@@ -72,23 +72,23 @@ export const checkPositivePrice = (
   const status = isEmpty
     ? MATH_NEGATIVE_TYPE.NONE
     : currentToNumber >= checkToNumber
-    ? MATH_NEGATIVE_TYPE.POSITIVE
-    : MATH_NEGATIVE_TYPE.NEGATIVE;
+      ? MATH_NEGATIVE_TYPE.POSITIVE
+      : MATH_NEGATIVE_TYPE.NEGATIVE;
   const percent =
     status === MATH_NEGATIVE_TYPE.NONE
       ? "-"
       : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(
-          Number(value || 0),
-        ).toFixed(2)}%`;
+        Number(value || 0),
+      ).toFixed(2)}%`;
   const price =
     status === MATH_NEGATIVE_TYPE.NONE
       ? "-"
       : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}$${convertToMB(
-          formatUsdNumber3Digits(
-            Math.abs(checkToNumber - currentToNumber).toString(),
-          ),
-          fixedPrice ?? 2,
-        )}`;
+        formatUsdNumber3Digits(
+          Math.abs(checkToNumber - currentToNumber).toString(),
+        ),
+        fixedPrice ?? 2,
+      )}`;
   return {
     status: status,
     value: value.includes("Infinity") ? "0" : value,

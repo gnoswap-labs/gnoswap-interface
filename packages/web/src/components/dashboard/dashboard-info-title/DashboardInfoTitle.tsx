@@ -9,7 +9,6 @@ import IconLogoWhite from "../../common/icons/IconLogoWhite";
 import { DashboardTokenInfo } from "@containers/dashboard-info-container/DashboardInfoContainer";
 import { DEVICE_TYPE } from "@styles/media";
 import IconLogoGnot from "@components/common/icons/IconLogoGnot";
-import { toUnitFormat } from "@utils/number-utils";
 
 interface DashboardInfoTitleProps {
   dashboardTokenInfo: DashboardTokenInfo;
@@ -27,7 +26,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
         </div>
         <div className="gnos-symbol">GNS</div>
       </GnosLogoWrapper>
-      <div className="amount-info">{toUnitFormat(dashboardTokenInfo.gnosAmount, true, true)}</div>
+      <div className="amount-info">{dashboardTokenInfo.gnosAmount}</div>
     </TokenWrapper>
     <TitleDivider />
     <TokenWrapper>

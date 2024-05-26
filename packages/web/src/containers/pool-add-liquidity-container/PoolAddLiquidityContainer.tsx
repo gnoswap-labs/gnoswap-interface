@@ -28,7 +28,6 @@ import {
   tickToPrice,
 } from "@utils/swap-utils";
 import { usePoolData } from "@hooks/pool/use-pool-data";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { encryptId } from "@utils/common";
 import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
@@ -77,7 +76,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     type = "EXACT_IN",
     isKeepToken = false,
   } = swapValue;
-  const { getGnotPath } = useGnotToGnot();
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
   const [exactType, setExactType] = useState<"EXACT_IN" | "EXACT_OUT">(
@@ -492,21 +490,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
         ...prev,
         tokenA: currentTokenA
           ? {
-              ...currentTokenA,
-              path: getGnotPath(currentTokenA).path,
-              name: getGnotPath(currentTokenA).name,
-              symbol: getGnotPath(currentTokenA).symbol,
-              logoURI: getGnotPath(currentTokenA).logoURI,
-            }
+            ...currentTokenA,
+          }
           : null,
         tokenB: currentTokenB
           ? {
-              ...currentTokenB,
-              path: getGnotPath(currentTokenB).path,
-              name: getGnotPath(currentTokenB).name,
-              symbol: getGnotPath(currentTokenB).symbol,
-              logoURI: getGnotPath(currentTokenB).logoURI,
-            }
+            ...currentTokenB,
+          }
           : null,
       }));
       return;

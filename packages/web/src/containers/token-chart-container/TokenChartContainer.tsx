@@ -13,7 +13,7 @@ import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGetTokenByPath, useGetTokenDetailByPath } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import dayjs from "dayjs";
 import {
@@ -21,6 +21,7 @@ import {
   getLocalizeTime,
   getNumberOfAxis,
 } from "@utils/chart";
+import BigNumber from "bignumber.js";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -203,7 +204,7 @@ const TokenChartContainer: React.FC = () => {
         priceInfo: {
           amount: {
             value: currentPrice
-              ? Number(formatUsdNumber3Digits(currentPrice))
+              ? toPriceFormat(currentPrice)
               : "",
             denom: "USD",
             status: dataToday.status,
@@ -227,14 +228,15 @@ const TokenChartContainer: React.FC = () => {
   }, []);
 
   const countXAxis = useMemo(() => {
-    if (breakpoint !== DEVICE_TYPE.MOBILE)
+    if (breakpoint === DEVICE_TYPE.MOBILE)
       return Math.floor(
         ((size.width || 0) + 20 - 25) /
-          (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
+        (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
       );
+
     return Math.floor(
       ((size.width || 0) + 20 - 8) /
-        (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
+      (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
     );
   }, [size.width, breakpoint, currentTab]);
 
@@ -265,12 +267,12 @@ const TokenChartContainer: React.FC = () => {
       currentTab === TokenChartGraphPeriods[0]
         ? 144
         : currentTab === TokenChartGraphPeriods[1]
-        ? 168
-        : currentTab === TokenChartGraphPeriods[2]
-        ? 180
-        : currentTab === TokenChartGraphPeriods[3]
-        ? 365
-        : 144;
+          ? 168
+          : currentTab === TokenChartGraphPeriods[2]
+            ? 180
+            : currentTab === TokenChartGraphPeriods[3]
+              ? 365
+              : 144;
     const currentLength = chartData.length;
     const startTime = Math.max(0, currentLength - length - 1);
 
@@ -279,6 +281,7 @@ const TokenChartContainer: React.FC = () => {
       getLocalizeTime(chartData[currentLength - 1]?.date),
       countXAxis > 2 ? Math.floor(24 / Math.min(countXAxis, 7)) : 3,
     );
+
     const labelWidth =
       breakpoint === DEVICE_TYPE.MOBILE
         ? DEFAULT_X_LABEL_WIDTH_MOBILE
@@ -298,31 +301,36 @@ const TokenChartContainer: React.FC = () => {
       temp,
       spaceBetweenLeftYAxisWithFirstLabel,
     );
+
+    const lastDate = new Date(chartData[chartData.length - 1]?.date);
+    lastDate.setMinutes(lastDate.getMinutes() + 30);
+
     const datas =
       chartData?.length > 0
         ? [
-            ...chartData
-              .slice(startTime, chartData.length - 1)
-              .map((item: IPriceResponse) => {
-                return {
-                  amount: {
-                    value: `${item.price}`,
-                    denom: "",
-                  },
-                  time: getLocalizeTime(item.date),
-                };
-              }),
-            {
-              amount: {
-                value: `${currentPrice}`,
-                denom: "",
-              },
-              time: getLocalizeTime(chartData[chartData.length - 1].date),
+          ...chartData
+            .map((item: IPriceResponse) => {
+              return {
+                amount: {
+                  value: `${item.price}`,
+                  denom: "",
+                },
+                time: getLocalizeTime(item.date),
+              };
+            }),
+          {
+            amount: {
+              value: `${currentPrice}`,
+              denom: "",
             },
-          ]
-        : [];
+            time: getLocalizeTime(lastDate),
+          },
+        ]
+        :
+        [];
+
     const yAxisLabels = getYAxisLabels(
-      datas.map(item => Number(item.amount.value).toFixed(2)),
+      datas.map(item => BigNumber(item.amount.value).toFormat(6)),
     );
     const chartInfo: ChartInfo = {
       xAxisLabels,
@@ -334,18 +342,32 @@ const TokenChartContainer: React.FC = () => {
 
   const getYAxisLabels = (datas: string[]): string[] => {
     const convertNumber = datas.map(item => Number(item));
-    const minPoint = Math.min(...convertNumber);
-    const maxPoint = Math.max(...convertNumber);
-    const temp = [minPoint.toString()];
-    const space = Number(Number((maxPoint - minPoint) / 5));
-    for (
-      let i = Number(minPoint) + Number(space);
-      i < Number(maxPoint);
-      i += space
-    ) {
-      temp.push(`${Number(i).toFixed(2)}`);
+    const minValue = BigNumber(Math.min(...convertNumber));
+    const maxValue = BigNumber(Math.max(...convertNumber));
+
+    const minPoint = minValue.multipliedBy(0.95);
+    const maxPoint = maxValue.multipliedBy(1.05);
+
+    if (datas.every(item => item === datas[0])) {
+      return [
+        toPriceFormat(minValue.multipliedBy(0.95)),
+        toPriceFormat(minValue),
+        toPriceFormat(minValue.multipliedBy(1.05)),
+      ];
     }
-    temp.push(maxPoint.toString());
+
+    const gap = maxPoint.minus(minPoint);
+    const space = gap.dividedBy(5);
+    const temp = [toPriceFormat(minPoint)];
+    for (
+      let i = minPoint.plus(space);
+      i.isLessThan(maxPoint);
+      i = i.plus(space)
+    ) {
+      temp.push(`${toPriceFormat(i)}`);
+    }
+    temp.push(toPriceFormat(maxPoint));
+
     const uniqueLabel = [...new Set(temp)];
     if (uniqueLabel.length === 1) uniqueLabel.unshift("0");
     return uniqueLabel;

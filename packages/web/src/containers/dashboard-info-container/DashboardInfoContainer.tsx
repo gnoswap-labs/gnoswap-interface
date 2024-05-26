@@ -4,7 +4,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { DashboardTokenResponse } from "@repositories/dashboard/response/token-response";
 import { useQuery } from "@tanstack/react-query";
-import { formatUsdNumber3Digits, prettyNumber } from "@utils/number-utils";
+import { formatUsdNumber3Digits, prettyNumber, toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 
 export interface DashboardTokenInfo {
@@ -89,16 +89,16 @@ const DashboardInfoContainer: React.FC = () => {
     const totalStaked = Number(tokenData?.gnsTotalStaked);
 
     if (circSupply === 0) return "0%";
-    if (totalStaked * 100 / circSupply < 0.1) return "0.1%";
+    if (totalStaked * 100 / circSupply < 0.1) return "<0.1%";
     const ratio = ((totalStaked / circSupply) * 100).toFixed(2);
     return `${prettyNumber(ratio)}%`;
   }, [tokenData]);
-  
+
   return (
     <DashboardInfo
       dashboardTokenInfo={{
-        gnosAmount: formatPrice(tokenData?.gnsPrice),
-        gnotAmount: formatPrice(tokenData?.gnotPrice),
+        gnosAmount: toPriceFormat(tokenData?.gnsPrice ?? "0", { usd: true, isFormat: false }),
+        gnotAmount: toPriceFormat(tokenData?.gnotPrice ?? "0", { usd: true, isFormat: false }),
       }}
       supplyOverviewInfo={{
         circulatingSupply: formatPrice(tokenData?.gnsCirculatingSupply, "GNS"),

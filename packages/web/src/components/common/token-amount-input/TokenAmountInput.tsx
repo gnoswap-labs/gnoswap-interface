@@ -62,6 +62,12 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
     return "-";
   }, [balance, connected, token?.decimals]);
 
+  const preventArrowKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (["ArrowUp", "ArrowDown"].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <TokenAmountInputWrapper>
       <div className="amount">
@@ -71,6 +77,8 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
           type="number"
           onChange={onChangeAmountInput}
           placeholder="0"
+          onKeyUp={preventArrowKeys}
+          onKeyDown={preventArrowKeys}
         />
         <div className="token">
           <SelectPairIncentivizeButton

@@ -392,6 +392,18 @@ const SelectPriceRangeCustom = forwardRef<
       return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
     }, [tokenA, tokenB, isKeepToken]);
 
+    const formatStartingPrice = useMemo(() => {
+      if (tempPrice) {
+        if (Number(tempPrice) < 1) {
+          return subscriptFormat(tempPrice);
+        }
+
+        return tempPrice;
+      }
+
+      return startingPriceValue;
+    }, [startingPriceValue, tempPrice]);
+
     if (selectPool.renderState() === "NONE") {
       return <></>;
     }
@@ -425,9 +437,7 @@ const SelectPriceRangeCustom = forwardRef<
             </div>
             <input
               className="starting-price-input"
-              value={
-                tempPrice ? subscriptFormat(tempPrice) : startingPriceValue
-              }
+              value={formatStartingPrice}
               onChange={onChangeStartingPrice}
               onBlur={updateStartingPrice}
               onFocus={() => setTempPrice("")}
@@ -450,21 +460,19 @@ const SelectPriceRangeCustom = forwardRef<
                   <div className="button-option-contaier">
                     <div className="graph-option-wrapper">
                       <span
-                        className={`graph-option-item decrease ${
-                          isLoading || showDim || !availMoveLeft
-                            ? "disabled-option"
-                            : ""
-                        }`}
+                        className={`graph-option-item decrease ${isLoading || showDim || !availMoveLeft
+                          ? "disabled-option"
+                          : ""
+                          }`}
                         onClick={moveLeft}
                       >
                         <IconKeyboardArrowLeft />
                       </span>
                       <span
-                        className={`graph-option-item increase ${
-                          isLoading || showDim || !availMoveRight
-                            ? "disabled-option"
-                            : ""
-                        }`}
+                        className={`graph-option-item increase ${isLoading || showDim || !availMoveRight
+                          ? "disabled-option"
+                          : ""
+                          }`}
                         onClick={moveRight}
                       >
                         <IconKeyboardArrowRight />
@@ -472,21 +480,19 @@ const SelectPriceRangeCustom = forwardRef<
                     </div>
                     <div className="graph-option-wrapper">
                       <span
-                        className={`graph-option-item decrease ${
-                          isLoading || showDim || !availZoomOut
-                            ? "disabled-option"
-                            : ""
-                        }`}
+                        className={`graph-option-item decrease ${isLoading || showDim || !availZoomOut
+                          ? "disabled-option"
+                          : ""
+                          }`}
                         onClick={zoomOut}
                       >
                         <IconRemove />
                       </span>
                       <span
-                        className={`graph-option-item increase ${
-                          isLoading || showDim || !availZoomIn
-                            ? "disabled-option"
-                            : ""
-                        }`}
+                        className={`graph-option-item increase ${isLoading || showDim || !availZoomIn
+                          ? "disabled-option"
+                          : ""
+                          }`}
                         onClick={zoomIn}
                       >
                         <IconAdd />
@@ -574,7 +580,6 @@ const SelectPriceRangeCustom = forwardRef<
                         }
                         currentPriceStr={currentPriceStr}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                        // priceRangeType={priceRangeType}
                         ref={minPriceRangeCustomRef}
                         priceRatio={tokenA.decimals / tokenB.decimals}
                       />
@@ -604,7 +609,6 @@ const SelectPriceRangeCustom = forwardRef<
                         }
                         currentPriceStr={currentPriceStrReverse}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                        // priceRangeType={priceRangeType}
                         ref={maxPriceRangeCustomRef}
                         priceRatio={tokenA.decimals / tokenB.decimals}
                       />

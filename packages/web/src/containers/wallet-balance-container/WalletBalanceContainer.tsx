@@ -171,7 +171,7 @@ const WalletBalanceContainer: React.FC = () => {
       fromAddress: account.address,
       toAddress: address,
       token: withdrawInfo,
-      tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
+      tokenAmount: BigNumber(amount).multipliedBy(Math.pow(10, withdrawInfo.decimals)).toNumber(),
     },
       withdrawInfo.type,);
     closeWithdraw();

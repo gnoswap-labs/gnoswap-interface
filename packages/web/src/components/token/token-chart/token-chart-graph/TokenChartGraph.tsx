@@ -4,6 +4,7 @@ import React, { useCallback, useMemo } from "react";
 import {
   TokenChartGraphWrapper,
   TokenChartGraphXLabel,
+  YAxisLabelWrapper
 } from "./TokenChartGraph.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { TokenChartGraphPeriodType } from "@containers/token-chart-container/TokenChartContainer";
@@ -89,6 +90,15 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     return "small-text";
   }, [yAxisLabels]);
 
+  const longestYAxisValue = useMemo(() => {
+    return yAxisLabels.reduce((current, next) => {
+      if (next.length > current.length) {
+        return next;
+      }
+
+      return current;
+    }, "");
+  }, [yAxisLabels]);
   const xAxisRange = useMemo(() => {
     const times = datas.map(d => new Date(d.time).getTime());
     const minX = Math.min(...times);
@@ -190,13 +200,14 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
             value: data.amount.value,
             time: data.time,
           }))}
+          // showBaseLine
+          // baseLineMap={[true, false, false, true]}
           firstPointColor={theme.color.border05}
           customData={customData}
         />
         <div
-          className={`xaxis-wrapper ${
-            xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""
-          }`}
+          className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""
+            }`}
         >
           {displayXAxisLabels.map((value, index) => (
             <TokenChartGraphXLabel key={index} x={value.position}>
@@ -205,13 +216,13 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           ))}
         </div>
       </div>
-      <div className="yaxis-wrapper">
+      <YAxisLabelWrapper width={Number(longestYAxisValue.length) / 8 * 58}>
         {yAxisLabels.map((label, index) => (
           <span key={index} className={`label ${typeYAxis}`}>
             ${label}
           </span>
         ))}
-      </div>
+      </YAxisLabelWrapper>
     </TokenChartGraphWrapper>
   );
 };

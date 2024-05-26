@@ -23,7 +23,9 @@ const UnstakePositionModalContainer = ({
   const clearModal = useClearModal();
   const { broadcastRejected, broadcastSuccess, broadcastPending, broadcastError, broadcastLoading } = useBroadcastHandler();
   const { pooledTokenInfos } = useUnstakeData({ positions });
-  const { openModal } = useTransactionConfirmModal();
+  const { openModal } = useTransactionConfirmModal({
+    confirmCallback: () => router.push(router.asPath.replace("/unstake", ""))
+  });
 
   const close = useCallback(() => {
     clearModal();
@@ -37,8 +39,8 @@ const UnstakePositionModalContainer = ({
     broadcastLoading(makeBroadcastUnStakingMessage("pending", {
       tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
       tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-      tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-      tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+      tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 }),
+      tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })
     }));
     const result = await positionRepository.unstakePositions({
       positions,
@@ -51,11 +53,11 @@ const UnstakePositionModalContainer = ({
           broadcastSuccess(makeBroadcastUnStakingMessage("success", {
             tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
             tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 }),
+            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })
           }));
           openModal();
-          router.push(router.asPath.replace("/unstake", ""));
+          // router.push(router.asPath.replace("/unstake", ""));
         }, 1000);
       } else if (result.code === 4000 && result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
         broadcastPending();
@@ -63,8 +65,8 @@ const UnstakePositionModalContainer = ({
           broadcastError(makeBroadcastUnStakingMessage("error", {
             tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
             tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 }),
+            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })
           }));
           openModal();
         }, 1000);
@@ -72,8 +74,8 @@ const UnstakePositionModalContainer = ({
         broadcastRejected(makeBroadcastUnStakingMessage("error", {
           tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
           tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-          tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-          tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+          tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 }),
+          tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })
         }));
         openModal();
       }
@@ -83,7 +85,7 @@ const UnstakePositionModalContainer = ({
     //   router.push(router.asPath.replace("/unstake", ""));
     // }
     return result;
-  }, [account?.address, clearModal, positionRepository, positions, router]);
+  }, [account?.address, positionRepository, positions, router]);
 
   return <UnstakePositionModal positions={positions} close={close} onSubmit={onSubmit} />;
 };

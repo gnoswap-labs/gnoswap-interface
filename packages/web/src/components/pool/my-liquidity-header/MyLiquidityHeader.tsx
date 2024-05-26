@@ -17,13 +17,14 @@ interface MyLiquidityHeaderProps {
   address: string | null;
   addressName: string;
   positionLength: number;
-  availableRemovePosition: boolean;
+  isShowRemovePositionButton: boolean;
   handleClickAddPosition: () => void;
   handleClickRemovePosition: () => void;
   isShowClosePosition: boolean;
   handleSetIsClosePosition: () => void;
   isHiddenAddPosition: boolean;
   showClosePositionButton: boolean;
+  isLoadingPositionsById: boolean;
 }
 
 const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
@@ -32,13 +33,14 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   address,
   addressName,
   positionLength,
-  availableRemovePosition,
+  isShowRemovePositionButton,
   handleClickAddPosition,
   handleClickRemovePosition,
   isShowClosePosition,
   handleSetIsClosePosition,
   isHiddenAddPosition,
   showClosePositionButton,
+  isLoadingPositionsById,
 }) => {
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -65,12 +67,12 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
       if (isOtherPosition) {
         return <>
           <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
-          <span>{`’s Positions (${positionLength})`}</span>
+          <span>{`’s Positions ${!isLoadingPositionsById ? `(${positionLength})` : ""}`}</span>
         </>
       }
 
       if (connectedWallet) {
-        return <span>{`My Positions (${positionLength})`}</span>
+        return <span>{`My Positions ${!isLoadingPositionsById ? `(${positionLength})` : ""}`}</span>
       }
 
       return <span>{"My Positions"}</span>
@@ -81,7 +83,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
     return <div className="header">
       <h2>
         {positionTitle()}
-        {canCopy && <button onClick={onClickCopy}><IconLinkPage />
+        {!isLoadingPositionsById && canCopy && <button onClick={onClickCopy}><IconLinkPage />
           {copied && (
             <CopyTooltip>
               <div className={`box ${themeKey}-shadow`}>
@@ -119,7 +121,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             />
           </div>
         )}
-        {availableRemovePosition && !isHiddenAddPosition && (
+        {isShowRemovePositionButton && !isHiddenAddPosition && (
           <Button
             text="Remove Position"
             onClick={handleClickRemovePosition}
@@ -140,7 +142,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             padding: "10px 16px",
             fontType: "p1",
           }}
-          className={!availableRemovePosition ? "full-width" : ""}
+          className={!showClosePositionButton ? "full-width" : ""}
         />
       </div>
     </HeaderWrapper>

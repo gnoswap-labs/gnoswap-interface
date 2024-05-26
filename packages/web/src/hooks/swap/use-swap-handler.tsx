@@ -33,9 +33,11 @@ const findKeyByValue = (
 
 export const useSwapHandler = () => {
   const [memorizeTokenSwap, setMemorizeTokenSwap] = useAtom(
-    SwapState.memorizeTokenSwap,
+    SwapState.memorizeTokenSwap
   );
+
   const router = useRouter();
+
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const {
     tokenA = null,
@@ -44,6 +46,7 @@ export const useSwapHandler = () => {
     tokenAAmount: defaultTokenAAmount,
     tokenBAmount: defaultTokenBAmount,
   } = swapValue;
+
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount, setTokenAAmount] = useState<string>(
     defaultTokenAAmount ?? "",
@@ -172,13 +175,14 @@ export const useSwapHandler = () => {
     }
 
     if (
-      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
+      Number(tokenAAmount) >
+      Number(parseFloat(tokenABalance.replace(/,/g, "")))
     ) {
       return "Insufficient Balance";
     }
     if (
       Number(tokenBAmount) >
-        Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
+      Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
       type === "EXACT_OUT"
     ) {
       return "Insufficient Balance";
@@ -357,7 +361,7 @@ export const useSwapHandler = () => {
     }
     if (
       Number(tokenBAmount) >
-        Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
+      Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
       type === "EXACT_OUT"
     ) {
       return false;
@@ -414,6 +418,7 @@ export const useSwapHandler = () => {
     }, 10000);
     return () => clearInterval(interval);
   }, [tokens]);
+
   const changeTokenAAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenB =
@@ -455,6 +460,7 @@ export const useSwapHandler = () => {
     },
     [isSameToken, memorizeTokenSwap, tokenA],
   );
+
   useEffect(() => {
     setSwapValue(prev => ({
       ...prev,
@@ -462,6 +468,7 @@ export const useSwapHandler = () => {
       tokenBAmount,
     }));
   }, [setSwapValue, tokenAAmount, tokenBAmount]);
+
   const changeTokenBAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenA =
@@ -691,13 +698,11 @@ export const useSwapHandler = () => {
                   swapTokenInfo.tokenAAmount,
                 ).toLocaleString("en-US", {
                   maximumFractionDigits: 6,
-                })}</span> <span>${
-                  swapTokenInfo?.tokenA?.symbol
-                }</span> for <sp${Number(
-                  swapTokenInfo.tokenBAmount,
-                ).toLocaleString("en-US", { maximumFractionDigits: 6 })} ${
-                  swapTokenInfo?.tokenB?.symbol
-                }`,
+                })}</span> <span>${swapTokenInfo?.tokenA?.symbol
+                  }</span> for <sp${Number(
+                    swapTokenInfo.tokenBAmount,
+                  ).toLocaleString("en-US", { maximumFractionDigits: 6 })} ${swapTokenInfo?.tokenB?.symbol
+                  }`,
               },
               {
                 timeout: 50000,
@@ -714,13 +719,12 @@ export const useSwapHandler = () => {
                   swapTokenInfo.tokenAAmount,
                 ).toLocaleString("en-US", {
                   maximumFractionDigits: 6,
-                })}</span> <span>${
-                  swapTokenInfo?.tokenA?.symbol
-                }</span> for <span>${Number(
-                  swapTokenInfo.tokenBAmount,
-                ).toLocaleString("en-US", {
-                  maximumFractionDigits: 6,
-                })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+                })}</span> <span>${swapTokenInfo?.tokenA?.symbol
+                  }</span> for <span>${Number(
+                    swapTokenInfo.tokenBAmount,
+                  ).toLocaleString("en-US", {
+                    maximumFractionDigits: 6,
+                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
               },
               {
                 timeout: 50000,
@@ -767,13 +771,12 @@ export const useSwapHandler = () => {
                     swapTokenInfo.tokenAAmount,
                   ).toLocaleString("en-US", {
                     maximumFractionDigits: 6,
-                  })}</span> <span>${
-                    swapTokenInfo?.tokenA?.symbol
-                  }</span> for <span>${Number(
-                    swapTokenInfo.tokenBAmount,
-                  ).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
-                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+                  })}</span> <span>${swapTokenInfo?.tokenA?.symbol
+                    }</span> for <span>${Number(
+                      swapTokenInfo.tokenBAmount,
+                    ).toLocaleString("en-US", {
+                      maximumFractionDigits: 6,
+                    })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
                 },
                 {
                   timeout: 50000,
@@ -790,13 +793,12 @@ export const useSwapHandler = () => {
                     swapTokenInfo.tokenAAmount,
                   ).toLocaleString("en-US", {
                     maximumFractionDigits: 6,
-                  })}</span> <span>${
-                    swapTokenInfo?.tokenA?.symbol
-                  }</span> for <span>${Number(
-                    swapTokenInfo.tokenBAmount,
-                  ).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
-                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+                  })}</span> <span>${swapTokenInfo?.tokenA?.symbol
+                    }</span> for <span>${Number(
+                      swapTokenInfo.tokenBAmount,
+                    ).toLocaleString("en-US", {
+                      maximumFractionDigits: 6,
+                    })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
                 },
                 {
                   timeout: 50000,
@@ -822,19 +824,32 @@ export const useSwapHandler = () => {
   }
 
   useEffect(() => {
+    if (
+      (defaultTokenAAmount || defaultTokenBAmount) &&
+      (!!Number(tokenAAmount) || !!Number(tokenBAmount))
+    ) {
+      setIsLoading(true);
+    }
+  }, [defaultTokenAAmount, defaultTokenBAmount, tokenAAmount, tokenBAmount]);
+
+  useEffect(() => {
     updateTokens();
     updateTokenPrices();
+    if (defaultTokenAAmount || defaultTokenBAmount) {
+      setIsLoading(true);
+    }
     if (!isEmptyObject(router?.query)) return;
     setTokenAAmount("");
     setTokenBAmount("");
   }, []);
+
   useEffect(() => {
     if (!tokenA?.symbol || !tokenB?.symbol) {
       return;
     }
     if (
       memorizeTokenSwap?.[
-        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
+      `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
       ] &&
       type === "EXACT_IN"
     ) {
@@ -842,7 +857,7 @@ export const useSwapHandler = () => {
     }
     if (
       memorizeTokenSwap?.[
-        `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`
+      `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`
       ] &&
       type === "EXACT_OUT"
     ) {
@@ -872,7 +887,7 @@ export const useSwapHandler = () => {
     }
     if (
       memorizeTokenSwap?.[
-        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
+      `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
       ] &&
       type === "EXACT_IN"
     ) {
@@ -881,7 +896,7 @@ export const useSwapHandler = () => {
     }
     if (
       memorizeTokenSwap?.[
-        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
+      `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
       ] &&
       type === "EXACT_OUT"
     ) {
@@ -957,8 +972,9 @@ export const useSwapHandler = () => {
       !tokenA?.symbol ||
       !tokenB?.symbol ||
       !isChangeBalancesToken
-    )
+    ) {
       return;
+    }
     const isExactIn = type === "EXACT_IN";
     const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
     estimateSwapRoute(changedAmount).then(result => {
@@ -989,6 +1005,7 @@ export const useSwapHandler = () => {
     tokenB?.symbol,
     isChangeBalancesToken,
   ]);
+
   return {
     slippage,
     connectedWallet,

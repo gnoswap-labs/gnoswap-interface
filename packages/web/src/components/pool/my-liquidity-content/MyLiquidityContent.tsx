@@ -27,9 +27,9 @@ interface MyLiquidityContentProps {
   breakpoint: DEVICE_TYPE;
   isDisabledButton: boolean;
   claimAll: () => void;
-  loading: boolean;
-  loadngTransactionClaim: boolean;
+  loadingTransactionClaim: boolean;
   isOtherPosition: boolean;
+  isLoadingPositionsById: boolean;
 }
 
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
@@ -37,9 +37,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   positions,
   breakpoint,
   claimAll,
-  loading,
-  loadngTransactionClaim,
+  loadingTransactionClaim,
   isOtherPosition,
+  isLoadingPositionsById: loading,
 }) => {
   const { tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
@@ -49,80 +49,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const isDisplay = useMemo(() => {
     return connected === true || positions.length > 0;
   }, [connected, positions]);
-
-  // const allBalances = useMemo(() => {
-  //   if (!isDisplay) {
-  //     return null;
-  //   }
-  //   return positions.reduce<{ [key in string]: PositionBalanceInfo }>(
-  //     (balanceMap, position) => {
-  //       const sumOfBalances = Number(position.tokenABalance) + Number(position.tokenBBalance);
-  //       const depositRatio = sumOfBalances === 0 ? 0.5 : Number(position.tokenABalance) / sumOfBalances;
-  //       const tokenABalance =
-  //         makeDisplayTokenAmount(
-  //           position.pool.tokenA,
-  //           position.tokenABalance,
-  //         ) || 0;
-  //       const tokenBBalance =
-  //         makeDisplayTokenAmount(
-  //           position.pool.tokenB,
-  //           position.tokenBBalance,
-  //         ) || 0;
-  //       const tokenABalanceInfo = {
-  //         token: position.pool.tokenA,
-  //         balanceUSD:
-  //           tokenABalance *
-  //           Number(tokenPrices[position.pool.tokenA.priceID]?.usd || 1),
-  //         percent: `${Math.round(depositRatio * 100)}%`,
-  //       };
-  //       const tokenBBalanceInfo = {
-  //         token: position.pool.tokenB,
-  //         balanceUSD:
-  //           tokenBBalance *
-  //           Number(tokenPrices[position.pool.tokenB.priceID]?.usd || 1),
-  //         percent: `${Math.round((1 - depositRatio) * 100)}%`,
-  //       };
-  //       if (!balanceMap[tokenABalanceInfo.token.priceID]) {
-  //         balanceMap[tokenABalanceInfo.token.priceID] = {
-  //           ...tokenABalanceInfo,
-  //           balance: 0,
-  //           balanceUSD: 0,
-  //         };
-  //       }
-  //       if (!balanceMap[tokenBBalanceInfo.token.priceID]) {
-  //         balanceMap[tokenBBalanceInfo.token.priceID] = {
-  //           ...tokenBBalanceInfo,
-  //           balance: 0,
-  //           balanceUSD: 0,
-  //         };
-  //       }
-  //       const changedTokenABalanceUSD =
-  //         balanceMap[tokenABalanceInfo.token.priceID].balanceUSD +
-  //         tokenABalanceInfo.balanceUSD;
-  //       const changedTokenABalance =
-  //         balanceMap[tokenABalanceInfo.token.priceID].balance +
-  //         Number(position.tokenABalance);
-  //       balanceMap[tokenABalanceInfo.token.priceID] = {
-  //         ...tokenABalanceInfo,
-  //         balance: changedTokenABalance,
-  //         balanceUSD: changedTokenABalanceUSD,
-  //       };
-  //       const changedTokenBBalanceUSD =
-  //         balanceMap[tokenBBalanceInfo.token.priceID].balanceUSD +
-  //         tokenBBalanceInfo.balanceUSD;
-  //       const changedTokenBBalance =
-  //         balanceMap[tokenBBalanceInfo.token.priceID].balance +
-  //         Number(position.tokenBBalance);
-  //       balanceMap[tokenBBalanceInfo.token.priceID] = {
-  //         ...tokenBBalanceInfo,
-  //         balance: changedTokenBBalance,
-  //         balanceUSD: changedTokenBBalanceUSD,
-  //       };
-  //       return balanceMap;
-  //     },
-  //     {},
-  //   );
-  // }, [isDisplay, positions, tokenPrices]);
 
   const totalBalance = useMemo(() => {
     if (!isDisplay) {
@@ -144,16 +70,16 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       [key in RewardType]: { [key in string]: PositionClaimInfo };
     } = {
       SWAP_FEE: {},
-      STAKING: {},
-      EXTERNAL: {},
       INTERNAL: {},
+      EXTERNAL: {},
+      STAKING: {},
     };
     positions
       .flatMap(position => position.reward)
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
-        balance: makeDisplayTokenAmount(reward.rewardToken, reward.totalAmount) || 0,
+        balance: reward.totalAmount || 0,
         balanceUSD:
           makeDisplayTokenAmount(
             reward.rewardToken,
@@ -161,9 +87,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
         claimableAmount:
-          makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) || 0,
+          Number(reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsd),
-        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D || 0) || 0,
+        accumulatedRewardOf1d: Number(reward.accuReward1D) || 0,
         claimableUsdValue: Number(reward.claimableUsd),
       }))
       .forEach(rewardInfo => {
@@ -187,9 +113,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      STAKING: Object.values(infoMap["STAKING"]),
-      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
       INTERNAL: Object.values(infoMap["INTERNAL"]),
+      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
 
@@ -203,9 +129,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       [key in RewardType]: { [key in string]: PositionAPRInfo };
     } = {
       SWAP_FEE: {},
-      STAKING: {},
-      EXTERNAL: {},
       INTERNAL: {},
+      EXTERNAL: {},
+      STAKING: {},
     };
     positions
       .flatMap(position => position.reward)
@@ -230,14 +156,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       });
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      STAKING: Object.values(infoMap["STAKING"]),
-      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
       INTERNAL: Object.values(infoMap["INTERNAL"]),
+      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
 
   const isShowRewardInfoTooltip = useMemo(() => {
-    return aprRewardInfo !== null && (aprRewardInfo?.EXTERNAL.length !== 0 || aprRewardInfo?.STAKING.length !== 0 || aprRewardInfo?.SWAP_FEE.length !== 0);
+    return aprRewardInfo !== null && (aprRewardInfo?.EXTERNAL.length !== 0 || aprRewardInfo?.INTERNAL.length !== 0 || aprRewardInfo?.SWAP_FEE.length !== 0);
   }, [aprRewardInfo]);
 
   const dailyEarning = useMemo(() => {
@@ -280,7 +206,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         claimableUSD: Number(reward.claimableUsd),
         accumulatedRewardOf1d: makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D || 0) || 0,
         claimableUsdValue: Number(reward.claimableUsd),
-        // aprOf7d: Number(reward.aprOf7d),
       }))
       .forEach(rewardInfo => {
         if (rewardInfo.claimableAmount > 0) {
@@ -293,7 +218,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
               accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
               claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-              // aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
             };
           } else {
             infoMap[rewardInfo.token.priceID] = rewardInfo;
@@ -304,7 +228,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [isDisplay, positions, tokenPrices]);
 
   const isShowClaimableRewardInfo = useMemo(() => {
-    return claimableRewardInfo && (claimableRewardInfo?.EXTERNAL.length !== 0 || claimableRewardInfo?.STAKING.length !== 0 || claimableRewardInfo?.SWAP_FEE.length !== 0);
+    return claimableRewardInfo && (claimableRewardInfo?.EXTERNAL.length !== 0 || claimableRewardInfo?.INTERNAL.length !== 0 || claimableRewardInfo?.SWAP_FEE.length !== 0);
   }, [claimableRewardInfo]);
 
   const isShowUnclaimableRewardInfo = useMemo(() => {
@@ -324,15 +248,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return positionAcc + currentPositionDailyReward;
     }, 0);
     return toUnitFormat(claimableUsdValue, true, true);
-    // const claimableUsdValue = claimableRewardInfo
-    //   ? Object.values(claimableRewardInfo)
-    //     .flatMap(item => item)
-    //     .reduce((accum, current) => {
-    //       return accum + Number(current.claimableUsdValue);
-    //     }, 0)
-    //   : 0;
-
-    // return toUnitFormat(claimableUsdValue, true, true);
   }, [isDisplay, positions]);
 
   const claimable = useMemo(() => {
@@ -407,18 +322,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo]);
 
   const logoReward = useMemo(() => {
-    const temp = claimableRewardInfo?.STAKING;
+    const temp = claimableRewardInfo?.INTERNAL;
     const rewardTokens = positionData?.rewardTokens || [];
     const rewardLogo = rewardTokens?.map(item => getGnotPath(item).logoURI) || [];
     return [...new Set([...rewardLogo, ...temp?.map(item => getGnotPath(item.token).logoURI) || []])];
   }, [claimableRewardInfo, getGnotPath, positionData]);
 
   const rewardDaily = useMemo(() => {
-    // const temp = claimableRewardInfo?.STAKING;
-    // const sumUSD =
-    //   temp?.reduce((accum, current) => accum + current.balance, 0) || 0;
-    // return toUnitFormat(`${sumUSD}`, true, true);
-
     const sumRewardDaily = positions.reduce((positionAcc, positionCurrent) => {
       const currentPositionDailyReward = positionCurrent.reward.reduce((rewardAcc, rewardCurrent) => {
         return rewardAcc + Number(rewardCurrent.accuReward1D);
@@ -430,9 +340,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [positions]);
 
   const rewardClaim = useMemo(() => {
-    const temp = claimableRewardInfo?.STAKING;
+    const temp = [...(claimableRewardInfo?.EXTERNAL ?? []), ...(claimableRewardInfo?.INTERNAL ?? [])];
     const sumUSD =
-      temp?.reduce((accum, current) => accum + current.claimableAmount, 0) || 0;
+      temp?.reduce((accum, current) => accum + current.claimableUsdValue, 0) || 0;
     return toUnitFormat(`${sumUSD}`, true, true);
   }, [claimableRewardInfo]);
 
@@ -595,7 +505,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               <Button
                 className="button-claim"
                 disabled={!claimable}
-                text={loadngTransactionClaim ? "" : "Claim All"}
+                text={loadingTransactionClaim ? "" : "Claim All"}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                   width: 86,
@@ -604,7 +514,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   fontType: "p1",
                 }}
                 leftIcon={
-                  loadngTransactionClaim ? (
+                  loadingTransactionClaim ? (
                     <LoadingSpinner className="loading-button" />
                   ) : undefined
                 }
@@ -653,7 +563,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 <Button
                   className="button-claim"
                   disabled={!claimable}
-                  text={loadngTransactionClaim ? "" : "Claim All"}
+                  text={loadingTransactionClaim ? "" : "Claim All"}
                   style={{
                     hierarchy: ButtonHierarchy.Primary,
                     height: 36,
@@ -662,7 +572,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   }}
                   onClick={claimAll}
                   leftIcon={
-                    loadngTransactionClaim ? (
+                    loadingTransactionClaim ? (
                       <LoadingSpinner className="loading-button" />
                     ) : undefined
                   }
