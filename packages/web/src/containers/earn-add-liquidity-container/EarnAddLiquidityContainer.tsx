@@ -568,7 +568,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenB: null,
       type: "EXACT_IN",
     });
-    // selectSwapFeeTier("NONE");
     setIsEarnAdd(false);
 
     return () => {

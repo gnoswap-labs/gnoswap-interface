@@ -63,7 +63,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   }, [balance, connected, token?.decimals]);
 
   const preventArrowKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (["ArrowUp", "ArrowDown"].includes(e.key)) { // Add your keys
+    if (["ArrowUp", "ArrowDown"].includes(e.key)) {
       e.preventDefault();
     }
   };

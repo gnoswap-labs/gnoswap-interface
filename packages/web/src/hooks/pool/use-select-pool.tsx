@@ -556,7 +556,6 @@ export const useSelectPool = ({
       }
       const minNearTick = priceToNearTick(minPosition, tickSpacing);
       const maxNearTick = priceToNearTick(maxPosition, tickSpacing);
-      // Possible bug
       setMaxPosition(tickToPrice(minNearTick));
       setMaxPosition(tickToPrice(maxNearTick));
       setInteractionType("FINISH");

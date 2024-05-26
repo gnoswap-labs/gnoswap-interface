@@ -32,12 +32,6 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   useEscCloseModal(handleESC);
   usePreventScroll(toggle.notification);
 
-  //   mutationKey: ["abc"] as MutationKey,
-  //   mutationFn: () => notificationRepository.clearNotification({
-  //     address: account?.address,
-  //   }),
-  // });
-
   const { data: txsGroupsInformation, refetch, isFetched } = useQuery<
     TransactionGroupsType[],
     Error

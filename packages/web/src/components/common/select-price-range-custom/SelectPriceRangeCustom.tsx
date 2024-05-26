@@ -580,7 +580,6 @@ const SelectPriceRangeCustom = forwardRef<
                         }
                         currentPriceStr={currentPriceStr}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                        // priceRangeType={priceRangeType}
                         ref={minPriceRangeCustomRef}
                         priceRatio={tokenA.decimals / tokenB.decimals}
                       />
@@ -610,7 +609,6 @@ const SelectPriceRangeCustom = forwardRef<
                         }
                         currentPriceStr={currentPriceStrReverse}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                        // priceRangeType={priceRangeType}
                         ref={maxPriceRangeCustomRef}
                         priceRatio={tokenA.decimals / tokenB.decimals}
                       />

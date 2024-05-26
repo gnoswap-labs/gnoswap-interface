@@ -72,13 +72,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     return haveClosedPosition;
   }, [connectedWallet, haveClosedPosition, isSwitchNetwork]);
 
-  // const availableRemovePosition = useMemo(() => {
-  //   if (!connectedWallet || isSwitchNetwork) {
-  //     return false;
-  //   }
-  //   return !haveClosedPosition;
-  // }, [connectedWallet, haveClosedPosition, isSwitchNetwork]);
-
   const isShowRemovePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
       return false;

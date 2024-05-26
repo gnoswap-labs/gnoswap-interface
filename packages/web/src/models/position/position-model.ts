@@ -46,23 +46,8 @@ export interface PositionModel {
   incentiveType: INCENTIVE_TYPE;
 
   // TODO: Remove later
-  // dailyRewards: RewardModel[];
-
-  // bins: PoolBinModel[];
 
   totalDailyRewardsUsd: string;
-
-  // unclaimedFee0Usd: string;
-
-  // unclaimedFee1Usd: string;
-
-  // tokensOwed0Amount: bigint;
-
-  // tokensOwed1Amount: bigint;
-
-  // tokensOwed0Usd: string;
-
-  // tokensOwed1Usd: string;
 
   stakedUsdValue: string;
 }

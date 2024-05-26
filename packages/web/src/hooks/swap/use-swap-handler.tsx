@@ -411,7 +411,6 @@ export const useSwapHandler = () => {
     setTokenBAmount("0");
   }, [updateBalances]);
 
-  // Auto refetch
   useEffect(() => {
     updateBalances();
     const interval = setInterval(() => {
@@ -462,7 +461,6 @@ export const useSwapHandler = () => {
     [isSameToken, memorizeTokenSwap, tokenA],
   );
 
-  // Update amount
   useEffect(() => {
     setSwapValue(prev => ({
       ...prev,
@@ -834,7 +832,6 @@ export const useSwapHandler = () => {
     }
   }, [defaultTokenAAmount, defaultTokenBAmount, tokenAAmount, tokenBAmount]);
 
-  // Component did mount
   useEffect(() => {
     updateTokens();
     updateTokenPrices();
@@ -846,7 +843,6 @@ export const useSwapHandler = () => {
     setTokenBAmount("");
   }, []);
 
-  // Toggle the loading => ON
   useEffect(() => {
     if (!tokenA?.symbol || !tokenB?.symbol) {
       return;
@@ -885,7 +881,6 @@ export const useSwapHandler = () => {
     tokenB?.symbol,
   ]);
 
-  // Estimate the token amount => stop loading
   useEffect(() => {
     if (!tokenA || !tokenB) {
       return;
@@ -970,7 +965,6 @@ export const useSwapHandler = () => {
     memorizeTokenSwap,
   ]);
 
-  // Estimate the token Value
   useEffect(() => {
     if (
       !Number(tokenAAmount) ||

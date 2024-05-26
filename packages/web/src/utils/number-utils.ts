@@ -97,12 +97,6 @@ export const toUnitFormat = (
   const bigNumber = BigNumber(value);
   const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
 
-  // if (wholeNumberLength >= 13)
-  //   return (
-  //     (usd ? "$" : "") +
-  //     bigNumber.dividedBy(Math.pow(10, 12)).decimalPlaces(2) +
-  //     unitsUpperCase.trillion
-  //   );
   if (wholeNumberLength >= 10 && isFormat)
     return (
       (usd ? "$" : "") +
@@ -159,12 +153,6 @@ export const toPriceFormat = (
   const bigNumber = BigNumber(value);
   const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
 
-  // if (wholeNumberLength >= 13)
-  //   return (
-  //     (usd ? "$" : "") +
-  //     bigNumber.dividedBy(Math.pow(10, 12)).decimalPlaces(2) +
-  //     unitsUpperCase.trillion
-  //   );
   if (wholeNumberLength >= 10 && options.isFormat)
     return (
       (options.usd ? "$" : "") +

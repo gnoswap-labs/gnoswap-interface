@@ -418,12 +418,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     return convertToKMB(`${Number(1 / Number(minPrice))}`, { maximumFractionDigits: 6 });
 
-    // const tokenBPriceStr = isFullRange
-    //   ? "∞ "
-    //   : !isSwap
-    //     ? maxPrice
-    //     : convertToKMB(`${Number(1 / Number(minPrice))}`, { maximumFractionDigits: 6 });
-    // return `${tokenBPriceStr}`;
   }, [
     position.tickLower,
     position.tickUpper,

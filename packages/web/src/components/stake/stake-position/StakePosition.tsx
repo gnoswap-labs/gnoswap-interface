@@ -7,7 +7,6 @@ import SelectStakeResult from "@components/stake/select-stake-result/SelectStake
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface StakePositionProps {
-  // stakedPositions: PoolPositionModel[];
   unstakedPositions: PoolPositionModel[];
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
@@ -29,7 +28,6 @@ export const CONTENT_TITLE = {
 export type CONTENT_TITLE = ValuesType<typeof CONTENT_TITLE>;
 
 const StakePosition: React.FC<StakePositionProps> = ({
-  // stakedPositions,
   unstakedPositions,
   checkedList,
   onCheckedItem,
@@ -52,7 +50,6 @@ const StakePosition: React.FC<StakePositionProps> = ({
     <div css={wrapper}>
       <h3 className="title">Stake Position</h3>
       <SelectLiquidity
-        // stakedPositions={stakedPositions}
         unstakedPositions={unstakedPositions}
         checkedList={checkedList}
         onCheckedItem={onCheckedItem}

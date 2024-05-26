@@ -57,21 +57,9 @@ export interface PoolModel {
   liquidity: string;
 
   //TODO Remove later
-  // feeChange: number;
-
   volumeChange: number;
 
-  // totalVolume: number;
-
   id: string;
-
-  // path: string;
-
-  // name: string;
-
-  // rewardsUsd24h?: any;
-
-  // usdValue?: any;
 }
 
 export interface IPoolDetailResponse {

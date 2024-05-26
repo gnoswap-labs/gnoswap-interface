@@ -219,9 +219,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     let baseLineNumberWidthComputation = 0;
 
-
-    //   maxValue - minValue !== 0 ? maxValue - minValue : maxValue * gapRatio;
-
     const minMaxGap = (() => {
       if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)) return maxValueBigNumber.multipliedBy(gapRatio);
 
