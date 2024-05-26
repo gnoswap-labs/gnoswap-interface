@@ -3,12 +3,16 @@ import { useMemo } from "react";
 import { ExchangeRateWrapper } from "./ExchangeRate.styles";
 
 interface Props {
-  value: any;
+  value: string;
 }
 
 const ExchangeRate: React.FC<Props> = ({ value }) => {
   const exchangePrice = useMemo(() => {
-    const newVal = formatExchangeRate(value);
+    if (isNaN(Number(value))) {
+      return value;
+    }
+
+    const newVal = formatExchangeRate(Number(value));
 
     return newVal;
   },

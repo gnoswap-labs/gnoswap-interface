@@ -14,7 +14,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { getPositionsByPoolId, loadingPositionById } = usePositionData();
   const { openModal } = useRemovePositionModal({
-    positions,
+    positions: positions,
     selectedIds: checkedList,
   });
   const { isLoadingCommon } = useLoading();
@@ -62,12 +62,14 @@ const RemoveLiquidityContainer: React.FC = () => {
   }, [openModal]);
 
   useEffect(() => {
+    // For this domain only show `closed = false` position
     const poolPath = router.query["pool-path"] as string;
     if (!poolPath) {
       return;
     }
     if (account?.address) {
-      setPositions(getPositionsByPoolId(poolPath));
+      const postions_ = getPositionsByPoolId(poolPath).filter(item => !item.closed);
+      setPositions(postions_);
       return;
     }
   }, [account?.address, getPositionsByPoolId, router.query]);

@@ -24,7 +24,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
   onClearAll,
 }) => {
   const listRef = useRef<HTMLDivElement | null>(null);
-  
+
   return (
     <>
       <NotificationListWrapper
@@ -35,7 +35,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
         <NotificationHeader>
           <span className="notification-title">Notification</span>
           <ClearButton
-            disabled={txsGroupsInformation.length === 0}
+            // disabled={txsGroupsInformation.length === 0}
             onClick={onClearAll}
           >
             Clear All

@@ -13,7 +13,7 @@ import { useGetPoolDetailByPath } from "@query/pools";
 
 const OneClickStakingContainer: React.FC = () => {
   const router = useRouter();
-  const { account } = useWallet();
+  const { account, connected } = useWallet();
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
   const { getPositionsByPoolId, getPositionsByPoolPath, loading: isLoadingPosition } = usePositionData();
@@ -24,14 +24,14 @@ const OneClickStakingContainer: React.FC = () => {
   const { data = initialPool as PoolDetailModel, isLoading: isLoadingPoolInfo } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
 
   const stakedPositions = useMemo(() => {
-    if (!poolPath) return [];
+    if (!poolPath || !account || !connected) return [];
     return positions.filter(position => position.staked);
-  }, [positions, poolPath]);
+  }, [poolPath, account, connected, positions]);
 
   const unstakedPositions = useMemo(() => {
-    if (!poolPath) return [];
+    if (!poolPath || !account || !connected) return [];
     return positions.filter(position => !position.staked);
-  }, [positions, poolPath]);
+  }, [poolPath, account, connected, positions]);
 
   const handleClickGotoStaking = useCallback(() => {
     if (poolId) {

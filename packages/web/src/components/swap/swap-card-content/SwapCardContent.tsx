@@ -101,8 +101,10 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (isSwitchNetwork) return "-";
     if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))
-        .toString().match(roundDownDecimalNumber(2));
+      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")
+        .toString()
+        .match(roundDownDecimalNumber(2))?.toString() ?? 0)
+        .toFormat();
     }
     return "-";
   }, [isSwitchNetwork, connectedWallet, swapTokenInfo.tokenABalance]);
@@ -111,8 +113,10 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (isSwitchNetwork) return "-";
     if (connectedWallet && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, ""))
-        .toFormat(2);
+      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")
+        .toString()
+        .match(roundDownDecimalNumber(2))?.toString() ?? 0)
+        .toFormat();
     }
     return "-";
   }, [swapTokenInfo.tokenBBalance, connectedWallet, isSwitchNetwork]);

@@ -21,7 +21,7 @@ const PREVIEW_ENV_VARIABLES = {
   PACKAGE_GOVERNANCE_ADDRESS: "g1kmat25auuqf0h5qvd4q7s707r8let5sky4tr76",
   WRAPPED_GNOT_PATH: "gno.land/r/demo/wugnot",
   GNS_TOKEN_PATH: "gno.land/r/demo/gns",
-  CREATE_POOL_FEE: "500000000",
+  CREATE_POOL_FEE: "100000000",
 };
 
 const ENV_VARIABLES = {

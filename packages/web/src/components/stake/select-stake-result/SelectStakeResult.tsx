@@ -4,7 +4,6 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useMemo } from "react";
 import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -33,8 +32,8 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
     const pooledTokenBAmount = positions.reduce((accum, position) => accum + position.tokenBBalance, 0);
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
-    const tokenAAmount = makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
-    const tokenBAmount = makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
+    const tokenAAmount = Number(pooledTokenAAmount) || 0;
+    const tokenBAmount = Number(pooledTokenBAmount) || 0;
     return [{
       token: tokenA,
       amount: tokenAAmount,

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
-interface Props {}
+interface Props { }
 
 export const TokenChartGraphWrapper = styled.div<Props>`
   display: flex;
@@ -47,7 +47,8 @@ export const TokenChartGraphWrapper = styled.div<Props>`
       color: ${({ theme }) => theme.color.text04};
 
       span {
-        ${fonts.body12};
+        /* white-space: nowrap; */
+        ${fonts.p4};
         color: ${({ theme }) => theme.color.text04};
         ${media.mobile} {
           ${fonts.p4};
@@ -63,17 +64,23 @@ export const TokenChartGraphWrapper = styled.div<Props>`
     }
   }
 
-  .yaxis-wrapper {
+  
+`;
+
+export const YAxisLabelWrapper = styled.div<{ width: number }>`
     text-align: center;
     display: flex;
     flex-direction: column-reverse;
-    min-width: 50px;
-    margin-bottom: 40px;
+    min-width: ${({ width }) => width};
     padding: 8px 0;
     justify-content: space-between;
+    margin: 0 4px;
+    margin-bottom: 50px;
+    /* margin-top: 8px; */
     span {
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
+      text-align: center;
     }
     .large-text {
       ${fonts.body12};
@@ -103,7 +110,6 @@ export const TokenChartGraphWrapper = styled.div<Props>`
         ${fonts.p7}
       }
     }
-  }
 `;
 
 export const TokenChartGraphXLabel = styled.span<{

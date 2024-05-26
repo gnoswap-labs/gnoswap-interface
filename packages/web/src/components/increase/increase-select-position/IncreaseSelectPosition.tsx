@@ -142,8 +142,7 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The deposit ratio of the two tokens is determined based on the
-                  current price and the set price range.
+                  The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.
                 </ToolTipContentWrapper>
               }
             >
@@ -159,8 +158,7 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The deposit ratio of the two tokens is determined based on the
-                  current price and the set price range.
+                  The estimated APR from swap fees is calculated based on the selected price range of the position.
                 </ToolTipContentWrapper>
               }
             >

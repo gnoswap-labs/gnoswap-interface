@@ -6,7 +6,6 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface SelectLiquidityProps {
   stakedPositions: PoolPositionModel[];
-  unstakedPositions: PoolPositionModel[];
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
@@ -16,7 +15,6 @@ interface SelectLiquidityProps {
 
 const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
   stakedPositions,
-  unstakedPositions,
   checkedList,
   onCheckedItem,
   onCheckedAll,
@@ -48,7 +46,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
             key={index}
           />
         ))}
-        {!isLoading && unstakedPositions.length === 0 && stakedPositions.length === 0 && <div className="no-position">No Position</div>}
+        {!isLoading && stakedPositions.length === 0 && <div className="no-position">No Position</div>}
       </ul>
     </div>
   );

@@ -4,9 +4,8 @@ import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
 import {
-  prettyNumber,
-  removeTrailingZeros,
   subscriptFormat,
+  toPriceFormat,
 } from "@utils/number-utils";
 import { getLocalizeTime } from "@utils/chart";
 import { convertToKMB } from "@utils/stake-position-utils";
@@ -75,10 +74,16 @@ export interface LineGraphProps {
   customData?: { height: number; locationTooltip: number };
   centerLineColor?: string;
   showBaseLine?: boolean;
+  showBaseLineLabels?: boolean;
   renderBottom?: (baseLineNumberWidth: number) => React.ReactElement;
   isShowTooltip?: boolean;
   onMouseMove?: (LineGraphData?: LineGraphData) => void;
   onMouseOut?: ((active: boolean) => void);
+  baseLineMap?: [boolean, boolean, boolean, boolean];
+  baseLineLabelsPosition?: "left" | "right";
+  baseLineLabelsTransform?: (value: string) => string;
+  graphBorder?: [boolean, boolean, boolean, boolean];
+  baseLineLabelsStyle?: React.CSSProperties;
 }
 
 export interface LineGraphRef {
@@ -144,13 +149,18 @@ const LineGraph: React.FC<LineGraphProps> = ({
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
   point,
-  firstPointColor,
   customData = { height: 0, locationTooltip: 0 },
-  showBaseLine,
+  showBaseLine = false,
   renderBottom,
   isShowTooltip = true,
   onMouseMove: onLineGraphMouseMove,
   onMouseOut: onLineGraphMouseOut,
+  showBaseLineLabels = false,
+  baseLineMap = [true, true, true, true],
+  baseLineLabelsPosition = "left",
+  baseLineLabelsTransform,
+  baseLineLabelsStyle,
+  firstPointColor,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -209,88 +219,103 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     let baseLineNumberWidthComputation = 0;
 
-    const minMaxGap = !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)
-      ? maxValueBigNumber.minus(minValueBigNumber) : maxValueBigNumber.multipliedBy(gapRatio);
+    const minMaxGap = (() => {
+      if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)) return maxValueBigNumber.multipliedBy(gapRatio);
 
-    if (showBaseLine) {
-      const baseLineData = new Array(baseLineCount)
-        .fill("")
-        .map((value, index) => {
-          // Gap from lowest value or highest value  to baseline
-          const additionalGap =
-            !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)
-              ? minMaxGap.multipliedBy(gapRatio / 2)
-              : minMaxGap.dividedBy(2);
-          // Gap between bottom and top base line
-          const baseLineGap =
-            !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0) ? minMaxGap.multipliedBy(1 + gapRatio) : minMaxGap;
-          // Lowest baseline value
-          const bottomBaseLineValue = minValueBigNumber.minus(additionalGap);
+      if (minValueBigNumber.isLessThan(0)) return maxValueBigNumber;
 
-          const currentBaseLineValue = bottomBaseLineValue.plus(baseLineGap.multipliedBy(index / (baseLineCount - 1)));
-          // const currentBaseLineValue =
-          //   bottomBaseLineValue + (index / (baseLineCount - 1)) * baseLineGap;
+      return maxValueBigNumber.minus(minValueBigNumber);
+    })();
 
-          if (currentBaseLineValue.isLessThan(-1)) {
-            return "-" + convertToKMB(currentBaseLineValue.absoluteValue().toFixed(), {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2,
-            });
-          }
+    const baseLineData = new Array(baseLineCount)
+      .fill("")
+      .map((value, index) => {
+        // Gap from lowest value or highest value  to baseline
+        const additionalGap = (() => {
+          if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)) return minMaxGap.dividedBy(2);
 
-          if (currentBaseLineValue.isGreaterThan(-1) && currentBaseLineValue.isLessThan(0)) {
-            return "-" + subscriptFormat(currentBaseLineValue.abs().toFixed());
-          }
+          return minMaxGap.multipliedBy(gapRatio / 2);
+        })();
 
+        // Gap between bottom and top base line
+        const baseLineGap = (() => {
+          if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)) return minMaxGap;
 
-          if (currentBaseLineValue.isLessThan(1)) {
-            return subscriptFormat(currentBaseLineValue.toString(), {
-              significantDigits: 3,
-              subscriptOffset: 3,
-            });
-          }
+          if (minValueBigNumber.isLessThanOrEqualTo(0)) return maxValueBigNumber;
 
-          if (currentBaseLineValue.isGreaterThanOrEqualTo(1) && currentBaseLineValue.isLessThan(100)) {
-            return convertToKMB(currentBaseLineValue.toString(), {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2,
-            });
-          }
+          return minMaxGap.multipliedBy(1 + gapRatio);
+        })();
 
-          const result = Math.round(currentBaseLineValue.toNumber()).toString();
+        // Lowest baseline value
+        const tempBottomBaseLineValue = minValueBigNumber.minus(additionalGap);
+        const bottomBaseLineValue = tempBottomBaseLineValue.isLessThanOrEqualTo(0) ? BigNumber(0) : tempBottomBaseLineValue;
 
-          if (currentBaseLineValue.isLessThan(1)) return subscriptFormat(currentBaseLineValue.toFixed());
+        const currentBaseLineValue = bottomBaseLineValue.plus(baseLineGap.multipliedBy(index / (baseLineCount - 1)));
 
-          return convertToKMB(result, {
+        if (currentBaseLineValue.isLessThan(-1)) {
+          return "-" + convertToKMB(currentBaseLineValue.absoluteValue().toFixed(), {
             maximumFractionDigits: 2,
             minimumFractionDigits: 2,
           });
+        }
+
+        if (currentBaseLineValue.isGreaterThan(-1) && currentBaseLineValue.isLessThan(0)) {
+          return "-" + subscriptFormat(currentBaseLineValue.abs().toFixed());
+        }
+
+
+        if (currentBaseLineValue.isLessThan(1)) {
+          return subscriptFormat(currentBaseLineValue.toString(), {
+            significantDigits: 3,
+            subscriptOffset: 3,
+          });
+        }
+
+        if (currentBaseLineValue.isGreaterThanOrEqualTo(1) && currentBaseLineValue.isLessThan(100)) {
+          return convertToKMB(currentBaseLineValue.toString(), {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          });
+        }
+
+        const result = Math.round(currentBaseLineValue.toNumber()).toString();
+
+        if (currentBaseLineValue.isLessThan(1)) return subscriptFormat(currentBaseLineValue.toFixed());
+
+        return convertToKMB(result, {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
         });
+      });
 
-      setBaseLineYAxis([...baseLineData]);
+    setBaseLineYAxis([...baseLineData]);
 
-      const maxLength = 7;
+    const maxLength = 7;
 
-      baseLineNumberWidthComputation = (() => {
-        if (!showBaseLine) return 0;
+    baseLineNumberWidthComputation = (() => {
+      if (!showBaseLineLabels) return 0;
 
-        const longestNumber = baseLineData.reduce((prev, current) => {
-          if (current.length > prev.length) {
-            return current;
-          }
-          return prev;
-        });
+      const longestNumber = baseLineData.reduce((prev, current) => {
+        if (current.length > prev.length) {
+          return current;
+        }
+        return prev;
+      });
+      const transformedLongestNumber = baseLineLabelsTransform ? baseLineLabelsTransform(longestNumber) : longestNumber;
 
-        return (longestNumber.length / maxLength) * 52;
-      })();
+      return (transformedLongestNumber.length / maxLength) * 52;
+    })();
 
-      setBaseLineNumberWidth(baseLineNumberWidthComputation);
-    }
+    setBaseLineNumberWidth(baseLineNumberWidthComputation);
 
     const optimizeValue = function (value: number, height: number) {
       // The base line wrapper will > top and bottom of graph 10 % so the height will be 110% of graph height
       const graphHeight = (() => {
         if (showBaseLine) {
+          if (minValueBigNumber.isEqualTo(0)) {
+            return height * (1 / 1.05);
+          }
+
           return height * (1 / 1.1);
         }
 
@@ -298,13 +323,19 @@ const LineGraph: React.FC<LineGraphProps> = ({
       })();
 
       // Subtract 5% from the top baseline
-      const topFrontierHeight = showBaseLine ? height * (1.05 / 1.1) : height;
+      const topFrontierHeight = (() => {
+        return showBaseLine ? height * (1.05 / 1.1) : height;
+      })();
 
       const result = (() => {
+        if (minValue === 0) {
+          return topFrontierHeight + (graphHeight * (0.05 / 1.05)) - ((value - minValue) * graphHeight) / minMaxGap.toNumber();
+        }
+
         if (maxValue - minValue === 0) {
           return (
             topFrontierHeight -
-            ((value - value * 0.95) * graphHeight) / minMaxGap.toNumber()
+            ((value * 0.05) * graphHeight) / minMaxGap.toNumber()
           );
         }
 
@@ -327,6 +358,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       x: optimizeTime(data.time, width) + baseLineNumberWidthComputation,
       y: optimizeValue(data.value, height),
     }));
+
     setPoints(points);
   };
 
@@ -480,6 +512,10 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   const isLightTheme = theme.themeKey === "light";
 
+  const hasTooltipContent = useMemo(() => {
+    return datas[currentPointIndex]?.time && datas[currentPointIndex]?.value;
+  }, [currentPointIndex, datas]);
+
   return (
     <LineGraphWrapper
       className={className}
@@ -496,7 +532,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
         isHiddenArrow
         position={locationTooltipPosition}
         content={
-          (isShowTooltip && currentPointIndex > -1) ? (
+          (hasTooltipContent && isShowTooltip && currentPointIndex > -1) ? (
             <LineGraphTooltipWrapper>
               <div className="tooltip-body">
                 <span className="date">
@@ -513,9 +549,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 )}
               </div>
               <div className="tooltip-header">
-                <span className="value">{`$${removeTrailingZeros(
-                  prettyNumber(datas[currentPointIndex]?.value || "0"),
-                )}`}</span>
+                <span className="value">{`$${toPriceFormat(BigNumber(datas[currentPointIndex]?.value).toString())}`}</span>
               </div>
             </LineGraphTooltipWrapper>
           ) : null
@@ -539,30 +573,33 @@ const LineGraph: React.FC<LineGraphProps> = ({
             {showBaseLine && (
               <>
                 {baseLineYAxis.map((value, index) => {
+                  const showBaseLine = baseLineMap[index];
                   const currentHeight =
                     height - (height * index) / (baseLineCount - 1);
+                  const baseWidth = width - ((showBaseLineLabels && baseLineLabelsPosition === "left") ? 0 : baseLineNumberWidth);
 
                   return (
                     <React.Fragment key={index}>
-                      <line
-                        x1={baseLineNumberWidth}
-                        x2={width}
+                      {showBaseLine && <line
+                        x1={(showBaseLineLabels && baseLineLabelsPosition === "left") ? baseLineNumberWidth : 0}
+                        x2={width - ((showBaseLineLabels && baseLineLabelsPosition === "left") ? 0 : baseLineNumberWidth)}
                         y1={currentHeight}
                         y2={currentHeight}
                         stroke="grey"
                         stroke-width="1"
                         strokeDasharray={3}
                         opacity={0.2}
-                      />
-                      <text
+                      />}
+                      {showBaseLine && showBaseLineLabels && <text
                         alignmentBaseline="central"
                         className="y-axis-number"
-                        x=""
+                        x={(showBaseLineLabels && baseLineLabelsPosition === "left") ? 0 : baseWidth + 5}
                         y={currentHeight}
                         fill={theme.color.text04}
+                        style={baseLineLabelsStyle}
                       >
-                        {value}
-                      </text>
+                        {baseLineLabelsTransform ? baseLineLabelsTransform(value) : value}
+                      </text>}
                     </React.Fragment>
                   );
                 })}

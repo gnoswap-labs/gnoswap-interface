@@ -33,7 +33,7 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
+export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY" | "INSUFFICIENT_BALANCE";
 
 export const useIncreaseHandle = () => {
   const router = useRouter();
@@ -47,7 +47,6 @@ export const useIncreaseHandle = () => {
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
     type: "Custom",
   });
-
   const loading = useMemo(() => {
     return !selectedPosition;
   }, [selectedPosition]);
@@ -295,6 +294,15 @@ export const useIncreaseHandle = () => {
     ) {
       return "ENTER_AMOUNT";
     }
+
+    if (
+      (isDepositTokenA && !!tokenA && Number(tokenAAmountInput.amount) > Number(tokenAAmountInput.balance.replace(/,/g, "")))
+      || (isDepositTokenB && !!tokenB && Number(tokenBAmountInput.amount) > Number(tokenBAmountInput.balance.replace(/,/g, "")))
+    ) {
+
+      return "INSUFFICIENT_BALANCE";
+    }
+
     return "INCREASE_LIQUIDITY";
   }, [tokenAAmountInput, tokenBAmountInput]);
 

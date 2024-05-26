@@ -43,9 +43,9 @@ const IncreaseAmountInfo: React.FC<IncreaseAmountInfoProps> = ({
             usdPrice={tokenB.usdPrice}
           />
         )}
-        <div className="icon-wrapper">
+        {(!isDepositTokenA || !isDepositTokenA) && <div className="icon-wrapper">
           <IconAdd className="icon-add" />
-        </div>
+        </div>}
       </div>
     </IncreaseAmountInfoWrapper>
   );

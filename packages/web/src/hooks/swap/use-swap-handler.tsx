@@ -67,6 +67,7 @@ export const useSwapHandler = () => {
     tokenAAmount: defaultTokenAAmount,
     tokenBAmount: defaultTokenBAmount,
   } = swapValue;
+
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount, setTokenAAmount] = useState<string>(
     defaultTokenAAmount ?? "",
@@ -789,7 +790,6 @@ export const useSwapHandler = () => {
   useEffect(() => {
     updateTokens();
     updateTokenPrices();
-
     if (!isEmptyObject(router?.query)) return;
     setTokenAAmount("");
     setTokenBAmount("");

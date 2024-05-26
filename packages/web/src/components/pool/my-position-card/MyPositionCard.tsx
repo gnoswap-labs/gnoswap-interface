@@ -33,7 +33,6 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -386,9 +385,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position?.pool.currentTick, isSwap]);
 
   const minTickRate = useMemo(() => {
-    if (isMinTick(position.tickLower)) {
-      return 0;
-    }
     const minPrice = !isSwap
       ? tickToPrice(position.tickLower)
       : 1 / tickToPrice(position.tickLower);
@@ -396,9 +392,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [currentPrice, position.tickLower, isSwap]);
 
   const maxTickRate = useMemo(() => {
-    if (isMaxTick(position.tickUpper)) {
-      return 999;
-    }
     const maxPrice = !isSwap
       ? tickToPrice(position.tickUpper)
       : 1 / tickToPrice(position.tickUpper);
@@ -412,12 +405,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     const maxPrice = tickToPriceStr(position.tickUpper, 40, isEndTick);
 
-    const tokenBPriceStr = isFullRange
-      ? "∞ "
-      : !isSwap
-        ? maxPrice
-        : convertToKMB(`${Number(1 / Number(minPrice))}`, { maximumFractionDigits: 6 });
-    return `${tokenBPriceStr}`;
+    if (isFullRange) { return "∞"; }
+
+
+    if (isFullRange) {
+      return "∞";
+    }
+
+    if (!isSwap) {
+      return maxPrice;
+    }
+
+    return convertToKMB(`${Number(1 / Number(minPrice))}`, { maximumFractionDigits: 6 });
+
   }, [
     position.tickLower,
     position.tickUpper,
@@ -442,13 +442,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [minTickRate, isSwap]);
 
   const maxTickLabel = useMemo(() => {
-    if (maxTickRate === 999) return "+999%";
+    if (maxTickRate === 999) return `>${maxTickRate}%`;
 
     if (maxTickRate >= 1000) return ">999%";
 
-    if (Math.abs(maxTickRate) < 1) return "<1%";
-
-    return (maxTickRate > 1 ? "+" : "") + Math.round(maxTickRate) + "%";
+    return `${maxTickRate > 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+      }%`;
   }, [maxTickRate]);
 
   const startClass = useMemo(() => {
@@ -770,12 +769,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           {!loading && (
             <div className="convert-price">
               <div>
-                1 {(!isSwap ? tokenA : tokenB)?.symbol} = <ExchangeRate value={minPriceStr} />&nbsp;
-                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+                1
+                {(!isSwap ? tokenA : tokenB)?.symbol} =& nbsp;
+                <ExchangeRate value={minPriceStr} /> & nbsp;
+                {(!isSwap ? tokenB : tokenA)?.symbol}& nbsp; (
                 <span className={startClass}>
                   {!isSwap ? minTickLabel : maxTickLabel}
                 </span>
-                )&nbsp;
+                ) & nbsp;
                 <Tooltip
                   placement="top"
                   FloatingContent={
@@ -788,14 +789,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 >
                   <IconInfo />
                 </Tooltip>
-                &nbsp;
-              </div>
+                & nbsp;
+              </div >
               <div>
-                ~ <ExchangeRate value={maxPriceStr} /> &nbsp;{(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-                <span className={endClass}>
+                ~& nbsp;
+                <ExchangeRate value={maxPriceStr} /> & nbsp; {(!isSwap ? tokenB : tokenA)?.symbol}& nbsp;
+                (<span className={endClass}>
                   {!isSwap ? maxTickLabel : minTickLabel}
-                </span>
-                )&nbsp;
+                </span>)&nbsp;
                 <Tooltip
                   placement="top"
                   FloatingContent={
@@ -809,9 +810,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   <IconInfo />
                 </Tooltip>
               </div>
-            </div>
+            </div >
           )}
-        </div>
+        </div >
         <PositionHistory position={position} isClosed={isClosed} tokenA={tokenA} tokenB={tokenB} />
       </MyPositionCardWrapper >
     </>
