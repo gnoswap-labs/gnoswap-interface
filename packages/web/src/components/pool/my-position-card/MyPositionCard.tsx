@@ -33,7 +33,6 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-// import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -386,9 +385,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position?.pool.currentTick, isSwap]);
 
   const minTickRate = useMemo(() => {
-    // if (isMinTick(position.tickLower)) {
-    //   return 0;
-    // }
     const minPrice = !isSwap
       ? tickToPrice(position.tickLower)
       : 1 / tickToPrice(position.tickLower);
@@ -396,9 +392,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [currentPrice, position.tickLower, isSwap]);
 
   const maxTickRate = useMemo(() => {
-    // if (isMaxTick(position.tickUpper)) {
-    //   return 999;
-    // }
     const maxPrice = !isSwap
       ? tickToPrice(position.tickUpper)
       : 1 / tickToPrice(position.tickUpper);

@@ -20,7 +20,6 @@ interface MyLiquidityProps {
   onScroll: () => void;
   currentIndex: number;
   claimAll: () => void;
-  // availableRemovePosition: boolean;
   isShowRemovePositionButton: boolean;
   loading: boolean;
   loadingTransactionClaim: boolean;
@@ -45,7 +44,6 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   onScroll,
   currentIndex,
   claimAll,
-  // availableRemovePosition,
   isShowRemovePositionButton,
   loading,
   loadingTransactionClaim,
@@ -67,7 +65,6 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             address={address}
             addressName={addressName}
             positionLength={positions.length}
-            // availableRemovePosition={availableRemovePosition}
             isShowRemovePositionButton={isShowRemovePositionButton}
             handleClickAddPosition={handleClickAddPosition}
             handleClickRemovePosition={handleClickRemovePosition}

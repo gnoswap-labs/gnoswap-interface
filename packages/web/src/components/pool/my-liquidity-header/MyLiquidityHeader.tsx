@@ -17,7 +17,6 @@ interface MyLiquidityHeaderProps {
   address: string | null;
   addressName: string;
   positionLength: number;
-  // availableRemovePosition: boolean;
   isShowRemovePositionButton: boolean;
   handleClickAddPosition: () => void;
   handleClickRemovePosition: () => void;
@@ -34,7 +33,6 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   address,
   addressName,
   positionLength,
-  // availableRemovePosition,
   isShowRemovePositionButton,
   handleClickAddPosition,
   handleClickRemovePosition,

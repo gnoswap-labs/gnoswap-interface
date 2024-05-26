@@ -182,7 +182,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       onScroll={handleScroll}
       currentIndex={currentIndex}
       claimAll={claimAllReward}
-      // availableRemovePosition={availableRemovePosition}
       isShowRemovePositionButton={isShowRemovePositionButton}
       loading={loading}
       loadingTransactionClaim={loadingTransactionClaim}
