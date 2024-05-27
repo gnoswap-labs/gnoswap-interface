@@ -554,4 +554,18 @@ export class PoolRepositoryImpl implements PoolRepository {
       args: [POOL_ADDRESS, amount],
     };
   }
+
+  private static makeApproveTokenToPositionMessage(
+    tokenPath: string,
+    amount: string,
+    caller: string,
+  ) {
+    return {
+      caller,
+      send: "",
+      pkg_path: tokenPath,
+      func: "Approve",
+      args: [PACKAGE_POSITION_ADDRESS, amount],
+    };
+  }
 }

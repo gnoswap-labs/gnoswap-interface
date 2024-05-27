@@ -22,7 +22,7 @@ import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
 import { createContext, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
-import { GnoProvider, GnoWSProvider } from "@gnolang/gno-js-client";
+import { GnoProvider, GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
 import ChainNetworkInfos from "@resources/chains.json";
 import { SwapRouterRepository } from "@repositories/swap/swap-router-repository";
@@ -49,6 +49,7 @@ import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-rep
 import {
   API_URL,
   DEFAULT_CHAIN_ID,
+  ROUTER_API_URL,
 } from "@common/clients/wallet-client/transaction-messages";
 
 interface GnoswapContextProps {
@@ -102,6 +103,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [, setStatus] = useAtom(WalletState.status);
 
   const [networkClient] = useState(new AxiosClient(API_URL));
+  const [routerAPIClient] = useState(new AxiosClient(ROUTER_API_URL));
 
   const [localStorageClient, setLocalStorageClient] = useState(
     WebStorageClient.createLocalStorageClient(),
@@ -143,7 +145,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       network ||
       ChainNetworkInfos.find(info => info.chainId === defaultChainId);
     if (currentNetwork) {
-      const provider = new GnoWSProvider(currentNetwork.wsUrl);
+      const provider = new GnoJSONRPCProvider(currentNetwork.rpcUrl);
       setRPCProvider(provider);
     }
   }, [network]);
@@ -185,8 +187,12 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [localStorageClient, rpcProvider, walletClient]);
 
   const swapRouterRepository = useMemo(() => {
-    return new SwapRouterRepositoryImpl(rpcProvider, walletClient);
-  }, [rpcProvider, walletClient]);
+    return new SwapRouterRepositoryImpl(
+      rpcProvider,
+      walletClient,
+      routerAPIClient,
+    );
+  }, [rpcProvider, walletClient, routerAPIClient]);
 
   const tokenRepository = useMemo(() => {
     return new TokenRepositoryImpl(networkClient, localStorageClient);
@@ -218,7 +224,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       ChainNetworkInfos.find(info => info.chainId === defaultChainId);
     if (currentNetwork) {
       try {
-        const provider = new GnoWSProvider(currentNetwork.wsUrl);
+        const provider = new GnoJSONRPCProvider(currentNetwork.rpcUrl);
         setRPCProvider(provider);
         return true;
       } catch (error) {

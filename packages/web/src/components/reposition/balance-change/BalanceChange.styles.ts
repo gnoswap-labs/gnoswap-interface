@@ -86,7 +86,14 @@ export const BalanceChangeWrapper = styled.div<Props>`
         width: 133px;
       }
       &.new-balance {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
         color: ${({ theme }) => theme.color.text03};
+
+        .loading-skeleton {
+          align-self: flex-end;
+        }
       }
     }
   }

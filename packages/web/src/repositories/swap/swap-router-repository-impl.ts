@@ -1,14 +1,12 @@
 import { WalletClient } from "@common/clients/wallet-client";
 import { SwapRouterRepository } from "./swap-router-repository";
-import { makeRoutesQuery } from "@utils/swap-route-utils";
+import { makeRouteKey, makeRoutesQuery } from "@utils/swap-route-utils";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
-import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
-import { SwapRouter } from "@gnoswap-labs/swap-router";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
@@ -18,7 +16,10 @@ import {
   makeDepositMessage,
   makeWithdrawMessage,
 } from "@common/clients/wallet-client/transaction-messages/token";
-import { makePoolTokenApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
+import {
+  makePoolTokenApproveMessage,
+  makeRouterTokenApproveMessage,
+} from "@common/clients/wallet-client/transaction-messages/pool";
 import {
   SendTransactionSuccessResponse,
   WalletResponse,
@@ -27,22 +28,31 @@ import { WrapTokenRequest } from "./request/wrap-token-request";
 import { TokenError } from "@common/errors/token";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { SwapRouteResponse } from "./response/swap-route-response";
-import { PACKAGE_ROUTER_PATH } from "@common/clients/wallet-client/transaction-messages";
+import {
+  PACKAGE_ROUTER_PATH,
+  TransactionMessage,
+} from "@common/clients/wallet-client/transaction-messages";
+import { checkGnotPath, toNativePath } from "@utils/common";
+import { NetworkClient } from "@common/clients/network-client";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
 
 const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
+  private networkClient: NetworkClient;
   private walletClient: WalletClient | null;
   private pools: PoolRPCModel[];
 
   constructor(
     rpcProvider: GnoProvider | null,
     walletClient: WalletClient | null,
+    networkClient: NetworkClient,
   ) {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
     this.pools = [];
+    this.networkClient = networkClient;
   }
 
   public updatePools(pools: PoolRPCModel[]) {
@@ -52,60 +62,47 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public estimateSwapRoute = async (
     request: EstimateSwapRouteRequest,
   ): Promise<EstimateSwapRouteResponse> => {
-    if (!ROUTER_PACKAGE_PATH || !this.rpcProvider) {
-      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
-    }
     const { inputToken, outputToken, exactType, tokenAmount } = request;
 
     if (BigNumber(tokenAmount).isNaN()) {
       throw new SwapError("INVALID_PARAMS");
     }
 
-    const inputTokenPath = isNativeToken(inputToken)
-      ? inputToken.wrappedPath
-      : inputToken.path;
-    const outputTokenPath = isNativeToken(outputToken)
-      ? outputToken.wrappedPath
-      : outputToken.path;
-    const swapRouter = new SwapRouter(this.pools);
-    const tokenAmountRaw = makeRawTokenAmount(
-      exactType === "EXACT_IN" ? inputToken : outputToken,
-      tokenAmount,
-    );
+    const inputTokenPath = checkGnotPath(inputToken.path);
+    const outputTokenPath = checkGnotPath(outputToken.path);
 
-    const estimatedRoutes = swapRouter.estimateSwapRoute(
-      inputTokenPath,
-      outputTokenPath,
-      BigInt(tokenAmountRaw || 0),
-      exactType,
-    );
+    const tokenAmountRaw =
+      exactType === "EXACT_IN"
+        ? makeRawTokenAmount(inputToken, tokenAmount)
+        : makeRawTokenAmount(inputToken, tokenAmount);
 
-    const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
-    const quotes = estimatedRoutes.map(route => route.quote).join(",");
-    const param = makeABCIParams("DrySwapRoute", [
-      inputTokenPath,
-      outputTokenPath,
-      tokenAmountRaw || "0",
-      exactType,
-      routesQuery,
-      quotes,
-    ]);
+    const response = await this.networkClient.post<
+      {
+        inputTokenPath: string;
+        outputTokenPath: string;
+        exactType: string;
+        amount: number;
+      },
+      EstimateSwapRouteResponse
+    >({
+      url: "routes",
+      body: {
+        inputTokenPath,
+        outputTokenPath,
+        exactType,
+        amount: Number(tokenAmountRaw || 0),
+      },
+    });
 
-    const result = await this.rpcProvider
-      .evaluateExpression(ROUTER_PACKAGE_PATH, param)
-      .then(evaluateExpressionToNumber);
-
-    if (result === null) {
-      throw new SwapError("NOT_FOUND_SWAP_POOL");
+    if (response.status !== 201) {
+      throw new SwapError("SWAP_FAILED");
     }
-    const resultAmount = makeDisplayTokenAmount(
-      exactType === "EXACT_IN" ? outputToken : inputToken,
-      result,
+
+    const estimatedRoutes = response.data.estimatedRoutes.map(
+      makeEstimatedRouteWithRouteKey,
     );
-    return {
-      amount: resultAmount?.toString() || "0",
-      estimatedRoutes,
-    };
+
+    return { ...response.data, estimatedRoutes };
   };
 
   public swapRoute = async (
@@ -135,37 +132,39 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       makeRawTokenAmount(resultToken, tokenAmountLimit) || "0";
     const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
-    const inputTokenPath = isNativeToken(inputToken)
-      ? inputToken.wrappedPath
-      : inputToken.path;
-    const outputTokenPath = isNativeToken(outputToken)
-      ? outputToken.wrappedPath
-      : outputToken.path;
-    const messages = [];
+
+    const inputTokenWrappedPath = checkGnotPath(inputToken.path);
+    const outputTokenWrappedPath = checkGnotPath(outputToken.path);
+
+    const inputTokenPath = toNativePath(inputTokenWrappedPath);
+    const outputTokenPath = toNativePath(outputTokenWrappedPath);
+
+    const approveMessages: TransactionMessage[] = [
+      makePoolTokenApproveMessage(
+        inputTokenWrappedPath,
+        MAX_UINT64.toString(),
+        address,
+      ),
+      makeRouterTokenApproveMessage(
+        inputTokenWrappedPath,
+        MAX_UINT64.toString(),
+        address,
+      ),
+      makeRouterTokenApproveMessage(
+        outputTokenWrappedPath,
+        MAX_UINT64.toString(),
+        address,
+      ),
+    ];
+
     const sendTokenAmount =
       exactType === "EXACT_IN" ? tokenAmountRaw : tokenAmountLimitRaw;
-    if (isNativeToken(inputToken)) {
-      messages.push(
-        makeDepositMessage(inputTokenPath, sendTokenAmount, "ugnot", address),
-      );
-    }
-    messages.push(
-      makePoolTokenApproveMessage(
-        inputTokenPath,
-        MAX_UINT64.toString(),
-        address,
-      ),
-    );
-    messages.push(
-      makePoolTokenApproveMessage(
-        outputTokenPath,
-        MAX_UINT64.toString(),
-        address,
-      ),
-    );
-    messages.push({
+
+    const send = inputTokenPath === "gnot" ? `${sendTokenAmount}ugnot` : "";
+
+    const swapMessage = {
       caller: address,
-      send: "",
+      send,
       pkg_path: ROUTER_PACKAGE_PATH,
       func: "SwapRoute",
       args: [
@@ -175,28 +174,51 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         exactType,
         `${routesQuery}`,
         `${quotes}`,
-        tokenAmountLimitRaw.toString(),
+        exactType === "EXACT_IN" ? "0" : MAX_UINT64.toString(), // slippage: tokenAmountLimitRaw.toString(),
       ],
-    });
+    };
+
+    const messages = [...approveMessages, swapMessage];
     const response = await this.walletClient.sendTransaction({
       messages,
       gasFee: 1,
       memo: "",
     });
     if (response.code !== 0 || !response.data) {
-      throw new SwapError("SWAP_FAILED");
+      return {
+        ...response,
+        data: null,
+      };
     }
     const data = response.data as SendTransactionSuccessResponse<string[]>;
     if (data.data === null || data.data.length === 0) {
-      throw new SwapError("SWAP_FAILED");
+      return {
+        ...response,
+        data: {
+          hash: data.hash,
+          height: data.height,
+          resultToken,
+          resultAmount: "0",
+          slippageAmount: "0",
+        },
+      };
     }
+
+    // XXX: log swap result
+    console.log("[SWAP RESULT]", response.data);
+
+    const result = exactType === "EXACT_IN" ? data.data[1] : data.data[0];
     const resultAmount =
-      makeDisplayTokenAmount(resultToken, data.data[0])?.toString() || "0";
+      makeDisplayTokenAmount(
+        resultToken,
+        BigNumber(result).abs().toString(),
+      )?.toString() || "0";
     const slippageAmount =
       makeDisplayTokenAmount(
         resultToken,
         sendTokenAmount.toString(),
       )?.toString() || "0";
+
     return {
       ...response,
       data: {
@@ -266,4 +288,11 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
     return response.status;
   };
+}
+
+function makeEstimatedRouteWithRouteKey(
+  estimatedRoute: EstimatedRoute,
+): EstimatedRoute {
+  const routeKey = makeRouteKey(estimatedRoute);
+  return { ...estimatedRoute, routeKey };
 }

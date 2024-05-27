@@ -40,7 +40,7 @@ interface RepositionContentProps {
   priceRange: AddLiquidityPriceRage;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
   currentAmounts: { amountA: number; amountB: number } | null;
-  repositionAmounts: { amountA: number; amountB: number } | null;
+  repositionAmounts: { amountA: number | null; amountB: number | null } | null;
 }
 
 const RepositionContent: React.FC<RepositionContentProps> = ({
