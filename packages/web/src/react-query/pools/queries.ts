@@ -8,6 +8,20 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { priceToTick } from "@utils/swap-utils";
 import { SwapFeeTierType } from "@constants/option.constant";
 
+export const useGetPoolCreationFee = (
+  options?: UseQueryOptions<number, Error>,
+) => {
+  const { poolRepository } = useGnoswapContext();
+
+  return useQuery<number, Error>({
+    queryKey: [QUERY_KEY.poolCreationFee],
+    queryFn: async () => {
+      return poolRepository.getCreationFee();
+    },
+    ...options,
+  });
+};
+
 export const useGetPoolList = (
   options?: UseQueryOptions<PoolModel[], Error>,
 ) => {

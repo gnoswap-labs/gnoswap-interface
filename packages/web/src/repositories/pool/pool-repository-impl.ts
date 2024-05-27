@@ -15,7 +15,11 @@ import {
 } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { GnoProvider } from "@gnolang/gno-js-client";
-import { evaluateExpressionToObject, makeABCIParams } from "@utils/rpc-utils";
+import {
+  evaluateExpressionToNumber,
+  evaluateExpressionToObject,
+  makeABCIParams,
+} from "@utils/rpc-utils";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
@@ -44,11 +48,11 @@ import {
   PACKAGE_POOL_ADDRESS,
   PACKAGE_POOL_PATH,
   GNS_TOKEN_PATH,
-  CREATE_POOL_FEE,
   PACKAGE_POSITION_ADDRESS,
   makeApproveMessage,
   WRAPPED_GNOT_PATH,
   TransactionMessage,
+  PACKAGE_GNOSWAP_CONST_PATH,
 } from "@common/clients/wallet-client/transaction-messages";
 import { MAX_UINT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -77,6 +81,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
+
   getRPCPools = async (): Promise<PoolRPCModel[]> => {
     try {
       const poolPackagePath = PACKAGE_POOL_PATH;
@@ -98,6 +103,25 @@ export class PoolRepositoryImpl implements PoolRepository {
       return pools;
     } catch (error) {
       return [];
+    }
+  };
+
+  getCreationFee = async (): Promise<number> => {
+    try {
+      if (!PACKAGE_GNOSWAP_CONST_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetPoolCreationFee", []);
+      const response = await this.rpcProvider.evaluateExpression(
+        PACKAGE_GNOSWAP_CONST_PATH,
+        param,
+      );
+
+      return evaluateExpressionToNumber(response);
+    } catch (error) {
+      console.error(error);
+      return 0;
     }
   };
 
@@ -183,8 +207,10 @@ export class PoolRepositoryImpl implements PoolRepository {
       ? tokenBAmountRaw
       : null;
 
+    const gnsApproveAmount = MAX_UINT64.toString();
+
     const createPoolMessages = [
-      PoolRepositoryImpl.makeApproveGnosTokenMessage(caller),
+      PoolRepositoryImpl.makeApproveGnosTokenMessage(gnsApproveAmount, caller),
       PoolRepositoryImpl.makeCreatePoolMessage(
         tokenA,
         tokenB,
@@ -533,12 +559,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     };
   }
 
-  private static makeApproveGnosTokenMessage(caller: string) {
-    return this.makeApproveTokenMessage(
-      GNS_TOKEN_PATH,
-      CREATE_POOL_FEE,
-      caller,
-    );
+  private static makeApproveGnosTokenMessage(amount: string, caller: string) {
+    return this.makeApproveTokenMessage(GNS_TOKEN_PATH, amount, caller);
   }
 
   private static makeApproveTokenMessage(
@@ -552,20 +574,6 @@ export class PoolRepositoryImpl implements PoolRepository {
       pkg_path: tokenPath,
       func: "Approve",
       args: [POOL_ADDRESS, amount],
-    };
-  }
-
-  private static makeApproveTokenToPositionMessage(
-    tokenPath: string,
-    amount: string,
-    caller: string,
-  ) {
-    return {
-      caller,
-      send: "",
-      pkg_path: tokenPath,
-      func: "Approve",
-      args: [PACKAGE_POSITION_ADDRESS, amount],
     };
   }
 }

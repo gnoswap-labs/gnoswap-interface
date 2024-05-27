@@ -8,6 +8,7 @@ const PREVIEW_ENV_VARIABLES = {
   DEFAULT_CHAIN_ID: "dev.gnoswap",
   API_URL: "https://dev.api.gnoswap.io/v1",
   ROUTER_API_URL: "https://gnoswap-route-api.in.onbloc.xyz",
+  PACKAGE_GNOSWAP_CONST_PATH: "gno.land/r/demo/gnoswap/consts",
   PACKAGE_ROUTER_PATH: "gno.land/r/demo/router",
   PACKAGE_POOL_PATH: "gno.land/r/demo/pool",
   PACKAGE_POSITION_PATH: "gno.land/r/demo/position",
@@ -28,6 +29,8 @@ const ENV_VARIABLES = {
   DEFAULT_CHAIN_ID: process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "",
   API_URL: process.env.NEXT_PUBLIC_API_URL || "",
   ROUTER_API_URL: process.env.NEXT_PUBLIC_ROUTER_API_URL || "",
+  PACKAGE_GNOSWAP_CONST_PATH:
+    process.env.NEXT_PUBLIC_PACKAGE_GNOSWAP_CONST_PATH || "",
   PACKAGE_ROUTER_PATH: process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH || "",
   PACKAGE_POOL_PATH: process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "",
   PACKAGE_POSITION_PATH: process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "",
@@ -51,6 +54,8 @@ const currentEnvVariables = isPreview ? PREVIEW_ENV_VARIABLES : ENV_VARIABLES;
 export const DEFAULT_CHAIN_ID = currentEnvVariables.DEFAULT_CHAIN_ID;
 export const API_URL = currentEnvVariables.API_URL;
 export const ROUTER_API_URL = currentEnvVariables.ROUTER_API_URL;
+export const PACKAGE_GNOSWAP_CONST_PATH =
+  currentEnvVariables.PACKAGE_GNOSWAP_CONST_PATH;
 export const PACKAGE_ROUTER_PATH = currentEnvVariables.PACKAGE_ROUTER_PATH;
 export const PACKAGE_POOL_PATH = currentEnvVariables.PACKAGE_POOL_PATH;
 export const PACKAGE_POSITION_PATH = currentEnvVariables.PACKAGE_POSITION_PATH;
