@@ -106,7 +106,6 @@ const SwapCard: React.FC<SwapCardProps> = ({
           />
         </div>
       </SwapCardWrapper>
-
       {openedConfirmModal && swapSummaryInfo && (
         <ConfirmSwapModal
           submitted={submitted}

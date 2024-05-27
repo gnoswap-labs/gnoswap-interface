@@ -193,6 +193,9 @@ export const ConfirmModal = styled.div`
               ${fonts.p2};
             }
             color: ${({ theme }) => theme.color.text10};
+            & > div {
+              display: inline-block
+            }
           }
           .exchange-price {
             ${fonts.body12};
@@ -355,9 +358,9 @@ export const ConfirmModal = styled.div`
   }
   .modal-body-loading {
     gap: 24px;
-    .view-transaction {
+    /* .view-transaction {
       padding-bottom: 36px;
-    }
+    } */
     ${media.mobile} {
       gap: 12px;
       .view-transaction {
@@ -369,6 +372,7 @@ export const ConfirmModal = styled.div`
           height: 60px;
         }
       }
+    }
   }
 `;
 

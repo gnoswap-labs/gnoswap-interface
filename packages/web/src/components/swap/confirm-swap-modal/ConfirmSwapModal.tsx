@@ -53,7 +53,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
-    return <>1 {tokenA.symbol} = <ExchangeRate value={convertSwapRate(swapRate)}/> {tokenB.symbol}</>;
+    return <>1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenB.symbol}</>;
   }, [swapSummaryInfo]);
 
   const swapRateUSDStr = useMemo(() => {
@@ -99,18 +99,16 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
           className={submitted ? "modal-body-wrapper" : ""}
         >
           <div
-            className={`modal-body ${
-              swapResult === null && submitted
-                ? "modal-body-loading"
-                : submitted
+            className={`modal-body ${swapResult === null && submitted
+              ? "modal-body-loading"
+              : submitted
                 ? "submitted-modal"
                 : ""
-            }`}
+              }`}
           >
             <div
-              className={`modal-header ${
-                submitted ? "model-header-submitted" : ""
-              }`}
+              className={`modal-header ${submitted ? "model-header-submitted" : ""
+                }`}
             >
               {!submitted && <span>Confirm Swap</span>}
               <div className="close-wrap" onClick={close}>
@@ -118,7 +116,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               </div>
             </div>
             {submitted ? (
-              <ConfirmSwapResult swapResult={swapResult} close={close} swapTokenInfo={swapTokenInfo}/>
+              <ConfirmSwapResult swapResult={swapResult} close={close} swapTokenInfo={swapTokenInfo} />
             ) : (
               <>
                 <div className="modal-receipt">
@@ -251,7 +249,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
         </div>
         <div className="transaction-state">
           <span className="submitted">Waiting for Confirmation</span>
-          <span className="swap-message">Swapping {Number(swapTokenInfo.tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6})} {swapTokenInfo?.tokenA?.symbol} for {Number(swapTokenInfo.tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})} {swapTokenInfo?.tokenB?.symbol}</span>
+          <span className="swap-message">Swapping {Number(swapTokenInfo.tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6 })} {swapTokenInfo?.tokenA?.symbol} for {Number(swapTokenInfo.tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6 })} {swapTokenInfo?.tokenB?.symbol}</span>
           <div className="view-transaction">
             <span>Confirm this transaction in your wallet</span>
           </div>
