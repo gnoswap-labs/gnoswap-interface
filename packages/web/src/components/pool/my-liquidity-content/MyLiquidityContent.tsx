@@ -168,7 +168,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [isDisplay, positions, tokenPrices]);
 
   const isShowRewardInfoTooltip = useMemo(() => {
-    return aprRewardInfo !== null && (aprRewardInfo?.EXTERNAL.length !== 0 || aprRewardInfo?.INTERNAL.length !== 0 || aprRewardInfo?.SWAP_FEE.length !== 0);
+    return aprRewardInfo !== null
+      && (aprRewardInfo?.EXTERNAL.length !== 0 ||
+        aprRewardInfo?.INTERNAL.length !== 0 ||
+        aprRewardInfo?.STAKING.length !== 0 ||
+        aprRewardInfo?.SWAP_FEE.length !== 0);
   }, [aprRewardInfo]);
 
   const dailyEarning = useMemo(() => {
@@ -199,7 +203,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
-        balance: makeDisplayTokenAmount(reward.rewardToken, reward.totalAmount) || 0,
+        balance: makeDisplayTokenAmount(reward.rewardToken, reward.totalAmount) ||
+          0,
         balanceUSD:
           makeDisplayTokenAmount(
             reward.rewardToken,
@@ -422,7 +427,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       </section>
       <section>
         <h4>Total Daily Earnings</h4>
-        {!loading && isShowRewardInfoTooltip ? (
+        {(!loading && isShowRewardInfoTooltip) ? (
           <Tooltip
             placement="top"
             FloatingContent={

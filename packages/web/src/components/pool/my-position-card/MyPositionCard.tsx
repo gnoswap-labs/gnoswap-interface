@@ -273,6 +273,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               token: current.rewardToken,
               rewardType: current.rewardType,
               accuReward1D: Number(current.accuReward1D),
+              accuReward1DPrice: Number(current.accuReward1D),
               apr: Number(current.apr),
             });
           }
@@ -287,6 +288,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       );
       return aprRewardInfo;
     }, []);
+
+
 
   const stringPrice = useMemo(() => {
     const price = tickToPriceStr(position?.pool?.currentTick, 40);
@@ -477,6 +480,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return isAllReserveZeroBin40 && isAllReserveZeroBin;
   }, [position.pool.bins, position.pool.bins40]);
 
+  const isShowRewardInfoTooltip = useMemo(() => {
+    return aprRewardInfo !== null
+      && (aprRewardInfo?.EXTERNAL.length !== 0
+        || aprRewardInfo?.INTERNAL.length !== 0
+        || aprRewardInfo?.STAKING.length !== 0
+        || aprRewardInfo?.SWAP_FEE.length !== 0);
+  }, [aprRewardInfo]);
+
+  const isShowTotalRewardInfo = useMemo(() => {
+    return totalRewardInfo && (totalRewardInfo?.EXTERNAL.length !== 0 || totalRewardInfo?.INTERNAL.length !== 0 || totalRewardInfo?.SWAP_FEE.length !== 0);
+  }, [totalRewardInfo]);
+
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
@@ -645,7 +660,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           <div className="info-box">
             <span className="symbol-text">Daily Earnings</span>
-            {!isClosed && aprRewardInfo && !loading ? (
+            {!isClosed && isShowRewardInfoTooltip && !loading ? (
               <Tooltip
                 placement="top"
                 FloatingContent={
@@ -671,12 +686,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           <div className="info-box">
             <span className="symbol-text">Claimable Rewards</span>
-            {!isClosed && !loading && totalRewardInfo ? (
+            {!isClosed && !loading && isShowTotalRewardInfo ? (
               <Tooltip
                 placement="top"
                 FloatingContent={
                   <div>
-                    <MyPositionRewardContent rewardInfo={totalRewardInfo} />
+                    {totalRewardInfo && <MyPositionRewardContent rewardInfo={totalRewardInfo} />}
                   </div>
                 }
               >
@@ -770,13 +785,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <div className="convert-price">
               <div>
                 1
-                {(!isSwap ? tokenA : tokenB)?.symbol} =& nbsp;
-                <ExchangeRate value={minPriceStr} /> & nbsp;
-                {(!isSwap ? tokenB : tokenA)?.symbol}& nbsp; (
-                <span className={startClass}>
-                  {!isSwap ? minTickLabel : maxTickLabel}
-                </span>
-                ) & nbsp;
+                {(!isSwap ? tokenA : tokenB)?.symbol} =&nbsp;
+                <ExchangeRate value={minPriceStr} />&nbsp;
+                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(<span className={startClass}>{!isSwap ? minTickLabel : maxTickLabel}</span>)&nbsp;
                 <Tooltip
                   placement="top"
                   FloatingContent={
@@ -789,14 +800,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 >
                   <IconInfo />
                 </Tooltip>
-                & nbsp;
+                &nbsp;
               </div >
               <div>
-                ~& nbsp;
-                <ExchangeRate value={maxPriceStr} /> & nbsp; {(!isSwap ? tokenB : tokenA)?.symbol}& nbsp;
-                (<span className={endClass}>
-                  {!isSwap ? maxTickLabel : minTickLabel}
-                </span>)&nbsp;
+                ~&nbsp;
+                <ExchangeRate value={maxPriceStr} /> &nbsp;{(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(<span className={endClass}>{!isSwap ? maxTickLabel : minTickLabel}</span>)&nbsp;
                 <Tooltip
                   placement="top"
                   FloatingContent={
