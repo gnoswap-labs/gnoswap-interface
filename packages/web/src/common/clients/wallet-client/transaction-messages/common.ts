@@ -22,7 +22,6 @@ const PREVIEW_ENV_VARIABLES = {
   PACKAGE_GOVERNANCE_ADDRESS: "g1kmat25auuqf0h5qvd4q7s707r8let5sky4tr76",
   WRAPPED_GNOT_PATH: "gno.land/r/demo/wugnot",
   GNS_TOKEN_PATH: "gno.land/r/demo/gns",
-  CREATE_POOL_FEE: "100000000",
 };
 
 const ENV_VARIABLES = {
@@ -46,7 +45,6 @@ const ENV_VARIABLES = {
   PACKAGE_GOVERNANCE_ADDRESS:
     process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_ADDRESS || "",
   GNS_TOKEN_PATH: process.env.NEXT_PUBLIC_GNS_TOKEN_PATH || "",
-  CREATE_POOL_FEE: process.env.NEXT_PUBLIC_PACKAGE_CREATE_POOL_FEE || "",
 };
 
 const currentEnvVariables = isPreview ? PREVIEW_ENV_VARIABLES : ENV_VARIABLES;
@@ -73,7 +71,6 @@ export const PACKAGE_STAKER_ADDRESS =
 export const PACKAGE_GOVERNANCE_ADDRESS =
   currentEnvVariables.PACKAGE_GOVERNANCE_ADDRESS;
 export const GNS_TOKEN_PATH = currentEnvVariables.GNS_TOKEN_PATH;
-export const CREATE_POOL_FEE = currentEnvVariables.CREATE_POOL_FEE;
 
 export interface TransactionBankMessage {
   from_address: string;
