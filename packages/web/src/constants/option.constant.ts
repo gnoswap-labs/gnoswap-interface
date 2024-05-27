@@ -136,7 +136,7 @@ export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
   FEE_100: {
     type: "FEE_100",
     fee: 100,
-    tickSpacing: 2,
+    tickSpacing: 1,
     rateStr: "0.01%",
     description: "Best for very stable pairs",
   },
@@ -225,14 +225,14 @@ export const CHART_TYPE = {
   "7D": "7D",
   "30D": "30D",
   "90D": "90D",
-  "ALL": "ALL",
+  ALL: "ALL",
 } as const;
 export type CHART_TYPE = ValuesType<typeof CHART_TYPE>;
 
 export const CHART_DAY_SCOPE_TYPE = {
   "7D": "7D",
   "30D": "30D",
-  "ALL": "ALL",
+  ALL: "ALL",
 } as const;
 
 export type CHART_DAY_SCOPE_TYPE = ValuesType<typeof CHART_DAY_SCOPE_TYPE>;
@@ -245,31 +245,23 @@ export const PriceRangeTooltip: {
   [key in SwapFeeTierType]: { [key in PriceRangeType]: string | undefined };
 } = {
   FEE_10000: {
-    Active:
-      "An aggressive price range for higher risks & returns.",
-    Passive:
-      "A passive price range for moderate risks & returns.",
+    Active: "An aggressive price range for higher risks & returns.",
+    Passive: "A passive price range for moderate risks & returns.",
     Custom: undefined,
   },
   FEE_3000: {
-    Active:
-      "An aggressive price range for higher risks & returns.",
-    Passive:
-      "A passive price range for moderate risks & returns.",
+    Active: "An aggressive price range for higher risks & returns.",
+    Passive: "A passive price range for moderate risks & returns.",
     Custom: undefined,
   },
   FEE_500: {
-    Active:
-      "An aggressive price range for higher risks & returns.",
-    Passive:
-      "A passive price range for moderate risks & returns.",
+    Active: "An aggressive price range for higher risks & returns.",
+    Passive: "A passive price range for moderate risks & returns.",
     Custom: undefined,
   },
   FEE_100: {
-    Active:
-      "An aggressive price range for higher risks & returns.",
-    Passive:
-      "A passive price range for moderate risks & returns.",
+    Active: "An aggressive price range for higher risks & returns.",
+    Passive: "A passive price range for moderate risks & returns.",
     Custom: undefined,
   },
   NONE: {
@@ -283,31 +275,23 @@ export const PriceRangeStr: {
   [key in SwapFeeTierType]: { [key in PriceRangeType]: string };
 } = {
   FEE_10000: {
-    Active:
-      "[-10% / +10%]",
-    Passive:
-      "[-50% / +100%]",
+    Active: "[-10% / +10%]",
+    Passive: "[-50% / +100%]",
     Custom: "",
   },
   FEE_3000: {
-    Active:
-      "[-10% / +10%]",
-    Passive:
-      "[-50% / +100%]",
+    Active: "[-10% / +10%]",
+    Passive: "[-50% / +100%]",
     Custom: "",
   },
   FEE_500: {
-    Active:
-      "[-10% / +10%]",
-    Passive:
-      "[-50% / +100%]",
+    Active: "[-10% / +10%]",
+    Passive: "[-50% / +100%]",
     Custom: "",
   },
   FEE_100: {
-    Active:
-      "[-0.5% / +0.5%]",
-    Passive:
-      "[-1% / +1%]",
+    Active: "[-0.5% / +0.5%]",
+    Passive: "[-1% / +1%]",
     Custom: "",
   },
   NONE: {
@@ -366,7 +350,7 @@ export const STAKING_PERIOD_INFO: {
       "During this staking period, you will only receive 70% of your maximum staking rewards. Keep your position staked to increase your rewards.",
     period: 30,
   },
-  "MAX": {
+  MAX: {
     title: "Staked more than 30 days",
     description: "Receiving Max Rewards",
     tooltipContent:
@@ -376,6 +360,6 @@ export const STAKING_PERIOD_INFO: {
 } as const;
 
 export interface DefaultTick {
-  tickLower?: number,
-  tickUpper?: number
+  tickLower?: number;
+  tickUpper?: number;
 }
