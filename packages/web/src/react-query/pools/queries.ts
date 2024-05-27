@@ -42,6 +42,24 @@ export const useGetPoolDetailByPath = (
   });
 };
 
+export const useGetSimpleBinsByPath = (
+  path: string,
+  enabled: boolean,
+  options?: UseQueryOptions<PoolBinModel[], Error>,
+) => {
+  const { poolRepository } = useGnoswapContext();
+  const convertPath = encryptId(path);
+  const count = 20;
+  return useQuery<PoolBinModel[], Error>({
+    queryKey: [QUERY_KEY.lazyBins, convertPath],
+    queryFn: async () => {
+      return poolRepository.getBinsOfPoolByPath(convertPath, count);
+    },
+    ...options,
+    enabled: enabled && !!path,
+  });
+};
+
 export const useGetBinsByPath = (
   path: string,
   count?: number,

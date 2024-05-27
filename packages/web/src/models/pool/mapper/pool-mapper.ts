@@ -110,18 +110,15 @@ export class PoolMapper {
   }
 
   public static fromResponse(pool: PoolResponse): PoolModel {
-    const bins = pool.bins.map(bin => ({
-      ...bin,
-    }));
     const id = pool.id ?? makeId(pool.poolPath);
     return {
       ...pool,
       id,
       incentiveType: pool.incentiveType as INCENTIVE_TYPE,
-      bins,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.apr,
-      bins40: pool.bins40,
+      bins: pool?.bins || [],
+      bins40: pool?.bins40 || [],
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
