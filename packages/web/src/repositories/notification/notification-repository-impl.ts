@@ -73,12 +73,12 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   };
 
   private replaceToken = (symbol: string) => {
-    if (symbol === "WGNOT") return "GNOT";
+    if (symbol === "wugnot") return "GNOT";
     return symbol;
   };
 
   private replaceUri = (symbol: string, uri: string) => {
-    if (symbol === "WGNOT")
+    if (symbol === "wugnot")
       return "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg";
     return uri;
   };
@@ -206,7 +206,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       return [];
     }
     try {
-      const { data } = await this.networkClient.get<{data: AccountActivity[],error: any}>({
+      const { data } = await this.networkClient.get<{ data: AccountActivity[], error: any }>({
         url: "/users/" + request.address + "/activity",
       });
 
@@ -219,8 +219,8 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   public getGroupedNotification = async (
     request: AccountActivityRequest,
   ): Promise<TransactionGroupsType[]> => {
-      const data = await this.getAccountOnchainActivity(request) ;
-      return this.groupTransactionsByDate(data);
+    const data = await this.getAccountOnchainActivity(request);
+    return this.groupTransactionsByDate(data);
   };
 
   public clearNotification = async (

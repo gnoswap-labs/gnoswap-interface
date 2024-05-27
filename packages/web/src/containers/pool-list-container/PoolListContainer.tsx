@@ -12,7 +12,6 @@ import { ThemeState } from "@states/index";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { useLoading } from "@hooks/common/use-loading";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
-import { isNumber } from "@utils/number-utils";
 import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
 
 export interface Pool {
@@ -73,6 +72,7 @@ const PoolListContainer: React.FC = () => {
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useRouter();
   const { poolListInfos, isFetchedPools, updatePools } = usePoolData();
+  console.log("🚀 ~ poolListInfos:", poolListInfos);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { isLoadingCommon } = useLoading();
 
@@ -122,7 +122,8 @@ const PoolListContainer: React.FC = () => {
       return convertKMBtoNumber(formattedNumber);
     }
 
-    if (!isNumber(formattedNumber)) {
+    console.log("🚀 ~ sortValueTransform ~ value:", value);
+    if (isNaN(Number(formattedNumber))) {
       return -1;
     }
 
@@ -206,11 +207,13 @@ const PoolListContainer: React.FC = () => {
         }
       } else if (sortOption.key === TABLE_HEAD.APR) {
         if (sortOption.direction === "asc") {
+          console.log("7239874982347 asc");
           temp.sort(
             (a: PoolListInfo, b: PoolListInfo) =>
               sortValueTransform(a.apr) - sortValueTransform(b.apr),
           );
         } else {
+          console.log("7239874982347 dsc");
           temp.sort(
             (a: PoolListInfo, b: PoolListInfo) =>
               -sortValueTransform(a.apr) + sortValueTransform(b.apr),
@@ -271,8 +274,8 @@ const PoolListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setTokenSortOption({
         key,

@@ -67,6 +67,7 @@ export const useSwapHandler = () => {
     tokenAAmount: defaultTokenAAmount,
     tokenBAmount: defaultTokenBAmount,
   } = swapValue;
+  console.log("🚀 ~ useSwapHandler ~ swapValue:", swapValue);
 
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount, setTokenAAmount] = useState<string>(
@@ -391,7 +392,7 @@ export const useSwapHandler = () => {
     }
     if (
       Number(tokenBAmount) >
-        Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
+      Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
       type === "EXACT_OUT"
     ) {
       return false;
@@ -681,13 +682,12 @@ export const useSwapHandler = () => {
               swapTokenInfo.tokenAAmount,
             ).toLocaleString("en-US", {
               maximumFractionDigits: 6,
-            })}</span> <span>${
-              swapTokenInfo?.tokenA?.symbol
-            }</span> for <span>${Number(
-              swapTokenInfo.tokenBAmount,
-            ).toLocaleString("en-US", {
-              maximumFractionDigits: 6,
-            })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+            })}</span> <span>${swapTokenInfo?.tokenA?.symbol
+              }</span> for <span>${Number(
+                swapTokenInfo.tokenBAmount,
+              ).toLocaleString("en-US", {
+                maximumFractionDigits: 6,
+              })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
           },
           {
             timeout: 50000,
@@ -709,10 +709,10 @@ export const useSwapHandler = () => {
       tokenAAmount: isExactIn
         ? tokenAAmount
         : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() ||
-          "0",
+        "0",
       tokenBAmount: isExactIn
         ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() ||
-          "0"
+        "0"
         : tokenBAmount,
     };
 

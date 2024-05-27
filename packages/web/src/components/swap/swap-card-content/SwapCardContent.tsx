@@ -40,6 +40,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   setSwapRateAction,
   isSwitchNetwork,
 }) => {
+  console.log("🚀 ~ swapTokenInfo:", swapTokenInfo);
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
   const direction = swapSummaryInfo?.swapDirection;
