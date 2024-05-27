@@ -9,6 +9,7 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePoolData } from "./use-pool-data";
 import { checkGnotPath } from "@utils/common";
+import { useGetPoolCreationFee } from "@query/pools";
 
 interface Props {
   compareToken: TokenModel | null;
@@ -27,6 +28,7 @@ export const usePool = ({
   const { poolRepository } = useGnoswapContext();
   const [fetching, setFetching] = useState(false);
   const { pools, updatePools, isFetchedPools, loading } = usePoolData();
+  const { data: createPoolFee } = useGetPoolCreationFee();
   const [feetierOfLiquidityMap, setFeetierOfLiquidityMap] = useState<
     { [key in string]: number } | null
   >(null);
@@ -134,7 +136,7 @@ export const usePool = ({
       slippage: string;
       withStaking?: boolean;
     }) => {
-      if (!tokenA || !tokenB || !account) {
+      if (!tokenA || !tokenB || !account || createPoolFee === undefined) {
         return null;
       }
       const currentTokenData = getCurrentTokenPairAmount(
@@ -157,13 +159,14 @@ export const usePool = ({
           slippage,
           caller: account.address,
           withStaking,
+          createPoolFee,
         })
         .catch(e => {
           console.error(e);
           return null;
         });
     },
-    [account, poolRepository, tokenA, tokenB, compareToken],
+    [account, poolRepository, tokenA, tokenB, compareToken, createPoolFee],
   );
 
   const addLiquidity = useCallback(

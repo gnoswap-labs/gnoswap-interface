@@ -23,6 +23,10 @@ export class PoolRepositoryMock implements PoolRepository {
     return rpcPools.map(pool => PoolRPCMapper.from(pool as any));
   };
 
+  getCreationFee = async (): Promise<number> => {
+    return 0;
+  };
+
   getPoolDetailRPCByPoolPath = async (): Promise<PoolDetailRPCModel> => {
     throw new PoolError("NOT_FOUND_POOL");
   };

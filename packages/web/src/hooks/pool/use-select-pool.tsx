@@ -408,8 +408,6 @@ export const useSelectPool = ({
     fullRange,
   ]);
 
-  console.log("🚀 ~ depositRatio ~ depositRatio:", depositRatio);
-
 
   const feeBoost = useMemo(() => {
     if (minPrice === null || maxPrice === null) {
