@@ -139,10 +139,10 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
   ): Promise<PoolDetailModel> => {
     const pool = await this.networkClient
-    .get<{ data: PoolResponse }>({
-      url: "/pools/" + encodeURIComponent(poolPath),
-    })
-    .then(response => PoolMapper.detailFromResponse(response.data.data));
+      .get<{ data: PoolResponse }>({
+        url: "/pools/" + encodeURIComponent(poolPath),
+      })
+      .then(response => PoolMapper.detailFromResponse(response.data.data));
     return pool;
   };
 
@@ -208,10 +208,25 @@ export class PoolRepositoryImpl implements PoolRepository {
       ? tokenBAmountRaw
       : null;
 
-    const gnsApproveAmount = createPoolFee.toString();
+    const createPoolMessages = [];
 
-    const createPoolMessages = [
-      PoolRepositoryImpl.makeApproveGnosTokenMessage(gnsApproveAmount, caller),
+    /**
+     * Create GNS Token Approve for pool create fee
+     */
+    if (createPoolFee > 0) {
+      const gnsApproveAmount = createPoolFee.toString();
+      createPoolMessages.push(
+        PoolRepositoryImpl.makeApproveGnosTokenMessage(
+          gnsApproveAmount,
+          caller,
+        ),
+      );
+    }
+
+    /**
+     * Add Create Pool message
+     */
+    createPoolMessages.push(
       PoolRepositoryImpl.makeCreatePoolMessage(
         tokenA,
         tokenB,
@@ -219,7 +234,7 @@ export class PoolRepositoryImpl implements PoolRepository {
         startPrice,
         caller,
       ),
-    ];
+    );
 
     const approveMessages: TransactionMessage[] = [];
 
