@@ -72,6 +72,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: {},
       INTERNAL: {},
       EXTERNAL: {},
+      // Not use any more
       STAKING: {},
     };
     positions
@@ -115,6 +116,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      // Not use any more
       STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
@@ -131,6 +133,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: {},
       INTERNAL: {},
       EXTERNAL: {},
+      // Not use any more
       STAKING: {},
     };
     positions
@@ -163,6 +166,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      // Not use any more
       STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
@@ -171,7 +175,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return aprRewardInfo !== null
       && (aprRewardInfo?.EXTERNAL.length !== 0 ||
         aprRewardInfo?.INTERNAL.length !== 0 ||
-        aprRewardInfo?.STAKING.length !== 0 ||
         aprRewardInfo?.SWAP_FEE.length !== 0);
   }, [aprRewardInfo]);
 
@@ -328,7 +331,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const logoDaily = useMemo(() => {
     const temp = claimableRewardInfo?.SWAP_FEE;
     return temp?.map(item => getGnotPath(item.token).logoURI) || [];
-  }, [claimableRewardInfo]);
+  }, [claimableRewardInfo?.SWAP_FEE]);
 
   const logoReward = useMemo(() => {
     const temp = claimableRewardInfo?.INTERNAL;
@@ -432,8 +435,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             placement="top"
             FloatingContent={
               <div>
-                {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-                <MyPositionAprContent rewardInfo={aprRewardInfo!} />
+                {aprRewardInfo && <MyPositionAprContent rewardInfo={aprRewardInfo} />}
               </div>
             }
           >

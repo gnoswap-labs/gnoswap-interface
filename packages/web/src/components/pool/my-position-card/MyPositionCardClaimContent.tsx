@@ -57,11 +57,11 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
     return toUnitFormat(sumUSD, true);
   }, [rewardInfo]);
 
-  const stakingRewardUSD = useMemo(() => {
+  const internalRewardUSD = useMemo(() => {
     if (!rewardInfo) {
       return 0;
     }
-    const sumUSD = rewardInfo.STAKING.reduce(
+    const sumUSD = rewardInfo.INTERNAL.reduce(
       (accum, current) => accum + current.claimableUSD,
       0,
     );
@@ -114,7 +114,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
         <React.Fragment>
           <div className="list">
             <span className="title">Internal Rewards</span>
-            <span className="title">{stakingRewardUSD}</span>
+            <span className="title">{internalRewardUSD}</span>
           </div>
           {stakingRewards.map((reward, index) => (
             <div key={index} className="list">

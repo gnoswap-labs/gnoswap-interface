@@ -211,6 +211,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       },
       {
         SWAP_FEE: [],
+        // Not use any more
         STAKING: [],
         EXTERNAL: [],
         INTERNAL: [],
@@ -281,13 +282,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         },
         {
           SWAP_FEE: [],
+          // NOt use anymore
           STAKING: [],
           EXTERNAL: [],
           INTERNAL: [],
         },
       );
       return aprRewardInfo;
-    }, []);
+    }, [position.reward]);
 
 
 
@@ -484,7 +486,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return aprRewardInfo !== null
       && (aprRewardInfo?.EXTERNAL.length !== 0
         || aprRewardInfo?.INTERNAL.length !== 0
-        || aprRewardInfo?.STAKING.length !== 0
         || aprRewardInfo?.SWAP_FEE.length !== 0);
   }, [aprRewardInfo]);
 
