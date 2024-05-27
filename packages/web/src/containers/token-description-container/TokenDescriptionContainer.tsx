@@ -9,10 +9,10 @@ export interface DescriptionInfo {
     name: string;
     symbol: string;
     image: string;
-    pkg_path: string
-    decimals: number
-    description: string
-    website_url: string
+    pkg_path: string;
+    decimals: number;
+    description: string;
+    website_url: string;
   };
   links: {
     Website: string;
@@ -37,12 +37,15 @@ export const descriptionInit: DescriptionInfo = {
 };
 
 const TokenDescriptionContainer: React.FC = () => {
-  const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
+  const [descriptionInfo, setDescriptionInfo] =
+    useState<DescriptionInfo>(descriptionInit);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
   const path = router.query["token-path"] as string;
-  const { data: tokenB, isLoading } = useGetTokenByPath(path, { enabled: !!path });
-  const { isLoadingCommon } = useLoading();
+  const { data: tokenB, isLoading } = useGetTokenByPath(path, {
+    enabled: !!path,
+  });
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const copyClick = async () => {
     try {
@@ -70,7 +73,7 @@ const TokenDescriptionContainer: React.FC = () => {
         links: {
           Website: tokenB.websiteURL || "",
           Gnoscan: `https://gnoscan.io/tokens/${tokenB.path}`,
-        }
+        },
       }));
     }
   }, [router.query, tokenB]);

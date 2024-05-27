@@ -11,13 +11,18 @@ const StakePositionContainer: React.FC = () => {
   const router = useRouter();
   const { account, connected, connectAccount } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { positions: allPositionData, getPositionsByPoolId, isFetchedPosition: isFetched, loadingPositionById } = usePositionData();
+  const {
+    positions: allPositionData,
+    getPositionsByPoolId,
+    isFetchedPosition: isFetched,
+    loadingPositionById,
+  } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { openModal } = useSubmitPositionModal({
     positions: positions,
-    selectedIds: checkedList
+    selectedIds: checkedList,
   });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const checkedAll = useMemo(() => {
     if (positions.length === 0) {
@@ -53,7 +58,6 @@ const StakePositionContainer: React.FC = () => {
     } else {
       openModal();
     }
-
   }, [openModal, connected, connectAccount]);
 
   useEffect(() => {
@@ -63,10 +67,16 @@ const StakePositionContainer: React.FC = () => {
       return;
     }
     if (!poolPath) {
-      setPositions(allPositionData.filter(item => !item.staked && !item.closed));
+      setPositions(
+        allPositionData.filter(item => !item.staked && !item.closed),
+      );
       return;
     }
-    setPositions(getPositionsByPoolId(poolPath).filter(item => !item.staked && !item.closed));
+    setPositions(
+      getPositionsByPoolId(poolPath).filter(
+        item => !item.staked && !item.closed,
+      ),
+    );
   }, [account?.address, getPositionsByPoolId, allPositionData, router.query]);
 
   const isEmpty = useMemo(() => {

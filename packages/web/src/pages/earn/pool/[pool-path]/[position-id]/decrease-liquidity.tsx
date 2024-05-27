@@ -19,7 +19,7 @@ export default function DecreaseLiquidity() {
     enabled: !!poolPath,
   });
   const { getGnotPath } = useGnotToGnot();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const listBreadcrumb = useMemo(() => {
     return [

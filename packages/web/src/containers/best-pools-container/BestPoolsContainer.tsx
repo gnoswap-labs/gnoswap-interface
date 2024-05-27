@@ -70,7 +70,7 @@ const BestPoolsContainer: React.FC = () => {
   const { data: tokenB } = useGetTokenByPath(path, { enabled: !!path });
   const { isLoading: isLoadingChainList } = useGetChainList();
   const { isLoading: isLoadingListToken } = useGetTokensList();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const bestPoolList: BestPool[] = useMemo(() => {
     return bestPools.map((item: IBestPoolResponse) => {

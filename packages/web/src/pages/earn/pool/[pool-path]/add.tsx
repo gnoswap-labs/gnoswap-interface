@@ -19,7 +19,7 @@ export default function EarnAdd() {
   const poolPath = router.query["pool-path"] || "";
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { getGnotPath } = useGnotToGnot();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const listBreadcrumb = useMemo(() => {
     return [

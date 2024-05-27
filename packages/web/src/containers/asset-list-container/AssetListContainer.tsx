@@ -200,7 +200,7 @@ const AssetListContainer: React.FC = () => {
   const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
   const [depositInfo, setDepositInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
   const { data: { tokens = [] } = {}, isLoading } = useGetTokensList({
     refetchInterval: 60 * 1000,
   });
@@ -275,8 +275,14 @@ const AssetListContainer: React.FC = () => {
         const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
         return {
           ...item,
-          price: isSwitchNetwork ? "-" : checkPrice ? "<$0.01" : toPriceFormat(price, { isFormat: false }),
-          balance: isSwitchNetwork ? "0" : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+          price: isSwitchNetwork
+            ? "-"
+            : checkPrice
+            ? "<$0.01"
+            : toPriceFormat(price, { isFormat: false }),
+          balance: isSwitchNetwork
+            ? "0"
+            : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),
         };
@@ -400,8 +406,8 @@ const AssetListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setTokenSortOption({
         key,

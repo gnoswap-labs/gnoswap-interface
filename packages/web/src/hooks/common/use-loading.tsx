@@ -1,29 +1,61 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+import { usePoolData } from "@hooks/pool/use-pool-data";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useInitLoading } from "@query/common";
+import { useGetDashboardTVL, useGetDashboardVolume } from "@query/dashboard";
 
-interface UseLoadingProps {
-  loadable: boolean;
-}
+export const useLoading = () => {
+  const { data: initialized } = useInitLoading({ initialData: false });
+  const {
+    loading: isLoadingTokenData,
+    isFetched: isFetchedTokenData,
+    isFetchedTokenPrices,
+    isLoadingTokenPrice,
+  } = useTokenData();
+  const { loading: isLoadingPoolData, isFetchedPools: isFetchedPoolData } =
+    usePoolData();
+  const { isLoading: isLoadingDashboardTVL, isFetched: isFetchedDashboardTVL } =
+    useGetDashboardTVL();
+  const {
+    isLoading: isLoadingDashboardVolume,
+    isFetched: isFetchedDashboardVolume,
+  } = useGetDashboardVolume();
 
-export const useLoading = (params?: UseLoadingProps) => {
-  const [isLoadingCommon, setIsLoadingCommon] = useState(true);
+  const isLoading = useMemo(() => {
+    if (initialized) {
+      return true;
+    }
+    if (
+      isFetchedPoolData &&
+      isFetchedTokenData &&
+      isFetchedDashboardTVL &&
+      isFetchedDashboardVolume &&
+      isFetchedTokenPrices
+    ) {
+      return false;
+    }
+    return (
+      isLoadingPoolData ||
+      isLoadingTokenData ||
+      isLoadingDashboardTVL ||
+      isLoadingDashboardVolume ||
+      isLoadingTokenPrice
+    );
+  }, [
+    initialized,
+    isFetchedPoolData,
+    isFetchedTokenData,
+    isFetchedDashboardTVL,
+    isFetchedDashboardVolume,
+    isFetchedTokenPrices,
+    isLoadingPoolData,
+    isLoadingTokenData,
+    isLoadingDashboardTVL,
+    isLoadingDashboardVolume,
+    isLoadingTokenPrice,
+  ]);
 
-  function startLoading() {
-    setIsLoadingCommon(true);
-    const timeout = setTimeout(() => {
-      setIsLoadingCommon(false);
-    }, 1500);
-
-    return timeout;
-  }
-
-  useEffect(() => {
-    const timeout = (params?.loadable ?? true) ? startLoading() : undefined;
-    return () => clearTimeout(timeout);
-  }, [params?.loadable]);
-  
   return {
-    isLoadingCommon: isLoadingCommon,
-    setIsLoadingCommon,
-    startLoading,
+    isLoading,
   };
 };

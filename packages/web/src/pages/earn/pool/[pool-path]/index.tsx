@@ -20,7 +20,7 @@ export default function Pool() {
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading } = useLoading();
 
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
@@ -52,7 +52,7 @@ export default function Pool() {
   }, [data?.incentiveType]);
 
   useEffect(() => {
-    if (hash === "staking" && isFetchedPosition && !loading && !isLoadingCommon) {
+    if (hash === "staking" && isFetchedPosition && !loading && !isLoading) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -62,7 +62,7 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [hash, isFetchedPosition, isLoadingCommon, loading, positions]);
+  }, [hash, isFetchedPosition, isLoading, loading, positions]);
 
   useEffect(() => {
     if (hash === "staking" && !loading && isFetchedPosition && positions.length === 0) {

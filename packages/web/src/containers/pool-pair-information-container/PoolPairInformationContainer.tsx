@@ -74,29 +74,26 @@ export const initialPool: PoolDetailModel = {
   priceRatio: {
     "7d": [],
     "30d": [],
-    "all": []
-  }
+    all: [],
+  },
 };
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
 }
 
-const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({
-  address,
-}) => {
+const PoolPairInformationContainer: React.FC<
+  PoolPairInformationContainerProps
+> = ({ address }) => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
-  const {
-    data = initialPool as PoolDetailModel,
-    isLoading: loading,
-  } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-  const { isLoadingCommon } = useLoading();
+  const { data = initialPool as PoolDetailModel, isLoading: loading } =
+    useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { isLoading: isLoadingCommon } = useLoading();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(
-    address,
-  );
+  const { getPositionsByPoolId, loading: loadingPosition } =
+    usePositionData(address);
   const { connected: connectedWallet, account } = useWallet();
   const { data: bins = [] } = useGetBinsByPath(poolPath as string, 40, {
     enabled: !!poolPath,

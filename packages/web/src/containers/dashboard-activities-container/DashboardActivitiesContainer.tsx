@@ -50,7 +50,6 @@ export const ACTIVITY_TYPE = {
 } as const;
 export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
 
-
 export const dummyTokenList: Activity[] = [
   {
     action: "Add GNOT and GNS",
@@ -77,7 +76,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState<SortOption>();
   const { breakpoint } = useWindowSize();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const {
     isFetched,
@@ -125,8 +124,8 @@ const DashboardActivitiesContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setSortOption({
         key,
@@ -146,14 +145,21 @@ const DashboardActivitiesContainer: React.FC = () => {
     return {
       action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
         res.tokenA.symbol,
-      )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.tokenB.symbol)}`,
-      totalValue: Number(res.totalUsd) < 0.01 && Number(res.totalUsd) ? "<$0.01" : `$${prettyNumber(res.totalUsd)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(`${Number(res.tokenAAmount)}`, true)} ${replaceToken(
-        res.tokenA.symbol,
-      )}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(`${Number(res.tokenBAmount)}`, true)} ${replaceToken(
+      )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(
         res.tokenB.symbol,
       )}`,
+      totalValue:
+        Number(res.totalUsd) < 0.01 && Number(res.totalUsd)
+          ? "<$0.01"
+          : `$${prettyNumber(res.totalUsd)}`,
+      tokenAmountOne: `${prettyNumberFloatInteger(
+        `${Number(res.tokenAAmount)}`,
+        true,
+      )} ${replaceToken(res.tokenA.symbol)}`,
+      tokenAmountTwo: `${prettyNumberFloatInteger(
+        `${Number(res.tokenBAmount)}`,
+        true,
+      )} ${replaceToken(res.tokenB.symbol)}`,
       account: res.account,
       time: res.time,
       explorerUrl,

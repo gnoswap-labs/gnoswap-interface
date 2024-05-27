@@ -13,7 +13,7 @@ const WalletMyPositions: React.FC<WalletMyPositionsProps> = ({
   cardList,
 }) => {
   const { isFetchedPosition, positions } = usePositionData();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
   const { connected } = useWallet();
   if (!connected) return null;
   if (isFetchedPosition && positions.length === 0 && !isLoadingCommon)

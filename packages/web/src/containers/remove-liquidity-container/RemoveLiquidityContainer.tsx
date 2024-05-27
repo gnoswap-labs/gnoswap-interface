@@ -17,7 +17,7 @@ const RemoveLiquidityContainer: React.FC = () => {
     positions: positions,
     selectedIds: checkedList,
   });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const stakedPositions = useMemo(() => {
     if (!connected) return [];
@@ -68,7 +68,9 @@ const RemoveLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      const postions_ = getPositionsByPoolId(poolPath).filter(item => !item.closed);
+      const postions_ = getPositionsByPoolId(poolPath).filter(
+        item => !item.closed,
+      );
       setPositions(postions_);
       return;
     }

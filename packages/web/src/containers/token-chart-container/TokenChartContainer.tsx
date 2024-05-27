@@ -155,7 +155,7 @@ const TokenChartContainer: React.FC = () => {
   const clearModal = useClearModal();
   const { breakpoint } = useWindowSize();
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const { openModal: openTradingModal } = useTokenTradingModal({
     onClickConfirm: () => {
@@ -203,9 +203,7 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: currentPrice
-              ? toPriceFormat(currentPrice)
-              : "",
+            value: currentPrice ? toPriceFormat(currentPrice) : "",
             denom: "USD",
             status: dataToday.status,
           },
@@ -231,12 +229,12 @@ const TokenChartContainer: React.FC = () => {
     if (breakpoint === DEVICE_TYPE.MOBILE)
       return Math.floor(
         ((size.width || 0) + 20 - 25) /
-        (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
+          (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
       );
 
     return Math.floor(
       ((size.width || 0) + 20 - 8) /
-      (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
+        (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
     );
   }, [size.width, breakpoint, currentTab]);
 
@@ -254,25 +252,26 @@ const TokenChartContainer: React.FC = () => {
     if (currentTab === TokenChartGraphPeriods[3]) {
       temp = prices1y || [];
     }
-    return temp.map(item => ({
-      ...item,
-      date: item.date,
-    })).reverse();
+    return temp
+      .map(item => ({
+        ...item,
+        date: item.date,
+      }))
+      .reverse();
   }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
 
   const getChartInfo = useCallback(() => {
-
     // You will ask me why the code is like this. old data it needs like that
     const length =
       currentTab === TokenChartGraphPeriods[0]
         ? 144
         : currentTab === TokenChartGraphPeriods[1]
-          ? 168
-          : currentTab === TokenChartGraphPeriods[2]
-            ? 180
-            : currentTab === TokenChartGraphPeriods[3]
-              ? 365
-              : 144;
+        ? 168
+        : currentTab === TokenChartGraphPeriods[2]
+        ? 180
+        : currentTab === TokenChartGraphPeriods[3]
+        ? 365
+        : 144;
     const currentLength = chartData.length;
     const startTime = Math.max(0, currentLength - length - 1);
 
@@ -308,8 +307,7 @@ const TokenChartContainer: React.FC = () => {
     const datas =
       chartData?.length > 0
         ? [
-          ...chartData
-            .map((item: IPriceResponse) => {
+            ...chartData.map((item: IPriceResponse) => {
               return {
                 amount: {
                   value: `${item.price}`,
@@ -318,16 +316,15 @@ const TokenChartContainer: React.FC = () => {
                 time: getLocalizeTime(item.date),
               };
             }),
-          {
-            amount: {
-              value: `${currentPrice}`,
-              denom: "",
+            {
+              amount: {
+                value: `${currentPrice}`,
+                denom: "",
+              },
+              time: getLocalizeTime(lastDate),
             },
-            time: getLocalizeTime(lastDate),
-          },
-        ]
-        :
-        [];
+          ]
+        : [];
 
     const yAxisLabels = getYAxisLabels(
       datas.map(item => BigNumber(item.amount.value).toFormat(6)),

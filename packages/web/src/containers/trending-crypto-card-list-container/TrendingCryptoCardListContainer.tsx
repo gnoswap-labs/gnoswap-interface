@@ -59,7 +59,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
     { enabled: !!path },
   );
   const { isLoading: isLoadingGetPoolList } = useGetPoolList();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const trendingCryptoList = useMemo(() => {
     return (trending ?? [])

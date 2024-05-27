@@ -46,7 +46,7 @@ const WalletBalanceContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
-  const { isLoadingCommon } = useLoading();
+  const { isLoading } = useLoading();
 
   const { balances: balancesPrice } = useTokenData();
 
@@ -102,8 +102,8 @@ const WalletBalanceContainer: React.FC = () => {
     });
   }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
   const loadingTotalBalance = useMemo(() => {
-    return loadingPositions || loadingConnect === "loading" || isLoadingCommon || !!(isEmptyObject(balancesPrice) && account?.address);
-  }, [loadingPositions, loadingConnect, isLoadingCommon, account?.address, balancesPrice]);
+    return loadingPositions || loadingConnect === "loading" || isLoading || !!(isEmptyObject(balancesPrice) && account?.address);
+  }, [loadingPositions, loadingConnect, isLoading, account?.address, balancesPrice]);
 
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {

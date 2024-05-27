@@ -148,7 +148,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       addLiquidity,
     });
 
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
@@ -721,12 +721,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     const nextTickLower =
       isNumber(selectPool.minPosition || "") ||
-        isFinite(selectPool.minPosition || 0)
+      isFinite(selectPool.minPosition || 0)
         ? priceToTick(selectPool.minPosition || 0)
         : null;
     const nextTickUpper =
       isNumber(selectPool.maxPosition || "") ||
-        isFinite(selectPool.maxPosition || 0)
+      isFinite(selectPool.maxPosition || 0)
         ? priceToTick(selectPool.maxPosition || 0)
         : null;
 

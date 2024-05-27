@@ -135,7 +135,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       createPool,
       addLiquidity,
     });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
@@ -490,13 +490,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
         ...prev,
         tokenA: currentTokenA
           ? {
-            ...currentTokenA,
-          }
+              ...currentTokenA,
+            }
           : null,
         tokenB: currentTokenB
           ? {
-            ...currentTokenB,
-          }
+              ...currentTokenB,
+            }
           : null,
       }));
       return;

@@ -74,7 +74,7 @@ const PoolListContainer: React.FC = () => {
   const router = useRouter();
   const { poolListInfos, isFetchedPools, updatePools } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const themeKey = useAtomValue(ThemeState.themeKey);
 

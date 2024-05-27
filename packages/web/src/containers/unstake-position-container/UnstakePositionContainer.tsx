@@ -17,7 +17,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
     positions,
     selectedIds: checkedList
   });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading } = useLoading();
 
   const checkedAll = useMemo(() => {
     if (positions.length === 0) {
@@ -69,7 +69,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
       handleConfirmUnstake={handleConfirmUnstake}
-      isLoading={isLoadingCommon || loadingPositionById}
+      isLoading={isLoading || loadingPositionById}
     />
   );
 };

@@ -23,7 +23,7 @@ export default function Pool() {
   const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading } = useLoading();
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
@@ -46,7 +46,7 @@ export default function Pool() {
   }, [data?.incentiveType]);
 
   useEffect(() => {
-    if (!loading && isFetchedPosition && !isLoadingCommon) {
+    if (!loading && isFetchedPosition && !isLoading) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -56,7 +56,7 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [loading, isFetchedPosition, isLoadingCommon]);
+  }, [loading, isFetchedPosition, isLoading]);
 
 
   return (

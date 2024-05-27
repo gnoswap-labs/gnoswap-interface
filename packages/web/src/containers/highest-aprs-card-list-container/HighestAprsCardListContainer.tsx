@@ -2,31 +2,35 @@ import HighestAprsCardList from "@components/home/highest-aprs-card-list/Highest
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/use-pool-data";
-import { useTokenData } from "@hooks/token/use-token-data";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 
 const HighestAprsCardListContainer: React.FC = () => {
   const router = useRouter();
   const { breakpoint } = useWindowSize();
-  const { higestAPRs, loading } = usePoolData();
-  const { loading: isLoadingTokenData, isLoadingTokenPrice } = useTokenData();
-  const { isLoadingCommon } = useLoading();
+  const { higestAPRs } = usePoolData();
+  const { isLoading: isLoadingCommon } = useLoading();
 
-  const movePoolDetails = useCallback((path: string) => {
-    router.push("/earn/pool/" + path);
-  }, [router]);
+  const movePoolDetails = useCallback(
+    (path: string) => {
+      router.push("/earn/pool/" + path);
+    },
+    [router],
+  );
 
-  const onClickItem = useCallback((path: string) => {
-    movePoolDetails(path);
-  }, [movePoolDetails]);
+  const onClickItem = useCallback(
+    (path: string) => {
+      movePoolDetails(path);
+    },
+    [movePoolDetails],
+  );
 
   return (
     <HighestAprsCardList
       list={higestAPRs}
       device={breakpoint}
       onClickItem={onClickItem}
-      loading={loading || isLoadingTokenData || isLoadingCommon || isLoadingTokenPrice}
+      loading={isLoadingCommon}
     />
   );
 };

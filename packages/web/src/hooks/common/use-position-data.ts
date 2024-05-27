@@ -112,33 +112,7 @@ export const usePositionData = (address?: string) => {
     }
   }, [initialData.loadingCall, data.length, isFetchedPosition, isPositionLoading, initialData.length, setInitialData]);
 
-  const isEarnPath = PATH.includes(router.pathname);
-
-  // * no need to force loading in another page
-  const isConnectedCheck = walletConnected && isEarnPath;
-
-  const shouldTriggerLoading = () => {
-    // * connected case
-    if (isConnectedCheck) {
-      return true;
-    }
-
-    // * not connected case
-    if (!isConnectedCheck && (isPositionLoading || !back)) {
-      return true;
-    }
-
-    // * [after go back] or [data change while interval refetch]
-    if (!!back || initialData.status) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const { isLoadingCommon } = useLoading({
-    loadable: shouldTriggerLoading(),
-  });
+  const { isLoading } = useLoading();
 
   const { getGnotPath } = useGnotToGnot();
 
@@ -237,8 +211,8 @@ export const usePositionData = (address?: string) => {
 
   const loading = useMemo(() => {
     const shouldPositionLoading = shouldShowLoading && isPositionLoading;
-    return (shouldPositionLoading && walletConnected) || isLoadingCommon;
-  }, [walletConnected, isLoadingCommon, isPositionLoading]);
+    return (shouldPositionLoading && walletConnected) || isLoading;
+  }, [walletConnected, isLoading, isPositionLoading]);
 
   return {
     availableStake,
