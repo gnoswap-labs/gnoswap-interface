@@ -9,11 +9,11 @@ import React, { useMemo } from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { DEVICE_TYPE } from "@styles/media";
 import { numberToRate } from "@utils/string-utils";
+import PoolInfoLazyChart from "../pool-info-lazy-chart/PoolInfoLazyChart";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -22,12 +22,7 @@ interface PoolInfoProps {
   breakpoint: DEVICE_TYPE;
 }
 
-const PoolInfo: React.FC<PoolInfoProps> = ({
-  pool,
-  routeItem,
-  themeKey,
-  breakpoint,
-}) => {
+const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
   const {
     poolId,
     tokenA,
@@ -37,10 +32,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
     volume24h,
     fees24h,
     rewardTokens,
-    bins,
-    price,
     tvl,
-    bins40,
   } = pool;
   const { getGnotPath } = useGnotToGnot();
   const rewardImage = useMemo(() => {
@@ -59,18 +51,10 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_TD_WIDTH_MOBILE
       : breakpoint === DEVICE_TYPE.TABLET_M
-        ? POOL_TD_WIDTH_SMALL_TABLET
-        : breakpoint === DEVICE_TYPE.TABLET
-          ? POOL_TD_WIDTH_TABLET
-          : POOL_TD_WIDTH;
-
-  const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
-    const isAllReserveZeroBin = bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
-
-    return (isAllReserveZeroBin40 && isAllReserveZeroBin);
-  }, [bins, bins40]);
-
+      ? POOL_TD_WIDTH_SMALL_TABLET
+      : breakpoint === DEVICE_TYPE.TABLET
+      ? POOL_TD_WIDTH_TABLET
+      : POOL_TD_WIDTH;
 
   return (
     <PoolInfoWrapper onClick={() => routeItem(poolId)}>
@@ -104,20 +88,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
       <TableColumn tdWidth={tdWidth[5]}>{rewardImage}</TableColumn>
       <TableColumn tdWidth={tdWidth[6]} onClick={e => e.stopPropagation()}>
         <div className="chart-wrapper">
-          <PoolGraph
-            width={100}
-            height={45}
-            tokenA={tokenA}
-            tokenB={tokenB}
-            currentTick={pool.currentTick}
-            bins={bins ?? []}
-            mouseover
-            showBar={!isHideBar}
-            themeKey={themeKey}
-            position="top"
-            nextSpacing={false}
-            poolPrice={Number(price)}
-          />
+          <PoolInfoLazyChart pool={pool} width={tdWidth[6]} />
         </div>
       </TableColumn>
     </PoolInfoWrapper>
