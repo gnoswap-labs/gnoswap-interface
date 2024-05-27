@@ -35,7 +35,7 @@
   "price": "16.26",
   "tokenABalance": "12345",
   "tokenBBalance": "616561416",
-  "tickSpacing": "2",
+  "tickSpacing": "1",
   "bins": [
     {
       "index": 0,

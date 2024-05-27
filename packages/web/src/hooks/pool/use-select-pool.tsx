@@ -426,7 +426,7 @@ export const useSelectPool = ({
   }, []);
 
   const tickSpacing = useMemo(
-    () => poolInfo?.tickSpacing || 2,
+    () => poolInfo?.tickSpacing || 1,
     [poolInfo?.tickSpacing],
   );
 
