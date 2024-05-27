@@ -189,6 +189,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       slippage,
       caller,
       withStaking,
+      createPoolFee,
     } = request;
     const gasFee = 1;
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
@@ -207,7 +208,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       ? tokenBAmountRaw
       : null;
 
-    const gnsApproveAmount = MAX_UINT64.toString();
+    const gnsApproveAmount = createPoolFee.toString();
 
     const createPoolMessages = [
       PoolRepositoryImpl.makeApproveGnosTokenMessage(gnsApproveAmount, caller),
