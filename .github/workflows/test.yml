@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - run: yarn
-      - run: yarn build:module
+      # - run: yarn build:module
       - run: yarn workspace @gnoswap-labs/web test:ci
 
   build-tests:
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - run: yarn
-      - run: yarn build:module
+      # - run: yarn build:module
       - run: yarn workspace @gnoswap-labs/web build
 
   # TODO: Apply when you're done setting up your storybook environment
