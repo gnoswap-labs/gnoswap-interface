@@ -10,7 +10,7 @@ import { RewardType } from "@constants/option.constant";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -144,14 +144,19 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .forEach(rewardInfo => {
         const existReward =
           infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
+        const tokenPrice = Number(tokenPrices[rewardInfo.token.priceID] ?? 0);
         if (existReward) {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
             accuReward1D: existReward.accuReward1D + rewardInfo.accuReward1D,
             apr: existReward.apr + rewardInfo.apr,
+            accuReward1DPrice: (existReward.accuReward1D * tokenPrice) + (rewardInfo.accuReward1D * tokenPrice),
           };
         } else {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = rewardInfo;
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
+            ...rewardInfo,
+            accuReward1DPrice: (rewardInfo.accuReward1D * tokenPrice)
+          };
         }
       });
     return {
@@ -302,12 +307,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   ]);
 
   const feeDaily = useMemo(() => {
-    // const temp = claimableRewardInfo?.SWAP_FEE;
-    // const sumUSD =
-    //   temp?.reduce((accum, current) => accum + current.balance, 0) || 0;
-    // return formatUsdNumber(`${sumUSD}`, 2, true);
-    return "$0";
-  }, []);
+    const temp = aprRewardInfo?.SWAP_FEE;
+    const sumUSD =
+      temp?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) || 0;
+    return formatUsdNumber(`${sumUSD}`, 2, true);
+  }, [aprRewardInfo?.SWAP_FEE]);
 
   const feeClaim = useMemo(() => {
     const temp = claimableRewardInfo?.SWAP_FEE;
@@ -329,15 +333,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo, getGnotPath, positionData]);
 
   const rewardDaily = useMemo(() => {
-    const sumRewardDaily = positions.reduce((positionAcc, positionCurrent) => {
-      const currentPositionDailyReward = positionCurrent.reward.reduce((rewardAcc, rewardCurrent) => {
-        return rewardAcc + Number(rewardCurrent.accuReward1D);
-      }, 0);
+    const temp = [...(aprRewardInfo?.INTERNAL ?? []), ...(aprRewardInfo?.EXTERNAL ?? [])];
+    const sumUSD =
+      temp?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) || 0;
+    return formatUsdNumber(`${sumUSD}`, 2, true);
 
-      return positionAcc + currentPositionDailyReward;
-    }, 0);
-    return toUnitFormat(`${sumRewardDaily}`, true, true);
-  }, [positions]);
+    // const sumRewardDaily = positions.reduce((positionAcc, positionCurrent) => {
+    //   const currentPositionDailyReward = positionCurrent.reward.reduce((rewardAcc, rewardCurrent) => {
+    //     return rewardAcc + Number(rewardCurrent.accuReward1D);
+    //   }, 0);
+
+    //   return positionAcc + currentPositionDailyReward;
+    // }, 0);
+    // return toUnitFormat(`${sumRewardDaily}`, true, true);
+  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL]);
 
   const rewardClaim = useMemo(() => {
     const temp = [...(claimableRewardInfo?.EXTERNAL ?? []), ...(claimableRewardInfo?.INTERNAL ?? [])];

@@ -30,10 +30,10 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
     if (!rewardInfo) {
       return null;
     }
-    if (rewardInfo.STAKING.length === 0) {
+    if (rewardInfo.INTERNAL.length === 0) {
       return null;
     }
-    return rewardInfo.STAKING;
+    return rewardInfo.INTERNAL;
   }, [rewardInfo]);
 
   const externalRewards = useMemo(() => {
