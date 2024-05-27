@@ -10,7 +10,7 @@ import { TvlResponse } from "@repositories/dashboard";
 import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
 import { useQuery } from "@tanstack/react-query";
 import { makeId } from "@utils/common";
-import { toPriceFormat, toUnitFormat } from "@utils/number-utils";
+import { toUnitFormat } from "@utils/number-utils";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 
@@ -46,7 +46,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: "Swap Fees 24h",
-      content: toPriceFormat(fees24hUsd ?? 0),
+      content: toUnitFormat(fees24hUsd || "0", true, true),
     },
   ];
 

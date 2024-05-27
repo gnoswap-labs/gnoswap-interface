@@ -73,7 +73,7 @@ const BestPoolsContainer: React.FC = () => {
   const { isLoadingCommon } = useLoading();
 
   const bestPoolList: BestPool[] = useMemo(() => {
-    return bestPools.map((item: IBestPoolResponse) => {
+    return (bestPools ?? []).map((item: IBestPoolResponse) => {
       const temp =
         pools.filter(
           (_item: PoolModel) => _item.poolPath === item.poolPath,

@@ -222,7 +222,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     const minMaxGap = (() => {
       if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)) return maxValueBigNumber.multipliedBy(gapRatio);
 
-      if (minValueBigNumber.isLessThan(0)) return maxValueBigNumber;
+      if (minValueBigNumber.isLessThan(0) || hasOnlyOnePoint) return maxValueBigNumber;
 
       return maxValueBigNumber.minus(minValueBigNumber);
     })();
@@ -353,6 +353,20 @@ const LineGraph: React.FC<LineGraphProps> = ({
         .dividedBy(maxTime - minTime)
         .toNumber();
     };
+
+    if (hasOnlyOnePoint) {
+      const onlySingleData = mappedDatas[0];
+
+      // const x = BigNumber(time - minTime)
+      // .multipliedBy((width) - baseLineNumberWidthComputation)
+      // .dividedBy(maxTime - minTime)
+      // .toNumber(); 
+
+      setPoints([{
+        x: optimizeTime(onlySingleData.time, width) + baseLineNumberWidthComputation,
+        y: optimizeValue(onlySingleData.value, height),
+      }]);
+    }
 
     const points = mappedDatas.map<Point>(data => ({
       x: optimizeTime(data.time, width) + baseLineNumberWidthComputation,
@@ -515,6 +529,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const hasTooltipContent = useMemo(() => {
     return datas[currentPointIndex]?.time && datas[currentPointIndex]?.value;
   }, [currentPointIndex, datas]);
+
+  const hasOnlyOnePoint = useMemo(() => datas.length === 1, [datas.length]);
 
   return (
     <LineGraphWrapper
