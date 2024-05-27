@@ -13,4 +13,5 @@ export interface CreatePoolRequest {
   slippage: string;
   caller: string;
   withStaking?: boolean;
+  createPoolFee: number; // fee is Raw Amount
 }

@@ -1,4 +1,4 @@
-import { EstimatedRoute } from "@gnoswap-labs/swap-router";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { TokenModel } from "@models/token/token-model";
 
 export interface SwapRouteRequest {

@@ -81,20 +81,20 @@ describe("price convert to tick", () => {
 describe("price convert to near tick", () => {
   test("1 to 0", () => {
     const price = 1;
-    const tickSpacing = 2;
+    const tickSpacing = 1;
     expect(priceToNearTick(price, tickSpacing)).toBe(0);
   });
 
   test("1.6486800559311758 to 5002", () => {
     const price = 1.6489273641220126;
-    const tickSpacing = 2;
+    const tickSpacing = 1;
     expect(priceToNearTick(price, tickSpacing)).toBe(5002);
   });
 
-  test("0.60651549714 to -5002", () => {
+  test("0.60651549714 to -5001", () => {
     const price = 0.60651549714;
-    const tickSpacing = 2;
-    expect(priceToNearTick(price, tickSpacing)).toBe(-5000);
+    const tickSpacing = 1;
+    expect(priceToNearTick(price, tickSpacing)).toBe(-5001);
   });
 
   test("0.60651549714 to -5004", () => {

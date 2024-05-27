@@ -8,8 +8,7 @@
     "dev": "ultra --recursive dev",
     "storybook": "yarn workspace @gnoswap-labs/web storybook",
     "test:ci": "ultra --recursive test:ci",
-    "build:module": "ultra --recursive --filter @gnoswap-labs/swap-router build",
-    "build": "yarn build:module && yarn workspace @gnoswap-labs/web build",
+    "build": "yarn workspace @gnoswap-labs/web build",
     "start": "yarn workspace @gnoswap-labs/web start"
   },
   "resolutions": {

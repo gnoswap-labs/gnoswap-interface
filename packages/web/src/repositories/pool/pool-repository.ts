@@ -19,6 +19,8 @@ export interface PoolRepository {
 
   getRPCPools: () => Promise<PoolRPCModel[]>;
 
+  getCreationFee: () => Promise<number>;
+
   getPoolDetailRPCByPoolPath: (poolPath: string) => Promise<PoolDetailRPCModel>;
 
   getPoolDetailByPoolPath: (poolPath: string) => Promise<PoolDetailModel>;

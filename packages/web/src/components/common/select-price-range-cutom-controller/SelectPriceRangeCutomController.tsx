@@ -47,7 +47,7 @@ const SelectPriceRangeCustomController = forwardRef<
   title,
   current,
   feeTier,
-  tickSpacing = 2,
+  tickSpacing = 1,
   changePrice,
   decrease,
   increase,

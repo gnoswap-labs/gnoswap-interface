@@ -28,10 +28,13 @@ interface Props {
   aprFee: number;
   priceRangeSummary: IPriceRange;
   currentAmounts: { amountA: number; amountB: number } | null;
-  repositionAmounts: { amountA: number; amountB: number } | null;
+  repositionAmounts: { amountA: number | null; amountB: number | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
-  addPosition: () => Promise<WalletResponse<AddLiquidityResponse> | null>;
+  addPosition: (
+    swapToken: TokenModel,
+    swapAmount: string,
+  ) => Promise<WalletResponse<AddLiquidityResponse> | null>;
 }
 
 const RepositionModalContainer: React.FC<Props> = ({

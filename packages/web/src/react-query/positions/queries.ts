@@ -6,7 +6,7 @@ import { IPositionHistoryModel } from "@models/position/position-history-model";
 
 export const useGetPositionsByAddress = (
   address: string,
-  options?: UseQueryOptions<PositionModel[], Error>
+  options?: UseQueryOptions<PositionModel[], Error>,
 ) => {
   const { positionRepository } = useGnoswapContext();
 
@@ -23,7 +23,10 @@ export const useGetPositionsByAddress = (
   });
 };
 
-export const useGetPositionHistory = (lpTokenId: string, options?: UseQueryOptions<IPositionHistoryModel[], Error>) => {
+export const useGetPositionHistory = (
+  lpTokenId: string,
+  options?: UseQueryOptions<IPositionHistoryModel[], Error>,
+) => {
   const { positionRepository } = useGnoswapContext();
 
   return useQuery<IPositionHistoryModel[], Error>({

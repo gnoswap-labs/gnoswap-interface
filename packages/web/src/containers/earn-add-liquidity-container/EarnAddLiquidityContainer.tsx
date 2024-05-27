@@ -403,12 +403,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
         return;
       }
-      if (!selectPool.currentPrice) {
-        return;
-      }
 
-      if (/^0\.0(?:0*)$/.test(amount) || amount.toString() === "0") {
-        tokenBAmountInput.changeAmount("0");
+      if (!selectPool.currentPrice) {
         return;
       }
 
