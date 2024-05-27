@@ -96,7 +96,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
             key={idx}
             className={cx({
               left: isAlignLeft(head),
-              sort: isSortOption(head),
+              sort: isSortOption(head) && canSort,
             })}
             tdWidth={tdWidth[idx]}
           >

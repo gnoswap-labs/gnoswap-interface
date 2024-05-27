@@ -5,7 +5,6 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface SelectLiquidityProps {
-  stakedPositions: PoolPositionModel[];
   unstakedPositions: PoolPositionModel[];
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
@@ -16,7 +15,6 @@ interface SelectLiquidityProps {
 }
 
 const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
-  // stakedPositions,
   unstakedPositions,
   checkedList,
   onCheckedItem,

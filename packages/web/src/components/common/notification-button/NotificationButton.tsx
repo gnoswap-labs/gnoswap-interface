@@ -7,7 +7,7 @@ import { CommonState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useMemo } from "react";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
@@ -32,15 +32,6 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   useEscCloseModal(handleESC);
   usePreventScroll(toggle.notification);
 
-  const clearNotificationMutation = useMutation({
-    onSuccess: () => {
-      refetch();
-    },
-    mutationFn: () => notificationRepository.getGroupedNotification({
-      address: account?.address,
-    })
-  });
-
   const { data: txsGroupsInformation, refetch, isFetched } = useQuery<
     TransactionGroupsType[],
     Error
@@ -59,10 +50,16 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
       return [...pre, ...allTxs];
     }, [] as string[]);
   }, [txsGroupsInformation]);
-  const handleClearAll = () => {
-    notificationRepository.appendRemovedTx(txs);
-    clearNotificationMutation.mutate();
-    refetch();
+  const handleClearAll = async () => {
+    try {
+      notificationRepository.appendRemovedTx(txs);
+      await notificationRepository.clearNotification({
+        address: account?.address,
+      });
+      refetch();
+    } catch (e) {
+      console.log("handleClearAll ~ e:", e);
+    }
   };
 
   const onListToggle = () => {

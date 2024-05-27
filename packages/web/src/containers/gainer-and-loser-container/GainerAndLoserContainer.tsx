@@ -11,8 +11,9 @@ import { IGainer } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolList } from "@query/pools";
 import { useRouter } from "next/router";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import BigNumber from "bignumber.js";
 
 export const gainersInit = [
   {
@@ -110,7 +111,7 @@ const GainerAndLoserContainer: React.FC = () => {
   const gainersList = useMemo(() => {
     return gainers?.slice(0, 3).map((item: IGainer) => {
       const isGnotPath = item.tokenPath === wugnotPath;
-      const priceChange = item.tokenPriceChange || 0;
+      const priceChange = item.tokenPrice24hChange || 0;
       const temp: TokenModel =
         tokens.filter(
           (token: TokenModel) => token.path === item.tokenPath,
@@ -120,7 +121,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: `${toUnitFormat(item.tokenPrice, true, false)}`,
+        price: `${(toPriceFormat(BigNumber(item.tokenPrice).toFormat(), { usd: true }))}`,
         change: {
           status:
             Number(priceChange) >= 0
@@ -137,7 +138,7 @@ const GainerAndLoserContainer: React.FC = () => {
   const loserList = useMemo(() => {
     return losers?.slice(0, 3)?.map((item: IGainer) => {
       const isGnotPath = item.tokenPath === wugnotPath;
-      const priceChange = item.tokenPriceChange || 0;
+      const priceChange = item.tokenPrice24hChange || 0;
       const temp: TokenModel =
         tokens.filter(
           (token: TokenModel) => token.path === item.tokenPath,
@@ -147,7 +148,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: `${toUnitFormat(item.tokenPrice, true, false)}`,
+        price: `${toPriceFormat(BigNumber(item.tokenPrice).toFormat(), { usd: true })}`,
         change: {
           status:
             Number(priceChange) >= 0

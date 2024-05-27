@@ -66,6 +66,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
     switch (buttonType) {
       case "INCREASE_LIQUIDITY":
         return "Increase Liquidity";
+      case "INSUFFICIENT_BALANCE":
+        return "Insufficient Balance";
       case "ENTER_AMOUNT":
       default:
         return "Enter Amount";
@@ -103,7 +105,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
         />
       </article>
       <Button
-        onClick={onSubmit}
+        onClick={activatedSubmit ? onSubmit : undefined}
+        disabled={!activatedSubmit}
         text={textButton}
         style={{
           hierarchy: activatedSubmit
@@ -112,7 +115,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
 
           fullWidth: true,
         }}
-        className="button-confirm"
+        className={"button-confirm"}
       />
     </IncreaseLiquidityWrapper>
   );

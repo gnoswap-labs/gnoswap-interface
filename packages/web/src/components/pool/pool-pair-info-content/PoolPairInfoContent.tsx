@@ -26,7 +26,6 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { toUnitFormat } from "@utils/number-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
-
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;

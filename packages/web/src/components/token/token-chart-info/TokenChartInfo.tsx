@@ -3,9 +3,10 @@ import { TokenChartInfoWrapper } from "./TokenChartInfo.styles";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { convertToMB } from "@utils/stake-position-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { toPriceFormat } from "@utils/number-utils";
+import BigNumber from "bignumber.js";
 
 export interface TokenChartInfoProps {
   token: {
@@ -45,7 +46,8 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
           </div>}
         </div>
         <div className="price-info">
-          {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${Number.isInteger(Number(priceInfo.amount.value)) ? `${priceInfo.amount.value}.00` : convertToMB(priceInfo.amount.value.toString(), 6)}`}</span>}
+          {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : toPriceFormat(BigNumber(priceInfo.amount.value).toFormat(), { usd: true })}</span>}
+          {/* {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${Number.isInteger(Number(priceInfo.amount.value)) ? `${priceInfo.amount.value}.00` : convertToMB(priceInfo.amount.value.toString(), 6)}`}</span>} */}
           {(priceInfo.amount.value && !loading) ? <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
             {
               isIncreasePrice() ?

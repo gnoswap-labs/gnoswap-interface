@@ -33,7 +33,7 @@ interface Props {
     estimatedAPR: string;
   };
   feeInfo: {
-    token: TokenModel;
+    token?: TokenModel;
     fee: string;
   };
   confirm: () => void;

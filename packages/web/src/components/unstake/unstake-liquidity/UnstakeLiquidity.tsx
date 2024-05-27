@@ -8,7 +8,6 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface UnstakeLiquidityProps {
   stakedPositions: PoolPositionModel[];
-  unstakedPositions: PoolPositionModel[];
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
@@ -19,7 +18,6 @@ interface UnstakeLiquidityProps {
 
 const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
   stakedPositions,
-  unstakedPositions,
   checkedList,
   onCheckedItem,
   onCheckedAll,
@@ -37,7 +35,6 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
       <h3 className="title">Unstake Position</h3>
       <SelectLiquidity
         stakedPositions={stakedPositions}
-        unstakedPositions={unstakedPositions}
         checkedList={checkedList}
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}

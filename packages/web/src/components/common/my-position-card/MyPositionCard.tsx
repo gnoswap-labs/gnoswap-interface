@@ -106,11 +106,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minTickLabel = useMemo(() => {
     return minTickRate * -1 > 1000
       ? ">999%"
-      : `${minTickRate < 0 ? "+" : ""}${
-          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-            ? "<1"
-            : Math.round(minTickRate * -1)
-        }%`;
+      : `${minTickRate < 0 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+        ? "<1"
+        : Math.round(minTickRate * -1)
+      }%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
@@ -120,9 +119,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     return maxTickRate >= 1000
       ? ">999%"
-      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${
-          Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
-        }%`;
+      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)}%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
@@ -145,7 +142,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -163,7 +160,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -286,8 +283,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
                   : inRange
-                  ? RANGE_STATUS_OPTION.IN
-                  : RANGE_STATUS_OPTION.OUT
+                    ? RANGE_STATUS_OPTION.IN
+                    : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>

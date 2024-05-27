@@ -463,7 +463,7 @@ export const TooltipContent = styled.div`
 
 
 export const RewardsContent = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  ${mixins.flexbox("column", "flex-start", "space-between")};
   gap: 8px;
   width: 268px;
   ${fonts.body12};
@@ -488,6 +488,10 @@ export const RewardsContent = styled.div`
   }
   .title {
     color: ${({ theme }) => theme.color.text04};
+  }
+  .note {
+    color: ${({ theme }) => theme.color.text04};
+    ${fonts.p4}
   }
   .content {
     color: ${({ theme }) => theme.color.text02};

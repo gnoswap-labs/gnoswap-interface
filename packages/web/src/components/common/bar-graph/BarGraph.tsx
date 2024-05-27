@@ -332,9 +332,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
             getGraphPoints().map((point, index) => (
               <path
                 key={index}
-                d={`M${point.x} ${point.y + 1} h${getStrokeWidth()} v${
-                  height - (point.y + 1)
-                } h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
+                d={`M${point.x} ${point.y + 1} h${getStrokeWidth()} v${height - (point.y + 1)
+                  } h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
                 fill={getStorkeColor(index)}
               />
             ))}

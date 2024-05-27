@@ -127,26 +127,26 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const adjustBins = useMemo(() => {
     return flip
       ? bins
-          .map(bin => ({
-            ...bin,
-            maxTick: -1 * bin.minTick,
-            minTick: -1 * bin.maxTick,
-            reserveTokenA: bin.reserveTokenB,
-            reserveTokenB: bin.reserveTokenA,
-            height: BigNumber(bin.reserveTokenB)
-              .multipliedBy(currentPrice)
-              .plus(bin.reserveTokenA)
-              .toNumber(),
-          }))
-          .reverse()
-      : bins.map(bin => ({
+        .map(bin => ({
           ...bin,
-          height: BigNumber(bin.reserveTokenA)
-            .multipliedBy(currentPrice)
-            .plus(bin.reserveTokenB)
+          maxTick: -1 * bin.minTick,
+          minTick: -1 * bin.maxTick,
+          reserveTokenA: bin.reserveTokenB,
+          reserveTokenB: bin.reserveTokenA,
+          height: BigNumber(bin.reserveTokenB)
+            .multipliedBy(price)
+            .plus(bin.reserveTokenA)
             .toNumber(),
-        }));
-  }, [bins, currentPrice, flip]);
+        }))
+        .reverse()
+      : bins.map(bin => ({
+        ...bin,
+        height: BigNumber(bin.reserveTokenA)
+          .multipliedBy(price)
+          .plus(bin.reserveTokenB)
+          .toNumber(),
+      }));
+  }, [bins, price, flip]);
 
   // Display bins is bins slice data.
   const displayBins = useMemo(() => {
@@ -970,8 +970,8 @@ function changeLine(
   const labelText = !selectedFullRange
     ? rateStr
     : type === "start"
-    ? "-100%"
-    : "∞";
+      ? "-100%"
+      : "∞";
 
   labelWrapper
     .select("rect")

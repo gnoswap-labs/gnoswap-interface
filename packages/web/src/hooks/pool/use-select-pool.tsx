@@ -237,9 +237,8 @@ export const useSelectPool = ({
         return Promise.resolve<PoolDetailRPCModel | null>(poolInfo);
       }
 
-      const poolPath = `${tokenPair?.join(":")}:${
-        SwapFeeTierInfoMap[feeTier].fee
-      }`;
+      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
+        }`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
 
       const convertPath = encryptId(poolPath);
@@ -255,21 +254,22 @@ export const useSelectPool = ({
       const changedPoolInfo =
         isReverse === false
           ? {
-              ...poolRes,
-              price: poolResFromDb.price,
-            }
+            ...poolRes,
+            price: poolResFromDb.price,
+          }
           : {
-              ...poolRes,
-              price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
-              ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
-              positions: poolRes.positions.map(position => ({
-                ...position,
-                tickLower: position.tickUpper * -1,
-                tickUpper: position.tickLower * -1,
-              })),
-            };
+            ...poolRes,
+            price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
+            ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
+            positions: poolRes.positions.map(position => ({
+              ...position,
+              tickLower: position.tickUpper * -1,
+              tickUpper: position.tickLower * -1,
+            })),
+          };
 
       return Promise.resolve<PoolDetailRPCModel | null>(changedPoolInfo);
+
     },
     staleTime: 5_000,
   });
@@ -407,6 +407,9 @@ export const useSelectPool = ({
     price,
     fullRange,
   ]);
+
+  console.log("🚀 ~ depositRatio ~ depositRatio:", depositRatio);
+
 
   const feeBoost = useMemo(() => {
     if (minPrice === null || maxPrice === null) {
@@ -553,7 +556,6 @@ export const useSelectPool = ({
       }
       const minNearTick = priceToNearTick(minPosition, tickSpacing);
       const maxNearTick = priceToNearTick(maxPosition, tickSpacing);
-      // Possible bug
       setMaxPosition(tickToPrice(minNearTick));
       setMaxPosition(tickToPrice(maxNearTick));
       setInteractionType("FINISH");
@@ -587,7 +589,7 @@ export const useSelectPool = ({
 
   useEffect(() => {
     setCurrentPoolPath(latestPoolPath);
-  }, [poolPath]);
+  }, [latestPoolPath]);
 
   return {
     startPrice,

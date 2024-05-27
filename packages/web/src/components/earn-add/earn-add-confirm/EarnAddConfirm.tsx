@@ -33,7 +33,7 @@ export interface EarnAddConfirmProps {
     estimatedAPR: string;
   };
   feeInfo: {
-    token: TokenModel;
+    token?: TokenModel;
     fee: string;
   };
   confirm: () => void;
@@ -59,7 +59,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
 
       <EarnAddConfirmAmountInfo {...amountInfo} />
 
-      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} {...amountInfo}/>
+      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} {...amountInfo} />
 
       {isPoolCreation && (
         <EarnAddConfirmFeeInfo {...feeInfo} />

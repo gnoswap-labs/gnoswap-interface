@@ -65,14 +65,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   }, [pool.rewardTokens, pool.tokenA, pool.tokenB]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = pool.bins40.every(
-      item =>
-        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
-    );
-    const isAllReserveZeroBin = pool.bins.every(
-      item =>
-        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
-    );
+    const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
 
     return isAllReserveZeroBin40 && isAllReserveZeroBin;
   }, [pool.bins, pool.bins40]);
@@ -116,9 +110,9 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               <div className="list-content">
                 <span className="value-text">{pool.liquidity}</span>
                 <span className="value-text">{numberToRate(pool.apr)}</span>
-              </div>
-            </div>
-          </div>
+              </div >
+            </div >
+          </div >
           <div className="volume-container">
             <div className="volume-header">
               <div className="volume-title">
@@ -152,17 +146,15 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               />
               <div className="price-section">
                 <span className="label-text">{"Current Price"}</span>
-                <span className="label-text">{`1 ${
-                  pool.tokenA.symbol
-                } = ${numberToFormat(pool.price, { decimals: 2 })} ${
-                  pool.tokenB.symbol
-                }`}</span>
+                <span className="label-text">{`1 ${pool.tokenA.symbol
+                  } = ${numberToFormat(pool.price, { decimals: 2 })} ${pool.tokenB.symbol
+                  }`}</span>
               </div>
             </div>
           </div>
-        </PoolCardWrapper>
-      </div>
-    </PoolCardWrapperWrapperBorder>
+        </PoolCardWrapper >
+      </div >
+    </PoolCardWrapperWrapperBorder >
   );
 };
 

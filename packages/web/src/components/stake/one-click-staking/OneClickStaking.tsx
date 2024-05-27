@@ -38,22 +38,22 @@ const OneClickStaking: React.FC<Props> = ({
 
   const tokenA = tokenAInfo
     ? {
-        ...tokenAInfo,
-        logoURI: getGnotPath(tokenAInfo).logoURI,
-        path: getGnotPath(tokenAInfo).path,
-        name: getGnotPath(tokenAInfo).name,
-        symbol: getGnotPath(tokenAInfo).symbol,
-      }
+      ...tokenAInfo,
+      logoURI: getGnotPath(tokenAInfo).logoURI,
+      path: getGnotPath(tokenAInfo).path,
+      name: getGnotPath(tokenAInfo).name,
+      symbol: getGnotPath(tokenAInfo).symbol,
+    }
     : null;
 
   const tokenB = tokenBInfo
     ? {
-        ...tokenBInfo,
-        logoURI: getGnotPath(tokenBInfo).logoURI,
-        path: getGnotPath(tokenBInfo).path,
-        name: getGnotPath(tokenBInfo).name,
-        symbol: getGnotPath(tokenBInfo).symbol,
-      }
+      ...tokenBInfo,
+      logoURI: getGnotPath(tokenBInfo).logoURI,
+      path: getGnotPath(tokenBInfo).path,
+      name: getGnotPath(tokenBInfo).name,
+      symbol: getGnotPath(tokenBInfo).symbol,
+    }
     : null;
 
   useEffect(() => {
@@ -138,45 +138,42 @@ const OneClickStaking: React.FC<Props> = ({
   }
 
   function renderPositionInfo() {
-    return (
-      <div className="one-click-info">
-        <div>
-          <div className="label">TVL</div>
-          <div className="value">{liquidityValue}</div>
-        </div>
-        <div>
-          <div className="label">Volume 24h</div>
-          <div className="value">{volumeValue}</div>
-        </div>
-        <div>
-          <div className="label">Fee 24h</div>
-          <div className="value">{feeChangedStr}</div>
-        </div>
-        <div>
-          <div className="label">Fee APR</div>
-          <div className="value">
-            {!isLoadingPool && (
-              <DoubleLogo
-                left={tokenARevert?.logoURI || ""}
-                right={tokenBRevert?.logoURI || ""}
-                size={24}
-                leftSymbol={tokenARevert?.symbol || ""}
-                rightSymbol={tokenBRevert?.symbol || ""}
-              />
-            )}
-            {feeApr}
-          </div>
-        </div>
-        <div>
-          <div className="label">Staking APR</div>
-          <div className="value">
-            <OverlapLogo logos={rewardTokens} size={24} />
-            {stakingApr}
-          </div>
+    return <div className="one-click-info">
+      <div>
+        <div className="label">TVL</div>
+        <div className="value">{liquidityValue}</div>
+      </div>
+      <div>
+        <div className="label">Volume 24h</div>
+        <div className="value">{volumeValue}</div>
+      </div>
+      <div>
+        <div className="label">Fee 24h</div>
+        <div className="value">{feeChangedStr}</div>
+      </div>
+      <div>
+        <div className="label">Fee APR</div>
+        <div className="value">
+          {!isLoadingPool && <DoubleLogo
+            left={tokenARevert?.logoURI || ""}
+            right={tokenBRevert?.logoURI || ""}
+            size={24}
+            leftSymbol={tokenARevert?.symbol || ""}
+            rightSymbol={tokenBRevert?.symbol || ""}
+          />}
+          {feeApr}
         </div>
       </div>
-    );
+      <div>
+        <div className="label">Staking APR</div>
+        <div className="value">
+          <OverlapLogo logos={rewardTokens} size={24} />
+          {stakingApr}
+        </div>
+      </div>
+    </div>;
   }
+
 
   return (
     <OneClickStakingWrapper>
@@ -194,64 +191,67 @@ const OneClickStaking: React.FC<Props> = ({
       {(isStakedPositions || isUnstakedPositions) && !isLoadingPool && (
         <Divider />
       )}
-      {isUnstakedPositions && !isLoadingPool && (
-        <div className="unstake-info">
-          <div className="title">
-            <div className="label">My Unstaked Positions</div>
-            <div className="value" onClick={handleClickGotoStaking}>
-              Go to Staking <IconStrokeArrowRight />
+      {
+        isUnstakedPositions && !isLoadingPool && (
+          <div className="unstake-info">
+            <div className="title">
+              <div className="label">My Unstaked Positions</div>
+              <div className="value" onClick={handleClickGotoStaking}>
+                Go to Staking <IconStrokeArrowRight />
+              </div>
             </div>
-          </div>
-          {unstakedPositions.map((item, index) => (
-            <div className="content" key={index}>
-              <div className="label">
-                {!isLoadingPool && (
+            {unstakedPositions.map((item, index) => (
+              <div className="content" key={index}>
+                <div className="label">
+                  {!isLoadingPool && (
+                    <DoubleTokenLogo
+                      left={tokenARevert}
+                      right={tokenBRevert}
+                      size={24}
+                      fontSize={8}
+                    />
+                  )}
+                  ID #{item.id}
+                </div >
+                <div className="value">
+                  {toUnitFormat(item.positionUsdValue, true, true)}
+                </div>
+              </div >
+            ))}
+          </div >
+        )}
+
+      {
+        isStakedPositions && !isLoadingPool && (
+          <div className="stake-info">
+            <div className="title">
+              <div className="label">My Staked Positions</div>
+              {!isUnstakedPositions && (
+                <div className="value" onClick={handleClickGotoStaking}>
+                  Go to Staking <IconStrokeArrowRight />
+                </div>
+              )}
+            </div>
+            {stakedPositions.map((item, index) => (
+              <div className="content" key={index}>
+                <div className="label">
                   <DoubleTokenLogo
                     left={tokenARevert}
                     right={tokenBRevert}
                     size={24}
                     fontSize={8}
                   />
-                )}
-                ID #{item.id}
+                  ID #{item.id}
+                </div>
+                <div className="value">
+                  {toUnitFormat(item.positionUsdValue, true, true)}
+                </div>
               </div>
-              <div className="value">
-                {toUnitFormat(item.positionUsdValue, true, true)}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {isStakedPositions && !isLoadingPool && (
-        <div className="stake-info">
-          <div className="title">
-            <div className="label">My Staked Positions</div>
-            {!isUnstakedPositions && (
-              <div className="value" onClick={handleClickGotoStaking}>
-                Go to Staking <IconStrokeArrowRight />
-              </div>
-            )}
+            ))}
           </div>
-          {stakedPositions.map((item, index) => (
-            <div className="content" key={index}>
-              <div className="label">
-                <DoubleTokenLogo
-                  left={tokenARevert}
-                  right={tokenBRevert}
-                  size={24}
-                  fontSize={8}
-                />
-                ID #{item.id}
-              </div>
-              <div className="value">
-                {toUnitFormat(item.positionUsdValue, true, true)}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </OneClickStakingWrapper>
+        )
+      }
+    </OneClickStakingWrapper >
   );
 };
 

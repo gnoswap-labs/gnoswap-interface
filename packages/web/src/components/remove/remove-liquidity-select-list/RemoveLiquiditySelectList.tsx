@@ -24,7 +24,6 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
   checkedAll,
   isLoading,
 }) => {
-
   return (
     <RemoveLiquiditySelectListWrapper>
       <div className="checked-all-wrap">
