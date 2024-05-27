@@ -408,8 +408,6 @@ export const useSelectPool = ({
     fullRange,
   ]);
 
-  console.log("🚀 ~ depositRatio ~ depositRatio:", depositRatio);
-
 
   const feeBoost = useMemo(() => {
     if (minPrice === null || maxPrice === null) {
@@ -428,7 +426,7 @@ export const useSelectPool = ({
   }, []);
 
   const tickSpacing = useMemo(
-    () => poolInfo?.tickSpacing || 2,
+    () => poolInfo?.tickSpacing || 1,
     [poolInfo?.tickSpacing],
   );
 

@@ -13,6 +13,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { formatUsdNumber3Digits, toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -337,7 +338,7 @@ const TokenListContainer: React.FC = () => {
         }
       }
     }
-    return temp.slice(page * 15, (page + 1) * 15);
+    return temp.slice(page * MAIN_TOKEN_LIST_SIZE, (page + 1) * MAIN_TOKEN_LIST_SIZE);
   }, [keyword, tokenType, sortOption, firstData, page]);
 
 
@@ -352,7 +353,7 @@ const TokenListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={Math.ceil((tokens || []).length / 15)}
+      totalPage={Math.ceil((tokens || []).length / MAIN_TOKEN_LIST_SIZE)}
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}

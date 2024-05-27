@@ -7,7 +7,7 @@ import {
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { TokenAmountInputModel } from "./use-token-amount-input";
 import { priceToNearTick } from "@utils/swap-utils";
 import { SelectPool } from "@hooks/pool/use-select-pool";
@@ -26,7 +26,8 @@ import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-
 import { convertToKMB } from "@utils/stake-position-utils";
 import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import { CREATE_POOL_FEE, GNS_TOKEN_PATH } from "@common/clients/wallet-client/transaction-messages";
+import { GNS_TOKEN_PATH } from "@common/clients/wallet-client/transaction-messages";
+import { useGetPoolCreationFee } from "@query/pools";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -87,10 +88,14 @@ export const useEarnAddLiquidityConfirmModal = ({
     broadcastPending,
     broadcastError,
   } = useBroadcastHandler();
-  const { tokens } = useTokenData();
-  const [, setOpenedModal] = useAtom(CommonState.openedModal);
-  const [, setModalContent] = useAtom(CommonState.modalContent);
   const router = useRouter();
+  const { tokens } = useTokenData();
+  const { data: creationFee, refetch: refetchGetPoolCreationFee } =
+    useGetPoolCreationFee({});
+
+  const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
+  const [, setModalContent] = useAtom(CommonState.modalContent);
+
   const tokenAAmount = useMemo(() => {
     const depositRatio = selectPool.depositRatio;
     const compareTokenPath = selectPool.compareToken?.path;
@@ -225,18 +230,20 @@ export const useEarnAddLiquidityConfirmModal = ({
       inRange,
       minPrice: minPriceStr,
       maxPrice: maxPriceStr,
-      priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr === "∞"
-        ? minPriceStr
-        : convertToKMB(Number(minPriceStr).toFixed(4), {
-          maximumFractionDigits: 4,
-        })
-        } ${tokenBSymbol}`,
-      priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr === "∞"
-        ? maxPriceStr
-        : convertToKMB(Number(maxPriceStr).toFixed(4), {
-          maximumFractionDigits: 4,
-        })
-        } ${tokenBSymbol}`,
+      priceLabelMin: `1 ${tokenASymbol} = ${
+        minPriceStr === "∞"
+          ? minPriceStr
+          : convertToKMB(Number(minPriceStr).toFixed(4), {
+              maximumFractionDigits: 4,
+            })
+      } ${tokenBSymbol}`,
+      priceLabelMax: `1 ${tokenASymbol} = ${
+        maxPriceStr === "∞"
+          ? maxPriceStr
+          : convertToKMB(Number(maxPriceStr).toFixed(4), {
+              maximumFractionDigits: 4,
+            })
+      } ${tokenBSymbol}`,
       feeBoost,
       estimatedAPR: "N/A",
     };
@@ -247,9 +254,11 @@ export const useEarnAddLiquidityConfirmModal = ({
   const feeInfo = useMemo((): { token?: TokenModel; fee: string } => {
     return {
       token: gnsToken,
-      fee: gnsToken ? `${makeDisplayTokenAmount(gnsToken, CREATE_POOL_FEE)}` : "",
+      fee: gnsToken
+        ? `${makeDisplayTokenAmount(gnsToken, creationFee || 0)}`
+        : "",
     };
-  }, [gnsToken]);
+  }, [creationFee, gnsToken]);
 
   const close = useCallback(() => {
     setOpenedModal(false);
@@ -305,24 +314,24 @@ export const useEarnAddLiquidityConfirmModal = ({
 
       const transaction = selectPool.isCreate
         ? createPool({
-          tokenAAmount,
-          tokenBAmount,
-          minTick,
-          maxTick,
-          slippage,
-          startPrice: `${selectPool.startPrice || 1}`,
-          swapFeeTier,
-          withStaking: options?.withStaking,
-        })
+            tokenAAmount,
+            tokenBAmount,
+            minTick,
+            maxTick,
+            slippage,
+            startPrice: `${selectPool.startPrice || 1}`,
+            swapFeeTier,
+            withStaking: options?.withStaking,
+          })
         : addLiquidity({
-          tokenAAmount,
-          tokenBAmount,
-          minTick,
-          maxTick,
-          slippage,
-          swapFeeTier,
-          withStaking: options?.withStaking,
-        });
+            tokenAAmount,
+            tokenBAmount,
+            minTick,
+            maxTick,
+            slippage,
+            swapFeeTier,
+            withStaking: options?.withStaking,
+          });
       transaction
         .then(result => {
           if (result) {
@@ -450,6 +459,12 @@ export const useEarnAddLiquidityConfirmModal = ({
     setOpenedModal,
     selectPool.isCreate,
   ]);
+
+  useEffect(() => {
+    if (openedModal) {
+      refetchGetPoolCreationFee();
+    }
+  }, [openedModal]);
 
   return {
     openAddPositionModal,

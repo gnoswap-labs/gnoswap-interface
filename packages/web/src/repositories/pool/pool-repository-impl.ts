@@ -15,7 +15,11 @@ import {
 } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { GnoProvider } from "@gnolang/gno-js-client";
-import { evaluateExpressionToObject, makeABCIParams } from "@utils/rpc-utils";
+import {
+  evaluateExpressionToNumber,
+  evaluateExpressionToObject,
+  makeABCIParams,
+} from "@utils/rpc-utils";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
@@ -44,11 +48,11 @@ import {
   PACKAGE_POOL_ADDRESS,
   PACKAGE_POOL_PATH,
   GNS_TOKEN_PATH,
-  CREATE_POOL_FEE,
   PACKAGE_POSITION_ADDRESS,
   makeApproveMessage,
   WRAPPED_GNOT_PATH,
   TransactionMessage,
+  PACKAGE_GNOSWAP_CONST_PATH,
 } from "@common/clients/wallet-client/transaction-messages";
 import { MAX_UINT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -77,6 +81,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
+
   getRPCPools = async (): Promise<PoolRPCModel[]> => {
     try {
       const poolPackagePath = PACKAGE_POOL_PATH;
@@ -101,6 +106,25 @@ export class PoolRepositoryImpl implements PoolRepository {
     }
   };
 
+  getCreationFee = async (): Promise<number> => {
+    try {
+      if (!PACKAGE_GNOSWAP_CONST_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetPoolCreationFee", []);
+      const response = await this.rpcProvider.evaluateExpression(
+        PACKAGE_GNOSWAP_CONST_PATH,
+        param,
+      );
+
+      return evaluateExpressionToNumber(response);
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
+  };
+
   getPools = async (): Promise<PoolModel[]> => {
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
@@ -115,10 +139,10 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
   ): Promise<PoolDetailModel> => {
     const pool = await this.networkClient
-    .get<{ data: PoolResponse }>({
-      url: "/pools/" + encodeURIComponent(poolPath),
-    })
-    .then(response => PoolMapper.detailFromResponse(response.data.data));
+      .get<{ data: PoolResponse }>({
+        url: "/pools/" + encodeURIComponent(poolPath),
+      })
+      .then(response => PoolMapper.detailFromResponse(response.data.data));
     return pool;
   };
 
@@ -165,6 +189,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       slippage,
       caller,
       withStaking,
+      createPoolFee,
     } = request;
     const gasFee = 1;
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
@@ -183,8 +208,25 @@ export class PoolRepositoryImpl implements PoolRepository {
       ? tokenBAmountRaw
       : null;
 
-    const createPoolMessages = [
-      PoolRepositoryImpl.makeApproveGnosTokenMessage(caller),
+    const createPoolMessages = [];
+
+    /**
+     * Create GNS Token Approve for pool create fee
+     */
+    if (createPoolFee > 0) {
+      const gnsApproveAmount = createPoolFee.toString();
+      createPoolMessages.push(
+        PoolRepositoryImpl.makeApproveGnosTokenMessage(
+          gnsApproveAmount,
+          caller,
+        ),
+      );
+    }
+
+    /**
+     * Add Create Pool message
+     */
+    createPoolMessages.push(
       PoolRepositoryImpl.makeCreatePoolMessage(
         tokenA,
         tokenB,
@@ -192,7 +234,7 @@ export class PoolRepositoryImpl implements PoolRepository {
         startPrice,
         caller,
       ),
-    ];
+    );
 
     const approveMessages: TransactionMessage[] = [];
 
@@ -533,12 +575,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     };
   }
 
-  private static makeApproveGnosTokenMessage(caller: string) {
-    return this.makeApproveTokenMessage(
-      GNS_TOKEN_PATH,
-      CREATE_POOL_FEE,
-      caller,
-    );
+  private static makeApproveGnosTokenMessage(amount: string, caller: string) {
+    return this.makeApproveTokenMessage(GNS_TOKEN_PATH, amount, caller);
   }
 
   private static makeApproveTokenMessage(

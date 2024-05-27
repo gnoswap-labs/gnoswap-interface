@@ -26,3 +26,5 @@ export const DEFAULT_GAS_FEE = 1 as const;
 export const DEFAULT_GAS_WANTED = 100_000_000 as const;
 
 export const SCANNER_URL = "https://gnoscan.io";
+
+export const MINIMUM_GNOT_SWAP_AMOUNT = 0.001;
