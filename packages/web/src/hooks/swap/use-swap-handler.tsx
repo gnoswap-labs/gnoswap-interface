@@ -67,7 +67,6 @@ export const useSwapHandler = () => {
     tokenAAmount: defaultTokenAAmount,
     tokenBAmount: defaultTokenBAmount,
   } = swapValue;
-  console.log("🚀 ~ useSwapHandler ~ swapValue:", swapValue);
 
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount, setTokenAAmount] = useState<string>(

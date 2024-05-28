@@ -53,7 +53,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
       if (value !== "" && !isAmount(value)) return;
       const temp = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
-      console.log("🚀 ~ temp:", temp);
       setToAmount(temp);
       changeTokenBAmount(temp);
     },

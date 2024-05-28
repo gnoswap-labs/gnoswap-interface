@@ -124,11 +124,6 @@ const HomeSwapContainer: React.FC = () => {
       ...tokenBAmount ? [`token_b_amount=${tokenBAmount}`] : [],
     ];
     const queriesString = queries.join("&");
-    console.log("🚀 ~ swapNow ~ queries:", queriesString);
-
-    console.log("🚀 ~ swapNow ~ tokenBAmount:", tokenBAmount);
-    console.log("🚀 ~ swapNow ~ tokenAAmount:", tokenAAmount);
-    console.log("🚀 ~ swapNow ~ swapDirection:", swapDirection);
     if (!!swapDirection && (!!tokenAAmount || !!tokenBAmount)) {
       router.push(
         `/swap?${queriesString}`

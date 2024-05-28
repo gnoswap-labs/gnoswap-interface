@@ -41,9 +41,7 @@ const SwapContainer: React.FC = () => {
     isLoading,
     setSwapValue,
     setSwapRateAction,
-    swapValue,
   } = useSwapHandler();
-  console.log("🚀 ~ swapValue:", swapValue);
 
   useEffect(() => {
     if (!initialized && tokens.length > 0) {
