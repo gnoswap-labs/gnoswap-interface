@@ -116,16 +116,20 @@ const HomeSwapContainer: React.FC = () => {
   }, [slippage, swapDirection, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapNow = useCallback(() => {
-    if (swapDirection === "EXACT_IN" && !!Number(tokenAAmount)) {
+    const queries = [
+      `from=${tokenA?.path}`,
+      `to=${tokenB?.path}`,
+      `direction=${swapDirection}`,
+      ...tokenAAmount ? [`token_a_amount=${tokenAAmount}`] : [],
+      ...tokenBAmount ? [`token_b_amount=${tokenBAmount}`] : [],
+    ];
+    const queriesString = queries.join("&");
+    if (!!swapDirection && (!!tokenAAmount || !!tokenBAmount)) {
       router.push(
-        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_IN`
-      );
-    } else {
-      router.push(
-        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_IN`
+        `/swap?${queriesString}`
       );
     }
-  }, [router, swapDirection, tokenA, tokenB, tokenAAmount]);
+  }, [router, swapDirection, tokenA, tokenB, tokenAAmount, tokenBAmount]);
 
   const onSubmitSwapValue = () => {
     setTokenA(tokenB);
@@ -147,6 +151,7 @@ const HomeSwapContainer: React.FC = () => {
     setSwapValue(prev => ({
       ...prev,
       tokenBAmount: value,
+      tokenAAmount: "",
       type: "EXACT_OUT",
     }));
     setTokenBAmount(value);

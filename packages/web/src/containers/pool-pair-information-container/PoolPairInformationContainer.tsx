@@ -53,7 +53,7 @@ export const initialPool: PoolDetailModel = {
   volumeChange: 0,
   rewards24hUsd: 0,
   id: "",
-  apr: 0,
+  apr: "0",
   fee: "",
   feeUsd24h: 0,
   currentTick: 0,

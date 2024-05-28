@@ -1,5 +1,5 @@
 import { ChartInfo, TokenChartGraphPeriodType, TokenInfo } from "@containers/token-chart-container/TokenChartContainer";
-import React from "react";
+import React, { useMemo } from "react";
 import TokenChartInfo from "../token-chart-info/TokenChartInfo";
 import TokenChartGraphTab from "./token-chart-graph-tab/TokenChartGraphTab";
 import TokenChartGraph from "./token-chart-graph/TokenChartGraph";
@@ -30,9 +30,11 @@ const TokenChart: React.FC<TokenChartProps> = ({
   size,
   breakpoint,
 }) => {
-  const isAllZero = (chartInfo?.datas?.length ?? 0) > 0 && chartInfo?.datas.every(item => {
-    Number(item.amount.value) === 0;
-  });
+  const isAllZero = useMemo(() => {
+    return ((chartInfo?.datas?.length || 0) > 0) && chartInfo?.datas.every(item => {
+      return Number(item.amount.value) === 0;
+    });
+  }, [chartInfo?.datas]);
 
   return (
     <TokenChartWrapper>
@@ -41,13 +43,13 @@ const TokenChart: React.FC<TokenChartProps> = ({
         currentTab={currentTab}
         changeTab={changeTab}
       />
-      {(chartInfo?.datas.length === 0 && !loading) && <ChartNotFound>
+      {(chartInfo?.datas.length === 0 && !loading || isAllZero) && <ChartNotFound>
         No data
       </ChartNotFound>}
       {loading && <LoadingChart>
         <LoadingSpinner />
       </LoadingChart>}
-      {((chartInfo?.datas.length !== 0 && !loading) || isAllZero) && <TokenChartGraph
+      {(chartInfo?.datas.length !== 0 && !loading && !isAllZero) && <TokenChartGraph
         xAxisLabels={chartInfo?.xAxisLabels || []}
         yAxisLabels={chartInfo?.yAxisLabels || []}
         datas={chartInfo?.datas || []}

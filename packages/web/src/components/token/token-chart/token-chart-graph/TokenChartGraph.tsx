@@ -200,8 +200,6 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
             value: data.amount.value,
             time: data.time,
           }))}
-          // showBaseLine
-          // baseLineMap={[true, false, false, true]}
           firstPointColor={theme.color.border05}
           customData={customData}
         />
