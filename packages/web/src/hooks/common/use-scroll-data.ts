@@ -12,7 +12,6 @@ const useScrollData = () => {
   }
 
   function saveScrollHeight(path: string, height: number) {
-    console.log(path, height);
     setPreviousPageScroll({ page: path, height });
     setPageScrollMap(prev => ({
       ...prev,
