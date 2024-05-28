@@ -3,11 +3,13 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useInitLoading } from "@query/common";
 import { useGetDashboardTVL, useGetDashboardVolume } from "@query/dashboard";
 import { useGetPoolList } from "@query/pools";
+import { useGetChainList } from "@query/token";
 
 export const useLoading = () => {
   const { data: initialized } = useInitLoading();
   const { isFetched: isFetchedTokenData, isFetchedTokenPrices } =
     useTokenData();
+  const { isFetched: isFetchedChainList } = useGetChainList({ enabled: false });
   const { isFetched: isFetchedPoolData } = useGetPoolList({ enabled: false });
   const { isFetched: isFetchedDashboardTVL } = useGetDashboardTVL({
     enabled: false,
@@ -41,8 +43,13 @@ export const useLoading = () => {
     if (!initialized) {
       return true;
     }
-    return !isFetchedTokenData || !isFetchedTokenPrices;
-  }, [initialized, isFetchedTokenData, isFetchedTokenPrices]);
+    return !isFetchedTokenData || !isFetchedTokenPrices || !isFetchedChainList;
+  }, [
+    initialized,
+    isFetchedTokenData,
+    isFetchedTokenPrices,
+    isFetchedChainList,
+  ]);
 
   const isLoadingHighestAPRPools = useMemo(() => {
     if (!initialized) {
