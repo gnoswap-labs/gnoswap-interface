@@ -32,4 +32,5 @@ export interface PoolListInfo {
   bins40: PoolBinModel[];
 
   tvl: string;
+
 }
