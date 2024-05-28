@@ -34,6 +34,7 @@ import { isNumber } from "@utils/number-utils";
 import { isFetchedPools } from "@states/pool";
 import { useLoading } from "@hooks/common/use-loading";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import { useRouterBack } from "@hooks/common/use-router-back";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -68,6 +69,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 
 const EarnAddLiquidityContainer: React.FC = () => {
   const router = useRouter();
+  useRouterBack();
   const [initialized, setInitialized] = useState(false);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const {

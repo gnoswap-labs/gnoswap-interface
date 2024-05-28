@@ -9,7 +9,7 @@ import { useGetChainList, useGetTokensList } from "@query/token";
 import { ITrending } from "@repositories/token";
 import { makeId } from "@utils/common";
 import { toPriceFormat } from "@utils/number-utils";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useMemo } from "react";
 
 const defaultToken = {

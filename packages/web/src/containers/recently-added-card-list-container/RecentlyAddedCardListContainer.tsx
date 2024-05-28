@@ -6,7 +6,7 @@ import { useGetDashboardTVL, useGetDashboardVolume } from "@query/dashboard";
 import { useGetChainList } from "@query/token";
 import { makeId } from "@utils/common";
 import { toUnitFormat } from "@utils/number-utils";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
 
 const RecentlyAddedCardListContainer: React.FC = () => {

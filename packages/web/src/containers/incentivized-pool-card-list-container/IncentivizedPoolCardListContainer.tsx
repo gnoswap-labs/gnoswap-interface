@@ -1,8 +1,14 @@
 /* eslint-disable */
-import React, { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import IncentivizedPoolCardList from "@components/earn/incentivized-pool-card-list/IncentivizedPoolCardList";
 import { ValuesType } from "utility-types";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
@@ -35,7 +41,12 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const [page, setPage] = useState(1);
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
-  const { incentivizedPools, isFetchedPools, updatePools, loading: isLoadingPool } = usePoolData();
+  const {
+    incentivizedPools,
+    isFetchedPools,
+    updatePools,
+    loading: isLoadingPool,
+  } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
@@ -74,7 +85,12 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.min(Math.floor(currentScrollX / 332) + 1, incentivizedPools.length));
+      setCurrentIndex(
+        Math.min(
+          Math.floor(currentScrollX / 332) + 1,
+          incentivizedPools.length,
+        ),
+      );
     }
   };
 

@@ -5,7 +5,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import React, {
   useCallback,
   useEffect,
@@ -14,8 +14,8 @@ import React, {
   useMemo,
 } from "react";
 import { ValuesType } from "utility-types";
-import { useAtomValue } from "jotai";
-import { ThemeState } from "@states/index";
+import { useAtom, useAtomValue } from "jotai";
+import { EarnState, ThemeState } from "@states/index";
 import { useGetUsernameByAddress } from "@query/address/queries";
 import { useLoading } from "@hooks/common/use-loading";
 import { PositionModel } from "@models/position/position-model";
@@ -41,11 +41,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   address,
   isOtherPosition,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(1);
-  const [page, setPage] = useState(1);
-
   const router = useRouter();
-
   const {
     connected,
     connectAdenaClient,
@@ -54,13 +50,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     account,
   } = useWallet();
   const { updateTokenPrices } = useTokenData();
-  const {
-    updatePositions,
-    isFetchedPools,
-    loading: isLoadingPool,
-  } = usePoolData();
+  const { isFetchedPools, loading: isLoadingPool } = usePoolData();
   const { width } = useWindowSize();
-  const divRef = useRef<HTMLDivElement | null>(null);
   const { openModal } = useConnectWalletModal();
   const {
     isError,
@@ -69,10 +60,17 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     loading: isLoadingPosition,
     positions,
   } = usePositionData(address);
-  const [mobile, setMobile] = useState(false);
-  const themeKey = useAtomValue(ThemeState.themeKey);
-  const [isClosed, setIsClosed] = useState(false);
+  const [isViewMorePositions, setIsViewMorePositions] = useAtom(
+    EarnState.isViewMorePositions,
+  );
   const { isLoading: isLoadingCommon } = useLoading();
+
+  const themeKey = useAtomValue(ThemeState.themeKey);
+  const [currentIndex, setCurrentIndex] = useState(1);
+  const [mobile, setMobile] = useState(false);
+  const [isClosed, setIsClosed] = useState(false);
+
+  const divRef = useRef<HTMLDivElement | null>(null);
 
   const { data: addressName = "" } = useGetUsernameByAddress(address || "", {
     enabled: !!address,
@@ -85,7 +83,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   };
   useEffect(() => {
     updateTokenPrices();
-    updatePositions();
     if (typeof window !== "undefined") {
       window.innerWidth < 920 ? setMobile(true) : setMobile(false);
     }
@@ -148,12 +145,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, [positions, width]);
 
   const handleClickLoadMore = useCallback(() => {
-    if (page === 1) {
-      setPage(prev => prev + 1);
-    } else {
-      setPage(1);
-    }
-  }, [page]);
+    setIsViewMorePositions(!isViewMorePositions);
+  }, [isViewMorePositions]);
 
   const dataMapping = useMemo(() => {
     let temp = positions;
@@ -163,14 +156,14 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     temp = temp.sort(
       (x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue),
     );
-    if (page === 1) {
+    if (isViewMorePositions) {
       if (width > 1180) {
         return temp.slice(0, 4);
       } else if (width > 920) {
         return temp.slice(0, 3);
       } else return temp;
     } else return temp;
-  }, [width, page, positions, isClosed]);
+  }, [positions, isClosed, isViewMorePositions, width]);
 
   const handleChangeClosed = () => {
     setIsClosed(!isClosed);
@@ -220,7 +213,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       showPagination={showPagination}
       showLoadMore={positions.length > 4}
       width={width}
-      loadMore={page === 1}
+      loadMore={!isViewMorePositions}
       onClickLoadMore={handleClickLoadMore}
       themeKey={themeKey}
       account={account}

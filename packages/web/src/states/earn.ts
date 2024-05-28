@@ -29,10 +29,15 @@ export const period = atom<number>(90);
 export const dataModal = atom<TokenAmountInputModel | null>(null);
 export const date = atom<DistributionPeriodDate>(DefaultDate);
 export const pool = atom<PoolModel | null>(null);
-export const poolInfoQuery = atom<PoolInfoQuery>({ data: null, isLoading: false });
+export const poolInfoQuery = atom<PoolInfoQuery>({
+  data: null,
+  isLoading: false,
+});
 
 export const initialDataData = atom<{
   length: number;
   status: boolean;
   loadingCall: boolean;
 }>({ length: -1, status: false, loadingCall: false });
+
+export const isViewMorePositions = atom<boolean>(false);

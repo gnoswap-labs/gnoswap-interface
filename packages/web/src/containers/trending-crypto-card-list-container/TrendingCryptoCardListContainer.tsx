@@ -9,7 +9,7 @@ import {
 import { ITrending } from "@repositories/token";
 import { TokenModel } from "@models/token/token-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolList } from "@query/pools";
 import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
@@ -77,7 +77,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
             item.tokenPath === wugnotPath ? gnot?.symbol || "" : temp.symbol,
           logoURI:
             item.tokenPath === wugnotPath ? gnot?.logoURI || "" : temp.logoURI,
-          price: `${(toPriceFormat(item.tokenPrice, { usd: true }))}`,
+          price: `${toPriceFormat(item.tokenPrice, { usd: true })}`,
           change: {
             status:
               Number(priceChange) >= 0

@@ -54,3 +54,10 @@ export const sessionId = atom<string>("");
 export const NOTIFICATION_HASH = "notification_hash";
 
 export const notificationHash = atomWithStorage<string>(NOTIFICATION_HASH, "");
+
+export const pageScrollMap = atom<{ [key in string]: number }>({});
+
+export const previousPageScroll = atom<{ page: string; height: number }>({
+  page: "",
+  height: 0,
+});

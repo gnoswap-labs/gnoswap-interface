@@ -14,7 +14,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo } from "react";
 
 export interface Props {

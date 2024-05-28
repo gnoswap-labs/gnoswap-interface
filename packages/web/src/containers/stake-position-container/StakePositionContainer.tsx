@@ -4,7 +4,7 @@ import { usePositionData } from "@hooks/common/use-position-data";
 import { useSubmitPositionModal } from "@hooks/earn/use-submit-position-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 
 const StakePositionContainer: React.FC = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TokenDescription from "@components/token/token-description/TokenDescription";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGetTokenByPath } from "@query/token";
 import { useLoading } from "@hooks/common/use-loading";
 

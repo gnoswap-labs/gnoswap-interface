@@ -12,7 +12,7 @@ import { numberToUSD } from "@utils/number-utils";
 import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo, useState, useEffect } from "react";
 
 export interface IPriceRange {
@@ -116,8 +116,8 @@ export const useDecreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {

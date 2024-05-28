@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import BestPools from "@components/token/best-pools/BestPools";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import {
   useGetChainList,
   useGetTokenByPath,
@@ -96,7 +96,7 @@ const BestPoolsContainer: React.FC = () => {
         },
         poolPath: temp?.poolPath || "",
         id: temp?.id || "",
-        feeRate: `FEE_${item.fee}` as SwapFeeTierType,
+        feeRate: `FEE_${item.fee || "100"}` as SwapFeeTierType,
         tvl: `${toUnitFormat(item.tvlUsd, true, true)}`,
         apr: numberToRate(item.apr),
       };

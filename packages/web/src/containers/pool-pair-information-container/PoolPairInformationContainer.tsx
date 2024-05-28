@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import PoolPairInformation from "@components/pool/pool-pair-information/PoolPairInformation";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";

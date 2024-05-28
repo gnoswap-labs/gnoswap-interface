@@ -1,6 +1,6 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { PoolsWrapper } from "./EarnIncentivizedPools.styles";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import EarnDescription from "../earn-description/EarnDescription";
 
 interface EarnIncentivizedPoolsProps {
@@ -15,9 +15,7 @@ const EarnIncentivizedPools: React.FC<EarnIncentivizedPoolsProps> = ({
   const router = useRouter();
 
   if (isOtherPosition) {
-    return (
-      <EarnDescription />
-    );
+    return <EarnDescription />;
   }
 
   return (

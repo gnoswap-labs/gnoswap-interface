@@ -24,7 +24,7 @@ import {
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useMemo, useCallback, useState, useEffect } from "react";
 
 export interface IPriceRange {
@@ -33,7 +33,10 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY" | "INSUFFICIENT_BALANCE";
+export type INCREASE_BUTTON_TYPE =
+  | "ENTER_AMOUNT"
+  | "INCREASE_LIQUIDITY"
+  | "INSUFFICIENT_BALANCE";
 
 export const useIncreaseHandle = () => {
   const router = useRouter();
@@ -128,8 +131,8 @@ export const useIncreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -150,9 +153,9 @@ export const useIncreaseHandle = () => {
     isCreate: false,
     options: selectedPosition
       ? {
-        tickLower: selectedPosition.tickLower,
-        tickUpper: selectedPosition.tickUpper,
-      }
+          tickLower: selectedPosition.tickLower,
+          tickUpper: selectedPosition.tickUpper,
+        }
       : null,
   });
 
@@ -296,10 +299,15 @@ export const useIncreaseHandle = () => {
     }
 
     if (
-      (isDepositTokenA && !!tokenA && Number(tokenAAmountInput.amount) > Number(tokenAAmountInput.balance.replace(/,/g, "")))
-      || (isDepositTokenB && !!tokenB && Number(tokenBAmountInput.amount) > Number(tokenBAmountInput.balance.replace(/,/g, "")))
+      (isDepositTokenA &&
+        !!tokenA &&
+        Number(tokenAAmountInput.amount) >
+          Number(tokenAAmountInput.balance.replace(/,/g, ""))) ||
+      (isDepositTokenB &&
+        !!tokenB &&
+        Number(tokenBAmountInput.amount) >
+          Number(tokenBAmountInput.balance.replace(/,/g, "")))
     ) {
-
       return "INSUFFICIENT_BALANCE";
     }
 

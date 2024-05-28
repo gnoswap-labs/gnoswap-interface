@@ -10,7 +10,7 @@ import { useRemoveData } from "@hooks/stake/use-remove-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { checkGnotPath } from "@utils/common";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
 
 interface RemovePositionModalContainerProps {

@@ -1,6 +1,6 @@
 import OneClickStaking from "@components/stake/one-click-staking/OneClickStaking";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -15,13 +15,25 @@ const OneClickStakingContainer: React.FC = () => {
   const router = useRouter();
   const { account, connected } = useWallet();
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
-  const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
-  const { getPositionsByPoolId, getPositionsByPoolPath, loading: isLoadingPosition } = usePositionData();
+  const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(
+    EarnState.poolInfoQuery,
+  );
+  const {
+    getPositionsByPoolId,
+    getPositionsByPoolPath,
+    loading: isLoadingPosition,
+  } = usePositionData();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
 
-  const poolId = router.query?.["pool-path"] === undefined ? null : `${router.query?.["pool-path"]}`;
+  const poolId =
+    router.query?.["pool-path"] === undefined
+      ? null
+      : `${router.query?.["pool-path"]}`;
   const poolPath = currentPoolPath;
-  const { data = initialPool as PoolDetailModel, isLoading: isLoadingPoolInfo } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const {
+    data = initialPool as PoolDetailModel,
+    isLoading: isLoadingPoolInfo,
+  } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
 
   const stakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];
@@ -64,7 +76,9 @@ const OneClickStakingContainer: React.FC = () => {
       unstakedPositions={unstakedPositions}
       handleClickGotoStaking={handleClickGotoStaking}
       pool={data}
-      isLoadingPool={isLoadingRPCPoolInfo || isLoadingPoolInfo || isLoadingPosition}
+      isLoadingPool={
+        isLoadingRPCPoolInfo || isLoadingPoolInfo || isLoadingPosition
+      }
     />
   );
 };

@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import TokenChart from "@components/token/token-chart/TokenChart";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { IPriceResponse, IPrices1d } from "@repositories/token";
 import { useAtom } from "jotai";
 import { TokenState } from "@states/index";

@@ -18,7 +18,7 @@ import { useGnotToGnot } from "./use-gnot-wugnot";
 import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { toUnitFormat } from "@utils/number-utils";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { isEmptyObject } from "@utils/validation-utils";
 
 const PATH = ["/tokens/[token-path]", "/swap"];

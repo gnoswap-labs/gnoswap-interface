@@ -6,7 +6,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import PoolIncentivizeLayout from "@layouts/pool-incentivize-layout/PoolIncentivizeLayout";
 import { DEVICE_TYPE } from "@styles/media";
 import React, { useMemo } from "react";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useLoading } from "@hooks/common/use-loading";
 
@@ -14,8 +14,10 @@ export default function PoolIncentivize() {
   const { breakpoint } = useWindowSize();
   const router = useRouter();
   const poolPath = router.query["pool-path"];
-  
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
   const { isLoading: isLoadingCommon } = useLoading();
 
   const listBreadcrumb = useMemo(() => {
@@ -23,9 +25,11 @@ export default function PoolIncentivize() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          (breakpoint === DEVICE_TYPE.WEB || breakpoint === DEVICE_TYPE.MEDIUM_WEB)
-            ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${Number(data?.fee) / 10000
-            }%)`
+          breakpoint === DEVICE_TYPE.WEB ||
+          breakpoint === DEVICE_TYPE.MEDIUM_WEB
+            ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${
+                Number(data?.fee) / 10000
+              }%)`
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },
@@ -36,7 +40,12 @@ export default function PoolIncentivize() {
   return (
     <PoolIncentivizeLayout
       header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading} />}
+      breadcrumbs={
+        <BreadcrumbsContainer
+          listBreadcrumb={listBreadcrumb}
+          isLoading={isLoadingCommon || isLoading}
+        />
+      }
       poolIncentivize={<PoolAddIncentivizeContainer />}
       footer={<Footer />}
     />

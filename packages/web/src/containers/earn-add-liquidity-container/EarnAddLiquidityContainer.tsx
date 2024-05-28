@@ -29,12 +29,13 @@ import {
   makeSwapFeeTier,
   priceToTick,
 } from "@utils/swap-utils";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { PoolModel } from "@models/pool/pool-model";
 import { useLoading } from "@hooks/common/use-loading";
 import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import { useRouterBack } from "@hooks/common/use-router-back";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -69,6 +70,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 
 const EarnAddLiquidityContainer: React.FC = () => {
   const router = useRouter();
+  useRouterBack();
 
   const [, setIsEarnAdd] = useAtom(EarnState.isEarnAdd);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);

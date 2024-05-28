@@ -22,7 +22,6 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
-import { useRouter } from "next/router";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;

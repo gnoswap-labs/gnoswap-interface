@@ -8,7 +8,7 @@ import React, {
 import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePosition } from "@hooks/common/use-position";
@@ -34,7 +34,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading, loadingPositionById } = usePositionData(address);
+  const { getPositionsByPoolId, loading, loadingPositionById } =
+    usePositionData(address);
   const { claimAll } = usePosition(positions);
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
@@ -52,7 +53,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   }, [account?.address, address]);
 
   const visiblePositions = useMemo(() => {
-    if ((!connectedWallet && !address)) {
+    if (!connectedWallet && !address) {
       return false;
     }
     return true;
@@ -62,8 +63,14 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     enabled: !!address,
   });
 
-  const haveClosedPosition = useMemo(() => positions.some(item => item.closed), [positions]);
-  const haveNotClosedPosition = useMemo(() => positions.some(item => !item.closed), [positions]);
+  const haveClosedPosition = useMemo(
+    () => positions.some(item => item.closed),
+    [positions],
+  );
+  const haveNotClosedPosition = useMemo(
+    () => positions.some(item => !item.closed),
+    [positions],
+  );
 
   const showClosePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -78,7 +85,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     }
     return haveNotClosedPosition;
   }, [connectedWallet, haveNotClosedPosition, isSwitchNetwork]);
-
 
   const handleClickAddPosition = useCallback(() => {
     router.push(`/earn/pool/${router.query["pool-path"]}/add`);
@@ -98,7 +104,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   };
 
   const claimAllReward = useCallback(() => {
-    const amount = positions.flatMap(item => item.reward).reduce((acc, item) => acc + Number(item.claimableUsd), 0);
+    const amount = positions
+      .flatMap(item => item.reward)
+      .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
     const data = {
       amount: toUnitFormat(amount, true, true),
     };
@@ -124,7 +132,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
           openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
-            () => { },
+            () => {},
             true,
           );
           setLoadingTransactionClaim(false);
@@ -143,11 +151,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     }
     const temp = getPositionsByPoolId(poolPath);
     setPositions(temp);
-  }, [
-    router.query,
-    visiblePositions,
-    getPositionsByPoolId,
-  ]);
+  }, [router.query, visiblePositions]);
 
   const filteredPosition = useMemo(() => {
     if (isShowClosePosition) return positions;
@@ -158,7 +162,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
   };
-
 
   return (
     <MyLiquidity
@@ -180,7 +183,12 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       loadingTransactionClaim={loadingTransactionClaim}
       isShowClosePosition={isShowClosePosition}
       handleSetIsClosePosition={handleSetIsClosePosition}
-      isHiddenAddPosition={!!(address && account?.address && address !== account?.address || !account?.address)}
+      isHiddenAddPosition={
+        !!(
+          (address && account?.address && address !== account?.address) ||
+          !account?.address
+        )
+      }
       showClosePositionButton={showClosePositionButton}
       isLoadingPositionsById={loadingPositionById}
     />

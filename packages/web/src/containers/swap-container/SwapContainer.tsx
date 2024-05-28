@@ -4,7 +4,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { SwapDirectionType } from "@common/values";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
 import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
 
@@ -66,8 +66,7 @@ const SwapContainer: React.FC = () => {
     const query = router.query;
     const currentTokenA =
       tokens.find(token => token.path === query.from) || null;
-    const currentTokenB =
-      tokens.find(token => token.path === query.to) || null;
+    const currentTokenB = tokens.find(token => token.path === query.to) || null;
     const direction = query.direction as SwapDirectionType;
     // const tokenAAmountQuery = (query.token_a_amount ?? "") as string;
     // const tokenBAmountQuery = (query.token_b_amount ?? "") as string;

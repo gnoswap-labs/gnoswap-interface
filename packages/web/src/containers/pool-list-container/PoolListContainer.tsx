@@ -5,7 +5,6 @@ import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { ValuesType } from "utility-types";
 import { useAtom, useAtomValue } from "jotai";
 import { CommonState } from "@states/index";
-import { useRouter } from "next/router";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import useClickOutside from "@hooks/common/use-click-outside";
 import { ThemeState } from "@states/index";
@@ -13,6 +12,7 @@ import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { useLoading } from "@hooks/common/use-loading";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
+import useRouter from "@hooks/common/use-custom-router";
 
 export interface Pool {
   poolId: string;
@@ -270,8 +270,8 @@ const PoolListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setTokenSortOption({
         key,

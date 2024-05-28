@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import UnstakeLiquidity from "@components/unstake/unstake-liquidity/UnstakeLiquidity";
 import { useUnstakePositionModal } from "@hooks/earn/use-unstake-position-modal";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePositionData } from "@hooks/common/use-position-data";
@@ -15,7 +15,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { openModal } = useUnstakePositionModal({
     positions,
-    selectedIds: checkedList
+    selectedIds: checkedList,
   });
   const { isLoading } = useLoading();
 

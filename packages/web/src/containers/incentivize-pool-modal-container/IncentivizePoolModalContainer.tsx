@@ -4,7 +4,7 @@ import React, { useCallback } from "react";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import {
   makeBroadcastIncentivizeMessage,
   useBroadcastHandler,

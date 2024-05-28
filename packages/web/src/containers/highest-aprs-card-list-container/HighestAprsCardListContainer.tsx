@@ -2,7 +2,7 @@ import HighestAprsCardList from "@components/home/highest-aprs-card-list/Highest
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/use-pool-data";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
 
 const HighestAprsCardListContainer: React.FC = () => {

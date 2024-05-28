@@ -5,7 +5,7 @@ import PoolLayout from "@layouts/pool-layout/PoolLayout";
 import StakingContainer from "@containers/staking-container/StakingContainer";
 import PoolPairInformationContainer from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import MyLiquidityContainer from "@containers/my-liquidity-container/MyLiquidityContainer";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "@query/pools";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -57,7 +57,6 @@ export default function Pool() {
       });
     }
   }, [loading, isFetchedPosition, isLoading]);
-
 
   return (
     <PoolLayout

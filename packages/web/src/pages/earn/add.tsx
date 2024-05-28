@@ -8,7 +8,7 @@ import OneClickStakingContainer from "@containers/one-click-staking-container/On
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 
 export default function EarnAdd() {
   const query = useRouter().query;

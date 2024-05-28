@@ -5,14 +5,18 @@ import { CommonState, WalletState } from "@states/index";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { Z_INDEX } from "@styles/zIndex";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 
 const ModalContainer: React.FC = () => {
   const router = useRouter();
   const [openedModal, setOpendModal] = useAtom(CommonState.openedModal);
   const [modalContent, setModalContent] = useAtom(CommonState.modalContent);
-  const [openedTransactionModal, setOpendTransactionModal] = useAtom(CommonState.openedTransactionModal);
-  const [transactionModalContent, setTransactionModalContent] = useAtom(CommonState.transactionModalContent);
+  const [openedTransactionModal, setOpendTransactionModal] = useAtom(
+    CommonState.openedTransactionModal,
+  );
+  const [transactionModalContent, setTransactionModalContent] = useAtom(
+    CommonState.transactionModalContent,
+  );
   const [, setWalletAccount] = useAtom(WalletState.loadingConnect);
 
   const visible = useMemo(() => {
@@ -50,7 +54,7 @@ const ModalContainer: React.FC = () => {
       {visible && (
         <Modal
           style={{
-            hidden: visibleTransactionModal
+            hidden: visibleTransactionModal,
           }}
           exitClick={closeModal}
         >
@@ -60,7 +64,7 @@ const ModalContainer: React.FC = () => {
       {visibleTransactionModal && (
         <Modal
           style={{
-            zIndex: Z_INDEX.secondModal
+            zIndex: Z_INDEX.secondModal,
           }}
         >
           {transactionModalContent}

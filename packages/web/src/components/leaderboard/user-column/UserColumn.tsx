@@ -3,7 +3,7 @@ import IconGoldMedal from "@components/common/icons/IconGoldMedal";
 import IconMeLogo from "@components/common/icons/IconMeLogo";
 import IconSilverMedal from "@components/common/icons/IconSilverMedal";
 import styled from "@emotion/styled";
-import useNavigate from "@hooks/common/use-navigate";
+import useRouter from "@hooks/common/use-custom-router";
 import { HTMLAttributes } from "react";
 import { TableColumn } from "../leaderboard-table-row/LeaderboardTableRow.styles";
 
@@ -27,7 +27,7 @@ const UserColumn = ({
   isMe?: boolean;
   tdWidth?: number;
 } & HTMLAttributes<HTMLDivElement>) => {
-  const { push } = useNavigate();
+  const { push } = useRouter();
   return (
     <TableColumn
       {...rest}

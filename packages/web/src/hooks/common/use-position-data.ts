@@ -6,7 +6,7 @@ import { useCallback, useMemo, useEffect, useState, useRef } from "react";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { makeId } from "@utils/common";
 import { useGetPositionsByAddress } from "@query/positions";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "./use-loading";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
@@ -40,7 +40,8 @@ export const usePositionData = (address?: string) => {
   } = useGetPositionsByAddress(fetchedAddress as string, {
     enabled: !!fetchedAddress && pools.length > 0,
     refetchInterval: () => {
-      if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15));
+      if (PATH.includes(router.pathname))
+        return secToMilliSec(back && !initialData.status ? 3 : 15);
 
       if (PATH_10SECOND.includes(router.pathname)) return secToMilliSec(10);
 
@@ -49,7 +50,9 @@ export const usePositionData = (address?: string) => {
       return false;
     },
     onSuccess(data) {
-      const haveNewData = JSON.stringify(data, transformData) !== JSON.stringify(cachedData.current, transformData);
+      const haveNewData =
+        JSON.stringify(data, transformData) !==
+        JSON.stringify(cachedData.current, transformData);
       if (haveNewData) {
         cachedData.current = data;
       }
@@ -57,19 +60,19 @@ export const usePositionData = (address?: string) => {
     },
     onError(err) {
       if ((err as AxiosError).response?.status === 404) {
-        const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current, transformData);
+        const haveNewData =
+          JSON.stringify([]) !==
+          JSON.stringify(cachedData.current, transformData);
         if (haveNewData) {
           cachedData.current = data;
         }
         setShouldShowLoading(haveNewData);
       }
-    }
+    },
   });
 
   function transformData(key: string, value: unknown) {
-    return typeof value === "bigint"
-      ? value.toString()
-      : value;
+    return typeof value === "bigint" ? value.toString() : value;
   }
 
   useEffect(() => {
@@ -110,7 +113,14 @@ export const usePositionData = (address?: string) => {
       });
       return;
     }
-  }, [initialData.loadingCall, data.length, isFetchedPosition, isPositionLoading, initialData.length, setInitialData]);
+  }, [
+    initialData.loadingCall,
+    data.length,
+    isFetchedPosition,
+    isPositionLoading,
+    initialData.length,
+    setInitialData,
+  ]);
 
   const { isLoading } = useLoading();
 
@@ -224,6 +234,7 @@ export const usePositionData = (address?: string) => {
     getPositionsByPoolPath,
     isFetchedPosition,
     loading: loading,
-    loadingPositionById: isLoadingPool || (isPositionLoading && walletConnected),
+    loadingPositionById:
+      isLoadingPool || (isPositionLoading && walletConnected),
   };
 };

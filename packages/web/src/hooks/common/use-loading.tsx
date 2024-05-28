@@ -4,8 +4,11 @@ import { useInitLoading } from "@query/common";
 import { useGetDashboardTVL, useGetDashboardVolume } from "@query/dashboard";
 import { useGetPoolList } from "@query/pools";
 import { useGetChainList } from "@query/token";
+import { useGetPositionsByAddress } from "@query/positions";
+import { useAddress } from "@hooks/address/use-address";
 
 export const useLoading = () => {
+  const { address } = useAddress();
   const { data: initialized } = useInitLoading();
   const { isFetched: isFetchedTokenData, isFetchedTokenPrices } =
     useTokenData();
@@ -17,6 +20,13 @@ export const useLoading = () => {
   const { isFetched: isFetchedDashboardVolume } = useGetDashboardVolume({
     enabled: false,
   });
+
+  const { isFetched: isFetchedPosition } = useGetPositionsByAddress(
+    address || "",
+    {
+      enabled: false,
+    },
+  );
 
   const isLoading = useMemo(() => {
     if (initialized) {
@@ -65,6 +75,16 @@ export const useLoading = () => {
     return !isFetchedDashboardTVL || !isFetchedDashboardVolume;
   }, [initialized, isFetchedDashboardTVL, isFetchedDashboardVolume]);
 
+  const isLoadingPositions = useMemo(() => {
+    if (!initialized) {
+      return true;
+    }
+    if (!address) {
+      return false;
+    }
+    return !isFetchedPosition;
+  }, [address, initialized, isFetchedPosition]);
+
   return {
     isLoading,
     isLoadingTokens,
@@ -72,5 +92,6 @@ export const useLoading = () => {
     isLoadingTrendingTokens,
     isLoadingHighestAPRPools,
     isLoadingDashboardStats,
+    isLoadingPositions,
   };
 };
