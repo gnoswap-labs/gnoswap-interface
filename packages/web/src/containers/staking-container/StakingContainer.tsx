@@ -41,7 +41,7 @@ const StakingContainer: React.FC = () => {
     }
     return address;
   }, [initializedData]);
-  const { getPositionsByPoolId, loading: isLoadingPosition } = usePositionData(address);
+  const { getPositionsByPoolId, loading: isLoadingPosition } = usePositionData({ address });
 
   const pool = useMemo(() => {
     if (!data) return null;

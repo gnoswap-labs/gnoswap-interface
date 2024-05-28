@@ -4,9 +4,9 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import PoolInfo from "./PoolInfo";
 import { css, Theme } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
-import { PoolCardInfo } from "@models/pool/info/pool-card-info";
+import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 
-const pool: PoolCardInfo = {
+const pool: IncentivizePoolCardInfo = {
   poolId: "bar_foo_500",
   tokenA: {
     chainId: "dev",
@@ -41,7 +41,6 @@ const pool: PoolCardInfo = {
   incentiveType: "INCENTIVIZED",
   currentTick: 0,
   price: 0,
-  bins: [],
   tvl: "0",
   bins40: [],
 };

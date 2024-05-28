@@ -34,6 +34,8 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
   slippage,
   changeSlippage,
 }) => {
+  console.log("🚀 24234 ~ isDepositTokenB:", isDepositTokenB);
+  console.log("🚀 24234 ~ isDepositTokenA:", isDepositTokenA);
   const [openedSetting, setOpenedSetting] = useState(false);
   return (
     <IncreaseSelectPositionWrapper>
@@ -61,7 +63,7 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
             token={tokenA}
             connected={connected}
             changeAmount={changeTokenAAmount}
-            changeToken={() => {}}
+            changeToken={() => { }}
           />
         )}
         {isDepositTokenB && (
@@ -70,10 +72,10 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
             token={tokenB}
             connected={connected}
             changeAmount={changeTokenBAmount}
-            changeToken={() => {}}
+            changeToken={() => { }}
           />
         )}
-        {isDepositTokenA && isDepositTokenB && (
+        {(isDepositTokenA && isDepositTokenB) && (
           <div className="arrow">
             <div className="shape">
               <IconAdd className="add-icon" />

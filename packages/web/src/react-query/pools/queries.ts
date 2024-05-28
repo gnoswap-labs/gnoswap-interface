@@ -1,6 +1,6 @@
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { PoolModel } from "@models/pool/pool-model";
+import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { QUERY_KEY } from "./types";
 import { encryptId } from "@utils/common";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
@@ -31,6 +31,24 @@ export const useGetPoolList = (
     queryKey: [QUERY_KEY.pools],
     queryFn: async () => {
       const data = await poolRepository.getPools();
+      data.sort(
+        (a: PoolModel, b: PoolModel) => -Number(a.price) + Number(b.price),
+      );
+      return data;
+    },
+    ...options,
+  });
+};
+
+export const useGetIncentivizePoolList = (
+  options?: UseQueryOptions<IncentivizePoolModel[], Error>,
+) => {
+  const { poolRepository } = useGnoswapContext();
+
+  return useQuery<IncentivizePoolModel[], Error>({
+    queryKey: [QUERY_KEY.incentivizePools],
+    queryFn: async () => {
+      const data = await poolRepository.getIncentivizePools();
       data.sort(
         (a: PoolModel, b: PoolModel) => -Number(a.price) + Number(b.price),
       );

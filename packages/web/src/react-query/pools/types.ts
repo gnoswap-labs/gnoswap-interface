@@ -5,4 +5,5 @@ export enum QUERY_KEY {
   bins = "bins",
   lazyBins = "lazyBins",
   initializeBins = "initializeBins",
+  incentivizePools = "incentivizePools"
 }

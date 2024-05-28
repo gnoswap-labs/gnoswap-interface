@@ -65,7 +65,7 @@ export const SelectFeeTierItemWrapper = styled.div`
     background-color: ${({ theme }) => theme.color.background13};
     border-radius: 25px;
     height: 20px;
-    padding: 0px 8px;
+    padding: 0px 4px;
     div {
       width: 12px;
       height: 12px;

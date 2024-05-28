@@ -54,6 +54,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
   buttonType,
   onSubmit,
 }) => {
+  console.log("🚀 ~ buttonType:", buttonType);
   const activatedSubmit = useMemo(() => {
     switch (buttonType) {
       case "INCREASE_LIQUIDITY":

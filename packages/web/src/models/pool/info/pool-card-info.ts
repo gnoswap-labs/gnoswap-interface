@@ -5,7 +5,7 @@ import { PoolBinModel } from "../pool-bin-model";
 /**
  * Todo: Change data structure
  */
-export interface PoolCardInfo {
+export interface IncentivizePoolCardInfo {
   poolId: string;
 
   incentiveType: INCENTIVE_TYPE;
@@ -29,8 +29,6 @@ export interface PoolCardInfo {
   price: number;
 
   currentTick: number;
-
-  bins: PoolBinModel[];
 
   bins40: PoolBinModel[];
 

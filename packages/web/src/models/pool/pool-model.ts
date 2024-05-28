@@ -2,6 +2,7 @@ import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
 
+
 export interface PoolModel {
 
   rewards24hUsd: number;
@@ -23,10 +24,6 @@ export interface PoolModel {
   tickSpacing: number;
 
   currentTick: number;
-
-  bins: PoolBinModel[];
-
-  bins40: PoolBinModel[];
 
   tvl: number;
 
@@ -60,6 +57,10 @@ export interface PoolModel {
   volumeChange: number;
 
   id: string;
+}
+
+export interface IncentivizePoolModel extends PoolModel {
+  bins40: PoolBinModel[];
 }
 
 export interface IPoolDetailResponse {

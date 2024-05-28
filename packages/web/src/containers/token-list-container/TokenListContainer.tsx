@@ -160,6 +160,8 @@ const TokenListContainer: React.FC = () => {
   };
 
   const { tokens, isFetched, error, tokenPrices, isFetchedTokenPrices } = useTokenData();
+  console.log("🚀 ~ tokenPrices:", tokenPrices);
+  console.log("🚀 ~ tokens:", tokens);
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -270,10 +272,28 @@ const TokenListContainer: React.FC = () => {
       };
     });
 
-    temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
+
+    temp.sort((a: Token, b: Token) => {
+      const volumeCompare = Number(b.volume24h.replace(/,/g, "").slice(1)) - Number(a.volume24h.replace(/,/g, "").slice(1));
+      const marketCapCompare = Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1));
+      const liquidityCompare = Number(b.liquidity.replace(/,/g, "").slice(1)) - Number(a.liquidity.replace(/,/g, "").slice(1));
+      const alphabeticalCompare = a.token.name.localeCompare(b.token.name);
+
+      if (volumeCompare !== 0) {
+        return volumeCompare;
+      } else if (marketCapCompare !== 0) {
+        return marketCapCompare;
+      } else if (liquidityCompare !== 0) {
+        return liquidityCompare;
+      } else {
+        return alphabeticalCompare;
+      }
+    });
     temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
     return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
   }, [tokenType, tokens, wugnotPath, tokenPrices]);
+
+  console.log("🚀 ~ firstData ~ firstData:", firstData);
 
   const getDatas = useCallback(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
@@ -314,9 +334,9 @@ const TokenListContainer: React.FC = () => {
         }
       } else if (sortOption.key === TABLE_HEAD.MARKET_CAP) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: Token, b: Token) => a.idx - b.idx);
+          temp.sort((a: Token, b: Token) => Number(a.marketCap.replace(/,/g, "").slice(1)) - Number(b.marketCap.replace(/,/g, "").slice(1)));
         } else {
-          temp.sort((a: Token, b: Token) => - a.idx + b.idx);
+          temp.sort((a: Token, b: Token) => - Number(a.marketCap.replace(/,/g, "").slice(1)) + Number(b.marketCap.replace(/,/g, "").slice(1)));
         }
       } else if (sortOption.key === TABLE_HEAD.VOLUME) {
         if (sortOption.direction === "asc") {
@@ -336,11 +356,13 @@ const TokenListContainer: React.FC = () => {
         } else {
           temp.sort((a: Token, b: Token) => - Number(a.liquidity.replace(/,/g, "").slice(1)) + Number(b.liquidity.replace(/,/g, "").slice(1)));
         }
+      } else {
+        temp
+          .sort((a: Token, b: Token) => - Number(a.volume24h.replace(/,/g, "").slice(1)) + Number(b.volume24h.replace(/,/g, "").slice(1)));
       }
     }
     return temp.slice(page * MAIN_TOKEN_LIST_SIZE, (page + 1) * MAIN_TOKEN_LIST_SIZE);
   }, [keyword, tokenType, sortOption, firstData, page]);
-
 
   return (
     <TokenList
