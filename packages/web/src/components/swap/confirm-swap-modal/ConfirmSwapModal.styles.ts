@@ -361,9 +361,6 @@ export const ConfirmModal = styled.div`
   }
   .modal-body-loading {
     gap: 24px;
-    /* .view-transaction {
-      padding-bottom: 36px;
-    } */
     ${media.mobile} {
       gap: 12px;
       .view-transaction {

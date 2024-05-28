@@ -346,14 +346,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       temp?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) || 0;
     return formatUsdNumber(`${sumUSD}`, 2, true);
 
-    // const sumRewardDaily = positions.reduce((positionAcc, positionCurrent) => {
-    //   const currentPositionDailyReward = positionCurrent.reward.reduce((rewardAcc, rewardCurrent) => {
-    //     return rewardAcc + Number(rewardCurrent.accuReward1D);
-    //   }, 0);
-
-    //   return positionAcc + currentPositionDailyReward;
-    // }, 0);
-    // return toUnitFormat(`${sumRewardDaily}`, true, true);
   }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL]);
 
   const rewardClaim = useMemo(() => {

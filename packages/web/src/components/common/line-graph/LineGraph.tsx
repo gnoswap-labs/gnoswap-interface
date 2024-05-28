@@ -354,19 +354,19 @@ const LineGraph: React.FC<LineGraphProps> = ({
         .toNumber();
     };
 
-    if (hasOnlyOnePoint) {
-      const onlySingleData = mappedDatas[0];
+    // if (hasOnlyOnePoint) {
+    // const onlySingleData = mappedDatas[0];
 
-      // const x = BigNumber(time - minTime)
-      // .multipliedBy((width) - baseLineNumberWidthComputation)
-      // .dividedBy(maxTime - minTime)
-      // .toNumber(); 
+    // const x = BigNumber(time - minTime)
+    // .multipliedBy((width) - baseLineNumberWidthComputation)
+    // .dividedBy(maxTime - minTime)
+    // .toNumber(); 
 
-      setPoints([{
-        x: optimizeTime(onlySingleData.time, width) + baseLineNumberWidthComputation,
-        y: optimizeValue(onlySingleData.value, height),
-      }]);
-    }
+    // setPoints([{
+    //   x: optimizeTime(onlySingleData.time, width) + baseLineNumberWidthComputation,
+    //   y: optimizeValue(onlySingleData.value, height),
+    // }]);
+    // }
 
     const points = mappedDatas.map<Point>(data => ({
       x: optimizeTime(data.time, width) + baseLineNumberWidthComputation,
