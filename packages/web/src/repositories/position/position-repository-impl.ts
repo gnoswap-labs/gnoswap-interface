@@ -88,11 +88,11 @@ export class PositionRepositoryImpl implements PositionRepository {
     return PositionBinMapper.fromList(response.data.data);
   };
 
-  getPositionsByAddress = async (address: string): Promise<PositionModel[]> => {
+  getPositionsByAddress = async (address: string, options?: { isClosed?: boolean }): Promise<PositionModel[]> => {
     const response = await this.networkClient.get<{
       data: PositionListResponse;
     }>({
-      url: "/users/" + address + "/position",
+      url: "/users/" + address + "/position" + (options?.isClosed !== undefined ? `?closed=${options.isClosed}` : ""),
     });
     return PositionMapper.fromList(response.data.data);
   };

@@ -16,7 +16,7 @@ import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
 import { PositionBinModel } from "@models/position/position-bin-model";
 
 export interface PositionRepository {
-  getPositionsByAddress: (address: string) => Promise<PositionModel[]>;
+  getPositionsByAddress: (address: string, options?: { isClosed?: boolean }) => Promise<PositionModel[]>;
 
   getPositionBins: (
     lpTokenId: string,

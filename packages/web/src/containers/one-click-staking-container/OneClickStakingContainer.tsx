@@ -16,7 +16,7 @@ const OneClickStakingContainer: React.FC = () => {
   const { account, connected } = useWallet();
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
-  const { getPositionsByPoolId, getPositionsByPoolPath, loading: isLoadingPosition } = usePositionData();
+  const { getPositionsByPoolId, getPositionsByPoolPath, loading: isLoadingPosition } = usePositionData({ isClosed: false });
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
 
   const poolId = router.query?.["pool-path"] === undefined ? null : `${router.query?.["pool-path"]}`;

@@ -5,19 +5,24 @@ import { PositionModel } from "@models/position/position-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionBinModel } from "@models/position/position-bin-model";
 
+interface UseGetPositionsByAddressOptions {
+  isClosed?: boolean;
+  queryOptions?: UseQueryOptions<PositionModel[], Error>
+}
+
 export const useGetPositionsByAddress = (
   address: string,
-  options?: UseQueryOptions<PositionModel[], Error>,
+  options?: UseGetPositionsByAddressOptions,
 ) => {
   const { positionRepository } = useGnoswapContext();
 
   return useQuery<PositionModel[], Error>({
-    queryKey: [QUERY_KEY.positions, address],
+    queryKey: [QUERY_KEY.positions, address, ...(options?.queryOptions !== undefined ? [options?.queryOptions] : [])],
     queryFn: async () => {
-      const data = await positionRepository.getPositionsByAddress(address);
+      const data = await positionRepository.getPositionsByAddress(address, { isClosed: options?.isClosed });
       return data;
     },
-    ...options,
+    ...options?.queryOptions,
     // refetchOnMount: true,
     // refetchOnReconnect: true,
     // retry: false,
