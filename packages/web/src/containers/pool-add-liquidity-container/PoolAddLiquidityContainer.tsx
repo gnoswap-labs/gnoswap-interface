@@ -34,6 +34,7 @@ import { isNumber } from "@utils/number-utils";
 import { isFetchedPools } from "@states/pool";
 import { useLoading } from "@hooks/common/use-loading";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -90,6 +91,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [priceRangeTypeFromUrl, setPriceRangeTypeFromUrl] =
     useState<PriceRangeType | null>();
   const [ticksFromUrl, setTickFromUrl] = useState<DefaultTick>();
+  const { getGnotPath } = useGnotToGnot();
+
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
@@ -491,11 +494,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tokenA: currentTokenA
           ? {
             ...currentTokenA,
+            logoURI: getGnotPath(currentTokenA).logoURI,
+            symbol: getGnotPath(currentTokenA).symbol,
           }
           : null,
         tokenB: currentTokenB
           ? {
             ...currentTokenB,
+            logoURI: getGnotPath(currentTokenB).logoURI,
+            symbol: getGnotPath(currentTokenB).symbol,
           }
           : null,
       }));

@@ -289,8 +289,8 @@ export const useIncreaseHandle = () => {
 
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
     if (
-      !Number(tokenAAmountInput.amount) ||
-      !Number(tokenBAmountInput.amount)
+      (isDepositTokenA && !Number(tokenAAmountInput.amount)) ||
+      (isDepositTokenB && !Number(tokenBAmountInput.amount))
     ) {
       return "ENTER_AMOUNT";
     }
@@ -299,7 +299,6 @@ export const useIncreaseHandle = () => {
       (isDepositTokenA && !!tokenA && Number(tokenAAmountInput.amount) > Number(tokenAAmountInput.balance.replace(/,/g, "")))
       || (isDepositTokenB && !!tokenB && Number(tokenBAmountInput.amount) > Number(tokenBAmountInput.balance.replace(/,/g, "")))
     ) {
-
       return "INSUFFICIENT_BALANCE";
     }
 
