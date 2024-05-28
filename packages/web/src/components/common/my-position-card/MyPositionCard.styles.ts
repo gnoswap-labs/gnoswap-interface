@@ -44,24 +44,23 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
         }
       }
     }
-
   }
   &:hover {
     box-shadow: ${({ viewMyRange }) => {
-    return !viewMyRange ? "8px 8px 20px rgba(0, 0, 0, 0.08)" : "none";
-  }};
+      return !viewMyRange ? "8px 8px 20px rgba(0, 0, 0, 0.08)" : "none";
+    }};
     .base-border {
       > div {
         background-color: ${({ theme, viewMyRange }) => {
-    return viewMyRange ? "none" : theme.color.background02;
-  }};
+          return viewMyRange ? "none" : theme.color.background02;
+        }};
       }
     }
   }
   &:before {
     display: ${({ viewMyRange }) => {
-    return !viewMyRange ? "none" : "block";
-  }};
+      return !viewMyRange ? "none" : "block";
+    }};
     position: absolute;
     content: "";
     top: 0;
@@ -69,7 +68,7 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
     width: 100%;
     height: 100%;
     border-radius: 10px;
-    background-color: ${({ theme }) => theme.color.backgroundOpacity8}
+    background-color: ${({ theme }) => theme.color.backgroundOpacity8};
   }
 `;
 
@@ -98,11 +97,12 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   cursor: pointer;
   &:hover {
     background-color: ${({ viewMyRange, theme }) => {
-    return viewMyRange ? "none" : theme.color.background02;
-  }};
-    border: 1px solid ${({ viewMyRange, theme }) => {
-    return viewMyRange ? "none" : theme.color.border14;
-  }};;
+      return viewMyRange ? "none" : theme.color.background02;
+    }};
+    border: 1px solid
+      ${({ viewMyRange, theme }) => {
+        return viewMyRange ? "none" : theme.color.border14;
+      }};
   }
   .title-wrapper {
     ${mixins.flexbox("row", "center", "space-between")};
@@ -120,9 +120,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
       gap: 8px;
       > span {
         ${fonts.body7}
-
       }
-
     }
     .badge-group {
       ${mixins.flexbox("row", "center", "flex-start")};
@@ -185,7 +183,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
       > svg {
         width: 18px;
         height: 16px;
-  
+
         * {
           fill: ${({ theme }) => theme.color.icon15};
         }
@@ -207,7 +205,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     left: 1px;
     bottom: -25px;
     width: calc(100% - 2px);
-    background-color: ${({ theme }) => theme.color.background06};;
+    background-color: ${({ theme }) => theme.color.background06};
     border-radius: 8px;
     cursor: default;
     box-shadow: 0px -4px 4px 0px #00000040;
@@ -249,9 +247,22 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   }
 
   .chart-wrapper {
+    display: flex;
     width: 100%;
-    cursor: default;
     margin-top: 16px;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+  }
+
+  .graph-loading-wrapper {
+    display: flex;
+    width: 100%;
+    margin-top: 36px;
+    padding: 15px;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
   }
 
   .min-max-price {
