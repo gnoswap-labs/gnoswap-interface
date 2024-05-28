@@ -19,7 +19,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
     return rewardInfo.SWAP_FEE;
   }, [rewardInfo.SWAP_FEE]);
 
-  const stakingRewards = useMemo(() => {
+  const internalRewards = useMemo(() => {
     if (rewardInfo.INTERNAL.length === 0) {
       return null;
     }
@@ -60,14 +60,14 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
           ))}
         </React.Fragment>
       )}
-      {stakingRewards && <div className="divider" />}
-      {stakingRewards && (
+      {internalRewards && <div className="divider" />}
+      {internalRewards && (
         <React.Fragment>
           <div className="list">
             <span className="title">Staking Rewards</span>
             <span className="title"></span>
           </div>
-          {stakingRewards.map((reward, index) => (
+          {internalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
                 <img

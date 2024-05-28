@@ -10,7 +10,7 @@ import { RewardType } from "@constants/option.constant";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -72,6 +72,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: {},
       INTERNAL: {},
       EXTERNAL: {},
+      // Not use any more
       STAKING: {},
     };
     positions
@@ -115,6 +116,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      // Not use any more
       STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
@@ -131,6 +133,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: {},
       INTERNAL: {},
       EXTERNAL: {},
+      // Not use any more
       STAKING: {},
     };
     positions
@@ -144,26 +147,35 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .forEach(rewardInfo => {
         const existReward =
           infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
+        const tokenPrice = Number(tokenPrices[rewardInfo.token.priceID] ?? 0);
         if (existReward) {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
             accuReward1D: existReward.accuReward1D + rewardInfo.accuReward1D,
             apr: existReward.apr + rewardInfo.apr,
+            accuReward1DPrice: (existReward.accuReward1D * tokenPrice) + (rewardInfo.accuReward1D * tokenPrice),
           };
         } else {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = rewardInfo;
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
+            ...rewardInfo,
+            accuReward1DPrice: (rewardInfo.accuReward1D * tokenPrice)
+          };
         }
       });
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      // Not use any more
       STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
 
   const isShowRewardInfoTooltip = useMemo(() => {
-    return aprRewardInfo !== null && (aprRewardInfo?.EXTERNAL.length !== 0 || aprRewardInfo?.INTERNAL.length !== 0 || aprRewardInfo?.SWAP_FEE.length !== 0);
+    return aprRewardInfo !== null
+      && (aprRewardInfo?.EXTERNAL.length !== 0 ||
+        aprRewardInfo?.INTERNAL.length !== 0 ||
+        aprRewardInfo?.SWAP_FEE.length !== 0);
   }, [aprRewardInfo]);
 
   const dailyEarning = useMemo(() => {
@@ -194,7 +206,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
-        balance: makeDisplayTokenAmount(reward.rewardToken, reward.totalAmount) || 0,
+        balance: makeDisplayTokenAmount(reward.rewardToken, reward.totalAmount) ||
+          0,
         balanceUSD:
           makeDisplayTokenAmount(
             reward.rewardToken,
@@ -302,12 +315,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   ]);
 
   const feeDaily = useMemo(() => {
-    // const temp = claimableRewardInfo?.SWAP_FEE;
-    // const sumUSD =
-    //   temp?.reduce((accum, current) => accum + current.balance, 0) || 0;
-    // return formatUsdNumber(`${sumUSD}`, 2, true);
-    return "$0";
-  }, []);
+    const temp = aprRewardInfo?.SWAP_FEE;
+    const sumUSD =
+      temp?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) || 0;
+    return formatUsdNumber(`${sumUSD}`, 2, true);
+  }, [aprRewardInfo?.SWAP_FEE]);
 
   const feeClaim = useMemo(() => {
     const temp = claimableRewardInfo?.SWAP_FEE;
@@ -319,7 +331,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const logoDaily = useMemo(() => {
     const temp = claimableRewardInfo?.SWAP_FEE;
     return temp?.map(item => getGnotPath(item.token).logoURI) || [];
-  }, [claimableRewardInfo]);
+  }, [claimableRewardInfo?.SWAP_FEE]);
 
   const logoReward = useMemo(() => {
     const temp = claimableRewardInfo?.INTERNAL;
@@ -329,15 +341,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo, getGnotPath, positionData]);
 
   const rewardDaily = useMemo(() => {
-    const sumRewardDaily = positions.reduce((positionAcc, positionCurrent) => {
-      const currentPositionDailyReward = positionCurrent.reward.reduce((rewardAcc, rewardCurrent) => {
-        return rewardAcc + Number(rewardCurrent.accuReward1D);
-      }, 0);
+    const temp = [...(aprRewardInfo?.INTERNAL ?? []), ...(aprRewardInfo?.EXTERNAL ?? [])];
+    const sumUSD =
+      temp?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) || 0;
+    return formatUsdNumber(`${sumUSD}`, 2, true);
 
-      return positionAcc + currentPositionDailyReward;
-    }, 0);
-    return toUnitFormat(`${sumRewardDaily}`, true, true);
-  }, [positions]);
+  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL]);
 
   const rewardClaim = useMemo(() => {
     const temp = [...(claimableRewardInfo?.EXTERNAL ?? []), ...(claimableRewardInfo?.INTERNAL ?? [])];
@@ -413,13 +422,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       </section>
       <section>
         <h4>Total Daily Earnings</h4>
-        {!loading && isShowRewardInfoTooltip ? (
+        {(!loading && isShowRewardInfoTooltip) ? (
           <Tooltip
             placement="top"
             FloatingContent={
               <div>
-                {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-                <MyPositionAprContent rewardInfo={aprRewardInfo!} />
+                {aprRewardInfo && <MyPositionAprContent rewardInfo={aprRewardInfo} />}
               </div>
             }
           >

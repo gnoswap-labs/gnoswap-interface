@@ -12,10 +12,10 @@ const TrendingCryptoCardList: React.FC<TrendingCryptoCardListProps> = ({
   list,
   loading,
 }) => {
-  if (loading) return(
-  <div css={loadingWrapper}>
-    <LoadingSpinner />
-  </div>);
+  if (loading) return (
+    <div css={loadingWrapper}>
+      <LoadingSpinner />
+    </div>);
 
   if (list.length === 0) {
     return (

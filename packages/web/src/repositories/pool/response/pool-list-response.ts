@@ -11,49 +11,49 @@ export interface PoolListResponse {
 }
 export interface PoolResponse {
   poolPath: string;
-  
+
   incentiveType?: string;
-  
+
   price: number;
-  
+
   tokenA: TokenModel;
-  
+
   tokenB: TokenModel;
-  
+
   tokenABalance: number;
-  
+
   tokenBBalance: number;
-  
+
   tickSpacing: number;
-  
+
   currentTick: number;
-  
+
   bins: PoolBinModel[];
-  
+
   bins40: PoolBinModel[];
-  
+
   tvl: number;
-  
+
   tvlChange: number;
-  
+
   volume24h: number;
-  
+
   fee: string;
-  
+
   feeUsd24h: number;
-  
+
   apr: number;
-  
-  totalApr: string | number | null;
-  
+
+  totalApr: string;
+
   rewardTokens?: TokenModel[];
-  
+
   priceRatio: IPoolPriceRatio;
-  
+
   liquidity: string;
-  
+
   allTimeVolumeUsd: number;
-  
+
   volumeChange24h: number;
 
   rewards24hUsd: number;
@@ -62,16 +62,17 @@ export interface PoolResponse {
 
   stakingApr: string;
 
+
   // TODO Remove later
 
   // feeChange: number;
-  
+
   id?: string;
-  
+
   volumeChange: number;
-  
+
   // totalVolume: number;
-  
+
   // name: string;
 }
 

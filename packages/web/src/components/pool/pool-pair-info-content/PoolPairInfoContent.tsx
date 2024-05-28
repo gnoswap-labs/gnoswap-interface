@@ -117,7 +117,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.rewardTokens]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin40 = pool.bins40?.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
     const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
 
     return (isAllReserveZeroBin40 && isAllReserveZeroBin);

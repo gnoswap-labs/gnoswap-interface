@@ -46,7 +46,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: "Swap Fees 24h",
-      content: `$${fees24hUsd || "0"}`,
+      content: toUnitFormat(fees24hUsd || "0", true, true),
     },
   ];
 

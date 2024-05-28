@@ -39,7 +39,7 @@ export const initialPool: PoolModel = {
   volume24h: 0,
   volumeChange: 0,
   id: "",
-  apr: 0,
+  apr: "0",
   fee: "",
   feeUsd24h: 0,
   currentTick: 0,
