@@ -12,7 +12,6 @@ import { ThemeState } from "@states/index";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { useLoading } from "@hooks/common/use-loading";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
-import { isNumber } from "@utils/number-utils";
 import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
 
 export interface Pool {
@@ -122,7 +121,7 @@ const PoolListContainer: React.FC = () => {
       return convertKMBtoNumber(formattedNumber);
     }
 
-    if (!isNumber(formattedNumber)) {
+    if (isNaN(Number(formattedNumber))) {
       return -1;
     }
 
@@ -271,8 +270,8 @@ const PoolListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setTokenSortOption({
         key,

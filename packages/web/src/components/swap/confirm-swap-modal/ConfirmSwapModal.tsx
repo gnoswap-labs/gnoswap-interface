@@ -37,12 +37,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 }) => {
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
-    return (
-      <>
-        1 {tokenA.symbol} = <ExchangeRate value={convertSwapRate(swapRate)} />{" "}
-        {tokenB.symbol}
-      </>
-    );
+    return <>1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenB.symbol}</>;
   }, [swapSummaryInfo]);
 
   const swapRateUSDStr = useMemo(() => {
@@ -83,13 +78,12 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   return (
     <ConfirmModal>
       <div
-        className={`modal-body ${
-          swapResult === null && submitted
+        className={`modal-body ${swapResult === null && submitted
             ? "modal-body-loading"
             : submitted
-            ? "submitted-modal"
-            : ""
-        }`}
+              ? "submitted-modal"
+              : ""
+          }`}
       >
         <div className="modal-header">
           <span>Confirm Swap</span>

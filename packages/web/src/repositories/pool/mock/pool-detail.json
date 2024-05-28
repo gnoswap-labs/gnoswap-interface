@@ -32,7 +32,7 @@
     "volumeChange": 118279700.0,
     "totalVolume": 1182797.0,
     "id": "bar_foo_500",
-    "apr": 0.12345,
+    "apr": "0.12345",
     "fee": "0.05%",
     "feeUsd24h": 131.937491,
     "feeChange": 13193.749143,
