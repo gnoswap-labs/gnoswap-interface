@@ -81,8 +81,6 @@ export function ExchangeRateGraphContent({
       }, []);
   }, [isReversed, poolData.priceRatio, selectedScope]);
 
-
-
   const xAxisLabels = useMemo(() => {
     const data = poolData.priceRatio;
 
@@ -127,18 +125,14 @@ export function ExchangeRateGraphContent({
   }, [hasSingleData, breakpoint, size.width]);
 
   const labelIndicesToShow = useMemo(() => {
-    if (xAxisLabels.length === 1) {
-      return [0];
-    }
+    if (hasSingleData) return [0];
 
     const spacing = ((xAxisLabels?.length ?? 0) - 1) / (countXAxis - 1);
 
     return Array.from({ length: countXAxis }, (_, index) =>
       Math.floor(spacing * index),
     ).reverse();
-  }, [countXAxis, xAxisLabels?.length]);
-  console.log("🚀 ~ xAxisLabels:", xAxisLabels);
-  console.log("🚀 ~ labelIndicesToShow ~ labelIndicesToShow:", labelIndicesToShow);
+  }, [countXAxis, hasSingleData, xAxisLabels]);
 
   return (
     <ExchangeRateGraphContentWrapper>
