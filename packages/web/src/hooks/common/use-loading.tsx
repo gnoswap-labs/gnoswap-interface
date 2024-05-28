@@ -5,7 +5,7 @@ import { useInitLoading } from "@query/common";
 import { useGetDashboardTVL, useGetDashboardVolume } from "@query/dashboard";
 
 export const useLoading = () => {
-  const { data: initialized } = useInitLoading({ initialData: false });
+  const { data: initialized } = useInitLoading();
   const {
     loading: isLoadingTokenData,
     isFetched: isFetchedTokenData,
@@ -22,7 +22,7 @@ export const useLoading = () => {
   } = useGetDashboardVolume();
 
   const isLoading = useMemo(() => {
-    if (initialized) {
+    if (!initialized) {
       return true;
     }
     if (

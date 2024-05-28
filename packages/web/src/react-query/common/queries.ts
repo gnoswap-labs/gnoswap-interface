@@ -8,7 +8,9 @@ export const useInitLoading = (options?: UseQueryOptions<boolean, Error>) => {
   return useQuery<boolean, Error>({
     queryKey: [QUERY_KEY.initLoading],
     queryFn: () =>
-      wait<boolean>(async () => true, DEFAULT_LOADING_TIME).then(() => true),
+      wait<boolean>(async () => true, DEFAULT_LOADING_TIME)
+        .then(() => true)
+        .catch(() => true),
     ...options,
   });
 };
