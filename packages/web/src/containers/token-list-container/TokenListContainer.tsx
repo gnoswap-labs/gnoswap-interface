@@ -148,7 +148,7 @@ const TokenListContainer: React.FC = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { wugnotPath, getGnotPath } = useGnotToGnot();
-  const { isLoading: isLoadingCommon } = useLoading();
+  const { isLoadingTokens } = useLoading();
 
   useEffect(() => {
     if (!keyword) {
@@ -473,7 +473,7 @@ const TokenListContainer: React.FC = () => {
   return (
     <TokenList
       tokens={getDatas()}
-      isFetched={!isLoadingCommon}
+      isFetched={!isLoadingTokens}
       error={error}
       tokenType={tokenType}
       sortOption={sortOption}
