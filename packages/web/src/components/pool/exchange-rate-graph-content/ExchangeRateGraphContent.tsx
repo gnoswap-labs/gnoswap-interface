@@ -115,16 +115,16 @@ export function ExchangeRateGraphContent({
   }, [poolData.priceRatio, selectedScope]);
 
 
-  const hasSingleData = useMemo(() => dataMemo.length === 1, [dataMemo.length]);
+  const hasSingleData = useMemo(() => dataMemo?.length === 1, [dataMemo]);
 
 
   const countXAxis = useMemo(() => {
-    if (dataMemo.length === 1) return 1;
+    if (hasSingleData) return 1;
 
     if (breakpoint !== DEVICE_TYPE.MOBILE)
       return Math.floor(((size.width || 0) + 20 - 25) / 100);
     return Math.floor(((size.width || 0) + 20 - 8) / 80);
-  }, [dataMemo.length, breakpoint, size.width]);
+  }, [hasSingleData, breakpoint, size.width]);
 
   const labelIndicesToShow = useMemo(() => {
     if (xAxisLabels.length === 1) {
