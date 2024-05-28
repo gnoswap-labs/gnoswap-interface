@@ -513,17 +513,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return totalRewardInfo && (totalRewardInfo?.EXTERNAL.length !== 0 || totalRewardInfo?.INTERNAL.length !== 0 || totalRewardInfo?.SWAP_FEE.length !== 0);
   }, [totalRewardInfo]);
 
-  const isShowRewardInfoTooltip = useMemo(() => {
-    return aprRewardInfo !== null
-      && (aprRewardInfo?.EXTERNAL.length !== 0
-        || aprRewardInfo?.INTERNAL.length !== 0
-        || aprRewardInfo?.SWAP_FEE.length !== 0);
-  }, [aprRewardInfo]);
-
-  const isShowTotalRewardInfo = useMemo(() => {
-    return totalRewardInfo && (totalRewardInfo?.EXTERNAL.length !== 0 || totalRewardInfo?.INTERNAL.length !== 0 || totalRewardInfo?.SWAP_FEE.length !== 0);
-  }, [totalRewardInfo]);
-
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
