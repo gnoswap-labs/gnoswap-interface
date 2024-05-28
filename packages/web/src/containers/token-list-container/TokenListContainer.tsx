@@ -160,8 +160,6 @@ const TokenListContainer: React.FC = () => {
   };
 
   const { tokens, isFetched, error, tokenPrices, isFetchedTokenPrices } = useTokenData();
-  console.log("🚀 ~ tokenPrices:", tokenPrices);
-  console.log("🚀 ~ tokens:", tokens);
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -292,8 +290,6 @@ const TokenListContainer: React.FC = () => {
     temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
     return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
   }, [tokenType, tokens, wugnotPath, tokenPrices]);
-
-  console.log("🚀 ~ firstData ~ firstData:", firstData);
 
   const getDatas = useCallback(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
