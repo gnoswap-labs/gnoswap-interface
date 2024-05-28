@@ -36,6 +36,7 @@ export function ExchangeRateGraphContent({
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
 
+
   const dataMemo = useMemo(() => {
     const data = poolData.priceRatio;
 
@@ -51,7 +52,9 @@ export function ExchangeRateGraphContent({
       }
     };
 
-    return getCurrentData()
+    const dataByType = getCurrentData();
+
+    return dataByType
       ?.map(item => ({
         time: item.date,
         value: item.ratio,
@@ -78,6 +81,8 @@ export function ExchangeRateGraphContent({
       }, []);
   }, [isReversed, poolData.priceRatio, selectedScope]);
 
+
+
   const xAxisLabels = useMemo(() => {
     const data = poolData.priceRatio;
 
@@ -93,7 +98,9 @@ export function ExchangeRateGraphContent({
       }
     };
 
-    return getCurrentData()
+    const dataByType = getCurrentData();
+
+    return dataByType
       ?.map(item => ({
         time: item.date,
         value: item.ratio.toString(),
@@ -107,18 +114,31 @@ export function ExchangeRateGraphContent({
       }, []);
   }, [poolData.priceRatio, selectedScope]);
 
+
+  const hasSingleData = useMemo(() => dataMemo.length === 1, [dataMemo.length]);
+
+
   const countXAxis = useMemo(() => {
+    if (dataMemo.length === 1) return 1;
+
     if (breakpoint !== DEVICE_TYPE.MOBILE)
       return Math.floor(((size.width || 0) + 20 - 25) / 100);
     return Math.floor(((size.width || 0) + 20 - 8) / 80);
-  }, [size.width, breakpoint]);
+  }, [dataMemo.length, breakpoint, size.width]);
 
   const labelIndicesToShow = useMemo(() => {
+    if (xAxisLabels.length === 1) {
+      return [0];
+    }
+
     const spacing = ((xAxisLabels?.length ?? 0) - 1) / (countXAxis - 1);
+
     return Array.from({ length: countXAxis }, (_, index) =>
       Math.floor(spacing * index),
     ).reverse();
   }, [countXAxis, xAxisLabels?.length]);
+  console.log("🚀 ~ xAxisLabels:", xAxisLabels);
+  console.log("🚀 ~ labelIndicesToShow ~ labelIndicesToShow:", labelIndicesToShow);
 
   return (
     <ExchangeRateGraphContentWrapper>
@@ -150,7 +170,7 @@ export function ExchangeRateGraphContent({
                       : "100%"
                   }
                 >
-                  <div className="exchange-rate-graph-xaxis">
+                  <div className={`exchange-rate-graph-xaxis ${hasSingleData ? "single-point" : ""}`}>
                     {labelIndicesToShow?.map((x, i) => (
                       <span key={i}>{xAxisLabels?.[x]}</span>
                     ))}

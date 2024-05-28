@@ -354,19 +354,15 @@ const LineGraph: React.FC<LineGraphProps> = ({
         .toNumber();
     };
 
-    // if (hasOnlyOnePoint) {
-    // const onlySingleData = mappedDatas[0];
+    if (hasOnlyOnePoint) {
+      const onlySingleData = mappedDatas[0];
 
-    // const x = BigNumber(time - minTime)
-    // .multipliedBy((width) - baseLineNumberWidthComputation)
-    // .dividedBy(maxTime - minTime)
-    // .toNumber(); 
-
-    // setPoints([{
-    //   x: optimizeTime(onlySingleData.time, width) + baseLineNumberWidthComputation,
-    //   y: optimizeValue(onlySingleData.value, height),
-    // }]);
-    // }
+      setPoints([{
+        x: (width + baseLineNumberWidthComputation) / 2,
+        y: optimizeValue(onlySingleData.value, height),
+      }]);
+      return;
+    }
 
     const points = mappedDatas.map<Point>(data => ({
       x: optimizeTime(data.time, width) + baseLineNumberWidthComputation,
@@ -531,6 +527,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   }, [currentPointIndex, datas]);
 
   const hasOnlyOnePoint = useMemo(() => datas.length === 1, [datas.length]);
+  console.log("🚀 ~ hasOnlyOnePoint:", hasOnlyOnePoint);
 
   return (
     <LineGraphWrapper
@@ -621,6 +618,13 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 })}
               </>
             )}
+            {hasOnlyOnePoint && <circle
+              cx={points?.[0]?.x}
+              cy={points?.[0]?.y}
+              r={1}
+              stroke={color}
+              fill={color}
+            />}
             {!isSameData && <path
               fill={`url(#gradient${COMPONENT_ID})`}
               stroke={color}

@@ -23,6 +23,12 @@ const OneClickStakingContainer: React.FC = () => {
   const poolPath = currentPoolPath;
   const { data = initialPool as PoolDetailModel, isLoading: isLoadingPoolInfo } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
 
+  useEffect(() => {
+    if (isLoadingRPCPoolInfo) {
+      setPositions([]);
+    }
+  }, [isLoadingRPCPoolInfo]);
+
   const stakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];
     return positions.filter(position => position.staked);
