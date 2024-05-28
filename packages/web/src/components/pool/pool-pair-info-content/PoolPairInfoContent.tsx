@@ -22,19 +22,20 @@ import { tickToPriceStr } from "@utils/swap-utils";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { toUnitFormat } from "@utils/number-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
-  positions: PoolPositionModel[];
+  poolBins: PoolBinModel[];
 }
 
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
   loading,
+  poolBins,
 }) => {
   const { getGnotPath } = useGnotToGnot();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -117,11 +118,10 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.rewardTokens]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = pool.bins40?.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
-    const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroPoolBin = poolBins?.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
 
-    return (isAllReserveZeroBin40 && isAllReserveZeroBin);
-  }, [pool.bins, pool.bins40]);
+    return isAllReserveZeroPoolBin;
+  }, [poolBins]);
 
   return (
     <ContentWrapper>
@@ -274,7 +274,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && <PoolGraph
             tokenA={pool?.tokenA}
             tokenB={pool?.tokenB}
-            bins={pool?.bins40 ?? []}
+            bins={poolBins ?? []}
             currentTick={pool?.currentTick}
             width={GRAPWIDTH}
             height={150}

@@ -61,8 +61,6 @@ export const initialPool: PoolDetailModel = {
   tokenABalance: 0,
   tokenBBalance: 0,
   tickSpacing: 0,
-  bins: [],
-  bins40: [],
   rewardTokens: [],
   totalApr: 0,
   poolPath: "",
@@ -93,7 +91,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     isLoading: loading,
   } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { isLoadingCommon } = useLoading();
-  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const [, setPositions] = useState<PoolPositionModel[]>([]);
   const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(
     address,
   );
@@ -136,7 +134,6 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
         symbol: getGnotPath(data.tokenB).symbol,
         logoURI: getGnotPath(data.tokenB).logoURI,
       },
-      bins: bins,
     };
   }, [data, bins]);
 
@@ -154,7 +151,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       onClickPath={onClickPath}
       feeStr={feeStr}
       loading={loading || isLoadingCommon || loadingPosition}
-      positions={connectedWallet ? positions : []}
+      poolBins={bins}
     />
   );
 };
