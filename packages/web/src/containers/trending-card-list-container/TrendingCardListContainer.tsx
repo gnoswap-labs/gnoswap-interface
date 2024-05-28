@@ -10,7 +10,7 @@ const TrendingCardListContainer: React.FC = () => {
   const router = useRouter();
   const { breakpoint } = useWindowSize();
   const { trendingTokens } = useTokenData();
-  const { isLoading: isLoadingCommon } = useLoading();
+  const { isLoadingTrendingTokens } = useLoading();
 
   const moveTokenDetails = useCallback(
     (path: string) => {
@@ -31,7 +31,7 @@ const TrendingCardListContainer: React.FC = () => {
       list={trendingTokens}
       device={breakpoint}
       onClickItem={onClickItem}
-      loading={isLoadingCommon}
+      loading={isLoadingTrendingTokens}
     />
   );
 };

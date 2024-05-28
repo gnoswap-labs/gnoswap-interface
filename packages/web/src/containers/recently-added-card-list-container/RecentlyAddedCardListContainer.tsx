@@ -12,7 +12,7 @@ import React, { useCallback } from "react";
 const RecentlyAddedCardListContainer: React.FC = () => {
   const router = useRouter();
   const { breakpoint } = useWindowSize();
-  const { isLoading: isLoadingCommon } = useLoading();
+  const { isLoadingDashboardStats } = useLoading();
   const { data: tvlData } = useGetDashboardTVL();
   const { data } = useGetDashboardVolume();
   const { data: chainData } = useGetChainList();
@@ -57,7 +57,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
       list={list}
       device={breakpoint}
       onClickItem={onClickItem}
-      loading={isLoadingCommon}
+      loading={isLoadingDashboardStats}
     />
   );
 };

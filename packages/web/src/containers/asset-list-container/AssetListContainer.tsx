@@ -200,8 +200,8 @@ const AssetListContainer: React.FC = () => {
   const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
   const [depositInfo, setDepositInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
-  const { isLoading: isLoadingCommon } = useLoading();
-  const { data: { tokens = [] } = {}, isLoading } = useGetTokensList({
+  const { isLoadingTokens } = useLoading();
+  const { data: { tokens = [] } = {} } = useGetTokensList({
     refetchInterval: 60 * 1000,
   });
   const { loading: loadingPositions } = usePositionData();
@@ -466,8 +466,7 @@ const AssetListContainer: React.FC = () => {
         assets={filteredTokens}
         isFetched={
           isFetched &&
-          !isLoadingCommon &&
-          !isLoading &&
+          !isLoadingTokens &&
           !loadingPositions &&
           !(isEmptyObject(balances) && account?.address)
         }

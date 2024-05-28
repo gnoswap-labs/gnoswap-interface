@@ -9,7 +9,7 @@ const HighestAprsCardListContainer: React.FC = () => {
   const router = useRouter();
   const { breakpoint } = useWindowSize();
   const { higestAPRs } = usePoolData();
-  const { isLoading: isLoadingCommon } = useLoading();
+  const { isLoadingHighestAPRPools } = useLoading();
 
   const movePoolDetails = useCallback(
     (path: string) => {
@@ -30,7 +30,7 @@ const HighestAprsCardListContainer: React.FC = () => {
       list={higestAPRs}
       device={breakpoint}
       onClickItem={onClickItem}
-      loading={isLoadingCommon}
+      loading={isLoadingHighestAPRPools}
     />
   );
 };

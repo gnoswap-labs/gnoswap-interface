@@ -1,61 +1,69 @@
 import { useMemo } from "react";
-import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useInitLoading } from "@query/common";
 import { useGetDashboardTVL, useGetDashboardVolume } from "@query/dashboard";
+import { useGetPoolList } from "@query/pools";
 
 export const useLoading = () => {
   const { data: initialized } = useInitLoading();
-  const {
-    loading: isLoadingTokenData,
-    isFetched: isFetchedTokenData,
-    isFetchedTokenPrices,
-    isLoadingTokenPrice,
-  } = useTokenData();
-  const { loading: isLoadingPoolData, isFetchedPools: isFetchedPoolData } =
-    usePoolData();
-  const { isLoading: isLoadingDashboardTVL, isFetched: isFetchedDashboardTVL } =
-    useGetDashboardTVL();
-  const {
-    isLoading: isLoadingDashboardVolume,
-    isFetched: isFetchedDashboardVolume,
-  } = useGetDashboardVolume();
+  const { isFetched: isFetchedTokenData, isFetchedTokenPrices } =
+    useTokenData();
+  const { isFetched: isFetchedPoolData } = useGetPoolList({ enabled: false });
+  const { isFetched: isFetchedDashboardTVL } = useGetDashboardTVL({
+    enabled: false,
+  });
+  const { isFetched: isFetchedDashboardVolume } = useGetDashboardVolume({
+    enabled: false,
+  });
 
   const isLoading = useMemo(() => {
+    if (initialized) {
+      return false;
+    }
+    return true;
+  }, [initialized]);
+
+  const isLoadingTokens = useMemo(() => {
     if (!initialized) {
       return true;
     }
-    if (
-      isFetchedPoolData &&
-      isFetchedTokenData &&
-      isFetchedDashboardTVL &&
-      isFetchedDashboardVolume &&
-      isFetchedTokenPrices
-    ) {
-      return false;
+    return !isFetchedTokenData || !isFetchedTokenPrices;
+  }, [initialized, isFetchedTokenData, isFetchedTokenPrices]);
+
+  const isLoadingPools = useMemo(() => {
+    if (!initialized) {
+      return true;
     }
-    return (
-      isLoadingPoolData ||
-      isLoadingTokenData ||
-      isLoadingDashboardTVL ||
-      isLoadingDashboardVolume ||
-      isLoadingTokenPrice
-    );
-  }, [
-    initialized,
-    isFetchedPoolData,
-    isFetchedTokenData,
-    isFetchedDashboardTVL,
-    isFetchedDashboardVolume,
-    isFetchedTokenPrices,
-    isLoadingPoolData,
-    isLoadingTokenData,
-    isLoadingDashboardTVL,
-    isLoadingDashboardVolume,
-    isLoadingTokenPrice,
-  ]);
+    return !isFetchedPoolData || !isFetchedTokenPrices;
+  }, [initialized, isFetchedPoolData, isFetchedTokenPrices]);
+
+  const isLoadingTrendingTokens = useMemo(() => {
+    if (!initialized) {
+      return true;
+    }
+    return !isFetchedTokenData || !isFetchedTokenPrices;
+  }, [initialized, isFetchedTokenData, isFetchedTokenPrices]);
+
+  const isLoadingHighestAPRPools = useMemo(() => {
+    if (!initialized) {
+      return true;
+    }
+    return !isFetchedPoolData;
+  }, [initialized, isFetchedPoolData]);
+
+  const isLoadingDashboardStats = useMemo(() => {
+    if (!initialized) {
+      return true;
+    }
+    return !isFetchedDashboardTVL || !isFetchedDashboardVolume;
+  }, [initialized, isFetchedDashboardTVL, isFetchedDashboardVolume]);
 
   return {
     isLoading,
+    isLoadingTokens,
+    isLoadingPools,
+    isLoadingTrendingTokens,
+    isLoadingHighestAPRPools,
+    isLoadingDashboardStats,
   };
 };

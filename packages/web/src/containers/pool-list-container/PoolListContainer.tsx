@@ -72,9 +72,9 @@ const PoolListContainer: React.FC = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useRouter();
-  const { poolListInfos, isFetchedPools, updatePools } = usePoolData();
+  const { poolListInfos, updatePools } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
-  const { isLoading: isLoadingCommon } = useLoading();
+  const { isLoadingPools } = useLoading();
 
   const themeKey = useAtomValue(ThemeState.themeKey);
 
@@ -293,7 +293,7 @@ const PoolListContainer: React.FC = () => {
         page * EARN_POOL_LIST_SIZE,
         (page + 1) * EARN_POOL_LIST_SIZE,
       )}
-      isFetched={isFetchedPools && !isLoadingCommon}
+      isFetched={!isLoadingPools}
       poolType={poolType}
       changePoolType={changePoolType}
       search={search}
