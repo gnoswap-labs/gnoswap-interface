@@ -1,6 +1,5 @@
 import { INCENTIVE_TYPE, SwapFeeTierType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
-import { PoolBinModel } from "../pool-bin-model";
 
 export interface PoolListInfo {
   poolId: string;
@@ -26,10 +25,6 @@ export interface PoolListInfo {
   price: number;
 
   currentTick: number;
-
-  bins: PoolBinModel[];
-
-  bins40: PoolBinModel[];
 
   tvl: string;
 

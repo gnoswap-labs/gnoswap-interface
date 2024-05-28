@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
-import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { QUERY_KEY, useGetPoolList } from "@query/pools";
@@ -83,30 +82,6 @@ export const usePoolData = () => {
     }));
   }, [pools]);
 
-  const incentivizedPools: PoolCardInfo[] = useMemo(() => {
-    const mappedPools = pools
-      .filter(pool => pool.incentiveType !== "NONE_INCENTIVIZED")
-      .map(PoolMapper.toCardInfo);
-    mappedPools.sort((x, y) => Number(y.tvl) - Number(x.tvl));
-    return mappedPools.map((item: PoolCardInfo) => {
-      return {
-        ...item,
-        tokenA: {
-          ...item.tokenA,
-          symbol: getGnotPath(item.tokenA).symbol,
-          logoURI: getGnotPath(item.tokenA).logoURI,
-          name: getGnotPath(item.tokenA).name,
-        },
-        tokenB: {
-          ...item.tokenB,
-          symbol: getGnotPath(item.tokenB).symbol,
-          logoURI: getGnotPath(item.tokenB).logoURI,
-          name: getGnotPath(item.tokenB).name,
-        },
-      };
-    });
-  }, [pools, gnot]);
-
   async function updatePools() {
     forceRefetch({ queryKey: [QUERY_KEY.pools] });
   }
@@ -116,7 +91,6 @@ export const usePoolData = () => {
     higestAPRs,
     pools,
     poolListInfos,
-    incentivizedPools,
     updatePools,
     loading,
     gnot,

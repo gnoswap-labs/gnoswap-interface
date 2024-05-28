@@ -18,6 +18,7 @@ import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import {
   DecreaseLiquidityResponse,
   IncreaseLiquidityResponse,
+  PositionBinResponse,
   PositionListResponse,
 } from "./response";
 import {
@@ -46,6 +47,8 @@ import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
 import { checkGnotPath, isGNOTPath } from "@utils/common";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
+import { PositionBinModel } from "@models/position/position-bin-model";
+import { PositionBinMapper } from "@models/position/mapper/position-bin-mapper";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient;
@@ -61,6 +64,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
+
   getPositionHistory = async (
     lpTokenId: string,
   ): Promise<IPositionHistoryModel[]> => {
@@ -72,11 +76,23 @@ export class PositionRepositoryImpl implements PositionRepository {
     return PositionHistoryMapper.fromList(response.data.data);
   };
 
-  getPositionsByAddress = async (address: string): Promise<PositionModel[]> => {
+  getPositionBins = async (
+    lpTokenId: string,
+    count: 20 | 40,
+  ): Promise<PositionBinModel[]> => {
+    const response = await this.networkClient.get<{
+      data: PositionBinResponse[];
+    }>({
+      url: "/positions/" + lpTokenId + `/bins?bins=${count}`,
+    });
+    return PositionBinMapper.fromList(response.data.data);
+  };
+
+  getPositionsByAddress = async (address: string, options?: { isClosed?: boolean }): Promise<PositionModel[]> => {
     const response = await this.networkClient.get<{
       data: PositionListResponse;
     }>({
-      url: "/users/" + address + "/position",
+      url: "/users/" + address + "/position" + (options?.isClosed !== undefined ? `?closed=${options.isClosed}` : ""),
     });
     return PositionMapper.fromList(response.data.data);
   };

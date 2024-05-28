@@ -33,7 +33,7 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { loading, isFetchedPosition } = usePositionData(address);
+  const { loading, isFetchedPosition } = usePositionData({ address });
 
   const isStaking = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {

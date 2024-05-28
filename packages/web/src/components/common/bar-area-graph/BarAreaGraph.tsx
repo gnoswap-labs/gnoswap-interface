@@ -13,7 +13,6 @@ export interface BarAreaGraphData {
 export interface BarAreaGraphProps {
   className?: string;
   strokeWidth?: number;
-  bins: PoolBinModel[];
   currentTick?: number;
   minGap?: number;
   width?: number;
@@ -31,7 +30,8 @@ export interface BarAreaGraphProps {
   minTickRate?: number;
   maxTickRate?: number;
   pool: PoolModel;
-  binsMyAmount: PoolBinModel[];
+  positionBins: PoolBinModel[];
+  poolBins: PoolBinModel[];
 }
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
@@ -39,7 +39,7 @@ const VIEWPORT_DEFAULT_HEIGHT = 200;
 
 const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   className = "",
-  bins,
+  positionBins,
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
   currentTick,
@@ -49,14 +49,14 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   tokenB,
   themeKey,
   pool,
-  binsMyAmount,
+  poolBins,
 }) => {
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
-    const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin40 = poolBins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin = positionBins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
 
     return isAllReserveZeroBin40 && isAllReserveZeroBin;
-  }, [pool.bins, pool.bins40]);
+  }, [poolBins, positionBins]);
 
   return (
     <BarAreaGraphWrapper
@@ -68,7 +68,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         currentTick={currentTick !== undefined ? currentTick : null}
         width={width}
         height={height}
-        bins={bins}
+        bins={poolBins}
         tokenA={tokenA}
         tokenB={tokenB}
         themeKey={themeKey}
@@ -79,7 +79,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         minTickPosition={minTick}
         poolPrice={pool?.price || 1}
         isPosition
-        binsMyAmount={binsMyAmount || []}
+        binsMyAmount={positionBins}
         showBar={!isHideBar}
       />
     </BarAreaGraphWrapper>

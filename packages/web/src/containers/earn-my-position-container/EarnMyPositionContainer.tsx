@@ -59,7 +59,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     isFetchedPosition,
     loading: isLoadingPosition,
     positions,
-  } = usePositionData(address);
+  } = usePositionData({ address });
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(
     EarnState.isViewMorePositions,
   );

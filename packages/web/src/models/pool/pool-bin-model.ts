@@ -7,17 +7,7 @@ export interface PoolBinModel {
 
   reserveTokenB: number;
 
-  currentTick?: number;
-
   minTick: number;
 
   maxTick: number;
-
-  minTickPrice?: string;
-
-  maxTickPrice?: string;
-
-  reverseMinTickPrice?: string;
-
-  reverseMaxTickPrice?: string;
 }

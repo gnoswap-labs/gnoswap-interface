@@ -45,6 +45,7 @@ import BigNumber from "bignumber.js";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import Button from "@components/common/button/Button";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
+import { useGetPositionBins } from "@query/positions";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -71,6 +72,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
   const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const [copied, setCopy] = useCopy();
+  const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40);
 
   const isClosed = position.closed;
 
@@ -81,10 +83,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const tokenB = useMemo(() => {
     return position.pool.tokenB;
   }, [position.pool.tokenB]);
-
-  const bins = useMemo(() => {
-    return position.bins40 || [];
-  }, [position.bins40]);
 
   const currentTick = useMemo(() => {
     return position.pool.currentTick || null;
@@ -341,12 +339,34 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     position?.pool?.currentTick,
   ]);
 
+  const poolBin = useMemo(() => {
+    return (bins ?? []).map(item => ({
+      index: item.index,
+      reserveTokenA: Number(item.poolReserveTokenA),
+      reserveTokenB: Number(item.poolReserveTokenB),
+      minTick: Number(item.minTick),
+      maxTick: Number(item.maxTick),
+      liquidity: Number(item.poolLiquidity),
+    }));
+  }, [bins]);
+
+  const positionBin = useMemo(() => {
+    return (bins ?? []).map(item => ({
+      index: item.index,
+      reserveTokenA: Number(item.reserveTokenA),
+      reserveTokenB: Number(item.reserveTokenB),
+      minTick: Number(item.minTick),
+      maxTick: Number(item.maxTick),
+      liquidity: Number(item.liquidity),
+    }));
+  }, [bins]);
+
   const tickRange = useMemo(() => {
-    const ticks = bins.flatMap(bin => [bin.minTick, bin.maxTick]);
+    const ticks = positionBin.flatMap(bin => [bin.minTick, bin.maxTick]);
     const min = Math.min(...ticks);
     const max = Math.max(...ticks);
     return [min, max];
-  }, [bins]);
+  }, [positionBin]);
 
   const minTickPosition = useMemo(() => {
     const [min, max] = tickRange;
@@ -529,17 +549,17 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   };
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = position.pool.bins40.every(
+    const isAllReserveZeroBin40 = poolBin.every(
       item =>
         Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
     );
-    const isAllReserveZeroBin = position.pool.bins.every(
+    const isAllReserveZeroBin = positionBin.every(
       item =>
         Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
     );
 
     return isAllReserveZeroBin40 && isAllReserveZeroBin;
-  }, [position.pool.bins, position.pool.bins40]);
+  }, [poolBin, positionBin]);
 
   const isShowRewardInfoTooltip = useMemo(() => {
     return (
@@ -842,7 +862,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <PoolGraph
               tokenA={tokenA}
               tokenB={tokenB}
-              bins={position.pool.bins40}
+              bins={poolBin}
               currentTick={currentTick}
               width={GRAPH_WIDTH}
               height={150}
@@ -854,7 +874,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               isPosition
               minTickPosition={minTickPosition}
               maxTickPosition={maxTickPosition}
-              binsMyAmount={bins ?? []}
+              binsMyAmount={positionBin}
               isSwap={isSwap}
               showBar={!isHideBar}
             />

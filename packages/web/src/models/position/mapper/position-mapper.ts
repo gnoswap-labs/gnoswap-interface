@@ -55,7 +55,7 @@ export class PositionMapper {
       reward: position.reward?.map(PositionMapper.rewardFromResponse) || [],
       closed: position.closed,
       totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
-      bins40: position.bins40,
+      bins40: [],
       totalClaimedUsd: position.totalClaimedUsd,
       usdValue: Number(position.usdValue),
       incentiveType: position.incentiveType as INCENTIVE_TYPE,

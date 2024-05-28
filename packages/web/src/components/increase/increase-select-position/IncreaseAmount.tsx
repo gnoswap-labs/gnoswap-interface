@@ -61,7 +61,7 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
             token={tokenA}
             connected={connected}
             changeAmount={changeTokenAAmount}
-            changeToken={() => {}}
+            changeToken={() => { }}
           />
         )}
         {isDepositTokenB && (
@@ -70,10 +70,10 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
             token={tokenB}
             connected={connected}
             changeAmount={changeTokenBAmount}
-            changeToken={() => {}}
+            changeToken={() => { }}
           />
         )}
-        {isDepositTokenA && isDepositTokenB && (
+        {(isDepositTokenA && isDepositTokenB) && (
           <div className="arrow">
             <div className="shape">
               <IconAdd className="add-icon" />

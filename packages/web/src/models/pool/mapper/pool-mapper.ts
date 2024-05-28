@@ -1,8 +1,8 @@
 import BigNumber from "bignumber.js";
 import { PoolListInfo } from "../info/pool-list-info";
-import { PoolModel } from "../pool-model";
+import { IncentivizePoolModel, PoolModel } from "../pool-model";
 import { INCENTIVE_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
-import { PoolCardInfo } from "../info/pool-card-info";
+import { IncentivizePoolCardInfo } from "../info/pool-card-info";
 import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
 import { makeId } from "@utils/common";
@@ -22,11 +22,9 @@ export class PoolMapper {
       tvl,
       fee,
       apr,
-      bins,
       rewardTokens,
       feeUsd24h,
       liquidity,
-      bins40,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => info.fee.toString() === fee,
@@ -45,8 +43,6 @@ export class PoolMapper {
       rewardTokens,
       currentTick,
       price,
-      bins: bins ?? [],
-      bins40: bins40 ?? [],
       tvl: toUnitFormat(tvl || "0", true, true),
     };
   }
@@ -67,7 +63,7 @@ export class PoolMapper {
     };
   }
 
-  public static toCardInfo(poolModel: PoolModel): PoolCardInfo {
+  public static toCardInfo(poolModel: IncentivizePoolModel): IncentivizePoolCardInfo {
     const {
       id,
       currentTick,
@@ -79,11 +75,10 @@ export class PoolMapper {
       volume24h,
       fee,
       apr,
-      bins,
       poolPath,
       rewardTokens,
-      bins40,
       feeUsd24h,
+      bins40,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee.toString(),
@@ -102,8 +97,7 @@ export class PoolMapper {
       rewardTokens,
       currentTick,
       price,
-      bins: bins ?? [],
-      bins40: bins40 ?? [],
+      bins40: bins40,
       poolPath: poolPath,
       tvl: tvl.toString(),
     };
@@ -117,8 +111,21 @@ export class PoolMapper {
       incentiveType: pool.incentiveType as INCENTIVE_TYPE,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr,
-      bins: pool?.bins || [],
-      bins40: pool?.bins40 || [],
+      liquidity: pool.liquidity,
+      allTimeVolumeUsd: pool.allTimeVolumeUsd,
+      price: Number(pool.price),
+    };
+  }
+
+  public static toIncentivePool(pool: PoolResponse): IncentivizePoolModel {
+    const id = pool.id ?? makeId(pool.poolPath);
+    return {
+      ...pool,
+      id,
+      incentiveType: pool.incentiveType as INCENTIVE_TYPE,
+      rewardTokens: pool.rewardTokens || [],
+      apr: pool.totalApr,
+      bins40: pool.bins40,
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
@@ -131,8 +138,6 @@ export class PoolMapper {
       ...pool,
       id,
       incentiveType: pool.incentiveType as INCENTIVE_TYPE,
-      bins: pool?.bins ?? [],
-      bins40: pool?.bins40 ?? [],
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr ?? "",
       totalApr: pool.totalApr,
