@@ -93,7 +93,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   const { isLoadingCommon } = useLoading();
   const [, setPositions] = useState<PoolPositionModel[]>([]);
   const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(
-    address,
+    { address },
   );
   const { connected: connectedWallet, account } = useWallet();
   const { data: bins = [] } = useGetBinsByPath(poolPath as string, 40, {
