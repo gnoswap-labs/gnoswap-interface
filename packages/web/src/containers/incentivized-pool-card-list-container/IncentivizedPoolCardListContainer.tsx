@@ -9,6 +9,8 @@ import { ThemeState } from "@states/index";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useLoading } from "@hooks/common/use-loading";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { useGetIncentivizePoolList } from "@query/pools";
+import { useIncentivizePool } from "@hooks/pool/use-incentivize-pool";
 export interface PoolListProps {
   logo: string[];
   name: string[];
@@ -35,7 +37,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const [page, setPage] = useState(1);
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
-  const { incentivizedPools, isFetchedPools, updatePools, loading: isLoadingPool } = usePoolData();
+  const { data: incentivizePools = [], isFetched: isFetchedPools, isLoading: isLoadingPool } = useIncentivizePool()
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
@@ -48,7 +50,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   };
   useEffect(() => {
     handleResize();
-    updatePools();
+    // updatePools();
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -56,8 +58,8 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   }, []);
 
   const loadMore = useMemo(() => {
-    return incentivizedPools.length > page * 8;
-  }, [incentivizedPools.length, page]);
+    return incentivizePools.length > page * 8;
+  }, [incentivizePools.length, page]);
 
   const routeItem = (id: string) => {
     router.push(`/earn/pool/${id}`);
@@ -74,7 +76,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.min(Math.floor(currentScrollX / 332) + 1, incentivizedPools.length));
+      setCurrentIndex(Math.min(Math.floor(currentScrollX / 332) + 1, incentivizePools.length));
     }
   };
 
@@ -84,11 +86,11 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     } else {
       return true;
     }
-  }, [incentivizedPools, width]);
+  }, [incentivizePools, width]);
 
   return (
     <IncentivizedPoolCardList
-      incentivizedPools={incentivizedPools}
+      incentivizedPools={incentivizePools}
       isPoolFetched={isFetchedPools}
       loadMore={!!loadMore}
       onClickLoadMore={handleClickLoadMore}

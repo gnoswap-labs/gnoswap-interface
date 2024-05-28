@@ -7,9 +7,9 @@ import {
 import IncentivizedPoolCard from "@components/earn/incentivized-pool-card/IncentivizedPoolCard";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
-import { PoolCardInfo } from "@models/pool/info/pool-card-info";
+import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 export interface IncentivizedPoolCardListProps {
-  incentivizedPools: PoolCardInfo[];
+  incentivizedPools: IncentivizePoolCardInfo[];
   loadMore: boolean;
   isPoolFetched: boolean;
   onClickLoadMore?: () => void;

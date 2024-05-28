@@ -4,7 +4,7 @@ import {
   PoolCardWrapper,
   PoolCardWrapperWrapperBorder,
 } from "./IncentivizedPoolCard.styles";
-import { PoolCardInfo } from "@models/pool/info/pool-card-info";
+import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
 import {
   INCENTIVE_TYPE_MAPPER,
@@ -17,7 +17,7 @@ import { numberToFormat, numberToRate } from "@utils/string-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface IncentivizedPoolCardProps {
-  pool: PoolCardInfo;
+  pool: IncentivizePoolCardInfo;
   routeItem: (id: string) => void;
   themeKey: "dark" | "light";
   checkStakedPool: (poolPath: string | null) => boolean;
@@ -62,14 +62,13 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
       return false;
     });
     return filteredArray;
-  }, [pool.rewardTokens, pool.tokenA, pool.tokenB]);
+  }, [pool.rewardTokens]);
 
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
-    const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
 
-    return isAllReserveZeroBin40 && isAllReserveZeroBin;
-  }, [pool.bins, pool.bins40]);
+    return isAllReserveZeroBin40;
+  }, [pool]);
 
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>

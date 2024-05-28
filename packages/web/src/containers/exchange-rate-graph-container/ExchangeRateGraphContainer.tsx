@@ -47,8 +47,6 @@ export const initialPool: PoolModel = {
   tokenABalance: 0,
   tokenBBalance: 0,
   tickSpacing: 0,
-  bins: [],
-  bins40: [],
   rewardTokens: [],
   totalApr: 0,
   poolPath: "",

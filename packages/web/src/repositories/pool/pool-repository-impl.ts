@@ -25,7 +25,7 @@ import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolRPCResponse } from "./response/pool-rpc-response";
-import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
+import { IncentivizePoolModel, IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
@@ -135,6 +135,17 @@ export class PoolRepositoryImpl implements PoolRepository {
     return pools;
   };
 
+  getIncentivizePools = async (): Promise<IncentivizePoolModel[]> => {
+    const response = await this.networkClient.get<PoolListResponse>({
+      url: "/incentivize/pools",
+    });
+
+    const pools = response?.data?.data
+      ? response.data.data.map(PoolMapper.toIncentivePool)
+      : [];
+    return pools;
+  };
+
   getPoolDetailByPoolPath = async (
     poolPath: string,
   ): Promise<PoolDetailModel> => {
@@ -205,8 +216,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-      ? tokenBAmountRaw
-      : null;
+        ? tokenBAmountRaw
+        : null;
 
     const createPoolMessages = [];
 
@@ -367,8 +378,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-      ? tokenBAmountRaw
-      : null;
+        ? tokenBAmountRaw
+        : null;
 
     const approveMessages: TransactionMessage[] = [];
 

@@ -26,6 +26,7 @@ import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
 import { toUnitFormat } from "@utils/number-utils";
 import { numberToRate } from "@utils/string-utils";
+import { useGetLazyPositionBins } from "@query/positions";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -54,6 +55,30 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
+
+  const { data: bins40 } = useGetLazyPositionBins(position.lpTokenId, 40, viewMyRange);
+
+  const poolBins = useMemo(() => {
+    return (bins40 ?? []).map(item => ({
+      index: item.index,
+      reserveTokenA: Number(item.poolReserveTokenA),
+      reserveTokenB: Number(item.poolReserveTokenB),
+      minTick: Number(item.minTick),
+      maxTick: Number(item.maxTick),
+      liquidity: Number(item.poolLiquidity),
+    }));
+  }, [bins40]);
+
+  const positionBins = useMemo(() => {
+    return (bins40 ?? []).map(item => ({
+      index: item.index,
+      reserveTokenA: Number(item.reserveTokenA),
+      reserveTokenB: Number(item.reserveTokenB),
+      minTick: Number(item.minTick),
+      maxTick: Number(item.maxTick),
+      liquidity: Number(item.liquidity),
+    }));
+  }, [bins40]);
 
   // fake close
   const inRange: boolean | null = useMemo(() => {
@@ -123,11 +148,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
-    const ticks = pool.bins.flatMap(bin => [bin.minTick, bin.maxTick]);
+    const ticks = positionBins.flatMap(bin => [bin.minTick, bin.maxTick]);
     const min = Math.min(...ticks);
     const max = Math.max(...ticks);
     return [min, max];
-  }, [pool.bins]);
+  }, [positionBins]);
 
   const minTickPosition = useMemo(() => {
     const [min, max] = tickRange;
@@ -251,6 +276,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     );
     return toUnitFormat(temp, true, true);
   }, [position.reward]);
+
+
   return (
     <MyPositionCardWrapperBorder
       className={`${position.staked && inRange !== null ? "special-card" : ""}`}
@@ -333,7 +360,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 maxLabel={maxTickLabel}
                 minTick={minTickPosition}
                 maxTick={maxTickPosition}
-                bins={pool.bins40}
+                poolBins={poolBins}
                 tokenA={tokenA}
                 tokenB={tokenB}
                 isHiddenStart={isHiddenStart}
@@ -342,7 +369,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 minTickRate={minTickRate}
                 maxTickRate={maxTickRate}
                 pool={pool}
-                binsMyAmount={position.bins40}
+                positionBins={positionBins}
               />
             </div>
             <div className="min-max-price">

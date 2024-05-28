@@ -48,7 +48,7 @@ const EarnMyPositionContainer: React.FC<
     const { width } = useWindowSize();
     const divRef = useRef<HTMLDivElement | null>(null);
     const { openModal } = useConnectWalletModal();
-    const { isError, availableStake, isFetchedPosition, loading: isLoadingPosition, positions } = usePositionData(address);
+    const { isError, availableStake, isFetchedPosition, loading: isLoadingPosition, positions } = usePositionData({ address });
     const [mobile, setMobile] = useState(false);
     const themeKey = useAtomValue(ThemeState.themeKey);
     const [isClosed, setIsClosed] = useState(false);

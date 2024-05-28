@@ -14,7 +14,12 @@ import { PATH, PATH_10SECOND, PATH_60SECOND } from "@constants/common.constant";
 import { PositionModel } from "@models/position/position-model";
 import { AxiosError } from "axios";
 
-export const usePositionData = (address?: string) => {
+export interface UsePositionDataOption {
+  address?: string;
+  isClosed?: boolean;
+}
+
+export const usePositionData = (options?: UsePositionDataOption) => {
   const router = useRouter();
   // TODO Question > EarnState.initialData
   const [initialData, setInitialData] = useAtom(EarnState.initialDataData);
@@ -25,8 +30,8 @@ export const usePositionData = (address?: string) => {
   const cachedData = useRef<PositionModel[]>();
 
   const fetchedAddress = useMemo(() => {
-    return address || account?.address;
-  }, [account?.address, address]);
+    return options?.address || account?.address;
+  }, [account?.address, options?.address]);
 
   const secToMilliSec = useCallback((sec: number) => {
     return sec * 1000;
@@ -38,30 +43,33 @@ export const usePositionData = (address?: string) => {
     isLoading: isPositionLoading,
     isFetched: isFetchedPosition,
   } = useGetPositionsByAddress(fetchedAddress as string, {
-    enabled: !!fetchedAddress && pools.length > 0,
-    refetchInterval: () => {
-      if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15));
+    isClosed: options?.isClosed,
+    queryOptions: {
+      enabled: !!fetchedAddress && pools.length > 0,
+      refetchInterval: () => {
+        if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15));
 
-      if (PATH_10SECOND.includes(router.pathname)) return secToMilliSec(10);
+        if (PATH_10SECOND.includes(router.pathname)) return secToMilliSec(10);
 
-      if (PATH_60SECOND.includes(router.pathname)) return secToMilliSec(60);
+        if (PATH_60SECOND.includes(router.pathname)) return secToMilliSec(60);
 
-      return false;
-    },
-    onSuccess(data) {
-      const haveNewData = JSON.stringify(data, transformData) !== JSON.stringify(cachedData.current, transformData);
-      if (haveNewData) {
-        cachedData.current = data;
-      }
-      setShouldShowLoading(haveNewData);
-    },
-    onError(err) {
-      if ((err as AxiosError).response?.status === 404) {
-        const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current, transformData);
+        return false;
+      },
+      onSuccess(data) {
+        const haveNewData = JSON.stringify(data, transformData) !== JSON.stringify(cachedData.current, transformData);
         if (haveNewData) {
           cachedData.current = data;
         }
         setShouldShowLoading(haveNewData);
+      },
+      onError(err) {
+        if ((err as AxiosError).response?.status === 404) {
+          const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current, transformData);
+          if (haveNewData) {
+            cachedData.current = data;
+          }
+          setShouldShowLoading(haveNewData);
+        }
       }
     }
   });

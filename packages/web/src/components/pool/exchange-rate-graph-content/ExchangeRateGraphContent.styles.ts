@@ -68,6 +68,9 @@ export const ExchangeRateGraphXAxisWrapper = styled.div<{ innerWidth: string }>`
       }
       color: ${({ theme }) => theme.color.text04};
     }
+    &.single-point{
+      ${mixins.flexbox("row", "center", "center")}
+    }
   }
 `;
 

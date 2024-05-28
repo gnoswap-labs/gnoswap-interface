@@ -5,7 +5,7 @@ import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolError } from "@common/errors/pool";
 import rpcPools from "./mock/rpc-pools.json";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
-import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
+import { IncentivizePoolModel, IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
@@ -15,6 +15,9 @@ import {
 } from "@common/clients/wallet-client/protocols";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 export class PoolRepositoryMock implements PoolRepository {
+  getIncentivizePools = async (): Promise<IncentivizePoolModel[]> => {
+    return [];
+  };
   getPools = async (): Promise<PoolModel[]> => {
     return [];
   };
