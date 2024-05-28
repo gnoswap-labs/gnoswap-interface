@@ -36,8 +36,8 @@ export const useLoading = () => {
     if (!initialized) {
       return true;
     }
-    return !isFetchedPoolData || !isFetchedTokenPrices;
-  }, [initialized, isFetchedPoolData, isFetchedTokenPrices]);
+    return !isFetchedPoolData;
+  }, [initialized, isFetchedPoolData]);
 
   const isLoadingTrendingTokens = useMemo(() => {
     if (!initialized) {
