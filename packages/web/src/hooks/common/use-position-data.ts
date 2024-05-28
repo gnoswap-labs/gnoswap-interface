@@ -45,7 +45,6 @@ export const usePositionData = (options?: UsePositionDataOption) => {
   } = useGetPositionsByAddress(fetchedAddress as string, {
     isClosed: options?.isClosed,
     queryOptions: {
-      enabled: !!fetchedAddress && pools.length > 0,
       refetchInterval: () => {
         if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15));
 

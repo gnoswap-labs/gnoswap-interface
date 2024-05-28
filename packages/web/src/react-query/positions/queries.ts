@@ -22,10 +22,8 @@ export const useGetPositionsByAddress = (
       const data = await positionRepository.getPositionsByAddress(address, { isClosed: options?.isClosed });
       return data;
     },
+    enabled: !!address,
     ...options?.queryOptions,
-    // refetchOnMount: true,
-    // refetchOnReconnect: true,
-    // retry: false,
   });
 };
 
