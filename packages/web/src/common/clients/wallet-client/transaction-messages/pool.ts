@@ -1,3 +1,4 @@
+import { toNativePath } from "@utils/common";
 import {
   makeApproveMessage,
   makeGNOTSendAmount,
@@ -42,18 +43,13 @@ export function makeCreateIncentiveMessage(
   isGNOT: boolean,
 ) {
   const send = makeGNOTSendAmount(isGNOT ? rewardAmount : 0);
+  const tokenPath = isGNOT ? toNativePath(rewardTokenPath) : rewardTokenPath;
 
   return makeTransactionMessage({
     send: send,
     func: "CreateExternalIncentive",
     packagePath: PACKAGE_STAKER_PATH,
-    args: [
-      poolPath,
-      rewardTokenPath,
-      rewardAmount,
-      `${startTime}`,
-      `${endTime}`,
-    ],
+    args: [poolPath, tokenPath, rewardAmount, `${startTime}`, `${endTime}`],
     caller,
   });
 }

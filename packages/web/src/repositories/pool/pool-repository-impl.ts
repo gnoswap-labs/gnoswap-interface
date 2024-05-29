@@ -25,7 +25,11 @@ import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolRPCResponse } from "./response/pool-rpc-response";
-import { IncentivizePoolModel, IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
+import {
+  IncentivizePoolModel,
+  IPoolDetailResponse,
+  PoolModel,
+} from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
@@ -216,8 +220,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-        ? tokenBAmountRaw
-        : null;
+      ? tokenBAmountRaw
+      : null;
 
     const createPoolMessages = [];
 
@@ -378,8 +382,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-        ? tokenBAmountRaw
-        : null;
+      ? tokenBAmountRaw
+      : null;
 
     const approveMessages: TransactionMessage[] = [];
 
