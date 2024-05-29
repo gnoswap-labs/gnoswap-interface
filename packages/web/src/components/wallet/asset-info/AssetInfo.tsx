@@ -14,6 +14,7 @@ import { makeId } from "@utils/common";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { useTheme } from "@emotion/react";
 import { isNativeToken } from "@models/token/token-model";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface AssetInfoProps {
   asset: Asset;
@@ -88,11 +89,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         tdWidth={ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(path)}
       >
-        {logoURI ? (
-          <img src={logoURI} alt="logo" className="logo" />
-        ) : (
-          <div className="missing-logo">{symbol.slice(0, 3)}</div>
-        )}
+        <MissingLogo
+          symbol={symbol}
+          url={logoURI}
+          className="logo"
+          width={28}
+          mobileWidth={28}
+        />
         <div className="token-name-symbol-path">
           <div className="token-name-path">
             <strong className="token-name">{name}</strong>
@@ -140,7 +143,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         tdWidth={TABLET_ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(symbol)}
       >
-        <img className="logo" src={logoURI} alt="logo" />
+        <MissingLogo
+          symbol={symbol}
+          url={logoURI}
+          className="logo"
+          width={28}
+          mobileWidth={28}
+        />
         <div className="token-name-symbol-path">
           <div className="token-name-path">
             <strong className="token-name">{name}</strong>
@@ -180,7 +189,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         tdWidth={MOBILE_ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(symbol)}
       >
-        <img className="logo" src={logoURI} alt="logo" />
+        <MissingLogo
+          symbol={symbol}
+          url={logoURI}
+          className="logo"
+          width={28}
+          mobileWidth={28}
+        />
         <div className="token-name-symbol-path">
           <div className="token-name-path">
             <strong className="token-name">{name}</strong>

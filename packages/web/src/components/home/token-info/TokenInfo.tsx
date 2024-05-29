@@ -118,8 +118,8 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
             symbol={token.symbol}
             url={token.logoURI}
             className="token-logo"
-            width={24}
-            mobileWidth={24}
+            width={28}
+            mobileWidth={28}
           />
           <div className="token-name-symbol-path">
             <div className="token-name-path">
