@@ -137,6 +137,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       const approveMessages = [];
       const collectMessages = [];
       const tokenPaths = position.poolPath.split(":");
+      const includedTokenPaths: string[] = [...tokenPaths];
       if (hasSwapFee && tokenPaths.length === 3) {
         approveMessages.push(
           makeApproveMessage(
@@ -159,10 +160,15 @@ export class PositionRepositoryImpl implements PositionRepository {
       if (hasReward) {
         // Reward token approve to Pool and Staker(When GNOT token)
         const rewardTokenMessages = position.reward.flatMap(reward => {
+          const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
+          if (includedTokenPaths.includes(rewardTokenWrappedPath)) {
+            return [];
+          }
+
           const approveMessages: TransactionMessage[] = [];
           approveMessages.push(
             makeApproveMessage(
-              checkGnotPath(reward.rewardToken.path),
+              rewardTokenWrappedPath,
               [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
               recipient,
             ),
@@ -177,6 +183,8 @@ export class PositionRepositoryImpl implements PositionRepository {
               ),
             );
           }
+
+          includedTokenPaths.push(rewardTokenWrappedPath);
           return approveMessages;
         });
         approveMessages.push(...rewardTokenMessages);
@@ -239,10 +247,49 @@ export class PositionRepositoryImpl implements PositionRepository {
       );
     }
 
+    const includedTokenPaths: string[] = [];
+
+    // Reward token approve to Pool and Staker(When GNOT token)
+    const collectRewardApproveMessages = positions.flatMap(position =>
+      position.reward.flatMap(reward => {
+        const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
+        if (includedTokenPaths.includes(rewardTokenWrappedPath)) {
+          return [];
+        }
+
+        const messages: TransactionMessage[] = [];
+        messages.push(
+          makeApproveMessage(
+            rewardTokenWrappedPath,
+            [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
+            caller,
+          ),
+        );
+
+        if (reward.rewardToken.path === WRAPPED_GNOT_PATH) {
+          messages.push(
+            makeApproveMessage(
+              checkGnotPath(WRAPPED_GNOT_PATH),
+              [PACKAGE_STAKER_ADDRESS, MAX_UINT64.toString()],
+              caller,
+            ),
+          );
+        }
+        includedTokenPaths.push(rewardTokenWrappedPath);
+        return messages;
+      }),
+    );
+
+    const collectRewardMessages = positions.flatMap(position =>
+      makeCollectRewardMessage(position.lpTokenId, caller),
+    );
+
     messages.push(
       ...positions.map(position =>
         makeUnstakeMessage(position.lpTokenId, caller),
       ),
+      ...collectRewardApproveMessages,
+      ...collectRewardMessages,
     );
     const result = await this.walletClient.sendTransaction({
       messages,
