@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Staking from "@components/pool/staking/Staking";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
@@ -31,8 +31,10 @@ const StakingContainer: React.FC = () => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
-  const { data = null } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-  const { isLoadingCommon } = useLoading();
+  const { data = null } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
@@ -132,25 +134,30 @@ const StakingContainer: React.FC = () => {
   }, []);
 
   const stakingPositionMap = useMemo(() => {
-    return positions.reduce<{ [key in StakingPeriodType]: PoolPositionModel[] }>((accum, current) => {
-      const stakedTime = Number(current.stakedAt) * 1000;
-      const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
-      let periodType: StakingPeriodType = "MAX";
-      if (difference < 5) {
-        periodType = "5D";
-      } else if (difference < 10) {
-        periodType = "10D";
-      } else if (difference < 30) {
-        periodType = "30D";
-      }
-      accum[periodType].push(current);
-      return accum;
-    }, {
-      "5D": [],
-      "10D": [],
-      "30D": [],
-      "MAX": [],
-    });
+    return positions.reduce<{
+      [key in StakingPeriodType]: PoolPositionModel[];
+    }>(
+      (accum, current) => {
+        const stakedTime = Number(current.stakedAt) * 1000;
+        const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
+        let periodType: StakingPeriodType = "MAX";
+        if (difference < 5) {
+          periodType = "5D";
+        } else if (difference < 10) {
+          periodType = "10D";
+        } else if (difference < 30) {
+          periodType = "30D";
+        }
+        accum[periodType].push(current);
+        return accum;
+      },
+      {
+        "5D": [],
+        "10D": [],
+        "30D": [],
+        MAX: [],
+      },
+    );
   }, [positions]);
 
   useEffect(() => {
@@ -172,7 +179,6 @@ const StakingContainer: React.FC = () => {
       return;
     }
     setType(0);
-
   }, [allPosition.length, positions.length, stakingPositionMap["MAX"].length]);
 
   return (
@@ -188,7 +194,12 @@ const StakingContainer: React.FC = () => {
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
       loading={isLoadingPool || isLoadingPosition || isLoadingCommon}
-      isOtherPosition={!!(address && account?.address && address !== account?.address || !account?.address)}
+      isOtherPosition={
+        !!(
+          (address && account?.address && address !== account?.address) ||
+          !account?.address
+        )
+      }
     />
   );
 };

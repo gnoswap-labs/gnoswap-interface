@@ -16,7 +16,7 @@ import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { useTokenData } from "./use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import {
   makeBroadcastAddLiquidityMessage,
   useBroadcastHandler,

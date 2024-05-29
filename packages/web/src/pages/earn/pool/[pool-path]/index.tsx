@@ -5,7 +5,7 @@ import PoolLayout from "@layouts/pool-layout/PoolLayout";
 import StakingContainer from "@containers/staking-container/StakingContainer";
 import PoolPairInformationContainer from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import MyLiquidityContainer from "@containers/my-liquidity-container/MyLiquidityContainer";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "@query/pools";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -20,7 +20,7 @@ export default function Pool() {
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
@@ -52,20 +52,13 @@ export default function Pool() {
   }, [data?.incentiveType]);
 
   useEffect(() => {
-    if (hash === "staking" && isFetchedPosition && !loading && !isLoadingCommon) {
-      const positionContainerElement = document.getElementById("staking");
-      const topPosition = positionContainerElement?.offsetTop;
-      if (!topPosition) {
-        return;
-      }
-      window.scrollTo({
-        top: topPosition,
-      });
-    }
-  }, [hash, isFetchedPosition, isLoadingCommon, loading, positions]);
-
-  useEffect(() => {
-    if (hash === "staking" && !loading && isFetchedPosition && positions.length === 0) {
+    if (
+      hash === "staking" &&
+      !loading &&
+      !isLoadingCommon &&
+      isFetchedPosition &&
+      positions.length === 0
+    ) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -98,7 +91,14 @@ export default function Pool() {
         });
       }
     }
-  }, [isFetchedPosition, hash, address, loading]);
+  }, [
+    isFetchedPosition,
+    hash,
+    address,
+    loading,
+    isLoadingCommon,
+    positions.length,
+  ]);
 
   return (
     <PoolLayout

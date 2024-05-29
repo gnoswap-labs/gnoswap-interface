@@ -12,7 +12,7 @@ import {
 } from "./HeaderSideMenuModal.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconAccountUser from "../icons/IconAccountUser";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import IconPulse from "../icons/IconPulse";
 
 interface HeaderSideMenuModalProps {
@@ -44,7 +44,7 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
     <HeaderSideMenuModalWrapper ref={menuRef}>
       <Navigation>
         <ul>
-        <li onClick={() => router.push(SIDE_MENU_NAV.DASHBOARD.path)}>
+          <li onClick={() => router.push(SIDE_MENU_NAV.DASHBOARD.path)}>
             <Link href={SIDE_MENU_NAV.DASHBOARD.path}>
               <LeftIconMenu>
                 <LeftIcon>
@@ -71,7 +71,7 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
             <Link href={SIDE_MENU_NAV.HELPCENTER.path}>
               <RightIconMenu>
                 {SIDE_MENU_NAV.HELPCENTER.title}
-                <LinkIconButton >
+                <LinkIconButton>
                   <IconOpenLink className="right-icon" />
                 </LinkIconButton>
               </RightIconMenu>
@@ -87,7 +87,10 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
               </RightIconMenu>
             </Link>
           </li>
-          <li className="last-side-menu" onClick={() => router.push(SIDE_MENU_NAV.LEGALPRIVACY.path)}>
+          <li
+            className="last-side-menu"
+            onClick={() => router.push(SIDE_MENU_NAV.LEGALPRIVACY.path)}
+          >
             <Link href={SIDE_MENU_NAV.LEGALPRIVACY.path}>
               <RightIconMenu>
                 {SIDE_MENU_NAV.LEGALPRIVACY.title}

@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import PoolPairInformation from "@components/pool/pool-pair-information/PoolPairInformation";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
@@ -72,33 +72,35 @@ export const initialPool: PoolDetailModel = {
   priceRatio: {
     "7d": [],
     "30d": [],
-    "all": []
-  }
+    all: [],
+  },
 };
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
 }
 
-const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({
-  address,
-}) => {
+const PoolPairInformationContainer: React.FC<
+  PoolPairInformationContainerProps
+> = ({ address }) => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
-  const {
-    data = initialPool as PoolDetailModel,
-    isLoading: loading,
-  } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-  const { isLoadingCommon } = useLoading();
+  const { data = initialPool as PoolDetailModel, isLoading: loading } =
+    useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { isLoading: isLoadingCommon } = useLoading();
   const [, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(
-    { address },
-  );
-  const { connected: connectedWallet, account } = useWallet();
-  const { data: bins = [] } = useGetBinsByPath(poolPath as string, 40, {
-    enabled: !!poolPath,
+  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData({
+    address,
   });
+  const { connected: connectedWallet, account } = useWallet();
+  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(
+    poolPath as string,
+    40,
+    {
+      enabled: !!poolPath,
+    },
+  );
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
     if (!poolPath) {
@@ -151,6 +153,9 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       onClickPath={onClickPath}
       feeStr={feeStr}
       loading={loading || isLoadingCommon || loadingPosition}
+      loadingBins={
+        loading || isLoadingCommon || loadingPosition || isLoadingBins
+      }
       poolBins={bins}
     />
   );

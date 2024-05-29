@@ -29,12 +29,14 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
+  loadingBins: boolean;
   poolBins: PoolBinModel[];
 }
 
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
   loading,
+  loadingBins,
   poolBins,
 }) => {
   const { getGnotPath } = useGnotToGnot();
@@ -55,11 +57,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     if (sumOfBalances === 0) {
       return 0.5;
     }
-    return Number(tokenABalance) / (Number(tokenABalance) + Number(tokenBBalance) / pool.price);
+    return (
+      Number(tokenABalance) /
+      (Number(tokenABalance) + Number(tokenBBalance) / pool.price)
+    );
   }, [tokenABalance, tokenBBalance, pool.price]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
-    const depositStr = `${Math.round((depositRatio) * 100)}%`;
+    const depositStr = `${Math.round(depositRatio * 100)}%`;
     return `(${depositStr})`;
   }, [depositRatio]);
 
@@ -80,17 +85,28 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     const aprStr = numberToRate(pool.totalApr);
     const totalAPR = pool.totalApr || 0;
     if (Number(totalAPR) >= 100) {
-      return <><IconStar />{aprStr}</>;
+      return (
+        <>
+          <IconStar />
+          {aprStr}
+        </>
+      );
     }
     return aprStr;
   }, [pool.totalApr]);
 
   const liquidityChangedStr = useMemo((): string => {
-    return `${numberToFormat(Math.abs(pool.tvlChange), { decimals: 2, forceDecimals: true })}%`;
+    return `${numberToFormat(Math.abs(pool.tvlChange), {
+      decimals: 2,
+      forceDecimals: true,
+    })}%`;
   }, [pool.tvlChange]);
 
   const volumeChangedStr = useMemo((): string => {
-    return `${numberToFormat(pool.volumeChange24h, { decimals: 2, forceDecimals: true })}%`;
+    return `${numberToFormat(pool.volumeChange24h, {
+      decimals: 2,
+      forceDecimals: true,
+    })}%`;
   }, [pool.volumeChange24h]);
 
   const feeChangedStr = useMemo((): string => {
@@ -102,7 +118,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.rewards24hUsd]);
 
   const isWrapText = useMemo(() => {
-    return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;
+    return (
+      pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4
+    );
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
   const currentPrice = useMemo(() => {
@@ -114,11 +132,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool]);
 
   const stakeLogo = useMemo(() => {
-    return pool?.rewardTokens?.map((item) => getGnotPath(item)?.logoURI);
+    return pool?.rewardTokens?.map(item => getGnotPath(item)?.logoURI);
   }, [pool?.rewardTokens]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroPoolBin = poolBins?.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroPoolBin = poolBins?.every(
+      item =>
+        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+    );
 
     return isAllReserveZeroPoolBin;
   }, [poolBins]);
@@ -128,109 +149,170 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       <PoolPairInfoContentWrapper>
         <section>
           <h4>TVL</h4>
-          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-            <span
-              css={pulseSkeletonStyle({ h: 20, w: "170px", smallTableWidth: 140 })}
-            />
-          </SkeletonEarnDetailWrapper>}
-          {!loading && <div className="wrapper-value">
-            <strong>{liquidityValue}</strong>
-            <div>
-              {pool.tvlChange >= 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}  <span className={pool.tvlChange >= 0 ? "positive" : "negative"}> {liquidityChangedStr}</span>
-            </div>
-          </div>}
-          <div className="section-info">
-            {!loading && <>
-              <div className="section-image">
-                <MissingLogo
-                  symbol={pool?.tokenA?.symbol}
-                  url={pool?.tokenA?.logoURI}
-                  width={20}
-                  className="image-logo"
-                />
-                <span>{convertToKMB(`${tokenABalance}`)} <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>{pool?.tokenA?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenA}</span></span>
-              </div>
-              <div className="divider"></div>
-              <div className="section-image">
-                <MissingLogo
-                  symbol={pool?.tokenB?.symbol}
-                  url={pool?.tokenB?.logoURI}
-                  width={20}
-                  className="image-logo"
-                />
-                <span>{convertToKMB(`${tokenBBalance}`)} <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>{pool?.tokenB?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenB}</span></span>
-              </div>
-            </>}
-            {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+          {loading && (
+            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
               <span
-                css={pulseSkeletonStyle({ h: 20, w: "250px" })}
+                css={pulseSkeletonStyle({
+                  h: 20,
+                  w: "170px",
+                  smallTableWidth: 140,
+                })}
               />
-            </SkeletonEarnDetailWrapper>}
+            </SkeletonEarnDetailWrapper>
+          )}
+          {!loading && (
+            <div className="wrapper-value">
+              <strong>{liquidityValue}</strong>
+              <div>
+                {pool.tvlChange >= 0 ? (
+                  <IconTriangleArrowUpV2 />
+                ) : (
+                  <IconTriangleArrowDownV2 />
+                )}{" "}
+                <span className={pool.tvlChange >= 0 ? "positive" : "negative"}>
+                  {" "}
+                  {liquidityChangedStr}
+                </span>
+              </div>
+            </div>
+          )}
+          <div className="section-info">
+            {!loading && (
+              <>
+                <div className="section-image">
+                  <MissingLogo
+                    symbol={pool?.tokenA?.symbol}
+                    url={pool?.tokenA?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  <span>
+                    {convertToKMB(`${tokenABalance}`)}{" "}
+                    <span
+                      className={`token-symbol ${
+                        isWrapText ? "wrap-text" : ""
+                      }`}
+                    >
+                      {pool?.tokenA?.symbol}
+                    </span>{" "}
+                    <span className="token-percent">
+                      {depositRatioStrOfTokenA}
+                    </span>
+                  </span>
+                </div>
+                <div className="divider"></div>
+                <div className="section-image">
+                  <MissingLogo
+                    symbol={pool?.tokenB?.symbol}
+                    url={pool?.tokenB?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  <span>
+                    {convertToKMB(`${tokenBBalance}`)}{" "}
+                    <span
+                      className={`token-symbol ${
+                        isWrapText ? "wrap-text" : ""
+                      }`}
+                    >
+                      {pool?.tokenB?.symbol}
+                    </span>{" "}
+                    <span className="token-percent">
+                      {depositRatioStrOfTokenB}
+                    </span>
+                  </span>
+                </div>
+              </>
+            )}
+            {loading && (
+              <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <span css={pulseSkeletonStyle({ h: 20, w: "250px" })} />
+              </SkeletonEarnDetailWrapper>
+            )}
           </div>
         </section>
         <section>
           <h4>Volume 24h</h4>
-          {!loading && <div className="wrapper-value">
-            <strong>{volumeValue}</strong>
-            <div>
-              <IconTriangleArrowUpV2 />  <span className="positive"> {volumeChangedStr}</span>
+          {!loading && (
+            <div className="wrapper-value">
+              <strong>{volumeValue}</strong>
+              <div>
+                <IconTriangleArrowUpV2 />{" "}
+                <span className="positive"> {volumeChangedStr}</span>
+              </div>
             </div>
-          </div>}
-          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-            <span
-              css={pulseSkeletonStyle({ h: 20, w: "170px", smallTableWidth: 140 })}
-            />
-          </SkeletonEarnDetailWrapper>}
+          )}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+              <span
+                css={pulseSkeletonStyle({
+                  h: 20,
+                  w: "170px",
+                  smallTableWidth: 140,
+                })}
+              />
+            </SkeletonEarnDetailWrapper>
+          )}
           <div className="section-info flex-row">
             <span>All-Time Volume</span>
-            {!loading && <div className="section-image">
-              <span>{toUnitFormat((pool.allTimeVolumeUsd ?? 0), true, true)}</span>
-            </div>}
+            {!loading && (
+              <div className="section-image">
+                <span>
+                  {toUnitFormat(pool.allTimeVolumeUsd ?? 0, true, true)}
+                </span>
+              </div>
+            )}
 
-            {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-              <span
-                css={pulseSkeletonStyle({ h: 20, w: "50px" })}
-              />
-            </SkeletonEarnDetailWrapper>}
+            {loading && (
+              <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <span css={pulseSkeletonStyle({ h: 20, w: "50px" })} />
+              </SkeletonEarnDetailWrapper>
+            )}
           </div>
         </section>
         <section>
           <h4>APR</h4>
-          {!loading &&
+          {!loading && (
             <Tooltip
               placement="top"
-              FloatingContent={<TooltipAPR
-                feeAPR={pool?.feeApr}
-                stakingAPR={pool?.stakingApr}
-                feeLogo={feeLogo}
-                stakeLogo={stakeLogo} />}
+              FloatingContent={
+                <TooltipAPR
+                  feeAPR={pool?.feeApr}
+                  stakingAPR={pool?.stakingApr}
+                  feeLogo={feeLogo}
+                  stakeLogo={stakeLogo}
+                />
+              }
             >
               <strong>{aprValue}</strong>
-            </Tooltip>}
-          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-            <span
-              css={pulseSkeletonStyle({ h: 20, w: "170px" })}
-            />
-          </SkeletonEarnDetailWrapper>}
+            </Tooltip>
+          )}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+              <span css={pulseSkeletonStyle({ h: 20, w: "170px" })} />
+            </SkeletonEarnDetailWrapper>
+          )}
           <div className="apr-info">
             <div className="content-wrap">
               <span>Fees 24h</span>
               {!loading && <span className="apr-value">{feeChangedStr}</span>}
-              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                <span
-                  css={pulseSkeletonStyle({ h: 20, w: "50px" })}
-                />
-              </SkeletonEarnDetailWrapper>}
+              {loading && (
+                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                  <span css={pulseSkeletonStyle({ h: 20, w: "50px" })} />
+                </SkeletonEarnDetailWrapper>
+              )}
             </div>
             <AprDivider />
             <div className="content-wrap content-reward">
               <span>Rewards 24h</span>
-              {!loading && <span className="apr-value">{rewardChangedStr}</span>}
-              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                <span
-                  css={pulseSkeletonStyle({ h: 20, w: "50px" })}
-                />
-              </SkeletonEarnDetailWrapper>}
+              {!loading && (
+                <span className="apr-value">{rewardChangedStr}</span>
+              )}
+              {loading && (
+                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                  <span css={pulseSkeletonStyle({ h: 20, w: "50px" })} />
+                </SkeletonEarnDetailWrapper>
+              )}
             </div>
           </div>
         </section>
@@ -240,54 +322,72 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <div className="position-header">
             <div>Current Price</div>
             <div className="swap-price">
-              {!loading && <div className="left">
-                <MissingLogo
-                  symbol={pool?.tokenA?.symbol}
-                  url={pool?.tokenA?.logoURI}
-                  width={20}
-                  className="image-logo"
-                />
-                {width >= 768 && `1 ${pool?.tokenA?.symbol}`} = <ExchangeRate value={currentPrice} /> {pool?.tokenB?.symbol}
-              </div>}
-              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                <span
-                  css={pulseSkeletonStyle({ h: 20, w: "80px" })}
-                />
-              </SkeletonEarnDetailWrapper>}
+              {!loading && (
+                <div className="left">
+                  <MissingLogo
+                    symbol={pool?.tokenA?.symbol}
+                    url={pool?.tokenA?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  {width >= 768 && `1 ${pool?.tokenA?.symbol}`} ={" "}
+                  <ExchangeRate value={currentPrice} /> {pool?.tokenB?.symbol}
+                </div>
+              )}
+              {loading && (
+                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                  <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+                </SkeletonEarnDetailWrapper>
+              )}
               <AprDivider className="divider" />
-              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                <span
-                  css={pulseSkeletonStyle({ h: 20, w: "80px" })}
-                />
-              </SkeletonEarnDetailWrapper>}
-              {!loading && <div className="right">
-                <MissingLogo
-                  symbol={pool?.tokenB?.symbol}
-                  url={pool?.tokenB?.logoURI}
-                  width={20}
-                  className="image-logo"
-                />
-                {width >= 768 && `1 ${pool?.tokenB?.symbol}`} = <ExchangeRate value={convertToKMB(`${Number((Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2))}`, { maximumFractionDigits: 6 })} /> {pool?.tokenA?.symbol}
-              </div>}
+              {loading && (
+                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                  <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+                </SkeletonEarnDetailWrapper>
+              )}
+              {!loading && (
+                <div className="right">
+                  <MissingLogo
+                    symbol={pool?.tokenB?.symbol}
+                    url={pool?.tokenB?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  {width >= 768 && `1 ${pool?.tokenB?.symbol}`} ={" "}
+                  <ExchangeRate
+                    value={convertToKMB(
+                      `${Number(
+                        Number(1 / pool.price).toFixed(width > 400 ? 6 : 2),
+                      )}`,
+                      { maximumFractionDigits: 6 },
+                    )}
+                  />{" "}
+                  {pool?.tokenA?.symbol}
+                </div>
+              )}
             </div>
           </div>
-          {!loading && <PoolGraph
-            tokenA={pool?.tokenA}
-            tokenB={pool?.tokenB}
-            bins={poolBins ?? []}
-            currentTick={pool?.currentTick}
-            width={GRAPWIDTH}
-            height={150}
-            mouseover
-            themeKey={themeKey}
-            position="top"
-            offset={40}
-            poolPrice={pool?.price || 1}
-            showBar={!isHideBar}
-          />}
-          {loading && <LoadingChart>
-            <LoadingSpinner />
-          </LoadingChart>}
+          {!loadingBins && (
+            <PoolGraph
+              tokenA={pool?.tokenA}
+              tokenB={pool?.tokenB}
+              bins={poolBins ?? []}
+              currentTick={pool?.currentTick}
+              width={GRAPWIDTH}
+              height={150}
+              mouseover
+              themeKey={themeKey}
+              position="top"
+              offset={40}
+              poolPrice={pool?.price || 1}
+              showBar={!isHideBar}
+            />
+          )}
+          {loadingBins && (
+            <LoadingChart>
+              <LoadingSpinner />
+            </LoadingChart>
+          )}
         </div>
       </section>
     </ContentWrapper>

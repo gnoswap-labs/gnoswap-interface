@@ -67,7 +67,7 @@ interface EarnAddLiquidityProps {
   submitOneClickStaking: () => void;
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
-  createOption: { startPrice: number | null, isCreate: boolean };
+  createOption: { startPrice: number | null; isCreate: boolean };
   handleSwapValue: () => void;
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
@@ -126,7 +126,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     isEarnAdd ? false : true,
   );
   const [openedSetting, setOpenedSetting] = useState(false);
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   useEffect(() => {
     if (tokenA && tokenB && isEarnAdd) {
@@ -290,8 +290,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
       <div className="select-content">
         <article className="selector-wrapper">
           <div
-            className={`header-wrapper default-cursor ${!isEarnAdd ? "disable-text" : ""
-              }`}
+            className={`header-wrapper default-cursor ${
+              !isEarnAdd ? "disable-text" : ""
+            }`}
           >
             <h5>1. Select Pair</h5>
             {!isEarnAdd && existTokenPair && (
@@ -317,8 +318,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
         <article className="selector-wrapper selector-wrapper-fee-tier">
           <div
-            className={`header-wrapper ${!isEarnAdd || !existTokenPair ? "default-cursor" : ""
-              } ${!isEarnAdd && "disable-text"}`}
+            className={`header-wrapper ${
+              !isEarnAdd || !existTokenPair ? "default-cursor" : ""
+            } ${!isEarnAdd && "disable-text"}`}
             onClick={toggleFeeTier}
           >
             <div className="header-wrapper-title">
@@ -348,12 +350,14 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         </article>
 
         <article
-          className={`selector-wrapper ${!openedPriceRange ? "selector-wrapper-price-range" : ""
-            }`}
+          className={`selector-wrapper ${
+            !openedPriceRange ? "selector-wrapper-price-range" : ""
+          }`}
         >
           <div
-            className={`header-wrapper ${!existTokenPair ? "default-cursor" : ""
-              }`}
+            className={`header-wrapper ${
+              !existTokenPair ? "default-cursor" : ""
+            }`}
             onClick={togglePriceRange}
           >
             <div className="header-wrapper-title">

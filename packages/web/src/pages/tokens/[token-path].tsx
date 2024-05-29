@@ -13,11 +13,11 @@ import GainerAndLoserContainer from "@containers/gainer-and-loser-container/Gain
 import { useLoading } from "@hooks/common/use-loading";
 
 export default function Token() {
-  const { isLoadingCommon } = useLoading();
+  const { isLoading } = useLoading();
   return (
     <TokenLayout
       header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer isLoading={isLoadingCommon} w="102px"/>}
+      breadcrumbs={<BreadcrumbsContainer isLoading={isLoading} w="102px" />}
       chart={<TokenChartContainer />}
       info={<TokenInfoContentContainer />}
       description={<TokenDescriptionContainer />}

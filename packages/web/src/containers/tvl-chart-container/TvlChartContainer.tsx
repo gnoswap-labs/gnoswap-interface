@@ -1,13 +1,11 @@
 import React, { useCallback, useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import TvlChart from "@components/dashboard/tvl-chart/TvlChart";
 import { CHART_TYPE } from "@constants/option.constant";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { TvlResponse } from "@repositories/dashboard";
 import dayjs from "dayjs";
 import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { getLocalizeTime } from "@utils/chart";
+import { useGetDashboardTVL } from "@query/dashboard";
 
 export interface TvlPriceInfo {
   amount: string;
@@ -146,16 +144,13 @@ const parseDate = (dateString: string) => {
 // }
 
 const TvlChartContainer: React.FC = () => {
-  const { dashboardRepository } = useGnoswapContext();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const [tvlChartType, setTvlChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],
   );
 
-  const { data: tvlData, isLoading } = useQuery<TvlResponse, Error>({
-    queryKey: ["dashboardTvl"],
-    queryFn: dashboardRepository.getDashboardTvl,
+  const { data: tvlData, isLoading } = useGetDashboardTVL({
     refetchInterval: 60 * 1000,
   });
   const changeTvlChartType = useCallback((newType: string) => {
@@ -207,7 +202,6 @@ const TvlChartContainer: React.FC = () => {
       },
       { xAxisLabels: [], datas: [] } as TvlChartInfo,
     );
-
   }, [tvlChartType, tvlData]);
 
   return (
@@ -215,7 +209,9 @@ const TvlChartContainer: React.FC = () => {
       tvlChartType={tvlChartType}
       changeTvlChartType={changeTvlChartType}
       tvlPriceInfo={{
-        amount: tvlData?.latest ? `$${removeTrailingZeros(prettyNumber(tvlData?.latest))}` : "-",
+        amount: tvlData?.latest
+          ? `$${removeTrailingZeros(prettyNumber(tvlData?.latest))}`
+          : "-",
       }}
       tvlChartInfo={chartData ?? { xAxisLabels: [], datas: [] }}
       loading={isLoading || isLoadingCommon}

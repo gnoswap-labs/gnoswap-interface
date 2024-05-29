@@ -51,12 +51,16 @@ export class PositionMapper {
       unclaimedFeeBAmount: Number(position.unclaimedFeeBAmount),
       apr: `${position.apr}` ?? "",
       stakedAt: position.stakedAt || "",
-      stakedUsdValue: position.stakedUsdValue || "0",
+      stakedUsdValue: position.stakedUsd || "0",
       reward: position.reward?.map(PositionMapper.rewardFromResponse) || [],
       closed: position.closed,
-      totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
+      totalDailyRewardsUsd: toUnitFormat(
+        position.totalDailyRewardsUsd,
+        true,
+        true,
+      ),
       bins40: [],
-      totalClaimedUsd: position.totalClaimedUsd,
+      totalClaimedUsd: position.totalClaimedUsd || "0",
       usdValue: Number(position.usdValue),
       incentiveType: position.incentiveType as INCENTIVE_TYPE,
     };
@@ -69,12 +73,11 @@ export class PositionMapper {
   public static rewardFromResponse(reward: RewardResponse): RewardModel {
     return {
       rewardToken: reward.rewardToken,
-      accuReward1D:
-        reward.accuReward1D !== "" ? reward.accuReward1D : null,
+      accuReward1D: reward.accuReward1D !== "" ? reward.accuReward1D : null,
       apr: reward.apr !== "" ? Number(reward.apr) : null,
       totalAmount: Number(reward.totalAmount),
       claimableAmount: Number(reward.claimableAmount),
-      claimableUsd: reward.claimableUsd,
+      claimableUsd: reward.claimableUsd || "0",
       rewardType: reward.rewardType.toUpperCase() as RewardType,
     };
   }

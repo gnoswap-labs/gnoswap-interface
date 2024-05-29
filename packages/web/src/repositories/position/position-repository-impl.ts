@@ -88,12 +88,22 @@ export class PositionRepositoryImpl implements PositionRepository {
     return PositionBinMapper.fromList(response.data.data);
   };
 
-  getPositionsByAddress = async (address: string, options?: { isClosed?: boolean }): Promise<PositionModel[]> => {
+  getPositionsByAddress = async (
+    address: string,
+    options?: { isClosed?: boolean },
+  ): Promise<PositionModel[]> => {
     const response = await this.networkClient.get<{
       data: PositionListResponse;
     }>({
-      url: "/users/" + address + "/position" + (options?.isClosed !== undefined ? `?closed=${options.isClosed}` : ""),
+      url:
+        "/users/" +
+        address +
+        "/position" +
+        (options?.isClosed !== undefined ? `?closed=${options.isClosed}` : ""),
     });
+    if (!response?.data?.data) {
+      return [];
+    }
     return PositionMapper.fromList(response.data.data);
   };
 
@@ -251,8 +261,8 @@ export class PositionRepositoryImpl implements PositionRepository {
       tokenAWrappedPath === WRAPPED_GNOT_PATH
         ? tokenAAmountRaw
         : tokenBWrappedPath
-          ? tokenBAmountRaw
-          : null;
+        ? tokenBAmountRaw
+        : null;
 
     // Make Approve messages that can be managed by a Pool package of tokens.
     const approveMessages = [

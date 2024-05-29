@@ -46,24 +46,7 @@ export interface PositionResponse {
 
   unclaimedFeeBUsd: string;
 
-  // TODO: Remove later
-  // reward?: RewardResponse[];
-
-  // unclaimedFee0Usd: string;
-
-  // tokensOwed1Usd: string;
-
-  // tokensOwed0Amount: string;
-
-  // tokensOwed1Amount: string;
-
-  // tokensOwed0Usd: string;
-
-  // bins: PoolBinModel[];
-
   totalDailyRewardsUsd: string;
 
-  stakedUsdValue?: string;
-
-  // unclaimedFee1Usd: string;
+  stakedUsd?: string;
 }

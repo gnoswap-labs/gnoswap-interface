@@ -1,6 +1,6 @@
+import React, { useCallback, useMemo, useState } from "react";
 import {
   RANGE_STATUS_OPTION,
-  // RewardType,
   SwapFeeTierInfoMap,
 } from "@constants/option.constant";
 import { POSITION_CONTENT_LABEL } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
@@ -12,7 +12,6 @@ import {
   MyPositionCardWrapperBorder,
 } from "./MyPositionCard.styles";
 import BarAreaGraph from "../bar-area-graph/BarAreaGraph";
-import { useMemo, useState } from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import {
   isEndTickBy,
@@ -27,6 +26,7 @@ import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
 import { toUnitFormat } from "@utils/number-utils";
 import { numberToRate } from "@utils/string-utils";
 import { useGetLazyPositionBins } from "@query/positions";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -55,8 +55,21 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
+  const [isMouseoverGraph, setIsMouseoverGraph] = useState(false);
 
-  const { data: bins40 } = useGetLazyPositionBins(position.lpTokenId, 40, viewMyRange);
+  const { data: bins40, isFetched: isFetchedBins } = useGetLazyPositionBins(
+    position.lpTokenId,
+    40,
+    isMouseoverGraph,
+  );
+
+  const onMouseoverViewMyRange = useCallback(() => {
+    setIsMouseoverGraph(true);
+  }, []);
+
+  const onMouseoutViewMyRange = useCallback(() => {
+    setIsMouseoverGraph(false);
+  }, []);
 
   const poolBins = useMemo(() => {
     return (bins40 ?? []).map(item => ({
@@ -131,10 +144,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minTickLabel = useMemo(() => {
     return minTickRate * -1 > 1000
       ? ">999%"
-      : `${minTickRate < 0 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-        ? "<1"
-        : Math.round(minTickRate * -1)
-      }%`;
+      : `${minTickRate < 0 ? "+" : ""}${
+          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+            ? "<1"
+            : Math.round(minTickRate * -1)
+        }%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
@@ -144,7 +158,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     return maxTickRate >= 1000
       ? ">999%"
-      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)}%`;
+      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${
+          Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+        }%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
@@ -167,7 +183,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -185,7 +201,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -230,6 +246,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     e.stopPropagation();
     setViewMyRange(!viewMyRange);
   };
+
   const getMinTick = useMemo(() => {
     if (!minTickPosition) {
       return null;
@@ -269,6 +286,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return maxTickRate > 0 ? "positive" : "negative";
   }, [getMaxTick, maxTickRate]);
+
   const claimableUSD = useMemo(() => {
     const temp = position.reward.reduce(
       (acc, cur) => Number(cur.claimableUsd) + acc,
@@ -276,7 +294,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     );
     return toUnitFormat(temp, true, true);
   }, [position.reward]);
-
 
   return (
     <MyPositionCardWrapperBorder
@@ -310,8 +327,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
                   : inRange
-                    ? RANGE_STATUS_OPTION.IN
-                    : RANGE_STATUS_OPTION.OUT
+                  ? RANGE_STATUS_OPTION.IN
+                  : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>
@@ -335,7 +352,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               {claimableUSD}
             </div>
           </div>
-          <div className="view-my-range">
+          <div
+            className="view-my-range"
+            onMouseOver={onMouseoverViewMyRange}
+            onMouseOut={onMouseoutViewMyRange}
+          >
             <span onClick={onClickViewRange}>
               View my range <IconStrokeArrowUp />
             </span>
@@ -351,35 +372,43 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 Hide my range <IconStrokeArrowDown />
               </span>
             </div>
-            <div className="chart-wrapper">
-              <BarAreaGraph
-                width={GRAPH_WIDTH}
-                height={GRAPH_HEIGHT}
-                currentTick={pool.currentTick}
-                minLabel={minTickLabel}
-                maxLabel={maxTickLabel}
-                minTick={minTickPosition}
-                maxTick={maxTickPosition}
-                poolBins={poolBins}
-                tokenA={tokenA}
-                tokenB={tokenB}
-                isHiddenStart={isHiddenStart}
-                currentIndex={currentIndex}
-                themeKey={themeKey}
-                minTickRate={minTickRate}
-                maxTickRate={maxTickRate}
-                pool={pool}
-                positionBins={positionBins}
-              />
-            </div>
-            <div className="min-max-price">
-              <p className={`label-text ${startClass}`}>
-                {minPriceStr}(<span>{minTickLabel}</span>) ~
-              </p>
-              <p className={`label-text ${endClass}`}>
-                {maxPriceStr}(<span>{maxTickLabel}</span>) {tokenB.symbol}
-              </p>
-            </div>
+            {isFetchedBins ? (
+              <React.Fragment>
+                <div className="chart-wrapper">
+                  <BarAreaGraph
+                    width={GRAPH_WIDTH}
+                    height={GRAPH_HEIGHT}
+                    currentTick={pool.currentTick}
+                    minLabel={minTickLabel}
+                    maxLabel={maxTickLabel}
+                    minTick={minTickPosition}
+                    maxTick={maxTickPosition}
+                    poolBins={poolBins}
+                    tokenA={tokenA}
+                    tokenB={tokenB}
+                    isHiddenStart={isHiddenStart}
+                    currentIndex={currentIndex}
+                    themeKey={themeKey}
+                    minTickRate={minTickRate}
+                    maxTickRate={maxTickRate}
+                    pool={pool}
+                    positionBins={positionBins}
+                  />
+                </div>
+                <div className="min-max-price">
+                  <p className={`label-text ${startClass}`}>
+                    {minPriceStr}(<span>{minTickLabel}</span>) ~
+                  </p>
+                  <p className={`label-text ${endClass}`}>
+                    {maxPriceStr}(<span>{maxTickLabel}</span>) {tokenB.symbol}
+                  </p>
+                </div>
+              </React.Fragment>
+            ) : (
+              <div className="graph-loading-wrapper">
+                <LoadingSpinner className="icon-loading" size={"SMALL"} />
+              </div>
+            )}
           </div>
         </MyPositionCardWrapper>
       </div>

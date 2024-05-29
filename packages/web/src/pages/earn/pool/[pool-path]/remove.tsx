@@ -5,7 +5,7 @@ import RemoveLiquidityContainer from "@containers/remove-liquidity-container/Rem
 import { useWindowSize } from "@hooks/common/use-window-size";
 import PoolRemoveLayout from "@layouts/pool-remove-layout/PoolRemoveLayout";
 import React, { useMemo } from "react";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
@@ -15,18 +15,21 @@ export default function Earn() {
   const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.query["pool-path"];
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
   const { getGnotPath } = useGnotToGnot();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const listBreadcrumb = useMemo(() => {
     return [
       { title: "Earn", path: "/earn" },
       {
         title:
-          (width > DeviceSize.mediumWeb)
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
-            }%)`
+          width > DeviceSize.mediumWeb
+            ? `${getGnotPath(data?.tokenA).symbol}/${
+                getGnotPath(data?.tokenB).symbol
+              } (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool/${poolPath}`,
       },
@@ -36,7 +39,12 @@ export default function Earn() {
   return (
     <PoolRemoveLayout
       header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading}/>}
+      breadcrumbs={
+        <BreadcrumbsContainer
+          listBreadcrumb={listBreadcrumb}
+          isLoading={isLoadingCommon || isLoading}
+        />
+      }
       removeLiquidity={<RemoveLiquidityContainer />}
       footer={<Footer />}
     />

@@ -17,7 +17,7 @@ import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useAtom } from "jotai";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo } from "react";
 
 export interface Props {

@@ -7,7 +7,7 @@ import EarnLayout from "@layouts/earn-layout/EarnLayout";
 import EarnIncentivizedPools from "@components/earn/earn-incentivized-pools/EarnIncentivizedPools";
 import EarnMyPositionContainer from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 
 export default function Earn() {
   const { account } = useWallet();
@@ -18,7 +18,12 @@ export default function Earn() {
   return (
     <EarnLayout
       header={<HeaderContainer />}
-      positions={<EarnMyPositionContainer isOtherPosition={isOtherPosition} address={(addr || "") as string} />}
+      positions={
+        <EarnMyPositionContainer
+          isOtherPosition={isOtherPosition}
+          address={(addr || "") as string}
+        />
+      }
       incentivizedPools={
         <EarnIncentivizedPools
           isOtherPosition={isOtherPosition}

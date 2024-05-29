@@ -49,7 +49,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 }) => {
   const { getGnotPath } = useGnotToGnot();
   const [shiftPosition, setShiftPosition] = useState(0);
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
 
@@ -295,19 +295,21 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <div className="button-option-contaier">
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${isLoading || showDim || !availMoveLeft
+                      className={`graph-option-item decrease ${
+                        isLoading || showDim || !availMoveLeft
                           ? "disabled-option"
                           : ""
-                        }`}
+                      }`}
                       onClick={moveLeft}
                     >
                       <IconKeyboardArrowLeft />
                     </span>
                     <span
-                      className={`graph-option-item increase ${isLoading || showDim || !availMoveRight
+                      className={`graph-option-item increase ${
+                        isLoading || showDim || !availMoveRight
                           ? "disabled-option"
                           : ""
-                        }`}
+                      }`}
                       onClick={moveRight}
                     >
                       <IconKeyboardArrowRight />
@@ -315,19 +317,21 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   </div>
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${isLoading || showDim || !availZoomOut
+                      className={`graph-option-item decrease ${
+                        isLoading || showDim || !availZoomOut
                           ? "disabled-option"
                           : ""
-                        }`}
+                      }`}
                       onClick={zoomOut}
                     >
                       <IconRemove />
                     </span>
                     <span
-                      className={`graph-option-item increase ${isLoading || showDim || !availZoomIn
+                      className={`graph-option-item increase ${
+                        isLoading || showDim || !availZoomIn
                           ? "disabled-option"
                           : ""
-                        }`}
+                      }`}
                       onClick={zoomIn}
                     >
                       <IconAdd />

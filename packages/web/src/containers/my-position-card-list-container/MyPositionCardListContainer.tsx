@@ -1,6 +1,6 @@
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import React, { useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
 

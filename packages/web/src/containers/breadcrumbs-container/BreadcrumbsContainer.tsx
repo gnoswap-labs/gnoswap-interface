@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import Breadcrumbs from "@components/common/breadcrumbs/Breadcrumbs";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGetTokenByPath } from "@query/token";
 
@@ -28,12 +28,16 @@ const getMapping: any = (symbol: any) => {
 };
 
 interface Props {
-  listBreadcrumb?: { title: string, path: string } [];
+  listBreadcrumb?: { title: string; path: string }[];
   isLoading?: boolean;
   w?: string;
 }
 
-const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading, w = "200px" }) => {
+const BreadcrumbsContainer: React.FC<Props> = ({
+  listBreadcrumb,
+  isLoading,
+  w = "200px",
+}) => {
   const router = useRouter();
   const path = router.query["token-path"] as string;
   const { data: tokenB } = useGetTokenByPath(path, {
@@ -63,7 +67,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading, w = 
   };
 
   if (isLoading) {
-    return <div css={pulseSkeletonStyle({ w: w, h: 26 })}/>;
+    return <div css={pulseSkeletonStyle({ w: w, h: 26 })} />;
   }
 
   return <Breadcrumbs steps={removePoolSteps} onClickPath={onClickPath} />;

@@ -7,7 +7,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import RepositionLayout from "@layouts/reposition/RepositionLayout";
 import { DeviceSize } from "@styles/media";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 
@@ -19,7 +19,7 @@ export default function EarnAdd() {
     enabled: !!poolPath,
   });
   const { getGnotPath } = useGnotToGnot();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const listBreadcrumb = useMemo(() => {
     return [

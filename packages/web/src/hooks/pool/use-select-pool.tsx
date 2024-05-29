@@ -117,7 +117,7 @@ export const useSelectPool = ({
     "NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH"
   >("NONE");
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
-  const { isLoadingCommon } = useLoading();
+  const { isLoading } = useLoading();
   const [, setGlobalCompareToken] = useAtom(EarnState.currentCompareToken);
 
   const tokenAPath = useMemo(
@@ -299,7 +299,7 @@ export const useSelectPool = ({
       }
       if (
         isLoadingPoolInfo ||
-        (isIgnoreDefaultLoading ? isLoadingCommon : null)
+        (isIgnoreDefaultLoading ? isLoading : null)
       ) {
         return "LOADING";
       }
@@ -311,7 +311,7 @@ export const useSelectPool = ({
       startPrice,
       tokenA,
       tokenB,
-      isLoadingCommon,
+      isLoading,
       isLoadingPoolInfo,
     ],
   );
