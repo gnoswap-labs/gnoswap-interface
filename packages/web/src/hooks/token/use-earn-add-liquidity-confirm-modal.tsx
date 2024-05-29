@@ -26,8 +26,8 @@ import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-
 import { convertToKMB } from "@utils/stake-position-utils";
 import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import { GNS_TOKEN_PATH } from "@common/clients/wallet-client/transaction-messages";
 import { useGetPoolCreationFee } from "@query/pools";
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;

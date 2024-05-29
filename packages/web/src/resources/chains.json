@@ -1,6 +1,12 @@
 [
   {
     "name": "GNO.LAND",
+    "chainId": "portal-loop",
+    "rpcUrl": "https://rpc.gno.land",
+    "wsUrl": "wss://rpc.gno.land/websocket"
+  },
+  {
+    "name": "GNO.LAND",
     "chainId": "test3",
     "rpcUrl": "https://rpc.test3.gno.land",
     "wsUrl": "wss://rpc.test3.gno.land/websocket"

@@ -1,12 +1,14 @@
+import {
+  PACKAGE_POOL_ADDRESS,
+  PACKAGE_ROUTER_ADDRESS,
+  PACKAGE_STAKER_ADDRESS,
+  PACKAGE_STAKER_PATH,
+} from "@constants/environment.constant";
 import { toNativePath } from "@utils/common";
 import {
   makeApproveMessage,
   makeGNOTSendAmount,
   makeTransactionMessage,
-  PACKAGE_POOL_ADDRESS,
-  PACKAGE_ROUTER_ADDRESS,
-  PACKAGE_STAKER_ADDRESS,
-  PACKAGE_STAKER_PATH,
 } from "./common";
 
 export function makePoolTokenApproveMessage(

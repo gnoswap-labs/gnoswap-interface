@@ -23,7 +23,7 @@ import { SwapPoolResponse } from "./response/swap-pool-response";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
-import { PACKAGE_POOL_ADDRESS, PACKAGE_POOL_PATH } from "@common/clients/wallet-client/transaction-messages";
+import { PACKAGE_POOL_ADDRESS, PACKAGE_POOL_PATH } from "@constants/environment.constant";
 
 const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
 

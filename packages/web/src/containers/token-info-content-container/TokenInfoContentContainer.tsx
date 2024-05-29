@@ -6,8 +6,7 @@ import useRouter from "@hooks/common/use-custom-router";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { checkPositivePrice } from "@utils/common";
 import { useLoading } from "@hooks/common/use-loading";
-import { WRAPPED_GNOT_PATH as ENV_WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
-const WRAPPED_GNOT_PATH = ENV_WRAPPED_GNOT_PATH || "";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 
 export const performanceInit = [
   {

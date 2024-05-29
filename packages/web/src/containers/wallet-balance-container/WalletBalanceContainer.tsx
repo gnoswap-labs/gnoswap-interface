@@ -21,9 +21,9 @@ import { useGetTokenPrices } from "@query/token";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useState, useMemo } from "react";
 import { useLoading } from "@hooks/common/use-loading";
-import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 import { isEmptyObject } from "@utils/validation-utils";
 import { toUnitFormat } from "@utils/number-utils";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 
 export interface BalanceSummaryInfo {
   amount: string;
