@@ -148,7 +148,6 @@ export const ModalContainer = styled.div`
           > div {
             overflow: hidden;
             text-overflow: ellipsis;
-            direction: rtl;
             white-space: nowrap;
           }
           padding: 1.5px 4px;
@@ -279,17 +278,17 @@ export const TokenInfoWrapper = styled.div<Props>`
   }};
   .token-path {
     max-width: ${({ tokenNameWidthList, maxWidth }) => {
-      return `calc(460px - 158px - ${maxWidth}px - ${tokenNameWidthList}px)`;
-    }};
+    return `calc(460px - 158px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+  }};
   }
   ${media.mobile} {
     max-width: ${({ maxWidth }) => {
-      return `calc(328px - 96px - ${maxWidth}px)`;
-    }};
+    return `calc(328px - 96px - ${maxWidth}px)`;
+  }};
     .token-path {
       max-width: ${({ tokenNameWidthList, maxWidth }) => {
-        return `calc(328px - 104px - ${maxWidth}px - ${tokenNameWidthList}px)`;
-      }};
+    return `calc(328px - 104px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+  }};
     }
   }
 `;

@@ -1,5 +1,5 @@
 // TODO : remove eslint-disable after work
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
@@ -98,6 +98,15 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     return path_.replace("gno.land", "...");
   }, [isNative, path]);
 
+  const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
+    e.stopPropagation();
+    if (path === "gnot") {
+      window.open("https://gnoscan.io/", "_blank");
+    } else {
+      window.open("https://gnoscan.io/tokens/" + makeId(path), "_blank");
+    }
+  }, []);
+
   return (
     <TokenInfoWrapper>
       <HoverSection onClick={() => onClickItem(token.path)}>
@@ -115,7 +124,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <div className="token-name-symbol-path">
             <div className="token-name-path">
               <strong className="token-name">{token.name}</strong>
-              <div className="token-path">
+              <div className="token-path" onClick={(e) => onClickPath(e, path)}>
                 <div>{tokenPathDisplay}</div>
                 <IconOpenLink
                   viewBox="0 0 22 22"

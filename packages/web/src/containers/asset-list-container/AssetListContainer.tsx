@@ -278,8 +278,8 @@ const AssetListContainer: React.FC = () => {
           price: isSwitchNetwork
             ? "-"
             : checkPrice
-            ? "<$0.01"
-            : toPriceFormat(price, { isFormat: false }),
+              ? "<$0.01"
+              : toPriceFormat(price, { isFormat: false }),
           balance: isSwitchNetwork
             ? "0"
             : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
@@ -406,8 +406,8 @@ const AssetListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setTokenSortOption({
         key,

@@ -23,7 +23,6 @@ export const HoverSection = styled.div`
   }
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
-    
   }
 `;
 
@@ -81,6 +80,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.last7days-graph {
     display: flex;
   }
+  
   &.name-col {
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     .token-name-symbol-path {
@@ -92,6 +92,14 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
         gap: 8px;
 
         .token-path {
+          &:hover {
+            color: ${({ theme }) => theme.color.text03};
+            .path-link-icon {
+              path {
+                fill: ${({ theme }) => theme.color.text03};
+              }
+            }
+          }
           ${mixins.flexbox("row", "flex-start", "flex-start")}
           ${fonts.p6};
           color: ${({ theme }) => theme.color.text04};
@@ -106,12 +114,16 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
           }
         }
       }
-    }
-    .token-name {
-      ${fonts.body11};
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      .token-name {
+        ${fonts.body11};
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      },
+      .token-symbol {
+        ${fonts.p4};
+        color: ${({ theme }) => theme.color.text04};
+      }
     }
   }
 
@@ -120,10 +132,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     height: 24px;
   }
 
-  .token-symbol {
-    ${fonts.p4};
-    color: ${({ theme }) => theme.color.text04};
-  }
+  
   .fee-rate,
   .token-index {
     ${fonts.body12};
