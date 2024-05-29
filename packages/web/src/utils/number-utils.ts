@@ -364,6 +364,9 @@ export const formatUSDWallet = (
 };
 
 export function removeTrailingZeros(value: string) {
+  if (BigNumber(value).isZero()) {
+    return "0";
+  }
   return value.replace(/\.?0+$/, "");
 }
 
