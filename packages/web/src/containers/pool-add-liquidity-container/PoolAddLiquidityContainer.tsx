@@ -496,15 +496,19 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tokenA: currentTokenA
           ? {
             ...currentTokenA,
-            logoURI: getGnotPath(currentTokenA).logoURI,
+            path: getGnotPath(currentTokenA).path,
+            name: getGnotPath(currentTokenA).name,
             symbol: getGnotPath(currentTokenA).symbol,
+            logoURI: getGnotPath(currentTokenA).logoURI,
           }
           : null,
         tokenB: currentTokenB
           ? {
             ...currentTokenB,
-            logoURI: getGnotPath(currentTokenB).logoURI,
+            path: getGnotPath(currentTokenB).path,
+            name: getGnotPath(currentTokenB).name,
             symbol: getGnotPath(currentTokenB).symbol,
+            logoURI: getGnotPath(currentTokenB).logoURI,
           }
           : null,
       }));

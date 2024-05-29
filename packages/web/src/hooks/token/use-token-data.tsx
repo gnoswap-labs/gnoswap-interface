@@ -35,10 +35,10 @@ export const useTokenData = () => {
     refetchInterval: PATH.includes(router.pathname)
       ? 15 * 1000
       : router.pathname === "/" || router.pathname === "/earn/add"
-      ? 10 * 1000
-      : PATH_60SECOND.includes(router.pathname)
-      ? 60 * 1000
-      : false,
+        ? 10 * 1000
+        : PATH_60SECOND.includes(router.pathname)
+          ? 60 * 1000
+          : false,
   });
   const {
     data: tokenPrices = {},
@@ -47,6 +47,7 @@ export const useTokenData = () => {
   } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
+  console.log("🚀 ~ useTokenData ~ account:", account);
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loadingBalance, setLoadingBalance] = useAtom(
@@ -145,29 +146,29 @@ export const useTokenData = () => {
       .map(token =>
         tokenPrices[token.path]
           ? {
-              token: {
-                ...token,
-                symbol: getGnotPath(token).symbol,
-                name: getGnotPath(token).name,
-                logoURI: getGnotPath(token).logoURI,
-              },
-              upDown: "none" as UpDownType,
-              content: `${toUnitFormat(
-                tokenPrices[token.path].usd,
-                true,
-                false,
-              )}`,
-            }
-          : {
-              token: {
-                ...token,
-                symbol: getGnotPath(token).symbol,
-                name: getGnotPath(token).name,
-                logoURI: getGnotPath(token).logoURI,
-              },
-              upDown: "none" as UpDownType,
-              content: "-",
+            token: {
+              ...token,
+              symbol: getGnotPath(token).symbol,
+              name: getGnotPath(token).name,
+              logoURI: getGnotPath(token).logoURI,
             },
+            upDown: "none" as UpDownType,
+            content: `${toUnitFormat(
+              tokenPrices[token.path].usd,
+              true,
+              false,
+            )}`,
+          }
+          : {
+            token: {
+              ...token,
+              symbol: getGnotPath(token).symbol,
+              name: getGnotPath(token).name,
+              logoURI: getGnotPath(token).logoURI,
+            },
+            upDown: "none" as UpDownType,
+            content: "-",
+          },
       )
       .filter((_: CardListTokenInfo) => _.content !== "-")
       .slice(0, 3);
@@ -206,7 +207,7 @@ export const useTokenData = () => {
     forceRefect({ queryKey: [QUERY_KEY.tokenPrices] });
   }
 
-  async function fetchTokenBalance(token: TokenModel) {
+  const fetchTokenBalance = useCallback(async (token: TokenModel) => {
     if (!rpcProvider || !account) {
       return null;
     }
@@ -224,10 +225,10 @@ export const useTokenData = () => {
       return res;
     }
     return null;
-  }
+  }, [account, rpcProvider]);
 
-  async function updateBalances() {
-    if (!rpcProvider) {
+  const updateBalances = useCallback(async () => {
+    if (!rpcProvider || !account) {
       return;
     }
     if (isEmptyObject(balances) && loadingBalance) {
@@ -244,6 +245,7 @@ export const useTokenData = () => {
         };
       }),
     );
+    console.log("🚀 ~ updateBalances ~ fetchResults:", fetchResults);
     const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
@@ -258,7 +260,7 @@ export const useTokenData = () => {
       setBalances(balancesData);
     }
     setLoadingBalance(false);
-  }
+  }, [account, balances, fetchTokenBalance, loadingBalance, rpcProvider, tokens]);
 
   return {
     gnotToken,

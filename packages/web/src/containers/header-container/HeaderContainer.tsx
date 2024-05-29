@@ -19,7 +19,7 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
 import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -47,6 +47,7 @@ export interface Token {
   apr?: string;
   volume?: string;
   liquidity: number;
+  isNative: boolean
 }
 
 export const RecentdummyToken: Token[] = [
@@ -74,6 +75,7 @@ export const RecentdummyToken: Token[] = [
     fee: "0.03%",
     isLiquid: true,
     liquidity: 0,
+    isNative: false,
   },
   {
     path: Math.floor(Math.random() * 50 + 1).toString(),
@@ -98,6 +100,7 @@ export const RecentdummyToken: Token[] = [
     },
     liquidity: 0,
     fee: "0.03%",
+    isNative: false,
   },
   {
     path: Math.floor(Math.random() * 50 + 1).toString(),
@@ -122,6 +125,7 @@ export const RecentdummyToken: Token[] = [
     },
     fee: "0.03%",
     liquidity: 0,
+    isNative: false,
   },
 ];
 
@@ -143,6 +147,7 @@ export const PopulardummyToken: Token[] = [
     },
     fee: "0.03%",
     liquidity: 0,
+    isNative: false,
   },
 ];
 
@@ -228,13 +233,12 @@ const HeaderContainer: React.FC = () => {
         });
         return {
           ...item,
-          apr: `${
-            !item_.apr
-              ? "-"
-              : Number(item_.apr) > 10
+          apr: `${!item_.apr
+            ? "-"
+            : Number(item_.apr) > 10
               ? `${item_.apr}% APR`
               : `${Number(item_.apr).toFixed(2)}% APR`
-          }`,
+            }`,
           price: price,
         };
       }
@@ -282,6 +286,7 @@ const HeaderContainer: React.FC = () => {
           isLiquid: true,
           apr: aprRate === "-" ? aprRate : `${aprRate} APR`,
           liquidity: Number(item ? item.tvl : "0"),
+          isNative: isNativeToken(item.tokenA)
         };
       })
       .sort((a, b) => b.liquidity - a.liquidity)
@@ -341,6 +346,7 @@ const HeaderContainer: React.FC = () => {
           isLiquid: false,
           volume: transferData.volume ?? "0",
           liquidity: 0,
+          isNative: isNativeToken(item),
         };
       })
       .sort((a, b) => Number(b.volume) - Number(a.volume))

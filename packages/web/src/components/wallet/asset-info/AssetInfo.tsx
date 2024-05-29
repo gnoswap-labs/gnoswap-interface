@@ -11,6 +11,10 @@ import {
 import { DEVICE_TYPE } from "@styles/media";
 import BigNumber from "bignumber.js";
 import { makeId } from "@utils/common";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
+import { useTheme } from "@emotion/react";
+import { isNativeToken } from "@models/token/token-model";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface AssetInfoProps {
   asset: Asset;
@@ -28,6 +32,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   withdraw,
   breakpoint,
 }) => {
+  const theme = useTheme();
   const { logoURI, name, symbol, balance, type, path, price } = asset;
   const onClickItem = useCallback((path: string) => {
     location.href = `/tokens/${makeId(path)}`;
@@ -49,20 +54,69 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
 
   const priceData = ["-", "<$0.01"].includes(price) ? price : `$${price}`;
 
+  const tokenPathDisplay = useMemo(() => {
+    const path_ = path;
+
+    if (isNativeToken(asset)) return "Native coin";
+
+    const tokenPathArr = path_.split("/");
+
+    if (tokenPathArr.length <= 0) return path_;
+
+    const lastPath = tokenPathArr[tokenPathArr.length - 1];
+
+    if (lastPath.length >= 12) {
+      return "..." + tokenPathArr[tokenPathArr.length - 1].slice(length - 12, length - 1);
+    }
+
+    return path_.replace("gno.land", "...");
+  }, [asset, path]);
+
+
+  const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
+    e.stopPropagation();
+    if (path === "gnot") {
+      window.open("https://gnoscan.io/", "_blank");
+    } else {
+      window.open("https://gnoscan.io/tokens/" + makeId(path), "_blank");
+    }
+  }, []);
+
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
       <TableColumn
-        className="left pointer"
+        className="name-col left-padding left pointer "
         tdWidth={ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(path)}
       >
-        {logoURI ? (
+        <MissingLogo
+          symbol={symbol}
+          url={logoURI}
+          className="logo"
+          width={28}
+          mobileWidth={28}
+        />
+        <div className="token-name-symbol-path">
+          <div className="token-name-path">
+            <strong className="token-name">{name}</strong>
+            <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, path)}>
+              <div>{tokenPathDisplay}</div>
+              <IconOpenLink
+                viewBox="0 0 22 22"
+                fill={theme.color.text04}
+                className="path-link-icon" />
+            </div>
+          </div>
+          <span className="token-symbol">{symbol}</span>
+        </div>
+
+        {/* {logoURI ? (
           <img src={logoURI} alt="logo" className="logo" />
         ) : (
           <div className="missing-logo">{symbol.slice(0, 3)}</div>
         )}
         <span className="name">{name}</span>
-        <span className="symbol">{symbol}</span>
+        <span className="symbol">{symbol}</span> */}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[1]}>
         <span className="chain">
@@ -85,13 +139,30 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   ) : breakpoint !== DEVICE_TYPE.MOBILE ? (
     <AssetInfoWrapper>
       <TableColumn
-        className="left"
+        className="name-col left-padding left"
         tdWidth={TABLET_ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(symbol)}
       >
-        <img className="logo" src={logoURI} alt="logo" />
-        <span className="name">{name}</span>
-        <span className="symbol">{symbol}</span>
+        <MissingLogo
+          symbol={symbol}
+          url={logoURI}
+          className="logo"
+          width={28}
+          mobileWidth={28}
+        />
+        <div className="token-name-symbol-path">
+          <div className="token-name-path">
+            <strong className="token-name">{name}</strong>
+            <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, path)}>
+              <div>{tokenPathDisplay}</div>
+              <IconOpenLink
+                viewBox="0 0 22 22"
+                fill={theme.color.text04}
+                className="path-link-icon" />
+            </div>
+          </div>
+          <span className="token-symbol">{symbol}</span>
+        </div>
       </TableColumn>
       <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[1]}>
         <span className="chain">
@@ -114,13 +185,30 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   ) : (
     <AssetInfoWrapper>
       <TableColumn
-        className="left"
+        className="name-col left-padding left"
         tdWidth={MOBILE_ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(symbol)}
       >
-        <img className="logo" src={logoURI} alt="logo" />
-        <span className="name">{name}</span>
-        <span className="symbol">{symbol}</span>
+        <MissingLogo
+          symbol={symbol}
+          url={logoURI}
+          className="logo"
+          width={28}
+          mobileWidth={28}
+        />
+        <div className="token-name-symbol-path">
+          <div className="token-name-path">
+            <strong className="token-name">{name}</strong>
+            <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, path)}>
+              <div>{tokenPathDisplay}</div>
+              <IconOpenLink
+                viewBox="0 0 22 22"
+                fill={theme.color.text04}
+                className="path-link-icon" />
+            </div>
+          </div>
+          <span className="token-symbol">{symbol}</span>
+        </div>
       </TableColumn>
       <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[1]}>
         <span className="chain">

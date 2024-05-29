@@ -96,6 +96,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
 
+  const isSmallWidth = useMemo(() => width < 300, [width]);
+
   // D3 - Dimension Definition
   const minX = d3.min(bins, bin => bin.minTick - defaultMinX) || 0;
   const maxX = d3.max(bins, bin => bin.maxTick - defaultMinX) || 0;
@@ -290,17 +292,27 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     const mouseY = event.offsetY;
     const currentBin = resolvedBins.find(bin => {
       const minX = scaleX(bin.minTick);
-      const maxX = Math.floor(scaleX(bin.maxTick));
+      const maxX = scaleX(bin.maxTick);
+      const barWidth = maxX - minX;
+      const maxGapRatio = isSmallWidth ? 0 : 0.11;
+      const minGapRatio = isSmallWidth ? 0 : 0.06;
+      const maxGap = barWidth * maxGapRatio;
+      const minGap = barWidth * minGapRatio;
+
       if (mouseY < 0.000001 || mouseY > height) {
         return false;
       }
       if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
         return false;
       }
-      return mouseX > minX - 1.8 && mouseX < maxX - 1;
+      return mouseX > minX - minGap && mouseX < maxX - maxGap;
     });
 
     if (currentBin?.index && (currentBin?.index !== lastHoverBinIndexRef.current)) {
+      console.log("🚀 234234 ~ onMouseoverChartBin ~ mouseX:", mouseX);
+      console.log("🚀 234234 ~ currentBin ~ currentBin: minX", scaleX(currentBin.minTick));
+      console.log("🚀 234234 ~ currentBin ~ currentBin: maxX", scaleX(currentBin.maxTick));
+      console.log("🚀 234234 ~ currentBin ~ currentBin: maxX", scaleX(currentBin.maxTick) - scaleX(currentBin.minTick));
       lastHoverBinIndexRef.current = currentBin?.index;
     }
 
@@ -321,7 +333,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         : 0)
     ) {
       setPositionX(null);
-      setPositionX(null);
+      setPositionY(null);
       setTooltipInfo(null);
       return;
     }
@@ -642,13 +654,13 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             <span>{tooltipInfo.tokenA.symbol}</span>
           </span>
           <span className="amount total-amount">
-            <MissingLogo
+            {/* <MissingLogo
               symbol={tooltipInfo.tokenA.symbol}
               url={tooltipInfo.tokenA.logoURI}
               className="logo"
               width={20}
               mobileWidth={20}
-            />
+            /> */}
             <span
               className={`token-amount-value hidden ${(tooltipInfo.tokenAAmount || "0").length > 21
                 ? "small-font"
@@ -686,13 +698,13 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             <span>{tooltipInfo.tokenB.symbol}</span>
           </span>
           <span className="amount total-amount">
-            <MissingLogo
+            {/* <MissingLogo
               symbol={tooltipInfo.tokenB.symbol}
               url={tooltipInfo.tokenB.logoURI}
               className="logo"
               width={20}
               mobileWidth={20}
-            />
+            /> */}
             <span
               className={`token-amount-value hidden ${(tooltipInfo.tokenBAmount || "0").length > 21
                 ? "small-font"
