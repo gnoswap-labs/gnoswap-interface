@@ -42,11 +42,11 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
   };
 
   const tokenPathDisplay = useMemo(() => {
-    const path_ = item.path;
+    const path_ = item?.path;
 
     if (item.isNative) return "Native coin";
 
-    const tokenPathArr = path_.split("/");
+    const tokenPathArr = path_?.split("/");
 
     if (tokenPathArr.length <= 0) return path_;
 
@@ -56,7 +56,7 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
       return "..." + tokenPathArr[tokenPathArr.length - 1].slice(length - 12, length - 1);
     }
 
-    return path_.replace("gno.land", "...");
+    return path_?.replace("gno.land", "...");
   }, [item.isNative, item.path]);
 
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
@@ -76,8 +76,8 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
             symbol={token.symbol}
             url={token.logoURI}
             className="token-logo"
-            width={24}
-            mobileWidth={24}
+            width={28}
+            mobileWidth={28}
           />
           <div className="token-name-symbol-path">
             <div className="token-name-path">

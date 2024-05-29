@@ -107,6 +107,8 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
           padding: 2px 4px;
           gap: 2px;
           border-radius: 4px;
+          white-space: nowrap;
+
           .path-link-icon {
             width: 10px;
             height: 10px;

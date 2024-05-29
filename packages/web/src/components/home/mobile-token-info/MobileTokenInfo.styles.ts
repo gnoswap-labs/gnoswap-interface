@@ -74,10 +74,11 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 
   &.name-col {
     flex: 1;
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     .token-name-symbol-path {
       ${mixins.flexbox("column", "start", "start")}
       margin: 0px 8px;
+      gap: 2px;
       
       .token-name-path {
         ${mixins.flexbox("row", "baseline", "start")}
@@ -92,7 +93,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
               }
             }
           }
-          ${mixins.flexbox("row", "flex-start", "flex-start")}
+          ${mixins.flexbox("row", "center", "flex-start")}
           ${fonts.p6};
           color: ${({ theme }) => theme.color.text04};
           background-color: ${({ theme }) => theme.color.background26};
@@ -107,7 +108,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
         }
       }
       .token-name {
-        ${fonts.body11};
+        font-size: 15px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -118,7 +119,6 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       }
     }
   }
-  
 
   &.price-col {
     ${mixins.flexbox("column", "flex-end", "center")};
@@ -148,17 +148,8 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   .token-logo {
-    width: 24px;
-    height: 24px;
-  }
-  .token-name {
-    margin: 0px 8px;
-    ${fonts.body11};
-  }
-  .token-symbol {
-    margin: 0px 8px;
-    ${fonts.p3};
-    color: ${({ theme }) => theme.color.text04};
+    width: 28px;
+    height: 28px;
   }
 
   .token-index {
