@@ -15,7 +15,7 @@ export const useBackground = () => {
   const [sessionId] = useAtom(CommonState.sessionId);
   const { updateBalances } = useTokenData();
   const { scrollTo, getScrollHeight } = useScrollData();
-  const { isLoadingTokens, isLoadingPools, isLoadingPositions } = useLoading();
+  const { isLoadingTokens, isLoadingPools } = useLoading();
   const [memorizedPath, setMemorizedPath] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,22 +32,14 @@ export const useBackground = () => {
           setMemorizedPath(null);
           break;
         case "/earn":
-          if (!isLoadingPositions) {
-            scrollTo(getScrollHeight(router.pathname));
-            setMemorizedPath(null);
-          }
+          scrollTo(getScrollHeight(router.pathname));
+          setMemorizedPath(null);
           break;
         default:
           break;
       }
     }
-  }, [
-    isLoadingPools,
-    isLoadingPositions,
-    isLoadingTokens,
-    memorizedPath,
-    router.pathname,
-  ]);
+  }, [isLoadingPools, isLoadingTokens, memorizedPath, router.pathname]);
 
   const onPopPage = (): void => {
     if (
