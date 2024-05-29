@@ -309,10 +309,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     });
 
     if (currentBin?.index && (currentBin?.index !== lastHoverBinIndexRef.current)) {
-      console.log("🚀 234234 ~ onMouseoverChartBin ~ mouseX:", mouseX);
-      console.log("🚀 234234 ~ currentBin ~ currentBin: minX", scaleX(currentBin.minTick));
-      console.log("🚀 234234 ~ currentBin ~ currentBin: maxX", scaleX(currentBin.maxTick));
-      console.log("🚀 234234 ~ currentBin ~ currentBin: maxX", scaleX(currentBin.maxTick) - scaleX(currentBin.minTick));
       lastHoverBinIndexRef.current = currentBin?.index;
     }
 

@@ -100,7 +100,6 @@ export const useSwapHandler = () => {
     updateBalances,
     getTokenUSDPrice,
   } = useTokenData();
-  console.log("🚀 ~ useSwapHandler ~ displayBalanceMap:", displayBalanceMap);
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const {
