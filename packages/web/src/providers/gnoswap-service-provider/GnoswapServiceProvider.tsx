@@ -49,8 +49,13 @@ import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-rep
 import {
   API_URL,
   DEFAULT_CHAIN_ID,
+  DEV_CHAIN_ID,
   ROUTER_API_URL,
-} from "@common/clients/wallet-client/transaction-messages";
+  DEV_API_URL,
+  DEV_ROUTER_API_URL,
+  CHAINS,
+} from "@constants/environment.constant";
+import { NetworkClient } from "@common/clients/network-client";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -99,11 +104,15 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
-  const [, setWalletAccount] = useAtom(WalletState.account);
-  const [, setStatus] = useAtom(WalletState.status);
+  const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
+  const [status, setStatus] = useAtom(WalletState.status);
 
-  const [networkClient] = useState(new AxiosClient(API_URL));
-  const [routerAPIClient] = useState(new AxiosClient(ROUTER_API_URL));
+  const [networkClient, setNetworkClient] = useState<NetworkClient | null>(
+    null,
+  );
+  const [routerAPIClient, setRouterAPIClient] = useState<NetworkClient | null>(
+    null,
+  );
 
   const [localStorageClient, setLocalStorageClient] = useState(
     WebStorageClient.createLocalStorageClient(),
@@ -115,13 +124,18 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
 
   const [walletClient] = useAtom(WalletState.client);
 
-  const [network] = useAtom(CommonState.network);
-
   const [rpcProvider, setRPCProvider] = useState<GnoProvider | null>(null);
 
   const initialized = useMemo(() => {
     return rpcProvider !== null && window !== undefined;
   }, [rpcProvider]);
+
+  const loadedProviders = useMemo(() => {
+    if (!networkClient || !routerAPIClient || !rpcProvider) {
+      return false;
+    }
+    return true;
+  }, [networkClient, routerAPIClient, rpcProvider]);
 
   useEffect(() => {
     const sessionId = getSessionId();
@@ -129,7 +143,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     const status = getStatus();
     setSessionId(sessionId || "");
     setWalletAccount(accountInfo);
-    setStatus(status);
+    setStatus(status || "init");
   }, []);
 
   useEffect(() => {
@@ -140,15 +154,35 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [sessionId]);
 
   useEffect(() => {
-    const defaultChainId = DEFAULT_CHAIN_ID || "";
-    const currentNetwork =
-      network ||
-      ChainNetworkInfos.find(info => info.chainId === defaultChainId);
-    if (currentNetwork) {
-      const provider = new GnoJSONRPCProvider(currentNetwork.rpcUrl);
-      setRPCProvider(provider);
+    if (!status) {
+      return;
     }
-  }, [network]);
+
+    if (status === "connected" && !walletAccount && !loadedProviders) {
+      return;
+    }
+
+    const currentChainId = CHAINS.includes(walletAccount?.chainId || "")
+      ? walletAccount?.chainId
+      : DEFAULT_CHAIN_ID;
+    const network =
+      ChainNetworkInfos.find(info => info.chainId === currentChainId) ||
+      ChainNetworkInfos[0];
+
+    switch (currentChainId) {
+      case DEV_CHAIN_ID:
+        setNetworkClient(new AxiosClient(DEV_API_URL));
+        setRouterAPIClient(new AxiosClient(DEV_ROUTER_API_URL));
+        setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
+        break;
+      case DEFAULT_CHAIN_ID:
+      default:
+        setNetworkClient(new AxiosClient(API_URL));
+        setRouterAPIClient(new AxiosClient(ROUTER_API_URL));
+        setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl));
+        break;
+    }
+  }, [loadedProviders, status, walletAccount, walletAccount?.chainId]);
 
   const accountRepository = useMemo(() => {
     return new AccountRepositoryImpl(
@@ -217,34 +251,12 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new LeaderboardRepositoryMock();
   }, []);
 
-  async function initNetwork() {
-    const defaultChainId = DEFAULT_CHAIN_ID;
-    const currentNetwork =
-      network ||
-      ChainNetworkInfos.find(info => info.chainId === defaultChainId);
-    if (currentNetwork) {
-      try {
-        const provider = new GnoJSONRPCProvider(currentNetwork.rpcUrl);
-        setRPCProvider(provider);
-        return true;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    setRPCProvider(null);
-    return false;
-  }
-
   useEffect(() => {
     if (window) {
       setLocalStorageClient(WebStorageClient.createLocalStorageClient());
       setSessionStorageClient(WebStorageClient.createSessionStorageClient());
     }
   }, []);
-
-  useEffect(() => {
-    initNetwork();
-  }, [network]);
 
   return (
     <GnoswapContext.Provider
@@ -265,7 +277,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         leaderboardRepository,
       }}
     >
-      {rpcProvider && children}
+      {loadedProviders && children}
     </GnoswapContext.Provider>
   );
 };

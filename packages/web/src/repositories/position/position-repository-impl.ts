@@ -36,12 +36,14 @@ import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
 import { IPositionHistoryResponse } from "./response/position-history-response";
 import {
-  PACKAGE_POOL_ADDRESS,
-  PACKAGE_STAKER_ADDRESS,
   TransactionMessage,
-  WRAPPED_GNOT_PATH,
   makeApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages";
+import {
+  PACKAGE_POOL_ADDRESS,
+  PACKAGE_STAKER_ADDRESS,
+  WRAPPED_GNOT_PATH,
+} from "@constants/environment.constant";
 import { MAX_INT64, MAX_UINT64 } from "@utils/math.utils";
 import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
 import { checkGnotPath, isGNOTPath } from "@utils/common";
@@ -51,12 +53,12 @@ import { PositionBinModel } from "@models/position/position-bin-model";
 import { PositionBinMapper } from "@models/position/mapper/position-bin-mapper";
 
 export class PositionRepositoryImpl implements PositionRepository {
-  private networkClient: NetworkClient;
+  private networkClient: NetworkClient | null;
   private rpcProvider: GnoProvider | null;
   private walletClient: WalletClient | null;
 
   constructor(
-    networkClient: NetworkClient,
+    networkClient: NetworkClient | null,
     rpcProvider: GnoProvider | null,
     walletClient: WalletClient | null,
   ) {
@@ -68,6 +70,9 @@ export class PositionRepositoryImpl implements PositionRepository {
   getPositionHistory = async (
     lpTokenId: string,
   ): Promise<IPositionHistoryModel[]> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<{
       data: IPositionHistoryResponse[];
     }>({
@@ -80,6 +85,9 @@ export class PositionRepositoryImpl implements PositionRepository {
     lpTokenId: string,
     count: 20 | 40,
   ): Promise<PositionBinModel[]> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<{
       data: PositionBinResponse[];
     }>({
@@ -92,6 +100,9 @@ export class PositionRepositoryImpl implements PositionRepository {
     address: string,
     options?: { isClosed?: boolean },
   ): Promise<PositionModel[]> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<{
       data: PositionListResponse;
     }>({

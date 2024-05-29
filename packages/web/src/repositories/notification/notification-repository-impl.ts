@@ -9,13 +9,14 @@ import { TransactionModel } from "@models/account/account-history-model";
 import dayjs from "dayjs";
 import { prettyNumberFloatInteger } from "@utils/number-utils";
 import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
+import { CommonError } from "@common/errors";
 
 export class NotificationRepositoryImpl implements NotificationRepository {
-  private networkClient: NetworkClient;
+  private networkClient: NetworkClient | null;
   private storage: StorageClient<StorageKeyType>;
 
   constructor(
-    networkClient: NetworkClient,
+    networkClient: NetworkClient | null,
     localStorageClient: StorageClient<StorageKeyType>,
   ) {
     this.networkClient = networkClient;
@@ -108,9 +109,11 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       case "DEPOSIT":
         return `Received <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       default:
-        return `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumberFloatInteger(
-          tx.tokenAAmount,
-        )} ${this.replaceToken(tx.tokenA.symbol ?? tx.tokenB.symbol)}`;
+        return `${this.capitalizeFirstLetter(
+          tx.actionType,
+        )} ${prettyNumberFloatInteger(tx.tokenAAmount)} ${this.replaceToken(
+          tx.tokenA.symbol ?? tx.tokenB.symbol,
+        )}`;
     }
   };
 
@@ -202,11 +205,17 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   public getAccountOnchainActivity = async (
     request: AccountActivityRequest,
   ): Promise<AccountActivity[]> => {
+    if (!this.networkClient) {
+      return [];
+    }
     if (!request?.address) {
       return [];
     }
     try {
-      const { data } = await this.networkClient.get<{ data: AccountActivity[], error: any }>({
+      const { data } = await this.networkClient.get<{
+        data: AccountActivity[];
+        error: any;
+      }>({
         url: "/users/" + request.address + "/activity",
       });
 
@@ -226,6 +235,9 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   public clearNotification = async (
     request: DeleteAccountActivityRequest,
   ): Promise<void> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     await this.networkClient.delete({
       url: "/users/" + request.address + "/activity",
     });

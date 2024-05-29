@@ -1,6 +1,7 @@
-import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
-import { useGetTokenByPath } from "@query/token";
 import { useCallback } from "react";
+import { useGetTokenByPath } from "@query/token";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+
 const GNOT_PATH = "gnot";
 
 export const useGnotToGnot = () => {

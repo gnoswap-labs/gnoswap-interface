@@ -28,26 +28,24 @@ import { WrapTokenRequest } from "./request/wrap-token-request";
 import { TokenError } from "@common/errors/token";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { SwapRouteResponse } from "./response/swap-route-response";
-import {
-  PACKAGE_ROUTER_PATH,
-  TransactionMessage,
-} from "@common/clients/wallet-client/transaction-messages";
+import { TransactionMessage } from "@common/clients/wallet-client/transaction-messages";
 import { checkGnotPath, toNativePath } from "@utils/common";
 import { NetworkClient } from "@common/clients/network-client";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
+import { PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
 
 const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
-  private networkClient: NetworkClient;
+  private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
   private pools: PoolRPCModel[];
 
   constructor(
     rpcProvider: GnoProvider | null,
     walletClient: WalletClient | null,
-    networkClient: NetworkClient,
+    networkClient: NetworkClient | null,
   ) {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
@@ -63,6 +61,10 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     request: EstimateSwapRouteRequest,
   ): Promise<EstimateSwapRouteResponse> => {
     const { inputToken, outputToken, exactType, tokenAmount } = request;
+
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
 
     if (BigNumber(tokenAmount).isNaN()) {
       throw new SwapError("INVALID_PARAMS");

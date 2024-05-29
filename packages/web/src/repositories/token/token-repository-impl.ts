@@ -16,24 +16,29 @@ import { IBalancesByAddressResponse } from "./response/balance-by-address-respon
 import { customSort } from "@containers/select-token-container/SelectTokenContainer";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
+import { CommonError } from "@common/errors";
 
 export class TokenRepositoryImpl implements TokenRepository {
-  private networkClient: NetworkClient;
+  private networkClient: NetworkClient | null;
   private localStorageClient: StorageClient<StorageKeyType>;
 
   constructor(
-    networkClient: NetworkClient,
+    networkClient: NetworkClient | null,
     localStorageClient: StorageClient<StorageKeyType>,
   ) {
     this.networkClient = networkClient;
     this.localStorageClient = localStorageClient;
   }
 
-  public getExchangeRateGraph = async (): Promise<TokenExchangeRateGraphResponse> => {
-    return mockedExchangeRateGraph;
-  };
+  public getExchangeRateGraph =
+    async (): Promise<TokenExchangeRateGraphResponse> => {
+      return mockedExchangeRateGraph;
+    };
 
   public getTokenByPath = async (path: string): Promise<ITokenResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const tempPath = path.replace(/\//g, "%2F");
     const response = await this.networkClient.get<{ data: ITokenResponse }>({
       url: `/token-metas/${tempPath}`,
@@ -42,6 +47,9 @@ export class TokenRepositoryImpl implements TokenRepository {
   };
 
   public getTokens = async (): Promise<TokenListResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<{ data: ITokenResponse[] }>({
       url: "/token-metas",
     });
@@ -53,6 +61,9 @@ export class TokenRepositoryImpl implements TokenRepository {
   };
 
   public getTokenPrices = async (): Promise<TokenPriceListResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<TokenPriceListResponse>({
       url: "/tokens/prices",
     });
@@ -62,14 +73,22 @@ export class TokenRepositoryImpl implements TokenRepository {
   public getTokenDetailByPath = async (
     path: string,
   ): Promise<ITokenDetailResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const tempPath = path.replace(/\//g, "%2F");
-    const response = await this.networkClient.get<{ data: ITokenDetailResponse }>({
+    const response = await this.networkClient.get<{
+      data: ITokenDetailResponse;
+    }>({
       url: `/tokens/${tempPath}/details`,
     });
     return response.data.data;
   };
 
   public getChain = async (): Promise<IChainResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<{ data: IChainResponse }>({
       url: "/chain",
     });
@@ -79,6 +98,9 @@ export class TokenRepositoryImpl implements TokenRepository {
   public getBalancesByAddress = async (
     address: string,
   ): Promise<IBalancesByAddressResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<IBalancesByAddressResponse>({
       url: `/balances/${address}`,
     });

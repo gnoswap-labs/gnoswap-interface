@@ -49,15 +49,17 @@ import {
 import { AddLiquidityResponse } from "./response/add-liquidity-response";
 import { CreatePoolResponse } from "./response/create-pool-response";
 import {
+  makeApproveMessage,
+  TransactionMessage,
+} from "@common/clients/wallet-client/transaction-messages";
+import {
   PACKAGE_POOL_ADDRESS,
   PACKAGE_POOL_PATH,
   GNS_TOKEN_PATH,
   PACKAGE_POSITION_ADDRESS,
-  makeApproveMessage,
   WRAPPED_GNOT_PATH,
-  TransactionMessage,
   PACKAGE_GNOSWAP_CONST_PATH,
-} from "@common/clients/wallet-client/transaction-messages";
+} from "@constants/environment.constant";
 import { MAX_UINT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import {
@@ -72,12 +74,12 @@ const POOL_PATH = PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
 
 export class PoolRepositoryImpl implements PoolRepository {
-  private networkClient: NetworkClient;
+  private networkClient: NetworkClient | null;
   private rpcProvider: GnoProvider | null;
   private walletClient: WalletClient | null;
 
   constructor(
-    networkClient: NetworkClient,
+    networkClient: NetworkClient | null,
     rpcProvider: GnoProvider | null,
     walletClient: WalletClient | null,
   ) {
@@ -130,6 +132,9 @@ export class PoolRepositoryImpl implements PoolRepository {
   };
 
   getPools = async (): Promise<PoolModel[]> => {
+    if (!this.networkClient) {
+      return [];
+    }
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
@@ -140,6 +145,9 @@ export class PoolRepositoryImpl implements PoolRepository {
   };
 
   getIncentivizePools = async (): Promise<IncentivizePoolModel[]> => {
+    if (!this.networkClient) {
+      return [];
+    }
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/incentivize/pools",
     });
@@ -153,6 +161,9 @@ export class PoolRepositoryImpl implements PoolRepository {
   getPoolDetailByPoolPath = async (
     poolPath: string,
   ): Promise<PoolDetailModel> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const pool = await this.networkClient
       .get<{ data: PoolResponse }>({
         url: "/pools/" + encodeURIComponent(poolPath),
@@ -165,6 +176,9 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
     count?: number,
   ): Promise<PoolBinModel[]> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     return this.networkClient
       .get<{ data: PoolBinModel[] }>({
         url: `/pools/${encodeURIComponent(poolPath)}/bins?bins=${count || 40}`,
@@ -482,6 +496,9 @@ export class PoolRepositoryImpl implements PoolRepository {
   getPoolDetailByPath = async (
     poolPath: string,
   ): Promise<IPoolDetailResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<IPoolDetailResponse>({
       url: "/pools/" + poolPath,
     });
