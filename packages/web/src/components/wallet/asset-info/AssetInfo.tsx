@@ -59,7 +59,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
 
     if (isNativeToken(asset)) return "Native coin";
 
-    const tokenPathArr = path_.split("/");
+    const tokenPathArr = path_?.split("/");
 
     if (tokenPathArr.length <= 0) return path_;
 
