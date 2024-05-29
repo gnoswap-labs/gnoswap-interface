@@ -46,8 +46,8 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
   .missing-logo {
     ${mixins.flexbox("row", "center", "center")};
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     color: ${({ theme }) => theme.color.text02};
     background-color: ${({ theme }) => theme.color.text04};
@@ -57,8 +57,10 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       line-height: 10px;
     }
     margin-left: 15px;
+    margin-top: 2px;
   }
   .logo {
+    margin-top: 2px;
     margin-left: 15px;
   }
 

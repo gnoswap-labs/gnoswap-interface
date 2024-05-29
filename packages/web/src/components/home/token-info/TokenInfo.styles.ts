@@ -83,6 +83,11 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   
   &.name-col {
     ${mixins.flexbox("row", "flex-start", "flex-start")};
+
+    .token-logo {
+      margin-top: 2px;
+    }
+
     .token-name-symbol-path {
       ${mixins.flexbox("column", "start", "start")}
       margin: 0px 8px;
@@ -130,12 +135,6 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
 
-  .token-logo {
-    width: 28px;
-    height: 28px;
-  }
-
-  
   .fee-rate,
   .token-index {
     ${fonts.body12};
