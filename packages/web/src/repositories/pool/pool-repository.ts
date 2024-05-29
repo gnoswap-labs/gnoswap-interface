@@ -1,7 +1,10 @@
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import { IncentivizePoolModel, IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
-import { PoolRPCModel } from "@models/pool/pool-rpc-model";
+import {
+  IncentivizePoolModel,
+  IPoolDetailResponse,
+  PoolModel,
+} from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
@@ -17,11 +20,11 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 export interface PoolRepository {
   getPools: () => Promise<PoolModel[]>;
 
-  getRPCPools: () => Promise<PoolRPCModel[]>;
-
   getCreationFee: () => Promise<number>;
 
-  getPoolDetailRPCByPoolPath: (poolPath: string) => Promise<PoolDetailRPCModel>;
+  getPoolDetailRPCByPoolPath: (
+    poolPath: string,
+  ) => Promise<PoolDetailRPCModel | null>;
 
   getPoolDetailByPoolPath: (poolPath: string) => Promise<PoolDetailModel>;
 
@@ -40,7 +43,7 @@ export interface PoolRepository {
 
   getPoolDetailByPath: (poolPath: string) => Promise<IPoolDetailResponse>;
 
-  getIncentivizePools: () => Promise<IncentivizePoolModel[]>
+  getIncentivizePools: () => Promise<IncentivizePoolModel[]>;
 
   createExternalIncentive: (
     request: CreateExternalIncentiveRequest,

@@ -6,10 +6,10 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { usePoolData } from "./use-pool-data";
 import { checkGnotPath } from "@utils/common";
-import { useGetPoolCreationFee } from "@query/pools";
+import { useGetPoolCreationFee, useGetRPCPoolsBy } from "@query/pools";
 
 interface Props {
   compareToken: TokenModel | null;
@@ -26,12 +26,8 @@ export const usePool = ({
 }: Props) => {
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
-  const [fetching, setFetching] = useState(false);
   const { pools, updatePools, isFetchedPools, loading } = usePoolData();
   const { data: createPoolFee } = useGetPoolCreationFee();
-  const [feetierOfLiquidityMap, setFeetierOfLiquidityMap] = useState<
-    { [key in string]: number } | null
-  >(null);
 
   const allPoolPaths = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -53,6 +49,34 @@ export const usePool = ({
       SwapFeeTierInfoMap.FEE_10000,
     ].map(feeInfo => `${tokenPair[0]}:${tokenPair[1]}:${feeInfo.fee}`);
   }, [tokenA, tokenB]);
+
+  const {
+    data: rpcPools,
+    isLoading: isLoadingRPCPools,
+    refetch: refetchRPCPools,
+  } = useGetRPCPoolsBy(allPoolPaths);
+
+  const feetierOfLiquidityMap: { [key in string]: number } | null =
+    useMemo(() => {
+      if (!rpcPools) {
+        return null;
+      }
+      const feetierOfLiquidityMap: { [key in string]: number } = {};
+      const totalLiquidities = rpcPools
+        .map(info => info.liquidity)
+        .reduce((total, cur) => total + cur, 0n);
+      for (const info of rpcPools) {
+        const liquidityRate =
+          totalLiquidities === 0n
+            ? 0
+            : (Number(info.liquidity) * 100) / Number(totalLiquidities);
+        const feeTier = info.fee;
+        if (feeTier) {
+          feetierOfLiquidityMap[`${feeTier}`] = liquidityRate;
+        }
+      }
+      return feetierOfLiquidityMap;
+    }, [rpcPools]);
 
   const currentPools: PoolModel[] = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -104,17 +128,6 @@ export const usePool = ({
     },
     [compareToken, tokenA, tokenB],
   );
-
-  async function fetchPoolInfos() {
-    const poolPaths = allPoolPaths;
-    return poolRepository
-      .getRPCPools()
-      .then(allPools =>
-        allPools.filter(
-          pool => pool.poolPath && poolPaths.includes(pool.poolPath),
-        ),
-      );
-  }
 
   const createPool = useCallback(
     async ({
@@ -226,39 +239,11 @@ export const usePool = ({
     if (!tokenA || !tokenB || isReverted) {
       return;
     }
-    setFeetierOfLiquidityMap(null);
-    setFetching(true);
-    fetchPoolInfos()
-      .then(infos => {
-        const feetierOfLiquidityMap: { [key in string]: number } = {};
-        const totalLiquidities = infos
-          .map(info => info.liquidity)
-          .reduce((total, cur) => total + cur, 0n);
-        for (const info of infos) {
-          const liquidityRate =
-            totalLiquidities === 0n
-              ? 0
-              : (Number(info.liquidity) * 100) / Number(totalLiquidities);
-          const feeTier = info.fee;
-          if (feeTier) {
-            feetierOfLiquidityMap[`${feeTier}`] = liquidityRate;
-          }
-        }
-        return feetierOfLiquidityMap;
-      })
-      .then(e => {
-        setFeetierOfLiquidityMap(e);
-        setTimeout(() => {
-          setFetching(false);
-        }, 1000);
-      })
-      .finally(() => {
-        setFetching(false);
-      });
-  }, [allPoolPaths, tokenA, tokenB, isReverted]);
+    refetchRPCPools();
+  }, [tokenA, tokenB, isReverted]);
 
   return {
-    fetching,
+    fetching: isLoadingRPCPools,
     pools: currentPools,
     feetierOfLiquidityMap: feetierOfLiquidityMap || {},
     createPool,
