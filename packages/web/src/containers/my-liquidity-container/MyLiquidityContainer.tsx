@@ -34,7 +34,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading, loadingPositionById } = usePositionData({ address });
+  const { getPositionsByPoolId, loading, loadingPositionById } =
+    usePositionData({ address });
   const { claimAll } = usePosition(positions);
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
@@ -150,7 +151,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     }
     const temp = getPositionsByPoolId(poolPath);
     setPositions(temp);
-  }, [router.query, visiblePositions]);
+  }, [router.query, visiblePositions, loadingPositionById]);
 
   const filteredPosition = useMemo(() => {
     if (isShowClosePosition) return positions;
