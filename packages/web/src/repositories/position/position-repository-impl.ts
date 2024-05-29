@@ -130,9 +130,8 @@ export class PositionRepositoryImpl implements PositionRepository {
         position.reward.findIndex(reward => reward.rewardType === "SWAP_FEE") >
         -1;
       const hasReward =
-        position.reward.findIndex(
-          reward =>
-            reward.rewardType === "STAKING" || reward.rewardType === "EXTERNAL",
+        position.reward.findIndex(reward =>
+          ["INTERNAL", "EXTERNAL"].includes(reward.rewardType),
         ) > -1;
 
       const approveMessages = [];
