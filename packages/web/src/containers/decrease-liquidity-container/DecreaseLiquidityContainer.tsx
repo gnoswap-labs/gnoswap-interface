@@ -2,7 +2,7 @@ import DecreaseLiquidity from "@components/decrease/decrease-liquidity/DecreaseL
 import DecreaseLiquidityLoading from "@components/decrease/decrease-liquidity/DecreaseLiquidityLoading";
 import { useDecreaseHandle } from "@hooks/decrease/use-decrease-handle";
 import { useDecreasePositionModal } from "@hooks/decrease/use-decrease-position-modal";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import React from "react";
 
 const DecreaseLiquidityContainer: React.FC = () => {

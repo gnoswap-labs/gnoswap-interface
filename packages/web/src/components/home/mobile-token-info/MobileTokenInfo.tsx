@@ -17,7 +17,7 @@ import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 
 interface TokenInfoProps {
   item: Token;
@@ -36,11 +36,7 @@ const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
 );
 
 const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
-  const {
-    token,
-    price,
-    priceOf1d
-  } = item;
+  const { token, price, priceOf1d } = item;
   const router = useRouter();
 
   const onClickItem = (path: string) => {
@@ -51,7 +47,13 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     <TokenInfoWrapper>
       <HoverSection onClick={() => onClickItem(token.path)}>
         <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
-          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
+          <MissingLogo
+            symbol={token.symbol}
+            url={token.logoURI}
+            className="token-logo"
+            width={24}
+            mobileWidth={24}
+          />
           <div className="symbol-col">
             <strong className="token-name">{token.name}</strong>
             <span className="token-symbol">{token.symbol}</span>
@@ -59,7 +61,9 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
         </TableColumn>
         <TableColumn className="price-col" tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
           <span>{price}</span>
-          <div className={cx(priceOf1d.status.toLowerCase())}>{renderToNegativeType(priceOf1d.status, priceOf1d.value)}</div>
+          <div className={cx(priceOf1d.status.toLowerCase())}>
+            {renderToNegativeType(priceOf1d.status, priceOf1d.value)}
+          </div>
         </TableColumn>
       </HoverSection>
     </TokenInfoWrapper>

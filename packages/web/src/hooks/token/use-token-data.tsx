@@ -18,7 +18,7 @@ import { useGnotToGnot } from "./use-gnot-wugnot";
 import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { toUnitFormat } from "@utils/number-utils";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { isEmptyObject } from "@utils/validation-utils";
 
 const PATH = ["/tokens/[token-path]", "/swap"];
@@ -35,10 +35,16 @@ export const useTokenData = () => {
     refetchInterval: PATH.includes(router.pathname)
       ? 15 * 1000
       : router.pathname === "/" || router.pathname === "/earn/add"
-        ? 10 * 1000
-        : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
+      ? 10 * 1000
+      : PATH_60SECOND.includes(router.pathname)
+      ? 60 * 1000
+      : false,
   });
-  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrice, isFetched: isFetchedTokenPrices } = useGetTokenPrices();
+  const {
+    data: tokenPrices = {},
+    isLoading: isLoadingTokenPrice,
+    isFetched: isFetchedTokenPrices,
+  } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
   const { rpcProvider } = useGnoswapContext();
@@ -127,7 +133,6 @@ export const useTokenData = () => {
     });
   }, [tokens, tokenPrices]);
 
-
   const recentlyAddedTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
       .sort((t1, t2) => {
@@ -140,25 +145,29 @@ export const useTokenData = () => {
       .map(token =>
         tokenPrices[token.path]
           ? {
-            token: {
-              ...token,
-              symbol: getGnotPath(token).symbol,
-              name: getGnotPath(token).name,
-              logoURI: getGnotPath(token).logoURI,
-            },
-            upDown: "none" as UpDownType,
-            content: `${toUnitFormat(tokenPrices[token.path].usd, true, false)}`,
-          }
+              token: {
+                ...token,
+                symbol: getGnotPath(token).symbol,
+                name: getGnotPath(token).name,
+                logoURI: getGnotPath(token).logoURI,
+              },
+              upDown: "none" as UpDownType,
+              content: `${toUnitFormat(
+                tokenPrices[token.path].usd,
+                true,
+                false,
+              )}`,
+            }
           : {
-            token: {
-              ...token,
-              symbol: getGnotPath(token).symbol,
-              name: getGnotPath(token).name,
-              logoURI: getGnotPath(token).logoURI,
+              token: {
+                ...token,
+                symbol: getGnotPath(token).symbol,
+                name: getGnotPath(token).name,
+                logoURI: getGnotPath(token).logoURI,
+              },
+              upDown: "none" as UpDownType,
+              content: "-",
             },
-            upDown: "none" as UpDownType,
-            content: "-",
-          },
       )
       .filter((_: CardListTokenInfo) => _.content !== "-")
       .slice(0, 3);
@@ -226,20 +235,25 @@ export const useTokenData = () => {
     }
 
     if (tokens.length === 0) return;
-    const fetchResults = await Promise.all(tokens.map(async (token) => {
-      const result = await fetchTokenBalance(token);
-      return {
-        priceID: token.priceID,
-        balance: result,
-      };
-    }));
+    const fetchResults = await Promise.all(
+      tokens.map(async token => {
+        const result = await fetchTokenBalance(token);
+        return {
+          priceID: token.priceID,
+          balance: result,
+        };
+      }),
+    );
     const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
         balancesData[result.priceID] = result.balance;
       }
     });
-    if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
+    if (
+      JSON.stringify(balancesData) !== JSON.stringify(balances) &&
+      !isEmptyObject(balancesData)
+    ) {
       setIsChangeBalancesToken(true);
       setBalances(balancesData);
     }

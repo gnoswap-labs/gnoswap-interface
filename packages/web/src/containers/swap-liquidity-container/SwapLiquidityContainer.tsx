@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { ValuesType } from "utility-types";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { useGetPoolList } from "@query/pools";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { PoolModel } from "@models/pool/pool-model";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
@@ -75,26 +75,43 @@ const SwapLiquidityContainer: React.FC = () => {
   const { tokenA, tokenB } = swapValue;
   const router = useRouter();
   const createPool = () => {
-    router.push({ pathname: "/earn/add", query: { tokenA: tokenA?.path as string, tokenB: tokenB?.path as string } }, "/earn/add");
+    router.push(
+      {
+        pathname: "/earn/add",
+        query: {
+          tokenA: tokenA?.path as string,
+          tokenB: tokenB?.path as string,
+        },
+      },
+      "/earn/add",
+    );
   };
 
   const poolDetail: PoolModel[] = useMemo(() => {
     const tokenAPath = tokenA?.path === "gnot" ? wugnotPath : tokenA?.path;
     const tokenBPath = tokenB?.path === "gnot" ? wugnotPath : tokenB?.path;
-    const pools: PoolModel[] = poolList.filter((item: PoolModel) => (item.poolPath?.includes(`${tokenAPath}:${tokenBPath}`) || item.poolPath?.includes(`${tokenBPath}:${tokenAPath}`)));
+    const pools: PoolModel[] = poolList.filter(
+      (item: PoolModel) =>
+        item.poolPath?.includes(`${tokenAPath}:${tokenBPath}`) ||
+        item.poolPath?.includes(`${tokenBPath}:${tokenAPath}`),
+    );
     return pools;
   }, [poolList, tokenA, tokenB, wugnotPath]);
 
   const liquidityListRandom = useMemo(() => {
     let count = 0;
-    const temp = dummyLiquidityList.map((_) => {
-      const poolItem = poolDetail.filter((item: PoolModel) => Number(item.fee) === Number(_.feeTier) * 10000);
+    const temp = dummyLiquidityList.map(_ => {
+      const poolItem = poolDetail.filter(
+        (item: PoolModel) => Number(item.fee) === Number(_.feeTier) * 10000,
+      );
       if (poolItem.length > 0) {
         count++;
         return {
           ..._,
           volume: `${toUnitFormat(Number(poolItem[0].volume24h), true, true)}`,
-          liquidity: `$${convertToKMB(poolItem[0].tvl.toString(), { maximumFractionDigits: 2 })}`,
+          liquidity: `$${convertToKMB(poolItem[0].tvl.toString(), {
+            maximumFractionDigits: 2,
+          })}`,
           apr: (poolItem?.[0]?.apr ?? "").toString(),
           active: true,
           id: poolItem[0].id,
@@ -130,7 +147,9 @@ const SwapLiquidityContainer: React.FC = () => {
     };
   }, [tokenB, gnot]);
 
-  const checkDoubleGnot = (tokenAData?.path === "gnot" && tokenBData?.path === "gnot") || (tokenBData?.path === "gnot" && tokenAData?.path === "gnot");
+  const checkDoubleGnot =
+    (tokenAData?.path === "gnot" && tokenBData?.path === "gnot") ||
+    (tokenBData?.path === "gnot" && tokenAData?.path === "gnot");
 
   if (!tokenAData || !tokenBData || isLoading || checkDoubleGnot) return null;
 

@@ -1,6 +1,12 @@
-import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+} from "react";
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
@@ -14,7 +20,11 @@ const WalletPositionCardListContainer: React.FC = () => {
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
   const { width } = useWindowSize();
-  const {  isFetchedPosition, loading : loadingPosition, positions } = usePositionData();
+  const {
+    isFetchedPosition,
+    loading: loadingPosition,
+    positions,
+  } = usePositionData();
   const { loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -33,9 +43,12 @@ const WalletPositionCardListContainer: React.FC = () => {
     };
   }, []);
 
-  const movePoolDetail = useCallback((id: string) => {
-    router.push(`/earn/pool/${id}`);
-  }, [router]);
+  const movePoolDetail = useCallback(
+    (id: string) => {
+      router.push(`/earn/pool/${id}`);
+    },
+    [router],
+  );
 
   const showPagination = useMemo(() => {
     if (width >= 920) {
@@ -48,11 +61,15 @@ const WalletPositionCardListContainer: React.FC = () => {
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.min(Math.floor(currentScrollX / 322) + 1, positions.length));
+      setCurrentIndex(
+        Math.min(Math.floor(currentScrollX / 322) + 1, positions.length),
+      );
     }
   };
 
-  const sortedData = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
+  const sortedData = positions.sort(
+    (x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue),
+  );
   if (!isFetchedPosition || isSwitchNetwork) return null;
 
   return (

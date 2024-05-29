@@ -10,7 +10,7 @@ import { TokenModel } from "@models/token/token-model";
 import { IGainer } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolList } from "@query/pools";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import BigNumber from "bignumber.js";
@@ -106,7 +106,7 @@ const GainerAndLoserContainer: React.FC = () => {
       enabled: !!path,
     },
   );
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const gainersList = useMemo(() => {
     return gainers?.slice(0, 3).map((item: IGainer) => {
@@ -121,7 +121,9 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: `${(toPriceFormat(BigNumber(item.tokenPrice).toFormat(), { usd: true }))}`,
+        price: `${toPriceFormat(BigNumber(item.tokenPrice).toFormat(), {
+          usd: true,
+        })}`,
         change: {
           status:
             Number(priceChange) >= 0
@@ -148,7 +150,9 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: `${toPriceFormat(BigNumber(item.tokenPrice).toFormat(), { usd: true })}`,
+        price: `${toPriceFormat(BigNumber(item.tokenPrice).toFormat(), {
+          usd: true,
+        })}`,
         change: {
           status:
             Number(priceChange) >= 0

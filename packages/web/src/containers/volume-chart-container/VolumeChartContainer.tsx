@@ -138,7 +138,7 @@ const parseDate = (dateString: string) => {
 
 const VolumeChartContainer: React.FC = () => {
   const { dashboardRepository } = useGnoswapContext();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const [volumeChartType, setVolumeChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],

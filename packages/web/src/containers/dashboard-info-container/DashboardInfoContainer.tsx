@@ -4,7 +4,11 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { DashboardTokenResponse } from "@repositories/dashboard/response/token-response";
 import { useQuery } from "@tanstack/react-query";
-import { formatUsdNumber3Digits, prettyNumber, toPriceFormat } from "@utils/number-utils";
+import {
+  formatUsdNumber3Digits,
+  prettyNumber,
+  toPriceFormat,
+} from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 
 export interface DashboardTokenInfo {
@@ -42,7 +46,12 @@ const formatPrice = (price?: string, unit?: string) => {
   if (price && Number(price) < 1) {
     return formatUsdNumber3Digits(price);
   }
-  return price ? `$${Number(formatUsdNumber3Digits(price)).toLocaleString("en", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}` : "-";
+  return price
+    ? `$${Number(formatUsdNumber3Digits(price)).toLocaleString("en", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      })}`
+    : "-";
 };
 
 export interface GovernenceOverviewInfo {
@@ -64,7 +73,7 @@ const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
 const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { dashboardRepository } = useGnoswapContext();
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const { data: tokenData, isLoading } = useQuery<
     DashboardTokenResponse,
@@ -89,7 +98,7 @@ const DashboardInfoContainer: React.FC = () => {
     const totalStaked = Number(tokenData?.gnsTotalStaked);
 
     if (circSupply === 0) return "0%";
-    if (totalStaked * 100 / circSupply < 0.1) return "<0.1%";
+    if ((totalStaked * 100) / circSupply < 0.1) return "<0.1%";
     const ratio = ((totalStaked / circSupply) * 100).toFixed(2);
     return `${prettyNumber(ratio)}%`;
   }, [tokenData]);
@@ -97,8 +106,14 @@ const DashboardInfoContainer: React.FC = () => {
   return (
     <DashboardInfo
       dashboardTokenInfo={{
-        gnosAmount: toPriceFormat(tokenData?.gnsPrice ?? "0", { usd: true, isFormat: false }),
-        gnotAmount: toPriceFormat(tokenData?.gnotPrice ?? "0", { usd: true, isFormat: false }),
+        gnosAmount: toPriceFormat(tokenData?.gnsPrice ?? "0", {
+          usd: true,
+          isFormat: false,
+        }),
+        gnotAmount: toPriceFormat(tokenData?.gnotPrice ?? "0", {
+          usd: true,
+          isFormat: false,
+        }),
       }}
       supplyOverviewInfo={{
         circulatingSupply: formatPrice(tokenData?.gnsCirculatingSupply, "GNS"),

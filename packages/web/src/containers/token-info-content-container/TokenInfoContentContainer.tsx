@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import TokenInfoContent from "@components/token/token-info-content/TokenInfoContent";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGetTokenDetailByPath } from "@query/token";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { checkPositivePrice } from "@utils/common";
 import { useLoading } from "@hooks/common/use-loading";
@@ -113,12 +113,14 @@ const TokenInfoContentContainer: React.FC = () => {
     path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
     { enabled: !!path },
   );
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const marketInformation = useMemo(() => {
     return {
       popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
-      tvl: market.lockedTokensUsd ? `$${convertToKMB(market.lockedTokensUsd)}` : "-",
+      tvl: market.lockedTokensUsd
+        ? `$${convertToKMB(market.lockedTokensUsd)}`
+        : "-",
       volume24h: market.volumeUsd24h
         ? `$${convertToKMB(Number(market.volumeUsd24h).toString())}`
         : "-",
@@ -127,22 +129,10 @@ const TokenInfoContentContainer: React.FC = () => {
   }, [market]);
 
   const priceInfomation = useMemo(() => {
-    const data1H = checkPositivePrice(
-      currentPrice,
-      pricesBefore.price1h,
-    );
-    const data1D = checkPositivePrice(
-      currentPrice,
-      pricesBefore.price1d,
-    );
-    const data7D = checkPositivePrice(
-      currentPrice,
-      pricesBefore.price7d,
-    );
-    const data30D = checkPositivePrice(
-      currentPrice,
-      pricesBefore.price30d,
-    );
+    const data1H = checkPositivePrice(currentPrice, pricesBefore.price1h);
+    const data1D = checkPositivePrice(currentPrice, pricesBefore.price1d);
+    const data7D = checkPositivePrice(currentPrice, pricesBefore.price7d);
+    const data30D = checkPositivePrice(currentPrice, pricesBefore.price30d);
 
     return {
       priceChange1h: {

@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRemovePositionModal } from "@hooks/earn/use-remove-position-modal";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useLoading } from "@hooks/common/use-loading";
 
@@ -17,7 +17,7 @@ const RemoveLiquidityContainer: React.FC = () => {
     positions: positions,
     selectedIds: checkedList,
   });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const stakedPositions = useMemo(() => {
     if (!connected) return [];
@@ -68,7 +68,9 @@ const RemoveLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      const postions_ = getPositionsByPoolId(poolPath).filter(item => !item.closed);
+      const postions_ = getPositionsByPoolId(poolPath).filter(
+        item => !item.closed,
+      );
       setPositions(postions_);
       return;
     }

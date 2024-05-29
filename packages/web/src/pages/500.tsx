@@ -3,7 +3,7 @@ import IconGnoswap404 from "@components/common/icons/IconGnoswap404";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
 import Custom500Layout from "@layouts/custom-500/Custom500Layout";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 

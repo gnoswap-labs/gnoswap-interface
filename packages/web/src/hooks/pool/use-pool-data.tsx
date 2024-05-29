@@ -1,13 +1,11 @@
+import { useMemo } from "react";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { QUERY_KEY, useGetPoolList } from "@query/pools";
-import { PoolState } from "@states/index";
-import { useAtom } from "jotai";
-import { useMemo } from "react";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { numberToRate } from "@utils/string-utils";
 
 const PATH_60SECOND = "/wallet";
@@ -23,14 +21,11 @@ export const usePoolData = () => {
       router.pathname === "/"
         ? 10 * 1000
         : router.pathname === PATH_60SECOND
-          ? 60 * 1000
-          : false,
+        ? 60 * 1000
+        : false,
   });
 
   const forceRefetch = useForceRefetchQuery();
-  const [isFetchedPositions, setIsFetchedPositions] = useAtom(
-    PoolState.isFetchedPositions,
-  );
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
   const poolListInfos = useMemo(() => {
@@ -40,19 +35,19 @@ export const usePoolData = () => {
         ...item,
         tokenA: item.tokenA
           ? {
-            ...item.tokenA,
-            symbol: getGnotPath(item.tokenA).symbol,
-            logoURI: getGnotPath(item.tokenA).logoURI,
-            name: getGnotPath(item.tokenA).name,
-          }
+              ...item.tokenA,
+              symbol: getGnotPath(item.tokenA).symbol,
+              logoURI: getGnotPath(item.tokenA).logoURI,
+              name: getGnotPath(item.tokenA).name,
+            }
           : item.tokenA,
         tokenB: item.tokenB
           ? {
-            ...item.tokenB,
-            symbol: getGnotPath(item.tokenB).symbol,
-            logoURI: getGnotPath(item.tokenB).logoURI,
-            name: getGnotPath(item.tokenB).name,
-          }
+              ...item.tokenB,
+              symbol: getGnotPath(item.tokenB).symbol,
+              logoURI: getGnotPath(item.tokenB).logoURI,
+              name: getGnotPath(item.tokenB).name,
+            }
           : item.tokenB,
       };
     });
@@ -87,10 +82,6 @@ export const usePoolData = () => {
     }));
   }, [pools]);
 
-  async function updatePositions() {
-    setIsFetchedPositions(true);
-  }
-
   async function updatePools() {
     forceRefetch({ queryKey: [QUERY_KEY.pools] });
   }
@@ -98,11 +89,9 @@ export const usePoolData = () => {
   return {
     isFetchedPools,
     higestAPRs,
-    isFetchedPositions,
     pools,
     poolListInfos,
     updatePools,
-    updatePositions,
     loading,
     gnot,
   };

@@ -5,7 +5,10 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { MostLiquidPool, type Token } from "@containers/token-list-container/TokenListContainer";
+import {
+  MostLiquidPool,
+  type Token,
+} from "@containers/token-list-container/TokenListContainer";
 import { cx } from "@emotion/css";
 import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import {
@@ -18,7 +21,7 @@ import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGrap
 import { Global, css } from "@emotion/react";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 
 interface TokenInfoProps {
   item: Token;
@@ -68,11 +71,13 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   };
 
   const onClickPoolItem = (item: MostLiquidPool) => {
-    const poolPath = `${item.tokenPair.tokenA.path}:${item.tokenPair.tokenB.path}:${Number(item.feeRate.slice(0, item.feeRate.length - 1)) * 10000}`;
+    const poolPath = `${item.tokenPair.tokenA.path}:${
+      item.tokenPair.tokenB.path
+    }:${Number(item.feeRate.slice(0, item.feeRate.length - 1)) * 10000}`;
     if (item.tokenPair.tokenA.logoURI) {
       location.href = `/earn/pool/${makeId(poolPath)}`;
     }
-  }
+  };
 
   return (
     <TokenInfoWrapper>
@@ -81,7 +86,13 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="token-index">{idx}</span>
         </TableColumn>
         <TableColumn className="left left-padding" tdWidth={TOKEN_TD_WIDTH[1]}>
-          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24} />
+          <MissingLogo
+            symbol={token.symbol}
+            url={token.logoURI}
+            className="token-logo"
+            width={24}
+            mobileWidth={24}
+          />
           <strong className="token-name">{token.name}</strong>
           <span className="token-symbol">{token.symbol}</span>
         </TableColumn>
@@ -117,30 +128,47 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="volume">{volume24h}</span>
         </TableColumn>
       </HoverSection>
-      <HoverSection onClick={() => onClickPoolItem(mostLiquidPool)} className={!!mostLiquidPool.tokenPair.tokenA.logoURI ? "" : "disabled-pointer"}>
-        <TableColumn className="liquid-col padding-12" tdWidth={TOKEN_TD_WIDTH[9]}>
-          {mostLiquidPool.tokenPair.tokenA.logoURI ? <>
-            <DoubleLogo
-              left={mostLiquidPool.tokenPair.tokenA.logoURI}
-              right={mostLiquidPool.tokenPair.tokenB.logoURI}
-              size={20}
-              leftSymbol={mostLiquidPool.tokenPair.tokenA.symbol}
-              rightSymbol={mostLiquidPool.tokenPair.tokenB.symbol}
-            />
-            <span className="liquid-symbol right-padding-12">
-              {tokenPairSymbolToOneCharacter(mostLiquidPool.tokenPair)}
-            </span>
-            <span className="fee-rate right-padding-12">
-              {mostLiquidPool.feeRate}
-            </span>
-          </> : "-"}
+      <HoverSection
+        onClick={() => onClickPoolItem(mostLiquidPool)}
+        className={
+          !!mostLiquidPool.tokenPair.tokenA.logoURI ? "" : "disabled-pointer"
+        }
+      >
+        <TableColumn
+          className="liquid-col padding-12"
+          tdWidth={TOKEN_TD_WIDTH[9]}
+        >
+          {mostLiquidPool.tokenPair.tokenA.logoURI ? (
+            <>
+              <DoubleLogo
+                left={mostLiquidPool.tokenPair.tokenA.logoURI}
+                right={mostLiquidPool.tokenPair.tokenB.logoURI}
+                size={20}
+                leftSymbol={mostLiquidPool.tokenPair.tokenA.symbol}
+                rightSymbol={mostLiquidPool.tokenPair.tokenB.symbol}
+              />
+              <span className="liquid-symbol right-padding-12">
+                {tokenPairSymbolToOneCharacter(mostLiquidPool.tokenPair)}
+              </span>
+              <span className="fee-rate right-padding-12">
+                {mostLiquidPool.feeRate}
+              </span>
+            </>
+          ) : (
+            "-"
+          )}
         </TableColumn>
       </HoverSection>
       <TableColumn
         tdWidth={TOKEN_TD_WIDTH[10]}
         className="right-padding-12 last7days-graph"
       >
-        <SimpleLineGraph width={100} height={33} datas={last7days} status={graphStatus} />
+        <SimpleLineGraph
+          width={100}
+          height={33}
+          datas={last7days}
+          status={graphStatus}
+        />
         <ChartGlobalTooltip />
       </TableColumn>
     </TokenInfoWrapper>

@@ -6,7 +6,7 @@ import { useCallback, useMemo, useEffect, useState, useRef } from "react";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { makeId } from "@utils/common";
 import { useGetPositionsByAddress } from "@query/positions";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "./use-loading";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
@@ -45,7 +45,6 @@ export const usePositionData = (options?: UsePositionDataOption) => {
   } = useGetPositionsByAddress(fetchedAddress as string, {
     isClosed: options?.isClosed,
     queryOptions: {
-      enabled: !!fetchedAddress && pools.length > 0,
       refetchInterval: () => {
         if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15));
 
@@ -71,13 +70,11 @@ export const usePositionData = (options?: UsePositionDataOption) => {
           setShouldShowLoading(haveNewData);
         }
       }
-    }
+    },
   });
 
   function transformData(key: string, value: unknown) {
-    return typeof value === "bigint"
-      ? value.toString()
-      : value;
+    return typeof value === "bigint" ? value.toString() : value;
   }
 
   useEffect(() => {
@@ -118,35 +115,16 @@ export const usePositionData = (options?: UsePositionDataOption) => {
       });
       return;
     }
-  }, [initialData.loadingCall, data.length, isFetchedPosition, isPositionLoading, initialData.length, setInitialData]);
+  }, [
+    initialData.loadingCall,
+    data.length,
+    isFetchedPosition,
+    isPositionLoading,
+    initialData.length,
+    setInitialData,
+  ]);
 
-  const isEarnPath = PATH.includes(router.pathname);
-
-  // * no need to force loading in another page
-  const isConnectedCheck = walletConnected && isEarnPath;
-
-  const shouldTriggerLoading = () => {
-    // * connected case
-    if (isConnectedCheck) {
-      return true;
-    }
-
-    // * not connected case
-    if (!isConnectedCheck && (isPositionLoading || !back)) {
-      return true;
-    }
-
-    // * [after go back] or [data change while interval refetch]
-    if (!!back || initialData.status) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const { isLoadingCommon } = useLoading({
-    loadable: shouldTriggerLoading(),
-  });
+  const { isLoading } = useLoading();
 
   const { getGnotPath } = useGnotToGnot();
 
@@ -245,8 +223,8 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
   const loading = useMemo(() => {
     const shouldPositionLoading = shouldShowLoading && isPositionLoading;
-    return (shouldPositionLoading && walletConnected) || isLoadingCommon;
-  }, [walletConnected, isLoadingCommon, isPositionLoading]);
+    return (shouldPositionLoading && walletConnected) || isLoading;
+  }, [walletConnected, isLoading, isPositionLoading]);
 
   return {
     availableStake,
@@ -258,6 +236,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     getPositionsByPoolPath,
     isFetchedPosition,
     loading: loading,
-    loadingPositionById: isLoadingPool || (isPositionLoading && walletConnected),
+    loadingPositionById:
+      isLoadingPool || (isPositionLoading && walletConnected),
   };
 };

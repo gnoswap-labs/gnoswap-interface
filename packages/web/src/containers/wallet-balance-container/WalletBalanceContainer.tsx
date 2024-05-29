@@ -5,7 +5,10 @@ import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
 import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
-import { makeBroadcastClaimMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import {
+  makeBroadcastClaimMessage,
+  useBroadcastHandler,
+} from "@hooks/common/use-broadcast-handler";
 import { usePosition } from "@hooks/common/use-position";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
@@ -46,13 +49,18 @@ const WalletBalanceContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
-  const { isLoadingCommon } = useLoading();
+  const { isLoading } = useLoading();
 
   const { balances: balancesPrice } = useTokenData();
 
   const { positions, loading: loadingPositions } = usePositionData();
   const { claimAll } = usePosition(positions);
-  const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
+  const {
+    broadcastSuccess,
+    broadcastPending,
+    broadcastError,
+    broadcastRejected,
+  } = useBroadcastHandler();
   const { openModal } = useTransactionConfirmModal();
   const { data: tokenPrices = {} } = useGetTokenPrices();
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
@@ -61,7 +69,6 @@ const WalletBalanceContainer: React.FC = () => {
   }, []);
   const changeTokenWithdraw = useCallback((token: TokenModel) => {
     setWithDrawInfo(token);
-    // setIsShowWithDrawModal(true);
   }, []);
 
   const deposit = useCallback(() => {
@@ -75,7 +82,9 @@ const WalletBalanceContainer: React.FC = () => {
     if (!address) return;
   }, [connected, address]);
   const claimAllReward = useCallback(() => {
-    const amount = positions.flatMap(item => item.reward).reduce((acc, item) => acc + Number(item.claimableAmount), 0);
+    const amount = positions
+      .flatMap(item => item.reward)
+      .reduce((acc, item) => acc + Number(item.claimableAmount), 0);
     const data = {
       amount: toUnitFormat(amount, true, true),
     };
@@ -89,26 +98,48 @@ const WalletBalanceContainer: React.FC = () => {
             setLoadingTransactionClaim(false);
           }, 1000);
           openModal();
-        } else if (response.code === 4000 && response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
+        } else if (
+          response.code === 4000 &&
+          response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+        ) {
           broadcastError(makeBroadcastClaimMessage("error", data));
           setLoadingTransactionClaim(false);
           openModal();
         } else {
           openModal();
-          broadcastRejected(makeBroadcastClaimMessage("error", data), () => { }, true);
+          broadcastRejected(
+            makeBroadcastClaimMessage("error", data),
+            () => {},
+            true,
+          );
           setLoadingTransactionClaim(false);
         }
       }
     });
   }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
   const loadingTotalBalance = useMemo(() => {
-    return loadingPositions || loadingConnect === "loading" || isLoadingCommon || !!(isEmptyObject(balancesPrice) && account?.address);
-  }, [loadingPositions, loadingConnect, isLoadingCommon, account?.address, balancesPrice]);
+    return (
+      loadingPositions ||
+      loadingConnect === "loading" ||
+      isLoading ||
+      !!(isEmptyObject(balancesPrice) && account?.address)
+    );
+  }, [
+    loadingPositions,
+    loadingConnect,
+    isLoading,
+    account?.address,
+    balancesPrice,
+  ]);
 
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
       const path = key === "gnot" ? WRAPPED_GNOT_PATH : key;
-      const balance = BigNumber(value || 0).multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice || 0).dividedBy(10 ** 6).toNumber() || 0;
+      const balance =
+        BigNumber(value || 0)
+          .multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice || 0)
+          .dividedBy(10 ** 6)
+          .toNumber() || 0;
       return BigNumber(acc).plus(balance).toNumber();
     }, 0);
   }, [balancesPrice, tokenPrices]);
@@ -135,12 +166,21 @@ const WalletBalanceContainer: React.FC = () => {
     { stakedBalance: 0, unStakedBalance: 0, claimableRewards: 0 },
   );
 
-  const sumTotalBalance = BigNumber(availableBalance)
-    .plus(unStakedBalance)
-    .plus(stakedBalance)
-    .plus(claimableRewards)
-    .decimalPlaces(2)
-    .toFormat(availableBalance === 0 ? 0 : 2);
+  const sumTotalBalance = useMemo(() => {
+    return BigNumber(availableBalance)
+      .plus(unStakedBalance)
+      .plus(stakedBalance)
+      .plus(claimableRewards)
+      .decimalPlaces(2)
+      .toFormat(availableBalance === 0 ? 0 : 2);
+  }, [
+    availableBalance,
+    unStakedBalance,
+    stakedBalance,
+    claimableRewards,
+    availableBalance,
+  ]);
+
   const closeDeposit = () => {
     setIsShowDepositModal(false);
   };
@@ -167,15 +207,19 @@ const WalletBalanceContainer: React.FC = () => {
 
   const onSubmit = (amount: any, address: string) => {
     if (!withdrawInfo || !account?.address) return;
-    handleSubmit({
-      fromAddress: account.address,
-      toAddress: address,
-      token: withdrawInfo,
-      tokenAmount: BigNumber(amount).multipliedBy(Math.pow(10, withdrawInfo.decimals)).toNumber(),
-    },
-      withdrawInfo.type,);
+    handleSubmit(
+      {
+        fromAddress: account.address,
+        toAddress: address,
+        token: withdrawInfo,
+        tokenAmount: BigNumber(amount)
+          .multipliedBy(Math.pow(10, withdrawInfo.decimals))
+          .toNumber(),
+      },
+      withdrawInfo.type,
+    );
     closeWithdraw();
-  }
+  };
   return (
     <>
       <WalletBalance

@@ -26,7 +26,7 @@ import {
 } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { checkGnotPath } from "@utils/common";

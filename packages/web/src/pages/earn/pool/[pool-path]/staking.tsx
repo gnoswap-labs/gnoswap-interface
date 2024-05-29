@@ -5,7 +5,7 @@ import PoolLayout from "@layouts/pool-layout/PoolLayout";
 import StakingContainer from "@containers/staking-container/StakingContainer";
 import PoolPairInformationContainer from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import MyLiquidityContainer from "@containers/my-liquidity-container/MyLiquidityContainer";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "@query/pools";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -23,7 +23,7 @@ export default function Pool() {
   const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading } = useLoading();
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
@@ -46,7 +46,7 @@ export default function Pool() {
   }, [data?.incentiveType]);
 
   useEffect(() => {
-    if (!loading && isFetchedPosition && !isLoadingCommon) {
+    if (!loading && isFetchedPosition && !isLoading) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -56,8 +56,7 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [loading, isFetchedPosition, isLoadingCommon]);
-
+  }, [loading, isFetchedPosition, isLoading]);
 
   return (
     <PoolLayout

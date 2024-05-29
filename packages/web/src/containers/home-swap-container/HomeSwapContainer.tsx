@@ -6,7 +6,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-import { useRouter } from "next/router";
+import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
@@ -88,7 +88,11 @@ const HomeSwapContainer: React.FC = () => {
   }, [tokenA, tokenAAmount, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
-    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]) {
+    if (
+      !Number(tokenBAmount) ||
+      !tokenB ||
+      !tokenPrices[checkGnotPath(tokenB.priceID)]
+    ) {
       return Number.NaN;
     }
     return BigNumber(tokenBAmount)
@@ -113,21 +117,30 @@ const HomeSwapContainer: React.FC = () => {
       tokenADecimals: tokenA?.decimals,
       tokenBDecimals: tokenB?.decimals,
     };
-  }, [slippage, swapDirection, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
+  }, [
+    slippage,
+    swapDirection,
+    tokenA,
+    tokenAAmount,
+    tokenABalance,
+    tokenAUSD,
+    tokenB,
+    tokenBAmount,
+    tokenBBalance,
+    tokenBUSD,
+  ]);
 
   const swapNow = useCallback(() => {
     const queries = [
       `from=${tokenA?.path}`,
       `to=${tokenB?.path}`,
       `direction=${swapDirection}`,
-      ...tokenAAmount ? [`token_a_amount=${tokenAAmount}`] : [],
-      ...tokenBAmount ? [`token_b_amount=${tokenBAmount}`] : [],
+      ...(tokenAAmount ? [`token_a_amount=${tokenAAmount}`] : []),
+      ...(tokenBAmount ? [`token_b_amount=${tokenBAmount}`] : []),
     ];
     const queriesString = queries.join("&");
     if (!!swapDirection && (!!tokenAAmount || !!tokenBAmount)) {
-      router.push(
-        `/swap?${queriesString}`
-      );
+      router.push(`/swap?${queriesString}`);
     }
   }, [router, swapDirection, tokenA, tokenB, tokenAAmount, tokenBAmount]);
 

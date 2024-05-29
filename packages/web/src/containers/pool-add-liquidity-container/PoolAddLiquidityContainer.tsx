@@ -34,6 +34,7 @@ import { isNumber } from "@utils/number-utils";
 import { isFetchedPools } from "@states/pool";
 import { useLoading } from "@hooks/common/use-loading";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import { useRouterBack } from "@hooks/common/use-router-back";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface AddLiquidityPriceRage {
@@ -69,6 +70,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 
 const EarnAddLiquidityContainer: React.FC = () => {
   const router = useRouter();
+  useRouterBack();
   const [initialized, setInitialized] = useState(false);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const {
@@ -138,7 +140,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       createPool,
       addLiquidity,
     });
-  const { isLoadingCommon } = useLoading();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
