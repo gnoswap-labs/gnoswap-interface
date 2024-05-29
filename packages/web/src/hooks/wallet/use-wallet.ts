@@ -12,8 +12,8 @@ import {
   GNOSWAP_SESSION_ID_KEY,
   GNOWSWAP_CONNECTED_KEY,
 } from "@states/common";
-import { DEFAULT_CHAIN_ID } from "@common/clients/wallet-client/transaction-messages";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { CHAINS, DEFAULT_CHAIN_ID } from "@constants/environment.constant";
 
 const CHAIN_ID = DEFAULT_CHAIN_ID;
 const balanceQueryKey = ["token-balance", "ugnot"];
@@ -35,11 +35,17 @@ export const useWallet = () => {
   }, [walletAccount]);
 
   const balanceQuery = useQuery({
-    queryKey: balanceQueryKey,
-    queryFn: () => rpcProvider?.getBalance(walletAccount?.address || "", "ugnot"),
+    queryKey: [balanceQueryKey, walletAccount?.chainId || ""],
+    queryFn: () =>
+      rpcProvider?.getBalance(walletAccount?.address || "", "ugnot"),
     refetchInterval: 5_000,
+    enabled: !!walletAccount?.address,
   });
-  const { data: balance, isLoading: isLoadingBalance, isStale: isBalanceStale } = balanceQuery;
+  const {
+    data: balance,
+    isLoading: isLoadingBalance,
+    isStale: isBalanceStale,
+  } = balanceQuery;
 
   const wallet = useMemo(() => {
     if (!connected) {
@@ -132,8 +138,8 @@ export const useWallet = () => {
     if (established.code === 0 || established.code === 4001) {
       const account = await accountRepository.getAccount();
       sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
-      const network = account.chainId === CHAIN_ID;
-      if (!network) {
+      const availNetwork = CHAINS.includes(account.chainId);
+      if (!availNetwork) {
         switchNetwork();
       }
       setWalletAccount(account);
@@ -152,17 +158,17 @@ export const useWallet = () => {
     try {
       walletClient.addEventChangedAccount(() => {
         queryClient.invalidateQueries({
-          queryKey: balanceQueryKey
+          queryKey: balanceQueryKey,
         });
         connectAdenaClient();
       });
       walletClient.addEventChangedNetwork(() => connectAdenaClient());
-    } catch { }
+    } catch {}
   }
 
   const isSwitchNetwork = useMemo(() => {
     if (!walletAccount) return true;
-    const network = walletAccount.chainId === CHAIN_ID;
+    const network = CHAINS.includes(walletAccount.chainId);
     return network ? false : true;
   }, [walletAccount]);
 

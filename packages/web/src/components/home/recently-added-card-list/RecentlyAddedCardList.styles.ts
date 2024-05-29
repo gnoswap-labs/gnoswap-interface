@@ -7,23 +7,20 @@ interface SkeletonStyleProps {
   tdWidth?: CSSProperties["width"];
 }
 
-interface Props {
-  loading: boolean;
-}
-
-export const RecentlyAddedCardListwrapper = styled.div<Props>`
+export const RecentlyAddedCardListWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "center")}
   width: 100%;
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
-  padding: ${({ loading }) => {
-    return loading ? "15px 0px 15px" : "15px 0px 11px";
-  }};
-  gap: ${({ loading }) => {
-    return loading ? "8px" : "12px";
-  }};
+  padding: 15px 0px 11px;
+  gap: 12px;
+  
+  &.loading {
+    padding: 15px 0px 15px;
+    gap: 8px;
+  }
 
   ${media.mobile} {
     padding: 15px 0px;

@@ -1,6 +1,6 @@
-import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
-import { useGetTokensList } from "@query/token";
 import { useCallback } from "react";
+import { useGetTokensList } from "@query/token";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 
 export const useTokenImage = () => {
   const { data: { tokens = [] } = {} } = useGetTokensList();

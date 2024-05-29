@@ -18,14 +18,14 @@ import { GnoProvider } from "@gnolang/gno-js-client";
 
 export class AccountRepositoryImpl implements AccountRepository {
   private walletClient: WalletClient | null;
-  private networkClient: NetworkClient;
+  private networkClient: NetworkClient | null;
   private rpcProvider: GnoProvider | null;
   private localStorageClient: StorageClient<StorageKeyType>;
   private sessionStorageClient: StorageClient<SessionStorageKeyType>;
 
   constructor(
     walletClient: WalletClient | null,
-    networkClient: NetworkClient,
+    networkClient: NetworkClient | null,
     localStorageClient: StorageClient,
     sessionStorageClient: StorageClient,
     rpcProvider: GnoProvider | null,
@@ -62,6 +62,9 @@ export class AccountRepositoryImpl implements AccountRepository {
   public getBalances = async (
     address: string,
   ): Promise<AccountBalanceModel[]> => {
+    if (!this.networkClient) {
+      return [];
+    }
     const response = await this.networkClient.get<AccountBalancesResponse>({
       url: `/user/${address}/balance`,
     });

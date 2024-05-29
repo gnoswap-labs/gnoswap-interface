@@ -37,12 +37,6 @@ export const ASSET_HEAD = {
 export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
 
 export interface Asset extends TokenModel {
-  // id: string;
-  // logoUri: string;
-  // type: ASSET_TYPE;
-  // name: string;
-  // symbol: string;
-  // chain: string;
   balance?: number | string | null;
   price?: any;
 }
@@ -97,43 +91,6 @@ const DEPOSIT_INFO: TokenModel = {
   type: "grc20",
   priceID: "gno.land/r/gns",
 };
-
-const INIT_GNOT = {
-  type: "native",
-  chainId: "dev.gnoswap",
-  createdAt: "0001-01-01T00:00:00Z",
-  name: "Gnoland",
-  path: "gnot",
-  decimals: 6,
-  symbol: "GNOT",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-  priceID: "gnot",
-  description:
-    "Gno.land is a platform to write smart contracts in Gnolang (Gno). Using an interpreted version of the general-purpose programming language Golang (Go), developers can write smart contracts and other blockchain apps without having to learn a language that’s exclusive to a single ecosystem. Web2 developers can easily contribute to web3 and start building a more transparent, accountable world.\n\nThe Gno transaction token, GNOT, and the contributor memberships power the platform, which runs on a variation of Proof of Stake. Proof of Contribution rewards contributors from technical and non-technical backgrounds, fairly and for life with GNOT. This consensus mechanism also achieves higher security with fewer validators, optimizing resources for a greener, more sustainable, and enduring blockchain ecosystem.\n\nAny blockchain using Gnolang achieves succinctness, composability, expressivity, and completeness not found in any other smart contract platform. By observing a minimal structure, the design can endure over time and challenge the regime of information censorship we’re living in today.",
-  websiteURL: "https://gno.land/",
-  displayPath: "Native",
-  wrappedPath: "gno.land/r/demo/wugnot",
-  balance: "0",
-} as const;
-
-const INIT_GNS = {
-  type: "grc20",
-  chainId: "dev.gnoswap",
-  createdAt: "2023-12-16T17:27:10Z",
-  name: "Gnoswap",
-  path: "gno.land/r/demo/gns",
-  decimals: 6,
-  symbol: "GNS",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-  priceID: "gno.land/r/demo/gns",
-  description: "GNS is a GRC20 token issued solely for testing purposes.",
-  websiteURL: "https://beta.gnoswap.io",
-  displayPath: "gno.land/r/demo/gns",
-  wrappedPath: "gno.land/r/demo/gns",
-  balance: "0",
-} as const;
 
 interface SortedProps extends TokenModel {
   balance: string;
@@ -459,7 +416,7 @@ const AssetListContainer: React.FC = () => {
     );
     closeWithdraw();
   };
-  console.log(filteredTokens, "filteredTokens");
+
   return (
     <>
       <AssetList

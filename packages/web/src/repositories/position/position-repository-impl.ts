@@ -36,12 +36,14 @@ import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
 import { IPositionHistoryResponse } from "./response/position-history-response";
 import {
-  PACKAGE_POOL_ADDRESS,
-  PACKAGE_STAKER_ADDRESS,
   TransactionMessage,
-  WRAPPED_GNOT_PATH,
   makeApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages";
+import {
+  PACKAGE_POOL_ADDRESS,
+  PACKAGE_STAKER_ADDRESS,
+  WRAPPED_GNOT_PATH,
+} from "@constants/environment.constant";
 import { MAX_INT64, MAX_UINT64 } from "@utils/math.utils";
 import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
 import { checkGnotPath, isGNOTPath } from "@utils/common";
@@ -51,12 +53,12 @@ import { PositionBinModel } from "@models/position/position-bin-model";
 import { PositionBinMapper } from "@models/position/mapper/position-bin-mapper";
 
 export class PositionRepositoryImpl implements PositionRepository {
-  private networkClient: NetworkClient;
+  private networkClient: NetworkClient | null;
   private rpcProvider: GnoProvider | null;
   private walletClient: WalletClient | null;
 
   constructor(
-    networkClient: NetworkClient,
+    networkClient: NetworkClient | null,
     rpcProvider: GnoProvider | null,
     walletClient: WalletClient | null,
   ) {
@@ -68,6 +70,9 @@ export class PositionRepositoryImpl implements PositionRepository {
   getPositionHistory = async (
     lpTokenId: string,
   ): Promise<IPositionHistoryModel[]> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<{
       data: IPositionHistoryResponse[];
     }>({
@@ -80,6 +85,9 @@ export class PositionRepositoryImpl implements PositionRepository {
     lpTokenId: string,
     count: 20 | 40,
   ): Promise<PositionBinModel[]> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<{
       data: PositionBinResponse[];
     }>({
@@ -92,6 +100,9 @@ export class PositionRepositoryImpl implements PositionRepository {
     address: string,
     options?: { isClosed?: boolean },
   ): Promise<PositionModel[]> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const response = await this.networkClient.get<{
       data: PositionListResponse;
     }>({
@@ -119,14 +130,14 @@ export class PositionRepositoryImpl implements PositionRepository {
         position.reward.findIndex(reward => reward.rewardType === "SWAP_FEE") >
         -1;
       const hasReward =
-        position.reward.findIndex(
-          reward =>
-            reward.rewardType === "STAKING" || reward.rewardType === "EXTERNAL",
+        position.reward.findIndex(reward =>
+          ["INTERNAL", "EXTERNAL"].includes(reward.rewardType),
         ) > -1;
 
       const approveMessages = [];
       const collectMessages = [];
       const tokenPaths = position.poolPath.split(":");
+      const includedTokenPaths: string[] = [...tokenPaths];
       if (hasSwapFee && tokenPaths.length === 3) {
         approveMessages.push(
           makeApproveMessage(
@@ -149,10 +160,15 @@ export class PositionRepositoryImpl implements PositionRepository {
       if (hasReward) {
         // Reward token approve to Pool and Staker(When GNOT token)
         const rewardTokenMessages = position.reward.flatMap(reward => {
+          const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
+          if (includedTokenPaths.includes(rewardTokenWrappedPath)) {
+            return [];
+          }
+
           const approveMessages: TransactionMessage[] = [];
           approveMessages.push(
             makeApproveMessage(
-              checkGnotPath(reward.rewardToken.path),
+              rewardTokenWrappedPath,
               [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
               recipient,
             ),
@@ -167,6 +183,8 @@ export class PositionRepositoryImpl implements PositionRepository {
               ),
             );
           }
+
+          includedTokenPaths.push(rewardTokenWrappedPath);
           return approveMessages;
         });
         approveMessages.push(...rewardTokenMessages);
@@ -229,10 +247,49 @@ export class PositionRepositoryImpl implements PositionRepository {
       );
     }
 
+    const includedTokenPaths: string[] = [];
+
+    // Reward token approve to Pool and Staker(When GNOT token)
+    const collectRewardApproveMessages = positions.flatMap(position =>
+      position.reward.flatMap(reward => {
+        const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
+        if (includedTokenPaths.includes(rewardTokenWrappedPath)) {
+          return [];
+        }
+
+        const messages: TransactionMessage[] = [];
+        messages.push(
+          makeApproveMessage(
+            rewardTokenWrappedPath,
+            [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
+            caller,
+          ),
+        );
+
+        if (reward.rewardToken.path === WRAPPED_GNOT_PATH) {
+          messages.push(
+            makeApproveMessage(
+              checkGnotPath(WRAPPED_GNOT_PATH),
+              [PACKAGE_STAKER_ADDRESS, MAX_UINT64.toString()],
+              caller,
+            ),
+          );
+        }
+        includedTokenPaths.push(rewardTokenWrappedPath);
+        return messages;
+      }),
+    );
+
+    const collectRewardMessages = positions.flatMap(position =>
+      makeCollectRewardMessage(position.lpTokenId, caller),
+    );
+
     messages.push(
       ...positions.map(position =>
         makeUnstakeMessage(position.lpTokenId, caller),
       ),
+      ...collectRewardApproveMessages,
+      ...collectRewardMessages,
     );
     const result = await this.walletClient.sendTransaction({
       messages,

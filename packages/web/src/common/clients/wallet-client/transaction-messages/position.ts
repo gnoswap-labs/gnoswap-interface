@@ -1,15 +1,14 @@
-import {
-  makeGNOTSendAmount,
-  makeTransactionMessage,
-  PACKAGE_POSITION_PATH,
-  PACKAGE_STAKER_PATH,
-} from "./common";
+import { makeGNOTSendAmount, makeTransactionMessage } from "./common";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
 import BigNumber from "bignumber.js";
+import {
+  PACKAGE_POSITION_PATH,
+  PACKAGE_STAKER_PATH,
+} from "@constants/environment.constant";
 
 export function makePositionMintMessage(
   tokenAPath: string,

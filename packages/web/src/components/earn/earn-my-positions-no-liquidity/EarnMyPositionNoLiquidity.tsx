@@ -1,5 +1,5 @@
-import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 import IconNoPosition from "@components/common/icons/IconNoPosition";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { AccountModel } from "@models/account/account-model";
 import { useGetTokenPrices } from "@query/token";

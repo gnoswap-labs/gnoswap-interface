@@ -4,7 +4,7 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { ThemeColorType } from "@styles/ThemeTypes";
 
-export const FontSize16 = styled.p`
+export const FontSize16 = styled.div`
   font-size: 16px;
   font-weight: 400;
   line-height: 20.8px;

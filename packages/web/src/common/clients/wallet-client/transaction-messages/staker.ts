@@ -1,10 +1,9 @@
 import {
-  makeApproveMessage,
-  makeTransactionMessage,
   PACKAGE_NFT_PATH,
   PACKAGE_STAKER_ADDRESS,
   PACKAGE_STAKER_PATH,
-} from "./common";
+} from "@constants/environment.constant";
+import { makeApproveMessage, makeTransactionMessage } from "./common";
 
 export function makeApporveStakeTokenMessage(
   lpTokenId: string,

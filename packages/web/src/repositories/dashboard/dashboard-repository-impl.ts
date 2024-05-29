@@ -11,13 +11,14 @@ import {
 } from "./request";
 import { OnchainActivityResponse } from "./response/onchain-response";
 import { IVolumeResponse } from "./response/volume-response";
+import { CommonError } from "@common/errors";
 
 export class DashboardRepositoryImpl implements DashboardRepository {
-  private networkClient: NetworkClient;
+  private networkClient: NetworkClient | null;
   private localStorageClient: StorageClient<StorageKeyType>;
 
   constructor(
-    networkClient: NetworkClient,
+    networkClient: NetworkClient | null,
     localStorageClient: StorageClient<StorageKeyType>,
   ) {
     this.networkClient = networkClient;
@@ -25,6 +26,9 @@ export class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   public getDashboardTvl = async (): Promise<TvlResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const { data } = await this.networkClient.get<{ data: TvlResponse }>({
       url: "/dashboard/tvl",
     });
@@ -32,12 +36,18 @@ export class DashboardRepositoryImpl implements DashboardRepository {
     return data.data;
   };
   public getDashboardVolume = async (): Promise<IVolumeResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const { data } = await this.networkClient.get<{ data: IVolumeResponse }>({
       url: "/dashboard/volume",
     });
     return data.data;
   };
   public getDashboardToken = async (): Promise<DashboardTokenResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     const { data } = await this.networkClient.get<{
       data: DashboardTokenResponse;
     }>({
@@ -49,6 +59,10 @@ export class DashboardRepositoryImpl implements DashboardRepository {
   public getDashboardOnchainActivity = async (
     request: OnchainRequest,
   ): Promise<OnchainActivityResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
     // type: "ALL" | "ADD" | "INCREASE" | "DECREASE" | "SWAP" | "STAKE" | "UNSTAKE" | "CLAIM" | "WITHDRAW" | "REMOVE";
     const response = await this.networkClient
       .get<{ data: OnchainActivityResponse }>({
@@ -64,6 +78,9 @@ export class DashboardRepositoryImpl implements DashboardRepository {
   public getAccountOnchainActivity = async (
     request: OnchainAccountRequest,
   ): Promise<OnchainActivityResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
     if (!request.address) {
       console.log("");
     }

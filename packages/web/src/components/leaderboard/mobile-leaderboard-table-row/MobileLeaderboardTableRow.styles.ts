@@ -25,7 +25,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 
   ${mixins.flexbox("row", "center", "flex-start")};
 
-  &:first-child {
+  &:first-of-type {
     justify-content: center;
   }
 
@@ -37,7 +37,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   ${media.mobile} {
     flex-grow: 2;
 
-    &:first-child {
+    &:first-of-type {
       flex-grow: 0;
     }
     &:last-child {
