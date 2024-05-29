@@ -3,6 +3,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import React from "react";
 import { wrapper } from "./SelectUnstakeResult.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import BigNumber from "bignumber.js";
 
 interface SelectUnstakeResultProps {
   positions: PoolPositionModel[];
@@ -11,8 +12,8 @@ interface SelectUnstakeResultProps {
 const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
   positions,
 }) => {
-  const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } = useUnstakeData({ positions });
-
+  const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } =
+    useUnstakeData({ positions });
 
   if (positions.length === 0) return <></>;
   return (
@@ -28,7 +29,11 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 mobileWidth={24}
               />
               <p>Pooled {pooledTokenInfo.token.symbol}</p>
-              <strong>{pooledTokenInfo.amount.toLocaleString("en", { minimumFractionDigits: 6 })}</strong>
+              <strong>
+                {pooledTokenInfo.amount.toLocaleString("en", {
+                  minimumFractionDigits: 6,
+                })}
+              </strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>
           </li>
@@ -43,7 +48,13 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 mobileWidth={24}
               />
               <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
-              <strong>{pooledTokenInfo.amount.toLocaleString("en", { minimumFractionDigits: 6 })}</strong>
+              <strong>
+                {BigNumber(pooledTokenInfo.amount).isZero()
+                  ? "0"
+                  : pooledTokenInfo.amount.toLocaleString("en", {
+                      minimumFractionDigits: 6,
+                    })}
+              </strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>
           </li>

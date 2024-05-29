@@ -2,9 +2,7 @@ import React, { useMemo } from "react";
 import StakingContentCard, {
   SummuryApr,
 } from "@components/pool/staking-content-card/StakingContentCard";
-import {
-  StakingContentWrapper,
-} from "./StakingContent.styles";
+import { StakingContentWrapper } from "./StakingContent.styles";
 import Button from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
@@ -29,9 +27,9 @@ interface StakingContentProps {
 
 const TEXT_BTN = [
   "Create your first position to get started ⛵",
-  "Stake your positions to get started ⛵",
-  "Keep your position staked to get higher rewards ⌛",
-  "Receiving Max Rewards ✨",
+  "Stake your position to get started ⛵",
+  "Keep staking to receive higher rewards ⌛",
+  "Receiving max rewards ✨",
 ];
 
 const DAY_TIME = 24 * 60 * 60 * 1000;
@@ -55,25 +53,30 @@ const StakingContent: React.FC<StakingContentProps> = ({
   }, [rewardTokens, pool]);
 
   const stakingPositionMap = useMemo(() => {
-    return positions.reduce<{ [key in StakingPeriodType]: PoolPositionModel[] }>((accum, current) => {
-      const stakedTime = new Date(current.stakedAt).getTime();
-      const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
-      let periodType: StakingPeriodType = "MAX";
-      if (difference < 5) {
-        periodType = "5D";
-      } else if (difference < 10) {
-        periodType = "10D";
-      } else if (difference < 30) {
-        periodType = "30D";
-      }
-      accum[periodType].push(current);
-      return accum;
-    }, {
-      "5D": [],
-      "10D": [],
-      "30D": [],
-      "MAX": [],
-    });
+    return positions.reduce<{
+      [key in StakingPeriodType]: PoolPositionModel[];
+    }>(
+      (accum, current) => {
+        const stakedTime = new Date(current.stakedAt).getTime();
+        const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
+        let periodType: StakingPeriodType = "MAX";
+        if (difference < 5) {
+          periodType = "5D";
+        } else if (difference < 10) {
+          periodType = "10D";
+        } else if (difference < 30) {
+          periodType = "30D";
+        }
+        accum[periodType].push(current);
+        return accum;
+      },
+      {
+        "5D": [],
+        "10D": [],
+        "30D": [],
+        MAX: [],
+      },
+    );
   }, [positions]);
 
   const checkPoints = useMemo((): StakingPeriodType[] => {
@@ -92,19 +95,28 @@ const StakingContent: React.FC<StakingContentProps> = ({
   return (
     <StakingContentWrapper isMobile={mobile}>
       <div className="content-header">
-        {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-          <span
-            css={pulseSkeletonStyle({ h: 22, w: "600px", mobileWidth: 400 })}
-          />
-        </SkeletonEarnDetailWrapper>}
-        {!loading && <span>Stake your position to earn rewards up <span className="to-web">to</span></span>}
-        {!loading && <div className="header-wrap">
-          <span className="to-mobile">to</span>
-          <span className="apr">{totalApr} APR </span>
-          <div className="coin-info">
-            <OverlapLogo logos={rewardTokenLogos} />
+        {loading && (
+          <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <span
+              css={pulseSkeletonStyle({ h: 22, w: "600px", mobileWidth: 400 })}
+            />
+          </SkeletonEarnDetailWrapper>
+        )}
+        {!loading && (
+          <span>
+            Stake your position to earn rewards up{" "}
+            <span className="to-web">to</span>
+          </span>
+        )}
+        {!loading && (
+          <div className="header-wrap">
+            <span className="to-mobile">to</span>
+            <span className="apr">{totalApr} APR </span>
+            <div className="coin-info">
+              <OverlapLogo logos={rewardTokenLogos} />
+            </div>
           </div>
-        </div>}
+        )}
       </div>
       <div className="staking-wrap">
         <>
@@ -114,6 +126,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               <SummuryApr
                 loading={loading}
                 key={index}
+                stakingApr={pool?.stakingApr || "0"}
                 rewardTokens={rewardTokens}
                 period={period}
                 positions={stakingPositionMap[period]}
@@ -124,6 +137,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               <StakingContentCard
                 key={index}
                 rewardTokens={rewardTokens}
+                stakingApr={pool?.stakingApr || "0"}
                 period={period}
                 positions={stakingPositionMap[period]}
                 breakpoint={breakpoint}
@@ -136,32 +150,45 @@ const StakingContent: React.FC<StakingContentProps> = ({
       </div>
       <div className="button-wrap">
         <div className="empty-content"></div>
-        {loading && <div className="loading-wrapper">
-          <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
-            <span
-              css={pulseSkeletonStyle({ h: 22, w: "400px", mobileWidth: 150 })}
-            />
-          </SkeletonEarnDetailWrapper>
-        </div>}
-        {!loading && <Button
-          text={TEXT_BTN[type]}
-          style={{
-            width: "100%",
-            height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
-            fontType: `${breakpoint === DEVICE_TYPE.WEB
-              ? "body7"
-              : breakpoint === DEVICE_TYPE.MOBILE
-                ? "p2"
-                : "body9"
+        {loading && (
+          <div className="loading-wrapper">
+            <SkeletonEarnDetailWrapper
+              className="loading-button"
+              height={36}
+              mobileHeight={24}
+            >
+              <span
+                css={pulseSkeletonStyle({
+                  h: 22,
+                  w: "400px",
+                  mobileWidth: 150,
+                })}
+              />
+            </SkeletonEarnDetailWrapper>
+          </div>
+        )}
+        {!loading && (
+          <Button
+            text={TEXT_BTN[type]}
+            style={{
+              width: "100%",
+              height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
+              fontType: `${
+                breakpoint === DEVICE_TYPE.WEB
+                  ? "body7"
+                  : breakpoint === DEVICE_TYPE.MOBILE
+                  ? "p2"
+                  : "body9"
               }`,
-            textColor: "text01",
-            bgColor: "background01",
-            padding: "10px 16px",
-            gap: "8px",
-          }}
-          className={type < 3 ? "change-weight" : "receive-button"}
-          onClick={() => { }}
-        />}
+              textColor: "text01",
+              bgColor: "background01",
+              padding: "10px 16px",
+              gap: "8px",
+            }}
+            className={type < 3 ? "change-weight" : "receive-button"}
+            onClick={() => {}}
+          />
+        )}
       </div>
     </StakingContentWrapper>
   );

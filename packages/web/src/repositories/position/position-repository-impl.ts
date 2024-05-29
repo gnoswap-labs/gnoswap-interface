@@ -280,16 +280,11 @@ export class PositionRepositoryImpl implements PositionRepository {
       }),
     );
 
-    const collectRewardMessages = positions.flatMap(position =>
-      makeCollectRewardMessage(position.lpTokenId, caller),
-    );
-
     messages.push(
+      ...collectRewardApproveMessages,
       ...positions.map(position =>
         makeUnstakeMessage(position.lpTokenId, caller),
       ),
-      ...collectRewardApproveMessages,
-      ...collectRewardMessages,
     );
     const result = await this.walletClient.sendTransaction({
       messages,
