@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtom } from "jotai";
-import { CommonState, WalletState } from "@states/index";
+import { CommonState, EarnState, WalletState } from "@states/index";
 import { useTokenData } from "@hooks/token/use-token-data";
 import useRouter from "@hooks/common/use-custom-router";
 import useScrollData from "./use-scroll-data";
@@ -13,6 +13,9 @@ export const useBackground = () => {
     useWallet();
   const [walletClient] = useAtom(WalletState.client);
   const [sessionId] = useAtom(CommonState.sessionId);
+  const [isViewMorePositions, setIsViewMorePositions] = useAtom(
+    EarnState.isViewMorePositions,
+  );
   const { updateBalances } = useTokenData();
   const { scrollTo, getScrollHeight } = useScrollData();
   const { isLoadingTokens, isLoadingPools } = useLoading();
@@ -35,11 +38,21 @@ export const useBackground = () => {
           scrollTo(getScrollHeight(router.pathname));
           setMemorizedPath(null);
           break;
+        case "/earn/[pool-path]":
+          scrollTo(getScrollHeight(router.pathname));
+          setMemorizedPath(null);
+          break;
         default:
           break;
       }
     }
   }, [isLoadingPools, isLoadingTokens, memorizedPath, router.pathname]);
+
+  useEffect(() => {
+    if (!router.pathname.startsWith("/earn") && isViewMorePositions) {
+      setIsViewMorePositions(false);
+    }
+  }, [router.pathname]);
 
   const onPopPage = (): void => {
     if (

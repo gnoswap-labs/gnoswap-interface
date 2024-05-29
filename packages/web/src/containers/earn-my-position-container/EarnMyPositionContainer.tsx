@@ -156,7 +156,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     temp = temp.sort(
       (x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue),
     );
-    if (isViewMorePositions) {
+    if (!isViewMorePositions) {
       if (width > 1180) {
         return temp.slice(0, 4);
       } else if (width > 920) {
