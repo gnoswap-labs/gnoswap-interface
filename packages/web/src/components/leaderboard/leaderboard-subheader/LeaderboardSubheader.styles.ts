@@ -14,7 +14,7 @@ export const Container = styled.div`
   }
 `;
 
-export const TitleWrapper = styled.p`
+export const TitleWrapper = styled.div`
   width: 597px;
 
   @media screen and (max-width: 597px) {

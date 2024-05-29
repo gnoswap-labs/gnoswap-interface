@@ -10,9 +10,9 @@ const IconVector = ({ className }: { className?: string }) => (
     <path
       d="M0 1H33.6667"
       stroke="#C3D2EA"
-      stroke-width="2"
-      stroke-miterlimit="3.8637"
-      stroke-dasharray="1 4"
+      strokeWidth="2"
+      strokeMiterlimit="3.8637"
+      strokeDasharray="1 4"
     />
   </svg>
 );

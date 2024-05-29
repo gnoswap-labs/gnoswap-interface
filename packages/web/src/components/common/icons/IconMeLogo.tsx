@@ -19,7 +19,7 @@ const IconMeLogo = ({ className }: { className?: string }) => {
         height="19"
         rx="3.5"
         fill="#E0E8F4"
-        fill-opacity="0.4"
+        fillOpacity="0.4"
       />
       <rect x="0.5" y="0.5" width="33" height="19" rx="3.5" stroke="#E0E8F4" />
       <path
@@ -43,7 +43,7 @@ const IconMeLogo = ({ className }: { className?: string }) => {
         height="19"
         rx="3.5"
         fill="#141A29"
-        fill-opacity="0.5"
+        fillOpacity="0.5"
       />
       <rect x="0.5" y="0.5" width="33" height="19" rx="3.5" stroke="#596782" />
       <path
