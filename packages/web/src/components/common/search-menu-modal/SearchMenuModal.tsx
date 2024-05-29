@@ -144,7 +144,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
     if (isNative) return "Native coin";
 
-    const tokenPathArr = path_?.split("/");
+    const tokenPathArr = path_?.split("/") ?? [];
 
     if (tokenPathArr?.length <= 0) return path_;
 

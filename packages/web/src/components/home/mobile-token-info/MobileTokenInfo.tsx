@@ -46,7 +46,7 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
 
     if (item.isNative) return "Native coin";
 
-    const tokenPathArr = path_?.split("/");
+    const tokenPathArr = path_?.split("/") ?? [];
 
     if (tokenPathArr?.length <= 0) return path_;
 
