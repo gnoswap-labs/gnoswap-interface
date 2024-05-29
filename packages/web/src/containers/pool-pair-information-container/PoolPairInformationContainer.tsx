@@ -86,19 +86,21 @@ const PoolPairInformationContainer: React.FC<
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
-  const {
-    data = initialPool as PoolDetailModel,
-    isLoading: loading,
-  } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { data = initialPool as PoolDetailModel, isLoading: loading } =
+    useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { isLoading: isLoadingCommon } = useLoading();
   const [, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(
-    { address },
-  );
-  const { connected: connectedWallet, account } = useWallet();
-  const { data: bins = [] } = useGetBinsByPath(poolPath as string, 40, {
-    enabled: !!poolPath,
+  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData({
+    address,
   });
+  const { connected: connectedWallet, account } = useWallet();
+  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(
+    poolPath as string,
+    40,
+    {
+      enabled: !!poolPath,
+    },
+  );
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
     if (!poolPath) {
@@ -151,6 +153,9 @@ const PoolPairInformationContainer: React.FC<
       onClickPath={onClickPath}
       feeStr={feeStr}
       loading={loading || isLoadingCommon || loadingPosition}
+      loadingBins={
+        loading || isLoadingCommon || loadingPosition || isLoadingBins
+      }
       poolBins={bins}
     />
   );
