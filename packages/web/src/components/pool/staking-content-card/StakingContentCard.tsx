@@ -24,7 +24,6 @@ import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PositionModel } from "@models/position/position-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { mapMessageByTemplate } from "@utils/template";
 import BigNumber from "bignumber.js";
 
 interface StakingContentCardProps {
@@ -111,21 +110,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [checkPoints, period]);
 
   const periodInfo = useMemo(() => {
-    const periodStakingApr = BigNumber(stakingApr)
-      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
-      .toFormat(0);
-    return {
-      ...STAKING_PERIOD_INFO[period],
-      description: mapMessageByTemplate(
-        STAKING_PERIOD_INFO[period].description,
-        { apr: `${periodStakingApr}%` },
-      ),
-      tooltipContent: mapMessageByTemplate(
-        STAKING_PERIOD_INFO[period].tooltipContent,
-        { apr: `${periodStakingApr}%` },
-      ),
-    };
-  }, [period, stakingApr]);
+    return STAKING_PERIOD_INFO[period];
+  }, [period]);
 
   const totalUSD = useMemo(() => {
     if (positions.length === 0) {
@@ -154,8 +140,11 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [positionRewards, tokenPrices]);
 
   const aprStr = useMemo(() => {
-    return "-";
-  }, []);
+    const periodStakingApr = BigNumber(stakingApr)
+      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
+      .toFormat(0);
+    return `${periodStakingApr}% APR`;
+  }, [period, stakingApr]);
 
   return (
     <StakingContentCardWrapper nonTotal={!hasPosition}>
@@ -300,21 +289,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [checkPoints, period]);
 
   const periodInfo = useMemo(() => {
-    const periodStakingApr = BigNumber(stakingApr)
-      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
-      .toFormat(0);
-    return {
-      ...STAKING_PERIOD_INFO[period],
-      description: mapMessageByTemplate(
-        STAKING_PERIOD_INFO[period].description,
-        { apr: `${periodStakingApr}%` },
-      ),
-      tooltipContent: mapMessageByTemplate(
-        STAKING_PERIOD_INFO[period].tooltipContent,
-        { apr: `${periodStakingApr}%` },
-      ),
-    };
-  }, [period, stakingApr]);
+    return STAKING_PERIOD_INFO[period];
+  }, [period]);
 
   const positionRewards = useMemo(() => {
     return positions.flatMap(position => position.reward);
@@ -345,8 +321,11 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [positionRewards, tokenPrices]);
 
   const aprStr = useMemo(() => {
-    return "-";
-  }, []);
+    const periodStakingApr = BigNumber(stakingApr)
+      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
+      .toFormat(0);
+    return `${periodStakingApr}% APR`;
+  }, [period, stakingApr]);
 
   return (
     <StakingContentCardWrapper nonTotal={!hasPosition}>
