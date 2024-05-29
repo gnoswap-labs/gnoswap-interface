@@ -19,8 +19,8 @@ export const AssetInfoWrapper = styled.div`
   }
 
   .logo {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   .name {
@@ -63,10 +63,11 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   &.name-col {
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     .token-name-symbol-path {
       ${mixins.flexbox("column", "start", "start")}
       margin: 0px 8px;
+      gap: 2px;
       
       .token-name-path {
         ${mixins.flexbox("row", "baseline", "start")}
@@ -81,7 +82,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
               }
             }
           }
-          ${mixins.flexbox("row", "flex-start", "flex-start")}
+          ${mixins.flexbox("row", "center", "flex-start")}
           ${fonts.p6};
           color: ${({ theme }) => theme.color.text04};
           background-color: ${({ theme }) => theme.color.background26};
@@ -96,7 +97,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
         }
       }
       .token-name {
-        ${fonts.body11};
+        font-size: 15px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
