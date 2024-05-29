@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import CardList from "@components/home/card-list/CardList";
 import {
-  RecentlyAddedCardListwrapper,
+  RecentlyAddedCardListWrapper,
   SkeletonItem,
 } from "./RecentlyAddedCardList.styles";
 import IconPieChart from "@components/common/icons/IconPieChart";
@@ -10,6 +10,7 @@ import { CardListKeyStats } from "@models/common/card-list-item-info";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Link from "next/link";
+import { cx } from "@emotion/css";
 
 interface RecentlyAddedCardListProps {
   list: Array<CardListKeyStats>;
@@ -28,7 +29,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
   }, [device]);
 
   return visible ? (
-    <RecentlyAddedCardListwrapper loading={loading}>
+    <RecentlyAddedCardListWrapper className={cx("loading", { "empty-status": loading })}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />
@@ -59,7 +60,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
       ) : (
         <CardList list={list} onClickItem={() => {}} />
       )}
-    </RecentlyAddedCardListwrapper>
+    </RecentlyAddedCardListWrapper>
   ) : null;
 };
 

@@ -721,7 +721,6 @@ export const useSwapHandler = () => {
 
     swap(estimatedRoutes, swapAmount)
       .then(response => {
-        console.log(response);
         if (response) {
           if (response.code === 0) {
             broadcastPending();
