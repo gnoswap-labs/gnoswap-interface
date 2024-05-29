@@ -46,7 +46,8 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isClosed: options?.isClosed,
     queryOptions: {
       refetchInterval: () => {
-        if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15));
+        if (PATH.includes(router.pathname))
+          return secToMilliSec(back && !initialData.status ? 3 : 15);
 
         if (PATH_10SECOND.includes(router.pathname)) return secToMilliSec(10);
 
@@ -55,7 +56,9 @@ export const usePositionData = (options?: UsePositionDataOption) => {
         return false;
       },
       onSuccess(data) {
-        const haveNewData = JSON.stringify(data, transformData) !== JSON.stringify(cachedData.current, transformData);
+        const haveNewData =
+          JSON.stringify(data, transformData) !==
+          JSON.stringify(cachedData.current, transformData);
         if (haveNewData) {
           cachedData.current = data;
         }
@@ -63,13 +66,15 @@ export const usePositionData = (options?: UsePositionDataOption) => {
       },
       onError(err) {
         if ((err as AxiosError).response?.status === 404) {
-          const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current, transformData);
+          const haveNewData =
+            JSON.stringify([]) !==
+            JSON.stringify(cachedData.current, transformData);
           if (haveNewData) {
             cachedData.current = data;
           }
           setShouldShowLoading(haveNewData);
         }
-      }
+      },
     },
   });
 
