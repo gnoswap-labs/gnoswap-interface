@@ -109,7 +109,7 @@ const WalletBalanceContainer: React.FC = () => {
           openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
-            () => {},
+            () => { },
             true,
           );
           setLoadingTransactionClaim(false);

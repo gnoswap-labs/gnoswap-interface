@@ -14,7 +14,6 @@ export const TokenInfoWrapper = styled.div`
 
 export const HoverSection = styled.div`
   ${mixins.flexbox("row", "center", "center", false)};
-  background-color: ${({ theme }) => theme.color.background01};
   transition: background-color 0.3s ease;
   cursor: pointer;
   height: 100%;
@@ -24,6 +23,7 @@ export const HoverSection = styled.div`
   }
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
+    
   }
 `;
 
@@ -34,6 +34,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   height: 100%;
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
+  
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
@@ -80,25 +81,54 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.last7days-graph {
     display: flex;
   }
+  &.name-col {
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    .token-name-symbol-path {
+      ${mixins.flexbox("column", "start", "start")}
+      margin: 0px 8px;
+      
+      .token-name-path {
+        ${mixins.flexbox("row", "baseline", "start")}
+        gap: 8px;
+
+        .token-path {
+          ${mixins.flexbox("row", "flex-start", "flex-start")}
+          ${fonts.p6};
+          color: ${({ theme }) => theme.color.text04};
+          background-color: ${({ theme }) => theme.color.background26};
+          padding: 2px 4px;
+          gap: 2px;
+          border-radius: 4px;
+          .path-link-icon {
+            width: 10px;
+            height: 10px;
+            fill: ${({ theme }) => theme.color.text04};
+          }
+        }
+      }
+    }
+    .token-name {
+      ${fonts.body11};
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 
   .token-logo {
     width: 24px;
     height: 24px;
   }
-  .token-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0px 8px;
-  }
 
-  .token-symbol,
+  .token-symbol {
+    ${fonts.p4};
+    color: ${({ theme }) => theme.color.text04};
+  }
   .fee-rate,
   .token-index {
     ${fonts.body12};
     color: ${({ theme }) => theme.color.text04};
   }
-  .token-symbol,
   .fee-rate {
     ${fonts.body11};
   }

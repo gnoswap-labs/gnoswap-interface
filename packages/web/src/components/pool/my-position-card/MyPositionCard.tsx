@@ -144,7 +144,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       sumOfBalances === 0
         ? 0.5
         : tokenABalance /
-          (tokenABalance + tokenBBalance / position?.pool?.price);
+        (tokenABalance + tokenBBalance / position?.pool?.price);
     return [
       {
         token: tokenA,
@@ -381,7 +381,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -399,7 +399,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -418,8 +418,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const tokenAPriceStr = isFullRange
       ? "0 "
       : !isSwap
-      ? Number(minPrice)
-      : convertToKMB(`${Number(1 / Number(maxPrice))}`, {
+        ? Number(minPrice)
+        : convertToKMB(`${Number(1 / Number(maxPrice))}`, {
           maximumFractionDigits: 6,
         });
     return `${tokenAPriceStr}`;
@@ -505,9 +505,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     if (maxTickRate >= 1000) return ">999%";
 
-    return `${maxTickRate > 1 ? "+" : ""}${
-      Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
-    }%`;
+    return `${maxTickRate > 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+      }%`;
   }, [maxTickRate]);
 
   const startClass = useMemo(() => {
@@ -522,28 +521,28 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       setSelectedPosition(position);
       router.push(
         "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/decrease-liquidity",
+        router.query["pool-path"] +
+        "/" +
+        position?.id +
+        "/decrease-liquidity",
       );
     } else if (text === "Increase Liquidity") {
       setSelectedPosition(position);
       router.push(
         "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/increase-liquidity",
+        router.query["pool-path"] +
+        "/" +
+        position?.id +
+        "/increase-liquidity",
       );
     } else {
       setSelectedPosition(position);
       router.push(
         "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/reposition",
+        router.query["pool-path"] +
+        "/" +
+        position?.id +
+        "/reposition",
       );
     }
   };
@@ -617,8 +616,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                       <div
                         onClick={() =>
                           setCopy(
-                            `${
-                              window.location.host + window.location.pathname
+                            `${window.location.host + window.location.pathname
                             }?addr=${address}#${position.id}`,
                           )
                         }
@@ -668,8 +666,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                         <div
                           onClick={() =>
                             setCopy(
-                              `${
-                                window.location.host + window.location.pathname
+                              `${window.location.host + window.location.pathname
                               }?addr=${address}#${position.id}`,
                             )
                           }
@@ -709,7 +706,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 onClick={() =>
                   router.push(
                     router.asPath +
-                      `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`,
+                    `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`,
                   )
                 }
               />
@@ -851,8 +848,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     position.closed
                       ? RANGE_STATUS_OPTION.NONE
                       : inRange
-                      ? RANGE_STATUS_OPTION.IN
-                      : RANGE_STATUS_OPTION.OUT
+                        ? RANGE_STATUS_OPTION.IN
+                        : RANGE_STATUS_OPTION.OUT
                   }
                 />
               </div>
@@ -887,14 +884,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           {!loading && (
             <div className="convert-price">
               <div>
-                1{(!isSwap ? tokenA : tokenB)?.symbol} =&nbsp;
-                <ExchangeRate value={minPriceStr} />
-                &nbsp;
-                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-                <span className={startClass}>
-                  {!isSwap ? minTickLabel : maxTickLabel}
-                </span>
-                )&nbsp;
+                1&nbsp;
+                {(!isSwap ? tokenA : tokenB)?.symbol} =&nbsp;
+                <ExchangeRate value={minPriceStr} />&nbsp;
+                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(<span className={startClass}>{!isSwap ? minTickLabel : maxTickLabel}</span>)&nbsp;
                 <Tooltip
                   placement="top"
                   FloatingContent={

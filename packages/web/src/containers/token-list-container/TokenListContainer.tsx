@@ -10,7 +10,7 @@ import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { ValuesType } from "utility-types";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import useClickOutside from "@hooks/common/use-click-outside";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -44,6 +44,7 @@ export interface Token {
   last7days: number[];
   idx: number;
   graphStatus: MATH_NEGATIVE_TYPE;
+  isNative: boolean;
 }
 
 export interface SortOption {
@@ -132,6 +133,7 @@ export const createDummyTokenList = (): Token[] => [
     ),
     idx: 1,
     graphStatus: MATH_NEGATIVE_TYPE.POSITIVE,
+    isNative: false,
   },
 ];
 
@@ -198,8 +200,8 @@ const TokenListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setSortOption({
         key,
@@ -339,6 +341,7 @@ const TokenListContainer: React.FC = () => {
           },
           idx: 1,
           graphStatus,
+          isNative: isNativeToken(item),
         };
       });
 
