@@ -327,6 +327,7 @@ export const STAKING_PERIOD_INFO: {
     description: string;
     tooltipContent: string;
     period: number;
+    rate: number;
   };
 } = {
   "5D": {
@@ -335,6 +336,7 @@ export const STAKING_PERIOD_INFO: {
     tooltipContent:
       "During this staking period, you will only receive 30% of your maximum staking rewards. Keep your position staked to increase your rewards.",
     period: 5,
+    rate: 0.3,
   },
   "10D": {
     title: "Staked less than 10 days",
@@ -342,6 +344,7 @@ export const STAKING_PERIOD_INFO: {
     tooltipContent:
       "During this staking period, you will only receive 50% of your maximum staking rewards. Keep your position staked to increase your rewards.",
     period: 10,
+    rate: 0.5,
   },
   "30D": {
     title: "Staked less than 30 days",
@@ -349,6 +352,7 @@ export const STAKING_PERIOD_INFO: {
     tooltipContent:
       "During this staking period, you will only receive 70% of your maximum staking rewards. Keep your position staked to increase your rewards.",
     period: 30,
+    rate: 0.7,
   },
   MAX: {
     title: "Staked more than 30 days",
@@ -356,6 +360,7 @@ export const STAKING_PERIOD_INFO: {
     tooltipContent:
       "During this staking period, you will receive maximum staking rewards. Keep your position staked to maintain your rewards.",
     period: -1,
+    rate: 1,
   },
 } as const;
 

@@ -13,6 +13,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { StakingPeriodType } from "@constants/option.constant";
 import useUrlParam from "@hooks/common/use-url-param";
 import { addressValidationCheck } from "@utils/validation-utils";
+import BigNumber from "bignumber.js";
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const StakingContainer: React.FC = () => {
@@ -43,7 +44,9 @@ const StakingContainer: React.FC = () => {
     }
     return address;
   }, [initializedData]);
-  const { getPositionsByPoolId, loading: isLoadingPosition } = usePositionData({ address });
+  const { getPositionsByPoolId, loading: isLoadingPosition } = usePositionData({
+    address,
+  });
 
   const pool = useMemo(() => {
     if (!data) return null;
@@ -92,8 +95,9 @@ const StakingContainer: React.FC = () => {
   }, [isSwitchNetwork, connectedWallet, positions]);
 
   const totalApr = useMemo(() => {
-    return "-";
-  }, []);
+    const apr = BigNumber(pool?.stakingApr || 0).toFormat(0);
+    return `${apr}%`;
+  }, [pool?.stakingApr]);
 
   const rewardTokens = useMemo(() => {
     const tokenPair: TokenModel[] = [];
@@ -138,7 +142,7 @@ const StakingContainer: React.FC = () => {
       [key in StakingPeriodType]: PoolPositionModel[];
     }>(
       (accum, current) => {
-        const stakedTime = Number(current.stakedAt) * 1000;
+        const stakedTime = new Date(current.stakedAt).getTime();
         const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
         let periodType: StakingPeriodType = "MAX";
         if (difference < 5) {

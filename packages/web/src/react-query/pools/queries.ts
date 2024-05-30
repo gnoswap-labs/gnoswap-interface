@@ -7,6 +7,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { priceToTick } from "@utils/swap-utils";
 import { SwapFeeTierType } from "@constants/option.constant";
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 
 export const useGetPoolCreationFee = (
   options?: UseQueryOptions<number, Error>,
@@ -18,6 +19,31 @@ export const useGetPoolCreationFee = (
     queryFn: async () => {
       return poolRepository.getCreationFee();
     },
+    ...options,
+  });
+};
+
+export const useGetRPCPoolsBy = (
+  poolPaths: string[],
+  options?: UseQueryOptions<PoolDetailRPCModel[], Error>,
+) => {
+  const { poolRepository } = useGnoswapContext();
+
+  return useQuery<PoolDetailRPCModel[], Error>({
+    queryKey: [QUERY_KEY.rpcPools, poolPaths.join("_")],
+    queryFn: async () => {
+      const pools: PoolDetailRPCModel[] = [];
+      for (const poolPath of poolPaths) {
+        const pool = await poolRepository
+          .getPoolDetailRPCByPoolPath(poolPath)
+          .catch(() => null);
+        if (pool) {
+          pools.push(pool);
+        }
+      }
+      return pools;
+    },
+    enabled: poolPaths.length > 0,
     ...options,
   });
 };

@@ -20,7 +20,6 @@ import {
   evaluateExpressionToObject,
   makeABCIParams,
 } from "@utils/rpc-utils";
-import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
@@ -87,30 +86,6 @@ export class PoolRepositoryImpl implements PoolRepository {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
-
-  getRPCPools = async (): Promise<PoolRPCModel[]> => {
-    try {
-      const poolPackagePath = PACKAGE_POOL_PATH;
-
-      if (!poolPackagePath || !this.rpcProvider) {
-        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
-      }
-
-      const param = makeABCIParams("ApiGetPools", []);
-      const res = await this.rpcProvider.evaluateExpression(
-        poolPackagePath,
-        param,
-      );
-      const pools = PoolRPCMapper.fromList(
-        evaluateExpressionToObject<{ response: PoolRPCResponse[] }>(res)
-          ?.response || [],
-      );
-
-      return pools;
-    } catch (error) {
-      return [];
-    }
-  };
 
   getCreationFee = async (): Promise<number> => {
     try {
@@ -188,16 +163,29 @@ export class PoolRepositoryImpl implements PoolRepository {
 
   getPoolDetailRPCByPoolPath = async (
     poolPath: string,
-  ): Promise<PoolDetailRPCModel> => {
-    const pools = await this.getRPCPools();
-    const pool = pools?.find(item => {
-      return item.poolPath === poolPath;
-    });
-    if (!pool) {
-      throw new PoolError("NOT_FOUND_POOL");
-    }
+  ): Promise<PoolDetailRPCModel | null> => {
+    try {
+      const poolPackagePath = PACKAGE_POOL_PATH;
 
-    return PoolRPCMapper.toDetail(pool);
+      if (!poolPackagePath || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("ApiGetPool", [poolPath]);
+      const res = await this.rpcProvider.evaluateExpression(
+        poolPackagePath,
+        param,
+      );
+      const responseData = evaluateExpressionToObject<{
+        response: PoolRPCResponse;
+      }>(res);
+
+      return responseData
+        ? PoolRPCMapper.detailFrom(responseData.response)
+        : null;
+    } catch (error) {
+      return null;
+    }
   };
 
   createPool = async (

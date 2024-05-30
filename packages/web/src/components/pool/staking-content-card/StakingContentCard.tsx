@@ -14,16 +14,21 @@ import {
 } from "./StakingContentCard.styles";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { STAKING_PERIOD_INFO, StakingPeriodType } from "@constants/option.constant";
+import {
+  STAKING_PERIOD_INFO,
+  StakingPeriodType,
+} from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { numberToUSD, toUnitFormat } from "@utils/number-utils";
 import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PositionModel } from "@models/position/position-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import BigNumber from "bignumber.js";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
+  stakingApr: string;
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
   rewardTokens: TokenModel[];
@@ -32,44 +37,58 @@ interface StakingContentCardProps {
 }
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
-const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionModel[], period: number }) => {
-  const getRemainTime = useCallback((position: PositionModel) => {
-    const stakedTime = new Date(position.stakedAt).getTime();
-    const passedTime = (new Date().getTime() - stakedTime);
-    const remainTime = period * DAY_TIME - passedTime;
-    const { day, hours, minutes, seconds } = calculateRemainTime(remainTime);
-    return `${day}d ${hours}h ${minutes}m ${seconds}s`;
-  }, [period]);
-
+const PriceTooltipContent = ({
+  positions,
+  period,
+}: {
+  positions: PoolPositionModel[];
+  period: number;
+}) => {
+  const getRemainTime = useCallback(
+    (position: PositionModel) => {
+      const stakedTime = new Date(position.stakedAt).getTime();
+      const passedTime = new Date().getTime() - stakedTime;
+      const remainTime = period * DAY_TIME - passedTime;
+      const { day, hours, minutes, seconds } = calculateRemainTime(remainTime);
+      return `${day}d ${hours}h ${minutes}m ${seconds}s`;
+    },
+    [period],
+  );
 
   return (
     <PriceTooltipContentWrapper>
       {positions.map((position, index) => {
-        return <React.Fragment key={index}>
-          <div className="list list-logo">
-            <DoubleLogo
-              size={18}
-              left={position.pool.tokenA.logoURI}
-              right={position.pool.tokenB.logoURI}
-            />
-            <span className="title">ID #{position.lpTokenId}</span>
-          </div>
-          <div className="list">
-            <span className="label">Total Value</span>
-            <span className="content">{numberToUSD(Number(position.usdValue))}</span>
-          </div>
-          <div className="list">
-            <span className="label">Staked Date</span>
-            <span className="content">{timeToDateStr(new Date(position.stakedAt).getTime())}</span>
-          </div>
-          <div className="list">
-            <span className="label">Next Tier</span>
-            <span className="content">{(period === -1) ? "-" : `in ${getRemainTime(position)}`}</span>
-          </div>
-          {index < positions.length - 1 && (
-            <TooltipDivider />
-          )}
-        </React.Fragment>;
+        return (
+          <React.Fragment key={index}>
+            <div className="list list-logo">
+              <DoubleLogo
+                size={18}
+                left={position.pool.tokenA.logoURI}
+                right={position.pool.tokenB.logoURI}
+              />
+              <span className="title">ID #{position.lpTokenId}</span>
+            </div>
+            <div className="list">
+              <span className="label">Total Value</span>
+              <span className="content">
+                {numberToUSD(Number(position.usdValue))}
+              </span>
+            </div>
+            <div className="list">
+              <span className="label">Staked Date</span>
+              <span className="content">
+                {timeToDateStr(new Date(position.stakedAt).getTime())}
+              </span>
+            </div>
+            <div className="list">
+              <span className="label">Next Tier</span>
+              <span className="content">
+                {period === -1 ? "-" : `in ${getRemainTime(position)}`}
+              </span>
+            </div>
+            {index < positions.length - 1 && <TooltipDivider />}
+          </React.Fragment>
+        );
       })}
     </PriceTooltipContentWrapper>
   );
@@ -79,6 +98,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   period,
   checkPoints,
   positions,
+  stakingApr,
   breakpoint,
   loading,
 }) => {
@@ -107,34 +127,52 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
     return positions.flatMap(position => position.reward);
   }, [positions]);
   const totalStakedRewardUSD = useMemo(() => {
-    const tempTotalStakedRewardUSD = positionRewards.filter(_ => ["EXTERNAL", "STAKING"].includes(_.rewardType)).reduce((accum, current) => {
-      if (current.rewardType !== "STAKING") {
-        return accum;
-      }
-      const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
-      return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
-    }, 0);
-    return toUnitFormat(tempTotalStakedRewardUSD / (10 ** 6), true, true);
+    const tempTotalStakedRewardUSD = positionRewards
+      .filter(_ => ["EXTERNAL", "STAKING"].includes(_.rewardType))
+      .reduce((accum, current) => {
+        if (current.rewardType !== "STAKING") {
+          return accum;
+        }
+        const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
+        return Number(current.totalAmount) * Number(tokenUSD) + accum;
+      }, 0);
+    return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
   }, [positionRewards, tokenPrices]);
 
   const aprStr = useMemo(() => {
-    return "-";
-  }, []);
+    const periodStakingApr = BigNumber(stakingApr)
+      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
+      .toFormat(0);
+    return `${periodStakingApr}% APR`;
+  }, [period, stakingApr]);
 
   return (
     <StakingContentCardWrapper nonTotal={!hasPosition}>
       <div className="left">
         <div className="mobile-wrap">
-          <div className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""}`}>
+          <div
+            className={`check-wrap ${
+              !checkedStep ? "check-wrap-not-active" : ""
+            }`}
+          >
             {checkedStep && <IconCheck />}
 
-            {(breakpoint === DEVICE_TYPE.MOBILE || breakpoint === DEVICE_TYPE.TABLET_M) ? (
+            {breakpoint === DEVICE_TYPE.MOBILE ||
+            breakpoint === DEVICE_TYPE.TABLET_M ? (
               <div className="check-line-long">
-                {checkedStep ? <IconLineLong /> : <div className="border-not-active" />}
+                {checkedStep ? (
+                  <IconLineLong />
+                ) : (
+                  <div className="border-not-active" />
+                )}
               </div>
             ) : (
               <div className="check-line">
-                {checkedStep ? <IconLine /> : <div className="border-not-active" />}
+                {checkedStep ? (
+                  <IconLine />
+                ) : (
+                  <div className="border-not-active" />
+                )}
               </div>
             )}
           </div>
@@ -144,7 +182,11 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
               <span className="content-text">{periodInfo.description}</span>
               <Tooltip
                 placement="top"
-                FloatingContent={<ToolTipContentWrapper>{periodInfo.tooltipContent}</ToolTipContentWrapper>}
+                FloatingContent={
+                  <ToolTipContentWrapper>
+                    {periodInfo.tooltipContent}
+                  </ToolTipContentWrapper>
+                }
               >
                 <IconInfo className="tooltip-icon" />
               </Tooltip>
@@ -154,36 +196,68 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
       </div>
       <div className="contents-wrap">
         <div className="contents">
-          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-            <span
-              css={pulseSkeletonStyle({ h: 22, w: "400px", tabletWidth: 300, mobileWidth: 100 })}
-            />
-          </SkeletonEarnDetailWrapper>}
-          {!loading && <div className="price">
-            <span>
-              <Tooltip
-                placement="top"
-                FloatingContent={
-                  <div>
-                    <PriceTooltipContent positions={positions} period={periodInfo.period} />
-                  </div>
-                }
-              >
-                <span>{totalUSD}</span>
-                {positions.length > 0 && checkedStep && totalStakedRewardUSD !== "$0" && "+ "}
-                {positions.length > 0 && checkedStep && totalStakedRewardUSD !== "$0" && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
-                {positions.length > 0 && <div className="badge">{positions.length} LP</div>}
-              </Tooltip>
-            </span>
-          </div>}
-          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-            <span
-              css={pulseSkeletonStyle({ h: 22, w: "200px", tabletWidth: 140, mobileWidth: 50 })}
-            />
-          </SkeletonEarnDetailWrapper>}
-          {!loading && <div className="apr">
-            <span className="apr-text">{aprStr}</span>
-          </div>}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+              <span
+                css={pulseSkeletonStyle({
+                  h: 22,
+                  w: "400px",
+                  tabletWidth: 300,
+                  mobileWidth: 100,
+                })}
+              />
+            </SkeletonEarnDetailWrapper>
+          )}
+          {!loading && (
+            <div className="price">
+              <span>
+                <Tooltip
+                  placement="top"
+                  FloatingContent={
+                    <div>
+                      <PriceTooltipContent
+                        positions={positions}
+                        period={periodInfo.period}
+                      />
+                    </div>
+                  }
+                >
+                  <span>{totalUSD}</span>
+                  {positions.length > 0 &&
+                    checkedStep &&
+                    totalStakedRewardUSD !== "$0" &&
+                    "+ "}
+                  {positions.length > 0 &&
+                    checkedStep &&
+                    totalStakedRewardUSD !== "$0" && (
+                      <span className="price-gd-text">
+                        {totalStakedRewardUSD}
+                      </span>
+                    )}
+                  {positions.length > 0 && (
+                    <div className="badge">{positions.length} LP</div>
+                  )}
+                </Tooltip>
+              </span>
+            </div>
+          )}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+              <span
+                css={pulseSkeletonStyle({
+                  h: 22,
+                  w: "200px",
+                  tabletWidth: 140,
+                  mobileWidth: 50,
+                })}
+              />
+            </SkeletonEarnDetailWrapper>
+          )}
+          {!loading && (
+            <div className="apr">
+              <span className="apr-text">{aprStr}</span>
+            </div>
+          )}
         </div>
       </div>
     </StakingContentCardWrapper>
@@ -195,6 +269,7 @@ interface SummuryAprProps {
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
   rewardTokens: TokenModel[];
+  stakingApr: string;
   loading: boolean;
   breakpoint: DEVICE_TYPE;
 }
@@ -203,6 +278,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   period,
   checkPoints,
   positions,
+  stakingApr,
   loading,
 }) => {
   const { tokenPrices } = useTokenData();
@@ -231,26 +307,35 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [positions]);
 
   const totalStakedRewardUSD = useMemo(() => {
-    const tempTotalStakedRewardUSD = positionRewards.reduce((accum, current) => {
-      if (current.rewardType !== "STAKING") {
-        return accum;
-      }
-      const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
-      return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
-    }, 0);
+    const tempTotalStakedRewardUSD = positionRewards.reduce(
+      (accum, current) => {
+        if (current.rewardType !== "STAKING") {
+          return accum;
+        }
+        const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
+        return Number(current.totalAmount) * Number(tokenUSD) + accum;
+      },
+      0,
+    );
     return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
-
   }, [positionRewards, tokenPrices]);
 
   const aprStr = useMemo(() => {
-    return "-";
-  }, []);
+    const periodStakingApr = BigNumber(stakingApr)
+      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
+      .toFormat(0);
+    return `${periodStakingApr}% APR`;
+  }, [period, stakingApr]);
 
   return (
     <StakingContentCardWrapper nonTotal={!hasPosition}>
       <div className="left">
         <div className="mobile-wrap">
-          <div className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""}`}>
+          <div
+            className={`check-wrap ${
+              !checkedStep ? "check-wrap-not-active" : ""
+            }`}
+          >
             {checkedStep && <IconCheck />}
           </div>
           <div className="name-wrap">
@@ -259,7 +344,11 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
               <span className="content-gd-text">{periodInfo.description}</span>
               <Tooltip
                 placement="top"
-                FloatingContent={<ToolTipContentWrapper>{periodInfo.tooltipContent}</ToolTipContentWrapper>}
+                FloatingContent={
+                  <ToolTipContentWrapper>
+                    {periodInfo.tooltipContent}
+                  </ToolTipContentWrapper>
+                }
               >
                 <IconInfo className="tooltip-icon" />
               </Tooltip>
@@ -269,36 +358,68 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
       </div>
       <div className="contents-wrap">
         <div className="contents">
-          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-            <span
-              css={pulseSkeletonStyle({ h: 22, w: "400px", tabletWidth: 300, mobileWidth: 100 })}
-            />
-          </SkeletonEarnDetailWrapper>}
-          {!loading && <div className="price">
-            <span>
-              <Tooltip
-                placement="top"
-                FloatingContent={
-                  <div>
-                    <PriceTooltipContent positions={positions} period={periodInfo.period} />
-                  </div>
-                }
-              >
-                <span>{totalUSD}</span>
-                {checkedStep && positions.length > 0 && totalStakedRewardUSD !== "$0" && "+ "}
-                {positions.length > 0 && totalStakedRewardUSD !== "$0" && checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
-                {positions.length > 0 && <div className="badge">{positions.length} LP</div>}
-              </Tooltip>
-            </span>
-          </div>}
-          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-            <span
-              css={pulseSkeletonStyle({ h: 22, w: "200px", tabletWidth: 140, mobileWidth: 50 })}
-            />
-          </SkeletonEarnDetailWrapper>}
-          {!loading && <div className="apr">
-            <span className="apr-gd-text">{aprStr}</span>
-          </div>}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+              <span
+                css={pulseSkeletonStyle({
+                  h: 22,
+                  w: "400px",
+                  tabletWidth: 300,
+                  mobileWidth: 100,
+                })}
+              />
+            </SkeletonEarnDetailWrapper>
+          )}
+          {!loading && (
+            <div className="price">
+              <span>
+                <Tooltip
+                  placement="top"
+                  FloatingContent={
+                    <div>
+                      <PriceTooltipContent
+                        positions={positions}
+                        period={periodInfo.period}
+                      />
+                    </div>
+                  }
+                >
+                  <span>{totalUSD}</span>
+                  {checkedStep &&
+                    positions.length > 0 &&
+                    totalStakedRewardUSD !== "$0" &&
+                    "+ "}
+                  {positions.length > 0 &&
+                    totalStakedRewardUSD !== "$0" &&
+                    checkedStep && (
+                      <span className="price-gd-text">
+                        {totalStakedRewardUSD}
+                      </span>
+                    )}
+                  {positions.length > 0 && (
+                    <div className="badge">{positions.length} LP</div>
+                  )}
+                </Tooltip>
+              </span>
+            </div>
+          )}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+              <span
+                css={pulseSkeletonStyle({
+                  h: 22,
+                  w: "200px",
+                  tabletWidth: 140,
+                  mobileWidth: 50,
+                })}
+              />
+            </SkeletonEarnDetailWrapper>
+          )}
+          {!loading && (
+            <div className="apr">
+              <span className="apr-gd-text">{aprStr}</span>
+            </div>
+          )}
         </div>
       </div>
     </StakingContentCardWrapper>

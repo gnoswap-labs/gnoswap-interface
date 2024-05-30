@@ -237,9 +237,13 @@ export const useSelectPool = ({
         return Promise.resolve<PoolDetailRPCModel | null>(poolInfo);
       }
 
-      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
-        }`;
+      const poolPath = `${tokenPair?.join(":")}:${
+        SwapFeeTierInfoMap[feeTier].fee
+      }`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
+      if (!poolRes) {
+        return Promise.resolve(null);
+      }
 
       const convertPath = encryptId(poolPath);
 
@@ -254,22 +258,21 @@ export const useSelectPool = ({
       const changedPoolInfo =
         isReverse === false
           ? {
-            ...poolRes,
-            price: poolResFromDb.price,
-          }
+              ...poolRes,
+              price: poolResFromDb.price,
+            }
           : {
-            ...poolRes,
-            price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
-            ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
-            positions: poolRes.positions.map(position => ({
-              ...position,
-              tickLower: position.tickUpper * -1,
-              tickUpper: position.tickLower * -1,
-            })),
-          };
+              ...poolRes,
+              price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
+              ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
+              positions: poolRes.positions.map(position => ({
+                ...position,
+                tickLower: position.tickUpper * -1,
+                tickUpper: position.tickLower * -1,
+              })),
+            };
 
       return Promise.resolve<PoolDetailRPCModel | null>(changedPoolInfo);
-
     },
     staleTime: 5_000,
   });
@@ -297,10 +300,7 @@ export const useSelectPool = ({
       if (isCreate && startPrice === null) {
         return "CREATE";
       }
-      if (
-        isLoadingPoolInfo ||
-        (isIgnoreDefaultLoading ? isLoading : null)
-      ) {
+      if (isLoadingPoolInfo || (isIgnoreDefaultLoading ? isLoading : null)) {
         return "LOADING";
       }
       return "DONE";
@@ -407,7 +407,6 @@ export const useSelectPool = ({
     price,
     fullRange,
   ]);
-
 
   const feeBoost = useMemo(() => {
     if (minPrice === null || maxPrice === null) {
