@@ -1,0 +1,36 @@
+{
+  "path": "gno.land/r/bar",
+  "usd": "1.000000",
+  "change1h": "0.000000",
+  "change1d": "0.000000",
+  "change7d": "0.000000",
+  "change30d": "0.000000",
+  "marketCap": "110200000000.000000",
+  "liquidity": "195871.000000",
+  "volume": "195886.000000",
+  "mostLiquidityPool": "",
+  "feeUsd24h": "",
+  "pricesBefore": {
+    "latestPrice": "",
+    "priceToday": "",
+    "price1h": "",
+    "price2h": "",
+    "price1d": "",
+    "price2d": "",
+    "price7d": "",
+    "price8d": "",
+    "price30d": "",
+    "price31d": "",
+    "price60d": "",
+    "price61d": "",
+    "price90d": "",
+    "price91d": ""
+  },
+  "volumeUsd24h": "",
+  "last7d": [
+    {
+      "date": "",
+      "price": ""
+    }
+  ]
+}

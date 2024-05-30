@@ -14,9 +14,11 @@ import { StorageClient } from "@common/clients/storage-client";
 import TokenDetail from "./mock/token-detail.json";
 import ChainData from "./mock/token-chain.json";
 import TokenByPath from "./mock/token-by-path.json";
+import TokenPrice from "./mock/token-price.json";
 import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
+import { TokenPriceModel } from "@models/token/token-price-model";
 
 export class TokenRepositoryMock implements TokenRepository {
   private localStorageClient: StorageClient<StorageKeyType>;
@@ -24,6 +26,11 @@ export class TokenRepositoryMock implements TokenRepository {
   constructor(localStorageClient: StorageClient) {
     this.localStorageClient = localStorageClient;
   }
+  public getTokenPricesByPath = async (path: string): Promise<TokenPriceModel> => {
+    console.log(path);
+
+    return TokenPrice as TokenPriceModel;
+  };
 
   public getExchangeRateGraph = async (): Promise<TokenExchangeRateGraphResponse> => {
     return mockedExchangeRateGraph;
