@@ -144,14 +144,14 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
     if (isNative) return "Native coin";
 
-    const tokenPathArr = path_.split("/");
+    const tokenPathArr = path_?.split("/") ?? [];
 
-    if (tokenPathArr.length <= 0) return path_;
+    if (tokenPathArr?.length <= 0) return path_;
 
-    const lastPath = tokenPathArr[tokenPathArr.length - 1];
+    const lastPath = tokenPathArr[tokenPathArr?.length - 1];
 
     if (lastPath.length >= 12) {
-      return "..." + tokenPathArr[tokenPathArr.length - 1].slice(length - 12, length - 1);
+      return "..." + tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1);
     }
 
     return path_.replace("gno.land", "...");

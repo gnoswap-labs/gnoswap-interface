@@ -47,7 +47,6 @@ export const useTokenData = () => {
   } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
-  console.log("🚀 ~ useTokenData ~ account:", account);
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loadingBalance, setLoadingBalance] = useAtom(
@@ -245,7 +244,6 @@ export const useTokenData = () => {
         };
       }),
     );
-    console.log("🚀 ~ updateBalances ~ fetchResults:", fetchResults);
     const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
