@@ -105,7 +105,6 @@ const TokenInfoContentContainer: React.FC = () => {
     data: {
       market = marketInformationInit,
       pricesBefore = priceChangeDetailInit,
-      currentPrice = "0",
     } = {},
     isLoading,
   } = useGetTokenDetailByPath(
@@ -113,7 +112,10 @@ const TokenInfoContentContainer: React.FC = () => {
     { enabled: !!path },
   );
   const {
-    data: tokenPrices,
+    data: {
+      usd: currentPrice = "0",
+      feeUsd24h,
+    } = {},
   } = useGetTokenPricesByPath(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
   const { isLoading: isLoadingCommon } = useLoading();
 
@@ -126,11 +128,11 @@ const TokenInfoContentContainer: React.FC = () => {
       volume24h: market.volumeUsd24h
         ? `${toPriceFormat(Number(market.volumeUsd24h).toString(), { isSmallValueShorten: true, usd: true, isFormat: true })}`
         : "-",
-      fees24h: tokenPrices?.feeUsd24h
-        ? `${toPriceFormat(tokenPrices.feeUsd24h, { isSmallValueShorten: true, usd: true, isFormat: true })}`
+      fees24h: feeUsd24h
+        ? `${toPriceFormat(feeUsd24h, { isSmallValueShorten: true, usd: true, isFormat: true })}`
         : "-",
     };
-  }, [market.lockedTokensUsd, market.popularity, market.volumeUsd24h, tokenPrices?.feeUsd24h]);
+  }, [market.lockedTokensUsd, market.popularity, market.volumeUsd24h, feeUsd24h]);
 
   const priceInfomation = useMemo(() => {
     const data1H = checkPositivePrice(currentPrice, pricesBefore.price1h);
