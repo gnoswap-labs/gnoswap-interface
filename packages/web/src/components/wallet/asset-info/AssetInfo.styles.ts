@@ -19,8 +19,8 @@ export const AssetInfoWrapper = styled.div`
   }
 
   .logo {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   .name {
@@ -41,10 +41,13 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.pointer {
     cursor: pointer;
   }
+  &.left-padding {
+    padding: 16px 16px 16px 0;
+  }
   .missing-logo {
     ${mixins.flexbox("row", "center", "center")};
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     color: ${({ theme }) => theme.color.text02};
     background-color: ${({ theme }) => theme.color.text04};
@@ -54,10 +57,62 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       line-height: 10px;
     }
     margin-left: 15px;
+    margin-top: 2px;
   }
   .logo {
+    margin-top: 2px;
     margin-left: 15px;
   }
+
+  &.name-col {
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    .token-name-symbol-path {
+      ${mixins.flexbox("column", "start", "start")}
+      margin: 0px 8px;
+      gap: 2px;
+      
+      .token-name-path {
+        ${mixins.flexbox("row", "baseline", "start")}
+        gap: 8px;
+
+        .token-path {
+          &:hover {
+            color: ${({ theme }) => theme.color.text03};
+            .path-link-icon {
+              path {
+                fill: ${({ theme }) => theme.color.text03};
+              }
+            }
+          }
+          ${mixins.flexbox("row", "center", "flex-start")}
+          ${fonts.p6};
+          color: ${({ theme }) => theme.color.text04};
+          background-color: ${({ theme }) => theme.color.background26};
+          padding: 2px 4px;
+          gap: 2px;
+          border-radius: 4px;
+          .path-link-icon {
+            width: 10px;
+            height: 10px;
+            fill: ${({ theme }) => theme.color.text04};
+          }
+        }
+      }
+      .token-name {
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      },
+      .token-symbol {
+        ${fonts.p4};
+        color: ${({ theme }) => theme.color.text04};
+      }
+    }
+  }
+
+  
+
   .name,
   .chain,
   .amount,

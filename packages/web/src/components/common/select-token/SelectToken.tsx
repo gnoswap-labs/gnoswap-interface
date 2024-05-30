@@ -12,7 +12,7 @@ import {
 } from "./SelectToken.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import IconNewTab from "../icons/IconNewTab";
 import { DEVICE_TYPE } from "@styles/media";
@@ -20,7 +20,7 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
 import MissingLogo from "../missing-logo/MissingLogo";
-import { makeId, removeDuplicatesByWrappedPath } from "@utils/common";
+import { removeDuplicatesByWrappedPath } from "@utils/common";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -158,7 +158,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       if (path === "gnot") {
         window.open("https://gnoscan.io/", "_blank");
       } else {
-        window.open("https://gnoscan.io/tokens/" + makeId(path), "_blank");
+        window.open("https://gnoscan.io/tokens/" + encodeURIComponent(path), "_blank");
       }
     },
     [],
@@ -251,7 +251,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                         e: React.MouseEvent<HTMLDivElement, MouseEvent>,
                       ) => onClickPath(e, token.path)}
                     >
-                      <div>{token.path}</div>
+                      <div>{isNativeToken(token) ? "Native Coin" : token.path}</div>
                       <IconNewTab />
                     </div>
                   </div>

@@ -22,7 +22,7 @@ function controlPoint(
   next?: Point,
   reverse?: boolean,
 ) {
-  const smoothing = 0.15;
+  const smoothing = 0.1;
   const prePoint = previous || current;
   const nextPoint = next || current;
   const calculated = calculateSmoothing(prePoint, nextPoint);
@@ -40,12 +40,14 @@ function bezierCommand(point: Point, index: number, points: Point[]) {
     points[index - 2],
     point,
   );
+
   const [cpeX, cpeY] = controlPoint(
     point,
     points[index - 1],
     points[index + 1],
     true,
   );
+
   return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.x},${point.y}`;
 }
 
@@ -466,6 +468,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
         if (index === 0) {
           return `${fill ? "L" : "M"} ${point.x},${point.y}`;
         }
+
         return smooth
           ? bezierCommand(point, index, points)
           : `L ${point.x},${point.y}`;

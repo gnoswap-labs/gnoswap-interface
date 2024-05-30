@@ -91,9 +91,8 @@ export const pulseSkeletonStyle = ({
       }
       ${media.mobile} {
         width: ${w};
-        width: ${
-          typeof mobileWidth === "number" ? `${mobileWidth}px` : mobileWidth
-        };
+        width: ${typeof mobileWidth === "number" ? `${mobileWidth}px` : mobileWidth
+    };
         height: ${typeof height === "number" && height === 22 ? "22px" : h};
       }
     `;
@@ -103,11 +102,11 @@ export const skeletonStyle = (
   skeletonWidth: CSSProperties["width"],
   type: SHAPE_TYPES,
 ) => (theme: Theme) =>
-  css`
+    css`
     position: relative;
     width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
     height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
     background: ${theme.color.background01};
     overflow: hidden;
@@ -134,11 +133,11 @@ export const skeletonTrendingStyle = (
   type: SHAPE_TYPES,
   seconds?: number,
 ) => (theme: Theme) =>
-  css`
+    css`
     position: relative;
     width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
     height: 25px;
     background: ${theme.color.background23};
     overflow: hidden;
@@ -167,11 +166,11 @@ export const skeletonTokenDetail = (
   tabletWidth?: CSSProperties["width"],
   smallTableWidth?: CSSProperties["width"],
 ) => (theme: Theme) =>
-  css`
+    css`
     position: relative;
     width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
     height: 22px;
     overflow: hidden;
     border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
@@ -191,15 +190,15 @@ export const skeletonTokenDetail = (
       width: ${tabletWidth
         ? `${tabletWidth}px`
         : typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
+          ? `${skeletonWidth}px`
+          : skeletonWidth};
     }
     ${media.tabletMiddle} {
       width: ${smallTableWidth
         ? `${smallTableWidth}px`
         : typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
+          ? `${skeletonWidth}px`
+          : skeletonWidth};
     }
     ${media.mobile} {
       width: ${typeof skeletonWidth === "number"
@@ -214,11 +213,11 @@ export const skeletonTotalBalance = (
   type: SHAPE_TYPES,
   seconds?: number,
 ) => (theme: Theme) =>
-  css`
+    css`
     position: relative;
     width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
     height: 20px;
     overflow: hidden;
     border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
@@ -244,11 +243,11 @@ export const skeletonBalanceDetail = (
   type: SHAPE_TYPES,
   seconds?: number,
 ) => (theme: Theme) =>
-  css`
+    css`
     position: relative;
     width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
     height: 20px;
     overflow: hidden;
     border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
@@ -274,7 +273,7 @@ export const POOL_TD_WIDTH_TABLET = [199, 150, 150, 150, 140, 150, 160];
 export const POOL_TD_WIDTH_SMALL_TABLET = [185, 110, 110, 100, 80, 104, 160];
 export const POOL_TD_WIDTH_MOBILE = [210, 110, 140, 120, 100, 106, 160];
 export const TOKEN_SEARCH_WIDTH = [400];
-export const ASSET_TD_WIDTH = [240, 300, 280, 280, 120, 138];
+export const ASSET_TD_WIDTH = [300, 300, 250, 250, 120, 138];
 export const TABLET_ASSET_TD_WIDTH = [220, 240, 190, 190, 120, 138];
 export const MOBILE_ASSET_TD_WIDTH = [230, 230, 195, 195, 90, 120];
 export const TOKEN_TD_WIDTH = [

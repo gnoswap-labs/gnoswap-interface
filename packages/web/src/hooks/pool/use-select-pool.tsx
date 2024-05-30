@@ -141,7 +141,7 @@ export const useSelectPool = ({
     return (
       tokenPair?.findIndex(path => {
         if (compareToken) {
-          return isNativeToken(compareToken)
+          return isNativeToken(compareToken) || compareToken.path === "gnot"
             ? compareToken.wrappedPath === path
             : compareToken.path === path;
         }

@@ -58,7 +58,6 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   };
   useEffect(() => {
     handleResize();
-    // updatePools();
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);

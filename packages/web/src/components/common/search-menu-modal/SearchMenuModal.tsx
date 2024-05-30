@@ -22,6 +22,7 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
+import { isNativeToken } from "@models/token/token-model";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -85,7 +86,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     if (path === "gnot") {
       window.open("https://gnoscan.io/", "_blank");
     } else {
-      window.open("https://gnoscan.io/tokens/" + makeId(path), "_blank");
+      window.open("https://gnoscan.io/tokens/" + encodeURIComponent(path), "_blank");
     }
   }, []);
 
@@ -138,6 +139,24 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
   }, [breakpoint]);
 
+  const getTokenPathDisplay = useCallback((path: string, isNative?: boolean) => {
+    const path_ = path;
+
+    if (isNative) return "Native coin";
+
+    const tokenPathArr = path_?.split("/") ?? [];
+
+    if (tokenPathArr?.length <= 0) return path_;
+
+    const lastPath = tokenPathArr[tokenPathArr?.length - 1];
+
+    if (lastPath.length >= 12) {
+      return "..." + tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1);
+    }
+
+    return path_.replace("gno.land", "...");
+  }, []);
+
   return (
     <>
       <SearchModalBackground>
@@ -162,7 +181,6 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                     {!keyword ? "Recent Searches" : "Tokens"}
                   </div>
                   {recents
-
                     .map((item, idx) =>
                       !item.isLiquid ? (
                         <li
@@ -177,7 +195,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                                   {item.token.name.length > length ? `${item.token.name.slice(0, length)}...` : item.token.name}
                                 </span>
                                 <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token.path)}>
-                                  <div>{item.token.path}</div>
+                                  <div>{getTokenPathDisplay(item.token.path, item.isNative)}</div>
                                   <IconNewTab />
                                 </div>
                               </div>
@@ -244,7 +262,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               {item.token.name.length > length ? `${item.token.name.slice(0, length)}...` : item.token.name}
                             </span>
                             <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token.path)}>
-                              <div>{item.token.path}</div>
+                              <div>{getTokenPathDisplay(item.token.path, item.isNative)}</div>
                               <IconNewTab />
                             </div>
                           </div>
