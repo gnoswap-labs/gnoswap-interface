@@ -19,14 +19,14 @@ import {
   tickToPrice,
   tickToPriceStr,
 } from "@utils/swap-utils";
-import { useTokenData } from "@hooks/token/use-token-data";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormat, toUnitFormat } from "@utils/number-utils";
 import { numberToRate } from "@utils/string-utils";
 import { useGetLazyPositionBins } from "@query/positions";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
+import { TokenPriceModel } from "@models/token/token-price-model";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -34,6 +34,7 @@ interface MyPositionCardProps {
   mobile: boolean;
   currentIndex?: number;
   themeKey: "dark" | "light";
+  tokenPrices: Record<string, TokenPriceModel>;
 }
 
 export function estimateTick(tick: number, width: number) {
@@ -47,13 +48,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   movePoolDetail,
   currentIndex,
   themeKey,
+  tokenPrices,
 }) => {
   const GRAPH_WIDTH = 290;
   const GRAPH_HEIGHT = 80;
   const { pool } = position;
   const { tokenA, tokenB } = pool;
   const [isHiddenStart] = useState(false);
-  const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
   const [isMouseoverGraph, setIsMouseoverGraph] = useState(false);
 
@@ -144,11 +145,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minTickLabel = useMemo(() => {
     return minTickRate * -1 > 1000
       ? ">999%"
-      : `${minTickRate < 0 ? "+" : ""}${
-          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-            ? "<1"
-            : Math.round(minTickRate * -1)
-        }%`;
+      : `${minTickRate < 0 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+        ? "<1"
+        : Math.round(minTickRate * -1)
+      }%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
@@ -158,9 +158,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     return maxTickRate >= 1000
       ? ">999%"
-      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${
-          Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
-        }%`;
+      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+      }%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
@@ -183,7 +182,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -201,7 +200,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -295,6 +294,16 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return toUnitFormat(temp, true, true);
   }, [position.reward]);
 
+  const dailyEarning = useMemo(() => {
+    const value = position.reward.reduce((acc, current) => {
+      const currentTokenPrice = Number(tokenPrices?.[current.rewardToken.priceID].usd ?? 0);
+
+      return acc + Number(current.accuReward1D ?? 0) * currentTokenPrice;
+    }, 0);
+
+    return toPriceFormat(value, { usd: true, isFormat: true });
+  }, [position.reward, tokenPrices]);
+
   return (
     <MyPositionCardWrapperBorder
       className={`${position.staked && inRange !== null ? "special-card" : ""}`}
@@ -327,8 +336,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
                   : inRange
-                  ? RANGE_STATUS_OPTION.IN
-                  : RANGE_STATUS_OPTION.OUT
+                    ? RANGE_STATUS_OPTION.IN
+                    : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>
@@ -348,7 +357,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </span>
             </div>
             <div className="list-content">
-              <span>{position.totalDailyRewardsUsd}</span>
+              <span>{dailyEarning}</span>
               {claimableUSD}
             </div>
           </div>

@@ -5,6 +5,7 @@ import React from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { AccountModel } from "@models/account/account-model";
 import OtherPositionNoLiquidity from "../other-positions-no-liquidity/OtherPositionNoLiquidity";
+import { TokenPriceModel } from "@models/token/token-price-model";
 export interface EarnMyPositionContentProps {
   isOtherPosition: boolean;
   connected: boolean;
@@ -26,6 +27,8 @@ export interface EarnMyPositionContentProps {
   onClickLoadMore?: () => void;
   themeKey: "dark" | "light";
   account: AccountModel | null;
+  tokenPrices: Record<string, TokenPriceModel>;
+  highestApr: number;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -48,6 +51,8 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   onClickLoadMore,
   themeKey,
   account,
+  tokenPrices,
+  highestApr,
 }) => {
   if (isOtherPosition && positions.length === 0 && !loading) {
     return <OtherPositionNoLiquidity account={account} />;
@@ -58,9 +63,9 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     );
   }
 
-  if (connected && positions.length === 0 && !loading) {
-    return <EarnMyPositionNoLiquidity account={account} />;
-  }
+  // if (connected && positions.length === 0 && !loading) {
+  return <EarnMyPositionNoLiquidity highestApr={highestApr} account={account} />;
+  // }
 
   return (
     <MyPositionCardList
@@ -78,6 +83,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       loadMore={loadMore}
       onClickLoadMore={onClickLoadMore}
       themeKey={themeKey}
+      tokenPrices={tokenPrices}
     />
   );
 

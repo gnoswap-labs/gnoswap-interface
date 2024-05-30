@@ -20,11 +20,11 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
   }, [rewardInfo.SWAP_FEE]);
 
   const stakingRewards = useMemo(() => {
-    if (rewardInfo.STAKING.length === 0) {
+    if (rewardInfo.INTERNAL.length === 0) {
       return null;
     }
-    return rewardInfo.STAKING;
-  }, [rewardInfo.STAKING]);
+    return rewardInfo.INTERNAL;
+  }, [rewardInfo.INTERNAL]);
 
   const externalRewards = useMemo(() => {
     if (rewardInfo.EXTERNAL.length === 0) {
@@ -39,9 +39,9 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
   }, [rewardInfo.SWAP_FEE]);
 
   const stakingRewardUSD = useMemo(() => {
-    const sumUSD = rewardInfo.STAKING.reduce((accum, current) => accum + current.claimableUSD, 0);
+    const sumUSD = rewardInfo.INTERNAL.reduce((accum, current) => accum + current.claimableUSD, 0);
     return toLowerUnitFormat(sumUSD, true);
-  }, [rewardInfo.STAKING]);
+  }, [rewardInfo.INTERNAL]);
 
   const externalRewardUSD = useMemo(() => {
     const sumUSD = rewardInfo.STAKING.reduce((accum, current) => accum + current.claimableUSD, 0);
@@ -79,7 +79,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
       {stakingRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">Staking Rewards</span>
+            <span className="title">Internal Rewards</span>
             <span className="title">{stakingRewardUSD}</span>
           </div>
           {stakingRewards.map((reward, index) => (

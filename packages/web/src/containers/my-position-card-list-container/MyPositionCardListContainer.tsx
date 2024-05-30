@@ -3,6 +3,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import useRouter from "@hooks/common/use-custom-router";
 import React, { useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
+import { useTokenData } from "@hooks/token/use-token-data";
 
 export const POSITION_CONTENT_LABEL = {
   DAILY: "Daily Earnings",
@@ -35,6 +36,8 @@ const MyPositionCardListContainer: React.FC<
       window.innerWidth < 1000 ? setMobile(true) : setMobile(false);
     }
   };
+  const { tokenPrices = {} } = useTokenData();
+  console.log("🚀 ~ tokenPrices:", tokenPrices);
 
   useEffect(() => {
     handleResize();
@@ -66,6 +69,7 @@ const MyPositionCardListContainer: React.FC<
       showPagination={false}
       showLoadMore={false}
       themeKey="dark"
+      tokenPrices={tokenPrices}
     />
   );
 };

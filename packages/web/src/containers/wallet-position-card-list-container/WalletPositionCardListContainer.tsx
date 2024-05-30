@@ -13,6 +13,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useTokenData } from "@hooks/token/use-token-data";
 
 const WalletPositionCardListContainer: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,6 +30,7 @@ const WalletPositionCardListContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { isSwitchNetwork } = useWallet();
+  const { tokenPrices = {} } = useTokenData();
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -87,6 +89,7 @@ const WalletPositionCardListContainer: React.FC = () => {
       themeKey={themeKey}
       divRef={divRef}
       onScroll={handleScroll}
+      tokenPrices={tokenPrices}
     />
   );
 };

@@ -10,11 +10,12 @@ import { NoLiquidityWrapper } from "./EarnMyPositionNoLiquidity.styles";
 
 interface EarnMyPositionNoLiquidityProps {
   account: AccountModel | null;
+  highestApr: number;
 }
 
 const EarnMyPositionNoLiquidity: React.FC<
   EarnMyPositionNoLiquidityProps
-> = ({ }) => {
+> = ({ highestApr }) => {
   const { balances: balancesPrice } = useTokenData();
   const { data: tokenPrices = {} } = useGetTokenPrices();
   const availableBalance = useMemo(() => {
@@ -27,7 +28,6 @@ const EarnMyPositionNoLiquidity: React.FC<
   const isInterger = Number.isInteger(Number(availableBalance));
   const converted = `$${convertToKMB(`${availableBalance}`, { maximumFractionDigits: isInterger ? 0 : 2, minimumFractionDigits: isInterger ? 0 : 2 }).toString()}`;
   // TODO : Added Recoil OR Props
-  const apr = "999%";
 
   return (
     <NoLiquidityWrapper>
@@ -35,7 +35,7 @@ const EarnMyPositionNoLiquidity: React.FC<
       <p>
         You have<span className="emphasis-text">&nbsp;{converted}&nbsp;</span>in
         your wallet available to earn rewards up to
-        <span className="emphasis-text">&nbsp;{apr}&nbsp;</span>APR.
+        <span className="emphasis-text">&nbsp;{highestApr.toFixed(2)}%&nbsp;</span>APR.
       </p>
       <span className="description">
         Create new positions to earn trading fees and stake your positions to earn staking rewards.

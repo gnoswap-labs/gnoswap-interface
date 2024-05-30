@@ -11,7 +11,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetTokenByPath, useGetTokenDetailByPath } from "@query/token";
+import { useGetTokenByPath, useGetTokenDetailByPath, useGetTokenPricesByPath } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
@@ -175,10 +175,17 @@ const TokenChartContainer: React.FC = () => {
       prices1m = [],
       prices1y = [],
       pricesBefore = priceChangeDetailInit,
-      currentPrice = "",
     } = {},
     isLoading,
   } = useGetTokenDetailByPath(path === "gnot" ? wugnotPath : path, {
+    enabled: !!path,
+    refetchInterval: 1000 * 10,
+  });
+  const {
+    data: {
+      usd: currentPrice,
+    } = {}
+  } = useGetTokenPricesByPath(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,
   });
