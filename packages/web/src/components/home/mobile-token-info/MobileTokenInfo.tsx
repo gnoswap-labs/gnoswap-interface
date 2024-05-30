@@ -64,7 +64,7 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
     if (path === "gnot") {
       window.open("https://gnoscan.io/", "_blank");
     } else {
-      window.open("https://gnoscan.io/tokens/" + makeId(path), "_blank");
+      window.open("https://gnoscan.io/tokens/" + encodeURIComponent(path), "_blank");
     }
   }, []);
 

@@ -1,4 +1,3 @@
-// TODO : remove eslint-disable after work
 import React, { useCallback, useMemo } from "react";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
@@ -103,7 +102,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     if (path === "gnot") {
       window.open("https://gnoscan.io/", "_blank");
     } else {
-      window.open("https://gnoscan.io/tokens/" + makeId(path), "_blank");
+      window.open("https://gnoscan.io/tokens/" + encodeURIComponent(path), "_blank");
     }
   }, []);
 

@@ -650,13 +650,6 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             <span>{tooltipInfo.tokenA.symbol}</span>
           </span>
           <span className="amount total-amount">
-            {/* <MissingLogo
-              symbol={tooltipInfo.tokenA.symbol}
-              url={tooltipInfo.tokenA.logoURI}
-              className="logo"
-              width={20}
-              mobileWidth={20}
-            /> */}
             <span
               className={`token-amount-value hidden ${(tooltipInfo.tokenAAmount || "0").length > 21
                 ? "small-font"
@@ -694,13 +687,6 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             <span>{tooltipInfo.tokenB.symbol}</span>
           </span>
           <span className="amount total-amount">
-            {/* <MissingLogo
-              symbol={tooltipInfo.tokenB.symbol}
-              url={tooltipInfo.tokenB.logoURI}
-              className="logo"
-              width={20}
-              mobileWidth={20}
-            /> */}
             <span
               className={`token-amount-value hidden ${(tooltipInfo.tokenBAmount || "0").length > 21
                 ? "small-font"

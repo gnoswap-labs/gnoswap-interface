@@ -20,7 +20,7 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
 import MissingLogo from "../missing-logo/MissingLogo";
-import { makeId, removeDuplicatesByWrappedPath } from "@utils/common";
+import { removeDuplicatesByWrappedPath } from "@utils/common";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -158,7 +158,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       if (path === "gnot") {
         window.open("https://gnoscan.io/", "_blank");
       } else {
-        window.open("https://gnoscan.io/tokens/" + makeId(path), "_blank");
+        window.open("https://gnoscan.io/tokens/" + encodeURIComponent(path), "_blank");
       }
     },
     [],

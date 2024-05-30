@@ -78,7 +78,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     if (path === "gnot") {
       window.open("https://gnoscan.io/", "_blank");
     } else {
-      window.open("https://gnoscan.io/tokens/" + makeId(path), "_blank");
+      window.open("https://gnoscan.io/tokens/" + encodeURIComponent(path), "_blank");
     }
   }, []);
 
@@ -109,14 +109,6 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
           </div>
           <span className="token-symbol">{symbol}</span>
         </div>
-
-        {/* {logoURI ? (
-          <img src={logoURI} alt="logo" className="logo" />
-        ) : (
-          <div className="missing-logo">{symbol.slice(0, 3)}</div>
-        )}
-        <span className="name">{name}</span>
-        <span className="symbol">{symbol}</span> */}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[1]}>
         <span className="chain">
