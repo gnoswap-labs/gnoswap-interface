@@ -204,6 +204,7 @@ const HeaderContainer: React.FC = () => {
           transferData.pricesBefore?.latestPrice,
           transferData.pricesBefore?.priceToday,
         );
+
         const usdFormat = formatUsdNumber3Digits(transferData.usd);
         const price = toPriceFormat(usdFormat || "0", {
           usd: true,

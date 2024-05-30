@@ -150,6 +150,7 @@ const VolumeChartContainer: React.FC = () => {
     refetchInterval: 60 * 1000,
   });
   const { volume: volumeData, allTimeVolumeUsd, allTimeFeeUsd } = volumeEntity || {};
+  console.log("🚀 ~ volumeData:", volumeData);
   const changeVolumeChartType = useCallback((newType: string) => {
     const volumeChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||

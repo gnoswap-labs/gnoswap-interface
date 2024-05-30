@@ -17,6 +17,7 @@ import { customSort } from "@containers/select-token-container/SelectTokenContai
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 import { CommonError } from "@common/errors";
+import { TokenPriceModel } from "@models/token/token-price-model";
 
 export class TokenRepositoryImpl implements TokenRepository {
   private networkClient: NetworkClient | null;
@@ -68,6 +69,17 @@ export class TokenRepositoryImpl implements TokenRepository {
       url: "/tokens/prices",
     });
     return response.data;
+  };
+
+  public getTokenPricesByPath = async (path: string): Promise<TokenPriceModel> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const response = await this.networkClient.get<{ data: TokenPriceModel }>({
+      url: "/tokens/" + encodeURIComponent(path) + "/prices",
+    });
+
+    return response.data.data;
   };
 
   public getTokenDetailByPath = async (

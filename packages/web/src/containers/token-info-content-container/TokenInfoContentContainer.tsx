@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
 import TokenInfoContent from "@components/token/token-info-content/TokenInfoContent";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetTokenDetailByPath } from "@query/token";
+import { useGetTokenDetailByPath, useGetTokenPricesByPath } from "@query/token";
 import useRouter from "@hooks/common/use-custom-router";
-import { convertToKMB } from "@utils/stake-position-utils";
 import { checkPositivePrice } from "@utils/common";
 import { useLoading } from "@hooks/common/use-loading";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { toPriceFormat } from "@utils/number-utils";
 
 export const performanceInit = [
   {
@@ -112,20 +112,25 @@ const TokenInfoContentContainer: React.FC = () => {
     path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
     { enabled: !!path },
   );
+  const {
+    data: tokenPrices,
+  } = useGetTokenPricesByPath(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
   const { isLoading: isLoadingCommon } = useLoading();
 
   const marketInformation = useMemo(() => {
     return {
       popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
       tvl: market.lockedTokensUsd
-        ? `$${convertToKMB(market.lockedTokensUsd)}`
+        ? `${toPriceFormat(market.lockedTokensUsd, { isSmallValueShorten: true, usd: true, isFormat: true })}`
         : "-",
       volume24h: market.volumeUsd24h
-        ? `$${convertToKMB(Number(market.volumeUsd24h).toString())}`
+        ? `${toPriceFormat(Number(market.volumeUsd24h).toString(), { isSmallValueShorten: true, usd: true, isFormat: true })}`
         : "-",
-      fees24h: market.feesUsd24h ? `$${convertToKMB(market.feesUsd24h)}` : "-",
+      fees24h: tokenPrices?.feeUsd24h
+        ? `${toPriceFormat(tokenPrices.feeUsd24h, { isSmallValueShorten: true, usd: true, isFormat: true })}`
+        : "-",
     };
-  }, [market]);
+  }, [market.lockedTokensUsd, market.popularity, market.volumeUsd24h, tokenPrices?.feeUsd24h]);
 
   const priceInfomation = useMemo(() => {
     const data1H = checkPositivePrice(currentPrice, pricesBefore.price1h);
@@ -151,7 +156,7 @@ const TokenInfoContentContainer: React.FC = () => {
         value: data30D.percent,
       },
     };
-  }, [pricesBefore]);
+  }, [currentPrice, pricesBefore.price1d, pricesBefore.price1h, pricesBefore.price30d, pricesBefore.price7d]);
 
   const pricePerformance = useMemo(() => {
     const dataToday = checkPositivePrice(
@@ -220,7 +225,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
       },
     ];
-  }, [pricesBefore]);
+  }, [currentPrice, pricesBefore.price30d, pricesBefore.price60d, pricesBefore.price90d, pricesBefore.priceToday]);
 
   return (
     <TokenInfoContent

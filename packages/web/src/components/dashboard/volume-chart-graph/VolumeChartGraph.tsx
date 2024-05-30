@@ -47,45 +47,52 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
+  const currentData = useMemo(() => datas, [datas]);
+  // const currentData = useMemo(() => [datas[0]], [datas]);
+  const currentXAxisLabels = useMemo(() => xAxisLabels, [xAxisLabels]);
+  // const currentXAxisLabels = useMemo(() => [xAxisLabels[0]], [xAxisLabels]);
+  const hasOnlyOneData = useMemo(() => currentData.length === 1, [currentData.length]);
 
   const countXAxis = useMemo(() => {
+    if (currentData.length === 1) return 1;
+
     if (breakpoint !== DEVICE_TYPE.MOBILE)
       return Math.floor(((size.width || 0) + 20 - 25) / 100);
     return Math.floor(((size.width || 0) + 20 - 8) / 80);
-  }, [size.width, breakpoint]);
+  }, [currentData.length, breakpoint, size.width]);
 
   const minGap = useMemo(() => {
-    if (datas.length < 8) return 16;
-    if (datas.length < 31) return 6;
+    if (currentData.length < 8) return 16;
+    if (currentData.length < 31) return 6;
     return 2;
-  }, [datas.length]);
+  }, [currentData.length]);
 
   const labelIndicesToShow = useMemo(() => {
-    return calculateMiddleIndices(xAxisLabels.length, Math.min(countXAxis, 4));
-  }, [countXAxis, xAxisLabels.length]);
+    return calculateMiddleIndices(currentXAxisLabels.length, Math.min(countXAxis, 4));
+  }, [countXAxis, currentXAxisLabels.length]);
 
   return (
     <VolumeChartGraphWrapper>
       <div className="data-wrapper">
         <div className="graph-wrap" ref={componentRef}>
           <BarGraph
-            className={`graph ${datas.length > 8 ? "graph-medium-gap" : ""}`}
+            className={`graph ${currentData.length > 8 ? "graph-medium-gap" : ""}`}
             width={size.width - 12}
             height={size.height - 24}
             color={theme.color.background04Hover}
             hoverColor={theme.color.background04}
             strokeWidth={size.width * 0.022}
-            datas={datas}
+            datas={currentData}
             minGap={minGap}
             customData={{
               height: 24,
               locationTooltip: 170,
             }}
             times={times}
-            radiusBorder={datas.length !== 91 ? 2 : 1}
+            radiusBorder={currentData.length !== 91 ? 2 : 1}
           />
         </div>
-        <div className="xaxis-wrapper">
+        <div className={`xaxis-wrapper ${hasOnlyOneData ? "center" : ""}`}>
           {labelIndicesToShow.map((x, i) => (
             <span key={i}>{xAxisLabels[x]}</span>
           ))}
