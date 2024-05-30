@@ -182,20 +182,16 @@ const TokenChartContainer: React.FC = () => {
     enabled: !!path,
     refetchInterval: 1000 * 10,
   });
-  console.log("🚀 ~ pricesBefore:", pricesBefore);
 
 
   const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
   useEffect(() => {
     if (tokenB) {
       const dataToday = checkPositivePrice(
-        pricesBefore.priceToday,
         pricesBefore.latestPrice,
+        pricesBefore.priceToday,
         19,
       );
-      console.log("🚀 ~ useEffect ~ latestPrice:", pricesBefore.latestPrice);
-      console.log("🚀 ~ useEffect ~ priceToday:", pricesBefore.priceToday);
-      console.log("🚀 ~ useEffect ~ dataToday:", dataToday);
 
       setTokenInfo(() => ({
         token: {

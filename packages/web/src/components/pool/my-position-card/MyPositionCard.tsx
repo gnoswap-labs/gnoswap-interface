@@ -2,10 +2,9 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconStaking from "@components/common/icons/IconStaking";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION, RewardType } from "@constants/option.constant";
-import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   CopyTooltip,
   ManageItem,
@@ -46,6 +45,8 @@ import IconPolygon from "@components/common/icons/IconPolygon";
 import Button from "@components/common/button/Button";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import { useGetPositionBins } from "@query/positions";
+import { toPriceFormat } from "@utils/number-utils";
+import { TokenPriceModel } from "@models/token/token-price-model";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -54,6 +55,7 @@ interface MyPositionCardProps {
   address: string;
   isHiddenAddPosition: boolean;
   connected: boolean;
+  tokenPrices: Record<string, TokenPriceModel>;
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
@@ -63,10 +65,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   address,
   isHiddenAddPosition,
   connected,
+  tokenPrices,
 }) => {
   const router = useRouter();
   const { width } = useWindowSize();
-  const { tokenPrices } = useTokenData();
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
@@ -101,19 +103,23 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return true;
   }, [position]);
 
+  const getTokenPrice = useCallback((priceId: string) => {
+    return tokenPrices?.[priceId]?.usd;
+  }, [tokenPrices]);
+
   const tokenABalanceUSD = useMemo(() => {
-    const tokenAUSD = Number(tokenPrices[tokenA.priceID]?.usd || "1");
+    const tokenAUSD = Number(getTokenPrice(tokenA.priceID) || "1");
     const tokenABalance =
       makeDisplayTokenAmount(tokenA, position.tokenABalance) || 0;
     return tokenAUSD * tokenABalance;
-  }, [position.tokenABalance, tokenA, tokenPrices]);
+  }, [getTokenPrice, position.tokenABalance, tokenA]);
 
   const tokenBBalanceUSD = useMemo(() => {
-    const tokenBUSD = Number(tokenPrices[tokenB.priceID]?.usd || "1");
+    const tokenBUSD = Number(getTokenPrice(tokenB.priceID) || "1");
     const tokenBBalance =
       makeDisplayTokenAmount(tokenB, position.tokenBBalance) || 0;
     return tokenBUSD * tokenBBalance;
-  }, [position.tokenBBalance, tokenB, tokenPrices]);
+  }, [getTokenPrice, position.tokenBBalance, tokenB]);
 
   const positionBalanceUSD = useMemo(() => {
     if (isClosed) {
@@ -188,6 +194,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         const index = accum[current.rewardType].findIndex(
           item => item.token.priceID === current.rewardToken.priceID,
         );
+
+
         if (index !== -1) {
           accum[current.rewardType][index] = {
             ...accum[current.rewardType][index],
@@ -195,6 +203,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               accum[current.rewardType][index].claimableAmount +
               current.claimableAmount,
             claimableUSD: accum[current.rewardType][index].claimableUSD + 1,
+            accumulatedRewardOf1dUsd: Number(current.accuReward1D ?? 0) * Number(getTokenPrice(current.rewardToken.priceID) ?? 0)
           };
         } else {
           accum[current.rewardType].push({
@@ -207,13 +216,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               ) || 0,
             balanceUSD:
               Number(current.totalAmount) *
-              Number(tokenPrices[current.rewardToken.priceID]?.usd || 0),
+              Number(getTokenPrice(current.rewardToken.priceID) || 0),
             claimableUSD: Number(current.claimableUsd) || 0,
-            accumulatedRewardOf1d:
-              makeDisplayTokenAmount(
-                current.rewardToken,
-                current.accuReward1D || 0,
-              ) || 0,
+            accumulatedRewardOf1d: current.accuReward1D ? Number(current.accuReward1D) : 0,
+            accumulatedRewardOf1dUsd: Number(current.accuReward1D ?? 0) * Number(getTokenPrice(current.rewardToken.priceID) ?? 0)
           });
         }
         return accum;
@@ -228,7 +234,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     );
 
     return totalRewardInfo;
-  }, [position.reward, tokenPrices]);
+  }, [getTokenPrice, position.reward]);
 
   const totalRewardUSD = useMemo(() => {
     if (isClosed) {
@@ -262,8 +268,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return "$0";
     }
 
-    return position.totalDailyRewardsUsd;
-  }, [position?.totalDailyRewardsUsd, isClosed]);
+
+    const totalDailyEarningValue = (Object.values(totalRewardInfo)).flatMap(item => item).reduce((acc, current) => {
+      return acc + Number(current.accumulatedRewardOf1dUsd);
+    }, 0);
+
+    return toPriceFormat(totalDailyEarningValue, { usd: true });
+  }, [isClosed, totalRewardInfo]);
+
+
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
     useMemo(() => {
@@ -428,7 +441,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     position.tickLower,
     tokenB.path,
     tokenB.symbol,
-    tokenPrices,
     tokenA.path,
     tokenA.symbol,
     isFullRange,
@@ -482,7 +494,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     position.tickUpper,
     tokenB.path,
     tokenB.symbol,
-    tokenPrices,
     tokenA.path,
     tokenA.symbol,
     maxTickRate,

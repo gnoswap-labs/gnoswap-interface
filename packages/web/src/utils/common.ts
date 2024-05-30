@@ -79,7 +79,7 @@ export const checkPositivePrice = (
 
     return ((1 - currentAsNumber / (checkAsNumber || 1)) * 100).toFixed(2);
   })();
-  const isEmpty = (Number(currentPrice) != 0 && !Number(currentPrice)) || (Number(checkPrice) != 0 && !Number(checkPrice));
+  const isEmpty = !currentPrice && !checkPrice || (!currentAsNumber && !checkAsNumber);
   const status = isEmpty
     ? MATH_NEGATIVE_TYPE.NONE
     : currentAsNumber >= checkAsNumber

@@ -5,6 +5,7 @@ import { PoolDivider, MyLiquidityWrapper, MyLiquidityWrapperAnchor } from "./MyL
 import { DEVICE_TYPE } from "@styles/media";
 import MyPositionCard from "../my-position-card/MyPositionCard";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
 
 interface MyLiquidityProps {
   address: string | null;
@@ -28,6 +29,7 @@ interface MyLiquidityProps {
   isHiddenAddPosition: boolean;
   showClosePositionButton: boolean;
   isLoadingPositionsById: boolean;
+  tokenPrices: Record<string, TokenPriceModel>;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -52,6 +54,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isHiddenAddPosition,
   showClosePositionButton,
   isLoadingPositionsById,
+  tokenPrices,
 }) => {
   return (
     <>
@@ -83,6 +86,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             loadingTransactionClaim={loadingTransactionClaim}
             isOtherPosition={isHiddenAddPosition}
             isLoadingPositionsById={isLoadingPositionsById}
+            tokenPrices={tokenPrices}
           />
         </div>
         {positions.length > 0 && <PoolDivider />}
@@ -96,6 +100,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
               address={address || ""}
               isHiddenAddPosition={isHiddenAddPosition}
               connected={connected}
+              tokenPrices={tokenPrices}
             />
           ))
         ) : (
@@ -111,6 +116,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                     address={address || ""}
                     isHiddenAddPosition={isHiddenAddPosition}
                     connected={connected}
+                    tokenPrices={tokenPrices}
                   />
                 ))}
               </div>

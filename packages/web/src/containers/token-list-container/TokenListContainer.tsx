@@ -223,6 +223,7 @@ const TokenListContainer: React.FC = () => {
           tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
         const transferData = isGnot ? tempWuGnot : tempTokenPrice;
+        (item.symbol === "BAR") && console.log("🚀 ~ .map ~ transferData:", transferData);
         const splitMostLiquidity: string[] =
           tempTokenPrice?.mostLiquidityPool?.split(":") || [];
         const swapFeeType: SwapFeeTierType =
@@ -233,10 +234,12 @@ const TokenListContainer: React.FC = () => {
         const tempTokenB = tokens.filter(
           (_item: TokenModel) => _item.path === splitMostLiquidity[1],
         );
+
         const dataToday = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
           transferData.pricesBefore?.priceToday,
         );
+
         const data7day = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
           transferData.pricesBefore?.price7d,
@@ -290,7 +293,9 @@ const TokenListContainer: React.FC = () => {
                   new Date(a.date).getTime() - new Date(b.date).getTime(),
               )
               .map(item => Number(item.price || 0)) || []),
-            Number(transferData?.pricesBefore?.latestPrice),
+            ...transferData?.pricesBefore?.latestPrice
+              ? [Number(transferData?.pricesBefore?.latestPrice)]
+              : [],
           ],
           marketCap: `$${Math.floor(
             Number(
