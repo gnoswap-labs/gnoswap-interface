@@ -29,7 +29,8 @@ const WalletPositionCardListContainer: React.FC = () => {
     isFetched: isFetchedPosition,
     isLoading: loadingPosition,
     data: positionsData = [],
-  } = useGetPositionsByAddress(account?.address ?? "", {
+  } = useGetPositionsByAddress(
+    account?.address ?? "", {
     isClosed: false,
     queryOptions: { enabled: !!account?.address }
   });

@@ -61,7 +61,7 @@ const WalletBalanceContainer: React.FC = () => {
   } = useGetPositionsByAddress(
     account?.address ?? '', {
     isClosed: false,
-    // queryOptions: { enabled: !!account?.address }
+    queryOptions: { enabled: !!account?.address }
   })
   const { claimAll } = usePosition(positions);
   const {

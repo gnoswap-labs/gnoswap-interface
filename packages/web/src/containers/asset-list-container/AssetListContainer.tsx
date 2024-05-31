@@ -135,7 +135,7 @@ const handleSort = (list: SortedProps[]) => {
 const AssetListContainer: React.FC = () => {
   const { connected, account, isSwitchNetwork } = useWallet();
 
-  const [address, setAddress] = useState("");
+  const [address] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(
     ASSET_FILTER_TYPE.ALL,
   );
@@ -143,7 +143,7 @@ const AssetListContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   // const [hasNext, setHasNext] = useState(false);
   const [extended, setExtened] = useState(true);
-  const [hasLoader, setHasLoader] = useState(false);
+  const [hasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
@@ -161,7 +161,7 @@ const AssetListContainer: React.FC = () => {
   } = useGetPositionsByAddress(
     account?.address ?? "", {
     isClosed: false,
-    // queryOptions: { enabled: !!account?.address }
+    queryOptions: { enabled: !!account?.address }
   });
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
