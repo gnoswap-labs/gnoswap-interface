@@ -58,7 +58,7 @@ export const convertToKMB = (
   const isDefaultSignificantDigits = !options?.maximumFractionDigits && !options?.minimumFractionDigits;
   const maximumSignificantDigits = options?.maximumSignificantDigits || (isDefaultSignificantDigits ? defaultMaximumSignificantDigits : undefined);
 
-  if (numberPrice < 1000) {
+  if (Number(numberPriceAbs) < 1000) {
     if (Number.isInteger(numberPrice)) return numberPrice.toLocaleString("en-US", {
       maximumFractionDigits: 0,
       minimumFractionDigits: 0,
@@ -72,10 +72,6 @@ export const convertToKMB = (
       maximumFractionDigits: options?.maximumFractionDigits,
       minimumFractionDigits: options?.minimumFractionDigits,
     });
-
-    if (Number(result.replace(/,/g, "")) >= 1000) {
-      return convertToKMB(result.replace(/,/g, ""));
-    }
 
     function rmTrailingZeros(value: string) {
       if (value.includes(".")) return removeTrailingZeros(value);
@@ -113,16 +109,6 @@ export const convertToKMB = (
           minimumFractionDigits: 2,
         }) + "K"
       );
-    }
-
-    const tempResult = (Number.isInteger(price) ? `${numberPrice}` : numberPrice.toLocaleString("en-US", {
-      maximumFractionDigits: options?.maximumFractionDigits ?? 2,
-      minimumFractionDigits: options?.minimumFractionDigits ?? 2,
-    }));
-
-
-    if (Number(tempResult.replace(/,/g, "")) >= 1000) {
-      return convertToKMB(tempResult.replace(/,/g, ""));
     }
 
     return (Number.isInteger(price) ? `${numberPrice}` : numberPrice.toLocaleString("en-US", {

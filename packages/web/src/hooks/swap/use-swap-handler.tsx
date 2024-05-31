@@ -339,7 +339,7 @@ export const useSwapHandler = () => {
       swapRateUSD,
       priceImpact,
       guaranteedAmount: {
-        amount: tokenAmountLimit,
+        amount: makeDisplayTokenAmount(targetTokenB, tokenAmountLimit) || 0,
         currency: targetTokenB.symbol,
       },
       gasFee: gasFeeAmount,
