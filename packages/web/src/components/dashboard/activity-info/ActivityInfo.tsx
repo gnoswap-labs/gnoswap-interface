@@ -27,8 +27,16 @@ interface ActivityInfoProps {
 }
 
 const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
-  const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
-    item;
+  const {
+    action,
+    totalValue,
+    tokenAmountOne,
+    tokenAmountTwo,
+    account,
+    time
+  } = item;
+  console.log("🚀 ~ tokenAmountTwo:", tokenAmountTwo);
+  console.log("🚀 ~ tokenAmountOne:", tokenAmountOne);
   const adjective = useMemo(() => ["for", "and"], []);
   const timeFormat = getDateUtcToLocal(time);
 

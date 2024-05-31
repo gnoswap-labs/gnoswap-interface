@@ -297,6 +297,7 @@ export function prettyNumber(val: string | number) {
 }
 
 export function prettyNumberFloatInteger(val: string | number, isKMB?: boolean) {
+  (val === "999.999999") && console.log("🚀 ~ prettyNumberFloatInteger ~ val:", val);
   const func = isKMB ? convertToKMB : convertToMB;
 
   if (Number.isInteger(Number(val))) {

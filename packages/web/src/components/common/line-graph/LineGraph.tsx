@@ -533,7 +533,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     ) {
       return undefined; // Or render some fallback UI
     }
-    
+
     // Start at the first point of the line chart
     let path = `M ${points[0].x},${points[0].y}`;
 
@@ -590,16 +590,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   <span className="time">
                     {currentPointIndex === datas.length - 1
                       ? parseTimeTVL(getLocalizeTime(new Date().toString()))
-                          .time
+                        .time
                       : parseTimeTVL(datas[currentPointIndex]?.time)?.time ||
-                        "0"}
+                      "0"}
                   </span>
                 )}
               </div>
               <div className="tooltip-header">
-                <span className="value">{`$${toPriceFormat(
+                <span className="value">{toPriceFormat(
                   BigNumber(datas[currentPointIndex]?.value).toString(),
-                )}`}</span>
+                  { usd: true, isRounding: false }
+                )}</span>
               </div>
             </LineGraphTooltipWrapper>
           ) : null
@@ -638,14 +639,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
                         <line
                           x1={
                             showBaseLineLabels &&
-                            baseLineLabelsPosition === "left"
+                              baseLineLabelsPosition === "left"
                               ? baseLineNumberWidth
                               : 0
                           }
                           x2={
                             width -
                             (showBaseLineLabels &&
-                            baseLineLabelsPosition === "left"
+                              baseLineLabelsPosition === "left"
                               ? 0
                               : baseLineNumberWidth)
                           }
@@ -663,7 +664,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                           className="y-axis-number"
                           x={
                             showBaseLineLabels &&
-                            baseLineLabelsPosition === "left"
+                              baseLineLabelsPosition === "left"
                               ? 0
                               : baseWidth + 5
                           }

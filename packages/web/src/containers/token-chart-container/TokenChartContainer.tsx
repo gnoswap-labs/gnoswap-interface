@@ -180,6 +180,7 @@ const TokenChartContainer: React.FC = () => {
     enabled: !!path,
     refetchInterval: 1000 * 10,
   });
+
   const {
     data: {
       usd: currentPrice,
@@ -212,7 +213,9 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: currentPrice ? toPriceFormat(currentPrice) : "",
+            value: currentPrice ?
+              toPriceFormat(currentPrice, { usd: true, isRounding: false })
+              : "",
             denom: "USD",
             status: dataToday.status,
           },

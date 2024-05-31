@@ -147,6 +147,12 @@ const WithDrawModal: React.FC<Props> = ({
 
   }, [address, amount, currentAvailableBalance, withdrawInfo]);
 
+  const estimatedPrice = useMemo(() => {
+    if (estimateFeeUSD < 0.01) return " (<$0.01)";
+
+    return estimateFeeUSD !== 0 ? ` ($${estimateFeeUSD})` : "";
+  }, [estimateFeeUSD]);
+
   if (isConfirm) {
     return null;
   }
@@ -264,8 +270,7 @@ const WithDrawModal: React.FC<Props> = ({
             <WithdrawContent>
               <div className="estimate-box">
                 <p className="estimate-fee">Estimated Network Fee</p>
-                <p className="tokens-fee">{`${estimateFee} GNOT${estimateFeeUSD !== 0 ? ` ($${estimateFeeUSD})` : ""
-                  }`}</p>
+                <p className="tokens-fee">{`${estimateFee} GNOT${estimatedPrice}`}</p>
               </div>
             </WithdrawContent>
 

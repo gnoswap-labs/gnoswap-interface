@@ -48,8 +48,13 @@ export const convertToKMB = (
     convertOffset?: number,
     forceFractionDigit?: number,
   }) => {
+  console.log("🚀 ~ forceFractionDigit:", options?.forceFractionDigit);
+  const shouldLog = (price === "999.999999");
+  console.log("🚀 32424 ~ price:", price);
+  console.log("🚀 32424 ~ price:", shouldLog);
   if (Number.isNaN(Number(price))) return "-";
   const numberPrice = Number(price);
+  shouldLog && console.log("🚀 ~ numberPrice:", numberPrice);
   const numberPriceAbs = Math.abs(Number(price));
   const isNegative = numberPrice < 0;
   const negativeSymbol = isNegative ? "-" : "";
@@ -59,12 +64,19 @@ export const convertToKMB = (
   const maximumSignificantDigits = options?.maximumSignificantDigits || (isDefaultSignificantDigits ? defaultMaximumSignificantDigits : undefined);
   const convertOffset = options?.convertOffset || 999;
   const intPart = Math.trunc(numberPrice);
+  shouldLog && console.log("🚀 ~ intPart: intPart", intPart.toString());
+  shouldLog && console.log("🚀 ~ intPart: round", Math.round(numberPrice).toString());
+  shouldLog && console.log("🚀 ~ intPart: numberPrice", numberPrice);
+  shouldLog && console.log("🚀 ~ intPart: last", numberPrice.toFixed(2));
 
-  if (Math.abs(intPart) < convertOffset) {
+  if (Math.abs(intPart) <= convertOffset) {
     if (Number.isInteger(numberPrice)) return numberPrice.toLocaleString("en-US", {
       maximumFractionDigits: 0,
       minimumFractionDigits: 0,
     });
+    if (intPart.toString().length < Math.round(numberPrice).toString().length) {
+      return intPart + "." + numberPrice.toString().split(".")[1].substring(0, 2);
+    }
     if (numberPrice < 0.000001 && numberPrice >= 0) return "0.000001";
     if (numberPrice < 1 && numberPrice >= 0) return `${Number(numberPrice.toFixed(6))}`;
 
@@ -77,7 +89,6 @@ export const convertToKMB = (
 
     function rmTrailingZeros(value: string) {
       if (value.includes(".")) return removeTrailingZeros(value);
-
       return options?.forceFractionDigit ? BigNumber(value).toFixed(options?.forceFractionDigit) : value;
     }
 
@@ -87,7 +98,7 @@ export const convertToKMB = (
 
     return Number.isInteger(result) ? forceFractionDigit(result) : rmTrailingZeros(result);
   } else {
-    const temp = Math.floor(numberPriceAbs);
+    const temp = numberPriceAbs;
     if (temp >= 1e9) {
       if (temp > 999.99 * 1e9) return "999.99B";
       return (
@@ -106,6 +117,12 @@ export const convertToKMB = (
       );
     }
     if (temp >= 1e3) {
+      shouldLog && console.log("🚀 ~ temp:", temp);
+      shouldLog && console.log("🚀 ~ temp:", negativeSymbol + (temp / 1e3).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      }) + "K");
+
       return (
         negativeSymbol + (temp / 1e3).toLocaleString("en-US", {
           maximumFractionDigits: 2,
@@ -113,6 +130,12 @@ export const convertToKMB = (
         }) + "K"
       );
     }
+
+    shouldLog && console.log("23842374897", numberPrice.toLocaleString("en-US", {
+      maximumFractionDigits: options?.maximumFractionDigits ?? 2,
+      minimumFractionDigits: options?.minimumFractionDigits ?? 2,
+    }));
+
     return (Number.isInteger(price) ? `${numberPrice}` : numberPrice.toLocaleString("en-US", {
       maximumFractionDigits: options?.maximumFractionDigits ?? 2,
       minimumFractionDigits: options?.minimumFractionDigits ?? 2,

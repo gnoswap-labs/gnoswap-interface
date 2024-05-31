@@ -5,8 +5,6 @@ import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDow
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { toPriceFormat } from "@utils/number-utils";
-import BigNumber from "bignumber.js";
 
 export interface TokenChartInfoProps {
   token: {
@@ -37,11 +35,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
   const displayPrice = useMemo(() =>
     (!priceInfo.amount.value || loading)
       ? "-"
-      : toPriceFormat(
-        BigNumber(priceInfo.amount.value).toFormat(), {
-        usd: true,
-        isRounding: false
-      }),
+      : priceInfo.amount.value,
     [loading, priceInfo.amount.value]);
 
   return (
