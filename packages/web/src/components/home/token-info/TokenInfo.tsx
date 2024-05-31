@@ -64,7 +64,6 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     graphStatus,
     isNative,
   } = item;
-  (token.symbol === "BAR") && console.log("🚀 ~ last7days:", last7days);
   const router = useRouter();
   const theme = useTheme();
 

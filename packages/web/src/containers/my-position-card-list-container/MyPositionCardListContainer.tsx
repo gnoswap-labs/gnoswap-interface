@@ -37,7 +37,6 @@ const MyPositionCardListContainer: React.FC<
     }
   };
   const { tokenPrices = {} } = useTokenData();
-  console.log("🚀 ~ tokenPrices:", tokenPrices);
 
   useEffect(() => {
     handleResize();

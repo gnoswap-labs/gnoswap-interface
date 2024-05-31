@@ -223,7 +223,6 @@ const TokenListContainer: React.FC = () => {
           tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
         const transferData = isGnot ? tempWuGnot : tempTokenPrice;
-        (item.symbol === "BAR") && console.log("🚀 ~ .map ~ transferData:", transferData);
         const splitMostLiquidity: string[] =
           tempTokenPrice?.mostLiquidityPool?.split(":") || [];
         const swapFeeType: SwapFeeTierType =

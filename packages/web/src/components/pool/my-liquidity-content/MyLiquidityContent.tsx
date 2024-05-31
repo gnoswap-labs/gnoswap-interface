@@ -43,7 +43,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   isLoadingPositionsById: loading,
   tokenPrices,
 }) => {
-  console.log("🚀 ~ positions:", positions);
   const { getGnotPath } = useGnotToGnot();
 
   const positionData = positions?.[0]?.pool;

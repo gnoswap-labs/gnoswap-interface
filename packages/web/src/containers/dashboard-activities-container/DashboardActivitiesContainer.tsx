@@ -158,10 +158,12 @@ const DashboardActivitiesContainer: React.FC = () => {
 
     const tokenAAmount = tokenASymbol ? `${convertToKMB(
       res.tokenAAmount,
+      { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
     )} ${replaceToken(res.tokenA.symbol)}` : "-";
 
     const tokenBAmount = tokenBSymbol ? `${convertToKMB(
       res.tokenBAmount,
+      { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
     )} ${replaceToken(res.tokenB.symbol)}` : "-";
 
     return {
