@@ -174,7 +174,6 @@ const TokenChartContainer: React.FC = () => {
       prices7d = [],
       prices1m = [],
       prices1y = [],
-      pricesBefore = priceChangeDetailInit,
     } = {},
     isLoading,
   } = useGetTokenDetailByPath(path === "gnot" ? wugnotPath : path, {
@@ -184,6 +183,7 @@ const TokenChartContainer: React.FC = () => {
   const {
     data: {
       usd: currentPrice,
+      pricesBefore = priceChangeDetailInit,
     } = {}
   } = useGetTokenPricesByPath(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
@@ -226,7 +226,7 @@ const TokenChartContainer: React.FC = () => {
         });
       }
     }
-  }, [router.query, pricesBefore.toString(), currentPrice, tokenB, gnot]);
+  }, [router.query, pricesBefore.latestPrice, currentPrice, tokenB, gnot, pricesBefore.priceToday, fromSelectToken]);
 
   const changeTab = useCallback((tab: string) => {
     const currentTab =

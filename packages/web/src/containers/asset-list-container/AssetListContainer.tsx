@@ -164,6 +164,8 @@ const AssetListContainer: React.FC = () => {
     queryOptions: { enabled: !!account?.address }
   });
 
+  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
+
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
     setIsShowDepositModal(true);
@@ -425,7 +427,7 @@ const AssetListContainer: React.FC = () => {
         isFetched={
           isFetched &&
           !isLoadingTokens &&
-          !loadingPositions &&
+          !isLoadingPosition &&
           !(isEmptyObject(balances) && account?.address)
         }
         assetType={assetType}

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { TokenChartInfoWrapper } from "./TokenChartInfo.styles";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
@@ -34,6 +34,16 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
     return priceInfo.amount.status === MATH_NEGATIVE_TYPE.POSITIVE;
   }, [priceInfo.amount.status]);
 
+  const displayPrice = useMemo(() =>
+    (!priceInfo.amount.value || loading)
+      ? "-"
+      : toPriceFormat(
+        BigNumber(priceInfo.amount.value).toFormat(), {
+        usd: true,
+        isRounding: false
+      }),
+    [loading, priceInfo.amount.value]);
+
   return (
     <TokenChartInfoWrapper>
       <div className="token-info-wrapper">
@@ -46,8 +56,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
           </div>}
         </div>
         <div className="price-info">
-          {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : toPriceFormat(BigNumber(priceInfo.amount.value).toFormat(), { usd: true })}</span>}
-          {/* {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${Number.isInteger(Number(priceInfo.amount.value)) ? `${priceInfo.amount.value}.00` : convertToMB(priceInfo.amount.value.toString(), 6)}`}</span>} */}
+          {<span className="price">{displayPrice}</span>}
           {(priceInfo.amount.value && !loading) ? <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
             {
               isIncreasePrice() ?

@@ -124,8 +124,8 @@ const DashboardActivitiesContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setSortOption({
         key,
@@ -141,13 +141,21 @@ const DashboardActivitiesContainer: React.FC = () => {
   };
 
   const formatActivity = (res: OnchainActivityData): Activity => {
+    console.log("🚀 ~ formatActivity ~ res:", res);
     const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
+
+    const actionText = (() => {
+      const action = capitalizeFirstLetter(res.actionType);
+      const tokenA = res.tokenA.symbol ? " " + replaceToken(res.tokenA.symbol) : "";
+      const tokenB = res.tokenB.symbol ? " " + replaceToken(res.tokenB.symbol) : "";
+      const haveOneToken = !tokenA || !tokenB;
+      const conjunction = !haveOneToken ? " " + (res.actionType === "SWAP" ? "for" : "and") : "";
+
+      return `${action}${tokenA}${conjunction}${tokenB}`;
+    })();
+
     return {
-      action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
-        res.tokenA.symbol,
-      )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(
-        res.tokenB.symbol,
-      )}`,
+      action: actionText,
       totalValue:
         Number(res.totalUsd) < 0.01 && Number(res.totalUsd)
           ? "<$0.01"

@@ -24,16 +24,19 @@ const WalletPositionCardListContainer: React.FC = () => {
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
   const { width } = useWindowSize();
-  const { account } = useWallet();
+  const { account, connected } = useWallet();
   const {
     isFetched: isFetchedPosition,
-    isLoading: loadingPosition,
+    isLoading: loadingPositions,
     data: positionsData = [],
   } = useGetPositionsByAddress(
     account?.address ?? "", {
     isClosed: false,
     queryOptions: { enabled: !!account?.address }
   });
+  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
+
+
   const { pools } = usePoolData();
   const { loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -113,7 +116,7 @@ const WalletPositionCardListContainer: React.FC = () => {
       positions={sortedData}
       loadMore={false}
       isFetched={isFetchedPosition}
-      isLoading={loading || loadingPosition}
+      isLoading={loading || isLoadingPosition}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       mobile={mobile}

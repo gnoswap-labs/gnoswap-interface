@@ -63,6 +63,8 @@ const WalletBalanceContainer: React.FC = () => {
     isClosed: false,
     queryOptions: { enabled: !!account?.address }
   })
+  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
+
   const { claimAll } = usePosition(positions);
   const {
     broadcastSuccess,
@@ -128,13 +130,13 @@ const WalletBalanceContainer: React.FC = () => {
   }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
   const loadingTotalBalance = useMemo(() => {
     return (
-      loadingPositions ||
+      isLoadingPosition ||
       loadingConnect === "loading" ||
       isLoading ||
       !!(isEmptyObject(balancesPrice) && account?.address)
     );
   }, [
-    loadingPositions,
+    isLoadingPosition,
     loadingConnect,
     isLoading,
     account?.address,

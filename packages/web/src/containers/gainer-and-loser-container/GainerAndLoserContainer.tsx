@@ -122,7 +122,7 @@ const GainerAndLoserContainer: React.FC = () => {
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
         price: `${toPriceFormat(item.tokenPrice, {
           usd: true,
-          isRounding: true,
+          isRounding: false,
         })}`,
         change: {
           status:
@@ -135,7 +135,7 @@ const GainerAndLoserContainer: React.FC = () => {
         },
       };
     });
-  }, [tokens, gainers]);
+  }, [gainers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.logoURI]);
 
   const loserList = useMemo(() => {
     return losers?.slice(0, 3)?.map((item: IGainer) => {
@@ -152,7 +152,7 @@ const GainerAndLoserContainer: React.FC = () => {
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
         price: `${toPriceFormat(item.tokenPrice, {
           usd: true,
-          isRounding: true,
+          isRounding: false,
         })}`,
         change: {
           status:
@@ -165,7 +165,7 @@ const GainerAndLoserContainer: React.FC = () => {
         },
       };
     });
-  }, [tokens, losers]);
+  }, [losers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.logoURI]);
 
   return (
     <GainerAndLoser
