@@ -65,13 +65,17 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
 
   const routeInfos = useMemo(() => {
     let currentFromToken = swapSummaryInfo.tokenA.path;
+
     return swapRouteInfo.pools.map(pool => {
       const ordered = currentFromToken === pool.tokenA;
       const fromToken = ordered ? pool.tokenA : pool.tokenB;
       const toToken = ordered ? pool.tokenB : pool.tokenA;
+      const poolInfos = pool.poolPath.split(":");
+      const fee = poolInfos.length > 2 ? poolInfos[2] : "100";
       currentFromToken = toToken;
+
       return {
-        fee: `${(pool.fee / 10000).toFixed(2)}%`,
+        fee: `${(Number(fee) / 10000).toFixed(2)}%`,
         fromToken,
         toToken,
       };
