@@ -21,7 +21,6 @@ export interface UsePositionDataOption {
 
 export const usePositionData = (options?: UsePositionDataOption) => {
   const router = useRouter();
-  // TODO Question > EarnState.initialData
   const [initialData, setInitialData] = useAtom(EarnState.initialDataData);
   const { back } = router.query;
   const { account, connected: walletConnected } = useWallet();
@@ -229,7 +228,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
   const loading = useMemo(() => {
     const shouldPositionLoading = shouldShowLoading && isPositionLoading;
     return (shouldPositionLoading && walletConnected) || isLoading;
-  }, [walletConnected, isLoading, isPositionLoading]);
+  }, [shouldShowLoading, isPositionLoading, walletConnected, isLoading]);
 
   return {
     availableStake,

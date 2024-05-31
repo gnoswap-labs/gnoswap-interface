@@ -77,7 +77,11 @@ const TrendingCryptoCardListContainer: React.FC = () => {
             item.tokenPath === wugnotPath ? gnot?.symbol || "" : temp.symbol,
           logoURI:
             item.tokenPath === wugnotPath ? gnot?.logoURI || "" : temp.logoURI,
-          price: `${toPriceFormat(item.tokenPrice, { usd: true })}`,
+          price: `${toPriceFormat(
+            item.tokenPrice,
+            {
+              usd: true, isRounding: true,
+            })}`,
           change: {
             status:
               Number(priceChange) >= 0

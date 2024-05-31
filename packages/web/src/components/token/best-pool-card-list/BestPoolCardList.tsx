@@ -35,7 +35,7 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) =>
         {list.map((info, idx) => (
           <Link href={`/earn/pool/${info.id}`} key={idx}>
             <li>
-              <div>
+              <div className="pair">
                 <DoubleLogo
                   left={info.tokenPair.tokenA.logoURI}
                   right={info.tokenPair.tokenB.logoURI}

@@ -45,7 +45,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     <WalletBalanceDetailInfo
       loading={balanceDetailInfo.loadingPositions}
       title={"Total Claimed Rewards"}
-      value={balanceDetailInfo.unstakingLP}
+      value={balanceDetailInfo.totalClaimedRewards}
       tooltip={"The cumulative sum of claimed rewards."}
     />
     {breakpoint === DEVICE_TYPE.MOBILE ? (

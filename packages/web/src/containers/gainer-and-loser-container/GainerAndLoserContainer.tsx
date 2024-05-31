@@ -13,7 +13,6 @@ import { useGetPoolList } from "@query/pools";
 import useRouter from "@hooks/common/use-custom-router";
 import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
-import BigNumber from "bignumber.js";
 
 export const gainersInit = [
   {
@@ -121,8 +120,9 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: `${toPriceFormat(BigNumber(item.tokenPrice).toFormat(), {
+        price: `${toPriceFormat(item.tokenPrice, {
           usd: true,
+          isRounding: true,
         })}`,
         change: {
           status:
@@ -150,8 +150,9 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: `${toPriceFormat(BigNumber(item.tokenPrice).toFormat(), {
+        price: `${toPriceFormat(item.tokenPrice, {
           usd: true,
+          isRounding: true,
         })}`,
         change: {
           status:

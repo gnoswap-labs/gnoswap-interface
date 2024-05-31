@@ -24,6 +24,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { isEmptyObject } from "@utils/validation-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { useGetPositionsByAddress } from "@query/positions";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -38,6 +39,7 @@ export interface BalanceDetailInfo {
   claimableRewards: string;
   loadingBalance: boolean;
   loadingPositions: boolean;
+  totalClaimedRewards: string;
 }
 
 const WalletBalanceContainer: React.FC = () => {
@@ -53,7 +55,14 @@ const WalletBalanceContainer: React.FC = () => {
 
   const { balances: balancesPrice } = useTokenData();
 
-  const { positions, loading: loadingPositions } = usePositionData();
+  const {
+    data: positions = [],
+    isLoading: loadingPositions
+  } = useGetPositionsByAddress(
+    account?.address ?? '', {
+    isClosed: false,
+    // queryOptions: { enabled: !!account?.address }
+  })
   const { claimAll } = usePosition(positions);
   const {
     broadcastSuccess,
@@ -144,8 +153,12 @@ const WalletBalanceContainer: React.FC = () => {
     }, 0);
   }, [balancesPrice, tokenPrices]);
 
-  const { stakedBalance, unStakedBalance, claimableRewards } = positions.reduce(
+  const { stakedBalance, unStakedBalance, claimableRewards, totalClaimedRewards } = positions.reduce(
     (acc, cur) => {
+      acc.totalClaimedRewards = BigNumber(acc.totalClaimedRewards)
+        .plus(cur.totalClaimedUsd ?? "0")
+        .toNumber()
+
       if (cur.staked) {
         acc.stakedBalance = BigNumber(acc.stakedBalance)
           .plus(cur.stakedUsdValue ?? "0")
@@ -163,7 +176,7 @@ const WalletBalanceContainer: React.FC = () => {
       });
       return acc;
     },
-    { stakedBalance: 0, unStakedBalance: 0, claimableRewards: 0 },
+    { stakedBalance: 0, unStakedBalance: 0, claimableRewards: 0, totalClaimedRewards: 0, },
   );
 
   const sumTotalBalance = useMemo(() => {
@@ -236,6 +249,7 @@ const WalletBalanceContainer: React.FC = () => {
           unstakingLP: `${unStakedBalance}`,
           loadingBalance: loadingTotalBalance,
           loadingPositions: loadingTotalBalance,
+          totalClaimedRewards: totalClaimedRewards.toString(),
         }}
         deposit={deposit}
         withdraw={withdraw}

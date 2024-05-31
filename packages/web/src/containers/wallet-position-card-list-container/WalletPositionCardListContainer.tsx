@@ -8,24 +8,32 @@ import React, {
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 import useRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { useGetPositionsByAddress } from "@query/positions";
+import { PositionMapper } from "@models/position/mapper/position-mapper";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 const WalletPositionCardListContainer: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { getGnotPath } = useGnotToGnot();
   const [currentIndex, setCurrentIndex] = useState(1);
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
   const { width } = useWindowSize();
+  const { account } = useWallet();
   const {
-    isFetchedPosition,
-    loading: loadingPosition,
-    positions,
-  } = usePositionData();
+    isFetched: isFetchedPosition,
+    isLoading: loadingPosition,
+    data: positionsData = [],
+  } = useGetPositionsByAddress(account?.address ?? "", {
+    isClosed: false,
+    queryOptions: { enabled: !!account?.address }
+  });
+  const { pools } = usePoolData();
   const { loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -58,7 +66,7 @@ const WalletPositionCardListContainer: React.FC = () => {
     } else {
       return true;
     }
-  }, [positions, width]);
+  }, [positionsData, width]);
 
   const handleScroll = () => {
     if (divRef.current) {
@@ -69,10 +77,35 @@ const WalletPositionCardListContainer: React.FC = () => {
     }
   };
 
+  const positions = useMemo(() => {
+    const poolPositions: PoolPositionModel[] = [];
+    positionsData.forEach(position => {
+      const pool = pools.find(pool => pool.poolPath === position.poolPath);
+      if (pool) {
+        const temp = {
+          ...pool,
+          tokenA: {
+            ...pool.tokenA,
+            symbol: getGnotPath(pool.tokenA).symbol,
+            logoURI: getGnotPath(pool.tokenA).logoURI,
+          },
+          tokenB: {
+            ...pool.tokenB,
+            symbol: getGnotPath(pool.tokenB).symbol,
+            logoURI: getGnotPath(pool.tokenB).logoURI,
+          },
+        };
+        poolPositions.push(PositionMapper.makePoolPosition(position, temp));
+      }
+    });
+    return poolPositions;
+  }, [pools, positionsData]);
+
   const sortedData = positions.sort(
     (x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue),
   );
   if (!isFetchedPosition || isSwitchNetwork) return null;
+
 
   return (
     <MyPositionCardList
