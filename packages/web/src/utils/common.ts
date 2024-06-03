@@ -62,9 +62,6 @@ export const checkPositivePrice = (
   checkPrice: string,
   fixedPrice?: number,
 ) => {
-
-  const shouldLog = checkPrice === "0.6449387391";
-
   const currentAsNumber = Number(currentPrice);
   const checkAsNumber = Number(checkPrice);
   const value = (() => {
