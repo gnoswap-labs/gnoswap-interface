@@ -113,7 +113,7 @@ const PoolPairInformationContainer: React.FC<
       const temp = getPositionsByPoolId(poolPath);
       setPositions(temp);
     }
-  }, [account?.address, router.query, getPositionsByPoolId, connectedWallet]);
+  }, [account?.address, router.query, connectedWallet]);
 
   const onClickPath = (path: string) => {
     router.push(path);

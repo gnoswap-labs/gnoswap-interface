@@ -36,6 +36,32 @@ import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapMod
 import { ERROR_VALUE } from "@common/errors/adena";
 import { MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 
+type SwapButtonStateType =
+  | "WALLET_LOGIN"
+  | "SWITCH_NETWORK"
+  | "SELECT_TOKEN"
+  | "ENTER_AMOUNT"
+  | "AMOUNT_TOO_LOW"
+  | "INSUFFICIENT_BALANCE"
+  | "INSUFFICIENT_LIQUIDITY"
+  | "WRAP"
+  | "UNWRAP"
+  | "SWAP";
+
+function compareAmountFn(
+  amountA: string | number | bigint,
+  amountB: string | number | bigint,
+) {
+  const amountValueA = BigNumber(`${amountA}`.replace(/,/g, ""));
+  const amountValueB = BigNumber(`${amountB}`.replace(/,/g, ""));
+
+  if (amountValueA.isEqualTo(amountValueB)) {
+    return 0;
+  }
+
+  return amountValueA.isGreaterThan(amountValueB) ? 1 : -1;
+}
+
 function handleAmount(changed: string, token: TokenModel | null) {
   let value = changed;
   const decimals = token?.decimals || 0;
@@ -179,18 +205,18 @@ export const useSwapHandler = () => {
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
 
-  const swapButtonText = useMemo(() => {
+  const swapButtonState: SwapButtonStateType = useMemo(() => {
     if (!connectedWallet) {
-      return "Wallet Login";
+      return "WALLET_LOGIN";
     }
     if (isSwitchNetwork) {
-      return "Switch to Gnoland";
+      return "SWITCH_NETWORK";
     }
     if (!tokenA || !tokenB) {
-      return "Select a Token";
+      return "SELECT_TOKEN";
     }
     if (!Number(tokenAAmount) && !Number(tokenBAmount)) {
-      return "Enter Amount";
+      return "ENTER_AMOUNT";
     }
     if (
       (Number(tokenAAmount) < 0.000001 && type === "EXACT_IN") ||
@@ -198,18 +224,15 @@ export const useSwapHandler = () => {
       (isGNOTPath(toNativePath(tokenA.path)) &&
         BigNumber(tokenAAmount).isLessThan(MINIMUM_GNOT_SWAP_AMOUNT))
     ) {
-      return "Amount Too Low";
+      return "AMOUNT_TOO_LOW";
     }
 
-    if (
-      connectedWallet &&
-      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
-    ) {
-      return "Insufficient Balance";
+    if (compareAmountFn(tokenAAmount, tokenABalance) > 0) {
+      return "INSUFFICIENT_BALANCE";
     }
 
     if (!isSameToken && swapState === "NO_LIQUIDITY") {
-      return "Insufficient Liquidity";
+      return "INSUFFICIENT_LIQUIDITY";
     }
     if (
       Number(tokenAAmount) > 0 &&
@@ -217,7 +240,7 @@ export const useSwapHandler = () => {
       !isLoading &&
       type === "EXACT_IN"
     ) {
-      return "Insufficient Liquidity";
+      return "INSUFFICIENT_LIQUIDITY";
     }
     if (
       Number(tokenBAmount) > 0 &&
@@ -225,15 +248,15 @@ export const useSwapHandler = () => {
       !isLoading &&
       type === "EXACT_OUT"
     ) {
-      return "Insufficient Liquidity";
+      return "INSUFFICIENT_LIQUIDITY";
     }
     if (isSameToken) {
       if (isNativeToken(tokenA)) {
-        return "Wrap";
+        return "WRAP";
       }
-      return "Unwrap";
+      return "UNWRAP";
     }
-    return "Swap";
+    return "SWAP";
   }, [
     connectedWallet,
     isSwitchNetwork,
@@ -247,6 +270,32 @@ export const useSwapHandler = () => {
     tokenABalance,
     isLoading,
   ]);
+
+  const swapButtonText = useMemo(() => {
+    switch (swapButtonState) {
+      case "WALLET_LOGIN":
+        return "Wallet Login";
+      case "SWITCH_NETWORK":
+        return "Switch to Gnoland";
+      case "SELECT_TOKEN":
+        return "Select a Token";
+      case "ENTER_AMOUNT":
+        return "Enter Amount";
+      case "AMOUNT_TOO_LOW":
+        return "Amount Too Low";
+      case "INSUFFICIENT_BALANCE":
+        return "Insufficient Balance";
+      case "INSUFFICIENT_LIQUIDITY":
+        return "Insufficient Liquidity";
+      case "WRAP":
+        return "Wrap";
+      case "UNWRAP":
+        return "Unwrap";
+      case "SWAP":
+      default:
+        return "Swap";
+    }
+  }, [swapButtonState]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
@@ -360,69 +409,8 @@ export const useSwapHandler = () => {
   ]);
 
   const isAvailSwap = useMemo(() => {
-    if (swapState !== "SUCCESS") {
-      return false;
-    }
-    if (!connectedWallet) {
-      return false;
-    }
-    if (isSwitchNetwork) {
-      return false;
-    }
-    if (!tokenA || !tokenB) {
-      return false;
-    }
-    if (!tokenAAmount && !tokenBAmount) {
-      return false;
-    }
-    if (
-      (Number(tokenAAmount) !== 0 && Number(tokenAAmount) < 0.000001) ||
-      Number(tokenBAmount) < 0.000001 ||
-      (isGNOTPath(toNativePath(tokenA.path)) &&
-        BigNumber(tokenAAmount).isLessThan(MINIMUM_GNOT_SWAP_AMOUNT))
-    ) {
-      return false;
-    }
-
-    if (
-      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
-    ) {
-      return false;
-    }
-    if (
-      Number(tokenBAmount) >
-      Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
-      type === "EXACT_OUT"
-    ) {
-      return false;
-    }
-    if (
-      Number(tokenAAmount) > 0 &&
-      !Number(tokenBAmount) &&
-      type === "EXACT_IN"
-    ) {
-      return false;
-    }
-    if (
-      Number(tokenBAmount) > 0 &&
-      !Number(tokenAAmount) &&
-      type === "EXACT_OUT"
-    ) {
-      return false;
-    }
-    return true;
-  }, [
-    swapState,
-    connectedWallet,
-    isSwitchNetwork,
-    tokenA,
-    tokenB,
-    tokenAAmount,
-    tokenBAmount,
-    tokenABalance,
-    tokenBBalance,
-    type,
-  ]);
+    return swapButtonState === "SWAP";
+  }, [swapButtonState]);
 
   const openConfirmModal = useCallback(() => {
     if (!swapSummaryInfo) {
@@ -681,12 +669,13 @@ export const useSwapHandler = () => {
               swapTokenInfo.tokenAAmount,
             ).toLocaleString("en-US", {
               maximumFractionDigits: 6,
-            })}</span> <span>${swapTokenInfo?.tokenA?.symbol
-              }</span> for <span>${Number(
-                swapTokenInfo.tokenBAmount,
-              ).toLocaleString("en-US", {
-                maximumFractionDigits: 6,
-              })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+            })}</span> <span>${
+              swapTokenInfo?.tokenA?.symbol
+            }</span> for <span>${Number(
+              swapTokenInfo.tokenBAmount,
+            ).toLocaleString("en-US", {
+              maximumFractionDigits: 6,
+            })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
           },
           {
             timeout: 50000,
@@ -708,10 +697,10 @@ export const useSwapHandler = () => {
       tokenAAmount: isExactIn
         ? tokenAAmount
         : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() ||
-        "0",
+          "0",
       tokenBAmount: isExactIn
         ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() ||
-        "0"
+          "0"
         : tokenBAmount,
     };
 

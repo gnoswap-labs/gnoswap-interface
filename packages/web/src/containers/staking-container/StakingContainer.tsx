@@ -44,6 +44,7 @@ const StakingContainer: React.FC = () => {
     }
     return address;
   }, [initializedData]);
+
   const { getPositionsByPoolId, loading: isLoadingPosition } = usePositionData({
     address,
   });
@@ -88,7 +89,7 @@ const StakingContainer: React.FC = () => {
       setPositions(stakedPositions);
       setAllPosition(temp);
     }
-  }, [account?.address, router.query, getPositionsByPoolId, address]);
+  }, [account?.address, router.query, address]);
 
   const isDisabledButton = useMemo(() => {
     return isSwitchNetwork || !connectedWallet || positions.length == 0;
