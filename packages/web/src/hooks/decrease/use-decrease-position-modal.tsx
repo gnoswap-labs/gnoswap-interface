@@ -77,20 +77,19 @@ export const useDecreasePositionModal = ({
       return false;
     }
 
-    const poolAmountA = BigNumber(pooledTokenInfos?.poolAmountA ?? 0).shiftedBy(-6).toNumber();
-    const poolAmountB = BigNumber(pooledTokenInfos?.poolAmountB ?? 0).shiftedBy(-6).toNumber();
+
 
     broadcastLoading(
       makeBroadcastRemoveMessage("pending", {
         tokenASymbol: tokenA.symbol,
         tokenBSymbol: tokenB.symbol,
-        tokenAAmount: Number(poolAmountA).toLocaleString(
+        tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
           "en-US",
           {
             maximumFractionDigits: 6,
           },
         ),
-        tokenBAmount: Number(poolAmountB).toLocaleString(
+        tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString(
           "en-US",
           {
             maximumFractionDigits: 6,
@@ -98,6 +97,9 @@ export const useDecreasePositionModal = ({
         ),
       }),
     );
+
+    const poolAmountA = BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toNumber();
+    const poolAmountB = BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toNumber();
 
     const result = await positionRepository
       .decreaseLiquidity({
