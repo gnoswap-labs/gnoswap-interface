@@ -189,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({
         {breakpoint === DEVICE_TYPE.MOBILE && (
           <BottomNavWrapper>
             <BottomNavContainer>
-              {HEADER_NAV.map(item => (
+              {navigationItems.map(item => (
                 <BottomNavItem
                   key={item.title}
                   className={
