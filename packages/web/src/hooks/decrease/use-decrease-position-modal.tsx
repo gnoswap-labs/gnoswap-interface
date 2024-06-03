@@ -17,6 +17,7 @@ import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo } from "react";
 import { IPooledTokenInfo } from "./use-decrease-handle";
+import BigNumber from "bignumber.js";
 
 export interface Props {
   openModal: () => void;
@@ -76,17 +77,20 @@ export const useDecreasePositionModal = ({
       return false;
     }
 
+    const poolAmountA = BigNumber(pooledTokenInfos?.poolAmountA ?? 0).shiftedBy(-6).toNumber();
+    const poolAmountB = BigNumber(pooledTokenInfos?.poolAmountB ?? 0).shiftedBy(-6).toNumber();
+
     broadcastLoading(
       makeBroadcastRemoveMessage("pending", {
         tokenASymbol: tokenA.symbol,
         tokenBSymbol: tokenB.symbol,
-        tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
+        tokenAAmount: Number(poolAmountA).toLocaleString(
           "en-US",
           {
             maximumFractionDigits: 6,
           },
         ),
-        tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString(
+        tokenBAmount: Number(poolAmountB).toLocaleString(
           "en-US",
           {
             maximumFractionDigits: 6,
@@ -112,7 +116,7 @@ export const useDecreasePositionModal = ({
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (
-            resultData.removedTokenAAmount || 0
+            (resultData.removedTokenAAmount || 0)
           ).toLocaleString("en-US", {
             maximumFractionDigits: 6,
           });
@@ -140,13 +144,13 @@ export const useDecreasePositionModal = ({
           makeBroadcastRemoveMessage("error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
-            tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
+            tokenAAmount: Number(poolAmountA).toLocaleString(
               "en-US",
               {
                 maximumFractionDigits: 6,
               },
             ),
-            tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString(
+            tokenBAmount: Number(poolAmountB).toLocaleString(
               "en-US",
               {
                 maximumFractionDigits: 6,
@@ -159,13 +163,13 @@ export const useDecreasePositionModal = ({
           makeBroadcastRemoveMessage("error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
-            tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
+            tokenAAmount: Number(poolAmountA).toLocaleString(
               "en-US",
               {
                 maximumFractionDigits: 6,
               },
             ),
-            tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString(
+            tokenBAmount: Number(poolAmountB).toLocaleString(
               "en-US",
               {
                 maximumFractionDigits: 6,
