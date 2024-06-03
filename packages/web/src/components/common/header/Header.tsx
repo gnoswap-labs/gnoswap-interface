@@ -4,7 +4,7 @@ import IconSearch from "@components/common/icons/IconSearch";
 import NotificationButton from "@components/common/notification-button/NotificationButton";
 import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
-import { HEADER_NAV } from "@constants/header.constant";
+import { HEADER_NAV, SIDE_MENU_NAV } from "@constants/header.constant";
 import { Token } from "@containers/header-container/HeaderContainer";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { AccountModel } from "@models/account/account-model";
@@ -95,6 +95,11 @@ const Header: React.FC<HeaderProps> = ({
   const navigationItems = useMemo(() => {
     // Make path by page name
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
+    if (blockedPaths.length > 0) {
+      return [...HEADER_NAV, ...SIDE_MENU_NAV].filter(
+        item => !blockedPaths.includes(item.path),
+      );
+    }
     return HEADER_NAV.filter(item => !blockedPaths.includes(item.path));
   }, []);
 
@@ -131,7 +136,7 @@ const Header: React.FC<HeaderProps> = ({
                         key={item.title}
                         className={
                           pathname === item.path ||
-                          (item.subPath || []).some(_ => pathname.includes(_))
+                          (item?.subPath || []).some(_ => pathname.includes(_))
                             ? "selected"
                             : ""
                         }
@@ -184,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({
         {breakpoint === DEVICE_TYPE.MOBILE && (
           <BottomNavWrapper>
             <BottomNavContainer>
-              {HEADER_NAV.map(item => (
+              {navigationItems.map(item => (
                 <BottomNavItem
                   key={item.title}
                   className={

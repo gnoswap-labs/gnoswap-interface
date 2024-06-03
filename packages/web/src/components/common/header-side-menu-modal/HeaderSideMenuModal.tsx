@@ -5,7 +5,11 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import { SIDE_EXTRA_MENU_NAV, SIDE_MENU_NAV } from "@constants/header.constant";
+import {
+  HEADER_NAV,
+  SIDE_EXTRA_MENU_NAV,
+  SIDE_MENU_NAV,
+} from "@constants/header.constant";
 import {
   Navigation,
   HeaderSideMenuModalWrapper,
@@ -34,7 +38,13 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
   const navigationItems = useMemo(() => {
     // Make path by page name
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
-    return SIDE_MENU_NAV.filter(item => !blockedPaths.includes(item.path));
+    const allPaths = [...HEADER_NAV, ...SIDE_MENU_NAV].filter(
+      item => !blockedPaths.includes(item.path),
+    );
+    if (allPaths.length > 4) {
+      return allPaths.slice(4, allPaths.length - 1);
+    }
+    return [];
   }, []);
 
   const extraNavigationItems = useMemo(() => {
@@ -60,7 +70,7 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
     };
   }, [menuRef, onSideMenuToggle]);
 
-  const getLeftIcon = useCallback((iconType: string) => {
+  const getIcon = useCallback((iconType: string | null) => {
     switch (iconType) {
       case "PULSE":
         return <IconPulse className="left-icon" />;
@@ -76,26 +86,38 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
   return (
     <HeaderSideMenuModalWrapper ref={menuRef}>
       <Navigation>
-        <ul>
-          {navigationItems.map((item, index) => (
-            <li key={index}>
-              <a onClick={() => router.push(item.path)}>
-                <LeftIconMenu>
-                  <LeftIcon>{getLeftIcon(item.iconType)}</LeftIcon>
-                  {item.title}
-                </LeftIconMenu>
-              </a>
-            </li>
-          ))}
-        </ul>
-        <MenuDivider />
+        {navigationItems.length > 0 && (
+          <React.Fragment>
+            <ul>
+              {navigationItems.map((item, index) => (
+                <li
+                  key={index}
+                  className="header-side-menu-item"
+                  onClick={() => router.push(item.path)}
+                >
+                  <a>
+                    <LeftIconMenu>
+                      <LeftIcon>{getIcon(item.iconType)}</LeftIcon>
+                      {item.title}
+                    </LeftIconMenu>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <MenuDivider />
+          </React.Fragment>
+        )}
         <ul>
           {extraNavigationItems.map((item, index) => (
-            <li key={index}>
-              <a onClick={() => router.push(item.path)}>
+            <li
+              key={index}
+              className="header-side-menu-item"
+              onClick={() => router.push(item.path)}
+            >
+              <a>
                 <RightIconMenu>
                   {item.title}
-                  <LinkIconButton>{getLeftIcon(item.iconType)}</LinkIconButton>
+                  <LinkIconButton>{getIcon(item.iconType)}</LinkIconButton>
                 </RightIconMenu>
               </a>
             </li>
