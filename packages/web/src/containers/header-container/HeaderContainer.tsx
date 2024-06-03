@@ -1,5 +1,3 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
 import Header from "@components/common/header/Header";
 import useRouter from "@hooks/common/use-custom-router";
 import React, { useState, useCallback, useMemo } from "react";
@@ -18,17 +16,12 @@ import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
-import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
-import {
-  formatUsdNumber3Digits,
-  toPriceFormat,
-  toUnitFormat,
-} from "@utils/number-utils";
+import { formatUsdNumber3Digits, toPriceFormat } from "@utils/number-utils";
 import { numberToRate } from "@utils/string-utils";
 
 interface NegativeStatusType {
@@ -47,7 +40,7 @@ export interface Token {
   apr?: string;
   volume?: string;
   liquidity: number;
-  isNative: boolean
+  isNative: boolean;
 }
 
 export const RecentdummyToken: Token[] = [
@@ -151,16 +144,6 @@ export const PopulardummyToken: Token[] = [
   },
 ];
 
-const filterByLiquidityPool = (
-  data: Record<string, TokenPriceModel>,
-  targetLiquidityPool?: string,
-): TokenPriceModel | null => {
-  const filteredItem = Object.entries(data).find(
-    ([key, value]) => value.mostLiquidityPool === targetLiquidityPool,
-  );
-  return filteredItem ? filteredItem[1] : null;
-};
-
 const HeaderContainer: React.FC = () => {
   const { pathname, push } = useRouter();
   const [sideMenuToggle, setSideMenuToggle] = useState(false);
@@ -234,12 +217,13 @@ const HeaderContainer: React.FC = () => {
         });
         return {
           ...item,
-          apr: `${!item_.apr
-            ? "-"
-            : Number(item_.apr) > 10
+          apr: `${
+            !item_.apr
+              ? "-"
+              : Number(item_.apr) > 10
               ? `${item_.apr}% APR`
               : `${Number(item_.apr).toFixed(2)}% APR`
-            }`,
+          }`,
           price: price,
         };
       }
@@ -287,7 +271,7 @@ const HeaderContainer: React.FC = () => {
           isLiquid: true,
           apr: aprRate === "-" ? aprRate : `${aprRate} APR`,
           liquidity: Number(item ? item.tvl : "0"),
-          isNative: isNativeToken(item.tokenA)
+          isNative: isNativeToken(item.tokenA),
         };
       })
       .sort((a, b) => b.liquidity - a.liquidity)

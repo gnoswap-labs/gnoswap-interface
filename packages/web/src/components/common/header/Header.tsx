@@ -1,3 +1,5 @@
+import React, { useCallback, useMemo, useState } from "react";
+import Link from "next/link";
 import IconSearch from "@components/common/icons/IconSearch";
 import NotificationButton from "@components/common/notification-button/NotificationButton";
 import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
@@ -7,8 +9,6 @@ import { Token } from "@containers/header-container/HeaderContainer";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { AccountModel } from "@models/account/account-model";
 import { DEVICE_TYPE, DeviceSize } from "@styles/media";
-import Link from "next/link";
-import React, { useCallback, useState } from "react";
 import IconDownload from "../icons/IconDownload";
 import IconHeaderLogo from "../icons/IconHeaderLogo";
 import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
@@ -29,6 +29,8 @@ import {
 } from "./Header.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { ITokenResponse } from "@repositories/token";
+import { BLOCKED_PAGES } from "@constants/environment.constant";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 interface HeaderProps {
   pathname?: string;
@@ -87,7 +89,14 @@ const Header: React.FC<HeaderProps> = ({
   gnotToken,
 }) => {
   const { width } = useWindowSize();
+  const router = useCustomRouter();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
+
+  const navigationItems = useMemo(() => {
+    // Make path by page name
+    const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
+    return HEADER_NAV.filter(item => !blockedPaths.includes(item.path));
+  }, []);
 
   const changeTokenDeposit = useCallback(() => {
     setIsShowDepositModal(true);
@@ -108,26 +117,31 @@ const Header: React.FC<HeaderProps> = ({
       <HeaderWrapper>
         <HeaderContainer>
           <LeftSection>
-            <Link href="/" passHref legacyBehavior>
+            <span className="link" onClick={() => router.replace("/")}>
               <LogoLink>
                 <IconHeaderLogo className="header-main-logo" />
               </LogoLink>
-            </Link>
+            </span>
             <Navigation>
               {breakpoint !== DEVICE_TYPE.MOBILE && (
-                <>
+                <React.Fragment>
                   <ul>
-                    {HEADER_NAV.map(item => (
+                    {navigationItems.map(item => (
                       <li
                         key={item.title}
                         className={
                           pathname === item.path ||
-                            (item.subPath || []).some(_ => pathname.includes(_))
+                          (item.subPath || []).some(_ => pathname.includes(_))
                             ? "selected"
                             : ""
                         }
                       >
-                        <Link href={item.path} replace>{item.title}</Link>
+                        <span
+                          className="link"
+                          onClick={() => router.push(item.path)}
+                        >
+                          {item.title}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -135,7 +149,7 @@ const Header: React.FC<HeaderProps> = ({
                     sideMenuToggle={sideMenuToggle}
                     onSideMenuToggle={onSideMenuToggle}
                   />
-                </>
+                </React.Fragment>
               )}
             </Navigation>
           </LeftSection>
@@ -175,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({
                   key={item.title}
                   className={
                     pathname === item.path ||
-                      (item.subPath || []).some(_ => pathname.includes(_))
+                    (item.subPath || []).some(_ => pathname.includes(_))
                       ? "selected"
                       : ""
                   }
