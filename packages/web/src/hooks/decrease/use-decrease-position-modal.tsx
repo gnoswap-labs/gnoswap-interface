@@ -16,6 +16,7 @@ import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo } from "react";
+import { IPooledTokenInfo } from "./use-decrease-handle";
 
 export interface Props {
   openModal: () => void;
@@ -30,7 +31,7 @@ export interface DecreasePositionModal {
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   percent: number;
-  pooledTokenInfos: any;
+  pooledTokenInfos: IPooledTokenInfo | null;
 }
 
 export const useDecreasePositionModal = ({
@@ -79,13 +80,13 @@ export const useDecreasePositionModal = ({
       makeBroadcastRemoveMessage("pending", {
         tokenASymbol: tokenA.symbol,
         tokenBSymbol: tokenB.symbol,
-        tokenAAmount: Number(pooledTokenInfos.poolAmountA).toLocaleString(
+        tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
           "en-US",
           {
             maximumFractionDigits: 6,
           },
         ),
-        tokenBAmount: Number(pooledTokenInfos.poolAmountB).toLocaleString(
+        tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString(
           "en-US",
           {
             maximumFractionDigits: 6,
@@ -139,13 +140,13 @@ export const useDecreasePositionModal = ({
           makeBroadcastRemoveMessage("error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
-            tokenAAmount: Number(pooledTokenInfos.poolAmountA).toLocaleString(
+            tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
               "en-US",
               {
                 maximumFractionDigits: 6,
               },
             ),
-            tokenBAmount: Number(pooledTokenInfos.poolAmountB).toLocaleString(
+            tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString(
               "en-US",
               {
                 maximumFractionDigits: 6,
@@ -158,13 +159,13 @@ export const useDecreasePositionModal = ({
           makeBroadcastRemoveMessage("error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
-            tokenAAmount: Number(pooledTokenInfos.poolAmountA).toLocaleString(
+            tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
               "en-US",
               {
                 maximumFractionDigits: 6,
               },
             ),
-            tokenBAmount: Number(pooledTokenInfos.poolAmountB).toLocaleString(
+            tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString(
               "en-US",
               {
                 maximumFractionDigits: 6,

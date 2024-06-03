@@ -7,6 +7,7 @@ import Button, { ButtonHierarchy } from "../button/Button";
 import IconClose from "../icons/IconCancel";
 import { DecreasePositionModalWrapper } from "./DecreasePositionModal.styles";
 import BalanceChange from "@components/decrease/balance-change/BalanceChange";
+import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
 
 interface Props {
   confirm: () => void;
@@ -20,7 +21,7 @@ interface Props {
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   percent: number;
-  pooledTokenInfos: any;
+  pooledTokenInfos: IPooledTokenInfo | null;
 }
 
 const DecreasePositionModal: React.FC<Props> = ({
@@ -61,7 +62,7 @@ const DecreasePositionModal: React.FC<Props> = ({
             />
           </div>
 
-          <BalanceChange {...amountInfo} title="Balance Changes" />
+          <BalanceChange {...amountInfo} pooledTokenInfos={pooledTokenInfos} title="Balance Changes" />
           <div>
             <Button
               onClick={confirm}

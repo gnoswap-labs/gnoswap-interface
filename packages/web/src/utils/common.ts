@@ -62,6 +62,9 @@ export const checkPositivePrice = (
   checkPrice: string,
   fixedPrice?: number,
 ) => {
+
+  const shouldLog = checkPrice === "0.6449387391";
+
   const currentAsNumber = Number(currentPrice);
   const checkAsNumber = Number(checkPrice);
   const value = (() => {
@@ -100,6 +103,9 @@ export const checkPositivePrice = (
         ),
         fixedPrice ?? 2,
       )}`;
+  shouldLog && console.log("🚀  2323423 ~ currentAsNumber:", currentAsNumber);
+  shouldLog && console.log("🚀 2323423 ~ checkAsNumber:", checkAsNumber);
+  shouldLog && console.log("🚀 2323423 ~ price:", price);
   return {
     status: status,
     value: value.includes("Infinity") ? "0" : value,

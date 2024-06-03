@@ -219,9 +219,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     let baseLineNumberWidthComputation = 0;
 
+    const everyPointEqual = maxValueBigNumber.minus(minValueBigNumber).isZero();
+    const everyPointZero = everyPointEqual && minValue === 0 && maxValue === 0;
+
     const minMaxGap = (() => {
-      if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0))
+      if (everyPointZero) {
+        return BigNumber(1);
+      }
+
+      if (everyPointEqual) {
         return maxValueBigNumber.multipliedBy(gapRatio);
+      }
 
       if (minValueBigNumber.isLessThan(0) || hasOnlyOnePoint)
         return maxValueBigNumber;
@@ -234,7 +242,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       .map((value, index) => {
         // Gap from lowest value or highest value  to baseline
         const additionalGap = (() => {
-          if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0))
+          if (everyPointEqual)
             return minMaxGap.dividedBy(2);
 
           return minMaxGap.multipliedBy(gapRatio / 2);
@@ -242,7 +250,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
         // Gap between bottom and top base line
         const baseLineGap = (() => {
-          if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0))
+          if (everyPointEqual)
             return minMaxGap;
 
           if (minValueBigNumber.isLessThanOrEqualTo(0))
@@ -345,16 +353,20 @@ const LineGraph: React.FC<LineGraphProps> = ({
       })();
 
       // Subtract 5% from the top baseline
-      const topFrontierHeight = (() => {
-        return showBaseLine ? height * (1.05 / 1.1) : height;
-      })();
+      const topFrontierHeight = showBaseLine ? height * (1.05 / 1.1) : height;
 
       const result = (() => {
+        if (everyPointZero) {
+          return (
+            topFrontierHeight - graphHeight / 2
+          );
+        }
+
         if (minMaxGap.isZero()) {
           return 0;
         }
 
-        if (minValue === 0) {
+        if (minValue === 0 && maxValue > 0) {
           return (
             topFrontierHeight +
             graphHeight * (0.05 / 1.05) -
@@ -362,7 +374,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
           );
         }
 
-        if (maxValue - minValue === 0) {
+        if (everyPointEqual) {
           return (
             topFrontierHeight -
             (value * 0.05 * graphHeight) / minMaxGap.toNumber()

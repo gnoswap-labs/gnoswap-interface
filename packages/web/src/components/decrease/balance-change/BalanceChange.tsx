@@ -1,5 +1,7 @@
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
 import { TokenModel } from "@models/token/token-model";
+import BigNumber from "bignumber.js";
 import React from "react";
 import { BalanceChangeWrapper } from "./BalanceChange.styles";
 
@@ -7,9 +9,10 @@ export interface BalanceChangeProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   title?: string;
+  pooledTokenInfos: IPooledTokenInfo | null;
 }
 
-const BalanceChange: React.FC<BalanceChangeProps> = ({ tokenA, tokenB, title = "3. Balance Changes" }) => {
+const BalanceChange: React.FC<BalanceChangeProps> = ({ tokenA, tokenB, title = "3. Balance Changes", pooledTokenInfos, }) => {
   return (
     <BalanceChangeWrapper>
       <h5>{title}</h5>
@@ -29,8 +32,8 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({ tokenA, tokenB, title = "
             />{" "}
             {tokenA?.symbol}
           </p>
-          <p className="label">100.554</p>
-          <p className="label new-balance">65,465.5</p>
+          <p className="label">{BigNumber(pooledTokenInfos?.tokenABalance ?? 0).toFormat()}</p>
+          <p className="label new-balance">{BigNumber(pooledTokenInfos?.tokenARemainingAmount ?? 0).toFormat()}</p>
         </div>
         <div className="table-balance-change">
           <p className="value">
@@ -41,8 +44,8 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({ tokenA, tokenB, title = "
             />{" "}
             {tokenB?.symbol}
           </p>
-          <p className="label">489,789.1982</p>
-          <p className="label new-balance">65,465.5</p>
+          <p className="label">{BigNumber(pooledTokenInfos?.tokenBBalance ?? 0).toFormat()}</p>
+          <p className="label new-balance">{BigNumber(pooledTokenInfos?.tokenBRemainingAmount ?? 0).toFormat()}</p>
         </div>
       </div>
     </BalanceChangeWrapper>

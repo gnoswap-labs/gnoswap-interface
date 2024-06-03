@@ -58,8 +58,10 @@ export const BalanceChangeWrapper = styled.div<Props>`
     }
   }
   .table-balance-change {
-    ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
+    display: grid;
+    grid-template-columns: 0.5fr 1fr 1fr;
+    column-gap: 2px;
     .label {
       color: ${({ theme }) => theme.color.text04};
       ${fonts.body12}
@@ -75,7 +77,6 @@ export const BalanceChangeWrapper = styled.div<Props>`
         width: 89px;
       }
       &:nth-of-type(2) {
-        flex: 1;
         text-align: right;
         ${media.mobile} {
           display: none;
@@ -83,7 +84,6 @@ export const BalanceChangeWrapper = styled.div<Props>`
       }
       &:nth-of-type(3) {
         text-align: right;
-        width: 133px;
       }
       &.new-balance {
         color: ${({ theme }) => theme.color.text03};

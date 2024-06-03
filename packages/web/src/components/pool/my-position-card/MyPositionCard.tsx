@@ -268,12 +268,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return "$0";
     }
 
-
     const totalDailyEarningValue = (Object.values(totalRewardInfo)).flatMap(item => item).reduce((acc, current) => {
       return acc + Number(current.accumulatedRewardOf1dUsd);
     }, 0);
 
-    return toPriceFormat(totalDailyEarningValue, { usd: true });
+    return toPriceFormat(totalDailyEarningValue, { usd: true, isSmallValueShorten: true });
   }, [isClosed, totalRewardInfo]);
 
 
