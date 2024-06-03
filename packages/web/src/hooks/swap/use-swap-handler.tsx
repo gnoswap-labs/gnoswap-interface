@@ -302,6 +302,7 @@ export const useSwapHandler = () => {
         gasFeeUSD: BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber(),
         swapRateAction,
         swapRate1USD,
+        direction: type,
       };
     }
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
@@ -347,6 +348,7 @@ export const useSwapHandler = () => {
       gasFeeUSD,
       swapRateAction,
       swapRate1USD,
+      direction: type,
     };
   }, [
     tokenA,
@@ -358,6 +360,7 @@ export const useSwapHandler = () => {
     gasFeeAmount,
     tokenAmountLimit,
     swapRateAction,
+    type
   ]);
 
   const isAvailSwap = useMemo(() => {
