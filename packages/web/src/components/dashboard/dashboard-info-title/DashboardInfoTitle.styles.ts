@@ -9,17 +9,24 @@ export const DashboardInfoTitleWrapper = styled.div`
   color: ${({ theme }) => theme.color.text02};
   gap: 16px;
   ${media.mobile} {
-    flex-direction: column;
     padding: 12px;
-    align-items: flex-start;
-    gap: 6px;
+    ${mixins.flexbox("row", "center", "flex-start")};
+    width: 100%;
+    gap: 8px;
     ${fonts.body7};
   }
 `;
 
 export const TokenWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  gap: 16px;
+  gap: 8px;
+
+  .amount-info {
+    ${fonts.body5};
+    ${media.mobile} {
+      ${fonts.body9};
+    }
+  }
 `;
 
 export const GnosLogoWrapper = styled.div`
@@ -28,13 +35,13 @@ export const GnosLogoWrapper = styled.div`
 
   .gnos-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
-    background-color: ${({ theme }) => theme.color.point};
-    width: 36px;
-    height: 36px;
-    border-radius: 100%;
-    ${media.mobile} {
-      width: 25px;
-      height: 25px;
+    svg {
+      width: 32px;
+      height: 32px;
+      ${media.mobile} {
+        width: 22px;
+        height: 22px;
+      }
     }
   }
   .gnos-image {
@@ -51,7 +58,7 @@ export const GnosLogoWrapper = styled.div`
       ${fonts.body3};
     }
     ${media.mobile} {
-      ${fonts.body7};
+      ${fonts.body9};
     }
   }
 `;
@@ -60,13 +67,13 @@ export const GnotLogoWrapper = styled.div`
   gap: 8px;
   .gnot-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
-    background-color: ${({ theme }) => theme.color.icon09};
-    width: 36px;
-    height: 36px;
-    border-radius: 100%;
-    ${media.mobile} {
-      width: 25px;
-      height: 25px;
+    svg {
+      width: 32px;
+      height: 32px;
+      ${media.mobile} {
+        width: 22px;
+        height: 22px;
+      }
     }
   }
   .gnot-symbol {
@@ -75,15 +82,15 @@ export const GnotLogoWrapper = styled.div`
       ${fonts.body3};
     }
     ${media.mobile} {
-      ${fonts.body7};
+      ${fonts.body9};
     }
   }
   .gnot-image {
-    width: 21px;
-    height: 21px;
+    width: 32px;
+    height: 32px;
     ${media.mobile} {
-      width: 14.84px;
-      height: 14.84px;
+      width: 22px;
+      height: 22px;
     }
   }
 `;
@@ -91,5 +98,8 @@ export const GnotLogoWrapper = styled.div`
 export const TitleDivider = styled.div`
   width: 1px;
   height: 24px;
-  border: 1px solid ${({ theme }) => theme.color.border02};
+  border-left: 1px solid ${({ theme }) => theme.color.border02};
+  ${media.mobile} {
+    height: 17px;
+  }
 `;

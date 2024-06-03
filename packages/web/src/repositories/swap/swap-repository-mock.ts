@@ -1,6 +1,6 @@
 import { StorageClient } from "@common/clients/storage-client";
 import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
-import { generateNumber, generateTxHash } from "@common/utils/test-util";
+import { generateNumber } from "@common/utils/test-util";
 import {
   SwapExpectedResultResponse,
   SwapFeeResponse,
@@ -8,12 +8,16 @@ import {
   SwapRepository,
   SwapResponse,
 } from ".";
+import { SwapRequest } from "./request";
+import { WalletClient } from "@common/clients/wallet-client";
 
 export class SwapRepositoryMock implements SwapRepository {
   private localStorageClient: StorageClient;
+  private walletClient: WalletClient;
 
-  constructor() {
+  constructor(walletClient: WalletClient) {
     this.localStorageClient = new MockStorageClient("LOCAL");
+    this.walletClient = walletClient;
   }
 
   public getSwapRate = async (): Promise<SwapRateResponse> => {
@@ -32,9 +36,9 @@ export class SwapRepositoryMock implements SwapRepository {
     SwapExpectedResultResponse
   > => {
     return {
-      price_impact: generateNumber(0, 10000),
-      min_received: generateNumber(0, 10000),
-      gas_fee: generateNumber(0, 1),
+      tokenAAmount: 0,
+      tokenBAmount: 0,
+      priceImpact: generateNumber(0, 10000),
     };
   };
 
@@ -48,14 +52,52 @@ export class SwapRepositoryMock implements SwapRepository {
     return 0;
   };
 
-  public setSlippage = (slippage: number): boolean => {
+  public setSlippage = (slippage: string): boolean => {
     this.localStorageClient.set("slippage", `${slippage}`);
     return true;
   };
 
-  public swap = async (): Promise<SwapResponse> => {
+  public swap = async (swapRequest: SwapRequest): Promise<SwapResponse> => {
+    const account = await this.walletClient.getAccount();
+    if (!account.data) {
+      throw new Error("Swap failed.");
+    }
+    const { address } = account.data;
+    const {
+      tokenA,
+      tokenB,
+      fee,
+      receiver,
+      zeroForOne,
+      amountSpecified,
+    } = swapRequest;
+    const response = await this.walletClient.sendTransaction({
+      messages: [
+        {
+          caller: address,
+          send: "",
+          pkg_path: "gno.land/r/pool",
+          func: "Swap",
+          args: [
+            tokenA.symbol.toLowerCase(),
+            tokenB.symbol.toLowerCase(),
+            `${fee}`,
+            receiver,
+            `${zeroForOne}`,
+            `${amountSpecified}`,
+            `${0}`,
+          ],
+        },
+      ],
+      gasWanted: 2000000,
+      gasFee: 1,
+      memo: "",
+    });
+    if (response.code !== 0) {
+      throw new Error("Swap failed.");
+    }
     return {
-      tx_hash: generateTxHash(),
+      tx_hash: response.type,
     };
   };
 }

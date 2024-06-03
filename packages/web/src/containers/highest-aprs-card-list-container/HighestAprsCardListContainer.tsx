@@ -1,21 +1,38 @@
-import { highestList } from "@components/home/card-list/card-list-dummy";
 import HighestAprsCardList from "@components/home/highest-aprs-card-list/HighestAprsCardList";
-import React, { useEffect, useState } from "react";
+import { useLoading } from "@hooks/common/use-loading";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { usePoolData } from "@hooks/pool/use-pool-data";
+import useRouter from "@hooks/common/use-custom-router";
+import React, { useCallback } from "react";
 
 const HighestAprsCardListContainer: React.FC = () => {
-  const [width, setWidth] = useState(Number);
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
+  const router = useRouter();
+  const { breakpoint } = useWindowSize();
+  const { higestAPRs } = usePoolData();
+  const { isLoadingHighestAPRPools } = useLoading();
 
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-  return <HighestAprsCardList list={highestList} windowSize={width} />;
+  const movePoolDetails = useCallback(
+    (path: string) => {
+      router.push("/earn/pool/" + path);
+    },
+    [router],
+  );
+
+  const onClickItem = useCallback(
+    (path: string) => {
+      movePoolDetails(path);
+    },
+    [movePoolDetails],
+  );
+
+  return (
+    <HighestAprsCardList
+      list={higestAPRs}
+      device={breakpoint}
+      onClickItem={onClickItem}
+      loading={isLoadingHighestAPRPools}
+    />
+  );
 };
 
 export default HighestAprsCardListContainer;

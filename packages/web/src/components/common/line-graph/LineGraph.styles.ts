@@ -1,41 +1,44 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const LineGraphWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 180px;
+  height: 321px;
   overflow: visible;
-
+  ${media.mobile} {
+    height: 252px;
+  }
   & svg {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 180px;
+    height: 321px;
     overflow: visible;
+    .center-line {
+      transform: translateY(50%) !important;
+    }
+    ${media.mobile} {
+      height: 252px;
+    }
+    .y-axis-number {
+      ${fonts.p6}
+    }
   }
 `;
 
-interface LineGraphTooltipWrapperProps {
-  x: number;
-  y: number;
-}
-
-export const LineGraphTooltipWrapper = styled.div<LineGraphTooltipWrapperProps>`
-  position: absolute;
-  top: ${props => `${props.y}px`};
-  left: ${props => `${props.x}px`};
+export const LineGraphTooltipWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 157px;
+  min-width: 106px;
   height: auto;
-  padding: 6px 8px;
-  background: ${({ theme }) => theme.color.background05};
+  background: ${({ theme }) => theme.color.background02};
   border-radius: 4px;
-  box-shadow: 2px 2px 12px 0px rgba(0, 0, 0, 0.15);
   overflow: visible;
+  gap: 8px;
   ${fonts.p4};
 
   & .tooltip-header {
@@ -44,9 +47,15 @@ export const LineGraphTooltipWrapper = styled.div<LineGraphTooltipWrapperProps>`
     width: 100%;
     height: auto;
     justify-content: space-between;
+    ${fonts.body9}
+    color: ${({ theme }) => theme.color.text02};
   }
 
   & .tooltip-body {
-    color: ${({ theme }) => theme.color.point};
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text04};
+    .time {
+      margin-left: 40px;
+    }
   }
 `;

@@ -1,8 +1,13 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import EarnIncentivizedPools from "./EarnIncentivizedPools";
 import IncentivizedPoolCardList from "../incentivized-pool-card-list/IncentivizedPoolCardList";
-import { poolDummy } from "../incentivized-pool-card-list/incentivized-pool-dummy";
-import { action } from '@storybook/addon-actions';
+import POOLS from "@repositories/pool/mock/pools.json";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import { action } from "@storybook/addon-actions";
+
+const pool = POOLS.pools[0] as any;
+
+const cardInfo = PoolMapper.toCardInfo(pool);
 
 export default {
   title: "earn/EarnIncentivizedPools",
@@ -19,9 +24,18 @@ export const Default = Template.bind({});
 Default.args = {
   cardList: <IncentivizedPoolCardList
     currentIndex={1}
-    list={poolDummy}
-    isFetched={true}
+    incentivizedPools={[cardInfo]}
+    isPoolFetched={true}
     routeItem={action("routeItem")}
     mobile={false}
+    loadMore={false}
+    page={1}
+    themeKey="dark"
+    divRef={null as any}
+    onScroll={action("onScroll")}
+    width={1440}
+    showPagination={false}
+    isLoading={false}
+    checkStakedPool={() => true}
   />
 };

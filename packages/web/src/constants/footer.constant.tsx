@@ -1,8 +1,8 @@
 import IconGithub from "@components/common/icons/social/IconGithub";
 import IconGitbook from "@components/common/icons/social/IconGitbook";
-import IconDiscode from "@components/common/icons/social/IconDiscode";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconTwitter from "@components/common/icons/social/IconTwitter";
+import IconDiscord from "@components/common/icons/social/IconDiscord";
 
 export const FOOTER_LEFT_NAV = {
   content:
@@ -16,29 +16,29 @@ export const FOOTER_LEFT_NAV = {
     {
       title: "gitbook",
       icon: <IconGitbook />,
-      path: "docs.gnoswap.io",
+      path: "https://docs.gnoswap.io/",
     },
     {
-      title: "discode",
-      icon: <IconDiscode />,
-      path: "/",
+      title: "discord",
+      icon: <IconDiscord />,
+      path: "https://discord.gg/u4bdGHStb2",
     },
     {
       title: "medium",
       icon: <IconMedium />,
-      path: "/",
+      path: "https://medium.com/@gnoswaplabs",
     },
     {
       title: "twitter",
       icon: <IconTwitter />,
-      path: "/",
+      path: "https://twitter.com/gnoswaplabs",
     },
   ],
 };
 
 export const FOOTER_RIGHT_NAV = [
   {
-    content: "Services",
+    content: "Features",
     menu: [
       {
         title: "Swap",
@@ -46,18 +46,18 @@ export const FOOTER_RIGHT_NAV = [
         newTab: false,
       },
       {
-        title: "Earn",
-        path: "/earn",
+        title: "Add Position",
+        path: "/earn/add",
         newTab: false,
       },
       {
-        title: "Wallet",
-        path: "/wallet",
+        title: "Stake Position",
+        path: "/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000#staking",
         newTab: false,
       },
       {
-        title: "Dashboard",
-        path: "/dashboard",
+        title: "Incentivize Pool",
+        path: "/earn/incentivize",
         newTab: false,
       },
     ],
@@ -67,7 +67,7 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "About Us",
-        path: "docs.gnoswap.io",
+        path: "https://docs.gnoswap.io/welcome",
         newTab: true,
       },
       {
@@ -76,17 +76,12 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "Discord Support",
-        path: "/",
+        title: "Twitter (X)",
+        path: "https://twitter.com/gnoswaplabs",
         newTab: true,
       },
       {
-        title: "Twitter Support",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "Forum Support",
+        title: "Project Onboarding",
         path: "/",
         newTab: true,
       },
@@ -101,12 +96,12 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "GitBook",
-        path: "docs.gnoswap.io",
+        title: "Docs",
+        path: "https://docs.gnoswap.io/contracts/",
         newTab: true,
       },
       {
-        title: "Development",
+        title: "Audit",
         path: "/",
         newTab: true,
       },
@@ -142,12 +137,12 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "Terms of Use",
-        path: "gnoswap.io/terms-of-use",
+        path: "/",
         newTab: true,
       },
       {
         title: "Privacy Policy",
-        path: "gnoswap.io/privacy-policy",
+        path: "/",
         newTab: true,
       },
     ],

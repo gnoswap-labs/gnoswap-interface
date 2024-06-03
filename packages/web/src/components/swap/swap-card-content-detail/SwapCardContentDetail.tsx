@@ -1,88 +1,129 @@
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
-import { TokenInfo } from "../swap-card/SwapCard";
 import IconNote from "@components/common/icons/IconNote";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import SwapCardFeeInfo from "../swap-card-fee-info/SwapCardFeeInfo";
 import SwapCardAutoRouter from "../swap-card-auto-router/SwapCardAutoRouter";
-import {
-  AutoRouterInfo,
-  SwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
 import SwapButtonTooltip from "../swap-button-tooltip/SwapButtonTooltip";
 import { DEVICE_TYPE } from "@styles/media";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { convertToMB } from "@utils/stake-position-utils";
+import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 
 interface ContentProps {
-  to: TokenInfo;
-  from: TokenInfo;
-  swapInfo: boolean;
-  showSwapInfo: () => void;
-  autoRouter: boolean;
-  showAutoRouter: () => void;
-  swapGasInfo: SwapGasInfo;
-  autoRouterInfo: AutoRouterInfo;
-  breakpoint: DEVICE_TYPE;
+  swapSummaryInfo: SwapSummaryInfo;
+  swapRouteInfos: SwapRouteInfo[];
+  isLoading: boolean;
+  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
 }
 
+export const convertSwapRate = (value: number) => {
+  if (value >= 0.00001) return value.toFixed(6);
+  return value.toFixed(15);
+};
+
 const SwapCardContentDetail: React.FC<ContentProps> = ({
-  to,
-  from,
-  swapInfo,
-  showSwapInfo,
-  autoRouter,
-  showAutoRouter,
-  swapGasInfo,
-  autoRouterInfo,
-  breakpoint,
+  swapSummaryInfo,
+  swapRouteInfos,
+  isLoading,
+  setSwapRateAction,
 }) => {
+  const { breakpoint } = useWindowSize();
+  const [openedDetailInfo, setOpenedDetailInfo] = useState(false);
+  const [openedRouteInfo, setOpenedRouteInfo] = useState(false);
+
+  const swapRateDescription = useMemo(() => {
+    const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
+    if (swapRateAction === "ATOB") {
+      return <>1 {tokenA.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenB.symbol}</>;
+    } else {
+      return <>1 {tokenB.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenA.symbol}</>;
+    }
+  }, [swapSummaryInfo]);
+
+  const swapRate1USD = useMemo(() => {
+    const swapRate1USD = swapSummaryInfo.swapRate1USD;
+    return convertToMB(formatUsdNumber3Digits(swapRate1USD));
+  }, [swapSummaryInfo.swapRate1USD, swapSummaryInfo.swapRateAction]);
+
+  const gasFeeUSDStr = useMemo(() => {
+    const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
+    return `$${gasFeeUSD}`;
+  }, [swapSummaryInfo.gasFeeUSD]);
+
+  const toggleDetailInfo = useCallback(() => {
+    setOpenedDetailInfo(!openedDetailInfo);
+  }, [openedDetailInfo]);
+
+  const toggleRouteInfo = useCallback(() => {
+    setOpenedRouteInfo(!openedRouteInfo);
+  }, [openedRouteInfo]);
+
+  const handleSwapRate = useCallback(() => {
+    setSwapRateAction(swapSummaryInfo.swapRateAction === "ATOB" ? "BTOA" : "ATOB");
+  }, [swapSummaryInfo.swapRateAction]);
+
   return (
     <>
-      <DetailWrapper swapInfo={swapInfo}>
+      <DetailWrapper opened={openedDetailInfo}>
         <div className="exchange-section">
           <div className="exchange-container">
-            <div className="ocin-info">
-              <SwapButtonTooltip swapGasInfo={swapGasInfo} />
-              <span>
-                {from.amount} {from.symbol} = {from.gnosExchangePrice} GNOS
-              </span>
-              {breakpoint !== DEVICE_TYPE.MOBILE && (
-                <span className="exchange-price">{from.usdExchangePrice}</span>
-              )}
-            </div>
+            {!isLoading && (
+              <div className="ocin-info">
+                <SwapButtonTooltip swapSummaryInfo={swapSummaryInfo} />
+                <span className="swap-rate" onClick={handleSwapRate}>
+                  {swapRateDescription}
+                </span>
+                {breakpoint !== DEVICE_TYPE.MOBILE && (
+                  <span className="exchange-price">{`($${swapRate1USD})`}</span>
+                )}
+              </div>
+            )}
+            {isLoading && (
+              <div className="loading-change">
+                <LoadingSpinner /> Fetching Best Price...
+              </div>
+            )}
             <div className="price-info">
-              <IconNote className="price-icon" />
-              <span>{swapGasInfo.usdExchangeGasFee}</span>
-              {swapInfo ? (
+              <IconNote className="price-icon note-icon" />
+              <span>{gasFeeUSDStr}</span>
+              {openedDetailInfo ? (
                 <IconStrokeArrowUp
                   className="price-icon"
-                  onClick={showSwapInfo}
+                  onClick={toggleDetailInfo}
                 />
               ) : (
                 <IconStrokeArrowDown
                   className="price-icon"
-                  onClick={showSwapInfo}
+                  onClick={toggleDetailInfo}
                 />
               )}
             </div>
           </div>
         </div>
       </DetailWrapper>
-      {swapInfo && (
-        <FeelWrapper swapInfo={swapInfo}>
+
+      {openedDetailInfo && (
+        <FeelWrapper opened={openedDetailInfo}>
           <div className="fee-section">
-            {swapInfo && (
+            {openedDetailInfo && (
               <SwapCardFeeInfo
-                autoRouter={autoRouter}
-                showAutoRouter={showAutoRouter}
-                swapGasInfo={swapGasInfo}
+                openedRouteInfo={openedRouteInfo}
+                toggleRouteInfo={toggleRouteInfo}
+                swapSummaryInfo={swapSummaryInfo}
+                isLoading={isLoading}
               />
             )}
-            {autoRouter && (
+            {openedRouteInfo && (
               <SwapCardAutoRouter
-                from={from}
-                to={to}
-                autoRouterInfo={autoRouterInfo}
+                swapRouteInfos={swapRouteInfos}
+                swapSummaryInfo={swapSummaryInfo}
+                isLoading={isLoading}
               />
             )}
           </div>

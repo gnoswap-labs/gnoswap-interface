@@ -10,6 +10,8 @@ export interface ModalStyleProps {
   textColor?: ThemeColorKeyTypes;
   width?: CSSProperties["width"];
   height?: CSSProperties["height"];
+  zIndex?: Z_INDEX;
+  hidden?: boolean;
 }
 
 export const ModalWrapper = styled.div<ModalStyleProps>`
@@ -22,13 +24,16 @@ export const ModalWrapper = styled.div<ModalStyleProps>`
     if (height) return typeof height === "number" ? height + "px" : height;
     return "auto";
   }};
-  padding: 24px;
   ${mixins.positionCenter()};
-  z-index: ${Z_INDEX.modal};
+  position: fixed;
+  z-index: ${({zIndex}) => zIndex || Z_INDEX.modal};
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
+  max-height: 100vh;
+  overflow: scroll;
+  display: ${({hidden}) => hidden === true ? "none" : "flex"} ;
 `;
 
 export const ModalHeader = styled.div<ModalStyleProps>`
@@ -58,7 +63,7 @@ export const Overlay = styled.div`
   right: 0px;
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: rgba(10, 14, 23, 0.7);
   overflow: hidden;
   z-index: ${Z_INDEX.modalOverlay};
 `;

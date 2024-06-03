@@ -19,7 +19,7 @@ const Switch: React.FC<SwitchProps> = ({
   return (
     <>
       {hasLabel ? (
-        <SwitchWrapper>
+        <SwitchWrapper className="switch-button">
           <SwitchLabel htmlFor="switch">{labelText}</SwitchLabel>
           <SwitchInput
             type="checkbox"

@@ -1,0 +1,28 @@
+{
+  "stat": {
+    "tvlUsd": "136106186.1658715",
+    "volume24hUsd": "98608.617",
+    "allTimeVolumeUsd": "10816.1597819619"
+  },
+  "trending": [
+    {
+      "tokenPath": "gno.land/r/qux",
+      "tokenPrice": "161.1816",
+      "tokenPrice24hChange": "0.0681"
+    }
+  ],
+  "gainers": [
+    {
+      "tokenPath": "gno.land/r/qux",
+      "tokenPrice": "161.1816",
+      "tokenPrice24hChange": "0.0681"
+    }
+  ],
+  "losers": [
+    {
+      "tokenPath": "gno.land/r/qux",
+      "tokenPrice": "161.1816",
+      "tokenPrice24hChange": "0.0681"
+    }
+  ]
+}

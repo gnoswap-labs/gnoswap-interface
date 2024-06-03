@@ -3,177 +3,172 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { SwapCardWrapper } from "./SwapCard.styles";
 import SwapCardHeader from "../swap-card-header/SwapCardHeader";
 import SwapCardContent from "../swap-card-content/SwapCardContent";
-import {
-  AutoRouterInfo,
-  tokenInfo,
-  SwapData,
-  SwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
-import ConfirmSwapModal from "../confirm-swap-modal/ConfirmSwapModal";
-import { DEVICE_TYPE } from "@styles/media";
-
-export interface TokenInfo {
-  token: string;
-  symbol: string;
-  amount: string;
-  price: string;
-  gnosExchangePrice: string;
-  usdExchangePrice: string;
-  balance: string;
-  tokenLogo: string;
-}
+import { TokenModel } from "@models/token/token-model";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { SwapResultInfo } from "@models/swap/swap-result-info";
 
 interface SwapCardProps {
-  search: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  keyword: string;
-  isConnected: boolean;
-  from: TokenInfo;
-  to: TokenInfo;
-  gnosAmount: string;
-  swapInfo: boolean;
-  showSwapInfo: () => void;
-  autoRouter: boolean;
-  showAutoRouter: () => void;
-  swapGasInfo: SwapGasInfo;
-  autoRouterInfo: AutoRouterInfo;
-  settingMenuToggle: boolean;
-  onSettingMenu: () => void;
-  tolerance: string;
-  changeTolerance: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  tokenModal: boolean;
-  onSelectTokenModal: () => void;
-  swapOpen: boolean;
-  onConfirmModal: () => void;
-  coinList: tokenInfo[];
-  changeToken: (token: tokenInfo, type: string) => void;
-  selectToken: (e: string) => void;
-  submitSwap: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-  breakpoint: DEVICE_TYPE;
-  submit: boolean;
-  isFetching: boolean;
-  swapResult?: SwapData;
-  resetTolerance: () => void;
-  handleCopyClipBoard: (text: string) => void;
+  connectedWallet: boolean;
   copied: boolean;
+  swapTokenInfo: SwapTokenInfo;
+  swapSummaryInfo: SwapSummaryInfo | null;
+  swapRouteInfos: SwapRouteInfo[];
+  isAvailSwap: boolean;
+  swapButtonText: string;
+  submitted: boolean;
+  swapResult: SwapResultInfo | null;
+  openedConfirmModal: boolean;
+  themeKey: "dark" | "light";
+  isSwitchNetwork: boolean;
+  isLoading: boolean;
+
+  changeTokenA: (token: TokenModel) => void;
+  changeTokenAAmount: (value: string, none?: boolean) => void;
+  changeTokenB: (token: TokenModel) => void;
+  changeTokenBAmount: (value: string, none?: boolean) => void;
+  changeSlippage: (value: string) => void;
+
+  switchSwapDirection: () => void;
+  openConfirmModal: () => void;
+  openConnectWallet: () => void;
+  closeModal: () => void;
+  copyURL: () => void;
+  swap: () => void;
+  switchNetwork: () => void;
+  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
-  search,
-  keyword,
-  from,
-  to,
-  gnosAmount,
-  isConnected,
-  swapInfo,
-  showSwapInfo,
-  autoRouter,
-  showAutoRouter,
-  swapGasInfo,
-  autoRouterInfo,
-  settingMenuToggle,
-  onSettingMenu,
-  tolerance,
-  changeTolerance,
-  tokenModal,
-  onSelectTokenModal,
-  swapOpen,
-  onConfirmModal,
-  coinList,
-  changeToken,
-  selectToken,
-  submitSwap,
-  breakpoint,
-  submit,
-  isFetching,
-  swapResult,
-  resetTolerance,
-  handleCopyClipBoard,
+  connectedWallet,
   copied,
+  swapTokenInfo,
+  swapSummaryInfo,
+  swapRouteInfos,
+  isAvailSwap,
+  swapButtonText,
+  changeTokenA,
+  changeTokenAAmount,
+  changeTokenB,
+  changeTokenBAmount,
+  changeSlippage,
+  switchSwapDirection,
+  openConfirmModal,
+  openConnectWallet,
+  copyURL,
+  themeKey,
+  isSwitchNetwork,
+  switchNetwork,
+  isLoading,
+  setSwapRateAction,
 }) => {
   return (
     <>
       <SwapCardWrapper>
         <SwapCardHeader
-          settingMenuToggle={settingMenuToggle}
-          onSettingMenu={onSettingMenu}
-          tolerance={tolerance}
-          changeTolerance={changeTolerance}
-          resetTolerance={resetTolerance}
-          handleCopyClipBoard={handleCopyClipBoard}
           copied={copied}
+          copyURL={copyURL}
+          slippage={swapTokenInfo.slippage}
+          changeSlippage={changeSlippage}
+          themeKey={themeKey}
         />
         <SwapCardContent
-          from={from}
-          to={to}
-          swapInfo={swapInfo}
-          showSwapInfo={showSwapInfo}
-          autoRouter={autoRouter}
-          showAutoRouter={showAutoRouter}
-          swapGasInfo={swapGasInfo}
-          autoRouterInfo={autoRouterInfo}
-          tokenModal={tokenModal}
-          onSelectTokenModal={onSelectTokenModal}
-          search={search}
-          keyword={keyword}
-          coinList={coinList}
-          changeToken={changeToken}
-          selectToken={selectToken}
-          breakpoint={breakpoint}
+          swapTokenInfo={swapTokenInfo}
+          swapSummaryInfo={swapSummaryInfo}
+          swapRouteInfos={swapRouteInfos}
+          changeTokenA={changeTokenA}
+          changeTokenAAmount={changeTokenAAmount}
+          changeTokenB={changeTokenB}
+          changeTokenBAmount={changeTokenBAmount}
+          switchSwapDirection={switchSwapDirection}
+          connectedWallet={connectedWallet}
+          isLoading={isLoading}
+          setSwapRateAction={setSwapRateAction}
+          isSwitchNetwork={isSwitchNetwork}
         />
         <div className="footer">
-          {isConnected ? (
-            Number(gnosAmount) - Number(from.gnosExchangePrice) > 0 ? (
-              <Button
-                text="Swap"
-                style={{
-                  fullWidth: true,
-                  height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                  fontType: "body7",
-                  hierarchy: ButtonHierarchy.Primary,
-                }}
-                onClick={onConfirmModal}
-              />
-            ) : (
-              <Button
-                text="Insufficient Balance"
-                style={{
-                  fullWidth: true,
-                  height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                  fontType: "body7",
-                  hierarchy: ButtonHierarchy.Gray,
-                }}
-                onClick={showSwapInfo}
-              />
-            )
-          ) : (
-            <Button
-              text="Connect Wallet"
-              style={{
-                fullWidth: true,
-                height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                fontType: "body7",
-                hierarchy: ButtonHierarchy.Primary,
-              }}
-              onClick={() => {}}
-            />
-          )}
+          <SwapButton
+            isSwitchNetwork={isSwitchNetwork}
+            connectedWallet={connectedWallet}
+            isAvailSwap={isAvailSwap}
+            openConfirmModal={openConfirmModal}
+            openConnectWallet={openConnectWallet}
+            text={swapButtonText}
+            switchNetwork={switchNetwork}
+          />
         </div>
       </SwapCardWrapper>
-      {swapOpen && (
-        <ConfirmSwapModal
-          onConfirmModal={onConfirmModal}
-          submitSwap={submitSwap}
-          from={from}
-          to={to}
-          swapGasInfo={swapGasInfo}
-          tolerance={tolerance}
-          breakpoint={breakpoint}
-          submit={submit}
-          isFetching={isFetching}
-          swapResult={swapResult}
-        />
-      )}
     </>
+  );
+};
+
+interface SwapButtonProps {
+  connectedWallet: boolean;
+  isAvailSwap: boolean;
+  text: string;
+  isSwitchNetwork: boolean;
+
+  openConfirmModal: () => void;
+  openConnectWallet: () => void;
+  switchNetwork: () => void;
+}
+
+const SwapButton: React.FC<SwapButtonProps> = ({
+  connectedWallet,
+  isAvailSwap,
+  text,
+  openConfirmModal,
+  openConnectWallet,
+  isSwitchNetwork,
+  switchNetwork,
+}) => {
+  const defaultStyle = {
+    fullWidth: true,
+    hierarchy: ButtonHierarchy.Primary,
+  };
+
+  if (!connectedWallet) {
+    return (
+      <Button
+        text={text}
+        style={defaultStyle}
+        onClick={openConnectWallet}
+        className="button-swap"
+      />
+    );
+  }
+
+  if (isSwitchNetwork) {
+    return (
+      <Button
+        text={text}
+        style={defaultStyle}
+        onClick={switchNetwork}
+        className="button-swap"
+      />
+    );
+  }
+
+  if (!isAvailSwap) {
+    return (
+      <Button
+        text={text}
+        style={{
+          ...defaultStyle,
+          hierarchy: ButtonHierarchy.Gray,
+        }}
+      />
+    );
+  }
+
+  return (
+    <Button
+      text={text}
+      style={defaultStyle}
+      onClick={openConfirmModal}
+      className="button-swap"
+    />
   );
 };
 

@@ -1,42 +1,188 @@
+import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import TokenSwap from "@components/token/token-swap/TokenSwap";
-import { useRouter } from "next/router";
-import React, { useCallback } from "react";
+import React, { useState, useEffect } from "react";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
+import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
+import useRouter from "@hooks/common/use-custom-router";
+import { useSwapHandler } from "@hooks/swap/use-swap-handler";
+import { useGetTokenByPath } from "@query/token";
+import { TokenModel } from "@models/token/token-model";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { encryptId, makeId } from "@utils/common";
 
 const TokenSwapContainer: React.FC = () => {
+  const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
+  const [openedSlippage, setOpenedSlippage] = useState(false);
+  const { getGnotPath } = useGnotToGnot();
+  const path = router.query["token-path"] as string;
+  const tokenAPath = router.query["tokenA"] as string;
+  const { data: tokenB = null, isFetched } = useGetTokenByPath(path, {
+    enabled: !!path,
+  });
+  const { data: tokenA = null } = useGetTokenByPath(tokenAPath, {
+    enabled: !!tokenAPath,
+  });
 
-  const swapNow = useCallback(() => {
-    router.push("/swap?from=GNOT&to=GNOS");
-  }, [router]);
+  const {
+    connectedWallet,
+    copied,
+    swapTokenInfo,
+    swapSummaryInfo,
+    swapRouteInfos,
+    isAvailSwap,
+    swapButtonText,
+    submitted,
+    swapResult,
+    openedConfirmModal,
+    slippage,
+    setSwapValue,
+    changeTokenA,
+    changeTokenAAmount,
+    changeTokenB,
+    changeTokenBAmount,
+    changeSlippage,
+    switchSwapDirection,
+    openConfirmModal,
+    openConnectWallet,
+    closeModal,
+    copyURL,
+    executeSwap,
+    isSwitchNetwork,
+    isLoading,
+    swapValue,
+    setSwapRateAction,
+    setTokenAAmount,
+  } = useSwapHandler();
 
-  const connectWallet = useCallback(() => {
-    console.log("Request Adena");
+  useEffect(() => {
+    setSwapValue({
+      tokenA: null,
+      tokenB: null,
+      type: "EXACT_IN",
+    });
+    setTokenAAmount("");
   }, []);
 
+  useEffect(() => {
+    if (isFetched) {
+      let request = {};
+      if (tokenA && tokenB && tokenA.symbol !== tokenB?.symbol) {
+        request = {
+          tokenB: {
+            ...tokenB,
+            path: getGnotPath(tokenB).path,
+            symbol: getGnotPath(tokenB).symbol,
+            logoURI: getGnotPath(tokenB).logoURI,
+            name: getGnotPath(tokenB).name,
+          },
+          tokenA: {
+            ...tokenA,
+            path: getGnotPath(tokenA).path,
+            symbol: getGnotPath(tokenA).symbol,
+            logoURI: getGnotPath(tokenA).logoURI,
+            name: getGnotPath(tokenA).name,
+          },
+        };
+      } else if (tokenA) {
+        request = {
+          tokenA: {
+            ...tokenA,
+            path: getGnotPath(tokenA).path,
+            symbol: getGnotPath(tokenA).symbol,
+            logoURI: getGnotPath(tokenA).logoURI,
+            name: getGnotPath(tokenA).name,
+          },
+        };
+      } else {
+        if (swapValue?.tokenA?.symbol === tokenB?.symbol) request = {};
+        else {
+          request = {
+            tokenB: {
+              ...tokenB,
+              path: getGnotPath(tokenB).path,
+              symbol: getGnotPath(tokenB).symbol,
+              logoURI: getGnotPath(tokenB).logoURI,
+              name: getGnotPath(tokenB).name,
+            },
+          };
+        }
+      }
+      setSwapValue(prev => {
+        return {
+          ...prev,
+          ...request,
+        };
+      });
+    }
+  }, [tokenB, isFetched, tokenA]);
+
+  const handleChangeTokenB = (token: TokenModel) => {
+    if (
+      swapValue?.tokenB?.path ===
+        encryptId(router?.query?.["token-path"] as string) &&
+      swapValue?.tokenA?.symbol !== token?.symbol
+    ) {
+      router.push(`/tokens/${makeId(token.path)}`);
+    }
+    changeTokenB(token);
+  };
+
+  const handleChangeTokenA = (token: TokenModel) => {
+    if (
+      swapValue?.tokenA?.path ===
+        encryptId(router?.query?.["token-path"] as string) &&
+      swapValue?.tokenB?.symbol !== token?.symbol
+    ) {
+      router.push(`/tokens/${makeId(token.path)}`);
+    }
+    changeTokenA(token);
+  };
+
   return (
-    <TokenSwap
-      from={{
-        token: "USDCoin",
-        symbol: "USDC",
-        amount: "121",
-        price: "$0.00",
-        balance: "0",
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      }}
-      to={{
-        token: "HEX",
-        symbol: "HEX",
-        amount: "5000",
-        price: "$0.00",
-        balance: "0",
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      }}
-      connected={true}
-      connectWallet={connectWallet}
-      swapNow={swapNow}
-    />
+    <>
+      <TokenSwap
+        connected={connectedWallet}
+        connectWallet={openConnectWallet}
+        swapNow={openConfirmModal}
+        switchSwapDirection={switchSwapDirection}
+        copied={copied}
+        handleCopied={copyURL}
+        themeKey={themeKey}
+        handleSetting={() => setOpenedSlippage(true)}
+        isSwitchNetwork={isSwitchNetwork}
+        dataTokenInfo={swapTokenInfo}
+        changeTokenA={handleChangeTokenA}
+        changeTokenB={handleChangeTokenB}
+        changeTokenAAmount={changeTokenAAmount}
+        changeTokenBAmount={changeTokenBAmount}
+        isLoading={isLoading}
+        isAvailSwap={isAvailSwap}
+        swapButtonText={swapButtonText}
+        swapSummaryInfo={swapSummaryInfo}
+        swapRouteInfos={swapRouteInfos}
+        setSwapRateAction={setSwapRateAction}
+      />
+      {openedConfirmModal && swapSummaryInfo && (
+        <ConfirmSwapModal
+          submitted={submitted}
+          swapTokenInfo={swapTokenInfo}
+          swapSummaryInfo={swapSummaryInfo}
+          swapResult={swapResult}
+          swap={executeSwap}
+          close={closeModal}
+        />
+      )}
+      {openedSlippage && (
+        <SettingMenuModal
+          slippage={slippage}
+          changeSlippage={changeSlippage}
+          close={() => setOpenedSlippage(false)}
+          className="swap-setting-class"
+        />
+      )}
+    </>
   );
 };
 

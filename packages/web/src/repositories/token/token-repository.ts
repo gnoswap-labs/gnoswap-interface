@@ -1,43 +1,38 @@
+import { TokenPriceModel } from "@models/token/token-price-model";
+import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import {
-  TokenSearchItemType,
-  TokenSearchListModel,
-} from "@models/token/token-search-list-model";
-import {
-  TokenDatatableResponse,
-  TokenInfoResponse,
-  SummaryPopularTokenListResponse,
-  SummaryHighestRewardListResponse,
-  SummaryRecentlyAddedListResponse,
-  TokenSearchListResponse,
-  ExchangeRateResponse,
-  TokenMetaListResponse,
-  USDExchangeRateResponse,
+  IChainResponse,
+  ITokenDetailResponse,
+  ITokenResponse,
+  TokenListResponse,
+  TokenPriceListResponse,
+  TokenSearchLogListResponse,
 } from "./response";
+import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
+import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 export interface TokenRepository {
-  getAllTokenMetas: () => Promise<TokenMetaListResponse>;
+  getTokens: () => Promise<TokenListResponse>;
 
-  getTokenById: (tokenId: string) => Promise<TokenInfoResponse>;
+  getTokenByPath: (path: string) => Promise<ITokenResponse>;
 
-  searchTokens: (keyword: string) => Promise<TokenSearchListResponse>;
+  getTokenPrices: () => Promise<TokenPriceListResponse>;
 
-  createSearchLog: (searchToken: TokenSearchItemType) => boolean;
+  getTokenPricesByPath: (path: string) => Promise<TokenPriceModel>;
 
-  getSearchLogs: () => TokenSearchListModel;
+  getTokenDetailByPath: (path: string) => Promise<ITokenDetailResponse>;
 
-  getAllExchangeRates: (tokenId: string) => Promise<ExchangeRateResponse>;
+  createSearchLog: (searchLog: TokenSearchLogModel) => Promise<boolean>;
 
-  getUSDExchangeRate: (tokenId: string) => Promise<USDExchangeRateResponse>;
+  getSearchLogs: () => Promise<TokenSearchLogListResponse>;
 
-  getTokenDatatable: () => Promise<TokenDatatableResponse>;
+  clearSearchLogs: () => Promise<boolean>;
 
-  getSummaryPopularTokens: () => Promise<SummaryPopularTokenListResponse>;
+  getChain: () => Promise<IChainResponse>;
 
-  getSummaryHighestRewardTokens: () => Promise<
-    SummaryHighestRewardListResponse
-  >;
+  getExchangeRateGraph: () => Promise<TokenExchangeRateGraphResponse>;
 
-  getSummaryRecentlyAddedTokens: () => Promise<
-    SummaryRecentlyAddedListResponse
-  >;
+  getBalancesByAddress: (
+    address: string,
+  ) => Promise<IBalancesByAddressResponse>;
 }

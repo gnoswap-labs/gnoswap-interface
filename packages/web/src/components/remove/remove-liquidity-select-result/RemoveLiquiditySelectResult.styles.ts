@@ -1,28 +1,37 @@
 import { fonts } from "@constants/font.constant";
-import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
-export const wrapper = (theme: Theme) => css`
+import styled from "@emotion/styled";
+import { media } from "@styles/media";
+
+export const RemoveLiquiditySelectResultWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   gap: 4px;
   width: 100%;
-  color: ${theme.color.text03};
+  color: ${({ theme }) => theme.color.text03};
   ${fonts.body12};
-  border-top: 1px solid ${theme.color.border02};
+  border-top: 1px solid ${({ theme }) => theme.color.border02};
   padding-top: 16px;
 
   ul,
   .total-section {
     width: 100%;
     padding: 15px;
-    background-color: ${theme.color.backgroundOpacity};
-    border: 1px solid ${theme.color.border02};
+    background-color: ${({ theme }) => theme.color.background20};
+    border: 1px solid ${({ theme }) => theme.color.border02};
     border-radius: 8px;
+    ${media.mobile} {
+      padding: 11px;
+      gap: 8px;
+    }
   }
 
   ul {
     ${mixins.flexbox("column", "center", "center")};
     gap: 16px;
+    ${media.mobile} {
+      gap: 8px;
+    }
   }
 
   li {
@@ -49,19 +58,25 @@ export const wrapper = (theme: Theme) => css`
 
     .dallor {
       ${fonts.p4}
-      color: ${theme.color.text04}
+      color: ${({ theme }) => theme.color.text04}
     }
   }
 
   .total-section {
     ${mixins.flexbox("row", "center", "space-between")};
-    height: 63px;
     h5 {
-      ${fonts.body10};
+      ${fonts.body12};
+      color: ${({ theme }) => theme.color.text04}
     }
+    
     .total-value {
-      ${fonts.body6}
-      color: ${theme.color.text02}
+      ${fonts.body12}
+      color: ${({ theme }) => theme.color.text02}
     }
+    ${media.mobile} {
+      h5 {
+        ${fonts.body12};
+      }
+s    }
   }
 `;

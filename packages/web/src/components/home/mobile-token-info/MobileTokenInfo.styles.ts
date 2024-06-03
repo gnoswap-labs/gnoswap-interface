@@ -1,10 +1,11 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TokenInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  height: 50px;
+  height: 52px;
   width: 100%;
   ${fonts.body11};
   &:not(:first-of-type) {
@@ -17,10 +18,18 @@ export const HoverSection = styled.div`
   background-color: ${({ theme }) => theme.color.background01};
   transition: background-color 0.3s ease;
   cursor: pointer;
+  width: 100%;
   height: 100%;
   overflow: hidden;
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
+  }
+  ${media.mobile} {
+    ${mixins.flexbox("row", "center", "space-between")};
+    padding: 9px 0 9px 16px;
+    &:nth-last-of-type(1) {
+      padding: 9px 16px 9px 16px;
+    }
   }
 `;
 
@@ -31,28 +40,109 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
+    width: 148px;
     flex-shrink: 0;
     justify-content: flex-start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  &.negative {
+  .positive {
     padding-left: 0;
     color: ${({ theme }) => theme.color.green01};
     svg * {
       fill: ${({ theme }) => theme.color.green01};
     }
+    span {
+      font-weight: 500;
+    }
   }
-  &.positive {
+  .negative {
     padding-left: 0;
     color: ${({ theme }) => theme.color.red01};
     svg * {
       fill: ${({ theme }) => theme.color.red01};
+    }
+    span {
+      font-weight: 500;
     }
   }
   .symbol-col {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
   }
 
+  &.name-col {
+    flex: 1;
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
+
+    .token-logo {
+      margin-top: 2px;
+    }
+
+    .token-name-symbol-path {
+      ${mixins.flexbox("column", "start", "start")}
+      margin: 0px 8px;
+      gap: 2px;
+      
+      .token-name-path {
+        ${mixins.flexbox("row", "baseline", "start")}
+        gap: 8px;
+
+        .token-path {
+          &:hover {
+            color: ${({ theme }) => theme.color.text03};
+            .path-link-icon {
+              path {
+                fill: ${({ theme }) => theme.color.text03};
+              }
+            }
+          }
+          ${mixins.flexbox("row", "center", "flex-start")}
+          ${fonts.p6};
+          color: ${({ theme }) => theme.color.text04};
+          background-color: ${({ theme }) => theme.color.background26};
+          padding: 2px 4px;
+          gap: 2px;
+          border-radius: 4px;
+          .path-link-icon {
+            width: 10px;
+            height: 10px;
+            fill: ${({ theme }) => theme.color.text04};
+          }
+        }
+      }
+      .token-name {
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      },
+      .token-symbol {
+        ${fonts.p4};
+        color: ${({ theme }) => theme.color.text04};
+      }
+    }
+  }
+
+  &.price-col {
+    ${mixins.flexbox("column", "flex-end", "center")};
+    > div {
+      ${mixins.flexbox("row", "center", "center")};
+      ${fonts.p4}
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+      &.positive {
+        padding-left: 0;
+        color: ${({ theme }) => theme.color.green01};
+        svg * {
+          fill: ${({ theme }) => theme.color.green01};
+        }
+      }
+    }
+  }
   .liquid-symbol {
     margin: 0px 4px;
   }
@@ -62,19 +152,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     padding: 16px;
   }
 
-  .token-logo {
-    width: 20px;
-    height: 20px;
-  }
-  .token-name {
-    margin: 0px 8px;
-    ${fonts.body12};
-  }
-  .token-symbol {
-    margin: 0px 8px;
-    ${fonts.p4};
-    color: ${({ theme }) => theme.color.text04};
-  }
+  
 
   .token-index {
     padding: 0px 16px 0px 8px;

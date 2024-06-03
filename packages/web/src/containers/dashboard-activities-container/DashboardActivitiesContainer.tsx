@@ -3,6 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
 import ActivityList from "@components/dashboard/activity-list/ActivityList";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import {
+  OnchainActivityData,
+  OnchainActivityResponse,
+} from "@repositories/dashboard/response/onchain-response";
+import dayjs from "dayjs";
+
+import relativeTime from "dayjs/plugin/relativeTime";
+import { prettyNumber } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
+import { convertToKMB } from "@utils/stake-position-utils";
+dayjs.extend(relativeTime);
 
 export interface Activity {
   action: string;
@@ -11,6 +23,7 @@ export interface Activity {
   tokenAmountTwo: string;
   account: string;
   time: string;
+  explorerUrl: string;
 }
 
 export interface SortOption {
@@ -38,63 +51,39 @@ export const ACTIVITY_TYPE = {
 } as const;
 export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
 
-const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
-  Action: "action",
-  "Total Value": "total_value",
-  "Token amount": "token_amount",
-  "Token amount ": "token_amount ",
-  Account: "Account",
-  Time: "Time",
-};
-
 export const dummyTokenList: Activity[] = [
   {
-    action: "Add GNOT and GNOS",
+    action: "Add GNOT and GNS",
     totalValue: "$12,090",
     tokenAmountOne: "100 ATOM",
-    tokenAmountTwo: "19 GNOS",
+    tokenAmountTwo: "19 GNS",
     account: "g129kua...ndsu12",
     time: "less than a minute ago",
+    explorerUrl:
+      "https://gnoscan.io/transactions/details?txhash=hNaBGE2oDb15Q08y68wpycjwwGaCcXcU2jnrRRfuUo0%3D",
   },
 ];
 
-async function fetchActivities(
-  type: ACTIVITY_TYPE, // eslint-disable-line
-  page: number, // eslint-disable-line
-  sortKey?: string, // eslint-disable-line
-  direction?: string, // eslint-disable-line
-): Promise<Activity[]> {
-  return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-    Promise.resolve([
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-    ]),
-  );
-}
+const replaceToken = (symbol: string) => {
+  if (symbol === "wugnot" || symbol === "WGNOT") return "GNOT";
+  return symbol;
+};
 
 const DashboardActivitiesContainer: React.FC = () => {
   const [activityType, setActivityType] = useState<ACTIVITY_TYPE>(
     ACTIVITY_TYPE.ALL,
   );
+  const { dashboardRepository } = useGnoswapContext();
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState<SortOption>();
   const { breakpoint } = useWindowSize();
+  const { isLoading: isLoadingCommon } = useLoading();
 
   const {
     isFetched,
     error,
-    data: activities,
-  } = useQuery<Activity[], Error>({
+    data: activities = [],
+  } = useQuery<OnchainActivityResponse, Error>({
     queryKey: [
       "activities",
       activityType,
@@ -103,12 +92,8 @@ const DashboardActivitiesContainer: React.FC = () => {
       sortOption?.direction,
     ],
     queryFn: () =>
-      fetchActivities(
-        activityType,
-        page,
-        sortOption && SORT_PARAMS[sortOption.key],
-        sortOption?.direction,
-      ),
+      dashboardRepository.getDashboardOnchainActivity({ type: activityType }),
+    refetchInterval: 60 * 1000,
   });
 
   const changeActivityType = useCallback((newType: string) => {
@@ -117,7 +102,6 @@ const DashboardActivitiesContainer: React.FC = () => {
       ACTIVITY_TYPE["ALL"];
     setActivityType(activityType);
   }, []);
-
   const movePage = useCallback((newPage: number) => {
     setPage(newPage);
   }, []);
@@ -141,8 +125,8 @@ const DashboardActivitiesContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setSortOption({
         key,
@@ -152,10 +136,54 @@ const DashboardActivitiesContainer: React.FC = () => {
     [sortOption],
   );
 
+  const capitalizeFirstLetter = (input: string) => {
+    const str = input.toLowerCase();
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const formatActivity = (res: OnchainActivityData): Activity => {
+    const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
+    const tokenASymbol = res.tokenA.symbol;
+    const tokenBSymbol = res.tokenB.symbol;
+
+    const actionText = (() => {
+      const action = capitalizeFirstLetter(res.actionType);
+      const tokenAText = tokenASymbol ? " " + replaceToken(tokenASymbol) : "";
+      const tokenBText = tokenBSymbol ? " " + replaceToken(tokenBSymbol) : "";
+      const haveOneToken = !tokenAText || !tokenBText;
+      const conjunction = !haveOneToken ? " " + (res.actionType === "SWAP" ? "for" : "and") : "";
+
+      return `${action}${tokenAText}${conjunction}${tokenBText}`;
+    })();
+
+    const tokenAAmount = tokenASymbol ? `${convertToKMB(
+      res.tokenAAmount,
+      { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
+    )} ${replaceToken(res.tokenA.symbol)}` : "-";
+
+    const tokenBAmount = tokenBSymbol ? `${convertToKMB(
+      res.tokenBAmount,
+      { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
+    )} ${replaceToken(res.tokenB.symbol)}` : "-";
+
+    return {
+      action: actionText,
+      totalValue:
+        Number(res.totalUsd) < 0.01 && Number(res.totalUsd)
+          ? "<$0.01"
+          : `$${prettyNumber(res.totalUsd)}`,
+      tokenAmountOne: tokenAAmount,
+      tokenAmountTwo: tokenBAmount,
+      account: res.account,
+      time: res.time,
+      explorerUrl,
+    };
+  };
+
   return (
     <ActivityList
-      activities={activities ?? []}
-      isFetched={isFetched}
+      activities={(activities ?? []).slice(0, 30).map(x => formatActivity(x))}
+      isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}
       sortOption={sortOption}

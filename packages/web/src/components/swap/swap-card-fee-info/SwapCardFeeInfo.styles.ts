@@ -21,9 +21,12 @@ export const FeeWrapper = styled.div`
 
   .gray-text {
     color: ${({ theme }) => theme.color.text04};
+    &:last-of-type {
+      margin-left: 4px;
+    }
   }
   .white-text {
-    color: ${({ theme }) => theme.color.text03};
+    color: ${({ theme }) => theme.color.text10};
   }
   .received,
   .gas-fee,
@@ -32,6 +35,19 @@ export const FeeWrapper = styled.div`
     width: 100%;
     align-self: stretch;
   }
+  .protocol {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 4px;
+    color: ${({ theme }) => theme.color.text04};
+
+    svg {
+      width: 16px;
+      height: 16px;
+      * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+    }
+  }
   .auto-router {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
@@ -39,8 +55,13 @@ export const FeeWrapper = styled.div`
     .auto-wrapper {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
+      svg * {
+        fill: ${({ theme }) => theme.color.point};
+      }
       h1 {
-        color: ${({ theme }) => theme.color.text07};
+        background: linear-gradient(90deg, #233DBD -27.22%, #8C8DFC 137.97%);
+        -webkit-background-clip: text;
+        color: transparent;
       }
     }
     .router-icon {
@@ -60,4 +81,10 @@ export const SwapDivider = styled.div`
   height: 1px;
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

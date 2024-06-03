@@ -9,8 +9,29 @@ export const WalletBalanceDetailWrapper = styled.div`
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background03};
   border: 1px solid ${({ theme }) => theme.color.border02};
+  @media (max-width: 968px) {
+    flex-direction: column;
+  }
   ${media.mobile} {
     flex-direction: column;
+  }
+  .loading-button {
+    width: 20px;
+    height: 20px;
+    background: conic-gradient(from 0deg at 50% 50.63%, #FFFFFF 0deg, #233DBD 360deg);
+    &::before {
+      width: 14.8px;
+      height: 14.8px;
+      background-color: ${({ theme }) => theme.color.background04Hover};
+    }
+  }
+  .claimable-rewards {
+    .value {
+      max-width: 180px;
+      @media (max-width: 968px) {
+        max-width: max-content;
+      }
+    }
   }
 `;
 
@@ -30,10 +51,12 @@ export const InfoWrapper = styled.div`
     align-items: center;
     padding: 12px;
     height: auto;
+    border-left: none;
   }
   .column-batch {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     gap: 8px;
+
   }
 
   .title-wrapper {
@@ -48,8 +71,8 @@ export const InfoWrapper = styled.div`
     }
 
     svg {
-      width: 13px;
-      height: 13px;
+      width: 16px;
+      height: 16px;
     }
     path {
       fill: ${({ theme }) => theme.color.icon03};
@@ -57,9 +80,9 @@ export const InfoWrapper = styled.div`
   }
 
   .value-wrapper {
-    ${mixins.flexbox("row", "flex-end", "center")};
+    ${mixins.flexbox("row", "center", "center")};
     width: 100%;
-
+    height: 31px;
     ${media.mobile} {
       gap: 8px;
     }
@@ -73,6 +96,7 @@ export const InfoWrapper = styled.div`
       }
       ${media.mobile} {
         ${fonts.body6};
+        font-weight: 500;
       }
     }
     .button-wrapper {

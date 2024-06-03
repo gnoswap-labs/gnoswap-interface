@@ -1,77 +1,176 @@
-import { CONTENT_TITLE } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
-import { FEE_RATE_OPTION } from "@constants/option.constant";
-import React from "react";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import {
+  DefaultTick,
+  PriceRangeStr,
+  PriceRangeTooltip,
+  PriceRangeType,
+} from "@constants/option.constant";
+import React, { useCallback, useMemo, useRef } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { wrapper } from "./SelectPriceRange.styles";
+import {
+  SelectPriceRangeItemWrapper,
+  SelectPriceRangeWrapper,
+  TooltipContentWrapper,
+} from "./SelectPriceRange.styles";
+import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import SelectPriceRangeCustom from "../select-price-range-custom/SelectPriceRangeCustom";
+import { TokenModel } from "@models/token/token-model";
+import { SelectPool } from "@hooks/pool/use-select-pool";
+import { isFetchedPools } from "@states/pool";
 
 interface SelectPriceRangeProps {
-  data?: any;
-  openPriceRange: boolean;
-  onClickOpenPriceRange: () => void;
+  opened: boolean;
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
+  priceRanges: AddLiquidityPriceRage[];
+  priceRange: AddLiquidityPriceRage | null;
+  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  changeStartingPrice: (price: string) => void;
+  selectPool: SelectPool;
+  showDim: boolean;
+  defaultPrice: number | null;
+  handleSwapValue: () => void;
+  isEmptyLiquidity: boolean;
+  isKeepToken: boolean;
+  setPriceRange: (type?: PriceRangeType) => void;
+  defaultPriceRangeRef?: React.MutableRefObject<
+    [number | null, number | null] | undefined
+  >;
+  resetPriceRangeTypeTarget: PriceRangeType;
+  defaultTicks?: DefaultTick;
+  isLoadingSelectPriceRange: boolean;
 }
 
-const priceRangeInit = [
-  {
-    title: "Active",
-    tooltip:
-      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
-    apr: "999%",
-  },
-  {
-    title: "Passive",
-    tooltip:
-      "A passive price range of [-50% ~ +100%] for moderate risks & returns.",
-    apr: "420%",
-  },
-  {
-    title: "Custom",
-  },
-];
-
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
-  openPriceRange,
-  onClickOpenPriceRange,
-  data,
+  opened,
+  tokenA,
+  tokenB,
+  priceRanges,
+  priceRange,
+  changePriceRange,
+  changeStartingPrice,
+  selectPool,
+  showDim,
+  defaultPrice,
+  handleSwapValue,
+  isEmptyLiquidity,
+  isKeepToken,
+  setPriceRange,
+  resetPriceRangeTypeTarget,
+  defaultTicks,
+  isLoadingSelectPriceRange,
 }) => {
+  const selectPriceRangeRef =
+    useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
+  const selectedTokenPair = true;
+
+  const changePriceRangeWithClear = useCallback(
+    (priceRange: AddLiquidityPriceRage) => {
+      changePriceRange(priceRange);
+      selectPriceRangeRef.current?.resetRange(priceRange.type);
+    },
+    [changePriceRange],
+  );
+
   return (
-    <div css={wrapper}>
-      <section className="title-content" onClick={onClickOpenPriceRange}>
-        <h5 className="title">{CONTENT_TITLE.PRICE_RANGE}</h5>
-        <Badge
-          text={data?.fee ?? FEE_RATE_OPTION.FEE_3}
-          type={BADGE_TYPE.LINE}
-        />
-      </section>
-      {openPriceRange && (
-        <section className="select-price-wrap">
-          {priceRangeInit.map((item: any, idx: number) => (
-            <div className="price-range-box" key={idx}>
-              <strong className="item-title">{item.title}</strong>
-              {item.tooltip && (
-                <div className="tooltip-wrap">
-                  <Tooltip
-                    placement="top"
-                    FloatingContent={
-                      <p className="tooltip-content">{item.tooltip}</p>
-                    }
-                  >
-                    <IconInfo className="tooltip-icon" />
-                  </Tooltip>
-                </div>
-              )}
-              {item.apr ? (
-                <span className="apr">{item.apr}</span>
-              ) : (
-                <IconStrokeArrowRight className="arrow-icon" />
-              )}
-            </div>
+    <SelectPriceRangeWrapper className={opened ? "open" : ""}>
+      {!selectPool.isCreate && !showDim && (
+        <div className="type-selector-wrapper">
+          {priceRanges.map((item, index) => (
+            <SelectPriceRangeItem
+              key={index}
+              selected={item.type === priceRange?.type}
+              tooltip={
+                PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type]
+              }
+              priceRangeStr={
+                PriceRangeStr[selectPool.feeTier || "NONE"][item.type]
+              }
+              priceRange={item}
+              changePriceRange={changePriceRangeWithClear}
+            />
           ))}
-        </section>
+        </div>
       )}
-    </div>
+      {selectedTokenPair && tokenA && tokenB && isFetchedPools && (
+        <SelectPriceRangeCustom
+          tokenA={tokenA}
+          tokenB={tokenB}
+          selectPool={selectPool}
+          changeStartingPrice={changeStartingPrice}
+          priceRangeType={priceRange?.type || null}
+          showDim={showDim}
+          defaultPrice={defaultPrice}
+          handleSwapValue={handleSwapValue}
+          isEmptyLiquidity={isEmptyLiquidity}
+          isKeepToken={isKeepToken}
+          setPriceRange={setPriceRange}
+          defaultTicks={defaultTicks}
+          resetPriceRangeTypeTarget={resetPriceRangeTypeTarget}
+          ref={selectPriceRangeRef}
+          isLoadingSelectPriceRange={isLoadingSelectPriceRange}
+        />
+      )}
+    </SelectPriceRangeWrapper>
+  );
+};
+
+interface SelectPriceRangeItemProps {
+  selected: boolean;
+  priceRange: AddLiquidityPriceRage;
+  tooltip: string | undefined;
+  priceRangeStr: string;
+  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+}
+
+export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
+  selected,
+  priceRange,
+  tooltip,
+  changePriceRange,
+  priceRangeStr,
+}) => {
+  const aprStr = useMemo(() => {
+    const apr = priceRange.apr;
+    if (apr) {
+      return `${apr}%`;
+    }
+    return "-";
+  }, [priceRange]);
+
+  const onClickItem = useCallback(() => {
+    changePriceRange(priceRange);
+  }, [priceRange, changePriceRange]);
+
+  return (
+    <SelectPriceRangeItemWrapper
+      className={selected ? "selected" : ""}
+      onClick={onClickItem}
+    >
+      <strong className="item-title">{priceRange.type}</strong>
+      {priceRange.text && <p>{priceRangeStr}</p>}
+      {tooltip && (
+        <div className="tooltip-wrap">
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TooltipContentWrapper
+                dangerouslySetInnerHTML={{ __html: tooltip }}
+              ></TooltipContentWrapper>
+            }
+          >
+            <IconInfo className="tooltip-icon" />
+          </Tooltip>
+        </div>
+      )}
+
+      {aprStr ? (
+        <span className="apr">{aprStr}</span>
+      ) : (
+        <IconStrokeArrowRight className="arrow-icon" />
+      )}
+    </SelectPriceRangeItemWrapper>
   );
 };
 

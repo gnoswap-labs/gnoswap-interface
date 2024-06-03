@@ -12,10 +12,10 @@ const VolumeChartPriceInfo: React.FC<VolumeChartPriceInfoProps> = ({
 }) => (
   <>
     <VolumeChartPriceInfoWrapper>
-      <div className="label">Volume</div>
+      <div className="label">Total Volume</div>
       <div className="price">{volumePriceInfo.amount}</div>
     </VolumeChartPriceInfoWrapper>
-    <FeeInfoWrapper>Fees: {volumePriceInfo.fee}</FeeInfoWrapper>
+    <FeeInfoWrapper>Total Fees: {volumePriceInfo.fee}</FeeInfoWrapper>
   </>
 );
 

@@ -1,17 +1,24 @@
 // TODO : remove eslint-disable after work
-/* eslint-disable */
-import React, { useCallback, useEffect, useState } from "react";
-import { ValuesType } from "utility-types";
-import { useQuery } from "@tanstack/react-query";
+import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
 import AssetList from "@components/wallet/asset-list/AssetList";
-import BigNumber from "bignumber.js";
+import DepositModal from "@components/wallet/deposit-modal/DepositModal";
+import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
+import useClickOutside from "@hooks/common/use-click-outside";
+import { useLoading } from "@hooks/common/use-loading";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
-
-interface AssetListResponse {
-  hasNext: boolean;
-  currentPage: number;
-  assets: Asset[];
-}
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { TokenModel } from "@models/token/token-model";
+import { useGetTokensList } from "@query/token";
+import { checkGnotPath } from "@utils/common";
+import { isEmptyObject } from "@utils/validation-utils";
+import BigNumber from "bignumber.js";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ValuesType } from "utility-types";
+import { toPriceFormat } from "@utils/number-utils";
+import { useGetPositionsByAddress } from "@query/positions";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -21,33 +28,21 @@ export interface AssetSortOption {
 export const ASSET_HEAD = {
   ASSET: "Asset",
   CHAIN: "Chain",
+  AMOUNT: "Amount",
   BALANCE: "Balance",
   DEPOSIT: "Deposit",
   WITHDRAW: "Withdraw",
 } as const;
 export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
 
-const SORT_PARAMS: { [key in ASSET_HEAD]: string } = {
-  Asset: "asset",
-  Chain: "chain",
-  Balance: "balance",
-  Deposit: "deposit",
-  Withdraw: "withdraw",
-};
-
-export interface Asset {
-  id: string;
-  logoUri: string;
-  type: ASSET_TYPE;
-  name: string;
-  symbol: string;
-  chain: string;
-  balance: string;
+export interface Asset extends TokenModel {
+  balance?: number | string | null;
+  price?: any;
 }
 
 export const ASSET_TYPE = {
-  NATIVE: "NATIVE",
-  GRC20: "GRC20",
+  NATIVE: "native",
+  GRC20: "grc20",
 } as const;
 
 export type ASSET_TYPE = ValuesType<typeof ASSET_TYPE>;
@@ -55,60 +50,12 @@ export type ASSET_TYPE = ValuesType<typeof ASSET_TYPE>;
 export const ASSET_FILTER_TYPE = {
   ALL: "All",
   GRC20: "GRC20",
-  NATIVE: "Native",
 } as const;
 
 export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 
-export const dummyAssetList: Asset[] = [
-  {
-    id: "BTC",
-    logoUri:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-    type: ASSET_TYPE.NATIVE,
-    name: "Bitcoin",
-    symbol: "BTC",
-    chain: "Gnoland",
-    balance: "0.1",
-  },
-  {
-    id: "GNOS",
-    logoUri:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png",
-    type: ASSET_TYPE.GRC20,
-    name: "Gnoswap",
-    symbol: "GNOS",
-    chain: "Gnoland",
-    balance: "0.000000",
-  },
-];
-
-async function fetchAssets(
-  address: string,
-  sortKey?: string, // eslint-disable-line
-  direction?: string, // eslint-disable-line
-): Promise<Asset[]> {
-  return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-    Promise.resolve([
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-    ]),
-  );
-}
-
 function filterZeroBalance(asset: Asset) {
-  const balance = BigNumber(asset.balance);
+  const balance = BigNumber(asset?.balance ?? 0);
   return balance.isGreaterThan(0);
 }
 
@@ -122,72 +69,255 @@ function filterKeyword(asset: Asset, keyword: string) {
   if (searchKeyword === "") return true;
   return (
     asset.name.toLowerCase().includes(searchKeyword) ||
-    asset.chain.toLowerCase().includes(searchKeyword) ||
-    asset.symbol.toLowerCase().includes(searchKeyword)
+    asset.symbol.toLowerCase().includes(searchKeyword) ||
+    asset.path.toLowerCase().includes(searchKeyword)
   );
 }
 
+const DEPOSIT_INFO: TokenModel = {
+  chainId: "dev",
+  createdAt: "2023-10-10T08:48:46+09:00",
+  name: "ATOM",
+  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+  path: "gno.land/r/gns",
+  decimals: 4,
+  symbol: "ATOM",
+  logoURI: "/atom.svg",
+  type: "grc20",
+  priceID: "gno.land/r/gns",
+};
+
+interface SortedProps extends TokenModel {
+  balance: string;
+  price?: string;
+  tokenPrice: number;
+  sortPrice?: string;
+}
+
+const handleSort = (list: SortedProps[]) => {
+  const gnot = list.find(a => a.symbol === GNOT_SYMBOL);
+  const gnos = list.find(a => a.symbol === GNS_SYMBOL);
+  const valueOfBalance = list
+    .filter(
+      a =>
+        a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL,
+    )
+    .sort((a, b) => {
+      const priceA = parseFloat((a.price || "0").replace(/,/g, ""));
+      const priceB = parseFloat((b.price || "0").replace(/,/g, ""));
+      return priceB - priceA;
+    });
+  const amountOfBalance = list
+    .filter(
+      a =>
+        a.price !== "-" &&
+        a.symbol !== GNOT_SYMBOL &&
+        a.symbol !== GNS_SYMBOL &&
+        !valueOfBalance.includes(a) &&
+        a.tokenPrice > 0,
+    )
+    .sort((a, b) => b.tokenPrice - a.tokenPrice);
+  const alphabest = list
+    .filter(
+      a =>
+        !amountOfBalance.includes(a) &&
+        a.symbol !== GNOT_SYMBOL &&
+        a.symbol !== GNS_SYMBOL &&
+        !valueOfBalance.includes(a),
+    )
+    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+  const rs = [];
+  gnot && rs.push(gnot);
+  gnos && rs.push(gnos);
+  return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
+};
+
 const AssetListContainer: React.FC = () => {
-  const [address, setAddress] = useState("");
+  const { connected, account, isSwitchNetwork } = useWallet();
+
+  const [address] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(
     ASSET_FILTER_TYPE.ALL,
   );
   const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [hasNext, setHasNext] = useState(false);
-  const [extended, setExtened] = useState(false);
-  const [filteredAssets, setFilteredAsset] = useState<Asset[]>([]);
-  const [hasLoader, setHasLoader] = useState(false);
+  // const [hasNext, setHasNext] = useState(false);
+  const [extended, setExtened] = useState(true);
+  const [hasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
-  const onTogleSearch = () => {
-    setSearchIcon(prev => !prev);
-  };
-
+  const [componentRef, isClickOutside, setIsInside] = useClickOutside();
+  const [isShowDepositModal, setIsShowDepositModal] = useState(false);
+  const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
+  const [depositInfo, setDepositInfo] = useState<TokenModel>(DEPOSIT_INFO);
+  const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
+  const { isLoadingTokens } = useLoading();
+  const { data: { tokens = [] } = {} } = useGetTokensList({
+    refetchInterval: 60 * 1000,
+  });
   const {
-    isFetched,
-    error,
-    data: assets,
-  } = useQuery<Asset[], Error>({
-    queryKey: ["assets", address, sortOption?.key, sortOption?.direction],
-    queryFn: () =>
-      fetchAssets(
-        address,
-        sortOption && SORT_PARAMS[sortOption.key],
-        sortOption?.direction,
-      ),
+    isLoading: loadingPositions,
+  } = useGetPositionsByAddress(
+    account?.address ?? "", {
+    isClosed: false,
+    queryOptions: { enabled: !!account?.address }
   });
 
+  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
+
+  const changeTokenDeposit = useCallback((token: TokenModel) => {
+    setDepositInfo(token);
+    setIsShowDepositModal(true);
+  }, []);
+
+  const changeTokenWithdraw = useCallback((token: TokenModel) => {
+    setWithDrawInfo(token);
+    setIsShowWithDrawModal(true);
+  }, []);
+
+  const onTogleSearch = () => {
+    setSearchIcon(prev => !prev);
+    setIsInside(true);
+  };
+
   useEffect(() => {
-    if (assets && assets.length > 0) {
-      const COLLAPSED_LENGTH = 10;
-      const filteredAssets = assets
-        .filter(
-          asset => invisibleZeroBalance === false || filterZeroBalance(asset),
-        )
-        .filter(asset => filterType(asset, assetType))
-        .filter(asset => filterKeyword(asset, keyword));
-      const hasLoader = filteredAssets.length > COLLAPSED_LENGTH;
-      const resultFilteredAssets = extended
-        ? filteredAssets
-        : filteredAssets.slice(
-            0,
-            Math.min(filteredAssets.length, COLLAPSED_LENGTH),
-          );
-
-      setHasLoader(hasLoader);
-      setFilteredAsset(resultFilteredAssets);
+    if (!keyword) {
+      if (isClickOutside) {
+        setSearchIcon(false);
+      }
     }
-  }, [assets, assetType, invisibleZeroBalance, extended, keyword]);
+  }, [isClickOutside, keyword]);
 
+  const {
+    displayBalanceMap,
+    balances,
+    tokenPrices,
+    isFetched,
+    updateBalances,
+  } = useTokenData();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateBalances();
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [tokens]);
+
+  useEffect(() => {
+    if (!tokens) return;
+
+    if (tokens?.length === 0) {
+      setTokenSortOption({
+        key: "Asset",
+        direction: "asc",
+      });
+    }
+  }, [tokens]);
+
+  const filteredTokens = useMemo(() => {
+    const COLLAPSED_LENGTH = 15;
+    const temp: SortedProps[] = tokens
+      .map(item => {
+        const tokenPrice = balances[item.priceID];
+        if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
+          return {
+            price: "-",
+            balance: "0",
+            ...item,
+            tokenPrice: tokenPrice || 0,
+            sortPrice: "0",
+          };
+        }
+        const price = BigNumber(tokenPrice)
+          .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
+          .dividedBy(10 ** 6);
+        const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
+        return {
+          ...item,
+          price: isSwitchNetwork
+            ? "-"
+            : checkPrice
+              ? "<$0.01"
+              : toPriceFormat(price, { isFormat: false }),
+          balance: isSwitchNetwork
+            ? "0"
+            : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+          tokenPrice: tokenPrice || 0,
+          sortPrice: price.toString(),
+        };
+      })
+      .filter(
+        asset => invisibleZeroBalance === false || filterZeroBalance(asset),
+      );
+
+    let sortedData = handleSort(temp || []);
+
+    if (sortOption?.key === "Asset") {
+      sortedData = sortedData.sort((x, y) => {
+        return sortOption?.direction === "asc"
+          ? x.name.localeCompare(y.name)
+          : y.name.localeCompare(x.name);
+      });
+    }
+    if (sortOption?.key === "Chain") {
+      sortedData = sortedData.sort((x, y) => {
+        return sortOption?.direction === "asc"
+          ? x.type.localeCompare(y.type)
+          : y.type.localeCompare(x.type);
+      });
+    }
+
+    if (sortOption?.key === "Amount") {
+      sortedData = sortedData.sort((x, y) => {
+        return sortOption?.direction === "desc"
+          ? Number(y.balance) - Number(x.balance)
+          : Number(x.balance) - Number(y.balance);
+      });
+    }
+
+    if (sortOption?.key === "Balance") {
+      sortedData = sortedData.sort((x, y) => {
+        if (
+          x.sortPrice === undefined ||
+          y.sortPrice === undefined ||
+          x.sortPrice === null ||
+          y.sortPrice === null
+        )
+          return 0;
+
+        return sortOption?.direction === "desc"
+          ? Number(y.sortPrice) - Number(x.sortPrice)
+          : Number(x.sortPrice) - Number(y.sortPrice);
+      });
+    }
+
+    sortedData = sortedData
+      .filter((asset: any) => filterType(asset, assetType))
+      .filter((asset: any) => filterKeyword(asset, keyword));
+
+    const resultFilteredAssets = extended
+      ? sortedData
+      : sortedData.slice(0, Math.min(sortedData.length, COLLAPSED_LENGTH));
+
+    return resultFilteredAssets;
+  }, [
+    tokens,
+    sortOption?.key,
+    sortOption?.direction,
+    extended,
+    balances,
+    tokenPrices,
+    displayBalanceMap,
+    invisibleZeroBalance,
+    assetType,
+    keyword,
+    isSwitchNetwork,
+  ]);
   const changeAssetType = useCallback((newType: string) => {
     switch (newType) {
       case ASSET_FILTER_TYPE.ALL:
         setAssetType(ASSET_FILTER_TYPE.ALL);
-        break;
-      case ASSET_FILTER_TYPE.NATIVE:
-        setAssetType(ASSET_FILTER_TYPE.NATIVE);
         break;
       case ASSET_FILTER_TYPE.GRC20:
         setAssetType(ASSET_FILTER_TYPE.GRC20);
@@ -210,19 +340,23 @@ const AssetListContainer: React.FC = () => {
   }, []);
 
   const deposit = useCallback(
-    (assetId: string) => {
-      console.debug("deposit", `address: ${address}`, `assetId: ${assetId}`);
+    (asset: Asset) => {
+      if (!connected) return;
+      setIsShowDepositModal(true);
+      setDepositInfo(asset);
       if (!address) return;
     },
-    [address],
+    [address, connected],
   );
 
   const withdraw = useCallback(
-    (assetId: string) => {
-      console.debug("withdraw", `address: ${address}`, `assetId: ${assetId}`);
+    (asset: Asset) => {
+      if (!connected) return;
+      setIsShowWithDrawModal(true);
+      setWithDrawInfo(asset);
       if (!address) return;
     },
-    [address],
+    [address, connected],
   );
 
   const sort = useCallback(
@@ -232,8 +366,8 @@ const AssetListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setTokenSortOption({
         key,
@@ -248,28 +382,96 @@ const AssetListContainer: React.FC = () => {
     return !disableItems.includes(head);
   }, []);
 
+  const closeDeposit = () => {
+    setIsShowDepositModal(false);
+  };
+
+  const closeWithdraw = () => {
+    setIsShowWithDrawModal(false);
+  };
+
+  const callbackDeposit = (value: boolean) => {
+    setIsShowDepositModal(value);
+  };
+
+  const callbackWithdraw = (value: boolean) => {
+    setIsShowWithDrawModal(value);
+  };
+
+  usePreventScroll(isShowDepositModal || isShowWithdrawModal);
+
+  const {
+    isConfirm,
+    setIsConfirm,
+    onSubmit: handleSubmit,
+  } = useWithdrawTokens();
+
+  const onSubmit = (amount: any, address: string) => {
+    if (!withdrawInfo || !account?.address) return;
+    handleSubmit(
+      {
+        fromAddress: account.address,
+        toAddress: address,
+        token: withdrawInfo,
+        tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
+      },
+      withdrawInfo.type,
+    );
+    closeWithdraw();
+  };
+
   return (
-    <AssetList
-      assets={filteredAssets}
-      isFetched={isFetched}
-      assetType={assetType}
-      invisibleZeroBalance={invisibleZeroBalance}
-      keyword={keyword}
-      extended={extended}
-      hasLoader={hasLoader}
-      changeAssetType={changeAssetType}
-      search={search}
-      toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
-      toggleExtended={toggleExtended}
-      deposit={deposit}
-      withdraw={withdraw}
-      sortOption={sortOption}
-      sort={sort}
-      isSortOption={isSortOption}
-      breakpoint={breakpoint}
-      searchIcon={searchIcon}
-      onTogleSearch={onTogleSearch}
-    />
+    <>
+      <AssetList
+        assets={filteredTokens}
+        isFetched={
+          isFetched &&
+          !isLoadingTokens &&
+          !isLoadingPosition &&
+          !(isEmptyObject(balances) && account?.address)
+        }
+        assetType={assetType}
+        invisibleZeroBalance={invisibleZeroBalance}
+        keyword={keyword}
+        extended={extended}
+        hasLoader={hasLoader}
+        changeAssetType={changeAssetType}
+        search={search}
+        toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
+        toggleExtended={toggleExtended}
+        deposit={deposit}
+        withdraw={withdraw}
+        sortOption={sortOption}
+        sort={sort}
+        isSortOption={isSortOption}
+        breakpoint={breakpoint}
+        searchIcon={searchIcon}
+        onTogleSearch={onTogleSearch}
+        searchRef={componentRef}
+      />
+      {isShowDepositModal && (
+        <DepositModal
+          breakpoint={breakpoint}
+          close={closeDeposit}
+          depositInfo={depositInfo}
+          changeToken={changeTokenDeposit}
+          callback={callbackDeposit}
+        />
+      )}
+      {isShowWithdrawModal && (
+        <WithDrawModal
+          breakpoint={breakpoint}
+          close={closeWithdraw}
+          withdrawInfo={withdrawInfo}
+          connected={connected}
+          changeToken={changeTokenWithdraw}
+          callback={callbackWithdraw}
+          setIsConfirm={() => setIsConfirm(true)}
+          isConfirm={isConfirm}
+          handleSubmit={onSubmit}
+        />
+      )}
+    </>
   );
 };
 

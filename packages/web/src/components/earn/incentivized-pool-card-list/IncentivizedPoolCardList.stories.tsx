@@ -2,8 +2,14 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { css } from "@emotion/react";
 import IncentivizedPoolCardList from "./IncentivizedPoolCardList";
-import { poolDummy } from "@components/earn//incentivized-pool-card/incentivized-pool-dummy";
 import { action } from "@storybook/addon-actions";
+import POOLS from "@repositories/pool/mock/pools.json";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+
+const pool = POOLS.pools[0] as any;
+
+const cardInfo = PoolMapper.toCardInfo(pool);
+
 
 export default {
   title: "earn/IncentivizedPoolCardList",
@@ -18,15 +24,18 @@ export default {
 
 const Template: ComponentStory<typeof IncentivizedPoolCardList> = args => (
   <div css={wrapper}>
-    <IncentivizedPoolCardList {...args} list={poolDummy} currentIndex={1} />
+    <IncentivizedPoolCardList {...args} incentivizedPools={[cardInfo]} currentIndex={1} />
   </div>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  isFetched: true,
+  isPoolFetched: true,
   routeItem: action("routeItem"),
   mobile: false,
+  page: 1,
+  width: 1440,
+  showPagination: false,
 };
 
 const wrapper = css`

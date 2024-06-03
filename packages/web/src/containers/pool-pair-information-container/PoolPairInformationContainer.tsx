@@ -1,93 +1,162 @@
-import React from "react";
-import { useRouter } from "next/router";
+import React, { useMemo, useState, useEffect } from "react";
+import useRouter from "@hooks/common/use-custom-router";
 import PoolPairInformation from "@components/pool/pool-pair-information/PoolPairInformation";
-import {
-  FEE_RATE_OPTION,
-  INCENTIVIZED_TYPE,
-  MATH_NEGATIVE_TYPE,
-} from "@constants/option.constant";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { useLoading } from "@hooks/common/use-loading";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 export interface pathProps {
   title: string;
   path: string;
 }
 
-export const menuInit = {
+export const menu = {
   title: "Earn",
   path: "/earn",
 };
 
-export const poolPairInit = {
-  poolInfo: {
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        compositionPercent: "50",
-        composition: "50.05881",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        compositionPercent: "50",
-        composition: "150.0255",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    token0Rate: "50%",
-    token1Rate: "50%",
-    feeRate: FEE_RATE_OPTION.FEE_3,
-    incentivized: INCENTIVIZED_TYPE.INCENTIVIZED,
+export const initialPool: PoolDetailModel = {
+  tokenA: {
+    chainId: "",
+    createdAt: "",
+    name: "",
+    address: "",
+    path: "",
+    decimals: 4,
+    symbol: "",
+    logoURI: "",
+    type: "native",
+    priceID: "",
   },
-  liquidity: {
-    value: "$524.24m",
-    change24h: {
-      status: MATH_NEGATIVE_TYPE.POSITIVE || MATH_NEGATIVE_TYPE.NEGATIVE,
-      value: "+3.52%",
-    },
+  tokenB: {
+    chainId: "",
+    createdAt: "",
+    name: "",
+    address: "",
+    path: "",
+    decimals: 4,
+    symbol: "",
+    logoURI: "",
+    type: "native",
+    priceID: "",
   },
-  volume24h: {
-    value: "$100.24m",
-    change24h: {
-      status: MATH_NEGATIVE_TYPE.NEGATIVE || MATH_NEGATIVE_TYPE.POSITIVE,
-      value: "-3.52%",
-    },
+  incentiveType: "INCENTIVIZED",
+  tvl: 0,
+  tvlChange: 0,
+  volume24h: 0,
+  volumeChange: 0,
+  rewards24hUsd: 0,
+  id: "",
+  apr: "0",
+  fee: "",
+  feeUsd24h: 0,
+  currentTick: 0,
+  price: 0,
+  tokenABalance: 0,
+  tokenBBalance: 0,
+  tickSpacing: 0,
+  rewardTokens: [],
+  totalApr: 0,
+  poolPath: "",
+  liquidity: "",
+  volumeChange24h: 0,
+  feeApr: "",
+  stakingApr: "",
+  allTimeVolumeUsd: 0,
+  priceRatio: {
+    "7d": [],
+    "30d": [],
+    all: [],
   },
-  apr: {
-    value: "✨108.21%",
-    fees: "-3.52%",
-    rewards: "88.13%",
-  },
-} as const;
-export type poolPairProps = typeof poolPairInit;
-export type poolInfoProps = (typeof poolPairInit)["poolInfo"];
-export type liquidityProps = (typeof poolPairInit)["liquidity"];
+};
 
-const PoolPairInformationContainer = () => {
+interface PoolPairInformationContainerProps {
+  address?: string | undefined;
+}
+
+const PoolPairInformationContainer: React.FC<
+  PoolPairInformationContainerProps
+> = ({ address }) => {
   const router = useRouter();
+  const { getGnotPath } = useGnotToGnot();
+  const poolPath = router.query["pool-path"] || "";
+  const { data = initialPool as PoolDetailModel, isLoading: loading } =
+    useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { isLoading: isLoadingCommon } = useLoading();
+  const [, setPositions] = useState<PoolPositionModel[]>([]);
+  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData({
+    address,
+  });
+  const { connected: connectedWallet, account } = useWallet();
+  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(
+    poolPath as string,
+    40,
+    {
+      enabled: !!poolPath,
+    },
+  );
+  useEffect(() => {
+    const poolPath = router.query["pool-path"] as string;
+    if (!poolPath) {
+      return;
+    }
+    if (!connectedWallet) {
+      return;
+    }
+    if (account?.address) {
+      const temp = getPositionsByPoolId(poolPath);
+      setPositions(temp);
+    }
+  }, [account?.address, router.query, connectedWallet]);
 
   const onClickPath = (path: string) => {
     router.push(path);
   };
 
+  const pool = useMemo(() => {
+    return {
+      ...data,
+      tokenA: {
+        ...data.tokenA,
+        path: getGnotPath(data.tokenA).path,
+        name: getGnotPath(data.tokenA).name,
+        symbol: getGnotPath(data.tokenA).symbol,
+        logoURI: getGnotPath(data.tokenA).logoURI,
+      },
+      tokenB: {
+        ...data.tokenB,
+        path: getGnotPath(data.tokenB).path,
+        name: getGnotPath(data.tokenB).name,
+        symbol: getGnotPath(data.tokenB).symbol,
+        logoURI: getGnotPath(data.tokenB).logoURI,
+      },
+    };
+  }, [data, bins]);
+
+  const feeStr = useMemo(() => {
+    if (!pool?.fee) {
+      return null;
+    }
+    return SwapFeeTierInfoMap[makeSwapFeeTier(pool.fee)].rateStr;
+  }, [pool?.fee]);
+
   return (
     <PoolPairInformation
-      info={poolPairInit}
-      menu={menuInit}
+      pool={pool}
+      menu={menu}
       onClickPath={onClickPath}
+      feeStr={feeStr}
+      loading={loading || isLoadingCommon || loadingPosition}
+      loadingBins={
+        loading || isLoadingCommon || loadingPosition || isLoadingBins
+      }
+      poolBins={bins}
     />
   );
 };

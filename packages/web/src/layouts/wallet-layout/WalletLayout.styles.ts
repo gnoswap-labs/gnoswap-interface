@@ -12,15 +12,15 @@ export const WalletLayoutWrapper = styled.div`
     ${mixins.flexbox("column", "center", "flex-start")};
     max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
     width: 100%;
-    padding: 100px 0px;
+    padding: 100px 0px 60px;
     ${media.tablet} {
       max-width: ${ContainerWidth.TABLET_CONTAINER};
-      padding: 60px 0px;
+      padding: 60px 0px 40px;
     }
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
-      width: 90%;
-      padding: 0px;
+      width: 100%;
+      padding: 0 16px 24px;
     }
   }
 
@@ -30,11 +30,19 @@ export const WalletLayoutWrapper = styled.div`
     width: 100%;
     padding: 0px 40px;
     gap: 36px;
+    > div {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      width: 100%;
+      gap: 22px;
+    }
     ${media.tablet} {
       gap: 24px;
     }
     ${media.mobile} {
-      padding: 24px 0px 48px 0px;
+      padding: 24px 0px 0px 0px;
+      > div {
+        gap: 16px;
+      }
     }
   }
   .assets,
@@ -42,7 +50,6 @@ export const WalletLayoutWrapper = styled.div`
   .balance-container {
     width: 100%;
   }
-
   .wallet-detail-section {
     ${mixins.flexbox("column", "center", "flex-start")};
     max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
@@ -55,8 +62,8 @@ export const WalletLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
-      width: 90%;
-      padding: 48px 0px;
+      width: 100%;
+      padding: 48px 16px;
     }
   }
 
@@ -65,7 +72,6 @@ export const WalletLayoutWrapper = styled.div`
     max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
     padding: 0px 40px;
-    gap: 24px;
     ${media.mobile} {
       padding: 0px;
     }
@@ -80,6 +86,9 @@ export const WalletLayoutWrapper = styled.div`
       ${fonts.h5};
     }
     color: ${({ theme }) => theme.color.text02};
+    svg {
+      cursor: pointer;
+    }
   }
 
   .background-wrapper {
@@ -100,5 +109,39 @@ export const WalletLayoutWrapper = styled.div`
         ${({ theme }) => theme.color.backgroundGradient3} 100%
       );
     }
+  }
+`;
+
+export const LinkButton = styled.div`
+  ${mixins.flexbox("row", "center", "center")};
+  width: 100%;
+  ${fonts.body11};
+  gap: 4px;
+  color: ${({ theme }) => theme.color.text04};
+  ${media.mobile} {
+    ${fonts.p3};
+  }
+  a {
+    ${mixins.flexbox("row", "center", "center")};
+    color: ${({ theme }) => theme.color.text07};
+    &:hover {
+      color: ${({ theme }) => theme.color.text08};
+      svg {
+        * {
+          fill: ${({ theme }) => theme.color.icon14};
+        }
+      }
+    }
+  }
+  svg {
+    width: 16px;
+    height: 16px;
+    * {
+      fill: ${({ theme }) => theme.color.text07};
+    }
+  }
+  ${media.mobile} {
+    flex-wrap: wrap;
+    padding: 0 20px;
   }
 `;

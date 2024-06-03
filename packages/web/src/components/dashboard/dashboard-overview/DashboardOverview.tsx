@@ -15,22 +15,24 @@ interface DashboardOverviewProps {
   supplyOverviewInfo: SupplyOverviewInfo;
   governenceOverviewInfo: GovernenceOverviewInfo;
   breakpoint: DEVICE_TYPE;
+  loading: boolean;
 }
 
 const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   supplyOverviewInfo,
   governenceOverviewInfo,
   breakpoint,
+  loading,
 }) => (
   <DashboardOverviewWrapper>
     {breakpoint === DEVICE_TYPE.MOBILE && <MobileDivider />}
-    <SupplyOverview supplyOverviewInfo={supplyOverviewInfo} />
+    <SupplyOverview supplyOverviewInfo={supplyOverviewInfo} loading={loading}/>
     {breakpoint !== DEVICE_TYPE.MOBILE ? (
       <OverviewDivider />
     ) : (
       <MobileDivider />
     )}
-    <GovernanceOverview governenceOverviewInfo={governenceOverviewInfo} />
+    <GovernanceOverview governenceOverviewInfo={governenceOverviewInfo} loading={loading}/>
   </DashboardOverviewWrapper>
 );
 

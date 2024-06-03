@@ -21,7 +21,7 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
     if (height) return typeof height === "number" ? height + "px" : height;
     return "auto";
   }};
-  padding: 12px 16px;
+  padding: 11px 15px;
   border-radius: 8px;
 
   .icon-wrapper {
@@ -29,7 +29,7 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
   }
 
   ${media.mobile} {
-    padding: 8px 12px 8px 12px;
+    padding: 7px 11px;
     ${fonts.body11};
     .search-icon {
       width: 24px;
@@ -42,7 +42,7 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
     border: 1px solid ${({ theme }) => theme.color.border03};
     color: ${({ theme }) => theme.color.text01};
     .search-icon * {
-      fill: ${({ theme }) => theme.color.icon03};
+      fill: ${({ theme }) => theme.color.icon08};
     }
   }
 
@@ -51,7 +51,7 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
     border: 1px solid ${({ theme }) => theme.color.border02};
     color: ${({ theme }) => theme.color.text14};
     .search-icon * {
-      fill: ${({ theme }) => theme.color.icon03};
+      fill: ${({ theme }) => theme.color.icon08};
     }
   }
 
@@ -70,6 +70,6 @@ export const InputStyle = styled.input`
   height: 100%;
   margin-right: 16px;
   &::placeholder {
-    color: ${({ theme }) => theme.color.text04};
+    color: ${({ theme }) => theme.color.text17};
   }
 `;

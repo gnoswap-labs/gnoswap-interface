@@ -5,47 +5,52 @@ import { Z_INDEX } from "@styles/zIndex";
 import { media } from "@styles/media";
 
 export const ConfirmSwapModalBackground = styled.div`
+  z-index: ${Z_INDEX.modal};
   position: fixed;
-  overflow: hidden;
+  overflow: scroll;
   top: 0px;
   bottom: 0px;
   left: 0px;
   right: 0px;
-  width: 100%;
-  height: 100%;
-  background: rgba(10, 14, 23, 0.7);
-  z-index: ${Z_INDEX.modalOverlay};
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
 `;
 
 export const ConfirmModal = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
-  position: absolute;
-  overflow: hidden;
+  position: relative;
+  pointer-events: initial;
+  display: flex;
+  flex-direction: column;
   width: 460px;
-  padding: 24px 0px;
+  padding: 23px;
+  height: auto;
+  padding: 23px 0px;
   gap: 16px;
-  top: calc(45vh - 230px);
-  left: calc(50vw - 230px);
   border-radius: 8px;
   box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
 
+  &.modal-body-wrapper {
+    gap: 24px;
+    ${media.mobile} {
+      padding: 12px 0px;
+    }
+  }
   ${media.mobile} {
     width: 328px;
-    top: calc(40vh - 164px);
-    left: calc(50vw - 164px);
-    padding: 16px 0px;
+    padding: 15px 0px;
   }
 
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    padding: 0px 24px;
+    padding: 0px 23px;
     gap: 16px;
 
     ${media.mobile} {
-      padding: 0px 12px;
+      padding: 0px 15px;
     }
 
     .modal-header {
@@ -71,7 +76,15 @@ export const ConfirmModal = styled.div`
           * {
             fill: ${({ theme }) => theme.color.icon01};
           }
+          &:hover {
+            * {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
+          }
         }
+      }
+      &.model-header-submitted {
+        ${mixins.flexbox("row", "center", "flex-end")};
       }
     }
 
@@ -90,7 +103,7 @@ export const ConfirmModal = styled.div`
           padding: 16px;
           gap: 8px;
           border-radius: 8px;
-          background: ${({ theme }) => theme.color.background01};
+          background: ${({ theme }) => theme.color.background20};
           border: 1px solid ${({ theme }) => theme.color.border02};
         }
         .second-section {
@@ -99,7 +112,7 @@ export const ConfirmModal = styled.div`
           padding: 16px;
           gap: 8px;
           border-radius: 8px;
-          background: ${({ theme }) => theme.color.background01};
+          background: ${({ theme }) => theme.color.background20};
           border: 1px solid ${({ theme }) => theme.color.border02};
         }
         .amount-container {
@@ -114,9 +127,10 @@ export const ConfirmModal = styled.div`
         }
         .button-wrapper {
           ${mixins.flexbox("row", "center", "flex-start")};
-          padding: 4px 12px 4px 6px;
+          padding: 5px 12px 5px 6px;
           gap: 8px;
           border-radius: 36px;
+          height: 34px;
           background: ${({ theme }) => theme.color.background13};
           ${fonts.body9}
           color: ${({ theme }) => theme.color.text02};
@@ -129,7 +143,7 @@ export const ConfirmModal = styled.div`
           ${mixins.flexbox("row", "center", "flex-start")};
           .price-text {
             ${fonts.body12};
-            color: ${({ theme }) => theme.color.text10};
+            color: ${({ theme }) => theme.color.text04};
             ${media.mobile} {
               ${fonts.p2};
             }
@@ -146,7 +160,7 @@ export const ConfirmModal = styled.div`
             ${mixins.flexbox("row", "center", "center")};
             width: 40px;
             height: 40px;
-            background-color: ${({ theme }) => theme.color.background01};
+            background-color: ${({ theme }) => theme.color.background20};
             border: 1px solid ${({ theme }) => theme.color.border02};
             border-radius: 50%;
 
@@ -169,17 +183,22 @@ export const ConfirmModal = styled.div`
           padding: 12px;
         }
         border-radius: 8px;
-        background: ${({ theme }) => theme.color.background01};
+        background: ${({ theme }) => theme.color.background20};
         border: 1px solid ${({ theme }) => theme.color.border02};
-        .ocin-info {
+        .coin-info {
           ${mixins.flexbox("row", "center", "flex-start")};
+          width: 100%;
           gap: 4px;
           .gnos-price {
+            display: flex;
             ${fonts.body12};
             ${media.mobile} {
               ${fonts.p2};
             }
-            color: ${({ theme }) => theme.color.text03};
+            color: ${({ theme }) => theme.color.text10};
+            & > div {
+              display: inline-block
+            }
           }
           .exchange-price {
             ${fonts.body12};
@@ -204,7 +223,7 @@ export const ConfirmModal = styled.div`
           gap: 8px;
         }
         border-radius: 8px;
-        background: ${({ theme }) => theme.color.background01};
+        background: ${({ theme }) => theme.color.background20};
         border: 1px solid ${({ theme }) => theme.color.border02};
 
         ${fonts.body12};
@@ -214,9 +233,12 @@ export const ConfirmModal = styled.div`
 
         .gray-text {
           color: ${({ theme }) => theme.color.text04};
+          &:last-of-type {
+            margin-left: 4px;
+          }
         }
         .white-text {
-          color: ${({ theme }) => theme.color.text03};
+          color: ${({ theme }) => theme.color.text10};
         }
         .slippage,
         .received,
@@ -226,25 +248,46 @@ export const ConfirmModal = styled.div`
           width: 100%;
           align-self: stretch;
         }
+        .protocol {
+          width: 100%;
+          ${mixins.flexbox("row", "center", "space-between")};
+          color: ${({ theme }) => theme.color.text04};
+          > div {
+            ${mixins.flexbox("row", "center", "flex-start")};
+            gap: 4px;
+          }
+          svg {
+            width: 16px;
+            height: 16px;
+            * {
+              fill: ${({ theme }) => theme.color.icon03};
+            }
+          }
+        }
       }
     }
 
     .modal-button {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
+      ${media.mobile} {
+        height: 41px;
+      }
     }
 
     .animation {
       ${mixins.flexbox("row", "center", "center")};
       width: 100%;
       align-self: stretch;
-      animation-logo {
+      .animation-logo {
         width: 72px;
-        height: 72px;
-        * {
-          fill: ${({ theme }) => theme.color.point};
+        height: auto;
+        ${media.mobile} {
+          width: 60px;
+          height: 54px;
         }
       }
+
     }
     .transaction-state {
       ${mixins.flexbox("column", "center", "flex-start")};
@@ -255,7 +298,7 @@ export const ConfirmModal = styled.div`
         color: ${({ theme }) => theme.color.text02};
       }
       .swap-message {
-        ${fonts.body11};
+        ${fonts.body12};
         color: ${({ theme }) => theme.color.text02};
       }
       .view-transaction {
@@ -264,6 +307,18 @@ export const ConfirmModal = styled.div`
         align-self: stretch;
         ${fonts.body11};
         color: ${({ theme }) => theme.color.text04};
+        span {
+          text-align: center;
+          br {
+            display: none;
+            ${media.mobile} {
+              display: initial;
+            }
+          }
+          .br {
+            display: initial;
+          }
+        }
         .open-link {
           ${mixins.flexbox("row", "center", "center")};
           width: 16px;
@@ -274,7 +329,12 @@ export const ConfirmModal = styled.div`
           height: 16px;
           cursor: pointer;
           * {
-            fill: ${({ theme }) => theme.color.icon05};
+            fill: ${({ theme }) => theme.color.icon03};
+          }
+          &:hover {
+            * {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
           }
         }
       }
@@ -282,6 +342,36 @@ export const ConfirmModal = styled.div`
     .close-button {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
+      button {
+        height: 57px;
+      }
+      ${media.mobile} {
+        button {
+          height: 41px;
+          width: 304px;
+        }
+      }
+    }
+  }
+  .submitted-modal {
+    gap: 24px;
+    ${media.mobile} {
+      padding: 0 12px;
+    }
+  }
+  .modal-body-loading {
+    gap: 24px;
+    ${media.mobile} {
+      gap: 12px;
+      .view-transaction {
+        padding-bottom: 12px;
+      }
+      .animation {
+        .animation-logo {
+          width: 60px;
+          height: 60px;
+        }
+      }
     }
   }
 `;

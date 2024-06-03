@@ -9,8 +9,13 @@ export const PoolHeaderWrapper = styled.div`
   align-self: stretch;
   ${media.mobile} {
     flex-direction: column;
-    gap: 8px;
+    gap: 24px;
     align-items: flex-start;
+    .select-tab-wrapper {
+      button {
+        padding: 4px 24px;
+      }
+    }
   }
 
   .title-container {
@@ -18,11 +23,12 @@ export const PoolHeaderWrapper = styled.div`
     gap: 36px;
     ${media.mobile} {
       width: 100%;
-      gap: 0px;
-      align-self: stretch;
+      height: 24px;
     }
   }
-
+  .select-tab-wrapper {
+    overflow-x: scroll;
+  }
   h2 {
     ${fonts.h5};
     ${media.mobile} {
@@ -33,7 +39,7 @@ export const PoolHeaderWrapper = styled.div`
 
   .icon-wrap {
     ${mixins.flexbox("row", "center", "center")};
-    padding: 8px 13px;
+    padding: 0 13px;
   }
   .search-icon {
     width: 24px;

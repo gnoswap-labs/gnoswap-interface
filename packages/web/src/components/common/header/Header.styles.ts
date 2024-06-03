@@ -44,7 +44,7 @@ export const BottomNavItem = styled.div`
   color: ${({ theme }) => theme.color.text04};
   &.selected,
   &:hover {
-    color: ${({ theme }) => theme.color.text03};
+    color: ${({ theme }) => theme.color.text16};
   }
 `;
 
@@ -59,8 +59,8 @@ export const HeaderContainer = styled.div`
     padding: 12px 40px;
   }
   ${media.mobile} {
-    padding: 8px 0px;
-    width: 90%;
+    padding: 8px 16px;
+    width: 100%;
   }
 `;
 
@@ -74,7 +74,11 @@ export const LeftSection = styled.div`
     gap: 32px;
   }
   ${media.mobile} {
-    max-width: 21px;
+    max-width: 28px;
+  }
+
+  .link {
+    cursor: pointer;
   }
 `;
 
@@ -86,8 +90,8 @@ export const LogoLink = styled.a`
     height: 32px;
   }
   ${media.mobile} {
-    width: 21px;
-    height: 24px;
+    width: 28px;
+    height: 32px;
   }
   .header-main-logo {
     width: 31.501px;
@@ -97,8 +101,8 @@ export const LogoLink = styled.a`
       height: 32px;
     }
     ${media.mobile} {
-      width: 21px;
-      height: 24px;
+      width: 28px;
+      height: 32px;
     }
   }
 `;
@@ -124,7 +128,7 @@ export const Navigation = styled.nav`
     color: ${({ theme }) => theme.color.text04};
     &.selected,
     &:hover {
-      color: ${({ theme }) => theme.color.text03};
+      color: ${({ theme }) => theme.color.text16};
     }
     ${media.tablet} {
       padding: 8px 12px;
@@ -137,7 +141,7 @@ export const RightSection = styled.div`
   ${mixins.flexbox("row", "center", "flex-end")};
   max-width: 255px;
   width: 100%;
-  gap: 16px;
+  gap: 10px;
   ${media.tablet} {
     max-width: 231px;
     gap: 8px;
@@ -146,7 +150,7 @@ export const RightSection = styled.div`
 
 export const SearchContainer = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  gap: 18px;
+  gap: 10px;
   ${media.tablet} {
     gap: 10px;
   }
@@ -156,20 +160,42 @@ export const SearchButton = styled.button`
   ${mixins.flexbox("row", "center", "flex-start")};
   border-radius: 4px;
   transition: all 0.3s ease;
+  margin-right: 2px;
   .search-icon {
-    width: 34px;
-    height: 34px;
+    width: 32.5px;
+    height: 32.5px;
     * {
-      fill: ${({ theme }) => theme.color.icon05};
+      fill: ${({ theme }) => theme.color.icon03};
     }
     ${media.tablet} {
-      width: 30px;
-      height: 30px;
+      width: 29px;
+      height: 29px;
     }
   }
   &:hover {
     .search-icon * {
-      fill: ${({ theme }) => theme.color.icon02};
+      fill: ${({ theme }) => theme.color.icon07};
     }
+  }
+`;
+
+export const DepositButton = styled.button`
+  ${mixins.flexbox("row", "center", "center")};
+  color: ${({ theme }) => theme.color.text27};
+  gap: 8px;
+  ${fonts.p1}
+  padding: 10px 16px 10px 14px;
+  background-color: ${({ theme }) => theme.color.background04};
+  border-radius: 8px;
+  width: 101px;
+  svg {
+    width: 15px;
+    height: 15px;
+    * {
+      fill: ${({ theme }) => theme.color.icon19} !important;
+    }
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.color.background04Hover};
   }
 `;

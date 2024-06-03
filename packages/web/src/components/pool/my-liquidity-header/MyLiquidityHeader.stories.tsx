@@ -1,7 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import MyLiquidityHeader from "./MyLiquidityHeader";
-import { liquidityInit } from "@containers/my-liquidity-container/MyLiquidityContainer";
 import { css } from "@emotion/react";
 
 export default {
@@ -19,7 +18,6 @@ const Template: ComponentStory<typeof MyLiquidityHeader> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  info: liquidityInit.poolInfo,
 };
 
 const wrapper = () => css`

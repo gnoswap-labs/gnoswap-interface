@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -16,21 +20,62 @@
     "incremental": true,
     "baseUrl": "./",
     "paths": {
-      "@constants/*": ["src/constants/*"],
-      "@containers/*": ["src/containers/*"],
-      "@common/*": ["src/common/*"],
-      "@components/*": ["src/components/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@repositories/*": ["src/repositories/*"],
-      "@utils/*": ["src/utils/*"],
-      "@providers/*": ["src/providers/*"],
-      "@states/*": ["src/states/*"],
-      "@styles/*": ["src/styles/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@models/*": ["src/models/*"]
+      "@constants/*": [
+        "src/constants/*"
+      ],
+      "@containers/*": [
+        "src/containers/*"
+      ],
+      "@common/*": [
+        "src/common/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@repositories/*": [
+        "src/repositories/*"
+      ],
+      "@resources/*": [
+        "src/resources/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@providers/*": [
+        "src/providers/*"
+      ],
+      "@states/*": [
+        "src/states/*"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@layouts/*": [
+        "src/layouts/*"
+      ],
+      "@models/*": [
+        "src/models/*"
+      ],
+      "@query/*": [
+        "src/react-query/*"
+      ],
+      "@context/*": [
+        "src/context/*"
+      ]
     },
     "jsxImportSource": "@emotion/react"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "jest.config.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "declaration": true
 }

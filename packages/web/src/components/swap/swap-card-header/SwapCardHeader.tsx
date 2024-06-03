@@ -1,7 +1,7 @@
 import IconLink from "@components/common/icons/IconLink";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconSettings from "@components/common/icons/IconSettings";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import SettingMenuModal from "../setting-menu-modal/SettingMenuModal";
 import {
   CopyTooltip,
@@ -9,37 +9,43 @@ import {
   SwapCardHeaderWrapper,
 } from "./SwapCardHeader.styles";
 interface SwapCardHeaderProps {
-  settingMenuToggle: boolean;
-  onSettingMenu: () => void;
-  tolerance: string;
-  changeTolerance: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  resetTolerance: () => void;
-  handleCopyClipBoard: (text: string) => void;
   copied: boolean;
+  copyURL: () => void;
+  slippage: string;
+  changeSlippage: (value: string) => void;
+  themeKey: "dark" | "light";
 }
 const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
-  settingMenuToggle,
-  onSettingMenu,
-  tolerance,
-  changeTolerance,
-  resetTolerance,
-  handleCopyClipBoard,
   copied,
+  copyURL,
+  slippage,
+  changeSlippage,
+  themeKey,
 }) => {
+  const [openedSetting, setOpenedSetting] = useState(false);
+
+  const openSetting = useCallback(() => {
+    setOpenedSetting(true);
+  }, []);
+
+  const closeSetting = useCallback(() => {
+    setOpenedSetting(false);
+  }, []);
+
   return (
     <SwapCardHeaderWrapper>
       <h2>Swap</h2>
       <div className="button-wrap">
         <div
           className="setting-wrap"
-          onClick={() => handleCopyClipBoard("Copy Completed.")}
+          onClick={copyURL}
         >
           <>
             <IconLink className="setting-icon" />
             {copied && (
               <CopyTooltip>
-                <div className="box">
-                  <span>URL Copied!</span>
+                <div className={`box ${themeKey}-shadow`}>
+                  <span>Swap URL Copied!</span>
                 </div>
                 <IconPolygon className="polygon-icon" />
               </CopyTooltip>
@@ -47,15 +53,14 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
           </>
         </div>
         <SettingMenuButton>
-          <div className="setting-wrap" onClick={onSettingMenu}>
+          <div className="setting-wrap" onClick={openSetting}>
             <IconSettings className="setting-icon" />
           </div>
-          {settingMenuToggle && (
+          {openedSetting && (
             <SettingMenuModal
-              onSettingMenu={onSettingMenu}
-              tolerance={tolerance}
-              changeTolerance={changeTolerance}
-              resetTolerance={resetTolerance}
+              slippage={slippage}
+              changeSlippage={changeSlippage}
+              close={closeSetting}
             />
           )}
         </SettingMenuButton>

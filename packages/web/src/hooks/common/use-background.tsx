@@ -1,39 +1,111 @@
-import { TokenState } from "@states/index";
+import { useEffect, useState } from "react";
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtom } from "jotai";
-import { useEffect } from "react";
-import { useExchange } from "@hooks/token/use-exchange";
-import { useTokenResource } from "@hooks/token/use-token-resource";
+import { CommonState, EarnState, WalletState } from "@states/index";
+import { useTokenData } from "@hooks/token/use-token-data";
+import useRouter from "@hooks/common/use-custom-router";
+import useScrollData from "./use-scroll-data";
+import { useLoading } from "./use-loading";
 
 export const useBackground = () => {
-  const { updateTokenMetas } = useTokenResource();
-  const { updateExchangeRates, updateUSDRate } = useExchange();
-
-  const [standard, setStandard] = useAtom(TokenState.standardTokenMeta);
+  const router = useRouter();
+  const { account, initSession, updateWalletEvents, connectAccount } =
+    useWallet();
+  const [walletClient] = useAtom(WalletState.client);
+  const [sessionId] = useAtom(CommonState.sessionId);
+  const [isViewMorePositions, setIsViewMorePositions] = useAtom(
+    EarnState.isViewMorePositions,
+  );
+  const { updateBalances } = useTokenData();
+  const { scrollTo, getScrollHeight } = useScrollData();
+  const { isLoadingTokens, isLoadingPools } = useLoading();
+  const [memorizedPath, setMemorizedPath] = useState<string | null>(null);
 
   useEffect(() => {
-    initStandardToken();
-    updateTokenMetas();
-  });
-
-  useEffect(() => {
-    if (!standard) {
+    if (memorizedPath === null) {
       return;
     }
-    console.log("BACKGROUND FETCH");
-    updateExchangeRates();
-    updateUSDRate();
-  }, [standard, updateExchangeRates, updateUSDRate]);
+    if (isLoadingPools || isLoadingTokens) {
+      return;
+    }
+    if (["/", "/earn"].includes(router.pathname)) {
+      switch (router.pathname) {
+        case "/":
+          scrollTo(getScrollHeight(router.pathname));
+          setMemorizedPath(null);
+          break;
+        case "/earn":
+          scrollTo(getScrollHeight(router.pathname));
+          setMemorizedPath(null);
+          break;
+        case "/earn/[pool-path]":
+          scrollTo(getScrollHeight(router.pathname));
+          setMemorizedPath(null);
+          break;
+        default:
+          break;
+      }
+    }
+  }, [isLoadingPools, isLoadingTokens, memorizedPath, router.pathname]);
 
-  const initStandardToken = () => {
-    setStandard({
-      token_id: "1",
-      name: "GNO.LAND",
-      symbol: "GNOLAND",
-      decimals: 6,
-      denom: "GNOT",
-      minimal_denom: "ugnot",
-    });
+  useEffect(() => {
+    if (!router.pathname.startsWith("/earn") && isViewMorePositions) {
+      setIsViewMorePositions(false);
+    }
+  }, [router.pathname]);
+
+  const onPopPage = (): void => {
+    if (
+      ["/earn/pool/[pool-path]", "/tokens/[token-path]"].includes(
+        router.pathname,
+      )
+    ) {
+      setMemorizedPath(router.pathname);
+    } else {
+      setMemorizedPath(null);
+    }
   };
 
-  return;
+  useEffect(() => {
+    window.addEventListener("popstate", onPopPage);
+    return () => window.removeEventListener("popstate", onPopPage);
+  }, [router.pathname]);
+
+  useEffect(() => {
+    if (walletClient) {
+      return;
+    }
+    function initWalletBySession() {
+      if (window?.adena?.version) {
+        initSession();
+      }
+    }
+
+    let count = 0;
+    const interval = setInterval(() => {
+      initWalletBySession();
+      count += 1;
+      if (count > 5 || walletClient || !sessionId) {
+        clearInterval(interval);
+      }
+    }, 200);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [walletClient]);
+
+  useEffect(() => {
+    if (walletClient) {
+      if (account) {
+        connectAccount();
+      }
+      updateWalletEvents(walletClient);
+    }
+  }, [walletClient, String(account)]);
+
+  useEffect(() => {
+    if (account?.address && account?.chainId) {
+      updateBalances();
+    }
+  }, [account]);
 };

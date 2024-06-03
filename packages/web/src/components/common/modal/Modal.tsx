@@ -1,13 +1,10 @@
-import IconClose from "../icons/IconCancel";
+import { usePositionModal } from "@hooks/common/use-postion-modal";
 import {
-  IconButton,
-  ModalHeader,
   ModalStyleProps,
   ModalWrapper,
   Overlay,
 } from "./Modal.styles";
-import GnoswapModalProvider from "@providers/gnoswap-modal-provider/GnoswapModalProvider";
-import IconStrokeArrowLeft from "../icons/IconStrokeArrowLeft";
+import React, { useRef, cloneElement } from "react";
 
 interface ModalProps {
   hasLeftArrow?: boolean;
@@ -21,35 +18,23 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({
-  hasLeftArrow = false,
-  leftArrowClick,
-  leftText,
-  hasExit = true,
   exitClick,
   style,
-  selector = "portal-root",
   children,
 }) => {
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const cloneChildren = () =>
+    React.Children.map(children, (child) =>
+      cloneElement(child as React.ReactElement, { modalRef })
+    );
+  usePositionModal(modalRef);
   return (
-    <GnoswapModalProvider selector={selector}>
-      <ModalWrapper {...style}>
-        <ModalHeader {...style}>
-          {hasLeftArrow && (
-            <IconButton onClick={leftArrowClick}>
-              <IconStrokeArrowLeft />
-            </IconButton>
-          )}
-          {leftText && <span>{leftText}</span>}
-          {hasExit && (
-            <IconButton onClick={exitClick} className="exit-button">
-              <IconClose />
-            </IconButton>
-          )}
-        </ModalHeader>
-        {children}
+    <>
+      <ModalWrapper ref={modalRef} {...style}>
+        {cloneChildren()}
       </ModalWrapper>
       <Overlay onClick={exitClick} />
-    </GnoswapModalProvider>
+    </>
   );
 };
 

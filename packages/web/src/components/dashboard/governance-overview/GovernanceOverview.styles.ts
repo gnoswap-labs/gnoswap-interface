@@ -7,10 +7,10 @@ export const GovernanceOverviewWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   color: ${({ theme }) => theme.color.text02};
-  padding: 24px;
+  padding: 23px;
   gap: 24px;
   ${media.mobile} {
-    padding: 12px 12px 16px 12px;
+    padding: 12px 12px 15px 12px;
     gap: 16px;
   }
 `;
@@ -18,18 +18,32 @@ export const GovernanceOverviewWrapper = styled.div`
 export const GovernanceOverviewTitleWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   color: ${({ theme }) => theme.color.text02};
-  ${fonts.body9};
-  gap: 4px;
+  ${fonts.body7};
+  gap: 6px;
+
   ${media.mobile} {
-    ${fonts.body7};
+    gap: 4px;
+    ${fonts.body9};
   }
 `;
 
 export const LabelIconButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
-  width: 16px;
-  height: 16px;
-  margin: 2.5px 0px;
+  width: 20px;
+  height: 20px;
+  margin: 0px;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+  ${media.mobile} {
+    width: 16px;
+    height: 16px;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
@@ -73,13 +87,21 @@ export const GovernanceWrapper = styled.div`
       ${fonts.body12}
     }
     svg {
-      cursor: pointer;
-      margin: 1.5px 0px;
       width: 18px;
       height: 18px;
+      ${media.mobile} {
+        width: 16px;
+        height: 16px;
+      }
     }
     path {
       fill: ${({ theme }) => theme.color.icon03};
+    }
+  }
+  .value {
+    ${fonts.body7}
+    ${media.mobile} {
+      ${fonts.body11};
     }
   }
 
@@ -89,7 +111,12 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      gap: 4px;
+      height: 20px;
     }
   }
   .holders {
@@ -98,7 +125,12 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      height: 20px;
+      gap: 4px;
     }
   }
   .passed-proposals {
@@ -107,7 +139,12 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      height: 20px;
+      gap: 4px;
     }
   }
   .active-proposals {
@@ -116,7 +153,12 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      height: 20px;
+      gap: 4px;
     }
   }
   .community-pool {
@@ -125,19 +167,43 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      height: 20px;
+      gap: 4px;
     }
   }
   .icon-wrapper {
     ${mixins.flexbox("row", "center", "center")};
   }
   .action-icon {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
+
+    ${media.mobile} {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   .active-proposals-emissions-tooltip {
     ${mixins.flexbox("row", "center", "flex-start")};
-    gap: 4px;
+    gap: 6px;
+    ${media.mobile} {
+      gap: 4px;
+    }
+  }
+`;
+
+export const LoadingTextWrapper = styled.div`
+  padding: 2.5px 0;
+  span {
+    height: 20px;
+    display: block;
+  }
+  ${media.mobile} {
+    padding: 1px 0;
   }
 `;

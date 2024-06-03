@@ -1,32 +1,48 @@
 import { fonts } from "@constants/font.constant";
-import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
+import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
-export const wrapper = (theme: Theme) => css`
-  ${sectionBoxStyle(theme)};
+export const SelectDistributionPeriodWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "center")};
+  width: 100%;
+  gap: 16px;
+
+  .section-title {
+    color: ${({ theme }) => theme.color.text10};
+    ${fonts.body12}
+  }
 
   .select-date-wrap {
     ${mixins.flexbox("row", "center", "space-between")};
     gap: 16px;
     width: 100%;
+    position: relative;
+    ${media.mobile} {
+    }
   }
+
   .start-date,
-  .end-date {
+  .period {
+    ${mixins.flexbox("row", "center", "space-between")};
     height: 67px;
+  }
+
+  .start-date {
     width: 100%;
   }
-`;
 
-export const sectionBoxStyle = (theme: Theme) => css`
-  ${mixins.flexbox("column", "flex-start", "center")};
-  width: 100%;
-  background-color: ${theme.color.backgroundOpacity};
-  border-radius: 8px;
-  border: 1px solid ${theme.color.border02};
-  padding: 15px;
-  gap: 16px;
-  .section-title {
-    color: ${theme.color.text05};
-    ${fonts.body12}
+  .period {
+    flex-shrink: 0;
+    width: 150px;
+  }
+  ${media.mobile} {
+    gap: 8px;
+    .select-date-wrap {
+      gap: 8px;
+    }
+    .period {
+      width: 110px;
+    }
   }
 `;

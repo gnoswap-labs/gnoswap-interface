@@ -1,15 +1,51 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
+
+export const PoolCardWrapperWrapperBorder = styled.div`
+  &.special-card {
+    min-width: 322px;
+    background: ${({ theme }) => theme.color.backgroundGradient4};
+    border-radius: 10px;
+    padding: 1px;
+    height: fit-content;
+    ${media.tablet} {
+      min-width: 322px;
+    }
+    ${media.mobile} {
+      min-width: 290px;
+    }
+    .base-border {
+      border-radius: 10px;
+      background: ${({ theme }) => theme.color.background01};
+      > div {
+        min-width: auto;
+        border: 0;
+        ${media.mobile} {
+          min-width: auto;
+        }
+      }
+    }
+    &:hover {
+      box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
+      .base-border {
+        > div {
+          background-color: ${({ theme }) => theme.color.background02};
+        }
+      }
+    }
+  }
+`;
 
 export const PoolCardWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   min-width: 322px;
-  padding: 16px;
+  padding: 15px;
   gap: 8px;
-  background-color: ${({ theme }) => theme.color.background03};
-  border: 1px solid ${({ theme }) => theme.color.border01};
+  background-color: ${({ theme }) => theme.color.background06};
+  border: 1px solid ${({ theme }) => theme.color.border14};
   border-radius: 10px;
   transition: all 0.3s ease;
   color: ${({ theme }) => theme.color.text02};
@@ -17,8 +53,11 @@ export const PoolCardWrapper = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.color.background02};
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid ${({ theme }) => theme.color.border14};
   }
-
+  ${media.mobile} {
+    min-width: 290px;
+  }
   .pool-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     ${fonts.body5}
@@ -32,12 +71,21 @@ export const PoolCardWrapper = styled.div`
     gap: 4px;
     align-self: stretch;
     .box-header {
-      ${mixins.flexbox("row", "center", "space-between")};
+      ${mixins.flexbox("row", "center", "flex-start")};
       width: 100%;
+      gap: 8px;
+      span {
+        font-size: 20px;
+        line-height: 28px;
+        font-weight: 500;
+      }
     }
     .box-group {
       ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 2px;
+      gap: 4px;
+      .content {
+        gap: 4px;
+      }
     }
   }
 
@@ -48,6 +96,9 @@ export const PoolCardWrapper = styled.div`
     .list-header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
+      .label-text {
+        ${fonts.body12}
+      }
     }
     .list-content {
       ${mixins.flexbox("row", "center", "space-between")};
@@ -70,6 +121,9 @@ export const PoolCardWrapper = styled.div`
     .volume-title {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
+      .label-text {
+        ${fonts.body12}
+      }
     }
     .volume-content {
       ${mixins.flexbox("row", "center", "space-between")};
@@ -83,10 +137,11 @@ export const PoolCardWrapper = styled.div`
     ${fonts.body8};
     background-color: ${({ theme }) => theme.color.backgroundOpacity};
     border-radius: 8px;
-    padding: 16px;
-    gap: 24px;
+    padding: 16px 16px 8px 16px;
+    gap: 12px;
     justify-content: center;
     align-items: center;
+    cursor: default;
 
     .pool-rate-wrapper {
       display: flex;
@@ -96,7 +151,7 @@ export const PoolCardWrapper = styled.div`
       gap: 4px;
 
       span {
-        color: ${({ theme }) => theme.color.text10};
+        color: ${({ theme }) => theme.color.text03};
         ${fonts.p4};
       }
 
@@ -105,18 +160,25 @@ export const PoolCardWrapper = styled.div`
         height: 16px;
 
         * {
-          fill: ${({ theme }) => theme.color.icon03};
+          fill: ${({ theme }) => theme.color.icon07};
         }
       }
     }
   }
 
+  .price-section {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .label-text {
     color: ${({ theme }) => theme.color.text04};
-    ${fonts.body12};
-    height: 18px;
+    ${fonts.p4};
   }
   .value-text {
-    ${fonts.body10};
+    ${fonts.body9};
   }
 `;

@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TableWrapper = styled.div`
@@ -10,13 +11,24 @@ export const TableWrapper = styled.div`
   border-radius: 8px;
   margin: 24px 0px;
 
+  ${media.mobile} {
+    margin-top: 8px;
+  }
+
   color: ${({ theme }) => theme.color.text04};
   ${fonts.body11};
   overflow-x: auto;
+  &.hidden-scroll {
+    overflow-x: hidden;
+  }
   .scroll-wrapper {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     height: auto;
     width: auto;
+    overflow-y: hidden;
+    ${media.mobile} {
+      width: 100%;
+    }
   }
   .token-list-head {
     width: 100%;
@@ -24,6 +36,9 @@ export const TableWrapper = styled.div`
     height: 50px;
     ${fonts.body12};
     border-bottom: 1px solid ${({ theme }) => theme.color.border02};
+    ${media.mobile} {
+      ${mixins.flexbox("row", "flex-start", "space-between")};
+    }
   }
 
   .token-list-body {
@@ -52,6 +67,16 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
     display: inline-flex;
     align-items: center;
     white-space: pre;
+  }
+
+  &.left-padding {
+    padding: 16px 16px 16px 0;
+  }
+  &.right-padding-16 {
+    padding: 16px 0 16px 16px;
+  }
+  &.right-padding-12 {
+    padding: 16px 12px 16px 16px;
   }
 
   &.left span {
@@ -98,6 +123,16 @@ export const MobileTableHeader = styled.div<{ tdWidth: number }>`
     white-space: pre;
   }
 
+  &.left-padding {
+    padding: 16px 16px 16px 0;
+  }
+  &.right-padding-16 {
+    padding: 16px 0 16px 16px;
+  }
+  &.right-padding-12 {
+    padding: 16px 12px 16px 16px;
+  }
+
   &.left span {
     flex-direction: row-reverse;
   }
@@ -113,12 +148,23 @@ export const MobileTableHeader = styled.div<{ tdWidth: number }>`
       fill: ${({ theme }) => theme.color.text04};
     }
   }
+  ${media.mobile} {
+    width: 50%;
+    padding: 16px 15px;
+    &:nth-last-of-type(1) {
+      padding: 16px 15px;
+    }
+  }
 `;
 
 export const noDataText = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "center")};
   color: ${theme.color.text04};
   ${fonts.body12};
-  width: 100%;
+  width: calc(100vw - 82px);
+  max-width: 1358px;
   height: 300px;
+  ${media.mobile} {
+    width: calc(100vw - 34px);
+  }
 `;

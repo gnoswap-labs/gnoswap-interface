@@ -6,11 +6,12 @@ import React, { useCallback, useEffect, useState } from "react";
 const SNS_URL: {
   [key in SNS_TYPE]: string;
 } = {
-  [SNS_TYPE.GITHUB]: "https://github.com/gnoswap-labs/gnoswap",
-  [SNS_TYPE.GITBOOK]: "https://docs.gnoswap.io",
-  [SNS_TYPE.DISCODE]: "https://discord.gg",
-  [SNS_TYPE.MEDIUM]: "https://medium.com",
-  [SNS_TYPE.TWITTER]: "https://twitter.com",
+  [SNS_TYPE.GITHUB]: "https://github.com/gnoswap-labs",
+  [SNS_TYPE.GITBOOK]: "https://docs.gnoswap.io/",
+  [SNS_TYPE.DISCORD]: "https://discord.gg/u4bdGHStb2",
+  [SNS_TYPE.TELEGRAM]: "https://t.me/gnoswap",
+  [SNS_TYPE.MEDIUM]: "https://medium.com/@gnoswaplabs",
+  [SNS_TYPE.TWITTER]: "https://twitter.com/gnoswaplabs",
 };
 
 const GnoswapBrandContainer: React.FC = () => {

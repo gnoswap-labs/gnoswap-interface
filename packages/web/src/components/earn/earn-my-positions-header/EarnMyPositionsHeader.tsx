@@ -1,43 +1,111 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { useCallback, useMemo } from "react";
 import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
+import Switch from "@components/common/switch/Switch";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { SCANNER_URL } from "@common/values";
 
 export interface EarnMyPositionsHeaderProps {
+  address?: string | null;
+  addressName?: string;
+  isOtherPosition: boolean;
+  visiblePositions: boolean;
+  positionLength: number;
   connected: boolean;
+  isSwitchNetwork: boolean;
+  availableStake: boolean;
   moveEarnAdd: () => void;
+  moveEarnStake: () => void;
+  isClosed: boolean;
+  handleChangeClosed: () => void;
+  positions: PoolPositionModel[];
 }
 
 const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
+  address,
+  addressName,
+  isOtherPosition,
+  visiblePositions,
+  positionLength,
   connected,
-  moveEarnAdd
+  isSwitchNetwork,
+  availableStake,
+  moveEarnAdd,
+  moveEarnStake,
+  isClosed,
+  handleChangeClosed,
 }) => {
 
-  const disabledNewPosition = useMemo(() => {
-    return !connected;
-  }, [connected]);
+  const disabledStake = useMemo(() => {
+    return !connected || isSwitchNetwork || !availableStake;
+  }, [availableStake, connected, isSwitchNetwork]);
+
+  const onClickAddressPosition = useCallback(() => {
+    const scannerUrl = `${SCANNER_URL}/accounts/${address}`;
+    window.open(scannerUrl, "_blank");
+  }, [address]);
 
   const onClickNewPosition = useCallback(() => {
-    if (disabledNewPosition) {
-      return;
-    }
     moveEarnAdd();
-  }, [disabledNewPosition, moveEarnAdd]);
+  }, [moveEarnAdd]);
+
+  const renderMyPositionTitle = () => {
+    if (isOtherPosition) return <h2>
+      <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
+      <span>{`’s Positions (${positionLength})`}</span>
+    </h2>;
+
+    if (connected) return (
+      <h2>
+        <span>{`My Positions (${positionLength})`}</span>
+      </h2>
+    );
+
+    return <h2>
+      <span>{"My Positions"}</span>
+    </h2>;
+  };
 
   return (
     <PositionsWrapper>
-      <h2>My Positions</h2>
-      <Button
-        text="New Position"
-        style={{
-          hierarchy: ButtonHierarchy.Primary,
-          fontType: "p1",
-          height: 36,
-          width: 114,
-          padding: "10px 16px",
-        }}
-        onClick={onClickNewPosition}
-        disabled={disabledNewPosition}
-      />
+      <div className="header-content">
+        {renderMyPositionTitle()}
+        {visiblePositions && <Switch
+          checked={isClosed}
+          onChange={handleChangeClosed}
+          hasLabel={true}
+          labelText="Show closed"
+        />}
+      </div>
+      <div className="button-wrapper">
+        {visiblePositions && <Switch
+          checked={isClosed}
+          onChange={handleChangeClosed}
+          hasLabel={true}
+          labelText="Show closed positions"
+        />}
+        <Button
+          text="Stake Position"
+          style={{
+            hierarchy: ButtonHierarchy.Primary,
+            fontType: "p1",
+            height: 36,
+            padding: "10px 16px",
+          }}
+          disabled={disabledStake}
+          onClick={moveEarnStake}
+        />
+        <Button
+          text="New Position"
+          style={{
+            hierarchy: ButtonHierarchy.Primary,
+            fontType: "p1",
+            height: 36,
+            padding: "10px 16px",
+          }}
+          onClick={onClickNewPosition}
+        />
+      </div>
     </PositionsWrapper>
   );
 };

@@ -6,36 +6,42 @@ import { Z_INDEX } from "@styles/zIndex";
 
 export interface NotificationProps {
   width?: number;
+  emptyData?: boolean;
 }
 
 export const NotificationListWrapper = styled.div<NotificationProps>`
   position: absolute;
-  top: 53px;
+  top: 44px;
   width: 320px;
-  max-height: 442px;
+  height: calc(100vh - 124px);
   overflow-y: auto;
-  padding: 20px 0px;
+  padding: 19px 0px;
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
+  z-index: ${Z_INDEX.modal};
   right: ${({ width }) => {
-    return width && width > 1680 ? "-150px" : "0px";
+    return width && width > 1920
+      ? "-250px"
+      : width && width > 1440
+      ? `-${(width - 1440) / 2 + 10}px`
+      : "-10px";
   }};
   left: ${({ width }) => {
     return width && width < 768 && "0px";
   }};
   ${media.tablet} {
-    top: 46px;
-    right: 0px;
+    top: 42px;
+    right: 0;
+    height: calc(100vh - 112px);
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "center", "flex-start")};
     position: fixed;
     width: 100%;
-    height: 426px;
-    top: calc(100vh - 426px);
-    z-index: ${Z_INDEX.modal};
+    height: ${({ emptyData }) => (emptyData ? "157px" : "426px")};
+    top: calc(100vh - ${({ emptyData }) => (emptyData ? "157px" : "426px")});
     padding: 24px 0px;
     min-width: 360px;
   }
@@ -70,10 +76,22 @@ export const NotificationHeader = styled.div`
 export const ClearButton = styled.button`
   ${fonts.body11};
   color: ${({ theme }) => theme.color.text04};
+  &:hover {
+    color: ${({ theme }) => theme.color.text03};
+  }
+  &:disabled {
+    &:hover {
+      cursor: not-allowed;
+      ${({ theme }) => theme.color.text04};
+    }
+    color: ${({ theme }) => theme.color.text04};
+  }
 `;
 
 export const TxsListItem = styled.div`
   width: 100%;
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 4px;
   & + & {
     :before {
       content: "";
@@ -103,7 +121,7 @@ export const TxsSummaryItem = styled.div`
   position: relative;
   width: 100%;
   min-height: 40px;
-  padding: 8px 24px;
+  padding: 16px 24px;
   height: auto;
   cursor: pointer;
   ${fonts.body12};
@@ -114,18 +132,23 @@ export const TxsSummaryItem = styled.div`
   .summary-content {
     width: 100%;
     padding: 0px 10px 0px 44px;
+    color: ${({ theme }) => theme.color.text22};
+    span {
+      color: ${({ theme }) => theme.color.text01};
+      font-weight: 500;
+    }
   }
   .status-icon {
-    margin-left: auto;
+    margin-left: 8px;
   }
   .success-icon * {
-    fill: ${({ theme }) => theme.color.point};
+    fill: ${({ theme }) => theme.color.green01};
   }
   .failed-icon * {
-    fill: ${({ theme }) => theme.color.icon03};
+    fill: ${({ theme }) => theme.color.red01};
   }
   .pending-icon * {
-    fill: ${({ theme }) => theme.color.icon06};
+    fill: ${({ theme }) => theme.color.text24};
   }
 `;
 
@@ -133,8 +156,12 @@ export const DoubleLogoWrapperTest = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   ${mixins.posTopCenterLeft("24px")};
   border-radius: 50%;
-  img {
+  img,
+  div {
     border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1/1;
   }
   .right-logo {
     margin-left: -12px;
@@ -143,11 +170,16 @@ export const DoubleLogoWrapperTest = styled.div`
 
 export const NoDataText = styled.span`
   ${mixins.flexbox("row", "center", "center")};
-  ${fonts.body9};
+  ${fonts.body11};
   color: ${({ theme }) => theme.color.text04};
   padding: 0px 24px;
   width: 100%;
   height: 34px;
+  margin-top: 100px;
+
+  ${media.tablet} {
+    margin-top: 25px;
+  }
 `;
 
 export const TransactionItemsWrap = styled.div`
@@ -157,6 +189,11 @@ export const TransactionItemsWrap = styled.div`
   width: 100%;
   cursor: pointer;
   padding: 0px 12px;
+
+  ${media.mobile} {
+    margin-top: 4px;
+    min-height: 40px;
+  }
   &:hover {
     background-color: ${({ theme }) => theme.color.hover02};
   }
@@ -168,19 +205,28 @@ export const TransactionItemsWrap = styled.div`
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text02};
       .content-wrap {
-        ${mixins.flexbox("row", "center", "flex-start")};
         margin-left: 44px;
+        color: ${({ theme }) => theme.color.text22};
+        span {
+          color: ${({ theme }) => theme.color.text01};
+        }
+        ${media.mobile} {
+        }
       }
     }
   }
+
+  .status-icon {
+    margin-left: 8px;
+  }
   .success-icon * {
-    fill: ${({ theme }) => theme.color.point};
+    fill: ${({ theme }) => theme.color.green01};
   }
   .failed-icon * {
-    fill: ${({ theme }) => theme.color.icon03};
+    fill: ${({ theme }) => theme.color.red01};
   }
   .pending-icon * {
-    fill: ${({ theme }) => theme.color.icon06};
+    fill: ${({ theme }) => theme.color.text24};
   }
 `;
 
@@ -188,10 +234,26 @@ export const DoubleLogo = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   ${mixins.posTopCenterLeft("12px")};
   border-radius: 50%;
-  img {
+  img,
+  div {
     border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1/1;
   }
   .right-logo {
     margin-left: -12px;
   }
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: ${Z_INDEX.modalOverlay};
 `;

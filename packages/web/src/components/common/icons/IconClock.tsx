@@ -1,18 +1,31 @@
 const IconClock = ({ className }: { className?: string }) => (
   <svg
-    width="21"
-    height="21"
-    viewBox="0 0 21 21"
-    fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    width="26"
+    height="25"
+    fill="none"
+    viewBox="0 0 26 25"
     className={className}
   >
     <path
+      fill="url(#paint0_linear_9065_220754)"
       fillRule="evenodd"
+      d="M3.168 12.5c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10zm10.937-5.313a.938.938 0 00-1.875 0V12.5c0 .249.1.487.275.663l2.5 2.5a.937.937 0 001.326-1.326l-2.226-2.225V7.187z"
       clipRule="evenodd"
-      d="M2.66797 10.5C2.66797 6.08172 6.24969 2.5 10.668 2.5C15.0862 2.5 18.668 6.08172 18.668 10.5C18.668 14.9183 15.0862 18.5 10.668 18.5C6.24969 18.5 2.66797 14.9183 2.66797 10.5ZM11.418 6.25C11.418 5.83579 11.0822 5.5 10.668 5.5C10.2538 5.5 9.91797 5.83579 9.91797 6.25V10.5C9.91797 10.6989 9.99699 10.8897 10.1376 11.0303L12.1376 13.0303C12.4305 13.3232 12.9054 13.3232 13.1983 13.0303C13.4912 12.7374 13.4912 12.2626 13.1983 11.9697L11.418 10.1893V6.25Z"
-      fill="#536CD7"
-    />
+    ></path>
+    <defs>
+      <linearGradient
+        id="paint0_linear_9065_220754"
+        x1="13.168"
+        x2="13.168"
+        y1="2.5"
+        y2="22.5"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#233DBD"></stop>
+        <stop offset="1" stopColor="#233DBD" stopOpacity="0.2"></stop>
+      </linearGradient>
+    </defs>
   </svg>
 );
 

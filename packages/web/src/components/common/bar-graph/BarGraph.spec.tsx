@@ -3,8 +3,8 @@ import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import BarGraph, { BarGraphProps } from "./BarGraph";
 
-describe('BarGraph Component', () => {
-  it('BarGraph render', () => {
+describe("BarGraph Component", () => {
+  it("BarGraph render", () => {
     const args: BarGraphProps = {
       color: "#FFFFFF",
       datas: []

@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TableWrapper = styled.div`
@@ -15,7 +16,7 @@ export const TableWrapper = styled.div`
   .pool-list-head {
     min-width: 100%;
     ${mixins.flexbox("row", "center", "flex-start")}
-    height: 50px;
+    height: 49px;
     border-bottom: 1px solid ${({ theme }) => theme.color.border02};
     ${fonts.body12};
   }
@@ -24,11 +25,20 @@ export const TableWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
   }
+  ${media.mobile} {
+    margin-top: 8px;
+  }
 `;
 
 export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
+  &:first-of-type {
+    padding: 16px 16px 16px 15px;
+  }
+  &:last-of-type {
+    padding: 16px 15px 16px 16px;
+  }
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;
@@ -63,5 +73,5 @@ export const noDataText = (theme: Theme) => css`
   color: ${theme.color.text04};
   ${fonts.body12};
   width: 100%;
-  height: 300px;
+  height: 120px;
 `;

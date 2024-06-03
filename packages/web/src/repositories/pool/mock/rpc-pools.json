@@ -1,0 +1,196 @@
+[
+  {
+    "pool_path": "gno.land/r/bar:gno.land/r/wugnot:100",
+    "token0_path": "gno.land/r/bar",
+    "token1_path": "gno.land/r/wugnot",
+    "fee": 100,
+    "token0_balance": "9853896",
+    "token1_balance": "6166599",
+    "tick_spacing": 2,
+    "max_liquidity_per_tick": 20790381397506,
+    "sqrt_price_x96": "6.1750766980980135e28",
+    "tick": -4985,
+    "fee_protocol": 134,
+    "fee_growth_global0_x128": 0,
+    "fee_growth_global1_x128": 1.4900365576412514e31,
+    "token0_protocol_fee": 0,
+    "token1_protocol_fee": 1,
+    "liquidity": "159860277",
+    "ticks": [-6000, -4000],
+    "tick_bitmaps": {},
+    "positions": [
+      {
+        "owner": "g1htpxzv2dkplvzg50nd8fswrneaxmdpwn459thx",
+        "tick_lower": -6000,
+        "tick_upper": -4000,
+        "liquidity": "159860277",
+        "token0_owed": 0,
+        "token1_owed": 0
+      }
+    ]
+  },
+  {
+    "pool_path": "gno.land/r/bar:gno.land/r/baz:100",
+    "token0_path": "gno.land/r/bar",
+    "token1_path": "gno.land/r/baz",
+    "fee": 100,
+    "token0_balance": "9999999",
+    "token1_balance": "6077907",
+    "tick_spacing": 2,
+    "max_liquidity_per_tick": 20790381397506,
+    "sqrt_price_x96": "61706811356946418161579056079",
+    "tick": -5000,
+    "fee_protocol": 0,
+    "fee_growth_global0_x128": 0,
+    "fee_growth_global1_x128": 0,
+    "token0_protocol_fee": 4,
+    "token1_protocol_fee": 0,
+    "liquidity": "159860277",
+    "ticks": [-6000, -4000],
+    "tick_bitmaps": {},
+    "positions": [
+      {
+        "owner": "g1htpxzv2dkplvzg50nd8fswrneaxmdpwn459thx",
+        "tick_lower": -6000,
+        "tick_upper": -4000,
+        "liquidity": "159860277",
+        "token0_owed": 0,
+        "token1_owed": 0
+      }
+    ]
+  },
+  {
+    "pool_path": "gno.land/r/baz:gno.land/r/qux:100",
+    "token0_path": "gno.land/r/baz",
+    "token1_path": "gno.land/r/qux",
+    "token0_balance": "6305554",
+    "token1_balance": "9604959",
+    "tick_spacing": 2,
+    "fee": 100,
+    "max_liquidity_per_tick": 20790381397506,
+    "sqrt_price_x96": "1.015337166131788e29",
+    "tick": 4961,
+    "fee_protocol": 134,
+    "fee_growth_global0_x128": 4.26161624304883e31,
+    "fee_growth_global1_x128": 0,
+    "token0_protocol_fee": 4,
+    "token1_protocol_fee": 0,
+    "liquidity": "159696391",
+    "ticks": [4000, 6000],
+    "tick_bitmaps": {},
+    "positions": [
+      {
+        "owner": "g1htpxzv2dkplvzg50nd8fswrneaxmdpwn459thx",
+        "tick_lower": 4000,
+        "tick_upper": 6000,
+        "liquidity": "159696391",
+        "token0_owed": 0,
+        "token1_owed": 0
+      }
+    ]
+  },
+  {
+    "pool_path": "gno.land/r/bar:gno.land/r/wugnot:500",
+    "token0_path": "gno.land/r/bar",
+    "token1_path": "gno.land/r/wugnot",
+    "token0_balance": "9780763",
+    "token1_balance": "6211105",
+    "tick_spacing": 10,
+    "max_liquidity_per_tick": 103951672670308,
+    "sqrt_price_x96": "6.1772792839089925e28",
+    "tick": -4979,
+    "fee": 100,
+    "fee_protocol": 134,
+    "fee_growth_global0_x128": 0,
+    "fee_growth_global1_x128": 1.2346017191884656e32,
+    "token0_protocol_fee": 0,
+    "token1_protocol_fee": 8,
+    "liquidity": "159860277",
+    "ticks": [-6000, -4000],
+    "tick_bitmaps": {},
+    "positions": [
+      {
+        "owner": "g1htpxzv2dkplvzg50nd8fswrneaxmdpwn459thx",
+        "tick_lower": -6000,
+        "tick_upper": -4000,
+        "liquidity": "159860277",
+        "token0_owed": 0,
+        "token1_owed": 0
+      }
+    ]
+  },
+  {
+    "pool_path": "gno.land/r/bar:gno.land/r/baz:500",
+    "token0_path": "gno.land/r/bar",
+    "token1_path": "gno.land/r/baz",
+    "fee": 500,
+    "token0_balance": "9937690",
+    "token1_balance": "10943746",
+    "tick_spacing": 10,
+    "max_liquidity_per_tick": 103951672670308,
+    "sqrt_price_x96": "102239599540632204908365252323",
+    "tick": 5099,
+    "fee_protocol": 0,
+    "fee_growth_global0_x128": 0,
+    "fee_growth_global1_x128": 0,
+    "token0_protocol_fee": 0,
+    "token1_protocol_fee": 0,
+    "liquidity": "291453167",
+    "ticks": [4000, 6000, 5000],
+    "tick_bitmaps": {
+      "1": "28269553036454149273332760011908996998438272973151439048218347582187896832",
+      "2": "309485009821345068724781056"
+    },
+    "positions": [
+      {
+        "owner": "g1htpxzv2dkplvzg50nd8fswrneaxmdpwn459thx",
+        "tick_lower": 4000,
+        "tick_upper": 6000,
+        "liquidity": "144812895",
+        "token0_owed": 0,
+        "token1_owed": 0
+      },
+      {
+        "owner": "g1htpxzv2dkplvzg50nd8fswrneaxmdpwn459thx",
+        "tick_lower": 5000,
+        "tick_upper": 6000,
+        "liquidity": "146640272",
+        "token0_owed": 0,
+        "token1_owed": 0
+      }
+    ]
+  },
+  {
+    "pool_path": "gno.land/r/baz:gno.land/r/qux:500",
+    "token0_path": "gno.land/r/baz",
+    "token1_path": "gno.land/r/qux",
+    "token0_balance": "6426094",
+    "token1_balance": "9407439",
+    "tick_spacing": 10,
+    "fee": 100,
+    "max_liquidity_per_tick": 103951672670308,
+    "sqrt_price_x96": "1.0143572349910887e29",
+    "tick": 4941,
+    "fee_protocol": 134,
+    "fee_growth_global0_x128": 3.1962121822866223e32,
+    "fee_growth_global1_x128": 0,
+    "token0_protocol_fee": 30,
+    "token1_protocol_fee": 0,
+    "liquidity": "159696391",
+    "ticks": [4000, 6000],
+    "tick_bitmaps": {
+      "1": "28269553036454149273332760011908996998438272973151439048218347582187896832",
+      "2": "309485009821345068724781056"
+    },
+    "positions": [
+      {
+        "owner": "g1htpxzv2dkplvzg50nd8fswrneaxmdpwn459thx",
+        "tick_lower": 4000,
+        "tick_upper": 6000,
+        "liquidity": "159696391",
+        "token0_owed": 0,
+        "token1_owed": 0
+      }
+    ]
+  }
+]

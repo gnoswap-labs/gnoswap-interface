@@ -1,67 +1,88 @@
-import { CONTENT_TITLE } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
-import React from "react";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { wrapper } from "./SelectFeeTier.styles";
-import { FEE_RATE_OPTION } from "@constants/option.constant";
+import React, { useCallback, useMemo } from "react";
+import { SelectFeeTierItemWrapper, SelectFeeTierWrapper } from "./SelectFeeTier.styles";
+import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import { PoolModel } from "@models/pool/pool-model";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 
 interface SelectFeeTierProps {
-  active: boolean;
-  data?: any;
-  openFeeTier: boolean;
-  onClickOpenFeeTier: () => void;
+  feetierOfLiquidityMap: { [key in string]: number };
+  feeTiers: SwapFeeTierType[];
+  feeTier: SwapFeeTierType | null;
+  pools: PoolModel[],
+  selectFeeTier: (feeTier: SwapFeeTierType) => void;
+  fetching: boolean;
+  openedFeeTier: boolean;
 }
 
-const feeRateInit = [
-  {
-    feeRate: FEE_RATE_OPTION.FEE_01,
-    desc: "Best for very stable pairs",
-    selectedFeeRate: "12% select",
-  },
-  {
-    feeRate: FEE_RATE_OPTION.FEE_05,
-    desc: "Best for stable pairs",
-    selectedFeeRate: "67% select",
-  },
-  {
-    feeRate: FEE_RATE_OPTION.FEE_3,
-    desc: "Best for most pairs",
-    selectedFeeRate: "21% select",
-  },
-  {
-    feeRate: FEE_RATE_OPTION.FEE_1,
-    desc: "Best for exotic pairs",
-    selectedFeeRate: "Not created",
-  },
-];
-
 const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
-  active,
-  openFeeTier,
-  onClickOpenFeeTier,
-  data = feeRateInit,
+  feetierOfLiquidityMap,
+  feeTiers,
+  feeTier,
+  selectFeeTier,
+  fetching,
+  openedFeeTier,
 }) => {
+
+  const onClickFeeTierItem = useCallback((feeTier: SwapFeeTierType) => {
+    selectFeeTier(feeTier);
+  }, [selectFeeTier]);
+
   return (
-    <div css={wrapper}>
-      <section className="title-content" onClick={onClickOpenFeeTier}>
-        <h5 className="title">{CONTENT_TITLE.FEE_TIER}</h5>
-        <Badge
-          text={data?.fee ?? FEE_RATE_OPTION.FEE_3}
-          type={BADGE_TYPE.LINE}
+    <SelectFeeTierWrapper className={openedFeeTier ? "open" : ""}>
+      {feeTiers.map((item, index) => (
+        <SelectFeeTierItem
+          key={index}
+          selected={feeTier === item}
+          feeTier={item}
+          liquidityRange={feetierOfLiquidityMap[SwapFeeTierInfoMap[item].fee]}
+          onClick={() => onClickFeeTierItem(item)}
+          fetching={fetching}
         />
-      </section>
-      {active && openFeeTier && (
-        <section className="select-fee-wrap">
-          {data.map((item: any, idx: number) => (
-            <div className="fee-tier-box" key={idx}>
-              <strong className="fee-rate">{item.feeRate}</strong>
-              <p className="desc">{item.desc}</p>
-              <span className="selected-fee-rate">{item.selectedFeeRate}</span>
-            </div>
-          ))}
-        </section>
-      )}
-    </div>
+      ))}
+    </SelectFeeTierWrapper>
   );
 };
+
+interface SelectFeeTierItemProps {
+  selected: boolean;
+  feeTier: SwapFeeTierType;
+  liquidityRange: number | undefined | null;
+  onClick: () => void;
+  fetching: boolean;
+}
+
+const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
+  selected,
+  feeTier,
+  liquidityRange,
+  onClick,
+  fetching,
+}) => {
+  const feeRateStr = useMemo(() => {
+    return SwapFeeTierInfoMap[feeTier].rateStr;
+  }, [feeTier]);
+
+  const rangeStr = useMemo(() => {
+    if (liquidityRange === null || liquidityRange === undefined) {
+      return "Not created";
+    }
+    return `${Math.round(liquidityRange)}% Selected`;
+  }, [liquidityRange]);
+
+  const description = useMemo(() => {
+    return SwapFeeTierInfoMap[feeTier].description;
+  }, [feeTier]);
+
+  return (
+    <SelectFeeTierItemWrapper className={selected ? "selected" : ""} onClick={onClick}>
+      <div>
+        <strong className="fee-rate">{feeRateStr}</strong>
+        <p className="desc">{description}</p>
+      </div>
+      <span className="selected-fee-rate">{fetching ? <LoadingSpinner /> : rangeStr}</span>
+    </SelectFeeTierItemWrapper>
+  );
+};
+
 
 export default SelectFeeTier;

@@ -1,5 +1,7 @@
-import { css, keyframes, Theme } from "@emotion/react";
+import { media } from "@styles/media";
+import { keyframes } from "@emotion/react";
 import mixins from "@styles/mixins";
+import styled from "@emotion/styled";
 
 const spin = keyframes`
   from {
@@ -10,25 +12,40 @@ const spin = keyframes`
   }
 `;
 
-export const wrapper = (theme: Theme) => css`
+export const LoadingSpinnerWrapper = styled.div<{
+  container: number;
+  circle: number;
+  mobileContainer: number;
+  mobileCircle: number;
+}>`
   position: relative;
-  width: 72px;
-  height: 72px;
+  width: ${({ container }) => `${container}px`};
+  height: ${({ container }) => `${container}px`};
   border-radius: 100%;
   animation: ${spin} 1s linear infinite;
   background: conic-gradient(
     from 0deg at 50% 50.63%,
-    #000000 0deg,
-    #0059ff 360deg
+    ${({ theme }) => theme.color.bgLoading} 0deg,
+    #233dbd 360deg
   );
 
   &::before {
     ${mixins.positionCenter()};
     content: "";
-    background-color: ${theme.color.background06};
-    width: 60px;
-    height: 60px;
+    background-color: ${({ theme }) => theme.color.background06};
+    width: ${({ circle }) => `${circle}px`};
+    height: ${({ circle }) => `${circle}px`};
     border-radius: 100%;
-    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: ${({ theme }) => theme.color.shadow02};
+  }
+
+  ${media.mobile} {
+    width: ${({ mobileContainer }) => `${mobileContainer}px`};
+    height: ${({ mobileContainer }) => `${mobileContainer}px`};
+
+    &::before {
+      width: ${({ mobileCircle }) => `${mobileCircle}px`};
+      height: ${({ mobileCircle }) => `${mobileCircle}px`};
+    }
   }
 `;

@@ -15,23 +15,41 @@ const Template: ComponentStory<typeof HomeSwap> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  from: {
-    token: "USDCoin",
-    symbol: "USDC",
-    amount: "121",
-    price: "$0.00",
-    balance: "0",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-  },
-  to: {
-    token: "HEX",
-    symbol: "HEX",
-    amount: "5000",
-    price: "$0.00",
-    balance: "0",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
+  swapTokenInfo: {
+    tokenA: {
+      chainId: "dev",
+      createdAt: "2023-10-17T05:58:00+09:00",
+      name: "Foo",
+      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      type: "grc20",
+      priceID: "gno.land/r/foo",
+    },
+    tokenAAmount: "0",
+    tokenABalance: "0",
+    tokenAUSD: 0,
+    tokenAUSDStr: "0",
+    tokenB: {
+      chainId: "dev",
+      createdAt: "2023-10-17T05:58:00+09:00",
+      name: "Foo",
+      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      type: "grc20",
+      priceID: "gno.land/r/foo",
+    },
+    tokenBAmount: "0",
+    tokenBBalance: "0",
+    tokenBUSD: 0,
+    tokenBUSDStr: "0",
+    direction: "EXACT_IN",
+    slippage: "0",
   },
   swapNow: action("swapNow"),
 };

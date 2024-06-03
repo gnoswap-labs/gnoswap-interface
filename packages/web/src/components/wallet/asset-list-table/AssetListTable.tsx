@@ -9,6 +9,8 @@ import { noDataText } from "@components/earn/pool-list-table/PoolListTable.style
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import {
   ASSET_INFO,
+  ASSET_INFO_MOBILE,
+  ASSET_INFO_TABLET,
   ASSET_TD_WIDTH,
   MOBILE_ASSET_TD_WIDTH,
   TABLET_ASSET_TD_WIDTH,
@@ -22,8 +24,8 @@ import { DEVICE_TYPE } from "@styles/media";
 interface AssetListTableProps {
   assets: Asset[];
   isFetched: boolean;
-  deposit: (assetId: string) => void;
-  withdraw: (assetId: string) => void;
+  deposit: (asset: Asset) => void;
+  withdraw: (asset: Asset) => void;
   sortOption: AssetSortOption | undefined;
   sort: (head: ASSET_HEAD) => void;
   isSortOption: (head: ASSET_HEAD) => boolean;
@@ -65,7 +67,8 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
     return (
       ASSET_HEAD.ASSET === head ||
       ASSET_HEAD.BALANCE === head ||
-      ASSET_HEAD.CHAIN === head
+      ASSET_HEAD.CHAIN === head ||
+      ASSET_HEAD.AMOUNT === head
     );
   };
   return (
@@ -81,9 +84,9 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
             tdWidth={
               breakpoint === DEVICE_TYPE.WEB
                 ? ASSET_TD_WIDTH[idx]
-                : breakpoint === DEVICE_TYPE.TABLET
-                ? TABLET_ASSET_TD_WIDTH[idx]
-                : MOBILE_ASSET_TD_WIDTH[idx]
+                : breakpoint !== DEVICE_TYPE.MOBILE
+                  ? TABLET_ASSET_TD_WIDTH[idx]
+                  : MOBILE_ASSET_TD_WIDTH[idx]
             }
           >
             <span
@@ -116,7 +119,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               breakpoint={breakpoint}
             />
           ))}
-        {!isFetched && <TableSkeleton info={ASSET_INFO} />}
+        {!isFetched && <TableSkeleton className="skeleton" info={breakpoint === DEVICE_TYPE.WEB ? ASSET_INFO : breakpoint !== DEVICE_TYPE.MOBILE ? ASSET_INFO_TABLET : ASSET_INFO_MOBILE} breakpoint={breakpoint} />}
       </div>
     </AssetListTableWrapper>
   );

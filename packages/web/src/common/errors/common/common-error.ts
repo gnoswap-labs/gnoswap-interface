@@ -5,6 +5,18 @@ const ERROR_VALUE = {
     status: 400,
     type: "Failed to initialize Provider",
   },
+  FAILED_INITIALIZE_GNO_PROVIDER: {
+    status: 401,
+    type: "Failed to initialize Gno Provider",
+  },
+  FAILED_INITIALIZE_WALLET: {
+    status: 402,
+    type: "Failed to initialize Wallet",
+  },
+  FAILED_INITIALIZE_ENVIRONMENT: {
+    status: 403,
+    type: "Failed to initialize environment value",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

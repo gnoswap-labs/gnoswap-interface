@@ -2,8 +2,13 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import PoolListTable from "./PoolListTable";
-import { dummyPoolList } from "@containers/pool-list-container/PoolListContainer";
 import { action } from "@storybook/addon-actions";
+import POOLS from "@repositories/pool/mock/pools.json";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+
+const pool = POOLS.pools[0] as any;
+
+const listInfo = PoolMapper.toListInfo(pool);
 
 export default {
   title: "earn/PoolList/PoolListTable",
@@ -16,7 +21,7 @@ const Template: ComponentStory<typeof PoolListTable> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  pools: dummyPoolList,
+  pools: [listInfo],
   isFetched: true,
   routeItem: action("routeItem"),
   sortOption: undefined,
@@ -34,8 +39,8 @@ Skeleton.args = {
   isSortOption: () => true,
 };
 
-export const NotFount = Template.bind({});
-NotFount.args = {
+export const NotFound = Template.bind({});
+NotFound.args = {
   pools: [],
   isFetched: true,
   routeItem: action("routeItem"),

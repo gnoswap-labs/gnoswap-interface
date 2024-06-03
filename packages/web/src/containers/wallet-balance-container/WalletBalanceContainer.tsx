@@ -1,13 +1,36 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
-import React, { useCallback, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { ERROR_VALUE } from "@common/errors/adena";
+import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
+import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
+import {
+  makeBroadcastClaimMessage,
+  useBroadcastHandler,
+} from "@hooks/common/use-broadcast-handler";
+import { usePosition } from "@hooks/common/use-position";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { TokenModel } from "@models/token/token-model";
+import { useGetTokenPrices } from "@query/token";
+import BigNumber from "bignumber.js";
+import React, { useCallback, useState, useMemo } from "react";
+import { useLoading } from "@hooks/common/use-loading";
+import { isEmptyObject } from "@utils/validation-utils";
+import { toNumberFormat, toUnitFormat } from "@utils/number-utils";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { useGetPositionsByAddress } from "@query/positions";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 export interface BalanceSummaryInfo {
   amount: string;
   changeRate: string;
+  loading: boolean;
 }
 
 export interface BalanceDetailInfo {
@@ -15,92 +38,266 @@ export interface BalanceDetailInfo {
   stakedLP: string;
   unstakingLP: string;
   claimableRewards: string;
-}
-
-const initialBalanceSummaryInfo: BalanceSummaryInfo = {
-  amount: "$0.00",
-  changeRate: "+0.0%",
-};
-
-async function fetchBalanceSummaryInfo(
-  address: string,
-): Promise<BalanceSummaryInfo> {
-  console.debug("fetchBalanceSummaryInfo", address);
-  return Promise.resolve({ amount: "1324.40", changeRate: "+14.3%" });
-}
-
-const initialBalanceDetailInfo: BalanceDetailInfo = {
-  availableBalance: "$0.00",
-  stakedLP: "$0.00",
-  unstakingLP: "$0.00",
-  claimableRewards: "$0.00",
-};
-
-async function fetchBalanceDetailInfo(
-  address: string,
-): Promise<BalanceDetailInfo> {
-  console.debug("fetchBalanceDetailInfo", address);
-  return Promise.resolve({
-    availableBalance: "$1.1",
-    stakedLP: "$1.2",
-    unstakingLP: "$1.3",
-    claimableRewards: "$1.4",
-  });
+  loadingBalance: boolean;
+  loadingPositions: boolean;
+  totalClaimedRewards: string;
 }
 
 const WalletBalanceContainer: React.FC = () => {
-  const [connected, setConnected] = useState(true);
+  const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();
   const [address, setAddress] = useState("");
   const { breakpoint } = useWindowSize();
+  const [isShowDepositModal, setIsShowDepositModal] = useState(false);
+  const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
+  const [depositInfo, setDepositInfo] = useState<TokenModel>();
+  const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
+  const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
+  const { isLoading } = useLoading();
+
+  const { balances: balancesPrice } = useTokenData();
+
+  const { data: positions = [], isLoading: loadingPositions } =
+    useGetPositionsByAddress(account?.address ?? "", {
+      isClosed: false,
+      queryOptions: { enabled: !!account?.address },
+    });
+  const isLoadingPosition = useMemo(
+    () => connected && loadingPositions,
+    [connected, loadingPositions],
+  );
+
+  const { claimAll } = usePosition(positions);
+  const {
+    broadcastSuccess,
+    broadcastPending,
+    broadcastError,
+    broadcastRejected,
+  } = useBroadcastHandler();
+  const { openModal } = useTransactionConfirmModal();
+  const { data: tokenPrices = {} } = useGetTokenPrices();
+  const changeTokenDeposit = useCallback((token?: TokenModel) => {
+    setDepositInfo(token);
+    setIsShowDepositModal(true);
+  }, []);
+  const changeTokenWithdraw = useCallback((token: TokenModel) => {
+    setWithDrawInfo(token);
+  }, []);
 
   const deposit = useCallback(() => {
     if (!connected) return;
+    changeTokenDeposit(undefined);
     if (!address) return;
-  }, [connected, address]);
-
+  }, [connected, address, changeTokenDeposit]);
   const withdraw = useCallback(() => {
     if (!connected) return;
+    setIsShowWithDrawModal(true);
     if (!address) return;
   }, [connected, address]);
+  const claimAllReward = useCallback(() => {
+    const amount = positions
+      .flatMap(item => item.reward)
+      .reduce((acc, item) => acc + Number(item.claimableAmount), 0);
+    const data = {
+      amount: toUnitFormat(amount, true, true),
+    };
+    setLoadingTransactionClaim(true);
+    claimAll().then(response => {
+      if (response) {
+        if (response.code === 0) {
+          broadcastPending();
+          setTimeout(() => {
+            broadcastSuccess(makeBroadcastClaimMessage("success", data));
+            setLoadingTransactionClaim(false);
+          }, 1000);
+          openModal();
+        } else if (
+          response.code === 4000 &&
+          response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+        ) {
+          broadcastError(makeBroadcastClaimMessage("error", data));
+          setLoadingTransactionClaim(false);
+          openModal();
+        } else {
+          openModal();
+          broadcastRejected(
+            makeBroadcastClaimMessage("error", data),
+            () => {},
+            true,
+          );
+          setLoadingTransactionClaim(false);
+        }
+      }
+    });
+  }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
+  const loadingTotalBalance = useMemo(() => {
+    return (
+      isLoadingPosition ||
+      loadingConnect === "loading" ||
+      isLoading ||
+      !!(isEmptyObject(balancesPrice) && account?.address)
+    );
+  }, [
+    isLoadingPosition,
+    loadingConnect,
+    isLoading,
+    account?.address,
+    balancesPrice,
+  ]);
 
-  const claimAll = useCallback(() => {}, []);
+  const availableBalance = useMemo(() => {
+    return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
+      const path = key === "gnot" ? WRAPPED_GNOT_PATH : key;
+      const balance =
+        BigNumber(value || 0)
+          .multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice || 0)
+          .shiftedBy(GNOT_TOKEN.decimals * -1)
+          .toNumber() || 0;
+      return BigNumber(acc).plus(balance).toNumber();
+    }, 0);
+  }, [balancesPrice, tokenPrices]);
+
+  const availableBalanceStr = useMemo(() => {
+    return availableBalance;
+  }, [availableBalance]);
 
   const {
-    isLoading: isBalanceSummaryInfoLoading,
-    error: balanceSummaryInfoError,
-    data: balanceSummaryInfo,
-  } = useQuery<BalanceSummaryInfo, Error>({
-    queryKey: ["balanceSummaryInfo", connected, address],
-    queryFn: () => {
-      if (!connected) return initialBalanceSummaryInfo;
-      return fetchBalanceSummaryInfo(address);
+    stakedBalance,
+    unStakedBalance,
+    claimableRewards,
+    totalClaimedRewards,
+  } = positions.reduce(
+    (acc, cur) => {
+      acc.totalClaimedRewards = BigNumber(acc.totalClaimedRewards)
+        .plus(cur.totalClaimedUsd ?? "0")
+        .toNumber();
+
+      if (cur.staked) {
+        acc.stakedBalance = BigNumber(acc.stakedBalance)
+          .plus(cur.stakedUsdValue ?? "0")
+          .toNumber();
+      } else {
+        acc.unStakedBalance = BigNumber(acc.unStakedBalance)
+          .plus(cur.totalClaimedUsd ?? "0")
+          .toNumber();
+      }
+
+      cur.reward.forEach(x => {
+        acc.claimableRewards = BigNumber(acc.claimableRewards)
+          .plus(x.claimableUsd ?? "0")
+          .toNumber();
+      });
+      return acc;
     },
-    initialData: initialBalanceSummaryInfo,
-  });
+    {
+      stakedBalance: 0,
+      unStakedBalance: 0,
+      claimableRewards: 0,
+      totalClaimedRewards: 0,
+    },
+  );
+
+  const sumTotalBalance = useMemo(() => {
+    return BigNumber(availableBalance)
+      .plus(unStakedBalance)
+      .plus(stakedBalance)
+      .plus(claimableRewards)
+      .decimalPlaces(2)
+      .toFormat(availableBalance === 0 ? 0 : 2);
+  }, [
+    availableBalance,
+    unStakedBalance,
+    stakedBalance,
+    claimableRewards,
+    availableBalance,
+  ]);
+
+  const closeDeposit = () => {
+    setIsShowDepositModal(false);
+  };
+
+  const closeWithdraw = () => {
+    setIsShowWithDrawModal(false);
+  };
+
+  const callbackDeposit = (value: boolean) => {
+    setIsShowDepositModal(value);
+  };
+
+  const callbackWithdraw = (value: boolean) => {
+    setIsShowWithDrawModal(value);
+  };
+
+  usePreventScroll(isShowDepositModal || isShowWithdrawModal);
 
   const {
-    isLoading: isBalanceDetailInfoLoading,
-    error: balanceDetailInfoError,
-    data: balanceDetailInfo,
-  } = useQuery<BalanceDetailInfo, Error>({
-    queryKey: ["balanceDetailInfo", connected, address],
-    queryFn: () => {
-      if (!connected) return initialBalanceDetailInfo;
-      return fetchBalanceDetailInfo(address);
-    },
-    initialData: initialBalanceDetailInfo,
-  });
+    isConfirm,
+    setIsConfirm,
+    onSubmit: handleSubmit,
+  } = useWithdrawTokens();
 
+  const onSubmit = (amount: any, address: string) => {
+    if (!withdrawInfo || !account?.address) return;
+    handleSubmit(
+      {
+        fromAddress: account.address,
+        toAddress: address,
+        token: withdrawInfo,
+        tokenAmount: BigNumber(amount)
+          .multipliedBy(Math.pow(10, withdrawInfo.decimals))
+          .toNumber(),
+      },
+      withdrawInfo.type,
+    );
+    closeWithdraw();
+  };
   return (
-    <WalletBalance
-      connected={connected}
-      balanceSummaryInfo={balanceSummaryInfo}
-      balanceDetailInfo={balanceDetailInfo}
-      deposit={deposit}
-      withdraw={withdraw}
-      claimAll={claimAll}
-      breakpoint={breakpoint}
-    />
+    <>
+      <WalletBalance
+        connected={connected}
+        balanceSummaryInfo={{
+          amount: isSwitchNetwork ? "$0" : `$${sumTotalBalance}`,
+          changeRate: "0.0%",
+          loading: loadingTotalBalance,
+        }}
+        balanceDetailInfo={{
+          availableBalance: isSwitchNetwork ? "-" : `${availableBalanceStr}`,
+          claimableRewards: isSwitchNetwork ? "-" : `${claimableRewards}`,
+          stakedLP: isSwitchNetwork ? "-" : `${stakedBalance}`,
+          unstakingLP: `${unStakedBalance}`,
+          loadingBalance: loadingTotalBalance,
+          loadingPositions: loadingTotalBalance,
+          totalClaimedRewards: totalClaimedRewards.toString(),
+        }}
+        deposit={deposit}
+        withdraw={withdraw}
+        claimAll={claimAllReward}
+        breakpoint={breakpoint}
+        isSwitchNetwork={isSwitchNetwork}
+        loadngTransactionClaim={loadngTransactionClaim}
+      />
+      {isShowDepositModal && (
+        <DepositModal
+          breakpoint={breakpoint}
+          close={closeDeposit}
+          depositInfo={depositInfo}
+          changeToken={changeTokenDeposit}
+          callback={callbackDeposit}
+        />
+      )}
+      {isShowWithdrawModal && (
+        <WithDrawModal
+          breakpoint={breakpoint}
+          close={closeWithdraw}
+          withdrawInfo={withdrawInfo}
+          connected={connected}
+          changeToken={changeTokenWithdraw}
+          callback={callbackWithdraw}
+          setIsConfirm={() => setIsConfirm(true)}
+          isConfirm={isConfirm}
+          handleSubmit={onSubmit}
+        />
+      )}
+    </>
   );
 };
 

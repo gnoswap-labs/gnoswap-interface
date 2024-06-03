@@ -1,60 +1,122 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
+  BlankIncentivizedCard,
   IncentivizedWrapper,
   PoolListWrapper,
 } from "./IncentivizedPoolCardList.styles";
-import { type PoolListProps } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import IncentivizedPoolCard from "@components/earn/incentivized-pool-card/IncentivizedPoolCard";
-import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
+import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 export interface IncentivizedPoolCardListProps {
-  list: Array<PoolListProps>;
-  loadMore?: boolean;
-  isFetched: boolean;
+  incentivizedPools: IncentivizePoolCardInfo[];
+  loadMore: boolean;
+  isPoolFetched: boolean;
   onClickLoadMore?: () => void;
   currentIndex: number;
-  routeItem: (id: number) => void;
+  routeItem: (id: string) => void;
   mobile: boolean;
+  page: number;
+  themeKey: "dark" | "light";
+  divRef: React.RefObject<HTMLDivElement>;
+  onScroll: () => void;
+  showPagination: boolean;
+  width: number;
+  isLoading: boolean;
+  checkStakedPool: (poolPath: string | null) => boolean
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
-  list,
-  loadMore,
-  isFetched,
+  incentivizedPools,
+  isPoolFetched,
   onClickLoadMore,
   currentIndex,
   routeItem,
   mobile,
-}) => (
-  <IncentivizedWrapper>
-    <PoolListWrapper>
-      {isFetched &&
-        list.length > 0 &&
-        list.map((item, idx) => (
-          <IncentivizedPoolCard item={item} key={idx} routeItem={routeItem} />
-        ))}
-      {!isFetched &&
-        Array.from({ length: 8 }).map((_, idx) => (
-          <span
-            key={idx}
-            className="card-skeleton"
-            css={skeletonStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+  page,
+  themeKey,
+  divRef,
+  onScroll,
+  showPagination,
+  width,
+  isLoading,
+  checkStakedPool,
+}) => {
+  const data = useMemo(() => {
+    if (page === 1) {
+      if (width > 1180) {
+        return incentivizedPools.slice(0, 8);
+      } else if (width > 920) {
+        return incentivizedPools.slice(0, 6);
+      } else {
+        return incentivizedPools;
+      }
+    } else {
+      return incentivizedPools;
+    }
+  }, [page, incentivizedPools, width]);
+
+  const renderPoolList = () => {
+    const hasData = !isLoading && incentivizedPools.length > 0;
+    const showLoading = !isPoolFetched || isLoading;
+    const showBlank = isPoolFetched &&
+      !isLoading &&
+      incentivizedPools.length > 0 &&
+      incentivizedPools.length < 4;
+
+    return <PoolListWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
+      {hasData &&
+        data.map((info, index) => (
+          <IncentivizedPoolCard
+            pool={info}
+            key={index}
+            routeItem={routeItem}
+            themeKey={themeKey}
+            checkStakedPool={checkStakedPool}
           />
         ))}
-    </PoolListWrapper>
-    {!mobile ? (
-      loadMore &&
-      onClickLoadMore && (
-        <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
-      )
-    ) : (
-      <div className="box-indicator">
-        <span className="current-page">{currentIndex}</span>
-        <span>/</span>
-        <span>{list.length}</span>
-      </div>
-    )}
-  </IncentivizedWrapper>
-);
+      {showBlank &&
+        Array((width <= 1180 && width >= 920 ? 3 : 4) - incentivizedPools.length)
+          .fill(1)
+          .map((_, index) => <BlankIncentivizedCard key={index} />)}
+      {showLoading &&
+        Array.from({ length: 8 }).map((_, index) => (
+          <span
+            key={index}
+            className="card-skeleton"
+            css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
+          />
+        ))}
+    </PoolListWrapper>;
+  };
+
+  const renderLoadMore = () => {
+    return <>
+      {!mobile &&
+        !isLoading &&
+        incentivizedPools.length > 8 &&
+        onClickLoadMore && (
+          <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
+        )}
+      {showPagination &&
+        isPoolFetched &&
+        incentivizedPools.length > 0 &&
+        !isLoading && (
+          <div className="box-indicator">
+            <span className="current-page">{currentIndex}</span>
+            <span>/</span>
+            <span>{incentivizedPools.length}</span>
+          </div>
+        )}
+    </>;
+  };
+
+  return (
+    <IncentivizedWrapper>
+      {renderPoolList()}
+      {renderLoadMore()}
+    </IncentivizedWrapper>
+  );
+};
 
 export default IncentivizedPoolCardList;

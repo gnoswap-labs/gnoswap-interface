@@ -1,14 +1,46 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapCardContent from "./SwapCardContent";
-import { css, Theme } from "@emotion/react";
-import {
-  coinList,
-  dummyAutoRouterInfo,
-  dummySwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
+import { css } from "@emotion/react";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { action } from "@storybook/addon-actions";
-import { DEVICE_TYPE } from "@styles/media";
+
+const swapTokenInfo: SwapTokenInfo = {
+  tokenA: {
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceID: "gno.land/r/foo",
+    address: ""
+  },
+  tokenAAmount: "",
+  tokenABalance: "",
+  tokenAUSD: 0,
+  tokenAUSDStr: "0",
+  tokenB: {
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceID: "gno.land/r/foo",
+    address: ""
+  },
+  tokenBAmount: "",
+  tokenBBalance: "",
+  tokenBUSD: 0,
+  tokenBUSDStr: "0",
+  direction: "EXACT_IN",
+  slippage: "10"
+};
 
 export default {
   title: "swap/SwapCardContent",
@@ -25,45 +57,16 @@ const Template: ComponentStory<typeof SwapCardContent> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  autoRouter: true,
-  showAutoRouter: action("onClick"),
-  swapGasInfo: dummySwapGasInfo,
-  swapInfo: true,
-  showSwapInfo: action("onClick"),
-  autoRouterInfo: dummyAutoRouterInfo,
-  search: action("search"),
-  tokenModal: true,
-  onSelectTokenModal: action("onClick"),
-  keyword: "",
-  coinList: coinList(),
-  changeToken: action("changeToken"),
-  selectToken: action("selectToken"),
-  breakpoint: DEVICE_TYPE.WEB,
-  from: {
-    token: "USDCoin",
-    symbol: "USDC",
-    amount: "121",
-    price: "$0.00",
-    gnosExchangePrice: "1250",
-    usdExchangePrice: "($1541.55)",
-    balance: "0",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-  },
-  to: {
-    token: "HEX",
-    symbol: "HEX",
-    amount: "5000",
-    price: "$0.00",
-    gnosExchangePrice: "1250",
-    usdExchangePrice: "($1541.55)",
-    balance: "0",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-  },
+  swapTokenInfo,
+  swapSummaryInfo: null,
+  swapRouteInfos: [],
+  changeTokenA: action("changeTokenA"),
+  changeTokenAAmount: action("changeTokenAAmount"),
+  changeTokenB: action("changeTokenB"),
+  changeTokenBAmount: action("changeTokenBAmount"),
 };
 
-const wrapper = (theme: Theme) => css`
+const wrapper = () => css`
   display: flex;
   width: 100%;
   align-items: center;
@@ -71,6 +74,6 @@ const wrapper = (theme: Theme) => css`
   margin-top: 50px;
 `;
 
-const contentWrap = (theme: Theme) => css`
+const contentWrap = () => css`
   width: 500px;
 `;

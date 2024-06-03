@@ -3,6 +3,8 @@ import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import iconChecked from "@components/common/icons/svg/icon-checked.svg";
 import iconCheckboxBlank from "@components/common/icons/svg/icon-checkbox-blank.svg";
+import iconCheckboxUnsure from "@components/common/icons/svg/icon-checkbox-unsure.svg";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -13,10 +15,59 @@ export const wrapper = (theme: Theme) => css`
   background-color: ${theme.color.background06};
   border-radius: 8px;
   border: 1px solid ${theme.color.border02};
-  box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: ${theme.color.shadow01};
   padding: 23px;
   .title {
     ${fonts.h6};
+  }
+  ${media.tabletMiddle} {
+    margin: 0 auto;
+    max-width: 500px;
+    width: 100%;
+  }
+  ${media.mobile} {
+    padding: 15px;
+    gap: 12px;
+  }
+  .unstake-des {
+    background-color: ${theme.color.backgroundOpacity4};
+    border-radius: 8px;
+    padding: 12px 16px;
+    p, h5, a {
+      ${fonts.body12}
+      color: ${theme.color.text08};
+    }
+    .icon-link {
+      width: 16px;
+      height: 16px;
+      * {
+        fill: ${theme.color.icon14};
+      }
+    }
+    h5 {
+      font-weight: 600;
+    }
+    p {
+      margin: 16px 0 24px;
+    }
+    a {
+      ${mixins.flexbox("rpw", "center", "flex-start")};
+      gap: 4px;
+      font-weight: 600;
+    }
+  }
+  .button-confirm {
+    gap: 8px;
+    height: 57px;
+    span {
+      ${fonts.body7}
+    }
+    ${media.mobile} {
+      height: 41px;
+      span {
+        ${fonts.body9}
+      }
+    }
   }
 `;
 
@@ -42,8 +93,15 @@ export const inputStyle = (theme: Theme) => css`
       mask-image: url(${iconCheckboxBlank});
     }
   }
+
   input[type="checkbox"]:checked + label:before {
-    background-color: ${theme.color.point};
+    background-color: ${theme.color.background04};
     mask-image: url(${iconChecked});
+  }
+
+  input[type="checkbox"]:disabled + label:before {
+    background-color: ${theme.color.text04};
+    mask-image: url(${iconCheckboxUnsure});
+    cursor: default;
   }
 `;

@@ -1,162 +1,189 @@
-import React, { useCallback, useState } from "react";
-import { ContentWrapper, SelectPairButton } from "./SwapCardContent.styles";
-import { TokenInfo } from "../swap-card/SwapCard";
+import React, { useCallback, useMemo } from "react";
+import { ContentWrapper } from "./SwapCardContent.styles";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import SwapCardContentDetail from "../swap-card-content-detail/SwapCardContentDetail";
-import {
-  AutoRouterInfo,
-  tokenInfo,
-  SwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
-import SelectTokenModal from "../select-token-modal/SelectTokenModal";
-import { DEVICE_TYPE } from "@styles/media";
-import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { TokenModel } from "@models/token/token-model";
+import { isAmount } from "@common/utils/data-check-util";
+import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
+import BigNumber from "bignumber.js";
+import { roundDownDecimalNumber } from "@utils/regex";
 
 interface ContentProps {
-  to: TokenInfo;
-  from: TokenInfo;
-  swapInfo: boolean;
-  showSwapInfo: () => void;
-  autoRouter: boolean;
-  showAutoRouter: () => void;
-  swapGasInfo: SwapGasInfo;
-  autoRouterInfo: AutoRouterInfo;
-  tokenModal: boolean;
-  onSelectTokenModal: () => void;
-  search: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  keyword: string;
-  coinList: tokenInfo[];
-  changeToken: (token: tokenInfo, type: string) => void;
-  selectToken: (e: string) => void;
-  breakpoint: DEVICE_TYPE;
-}
-
-function isAmount(str: string) {
-  const regex = /^\d+(\.\d*)?$/;
-  return regex.test(str);
+  swapTokenInfo: SwapTokenInfo;
+  swapSummaryInfo: SwapSummaryInfo | null;
+  swapRouteInfos: SwapRouteInfo[];
+  changeTokenA: (token: TokenModel) => void;
+  changeTokenAAmount: (value: string, none?: boolean) => void;
+  changeTokenB: (token: TokenModel) => void;
+  changeTokenBAmount: (value: string, none?: boolean) => void;
+  switchSwapDirection: () => void;
+  connectedWallet: boolean;
+  isLoading: boolean;
+  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
+  isSwitchNetwork: boolean;
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
-  to,
-  from,
-  swapInfo,
-  showSwapInfo,
-  autoRouter,
-  showAutoRouter,
-  swapGasInfo,
-  autoRouterInfo,
-  tokenModal,
-  onSelectTokenModal,
-  search,
-  keyword,
-  coinList,
-  changeToken,
-  selectToken,
-  breakpoint,
+  swapTokenInfo,
+  swapSummaryInfo,
+  swapRouteInfos,
+  changeTokenA,
+  changeTokenAAmount,
+  changeTokenB,
+  changeTokenBAmount,
+  switchSwapDirection,
+  connectedWallet,
+  isLoading,
+  setSwapRateAction,
+  isSwitchNetwork,
 }) => {
-  const [fromAmount, setFromAmount] = useState(from.amount);
-  const [toAmount, setToAmount] = useState(to.amount);
+  const tokenA = swapTokenInfo.tokenA;
+  const tokenB = swapTokenInfo.tokenB;
+  const direction = swapSummaryInfo?.swapDirection;
 
-  const onChangeFromAmount = useCallback(
+  const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      if (value === "") {
+        changeTokenAAmount("", true);
+      }
       if (value !== "" && !isAmount(value)) return;
-      setFromAmount(value);
+      changeTokenAAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [changeTokenAAmount],
   );
 
-  const onChangeToAmount = useCallback(
+  const onChangeTokenBAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      if (value === "") {
+        changeTokenBAmount("", true);
+      }
       if (value !== "" && !isAmount(value)) return;
-      setToAmount(value);
+      changeTokenBAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [changeTokenBAmount],
   );
+
+  const handleAutoFillTokenA = useCallback(() => {
+    if (connectedWallet) {
+      const formatValue = (parseFloat(
+        swapTokenInfo.tokenABalance.replace(/,/g, ""),
+      )).toString();
+      changeTokenAAmount(formatValue);
+    }
+  }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
+
+  const handleAutoFillTokenB = useCallback(() => {
+    if (connectedWallet) {
+      const formatValue = (parseFloat(
+        swapTokenInfo.tokenBBalance.replace(/,/g, ""),
+      ))
+        .toString();
+      changeTokenBAmount(formatValue);
+    }
+  }, [changeTokenBAmount, connectedWallet, swapTokenInfo]);
+
+  const isShowInfoSection = useMemo(() => {
+    return (
+      !!(
+        swapSummaryInfo &&
+        !!Number(swapTokenInfo.tokenAAmount) &&
+        !!Number(swapTokenInfo.tokenBAmount)
+      ) || isLoading
+    );
+  }, [swapSummaryInfo, swapTokenInfo, isLoading]);
+
+  const balanceADisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
+    if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
+      if (swapTokenInfo.tokenABalance === "0") return 0;
+      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")
+        .toString()
+        .match(roundDownDecimalNumber(2))?.toString() ?? 0)
+        .toFormat();
+    }
+    return "-";
+  }, [isSwitchNetwork, connectedWallet, swapTokenInfo.tokenABalance]);
+
+  const balanceBDisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
+    if (connectedWallet && swapTokenInfo.tokenBBalance !== "-") {
+      if (swapTokenInfo.tokenBBalance === "0") return 0;
+      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")
+        .toString()
+        .match(roundDownDecimalNumber(2))?.toString() ?? 0)
+        .toFormat();
+    }
+    return "-";
+  }, [swapTokenInfo.tokenBBalance, connectedWallet, isSwitchNetwork]);
 
   return (
-    <>
-      {tokenModal && (
-        <SelectTokenModal
-          onSelectTokenModal={onSelectTokenModal}
-          search={search}
-          keyword={keyword}
-          coinList={coinList}
-          changeToken={changeToken}
+    <ContentWrapper>
+      <div className="first-section">
+        <div className="amount-container">
+          <input
+            className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
+            value={swapTokenInfo.tokenAAmount}
+            onChange={onChangeTokenAAmount}
+            placeholder="0"
+          />
+          <div className="token-selector">
+            <SelectPairButton token={tokenA} changeToken={changeTokenA} />
+          </div>
+        </div>
+        <div className="amount-info">
+          <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>{swapTokenInfo.tokenAUSDStr}</span>
+          <span
+            className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"
+              }`}
+            onClick={handleAutoFillTokenA}
+          >
+            Balance: {balanceADisplay}
+          </span>
+        </div>
+        <div className="arrow">
+          <div className="shape" onClick={switchSwapDirection}>
+            <IconSwapArrowDown className="shape-icon" />
+          </div>
+        </div>
+      </div>
+      <div className="second-section">
+        <div className="amount-container">
+          <input
+            className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
+            value={swapTokenInfo.tokenBAmount}
+            onChange={onChangeTokenBAmount}
+            placeholder="0"
+          />
+          <div className="token-selector">
+            <SelectPairButton token={tokenB} changeToken={changeTokenB} />
+          </div>
+        </div>
+        <div className="amount-info">
+          <span className={`price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}>{swapTokenInfo.tokenBUSDStr}</span>
+          <span
+            className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"
+              }`}
+            onClick={handleAutoFillTokenB}
+          >
+            Balance: {balanceBDisplay}
+          </span>
+        </div>
+      </div>
+
+      {swapSummaryInfo && isShowInfoSection && (
+        <SwapCardContentDetail
+          swapSummaryInfo={swapSummaryInfo}
+          swapRouteInfos={swapRouteInfos}
+          isLoading={isLoading}
+          setSwapRateAction={setSwapRateAction}
         />
       )}
-      <ContentWrapper>
-        <div className="first-section">
-          <div className="amount-container">
-            <input
-              className="amount-text"
-              value={fromAmount}
-              onChange={onChangeFromAmount}
-              placeholder={fromAmount === "" ? "0" : ""}
-            />
-            <SelectPairButton
-              onClick={() => {
-                selectToken("from");
-                onSelectTokenModal();
-              }}
-            >
-              <img
-                src={from.tokenLogo}
-                alt="token logo"
-                className="token-logo"
-              />
-              <span className="token-symbol">{from.symbol}</span>
-              <IconStrokeArrowDown className="arrow-icon" />
-            </SelectPairButton>
-          </div>
-          <div className="amount-info">
-            <span className="price-text">{from.price}</span>
-            <span className="balance-text">Balance : {from.balance}</span>
-          </div>
-          <div className="arrow">
-            <div className="shape">
-              <IconSwapArrowDown className="shape-icon" />
-            </div>
-          </div>
-        </div>
-        <div className="second-section">
-          <div className="amount-container">
-            <input
-              className="amount-text"
-              value={toAmount}
-              onChange={onChangeToAmount}
-              placeholder={toAmount === "" ? "0" : ""}
-            />
-            <SelectPairButton
-              onClick={() => {
-                selectToken("to");
-                onSelectTokenModal();
-              }}
-            >
-              <img src={to.tokenLogo} alt="token logo" className="token-logo" />
-              <span className="token-symbol">{to.symbol}</span>
-              <IconStrokeArrowDown className="arrow-icon" />
-            </SelectPairButton>
-          </div>
-          <div className="amount-info">
-            <span className="price-text">{to.price}</span>
-            <span className="balance-text">Balance : {to.balance}</span>
-          </div>
-        </div>
-        <SwapCardContentDetail
-          to={to}
-          from={from}
-          swapInfo={swapInfo}
-          showSwapInfo={showSwapInfo}
-          autoRouter={autoRouter}
-          showAutoRouter={showAutoRouter}
-          swapGasInfo={swapGasInfo}
-          autoRouterInfo={autoRouterInfo}
-          breakpoint={breakpoint}
-        />
-      </ContentWrapper>
-    </>
+    </ContentWrapper>
   );
 };
 

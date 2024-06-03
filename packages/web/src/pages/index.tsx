@@ -1,4 +1,5 @@
 import Footer from "@components/common/footer/Footer";
+import Banner from "@components/home/banner/Banner";
 import GnoswapBrandContainer from "@containers/gnoswap-brand-container/GnoswapBrandContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import HighestAprsCardListContainer from "@containers/highest-aprs-card-list-container/HighestAprsCardListContainer";
@@ -18,6 +19,7 @@ export default function Home() {
       highest={<HighestAprsCardListContainer />}
       recently={<RecentlyAddedCardListContainer />}
       tokenList={<TokenListContainer />}
+      banner={<Banner />}
       footer={<Footer />}
     />
   );

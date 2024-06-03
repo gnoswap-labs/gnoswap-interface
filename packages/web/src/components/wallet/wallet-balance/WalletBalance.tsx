@@ -11,6 +11,9 @@ interface WalletBalanceProps {
   connected: boolean;
   balanceSummaryInfo: BalanceSummaryInfo;
   balanceDetailInfo: BalanceDetailInfo;
+  isSwitchNetwork: boolean;
+  loadngTransactionClaim: boolean;
+
   deposit: () => void;
   withdraw: () => void;
   claimAll: () => void;
@@ -25,6 +28,8 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   withdraw,
   claimAll,
   breakpoint,
+  isSwitchNetwork,
+  loadngTransactionClaim,
 }) => (
   <WalletBalanceWrapper>
     <WalletBalanceSummary
@@ -33,12 +38,15 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
       deposit={deposit}
       withdraw={withdraw}
       breakpoint={breakpoint}
+      isSwitchNetwork={isSwitchNetwork}
     />
     <WalletBalanceDetail
       connected={connected}
       balanceDetailInfo={balanceDetailInfo}
       claimAll={claimAll}
       breakpoint={breakpoint}
+      isSwitchNetwork={isSwitchNetwork}
+      loadngTransactionClaim={loadngTransactionClaim}
     />
   </WalletBalanceWrapper>
 );

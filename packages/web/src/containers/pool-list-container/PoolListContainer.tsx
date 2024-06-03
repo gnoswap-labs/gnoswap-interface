@@ -1,17 +1,22 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { type FeeOptions } from "@common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
-import { type TokenPairModel } from "@models/token/token-pair-model";
-import { useQuery } from "@tanstack/react-query";
+import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { ValuesType } from "utility-types";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { CommonState } from "@states/index";
-import { useRouter } from "next/router";
-import { generateBarAreaDatas } from "@common/utils/test-util";
+import { usePoolData } from "@hooks/pool/use-pool-data";
+import useClickOutside from "@hooks/common/use-click-outside";
+import { ThemeState } from "@states/index";
+import { PoolListInfo } from "@models/pool/info/pool-list-info";
+import { useLoading } from "@hooks/common/use-loading";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
+import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
+import useRouter from "@hooks/common/use-custom-router";
 
 export interface Pool {
   poolId: string;
-  tokenPair: TokenPairModel;
+  tokenPair: TokenPairInfo;
   feeRate: FeeOptions;
   liquidity: string;
   apr: string;
@@ -32,153 +37,31 @@ export interface PoolSortOption {
 
 export const TABLE_HEAD = {
   POOL_NAME: "Pool Name",
-  LIQUIDITY: "Liquidity",
+  TVL: "TVL",
   VOLUME: "Volume (24h)",
   FEES: "Fees (24h)",
   APR: "APR",
-  REWARDS: "Rewards",
+  REWARDS: "Incentive",
   LIQUIDITY_PLOT: "Liquidity Plot",
 } as const;
+
+export const SORT_SUPPORT_HEAD = [
+  "Pool Name",
+  "TVL",
+  "Volume (24h)",
+  "Fees (24h)",
+  "APR",
+];
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
 export const POOL_TYPE = {
   ALL: "All",
   INCENTIVIZED: "Incentivized",
-  NON_INCENTIVIZED: "Non-Incentivized",
+  NONE_INCENTIVIZED: "Non-Incentivized",
 } as const;
 
 export type POOL_TYPE = ValuesType<typeof POOL_TYPE>;
-
-const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
-  "Pool Name": "name",
-  Liquidity: "liquidity",
-  "Volume (24h)": "volume",
-  "Fees (24h)": "fees",
-  APR: "apr",
-  Rewards: "rewards",
-  "Liquidity Plot": "liquidity_plot",
-};
-
-export const dummyPoolList: Pool[] = [
-  {
-    poolId: Math.floor(Math.random() * 50 + 1).toString(),
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    feeRate: "0.01%",
-    liquidity: "$12,090.41M",
-    apr: "$311,421.12M",
-    volume24h: "$311,421.12M",
-    fees24h: "$311,421.12M",
-    rewards: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png",
-    ],
-    incentiveType: POOL_TYPE.INCENTIVIZED,
-    tickInfo: {
-      currentTick: 22,
-      ticks: generateBarAreaDatas()
-    }
-  },
-  {
-    poolId: "2",
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    feeRate: "0.05%",
-    liquidity: "$12,090.41M",
-    apr: "$311,421.12M",
-    volume24h: "$311,421.12M",
-    fees24h: "$311,421.12M",
-    rewards: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x4E15361FD6b4BB609Fa63C81A2be19d873717870/logo.png",
-      "https://assets.coingecko.com/coins/images/29223/large/Favicon_200x200px.png?1677480836",
-    ],
-    incentiveType: POOL_TYPE.ALL,
-    tickInfo: {
-      currentTick: 29,
-      ticks: generateBarAreaDatas()
-    }
-  },
-  {
-    poolId: "3",
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    feeRate: "0.3%",
-    liquidity: "$12,090.41M",
-    apr: "$311,421.12M",
-    volume24h: "$311,421.12M",
-    fees24h: "$311,421.12M",
-    rewards: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x4E15361FD6b4BB609Fa63C81A2be19d873717870/logo.png",
-      "https://assets.coingecko.com/coins/images/29223/large/Favicon_200x200px.png?1677480836",
-    ],
-    incentiveType: POOL_TYPE.NON_INCENTIVIZED,
-    tickInfo: {
-      currentTick: 14,
-      ticks: generateBarAreaDatas()
-    }
-  },
-];
-
-async function fetchPools(
-  type: POOL_TYPE, // eslint-disable-line
-  page: number, // eslint-disable-line
-  keyword: string, // eslint-disable-line
-  sortKey?: string, // eslint-disable-line
-  direction?: string, // eslint-disable-line
-): Promise<Pool[]> {
-  return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-    Promise.resolve([
-      ...dummyPoolList,
-      ...dummyPoolList,
-      ...dummyPoolList,
-      ...dummyPoolList,
-      ...dummyPoolList,
-    ]),
-  );
-}
 
 const PoolListContainer: React.FC = () => {
   const [poolType, setPoolType] = useState<POOL_TYPE>(POOL_TYPE.ALL);
@@ -188,38 +71,174 @@ const PoolListContainer: React.FC = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useRouter();
+  const { poolListInfos, updatePools } = usePoolData();
+  const [componentRef, isClickOutside, setIsInside] = useClickOutside();
+  const { isLoadingPools } = useLoading();
 
-  const routeItem = (id: number) => {
+  const themeKey = useAtomValue(ThemeState.themeKey);
+
+  useEffect(() => {
+    updatePools();
+  }, []);
+
+  useEffect(() => {
+    if (!keyword) {
+      if (isClickOutside) {
+        setSearchIcon(false);
+      }
+    }
+  }, [isClickOutside, keyword]);
+
+  // 10K -> 10000, 20M -> 2000000 ...
+  const convertKMBtoNumber = (kmbValue: string) => {
+    const sizesMap: { [key: string]: number } = {
+      K: 1_000,
+      M: 1_000_000,
+      B: 1_000_000_000,
+    };
+
+    const lastChar = kmbValue.charAt(kmbValue.length - 1);
+    let currentValue = Number(kmbValue.slice(0, kmbValue.length - 1));
+
+    for (const sizeKey in sizesMap) {
+      if (sizeKey === lastChar) {
+        currentValue = sizesMap[sizeKey] * currentValue;
+      }
+    }
+
+    return currentValue;
+  };
+
+  const sortValueTransform = (value: string) => {
+    const formattedNumber = value.replace(/,/g, "").slice(1);
+    const lastChar = formattedNumber.charAt(formattedNumber.length - 1);
+
+    if (value === "<$0.01") {
+      return 0.009;
+    }
+
+    if (["K", "M", "B"].some(item => item === lastChar)) {
+      return convertKMBtoNumber(formattedNumber);
+    }
+
+    if (isNaN(Number(formattedNumber))) {
+      return -1;
+    }
+
+    return Number(value.replace(/,/g, "").slice(1));
+  };
+
+  const sortedPoolListInfos = useMemo(() => {
+    function filteredPoolType(
+      poolType: POOL_TYPE,
+      incentivizedType: INCENTIVE_TYPE,
+    ) {
+      switch (poolType) {
+        case "Incentivized":
+          return incentivizedType !== "NONE_INCENTIVIZED";
+        case "Non-Incentivized":
+          return incentivizedType === "NONE_INCENTIVIZED";
+        default:
+          break;
+      }
+      return true;
+    }
+
+    const temp = poolListInfos.filter(info => {
+      if (keyword !== "") {
+        return (
+          info.tokenA.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          info.tokenB.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          info.tokenA.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
+          info.tokenB.symbol.toLowerCase().includes(keyword.toLowerCase())
+        );
+      }
+      return true;
+    });
+    if (sortOption) {
+      if (sortOption.key === TABLE_HEAD.POOL_NAME) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) =>
+            b.tokenA.name.localeCompare(a.tokenA.name),
+          );
+        } else {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) =>
+            a.tokenA.name.localeCompare(b.tokenA.name),
+          );
+        }
+      } else if (sortOption.key === TABLE_HEAD.TVL) {
+        if (sortOption.direction === "asc") {
+          temp.sort(
+            (a: PoolListInfo, b: PoolListInfo) =>
+              sortValueTransform(a.tvl) - sortValueTransform(b.tvl),
+          );
+        } else {
+          temp.sort(
+            (a: PoolListInfo, b: PoolListInfo) =>
+              -sortValueTransform(a.tvl) + sortValueTransform(b.tvl),
+          );
+        }
+      } else if (sortOption.key === TABLE_HEAD.VOLUME) {
+        if (sortOption.direction === "asc") {
+          temp.sort(
+            (a: PoolListInfo, b: PoolListInfo) =>
+              sortValueTransform(a.volume24h) - sortValueTransform(b.volume24h),
+          );
+        } else {
+          temp.sort(
+            (a: PoolListInfo, b: PoolListInfo) =>
+              -sortValueTransform(a.volume24h) +
+              sortValueTransform(b.volume24h),
+          );
+        }
+      } else if (sortOption.key === TABLE_HEAD.FEES) {
+        if (sortOption.direction === "asc") {
+          temp.sort(
+            (a: PoolListInfo, b: PoolListInfo) =>
+              sortValueTransform(a.fees24h) - sortValueTransform(b.fees24h),
+          );
+        } else {
+          temp.sort(
+            (a: PoolListInfo, b: PoolListInfo) =>
+              -sortValueTransform(a.fees24h) + sortValueTransform(b.fees24h),
+          );
+        }
+      } else if (sortOption.key === TABLE_HEAD.APR) {
+        if (sortOption.direction === "asc") {
+          temp.sort(
+            (a: PoolListInfo, b: PoolListInfo) =>
+              sortValueTransform(a.apr) - sortValueTransform(b.apr),
+          );
+        } else {
+          temp.sort(
+            (a: PoolListInfo, b: PoolListInfo) =>
+              -sortValueTransform(a.apr) + sortValueTransform(b.apr),
+          );
+        }
+      }
+    } else {
+      temp.sort(
+        (a: PoolListInfo, b: PoolListInfo) =>
+          -sortValueTransform(a.tvl) + sortValueTransform(b.tvl),
+      );
+    }
+    return temp.filter(info => filteredPoolType(poolType, info.incentiveType));
+  }, [keyword, poolListInfos, poolType, sortOption]);
+
+  const totalPage = useMemo(() => {
+    return Math.ceil(sortedPoolListInfos.length / EARN_POOL_LIST_SIZE);
+  }, [sortedPoolListInfos.length]);
+
+  const routeItem = (id: string) => {
     router.push(`/earn/pool/${id}`);
   };
   const onTogleSearch = () => {
     setSearchIcon(prev => !prev);
+    setIsInside(true);
   };
-
-  const {
-    isFetched,
-    error,
-    data: pools,
-  } = useQuery<Pool[], Error>({
-    queryKey: [
-      "pools",
-      poolType,
-      page,
-      keyword,
-      sortOption?.key,
-      sortOption?.direction,
-    ],
-    queryFn: () =>
-      fetchPools(
-        poolType,
-        page,
-        keyword,
-        sortOption && SORT_PARAMS[sortOption.key],
-        sortOption?.direction,
-      ),
-  });
-
   const changePoolType = useCallback((newType: string) => {
+    setPage(0);
+
     switch (newType) {
       case POOL_TYPE.ALL:
         setPoolType(POOL_TYPE.ALL);
@@ -227,8 +246,8 @@ const PoolListContainer: React.FC = () => {
       case POOL_TYPE.INCENTIVIZED:
         setPoolType(POOL_TYPE.INCENTIVIZED);
         break;
-      case POOL_TYPE.NON_INCENTIVIZED:
-        setPoolType(POOL_TYPE.NON_INCENTIVIZED);
+      case POOL_TYPE.NONE_INCENTIVIZED:
+        setPoolType(POOL_TYPE.NONE_INCENTIVIZED);
         break;
       default:
         setPoolType(POOL_TYPE.ALL);
@@ -237,6 +256,7 @@ const PoolListContainer: React.FC = () => {
 
   const search = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
+    setPage(0);
   }, []);
 
   const movePage = useCallback((newPage: number) => {
@@ -250,8 +270,8 @@ const PoolListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setTokenSortOption({
         key,
@@ -268,15 +288,17 @@ const PoolListContainer: React.FC = () => {
 
   return (
     <PoolList
-      pools={pools ?? []}
-      isFetched={isFetched}
-      error={error}
+      pools={sortedPoolListInfos.slice(
+        page * EARN_POOL_LIST_SIZE,
+        (page + 1) * EARN_POOL_LIST_SIZE,
+      )}
+      isFetched={!isLoadingPools}
       poolType={poolType}
       changePoolType={changePoolType}
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={100}
+      totalPage={totalPage}
       movePage={movePage}
       sortOption={sortOption}
       sort={sort}
@@ -285,6 +307,8 @@ const PoolListContainer: React.FC = () => {
       routeItem={routeItem}
       searchIcon={searchIcon}
       onTogleSearch={onTogleSearch}
+      searchRef={componentRef}
+      themeKey={themeKey}
     />
   );
 };

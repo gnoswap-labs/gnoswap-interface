@@ -1,5 +1,5 @@
 {
-  "packageManager": "yarn@3.6.1",
+  "packageManager": "yarn@4.1.0",
   "workspaces": [
     "packages/*"
   ],
@@ -8,7 +8,8 @@
     "dev": "ultra --recursive dev",
     "storybook": "yarn workspace @gnoswap-labs/web storybook",
     "test:ci": "ultra --recursive test:ci",
-    "build": "yarn workspace @gnoswap-labs/web build"
+    "build": "yarn workspace @gnoswap-labs/web build",
+    "start": "yarn workspace @gnoswap-labs/web start"
   },
   "resolutions": {
     "@storybook/react-docgen-typescript-plugin": "npm:react-docgen-typescript-plugin@1.0.5"

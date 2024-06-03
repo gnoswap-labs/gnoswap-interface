@@ -1,33 +1,41 @@
-import React from "react";
-import IconHeaderLogo from "../icons/IconHeaderLogo";
+import React, { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import IconSearch from "@components/common/icons/IconSearch";
+import NotificationButton from "@components/common/notification-button/NotificationButton";
+import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
+import DepositModal from "@components/wallet/deposit-modal/DepositModal";
+import { HEADER_NAV, SIDE_MENU_NAV } from "@constants/header.constant";
+import { Token } from "@containers/header-container/HeaderContainer";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { AccountModel } from "@models/account/account-model";
+import { DEVICE_TYPE, DeviceSize } from "@styles/media";
+import IconDownload from "../icons/IconDownload";
+import IconHeaderLogo from "../icons/IconHeaderLogo";
+import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
+import SubMenuButton from "../sub-menu-button/SubMenuButton";
 import {
-  HeaderWrapper,
-  HeaderContainer,
-  LeftSection,
-  Navigation,
-  RightSection,
-  LogoLink,
-  SearchContainer,
-  SearchButton,
-  BottomNavWrapper,
   BottomNavContainer,
   BottomNavItem,
+  BottomNavWrapper,
+  DepositButton,
+  HeaderContainer,
+  HeaderWrapper,
+  LeftSection,
+  LogoLink,
+  Navigation,
+  RightSection,
+  SearchButton,
+  SearchContainer,
 } from "./Header.styles";
-import NotificationButton from "@components/common/notification-button/NotificationButton";
-import { HEADER_NAV } from "@constants/header.constant";
-import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
-import { Token } from "@containers/header-container/HeaderContainer";
-import { DEVICE_TYPE } from "@styles/media";
-import SubMenuButton from "../sub-menu-button/SubMenuButton";
-import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { ITokenResponse } from "@repositories/token";
+import { BLOCKED_PAGES } from "@constants/environment.constant";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 interface HeaderProps {
   pathname?: string;
-  isConnected: boolean;
   sideMenuToggle: boolean;
-  onSideMenuToggle: () => void;
+  onSideMenuToggle: (value: boolean) => void;
   searchMenuToggle: boolean;
   onSearchMenuToggle: () => void;
   tokens: Token[];
@@ -36,11 +44,25 @@ interface HeaderProps {
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
   breakpoint: DEVICE_TYPE;
+  account: AccountModel | null;
+  connected: boolean;
+  connectAdenaClient: () => void;
+  themeKey: "dark" | "light";
+  disconnectWallet: () => void;
+  switchNetwork: () => void;
+  isSwitchNetwork: boolean;
+  loadingConnect: string;
+  mostLiquidity: Token[];
+  popularTokens: Token[];
+  recents: Token[];
+  movePage: (path: string) => void;
+  gnotBalance?: number;
+  isLoadingGnotBalance?: boolean;
+  gnotToken?: ITokenResponse;
 }
 
 const Header: React.FC<HeaderProps> = ({
   pathname = "/",
-  isConnected,
   sideMenuToggle,
   onSideMenuToggle,
   searchMenuToggle,
@@ -50,27 +72,81 @@ const Header: React.FC<HeaderProps> = ({
   search,
   keyword,
   breakpoint,
+  account,
+  connected,
+  connectAdenaClient,
+  themeKey,
+  disconnectWallet,
+  switchNetwork,
+  isSwitchNetwork,
+  loadingConnect,
+  mostLiquidity,
+  popularTokens,
+  recents,
+  movePage,
+  gnotBalance,
+  isLoadingGnotBalance,
+  gnotToken,
 }) => {
+  const { width } = useWindowSize();
+  const router = useCustomRouter();
+  const [isShowDepositModal, setIsShowDepositModal] = useState(false);
+
+  const navigationItems = useMemo(() => {
+    // Make path by page name
+    const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
+    if (blockedPaths.length > 0) {
+      return [...HEADER_NAV, ...SIDE_MENU_NAV].filter(
+        item => !blockedPaths.includes(item.path),
+      );
+    }
+    return HEADER_NAV.filter(item => !blockedPaths.includes(item.path));
+  }, []);
+
+  const changeTokenDeposit = useCallback(() => {
+    setIsShowDepositModal(true);
+  }, []);
+
+  const closeDeposit = () => {
+    setIsShowDepositModal(false);
+  };
+
+  const callbackDeposit = (value: boolean) => {
+    setIsShowDepositModal(value);
+  };
+
+  usePreventScroll(isShowDepositModal);
+
   return (
     <>
       <HeaderWrapper>
         <HeaderContainer>
           <LeftSection>
-            <Link href="/" passHref legacyBehavior>
+            <span className="link" onClick={() => router.replace("/")}>
               <LogoLink>
                 <IconHeaderLogo className="header-main-logo" />
               </LogoLink>
-            </Link>
+            </span>
             <Navigation>
               {breakpoint !== DEVICE_TYPE.MOBILE && (
-                <>
+                <React.Fragment>
                   <ul>
-                    {HEADER_NAV.map(item => (
+                    {navigationItems.map(item => (
                       <li
                         key={item.title}
-                        className={pathname === item.path ? "selected" : ""}
+                        className={
+                          pathname === item.path ||
+                          (item?.subPath || []).some(_ => pathname.includes(_))
+                            ? "selected"
+                            : ""
+                        }
                       >
-                        <Link href={item.path}>{item.title}</Link>
+                        <span
+                          className="link"
+                          onClick={() => router.push(item.path)}
+                        >
+                          {item.title}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -78,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({
                     sideMenuToggle={sideMenuToggle}
                     onSideMenuToggle={onSideMenuToggle}
                   />
-                </>
+                </React.Fragment>
               )}
             </Navigation>
           </LeftSection>
@@ -87,7 +163,25 @@ const Header: React.FC<HeaderProps> = ({
               <SearchButton onClick={onSearchMenuToggle}>
                 <IconSearch className="search-icon" />
               </SearchButton>
-              <WalletConnectorButton isConnected={isConnected} />
+              {connected && width > DeviceSize[DEVICE_TYPE.TABLET_S] && (
+                <DepositButton onClick={() => changeTokenDeposit()}>
+                  <IconDownload />
+                  <span>Deposit</span>
+                </DepositButton>
+              )}
+              <WalletConnectorButton
+                account={account}
+                connected={connected}
+                connectAdenaClient={connectAdenaClient}
+                themeKey={themeKey}
+                disconnectWallet={disconnectWallet}
+                switchNetwork={switchNetwork}
+                isSwitchNetwork={isSwitchNetwork}
+                loadingConnect={loadingConnect}
+                gnotBalance={gnotBalance}
+                isLoadingGnotBalance={isLoadingGnotBalance}
+                gnotToken={gnotToken}
+              />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />
           </RightSection>
@@ -95,10 +189,15 @@ const Header: React.FC<HeaderProps> = ({
         {breakpoint === DEVICE_TYPE.MOBILE && (
           <BottomNavWrapper>
             <BottomNavContainer>
-              {HEADER_NAV.map(item => (
+              {navigationItems.map(item => (
                 <BottomNavItem
                   key={item.title}
-                  className={pathname === item.path ? "selected" : ""}
+                  className={
+                    pathname === item.path ||
+                    (item.subPath || []).some(_ => pathname.includes(_))
+                      ? "selected"
+                      : ""
+                  }
                 >
                   <Link href={item.path}>{item.title}</Link>
                 </BottomNavItem>
@@ -117,9 +216,25 @@ const Header: React.FC<HeaderProps> = ({
             keyword={keyword}
             tokens={tokens}
             isFetched={isFetched}
+            breakpoint={breakpoint}
+            mostLiquidity={mostLiquidity}
+            popularTokens={popularTokens}
+            recents={recents}
+            placeholder="Search by Name, Symbol, or Path"
+            movePage={movePage}
           />
         )}
       </HeaderWrapper>
+
+      {isShowDepositModal && (
+        <DepositModal
+          breakpoint={breakpoint}
+          close={closeDeposit}
+          depositInfo={undefined}
+          changeToken={changeTokenDeposit}
+          callback={callbackDeposit}
+        />
+      )}
     </>
   );
 };

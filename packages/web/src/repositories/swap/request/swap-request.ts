@@ -1,13 +1,15 @@
+import { TokenModel } from "@models/token/token-model";
+
 export interface SwapRequest {
-  token0: {
-    tokenId: string;
-    amount: number;
-  };
-  token1: {
-    tokenId: string;
-    amount: number;
-  };
-  type: "EXACT_IN" | "EXACT_OUT";
-  slippage: number;
-  gasFee: number;
+  tokenA: TokenModel;
+
+  tokenB: TokenModel;
+
+  fee: number;
+
+  receiver: string; //address
+
+  zeroForOne: boolean; // direction
+
+  amountSpecified: number; // positive: token to spend, negative: token to receive
 }

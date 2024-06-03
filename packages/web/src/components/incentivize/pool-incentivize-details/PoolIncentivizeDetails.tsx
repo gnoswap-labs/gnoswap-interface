@@ -1,53 +1,73 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
+import { makePairName } from "@utils/string-utils";
 import React from "react";
-import { CONTENT_TITLE } from "@components/incentivize/pool-incentivize/PoolIncentivize";
 import { wrapper } from "./PoolIncentivizeDetails.styles";
+import { DistributionPeriodDate } from "../pool-incentivize/PoolIncentivize";
+import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import { TokenModel } from "@models/token/token-model";
 
 interface PoolIncentivizeDetailsProps {
-  details: any;
+  details: PoolSelectItemInfo | null;
+  startDate?: DistributionPeriodDate;
+  period: number;
+  amount: string;
+  token: TokenModel | null;
+}
+
+function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
+  const utcDate: Date = new Date(Date.UTC(myDate?.year || 0, (myDate?.month || 1) - 1, (myDate?.date || 0) + (days || 0), 0, 0, 0));
+  const formattedDate: string =
+    utcDate.toISOString().replace(/T/, " ").replace(/\..+/, "") + " (UTC)";
+  return formattedDate;
 }
 
 const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   details,
+  startDate,
+  period,
+  amount,
+  token,
 }) => {
+
   return (
     <div css={wrapper}>
       <section>
-        <h5 className="section-title">{CONTENT_TITLE.POOL}</h5>
-        <div className="section-info">
+        <h5 className="section-title">Pool</h5>
+        {details ? <div className="section-info">
           <DoubleLogo
-            left={details.tokenPair.token0.tokenLogo}
-            right={details.tokenPair.token1.tokenLogo}
+            left={details.tokenA.logoURI}
+            right={details.tokenB.logoURI}
+            leftSymbol={details.tokenA.symbol}
+            rightSymbol={details.tokenB.symbol}
             size={24}
           />
           <span className="pair-symbol">
-            {tokenPairSymbolToOneCharacter(details.tokenPair)}
+            {makePairName(details)}
           </span>
-          <Badge text={details.feeRate} type={BADGE_TYPE.DARK_DEFAULT} />
-        </div>
+          <Badge text={`${(Number(details.fee) ?? 0) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
+        </div> : <div className="section-info">-</div>}
       </section>
       <section>
-        <h5 className="section-title">{CONTENT_TITLE.TOTAL_AMOUNT}</h5>
-        <div className="section-info">
+        <h5 className="section-title">Total Amount</h5>
+        {amount && token ? <div className="section-info">
           <img
-            src={details.tokenPair.token0.tokenLogo}
+            src={token.logoURI}
             alt="token-logo"
             className="token-logo"
           />
-          <span className="total-amount-value">106,208.255 GNOS</span>
-        </div>
+          <span className="total-amount-value">{Number(amount).toLocaleString()} {token.symbol}</span>
+        </div> : <div className="section-info">-</div>}
       </section>
       <section className="period-section">
-        <h5 className="section-title">{CONTENT_TITLE.PERIOD}</h5>
+        <h5 className="section-title">Period</h5>
         <div className="section-info">
           <span className="select-date">
-            2022-12-06 00:00 (UTC)
-            <br />- 2023-01-05 00:00 (UTC)
+            {formatDate(startDate, 0)}
+            <br />- {formatDate(startDate, period)}
           </span>
           <span className="period-desc">
-            1,820.5 GNOS will be distributed daily
+            {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()} {token?.symbol} will be distributed daily
           </span>
         </div>
       </section>

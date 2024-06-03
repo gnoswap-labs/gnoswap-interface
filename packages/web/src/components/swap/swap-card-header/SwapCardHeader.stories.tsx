@@ -19,13 +19,10 @@ const Template: ComponentStory<typeof SwapCardHeader> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  settingMenuToggle: true,
-  onSettingMenu: action("onSettingMenu"),
-  tolerance: "",
-  changeTolerance: action("changeTolerance"),
-  resetTolerance: action("resetTolerance"),
-  handleCopyClipBoard: action("handleCopyClipBoard"),
-  copied: true,
+  copied: false,
+  copyURL: action("copyURL"),
+  slippage: "0",
+  changeSlippage: action("changeSlippage"),
 };
 
 const wrapper = () => css`

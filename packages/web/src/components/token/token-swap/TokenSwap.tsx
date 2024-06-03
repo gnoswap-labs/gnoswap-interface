@@ -1,29 +1,41 @@
-import React, { useCallback, useState } from "react";
-import { wrapper } from "./TokenSwap.styles";
+import React, { useCallback, useMemo } from "react";
+import { CopyTooltip, wrapper } from "./TokenSwap.styles";
 import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
+import IconLink from "@components/common/icons/IconLink";
+import IconPolygon from "@components/common/icons/IconPolygon";
+import { TokenModel } from "@models/token/token-model";
+import { DataTokenInfo } from "@models/token/token-swap-model";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
+import BigNumber from "bignumber.js";
+import { roundDownDecimalNumber } from "@utils/regex";
+
 export interface TokenSwapProps {
-  from: {
-    token: string;
-    symbol: string;
-    amount: string;
-    price: string;
-    balance: string;
-    tokenLogo: string;
-  };
-  to: {
-    token: string;
-    symbol: string;
-    amount: string;
-    price: string;
-    balance: string;
-    tokenLogo: string;
-  };
+  isSwitchNetwork: boolean;
   connected: boolean;
-  connectWallet: () => void;
+  copied: boolean;
+  themeKey: "dark" | "light";
+  dataTokenInfo: DataTokenInfo;
+  isLoading: boolean;
+  swapButtonText: string;
+  isAvailSwap: boolean;
+  swapSummaryInfo: SwapSummaryInfo | null;
+  swapRouteInfos: SwapRouteInfo[];
+
   swapNow: () => void;
+  handleSetting: () => void;
+  handleCopied: () => void;
+  connectWallet: () => void;
+  changeTokenA: (token: TokenModel) => void;
+  changeTokenAAmount: (value: string, none?: boolean) => void;
+  changeTokenB: (token: TokenModel) => void;
+  changeTokenBAmount: (value: string, none?: boolean) => void;
+  switchSwapDirection: () => void;
+  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
 }
 
 function isAmount(str: string) {
@@ -31,108 +43,184 @@ function isAmount(str: string) {
   return regex.test(str);
 }
 
-const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWallet, swapNow }) => {
-  const [fromAmount, setFromAmount] = useState(from.amount);
-  const [toAmount, setToAmount] = useState(to.amount);
+const TokenSwap: React.FC<TokenSwapProps> = ({
+  connected,
+  connectWallet,
+  swapNow,
+  copied,
+  handleCopied,
+  themeKey,
+  handleSetting,
+  isSwitchNetwork,
+  dataTokenInfo,
+  changeTokenA,
+  changeTokenAAmount,
+  changeTokenB,
+  changeTokenBAmount,
+  switchSwapDirection,
+  isLoading,
+  swapButtonText,
+  isAvailSwap,
+  swapSummaryInfo,
+  swapRouteInfos,
+  setSwapRateAction,
+}) => {
+  const tokenA = dataTokenInfo.tokenA;
+  const tokenB = dataTokenInfo.tokenB;
+  const direction = swapSummaryInfo?.swapDirection;
 
-  const onChangeFromAmount = useCallback(
+  const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-
+      if (value === "") {
+        changeTokenAAmount("", true);
+      }
       if (value !== "" && !isAmount(value)) return;
-
-      setFromAmount(value);
-      // TODO
-      // - mapT0AmountToT0Price
-      // - mapT0AmpuntT1Amount
-      // - mapT1AmpuntT1Price
+      changeTokenAAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [changeTokenAAmount],
   );
 
-  const onChangeToAmount = useCallback(
+  const onChangeTokenBAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-
+      if (value === "") {
+        changeTokenBAmount("", true);
+      }
       if (value !== "" && !isAmount(value)) return;
-
-      setToAmount(value);
-      // TODO
-      // - mapT1AmountToT1Price
-      // - mapT1AmpuntT0Amount
-      // - mapT0AmpuntT0Price
+      changeTokenBAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [changeTokenBAmount],
   );
+
+  const handleAutoFillTokenA = useCallback(() => {
+    if (connected) {
+      const formatValue = parseFloat(dataTokenInfo.tokenABalance.replace(/,/g, "")).toString();
+      changeTokenAAmount(formatValue);
+    }
+  }, [changeTokenAAmount, connected, dataTokenInfo]);
+
+  const handleAutoFillTokenB = useCallback(() => {
+    if (connected) {
+      const formatValue = parseFloat(dataTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
+      changeTokenBAmount(formatValue);
+    }
+  }, [changeTokenBAmount, connected, dataTokenInfo]);
 
   const onClickConfirm = useCallback(() => {
-    if (!connected) {
+    if (!connected || isSwitchNetwork) {
       connectWallet();
       return;
     }
     swapNow();
-  }, [connected, connectWallet, swapNow]);
+  }, [connected, connectWallet, swapNow, isSwitchNetwork]);
+
+  const isShowInfoSection = useMemo(() => {
+    return (!!Number(dataTokenInfo.tokenAAmount) && !!Number(dataTokenInfo.tokenBAmount)) || isLoading;
+  }, [dataTokenInfo, isLoading]);
+
+  const balanceADisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
+    if (connected && dataTokenInfo.tokenABalance !== "-") {
+      if (dataTokenInfo.tokenABalance === "0") return 0;
+      return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat();
+    }
+    return "-";
+  }, [isSwitchNetwork, connected, dataTokenInfo.tokenABalance, dataTokenInfo.tokenADecimals]);
+
+  const balanceBDisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
+    if (connected && dataTokenInfo.tokenBBalance !== "-") {
+      if (dataTokenInfo.tokenBBalance === "0") return 0;
+      return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat();
+    }
+    return "-";
+  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork, dataTokenInfo.tokenBDecimals]);
 
   return (
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
-        <button className="setting-button" disabled>
-          <IconSettings className="setting-icon" />
-        </button>
+        <div className="header-button">
+          <button className="setting-button link-button" onClick={handleCopied}>
+            <IconLink className="setting-icon" />
+            {copied && (
+              <CopyTooltip>
+                <div className={`box ${themeKey}-shadow`}>
+                  <span>Swap URL Copied!</span>
+                </div>
+                <IconPolygon className="polygon-icon" />
+              </CopyTooltip>
+            )}
+          </button>
+          <button className="setting-button" onClick={handleSetting}>
+            <IconSettings className="setting-icon" />
+          </button>
+        </div>
       </div>
       <div className="inputs">
         <div className="from">
           <div className="amount">
             <input
-              className="amount-text"
-              value={fromAmount}
-              onChange={onChangeFromAmount}
-              placeholder={fromAmount === "" ? "0" : ""}
+              className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
+              value={dataTokenInfo.tokenAAmount}
+              onChange={onChangeTokenAAmount}
+              placeholder="0"
             />
             <div className="token">
-              <SelectPairButton token={from} />
+              <SelectPairButton token={tokenA} changeToken={changeTokenA} />
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{from.price}</span>
-            <span className="balance-text">Balance : {from.balance}</span>
+            <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>{dataTokenInfo.tokenAUSDStr}</span>
+            <span className={`balance-text ${tokenA && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenA}>
+              Balance: {balanceADisplay}
+            </span>
           </div>
         </div>
         <div className="to">
           <div className="amount">
             <input
-              className="amount-text"
-              value={toAmount}
-              onChange={onChangeToAmount}
-              placeholder={toAmount === "" ? "0" : ""}
+              className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
+              value={dataTokenInfo.tokenBAmount}
+              onChange={onChangeTokenBAmount}
+              placeholder="0"
             />
             <div className="token">
-              <SelectPairButton token={to} />
+              <SelectPairButton token={tokenB} changeToken={changeTokenB} />
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{to.price}</span>
-            <span className="balance-text">Balance : {to.balance}</span>
+            <span className={`price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}>{dataTokenInfo.tokenBUSDStr}</span>
+            <span className={`balance-text ${tokenB && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenB}>
+              Balance: {balanceBDisplay}
+            </span>
           </div>
         </div>
-        <div className="arrow">
+        <div className="arrow" onClick={switchSwapDirection}>
           <div className="shape">
             <IconSwapArrowDown className="shape-icon" />
           </div>
         </div>
       </div>
-
+      {swapSummaryInfo && isShowInfoSection && (
+        <SwapCardContentDetail
+          swapSummaryInfo={swapSummaryInfo}
+          swapRouteInfos={swapRouteInfos}
+          isLoading={isLoading}
+          setSwapRateAction={setSwapRateAction}
+        />
+      )}
       <div className="footer">
         <Button
-          text={connected ? "Swap now" : "Connect Wallet"}
+          text={swapButtonText}
           style={{
             fullWidth: true,
-            height: 57,
-            fontType: "body7",
-            hierarchy: ButtonHierarchy.Primary
+            hierarchy: ButtonHierarchy.Primary,
           }}
+          disabled={!isAvailSwap}
           onClick={onClickConfirm}
+          className="confirm-button"
         />
       </div>
     </div>

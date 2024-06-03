@@ -4,7 +4,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { WalletBalanceDetailInfoTooltipContent } from "./DashboardLabel.styles";
 
 interface WalletBalanceDetailInfoProps {
-  tooltip: string;
+  tooltip: React.ReactNode;
 }
 
 const DashboardLabel: React.FC<WalletBalanceDetailInfoProps> = ({

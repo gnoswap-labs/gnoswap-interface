@@ -16,7 +16,6 @@ interface DashboardInfoTitleProps {
 
 const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
   dashboardTokenInfo,
-  breakpoint,
 }) => (
   <DashboardInfoTitleWrapper>
     <TokenWrapper>
@@ -24,19 +23,19 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
         <div className="gnos-image-wrapper">
           <IconLogoWhite className="gnos-image" />
         </div>
-        <div className="gnos-symbol">GNOS</div>
+        <div className="gnos-symbol">GNS</div>
       </GnosLogoWrapper>
-      <div>{dashboardTokenInfo.gnosAmount}</div>
+      <div className="amount-info">{dashboardTokenInfo.gnosAmount}</div>
     </TokenWrapper>
-    {breakpoint !== DEVICE_TYPE.MOBILE && <TitleDivider />}
+    <TitleDivider />
     <TokenWrapper>
       <GnotLogoWrapper>
         <div className="gnot-image-wrapper">
-          <IconLogoWhite className="gnot-image" />
+          <img src="https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg" className="gnot-image" />
         </div>
         <div className="gnot-symbol">GNOT</div>
       </GnotLogoWrapper>
-      <div>{dashboardTokenInfo.gnotAmount}</div>
+      <div className="amount-info">{dashboardTokenInfo.gnotAmount}</div>
     </TokenWrapper>
   </DashboardInfoTitleWrapper>
 );

@@ -11,12 +11,12 @@ import PoolListHeader from "@components/earn/pool-list-header/PoolListHeader";
 import PoolListTable from "@components/earn/pool-list-table/PoolListTable";
 import Pagination from "@components/common/pagination/Pagination";
 import { PoolListWrapper } from "./PoolList.styles";
-import { DeviceSize, DEVICE_TYPE } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
+import { PoolListInfo } from "@models/pool/info/pool-list-info";
 
 interface TokenListProps {
-  pools: Pool[];
+  pools: PoolListInfo[];
   isFetched: boolean;
-  error: Error | null;
   poolType?: POOL_TYPE;
   changePoolType: (newType: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -30,13 +30,14 @@ interface TokenListProps {
   searchIcon: boolean;
   onTogleSearch: () => void;
   breakpoint: DEVICE_TYPE;
-  routeItem: (id: number) => void;
+  routeItem: (id: string) => void;
+  searchRef: React.RefObject<HTMLDivElement>;
+  themeKey: "dark" | "light";
 }
 
 const PoolList: React.FC<TokenListProps> = ({
   pools,
   isFetched,
-  error,
   poolType = POOL_TYPE.ALL,
   changePoolType,
   search,
@@ -51,6 +52,8 @@ const PoolList: React.FC<TokenListProps> = ({
   onTogleSearch,
   breakpoint,
   routeItem,
+  searchRef,
+  themeKey,
 }) => {
   return (
     <PoolListWrapper>
@@ -62,6 +65,7 @@ const PoolList: React.FC<TokenListProps> = ({
         breakpoint={breakpoint}
         searchIcon={searchIcon}
         onTogleSearch={onTogleSearch}
+        searchRef={searchRef}
       />
       <PoolListTable
         pools={pools}
@@ -70,13 +74,15 @@ const PoolList: React.FC<TokenListProps> = ({
         sortOption={sortOption}
         isSortOption={isSortOption}
         routeItem={routeItem}
+        themeKey={themeKey}
+        breakpoint={breakpoint}
       />
-      <Pagination
+      {totalPage > 1 && <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}
         siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
-      />
+      />}
     </PoolListWrapper>
   );
 };

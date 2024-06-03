@@ -1,6 +1,6 @@
 import { AmountType } from "@common/types/data-prop-types";
 import { AmountNumberType } from "@common/types/data-prop-types";
-import { TokenMeta } from "@repositories/token";
+import { amountEmptyNumberInit } from "@common/values";
 import BigNumber from "bignumber.js";
 
 interface Amount {
@@ -14,16 +14,6 @@ interface DenomConfig {
   minimalDenom: string;
   minimalRate: BigNumber;
 }
-
-export const metaInfoToConfig = (metaInfo: TokenMeta): DenomConfig => {
-  const { decimals, denom, minimal_denom } = metaInfo;
-  return {
-    defaultDenom: denom,
-    defaultRate: BigNumber(1),
-    minimalDenom: minimal_denom,
-    minimalRate: BigNumber(1).shiftedBy(decimals * -1),
-  };
-};
 
 export const toMinimalDenom = (amount: Amount, denomConfig: DenomConfig) => {
   const { defaultRate, minimalDenom, minimalRate } = denomConfig;
@@ -55,6 +45,9 @@ export const toDefaultDenom = (amount: Amount, denomConfig: DenomConfig) => {
 
 export const textToBalances = (balancesText: string) => {
   const balanceTexts = balancesText.split(",");
+  if (balanceTexts.length === 0) {
+    return [amountEmptyNumberInit];
+  }
   const balances = balanceTexts.map(convertTextToAmount);
   return balances;
 };
@@ -76,9 +69,9 @@ const convertTextToAmount = (text: string) => {
     .replace('"', "")
     .match(/[a-zA-Z]+|[0-9]+(?:\.[0-9]+|)/g);
 
-  const value = balance && balance?.length > 0 ? balance[0] : 0.0;
-  const denom = balance && balance?.length > 1 ? balance[1] : "";
-  return { value: BigNumber(value), denom };
+  const amount = balance && balance?.length > 0 ? balance[0] : 0.0;
+  const currency = balance && balance?.length > 1 ? balance[1] : "";
+  return { amount: BigNumber(amount).toNumber(), currency };
 };
 
 export const amountFormatToBignum = (amount: AmountNumberType | AmountType) => {

@@ -12,4 +12,4 @@ const Template: ComponentStory<typeof SelectUnstakeResult> = args => {
 };
 
 export const Default = Template.bind({});
-Default.args = { checkedList: ["#11111"] };
+Default.args = {};

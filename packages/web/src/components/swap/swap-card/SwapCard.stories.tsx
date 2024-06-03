@@ -2,13 +2,86 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapCard from "./SwapCard";
 import { css } from "@emotion/react";
-import {
-  coinList,
-  dummyAutoRouterInfo,
-  dummySwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
-import { action } from "@storybook/addon-actions";
-import { DEVICE_TYPE } from "@styles/media";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+
+
+const swapSummaryInfo: SwapSummaryInfo = {
+  tokenA: {
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceID: "gno.land/r/foo",
+    address: ""
+  },
+  tokenB: {
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceID: "gno.land/r/foo",
+    address: ""
+  },
+  swapDirection: "EXACT_IN",
+  swapRate: 1.14,
+  swapRateUSD: 1.14,
+  priceImpact: 0.3,
+  guaranteedAmount: {
+    amount: 45124,
+    currency: "GNOT"
+  },
+  gasFee: {
+    amount: 0.000001,
+    currency: "GNOT"
+  },
+  gasFeeUSD: 0.1,
+  swapRateAction: "ATOB",
+  swapRate1USD: 1,
+};
+
+export const swapRouteInfos: SwapRouteInfo[] = [{
+  from: {
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceID: "gno.land/r/foo",
+    address: ""
+  },
+  to: {
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceID: "gno.land/r/foo",
+    address: ""
+  },
+  gasFee: {
+    amount: 0.000001,
+    currency: "GNOT"
+  },
+  gasFeeUSD: 0.1,
+  pools: [],
+  version: "V1",
+  weight: 100,
+}];
 
 export default {
   title: "swap/SwapCard",
@@ -25,57 +98,9 @@ const Template: ComponentStory<typeof SwapCard> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  search: action("search"),
-  keyword: "",
-  gnosAmount: "1500",
-  isConnected: true,
-  autoRouter: true,
-  showAutoRouter: action("onClick"),
-  swapGasInfo: dummySwapGasInfo,
-  swapInfo: true,
-  showSwapInfo: action("onClick"),
-  autoRouterInfo: dummyAutoRouterInfo,
-  settingMenuToggle: true,
-  onSettingMenu: action("onSettingMenu"),
-  tolerance: "",
-  changeTolerance: action("changeTolerance"),
-  tokenModal: true,
-  onSelectTokenModal: action("onClick"),
-  swapOpen: true,
-  onConfirmModal: action("onClick"),
-  submitSwap: action("submitSwap"),
-  coinList: coinList(),
-  changeToken: action("changeToken"),
-  selectToken: action("selectToken"),
-  resetTolerance: action("resetTolerance"),
-  handleCopyClipBoard: action("handleCopyClipBoard"),
-  breakpoint: DEVICE_TYPE.WEB,
-  submit: false,
-  copied: true,
-  isFetching: true,
-  swapResult: { success: true, transaction: "https//:naver.com" },
-  from: {
-    token: "USDCoin",
-    symbol: "USDC",
-    amount: "121",
-    price: "$0.00",
-    gnosExchangePrice: "1250",
-    usdExchangePrice: "($1541.55)",
-    balance: "0",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-  },
-  to: {
-    token: "HEX",
-    symbol: "HEX",
-    amount: "5000",
-    price: "$0.00",
-    gnosExchangePrice: "1250",
-    usdExchangePrice: "($1541.55)",
-    balance: "0",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-  },
+  swapSummaryInfo,
+  swapRouteInfos,
+  swapButtonText: "Swap"
 };
 
 const wrapper = () => css`

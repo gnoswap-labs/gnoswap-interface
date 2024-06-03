@@ -15,15 +15,20 @@ const Template: ComponentStory<typeof SelectPairButton> = args => (
 export const Selected = Template.bind({});
 Selected.args = {
   token: {
-    tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-    name: "HEX",
-    symbol: "HEX",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceID: "gno.land/r/foo",
+    address: ""
   },
 };
 
 export const UnSelected = Template.bind({});
 UnSelected.args = {
-  token: null,
+  token: undefined,
 };

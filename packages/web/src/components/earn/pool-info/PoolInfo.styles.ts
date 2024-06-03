@@ -6,9 +6,19 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
+  &:first-of-type {
+    padding: 16px 16px 16px 15px;
+  }
+  &:last-of-type {
+    padding: 16px 15px 16px 16px;
+  }
   height: 100%;
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
+  .icon-reward {
+    width: 20px;
+    height: 20px;
+  }
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
@@ -30,7 +40,7 @@ export const PoolInfoWrapper = styled.div`
   }
 
   .symbol-pair {
-    margin: 0px 4px;
+    margin: 0px 8px;
   }
   .feeRate {
     ${fonts.body12};
@@ -39,5 +49,10 @@ export const PoolInfoWrapper = styled.div`
 
   .chart-wrapper {
     width: 100px;
+    cursor: default;
+  }
+  .icon-reward {
+    width: 20px;
+    height: 20px;
   }
 `;

@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useMemo } from "react";
 import GainerAndLoser from "@components/token/gainer-and-loser/GainerAndLoser";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import {
+  useGetChainList,
+  useGetTokenDetailByPath,
+  useGetTokensList,
+} from "@query/token";
+import { TokenModel } from "@models/token/token-model";
+import { IGainer } from "@repositories/token";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGetPoolList } from "@query/pools";
+import useRouter from "@hooks/common/use-custom-router";
+import { toPriceFormat } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 export const gainersInit = [
   {
-    tokenId: "1",
+    path: "1",
     name: "HEX",
     symbol: "HEX",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
     price: "$12,908.25",
     change: {
@@ -16,10 +28,10 @@ export const gainersInit = [
     },
   },
   {
-    tokenId: "2",
+    path: "2",
     name: "USDCoin",
     symbol: "USDC",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     price: "$12,908.25",
     change: {
@@ -28,10 +40,10 @@ export const gainersInit = [
     },
   },
   {
-    tokenId: "1",
+    path: "1",
     name: "Bitcoin",
     symbol: "BTC",
-    tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
     price: "$12,908.25",
     change: {
       status: MATH_NEGATIVE_TYPE.POSITIVE,
@@ -42,10 +54,10 @@ export const gainersInit = [
 
 export const losersInit = [
   {
-    tokenId: "1",
+    path: "1",
     name: "Bitcoin",
     symbol: "BTC",
-    tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
     price: "$12,908.25",
     change: {
       status: MATH_NEGATIVE_TYPE.NEGATIVE,
@@ -53,10 +65,10 @@ export const losersInit = [
     },
   },
   {
-    tokenId: "2",
+    path: "2",
     name: "USDCoin",
     symbol: "USDC",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     price: "$12,908.25",
     change: {
@@ -65,10 +77,10 @@ export const losersInit = [
     },
   },
   {
-    tokenId: "1",
+    path: "1",
     name: "HEX",
     symbol: "HEX",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
     price: "$12,908.25",
     change: {
@@ -79,7 +91,102 @@ export const losersInit = [
 ];
 
 const GainerAndLoserContainer: React.FC = () => {
-  return <GainerAndLoser gainers={gainersInit} losers={losersInit} />;
+  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } =
+    useGetTokensList();
+  const { data: { gainers = [], losers = [] } = {}, isLoading } =
+    useGetChainList();
+  const { gnot, wugnotPath } = useGnotToGnot();
+  const router = useRouter();
+  const path = router.query["token-path"] as string;
+  const { isLoading: isLoadingGetPoolList } = useGetPoolList();
+  const { isLoading: isLoadingTokenDetail } = useGetTokenDetailByPath(
+    path === "gnot" ? wugnotPath : path,
+    {
+      enabled: !!path,
+    },
+  );
+  const { isLoading: isLoadingCommon } = useLoading();
+
+  const gainersList = useMemo(() => {
+    return gainers?.slice(0, 3).map((item: IGainer) => {
+      const isGnotPath = item.tokenPath === wugnotPath;
+      const priceChange = item.tokenPrice24hChange || 0;
+      const temp: TokenModel =
+        tokens.filter(
+          (token: TokenModel) => token.path === item.tokenPath,
+        )?.[0] || {};
+      return {
+        path: isGnotPath ? gnot?.path || "" : item.tokenPath,
+        name: isGnotPath ? gnot?.name || "" : temp.name,
+        symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
+        logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
+        price: `${toPriceFormat(item.tokenPrice, {
+          usd: true,
+          isRounding: false,
+        })}`,
+        change: {
+          status:
+            Number(priceChange) >= 0
+              ? MATH_NEGATIVE_TYPE.POSITIVE
+              : MATH_NEGATIVE_TYPE.NEGATIVE,
+          value: `${Number(priceChange) >= 0 ? "+" : ""}${Number(
+            priceChange,
+          ).toFixed(2)}%`,
+        },
+      };
+    });
+  }, [gainers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.logoURI]);
+
+  const loserList = useMemo(() => {
+    return losers?.slice(0, 3)?.map((item: IGainer) => {
+      const isGnotPath = item.tokenPath === wugnotPath;
+      const priceChange = item.tokenPrice24hChange || 0;
+      const temp: TokenModel =
+        tokens.filter(
+          (token: TokenModel) => token.path === item.tokenPath,
+        )?.[0] || {};
+      return {
+        path: isGnotPath ? gnot?.path || "" : item.tokenPath,
+        name: isGnotPath ? gnot?.name || "" : temp.name,
+        symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
+        logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
+        price: `${toPriceFormat(item.tokenPrice, {
+          usd: true,
+          isRounding: false,
+        })}`,
+        change: {
+          status:
+            Number(priceChange) >= 0
+              ? MATH_NEGATIVE_TYPE.POSITIVE
+              : MATH_NEGATIVE_TYPE.NEGATIVE,
+          value: `${Number(priceChange) >= 0 ? "+" : ""}${Number(
+            priceChange,
+          ).toFixed(2)}%`,
+        },
+      };
+    });
+  }, [losers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.logoURI]);
+
+  return (
+    <GainerAndLoser
+      gainers={gainersList}
+      losers={loserList}
+      loadingLose={
+        isLoading ||
+        isLoadingListToken ||
+        isLoadingGetPoolList ||
+        isLoadingTokenDetail ||
+        isLoadingCommon
+      }
+      loadingGain={
+        isLoading ||
+        isLoadingListToken ||
+        isLoadingGetPoolList ||
+        isLoadingTokenDetail ||
+        isLoadingCommon
+      }
+    />
+  );
 };
 
 export default GainerAndLoserContainer;

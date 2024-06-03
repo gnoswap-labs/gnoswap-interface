@@ -32,19 +32,22 @@ export const wrapper = (theme: Theme) => css`
   .inputs {
     ${mixins.flexbox("column", "center", "space-between")};
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 2px;
     width: 100%;
     height: 100%;
     position: relative;
+    
     .from,
     .to {
       ${mixins.flexbox("row", "center", "space-between")};
       flex-wrap: wrap;
-
+      &:focus-within {
+        border: 1px solid ${theme.color.border15};
+      }
       width: 100%;
       padding: 9px 23px;
 
-      background-color: ${theme.color.background01};
+      background-color: ${theme.color.background20};
       border: 1px solid ${theme.color.border02};
       border-radius: 8px;
     }
@@ -56,13 +59,17 @@ export const wrapper = (theme: Theme) => css`
     }
 
     .token {
-      width: 112px;
-      height: 30px;
       cursor: default;
+      .token-symbol {
+        margin-right: 0;
+      }
+      > div {
+        padding: 5px 6px 5px 6px;
+        height: 34px;
+      }
       span {
-        font-size: 15px;
+        font-size: 16px;
         line-height: 19px;
-        margin: 0px 8px;
       }
     }
 
@@ -78,12 +85,19 @@ export const wrapper = (theme: Theme) => css`
       line-height: 38px;
       color: ${theme.color.text01};
       margin-right: 30px;
+      &::placeholder {
+        color: ${theme.color.text01};
+      }
     }
 
     .price-text,
     .balance-text {
-      ${fonts.p2};
-      color: ${theme.color.text10};
+      ${fonts.p1};
+      color: ${theme.color.text04};
+    }
+    .balance-text-disabled {
+      cursor: pointer;
+      z-index: 1;
     }
 
     .token {
@@ -108,7 +122,10 @@ export const wrapper = (theme: Theme) => css`
         background-color: ${theme.color.background01};
         border: 1px solid ${theme.color.border02};
         border-radius: 50%;
-
+        cursor: pointer;
+        :hover {
+          background-color: ${theme.color.backgroundGradient};
+        }
         .shape-icon {
           width: 16px;
           height: 16px;

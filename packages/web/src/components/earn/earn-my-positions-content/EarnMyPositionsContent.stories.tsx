@@ -1,7 +1,6 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import EarnMyPositionsContent from "./EarnMyPositionsContent";
-import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 
 export default {
   title: "earn/EarnMyPositionsContent",
@@ -11,66 +10,6 @@ export default {
 const Template: ComponentStory<typeof EarnMyPositionsContent> = args => (
   <EarnMyPositionsContent {...args} />
 );
-
-const position: PoolPosition = {
-  tokenPair: {
-    token0: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "HEX",
-      symbol: "HEX",
-      amount: {
-        value: "18,500.18",
-        denom: "gnot",
-      },
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-    },
-    token1: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "USDCoin",
-      symbol: "USDC",
-      amount: {
-        value: "18,500.18",
-        denom: "gnot",
-      },
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    },
-  },
-  rewards: [
-    {
-      token: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      amount: {
-        value: "18,500.18",
-        denom: "gnot",
-      },
-    },
-  ],
-  feeRate: "0.05%",
-  stakeType: "Staked",
-  value: "$18,500.10",
-  apr: "108.21%",
-  inRange: true,
-  currentPriceAmount: "1184.24 GNOS per ETH",
-  minPriceAmount: "1.75 GNOT Per GNOS",
-  maxPriceAmount: "2.25 GNOT Per GNOS",
-  currentTick: 4,
-  minTick: 40,
-  maxTick: 200,
-  minLabel: "-30%",
-  maxLabel: "50%",
-  ticks: ["1", "1", "2", "2", "3", "3", "2", "2", "1", "1"]
-};
 
 export const UnConnected = Template.bind({});
 UnConnected.args = {
@@ -94,7 +33,7 @@ export const CardList = Template.bind({});
 CardList.args = {
   connected: true,
   fetched: true,
-  positions: [position, position],
+  positions: [],
   connect: action("connect"),
   movePoolDetail: action("movePoolDetail"),
 };

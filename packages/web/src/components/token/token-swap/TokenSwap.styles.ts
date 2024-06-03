@@ -1,14 +1,15 @@
 import mixins from "@styles/mixins";
 import { css, Theme } from "@emotion/react";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
+import styled from "@emotion/styled";
 
 export const wrapper = (theme: Theme) => css`
-  padding: 24px;
+  padding: 23px;
   background-color: ${theme.color.background06};
   border: 1px solid ${theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
-
   .header {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
@@ -17,17 +18,50 @@ export const wrapper = (theme: Theme) => css`
     .title {
       ${fonts.h6};
       color: ${theme.color.text02};
+      ${media.mobile} {
+        ${fonts.body9}
+      }
     }
-
+    .header-button {
+      ${mixins.flexbox("row", "center", "center")};
+      gap: 15px;
+      ${media.mobile} {
+        gap: 12px;
+      }
+    }
     .setting-button {
       width: 24px;
       height: 24px;
     }
+    .link-button {
+      position: relative;
+    }
     .setting-icon * {
       fill: ${theme.color.icon03};
     }
+    .setting-icon {
+      &:hover {
+        * {
+          fill: ${theme.color.icon07};
+        }
+      }
+    }
   }
 
+  .loading-change {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 8px;
+    color: ${theme.color.text03};
+    ${fonts.body12}
+    > div {
+      width: 16px;
+      height: 16px;
+      &::before {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
   .inputs {
     ${mixins.flexbox("column", "center", "space-between")};
     flex-wrap: wrap;
@@ -39,13 +73,14 @@ export const wrapper = (theme: Theme) => css`
     .to {
       ${mixins.flexbox("row", "center", "space-between")};
       flex-wrap: wrap;
-
       width: 100%;
       padding: 16px 24px;
-
-      background-color: ${theme.color.background01};
+      background-color: ${theme.color.background20};
       border: 1px solid ${theme.color.border02};
       border-radius: 8px;
+      &:focus-within {
+        border: 1px solid  ${theme.color.border15};
+      }
     }
 
     .amount {
@@ -54,22 +89,13 @@ export const wrapper = (theme: Theme) => css`
       margin-bottom: 8px;
     }
 
-    .token {
-      width: 112px;
-      height: 30px;
-      cursor: default;
-      span {
-        font-size: 15px;
-        line-height: 19px;
-        margin: 0px 8px;
-      }
-    }
-
     .info {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
     }
-
+    .text-opacity {
+      opacity: 0.5;
+    }
     .amount-text {
       width: 100%;
       ${fonts.body1};
@@ -77,26 +103,39 @@ export const wrapper = (theme: Theme) => css`
       line-height: 38px;
       color: ${theme.color.text01};
       margin-right: 30px;
+      &::placeholder {
+        color: ${theme.color.text02};
+      }
     }
 
     .price-text,
     .balance-text {
       ${fonts.p2};
-      color: ${theme.color.text10};
+      color: ${theme.color.text04};
+    }
+    .balance-text-disabled {
+      cursor: pointer;
     }
 
     .token {
       ${mixins.flexbox("row", "center", "center")}
-      width: 112px;
-      height: 30px;
-      font-size: 15px;
-      font-weight: 500;
-      line-height: 19px;
+      width: auto;
       border-radius: 36px;
       color: ${theme.color.text01};
+      height: 34px;
+      .selected-token {
+        padding: 5px 10px 5px 6px;
+      }
+      .not-selected-token {
+        padding: 5px 10px 5px 12px
+      }
+      .token-symbol {
+        height: 21px;
+      }
     }
 
     .arrow {
+      cursor: pointer;
       ${mixins.flexbox("row", "center", "center")};
       ${mixins.positionCenter()};
       width: 100%;
@@ -107,7 +146,9 @@ export const wrapper = (theme: Theme) => css`
         background-color: ${theme.color.background01};
         border: 1px solid ${theme.color.border02};
         border-radius: 50%;
-
+        &:hover {
+          background-color: ${theme.color.backgroundGradient};
+        }
         .shape-icon {
           width: 16px;
           height: 16px;
@@ -123,5 +164,53 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     padding-top: 16px;
+    .confirm-button {
+      height: 57px;
+      span {
+        ${fonts.body7}
+      }
+    }
+  }
+  ${media.mobile} {
+    padding: 15px;
+    .header {
+      padding-bottom: 12px;
+    }
+    .footer {
+      padding-top: 12px;
+      .confirm-button {
+        height: 41px;
+        span {
+          ${fonts.body9}
+        }
+      }
+    }
+  }
+`;
+
+export const CopyTooltip = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  position: absolute;
+  top: -65px;
+  left: -65px;
+  .box {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 155px;
+    padding: 16px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.background02};
+  }
+  .dark-shadow {
+    box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
+  }
+  .light-shadow {
+    box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
+  }
+  .polygon-icon * {
+    fill: ${({ theme }) => theme.color.background02};
   }
 `;

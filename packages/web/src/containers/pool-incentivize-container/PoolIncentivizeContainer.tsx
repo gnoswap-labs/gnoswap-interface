@@ -1,59 +1,160 @@
 import PoolIncentivize from "@components/incentivize/pool-incentivize/PoolIncentivize";
-import { FEE_RATE_OPTION } from "@constants/option.constant";
-import React, { useCallback, useState } from "react";
-
-const dummyData = {
-  tokenPair: {
-    token0: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "HEX",
-      symbol: "HEX",
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-    },
-    token1: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "USDCoin",
-      symbol: "USDC",
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    },
-  },
-  feeRate: FEE_RATE_OPTION.FEE_3,
-};
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { TokenBalanceInfo } from "@models/token/token-balance-info";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
+import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
+import { useIncentivizePoolModal } from "@hooks/incentivize/use-incentivize-pool-modal";
+import { TokenModel } from "@models/token/token-model";
+import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useAtom } from "jotai";
+import { EarnState } from "@states/index";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { useGetPoolList } from "src/react-query/pools";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export const dummyDisclaimer =
-  "Disclaimer1Disclaimer1 Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer3Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer";
+  "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. Before you proceed, ensure that you understand the mechanics of external incentives and acknowledge that you cannot withdraw the rewards once you complete this step.<br /><br />The incentives you add will be automatically distributed by the contract and may draw more liquidity providers.";
 
-interface DistributionPeriodDate {
-  year: number;
-  month: number;
-  date: number;
-}
+const tokenBalances: TokenBalanceInfo[] = [];
+const periods = [90, 180, 365];
 
 const PoolIncentivizeContainer: React.FC = () => {
-  const [startDate, setStartDate] = useState<DistributionPeriodDate>();
-  const [endDate, setEndDate] = useState<DistributionPeriodDate>();
-  const [amount, setAmount] = useState("");
+  const [period, setPeriod] = useAtom(EarnState.period);
+  const [startDate, setStartDate] = useAtom(EarnState.date);
+  const [, setDataModal] = useAtom(EarnState.dataModal);
+  const [currentPool, setCurrentPool] = useAtom(EarnState.pool);
 
-  const onChangeAmount = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setAmount(value);
-    },
-    [],
-  );
+  const { connected, connectAdenaClient, isSwitchNetwork } = useWallet();
+
+  const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(null);
+  const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
+  const [token, setToken] = useState<TokenModel | null>(null);
+  const tokenAmountInput = useTokenAmountInput(token);
+  const { updateTokenPrices } = useTokenData();
+  const { data: pools = [] } = useGetPoolList({ enabled: false });
+  const { getGnotPath } = useGnotToGnot();
+  
+  useEffect(() => {
+    setDataModal(tokenAmountInput);
+  }, [tokenAmountInput.amount, token]);
+
+  const { openModal } = useIncentivizePoolModal();
+
+  useEffect(() => {
+    updateTokenPrices();
+    setCurrentPool(null);
+  }, []);
+
+  const changeToken = useCallback((token: TokenModel) => {
+    setToken(token);
+  }, []);
+
+  useEffect(() => {
+    setPoolDetail(PoolDetailData.pool as PoolDetailModel);
+  }, []);
+
+  const selectPool = useCallback((poolId: string) => {
+    const pool = pools.find(pool => pool.id === poolId);
+    if (pool) {
+      setCurrentPool({
+        ...pool,
+        tokenA: {
+          ...pool.tokenA,
+          path: getGnotPath(pool.tokenA).path,
+          symbol: getGnotPath(pool.tokenA).symbol,
+          logoURI: getGnotPath(pool.tokenA).logoURI,
+        },
+        tokenB: {
+          ...pool.tokenB,
+          path: getGnotPath(pool.tokenB).path,
+          symbol: getGnotPath(pool.tokenB).symbol,
+          logoURI: getGnotPath(pool.tokenB).logoURI,
+        },
+      });
+    }
+  }, [pools, setCurrentPool]);
+
+  const selectToken = useCallback((path: string) => {
+    const token = tokenBalances.find(token => token.path === path);
+    if (token) {
+      setCurrentToken(token);
+    }
+  }, []);
+
+  const handleConfirmIncentivize = useCallback(() => {
+    if (!connected) {
+      connectAdenaClient();
+    } else {
+      openModal();
+    }
+  }, [connected, connectAdenaClient, openModal]);
+
+  const disableButton = useMemo(() => {
+    if (!connected) {
+      return false;
+    }
+    if (isSwitchNetwork) {
+      return false;
+    }
+    if (!currentPool) {
+      return true;
+    }
+    if (Number(tokenAmountInput.amount) === 0) {
+      return true;
+    }
+    if (Number(tokenAmountInput.amount) < 0.000001) {
+      return true;
+    }
+    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance.replace(/,/g, ""))) {
+      return true;
+    }
+    return false;
+  }, [connected, currentPool, tokenAmountInput, isSwitchNetwork]);
+
+  const textBtn = useMemo(() => {
+    if (!connected) {
+      return "Wallet Login";
+    }
+    if (isSwitchNetwork) {
+      return "Switch to Gnoland";
+    }
+    if (!currentPool) {
+      return "Select Pool";
+    }
+    if (Number(tokenAmountInput.amount) === 0) {
+      return "Enter Amount";
+    }
+    if (Number(tokenAmountInput.amount) < 0.000001) {
+      return "Amount Too Low";
+    }
+    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance.replace(/,/g, ""))) {
+      return "Insufficient Balance";
+    }
+    return "Incentivize Pool";
+  }, [connected, currentPool, tokenAmountInput, isSwitchNetwork]);
 
   return (
     <PoolIncentivize
+      pools={pools}
+      selectedPool={currentPool}
+      selectPool={selectPool}
       startDate={startDate}
       setStartDate={setStartDate}
-      endDate={endDate}
-      setEndDate={setEndDate}
-      amount={amount}
-      onChangeAmount={onChangeAmount}
-      details={dummyData}
+      periods={periods}
+      period={period}
+      setPeriod={setPeriod}
+      details={poolDetail}
       disclaimer={dummyDisclaimer}
+      token={currentToken}
+      tokens={tokenBalances}
+      selectToken={selectToken}
+      handleConfirmIncentivize={handleConfirmIncentivize}
+      tokenAmountInput={tokenAmountInput}
+      changeToken={changeToken}
+      textBtn={textBtn}
+      disableButton={disableButton}
+      connected={connected}
     />
   );
 };

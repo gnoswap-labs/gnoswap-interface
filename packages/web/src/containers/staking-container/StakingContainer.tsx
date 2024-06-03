@@ -1,96 +1,134 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Staking from "@components/pool/staking/Staking";
 import { useWindowSize } from "@hooks/common/use-window-size";
-
-export const rewardInfoInit = {
-  apr: "89",
-  tokenPair: {
-    token0: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "HEX",
-      symbol: "HEX",
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-    },
-    token1: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "USDCoin",
-      symbol: "USDC",
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    },
-  },
-};
-
-export const stakingInit = [
-  {
-    active: true,
-    title: "Staked less than 5 days",
-    total: "$241,210",
-    lp: "0",
-    staking: "$200,000 (4 LPs)",
-    beingUnstaked: "$41,210 (3 LPs)",
-    apr: "32%",
-    multiplier: "x0.5 Multiplier",
-    tokenLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-  },
-  {
-    active: true,
-    title: "Staked less than 10 days",
-    total: "$0",
-    lp: "0",
-    staking: "-",
-    beingUnstaked: "-",
-    apr: "50%",
-    multiplier: "x0.7 Multiplier",
-    tokenLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-  },
-  {
-    active: true,
-    title: "Staked less than 30 days",
-    total: "$300,810",
-    lp: "0",
-    staking: "$300,000 (4 LPs)",
-    beingUnstaked: "$810  (1 LPs)",
-    apr: "67%",
-    multiplier: "x1.0 Multiplier",
-    tokenLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-  },
-  {
-    active: true,
-    title: "Staked more than 30 days",
-    total: "$4,123.12",
-    lp: "2",
-    staking: "$82.54",
-    beingUnstaked: "$810  (1 LPs)",
-    apr: "89%",
-    multiplier: "x1.5 Multiplier",
-    tokenLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-  },
-];
+import { useWallet } from "@hooks/wallet/use-wallet";
+import useRouter from "@hooks/common/use-custom-router";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenModel } from "@models/token/token-model";
+import { usePoolData } from "@hooks/pool/use-pool-data";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGetPoolDetailByPath } from "@query/pools";
+import { useLoading } from "@hooks/common/use-loading";
+import { StakingPeriodType } from "@constants/option.constant";
+import useUrlParam from "@hooks/common/use-url-param";
+import { addressValidationCheck } from "@utils/validation-utils";
+import BigNumber from "bignumber.js";
+const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const StakingContainer: React.FC = () => {
+  const { account } = useWallet();
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
+  const { connected: connectedWallet, isSwitchNetwork } = useWallet();
+  const { loading: isLoadingPool } = usePoolData();
+  const [type, setType] = useState(3);
+  const { initializedData } = useUrlParam<{ addr: string | undefined }>({
+    addr: account?.address,
+  });
+
+  const [allPosition, setAllPosition] = useState<PoolPositionModel[]>([]);
+  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const router = useRouter();
+  const { getGnotPath } = useGnotToGnot();
+  const poolPath = router.query["pool-path"] || "";
+  const { data = null } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
+  const { isLoading: isLoadingCommon } = useLoading();
+
+  const address = useMemo(() => {
+    const address = initializedData?.addr;
+    if (!address || !addressValidationCheck(address)) {
+      return undefined;
+    }
+    return address;
+  }, [initializedData]);
+
+  const { getPositionsByPoolId, loading: isLoadingPosition } = usePositionData({
+    address,
+  });
+
+  const pool = useMemo(() => {
+    if (!data) return null;
+    return {
+      ...data,
+      tokenA: {
+        ...data.tokenA,
+        path: getGnotPath(data.tokenA).path,
+        name: getGnotPath(data.tokenA).name,
+        symbol: getGnotPath(data.tokenA).symbol,
+        logoURI: getGnotPath(data.tokenA).logoURI,
+      },
+      tokenB: {
+        ...data.tokenB,
+        path: getGnotPath(data.tokenB).path,
+        name: getGnotPath(data.tokenB).name,
+        symbol: getGnotPath(data.tokenB).symbol,
+        logoURI: getGnotPath(data.tokenB).logoURI,
+      },
+    };
+  }, [data]);
+
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 768 && window.innerWidth > 375
+      window.innerWidth < 931 && window.innerWidth > 375
         ? setMobile(true)
         : setMobile(false);
     }
   };
+
+  useEffect(() => {
+    const poolPath = router.query["pool-path"] as string;
+    if (!poolPath) {
+      return;
+    }
+    if (account?.address || address) {
+      const temp = getPositionsByPoolId(poolPath);
+      const stakedPositions = temp.filter(position => position.staked);
+      setPositions(stakedPositions);
+      setAllPosition(temp);
+    }
+  }, [account?.address, router.query, address]);
+
+  const isDisabledButton = useMemo(() => {
+    return isSwitchNetwork || !connectedWallet || positions.length == 0;
+  }, [isSwitchNetwork, connectedWallet, positions]);
+
+  const totalApr = useMemo(() => {
+    const apr = BigNumber(pool?.stakingApr || 0).toFormat(0);
+    return `${apr}%`;
+  }, [pool?.stakingApr]);
+
+  const rewardTokens = useMemo(() => {
+    const tokenPair: TokenModel[] = [];
+    if (pool) {
+      tokenPair.push(pool.tokenA);
+      tokenPair.push(pool.tokenB);
+    }
+    const rewardTokenMap = positions
+      .flatMap(position => position.reward)
+      .reduce<{ [key in string]: TokenModel }>((accum, current) => {
+        if (
+          tokenPair.findIndex(
+            token => token.priceID === current.rewardToken.priceID,
+          ) > -1
+        ) {
+          accum[current.rewardToken.priceID] = current.rewardToken;
+        }
+        return accum;
+      }, {});
+    const extraTokens = Object.values(rewardTokenMap);
+    return [...tokenPair, ...extraTokens];
+  }, [pool, positions]);
+
+  const handleClickStakeRedirect = useCallback(() => {
+    router.push(`/earn/pool/${router.query["pool-path"]}/stake`);
+  }, [router]);
+
+  const handleClickUnStakeRedirect = useCallback(() => {
+    router.push(`/earn/pool/${router.query["pool-path"]}/unstake`);
+  }, [router]);
 
   useEffect(() => {
     handleResize();
@@ -100,12 +138,73 @@ const StakingContainer: React.FC = () => {
     };
   }, []);
 
+  const stakingPositionMap = useMemo(() => {
+    return positions.reduce<{
+      [key in StakingPeriodType]: PoolPositionModel[];
+    }>(
+      (accum, current) => {
+        const stakedTime = new Date(current.stakedAt).getTime();
+        const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
+        let periodType: StakingPeriodType = "MAX";
+        if (difference < 5) {
+          periodType = "5D";
+        } else if (difference < 10) {
+          periodType = "10D";
+        } else if (difference < 30) {
+          periodType = "30D";
+        }
+        accum[periodType].push(current);
+        return accum;
+      },
+      {
+        "5D": [],
+        "10D": [],
+        "30D": [],
+        MAX: [],
+      },
+    );
+  }, [positions]);
+
+  useEffect(() => {
+    if (allPosition.length === 0) {
+      setType(0);
+      return;
+    }
+    if (positions.length === 0) {
+      setType(1);
+      return;
+    }
+    if (stakingPositionMap["MAX"].length === 0) {
+      setType(2);
+      return;
+    }
+
+    if (stakingPositionMap["MAX"].length !== 0) {
+      setType(3);
+      return;
+    }
+    setType(0);
+  }, [allPosition.length, positions.length, stakingPositionMap["MAX"].length]);
+
   return (
     <Staking
-      info={stakingInit}
-      rewardInfo={rewardInfoInit}
+      pool={pool}
+      totalApr={totalApr}
+      positions={positions}
+      rewardTokens={rewardTokens}
       breakpoint={breakpoint}
       mobile={mobile}
+      isDisabledButton={isDisabledButton}
+      type={type}
+      handleClickStakeRedirect={handleClickStakeRedirect}
+      handleClickUnStakeRedirect={handleClickUnStakeRedirect}
+      loading={isLoadingPool || isLoadingPosition || isLoadingCommon}
+      isOtherPosition={
+        !!(
+          (address && account?.address && address !== account?.address) ||
+          !account?.address
+        )
+      }
     />
   );
 };

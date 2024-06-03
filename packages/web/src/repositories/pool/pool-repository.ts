@@ -1,33 +1,55 @@
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import {
-  PoolListResponse,
-  PoolInfoResponse,
-  PoolSummaryAprResponse,
-  PoolSummaryLiquidityResponse,
-  PoolSummaryVolumeResponse,
-  PoolChartResponse,
-} from "./response";
+  IncentivizePoolModel,
+  IPoolDetailResponse,
+  PoolModel,
+} from "@models/pool/pool-model";
+import { AddLiquidityRequest } from "./request/add-liquidity-request";
+import { CreatePoolRequest } from "./request/create-pool-request";
+import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
+import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
+import { AddLiquidityResponse } from "./response/add-liquidity-response";
+import { CreatePoolResponse } from "./response/create-pool-response";
+import {
+  SendTransactionResponse,
+  WalletResponse,
+} from "@common/clients/wallet-client/protocols";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
 
 export interface PoolRepository {
-  getPools: (option?: {}) => Promise<PoolListResponse>;
+  getPools: () => Promise<PoolModel[]>;
 
-  getPoolsByAddress: (address: string) => Promise<PoolListResponse>;
+  getCreationFee: () => Promise<number>;
 
-  getPoolById: (poolId: string) => Promise<PoolInfoResponse>;
+  getPoolDetailRPCByPoolPath: (
+    poolPath: string,
+  ) => Promise<PoolDetailRPCModel | null>;
 
-  getPoolChartTicks: (poolId: string) => Promise<PoolChartResponse>;
+  getPoolDetailByPoolPath: (poolPath: string) => Promise<PoolDetailModel>;
 
-  getPoolChartTicksByTokenPair: (
-    token0Id: string,
-    token1Id: string,
-  ) => Promise<PoolChartResponse>;
+  getBinsOfPoolByPath: (
+    poolPath: string,
+    count?: number,
+  ) => Promise<PoolBinModel[]>;
 
-  getPoolSummaryLiquidityById: (
-    poolId: string,
-  ) => Promise<PoolSummaryLiquidityResponse>;
+  createPool: (
+    request: CreatePoolRequest,
+  ) => Promise<WalletResponse<CreatePoolResponse>>;
 
-  getPoolSummaryVolumeById: (
-    poolId: string,
-  ) => Promise<PoolSummaryVolumeResponse>;
+  addLiquidity: (
+    request: AddLiquidityRequest,
+  ) => Promise<WalletResponse<AddLiquidityResponse>>;
 
-  getPoolSummaryAprById: (poolId: string) => Promise<PoolSummaryAprResponse>;
+  getPoolDetailByPath: (poolPath: string) => Promise<IPoolDetailResponse>;
+
+  getIncentivizePools: () => Promise<IncentivizePoolModel[]>;
+
+  createExternalIncentive: (
+    request: CreateExternalIncentiveRequest,
+  ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null>;
+
+  removeExternalIncentive: (
+    request: RemoveExternalIncentiveRequest,
+  ) => Promise<string | null>;
 }

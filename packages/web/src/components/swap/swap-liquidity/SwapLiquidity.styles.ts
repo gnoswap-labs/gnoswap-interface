@@ -6,11 +6,11 @@ import mixins from "@styles/mixins";
 export const SwapLiquidityWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  padding: 24px 0px;
-  gap: 24px;
+  padding: 23px 0px;
+  gap: 16px;
   ${media.mobile} {
-    padding: 16px 0px;
-    gap: 16px;
+    padding: 15px 0px;
+    gap: 12px;
     align-self: stretch;
   }
 
@@ -22,12 +22,12 @@ export const SwapLiquidityWrapper = styled.div`
   .box-header {
     ${mixins.flexbox("row", "center", "flex-start")};
     width: 100%;
-    padding: 0px 24px;
+    padding: 0px 23px;
     gap: 8px;
     color: ${({ theme }) => theme.color.text02};
     ${fonts.body7};
     ${media.mobile} {
-      padding: 0px 16px;
+      padding: 0px 15px;
     }
 
     .coin-pair {
@@ -35,14 +35,12 @@ export const SwapLiquidityWrapper = styled.div`
 
       .gnos-image-wrapper {
         ${mixins.flexbox("row", "center", "center")};
-        background-color: ${({ theme }) => theme.color.point};
         width: 24px;
         height: 24px;
         border-radius: 100%;
       }
       .gnot-image-wrapper {
         ${mixins.flexbox("row", "center", "center")};
-        background-color: ${({ theme }) => theme.color.icon09};
         width: 24px;
         height: 24px;
         border-radius: 100%;
@@ -50,8 +48,8 @@ export const SwapLiquidityWrapper = styled.div`
       }
       .coin-logo {
         ${mixins.flexbox("row", "center", "flex-start")};
-        width: 14.25px;
-        height: 14.25px;
+        width: 24px;
+        height: 24px;
         flex-shrink: 0;
       }
     }
@@ -79,7 +77,9 @@ export const SwapLiquidityWrapper = styled.div`
     ${media.mobile} {
       ${fonts.p2}
     }
-
+    > a {
+      width: 100%;
+    }
     .th {
       ${mixins.flexbox("row", "flex-start", "flex-start")};
       width: 100%;
@@ -88,6 +88,9 @@ export const SwapLiquidityWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
       ${media.mobile} {
         padding: 0px 16px;
+        .volume {
+          min-width: 83px;
+        }
       }
 
       .feetier {
@@ -100,21 +103,28 @@ export const SwapLiquidityWrapper = styled.div`
         flex: 1 0 0;
         text-align: right;
       }
-    }
 
+    }
+    .inacitve-liquidity {
+      cursor: default;
+      pointer-events: none;
+    }
     .fee-info {
       ${mixins.flexbox("row", "center", "flex-start")};
       width: 100%;
-      padding: 8px 24px;
+      padding: 7px 23px;
       gap: 8px;
       align-self: stretch;
-      ${media.mobile} {
-        padding: 8px 16px;
-      }
       &:hover {
         background-color: ${({ theme }) => theme.color.background05Hover};
       }
-
+      ${media.mobile} {
+        padding: 7px 15px;
+        gap: 4px;
+        .volume {
+          min-width: 83px;
+        }
+      }
       .badge-wrap {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
         flex: 1 0 0;

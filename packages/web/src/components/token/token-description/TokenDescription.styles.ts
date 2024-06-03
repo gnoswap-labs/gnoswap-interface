@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -9,9 +10,26 @@ export const wrapper = (theme: Theme) => css`
   border: 1px solid ${theme.color.border02};
   border-radius: 8px;
   color: ${theme.color.text01};
-  padding: 24px;
-  gap: 24px;
+  gap: 12px;
+  padding: 23px;
   h2 {
     ${fonts.body7};
+  }
+  @media (max-width: 1180px) {
+    padding: 15px;
+  }
+  ${media.mobile} {
+    h2 {
+      ${fonts.body9};
+    }
+    margin-top: 16px;
+    margin-bottom: 16px;
+    ${fonts.body9};
+    border: none;
+    gap: 8px;
+    padding: 0;
+    .loading-value {
+      height: 20px;
+    }
   }
 `;

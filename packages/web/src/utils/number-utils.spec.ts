@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import {
   mathSybmolAbsFormat,
+  toMillionFormat,
   toNumberFormat,
   toUnitFormat,
 } from "./number-utils";
@@ -34,11 +35,33 @@ describe("mathSybmolAbsFormat", () => {
 describe("The toUnitFormat function returns a value represented in numeric units and up to two decimal places.", () => {
   test("12345.6789 to $12.35K", () => {
     const num = 12345.6789;
-    expect(toUnitFormat(num, true)).toBe("$12.35K");
+    expect(toUnitFormat(num, true, true)).toBe("$12.35K");
   });
 
   test("-12345.6789 to -12.35K", () => {
     const num = -12345.6789;
-    expect(toUnitFormat(num, false)).toBe("-12.35K");
+    expect(toUnitFormat(num, false, true)).toBe("-12.35K");
+  });
+});
+
+describe("toMillionFormat returns Million or FormatNumber", () => {
+  test("1000 to 1,000", () => {
+    const num = 1000;
+    expect(toMillionFormat(num)).toBe("1,000.00");
+  });
+
+  test("1000000 to 1.00m", () => {
+    const num = 1000000;
+    expect(toMillionFormat(num)).toBe("1.00m");
+  });
+
+  test("1234567 to 1.23m", () => {
+    const num = 1234567;
+    expect(toMillionFormat(num)).toBe("1.23m");
+  });
+
+  test('"" to null', () => {
+    const num = "";
+    expect(toMillionFormat(num)).toBe(null);
   });
 });

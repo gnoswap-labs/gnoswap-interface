@@ -1,132 +1,178 @@
-import { useCallback, useState } from "react";
+import { SwapDirectionType } from "@common/values";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useSlippage } from "@hooks/common/use-slippage";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { TokenModel, isNativeToken } from "@models/token/token-model";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
-import { SwapConfirmModel } from "@models/swap/swap-confirm-model";
-import { SwapExpectedResultModel } from "@models/swap/swap-expected-result-model";
-import { TokenDefaultModel } from "@models/token/token-default-model";
-import { ExactTypeOption } from "@common/values/data-constant";
-import { useExchange } from "@hooks/token/use-exchange";
-import { useRepository } from "@hooks/repository/use-repository";
-import { SwapInfoRequest } from "@repositories/swap/request/swap-info-request";
-import { SwapRateMapper } from "@models/swap/mapper/swap-rate-mapper";
-import { SwapExpectedMapper } from "@models/swap/mapper/swap-expected-mapper";
-import { SwapRequest } from "@repositories/swap/request";
-import { SwapConfirmMapper } from "@models/swap/mapper/swap-confirm-mapper";
+import { useCallback, useMemo, useState } from "react";
+import { useEstimateSwap } from "@query/router";
 
-interface Props {
-  token0: TokenDefaultModel | null;
-  token1: TokenDefaultModel | null;
-  swapType: ExactTypeOption;
+interface UseSwapProps {
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
+  direction: SwapDirectionType;
+  slippage: string;
 }
 
-export const useSwap = ({ token0, token1, swapType }: Props) => {
-  const { swapRepository } = useRepository();
-  const { exchangeTokenByRate } = useExchange();
+export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
+  const { account } = useWallet();
+  const { swapRouterRepository } = useGnoswapContext();
+  const [swapAmount, setSwapAmount] = useState<string | null>(null);
+  const { slippage } = useSlippage();
 
-  const [swapRate, setSwapRate] = useState<BigNumber | null>(null);
-  const [swapResult, setSwapResult] = useState<SwapExpectedResultModel>();
-  const [swappedToken0, setSwappedToken0] = useState<TokenDefaultModel | null>(
-    token0,
-  );
-  const [swappedToken1, setSwappedToken1] = useState<TokenDefaultModel | null>(
-    token1,
-  );
-  const [slippage, setSlippage] = useState(0);
+  const selectedTokenPair = tokenA !== null && tokenB !== null;
 
-  const initSlippage = useCallback(() => {
-    const slippage = swapRepository.getSlippage();
-    setSlippage(slippage);
-  }, [swapRepository]);
-
-  const updateSlippage = useCallback(
-    (slippage: number) => {
-      swapRepository.setSlippage(slippage);
-      setSlippage(slippage);
-    },
-    [swapRepository],
-  );
-
-  const updateSwappedTokens = useCallback(
-    (swapRate: BigNumber | null) => {
-      if (!token0 || !token1 || !swapRate) {
-        return false;
-      }
-      if (swapType === "EXACT_IN") {
-        const swappedToken = exchangeTokenByRate(token0, token1, swapRate);
-        setSwappedToken0(token0);
-        setSwappedToken1(swappedToken);
-      } else if (swapType === "EXACT_OUT") {
-        const swappedToken = exchangeTokenByRate(token0, token1, swapRate);
-        setSwappedToken0(swappedToken);
-        setSwappedToken1(token1);
-      }
-      return true;
-    },
-    [exchangeTokenByRate, swapType, token0, token1],
-  );
-
-  const updateSwapRate = useCallback(() => {
-    if (!token0 || !token1) {
-      setSwapRate(null);
-      return;
+  const isSameToken = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return false;
     }
-    const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
-      token0,
-      token1,
-      type: swapType,
-    });
-    swapRepository
-      .getSwapRate(request)
-      .then(response => {
-        const swapRate = BigNumber(response.rate);
-        setSwapRate(swapRate);
-        return swapRate;
-      })
-      .then(updateSwappedTokens)
-      .catch(() => setSwapRate(null));
-  }, [swapRepository, swapType, token0, token1, updateSwappedTokens]);
-
-  const updateSwapResult = useCallback(() => {
-    if (!token0 || !token1) {
-      return;
+    if (isNativeToken(tokenA)) {
+      return tokenA.wrappedPath === tokenB.path;
     }
-    const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
-      token0,
-      token1,
-      type: swapType,
-    });
-    swapRepository
-      .getExpectedSwapResult(request)
-      .then(SwapExpectedMapper.fromExpectedResponse)
-      .then(swapResult => setSwapResult(swapResult));
-  }, [swapRepository, swapType, token0, token1]);
+    if (isNativeToken(tokenB)) {
+      return tokenA.path === tokenB.wrappedPath;
+    }
+    return false;
+  }, [tokenA, tokenB]);
 
-  const swap = useCallback(() => {
-    if (!swappedToken0 || !swappedToken1) {
+  const currentSwapAmount = useMemo(() => {
+    if (!swapAmount || BigNumber(swapAmount).isZero()) {
+      return 0;
+    }
+    return BigNumber(swapAmount).toNumber();
+  }, [swapAmount]);
+
+  const {
+    data: estimatedSwapResult,
+    isLoading: isEstimatedSwapLoading,
+    error,
+  } = useEstimateSwap(
+    {
+      inputToken: tokenA,
+      outputToken: tokenB,
+      exactType: direction,
+      tokenAmount: currentSwapAmount,
+    },
+    {
+      enabled: currentSwapAmount > 0 && !!tokenA && !!tokenB,
+    },
+  );
+
+  const swapState: "NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS" =
+    useMemo(() => {
+      if (!selectedTokenPair || !currentSwapAmount) {
+        return "NONE";
+      }
+
+      if (isSameToken) {
+        return "NONE";
+      }
+
+      if (isEstimatedSwapLoading) {
+        return "LOADING";
+      }
+
+      if (!!error || !estimatedSwapResult?.amount) {
+        return "NO_LIQUIDITY";
+      }
+
+      return "SUCCESS";
+    }, [
+      currentSwapAmount,
+      error,
+      estimatedSwapResult?.amount,
+      isEstimatedSwapLoading,
+      isSameToken,
+      selectedTokenPair,
+    ]);
+
+  const estimatedRoutes: EstimatedRoute[] = useMemo(() => {
+    if (swapState !== "SUCCESS" || !estimatedSwapResult || !currentSwapAmount) {
+      return [];
+    }
+
+    return estimatedSwapResult.estimatedRoutes;
+  }, [swapState, estimatedSwapResult, currentSwapAmount]);
+
+  const estimatedAmount: string | null = useMemo(() => {
+    if (!currentSwapAmount || error) {
+      return "0";
+    }
+
+    if (swapState !== "SUCCESS" || !estimatedSwapResult) {
       return null;
     }
-    const swapRequest: SwapConfirmModel = {
-      tokenPair: {
-        token0: swappedToken0,
-        token1: swappedToken1,
-      },
-      type: swapType,
-      slippage,
-      gasFee: BigNumber(0), // TODO: swapResult.gasFee
-    };
-    const request: SwapRequest = SwapConfirmMapper.toConfirmRequest(swapRequest);
-    return swapRepository.swap(request);
-  }, [slippage, swapRepository, swapType, swappedToken0, swappedToken1]);
+
+    return estimatedSwapResult.amount;
+  }, [currentSwapAmount, error, swapState, estimatedSwapResult]);
+
+  const tokenAmountLimit = useMemo(() => {
+    if (estimatedAmount && !Number.isNaN(Number(slippage))) {
+      const shift = tokenA?.decimals || 6;
+      const slippageAmountNumber = BigNumber(estimatedAmount).multipliedBy(
+        Number(slippage) * 0.01,
+      );
+      const tokenAmountLimit =
+        direction === "EXACT_IN"
+          ? BigNumber(estimatedAmount)
+            .minus(slippageAmountNumber)
+            .shiftedBy(shift)
+            .toNumber()
+          : BigNumber(estimatedAmount)
+            .plus(slippageAmountNumber)
+            .shiftedBy(shift)
+            .toNumber();
+
+      if (tokenAmountLimit <= 0) {
+        return 0;
+      }
+      return tokenA ? makeDisplayTokenAmount(tokenA, tokenAmountLimit) || 0 : 0;
+    }
+    return 0;
+  }, [direction, estimatedAmount, slippage, tokenA]);
+
+  const estimateSwapRoute = useCallback((amount: string) => {
+    setSwapAmount(amount || "0");
+  }, []);
+
+  const swap = useCallback(
+    async (estimatedRoutes: EstimatedRoute[], tokenAmount: string) => {
+      if (!account) {
+        return null;
+      }
+      if (!selectedTokenPair) {
+        return null;
+      }
+
+      return swapRouterRepository.swapRoute({
+        inputToken: tokenA,
+        outputToken: tokenB,
+        estimatedRoutes,
+        exactType: direction,
+        tokenAmount: Number(tokenAmount),
+        tokenAmountLimit,
+      });
+    },
+    [
+      account,
+      direction,
+      selectedTokenPair,
+      swapRouterRepository,
+      tokenA,
+      tokenAmountLimit,
+      tokenB,
+    ],
+  );
 
   return {
-    swappedToken0,
-    swappedToken1,
-    slippage,
-    swapRate,
-    swapResult,
-    initSlippage,
-    updateSwapRate,
-    updateSlippage,
-    updateSwapResult,
+    isSameToken,
+    tokenAmountLimit,
+    estimatedAmount,
+    estimatedRoutes,
+    swapState,
     swap,
+    estimateSwapRoute,
   };
 };

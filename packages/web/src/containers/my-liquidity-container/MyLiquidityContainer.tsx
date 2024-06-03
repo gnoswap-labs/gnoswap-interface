@@ -1,132 +1,202 @@
-import React from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
-import { FEE_RATE_OPTION } from "@constants/option.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import useRouter from "@hooks/common/use-custom-router";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { usePosition } from "@hooks/common/use-position";
+import {
+  makeBroadcastClaimMessage,
+  useBroadcastHandler,
+} from "@hooks/common/use-broadcast-handler";
+import { ERROR_VALUE } from "@common/errors/adena";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useGetUsernameByAddress } from "@query/address/queries";
+import { toUnitFormat } from "@utils/number-utils";
+import { useTokenData } from "@hooks/token/use-token-data";
 
-export const liquidityInit = {
-  poolInfo: {
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        compositionPercent: "50",
-        composition: "50.05881",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        compositionPercent: "50",
-        composition: "150.0255",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    token0Rate: "50%",
-    token1Rate: "50%",
-    feeRate: FEE_RATE_OPTION.FEE_3,
-  },
-  totalBalance: "$1.24m",
-  swapFees: "150",
-  dailyEarn: "$954.52",
-  claimRewards: "$3,052.59",
-  positionList: [
-    {
-      productId: 982932,
-      tokenPair: {
-        token0: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "HEX",
-          symbol: "HEX",
-          tokenLogo:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-        },
-        token1: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "USDCoin",
-          symbol: "USDC",
-          tokenLogo:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-        },
-        isStaked: true,
-        range: true,
-        balance: "18,092.45",
-        totalRewards: "1,015.24",
-        estimatedAPR: "90.5",
-        minAmount: "1,105.1",
-        maxAmount: "1,268.2",
-      },
-    },
-    {
-      productId: 982933,
-      tokenPair: {
-        token0: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "HEX",
-          symbol: "HEX",
-          tokenLogo:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-        },
-        token1: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "USDCoin",
-          symbol: "USDC",
-          tokenLogo:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-        },
-        isStaked: true,
-        range: true,
-        balance: "18,092.45",
-        totalRewards: "1,015.24",
-        estimatedAPR: "90.5",
-        minAmount: "1,105.1",
-        maxAmount: "1,268.2",
-      },
-    },
-    {
-      productId: 982934,
-      tokenPair: {
-        token0: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "HEX",
-          symbol: "HEX",
-          tokenLogo:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-        },
-        token1: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "USDCoin",
-          symbol: "USDC",
-          tokenLogo:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-        },
-        isStaked: false,
-        range: false,
-        balance: "18,092.45",
-        totalRewards: "1,015.24",
-        estimatedAPR: "90.5",
-        minAmount: "1,105.1",
-        maxAmount: "1,268.2",
-      },
-    },
-  ],
-};
+interface MyLiquidityContainerProps {
+  address?: string | undefined;
+}
 
-const MyLiquidityContainer: React.FC = () => {
+
+const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
+  address,
+}) => {
+  const router = useRouter();
+  const divRef = useRef<HTMLDivElement | null>(null);
   const { breakpoint } = useWindowSize();
+  const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
+  const [currentIndex, setCurrentIndex] = useState(1);
+  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const { getPositionsByPoolId, loading, loadingPositionById } =
+    usePositionData({ address });
+  const { claimAll } = usePosition(positions);
+  const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
+  const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
+  const { openModal } = useTransactionConfirmModal();
+  const { tokenPrices } = useTokenData();
 
-  return <MyLiquidity info={liquidityInit} breakpoint={breakpoint} />;
+  const {
+    broadcastSuccess,
+    broadcastPending,
+    broadcastError,
+    broadcastRejected,
+  } = useBroadcastHandler();
+
+  const isOtherPosition = useMemo(() => {
+    return Boolean(address) && address !== account?.address;
+  }, [account?.address, address]);
+
+  const visiblePositions = useMemo(() => {
+    if (!connectedWallet && !address) {
+      return false;
+    }
+    return true;
+  }, [address, connectedWallet]);
+
+  const { data: addressName = "" } = useGetUsernameByAddress(address || "", {
+    enabled: !!address,
+  });
+
+  const haveClosedPosition = useMemo(
+    () => positions.some(item => item.closed),
+    [positions],
+  );
+  const haveNotClosedPosition = useMemo(
+    () => positions.some(item => !item.closed),
+    [positions],
+  );
+
+  const showClosePositionButton = useMemo(() => {
+    if (!connectedWallet || isSwitchNetwork) {
+      return false;
+    }
+    return haveClosedPosition;
+  }, [connectedWallet, haveClosedPosition, isSwitchNetwork]);
+
+  const isShowRemovePositionButton = useMemo(() => {
+    if (!connectedWallet || isSwitchNetwork) {
+      return false;
+    }
+    return haveNotClosedPosition;
+  }, [connectedWallet, haveNotClosedPosition, isSwitchNetwork]);
+
+  const handleClickAddPosition = useCallback(() => {
+    router.push(`/earn/pool/${router.query["pool-path"]}/add`);
+  }, [router]);
+
+  const handleClickRemovePosition = useCallback(() => {
+    router.push(`/earn/pool/${router.query["pool-path"]}/remove`);
+  }, [router]);
+
+  const handleScroll = () => {
+    if (divRef.current) {
+      const currentScrollX = divRef.current.scrollLeft;
+      setCurrentIndex(
+        Math.floor(currentScrollX / divRef.current.offsetWidth) + 1,
+      );
+    }
+  };
+
+  const claimAllReward = useCallback(() => {
+    const amount = positions
+      .flatMap(item => item.reward)
+      .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
+    const data = {
+      amount: toUnitFormat(amount, true, true),
+    };
+
+    setLoadingTransactionClaim(true);
+    claimAll().then(response => {
+      if (response) {
+        if (response.code === 0) {
+          broadcastPending();
+          setTimeout(() => {
+            broadcastSuccess(makeBroadcastClaimMessage("success", data));
+            setLoadingTransactionClaim(false);
+          }, 1000);
+          openModal();
+        } else if (
+          response.code === 4000 &&
+          response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+        ) {
+          broadcastError(makeBroadcastClaimMessage("error", data));
+          setLoadingTransactionClaim(false);
+          openModal();
+        } else {
+          openModal();
+          broadcastRejected(
+            makeBroadcastClaimMessage("error", data),
+            () => { },
+            true,
+          );
+          setLoadingTransactionClaim(false);
+        }
+      }
+    });
+  }, [claimAll, router, setLoadingTransactionClaim, positions, openModal]);
+
+  useEffect(() => {
+    const poolPath = router.query["pool-path"] as string;
+    if (!poolPath) {
+      return;
+    }
+    if (!visiblePositions) {
+      return;
+    }
+    const temp = getPositionsByPoolId(poolPath);
+    setPositions(temp);
+  }, [router.query, visiblePositions, loadingPositionById]);
+
+  const filteredPosition = useMemo(() => {
+    if (isShowClosePosition) return positions;
+
+    return positions.filter(item => item.closed === false);
+  }, [isShowClosePosition, positions]);
+
+  const handleSetIsClosePosition = () => {
+    setIsShowClosedPosition(!isShowClosePosition);
+  };
+
+  return (
+    <MyLiquidity
+      address={address || account?.address || null}
+      addressName={addressName}
+      isOtherPosition={isOtherPosition}
+      positions={visiblePositions ? filteredPosition : []}
+      breakpoint={breakpoint}
+      connected={connectedWallet}
+      isSwitchNetwork={isSwitchNetwork}
+      handleClickAddPosition={handleClickAddPosition}
+      handleClickRemovePosition={handleClickRemovePosition}
+      divRef={divRef}
+      onScroll={handleScroll}
+      currentIndex={currentIndex}
+      claimAll={claimAllReward}
+      isShowRemovePositionButton={isShowRemovePositionButton}
+      loading={loading}
+      loadingTransactionClaim={loadingTransactionClaim}
+      isShowClosePosition={isShowClosePosition}
+      handleSetIsClosePosition={handleSetIsClosePosition}
+      isHiddenAddPosition={
+        !!(
+          (address && account?.address && address !== account?.address) ||
+          !account?.address
+        )
+      }
+      showClosePositionButton={showClosePositionButton}
+      isLoadingPositionsById={loadingPositionById}
+      tokenPrices={tokenPrices}
+    />
+  );
 };
 
 export default MyLiquidityContainer;

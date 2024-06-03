@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -7,11 +8,15 @@ export const wrapper = (theme: Theme) => css`
   ${fonts.body8};
   width: 100%;
   height: 214px;
-  background-color: ${theme.color.background06};
+  background-color: ${theme.color.backgroundOpacity3};
   border: 1px solid ${theme.color.border02};
   border-radius: 8px;
-  padding: 16px;
+  padding: 15px;
   gap: 16px;
+  ${media.mobile} {
+    gap: 12px;
+    height: auto;
+  }
 
   .title-wrap,
   .performance-list {
@@ -33,10 +38,25 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
     gap: 16px;
+    ${media.mobile} {
+      gap: 12px;
+    }
   }
   .performance-list {
     height: 25px;
+    ${media.mobile} {
+      height: 18px;
+    }
+    .loading-wrapper {
+      width: 200px;
+      display: flex;
+      justify-content: end;
+      > span {
+        display: flex;
+      }
+    }
     span {
+      ${fonts.body10};
       width: 200px;
       text-align: right;
       color: ${theme.color.green01};
@@ -46,6 +66,12 @@ export const wrapper = (theme: Theme) => css`
       }
       &.negative {
         color: ${theme.color.red01};
+      }
+      &.none {
+        color: ${theme.color.text01};
+      }
+      ${media.mobile} {
+        ${fonts.body12};
       }
     }
   }

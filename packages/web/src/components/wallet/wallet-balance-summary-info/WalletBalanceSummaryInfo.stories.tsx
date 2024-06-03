@@ -16,5 +16,6 @@ Default.args = {
   balanceSummaryInfo: {
     amount: "1,000.00",
     changeRate: "+1.10%",
+    loading: false,
   },
 };

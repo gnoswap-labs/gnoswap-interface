@@ -2,8 +2,13 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import IncentivizedPoolCard from "./IncentivizedPoolCard";
-import { poolDummy } from "./incentivized-pool-dummy";
 import { action } from "@storybook/addon-actions";
+import POOLS from "@repositories/pool/mock/pools.json";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+
+const pool = POOLS.pools[0] as any;
+
+const cardInfo = PoolMapper.toCardInfo(pool);
 
 export default {
   title: "earn/IncentivizedPoolCard",
@@ -11,11 +16,10 @@ export default {
 } as ComponentMeta<typeof IncentivizedPoolCard>;
 
 const Template: ComponentStory<typeof IncentivizedPoolCard> = args => {
-  return <IncentivizedPoolCard {...args} item={poolDummy[0]} />;
+  return <IncentivizedPoolCard {...args} pool={cardInfo} />;
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  item: poolDummy[0],
   routeItem: action("routeItem"),
 };

@@ -17,6 +17,7 @@ interface TokenListHeaderProps {
   breakpoint: DEVICE_TYPE;
   searchIcon: boolean;
   onTogleSearch: () => void;
+  searchRef: React.RefObject<HTMLDivElement>;
 }
 
 const TokenListHeader: React.FC<TokenListHeaderProps> = ({
@@ -27,6 +28,7 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
   breakpoint,
   searchIcon,
   onTogleSearch,
+  searchRef,
 }) => (
   <TokenListHeaderwrapper>
     <TokenTitleWrapper>
@@ -38,13 +40,15 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
           onClick={changeTokenType}
         />
       ) : searchIcon ? (
-        <SearchInput
-          width={200}
-          height={40}
-          value={keyword}
-          onChange={search}
-          className="tokens-search"
-        />
+        <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
+          <SearchInput
+            width={200}
+            height={40}
+            value={keyword}
+            onChange={search}
+            className="tokens-search"
+          />
+        </div>
       ) : (
         <div className="icon-wrap" onClick={onTogleSearch}>
           <IconSearch className="search-icon" />
@@ -63,6 +67,7 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
         selectType={tokenType}
         list={Object.values(TOKEN_TYPE)}
         onClick={changeTokenType}
+        buttonClassName="select-tab-token"
       />
     )}
   </TokenListHeaderwrapper>

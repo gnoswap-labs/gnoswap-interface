@@ -16,6 +16,7 @@ export const GnoswapBrandWrapper = styled.div`
     max-width: 328px;
     align-items: center;
     gap: 32px;
+    padding: 10px 0 0 0;
   }
 
   .sns {
@@ -62,13 +63,13 @@ export const TitleWrapper = styled.h1`
     line-height: 55px;
   }
   ${media.mobile} {
-    font-size: 36px;
-    font-weight: 600;
+    font-size: 38px;
+    font-weight: 700;
     line-height: 43px;
   }
 
   span {
-    color: ${({ theme }) => theme.color.point};
+    color: ${({ theme }) => theme.color.text24};
   }
 `;
 export const SubTitleWrapper = styled.h4`

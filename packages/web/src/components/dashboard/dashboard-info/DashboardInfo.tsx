@@ -7,12 +7,14 @@ import {
   SupplyOverviewInfo,
 } from "@containers/dashboard-info-container/DashboardInfoContainer";
 import { DEVICE_TYPE } from "@styles/media";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface DashboardInfoProps {
   dashboardTokenInfo: DashboardTokenInfo;
   supplyOverviewInfo: SupplyOverviewInfo;
   governenceOverviewInfo: GovernenceOverviewInfo;
   breakpoint: DEVICE_TYPE;
+  loading: boolean;
 }
 
 const DashboardInfo: React.FC<DashboardInfoProps> = ({
@@ -20,16 +22,25 @@ const DashboardInfo: React.FC<DashboardInfoProps> = ({
   supplyOverviewInfo,
   governenceOverviewInfo,
   breakpoint,
+  loading,
 }) => (
   <DashboardInfoWrapper>
-    <DashboardInfoTitle
-      dashboardTokenInfo={dashboardTokenInfo}
-      breakpoint={breakpoint}
-    />
+    {!loading && (
+      <DashboardInfoTitle
+        dashboardTokenInfo={dashboardTokenInfo}
+        breakpoint={breakpoint}
+      />
+    )}
+    {loading && (
+      <div className="loading-spining">
+        <span css={pulseSkeletonStyle({ w: "400px", mobileWidth: "150" })} />
+      </div>
+    )}
     <DashboardOverview
       supplyOverviewInfo={supplyOverviewInfo}
       governenceOverviewInfo={governenceOverviewInfo}
       breakpoint={breakpoint}
+      loading={loading}
     />
   </DashboardInfoWrapper>
 );

@@ -1,6 +1,5 @@
 // TODO : remove eslint-disable after work
-/* eslint-disable */
-import React from "react";
+import React, { useMemo } from "react";
 import { type Activity } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import {
@@ -8,11 +7,18 @@ import {
   TableColumn,
   TokenInfoWrapper,
   IconButton,
+  TableColumnTooltipContent,
 } from "./ActivityInfo.styles";
 import {
   ACTIVITY_TD_WIDTH,
   MOBILE_ACTIVITY_TD_WIDTH,
 } from "@constants/skeleton.constant";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { formatAddress } from "@utils/string-utils";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { getDateUtcToLocal } from "@common/utils/date-util";
+dayjs.extend(relativeTime);
 
 interface ActivityInfoProps {
   item: Activity;
@@ -20,34 +26,48 @@ interface ActivityInfoProps {
   key?: number;
 }
 
-const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
-  const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
-    item;
-  const adjective = ["for", "and"];
+const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
+  const {
+    action,
+    totalValue,
+    tokenAmountOne,
+    tokenAmountTwo,
+    account,
+    time
+  } = item;
+  const adjective = useMemo(() => ["for", "and"], []);
+  const timeFormat = getDateUtcToLocal(time);
+
+  const actionText = useMemo(() => {
+    if (action.split(" ").some(i => adjective.includes(i))) {
+      return action.split(" ").map((text, idx) => {
+        return idx === action.split(" ").length - 1 ||
+          idx === action.split(" ").length - 3 ? (
+          <span key={idx} className="symbol-text">{text}</span>
+        ) : (
+          text + " "
+        );
+      });
+    }
+
+    return action.split(" ").map((text, idx) => {
+      return idx === action.split(" ").length - 1 ? (
+        <span key={idx} className="symbol-text">{text}</span>
+      ) : (
+        text + " "
+      );
+    });
+  }, [action, adjective]);
+
   return (
-    <TokenInfoWrapper key={key}>
+    <TokenInfoWrapper>
       <HoverSection>
         <TableColumn className="left" tdWidth={ACTIVITY_TD_WIDTH[0]}>
           <span className="token-index">
-            {action.split(" ").some(i => adjective.includes(i))
-              ? action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ||
-                    idx === action.split(" ").length - 3 ? (
-                    <span className="symbol-text">{text}</span>
-                  ) : (
-                    text + " "
-                  );
-                })
-              : action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ? (
-                    <span className="symbol-text">{text}</span>
-                  ) : (
-                    text + " "
-                  );
-                })}
+            {actionText}
             <IconButton
               onClick={() => {
-                alert("open Link");
+                window.open(item.explorerUrl, "_blank");
               }}
             >
               <IconOpenLink className="action-icon" />
@@ -64,10 +84,28 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
           <span className="token-index">{tokenAmountTwo}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_TD_WIDTH[4]}>
-          <span className="token-index">{account}</span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TableColumnTooltipContent>
+                {account}
+              </TableColumnTooltipContent>
+            }
+          >
+            <span className="token-index tooltip-label">{formatAddress(account || "")}</span>
+          </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_TD_WIDTH[5]}>
-          <span className="token-index">{time}</span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TableColumnTooltipContent>
+                {`${timeFormat.value} (UTC+${timeFormat.offsetHours})`}
+              </TableColumnTooltipContent>
+            }
+          >
+            <span className="token-index tooltip-label">{dayjs(time).fromNow()}</span>
+          </Tooltip>
         </TableColumn>
       </HoverSection>
     </TokenInfoWrapper>
@@ -76,33 +114,32 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
 
 export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
   item,
-  idx,
-  key,
 }) => {
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
   const adjective = ["for", "and"];
+  const timeFormat = getDateUtcToLocal(time);
   return (
-    <TokenInfoWrapper key={key}>
+    <TokenInfoWrapper>
       <HoverSection>
         <TableColumn className="left" tdWidth={MOBILE_ACTIVITY_TD_WIDTH[0]}>
           <span className="token-index">
             {action.split(" ").some(i => adjective.includes(i))
               ? action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ||
-                    idx === action.split(" ").length - 3 ? (
-                    <span className="symbol-text">{text}</span>
-                  ) : (
-                    text + " "
-                  );
-                })
+                return idx === action.split(" ").length - 1 ||
+                  idx === action.split(" ").length - 3 ? (
+                  <span key={idx} className="symbol-text">{text}</span>
+                ) : (
+                  text + " "
+                );
+              })
               : action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ? (
-                    <span className="symbol-text">{text}</span>
-                  ) : (
-                    text + " "
-                  );
-                })}
+                return idx === action.split(" ").length - 1 ? (
+                  <span key={idx} className="symbol-text">{text}</span>
+                ) : (
+                  text + " "
+                );
+              })}
             <IconButton
               onClick={() => {
                 alert("open Link");
@@ -122,10 +159,28 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
           <span className="token-index">{tokenAmountTwo}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={MOBILE_ACTIVITY_TD_WIDTH[4]}>
-          <span className="token-index">{account}</span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TableColumnTooltipContent>
+                {account}
+              </TableColumnTooltipContent>
+            }
+          >
+            <span className="token-index">{formatAddress(account)}</span>
+          </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={MOBILE_ACTIVITY_TD_WIDTH[5]}>
-          <span className="token-index">{time}</span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TableColumnTooltipContent>
+                {`${timeFormat.value} (UTC+${timeFormat.offsetHours})`}
+              </TableColumnTooltipContent>
+            }
+          >
+            <span className="token-index">{dayjs(time).fromNow()}</span>
+          </Tooltip>
         </TableColumn>
       </HoverSection>
     </TokenInfoWrapper>

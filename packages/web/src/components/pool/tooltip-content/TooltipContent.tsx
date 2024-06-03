@@ -5,7 +5,7 @@ import { wrapper } from "./TooltipContent.styles";
 export const TITLE = {
   COMPOSITION: "Composition",
   CLAIM_REWARDS: "Claim_rewards",
-  STAKING_REWARDS_UPPER: "Staking Rewards",
+  STAKINGS_UPPER: "Staking Rewards",
   UNCLAIMABLE: "Unclaimable",
   BALANCE: "Balance",
   TOTAL_REWARDS: "Total_rewards",
@@ -26,7 +26,6 @@ const CLAIM_CONTENT =
   "*Swap Fees are only claimable when liquidity is unstaked. If you want to claim the swap fees, please unstake your liquidity first.";
 
 const TooltipContent: React.FC<TooltipContentProps> = ({ info }) => {
-  console.log(info);
   return (
     <div css={wrapper}>
       {info.content.map((item: any, idx: number) => (
@@ -43,7 +42,7 @@ const TooltipContent: React.FC<TooltipContentProps> = ({ info }) => {
                 {item.tokens.map((token: any, idx: number) => (
                   <li key={idx}>
                     <img
-                      src={token.tokenLogo}
+                      src={token.logoURI}
                       alt="token logo image"
                       className="token-logo"
                     />

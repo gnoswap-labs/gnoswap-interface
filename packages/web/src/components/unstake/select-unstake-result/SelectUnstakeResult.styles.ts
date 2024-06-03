@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -10,43 +11,39 @@ export const wrapper = (theme: Theme) => css`
   ${fonts.body12};
   border-top: 1px solid ${theme.color.border02};
   padding-top: 16px;
-
-  ul {
+  ${media.mobile} {
+    padding-top: 12px;
+  }
+  
+  .pooled-section,
+  .result-section {
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
     padding: 15px;
-    background-color: ${theme.color.backgroundOpacity};
+    background-color: ${theme.color.background20};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     gap: 16px;
+    ${media.mobile} {
+      padding: 11px;
+      gap: 8px;
+    }
   }
 
   li {
     width: 100%;
-    img {
-      width: 24px;
-      height: 24px;
-    }
-  }
-
-  .pooled-section li {
-    ${mixins.flexbox("row", "center", "flex-start")};
-    height: 24px;
-    .token-id {
-      margin-left: 8px;
-    }
-    .period-value {
-      margin-left: auto;
-    }
-  }
-
-  .result-section li {
     height: 39px;
     ${mixins.flexbox("column", "flex-end", "center")};
+    /* gap: 5px; */
     .main-info {
       width: 100%;
       height: 24px;
       ${mixins.flexbox("row", "center", "center")};
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
       p {
         margin-left: 5px;
       }
@@ -58,6 +55,50 @@ export const wrapper = (theme: Theme) => css`
     .dallor {
       ${fonts.p4}
       color: ${theme.color.text04}
+    }
+  }
+
+  .result-section {
+    ${mixins.flexbox("column", "center", "center")};
+    color: ${theme.color.text02};
+    ${fonts.body12}
+    .result-value {
+      margin-left: auto;
+    }
+    .total-amount-box,
+    .apr-box {
+      width: 100%;
+      ${mixins.flexbox("row", "center", "flex-start")};
+    }
+    .total-amount-box {
+      height: 24px;
+      ${media.mobile} {
+        height: 18px;
+      }
+    }
+    .apr-box {
+      height: 18px;
+    }
+    h5 {
+      margin-right: 4px;
+      &.total-amount-title, &.apr-title {
+        margin-right: 4px;
+        color: ${theme.color.text04};
+      }
+    }
+  }
+
+  .hover-info {
+    &,
+    & * {
+      width: 16px;
+      height: 16px;
+    }
+    cursor: default;
+    .icon-info {
+      * {
+        fill: ${theme.color.icon03};
+      }
     }
   }
 `;

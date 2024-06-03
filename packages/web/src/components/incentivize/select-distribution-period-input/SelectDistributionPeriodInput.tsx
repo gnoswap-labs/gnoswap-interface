@@ -1,68 +1,55 @@
-import Calendar from "@components/common/calendar/Calendar";
-import React, { useCallback, useState } from "react";
-import { SelectDistributionPeriodInputWrapper } from "./SelectDistributionPeriodInput.styles";
-
-interface DistributionPeriodDate {
-  year: number;
-  month: number;
-  date: number;
-}
+import React, { useMemo } from "react";
+import { PoolIncentivizeSelectPeriodBoxItem, SelectDistributionPeriodInputWrapper } from "./SelectDistributionPeriodInput.styles";
+import SelectBox from "@components/common/select-box/SelectBox";
 
 export interface SelectDistributionPeriodInputProps {
   title: string;
-  date?: DistributionPeriodDate;
-  setDate: (date: DistributionPeriodDate) => void;
+  period: number;
+  periods: number[];
+  changePeriod: (period: number) => void;
 }
-
-const DefaultDate = {
-  year: new Date().getFullYear(),
-  month: new Date().getMonth() + 1,
-  date: new Date().getDate(),
-};
 
 const SelectDistributionPeriodInput: React.FC<SelectDistributionPeriodInputProps> = ({
   title,
-  date,
-  setDate,
+  period,
+  periods,
+  changePeriod,
 }) => {
-  const [opened, setOpened] = useState(false);
 
-  const getDateText = useCallback(() => {
-    if (!date) {
-      return "";
-    }
-    return `${date.date}/${date.month}/${date.year}`;
-  }, [date]);
-
-  const onClickDateWrapper = useCallback(() => {
-    setOpened(!opened);
-  }, [opened]);
-
-  const onClickCalendarDate = (date: DistributionPeriodDate) => {
-    setDate(date);
-    setOpened(false);
-  };
+  const currentPeriodText = useMemo(() => {
+    return `${period} Days`;
+  }, [period]);
 
   return (
     <SelectDistributionPeriodInputWrapper>
-      <span className="title">{title}</span>
+      <span className="description">{title}</span>
 
-      <div className="date-wrapper" onClick={onClickDateWrapper}>
-        <span className="date">{getDateText()}</span>
-      </div>
-
-      <div className="calendar-container">
-        {opened && (
-          <div className="calendar-wrapper">
-            <Calendar
-              selectedDate={date || DefaultDate}
-              onClickDate={onClickCalendarDate}
-            />
-          </div>
-        )}
-      </div>
+      <SelectBox
+        current={currentPeriodText}
+        items={periods}
+        select={changePeriod}
+        render={(period) => <SelectDistributionPeriodItem period={period} />}
+      />
     </SelectDistributionPeriodInputWrapper>
   );
 };
 
 export default SelectDistributionPeriodInput;
+
+interface SelectDistributionPeriodItemProps {
+  period: number;
+}
+
+const SelectDistributionPeriodItem: React.FC<SelectDistributionPeriodItemProps> = ({
+  period,
+}) => {
+  const periodText = useMemo(() => {
+    return `${period} days`;
+  }, [period]);
+
+  return (
+    <PoolIncentivizeSelectPeriodBoxItem>
+      {periodText}
+    </PoolIncentivizeSelectPeriodBoxItem>
+  );
+};

@@ -4,6 +4,7 @@ import mixins from "@styles/mixins";
 import iconChecked from "@components/common/icons/svg/icon-checked.svg";
 import iconCheckboxBlank from "@components/common/icons/svg/icon-checkbox-blank.svg";
 import iconCheckboxUnsure from "@components/common/icons/svg/icon-checkbox-unsure.svg";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -14,10 +15,33 @@ export const wrapper = (theme: Theme) => css`
   background-color: ${theme.color.background06};
   border-radius: 8px;
   border: 1px solid ${theme.color.border02};
-  box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: ${theme.color.shadow01};
   padding: 23px;
   .title {
     ${fonts.h6};
+  }
+  .button-submit {
+    height: 57px;
+    span {
+      font-size: 18px;
+    }
+    ${media.mobile} {
+      height: 41px;
+      span {
+        font-size: 16px;
+      }
+    }
+  }
+
+  ${media.tabletMiddle} {
+    max-width: 500px;
+    width: 100%;
+    padding: 23px;
+    margin: auto;
+    gap: 12px;
+  }
+  ${media.mobile} {
+    padding: 15px;
   }
 `;
 
@@ -43,7 +67,7 @@ export const inputStyle = (theme: Theme) => css`
   }
 
   input[type="checkbox"]:checked + label:before {
-    background-color: ${theme.color.point};
+    background-color: ${theme.color.background04};
     mask-image: url(${iconChecked});
   }
 
@@ -51,5 +75,29 @@ export const inputStyle = (theme: Theme) => css`
     background-color: ${theme.color.text04};
     mask-image: url(${iconCheckboxUnsure});
     cursor: default;
+  }
+`;
+
+export const loadingWrapper = (theme: Theme) => css`
+  ${mixins.flexbox("row", "center", "center")}
+  width: 100%;
+  height: 188px;
+  border-radius: 8px;
+  > span {
+    color: ${theme.color.text04};
+    ${fonts.body11}
+    margin-top: 18px;
+  }
+  > div {
+    width: 48px;
+    height: 48px;
+    &::before {
+      background-color: ${theme.color.background01};
+      width: 38px;
+      height: 38px;
+    }
+  }
+  ${media.mobile} {
+    height: 177px;
   }
 `;

@@ -1,8 +1,22 @@
-import { ExactTypeOption } from "@common/values/data-constant";
-import { TokenDefaultModel } from "./token-default-model";
+import { SwapDirectionType } from "@common/values/data-constant";
+import { TokenModel } from "./token-model";
 
 export interface TokenSwapModel {
-  token0: TokenDefaultModel | null;
-  token1: TokenDefaultModel | null;
-  type: ExactTypeOption;
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
+  type: SwapDirectionType;
+}
+
+export interface DataTokenInfo {
+  tokenA: TokenModel | null;
+  tokenAAmount: string;
+  tokenABalance: string;
+  tokenB: TokenModel | null;
+  tokenBAmount: string;
+  tokenBBalance: string;
+  direction: SwapDirectionType;
+  tokenAUSDStr: string;
+  tokenBUSDStr: string;
+  tokenADecimals?: number;
+  tokenBDecimals?: number;
 }

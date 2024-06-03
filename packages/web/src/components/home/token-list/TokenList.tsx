@@ -30,6 +30,7 @@ interface TokenItem {
   breakpoint: DEVICE_TYPE;
   searchIcon: boolean;
   onTogleSearch: () => void;
+  searchRef: React.RefObject<HTMLDivElement>;
 }
 
 const TokenList: React.FC<TokenItem> = ({
@@ -49,6 +50,7 @@ const TokenList: React.FC<TokenItem> = ({
   breakpoint,
   searchIcon,
   onTogleSearch,
+  searchRef,
 }) => {
   return (
     <div css={wrapper}>
@@ -60,6 +62,7 @@ const TokenList: React.FC<TokenItem> = ({
         breakpoint={breakpoint}
         searchIcon={searchIcon}
         onTogleSearch={onTogleSearch}
+        searchRef={searchRef}
       />
       <TokenListTable
         tokens={tokens}
@@ -69,12 +72,12 @@ const TokenList: React.FC<TokenItem> = ({
         sort={sort}
         breakpoint={breakpoint}
       />
-      <Pagination
+      {totalPage > 1  && <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}
         siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
-      />
+      />}
     </div>
   );
 };

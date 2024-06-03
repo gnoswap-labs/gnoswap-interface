@@ -6,10 +6,22 @@ import { media } from "@styles/media";
 export const TokenListHeaderwrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
+  
+  .tokens-search {
+    min-width: 300px;
+  }
   ${media.mobile} {
     align-items: flex-start;
     flex-direction: column;
     gap: 24px;
+    .tokens-search {
+      min-width: 200px;
+    }
+  }
+  .select-tab-token {
+    ${media.mobile} {
+      padding: 4px 24px;
+    }
   }
 `;
 
@@ -29,16 +41,20 @@ export const TokenTitleWrapper = styled.div`
     }
   }
 
-  .search-icon {
-    width: 24px;
-    height: 24px;
-    * {
-      fill: ${({ theme }) => theme.color.icon08};
+  .icon-wrap {
+    height: 100%;
+    .search-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 13px;
+      * {
+        fill: ${({ theme }) => theme.color.icon08};
+      }
     }
-  }
-  .search-icon:hover {
-    * {
-      fill: ${({ theme }) => theme.color.icon02};
+    .search-icon:hover {
+      * {
+        fill: ${({ theme }) => theme.color.icon02};
+      }
     }
   }
 `;

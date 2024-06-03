@@ -6,8 +6,8 @@ export const amountEmptyBigNumInit = {
 };
 
 export const amountEmptyNumberInit = {
-  value: 0,
-  denom: "",
+  amount: 0,
+  currency: "",
 };
 
 export const unitsUpperCase = {
@@ -15,4 +15,11 @@ export const unitsUpperCase = {
   million: "M",
   billion: "B",
   trillion: "T",
+};
+
+export const unitsLowerCase = {
+  thousand: "k",
+  million: "m",
+  billion: "b",
+  trillion: "t",
 };

@@ -8,7 +8,7 @@ export const MyLiquidityWrapper = styled.div`
   width: 100%;
   gap: 16px;
   ${media.tablet} {
-    gap: 24px;
+    gap: 16px;
   }
   ${media.mobile} {
     gap: 12px;
@@ -23,7 +23,7 @@ export const MyLiquidityWrapper = styled.div`
   .slider-wrap {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    overflow-x: auto;
+    overflow: overlay;
     gap: 12px;
     .box-slider {
       ${mixins.flexbox("row", "flex-start", "flex-start")};
@@ -39,7 +39,7 @@ export const MyLiquidityWrapper = styled.div`
       ${fonts.body12};
     }
     .current-page {
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text03};
     }
   }
 `;
@@ -50,4 +50,17 @@ export const PoolDivider = styled.div`
   height: 1px;
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
+`;
+
+export const MyLiquidityWrapperAnchor = styled.div`
+  position: relative;
+  visibility: hidden;
+  display: block;
+  top: -87px;
+  ${media.tablet} {
+    top: -75px;
+  }
+  ${media.mobile} {
+    display: none;
+  }
 `;

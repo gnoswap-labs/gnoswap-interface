@@ -15,9 +15,7 @@ export const TokenInfoWrapper = styled.div`
 
 export const HoverSection = styled.div`
   ${mixins.flexbox("row", "center", "center", false)};
-  background-color: ${({ theme }) => theme.color.background01};
   transition: background-color 0.3s ease;
-  cursor: pointer;
   height: 100%;
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
@@ -51,6 +49,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     ${fonts.body11};
     color: ${({ theme }) => theme.color.text02};
   }
+  .tooltip-label {
+    cursor: default;
+  }
   .symbol-text {
     font-weight: 700;
   }
@@ -59,7 +60,13 @@ export const IconButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
   width: 16px;
   height: 16px;
-  margin: 1px 0px;
+  margin: 1px 0px 1px 2px;
+  ${media.tablet} {
+    margin-left: 2px;
+  }
+  ${media.mobile} {
+    margin-left: 0;
+  }
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
@@ -68,4 +75,10 @@ export const IconButton = styled.button`
       fill: ${({ theme }) => theme.color.icon07};
     }
   }
+`;
+
+export const TableColumnTooltipContent = styled.div`
+  max-width: 268px;
+  word-break: break-all;
+  ${fonts.body12};
 `;

@@ -28,6 +28,7 @@ export const BreadcrumbsWrapper = styled.div`
   width: 100%;
   gap: 20px;
   align-self: stretch;
+  position: relative;
   ${media.mobile} {
     gap: 10px;
   }
@@ -42,8 +43,31 @@ export const BreadcrumbsWrapper = styled.div`
     }
     color: ${({ theme }) => theme.color.text02};
   }
-
+  .pulse-skeleton {
+    position: absolute;
+    left: 98.8px;
+    top: 12px;
+    bottom: 6px;
+    ${media.tablet} {
+      ${fonts.p2};
+      left: 82px;
+      top: 10px;
+      bottom: 5px;
+      height: 24px;
+    }
+    ${media.mobile} {
+      ${fonts.p2};
+      left: 62.5px;
+      top: 3px;
+      bottom: 2px;
+      height: 24px;
+    }
+  }
   .location {
+    position: absolute;
+    left: 98.8px;
+    top: 12px;
+    bottom: 6px;
     ${mixins.flexbox("row", "center", "flex-start")};
     padding: 4px 8px;
     gap: 4px;
@@ -52,10 +76,19 @@ export const BreadcrumbsWrapper = styled.div`
     ${fonts.body12};
     ${media.tablet} {
       ${fonts.p2};
+      left: 82px;
+      top: 10px;
+      bottom: 5px;
     }
-    color: ${({ theme }) => theme.color.text05};
+    ${media.mobile} {
+      ${fonts.p2};
+      left: 62.5px;
+      top: 3px;
+      bottom: 2px;
+    }
+    color: ${({ theme }) => theme.color.text04};
     .token {
-      color: ${({ theme }) => theme.color.text22};
+      color: ${({ theme }) => theme.color.text10};
     }
   }
 
@@ -63,10 +96,10 @@ export const BreadcrumbsWrapper = styled.div`
     cursor: pointer;
     transition: color 0.3s ease;
     &:hover {
-      color: ${({ theme }) => theme.color.text02};
+      color: ${({ theme }) => theme.color.text16};
     }
     &:last-of-type {
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text10};
     }
   }
 

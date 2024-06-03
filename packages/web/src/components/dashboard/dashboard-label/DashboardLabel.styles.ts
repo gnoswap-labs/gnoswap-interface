@@ -4,8 +4,8 @@ import { fonts } from "@constants/font.constant";
 
 export const WalletBalanceDetailInfoTooltipContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  width: calc(300px - 32px);
+  max-width: 268px;
   ${fonts.body12};
-  color: ${({ theme }) => theme.color.text15};
-  background-color: ${({ theme }) => theme.color.background14};
+  color: ${({ theme }) => theme.color.text02};
+  background-color: ${({ theme }) => theme.color.background02};
 `;

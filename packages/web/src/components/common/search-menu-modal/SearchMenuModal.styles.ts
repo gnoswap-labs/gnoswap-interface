@@ -5,15 +5,7 @@ import { Z_INDEX } from "@styles/zIndex";
 import { media } from "@styles/media";
 
 export const SearchModalBackground = styled.div`
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: 100%;
-  height: 100%;
-  background: rgba(10, 14, 23, 0.7);
-  z-index: ${Z_INDEX.modalOverlay};
+  z-index: ${Z_INDEX.modal};
 `;
 
 export const SearchContainer = styled.div`
@@ -47,7 +39,7 @@ export const SearchWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.background06};
   color: ${({ theme }) => theme.color.text14};
   .search-icon * {
-    fill: ${({ theme }) => theme.color.icon03};
+    fill: ${({ theme }) => theme.color.icon08};
   }
   box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   &:focus-within {
@@ -65,7 +57,7 @@ export const InputStyle = styled.input`
   height: 100%;
   margin-right: 16px;
   &::placeholder {
-    color: ${({ theme }) => theme.color.text04};
+    color: ${({ theme }) => theme.color.text17};
   }
 `;
 
@@ -74,8 +66,10 @@ export const ModalContainer = styled.div`
   position: absolute;
   width: 460px;
   left: calc(50vw - 230px);
+  max-height: calc(100vh - 80px);
+  overflow-y: scroll;
   top: 67.5px;
-  padding: 8px 0px;
+  padding: 0px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
@@ -89,7 +83,9 @@ export const ModalContainer = styled.div`
   }
 
   ul {
+    max-height: 100vh;
     width: 100%;
+    .no-data-found,
     .recent-searches,
     .popular-tokens {
       ${mixins.flexbox("row", "center", "flex-start")};
@@ -98,17 +94,21 @@ export const ModalContainer = styled.div`
       color: ${({ theme }) => theme.color.text04};
       ${media.mobile} {
         padding: 12px 12px 8px 12px;
-        ${fonts.p2}
+        ${fonts.p4}
       }
+    }
+    .no-data-found {
+      ${mixins.flexbox("row", "center", "center")};
+      padding: 16px 24px 16px 24px;
     }
   }
   li {
     ${mixins.flexbox("row", "center", "flex-start")};
-    padding: 16px 24px;
+    padding: 15px 24px;
     gap: 8px;
     cursor: pointer;
     ${media.mobile} {
-      padding: 12px;
+      padding: 10px 12px;
       ${fonts.p2}
     }
     &.selected,
@@ -120,29 +120,120 @@ export const ModalContainer = styled.div`
       gap: 8px;
       flex: 1 0 0;
     }
+    .coin-info-wrapper {
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
+      gap: 8px;
+      flex: 1 0 0;
+    }
     .token-logo {
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
+      ${media.mobile} {
+        width: 24px;
+        height: 24px;
+      }
+    }
+    .coin-info-detail {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      gap: 2px;
+      > span {
+        color: ${({ theme }) => theme.color.text04};
+        ${fonts.p3}
+      }
+      > div {
+        max-width: 100%;
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 8px;
+        .token-path {
+          > div {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          padding: 1.5px 4px;
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 2px;
+          background-color: ${({ theme }) => theme.color.backgroundOpacity};
+          border-radius: 4px;
+          color: ${({ theme }) => theme.color.text04};
+          ${fonts.p6}
+          svg {
+            min-width: 10px;
+            width: 10px;
+            height: 10px;
+            * {
+              fill: ${({ theme }) => theme.color.icon03}; 
+            }
+          }
+          &:hover {
+            color: ${({ theme }) => theme.color.text03};
+            svg {
+              * {
+                fill: ${({ theme }) => theme.color.icon07}; 
+              }
+            }
+          }
+        }
+      }
+      ${media.mobile} {
+        > div {
+          max-width: 100%;
+        }
+      }
+    }
+    .coin-infor-value {
+      ${mixins.flexbox("column", "flex-end", "flex-end")};
+      gap: 2px;
+      .positive, .negative  {
+        ${fonts.p3}
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+        
+      }
+      .token-price-apr {
+        color: ${({ theme }) => theme.color.text04};
+        ${fonts.p3}
+      }
+      .negative {
+        svg {
+          * {
+            fill: ${({ theme }) => theme.color.red01};
+          }
+        }
+      }
+      .positive {
+        svg {
+          * {
+            fill: ${({ theme }) => theme.color.green01};
+          }
+        }
+      }
     }
     .token-name {
-      ${fonts.body8};
-      color: ${({ theme }) => theme.color.text02};
-      ${media.mobile} {
-        ${fonts.body12}
-      }
-    }
-    .token-symbol {
-      ${fonts.body8};
-      color: ${({ theme }) => theme.color.text04};
-      ${media.mobile} {
-        ${fonts.body12}
-      }
-    }
-    .token-price {
-      ${fonts.body7};
+      ${fonts.body9};
+      white-space: nowrap;
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
         ${fonts.body11}
+      }
+    }
+    .token-symbol {
+      ${fonts.body12};
+      color: ${({ theme }) => theme.color.text04};
+      ${media.mobile} {
+        ${fonts.p4}
+      }
+    }
+    .token-price {
+      ${mixins.flexbox("row", "center", "flex-end")};
+      ${fonts.body9};
+      color: ${({ theme }) => theme.color.text02};
+      ${media.mobile} {
+        ${fonts.body11}
+      }
+      svg {
+        height: 20px;
+        width: auto;
       }
     }
     .negative {
@@ -156,8 +247,48 @@ export const ModalContainer = styled.div`
       ${fonts.body12};
       color: ${({ theme }) => theme.color.green01};
       ${media.mobile} {
-        ${fonts.p2}
+        ${fonts.p4}
       }
+    }
+  }
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: ${Z_INDEX.modalOverlay};
+  background: rgba(10, 14, 23, 0.7);
+`;
+
+interface Props {
+  maxWidth: number;
+  tokenNameWidthList: number;
+}
+
+export const TokenInfoWrapper = styled.div<Props>`
+  overflow-x: hidden;
+  max-width: ${({ maxWidth }) => {
+    return `calc(460px - 150px - ${maxWidth}px)`;
+  }};
+  .token-path {
+    max-width: ${({ tokenNameWidthList, maxWidth }) => {
+    return `calc(460px - 158px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+  }};
+  }
+  ${media.mobile} {
+    max-width: ${({ maxWidth }) => {
+    return `calc(328px - 96px - ${maxWidth}px)`;
+  }};
+    .token-path {
+      max-width: ${({ tokenNameWidthList, maxWidth }) => {
+    return `calc(328px - 104px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+  }};
     }
   }
 `;

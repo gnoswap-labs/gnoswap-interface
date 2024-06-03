@@ -1,5 +1,7 @@
+import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import React from "react";
-import { WalletLayoutWrapper } from "./WalletLayout.styles";
+import { LinkButton, WalletLayoutWrapper } from "./WalletLayout.styles";
+import Link from "next/link";
 
 interface WalletLayoutProps {
   header: React.ReactNode;
@@ -21,7 +23,15 @@ const WalletLayout: React.FC<WalletLayoutProps> = ({
     <section className="wallet-summary-section">
       <div className="summary-container">
         <h3 className="title-wrapper">Wallet</h3>
-        <div className="balance-container">{balance}</div>
+        <div>
+          <div className="balance-container">{balance}</div>
+          <LinkButton>
+            <span>Create a position to start earning rewards</span>
+            <Link href="/earn/add?tokenA=gnot&tokenB=gno.land/r/demo/gns&fee_tier=3000">
+              Click here <IconStrokeArrowRight className="link-icon" />
+            </Link>
+          </LinkButton>
+        </div>
       </div>
     </section>
     <div className="background-wrapper">

@@ -7,14 +7,15 @@ export const PoolInfoHeaderWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")}
   width: 100%;
   gap: 8px;
-  ${media.mobile} {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
   .left-wrap {
     ${mixins.flexbox("row", "center", "flex-start")}
     gap: 8px;
+    img {
+      ${media.mobile} {
+        width: 24px;
+        height: 24px;
+      }
+    }
   }
 
   h3 {
@@ -27,7 +28,7 @@ export const PoolInfoHeaderWrapper = styled.div`
 
   .badge-wrap {
     ${mixins.flexbox("row", "center", "center")}
-    gap: 2px;
+    gap: 3px;
     ${media.tablet} {
       gap: 8px;
     }
@@ -38,12 +39,16 @@ export const PoolInfoHeaderWrapper = styled.div`
       ${mixins.flexbox("row", "center", "center")}
       padding: 0px 6px;
       height: 24px;
-      gap: 4px;
+      gap: 5px;
       border-radius: 4px;
       ${fonts.p3};
-      color: ${({ theme }) => theme.color.text12};
+      color: ${({ theme }) => theme.color.text05};
       border: 1px solid ${({ theme }) => theme.color.border08};
       background-color: ${({ theme }) => theme.color.background08};
+      img {
+        width: 18px;
+        height: 18px;
+      }
       );
     }
   }

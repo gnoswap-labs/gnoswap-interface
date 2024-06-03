@@ -4,7 +4,7 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStaking from "@components/common/icons/IconStaking";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { STAKED_OPTION } from "@constants/option.constant";
-import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
+import { numberToRate, tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import { wrapper } from "./MyLiquidityDetailsCard.styles";
 
 interface MyLiquidityDetailsCardProps {
@@ -29,8 +29,8 @@ const MyLiquidityDetailsCard: React.FC<MyLiquidityDetailsCardProps> = ({
       <div className="pair-wrap">
         <div className="token-info">
           <DoubleLogo
-            left={tokenPair.token0.tokenLogo}
-            right={tokenPair.token1.tokenLogo}
+            left={tokenPair.tokenA.logoURI}
+            right={tokenPair.tokenB.logoURI}
           />
           <span className="pair-symbol">
             {tokenPairSymbolToOneCharacter(tokenPair)}
@@ -62,7 +62,7 @@ const MyLiquidityDetailsCard: React.FC<MyLiquidityDetailsCardProps> = ({
         </section>
         <section>
           <h4>Estimated APR</h4>
-          <span className="content-value">{apr}</span>
+          <span className="content-value">{numberToRate(apr)}</span>
         </section>
       </div>
     </div>

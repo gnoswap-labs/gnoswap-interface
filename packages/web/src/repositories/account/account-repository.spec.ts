@@ -1,13 +1,14 @@
 import { StorageClient } from "@common/clients/storage-client";
 import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
 import { WalletClient } from "@common/clients/wallet-client";
-import { AdenaClient } from "@common/clients/wallet-client/adena-client";
-import { AdenaError } from "@common/errors/adena";
+import { AdenaClient } from "@common/clients/wallet-client/adena/adena-client";
 import { AccountRepository } from "./account-repository";
-import { AccountRepositoryInstance } from "./account-repository-instance";
+import { AccountRepositoryImpl } from "./account-repository-impl";
+import { AxiosClient } from "@common/clients/network-client/axios-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
+let sessionStorageClient: StorageClient;
 let accountRepository: AccountRepository;
 
 const defaultAccountInfo = {
@@ -18,17 +19,19 @@ const defaultAccountInfo = {
     "@type": "----",
     value: "----",
   },
-  accountNumber: "1",
-  sequence: "1",
+  accountNumber: 1,
+  sequence: 1,
   chainId: "test3",
 };
 
 beforeEach(() => {
   walletClient = new AdenaClient();
   localStorageClient = new MockStorageClient("LOCAL");
-  accountRepository = new AccountRepositoryInstance(
+  accountRepository = new AccountRepositoryImpl(
     walletClient,
+    new AxiosClient(),
     localStorageClient,
+    sessionStorageClient,
   );
   jest.clearAllMocks();
 });
@@ -43,15 +46,11 @@ describe("get account", () => {
       data: defaultAccountInfo,
     });
 
-    const response = await accountRepository.getAccount();
+    const account = await accountRepository.getAccount();
 
-    expect(response).toBeTruthy();
-    expect(typeof response.code).toBe("number");
-    expect(typeof response.status).toBe("string");
-    expect(typeof response.type).toBe("string");
-    expect(typeof response.message).toBe("string");
-    expect(typeof response.data).toBe("object");
-    expect(typeof response.data.address).toBe("string");
+    expect(account).toBeTruthy();
+    expect(typeof account).toBe("object");
+    expect(typeof account?.address).toBe("string");
   });
 
   it("not connected wallet error", async () => {

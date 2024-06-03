@@ -1,8 +1,8 @@
-import IconDiscode from "@components/common/icons/social/IconDiscode";
 import IconGitbook from "@components/common/icons/social/IconGitbook";
 import IconGithub from "@components/common/icons/social/IconGithub";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconTwitter from "@components/common/icons/social/IconTwitter";
+import IconDiscord from "@components/common/icons/social/IconDiscord";
 import { DeviceSize } from "@styles/media";
 import React, { useCallback } from "react";
 import { ValuesType } from "utility-types";
@@ -18,7 +18,8 @@ import {
 export const SNS_TYPE = {
   GITHUB: "github",
   GITBOOK: "gitbook",
-  DISCODE: "discode",
+  DISCORD: "discord",
+  TELEGRAM: "telegram",
   MEDIUM: "medium",
   TWITTER: "twitter",
 } as const;
@@ -43,8 +44,8 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
     [onClickSns],
   );
 
-  const onClickDiscode = useCallback(
-    () => onClickSns(SNS_TYPE.DISCODE),
+  const onClickDiscord = useCallback(
+    () => onClickSns(SNS_TYPE.DISCORD),
     [onClickSns],
   );
 
@@ -66,7 +67,7 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
           <br />
           on Gnoswap
         </TitleWrapper>
-        <SubTitleWrapper>the One-stop Gnoland Defi Platform</SubTitleWrapper>
+        <SubTitleWrapper>the One-stop Gnoland DeFi Platform</SubTitleWrapper>
       </HeroTitleContainer>
       {windowSize > DeviceSize.mobile && (
         <DescriptionContainer>
@@ -77,8 +78,8 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
             <button onClick={onClickGitbook}>
               <IconGitbook className="icon" />
             </button>
-            <button onClick={onClickDiscode}>
-              <IconDiscode className="icon" />
+            <button onClick={onClickDiscord}>
+              <IconDiscord className="icon" />
             </button>
             <button onClick={onClickMedium}>
               <IconMedium className="icon" />
@@ -88,13 +89,12 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
             </button>
           </div>
           <DescriptionTitle>
-            Gnoswap is an open-source & audited AMM Dex that provides
-            <br />a simplified concentrated-LP experience for increased capital
-            efficiency.
+            The first Concentrated Liquidity AMM DEX built using Gnolang <br />
+            to offer the most simplified and user-friendly DeFi experience for traders.
           </DescriptionTitle>
-        </DescriptionContainer>
+        </DescriptionContainer >
       )}
-    </GnoswapBrandWrapper>
+    </GnoswapBrandWrapper >
   );
 };
 

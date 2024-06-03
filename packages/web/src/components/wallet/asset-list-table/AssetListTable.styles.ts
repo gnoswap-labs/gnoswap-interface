@@ -9,6 +9,9 @@ export const AssetListTableWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border01};
   border-radius: 8px;
   color: ${({ theme }) => theme.color.text04};
+  ${media.tabletMiddle} {
+    margin-bottom: 16px;
+  }
   ${fonts.body11};
   overflow-x: auto;
   .asset-list-head {
@@ -23,13 +26,28 @@ export const AssetListTableWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
   }
+  .skeleton {
+    height: 68px;
+    ${media.mobile} {
+      height: 68px;
+    }
+  }
 `;
 
 export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   height: 100%;
   ${mixins.flexbox("row", "center", "flex-end")};
-
+  &:first-of-type {
+    .asset {
+      padding: 16px 16px 16px 15px;
+    }
+  }
+  &:last-of-type {
+    .withdraw {
+      padding: 16px 15px 16px 12px;
+    }
+  }
   .asset {
     padding: 16px;
     ${media.tablet} {
@@ -43,19 +61,25 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
   .balance {
-    padding: 16px;
+    padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }
   }
   .deposit {
-    padding: 16px;
+    padding: 16px 0 16px 16px;
     ${media.tablet} {
-      padding: 16px 16px 16px 12px;
+      padding: 16px 0 16px 12px;
+    }
+  }
+  .amount {
+    padding: 16px 0;
+    ${media.tablet} {
+      padding: 16px 0px;
     }
   }
   .withdraw {
-    padding: 16px;
+    padding: 16px 16px 16px 12px;
     ${media.tablet} {
       padding: 16px 16px 16px 12px;
     }

@@ -14,6 +14,5 @@ const Template: ComponentStory<typeof EarnMyPositionNoLiquidity> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  value: "$1,120.15",
-  apr: "999%",
+  account: null,
 };

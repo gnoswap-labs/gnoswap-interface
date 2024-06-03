@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SelectDistributionPeriod from "./SelectDistributionPeriod";
-import { action } from '@storybook/addon-actions';
+import { action } from "@storybook/addon-actions";
 
 export default {
   title: "incentivize/SelectDistributionPeriod",
@@ -19,6 +19,7 @@ Default.args = {
     month: 10,
     date: 1
   },
-  setStartDate: action("start date"),
-  setEndDate: action("end date"),
+  period: 90,
+  setStartDate: action("setStartDate"),
+  setPeriod: action("setPeriod"),
 };

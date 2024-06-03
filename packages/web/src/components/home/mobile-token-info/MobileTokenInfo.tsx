@@ -1,20 +1,20 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
-import React from "react";
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import React, { useCallback, useMemo } from "react";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type Token } from "@containers/token-list-container/TokenListContainer";
 import { cx } from "@emotion/css";
-import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import {
   HoverSection,
   TableColumn,
   TokenInfoWrapper,
 } from "./MobileTokenInfo.styles";
 import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
-import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { makeId } from "@utils/common";
+import useRouter from "@hooks/common/use-custom-router";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
+import { useTheme } from "@emotion/react";
 
 interface TokenInfoProps {
   item: Token;
@@ -25,96 +25,81 @@ const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
   <>
     {status === MATH_NEGATIVE_TYPE.NEGATIVE ? (
       <IconTriangleArrowDown />
-    ) : (
+    ) : status === MATH_NEGATIVE_TYPE.POSITIVE ? (
       <IconTriangleArrowUp />
-    )}
+    ) : null}
     <span>{value}</span>
   </>
 );
 
-const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
-  const {
-    tokenId,
-    token,
-    price,
-    priceOf1d,
-    priceOf7d,
-    priceOf30d,
-    marketCap,
-    liquidity,
-    volume24h,
-    mostLiquidPool,
-    last7days,
-  } = item;
+const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
+  const { token, price, priceOf1d } = item;
+  const router = useRouter();
+  const theme = useTheme();
 
-  const onClickItem = (symbol: string) => {
-    location.href = "/tokens/" + symbol;
+  const onClickItem = (path: string) => {
+    router.push("/tokens/" + makeId(path));
   };
+
+  const tokenPathDisplay = useMemo(() => {
+    const path_ = item?.path;
+
+    if (item.isNative) return "Native coin";
+
+    const tokenPathArr = path_?.split("/") ?? [];
+
+    if (tokenPathArr?.length <= 0) return path_;
+
+    const lastPath = tokenPathArr[tokenPathArr?.length - 1];
+
+    if (lastPath.length >= 12) {
+      return "..." + tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1);
+    }
+
+    return path_?.replace("gno.land", "...");
+  }, [item.isNative, item.path]);
+
+  const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
+    e.stopPropagation();
+    if (path === "gnot") {
+      window.open("https://gnoscan.io/", "_blank");
+    } else {
+      window.open("https://gnoscan.io/tokens/" + encodeURIComponent(path), "_blank");
+    }
+  }, []);
 
   return (
     <TokenInfoWrapper>
-      <HoverSection onClick={() => onClickItem(token.symbol)}>
-        <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[0]}>
-          <span className="token-index">{idx}</span>
-        </TableColumn>
-        <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
-          <img src={token.tokenLogo} alt="token logo" className="token-logo" />
-          <div className="symbol-col">
-            <strong className="token-name">{token.name}</strong>
-            <span className="token-symbol">{token.symbol}</span>
+      <HoverSection onClick={() => onClickItem(token.path)}>
+        <TableColumn className="name-col left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
+          <MissingLogo
+            symbol={token.symbol}
+            url={token.logoURI}
+            className="token-logo"
+            width={28}
+            mobileWidth={28}
+          />
+          <div className="token-name-symbol-path">
+            <div className="token-name-path">
+              <strong className="token-name">{token.name}</strong>
+              <div className="token-path" onClick={(e) => onClickPath(e, item.path)}>
+                <div>{tokenPathDisplay}</div>
+                <IconOpenLink
+                  viewBox="0 0 22 22"
+                  fill={theme.color.text04}
+                  className="path-link-icon" />
+              </div>
+            </div>
+            <span className="token-symbol">{token.symbol} </span>
           </div>
         </TableColumn>
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
+        <TableColumn className="price-col" tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
           <span>{price}</span>
-        </TableColumn>
-        <TableColumn
-          tdWidth={MOBILE_TOKEN_TD_WIDTH[3]}
-          className={cx(priceOf1d.status.toLowerCase())}
-        >
-          {renderToNegativeType(priceOf1d.status, priceOf1d.value)}
-        </TableColumn>
-        <TableColumn
-          tdWidth={MOBILE_TOKEN_TD_WIDTH[4]}
-          className={cx(priceOf7d.status.toLowerCase())}
-        >
-          {renderToNegativeType(priceOf7d.status, priceOf7d.value)}
-        </TableColumn>
-        <TableColumn
-          tdWidth={MOBILE_TOKEN_TD_WIDTH[5]}
-          className={cx(priceOf30d.status.toLowerCase())}
-        >
-          {renderToNegativeType(priceOf30d.status, priceOf30d.value)}
-        </TableColumn>
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[6]}>
-          <span>{marketCap}</span>
-        </TableColumn>
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[7]}>
-          <span>{liquidity}</span>
-        </TableColumn>
-
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[8]}>
-          <span className="volume">{volume24h}</span>
+          <div className={cx(priceOf1d.status.toLowerCase())}>
+            {renderToNegativeType(priceOf1d.status, priceOf1d.value)}
+          </div>
         </TableColumn>
       </HoverSection>
-      <HoverSection>
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[9]}>
-          <DoubleLogo
-            left={mostLiquidPool.tokenPair.token0.tokenLogo}
-            right={mostLiquidPool.tokenPair.token1.tokenLogo}
-            size={20}
-          />
-          <span className="liquid-symbol">
-            {tokenPairSymbolToOneCharacter(mostLiquidPool.tokenPair)}
-          </span>
-          <span className="fee-rate">{mostLiquidPool.feeRate}</span>
-        </TableColumn>
-      </HoverSection>
-      <TableColumn
-        tdWidth={MOBILE_TOKEN_TD_WIDTH[10]}
-        className="last7days-graph"
-      >
-        <SimpleLineGraph width={100} height={33} datas={last7days} />
-      </TableColumn>
     </TokenInfoWrapper>
   );
 };

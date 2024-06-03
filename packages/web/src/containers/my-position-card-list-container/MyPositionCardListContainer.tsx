@@ -1,11 +1,14 @@
-import { generateBarAreaDatas } from "@common/utils/test-util";
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
-import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
-import { useRouter } from "next/router";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import useRouter from "@hooks/common/use-custom-router";
 import React, { useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
+import { useTokenData } from "@hooks/token/use-token-data";
 
 export const POSITION_CONTENT_LABEL = {
+  DAILY: "Daily Earnings",
+  BALANCE: "Balance",
+  CLAIMABLE: "Claimable Rewards",
   VALUE: "Value",
   APR: "APR",
   CURRENT_PRICE: "Current Price",
@@ -15,107 +18,6 @@ export const POSITION_CONTENT_LABEL = {
 } as const;
 
 export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
-
-export const dummyPosition: PoolPosition[] = [
-  {
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    rewards: [],
-    feeRate: "0.05%",
-    stakeType: "Unstaked",
-    value: "$18,500.10",
-    apr: "108.21%",
-    inRange: false,
-    currentPriceAmount: "1184.24 GNOS per ETH",
-    minPriceAmount: "1.75 GNOT Per GNOS",
-    maxPriceAmount: "2.25 GNOT Per GNOS",
-    currentTick: 18,
-    minTick: 10,
-    maxTick: 110,
-    minLabel: "-80%",
-    maxLabel: "-10%",
-    ticks: generateBarAreaDatas()
-  },
-  {
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    rewards: [
-      {
-        token: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "HEX",
-          symbol: "HEX",
-          amount: {
-            value: "18,500.18",
-            denom: "gnot",
-          },
-          tokenLogo:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-        },
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-      },
-    ],
-    feeRate: "0.05%",
-    stakeType: "Staked",
-    value: "$18,500.10",
-    apr: "108.21%",
-    inRange: true,
-    currentPriceAmount: "1184.24 GNOS per ETH",
-    minPriceAmount: "1.75 GNOT Per GNOS",
-    maxPriceAmount: "2.25 GNOT Per GNOS",
-    currentTick: 18,
-    ticks: generateBarAreaDatas()
-  },
-];
-
-export const dummyPositionList = [...dummyPosition, ...dummyPosition];
 
 interface MyPositionCardListContainerProps {
   loadMore?: boolean;
@@ -127,12 +29,14 @@ const MyPositionCardListContainer: React.FC<
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { width } = useWindowSize();
   const [mobile, setMobile] = useState(false);
   const handleResize = () => {
     if (typeof window !== "undefined") {
       window.innerWidth < 1000 ? setMobile(true) : setMobile(false);
     }
   };
+  const { tokenPrices = {} } = useTokenData();
 
   useEffect(() => {
     handleResize();
@@ -154,11 +58,17 @@ const MyPositionCardListContainer: React.FC<
     <MyPositionCardList
       loadMore={true}
       isFetched={true}
+      isLoading={false}
       onClickLoadMore={onClickLoadMore}
-      positions={dummyPositionList}
+      positions={[]}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       mobile={mobile}
+      width={width}
+      showPagination={false}
+      showLoadMore={false}
+      themeKey="dark"
+      tokenPrices={tokenPrices}
     />
   );
 };

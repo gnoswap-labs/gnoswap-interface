@@ -31,8 +31,8 @@ export const AutoRouterWrapper = styled.div`
     .left-box {
       ${mixins.flexbox("row", "center", "flex-start")};
       height: 28px;
-      padding: 0px 4px 0px 2px;
-      gap: 2px;
+      padding: 0px 4px 0px 4px;
+      gap: 4px;
       border-radius: 4px;
       border: 1px solid ${({ theme }) => theme.color.border02};
       background: ${({ theme }) => theme.color.background02};
@@ -44,27 +44,27 @@ export const AutoRouterWrapper = styled.div`
         gap: 4px;
         border-radius: 4px;
         ${fonts.p3};
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => theme.color.text10};
         border: 1px solid ${({ theme }) => theme.color.border08};
         background: ${({ theme }) => theme.color.background05};
       }
       span {
         ${fonts.p3};
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => theme.color.text10};
       }
     }
 
     .pair-fee {
       ${mixins.flexbox("row", "center", "center")};
       height: 28px;
-      padding: 0px 8px;
-      gap: 2px;
+      padding: 0px 6px;
+      gap: 4px;
       border-radius: 4px;
       border: 1px solid ${({ theme }) => theme.color.border02};
       background: ${({ theme }) => theme.color.background02};
       h1 {
         ${fonts.p3};
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => theme.color.text10};
       }
       .coin-logo {
         ${mixins.flexbox("row", "flex-start", "flex-start")};
@@ -97,6 +97,16 @@ export const AutoRouterWrapper = styled.div`
       ${fonts.p4}
     }
     color: ${({ theme }) => theme.color.text04};
+  }
+  .loading-spin {
+    width: 36px;
+    height: 36px;
+    margin: 28px auto;
+    &::before {
+      width: 28px;
+      height: 28px;
+      box-shadow: none;
+    }
   }
 `;
 

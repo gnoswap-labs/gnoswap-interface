@@ -6,6 +6,19 @@ import { action } from "@storybook/addon-actions";
 import Header from "./Header";
 import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
 import { DEVICE_TYPE } from "@styles/media";
+import { AccountModel } from "@models/account/account-model";
+
+const defaultAccountInfo: AccountModel = {
+  status: "ACTIVE",
+  address: "g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae",
+  balances: [],
+  publicKeyType: "",
+  publicKeyValue: "",
+  accountNumber: 1,
+  sequence: 1,
+  chainId: "test3",
+};
+
 
 export default {
   title: "common/Header",
@@ -21,7 +34,10 @@ const Template: ComponentStory<typeof Header> = args => (
 export const Default = Template.bind({});
 Default.args = {
   pathname: "/",
-  isConnected: true,
+  connected: false,
+  account: defaultAccountInfo,
+  connectAdenaClient: action("connectAdenaClient"),
+  disconnectWallet: action("disconnectWallet"),
   sideMenuToggle: true,
   onSideMenuToggle: action("onSideMenuToggle"),
   searchMenuToggle: true,

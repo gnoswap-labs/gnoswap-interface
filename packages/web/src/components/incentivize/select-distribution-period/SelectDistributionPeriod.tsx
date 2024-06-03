@@ -1,7 +1,7 @@
 import React from "react";
-import { CONTENT_TITLE } from "@components/incentivize/pool-incentivize/PoolIncentivize";
-import { wrapper } from "./SelectDistributionPeriod.styles";
 import SelectDistributionPeriodInput from "../select-distribution-period-input/SelectDistributionPeriodInput";
+import { SelectDistributionPeriodWrapper } from "./SelectDistributionPeriod.styles";
+import SelectDistributionDateInput from "../select-distribution-date-input/SelectDistributionDateInput";
 
 interface DistributionPeriodDate {
   year: number;
@@ -12,8 +12,9 @@ interface DistributionPeriodDate {
 interface SelectDistributionPeriodProps {
   startDate?: DistributionPeriodDate,
   setStartDate: (date: DistributionPeriodDate) => void;
-  endDate?: DistributionPeriodDate
-  setEndDate: (date: DistributionPeriodDate) => void;
+  period: number;
+  periods: number[];
+  setPeriod: (period: number) => void;
 }
 
 const SelectDistributionPeriod: React.FC<
@@ -21,29 +22,32 @@ const SelectDistributionPeriod: React.FC<
 > = ({
   startDate,
   setStartDate,
-  endDate,
-  setEndDate,
+  period,
+  periods,
+  setPeriod,
 }) => {
+
     return (
-      <div css={wrapper}>
-        <h5 className="section-title">{CONTENT_TITLE.SELECT_PERIOD}</h5>
+      <SelectDistributionPeriodWrapper>
+        <h5 className="section-title">2. Select Distribution Period</h5>
         <div className="select-date-wrap">
           <div className="start-date">
-            <SelectDistributionPeriodInput
+            <SelectDistributionDateInput
               title="Start Date"
               date={startDate}
               setDate={setStartDate}
             />
           </div>
-          <div className="end-date">
+          <div className="period">
             <SelectDistributionPeriodInput
-              title="End Date"
-              date={endDate}
-              setDate={setEndDate}
+              periods={periods}
+              title="Distribution Period"
+              period={period}
+              changePeriod={setPeriod}
             />
           </div>
         </div>
-      </div>
+      </SelectDistributionPeriodWrapper>
     );
   };
 

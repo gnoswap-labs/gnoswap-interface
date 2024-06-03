@@ -1,6 +1,7 @@
 import {
   SortOption,
   TABLE_HEAD,
+  TABLE_HEAD_MOBILE,
   type Token,
 } from "@containers/token-list-container/TokenListContainer";
 import React, { useCallback } from "react";
@@ -43,14 +44,14 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
 }) => {
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
-      return sortOption?.key === head && sortOption.direction === "asc";
+      return sortOption?.key === head && sortOption.direction === "asc" && !sortOption.firstActive;
     },
     [sortOption],
   );
 
   const isDescendingOption = useCallback(
     (head: TABLE_HEAD) => {
-      return sortOption?.key === head && sortOption.direction === "desc";
+      return sortOption?.key === head && sortOption.direction === "desc" && !sortOption.firstActive;
     },
     [sortOption],
   );
@@ -67,16 +68,25 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
   };
 
   return breakpoint !== DEVICE_TYPE.MOBILE ? (
-    <TableWrapper>
+    <TableWrapper className={tokens.length === 0 ? "hidden-scroll" : ""}>
       <div className="scroll-wrapper">
         <div className="token-list-head">
           {Object.values(TABLE_HEAD).map((head, idx) => (
             <TableHeader
               key={idx}
-              className={cx({
-                left: isAlignLeft(head),
-                sort: isSortOption(head),
-              })}
+              className={cx(
+                idx >= 7
+                  ? "right-padding-12"
+                  : idx >= 2
+                    ? "right-padding-16"
+                    : idx === 1
+                      ? "left-padding"
+                      : "",
+                {
+                  left: isAlignLeft(head),
+                  sort: isSortOption(head),
+                },
+              )}
               tdWidth={TOKEN_TD_WIDTH[idx]}
             >
               <span
@@ -101,7 +111,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
           {isFetched &&
             tokens.length > 0 &&
             tokens.map((item, idx) => (
-              <TokenInfo item={item} idx={idx + 1} key={idx} />
+              <TokenInfo item={item} idx={item.idx + 1} key={idx} />
             ))}
           {!isFetched && <TableSkeleton info={TOKEN_INFO} />}
         </div>
@@ -111,7 +121,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
     <TableWrapper>
       <div className="scroll-wrapper">
         <div className="token-list-head">
-          {Object.values(TABLE_HEAD).map((head, idx) => (
+          {Object.values(TABLE_HEAD_MOBILE).map((head, idx) => (
             <MobileTableHeader
               key={idx}
               className={cx({
@@ -121,7 +131,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
               tdWidth={MOBILE_TOKEN_TD_WIDTH[idx]}
             >
               <span
-                className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
+                className={Object.keys(TABLE_HEAD_MOBILE)[idx].toLowerCase()}
                 onClick={() => onClickTableHead(head)}
               >
                 {isAscendingOption(head) && (
@@ -142,7 +152,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
           {isFetched &&
             tokens.length > 0 &&
             tokens.map((item, idx) => (
-              <MobileTokenInfo item={item} idx={idx + 1} key={idx} />
+              <MobileTokenInfo item={item} idx={item.idx + 1} key={idx} />
             ))}
           {!isFetched && <TableSkeleton info={MOBILE_TOKEN_INFO} />}
         </div>

@@ -1,8 +1,24 @@
-import { generateBarAreaDatas } from "@common/utils/test-util";
 import EarnMyPositions from "@components/earn/earn-my-positions/EarnMyPositions";
-import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { usePoolData } from "@hooks/pool/use-pool-data";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import useRouter from "@hooks/common/use-custom-router";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
 import { ValuesType } from "utility-types";
+import { useAtom, useAtomValue } from "jotai";
+import { EarnState, ThemeState } from "@states/index";
+import { useGetUsernameByAddress } from "@query/address/queries";
+import { useLoading } from "@hooks/common/use-loading";
+import { PositionModel } from "@models/position/position-model";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -15,188 +31,205 @@ export const POSITION_CONTENT_LABEL = {
 
 export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
 
-interface PositionToken {
-  tokenId: string;
-  name: string;
-  symbol: string;
-  amount: {
-    value: string;
-    denom: string;
-  };
-  tokenLogo: string;
-}
-
-export interface PoolPosition {
-  tokenPair: {
-    token0: PositionToken,
-    token1: PositionToken,
-  };
-  feeRate: string;
-  stakeType: string;
-  value: string;
-  apr: string;
-  inRange: boolean;
-  currentPriceAmount: string;
-  minPriceAmount: string;
-  maxPriceAmount: string;
-  rewards: {
-    token: PositionToken;
-    amount: {
-      value: "18,500.18",
-      denom: "gnot",
-    };
-  }[];
-  currentTick?: number;
-  minTick?: number;
-  maxTick?: number;
-  minLabel?: string;
-  maxLabel?: string;
-  ticks: string[];
-}
-
-export const dummyPosition: PoolPosition[] = [
-  {
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    rewards: [],
-    feeRate: "0.05%",
-    stakeType: "Unstaked",
-    value: "$18,500.10",
-    apr: "108.21%",
-    inRange: false,
-    currentPriceAmount: "1184.24 GNOS per ETH",
-    minPriceAmount: "1.75 GNOT Per GNOS",
-    maxPriceAmount: "2.25 GNOT Per GNOS",
-    currentTick: 18,
-    minTick: 10,
-    maxTick: 110,
-    minLabel: "-80%",
-    maxLabel: "-10%",
-    ticks: generateBarAreaDatas()
-  },
-  {
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    rewards: [
-      {
-        token: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "HEX",
-          symbol: "HEX",
-          amount: {
-            value: "18,500.18",
-            denom: "gnot",
-          },
-          tokenLogo:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-        },
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-      },
-    ],
-    feeRate: "0.05%",
-    stakeType: "Staked",
-    value: "$18,500.10",
-    apr: "108.21%",
-    inRange: true,
-    currentPriceAmount: "1184.24 GNOS per ETH",
-    minPriceAmount: "1.75 GNOT Per GNOS",
-    maxPriceAmount: "2.25 GNOT Per GNOS",
-    currentTick: 24,
-    minTick: 120,
-    maxTick: 200,
-    minLabel: "-30%",
-    maxLabel: "50%",
-    ticks: generateBarAreaDatas()
-  },
-];
-
-export const dummyPositionList = () => [...dummyPosition, ...dummyPosition];
-
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
+  address?: string | undefined;
+  isOtherPosition?: boolean;
 }
 
-const EarnMyPositionContainer: React.FC<
-  EarnMyPositionContainerProps
-> = () => {
+const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
+  address,
+  isOtherPosition,
+}) => {
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [connected, setConnected] = useState(true);
-  const [positions, setPositions] = useState<PoolPosition[]>([]);
+  const {
+    connected,
+    connectAdenaClient,
+    isSwitchNetwork,
+    switchNetwork,
+    account,
+  } = useWallet();
+  const { tokenPrices = {}, updateTokenPrices } = useTokenData();
+  const { isFetchedPools, loading: isLoadingPool, pools } = usePoolData();
+  const { width } = useWindowSize();
+  const { openModal } = useConnectWalletModal();
+  const {
+    isError,
+    availableStake,
+    isFetchedPosition,
+    loading: isLoadingPosition,
+    positions,
+  } = usePositionData({ address });
+  const [isViewMorePositions, setIsViewMorePositions] = useAtom(
+    EarnState.isViewMorePositions,
+  );
+  const { isLoading: isLoadingCommon } = useLoading();
 
+  const themeKey = useAtomValue(ThemeState.themeKey);
+  const [currentIndex, setCurrentIndex] = useState(1);
+  const [mobile, setMobile] = useState(false);
+  const [isClosed, setIsClosed] = useState(false);
+
+  const divRef = useRef<HTMLDivElement | null>(null);
+
+  const { data: addressName = "" } = useGetUsernameByAddress(address || "", {
+    enabled: !!address,
+  });
+
+  const handleResize = () => {
+    if (typeof window !== "undefined") {
+      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
+    }
+  };
   useEffect(() => {
-    const dummyPositions = dummyPositionList();
-    setPositions(dummyPositions);
+    updateTokenPrices();
+    if (typeof window !== "undefined") {
+      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const connect = useCallback(() => {
-    setConnected(true);
-  }, []);
+    if (!connected) {
+      openModal();
+    } else {
+      switchNetwork();
+    }
+  }, [
+    connectAdenaClient,
+    isSwitchNetwork,
+    switchNetwork,
+    openModal,
+    connected,
+  ]);
 
   const moveEarnAdd = useCallback(() => {
     router.push("/earn/add");
   }, [router]);
 
-  const movePoolDetail = useCallback((id: string) => {
-    router.push(`/earn/pool/${id}`);
+  const movePoolDetail = useCallback(
+    (id: string) => {
+      let query = "";
+      if (address && address.length > 0) {
+        query = `?addr=${address}`;
+      }
+      router.push(`/earn/pool/${id}${query}`);
+    },
+    [router, address],
+  );
+
+  const moveEarnStake = useCallback(() => {
+    router.push(
+      "/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/#staking",
+    );
   }, [router]);
+
+  const handleScroll = () => {
+    if (divRef.current) {
+      const currentScrollX = divRef.current.scrollLeft;
+      setCurrentIndex(
+        Math.min(Math.floor(currentScrollX / 332) + 1, positions.length),
+      );
+    }
+  };
+
+  const showPagination = useMemo(() => {
+    if (width >= 920) {
+      return false;
+    } else {
+      return true;
+    }
+  }, [positions, width]);
+
+  const handleClickLoadMore = useCallback(() => {
+    setIsViewMorePositions(!isViewMorePositions);
+  }, [isViewMorePositions]);
+
+  const dataMapping = useMemo(() => {
+    let temp = positions;
+    if (!isClosed) {
+      temp = positions.filter((_: PositionModel) => _.closed === false);
+    }
+    temp = temp.sort(
+      (x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue),
+    );
+    if (!isViewMorePositions) {
+      if (width > 1180) {
+        return temp.slice(0, 4);
+      } else if (width > 920) {
+        return temp.slice(0, 3);
+      } else return temp;
+    } else return temp;
+  }, [positions, isClosed, isViewMorePositions, width]);
+
+  const handleChangeClosed = () => {
+    setIsClosed(!isClosed);
+  };
+
+  const allPositionLength = useMemo(() => positions.length, [positions]);
+  const openPositionLength = useMemo(
+    () => positions.filter((_: PositionModel) => _.closed === false).length,
+    [positions],
+  );
+
+  const visiblePositions = useMemo(() => {
+    const noClosedPosition = positions.every(item => !item.closed);
+
+    if ((!connected && !address) || noClosedPosition) {
+      return false;
+    }
+    return true;
+  }, [address, connected, positions]);
+
+  const highestApr = useMemo(() => {
+    return pools.reduce((acc, current) => {
+      if (Number(current.totalApr) > acc) {
+        return Number(current.totalApr);
+      }
+      return acc;
+    }, Number(pools?.[0]?.totalApr ?? 0));
+  }, [pools]);
 
   return (
     <EarnMyPositions
+      address={address}
+      addressName={addressName}
+      isOtherPosition={!!isOtherPosition}
+      visiblePositions={visiblePositions}
+      positionLength={isClosed ? allPositionLength : openPositionLength}
       connected={connected}
+      availableStake={availableStake}
       connect={connect}
-      fetched={true}
-      positions={positions}
+      loading={
+        isLoadingPool ||
+        isLoadingCommon ||
+        (connected ? isLoadingPosition || !isFetchedPosition : false)
+      }
+      fetched={isFetchedPools && isFetchedPosition}
+      isError={isError}
+      positions={dataMapping}
       moveEarnAdd={moveEarnAdd}
       movePoolDetail={movePoolDetail}
+      moveEarnStake={moveEarnStake}
+      isSwitchNetwork={isSwitchNetwork}
+      mobile={mobile}
+      onScroll={handleScroll}
+      divRef={divRef}
+      currentIndex={currentIndex}
+      showPagination={showPagination}
+      showLoadMore={positions.length > 4}
+      width={width}
+      loadMore={!isViewMorePositions}
+      onClickLoadMore={handleClickLoadMore}
+      themeKey={themeKey}
+      account={account}
+      isClosed={isClosed}
+      handleChangeClosed={handleChangeClosed}
+      tokenPrices={tokenPrices}
+      highestApr={highestApr}
     />
   );
 };

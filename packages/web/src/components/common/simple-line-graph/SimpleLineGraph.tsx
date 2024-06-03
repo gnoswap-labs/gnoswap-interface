@@ -1,19 +1,26 @@
 import { useTheme } from "@emotion/react";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import LineGraph from "../line-graph/LineGraph";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
 export interface SimpleLineGraphProps {
   datas: number[];
   width?: number;
   height?: number;
+  status: MATH_NEGATIVE_TYPE
 }
 
 const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
   datas,
   width,
-  height
+  height,
+  status,
 }) => {
   const theme = useTheme();
+
+  const checkSameData = useMemo(() => {
+    return datas.length > 0 && datas.every(element => element === datas[0]);
+  }, [datas]);
 
   const getChartDatas = useCallback(() => {
     return datas.map((data, index) => ({
@@ -26,11 +33,13 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
     if (datas.length < 2) {
       return "UP";
     }
+    if (status === MATH_NEGATIVE_TYPE.NONE) {
+      if (datas[0] < datas[datas.length - 1]) {
+        return "UP";
+      } else return "DOWN";
+    }
 
-    const result = datas.reduce((sum, current) => sum + current, 0);
-    const average = result / datas.length;
-
-    if (datas[datas.length - 1] > average) {
+    if (status === MATH_NEGATIVE_TYPE.POSITIVE) {
       return "UP";
     }
     return "DOWN";
@@ -38,21 +47,21 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
 
   const getColor = useCallback(() => {
     if (getStatus() === "UP") {
-      return theme.color.green01;
+      return theme.color.greenOpacity;
     }
-    return theme.color.red01;
+    return theme.color.redOpacity;
   }, [getStatus, theme]);
 
   const getGradientColor = useCallback(() => {
     if (getStatus() === "UP") {
       return {
-        start: "#2EFF8266",
-        end: "#4BFF2E00"
+        start: "#16C78A66",
+        end: "#16C78A00"
       };
     }
     return {
-      start: "#FF494966",
-      end: "#FF494910"
+      start: "#EA394366",
+      end: "#EA394300"
     };
   }, [getStatus]);
 
@@ -66,6 +75,7 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
       gradientEndColor={getGradientColor().end}
       width={width}
       height={height}
+      centerLineColor={checkSameData ? getColor() : undefined}
     />
   );
 };

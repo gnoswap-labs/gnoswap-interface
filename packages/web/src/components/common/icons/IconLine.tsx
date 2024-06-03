@@ -7,7 +7,7 @@ const IconLine = ({ className }: { className?: string }) => (
     fill="none"
     className={className}
   >
-    <path d="M1 0L1 49" stroke="#0059FF" />
+    <path d="M1 0L1 49" stroke="#233DBD" />
   </svg>
 );
 

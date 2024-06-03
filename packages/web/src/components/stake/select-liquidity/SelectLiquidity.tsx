@@ -1,32 +1,40 @@
 import React from "react";
-import { CONTENT_TITLE } from "@components/stake/stake-liquidity/StakeLiquidity";
 import { wrapper } from "./SelectLiquidity.styles";
 import SelectLiquidityList from "@components/stake/select-liquidity-list/SelectLiquidityList";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface SelectLiquidityProps {
-  liquidity: any[];
+  unstakedPositions: PoolPositionModel[];
   checkedList: string[];
-  onCheckedItem: (checked: boolean, tokenId: string) => void;
+  onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
+  isHiddenTitle?: boolean;
+  isEmpty: boolean;
+  isLoading: boolean;
 }
 
 const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
-  liquidity,
+  unstakedPositions,
   checkedList,
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  isHiddenTitle = false,
+  isEmpty,
+  isLoading,
 }) => {
   return (
     <section css={wrapper}>
-      <h5 className="section-title">{CONTENT_TITLE.LIQUIDITY}</h5>
+      {!isHiddenTitle && <h5 className="section-title">2. Select Liquidity</h5>}
       <SelectLiquidityList
-        list={liquidity}
+        unstakedPositions={unstakedPositions}
         checkedList={checkedList}
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
+        isEmpty={isEmpty}
+        isLoading={isLoading}
       />
     </section>
   );

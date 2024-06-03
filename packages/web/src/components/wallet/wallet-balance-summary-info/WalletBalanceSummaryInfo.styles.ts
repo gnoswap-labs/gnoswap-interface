@@ -4,13 +4,19 @@ import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
 export const WalletBalanceSummaryInfoWrapper = styled.div`
-  ${mixins.flexbox("row", "center", "flex-start")};
-  gap: 16px;
+  ${mixins.flexbox("row", "baseline", "flex-start")};
+  gap: 8px;
   ${media.mobile} {
+    .loading-wrapper {
+      ${mixins.flexbox("row", "center", "center")};
+      height: 29px;
+    }
     gap: 8px;
   }
+  
   .amount {
     ${fonts.h3};
+    font-weight: 500 !important;
     color: ${({ theme }) => theme.color.text02};
     ${media.tablet} {
       ${fonts.h4};
@@ -22,6 +28,20 @@ export const WalletBalanceSummaryInfoWrapper = styled.div`
   .change-rate {
     ${fonts.body3};
     color: ${({ theme }) => theme.color.text04};
+    ${media.mobile} {
+      ${fonts.body7};
+    }
+  }
+  .negative {
+    ${fonts.body3};
+    color: ${({ theme }) => theme.color.red01};
+    ${media.mobile} {
+      ${fonts.body7};
+    }
+  }
+  .positive {
+    ${fonts.body3};
+    color: ${({ theme }) => theme.color.green01};
     ${media.mobile} {
       ${fonts.body7};
     }

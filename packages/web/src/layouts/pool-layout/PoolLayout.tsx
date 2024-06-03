@@ -1,6 +1,7 @@
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import React from "react";
 import { PoolLayoutWrapper } from "./PoolLayout.styles";
+import useRouter from "@hooks/common/use-custom-router";
 
 interface PoolLayoutProps {
   header: React.ReactNode;
@@ -8,6 +9,7 @@ interface PoolLayoutProps {
   liquidity: React.ReactNode;
   staking: React.ReactNode;
   footer: React.ReactNode;
+  isStaking: boolean;
 }
 
 const PoolLayout: React.FC<PoolLayoutProps> = ({
@@ -16,25 +18,39 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
   liquidity,
   staking,
   footer,
-}) => (
-  <PoolLayoutWrapper>
-    {header}
-    <div className="pool-section">
-      <div className="summury-container">{poolPairInformation}</div>
-      <div className="positions-container">{liquidity}</div>
-      <div className="staking-container">
-        {staking}
-        <div className="button">
-          <span>Want to boost up incentives for this pool?&nbsp;</span>
-          <div className="pointer-wrap">
-            <span> Click here to start the process</span>
-            <IconStrokeArrowRight className="arrow-icon" />
+  isStaking,
+}) => {
+  const router = useRouter();
+  const onClickIncentivize = () => {
+    router.push(`/earn/pool/${router.query["pool-path"]}/incentivize`);
+  };
+  return (
+    <PoolLayoutWrapper>
+      {header}
+      <div className="pool-section">
+        <div className="summury-container">{poolPairInformation}</div>
+        <div className="positions-container">{liquidity}</div>
+        <div
+          id="staking-container"
+          className="staking-container"
+          style={{ marginTop: !isStaking ? "-44px" : "0" }}
+        >
+          {staking}
+          <div className="button">
+            <span>
+              Want to {isStaking ? "boost" : "add"} up incentives for this
+              pool?&nbsp;
+            </span>
+            <div className="pointer-wrap" onClick={onClickIncentivize}>
+              <span> Click here</span>
+              <IconStrokeArrowRight className="arrow-icon" />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    {footer}
-  </PoolLayoutWrapper>
-);
+      {footer}
+    </PoolLayoutWrapper>
+  );
+};
 
 export default PoolLayout;

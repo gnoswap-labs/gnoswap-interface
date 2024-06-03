@@ -1,12 +1,14 @@
 import {
-  InjectEstablishRequest,
-  InjectExistsRequest,
-  InjectGetAccountRequest,
-  InjectSendTransactionRequest,
+  WalletStatusMethod,
+  WalletTransactionMethod,
+  WalletAccountMethod,
+  WalletEventMethod,
+  WalletNetworkMethod,
 } from "./protocols";
 
 export interface WalletClient
-  extends InjectEstablishRequest,
-    InjectExistsRequest,
-    InjectSendTransactionRequest,
-    InjectGetAccountRequest {}
+  extends WalletStatusMethod,
+    WalletTransactionMethod,
+    WalletAccountMethod,
+    WalletNetworkMethod,
+    WalletEventMethod {}

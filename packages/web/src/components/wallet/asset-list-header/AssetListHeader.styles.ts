@@ -6,19 +6,32 @@ import mixins from "@styles/mixins";
 export const AssetListHeaderWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
+  ${media.tabletMiddle} {
+    align-items: flex-start;
+    gap: 24px;
+  }
   ${media.mobile} {
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: 8px;
+    gap: 24px;
+    .select-tab-wrapper {
+      button {
+        padding: 4px 24px;
+      }
+    }
   }
 
   .title-container {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 36px;
+    ${media.tabletMiddle} {
+      gap: 24px;
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+    }
     ${media.mobile} {
       width: 100%;
-      justify-content: space-between;
+      ${mixins.flexbox("row", "center", "space-between")};
     }
   }
   .mobile-title-container {
@@ -27,6 +40,8 @@ export const AssetListHeaderWrapper = styled.div`
   }
   .icon-wrap {
     ${mixins.flexbox("row", "center", "center")};
+    cursor: pointer;
+    margin-right: 13px;
   }
   .search-icon {
     width: 24px;
@@ -55,5 +70,10 @@ export const AssetListHeaderWrapper = styled.div`
     gap: 36px;
   }
   .assets-search {
+    input {
+      &::placeholder {
+        color: ${({ theme }) => theme.color.text17};
+      }
+    }
   }
 `;

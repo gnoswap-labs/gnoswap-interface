@@ -1,65 +1,94 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
-import BarGraph from "@components/common/bar-graph/BarGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { POOL_TD_WIDTH } from "@constants/skeleton.constant";
-import { type Pool } from "@containers/pool-list-container/PoolListContainer";
-import React from "react";
+import {
+  POOL_TD_WIDTH,
+  POOL_TD_WIDTH_MOBILE,
+  POOL_TD_WIDTH_SMALL_TABLET,
+  POOL_TD_WIDTH_TABLET,
+} from "@constants/skeleton.constant";
+import React, { useMemo } from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
+import { PoolListInfo } from "@models/pool/info/pool-list-info";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { DEVICE_TYPE } from "@styles/media";
+import { numberToRate } from "@utils/string-utils";
+import PoolInfoLazyChart from "../pool-info-lazy-chart/PoolInfoLazyChart";
+
 interface PoolInfoProps {
-  pool: Pool;
-  routeItem: (id: number) => void;
+  pool: PoolListInfo;
+  routeItem: (id: string) => void;
+  themeKey: "dark" | "light";
+  breakpoint: DEVICE_TYPE;
 }
 
-const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
+const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
   const {
     poolId,
-    tokenPair,
-    feeRate,
-    liquidity,
+    tokenA,
+    tokenB,
+    feeTier,
     apr,
     volume24h,
     fees24h,
-    rewards,
-    incentiveType,
-    tickInfo
+    rewardTokens,
+    tvl,
   } = pool;
+  const { getGnotPath } = useGnotToGnot();
+  const rewardImage = useMemo(() => {
+    const tempRewardTokens = rewardTokens.map(item => {
+      return {
+        ...item,
+        logoURI: getGnotPath(item).logoURI,
+      };
+    });
+    const temp = tempRewardTokens.map(token => token.logoURI);
+    const logos = [...new Set(temp)];
+    return <OverlapLogo logos={logos} size={20} />;
+  }, [rewardTokens]);
+
+  const tdWidth =
+    breakpoint === DEVICE_TYPE.MOBILE
+      ? POOL_TD_WIDTH_MOBILE
+      : breakpoint === DEVICE_TYPE.TABLET_M
+      ? POOL_TD_WIDTH_SMALL_TABLET
+      : breakpoint === DEVICE_TYPE.TABLET
+      ? POOL_TD_WIDTH_TABLET
+      : POOL_TD_WIDTH;
+
   return (
-    <PoolInfoWrapper
-      onClick={() => routeItem(Math.floor(Math.random() * 100 + 1))}
-    >
-      <TableColumn className="left" tdWidth={POOL_TD_WIDTH[0]}>
+    <PoolInfoWrapper onClick={() => routeItem(poolId)}>
+      <TableColumn className="left" tdWidth={tdWidth[0]}>
         <DoubleLogo
-          left={tokenPair.token0.tokenLogo}
-          right={tokenPair.token1.tokenLogo}
-          size={20}
+          left={tokenA.logoURI}
+          right={tokenB.logoURI}
+          size={24}
+          leftSymbol={tokenA.symbol}
+          rightSymbol={tokenB.symbol}
         />
-        <span className="symbol-pair">{`${tokenPair.token0.symbol}/${tokenPair.token1.symbol}`}</span>
-        <span className="feeRate">{feeRate}</span>
+        <span className="symbol-pair">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
+        <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
       </TableColumn>
-      <TableColumn tdWidth={POOL_TD_WIDTH[1]}>
-        <span className="liquidity">{liquidity}</span>
+      {/* TVL */}
+      <TableColumn tdWidth={tdWidth[1]}>
+        <span className="liquidity">{tvl}</span>
       </TableColumn>
-      <TableColumn tdWidth={POOL_TD_WIDTH[2]}>
+      {/* Volume (24h) */}
+      <TableColumn tdWidth={tdWidth[2]}>
         <span className="volume">{volume24h}</span>
       </TableColumn>
-      <TableColumn tdWidth={POOL_TD_WIDTH[3]}>
+      {/* Fee (24h) */}
+      <TableColumn tdWidth={tdWidth[3]}>
         <span className="fees">{fees24h}</span>
       </TableColumn>
-      <TableColumn tdWidth={POOL_TD_WIDTH[4]}>
-        <span className="apr">{apr}</span>
+      {/* APR */}
+      <TableColumn tdWidth={tdWidth[4]}>
+        <span className="apr">{numberToRate(apr)}</span>
       </TableColumn>
-      <TableColumn tdWidth={POOL_TD_WIDTH[5]}>
-        <DoubleLogo left={rewards[0]} right={rewards[1]} size={20} />
-      </TableColumn>
-      <TableColumn tdWidth={POOL_TD_WIDTH[6]}>
+      <TableColumn tdWidth={tdWidth[5]}>{rewardImage}</TableColumn>
+      <TableColumn tdWidth={tdWidth[6]} onClick={e => e.stopPropagation()}>
         <div className="chart-wrapper">
-          <BarGraph
-            width={100}
-            height={45}
-            currentTick={tickInfo.currentTick}
-            datas={tickInfo.ticks}
-          />
+          <PoolInfoLazyChart pool={pool} width={tdWidth[6]} />
         </div>
       </TableColumn>
     </PoolInfoWrapper>

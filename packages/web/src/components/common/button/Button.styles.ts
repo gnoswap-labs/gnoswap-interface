@@ -18,6 +18,9 @@ export interface ButtonStyleProps {
   radius?: CSSProperties["borderRadius"];
   justify?: CSSProperties["justifyContent"];
   padding?: CSSProperties["padding"];
+  minWidth?: CSSProperties["minWidth"];
+  hoverColor?: ThemeColorKeyTypes;
+  disabledColor?: ThemeColorKeyTypes;
 }
 
 export const ButtonWrapper = styled.button<ButtonStyleProps>`
@@ -29,6 +32,11 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   width: ${({ width, fullWidth }) => {
     if (width) return typeof width === "number" ? width + "px" : width;
     if (fullWidth) return "100%";
+    return "auto";
+  }};
+  min-width: ${({ minWidth }) => {
+    if (minWidth)
+      return typeof minWidth === "number" ? minWidth + "px" : minWidth;
     return "auto";
   }};
   height: ${({ height }) => {
@@ -47,7 +55,10 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
 
   &.selected,
   &:hover {
-    background-color: ${({ hierarchy, theme }) => {
+    background-color: ${({ hierarchy, theme, hoverColor }) => {
+      if (hoverColor) {
+        return hoverColor;
+      }
       if (hierarchy === ButtonHierarchy.Primary)
         return theme.color.background04Hover;
       if (hierarchy === ButtonHierarchy.Dark)
@@ -62,9 +73,12 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
     }
   }
   &:disabled {
-    background-color: ${({ hierarchy, theme }) => {
+    background-color: ${({ hierarchy, theme, disabledColor }) => {
+      if (disabledColor) {
+        return disabledColor;
+      }
       if (hierarchy === ButtonHierarchy.Primary)
-        return theme.color.background07;
+        return theme.color.background17;
       return;
     }};
   }
@@ -78,6 +92,7 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
 `;
 
 export const StyledText = styled.span<ButtonStyleProps>`
+  white-space: nowrap;
   ${({ fontType }) => fonts[fontType ?? "body9"]};
   color: ${({ theme, textColor, hierarchy }) => {
     if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;

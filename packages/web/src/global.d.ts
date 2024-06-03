@@ -7,6 +7,7 @@ declare module "@emotion/react" {
   export interface Theme {
     color: ThemeColorType;
     windowSize: WindowSizeType;
+    themeKey: "dark" | "light"
   }
 }
 

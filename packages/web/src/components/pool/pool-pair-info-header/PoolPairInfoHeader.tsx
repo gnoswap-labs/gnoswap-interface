@@ -1,27 +1,65 @@
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { poolInfoProps } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
-import React from "react";
+import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
+import { TokenModel } from "@models/token/token-model";
+import React, { useMemo } from "react";
 import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
 
 interface PoolPairInfoHeaderProps {
-  info: poolInfoProps;
+  tokenA: TokenModel;
+  tokenB: TokenModel;
+  incentivizedType: INCENTIVE_TYPE;
+  rewardTokens: TokenModel[];
+  feeStr: string;
 }
 
-const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({ info }) => {
+const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
+  tokenA,
+  tokenB,
+  feeStr,
+  rewardTokens,
+  incentivizedType
+}) => {
+  const { getGnotPath } = useGnotToGnot();
+  const incentivezedStr = useMemo(() => {
+    if (incentivizedType === "INCENTIVIZED") {
+      return "Incentive";
+    }
+    if (incentivizedType === "EXTERNAL") {
+      return "Incentive";
+    }
+    return "";
+  }, [incentivizedType]);
+
+  const rewardTokenLogos = useMemo(() => {
+    return [...new Set(rewardTokens.map(token => getGnotPath(token).logoURI))];
+  }, [getGnotPath, rewardTokens]);
+
   return (
     <PoolInfoHeaderWrapper>
       <div className="left-wrap">
         <DoubleLogo
-          left={info.tokenPair.token0.tokenLogo}
-          right={info.tokenPair.token1.tokenLogo}
+          left={tokenA.logoURI}
+          right={tokenB.logoURI}
+          leftSymbol={tokenA.symbol}
+          rightSymbol={tokenB.symbol}
         />
         <h3>
-          {info.tokenPair.token0.symbol}/{info.tokenPair.token1.symbol}
+          {tokenA.symbol}/{tokenB.symbol}
         </h3>
       </div>
       <div className="badge-wrap">
-        <div className="badge">{info.feeRate}</div>
-        <div className="badge">{info.incentivized}</div>
+        <div className="badge">{feeStr}</div>
+        {incentivezedStr && <div className="badge">
+          {incentivezedStr}
+          {rewardTokenLogos.length > 0 && (
+            <OverlapLogo
+              size={18}
+              logos={rewardTokenLogos}
+            />
+          )}
+        </div>}
       </div>
     </PoolInfoHeaderWrapper>
   );
