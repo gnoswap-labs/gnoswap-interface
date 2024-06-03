@@ -41,6 +41,7 @@ import {
 } from "@common/clients/wallet-client/transaction-messages";
 import {
   PACKAGE_POOL_ADDRESS,
+  PACKAGE_POSITION_ADDRESS,
   PACKAGE_STAKER_ADDRESS,
   WRAPPED_GNOT_PATH,
 } from "@constants/environment.constant";
@@ -403,6 +404,17 @@ export class PositionRepositoryImpl implements PositionRepository {
       ),
     ];
 
+    // If the GNOT token is included, the Position package must include the token approve.
+    if (isGNOTPath(tokenAWrappedPath) || isGNOTPath(tokenBWrappedPath)) {
+      approveMessages.push(
+        makeApproveMessage(
+          WRAPPED_GNOT_PATH,
+          [PACKAGE_POSITION_ADDRESS, MAX_INT64.toString()],
+          caller,
+        ),
+      );
+    }
+
     const decreaseLiquidityMessage = makePositionDecreaseLiquidityMessage(
       lpTokenId,
       decreaseRatio,
@@ -467,6 +479,17 @@ export class PositionRepositoryImpl implements PositionRepository {
         caller,
       ),
     );
+
+    // If the GNOT token is included, the Position package must include the token approve.
+    if (tokenPaths.some(isGNOTPath)) {
+      approveMessages.push(
+        makeApproveMessage(
+          WRAPPED_GNOT_PATH,
+          [PACKAGE_POSITION_ADDRESS, MAX_INT64.toString()],
+          caller,
+        ),
+      );
+    }
 
     // Make Decrease liquidity messages
     const decreaseLiquidityMessages = lpTokenIds.map(lpTokenId =>
