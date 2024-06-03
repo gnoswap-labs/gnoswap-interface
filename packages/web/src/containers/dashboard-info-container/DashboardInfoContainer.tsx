@@ -48,9 +48,9 @@ const formatPrice = (price?: string, unit?: string) => {
   }
   return price
     ? `$${Number(formatUsdNumber3Digits(price)).toLocaleString("en", {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      })}`
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+    })}`
     : "-";
 };
 
@@ -97,7 +97,7 @@ const DashboardInfoContainer: React.FC = () => {
     const circSupply = Number(tokenData?.gnsCirculatingSupply);
     const totalStaked = Number(tokenData?.gnsTotalStaked);
 
-    if (circSupply === 0) return "0%";
+    if (totalStaked === 0 || circSupply === 0) return "0%";
     if ((totalStaked * 100) / circSupply < 0.1) return "<0.1%";
     const ratio = ((totalStaked / circSupply) * 100).toFixed(2);
     return `${prettyNumber(ratio)}%`;
@@ -122,7 +122,11 @@ const DashboardInfoContainer: React.FC = () => {
           "GNS",
         ),
         totalSupply: formatPrice(tokenData?.gnsTotalSupply, "GNS"),
-        totalStaked: formatPrice(tokenData?.gnsTotalStaked, "GNS"),
+        totalStaked: (() => {
+          if (isNaN(Number(tokenData?.gnsTotalStaked ?? 0))) return "-";
+
+          return formatPrice(tokenData?.gnsTotalStaked, "GNS");
+        })(),
         progressBar: progressBar,
         stakingRatio: stakingRatio,
       }}

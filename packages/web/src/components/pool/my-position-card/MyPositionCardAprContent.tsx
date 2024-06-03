@@ -54,7 +54,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, { decimals: 0 })}%
+                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true })}%
               </span>
             </div>
           ))}

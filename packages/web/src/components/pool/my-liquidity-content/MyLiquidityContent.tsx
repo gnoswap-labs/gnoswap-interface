@@ -330,6 +330,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const temp = aprRewardInfo?.SWAP_FEE;
     const sumUSD =
       temp?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) || 0;
+    if (sumUSD > 0 && sumUSD <= 0.01) return "<&0.01";
+
     return formatUsdNumber(`${sumUSD}`, 2, true);
   }, [aprRewardInfo?.SWAP_FEE]);
 

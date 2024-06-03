@@ -50,25 +50,27 @@ export default function Pool() {
       return true;
     }
     return false;
-  }, [data?.incentiveType]);
+  }, [data?.incentiveType, poolPath]);
 
   useEffect(() => {
     if (
-      hash === "staking" &&
-      !loading &&
-      !isLoadingCommon &&
-      isFetchedPosition &&
-      positions.length === 0
+      hash === "staking"
+      && !loading
+      && !isLoadingCommon
+      && isFetchedPosition
+      && isStaking
     ) {
-      const positionContainerElement = document.getElementById("staking");
-      const topPosition = positionContainerElement?.offsetTop;
+      const positionContainerElement = document.getElementById("staking-container");
+      const topPosition = positionContainerElement?.getBoundingClientRect().top;
       if (!topPosition) {
         return;
       }
       window.scrollTo({
         top: topPosition,
       });
-    } else if (address && isFetchedPosition && !loading) {
+      return;
+    }
+    if (address && isFetchedPosition && !loading) {
       if (hash) {
         const positionContainerElement = document.getElementById(`${hash}`);
         const topPosition =
@@ -99,6 +101,7 @@ export default function Pool() {
     loading,
     isLoadingCommon,
     positions.length,
+    isStaking,
   ]);
 
   return (

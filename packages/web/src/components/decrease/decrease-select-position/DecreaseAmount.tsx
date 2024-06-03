@@ -35,10 +35,10 @@ const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
           </div>
         </div>
         <div className="range">
-          <Range percent={percent} handlePercent={handlePercent}/>
+          <Range percent={percent} handlePercent={handlePercent} />
         </div>
       </div>
-      <DecreasePoolInfo tokenA={tokenA} tokenB={tokenB} pooledTokenInfos={pooledTokenInfos}/>
+      <DecreasePoolInfo tokenA={tokenA} tokenB={tokenB} pooledTokenInfos={pooledTokenInfos} />
     </DecreaseSelectPositionWrapper>
   );
 };

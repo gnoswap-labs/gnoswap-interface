@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { TokenChartInfoWrapper } from "./TokenChartInfo.styles";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
@@ -20,6 +20,7 @@ export interface TokenChartInfoProps {
     };
     changedRate: number;
   };
+  isEmpty: boolean;
   loading: boolean;
 }
 
@@ -27,16 +28,46 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
   token,
   priceInfo,
   loading,
+  isEmpty,
 }) => {
-  const isIncreasePrice = useCallback(() => {
-    return priceInfo.amount.status === MATH_NEGATIVE_TYPE.POSITIVE;
+  const rateClass = useMemo(() => {
+    switch (priceInfo.amount.status) {
+      case MATH_NEGATIVE_TYPE.POSITIVE:
+        return "up";
+      case MATH_NEGATIVE_TYPE.NEGATIVE:
+        return "down";
+      default:
+        if (isEmpty) return "-";
+        return "up";
+    }
+  }, [isEmpty, priceInfo.amount.status]);
+
+  const statusIcon = useMemo(() => {
+    switch (priceInfo.amount.status) {
+      case MATH_NEGATIVE_TYPE.POSITIVE:
+        return <IconTriangleArrowUp className="arrow-icon" />;
+      case MATH_NEGATIVE_TYPE.NEGATIVE:
+        return <IconTriangleArrowDown className="arrow-icon" />;
+      default:
+        return <></>;
+    }
   }, [priceInfo.amount.status]);
 
-  const displayPrice = useMemo(() =>
-    (!priceInfo.amount.value || loading)
+
+  const displayPrice = useMemo(() => {
+    return (!priceInfo.amount.value || loading)
       ? "-"
-      : priceInfo.amount.value,
+      : priceInfo.amount.value;
+  },
     [loading, priceInfo.amount.value]);
+
+  const displayRate = useMemo(() => {
+    if (isEmpty) {
+      return "-";
+    }
+
+    return `${priceInfo.changedRate.toFixed(2)}%`;
+  }, [isEmpty, priceInfo.changedRate]);
 
   return (
     <TokenChartInfoWrapper>
@@ -51,13 +82,9 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
         </div>
         <div className="price-info">
           {<span className="price">{displayPrice}</span>}
-          {(priceInfo.amount.value && !loading) ? <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
-            {
-              isIncreasePrice() ?
-                <IconTriangleArrowUp className="arrow-icon" /> :
-                <IconTriangleArrowDown className="arrow-icon" />
-            }
-            <span>{priceInfo.changedRate.toFixed(2)}%</span>
+          {(priceInfo.amount.value && !loading) ? <div className={`change-rate-wrapper ${rateClass}`}>
+            {statusIcon}
+            <span>{displayRate}</span>
           </div> : <></>}
           {(loading || !priceInfo.amount.value) && <div className="change-rate-wrapper">&nbsp;</div>}
         </div>

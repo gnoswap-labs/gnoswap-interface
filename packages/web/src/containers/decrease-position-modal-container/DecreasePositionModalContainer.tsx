@@ -1,6 +1,7 @@
 import DecreasePositionModal from "@components/common/decrease-position-modal/DecreasePositionModal";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
+import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
 import { TokenModel } from "@models/token/token-model";
 import React, { useCallback } from "react";
 
@@ -14,7 +15,7 @@ interface Props {
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   percent: number;
-  pooledTokenInfos: any;
+  pooledTokenInfos: IPooledTokenInfo | null;
   confirm: () => void;
 }
 

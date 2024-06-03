@@ -21,6 +21,21 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
+export interface IPooledTokenInfo {
+  poolAmountA: string;
+  poolAmountUSDA: string;
+  poolAmountB: string;
+  poolAmountUSDB: string;
+  unClaimTokenAAmount: string;
+  unClaimTokenBAmount: string;
+  unClaimTokenAAmountUSD: string;
+  unClaimTokenBAmountUSD: string;
+  tokenABalance: string,
+  tokenBBalance: string,
+  tokenARemainingAmount: string,
+  tokenBRemainingAmount: string,
+}
+
 export type DeCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
 
 export const useDecreaseHandle = () => {
@@ -116,8 +131,8 @@ export const useDecreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-      ? RANGE_STATUS_OPTION.IN
-      : RANGE_STATUS_OPTION.OUT;
+        ? RANGE_STATUS_OPTION.IN
+        : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -188,7 +203,7 @@ export const useDecreaseHandle = () => {
     setPriceRange(priceRange);
   }, []);
 
-  const pooledTokenInfos = useMemo(() => {
+  const pooledTokenInfos: IPooledTokenInfo | null = useMemo(() => {
     if (!selectedPosition) {
       return null;
     }
@@ -215,6 +230,18 @@ export const useDecreaseHandle = () => {
       poolAmountUSDA: numberToUSD(
         (tokenAAmount * Number(tokenAPrice) * percent) / 100,
       ),
+      tokenABalance: tokenAAmount.toString(),
+      tokenBBalance: tokenBAmount.toString(),
+      tokenARemainingAmount: BigNumber(tokenAAmount)
+        .multipliedBy(100 - percent)
+        .dividedBy(100)
+        .toNumber()
+        .toString(),
+      tokenBRemainingAmount: BigNumber(tokenBAmount)
+        .multipliedBy(100 - percent)
+        .dividedBy(100)
+        .toNumber()
+        .toString(),
       poolAmountB: BigNumber(tokenBAmount)
         .multipliedBy(percent)
         .dividedBy(100)

@@ -370,7 +370,7 @@ const TokenListContainer: React.FC = () => {
     return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
   }, [tokenType, tokens, wugnotPath, tokenPrices]);
 
-  const getDatas = useCallback(() => {
+  const sortedData = useMemo(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
     const temp = firstData.filter((item: Token) =>
       item.token.path.includes(grc20),
@@ -494,7 +494,7 @@ const TokenListContainer: React.FC = () => {
 
   return (
     <TokenList
-      tokens={getDatas()}
+      tokens={sortedData}
       isFetched={!isLoadingTokens}
       error={error}
       tokenType={tokenType}

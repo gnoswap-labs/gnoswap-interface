@@ -15,7 +15,7 @@ interface SupplyOverviewInfoProps {
   loading: boolean;
 }
 
-const LoadingText = ({ className } : { className?: string }) => {
+const LoadingText = ({ className }: { className?: string }) => {
   return (
     <LoadingTextWrapper className={`loading-text-wrapper ${className ?? ""}`}>
       <span css={pulseSkeletonStyle({ w: "150px", mobileWidth: "120" })} />
@@ -121,14 +121,14 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           {!loading ? (
             <div className="supply-value">{supplyOverviewInfo.totalStaked}</div>
           ) : (
-            <LoadingText className="loading-staked-info"/>
+            <LoadingText className="loading-staked-info" />
           )}
           {!loading ? (
             <div className="staked-ratio-title">
               Staking Ratio: {supplyOverviewInfo.stakingRatio}
             </div>
           ) : (
-            <LoadingText className="loading-staked-ratio"/>
+            <LoadingText className="loading-staked-ratio" />
           )}
         </div>
       </div>

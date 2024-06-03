@@ -104,7 +104,6 @@ const TokenInfoContentContainer: React.FC = () => {
   const {
     data: {
       market = marketInformationInit,
-      pricesBefore = priceChangeDetailInit,
     } = {},
     isLoading,
   } = useGetTokenDetailByPath(
@@ -115,6 +114,7 @@ const TokenInfoContentContainer: React.FC = () => {
     data: {
       usd: currentPrice = "0",
       feeUsd24h,
+      pricesBefore = priceChangeDetailInit,
     } = {},
   } = useGetTokenPricesByPath(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
   const { isLoading: isLoadingCommon } = useLoading();
@@ -181,6 +181,7 @@ const TokenInfoContentContainer: React.FC = () => {
       pricesBefore.price90d,
       6,
     );
+
     return [
       {
         createdAt: "Today",

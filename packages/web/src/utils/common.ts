@@ -65,7 +65,7 @@ export const checkPositivePrice = (
   const currentAsNumber = Number(currentPrice);
   const checkAsNumber = Number(checkPrice);
   const value = (() => {
-    if (checkAsNumber >= currentAsNumber) {
+    if (checkAsNumber > currentAsNumber) {
       if (currentAsNumber === 0) {
         return (100).toFixed();
       }
@@ -80,17 +80,29 @@ export const checkPositivePrice = (
     return ((1 - currentAsNumber / (checkAsNumber || 1)) * 100).toFixed(2);
   })();
   const isEmpty = !currentPrice && !checkPrice || (!currentAsNumber && !checkAsNumber);
-  const status = isEmpty
-    ? MATH_NEGATIVE_TYPE.NONE
-    : currentAsNumber >= checkAsNumber
-      ? MATH_NEGATIVE_TYPE.POSITIVE
-      : MATH_NEGATIVE_TYPE.NEGATIVE;
-  const percent =
-    status === MATH_NEGATIVE_TYPE.NONE
-      ? "-"
-      : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(
-        Number(value || 0),
-      ).toFixed(2)}%`;
+  const status = (() => {
+    if (isEmpty) {
+      return MATH_NEGATIVE_TYPE.NONE;
+    }
+
+    if (currentAsNumber >= checkAsNumber) {
+      return MATH_NEGATIVE_TYPE.POSITIVE;
+    }
+
+    return MATH_NEGATIVE_TYPE.NEGATIVE;
+  })();
+  const percent = (() => {
+    if (status === MATH_NEGATIVE_TYPE.NONE) return "-";
+
+    if (currentAsNumber === checkAsNumber) {
+      return "0.00%";
+    }
+
+    return `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(
+      Number(value || 0),
+    ).toFixed(2)}%`;
+
+  })();
   const price =
     status === MATH_NEGATIVE_TYPE.NONE
       ? "-"
