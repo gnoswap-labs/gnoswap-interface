@@ -70,6 +70,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     address: ""
   },
   swapDirection: "EXACT_IN",
+  direction: "EXACT_IN",
   swapRate: 1.14,
   swapRateUSD: 1.14,
   priceImpact: 0.3,
