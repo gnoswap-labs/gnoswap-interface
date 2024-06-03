@@ -12,6 +12,8 @@ import {
   LeftIconMenu,
   LeftIcon,
   MenuDivider,
+  RightIconMenu,
+  LinkIconButton,
 } from "./HeaderSideMenuModal.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconAccountUser from "../icons/IconAccountUser";
@@ -77,12 +79,12 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
         <ul>
           {navigationItems.map((item, index) => (
             <li key={index}>
-              <span onClick={() => router.push(item.path)}>
+              <a onClick={() => router.push(item.path)}>
                 <LeftIconMenu>
                   <LeftIcon>{getLeftIcon(item.iconType)}</LeftIcon>
                   {item.title}
                 </LeftIconMenu>
-              </span>
+              </a>
             </li>
           ))}
         </ul>
@@ -90,12 +92,12 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
         <ul>
           {extraNavigationItems.map((item, index) => (
             <li key={index}>
-              <span onClick={() => router.push(item.path)}>
-                <LeftIconMenu>
-                  <LeftIcon>{getLeftIcon(item.iconType)}</LeftIcon>
+              <a onClick={() => router.push(item.path)}>
+                <RightIconMenu>
                   {item.title}
-                </LeftIconMenu>
-              </span>
+                  <LinkIconButton>{getLeftIcon(item.iconType)}</LinkIconButton>
+                </RightIconMenu>
+              </a>
             </li>
           ))}
         </ul>
