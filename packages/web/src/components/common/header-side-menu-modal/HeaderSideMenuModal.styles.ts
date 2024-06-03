@@ -30,8 +30,8 @@ export const FakeSpaceWrapper = styled.div`
   height: 44px;
   top:0px;
 
-  right: 0px;
-  width: 240px;
+  left: 0px;
+  width: 40px;
   ${media.mobile} {
     width: 100%;
     left: 0;

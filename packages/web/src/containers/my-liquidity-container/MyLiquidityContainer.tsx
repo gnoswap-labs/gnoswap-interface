@@ -20,10 +20,12 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useGetUsernameByAddress } from "@query/address/queries";
 import { toUnitFormat } from "@utils/number-utils";
+import { useTokenData } from "@hooks/token/use-token-data";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
 }
+
 
 const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   address,
@@ -40,6 +42,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
+  const { tokenPrices } = useTokenData();
 
   const {
     broadcastSuccess,
@@ -132,7 +135,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
           openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
-            () => {},
+            () => { },
             true,
           );
           setLoadingTransactionClaim(false);
@@ -191,6 +194,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       }
       showClosePositionButton={showClosePositionButton}
       isLoadingPositionsById={loadingPositionById}
+      tokenPrices={tokenPrices}
     />
   );
 };

@@ -44,6 +44,20 @@ export const useGetTokenPrices = (
   });
 };
 
+export const useGetTokenPricesByPath = (
+  path: string,
+  options?: UseQueryOptions<TokenPriceModel, Error>,
+) => {
+  const { tokenRepository } = useGnoswapContext();
+  const currentPath = encryptId(path);
+
+  return useQuery<TokenPriceModel, Error>({
+    queryKey: [QUERY_KEY.tokenPrices, currentPath],
+    queryFn: () => tokenRepository.getTokenPricesByPath(currentPath),
+    ...options,
+  });
+};
+
 export const useGetTokenDetailByPath = (
   path: string,
   option?: UseQueryOptions<ITokenDetailResponse, Error>,

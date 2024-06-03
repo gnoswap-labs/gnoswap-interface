@@ -38,6 +38,7 @@ export const NoLiquidityWrapper = styled.div`
   ${media.mobile} {
     padding: 25px 12px;
     > p {
+      text-align: center;
       ${fonts.body11};
       margin-top: 12px;
       margin-bottom: 12px;
@@ -64,6 +65,7 @@ export const NoLiquidityWrapper = styled.div`
     ${media.mobile} {
       text-align: start;
       ${fonts.p4};
+      text-align: center
     }
   }
 `;

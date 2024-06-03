@@ -41,6 +41,9 @@ export const VolumeChartGraphWrapper = styled.div`
     }
 
     .xaxis-wrapper {
+      &.center {
+        ${mixins.flexbox("row", "center", "center")};
+      }
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
       height: 17px;

@@ -1,5 +1,4 @@
 // TODO : remove eslint-disable after work
-/* eslint-disable */
 import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
 import AssetList from "@components/wallet/asset-list/AssetList";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
@@ -7,7 +6,6 @@ import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
 import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
 import useClickOutside from "@hooks/common/use-click-outside";
 import { useLoading } from "@hooks/common/use-loading";
-import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -20,6 +18,7 @@ import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
 import { toPriceFormat } from "@utils/number-utils";
+import { useGetPositionsByAddress } from "@query/positions";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -58,10 +57,6 @@ export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 function filterZeroBalance(asset: Asset) {
   const balance = BigNumber(asset?.balance ?? 0);
   return balance.isGreaterThan(0);
-}
-
-function removeTrailingZeros(value: string) {
-  return value.replace(/\.?0+$/, "");
 }
 
 function filterType(asset: Asset, type: ASSET_FILTER_TYPE) {
@@ -140,7 +135,7 @@ const handleSort = (list: SortedProps[]) => {
 const AssetListContainer: React.FC = () => {
   const { connected, account, isSwitchNetwork } = useWallet();
 
-  const [address, setAddress] = useState("");
+  const [address] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(
     ASSET_FILTER_TYPE.ALL,
   );
@@ -148,7 +143,7 @@ const AssetListContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   // const [hasNext, setHasNext] = useState(false);
   const [extended, setExtened] = useState(true);
-  const [hasLoader, setHasLoader] = useState(false);
+  const [hasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
@@ -161,7 +156,15 @@ const AssetListContainer: React.FC = () => {
   const { data: { tokens = [] } = {} } = useGetTokensList({
     refetchInterval: 60 * 1000,
   });
-  const { loading: loadingPositions } = usePositionData();
+  const {
+    isLoading: loadingPositions,
+  } = useGetPositionsByAddress(
+    account?.address ?? "", {
+    isClosed: false,
+    queryOptions: { enabled: !!account?.address }
+  });
+
+  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
@@ -424,7 +427,7 @@ const AssetListContainer: React.FC = () => {
         isFetched={
           isFetched &&
           !isLoadingTokens &&
-          !loadingPositions &&
+          !isLoadingPosition &&
           !(isEmptyObject(balances) && account?.address)
         }
         assetType={assetType}

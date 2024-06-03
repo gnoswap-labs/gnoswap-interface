@@ -62,16 +62,27 @@ export const checkPositivePrice = (
   checkPrice: string,
   fixedPrice?: number,
 ) => {
-  const currentToNumber = Number(currentPrice);
-  const checkToNumber = Number(checkPrice);
-  const value =
-    checkPrice >= currentPrice
-      ? ((currentToNumber / (checkToNumber || 1) - 1) * 100).toFixed(2)
-      : ((1 - currentToNumber / (checkToNumber || 1)) * 100).toFixed(2);
-  const isEmpty = !Number(currentPrice) || !Number(checkPrice);
+  const currentAsNumber = Number(currentPrice);
+  const checkAsNumber = Number(checkPrice);
+  const value = (() => {
+    if (checkAsNumber >= currentAsNumber) {
+      if (currentAsNumber === 0) {
+        return (100).toFixed();
+      }
+
+      return ((currentAsNumber / (checkAsNumber || 1) - 1) * 100).toFixed(2);
+    }
+
+    if (checkAsNumber === 0) {
+      return "Infinity";
+    }
+
+    return ((1 - currentAsNumber / (checkAsNumber || 1)) * 100).toFixed(2);
+  })();
+  const isEmpty = !currentPrice && !checkPrice || (!currentAsNumber && !checkAsNumber);
   const status = isEmpty
     ? MATH_NEGATIVE_TYPE.NONE
-    : currentToNumber >= checkToNumber
+    : currentAsNumber >= checkAsNumber
       ? MATH_NEGATIVE_TYPE.POSITIVE
       : MATH_NEGATIVE_TYPE.NEGATIVE;
   const percent =
@@ -85,7 +96,7 @@ export const checkPositivePrice = (
       ? "-"
       : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}$${convertToMB(
         formatUsdNumber3Digits(
-          Math.abs(checkToNumber - currentToNumber).toString(),
+          Math.abs(checkAsNumber - currentAsNumber).toString(),
         ),
         fixedPrice ?? 2,
       )}`;

@@ -11,8 +11,9 @@ import {
 import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
-import { prettyNumber, prettyNumberFloatInteger } from "@utils/number-utils";
+import { prettyNumber } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import { convertToKMB } from "@utils/stake-position-utils";
 dayjs.extend(relativeTime);
 
 export interface Activity {
@@ -124,8 +125,8 @@ const DashboardActivitiesContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setSortOption({
         key,
@@ -142,24 +143,37 @@ const DashboardActivitiesContainer: React.FC = () => {
 
   const formatActivity = (res: OnchainActivityData): Activity => {
     const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
+    const tokenASymbol = res.tokenA.symbol;
+    const tokenBSymbol = res.tokenB.symbol;
+
+    const actionText = (() => {
+      const action = capitalizeFirstLetter(res.actionType);
+      const tokenAText = tokenASymbol ? " " + replaceToken(tokenASymbol) : "";
+      const tokenBText = tokenBSymbol ? " " + replaceToken(tokenBSymbol) : "";
+      const haveOneToken = !tokenAText || !tokenBText;
+      const conjunction = !haveOneToken ? " " + (res.actionType === "SWAP" ? "for" : "and") : "";
+
+      return `${action}${tokenAText}${conjunction}${tokenBText}`;
+    })();
+
+    const tokenAAmount = tokenASymbol ? `${convertToKMB(
+      res.tokenAAmount,
+      { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
+    )} ${replaceToken(res.tokenA.symbol)}` : "-";
+
+    const tokenBAmount = tokenBSymbol ? `${convertToKMB(
+      res.tokenBAmount,
+      { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
+    )} ${replaceToken(res.tokenB.symbol)}` : "-";
+
     return {
-      action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
-        res.tokenA.symbol,
-      )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(
-        res.tokenB.symbol,
-      )}`,
+      action: actionText,
       totalValue:
         Number(res.totalUsd) < 0.01 && Number(res.totalUsd)
           ? "<$0.01"
           : `$${prettyNumber(res.totalUsd)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(
-        `${Number(res.tokenAAmount)}`,
-        true,
-      )} ${replaceToken(res.tokenA.symbol)}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(
-        `${Number(res.tokenBAmount)}`,
-        true,
-      )} ${replaceToken(res.tokenB.symbol)}`,
+      tokenAmountOne: tokenAAmount,
+      tokenAmountTwo: tokenBAmount,
       account: res.account,
       time: res.time,
       explorerUrl,

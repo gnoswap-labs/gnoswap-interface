@@ -1,3 +1,4 @@
+import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import {
   IChainResponse,
@@ -16,6 +17,8 @@ export interface TokenRepository {
   getTokenByPath: (path: string) => Promise<ITokenResponse>;
 
   getTokenPrices: () => Promise<TokenPriceListResponse>;
+
+  getTokenPricesByPath: (path: string) => Promise<TokenPriceModel>;
 
   getTokenDetailByPath: (path: string) => Promise<ITokenDetailResponse>;
 

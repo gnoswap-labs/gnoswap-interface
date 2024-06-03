@@ -28,6 +28,7 @@ ConnectionSucceeded.args = {
     claimableRewards: "$1.40",
     loadingBalance: false,
     loadingPositions: false,
+    totalClaimedRewards: "$1.50"
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
@@ -50,6 +51,7 @@ ConnectionFailed.args = {
     claimableRewards: "$0.00",
     loadingBalance: false,
     loadingPositions: false,
+    totalClaimedRewards: "$1.50",
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
@@ -70,6 +72,7 @@ LoadingData.args = {
     claimableRewards: "$0.00",
     loadingBalance: false,
     loadingPositions: false,
+    totalClaimedRewards: "$1.50",
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),

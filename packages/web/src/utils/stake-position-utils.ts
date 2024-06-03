@@ -47,20 +47,18 @@ export const convertToKMB = (
     maximumSignificantDigits?: number,
     convertOffset?: number,
     forceFractionDigit?: number,
-  }) => {
-  if (Number.isNaN(Number(price))) return "-";
-  const numberPrice = Number(price);
-  const numberPriceAbs = Math.abs(Number(price));
+  }): string => {
+  if (Number.isNaN(Number(price.replace(/,/g, "")))) return "-";
+  const numberPrice = Number(price.replace(/,/g, ""));
+  const numberPriceAbs = Math.abs(Number(price.replace(/,/g, "")));
   const isNegative = numberPrice < 0;
   const negativeSymbol = isNegative ? "-" : "";
 
   const defaultMaximumSignificantDigits = 5;
   const isDefaultSignificantDigits = !options?.maximumFractionDigits && !options?.minimumFractionDigits;
   const maximumSignificantDigits = options?.maximumSignificantDigits || (isDefaultSignificantDigits ? defaultMaximumSignificantDigits : undefined);
-  const convertOffset = options?.convertOffset || 999;
-  const intPart = Math.trunc(numberPrice);
 
-  if (Math.abs(intPart) < convertOffset) {
+  if (Number(numberPriceAbs) < 1000) {
     if (Number.isInteger(numberPrice)) return numberPrice.toLocaleString("en-US", {
       maximumFractionDigits: 0,
       minimumFractionDigits: 0,
@@ -77,7 +75,6 @@ export const convertToKMB = (
 
     function rmTrailingZeros(value: string) {
       if (value.includes(".")) return removeTrailingZeros(value);
-
       return options?.forceFractionDigit ? BigNumber(value).toFixed(options?.forceFractionDigit) : value;
     }
 
@@ -87,7 +84,7 @@ export const convertToKMB = (
 
     return Number.isInteger(result) ? forceFractionDigit(result) : rmTrailingZeros(result);
   } else {
-    const temp = Math.floor(numberPriceAbs);
+    const temp = numberPriceAbs;
     if (temp >= 1e9) {
       if (temp > 999.99 * 1e9) return "999.99B";
       return (
@@ -113,6 +110,7 @@ export const convertToKMB = (
         }) + "K"
       );
     }
+
     return (Number.isInteger(price) ? `${numberPrice}` : numberPrice.toLocaleString("en-US", {
       maximumFractionDigits: options?.maximumFractionDigits ?? 2,
       minimumFractionDigits: options?.minimumFractionDigits ?? 2,

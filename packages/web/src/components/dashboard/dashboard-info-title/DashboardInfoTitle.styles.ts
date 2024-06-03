@@ -86,11 +86,11 @@ export const GnotLogoWrapper = styled.div`
     }
   }
   .gnot-image {
-    width: 21px;
-    height: 21px;
+    width: 32px;
+    height: 32px;
     ${media.mobile} {
-      width: 14.84px;
-      height: 14.84px;
+      width: 22px;
+      height: 22px;
     }
   }
 `;

@@ -110,7 +110,6 @@ export const toUnitFormat = (
       unitsUpperCase.million
     );
   if (isKMB) {
-
     if (wholeNumberLength >= 4 && isFormat) {
       return (usd ? "$" : "") + convertToKMB(bigNumber.toNumber().toString(), {
         maximumFractionDigits: 2,

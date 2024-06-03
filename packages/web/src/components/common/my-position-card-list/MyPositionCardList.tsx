@@ -4,6 +4,7 @@ import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
 
 interface MyPositionCardListProps {
   loadMore: boolean;
@@ -20,6 +21,7 @@ interface MyPositionCardListProps {
   showLoadMore: boolean;
   width: number;
   themeKey: "dark" | "light";
+  tokenPrices: Record<string, TokenPriceModel>,
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
@@ -37,13 +39,21 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   width,
   themeKey,
   showLoadMore,
+  tokenPrices,
 }) => (
   <CardListWrapper $loading={isLoading}>
     <GridWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
       {!isLoading &&
         positions.length > 0 &&
         positions.map((position, idx) => (
-          <MyPositionCard currentIndex={idx} position={position} key={idx} movePoolDetail={movePoolDetail} mobile={mobile} themeKey={themeKey} />
+          <MyPositionCard
+            tokenPrices={tokenPrices}
+            currentIndex={idx}
+            position={position}
+            key={idx}
+            movePoolDetail={movePoolDetail}
+            mobile={mobile}
+            themeKey={themeKey} />
         ))}
       {isFetched && !isLoading &&
         positions.length > 0 && positions.length < 4 &&

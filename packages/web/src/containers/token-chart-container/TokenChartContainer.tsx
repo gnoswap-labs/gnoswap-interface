@@ -11,7 +11,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetTokenByPath, useGetTokenDetailByPath } from "@query/token";
+import { useGetTokenByPath, useGetTokenDetailByPath, useGetTokenPricesByPath } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
@@ -174,14 +174,23 @@ const TokenChartContainer: React.FC = () => {
       prices7d = [],
       prices1m = [],
       prices1y = [],
-      pricesBefore = priceChangeDetailInit,
-      currentPrice = "",
     } = {},
     isLoading,
   } = useGetTokenDetailByPath(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,
   });
+
+  const {
+    data: {
+      usd: currentPrice,
+      pricesBefore = priceChangeDetailInit,
+    } = {}
+  } = useGetTokenPricesByPath(path === "gnot" ? wugnotPath : path, {
+    enabled: !!path,
+    refetchInterval: 1000 * 10,
+  });
+
 
   const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
   useEffect(() => {
@@ -191,6 +200,7 @@ const TokenChartContainer: React.FC = () => {
         pricesBefore.priceToday,
         19,
       );
+
       setTokenInfo(() => ({
         token: {
           name: getGnotPath(tokenB).name,
@@ -203,7 +213,9 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: currentPrice ? toPriceFormat(currentPrice) : "",
+            value: currentPrice ?
+              toPriceFormat(currentPrice, { usd: true, isRounding: false })
+              : "",
             denom: "USD",
             status: dataToday.status,
           },
@@ -217,7 +229,7 @@ const TokenChartContainer: React.FC = () => {
         });
       }
     }
-  }, [router.query, pricesBefore.toString(), currentPrice, tokenB, gnot]);
+  }, [router.query, pricesBefore.latestPrice, currentPrice, tokenB, gnot, pricesBefore.priceToday, fromSelectToken]);
 
   const changeTab = useCallback((tab: string) => {
     const currentTab =
@@ -229,12 +241,12 @@ const TokenChartContainer: React.FC = () => {
     if (breakpoint === DEVICE_TYPE.MOBILE)
       return Math.floor(
         ((size.width || 0) + 20 - 25) /
-          (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
+        (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
       );
 
     return Math.floor(
       ((size.width || 0) + 20 - 8) /
-        (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
+      (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
     );
   }, [size.width, breakpoint, currentTab]);
 
@@ -266,12 +278,12 @@ const TokenChartContainer: React.FC = () => {
       currentTab === TokenChartGraphPeriods[0]
         ? 144
         : currentTab === TokenChartGraphPeriods[1]
-        ? 168
-        : currentTab === TokenChartGraphPeriods[2]
-        ? 180
-        : currentTab === TokenChartGraphPeriods[3]
-        ? 365
-        : 144;
+          ? 168
+          : currentTab === TokenChartGraphPeriods[2]
+            ? 180
+            : currentTab === TokenChartGraphPeriods[3]
+              ? 365
+              : 144;
     const currentLength = chartData.length;
     const startTime = Math.max(0, currentLength - length - 1);
 
@@ -307,23 +319,23 @@ const TokenChartContainer: React.FC = () => {
     const datas =
       chartData?.length > 0
         ? [
-            ...chartData.map((item: IPriceResponse) => {
-              return {
-                amount: {
-                  value: `${item.price}`,
-                  denom: "",
-                },
-                time: getLocalizeTime(item.date),
-              };
-            }),
-            {
+          ...chartData.map((item: IPriceResponse) => {
+            return {
               amount: {
-                value: `${currentPrice}`,
+                value: `${item.price}`,
                 denom: "",
               },
-              time: getLocalizeTime(lastDate),
+              time: getLocalizeTime(item.date),
+            };
+          }),
+          {
+            amount: {
+              value: `${currentPrice}`,
+              denom: "",
             },
-          ]
+            time: getLocalizeTime(lastDate),
+          },
+        ]
         : [];
 
     const yAxisLabels = getYAxisLabels(

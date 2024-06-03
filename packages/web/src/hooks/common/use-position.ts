@@ -1,9 +1,9 @@
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import { PositionModel } from "@models/position/position-model";
 import { useCallback } from "react";
 import { useGnoswapContext } from "./use-gnoswap-context";
 
-export const usePosition = (positions: PoolPositionModel[]) => {
+export const usePosition = (positions: PositionModel[]) => {
   const { positionRepository } = useGnoswapContext();
   const { account } = useWallet();
 

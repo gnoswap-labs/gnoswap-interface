@@ -13,20 +13,23 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "space-between")};
     color: ${theme.color.text04};
     padding: 0px 24px;
-    gap: 8px;
+    gap: 4px;
     min-width: max-content;
   }
   .pair {
     min-width: 170px;
+    flex: 1.5;
     @media (max-width: 768px) and (min-width: 400px) {
       min-width: 130px;
       max-width: 130px;
     }
   }
   .tvl {
+    flex: 1;
     min-width: 90px;
   }
   .apr {
+    flex: 1;
     min-width: 60px;
   }
   .tvl,
@@ -39,9 +42,10 @@ export const wrapper = (theme: Theme) => css`
     gap: 4px;
     li {
       ${mixins.flexbox("row", "center", "space-between")};
-      gap: 8px;
-      > div {
+      gap: 4px;
+      .pair {
         ${mixins.flexbox("row", "center", "flex-start")};
+        flex: 1.5;
         min-width: 170px;
         @media (max-width: 768px) and (min-width: 400px) {
           min-width: 130px;

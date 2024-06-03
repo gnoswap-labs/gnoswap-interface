@@ -4,6 +4,7 @@ import { EarnMyPositionswrapper } from "./EarnMyPositions.styles";
 import React from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { AccountModel } from "@models/account/account-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
 
 export interface EarnMyPositionsProps {
   address?: string | null;
@@ -35,6 +36,8 @@ export interface EarnMyPositionsProps {
   account: AccountModel | null;
   isClosed: boolean;
   handleChangeClosed: () => void;
+  tokenPrices: Record<string, TokenPriceModel>;
+  highestApr: number;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -67,6 +70,8 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   account,
   isClosed,
   handleChangeClosed,
+  tokenPrices,
+  highestApr,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -105,6 +110,8 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       onClickLoadMore={onClickLoadMore}
       themeKey={themeKey}
       account={account}
+      tokenPrices={tokenPrices}
+      highestApr={highestApr}
     />
   </EarnMyPositionswrapper>
 );

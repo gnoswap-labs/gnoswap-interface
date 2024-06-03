@@ -49,8 +49,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     switchNetwork,
     account,
   } = useWallet();
-  const { updateTokenPrices } = useTokenData();
-  const { isFetchedPools, loading: isLoadingPool } = usePoolData();
+  const { tokenPrices = {}, updateTokenPrices } = useTokenData();
+  const { isFetchedPools, loading: isLoadingPool, pools } = usePoolData();
   const { width } = useWindowSize();
   const { openModal } = useConnectWalletModal();
   const {
@@ -184,6 +184,15 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     return true;
   }, [address, connected, positions]);
 
+  const highestApr = useMemo(() => {
+    return pools.reduce((acc, current) => {
+      if (Number(current.totalApr) > acc) {
+        return Number(current.totalApr);
+      }
+      return acc;
+    }, Number(pools?.[0]?.totalApr ?? 0));
+  }, [pools]);
+
   return (
     <EarnMyPositions
       address={address}
@@ -219,6 +228,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       account={account}
       isClosed={isClosed}
       handleChangeClosed={handleChangeClosed}
+      tokenPrices={tokenPrices}
+      highestApr={highestApr}
     />
   );
 };

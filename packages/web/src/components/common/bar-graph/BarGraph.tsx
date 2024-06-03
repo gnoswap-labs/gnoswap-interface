@@ -92,6 +92,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
   const { height: customHeight = 0, locationTooltip = 0 } = customData;
   const [chartPoint, setChartPoint] = useState<Point>();
 
+  const hasOnlyOneData = useMemo(() => (datas?.length ?? 0) === 1, [datas?.length]);
+
   const getStrokeWidth = useCallback(() => {
     const maxStorkeWidth = BigNumber(
       width - (datas.length - 1) * minGap,
@@ -101,10 +103,12 @@ const BarGraph: React.FC<BarGraphProps> = ({
   }, [width, datas.length, minGap, strokeWidth]);
   const getGraphPoints = useCallback(() => {
     const strokeWidth = getStrokeWidth();
-    const mappedDatas = datas.map((data, index) => ({
-      value: new BigNumber(data).toNumber(),
-      x: index + 1,
-    }));
+    const mappedDatas = datas.map((data, index) => {
+      return ({
+        value: new BigNumber(data).toNumber(),
+        x: index + 1,
+      });
+    });
 
     const values = mappedDatas.map(data => data.value);
     const xValues = mappedDatas.map(data => data.x);
@@ -115,6 +119,10 @@ const BarGraph: React.FC<BarGraphProps> = ({
     const maxXValue = Math.max(...xValues);
 
     const optimizeValue = function (value: number, height: number) {
+      if (hasOnlyOneData) {
+        return 0;
+      }
+
       return (
         height -
         new BigNumber(value - minValue)
@@ -129,6 +137,13 @@ const BarGraph: React.FC<BarGraphProps> = ({
       width: number,
       strokeWidth: number,
     ) {
+      if (hasOnlyOneData) {
+        return new BigNumber(1)
+          .multipliedBy(width - strokeWidth)
+          .dividedBy(1)
+          .toNumber();
+      }
+
       return new BigNumber(x - minXValue)
         .multipliedBy(width - strokeWidth)
         .dividedBy(maxXValue - minXValue)

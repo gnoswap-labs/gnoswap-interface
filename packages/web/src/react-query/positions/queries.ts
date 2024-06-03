@@ -17,7 +17,7 @@ export const useGetPositionsByAddress = (
   const { positionRepository } = useGnoswapContext();
 
   return useQuery<PositionModel[], Error>({
-    queryKey: [QUERY_KEY.positions, address, ...(options?.queryOptions !== undefined ? [options?.queryOptions] : [])],
+    queryKey: [QUERY_KEY.positions, address, ...(options?.isClosed !== undefined ? [options?.isClosed] : [])],
     queryFn: async () => {
       const data = await positionRepository.getPositionsByAddress(address, { isClosed: options?.isClosed });
       return data;

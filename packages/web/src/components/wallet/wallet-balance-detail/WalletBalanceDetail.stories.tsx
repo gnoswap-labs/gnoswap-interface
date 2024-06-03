@@ -22,6 +22,7 @@ Default.args = {
     claimableRewards: "$1.40",
     loadingBalance: false,
     loadingPositions: false,
+    totalClaimedRewards: "$1.50"
   },
   connected: true,
   claimAll: action("claimAll"),

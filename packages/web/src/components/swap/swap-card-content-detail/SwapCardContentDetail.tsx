@@ -40,9 +40,9 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
     if (swapRateAction === "ATOB") {
-      return <>1 {tokenA.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)}/>&nbsp;{tokenB.symbol}</>;
+      return <>1 {tokenA.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenB.symbol}</>;
     } else {
-      return <>1 {tokenB.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)}/>&nbsp;{tokenA.symbol}</>;
+      return <>1 {tokenB.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenA.symbol}</>;
     }
   }, [swapSummaryInfo]);
 
@@ -50,7 +50,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
     const swapRate1USD = swapSummaryInfo.swapRate1USD;
     return convertToMB(formatUsdNumber3Digits(swapRate1USD));
   }, [swapSummaryInfo.swapRate1USD, swapSummaryInfo.swapRateAction]);
-  
+
   const gasFeeUSDStr = useMemo(() => {
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
     return `$${gasFeeUSD}`;
