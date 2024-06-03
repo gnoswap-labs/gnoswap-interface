@@ -23,9 +23,9 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
   }, [swapSummaryInfo.swapDirection]);
 
   const guaranteedStr = useMemo(() => {
-    const { tokenA, tokenB, direction } = swapSummaryInfo;
+    const { tokenA, tokenB, swapDirection } = swapSummaryInfo;
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
-    const token = direction === "EXACT_IN" ? tokenB : tokenA;
+    const token = swapDirection === "EXACT_IN" ? tokenB : tokenA;
     return `${toNumberFormat(amount || 0, token.decimals)} ${currency}`;
   }, [swapSummaryInfo]);
 
