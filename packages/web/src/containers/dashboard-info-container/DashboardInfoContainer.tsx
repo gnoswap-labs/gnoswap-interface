@@ -95,9 +95,7 @@ const DashboardInfoContainer: React.FC = () => {
   const stakingRatio = useMemo(() => {
     if (!tokenData) return "-";
     const circSupply = Number(tokenData?.gnsCirculatingSupply);
-    console.log("🚀 ~ stakingRatio ~ circSupply:", circSupply);
     const totalStaked = Number(tokenData?.gnsTotalStaked);
-    console.log("🚀 ~ stakingRatio ~ totalStaked:", totalStaked);
 
     if (totalStaked === 0 || circSupply === 0) return "0%";
     if ((totalStaked * 100) / circSupply < 0.1) return "<0.1%";
