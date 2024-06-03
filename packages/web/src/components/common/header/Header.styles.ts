@@ -76,6 +76,10 @@ export const LeftSection = styled.div`
   ${media.mobile} {
     max-width: 28px;
   }
+
+  .link {
+    cursor: pointer;
+  }
 `;
 
 export const LogoLink = styled.a`

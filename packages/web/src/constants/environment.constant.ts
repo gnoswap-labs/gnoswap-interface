@@ -23,6 +23,7 @@ const ENV_VARIABLES = {
   PACKAGE_STAKER_ADDRESS: process.env.NEXT_PUBLIC_PACKAGE_STAKER_ADDRESS || "",
   PACKAGE_GOVERNANCE_ADDRESS:
     process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_ADDRESS || "",
+  BLOCKED_PAGES: process.env.NEXT_PUBLIC_BLOCKED_PAGES?.split(",") || [],
 };
 
 const currentEnvVariables = ENV_VARIABLES;
@@ -53,3 +54,4 @@ export const PACKAGE_STAKER_ADDRESS =
   currentEnvVariables.PACKAGE_STAKER_ADDRESS;
 export const PACKAGE_GOVERNANCE_ADDRESS =
   currentEnvVariables.PACKAGE_GOVERNANCE_ADDRESS;
+export const BLOCKED_PAGES = currentEnvVariables.BLOCKED_PAGES;

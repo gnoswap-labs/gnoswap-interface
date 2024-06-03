@@ -2,12 +2,12 @@ export const HEADER_NAV = [
   {
     title: "Swap",
     path: "/swap",
-    subPath: ["/tokens/"]
+    subPath: ["/tokens/"],
   },
   {
     title: "Earn",
     path: "/earn",
-    subPath: ["/earn/pool/", "/earn/add", "/earn/stake"]
+    subPath: ["/earn/pool/", "/earn/add", "/earn/stake"],
   },
   {
     title: "Wallet",
@@ -19,25 +19,33 @@ export const HEADER_NAV = [
   },
 ];
 
-export const SIDE_MENU_NAV = {
-  DASHBOARD: {
+export const SIDE_MENU_NAV = [
+  {
     title: "Dashboard",
     path: "/dashboard",
+    iconType: "PULSE",
   },
-  GOVERNENCE: {
+  {
     title: "Governance",
     path: "/governance",
+    iconType: "ACCOUNT_USER",
   },
-  HELPCENTER: {
+] as const;
+
+export const SIDE_EXTRA_MENU_NAV = [
+  {
     title: "Help Center",
     path: "https://discord.gg/u4bdGHStb2",
+    iconType: "OPEN_LINK",
   },
-  DOCUMENTATION: {
+  {
     title: "Documentation",
     path: "https://docs.gnoswap.io/",
+    iconType: "OPEN_LINK",
   },
-  LEGALPRIVACY: {
+  {
     title: "Legal & Privacy",
     path: "/",
+    iconType: "OPEN_LINK",
   },
-};
+] as const;
