@@ -36,7 +36,7 @@ const Staking: React.FC<StakingProps> = ({
   pool,
   isOtherPosition,
 }) => {
-  
+
   return (
     <>
       <StakingAnchor id="staking" />
