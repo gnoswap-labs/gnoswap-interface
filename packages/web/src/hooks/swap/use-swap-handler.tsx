@@ -311,6 +311,7 @@ export const useSwapHandler = () => {
     const tokenAUSDAmount =
       (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) *
       Number(tokenAUSDValue);
+
     const tokenBUSDAmount =
       (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) *
       Number(tokenBUSDValue);
@@ -323,9 +324,9 @@ export const useSwapHandler = () => {
       type === "EXACT_IN"
         ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
         : BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
-    const priceImpactNum = BigNumber(tokenBUSDAmount - tokenAUSDAmount)
+    const priceImpactNum = tokenAUSDAmount !== 0 ? BigNumber(tokenBUSDAmount - tokenAUSDAmount)
       .multipliedBy(100)
-      .dividedBy(tokenAUSDAmount);
+      .dividedBy(tokenAUSDAmount) : BigNumber(0);
     const priceImpact = priceImpactNum.isGreaterThan(100)
       ? 100
       : Number(priceImpactNum.toFixed(2));

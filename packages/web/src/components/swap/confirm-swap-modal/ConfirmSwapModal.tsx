@@ -62,7 +62,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
   const guaranteedStr = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
-    return `${toNumberFormat(amount)} ${currency}`;
+    return `${toNumberFormat(amount, 6)} ${currency}`;
   }, [swapSummaryInfo.guaranteedAmount]);
 
   const gasFeeStr = useMemo(() => {
@@ -79,10 +79,10 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     <ConfirmModal>
       <div
         className={`modal-body ${swapResult === null && submitted
-            ? "modal-body-loading"
-            : submitted
-              ? "submitted-modal"
-              : ""
+          ? "modal-body-loading"
+          : submitted
+            ? "submitted-modal"
+            : ""
           }`}
       >
         <div className="modal-header">

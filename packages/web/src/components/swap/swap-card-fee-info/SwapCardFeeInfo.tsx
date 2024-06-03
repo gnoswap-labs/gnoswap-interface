@@ -37,7 +37,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
 
   const guaranteedStr = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
-    return `${toNumberFormat(amount || 0)} ${currency}`;
+    return `${toNumberFormat(amount || 0, 6)} ${currency}`;
   }, [swapSummaryInfo.guaranteedAmount]);
 
   const gasFeeStr = useMemo(() => {
