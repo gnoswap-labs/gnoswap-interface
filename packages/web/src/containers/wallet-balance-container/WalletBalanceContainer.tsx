@@ -22,9 +22,10 @@ import BigNumber from "bignumber.js";
 import React, { useCallback, useState, useMemo } from "react";
 import { useLoading } from "@hooks/common/use-loading";
 import { isEmptyObject } from "@utils/validation-utils";
-import { toUnitFormat } from "@utils/number-utils";
+import { toNumberFormat, toUnitFormat } from "@utils/number-utils";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useGetPositionsByAddress } from "@query/positions";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -55,15 +56,15 @@ const WalletBalanceContainer: React.FC = () => {
 
   const { balances: balancesPrice } = useTokenData();
 
-  const {
-    data: positions = [],
-    isLoading: loadingPositions
-  } = useGetPositionsByAddress(
-    account?.address ?? '', {
-    isClosed: false,
-    queryOptions: { enabled: !!account?.address }
-  })
-  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
+  const { data: positions = [], isLoading: loadingPositions } =
+    useGetPositionsByAddress(account?.address ?? "", {
+      isClosed: false,
+      queryOptions: { enabled: !!account?.address },
+    });
+  const isLoadingPosition = useMemo(
+    () => connected && loadingPositions,
+    [connected, loadingPositions],
+  );
 
   const { claimAll } = usePosition(positions);
   const {
@@ -120,7 +121,7 @@ const WalletBalanceContainer: React.FC = () => {
           openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
-            () => { },
+            () => {},
             true,
           );
           setLoadingTransactionClaim(false);
@@ -149,17 +150,26 @@ const WalletBalanceContainer: React.FC = () => {
       const balance =
         BigNumber(value || 0)
           .multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice || 0)
-          .dividedBy(10 ** 6)
+          .shiftedBy(GNOT_TOKEN.decimals * -1)
           .toNumber() || 0;
       return BigNumber(acc).plus(balance).toNumber();
     }, 0);
   }, [balancesPrice, tokenPrices]);
 
-  const { stakedBalance, unStakedBalance, claimableRewards, totalClaimedRewards } = positions.reduce(
+  const availableBalanceStr = useMemo(() => {
+    return availableBalance;
+  }, [availableBalance]);
+
+  const {
+    stakedBalance,
+    unStakedBalance,
+    claimableRewards,
+    totalClaimedRewards,
+  } = positions.reduce(
     (acc, cur) => {
       acc.totalClaimedRewards = BigNumber(acc.totalClaimedRewards)
         .plus(cur.totalClaimedUsd ?? "0")
-        .toNumber()
+        .toNumber();
 
       if (cur.staked) {
         acc.stakedBalance = BigNumber(acc.stakedBalance)
@@ -178,7 +188,12 @@ const WalletBalanceContainer: React.FC = () => {
       });
       return acc;
     },
-    { stakedBalance: 0, unStakedBalance: 0, claimableRewards: 0, totalClaimedRewards: 0, },
+    {
+      stakedBalance: 0,
+      unStakedBalance: 0,
+      claimableRewards: 0,
+      totalClaimedRewards: 0,
+    },
   );
 
   const sumTotalBalance = useMemo(() => {
@@ -245,7 +260,7 @@ const WalletBalanceContainer: React.FC = () => {
           loading: loadingTotalBalance,
         }}
         balanceDetailInfo={{
-          availableBalance: isSwitchNetwork ? "-" : `${availableBalance}`,
+          availableBalance: isSwitchNetwork ? "-" : `${availableBalanceStr}`,
           claimableRewards: isSwitchNetwork ? "-" : `${claimableRewards}`,
           stakedLP: isSwitchNetwork ? "-" : `${stakedBalance}`,
           unstakingLP: `${unStakedBalance}`,
