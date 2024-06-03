@@ -8,7 +8,6 @@ import {
 } from "./WalletBalanceDetailInfo.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { formatUSDWallet } from "@utils/number-utils";
 
 interface WalletBalanceDetailInfoProps {
   title: string;
@@ -37,7 +36,12 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
     const valueElement = valueRef.current;
     const size = width > 1180 ? 28 : 24;
     if (divElement && valueElement) {
-      setFontSize(Math.min((valueElement.offsetWidth - 70) * size / divElement.offsetWidth, size));
+      setFontSize(
+        Math.min(
+          ((valueElement.offsetWidth - 70) * size) / divElement.offsetWidth,
+          size,
+        ),
+      );
     }
   }, [valueRef, divRef, width]);
   const isClaim = className === "claimable-rewards" && width > 968;
@@ -55,14 +59,19 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
             <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
           </div>
         ) : (
-          <span className="value" style={isClaim ? { fontSize: `${fontSize}px` } : {}}>
-            {formatUSDWallet(value, true)}
+          <span
+            className="value"
+            style={isClaim ? { fontSize: `${fontSize}px` } : {}}
+          >
+            ${BigNumber(value).decimalPlaces(2).toFormat()}
           </span>
         )}
         {button && <div className="button-wrapper">{button}</div>}
-        {isClaim && <span className="value hidden-value" ref={divRef}>
-          ${BigNumber(value).decimalPlaces(2).toFormat()}
-        </span>}
+        {isClaim && (
+          <span className="value hidden-value" ref={divRef}>
+            ${BigNumber(value).decimalPlaces(2).toFormat()}
+          </span>
+        )}
       </div>
     </WalletBalanceDetailInfoWrapper>
   );
