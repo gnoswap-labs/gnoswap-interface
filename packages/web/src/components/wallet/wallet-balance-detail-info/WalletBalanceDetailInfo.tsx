@@ -1,13 +1,13 @@
+import React, { useRef, useEffect, useState } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import BigNumber from "bignumber.js";
-import React, { useRef, useEffect, useState } from "react";
 import {
   WalletBalanceDetailInfoTooltipContent,
   WalletBalanceDetailInfoWrapper,
 } from "./WalletBalanceDetailInfo.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { numberToFormat } from "@utils/string-utils";
 
 interface WalletBalanceDetailInfoProps {
   title: string;
@@ -63,13 +63,13 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
             className="value"
             style={isClaim ? { fontSize: `${fontSize}px` } : {}}
           >
-            ${BigNumber(value).decimalPlaces(2).toFormat()}
+            ${numberToFormat(value, { decimals: 2 })}
           </span>
         )}
         {button && <div className="button-wrapper">{button}</div>}
         {isClaim && (
           <span className="value hidden-value" ref={divRef}>
-            ${BigNumber(value).decimalPlaces(2).toFormat()}
+            ${numberToFormat(value, { decimals: 2 })}
           </span>
         )}
       </div>
