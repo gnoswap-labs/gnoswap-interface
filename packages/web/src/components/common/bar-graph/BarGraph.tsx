@@ -198,7 +198,6 @@ const BarGraph: React.FC<BarGraphProps> = ({
     }
     const { currentTarget } = event;
     const { left, top } = currentTarget.getBoundingClientRect();
-    // const { left, top } = currentTarget.getBoundingClientRect();
     if ((clientY || 0) - top > 205) {
       setCurrentPointIndex(-1);
       return;

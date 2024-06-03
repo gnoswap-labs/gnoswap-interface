@@ -27,9 +27,7 @@ export class TokenRepositoryMock implements TokenRepository {
     this.localStorageClient = localStorageClient;
   }
   public getTokenPricesByPath = async (path: string): Promise<TokenPriceModel> => {
-    console.log(path);
-
-    return TokenPrice as TokenPriceModel;
+    return { ...TokenPrice, path: path } as TokenPriceModel;
   };
 
   public getExchangeRateGraph = async (): Promise<TokenExchangeRateGraphResponse> => {
@@ -41,9 +39,7 @@ export class TokenRepositoryMock implements TokenRepository {
   };
 
   public getTokenByPath = async (path: string): Promise<ITokenResponse> => {
-    console.log(path);
-
-    return TokenByPath as ITokenResponse;
+    return { ...TokenByPath, path: path } as ITokenResponse;
   };
 
   public getTokenPrices = async (): Promise<TokenPriceListResponse> => {

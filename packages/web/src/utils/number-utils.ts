@@ -111,11 +111,6 @@ export const toUnitFormat = (
     );
   if (isKMB) {
     if (wholeNumberLength >= 4 && isFormat) {
-      console.log(bigNumber.toNumber().toString());
-      console.log(convertToKMB(bigNumber.toNumber().toString(), {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      }));
       return (usd ? "$" : "") + convertToKMB(bigNumber.toNumber().toString(), {
         maximumFractionDigits: 2,
         minimumFractionDigits: 2,
