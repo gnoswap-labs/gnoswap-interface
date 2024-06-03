@@ -20,6 +20,7 @@ export interface TokenChartInfoProps {
     };
     changedRate: number;
   };
+  isEmpty: boolean;
   loading: boolean;
 }
 
@@ -27,6 +28,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
   token,
   priceInfo,
   loading,
+  isEmpty,
 }) => {
   const rateClass = useMemo(() => {
     switch (priceInfo.amount.status) {
@@ -35,9 +37,10 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
       case MATH_NEGATIVE_TYPE.NEGATIVE:
         return "down";
       default:
-        return "";
+        if (isEmpty) return "-";
+        return "up";
     }
-  }, [priceInfo.amount.status]);
+  }, [isEmpty, priceInfo.amount.status]);
 
   const statusIcon = useMemo(() => {
     switch (priceInfo.amount.status) {
@@ -59,13 +62,12 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
     [loading, priceInfo.amount.value]);
 
   const displayRate = useMemo(() => {
-
-    if (priceInfo.amount.status === MATH_NEGATIVE_TYPE.NONE) {
+    if (isEmpty) {
       return "-";
     }
 
-    return `${priceInfo.amount.status === priceInfo.changedRate.toFixed(2)}%`;
-  }, [priceInfo.amount.status, priceInfo.changedRate]);
+    return `${priceInfo.changedRate.toFixed(2)}%`;
+  }, [isEmpty, priceInfo.changedRate]);
 
   return (
     <TokenChartInfoWrapper>

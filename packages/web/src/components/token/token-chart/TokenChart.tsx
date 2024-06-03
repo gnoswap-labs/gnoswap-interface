@@ -35,10 +35,11 @@ const TokenChart: React.FC<TokenChartProps> = ({
       return Number(item.amount.value) === 0;
     });
   }, [chartInfo?.datas]);
+  console.log("🚀 ~ isAllZero ~ isAllZero:", isAllZero);
 
   return (
     <TokenChartWrapper>
-      <TokenChartInfo {...tokenInfo} loading={loading} />
+      <TokenChartInfo {...tokenInfo} isEmpty={chartInfo?.datas.length === 0 && !loading || isAllZero || false} loading={loading} />
       <TokenChartGraphTab
         currentTab={currentTab}
         changeTab={changeTab}
