@@ -30,6 +30,7 @@ import BigNumber from "bignumber.js";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { PoolModel } from "@models/pool/pool-model";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -85,7 +86,10 @@ export interface SelectPool {
   ) => void;
   isChangeMinMax: boolean;
   setIsChangeMinMax: (value: boolean) => void;
-  poolInfo: PoolDetailRPCModel | null | undefined;
+  poolInfo?: {
+    chainData: PoolDetailRPCModel | null | undefined,
+    dbData: PoolModel | null | undefined,
+  };
 }
 
 export const useSelectPool = ({
@@ -192,7 +196,10 @@ export const useSelectPool = ({
   );
 
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery<
-    PoolDetailRPCModel | null,
+    {
+      chainData: PoolDetailRPCModel | null;
+      dbData: PoolModel | null;
+    },
     Error
   >({
     queryKey: [
@@ -205,12 +212,24 @@ export const useSelectPool = ({
     ],
     queryFn: async () => {
       if (!tokenA || !tokenB || !feeTier) {
-        return await Promise.resolve<PoolDetailRPCModel | null>(null);
+        return await Promise.resolve<{
+          chainData: PoolDetailRPCModel | null;
+          dbData: PoolModel | null;
+        }>({ chainData: null, dbData: null } as {
+          chainData: PoolDetailRPCModel | null;
+          dbData: PoolModel | null;
+        });
       }
 
       if (isCreate) {
         if (!startPrice) {
-          return await Promise.resolve<PoolDetailRPCModel | null>(null);
+          return await Promise.resolve<{
+            chainData: PoolDetailRPCModel | null;
+            dbData: PoolModel | null;
+          }>({ chainData: null, dbData: null } as {
+            chainData: PoolDetailRPCModel | null;
+            dbData: PoolModel | null;
+          });
         }
         const poolInfo: PoolDetailRPCModel = {
           poolPath: "",
@@ -234,15 +253,20 @@ export const useSelectPool = ({
           positions: [],
         };
 
-        return Promise.resolve<PoolDetailRPCModel | null>(poolInfo);
+        return Promise.resolve<{
+          chainData: PoolDetailRPCModel | null;
+          dbData: PoolModel | null;
+        }>({ chainData: poolInfo, dbData: null } as {
+          chainData: PoolDetailRPCModel | null;
+          dbData: PoolModel | null;
+        });
       }
 
-      const poolPath = `${tokenPair?.join(":")}:${
-        SwapFeeTierInfoMap[feeTier].fee
-      }`;
+      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
+        }`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
       if (!poolRes) {
-        return Promise.resolve(null);
+        return Promise.resolve({ chainData: null, dbData: null });
       }
 
       const convertPath = encryptId(poolPath);
@@ -258,21 +282,27 @@ export const useSelectPool = ({
       const changedPoolInfo =
         isReverse === false
           ? {
-              ...poolRes,
-              price: poolResFromDb.price,
-            }
+            ...poolRes,
+            price: poolResFromDb.price,
+          }
           : {
-              ...poolRes,
-              price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
-              ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
-              positions: poolRes.positions.map(position => ({
-                ...position,
-                tickLower: position.tickUpper * -1,
-                tickUpper: position.tickLower * -1,
-              })),
-            };
+            ...poolRes,
+            price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
+            ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
+            positions: poolRes.positions.map(position => ({
+              ...position,
+              tickLower: position.tickUpper * -1,
+              tickUpper: position.tickLower * -1,
+            })),
+          };
 
-      return Promise.resolve<PoolDetailRPCModel | null>(changedPoolInfo);
+      return Promise.resolve<{
+        chainData: PoolDetailRPCModel | null;
+        dbData: PoolModel | null;
+      }>({
+        chainData: changedPoolInfo,
+        dbData: poolResFromDb,
+      });
     },
     staleTime: 5_000,
   });
@@ -280,9 +310,9 @@ export const useSelectPool = ({
   useEffect(() => {
     setPoolInfoQuery({
       isLoading: isLoadingPoolInfo,
-      data: poolInfo,
+      data: poolInfo?.chainData,
     });
-  }, [isLoadingPoolInfo, poolInfo]);
+  }, [isLoadingPoolInfo, poolInfo, setPoolInfoQuery]);
 
   useEffect(() => {
     priceRangeRef.current = [...defaultPriceRange];
@@ -317,26 +347,26 @@ export const useSelectPool = ({
   );
 
   const liquidityOfTickPoints: [number, number][] = useMemo(() => {
-    if (!poolInfo || poolInfo.ticks.length === 0) {
+    if (!poolInfo?.chainData || poolInfo?.chainData.ticks.length === 0) {
       return [] as [number, number][];
     }
-    const result: [number, number][] = poolInfo.ticks
+    const result: [number, number][] = poolInfo.chainData.ticks
       .sort((t1, t2) => t1 - t2)
       .map(tick => {
-        const height = poolInfo.positions
+        const height = poolInfo.chainData?.positions
           .filter(p => p.tickLower <= tick && p.tickUpper > tick)
           .reduce((acc, cur) => acc + cur.liquidityOfTick, 0);
         const tickPrice = tickToPrice(tick);
-        return [tickPrice, height];
+        return [tickPrice ?? 0, height ?? 0];
       });
     return [[0, 0], ...result];
   }, [poolInfo]);
 
   const price = useMemo(() => {
-    if (!poolInfo) {
+    if (!poolInfo?.chainData) {
       return 0;
     }
-    return poolInfo.price;
+    return poolInfo.chainData?.price;
   }, [poolInfo]);
 
   const minPrice = useMemo(() => {
@@ -425,8 +455,8 @@ export const useSelectPool = ({
   }, []);
 
   const tickSpacing = useMemo(
-    () => poolInfo?.tickSpacing || 1,
-    [poolInfo?.tickSpacing],
+    () => poolInfo?.chainData?.tickSpacing || 1,
+    [poolInfo?.chainData?.tickSpacing],
   );
 
   function excuteInteraction(callback: () => void) {
@@ -464,8 +494,8 @@ export const useSelectPool = ({
       if (!poolInfo || !minPosition) {
         return;
       }
-      const tickSpacing = poolInfo.tickSpacing;
-      const nearTick = priceToNearTick(minPosition, tickSpacing);
+      const tickSpacing = poolInfo.chainData?.tickSpacing ?? 0;
+      const nearTick = priceToNearTick(minPosition, tickSpacing ?? 0);
       if (nearTick < MAX_TICK - tickSpacing) {
         changeMinPosition(tickToPrice(nearTick + tickSpacing));
       }
@@ -481,7 +511,7 @@ export const useSelectPool = ({
         return;
       }
       setInteractionType("INTERACTION");
-      const tickSpacing = poolInfo.tickSpacing;
+      const tickSpacing = poolInfo?.chainData?.tickSpacing ?? 0;
       const nearTick = priceToNearTick(minPosition, tickSpacing);
       if (nearTick > MIN_TICK + tickSpacing) {
         changeMinPosition(tickToPrice(nearTick - tickSpacing));
@@ -494,7 +524,7 @@ export const useSelectPool = ({
       if (!poolInfo || !maxPosition) {
         return;
       }
-      const tickSpacing = poolInfo.tickSpacing;
+      const tickSpacing = poolInfo.chainData?.tickSpacing ?? 0;
       const nearTick = priceToNearTick(maxPosition, tickSpacing);
       if (nearTick < MAX_TICK - tickSpacing) {
         changeMaxPosition(tickToPrice(nearTick + tickSpacing));
@@ -504,10 +534,10 @@ export const useSelectPool = ({
 
   const decreaseMaxTick = useCallback(() => {
     excuteInteraction(() => {
-      if (!poolInfo || !maxPosition) {
+      if (!poolInfo?.chainData?.tickSpacing || !maxPosition) {
         return;
       }
-      const tickSpacing = poolInfo.tickSpacing;
+      const tickSpacing = poolInfo.chainData.tickSpacing;
       const nearTick = priceToNearTick(maxPosition, tickSpacing);
       if (nearTick > MIN_TICK + tickSpacing) {
         changeMaxPosition(tickToPrice(nearTick - tickSpacing));
@@ -563,8 +593,8 @@ export const useSelectPool = ({
     if (isCreate && startPrice === null) {
       setLatestPoolPath(null);
     }
-    if (poolInfo) {
-      setLatestPoolPath(poolInfo.poolPath);
+    if (poolInfo?.chainData) {
+      setLatestPoolPath(poolInfo.chainData?.poolPath ?? "");
     }
   }, [isCreate, poolInfo, startPrice]);
 
