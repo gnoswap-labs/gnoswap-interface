@@ -34,7 +34,8 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { isFetchedPosition, loading, getPositionsByPoolId, positions } = usePositionData({ address });
+  const { isFetchedPosition, loading, getPositionsByPoolId, positions } =
+    usePositionData({ address });
 
   const isStaking = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {

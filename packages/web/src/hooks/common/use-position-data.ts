@@ -1,18 +1,19 @@
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useCallback, useMemo, useEffect, useState, useRef } from "react";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useCallback, useMemo } from "react";
 import { makeId } from "@utils/common";
-import { useGetPositionsByAddress } from "@query/positions";
+import {
+  useGetPositionsByAddress,
+  useMakePoolPositions,
+} from "@query/positions";
 import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "./use-loading";
-import { useAtom } from "jotai";
-import { EarnState } from "@states/index";
 import { PATH, PATH_10SECOND, PATH_60SECOND } from "@constants/common.constant";
-import { PositionModel } from "@models/position/position-model";
-import { AxiosError } from "axios";
+
+function secToMilliSec(sec: number) {
+  return sec * 1000;
+}
 
 export interface UsePositionDataOption {
   address?: string;
@@ -21,32 +22,23 @@ export interface UsePositionDataOption {
 
 export const usePositionData = (options?: UsePositionDataOption) => {
   const router = useRouter();
-  const [initialData, setInitialData] = useAtom(EarnState.initialDataData);
   const { back } = router.query;
   const { account, connected: walletConnected } = useWallet();
-  const { pools, loading: isLoadingPool } = usePoolData();
-  const [shouldShowLoading, setShouldShowLoading] = useState(false);
-  const cachedData = useRef<PositionModel[]>();
+  const { pools, isFetchedPools } = usePoolData();
 
   const fetchedAddress = useMemo(() => {
     return options?.address || account?.address;
   }, [account?.address, options?.address]);
 
-  const secToMilliSec = useCallback((sec: number) => {
-    return sec * 1000;
-  }, []);
-
   const {
-    data = [],
+    data,
     isError,
-    isLoading: isPositionLoading,
     isFetched: isFetchedPosition,
   } = useGetPositionsByAddress(fetchedAddress as string, {
     isClosed: options?.isClosed,
     queryOptions: {
       refetchInterval: () => {
-        if (PATH.includes(router.pathname))
-          return secToMilliSec(back && !initialData.status ? 3 : 15);
+        if (PATH.includes(router.pathname)) return secToMilliSec(back ? 3 : 15);
 
         if (PATH_10SECOND.includes(router.pathname)) return secToMilliSec(10);
 
@@ -54,116 +46,28 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
         return false;
       },
-      onSuccess(data) {
-        const haveNewData =
-          JSON.stringify(data, transformData) !==
-          JSON.stringify(cachedData.current, transformData);
-        if (haveNewData) {
-          cachedData.current = data;
-        }
-        setShouldShowLoading(haveNewData);
-      },
-      onError(err) {
-        if ((err as AxiosError).response?.status === 404) {
-          const haveNewData =
-            JSON.stringify([]) !==
-            JSON.stringify(cachedData.current, transformData);
-          if (haveNewData) {
-            cachedData.current = data;
-          }
-          setShouldShowLoading(haveNewData);
-        }
-      },
     },
   });
 
-  function transformData(key: string, value: unknown) {
-    return typeof value === "bigint" ? value.toString() : value;
-  }
-
-  useEffect(() => {
-    if (isPositionLoading) {
-      setInitialData(() => {
-        return {
-          length: data.length,
-          status: false,
-          loadingCall: true,
-        };
-      });
-    }
-  }, [data.length, isPositionLoading, setInitialData]);
-
-  useEffect(() => {
-    if (initialData.loadingCall && isFetchedPosition && !isPositionLoading) {
-      setInitialData(() => {
-        return {
-          length: data.length,
-          status: false,
-          loadingCall: false,
-        };
-      });
-      return;
-    }
-    if (
-      initialData.length !== -1 &&
-      data.length !== initialData.length &&
-      isFetchedPosition &&
-      !isPositionLoading
-    ) {
-      setInitialData(() => {
-        return {
-          length: data.length,
-          status: true,
-          loadingCall: false,
-        };
-      });
-      return;
-    }
-  }, [
-    initialData.loadingCall,
-    data.length,
-    isFetchedPosition,
-    isPositionLoading,
-    initialData.length,
-    setInitialData,
-  ]);
-
   const { isLoading } = useLoading();
 
-  const { getGnotPath } = useGnotToGnot();
-
-  const positions = useMemo(() => {
-    const poolPositions: PoolPositionModel[] = [];
-    data.forEach(position => {
-      const pool = pools.find(pool => pool.poolPath === position.poolPath);
-      if (pool) {
-        const temp = {
-          ...pool,
-          tokenA: {
-            ...pool.tokenA,
-            symbol: getGnotPath(pool.tokenA).symbol,
-            logoURI: getGnotPath(pool.tokenA).logoURI,
-          },
-          tokenB: {
-            ...pool.tokenB,
-            symbol: getGnotPath(pool.tokenB).symbol,
-            logoURI: getGnotPath(pool.tokenB).logoURI,
-          },
-        };
-        poolPositions.push(PositionMapper.makePoolPosition(position, temp));
-      }
-    });
-    return poolPositions;
-  }, [data, getGnotPath, pools]);
+  const { data: positions = [], isFetched: isFetchedPoolPositions } =
+    useMakePoolPositions(data, pools, isFetchedPosition);
 
   const availableStake = useMemo(() => {
+    if (!isFetchedPoolPositions) {
+      return false;
+    }
     const unstakedPositions = positions.filter(position => !position.staked);
     return unstakedPositions.length > 0;
-  }, [positions]);
+  }, [isFetchedPoolPositions, positions]);
 
   const checkStakedPool = useCallback(
     (poolPath: string | null) => {
       if (!poolPath) {
+        return false;
+      }
+      if (!isFetchedPoolPositions) {
         return false;
       }
       const stakedPoolPaths = positions
@@ -171,50 +75,26 @@ export const usePositionData = (options?: UsePositionDataOption) => {
         .map(position => position.poolPath);
       return stakedPoolPaths.includes(poolPath);
     },
-    [positions],
+    [isFetchedPoolPositions, positions],
   );
 
   const getPositions = useCallback(() => {
+    if (!isFetchedPoolPositions) {
+      return [];
+    }
     return positions;
-  }, [positions]);
+  }, [isFetchedPoolPositions, positions]);
 
   const getPositionsByPoolId = useCallback(
     (poolId: string): PoolPositionModel[] => {
-      if (!fetchedAddress) {
+      if (!isFetchedPoolPositions) {
         return [];
       }
-      if (pools.length === 0) {
-        return [];
-      }
-      const poolPositions: PoolPositionModel[] = [];
-      data.forEach(position => {
-        const pool = pools.find(
-          pool => pool.poolPath === position.poolPath && pool.id === poolId,
-        );
-        if (pool) {
-          const temp = {
-            ...pool,
-            tokenA: {
-              ...pool.tokenA,
-              path: getGnotPath(pool.tokenA).path,
-              name: getGnotPath(pool.tokenA).name,
-              symbol: getGnotPath(pool.tokenA).symbol,
-              logoURI: getGnotPath(pool.tokenA).logoURI,
-            },
-            tokenB: {
-              ...pool.tokenB,
-              path: getGnotPath(pool.tokenB).path,
-              name: getGnotPath(pool.tokenB).name,
-              symbol: getGnotPath(pool.tokenB).symbol,
-              logoURI: getGnotPath(pool.tokenB).logoURI,
-            },
-          };
-          poolPositions.push(PositionMapper.makePoolPosition(position, temp));
-        }
-      });
-      return poolPositions;
+      return positions.filter(
+        poolPositions => makeId(poolPositions.poolPath) === poolId,
+      );
     },
-    [fetchedAddress, pools, data, getGnotPath],
+    [isFetchedPoolPositions, positions],
   );
 
   const getPositionsByPoolPath = useCallback(
@@ -226,9 +106,12 @@ export const usePositionData = (options?: UsePositionDataOption) => {
   );
 
   const loading = useMemo(() => {
-    const shouldPositionLoading = shouldShowLoading && isPositionLoading;
-    return (shouldPositionLoading && walletConnected) || isLoading;
-  }, [shouldShowLoading, isPositionLoading, walletConnected, isLoading]);
+    return (!isFetchedPools && walletConnected) || isLoading;
+  }, [isFetchedPools, isLoading, walletConnected]);
+
+  const loadingPositionById = useMemo(() => {
+    return (!isFetchedPoolPositions && walletConnected) || isLoading;
+  }, [isFetchedPoolPositions, isLoading, walletConnected]);
 
   return {
     availableStake,
@@ -239,8 +122,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     getPositionsByPoolId,
     getPositionsByPoolPath,
     isFetchedPosition,
-    loading: loading,
-    loadingPositionById:
-      isLoadingPool || (isPositionLoading && walletConnected),
+    loading,
+    loadingPositionById,
   };
 };

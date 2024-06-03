@@ -4,10 +4,15 @@ import { QUERY_KEY } from "./types";
 import { PositionModel } from "@models/position/position-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionBinModel } from "@models/position/position-bin-model";
+import { PoolModel } from "@models/pool/pool-model";
+import { isGNOTPath } from "@utils/common";
+import { GNOT_TOKEN } from "@common/values/token-constant";
+import { PositionMapper } from "@models/position/mapper/position-mapper";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface UseGetPositionsByAddressOptions {
   isClosed?: boolean;
-  queryOptions?: UseQueryOptions<PositionModel[], Error>
+  queryOptions?: UseQueryOptions<PositionModel[], Error>;
 }
 
 export const useGetPositionsByAddress = (
@@ -17,9 +22,20 @@ export const useGetPositionsByAddress = (
   const { positionRepository } = useGnoswapContext();
 
   return useQuery<PositionModel[], Error>({
-    queryKey: [QUERY_KEY.positions, address, ...(options?.isClosed !== undefined ? [options?.isClosed] : [])],
+    queryKey: [
+      QUERY_KEY.positions,
+      address,
+      ...(options?.isClosed !== undefined ? [options?.isClosed] : []),
+    ],
     queryFn: async () => {
-      const data = await positionRepository.getPositionsByAddress(address, { isClosed: options?.isClosed });
+      const data = await positionRepository
+        .getPositionsByAddress(address, {
+          isClosed: options?.isClosed,
+        })
+        .catch(e => {
+          console.error(e);
+          return [];
+        });
       return data;
     },
     enabled: !!address,
@@ -76,5 +92,48 @@ export const useGetLazyPositionBins = (
     },
     ...options,
     enabled: enabled,
+  });
+};
+
+function makeId(data: PoolModel[] | PositionModel[]) {
+  return data.map(item => item.id).join("_");
+}
+
+export const useMakePoolPositions = (
+  positions: PositionModel[] | undefined,
+  pools: PoolModel[],
+  isFetchedPosition: boolean,
+  options?: UseQueryOptions<PoolPositionModel[], Error>,
+) => {
+  return useQuery<PoolPositionModel[], Error>({
+    queryKey: [QUERY_KEY.poolPositions, makeId(positions || [])],
+    queryFn: async () => {
+      return new Promise(resolve => {
+        const poolPositions: PoolPositionModel[] = [];
+        positions?.forEach(position => {
+          const pool = pools.find(pool => pool.poolPath === position.poolPath);
+          if (pool) {
+            const tokenA = isGNOTPath(pool.tokenA.path)
+              ? GNOT_TOKEN
+              : pool.tokenA;
+            const tokenB = isGNOTPath(pool.tokenB.path)
+              ? GNOT_TOKEN
+              : pool.tokenB;
+            const currentPool = {
+              ...pool,
+              tokenA,
+              tokenB,
+            };
+            poolPositions.push(
+              PositionMapper.makePoolPosition(position, currentPool),
+            );
+          }
+        });
+
+        resolve(poolPositions);
+      });
+    },
+    enabled: isFetchedPosition && pools.length > 0,
+    ...options,
   });
 };
