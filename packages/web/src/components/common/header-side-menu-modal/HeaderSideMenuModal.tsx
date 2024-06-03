@@ -90,8 +90,12 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
           <React.Fragment>
             <ul>
               {navigationItems.map((item, index) => (
-                <li key={index}>
-                  <a onClick={() => router.push(item.path)}>
+                <li
+                  key={index}
+                  className="header-side-menu-item"
+                  onClick={() => router.push(item.path)}
+                >
+                  <a>
                     <LeftIconMenu>
                       <LeftIcon>{getIcon(item.iconType)}</LeftIcon>
                       {item.title}
@@ -105,8 +109,12 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
         )}
         <ul>
           {extraNavigationItems.map((item, index) => (
-            <li key={index}>
-              <a onClick={() => router.push(item.path)}>
+            <li
+              key={index}
+              className="header-side-menu-item"
+              onClick={() => router.push(item.path)}
+            >
+              <a>
                 <RightIconMenu>
                   {item.title}
                   <LinkIconButton>{getIcon(item.iconType)}</LinkIconButton>

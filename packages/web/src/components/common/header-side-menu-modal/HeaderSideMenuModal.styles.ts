@@ -28,7 +28,7 @@ export const HeaderSideMenuModalWrapper = styled.div`
 export const FakeSpaceWrapper = styled.div`
   position: absolute;
   height: 44px;
-  top:0px;
+  top: 0px;
 
   left: 0px;
   width: 40px;
@@ -44,6 +44,11 @@ export const FakeSpaceWrapper = styled.div`
 export const Navigation = styled.nav`
   width: 100%;
   padding: 0px;
+
+  .header-side-menu-item {
+    width: 100%;
+  }
+
   ul {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
@@ -72,21 +77,21 @@ export const Navigation = styled.nav`
     &:hover {
       background-color: ${({ theme }) => theme.color.hover04};
       > a > div {
-      color: ${({ theme }) => theme.color.text16};
-      .left-icon * {
-        stroke: ${({ theme }) => theme.color.text16};
-      }
-      .right-icon {
-        fill: ${({ theme }) => theme.color.text16};
-      }
-      button {
-        svg * {
+        color: ${({ theme }) => theme.color.text16};
+        .left-icon * {
+          stroke: ${({ theme }) => theme.color.text16};
+        }
+        .right-icon {
           fill: ${({ theme }) => theme.color.text16};
         }
+        button {
+          svg * {
+            fill: ${({ theme }) => theme.color.text16};
+          }
+        }
       }
-    },
+    }
   }
-}
 `;
 
 export const LeftIcon = styled.div`
@@ -124,4 +129,3 @@ export const MenuDivider = styled.div`
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
 `;
-
