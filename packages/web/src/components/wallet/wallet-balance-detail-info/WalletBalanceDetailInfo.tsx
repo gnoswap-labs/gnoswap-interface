@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import {
@@ -8,6 +8,7 @@ import {
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { numberToFormat } from "@utils/string-utils";
+import BigNumber from "bignumber.js";
 
 interface WalletBalanceDetailInfoProps {
   title: string;
@@ -45,6 +46,14 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
     }
   }, [valueRef, divRef, width]);
   const isClaim = className === "claimable-rewards" && width > 968;
+
+  const displayValue = useMemo(() => {
+    if (!value || BigNumber(value).isZero()) {
+      return "$0";
+    }
+    return `$${numberToFormat(value, { decimals: 2, forceDecimals: true })}`;
+  }, [value]);
+
   return (
     <WalletBalanceDetailInfoWrapper className={className}>
       <div className="title-wrapper">
@@ -63,13 +72,13 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
             className="value"
             style={isClaim ? { fontSize: `${fontSize}px` } : {}}
           >
-            ${numberToFormat(value, { decimals: 2 })}
+            {displayValue}
           </span>
         )}
         {button && <div className="button-wrapper">{button}</div>}
         {isClaim && (
           <span className="value hidden-value" ref={divRef}>
-            ${numberToFormat(value, { decimals: 2 })}
+            {displayValue}
           </span>
         )}
       </div>
