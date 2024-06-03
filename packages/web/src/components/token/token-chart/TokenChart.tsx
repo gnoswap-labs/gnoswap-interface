@@ -31,15 +31,14 @@ const TokenChart: React.FC<TokenChartProps> = ({
   breakpoint,
 }) => {
   const isAllZero = useMemo(() => {
-    return ((chartInfo?.datas?.length || 0) > 0) && chartInfo?.datas.every(item => {
+    return (chartInfo?.datas?.length || 0) === 0 || chartInfo?.datas.every(item => {
       return Number(item.amount.value) === 0;
     });
   }, [chartInfo?.datas]);
-  console.log("🚀 ~ isAllZero ~ isAllZero:", isAllZero);
 
   return (
     <TokenChartWrapper>
-      <TokenChartInfo {...tokenInfo} isEmpty={chartInfo?.datas.length === 0 && !loading || isAllZero || false} loading={loading} />
+      <TokenChartInfo {...tokenInfo} isEmpty={loading || isAllZero || false} loading={loading} />
       <TokenChartGraphTab
         currentTab={currentTab}
         changeTab={changeTab}
