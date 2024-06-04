@@ -109,12 +109,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
             accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
             claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-            accumulatedRewardOf1dUsd: existReward.accumulatedRewardOf1dUsd + rewardInfo.accumulatedRewardOf1d * Number(tokenPrices[rewardInfo.token.priceID].usd ?? 0),
+            accumulatedRewardOf1dUsd: existReward.accumulatedRewardOf1dUsd + rewardInfo.accumulatedRewardOf1d * Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...rewardInfo,
-            accumulatedRewardOf1dUsd: rewardInfo.accumulatedRewardOf1d * Number(tokenPrices[rewardInfo.token.priceID].usd ?? 0),
+            accumulatedRewardOf1dUsd: rewardInfo.accumulatedRewardOf1d * Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
           };
         }
       });
@@ -154,7 +154,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .forEach(rewardInfo => {
         const existReward =
           infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
-        const tokenPrice = Number(tokenPrices[rewardInfo.token.priceID].usd ?? 0);
+        const tokenPrice = Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0);
         if (existReward) {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
@@ -239,12 +239,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
               accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
               claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-              accumulatedRewardOf1dUsd: existReward.accumulatedRewardOf1dUsd + rewardInfo.accumulatedRewardOf1d * Number(tokenPrices[rewardInfo.token.priceID].usd ?? 0),
+              accumulatedRewardOf1dUsd: existReward.accumulatedRewardOf1dUsd + rewardInfo.accumulatedRewardOf1d * Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
             };
           } else {
             infoMap[rewardInfo.token.priceID] = {
               ...rewardInfo,
-              accumulatedRewardOf1dUsd: rewardInfo.accumulatedRewardOf1d * Number(tokenPrices[rewardInfo.token.priceID].usd ?? 0),
+              accumulatedRewardOf1dUsd: rewardInfo.accumulatedRewardOf1d * Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
             };
           }
         }
