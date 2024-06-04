@@ -80,6 +80,21 @@ export default function Pool() {
       !loadingPositionById &&
       !isLoadingCommon
     ) {
+      if (hash && hash !== "staking") {
+        setTimeout(() => {
+          const positionContainerElement = document.getElementById(`${hash}`);
+          const topPosition =
+            positionContainerElement?.offsetTop;
+          if (!topPosition) {
+            return;
+          }
+          window.scrollTo({
+            top: topPosition,
+          });
+        });
+        return;
+      }
+
       setTimeout(() => {
         const positionContainerElement =
           document.getElementById("liquidity-wrapper");
@@ -92,29 +107,6 @@ export default function Pool() {
           top: topPosition,
         });
       });
-      // if (hash) {
-      // console.log("🚀 ~ useEffect ~ hash:", hash);
-      // const positionContainerElement = document.getElementById(`${hash}`);
-      // const topPosition =
-      //   positionContainerElement?.getBoundingClientRect().top;
-      // if (!topPosition) {
-      //   return;
-      // }
-      // window.scrollTo({
-      //   top: topPosition,
-      // });
-      // } else {
-      // const positionContainerElement =
-      //   document.getElementById("liquidity-wrapper");
-      // const topPosition =
-      //   positionContainerElement?.offsetTop;
-      // if (!topPosition) {
-      //   return;
-      // }
-      // window.scrollTo({
-      //   top: topPosition,
-      // });
-      // }
     }
   }, [
     isFetchedPosition,

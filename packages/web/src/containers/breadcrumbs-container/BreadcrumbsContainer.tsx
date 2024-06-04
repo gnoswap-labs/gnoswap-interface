@@ -3,10 +3,16 @@ import Breadcrumbs from "@components/common/breadcrumbs/Breadcrumbs";
 import useRouter from "@hooks/common/use-custom-router";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGetTokenByPath } from "@query/token";
+import { ITokenResponse } from "@repositories/token";
 
+export type BreadcrumbTypes = "TOKEN_SYMBOL" | "OTHERs";
 export interface Steps {
   title: string;
   path?: string;
+  options?: {
+    type?: BreadcrumbTypes;
+    token?: ITokenResponse;
+  }
 }
 
 // const stepsDummy: Steps[] = [
@@ -28,7 +34,7 @@ const getMapping: any = (symbol: any) => {
 };
 
 interface Props {
-  listBreadcrumb?: { title: string; path: string }[];
+  listBreadcrumb?: Steps[];
   isLoading?: boolean;
   w?: string;
 }
@@ -44,6 +50,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
     enabled: !!path,
     refetchInterval: 1000 * 10,
   });
+
   const removePoolSteps = useMemo(() => {
     if (listBreadcrumb) {
       return listBreadcrumb;
@@ -60,7 +67,9 @@ const BreadcrumbsContainer: React.FC<Props> = ({
         path: "",
       },
     ];
-  }, [tokenB, getMapping, listBreadcrumb]);
+  }, [listBreadcrumb, tokenB?.symbol, router.pathname]);
+  console.log("🚀 ~ removePoolSteps ~ removePoolSteps:", removePoolSteps);
+
 
   const onClickPath = (path: string) => {
     router.push(path);
