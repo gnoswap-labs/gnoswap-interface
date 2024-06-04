@@ -34,7 +34,8 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { isFetchedPosition, loading, getPositionsByPoolId, positions } =
+
+  const { isFetchedPosition, loading, getPositionsByPoolId, positions, loadingPositionById } =
     usePositionData({ address });
 
   const isStaking = useMemo(() => {
@@ -60,6 +61,7 @@ export default function Pool() {
       && isFetchedPosition
       && isStaking
     ) {
+      console.log("🚀 ~ useEffect ~ hash:", hash);
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -70,29 +72,49 @@ export default function Pool() {
       });
       return;
     }
-    if (address && isFetchedPosition && !loading) {
-      if (hash) {
-        const positionContainerElement = document.getElementById(`${hash}`);
-        const topPosition =
-          positionContainerElement?.getBoundingClientRect().top;
-        if (!topPosition) {
-          return;
-        }
-        window.scrollTo({
-          top: topPosition,
-        });
-      } else {
+
+    if (
+      address &&
+      isFetchedPosition &&
+      !loading &&
+      !loadingPositionById &&
+      !isLoadingCommon
+    ) {
+      setTimeout(() => {
         const positionContainerElement =
           document.getElementById("liquidity-wrapper");
         const topPosition =
-          positionContainerElement?.getBoundingClientRect().top;
+          positionContainerElement?.offsetTop;
         if (!topPosition) {
           return;
         }
         window.scrollTo({
           top: topPosition,
         });
-      }
+      });
+      // if (hash) {
+      // console.log("🚀 ~ useEffect ~ hash:", hash);
+      // const positionContainerElement = document.getElementById(`${hash}`);
+      // const topPosition =
+      //   positionContainerElement?.getBoundingClientRect().top;
+      // if (!topPosition) {
+      //   return;
+      // }
+      // window.scrollTo({
+      //   top: topPosition,
+      // });
+      // } else {
+      // const positionContainerElement =
+      //   document.getElementById("liquidity-wrapper");
+      // const topPosition =
+      //   positionContainerElement?.offsetTop;
+      // if (!topPosition) {
+      //   return;
+      // }
+      // window.scrollTo({
+      //   top: topPosition,
+      // });
+      // }
     }
   }, [
     isFetchedPosition,
@@ -102,8 +124,12 @@ export default function Pool() {
     isLoadingCommon,
     positions.length,
     isStaking,
+    loadingPositionById
   ]);
 
+  const positionContainerElement =
+    document.getElementById("liquidity-wrapper");
+  console.log("🚀 ~ useEffect ~ positionContainerElement:", positionContainerElement?.offsetTop);
   console.log("234238947");
 
   return (
