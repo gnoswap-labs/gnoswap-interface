@@ -1,8 +1,8 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { convertToMB } from "./stake-position-utils";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
-import { formatUsdNumber3Digits } from "./number-utils";
+import { toPriceFormat } from "./number-utils";
+import BigNumber from "bignumber.js";
 
 export function wait<T>(
   runner: () => Promise<T>,
@@ -60,26 +60,38 @@ export const parseJson = (data: string) => {
 export const checkPositivePrice = (
   currentPrice: string,
   checkPrice: string,
-  fixedPrice?: number,
+  { shortenSmallPercent,
+    shortenSmallChange,
+  }: {
+    shortenSmallPercent?: boolean;
+    shortenSmallChange?: boolean;
+  } = {
+      shortenSmallPercent: false,
+      shortenSmallChange: false,
+    }
 ) => {
   const currentAsNumber = Number(currentPrice);
   const checkAsNumber = Number(checkPrice);
-  const value = (() => {
+  const percentValue = (() => {
+    if (currentAsNumber === checkAsNumber) {
+      return "0";
+    }
+
     if (checkAsNumber > currentAsNumber) {
       if (currentAsNumber === 0) {
         return (100).toFixed();
       }
-
-      return ((currentAsNumber / (checkAsNumber || 1) - 1) * 100).toFixed(2);
     }
 
     if (checkAsNumber === 0) {
       return "Infinity";
     }
 
-    return ((1 - currentAsNumber / (checkAsNumber || 1)) * 100).toFixed(2);
+    return toPriceFormat(BigNumber(currentAsNumber).dividedBy(checkAsNumber || 1).minus(1).multipliedBy(100).abs().toFixed());
   })();
+
   const isEmpty = !currentPrice && !checkPrice || (!currentAsNumber && !checkAsNumber);
+
   const status = (() => {
     if (isEmpty) {
       return MATH_NEGATIVE_TYPE.NONE;
@@ -91,32 +103,53 @@ export const checkPositivePrice = (
 
     return MATH_NEGATIVE_TYPE.NEGATIVE;
   })();
-  const percent = (() => {
+
+  const statusSign = status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+";
+
+
+
+  const percentDisplay = (() => {
     if (status === MATH_NEGATIVE_TYPE.NONE) return "-";
 
-    if (currentAsNumber === checkAsNumber) {
-      return "0.00%";
+    if (percentValue.includes("Infinity")) {
+      return statusSign + "0.00%";
     }
 
-    return `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(
-      Number(value || 0),
-    ).toFixed(2)}%`;
+    if (Number(percentValue) < 0.01) {
+      if (shortenSmallPercent) {
+        return statusSign + "<0.01%";
+      }
 
+      return statusSign + BigNumber(percentValue || 0).toFixed() + "%";
+    }
+
+    return statusSign + BigNumber(percentValue || 0).toFixed(2) + "%";
   })();
-  const price =
-    status === MATH_NEGATIVE_TYPE.NONE
-      ? "-"
-      : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}$${convertToMB(
-        formatUsdNumber3Digits(
-          Math.abs(checkAsNumber - currentAsNumber).toString(),
-        ),
-        fixedPrice ?? 2,
-      )}`;
+  const price = (() => {
+    if (status === MATH_NEGATIVE_TYPE.NONE) {
+      return "-";
+    }
+
+    if (Number(percentValue) < 0.01) {
+      if (shortenSmallChange) {
+        return statusSign + "<0.01";
+      }
+
+      return statusSign + toPriceFormat(
+        BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(),
+      );
+    }
+
+    return statusSign + toPriceFormat(
+      BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(2),
+    );
+  })();
+
   return {
     status: status,
-    value: value.includes("Infinity") ? "0" : value,
+    percentValue: percentValue,
     isEmpty: isEmpty,
-    percent: percent.includes("Infinity") ? "0.00%" : percent,
+    percentDisplay: percentDisplay,
     price: price,
   };
 };

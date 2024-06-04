@@ -236,13 +236,15 @@ const TokenListContainer: React.FC = () => {
 
         const dataToday = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.priceToday,
-        );
+          transferData.pricesBefore?.priceToday, {
+          shortenSmallPercent: true
+        });
 
         const data7day = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.price7d,
-        );
+          transferData.pricesBefore?.price7d, {
+          shortenSmallPercent: true
+        });
         const graphStatus = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
           tempTokenPrice.last7d?.sort(
@@ -252,8 +254,9 @@ const TokenListContainer: React.FC = () => {
 
         const data30D = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.price30d,
-        );
+          transferData.pricesBefore?.price30d, {
+          shortenSmallPercent: true
+        });
         const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
 
         return {
@@ -313,35 +316,35 @@ const TokenListContainer: React.FC = () => {
           priceOf1d: {
             status: dataToday.status,
             value:
-              dataToday.percent !== "-"
-                ? dataToday.percent.replace(/[+-]/g, "")
-                : dataToday.percent,
+              dataToday.percentDisplay !== "-"
+                ? dataToday.percentDisplay.replace(/[+-]/g, "")
+                : dataToday.percentDisplay,
             realValue:
-              dataToday.percent === "-"
+              dataToday.percentDisplay === "-"
                 ? -100000000000
-                : Number(dataToday.percent.replace(/[%]/g, "")),
+                : Number(dataToday.percentDisplay.replace(/[%]/g, "")),
           },
           priceOf7d: {
             status: data7day.status,
             value:
-              data7day.percent !== "-"
-                ? data7day.percent.replace(/[+-]/g, "")
-                : data7day.percent,
+              data7day.percentDisplay !== "-"
+                ? data7day.percentDisplay.replace(/[+-]/g, "")
+                : data7day.percentDisplay,
             realValue:
-              data7day.percent === "-"
+              data7day.percentDisplay === "-"
                 ? -100000000000
-                : Number(data7day.percent.replace(/[%]/g, "")),
+                : Number(data7day.percentDisplay.replace(/[%]/g, "")),
           },
           priceOf30d: {
             status: data30D.status,
             value:
-              data30D.percent !== "-"
-                ? data30D.percent.replace(/[+-]/g, "")
-                : data30D.percent,
+              data30D.percentDisplay !== "-"
+                ? data30D.percentDisplay.replace(/[+-]/g, "")
+                : data30D.percentDisplay,
             realValue:
-              data30D.percent === "-"
+              data30D.percentDisplay === "-"
                 ? -100000000000
-                : Number(data30D.percent.replace(/[%]/g, "")),
+                : Number(data30D.percentDisplay.replace(/[%]/g, "")),
           },
           idx: 1,
           graphStatus,

@@ -143,19 +143,19 @@ const TokenInfoContentContainer: React.FC = () => {
     return {
       priceChange1h: {
         status: data1H.status,
-        value: data1H.percent,
+        value: data1H.percentDisplay,
       },
       priceChange24h: {
         status: data1D.status,
-        value: data1D.percent,
+        value: data1D.percentDisplay,
       },
       priceChange7d: {
         status: data7D.status,
-        value: data7D.percent,
+        value: data7D.percentDisplay,
       },
       priceChange30d: {
         status: data30D.status,
-        value: data30D.percent,
+        value: data30D.percentDisplay,
       },
     };
   }, [currentPrice, pricesBefore.price1d, pricesBefore.price1h, pricesBefore.price30d, pricesBefore.price7d]);
@@ -164,22 +164,18 @@ const TokenInfoContentContainer: React.FC = () => {
     const dataToday = checkPositivePrice(
       currentPrice,
       pricesBefore.priceToday,
-      6,
     );
     const data30day = checkPositivePrice(
       currentPrice,
       pricesBefore.price30d,
-      6,
     );
     const data60day = checkPositivePrice(
       currentPrice,
       pricesBefore.price60d,
-      6,
     );
     const data90day = checkPositivePrice(
       currentPrice,
       pricesBefore.price90d,
-      6,
     );
 
     return [
@@ -191,7 +187,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
         change: {
           status: dataToday.status,
-          value: dataToday.percent,
+          value: dataToday.percentDisplay,
         },
       },
       {
@@ -202,7 +198,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
         change: {
           status: data30day.status,
-          value: data30day.percent,
+          value: data30day.percentDisplay,
         },
       },
       {
@@ -213,7 +209,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
         change: {
           status: data60day.status,
-          value: data60day.percent,
+          value: data60day.percentDisplay,
         },
       },
       {
@@ -224,7 +220,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
         change: {
           status: data90day.status,
-          value: data90day.percent,
+          value: data90day.percentDisplay,
         },
       },
     ];

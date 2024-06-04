@@ -198,7 +198,6 @@ const TokenChartContainer: React.FC = () => {
       const dataToday = checkPositivePrice(
         pricesBefore.latestPrice,
         pricesBefore.priceToday,
-        19,
       );
 
       setTokenInfo(() => ({
@@ -219,7 +218,7 @@ const TokenChartContainer: React.FC = () => {
             denom: "USD",
             status: dataToday.status,
           },
-          changedRate: Math.abs(Number(dataToday.value || 0)),
+          changedRate: Math.abs(Number(dataToday.percentValue || 0)),
         },
       }));
       if (!fromSelectToken && !tokenB.logoURI) {
@@ -330,7 +329,7 @@ const TokenChartContainer: React.FC = () => {
           }),
           {
             amount: {
-              value: `${currentPrice}`,
+              value: pricesBefore.latestPrice,
               denom: "",
             },
             time: getLocalizeTime(lastDate),
