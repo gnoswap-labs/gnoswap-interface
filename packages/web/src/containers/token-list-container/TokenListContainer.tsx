@@ -236,15 +236,13 @@ const TokenListContainer: React.FC = () => {
 
         const dataToday = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.priceToday, {
-          shortenSmallPercent: true
-        });
+          transferData.pricesBefore?.priceToday,
+        );
 
         const data7day = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.price7d, {
-          shortenSmallPercent: true
-        });
+          transferData.pricesBefore?.price7d,
+        );
         const graphStatus = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
           tempTokenPrice.last7d?.sort(
@@ -254,9 +252,8 @@ const TokenListContainer: React.FC = () => {
 
         const data30D = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.price30d, {
-          shortenSmallPercent: true
-        });
+          transferData.pricesBefore?.price30d,
+        );
         const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
 
         return {

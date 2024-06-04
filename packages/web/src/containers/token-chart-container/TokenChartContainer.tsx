@@ -329,7 +329,7 @@ const TokenChartContainer: React.FC = () => {
           }),
           {
             amount: {
-              value: pricesBefore.latestPrice,
+              value: (pricesBefore.latestPrice || 0).toString(),
               denom: "",
             },
             time: getLocalizeTime(lastDate),

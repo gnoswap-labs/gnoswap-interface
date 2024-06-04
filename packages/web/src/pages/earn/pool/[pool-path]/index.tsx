@@ -50,7 +50,7 @@ export default function Pool() {
       return true;
     }
     return false;
-  }, [data?.incentiveType, poolPath]);
+  }, [data?.incentiveType, getPositionsByPoolId, poolPath]);
 
   useEffect(() => {
     if (
@@ -60,8 +60,8 @@ export default function Pool() {
       && isFetchedPosition
       && isStaking
     ) {
-      const positionContainerElement = document.getElementById("staking-container");
-      const topPosition = positionContainerElement?.getBoundingClientRect().top;
+      const positionContainerElement = document.getElementById("staking");
+      const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
         return;
       }
@@ -103,6 +103,8 @@ export default function Pool() {
     positions.length,
     isStaking,
   ]);
+
+  console.log("234238947");
 
   return (
     <PoolLayout

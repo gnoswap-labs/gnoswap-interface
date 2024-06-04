@@ -120,7 +120,7 @@ export const checkPositivePrice = (
         return statusSign + "<0.01%";
       }
 
-      return statusSign + BigNumber(percentValue || 0).toFixed() + "%";
+      return statusSign + "0.00%";
     }
 
     return statusSign + BigNumber(percentValue || 0).toFixed(2) + "%";
@@ -132,7 +132,7 @@ export const checkPositivePrice = (
 
     if (Number(percentValue) < 0.01) {
       if (shortenSmallChange) {
-        return statusSign + "<0.01";
+        return statusSign + "0.00";
       }
 
       return statusSign + toPriceFormat(
