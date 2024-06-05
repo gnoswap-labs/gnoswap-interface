@@ -68,17 +68,17 @@ const SwapContainer: React.FC = () => {
       tokens.find(token => token.path === query.from) || null;
     const currentTokenB = tokens.find(token => token.path === query.to) || null;
     const direction = query.direction as SwapDirectionType;
-    // const tokenAAmountQuery = (query.token_a_amount ?? "") as string;
-    // const tokenBAmountQuery = (query.token_b_amount ?? "") as string;
+    const tokenAAmountQuery = (query.token_a_amount ?? "") as string;
+    const tokenBAmountQuery = (query.token_b_amount ?? "") as string;
     if (!currentTokenA && !currentTokenB) return;
     setSwapValue({
       tokenA: currentTokenA,
       tokenB: currentTokenB,
       type: direction,
-      // tokenAAmount: tokenAAmountQuery,
-      // tokenBAmount: tokenBAmountQuery,
-      tokenAAmount: "",
-      tokenBAmount: "",
+      tokenAAmount: tokenAAmountQuery,
+      tokenBAmount: tokenBAmountQuery,
+      // tokenAAmount: "",
+      // tokenBAmount: "",
     });
   }, [initialized, router.query, tokens]);
 

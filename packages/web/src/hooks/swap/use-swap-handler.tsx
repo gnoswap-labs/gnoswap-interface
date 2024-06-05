@@ -10,7 +10,7 @@ import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { CommonState, SwapState } from "@states/index";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSwap } from "./use-swap";
 import { TNoticeType } from "src/context/NoticeContext";
 import {
@@ -81,7 +81,13 @@ function handleAmount(changed: string, token: TokenModel | null) {
   return value;
 }
 
-export const useSwapHandler = () => {
+export const useSwapHandler = ({
+  // defaultTokenAAmount,
+  // defaultTokenBAmount,
+}: {
+  defaultTokenAAmount?: string,
+  defaultTokenBAmount?: string,
+} = {}) => {
   const router = useRouter();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -95,12 +101,21 @@ export const useSwapHandler = () => {
   } = swapValue;
 
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
-  const [tokenAAmount, setTokenAAmount] = useState<string>(
-    defaultTokenAAmount ?? "",
+  const [tokenAAmount = "", setTokenAAmount] = useState(
+    defaultTokenAAmount ?? undefined,
   );
-  const [tokenBAmount, setTokenBAmount] = useState<string>(
-    !defaultTokenAAmount && defaultTokenBAmount ? defaultTokenBAmount : "",
+  const estimateFlagRef = useRef(0);
+
+  const [tokenBAmount = "", setTokenBAmount_] = useState(
+    () => !defaultTokenAAmount ? (defaultTokenBAmount ? defaultTokenBAmount : undefined) : undefined,
   );
+
+  function setTokenBAmount(value?: string, source?: string) {
+    console.log("🚀 ~ setTokenBAmount ~ source:", source);
+    console.log("🚀 ~ setTokenBAmount ~ value:", value);
+    setTokenBAmount_(value);
+  }
+
   const [submitted, setSubmitted] = useState(false);
 
   const [copied, setCopied] = useState(false);
@@ -351,7 +366,6 @@ export const useSwapHandler = () => {
         gasFeeUSD: BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber(),
         swapRateAction,
         swapRate1USD,
-        direction: type,
       };
     }
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
@@ -446,7 +460,7 @@ export const useSwapHandler = () => {
   const onFinishSwap = useCallback(() => {
     closeModal();
     setTokenAAmount("0");
-    setTokenBAmount("0");
+    setTokenBAmount("0", "init");
   }, []);
 
   useEffect(() => {
@@ -462,11 +476,12 @@ export const useSwapHandler = () => {
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenA);
+      console.log("🚀 ~ useSwapHandler ~ value:", value);
       estimateSwapRoute(value);
 
       if (isSameToken) {
         setTokenAAmount(value);
-        setTokenBAmount(value);
+        setTokenBAmount(value, "changeTokenAAmount");
         setSwapValue(prev => ({
           ...prev,
           tokenAAmount: value,
@@ -509,6 +524,7 @@ export const useSwapHandler = () => {
   const changeTokenBAmount = useCallback(
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenA);
+      console.log("🚀 ~ useSwapHandler ~ value:", value);
 
       if (none) {
         setIsLoading(false);
@@ -530,7 +546,7 @@ export const useSwapHandler = () => {
         type: "EXACT_OUT",
       }));
       estimateSwapRoute(value);
-      setTokenBAmount(value);
+      setTokenBAmount(value, "changeTokenBAmount");
     },
     [isSameToken, tokenA, tokenB?.symbol],
   );
@@ -541,7 +557,7 @@ export const useSwapHandler = () => {
       if (tokenB?.symbol === token.symbol) {
         changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
         setTokenAAmount(tokenBAmount);
-        setTokenBAmount(tokenAAmount);
+        setTokenBAmount(tokenAAmount, "changeTokenA");
       }
       setSwapValue(prev => ({
         tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
@@ -562,7 +578,7 @@ export const useSwapHandler = () => {
       if (tokenA?.symbol === token.symbol) {
         changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
         setTokenAAmount(tokenBAmount);
-        setTokenBAmount(tokenAAmount);
+        setTokenBAmount(tokenAAmount, "changeTokenB");
       }
       setSwapValue(prev => ({
         tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
@@ -597,7 +613,7 @@ export const useSwapHandler = () => {
     if (changedSwapDirection === "EXACT_IN") {
       setTokenAAmount(tokenBAmount);
       if (!preTokenA || !preTokenB) {
-        setTokenBAmount(tokenAAmount);
+        setTokenBAmount(tokenAAmount, "switchSwapDirection");
       }
     } else {
       setTokenBAmount(tokenAAmount);
@@ -673,13 +689,12 @@ export const useSwapHandler = () => {
               swapTokenInfo.tokenAAmount,
             ).toLocaleString("en-US", {
               maximumFractionDigits: 6,
-            })}</span> <span>${
-              swapTokenInfo?.tokenA?.symbol
-            }</span> for <span>${Number(
-              swapTokenInfo.tokenBAmount,
-            ).toLocaleString("en-US", {
-              maximumFractionDigits: 6,
-            })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+            })}</span> <span>${swapTokenInfo?.tokenA?.symbol
+              }</span> for <span>${Number(
+                swapTokenInfo.tokenBAmount,
+              ).toLocaleString("en-US", {
+                maximumFractionDigits: 6,
+              })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
           },
           {
             timeout: 50000,
@@ -701,10 +716,10 @@ export const useSwapHandler = () => {
       tokenAAmount: isExactIn
         ? tokenAAmount
         : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() ||
-          "0",
+        "0",
       tokenBAmount: isExactIn
         ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() ||
-          "0"
+        "0"
         : tokenBAmount,
     };
 
@@ -771,7 +786,7 @@ export const useSwapHandler = () => {
 
     if (type === "EXACT_IN") {
       const amount = makeDisplayTokenAmount(tokenB, estimatedAmount || 0) || 0;
-      setTokenBAmount(amount.toString());
+      setTokenBAmount(amount.toString(), "revceive amount es");
     } else {
       const amount = makeDisplayTokenAmount(tokenA, estimatedAmount || 0) || 0;
       setTokenAAmount(amount.toString());
@@ -782,19 +797,39 @@ export const useSwapHandler = () => {
     updateTokens();
     updateTokenPrices();
     if (!isEmptyObject(router?.query)) return;
-    setTokenAAmount("");
-    setTokenBAmount("");
+    // if (defaultTokenAAmount) {
+    //   console.log("🚀 ~ useEffect ~ defaultTokenAAmount:", defaultTokenAAmount);
+    //   setTokenAAmount(defaultTokenAAmount);
+    //   setIsLoading(true);
+    //   estimateSwapRoute(defaultTokenAAmount);
+    // }
+
+    // setTokenAAmount("");
+    // setTokenBAmount("");
   }, []);
 
   useEffect(() => {
     if (!tokenA?.symbol || !tokenB?.symbol) {
       return;
     }
+    console.log("🚀 ~ useEffect ~ estimateFlagRef:", estimateFlagRef);
+    console.log("🚀 ~ useEffect ~ defaultTokenAAmount:", defaultTokenAAmount);
+    console.log("🚀 ~ useEffect ~ defaultTokenBAmount:", defaultTokenBAmount);
+    if (estimateFlagRef.current === 0) {
+      if (!!defaultTokenAAmount) {
+        estimateFlagRef.current += 1;
+        changeTokenAAmount(defaultTokenAAmount);
+        return;
+      }
+      if (!!defaultTokenBAmount) {
+        estimateFlagRef.current += 1;
+        changeTokenBAmount(defaultTokenBAmount);
+        return;
+      }
+    }
 
-    if (
-      (defaultTokenAAmount || defaultTokenBAmount) &&
-      (!!Number(tokenAAmount) || !!Number(tokenBAmount))
-    ) {
+
+    if (!!Number(tokenAAmount) || !!Number(tokenBAmount)) {
       setIsLoading(true);
     }
   }, [

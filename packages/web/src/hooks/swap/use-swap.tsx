@@ -87,6 +87,7 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
       isSameToken,
       selectedTokenPair,
     ]);
+  console.log("🚀 ~ useSwap ~ swapState:", swapState);
 
   const estimatedRoutes: EstimatedRoute[] = useMemo(() => {
     if (swapState !== "SUCCESS" || !estimatedSwapResult || !currentSwapAmount) {
@@ -98,7 +99,8 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
 
   const estimatedAmount: string | null = useMemo(() => {
     if (!currentSwapAmount || error) {
-      return "0";
+      return null;
+      // return "0";
     }
 
     if (swapState !== "SUCCESS" || !estimatedSwapResult) {
