@@ -200,19 +200,62 @@ const LineGraph: React.FC<LineGraphProps> = ({
     width: number,
     height: number,
   ) => {
-    const mappedDatas = datas.map(data => ({
-      value: new BigNumber(data.value).toNumber(),
-      time: new Date(data.time).getTime(),
-    }));
+    let minValue: number;
+    let maxValue: number;
+    let minTime: number;
+    let maxTime: number;
+
+    const mappedDatas = (() => {
+      const newDatas = datas.map(item => ({
+        value: new BigNumber(item.value).toNumber(),
+        time: new Date(item.time).getTime(),
+      }));
+
+      const values = newDatas.map(data => data.value);
+      const times = newDatas.map(data => data.time);
+
+      minValue = Math.min(...values);
+      maxValue = Math.max(...values);
+      minTime = Math.min(...times);
+      maxTime = Math.max(...times);
+
+      if (smooth) {
+        return newDatas.map((item, index) => {
+          const currentItem = item;
+          const previousItem = index !== 0 ? newDatas[index - 1] : null;
+          const next1Item = index !== length - 1 ? newDatas[index + 1] : null;
+          const next2Item = index !== length - 2 ? newDatas[index + 2] : null;
+          if (previousItem && next1Item && next2Item) {
+            if (next1Item.value === next2Item.value
+              && currentItem.value === next1Item.value
+              && (currentItem.value - previousItem.value) > (maxValue - minValue) / 10
+            ) {
+              const fakeItemValue = new BigNumber(currentItem.value)
+                .minus(BigNumber(currentItem.value).minus(BigNumber(previousItem.value)).dividedBy(10))
+                .toNumber();
+
+
+              return {
+                value: fakeItemValue,
+                time: new Date(item.time).getTime(),
+              };
+            }
+          }
+
+          return item;
+        });
+      }
+
+      return newDatas;
+    })();
     const gapRatio = 0.1;
 
-    const values = mappedDatas.map(data => data.value);
-    const times = mappedDatas.map(data => data.time);
 
-    const minValue = Math.min(...values);
-    const maxValue = Math.max(...values);
-    const minTime = Math.min(...times);
-    const maxTime = Math.max(...times);
+
+    // const minValue = Math.min(...values);
+    // const maxValue = Math.max(...values);
+    // const minTime = Math.min(...times);
+    // const maxTime = Math.max(...times);
 
     const minValueBigNumber = BigNumber(minValue);
     const maxValueBigNumber = BigNumber(maxValue);

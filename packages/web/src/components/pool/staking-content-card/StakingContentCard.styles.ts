@@ -223,6 +223,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
         gap: 8px;
       }
       .apr-text {
+        cursor: default;
         color: ${({ theme }) => theme.color.text03};
         ${fonts.body6}
         ${media.tablet} {

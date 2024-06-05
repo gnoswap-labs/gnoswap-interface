@@ -31,6 +31,19 @@ export interface PulseSkeletonParams {
   tone?: "200" | "300" | "400" | "500" | "600";
 }
 
+export interface TableInfoType {
+  title: TABLE_TITLE;
+  total: number;
+  tdWidth: number[];
+  list: List[];
+}
+interface List {
+  width: number;
+  type: SHAPE_TYPES;
+  left: boolean;
+  className?: string;
+}
+
 const getPulseBackground = (
   tone: PulseSkeletonParams["tone"],
   theme: Theme,

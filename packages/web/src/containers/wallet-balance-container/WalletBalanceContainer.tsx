@@ -61,6 +61,7 @@ const WalletBalanceContainer: React.FC = () => {
       isClosed: false,
       queryOptions: { enabled: !!account?.address },
     });
+
   const isLoadingPosition = useMemo(
     () => connected && loadingPositions,
     [connected, loadingPositions],
@@ -121,7 +122,7 @@ const WalletBalanceContainer: React.FC = () => {
           openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
-            () => {},
+            () => { },
             true,
           );
           setLoadingTransactionClaim(false);

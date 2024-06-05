@@ -85,6 +85,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   isSwap = false,
   showBar = true,
 }) => {
+  const graphIdRef = useRef(Math.random());
   const defaultMinX = Math.min(...(bins).map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
@@ -200,7 +201,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   /** Update Chart by data */
   function updateChart() {
     const tickSpacing = getTickSpacing();
-    console.log("🚀 ~ updateChart ~ tickSpacing:", tickSpacing);
     const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing / 2;
 
     // Retrieves the colour of the chart bar at the current tick.
@@ -258,7 +258,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .style("fill", bin => fillByBin(bin))
         .style("stroke-width", "0")
         .attr("class", "rects")
-        .attr("id", bin => `pool-graph-bin-${bin.index}`)
+        .attr("id", bin => `pool-graph-bin-${graphIdRef.current}-${bin.index}`)
         .attr("x", bin => scaleX(bin.minTick) + 0.6)
         .attr("width", bin => scaleX(bin.maxTick - bin.minTick) - 0.6)
         .attr("y", bin => {
@@ -285,23 +285,21 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }
 
   function onMouseoverChartBin(event: MouseEvent) {
-    console.log("🚀 ~ onMouseoverChartBin ~ event:", event);
     if (!mouseover) {
       return;
     }
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const currentBin = resolvedBins.find(bin => {
-
       if (mouseY < 0.000001 || mouseY > height) {
         return false;
       }
       if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
         return false;
       }
-      const currentBinElement = document.getElementById(`pool-graph-bin-${bin.index}`)?.matches(":hover");
-      const previousBinElement = document.getElementById(`pool-graph-bin-${bin.index - 1}`)?.matches(":hover");
-      const nextBinElement = document.getElementById(`pool-graph-bin-${bin.index - 1}`)?.matches(":hover");
+      const currentBinElement = document.getElementById(`pool-graph-bin-${graphIdRef.current}-${bin.index}`)?.matches(":hover");
+      const previousBinElement = document.getElementById(`pool-graph-bin-${graphIdRef.current}-${bin.index - 1}`)?.matches(":hover");
+      const nextBinElement = document.getElementById(`pool-graph-bin-${graphIdRef.current}-${bin.index - 1}`)?.matches(":hover");
 
       const isHoveringIndex = (() => {
         if (currentBinElement) return bin.index;

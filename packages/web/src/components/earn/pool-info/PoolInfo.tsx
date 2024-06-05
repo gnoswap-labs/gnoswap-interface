@@ -51,10 +51,10 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_TD_WIDTH_MOBILE
       : breakpoint === DEVICE_TYPE.TABLET_M
-      ? POOL_TD_WIDTH_SMALL_TABLET
-      : breakpoint === DEVICE_TYPE.TABLET
-      ? POOL_TD_WIDTH_TABLET
-      : POOL_TD_WIDTH;
+        ? POOL_TD_WIDTH_SMALL_TABLET
+        : breakpoint === DEVICE_TYPE.TABLET
+          ? POOL_TD_WIDTH_TABLET
+          : POOL_TD_WIDTH;
 
   return (
     <PoolInfoWrapper onClick={() => routeItem(poolId)}>

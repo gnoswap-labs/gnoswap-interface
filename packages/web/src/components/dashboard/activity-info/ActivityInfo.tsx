@@ -17,7 +17,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { formatAddress } from "@utils/string-utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { getDateUtcToLocal } from "@common/utils/date-util";
+import { getDateDiff, getDateUtcToLocal } from "@common/utils/date-util";
 dayjs.extend(relativeTime);
 
 interface ActivityInfoProps {
@@ -104,7 +104,8 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
               </TableColumnTooltipContent>
             }
           >
-            <span className="token-index tooltip-label">{dayjs(time).fromNow()}</span>
+            <span className="token-index tooltip-label">{getDateDiff(time)}</span>
+            {/* <span className="token-index tooltip-label">{dayjs(time).fromNow()}</span> */}
           </Tooltip>
         </TableColumn>
       </HoverSection>
