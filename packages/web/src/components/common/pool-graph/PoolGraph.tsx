@@ -96,7 +96,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
 
-  const isSmallWidth = useMemo(() => width < 300, [width]);
 
   // D3 - Dimension Definition
   const minX = d3.min(bins, bin => bin.minTick - defaultMinX) || 0;
@@ -201,6 +200,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   /** Update Chart by data */
   function updateChart() {
     const tickSpacing = getTickSpacing();
+    console.log("🚀 ~ updateChart ~ tickSpacing:", tickSpacing);
     const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing / 2;
 
     // Retrieves the colour of the chart bar at the current tick.
@@ -249,55 +249,49 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     }
 
     // D3 - Draw bins as bars
-    if (!showBar) {
-      return;
+    if (showBar) {
+      rects
+        .selectAll("rects")
+        .data(resolvedBins)
+        .enter()
+        .append("rect")
+        .style("fill", bin => fillByBin(bin))
+        .style("stroke-width", "0")
+        .attr("class", "rects")
+        .attr("id", bin => `pool-graph-bin-${bin.index}`)
+        .attr("x", bin => scaleX(bin.minTick) + 0.6)
+        .attr("width", bin => scaleX(bin.maxTick - bin.minTick) - 0.6)
+        .attr("y", bin => {
+          const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+          return (
+            scaleYComputation -
+            (scaleYComputation > height - 3 && scaleYComputation !== height
+              ? 3
+              : 0)
+          );
+        })
+        .attr("height", bin => {
+          const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+          return (
+            boundsHeight -
+            scaleYComputation +
+            (scaleYComputation > height - 3 && scaleYComputation !== height
+              ? 3
+              : 0)
+          );
+        });
     }
 
-    rects
-      .selectAll("rects")
-      .data(resolvedBins)
-      .enter()
-      .append("rect")
-      .style("fill", bin => fillByBin(bin))
-      .style("stroke-width", "0")
-      .attr("class", "rects")
-      .attr("x", bin => scaleX(bin.minTick))
-      .attr("y", bin => {
-        const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-        return (
-          scaleYComputation -
-          (scaleYComputation > height - 3 && scaleYComputation !== height
-            ? 3
-            : 0)
-        );
-      })
-      .attr("width", tickSpacing - 1)
-      .attr("height", bin => {
-        const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-        return (
-          boundsHeight -
-          scaleYComputation +
-          (scaleYComputation > height - 3 && scaleYComputation !== height
-            ? 3
-            : 0)
-        );
-      });
   }
 
   function onMouseoverChartBin(event: MouseEvent) {
+    console.log("🚀 ~ onMouseoverChartBin ~ event:", event);
     if (!mouseover) {
       return;
     }
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const currentBin = resolvedBins.find(bin => {
-      const minX = scaleX(bin.minTick);
-      const maxX = scaleX(bin.maxTick);
-      const barWidth = maxX - minX;
-      const maxGapRatio = isSmallWidth ? 0 : 0.09;
-      const minGapRatio = isSmallWidth ? 0 : 0.06;
-      const maxGap = barWidth * maxGapRatio;
-      const minGap = barWidth * minGapRatio;
 
       if (mouseY < 0.000001 || mouseY > height) {
         return false;
@@ -305,7 +299,21 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
         return false;
       }
-      return mouseX > minX - minGap && mouseX < maxX - maxGap;
+      const currentBinElement = document.getElementById(`pool-graph-bin-${bin.index}`)?.matches(":hover");
+      const previousBinElement = document.getElementById(`pool-graph-bin-${bin.index - 1}`)?.matches(":hover");
+      const nextBinElement = document.getElementById(`pool-graph-bin-${bin.index - 1}`)?.matches(":hover");
+
+      const isHoveringIndex = (() => {
+        if (currentBinElement) return bin.index;
+
+        if (previousBinElement) return bin.index - 1;
+
+        if (nextBinElement) return bin.index + 1;
+      })();
+
+      if (!isHoveringIndex) return false;
+
+      return bin.index == isHoveringIndex;
     });
 
     if (currentBin?.index && (currentBin?.index !== lastHoverBinIndexRef.current)) {
