@@ -139,7 +139,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       maxTickSwap: temp[fullLength - i - 1].maxTick,
     }));
     return !isSwap ? temp : revereTemp;
-  }, [bins, boundsHeight, defaultMinX, poolPrice, isSwap]);
+  }, [bins, boundsHeight, defaultMinX, poolPrice, isSwap, binsMyAmount]);
 
   const maxHeight = d3.max(resolvedBins, bin => bin.reserveTokenMap) || 0;
 

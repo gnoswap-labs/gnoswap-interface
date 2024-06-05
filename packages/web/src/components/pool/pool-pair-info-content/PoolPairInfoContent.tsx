@@ -189,9 +189,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   <span>
                     {convertToKMB(`${tokenABalance}`)}{" "}
                     <span
-                      className={`token-symbol ${
-                        isWrapText ? "wrap-text" : ""
-                      }`}
+                      className={`token-symbol ${isWrapText ? "wrap-text" : ""
+                        }`}
                     >
                       {pool?.tokenA?.symbol}
                     </span>{" "}
@@ -211,9 +210,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   <span>
                     {convertToKMB(`${tokenBBalance}`)}{" "}
                     <span
-                      className={`token-symbol ${
-                        isWrapText ? "wrap-text" : ""
-                      }`}
+                      className={`token-symbol ${isWrapText ? "wrap-text" : ""
+                        }`}
                     >
                       {pool?.tokenB?.symbol}
                     </span>{" "}
@@ -284,7 +282,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 />
               }
             >
-              <strong>{aprValue}</strong>
+              <strong className="apr-content">{aprValue}</strong>
             </Tooltip>
           )}
           {loading && (

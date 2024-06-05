@@ -191,6 +191,12 @@ export const PoolPairInfoContentWrapper = styled.div`
         }
       }
     }
+    .apr-content {
+      &:hover {
+        color: ${({ theme }) => theme.color.text07};
+        cursor: default;
+      }
+    }
     ${media.tablet} {
       padding: 24px;
     }

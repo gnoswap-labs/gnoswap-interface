@@ -158,8 +158,8 @@ export const StakingContentCardWrapper = styled.div<Props>`
             
           }
           pointer-events: ${({ nonTotal }) => {
-            return nonTotal ? "none" : "initial";
-          }};
+    return nonTotal ? "none" : "initial";
+  }};
           &:hover {
             span {
               color: ${({ theme }) => theme.color.text07};
@@ -231,10 +231,6 @@ export const StakingContentCardWrapper = styled.div<Props>`
         }
         ${media.mobile} {
           ${fonts.body12}
-        }
-        &:hover {
-          cursor: default;
-          color: ${({ theme }) => theme.color.text07};
         }
       }
       .apr-gd-text {

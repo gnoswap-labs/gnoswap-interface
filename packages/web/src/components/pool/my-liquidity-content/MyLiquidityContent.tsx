@@ -202,7 +202,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       : 0;
 
     return toUnitFormat(claimableUsdValue, true, true);
-  }, [positions, isDisplay]);
+  }, [positions, isDisplay, claimableRewardInfo]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
     if (!isDisplay) {
@@ -330,7 +330,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const temp = aprRewardInfo?.SWAP_FEE;
     const sumUSD =
       temp?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) || 0;
-    if (sumUSD > 0 && sumUSD <= 0.01) return "<&0.01";
+    if (sumUSD > 0 && sumUSD <= 0.01) return "<$0.01";
 
     return formatUsdNumber(`${sumUSD}`, 2, true);
   }, [aprRewardInfo?.SWAP_FEE]);
@@ -345,7 +345,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const logoDaily = useMemo(() => {
     const temp = claimableRewardInfo?.SWAP_FEE;
     return temp?.map(item => getGnotPath(item.token).logoURI) || [];
-  }, [claimableRewardInfo?.SWAP_FEE]);
+  }, [claimableRewardInfo?.SWAP_FEE, getGnotPath]);
 
   const logoReward = useMemo(() => {
     const temp = claimableRewardInfo?.INTERNAL;
