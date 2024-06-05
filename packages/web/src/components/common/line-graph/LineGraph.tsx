@@ -222,16 +222,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
       if (smooth) {
         return newDatas.map((item, index) => {
           const currentItem = item;
-          const previousItem = index !== 0 ? newDatas[index - 1] : null;
+          const previous2Item = index > 1 ? newDatas[index - 2] : null;
+          const previous1Item = index !== 0 ? newDatas[index - 1] : null;
           const next1Item = index !== length - 1 ? newDatas[index + 1] : null;
           const next2Item = index !== length - 2 ? newDatas[index + 2] : null;
-          if (previousItem && next1Item && next2Item) {
-            if (next1Item.value === next2Item.value
-              && currentItem.value === next1Item.value
-              && (currentItem.value - previousItem.value) > (maxValue - minValue) / 10
+          if (previous1Item && next1Item && next2Item) {
+            if (Math.abs(next1Item.value - next2Item.value) < 0.001
+              && Math.abs(currentItem.value - next1Item.value) < 0.001
+              && Math.abs(currentItem.value - previous1Item.value) >= 0.001
             ) {
               const fakeItemValue = new BigNumber(currentItem.value)
-                .minus(BigNumber(currentItem.value).minus(BigNumber(previousItem.value)).dividedBy(10))
+                .minus(BigNumber(currentItem.value).minus(BigNumber(previous1Item.value)).dividedBy(15))
                 .toNumber();
 
 
@@ -240,7 +241,23 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 time: new Date(item.time).getTime(),
               };
             }
+
           }
+          if (previous2Item && previous1Item && next1Item)
+            if (Math.abs(previous2Item.value - previous1Item.value) < 0.001
+              && Math.abs(previous1Item.value - currentItem.value) < 0.001
+              && (next1Item.value - currentItem.value) >= 0.001
+            ) {
+              const fakeItemValue = new BigNumber(currentItem.value)
+                .plus(BigNumber(next1Item.value).minus(BigNumber(currentItem.value)).dividedBy(15))
+                .toNumber();
+
+
+              return {
+                value: fakeItemValue,
+                time: new Date(item.time).getTime(),
+              };
+            }
 
           return item;
         });

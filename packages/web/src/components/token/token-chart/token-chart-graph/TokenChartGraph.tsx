@@ -187,7 +187,6 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
       <div className="data-wrapper" ref={componentRef}>
         <LineGraph
           cursor
-          smooth
           className="graph"
           width={size?.width || 0}
           height={
