@@ -77,8 +77,6 @@ const SwapContainer: React.FC = () => {
       type: direction,
       tokenAAmount: tokenAAmountQuery,
       tokenBAmount: tokenBAmountQuery,
-      // tokenAAmount: "",
-      // tokenBAmount: "",
     });
   }, [initialized, router.query, tokens]);
 
