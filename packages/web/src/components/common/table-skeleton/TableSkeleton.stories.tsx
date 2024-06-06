@@ -3,7 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TableSkeleton from "./TableSkeleton";
 import {
-  POOL_TD_WIDTH,
+  // POOL_TD_WIDTH,
   SHAPE_TYPES,
   TABLE_TITLE,
 } from "@constants/skeleton.constant";
@@ -22,14 +22,14 @@ Default.args = {
   info: {
     title: TABLE_TITLE.POOL_TABLE,
     total: 5,
-    tdWidth: POOL_TD_WIDTH,
+    // tdWidth: POOL_TD_WIDTH,
     list: [
-      { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true , className: ""},
-      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false , className: ""},
-      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false , className: ""},
-      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false , className: ""},
-      { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false , className: ""},
-      { width: 20, type: SHAPE_TYPES.CIRCLE, left: false , className: ""},
+      { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "" },
+      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "" },
+      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "" },
+      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "" },
+      { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "" },
+      { width: 20, type: SHAPE_TYPES.CIRCLE, left: false, className: "" },
     ],
   },
 };

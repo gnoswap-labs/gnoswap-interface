@@ -13,10 +13,10 @@ import {
   POOL_INFO_MOBILE,
   POOL_INFO_SMALL_TABLET,
   POOL_INFO_TABLET,
-  POOL_TD_WIDTH,
-  POOL_TD_WIDTH_MOBILE,
-  POOL_TD_WIDTH_SMALL_TABLET,
-  POOL_TD_WIDTH_TABLET,
+  // POOL_TD_WIDTH,
+  // POOL_TD_WIDTH_MOBILE,
+  // POOL_TD_WIDTH_SMALL_TABLET,
+  // POOL_TD_WIDTH_TABLET,
 } from "@constants/skeleton.constant";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
@@ -69,14 +69,14 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
     return TABLE_HEAD.POOL_NAME === head;
   };
 
-  const tdWidth =
-    breakpoint === DEVICE_TYPE.MOBILE
-      ? POOL_TD_WIDTH_MOBILE
-      : breakpoint === DEVICE_TYPE.TABLET_M
-        ? POOL_TD_WIDTH_SMALL_TABLET
-        : breakpoint === DEVICE_TYPE.TABLET
-          ? POOL_TD_WIDTH_TABLET
-          : POOL_TD_WIDTH;
+  // const tdWidth =
+  //   breakpoint === DEVICE_TYPE.MOBILE
+  //     ? POOL_INFO_MOBILE.list
+  //     : breakpoint === DEVICE_TYPE.TABLET_M
+  //       ? POOL_TD_WIDTH_SMALL_TABLET
+  //       : breakpoint === DEVICE_TYPE.TABLET
+  //         ? POOL_TD_WIDTH_TABLET
+  //         : POOL_TD_WIDTH;
   const poolInfo =
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_INFO_MOBILE
@@ -98,7 +98,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
               left: isAlignLeft(head),
               sort: isSortOption(head) && canSort,
             })}
-            tdWidth={tdWidth[idx]}
+            tdWidth={poolInfo.list[idx].width}
           >
             <span
               className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}

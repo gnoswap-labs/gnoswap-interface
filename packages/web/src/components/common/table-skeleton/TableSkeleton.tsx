@@ -1,7 +1,7 @@
 import React from "react";
 import {
   ASSET_TD_WIDTH,
-  emptyArrayInit, SHAPE_TYPES,
+  emptyArrayInit,
   pulseSkeletonStyle,
   TABLE_TITLE,
   MOBILE_ASSET_TD_WIDTH,
@@ -44,7 +44,7 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({ info, breakpoint, classNa
               tdWidth={info.list[idx].width}
             >
               <span
-                css={pulseSkeletonStyle({ w: item.type === SHAPE_TYPES.ROUNDED_SQUARE ? item.width * 0.6 : item.width, type: item.type })}
+                css={pulseSkeletonStyle({ w: item.skeletonWidth, type: item.type })}
               />
             </SkeletonItem>
           ))}

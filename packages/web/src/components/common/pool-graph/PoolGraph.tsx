@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PoolGraphTooltipWrapper, PoolGraphWrapper } from "./PoolGraph.styles";
 import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -97,6 +97,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
 
+  const getBinId = useCallback((index: number) => `pool-graph-bin-${graphIdRef.current}-${index}`, []);
 
   // D3 - Dimension Definition
   const minX = d3.min(bins, bin => bin.minTick - defaultMinX) || 0;
@@ -239,8 +240,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (currentTick) {
       rects
         .append("line")
-        .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
-        .attr("x2", centerPosition + tickSpacing / 2 - 0.5)
+        .attr("x1", centerPosition + tickSpacing / 2)
+        .attr("x2", centerPosition + tickSpacing / 2)
         .attr("y1", 0)
         .attr("y2", boundsHeight)
         .attr("stroke-dasharray", 3)
@@ -254,34 +255,66 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .selectAll("rects")
         .data(resolvedBins)
         .enter()
-        .append("rect")
-        .style("fill", bin => fillByBin(bin))
-        .style("stroke-width", "0")
-        .attr("class", "rects")
-        .attr("id", bin => `pool-graph-bin-${graphIdRef.current}-${bin.index}`)
-        .attr("x", bin => scaleX(bin.minTick) + 0.6)
-        .attr("width", bin => scaleX(bin.maxTick - bin.minTick) - 0.6)
-        .attr("y", bin => {
-          const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-          return (
-            scaleYComputation -
-            (scaleYComputation > height - 3 && scaleYComputation !== height
-              ? 3
-              : 0)
-          );
-        })
-        .attr("height", bin => {
-          const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-          return (
-            boundsHeight -
-            scaleYComputation +
-            (scaleYComputation > height - 3 && scaleYComputation !== height
-              ? 3
-              : 0)
-          );
+        .append("g")
+        .attr("class", "bin-wrapper")
+        .attr("id", bin => getBinId(bin.index))
+        .each(function (bin) {
+          d3
+            .select(this)
+            .append("rect")
+            .style("fill", "transparent")
+            .attr("class", "bin-inner")
+            .style("stroke-width", "0")
+            .attr("x", scaleX(bin.minTick))
+            .attr("width", scaleX(bin.maxTick - bin.minTick))
+            .attr("y", () => {
+              const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+              return (
+                scaleYComputation -
+                (scaleYComputation > height - 3 && scaleYComputation !== height
+                  ? 3
+                  : 0)
+              );
+            })
+            .attr("height", () => {
+              const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+              return (
+                boundsHeight -
+                scaleYComputation +
+                (scaleYComputation > height - 3 && scaleYComputation !== height
+                  ? 3
+                  : 0)
+              );
+            });
+          d3
+            .select(this)
+            .append("rect")
+            .style("fill", fillByBin(bin))
+            .attr("class", "bin-inner")
+            .style("stroke-width", "0")
+            .attr("x", scaleX(bin.minTick) + 1)
+            .attr("width", scaleX(bin.maxTick - bin.minTick) - 1)
+            .attr("y", () => {
+              const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+              return (
+                scaleYComputation -
+                (scaleYComputation > height - 3 && scaleYComputation !== height
+                  ? 3
+                  : 0)
+              );
+            })
+            .attr("height", () => {
+              const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+              return (
+                boundsHeight -
+                scaleYComputation +
+                (scaleYComputation > height - 3 && scaleYComputation !== height
+                  ? 3
+                  : 0)
+              );
+            });
         });
     }
-
   }
 
   function onMouseoverChartBin(event: MouseEvent) {
@@ -297,23 +330,30 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
         return false;
       }
-      const currentBinElement = document.getElementById(`pool-graph-bin-${graphIdRef.current}-${bin.index}`)?.matches(":hover");
-      const previousBinElement = document.getElementById(`pool-graph-bin-${graphIdRef.current}-${bin.index - 1}`)?.matches(":hover");
-      const nextBinElement = document.getElementById(`pool-graph-bin-${graphIdRef.current}-${bin.index - 1}`)?.matches(":hover");
+      const isHoveringCurrentBin = document
+        .getElementById(getBinId(bin.index))
+        ?.matches(":hover");
+
+      const isHoveringPreviousBin = document
+        .getElementById(getBinId(bin.index - 1))
+        ?.matches(":hover");
+      const isHoveringNextBin = document
+        .getElementById(getBinId(bin.index + 1))
+        ?.matches(":hover");
 
       const isHoveringIndex = (() => {
-        if (currentBinElement) return bin.index;
+        if (isHoveringCurrentBin) return bin.index;
 
-        if (previousBinElement) return bin.index - 1;
+        if (isHoveringPreviousBin) return bin.index - 1;
 
-        if (nextBinElement) return bin.index + 1;
+        if (isHoveringNextBin) return bin.index + 1;
       })();
 
-      if (!isHoveringIndex) return false;
+      console.log("🚀 ~ isHoveringIndex ~ isHoveringIndex:", isHoveringIndex);
+      if (isHoveringIndex !== 0 && !isHoveringIndex) return false;
 
-      return bin.index == isHoveringIndex;
+      return bin.index === isHoveringIndex;
     });
-
     if (currentBin?.index && (currentBin?.index !== lastHoverBinIndexRef.current)) {
       lastHoverBinIndexRef.current = currentBin?.index;
     }

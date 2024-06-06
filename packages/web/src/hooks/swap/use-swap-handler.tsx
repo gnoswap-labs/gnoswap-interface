@@ -470,7 +470,6 @@ export const useSwapHandler = ({
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenA);
-      console.log("🚀 ~ useSwapHandler ~ value:", value);
       estimateSwapRoute(value);
 
       if (isSameToken) {

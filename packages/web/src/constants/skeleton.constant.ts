@@ -34,7 +34,7 @@ export interface PulseSkeletonParams {
 export interface TableInfoType {
   title: TABLE_TITLE;
   total: number;
-  tdWidth: number[];
+  tdWidth?: number[];
   list: List[];
 }
 interface List {
@@ -42,6 +42,7 @@ interface List {
   type: SHAPE_TYPES;
   left: boolean;
   className?: string;
+  skeletonWidth: number;
 }
 
 const getPulseBackground = (
@@ -281,10 +282,8 @@ export const skeletonBalanceDetail = (
     }
   `;
 
-export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
-export const POOL_TD_WIDTH_TABLET = [199, 150, 150, 150, 140, 150, 160];
-export const POOL_TD_WIDTH_SMALL_TABLET = [185, 110, 110, 100, 80, 104, 160];
-export const POOL_TD_WIDTH_MOBILE = [210, 110, 140, 120, 100, 106, 160];
+
+
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [300, 300, 250, 250, 120, 138];
 export const TABLET_ASSET_TD_WIDTH = [220, 240, 190, 190, 120, 138];
@@ -337,60 +336,60 @@ export const emptyArrayInit = (total: number) => {
 export const POOL_INFO = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  tdWidth: POOL_TD_WIDTH,
+  // tdWidth: POOL_TD_WIDTH,
   list: [
-    { width: 240, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 170, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 198, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 240, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 170, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
+    { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 102 },
+    { width: 198, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 102 },
   ],
 };
 
 export const POOL_INFO_SMALL_TABLET = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  tdWidth: POOL_TD_WIDTH_SMALL_TABLET,
+  // tdWidth: POOL_TD_WIDTH_SMALL_TABLET,
   list: [
-    { width: 185, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
-    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 185, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 185 },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 110 },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 110 },
+    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 100 },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
+    { width: 104, type: SHAPE_TYPES.CIRCLE, left: false, skeletonWidth: 20 },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 160 },
   ],
 };
 
 export const POOL_INFO_TABLET = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  tdWidth: POOL_TD_WIDTH_TABLET,
+  // tdWidth: POOL_TD_WIDTH_TABLET,
   list: [
-    { width: 199, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
-    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 199, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 150, type: SHAPE_TYPES.CIRCLE, left: false, skeletonWidth: 20 },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 102 },
   ],
 };
 
 export const POOL_INFO_MOBILE = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  tdWidth: POOL_TD_WIDTH_MOBILE,
+  // tdWidth: POOL_TD_WIDTH_MOBILE,
   list: [
-    { width: 210, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
-    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 210, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 140 },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 110 },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 140 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 100 },
+    { width: 106, type: SHAPE_TYPES.CIRCLE, left: false, skeletonWidth: 20 },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 160 },
   ],
 };
 
