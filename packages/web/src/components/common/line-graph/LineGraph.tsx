@@ -267,13 +267,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
     })();
     const gapRatio = 0.1;
 
-
-
-    // const minValue = Math.min(...values);
-    // const maxValue = Math.max(...values);
-    // const minTime = Math.min(...times);
-    // const maxTime = Math.max(...times);
-
     const minValueBigNumber = BigNumber(minValue);
     const maxValueBigNumber = BigNumber(maxValue);
 
@@ -802,20 +795,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   className="first-line"
                 />
               )}
-              {/* {
-                centerLineColor && (
-                  <line
-                    stroke={centerLineColor}
-                    strokeWidth={1}
-                    x1={0}
-                    y1={firstPoint.y}
-                    x2={width}
-                    y2={firstPoint.y}
-                    strokeDasharray={0}
-                    className="center-line"
-                  />
-                )
-              } */}
               {isFocus() && currentPoint && (
                 <line
                   stroke={color}

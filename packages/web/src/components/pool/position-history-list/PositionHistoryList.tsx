@@ -1,5 +1,3 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
 import { DEVICE_TYPE } from "@styles/media";
 import React from "react";
 import PositionHistoryTable from "../position-history-table/PositionHistoryTable";

@@ -1,5 +1,3 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
 import { Token } from "@containers/header-container/HeaderContainer";
 import React, { useRef, useCallback, useState, useEffect, useMemo } from "react";
 import {
@@ -22,7 +20,6 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
-import { isNativeToken } from "@models/token/token-model";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -91,7 +88,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   }, []);
 
   useEffect(() => {
-    let temp: number[] = [];
+    const temp: number[] = [];
     popularPriceRef.current.forEach((ref) => {
       if (ref.current) {
         const width = ref.current.getBoundingClientRect().width;
@@ -103,7 +100,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
 
   useEffect(() => {
-    let temp: number[] = [];
+    const temp: number[] = [];
     recentPriceRef.current.forEach((ref) => {
       if (ref.current) {
         const width = ref.current.getBoundingClientRect().width;
@@ -111,7 +108,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       }
     });
     setWidthListRecent(temp);
-  }, [recentPriceRef, popularTokens.toString(), keyword]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recentPriceRef, JSON.stringify(popularTokens), keyword]);
 
   useEffect(() => {
     const temp: number[] = [];
@@ -122,7 +120,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       }
     });
     setTokenNameRecentWidthList(temp);
-  }, [tokenNameRecentsRef, recents.toString(), keyword]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokenNameRecentsRef, JSON.stringify(recents), keyword]);
 
   useEffect(() => {
     const temp: number[] = [];
@@ -133,7 +132,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       }
     });
     setTokenNamePopularWidthList(temp);
-  }, [tokenNamePopularRef, keyword, popularTokens.toString()]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokenNamePopularRef, keyword, JSON.stringify(popularTokens)]);
 
   const length = useMemo(() => {
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;

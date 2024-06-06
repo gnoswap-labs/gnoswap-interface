@@ -1,5 +1,4 @@
 // TODO : remove eslint-disable after work
-/* eslint-disable */
 import { ERROR_VALUE } from "@common/errors/adena";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
@@ -10,7 +9,6 @@ import {
   useBroadcastHandler,
 } from "@hooks/common/use-broadcast-handler";
 import { usePosition } from "@hooks/common/use-position";
-import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -22,7 +20,7 @@ import BigNumber from "bignumber.js";
 import React, { useCallback, useState, useMemo } from "react";
 import { useLoading } from "@hooks/common/use-loading";
 import { isEmptyObject } from "@utils/validation-utils";
-import { toNumberFormat, toUnitFormat } from "@utils/number-utils";
+import { toUnitFormat } from "@utils/number-utils";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useGetPositionsByAddress } from "@query/positions";
 import { GNOT_TOKEN } from "@common/values/token-constant";
@@ -45,7 +43,7 @@ export interface BalanceDetailInfo {
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();
-  const [address, setAddress] = useState("");
+  const [address,] = useState("");
   const { breakpoint } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
@@ -54,7 +52,7 @@ const WalletBalanceContainer: React.FC = () => {
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const { isLoading } = useLoading();
 
-  const { balances: balancesPrice, loadingBalance, loading } = useTokenData();
+  const { balances: balancesPrice, loadingBalance } = useTokenData();
 
   const { data: positions = [], isLoading: loadingPositions } =
     useGetPositionsByAddress(account?.address ?? "", {
@@ -136,6 +134,7 @@ const WalletBalanceContainer: React.FC = () => {
       loadingConnect === "loading" ||
       isLoading ||
       isLoadingTokenPrices ||
+      loadingBalance ||
       !!(isEmptyObject(balancesPrice) && account?.address)
     );
   }, [
@@ -144,6 +143,8 @@ const WalletBalanceContainer: React.FC = () => {
     isLoading,
     account?.address,
     balancesPrice,
+    isLoadingTokenPrices,
+    loadingBalance,
   ]);
 
   const availableBalance = useMemo(() => {
@@ -210,7 +211,6 @@ const WalletBalanceContainer: React.FC = () => {
     unStakedBalance,
     stakedBalance,
     claimableRewards,
-    availableBalance,
   ]);
 
   const closeDeposit = () => {

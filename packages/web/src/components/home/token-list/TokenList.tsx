@@ -1,5 +1,3 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
 import React from "react";
 import {
   TOKEN_TYPE,
@@ -36,7 +34,6 @@ interface TokenItem {
 const TokenList: React.FC<TokenItem> = ({
   tokens,
   isFetched,
-  error,
   tokenType = TOKEN_TYPE.ALL,
   sortOption,
   changeTokenType,
@@ -72,7 +69,7 @@ const TokenList: React.FC<TokenItem> = ({
         sort={sort}
         breakpoint={breakpoint}
       />
-      {totalPage > 1  && <Pagination
+      {totalPage > 1 && <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}

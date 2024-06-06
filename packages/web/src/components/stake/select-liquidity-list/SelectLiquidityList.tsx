@@ -50,15 +50,6 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
             key={index}
           />
         ))}
-        {/* {!isLoading && stakedPositions.filter(item => item.closed === false).map((position, index) => (
-          <SelectLiquidityListItem
-            position={position}
-            checkedList={checkedList}
-            onCheckedItem={() => null}
-            key={index}
-            disabled
-          />
-        ))} */}
         {!isLoading && isEmpty && <div className="no-position">No Position</div>}
       </ul>
     </div>

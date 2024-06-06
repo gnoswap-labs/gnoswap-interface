@@ -1,5 +1,3 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 
 import {
@@ -19,7 +17,7 @@ import {
 } from "./PositionInfo.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
-import { prettyNumber, prettyNumberFloatInteger } from "@utils/number-utils";
+import { prettyNumber } from "@utils/number-utils";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import { convertToKMB } from "@utils/stake-position-utils";
