@@ -47,6 +47,7 @@ export const convertToKMB = (
     maximumSignificantDigits?: number,
     convertOffset?: number,
     forceFractionDigit?: number,
+    isIgnoreKFormat?: boolean,
   }): string => {
   if (Number.isNaN(Number(price.replace(/,/g, "")))) return "-";
   const numberPrice = Number(price.replace(/,/g, ""));
@@ -64,7 +65,7 @@ export const convertToKMB = (
       minimumFractionDigits: 0,
     });
     if (numberPrice < 0.000001 && numberPrice >= 0) return "0.000001";
-    if (numberPrice < 1 && numberPrice >= 0) return `${Number(numberPrice.toFixed(6))}`;
+    if (numberPrice < 1 && numberPrice >= 0) return `${Number(numberPrice.toFixed(options?.maximumFractionDigits ?? 6))}`;
 
     const result = numberPrice.toLocaleString("en-US", {
       maximumSignificantDigits: maximumSignificantDigits,
@@ -73,49 +74,48 @@ export const convertToKMB = (
       minimumFractionDigits: options?.minimumFractionDigits,
     });
 
-    function rmTrailingZeros(value: string) {
-      if (value.includes(".")) return removeTrailingZeros(value);
-      return options?.forceFractionDigit ? BigNumber(value).toFixed(options?.forceFractionDigit) : value;
+    // Force Fraction Digit
+    if (options?.forceFractionDigit && Number.isInteger(result)) {
+      return BigNumber(result).toFixed(options?.forceFractionDigit);
     }
 
-    function forceFractionDigit(value: string) {
-      return options?.forceFractionDigit ? BigNumber(value).toFixed(options?.forceFractionDigit) : value;
-    }
+    // Remove trailing zeros
+    if (result.includes(".")) return removeTrailingZeros(result);
 
-    return Number.isInteger(result) ? forceFractionDigit(result) : rmTrailingZeros(result);
-  } else {
-    const temp = numberPriceAbs;
-    if (temp >= 1e9) {
-      if (temp > 999.99 * 1e9) return "999.99B";
-      return (
-        negativeSymbol + (temp / 1e9).toLocaleString("en-US", {
-          maximumFractionDigits: 2,
-          minimumFractionDigits: 2,
-        }) + "B"
-      );
-    }
-    if (temp >= 1e6) {
-      return (
-        negativeSymbol + (temp / 1e6).toLocaleString("en-US", {
-          maximumFractionDigits: 2,
-          minimumFractionDigits: 2,
-        }) + "M"
-      );
-    }
-    if (temp >= 1e3) {
-      return (
-        negativeSymbol + (temp / 1e3).toLocaleString("en-US", {
-          maximumFractionDigits: 2,
-          minimumFractionDigits: 2,
-        }) + "K"
-      );
-    }
-
-    return (Number.isInteger(price) ? `${numberPrice}` : numberPrice.toLocaleString("en-US", {
-      maximumFractionDigits: options?.maximumFractionDigits ?? 2,
-      minimumFractionDigits: options?.minimumFractionDigits ?? 2,
-    }));
+    return result;
   }
+
+  if (numberPriceAbs > 999.99 * 1e9) return "999.99B";
+
+  if (numberPriceAbs >= 1e9) {
+    return (
+      negativeSymbol + (numberPriceAbs / 1e9).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      }) + "B"
+    );
+  }
+  if (numberPriceAbs >= 1e6) {
+    return (
+      negativeSymbol + (numberPriceAbs / 1e6).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      }) + "M"
+    );
+  }
+  if (numberPriceAbs >= 1e3 && !options?.isIgnoreKFormat) {
+    return (
+      negativeSymbol + (numberPriceAbs / 1e3).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      }) + "K"
+    );
+  }
+
+  return (Number.isInteger(price) ? `${numberPrice}` : numberPrice.toLocaleString("en-US", {
+    maximumFractionDigits: options?.maximumFractionDigits ?? 2,
+    minimumFractionDigits: options?.minimumFractionDigits ?? 2,
+  }));
 };
 
 export const convertLiquidityUsdToKMB = (
@@ -182,11 +182,10 @@ export const formatUsdNumber = (
   maximumFractionDigits?: number,
   isKMB?: boolean,
 ) => {
-  const func = isKMB ? convertToKMB : convertToMB;
-  if (func(price, maximumFractionDigits) === "-") {
+  if (convertToKMB(price, { maximumFractionDigits, isIgnoreKFormat: !isKMB }) === "-") {
     return "-";
   }
-  return `$${func(price, maximumFractionDigits)}`;
+  return `$${convertToKMB(price, { maximumFractionDigits, isIgnoreKFormat: !isKMB })}`;
 };
 
 export function convertLiquidityUsdValue(value: number) {

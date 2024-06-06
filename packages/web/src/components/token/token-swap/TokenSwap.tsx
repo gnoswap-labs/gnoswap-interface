@@ -126,7 +126,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
       return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat();
     }
     return "-";
-  }, [isSwitchNetwork, connected, dataTokenInfo.tokenABalance, dataTokenInfo.tokenADecimals]);
+  }, [isSwitchNetwork, connected, dataTokenInfo.tokenABalance]);
 
   const balanceBDisplay = useMemo(() => {
     if (isSwitchNetwork) return "-";
@@ -135,7 +135,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
       return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat();
     }
     return "-";
-  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork, dataTokenInfo.tokenBDecimals]);
+  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork]);
 
   return (
     <div css={wrapper}>

@@ -2,9 +2,7 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
-interface Props { }
-
-export const TokenChartGraphWrapper = styled.div<Props>`
+export const TokenChartGraphWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;

@@ -239,7 +239,7 @@ const AssetListContainer: React.FC = () => {
             ? "-"
             : checkPrice
               ? "<$0.01"
-              : toPriceFormat(price, { isFormat: false }),
+              : toPriceFormat(price, { isKMBFormat: false }),
           balance: isSwitchNetwork
             ? "0"
             : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),

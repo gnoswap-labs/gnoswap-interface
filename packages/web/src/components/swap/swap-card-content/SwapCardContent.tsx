@@ -127,7 +127,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-container">
           <input
             className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
-            value={swapTokenInfo.tokenBAmount ? BigNumber(swapTokenInfo.tokenAAmount).toFixed() : swapTokenInfo.tokenBAmount}
+            value={swapTokenInfo.tokenAAmount ? BigNumber(swapTokenInfo.tokenAAmount).toFixed() : swapTokenInfo.tokenAAmount}
             onChange={onChangeTokenAAmount}
             placeholder="0"
           />

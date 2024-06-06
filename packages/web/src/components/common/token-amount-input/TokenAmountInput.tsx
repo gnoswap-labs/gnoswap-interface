@@ -60,7 +60,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       return result;
     }
     return "-";
-  }, [balance, connected, token?.decimals]);
+  }, [balance, connected]);
 
   const preventArrowKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (["ArrowUp", "ArrowDown"].includes(e.key)) {
