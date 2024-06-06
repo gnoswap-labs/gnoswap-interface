@@ -103,7 +103,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.tvlChange]);
 
   const volumeChangedStr = useMemo((): string => {
-    return `${numberToFormat(pool.volumeChange24h, {
+    return `${numberToFormat(Math.abs(pool.volumeChange24h), {
       decimals: 2,
       forceDecimals: true,
     })}%`;
@@ -236,7 +236,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <strong>{volumeValue}</strong>
               <div>
                 <IconTriangleArrowUpV2 />{" "}
-                <span className="positive"> {volumeChangedStr}</span>
+                <span className={pool.volumeChange24h > 0 ? "positive" : "negative"}> {volumeChangedStr}</span>
               </div>
             </div>
           )}
