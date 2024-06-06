@@ -349,7 +349,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         if (isHoveringNextBin) return bin.index + 1;
       })();
 
-      console.log("🚀 ~ isHoveringIndex ~ isHoveringIndex:", isHoveringIndex);
       if (isHoveringIndex !== 0 && !isHoveringIndex) return false;
 
       return bin.index === isHoveringIndex;

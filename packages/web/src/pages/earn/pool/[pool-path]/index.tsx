@@ -61,7 +61,6 @@ export default function Pool() {
       && isFetchedPosition
       && isStaking
     ) {
-      console.log("🚀 ~ useEffect ~ hash:", hash);
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -118,11 +117,6 @@ export default function Pool() {
     isStaking,
     loadingPositionById
   ]);
-
-  const positionContainerElement =
-    document.getElementById("liquidity-wrapper");
-  console.log("🚀 ~ useEffect ~ positionContainerElement:", positionContainerElement?.offsetTop);
-  console.log("234238947");
 
   return (
     <PoolLayout

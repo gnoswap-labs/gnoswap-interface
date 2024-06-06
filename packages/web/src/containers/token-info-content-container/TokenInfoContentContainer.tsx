@@ -169,9 +169,6 @@ const TokenInfoContentContainer: React.FC = () => {
       currentPrice,
       pricesBefore.price30d,
     );
-    console.log("🚀 ~ pricePerformance ~ currentPrice:", currentPrice);
-    console.log("🚀 ~ pricePerformance ~ pricesBefore.price30d:", pricesBefore.price30d);
-
     const data60day = checkPositivePrice(
       currentPrice,
       pricesBefore.price60d,

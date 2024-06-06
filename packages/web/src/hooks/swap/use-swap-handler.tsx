@@ -517,7 +517,6 @@ export const useSwapHandler = ({
   const changeTokenBAmount = useCallback(
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenA);
-      console.log("🚀 ~ useSwapHandler ~ value:", value);
 
       if (none) {
         setIsLoading(false);

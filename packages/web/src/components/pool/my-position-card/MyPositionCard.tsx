@@ -67,7 +67,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   connected,
   tokenPrices,
 }) => {
-  console.log("🚀 ~ position:", position.id);
   const router = useRouter();
   const { width } = useWindowSize();
   const [isSwap, setIsSwap] = useState(false);

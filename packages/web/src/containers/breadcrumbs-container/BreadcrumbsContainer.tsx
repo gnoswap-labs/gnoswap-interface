@@ -68,8 +68,6 @@ const BreadcrumbsContainer: React.FC<Props> = ({
       },
     ];
   }, [listBreadcrumb, tokenB?.symbol, router.pathname]);
-  console.log("🚀 ~ removePoolSteps ~ removePoolSteps:", removePoolSteps);
-
 
   const onClickPath = (path: string) => {
     router.push(path);

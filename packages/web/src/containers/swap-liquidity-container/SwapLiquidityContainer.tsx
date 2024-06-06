@@ -134,7 +134,7 @@ const SwapLiquidityContainer: React.FC = () => {
       symbol: getGnotPath(tokenA).symbol,
       logoURI: getGnotPath(tokenA).logoURI,
     };
-  }, [swapValue.tokenA, gnot]);
+  }, [tokenA, gnot]);
 
   const tokenBData = useMemo(() => {
     if (!tokenB) return null;

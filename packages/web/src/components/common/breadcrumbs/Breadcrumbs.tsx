@@ -16,7 +16,6 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
   const theme = useTheme();
 
   const tokenPathDisplay = useCallback((token?: TokenModel) => {
-    console.log("🚀 ~ tokenPathDisplay ~ token:", token);
     if (!token) return "";
 
     const path_ = token.path;
