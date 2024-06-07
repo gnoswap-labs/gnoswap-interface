@@ -10,7 +10,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { numberToFormat, numberToRate } from "@utils/string-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
@@ -235,7 +235,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             <div className="wrapper-value">
               <strong>{volumeValue}</strong>
               <div>
-                <IconTriangleArrowUpV2 />{" "}
+                {pool.volumeChange24h > 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}{" "}
                 <span className={pool.volumeChange24h > 0 ? "positive" : "negative"}> {volumeChangedStr}</span>
               </div>
             </div>
@@ -352,14 +352,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   {width >= 768 && `1 ${pool?.tokenB?.symbol}`} ={" "}
-                  <ExchangeRate
-                    value={convertToKMB(
-                      `${Number(
-                        Number(1 / pool.price).toFixed(width > 400 ? 6 : 2),
-                      )}`,
-                      { maximumFractionDigits: 6 },
-                    )}
-                  />{" "}
+                  {formatTokenExchangeRate(Number(1 / pool.price).toFixed(width > 400 ? 6 : 2))}{" "}
                   {pool?.tokenA?.symbol}
                 </div>
               )}

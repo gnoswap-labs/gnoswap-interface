@@ -3,7 +3,6 @@ import {
   unitsLowerCase,
   unitsUpperCase,
 } from "@common/values/global-initial-value";
-import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import BigNumber from "bignumber.js";
 import { convertToKMB } from "./stake-position-utils";
 
@@ -412,26 +411,4 @@ export function subscriptFormat(
 
   const result = `0.0${getSubcriptChars(numberStr)}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
   return result;
-}
-
-export function formatExchangeRate(value: number, options?: { feeTier?: SwapFeeTierType }) {
-  const valueStr = value.toString();
-
-  const range = options?.feeTier ? SwapFeeTierMaxPriceRangeMap[options?.feeTier] : null;
-
-  if (valueStr === null || BigNumber(Number(valueStr)).isNaN()) {
-    return "-";
-  }
-
-  const currentValue = BigNumber(valueStr).toNumber();
-
-  if (range && currentValue / range.maxPrice > 0.9) {
-    return "∞";
-  }
-
-  if (currentValue < 1 && currentValue !== 0) {
-    return subscriptFormat(BigNumber(value).toFixed());
-  }
-
-  return convertToKMB(Number(value).toString());
 }

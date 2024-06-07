@@ -11,6 +11,9 @@ export const PairRatioWrapper = styled.div`
   .icon-wrapper {
     ${mixins.flexbox("row", "center", "center")};
   }
+  .ratio-value {
+    word-break: break-all; 
+  }
   svg {
     cursor: pointer;
     * {

@@ -38,6 +38,37 @@ export const convertToMB = (price: string, maximumFractionDigits?: number) => {
   }
 };
 
+export const formatTokenExchangeRate = (
+  inputNumber: string | number | BigNumber, options: {
+    isIgnoreKFormat: boolean;
+    forcedIntegerDecimals: number;
+    maxSignificantDigits: number;
+  } = {
+      isIgnoreKFormat: false,
+      forcedIntegerDecimals: 0,
+      maxSignificantDigits: 5,
+    }
+) => {
+  const inputAsNumber = Number(inputNumber.toString().replace(/,/g, ""));
+
+  if (inputAsNumber < 1e3) {
+    if (Number.isNaN(inputAsNumber)) return "-";
+
+    if (Number.isInteger(inputAsNumber)) return inputAsNumber.toLocaleString("en-US", {
+      maximumFractionDigits: options?.forcedIntegerDecimals,
+      minimumFractionDigits: options?.forcedIntegerDecimals,
+    });
+
+    return inputAsNumber.toLocaleString("en-US", {
+      maximumSignificantDigits: options?.maxSignificantDigits,
+    });
+  }
+
+  return convertToKMB(inputNumber.toString(), {
+    isIgnoreKFormat: options?.isIgnoreKFormat
+  });
+};
+
 export const convertToKMB = (
   price: string,
   options?: {
@@ -45,9 +76,8 @@ export const convertToKMB = (
     minimumFractionDigits?: number,
     minimumSignificantDigits?: number,
     maximumSignificantDigits?: number,
-    convertOffset?: number,
-    forceFractionDigit?: number,
     isIgnoreKFormat?: boolean,
+    usd?: boolean,
   }): string => {
   if (Number.isNaN(Number(price.replace(/,/g, "")))) return "-";
   const numberPrice = Number(price.replace(/,/g, ""));
@@ -73,11 +103,6 @@ export const convertToKMB = (
       maximumFractionDigits: options?.maximumFractionDigits,
       minimumFractionDigits: options?.minimumFractionDigits,
     });
-
-    // Force Fraction Digit
-    if (options?.forceFractionDigit && Number.isInteger(result)) {
-      return BigNumber(result).toFixed(options?.forceFractionDigit);
-    }
 
     // Remove trailing zeros
     if (result.includes(".")) return removeTrailingZeros(result);
@@ -185,6 +210,7 @@ export const formatUsdNumber = (
   if (convertToKMB(price, { maximumFractionDigits, isIgnoreKFormat: !isKMB }) === "-") {
     return "-";
   }
+
   return `$${convertToKMB(price, { maximumFractionDigits, isIgnoreKFormat: !isKMB })}`;
 };
 

@@ -35,8 +35,6 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
 
     return `$${convertToKMB(usd.toString(), { isIgnoreKFormat: true, maximumFractionDigits: 20 })}`;
   }, [usd, amount]);
-  console.log("🚀 ~ usdValue ~ usdValue:", usdValue);
-
 
   const changeAmount = useCallback((value: string) => {
     if (!token) {

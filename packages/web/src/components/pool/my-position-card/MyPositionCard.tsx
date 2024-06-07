@@ -30,7 +30,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
@@ -43,7 +43,6 @@ import { useCopy } from "@hooks/common/use-copy";
 import BigNumber from "bignumber.js";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import Button from "@components/common/button/Button";
-import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import { useGetPositionBins } from "@query/positions";
 import { toPriceFormat } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
@@ -71,7 +70,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const { width } = useWindowSize();
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
+  const GRAPH_WIDTH = useMemo(() => Math.min(width - (width > 767 ? 224 : 80), 1216), [width]);
   const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const [copied, setCopy] = useCopy();
   const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40);
@@ -323,24 +322,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const stringPrice = useMemo(() => {
     const price = tickToPriceStr(position?.pool?.currentTick, 40);
-
     if (isSwap) {
       return (
         <>
           1 {tokenB?.symbol} ={" "}
-          <ExchangeRate
-            value={convertToKMB(
-              `${Number(Number(1 / position?.pool?.price).toFixed(6))}`,
-              { maximumFractionDigits: 6 },
-            )}
-          />{" "}
+          {formatTokenExchangeRate(1 / position?.pool?.price)}
+          {" "}
           {tokenA?.symbol}
         </>
       );
     }
     return (
       <>
-        1 {tokenA?.symbol} = <ExchangeRate value={price} /> {tokenB?.symbol}
+        1 {tokenA?.symbol} = {formatTokenExchangeRate(price)} {tokenB?.symbol}
       </>
     );
   }, [
@@ -421,30 +415,25 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       estimateTick(minTickPosition, GRAPH_WIDTH) === 0 &&
       estimateTick(maxTickPosition, GRAPH_WIDTH) === GRAPH_WIDTH
     );
-  }, [minTickPosition, maxTickPosition]);
+  }, [minTickPosition, GRAPH_WIDTH, maxTickPosition]);
 
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
     const maxPrice = tickToPrice(position.tickUpper);
     const minPrice = tickToPriceStr(position.tickLower, 40, isEndTick);
-    const tokenAPriceStr = isFullRange
-      ? "0 "
-      : !isSwap
-        ? Number(minPrice)
-        : convertToKMB(`${Number(1 / Number(maxPrice))}`, {
-          maximumFractionDigits: 6,
-        });
-    return `${tokenAPriceStr}`;
-  }, [
-    position.tickUpper,
-    position.tickLower,
-    tokenB.path,
-    tokenB.symbol,
-    tokenA.path,
-    tokenA.symbol,
-    isFullRange,
-    isSwap,
-  ]);
+
+    if (minPrice && isNaN(Number(minPrice))) {
+      return minPrice;
+    }
+
+    if (isFullRange) return "0 ";
+
+    if (!isSwap) {
+      return formatTokenExchangeRate(minPrice);
+    }
+
+    return formatTokenExchangeRate(`${Number(1 / Number(maxPrice))}`);
+  }, [position.tickLower, position.pool.fee, position.tickUpper, isFullRange, isSwap]);
 
   const currentPrice = useMemo(() => {
     return !isSwap
@@ -491,13 +480,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [
     position.tickLower,
     position.tickUpper,
-    tokenB.path,
-    tokenB.symbol,
-    tokenA.path,
-    tokenA.symbol,
-    maxTickRate,
     isFullRange,
     isSwap,
+    position.pool.fee,
   ]);
 
   const minTickLabel = useMemo(() => {
@@ -896,7 +881,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <div>
                 1&nbsp;
                 {(!isSwap ? tokenA : tokenB)?.symbol} =&nbsp;
-                <ExchangeRate value={minPriceStr} />&nbsp;
+                {formatTokenExchangeRate(minPriceStr)}&nbsp;
                 {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(<span className={startClass}>{!isSwap ? minTickLabel : maxTickLabel}</span>)&nbsp;
                 <Tooltip
                   placement="top"
@@ -914,7 +899,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </div>
               <div>
                 ~&nbsp;
-                <ExchangeRate value={maxPriceStr} /> &nbsp;
+                {formatTokenExchangeRate(maxPriceStr)} &nbsp;
                 {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={endClass}>
                   {!isSwap ? maxTickLabel : minTickLabel}

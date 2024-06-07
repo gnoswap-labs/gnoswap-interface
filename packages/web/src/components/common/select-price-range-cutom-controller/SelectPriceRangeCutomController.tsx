@@ -16,7 +16,7 @@ import React, {
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 import IconAdd from "../icons/IconAdd";
 import IconRemove from "../icons/IconRemove";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isNumber, removeTrailingZeros, subscriptFormat } from "@utils/number-utils";
 
 export interface SelectPriceRangeCustomControllerProps {
@@ -31,7 +31,7 @@ export interface SelectPriceRangeCustomControllerProps {
   changePrice: (price: number) => void;
   decrease: () => void;
   increase: () => void;
-  currentPriceStr: JSX.Element | string;
+  // currentPriceStr: JSX.Element | string;
   setIsChangeMinMax: (value: boolean) => void;
   priceRatio?: number;
 }
@@ -164,15 +164,12 @@ const SelectPriceRangeCustomController = forwardRef<
     const currentValue = BigNumber(current).toNumber();
     const { maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
 
-    if (currentValue < 1 && currentValue !== 0) {
-      return subscriptFormat(BigNumber(current).toFixed());
-    }
 
     if (currentValue / maxPrice > 0.9) {
       return "∞";
     }
 
-    return convertToKMB(Number(current).toFixed());
+    return formatTokenExchangeRate(Number(current));
   }, [current, feeTier]);
 
   const priceValueString = (
