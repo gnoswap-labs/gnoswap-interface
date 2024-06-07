@@ -12,6 +12,9 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useLoading } from "@hooks/common/use-loading";
+import { getServerSideProps } from "./index";
+
+export { getServerSideProps };
 
 export default function Pool() {
   const router = useRouter();

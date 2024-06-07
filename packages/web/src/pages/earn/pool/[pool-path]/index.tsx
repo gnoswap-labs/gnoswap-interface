@@ -12,13 +12,57 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useLoading } from "@hooks/common/use-loading";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { API_URL } from "@constants/environment.constant";
+import { PoolResponse } from "@repositories/pool";
+import { PoolModel } from "@models/pool/pool-model";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import { encryptId } from "@utils/common";
+import { HTTP_5XX_ERROR } from "@constants/common.constant";
 
-export default function Pool() {
+export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async (context) => {
+  const poolPath = (context.query["pool-path"] || "") as string;
+  const positionId = (context.query["position-id"] || "") as string;
+
+  if (positionId) {
+
+  }
+
+  const res = await fetch(API_URL + "/pools/" + encodeURIComponent(encryptId(poolPath)));
+
+  if (HTTP_5XX_ERROR.includes(res.status)) {
+    return {
+      redirect: {
+        destination: "/500",
+        permanent: false
+      }
+    };
+  }
+
+  if (res.status === 404) {
+    return { notFound: true };
+  }
+
+  if (res.status === 200) {
+    const poolRes = (await res.json()).data as PoolResponse;
+
+    return {
+      props: {
+        pool: PoolMapper.fromResponse(poolRes)
+      }
+    };
+  }
+
+  return { props: {} };
+});
+
+export default function Pool({ pool }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const { account } = useWallet();
   const poolPath = router.query["pool-path"] || "";
-  const { data = null } = useGetPoolDetailByPath(poolPath as string, {
+  const { data = pool } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
+    initialData: pool
   });
   const { isLoading: isLoadingCommon } = useLoading();
 
