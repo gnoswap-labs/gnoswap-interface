@@ -129,17 +129,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     );
   }, [currentTokenA.symbol, currentTokenB.symbol, currentPrice]);
 
-  const currentPriceStrReverse = useMemo(() => {
-    if (!selectPool.currentPrice) {
-      return "-";
-    }
-    const currentPrice = convertToKMB(
-      (1 / selectPool.currentPrice).toString(),
-      { maximumFractionDigits: 4 },
-    );
-    return `1 ${currentTokenB.symbol} = ${currentPrice} ${currentTokenA.symbol}`;
-  }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
-
   const availZoomIn = useMemo(() => {
     return selectPool.zoomLevel < ZOOL_VALUES.length - 1;
   }, [selectPool.zoomLevel]);
@@ -295,21 +284,19 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <div className="button-option-contaier">
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${
-                        isLoading || showDim || !availMoveLeft
-                          ? "disabled-option"
-                          : ""
-                      }`}
+                      className={`graph-option-item decrease ${isLoading || showDim || !availMoveLeft
+                        ? "disabled-option"
+                        : ""
+                        }`}
                       onClick={moveLeft}
                     >
                       <IconKeyboardArrowLeft />
                     </span>
                     <span
-                      className={`graph-option-item increase ${
-                        isLoading || showDim || !availMoveRight
-                          ? "disabled-option"
-                          : ""
-                      }`}
+                      className={`graph-option-item increase ${isLoading || showDim || !availMoveRight
+                        ? "disabled-option"
+                        : ""
+                        }`}
                       onClick={moveRight}
                     >
                       <IconKeyboardArrowRight />
@@ -317,21 +304,19 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   </div>
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${
-                        isLoading || showDim || !availZoomOut
-                          ? "disabled-option"
-                          : ""
-                      }`}
+                      className={`graph-option-item decrease ${isLoading || showDim || !availZoomOut
+                        ? "disabled-option"
+                        : ""
+                        }`}
                       onClick={zoomOut}
                     >
                       <IconRemove />
                     </span>
                     <span
-                      className={`graph-option-item increase ${
-                        isLoading || showDim || !availZoomIn
-                          ? "disabled-option"
-                          : ""
-                      }`}
+                      className={`graph-option-item increase ${isLoading || showDim || !availZoomIn
+                        ? "disabled-option"
+                        : ""
+                        }`}
                       onClick={zoomIn}
                     >
                       <IconAdd />
@@ -405,7 +390,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       changePrice={selectPool.setMinPosition}
                       decrease={selectPool.decreaseMinTick}
                       increase={selectPool.increaseMinTick}
-                      currentPriceStr={currentPriceStr}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
                     />
                     <SelectPriceRangeCutomController
@@ -420,7 +404,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       changePrice={selectPool.setMaxPosition}
                       decrease={selectPool.decreaseMaxTick}
                       increase={selectPool.increaseMaxTick}
-                      currentPriceStr={currentPriceStrReverse}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
                     />
                   </div>
