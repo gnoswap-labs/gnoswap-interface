@@ -108,11 +108,11 @@ const DashboardInfoContainer: React.FC = () => {
       dashboardTokenInfo={{
         gnosAmount: toPriceFormat(tokenData?.gnsPrice ?? "0", {
           usd: true,
-          isFormat: false,
+          isKMBFormat: false,
         }),
         gnotAmount: toPriceFormat(tokenData?.gnotPrice ?? "0", {
           usd: true,
-          isFormat: false,
+          isKMBFormat: false,
         }),
       }}
       supplyOverviewInfo={{

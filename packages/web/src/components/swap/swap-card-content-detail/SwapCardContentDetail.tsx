@@ -12,7 +12,7 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
-import { convertToMB } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 
 interface ContentProps {
@@ -48,8 +48,8 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
 
   const swapRate1USD = useMemo(() => {
     const swapRate1USD = swapSummaryInfo.swapRate1USD;
-    return convertToMB(formatUsdNumber3Digits(swapRate1USD));
-  }, [swapSummaryInfo.swapRate1USD, swapSummaryInfo.swapRateAction]);
+    return convertToKMB(formatUsdNumber3Digits(swapRate1USD), { isIgnoreKFormat: true });
+  }, [swapSummaryInfo.swapRate1USD]);
 
   const gasFeeUSDStr = useMemo(() => {
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
@@ -82,6 +82,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
                 {breakpoint !== DEVICE_TYPE.MOBILE && (
                   <span className="exchange-price">{`($${swapRate1USD})`}</span>
                 )}
+
               </div>
             )}
             {isLoading && (

@@ -1,9 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useMemo } from "react";
 import { RemoveLiquiditySelectListItemWrapper, TokenTitleWrapper, TokenValueWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-// import { convertToMB } from "@utils/stake-position-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { tooltipWrapper } from "@components/stake/select-lilquidity-list-item/SelectLiquidityListItem.styles";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";

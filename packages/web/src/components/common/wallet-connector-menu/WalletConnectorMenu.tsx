@@ -126,7 +126,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     const price = BigNumber(formattedPrice).toFormat();
 
     return `${price} GNOT` || "0 GNOT";
-  }, [account?.balances, gnotBalance]);
+  }, [account?.balances, gnotBalance, gnotToken?.decimals, isLoadingGnotBalance]);
 
   const onClickDisconnect = useCallback(() => {
     disconnectWallet();

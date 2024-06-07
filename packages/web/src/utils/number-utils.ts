@@ -5,7 +5,7 @@ import {
 } from "@common/values/global-initial-value";
 import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import BigNumber from "bignumber.js";
-import { convertToKMB, convertToMB } from "./stake-position-utils";
+import { convertToKMB } from "./stake-position-utils";
 
 export const isNumber = (value: BigNumber | string | number): boolean => {
   const reg = /^-?\d+\.?\d*$/;
@@ -135,12 +135,12 @@ export const toPriceFormat = (
   value: BigNumber | string | number,
   options: {
     usd?: boolean,
-    isFormat?: boolean,
+    isKMBFormat?: boolean,
     isSmallValueShorten?: boolean,
     isRounding?: boolean,
-  } | undefined = {
+  } = {
       usd: false,
-      isFormat: true,
+      isKMBFormat: true,
       isSmallValueShorten: false,
       isRounding: true
     }): string => {
@@ -151,34 +151,37 @@ export const toPriceFormat = (
 
   const bigNumber = BigNumber(value);
   const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
+  const prefix = (options.usd ? "$" : "");
 
-  if (wholeNumberLength >= 10 && options.isFormat)
-    return (
-      (options.usd ? "$" : "") +
-      bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
-      unitsUpperCase.billion
-    );
-  if (wholeNumberLength >= 7 && options.isFormat)
-    return (
-      (options.usd ? "$" : "") +
-      bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
-      unitsUpperCase.million
-    );
+  if (options.isKMBFormat) {
+    if (wholeNumberLength >= 10)
+      return (
+        prefix +
+        bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
+        unitsUpperCase.billion
+      );
 
-  if (wholeNumberLength >= 4 && options.isFormat)
-    return (
-      (options.usd ? "$" : "") +
-      bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
-      unitsUpperCase.thousand
-    );
+    if (wholeNumberLength >= 7)
+      return (
+        prefix +
+        bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
+        unitsUpperCase.million
+      );
 
-  // TODO : Else Return Type
-  if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0) && options.isSmallValueShorten) {
-    return (options.usd ? "<$" : "<$") + "0.01";
+    if (wholeNumberLength >= 4)
+      return (
+        prefix +
+        bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
+        unitsUpperCase.thousand
+      );
   }
 
-  if (Number(bigNumber) === 0) {
-    return (options.usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed();
+  if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0) && options.isSmallValueShorten) {
+    return (options.usd ? "<$" : "<") + "0.01";
+  }
+
+  if (bigNumber.isEqualTo(0)) {
+    return prefix + bigNumber.decimalPlaces(2).toFixed();
   }
 
   if (Number(bigNumber) < 1) {
@@ -187,10 +190,10 @@ export const toPriceFormat = (
         maximumSignificantDigits: 4,
         minimumSignificantDigits: 4,
       });
-      return (options.usd ? "$" : "") + tempNum.substring(0, tempNum.length - 1);
+      return prefix + tempNum.substring(0, tempNum.length - 1);
     }
 
-    return (options.usd ? "$" : "") + bigNumber.toNumber().toLocaleString("en-US", {
+    return prefix + bigNumber.toNumber().toLocaleString("en-US", {
       maximumSignificantDigits: 3,
     });
   }
@@ -202,10 +205,10 @@ export const toPriceFormat = (
   const [, decimalPart] = tempNum.split(".");
 
   if (!options.isRounding && !bigNumber.isInteger() && decimalPart?.length >= 3) {
-    return (options.usd ? "$" : "") + tempNum.substring(0, tempNum.length - 1);
+    return prefix + tempNum.substring(0, tempNum.length - 1);
   }
 
-  return (options.usd ? "$" : "") + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });
+  return prefix + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });
 };
 
 /**
@@ -296,12 +299,10 @@ export function prettyNumber(val: string | number) {
 }
 
 export function prettyNumberFloatInteger(val: string | number, isKMB?: boolean) {
-  const func = isKMB ? convertToKMB : convertToMB;
-
   if (Number.isInteger(Number(val))) {
-    return func(val.toString());
+    return convertToKMB(val.toString(), { isIgnoreKFormat: !isKMB });
   } else {
-    return func(val.toString(), 6);
+    return convertToKMB(val.toString(), { isIgnoreKFormat: !isKMB, maximumFractionDigits: 6 });
   }
 }
 

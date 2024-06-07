@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useMemo } from "react";
 import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";

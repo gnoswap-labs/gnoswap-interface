@@ -2,7 +2,7 @@ import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokenData } from "./use-token-data";
-import { convertToMB } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import { checkGnotPath } from "@utils/common";
 
 export interface TokenAmountInputModel {
@@ -29,12 +29,14 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   }, [displayBalanceMap, token]);
 
   const usdValue = useMemo(() => {
-
     if (!usd || !(Number(amount))) {
       return "-";
     }
-    return `$${convertToMB(usd.toString())}`;
+
+    return `$${convertToKMB(usd.toString(), { isIgnoreKFormat: true, maximumFractionDigits: 20 })}`;
   }, [usd, amount]);
+  console.log("🚀 ~ usdValue ~ usdValue:", usdValue);
+
 
   const changeAmount = useCallback((value: string) => {
     if (!token) {

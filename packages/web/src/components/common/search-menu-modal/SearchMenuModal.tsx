@@ -155,7 +155,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     }
 
     return path_.replace("gno.land", "...");
-  }, []);
+  }, [length]);
 
   return (
     <>
