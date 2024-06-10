@@ -271,7 +271,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return acc + Number(current.accumulatedRewardOf1dUsd);
     }, 0);
 
-    return toPriceFormat(totalDailyEarningValue, { usd: true, isSmallValueShorten: true });
+    return toPriceFormat(
+      totalDailyEarningValue, {
+      usd: true,
+      isSmallValueShorten: true,
+      isRounding: false,
+    });
   }, [isClosed, totalRewardInfo]);
 
 
@@ -321,7 +326,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }, [position.reward]);
 
   const stringPrice = useMemo(() => {
-    const price = tickToPriceStr(position?.pool?.currentTick, 40);
+    const price = tickToPriceStr(position?.pool?.currentTick, {
+      decimals: 40,
+      isFormat: false,
+    });
     if (isSwap) {
       return (
         <>
@@ -420,7 +428,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
     const maxPrice = tickToPrice(position.tickUpper);
-    const minPrice = tickToPriceStr(position.tickLower, 40, isEndTick);
+    const minPrice = tickToPriceStr(
+      position.tickLower, {
+      isEnd: isEndTick,
+      decimals: 40,
+    },);
 
     if (minPrice && isNaN(Number(minPrice))) {
       return minPrice;
@@ -460,7 +472,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     const minPrice = tickToPrice(position.tickLower);
 
-    const maxPrice = tickToPriceStr(position.tickUpper, 40, isEndTick);
+    const maxPrice = tickToPriceStr(
+      position.tickUpper, {
+      isEnd: isEndTick,
+      decimals: 40,
+    });
 
     if (isFullRange) {
       return "∞";

@@ -51,6 +51,9 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
     if (!value || BigNumber(value).isZero()) {
       return "$0";
     }
+    if (BigNumber(value).isLessThan(0.01)) {
+      return "<$0.01";
+    }
     return `$${numberToFormat(value, { decimals: 2, forceDecimals: true })}`;
   }, [value]);
 

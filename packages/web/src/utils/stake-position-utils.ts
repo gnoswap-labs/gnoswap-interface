@@ -78,6 +78,7 @@ export const convertToKMB = (
     maximumSignificantDigits?: number,
     isIgnoreKFormat?: boolean,
     usd?: boolean,
+    ignoreSmallValueFormat?: boolean,
   }): string => {
   if (Number.isNaN(Number(price.replace(/,/g, "")))) return "-";
   const numberPrice = Number(price.replace(/,/g, ""));

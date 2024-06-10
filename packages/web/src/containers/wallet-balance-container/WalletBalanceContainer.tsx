@@ -198,6 +198,7 @@ const WalletBalanceContainer: React.FC = () => {
       totalClaimedRewards: 0,
     },
   );
+  console.log("🚀 ~ claimableRewards:", claimableRewards);
 
   const sumTotalBalance = useMemo(() => {
     return BigNumber(availableBalance)

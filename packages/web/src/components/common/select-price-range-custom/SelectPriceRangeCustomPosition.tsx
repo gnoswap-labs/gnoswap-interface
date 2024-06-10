@@ -7,7 +7,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { tickToPrice } from "@utils/swap-utils";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import IconAdd from "../icons/IconAdd";
@@ -23,7 +23,6 @@ import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
-import { subscriptFormat } from "@utils/number-utils";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -115,7 +114,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       return (
         <>
           1 {currentTokenA.symbol} =&nbsp;
-          {convertToKMB(currentPrice.toString())}&nbsp;
+          {formatTokenExchangeRate(currentPrice.toString())}&nbsp;
           {currentTokenB.symbol}
         </>
       );
@@ -124,7 +123,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     return (
       <>
         1 {currentTokenA.symbol} =&nbsp;
-        {subscriptFormat(currentPrice)}&nbsp;{currentTokenB.symbol}
+        {currentPrice}&nbsp;{currentTokenB.symbol}
       </>
     );
   }, [currentTokenA.symbol, currentTokenB.symbol, currentPrice]);

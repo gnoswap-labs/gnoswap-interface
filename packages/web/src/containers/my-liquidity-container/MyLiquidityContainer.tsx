@@ -159,7 +159,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const filteredPosition = useMemo(() => {
     if (isShowClosePosition) return positions;
 
-    return positions.filter(item => item.closed === false);
+    return positions.filter(item => item.closed === false)
+      .sort((a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue));
   }, [isShowClosePosition, positions]);
 
   const handleSetIsClosePosition = () => {

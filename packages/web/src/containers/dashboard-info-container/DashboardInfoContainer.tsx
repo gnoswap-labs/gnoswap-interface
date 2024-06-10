@@ -125,7 +125,11 @@ const DashboardInfoContainer: React.FC = () => {
         totalStaked: (() => {
           if (isNaN(Number(tokenData?.gnsTotalStaked ?? 0))) return "-";
 
-          return formatPrice(tokenData?.gnsTotalStaked, "GNS");
+          return toPriceFormat(
+            tokenData?.gnsTotalStaked ?? 0, {
+            isKMBFormat: false,
+            isRounding: false
+          }) + " GNS";
         })(),
         progressBar: progressBar,
         stakingRatio: stakingRatio,

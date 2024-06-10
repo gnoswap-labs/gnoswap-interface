@@ -476,7 +476,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           })
           .reduce<{ [key in number]: string }>((acc, current) => {
             if (!acc[current]) {
-              acc[current] = tickToPriceStr(current, 40).toString();
+              acc[current] = tickToPriceStr(current, { decimals: 40 }).toString();
             }
             return acc;
           }, {});

@@ -124,7 +124,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
   const currentPrice = useMemo(() => {
-    return tickToPriceStr(pool.currentTick, 40);
+    return tickToPriceStr(pool.currentTick, { decimals: 40 });
   }, [pool?.currentTick]);
 
   const feeLogo = useMemo(() => {
@@ -235,8 +235,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             <div className="wrapper-value">
               <strong>{volumeValue}</strong>
               <div>
-                {pool.volumeChange24h > 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}{" "}
-                <span className={pool.volumeChange24h > 0 ? "positive" : "negative"}> {volumeChangedStr}</span>
+                {pool.volumeChange24h >= 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}{" "}
+                <span className={pool.volumeChange24h >= 0 ? "positive" : "negative"}> {volumeChangedStr}</span>
               </div>
             </div>
           )}

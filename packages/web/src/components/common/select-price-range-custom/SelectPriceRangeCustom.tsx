@@ -36,7 +36,6 @@ import IconKeyboardArrowRight from "../icons/IconKeyboardArrowRight";
 import IconInfo from "../icons/IconInfo";
 import Tooltip from "../tooltip/Tooltip";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { subscriptFormat } from "@utils/number-utils";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
@@ -371,10 +370,6 @@ const SelectPriceRangeCustom = forwardRef<
 
     const formatStartingPrice = useMemo(() => {
       if (tempPrice) {
-        if (Number(tempPrice) < 1) {
-          return subscriptFormat(tempPrice);
-        }
-
         return tempPrice;
       }
 

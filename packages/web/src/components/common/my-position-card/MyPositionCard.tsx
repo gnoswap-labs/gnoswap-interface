@@ -214,7 +214,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
-    const minPrice = tickToPriceStr(position.tickLower, 40, isEndTick);
+    const minPrice = tickToPriceStr(
+      position.tickLower, {
+      decimals: 40,
+      isEnd: isEndTick
+    });
     const tokenAPriceStr = isFullRange ? "0 " : minPrice;
     return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
   }, [
@@ -228,7 +232,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const maxPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
-    const maxPrice = tickToPriceStr(position.tickUpper, 40, isEndTick);
+    const maxPrice = tickToPriceStr(
+      position.tickUpper, {
+      decimals: 40,
+      isEnd: isEndTick
+    });
     const tokenBPriceStr = isFullRange ? "∞ " : maxPrice;
     return `${tokenBPriceStr}`;
   }, [

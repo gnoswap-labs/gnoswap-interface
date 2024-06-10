@@ -77,7 +77,11 @@ export const useIncreaseHandle = () => {
       selectedPosition?.tickLower,
       selectedPosition?.pool.fee,
     );
-    const minPrice = tickToPriceStr(selectedPosition?.tickLower, 40, isEndTick);
+    const minPrice = tickToPriceStr(
+      selectedPosition?.tickLower, {
+      decimals: 40,
+      isEnd: isEndTick
+    });
 
     return `${minPrice}`;
   }, [selectedPosition?.tickUpper, selectedPosition?.tickLower]);
@@ -89,7 +93,11 @@ export const useIncreaseHandle = () => {
       selectedPosition?.pool.fee,
     );
 
-    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, 40, isEndTick);
+    const maxPrice = tickToPriceStr(
+      selectedPosition?.tickUpper, {
+      decimals: 40,
+      isEnd: isEndTick
+    });
 
     return maxPrice;
   }, [selectedPosition?.tickLower, selectedPosition?.tickUpper]);

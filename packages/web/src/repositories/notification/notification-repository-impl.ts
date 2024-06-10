@@ -136,6 +136,11 @@ export class NotificationRepositoryImpl implements NotificationRepository {
        **/
       if (removedTxs.includes(tx.txHash)) continue;
 
+      /**
+       * *If tx both amounts are `0` ignore it
+       **/
+      if (!Number(tx.tokenAAmount) && !Number(tx.tokenBAmount)) continue;
+
       const tokenA = {
         ...tx.tokenA,
         symbol: this.replaceToken(tx.tokenA?.symbol),
@@ -158,15 +163,17 @@ export class NotificationRepositoryImpl implements NotificationRepository {
         isRead: seenTxs.includes(tx.txHash), // * Check if transaction is already seen
       };
 
-      if (transactionDate.isSame(today, "day")) {
-        todayTransactions.push(txModel);
-      } else if (transactionDate.isAfter(today.subtract(7, "day"))) {
-        pastWeekTransactions.push(txModel);
-      } else if (transactionDate.isAfter(today.subtract(30, "day"))) {
-        pastMonthTransactions.push(txModel);
-      } else {
-        olderTransactions.push(txModel);
-      }
+      if (tokenA)
+
+        if (transactionDate.isSame(today, "day")) {
+          todayTransactions.push(txModel);
+        } else if (transactionDate.isAfter(today.subtract(7, "day"))) {
+          pastWeekTransactions.push(txModel);
+        } else if (transactionDate.isAfter(today.subtract(30, "day"))) {
+          pastMonthTransactions.push(txModel);
+        } else {
+          olderTransactions.push(txModel);
+        }
     }
 
     const res = [];

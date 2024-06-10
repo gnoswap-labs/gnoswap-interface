@@ -347,6 +347,7 @@ export const formatUSDWallet = (
   value: BigNumber | string | number,
   usd = false,
 ): string => {
+  console.log("🚀 ~ value:", value);
   if (!isNumber(value)) {
     // TODO : Error Check
     return usd ? "$0" : "0";

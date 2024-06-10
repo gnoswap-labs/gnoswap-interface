@@ -31,7 +31,6 @@ export interface SelectPriceRangeCustomControllerProps {
   changePrice: (price: number) => void;
   decrease: () => void;
   increase: () => void;
-  // currentPriceStr: JSX.Element | string;
   setIsChangeMinMax: (value: boolean) => void;
   priceRatio?: number;
 }
