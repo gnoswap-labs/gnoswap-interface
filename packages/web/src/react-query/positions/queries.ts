@@ -32,8 +32,6 @@ export const useGetPositionsByAddress = (
       options?.isClosed,
     ].filter(item => (item !== undefined)),
     queryFn: async () => {
-      console.log("🚀 ~ options?.poolPath:", options?.poolPath);
-
       const data = await positionRepository
         .getPositionsByAddress(options?.address || account?.address || "", {
           isClosed: options?.isClosed,
@@ -45,7 +43,7 @@ export const useGetPositionsByAddress = (
         });
       return data;
     },
-    enabled: (!!options?.address || !!account?.address) && !!options?.poolPath,
+    enabled: (!!options?.address || !!account?.address),
     ...options?.queryOptions,
   });
 };

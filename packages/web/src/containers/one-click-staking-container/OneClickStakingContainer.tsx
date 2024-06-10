@@ -37,7 +37,6 @@ const OneClickStakingContainer: React.FC = () => {
 
     return [...tokenPair, feeTier].join(":");
   }, [router.query, tokenPair]);
-  console.log("🚀 ~ poolPath ~ poolPath:", poolPath);
 
   const { data: positions = [], isLoading: isLoadingPosition } = useGetPositionsByAddress({
     isClosed: false,
