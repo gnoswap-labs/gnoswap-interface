@@ -70,11 +70,16 @@ export const IncreaseSelectPositionWrapper = styled.div<Props>`
     gap: 2px;
   }
   .min {
-    padding: 16px 0;
+    padding: 16px 8px;
     flex: 1;
+    overflow: hidden;
     ${mixins.flexbox("column", "center", "center")};
     gap: 8px;
     p {
+      text-align: center;
+      width: 100%;
+      text-overflow: ellipsis;
+      overflow: hidden;
       ${fonts.body12}
       color: ${({ theme }) => theme.color.text04};
 

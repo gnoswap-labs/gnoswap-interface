@@ -249,7 +249,8 @@ const SelectPriceRangeCustom = forwardRef<
     const onChangeStartingPrice = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        setStartingPriceValue(value);
+        const formattedValue = value.replace(/[^0-9.]/, "");
+        setStartingPriceValue(formattedValue);
       },
       [],
     );
@@ -414,6 +415,7 @@ const SelectPriceRangeCustom = forwardRef<
               onBlur={updateStartingPrice}
               onFocus={() => setTempPrice("")}
               placeholder="Enter price"
+              type={"nu"}
             />
           </StartingPriceWrapper>
         )}

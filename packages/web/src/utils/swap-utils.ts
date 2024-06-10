@@ -149,13 +149,9 @@ export function tickToPriceStr(
     return "0";
   }
 
-  if (options?.isFormat) {
-    return convertToKMB(result.replace(/,/g, ""), {
-      ignoreSmallValueFormat: true
-    });
-  }
-
-  return result;
+  return convertToKMB(result.replace(/,/g, ""), {
+    ignoreSmallValueFormat: true
+  });
 }
 
 export function feeBoostByPrices(

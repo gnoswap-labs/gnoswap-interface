@@ -55,7 +55,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       if (balance === "0") return 0;
 
       const result = BigNumber((balance.replace(/,/g, "")
-        .toString().match(roundDownDecimalNumber(2)))?.toString() ?? 0).toFormat();
+        .toString().match(roundDownDecimalNumber(2)))?.toString() ?? 0).toFormat(2);
 
       return result;
     }

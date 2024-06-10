@@ -215,12 +215,15 @@ export const useDecreaseHandle = () => {
     if (!selectedPosition) {
       return null;
     }
+    console.log("🚀 ~ constpooledTokenInfos:IPooledTokenInfo|null=useMemo ~ selectedPosition:", selectedPosition);
     const tokenA = selectedPosition.pool.tokenA;
     const tokenB = selectedPosition.pool.tokenB;
     const pooledTokenAAmount = selectedPosition.tokenABalance;
     const pooledTokenBAmount = selectedPosition.tokenBBalance;
     const unClaimTokenA = selectedPosition.unclaimedFeeAAmount;
+    console.log("🚀 ~ constpooledTokenInfos:IPooledTokenInfo|null=useMemo ~ unClaimTokenA:", unClaimTokenA);
     const unClaimTokenB = selectedPosition.unclaimedFeeBAmount;
+    console.log("🚀 ~ constpooledTokenInfos:IPooledTokenInfo|null=useMemo ~ unClaimTokenB:", unClaimTokenB);
 
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;

@@ -104,7 +104,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")
         .toString()
         .match(roundDownDecimalNumber(2))?.toString() ?? 0)
-        .toFormat();
+        .toFormat(2);
     }
     return "-";
   }, [isSwitchNetwork, connectedWallet, swapTokenInfo.tokenABalance]);
@@ -116,10 +116,26 @@ const SwapCardContent: React.FC<ContentProps> = ({
       return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")
         .toString()
         .match(roundDownDecimalNumber(2))?.toString() ?? 0)
-        .toFormat();
+        .toFormat(2);
     }
     return "-";
   }, [swapTokenInfo.tokenBBalance, connectedWallet, isSwitchNetwork]);
+
+  const tokenAAmount = useMemo(() => {
+    if (swapTokenInfo.tokenAAmount.includes("e")) {
+      return BigNumber(swapTokenInfo.tokenAAmount).toFixed();
+    }
+
+    return swapTokenInfo.tokenAAmount;
+  }, [swapTokenInfo.tokenAAmount]);
+
+  const tokenBAmount = useMemo(() => {
+    if (swapTokenInfo.tokenBAmount.includes("e")) {
+      return BigNumber(swapTokenInfo.tokenBAmount).toFixed();
+    }
+
+    return swapTokenInfo.tokenBAmount;
+  }, [swapTokenInfo.tokenBAmount]);
 
   return (
     <ContentWrapper>
@@ -127,7 +143,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-container">
           <input
             className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
-            value={swapTokenInfo.tokenAAmount ? BigNumber(swapTokenInfo.tokenAAmount).toFixed() : swapTokenInfo.tokenAAmount}
+            value={tokenAAmount}
             onChange={onChangeTokenAAmount}
             placeholder="0"
           />
@@ -155,7 +171,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-container">
           <input
             className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
-            value={swapTokenInfo.tokenBAmount ? BigNumber(swapTokenInfo.tokenBAmount).toFixed() : swapTokenInfo.tokenBAmount}
+            value={tokenBAmount}
             onChange={onChangeTokenBAmount}
             placeholder="0"
           />

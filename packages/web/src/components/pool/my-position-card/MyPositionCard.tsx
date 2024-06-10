@@ -326,10 +326,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }, [position.reward]);
 
   const stringPrice = useMemo(() => {
-    const price = tickToPriceStr(position?.pool?.currentTick, {
-      decimals: 40,
-      isFormat: false,
-    });
+    const price = tickToPriceStr(position?.pool?.currentTick, { decimals: 40 });
     if (isSwap) {
       return (
         <>

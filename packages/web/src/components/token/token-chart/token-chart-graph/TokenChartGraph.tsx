@@ -168,7 +168,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
         text: dayjs(datetime).format(formatInfo.format),
       };
     });
-  }, [xAxisRange, currentTab, size.width, scaleX]);
+  }, [xAxisRange, currentTab, size.width, scaleX, revertX]);
 
   // Filter the list of X-axis labels to display
   const displayXAxisLabels: XAxisLabel[] = useMemo(() => {

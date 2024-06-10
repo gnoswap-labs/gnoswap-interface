@@ -41,8 +41,8 @@ export const convertToMB = (price: string, maximumFractionDigits?: number) => {
 export const formatTokenExchangeRate = (
   inputNumber: string | number | BigNumber, options: {
     isIgnoreKFormat: boolean;
-    forcedIntegerDecimals: number;
-    maxSignificantDigits: number;
+    forcedIntegerDecimals?: number;
+    maxSignificantDigits?: number;
   } = {
       isIgnoreKFormat: false,
       forcedIntegerDecimals: 0,

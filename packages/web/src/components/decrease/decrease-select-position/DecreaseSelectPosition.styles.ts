@@ -32,8 +32,8 @@ export const DecreaseSelectPositionWrapper = styled.div<Props>`
   }
   h5 {
     color: ${({ isDisabled, theme }) => {
-      return isDisabled ? theme.color.text04 : theme.color.text10;
-    }};
+    return isDisabled ? theme.color.text04 : theme.color.text10;
+  }};
     ${fonts.body12}
   }
 
@@ -72,11 +72,16 @@ export const DecreaseSelectPositionWrapper = styled.div<Props>`
     gap: 2px;
   }
   .min {
-    padding: 16px 0;
+    padding: 16px 8px;
     flex: 1;
     ${mixins.flexbox("column", "center", "center")};
     gap: 8px;
+    overflow: hidden;
     p {
+      text-align: center;
+      width: 100%;
+      text-overflow: ellipsis;
+      overflow: hidden;
       ${fonts.body12}
       color: ${({ theme }) => theme.color.text04};
 

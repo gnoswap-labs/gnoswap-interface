@@ -103,7 +103,9 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       case "UNSTAKE":
         return `Unstaked <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "CLAIM":
-        return `Claimed <span>${token0Amount}</span> <span>${token0symbol}</span>`;
+        const token0Display = Number(tx?.tokenAAmount) ? `<span>${token0Amount}</span> <span>${token0symbol}</span>` : "";
+        const token1Display = Number(tx?.tokenAAmount) ? `and <span>${token1Amount}</span> <span>${token1symbol}</span>` : "";
+        return `Claimed ${token0Display} ${token1Display}`;
       case "WITHDRAW":
         return `Sent <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       case "DEPOSIT":
@@ -121,6 +123,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   groupTransactionsByDate = (
     transactions: AccountActivity[],
   ): TransactionGroupsType[] => {
+    console.log("🚀 ~ NotificationRepositoryImpl ~ transactions:", transactions.filter(item => item.actionType === "CLAIM"));
     const today = dayjs();
     const todayTransactions: TransactionModel[] = [];
     const pastWeekTransactions: TransactionModel[] = [];
@@ -130,7 +133,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     const removedTxs = this.getRemovedTx();
     const seenTxs = this.getSeenTx();
 
-    for (const tx of transactions ?? []) {
+    for (const tx of transactions.filter(item => item.actionType === "CLAIM") ?? []) {
       /**
        * *If tx is removed then ignore it
        **/

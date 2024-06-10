@@ -1,11 +1,9 @@
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import {
   MOBILE_POSITION_HISTORY_INFO,
-  MOBILE_POSITION_HISTORY_TD_WIDTH,
   POSITION_HISTORY_INFO,
-  POSITION_HISTORY_TD_WIDTH,
+  TableInfoType,
   TABLET_POSITION_HISTORY_INFO,
-  TABLET_POSITION_HISTORY_TD_WIDTH
 } from "@constants/skeleton.constant";
 import {
   TABLE_HEAD,
@@ -39,17 +37,10 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
   tokenB,
   isLoading,
 }) => {
-  const td =
-    breakpoint === DEVICE_TYPE.MOBILE
-      ? MOBILE_POSITION_HISTORY_TD_WIDTH
-      : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
-        ? TABLET_POSITION_HISTORY_TD_WIDTH
-        : POSITION_HISTORY_TD_WIDTH;
-
-  const sekeleton: any =
+  const sekeleton: TableInfoType =
     breakpoint === DEVICE_TYPE.MOBILE
       ? MOBILE_POSITION_HISTORY_INFO
-      : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
+      : (breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M)
         ? TABLET_POSITION_HISTORY_INFO
         : POSITION_HISTORY_INFO;
   return (
@@ -63,7 +54,7 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
                 left: idx < 2,
                 right: idx > 1,
               })}
-              tdWidth={td[idx]}
+              tdWidth={sekeleton.list[idx]?.width ?? 0}
             >
               <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}>
                 {idx === 3 ? `${tokenA?.symbol} Amount` : idx === 4 ? `${tokenB?.symbol} Amount` : head}

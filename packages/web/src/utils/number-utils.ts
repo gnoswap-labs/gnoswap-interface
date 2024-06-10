@@ -137,39 +137,43 @@ export const toPriceFormat = (
     isKMBFormat?: boolean,
     isSmallValueShorten?: boolean,
     isRounding?: boolean,
+    lestThan1Decimals?: number;
+    greaterThan1Decimals?: number;
+    forcedDecimals?: boolean;
   } = {
       usd: false,
       isKMBFormat: true,
       isSmallValueShorten: false,
-      isRounding: true
+      isRounding: true,
+      forcedDecimals: false,
     }): string => {
   if (!isNumber(value)) {
     // TODO : Error Check
     return options.usd ? "$0" : "0";
   }
-
-  const bigNumber = BigNumber(value);
-  const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
+  const bigNumber = BigNumber(value).abs();
+  const intDigitLength = bigNumber.abs().integerValue().toString().length;
   const prefix = (options.usd ? "$" : "");
+  const negativeSign = BigNumber(value).isLessThan(0) ? "-" : "";
 
   if (options.isKMBFormat) {
-    if (wholeNumberLength >= 10)
+    if (intDigitLength >= 10)
       return (
-        prefix +
+        negativeSign + prefix +
         bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
         unitsUpperCase.billion
       );
 
-    if (wholeNumberLength >= 7)
+    if (intDigitLength >= 7)
       return (
-        prefix +
+        negativeSign + prefix +
         bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
         unitsUpperCase.million
       );
 
-    if (wholeNumberLength >= 4)
+    if (intDigitLength >= 4)
       return (
-        prefix +
+        negativeSign + prefix +
         bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
         unitsUpperCase.thousand
       );
@@ -183,31 +187,42 @@ export const toPriceFormat = (
     return prefix + bigNumber.decimalPlaces(2).toFixed();
   }
 
+  const negativeSignLength = bigNumber.isLessThan(0) ? 1 : 0;
   if (Number(bigNumber) < 1) {
+    const lestThan1Decimals = (options.lestThan1Decimals ?? 3) + negativeSignLength;
+
     if (!options.isRounding) {
       const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
-        maximumSignificantDigits: 4,
-        minimumSignificantDigits: 4,
+        maximumSignificantDigits: lestThan1Decimals + 1,
+        minimumSignificantDigits: lestThan1Decimals + 1,
       });
-      return prefix + tempNum.substring(0, tempNum.length - 1);
+      return negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
     }
 
-    return prefix + bigNumber.toNumber().toLocaleString("en-US", {
-      maximumSignificantDigits: 3,
+    return negativeSign + prefix + bigNumber.toNumber().toLocaleString("en-US", {
+      maximumSignificantDigits: lestThan1Decimals,
+      minimumFractionDigits: options.forcedDecimals ? lestThan1Decimals : undefined
     });
   }
 
+  const greaterThan1Decimals = (options.greaterThan1Decimals ?? 2) + negativeSignLength;
+
   const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
-    maximumSignificantDigits: 3,
-    minimumFractionDigits: 3,
+    minimumFractionDigits: greaterThan1Decimals + 1,
+    maximumFractionDigits: greaterThan1Decimals + 1,
   });
   const [, decimalPart] = tempNum.split(".");
 
   if (!options.isRounding && !bigNumber.isInteger() && decimalPart?.length >= 3) {
-    return prefix + tempNum.substring(0, tempNum.length - 1);
+    return negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
   }
 
-  return prefix + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });
+  return negativeSign + prefix + bigNumber.decimalPlaces(greaterThan1Decimals)
+    .toNumber()
+    .toLocaleString("en", {
+      maximumFractionDigits: greaterThan1Decimals,
+      minimumFractionDigits: options.forcedDecimals ? greaterThan1Decimals : undefined
+    });
 };
 
 /**

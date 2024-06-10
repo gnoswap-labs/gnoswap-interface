@@ -217,7 +217,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const minPrice = tickToPriceStr(
       position.tickLower, {
       decimals: 40,
-      isEnd: isEndTick
+      isEnd: isEndTick,
     });
     const tokenAPriceStr = isFullRange ? "0 " : minPrice;
     return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
@@ -235,7 +235,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const maxPrice = tickToPriceStr(
       position.tickUpper, {
       decimals: 40,
-      isEnd: isEndTick
+      isEnd: isEndTick,
+      isFormat: true,
     });
     const tokenBPriceStr = isFullRange ? "∞ " : maxPrice;
     return `${tokenBPriceStr}`;
@@ -311,7 +312,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return acc + Number(current.accuReward1D ?? 0) * currentTokenPrice;
     }, 0);
 
-    return toPriceFormat(value, { usd: true });
+    return toPriceFormat(
+      value, {
+      usd: true,
+      isRounding: false,
+      lestThan1Decimals: 2,
+      forcedDecimals: true,
+    });
   }, [position.reward, tokenPrices]);
 
   return (

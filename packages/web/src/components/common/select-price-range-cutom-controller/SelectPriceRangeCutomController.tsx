@@ -99,10 +99,10 @@ const SelectPriceRangeCustomController = forwardRef<
       return;
     }
     const currentValue = BigNumber(value).multipliedBy(priceRatio ?? 1).toNumber();
-    if (currentValue < 0.00000001) {
-      setDisplayValue("0");
-      return;
-    }
+    // if (currentValue < 0.00000001) {
+    //   setDisplayValue("0");
+    //   return;
+    // }
     const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
     if (currentValue <= minPrice) {
       setDisplayValue("0");
@@ -161,8 +161,15 @@ const SelectPriceRangeCustomController = forwardRef<
     }
 
     const currentValue = BigNumber(current).toNumber();
-    const { maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
+    const { maxPrice, minPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
 
+    if (currentValue < minPrice) {
+      return "0";
+    }
+
+    if (currentValue < 1 && currentValue !== 0) {
+      return subscriptFormat(BigNumber(current).toFixed());
+    }
 
     if (currentValue / maxPrice > 0.9) {
       return "∞";

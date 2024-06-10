@@ -11,7 +11,6 @@ import { useCallback, useEffect, useMemo } from "react";
 import { TokenAmountInputModel } from "./use-token-amount-input";
 import { priceToNearTick } from "@utils/swap-utils";
 import { SelectPool } from "@hooks/pool/use-select-pool";
-import { numberToFormat } from "@utils/string-utils";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { useTokenData } from "./use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -23,11 +22,12 @@ import {
 } from "@hooks/common/use-broadcast-handler";
 import { CreatePoolResponse } from "@repositories/pool/response/create-pool-response";
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { useGetPoolCreationFee } from "@query/pools";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
+import { subscriptFormat } from "@utils/number-utils";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -169,6 +169,27 @@ export const useEarnAddLiquidityConfirmModal = ({
     tokenBAmountInput.usdValue,
   ]);
 
+  const formatPriceDisplay = (price: number) => {
+    if (price === null || BigNumber(Number(price)).isNaN() || !swapFeeTier) {
+      return "-";
+    }
+
+    const { maxPrice } = SwapFeeTierMaxPriceRangeMap[swapFeeTier || "NONE"];
+
+    const currentValue = BigNumber(price).toNumber();
+
+    if (currentValue < 1 && currentValue !== 0) {
+      return subscriptFormat(BigNumber(price).toFixed());
+    }
+
+
+    if (currentValue / maxPrice > 0.9) {
+      return "∞";
+    }
+
+    return formatTokenExchangeRate(Number(price));
+  };
+
   const priceRangeInfo = useMemo(() => {
     if (!selectPool) {
       return null;
@@ -195,19 +216,15 @@ export const useEarnAddLiquidityConfirmModal = ({
       };
     }
 
-    const { minPrice, maxPrice } =
+    const { minPrice } =
       SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
     let minPriceStr = "0.0000";
     let maxPriceStr = "0.0000";
     if (selectPool.minPrice && selectPool.minPrice > minPrice) {
-      minPriceStr = numberToFormat(selectPool.minPrice, { decimals: 4 });
+      minPriceStr = formatPriceDisplay(selectPool.minPrice);
     }
     if (selectPool.maxPrice) {
-      if (selectPool.maxPrice / maxPrice > 0.9) {
-        maxPriceStr = "∞";
-      } else {
-        maxPriceStr = numberToFormat(selectPool.maxPrice, { decimals: 4 });
-      }
+      maxPriceStr = formatPriceDisplay(selectPool.maxPrice);
     }
     const feeBoost =
       selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
@@ -230,18 +247,8 @@ export const useEarnAddLiquidityConfirmModal = ({
       inRange,
       minPrice: minPriceStr,
       maxPrice: maxPriceStr,
-      priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr === "∞"
-        ? minPriceStr
-        : convertToKMB(Number(minPriceStr).toFixed(4), {
-          maximumFractionDigits: 4,
-        })
-        } ${tokenBSymbol}`,
-      priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr === "∞"
-        ? maxPriceStr
-        : convertToKMB(Number(maxPriceStr).toFixed(4), {
-          maximumFractionDigits: 4,
-        })
-        } ${tokenBSymbol}`,
+      priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr} ${tokenBSymbol}`,
+      priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr} ${tokenBSymbol}`,
       feeBoost,
       estimatedAPR: "N/A",
     };
