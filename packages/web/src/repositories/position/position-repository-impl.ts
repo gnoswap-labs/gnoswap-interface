@@ -99,11 +99,20 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   getPositionsByAddress = async (
     address: string,
-    options?: { isClosed?: boolean },
+    options?: {
+      isClosed?: boolean,
+      poolPath?: string,
+    },
   ): Promise<PositionModel[]> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
+    const queries = [
+      (options?.isClosed !== undefined ? `closed=${options.isClosed}` : ""),
+      (options?.poolPath !== undefined ? `poolPath=${options.poolPath}` : "")
+    ];
+    const queryString = queries.filter(item => !!item).join("&");
+
     const response = await this.networkClient.get<{
       data: PositionListResponse;
     }>({
@@ -111,7 +120,7 @@ export class PositionRepositoryImpl implements PositionRepository {
         "/users/" +
         address +
         "/position" +
-        (options?.isClosed !== undefined ? `?closed=${options.isClosed}` : ""),
+        (queryString ? `?${queryString}` : "")
     });
     if (!response?.data?.data) {
       return [];

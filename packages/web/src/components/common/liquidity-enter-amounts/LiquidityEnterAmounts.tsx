@@ -28,12 +28,15 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
   changeTokenAAmount,
   changeTokenBAmount,
 }) => {
+  console.log("🚀 234234 ~ tokenAInput:", tokenAInput.token?.path);
+  console.log("🚀 234234 ~ compareToken:", compareToken?.path);
   const isSelectTokenA = useMemo(() => {
     if (compareToken?.path === null || tokenAInput?.token?.path === null) {
       return null;
     }
     return (compareToken?.path !== tokenAInput.token?.path);
   }, [compareToken?.path, tokenAInput.token]);
+  console.log("🚀 ~ isSelectTokenA ~ isSelectTokenA:", isSelectTokenA);
 
   const visibleTokenA = useMemo(() => {
     if (isSelectTokenA === null || depositRatio === null) {
@@ -63,8 +66,8 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <TokenAmountInput {...tokenAInput} connected={connected} changeToken={changeTokenA} changeAmount={changeTokenAAmount} />
-            <TokenAmountInput {...tokenBInput} connected={connected} changeToken={changeTokenB} changeAmount={changeTokenBAmount} />
+            <TokenAmountInput key={tokenAInput.token?.path} {...tokenAInput} connected={connected} changeToken={changeTokenA} changeAmount={changeTokenAAmount} />
+            <TokenAmountInput key={tokenBInput.token?.path}  {...tokenBInput} connected={connected} changeToken={changeTokenB} changeAmount={changeTokenBAmount} />
             <div className="arrow">
               <div className="shape">
                 <IconAdd className="add-icon" />

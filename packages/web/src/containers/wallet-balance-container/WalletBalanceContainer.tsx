@@ -55,9 +55,8 @@ const WalletBalanceContainer: React.FC = () => {
   const { balances: balancesPrice, loadingBalance } = useTokenData();
 
   const { data: positions = [], isLoading: loadingPositions } =
-    useGetPositionsByAddress(account?.address ?? "", {
+    useGetPositionsByAddress({
       isClosed: false,
-      queryOptions: { enabled: !!account?.address },
     });
 
   const isLoadingPosition = useMemo(

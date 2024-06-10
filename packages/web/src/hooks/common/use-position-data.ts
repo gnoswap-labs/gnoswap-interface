@@ -34,7 +34,8 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     data,
     isError,
     isFetched: isFetchedPosition,
-  } = useGetPositionsByAddress(fetchedAddress as string, {
+  } = useGetPositionsByAddress({
+    address: fetchedAddress as string,
     isClosed: options?.isClosed,
     queryOptions: {
       refetchInterval: () => {

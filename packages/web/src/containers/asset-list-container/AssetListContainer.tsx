@@ -158,10 +158,8 @@ const AssetListContainer: React.FC = () => {
   });
   const {
     isLoading: loadingPositions,
-  } = useGetPositionsByAddress(
-    account?.address ?? "", {
+  } = useGetPositionsByAddress({
     isClosed: false,
-    queryOptions: { enabled: !!account?.address }
   });
 
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);

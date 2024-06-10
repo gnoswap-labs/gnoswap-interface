@@ -24,15 +24,13 @@ const WalletPositionCardListContainer: React.FC = () => {
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
   const { width } = useWindowSize();
-  const { account, connected } = useWallet();
+  const { connected } = useWallet();
   const {
     isFetched: isFetchedPosition,
     isLoading: loadingPositions,
     data: positionsData = [],
-  } = useGetPositionsByAddress(
-    account?.address ?? "", {
+  } = useGetPositionsByAddress({
     isClosed: false,
-    queryOptions: { enabled: !!account?.address }
   });
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
