@@ -215,7 +215,6 @@ export const useDecreaseHandle = () => {
     if (!selectedPosition) {
       return null;
     }
-    console.log("🚀 ~ constpooledTokenInfos:IPooledTokenInfo|null=useMemo ~ selectedPosition:", selectedPosition);
     const tokenA = selectedPosition.pool.tokenA;
     const tokenB = selectedPosition.pool.tokenB;
     const pooledTokenAAmount = selectedPosition.tokenABalance;
@@ -261,8 +260,8 @@ export const useDecreaseHandle = () => {
       poolAmountUSDB: numberToUSD(
         (tokenBAmount * Number(tokenBPrice) * percent) / 100,
       ),
-      unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
-      unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
+      unClaimTokenAAmount: BigNumber(unClaimTokenAAmount).toFormat(),
+      unClaimTokenBAmount: BigNumber(unClaimTokenBAmount).toFormat(),
       unClaimTokenAAmountUSD: numberToUSD(
         unClaimTokenAAmount * Number(tokenAPrice),
       ),
