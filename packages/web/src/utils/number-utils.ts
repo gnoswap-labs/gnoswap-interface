@@ -132,7 +132,7 @@ export const toUnitFormat = (
  */
 export const toPriceFormat = (
   value: BigNumber | string | number,
-  options: {
+  options?: {
     usd?: boolean,
     isKMBFormat?: boolean,
     isSmallValueShorten?: boolean,
@@ -140,47 +140,53 @@ export const toPriceFormat = (
     lestThan1Decimals?: number;
     greaterThan1Decimals?: number;
     forcedDecimals?: boolean;
-  } = {
-      usd: false,
-      isKMBFormat: true,
-      isSmallValueShorten: false,
-      isRounding: true,
-      forcedDecimals: false,
-    }): string => {
+  }
+): string => {
+  const usd = options?.usd || false;
+  const isKMBFormat = options?.isKMBFormat || true;
+  const isSmallValueShorten = options?.isSmallValueShorten || false;
+  const isRounding = options?.isRounding || true;
+  const forcedDecimals = options?.forcedDecimals || false;
+  const lestThan1Decimals = options?.lestThan1Decimals || 3;
+  const greaterThan1Decimals = options?.greaterThan1Decimals || 2;
+
   if (!isNumber(value)) {
     // TODO : Error Check
-    return options.usd ? "$0" : "0";
+    return usd ? "$0" : "0";
   }
   const bigNumber = BigNumber(value).abs();
-  const intDigitLength = bigNumber.abs().integerValue().toString().length;
-  const prefix = (options.usd ? "$" : "");
+  const prefix = (usd ? "$" : "");
   const negativeSign = BigNumber(value).isLessThan(0) ? "-" : "";
 
-  if (options.isKMBFormat) {
-    if (intDigitLength >= 10)
+  if (isKMBFormat) {
+    if (bigNumber.isGreaterThan(1e9)) {
       return (
         negativeSign + prefix +
         bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
         unitsUpperCase.billion
       );
+    }
 
-    if (intDigitLength >= 7)
+    if (bigNumber.isGreaterThan(1e6)) {
       return (
         negativeSign + prefix +
         bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
         unitsUpperCase.million
       );
+    }
 
-    if (intDigitLength >= 4)
+    if (bigNumber.isGreaterThan(1e3)) {
+
       return (
         negativeSign + prefix +
         bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
         unitsUpperCase.thousand
       );
+    }
   }
 
-  if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0) && options.isSmallValueShorten) {
-    return (options.usd ? "<$" : "<") + "0.01";
+  if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0) && isSmallValueShorten) {
+    return (usd ? "<$" : "<") + "0.01";
   }
 
   if (bigNumber.isEqualTo(0)) {
@@ -189,39 +195,39 @@ export const toPriceFormat = (
 
   const negativeSignLength = bigNumber.isLessThan(0) ? 1 : 0;
   if (Number(bigNumber) < 1) {
-    const lestThan1Decimals = (options.lestThan1Decimals ?? 3) + negativeSignLength;
+    const finalLestThan1Decimals = lestThan1Decimals + negativeSignLength;
 
-    if (!options.isRounding) {
+    if (!isRounding) {
       const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
-        maximumSignificantDigits: lestThan1Decimals + 1,
-        minimumSignificantDigits: lestThan1Decimals + 1,
+        maximumSignificantDigits: finalLestThan1Decimals + 1,
+        minimumSignificantDigits: finalLestThan1Decimals + 1,
       });
       return negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
     }
 
     return negativeSign + prefix + bigNumber.toNumber().toLocaleString("en-US", {
-      maximumSignificantDigits: lestThan1Decimals,
-      minimumFractionDigits: options.forcedDecimals ? lestThan1Decimals : undefined
+      maximumSignificantDigits: finalLestThan1Decimals,
+      minimumFractionDigits: forcedDecimals ? finalLestThan1Decimals : undefined
     });
   }
 
-  const greaterThan1Decimals = (options.greaterThan1Decimals ?? 2) + negativeSignLength;
+  const finalGreaterThan1Decimals = (greaterThan1Decimals ?? 2) + negativeSignLength;
 
   const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
-    minimumFractionDigits: greaterThan1Decimals + 1,
-    maximumFractionDigits: greaterThan1Decimals + 1,
+    minimumFractionDigits: finalGreaterThan1Decimals + 1,
+    maximumFractionDigits: finalGreaterThan1Decimals + 1,
   });
   const [, decimalPart] = tempNum.split(".");
 
-  if (!options.isRounding && !bigNumber.isInteger() && decimalPart?.length >= 3) {
+  if (!isRounding && !bigNumber.isInteger() && decimalPart?.length >= 3) {
     return negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
   }
 
-  return negativeSign + prefix + bigNumber.decimalPlaces(greaterThan1Decimals)
+  return negativeSign + prefix + bigNumber.decimalPlaces(finalGreaterThan1Decimals)
     .toNumber()
     .toLocaleString("en", {
-      maximumFractionDigits: greaterThan1Decimals,
-      minimumFractionDigits: options.forcedDecimals ? greaterThan1Decimals : undefined
+      maximumFractionDigits: finalGreaterThan1Decimals,
+      minimumFractionDigits: forcedDecimals ? finalGreaterThan1Decimals : undefined
     });
 };
 
@@ -394,12 +400,11 @@ export function countZeros(decimalFraction: string) {
 const getSubcriptChars = (number: string) => {
   let temp = "";
   const subscriptZeroCharCode = 8320;
-  const numberOfZeroString = countZeros(number).toString();
+  const numberOfZeroString = (countZeros(number) - 1).toString();
 
   for (let index = 0; index < numberOfZeroString.length; index++) {
     const currentChar = Number(numberOfZeroString[index]);
-    const lastChar = index === numberOfZeroString.length - 1;
-    const singleSubscriptNumber = String.fromCharCode(subscriptZeroCharCode + Number(lastChar ? currentChar - 1 : currentChar));
+    const singleSubscriptNumber = String.fromCharCode(subscriptZeroCharCode + Number(currentChar));
     temp += singleSubscriptNumber;
   }
 
@@ -413,7 +418,7 @@ export function subscriptFormat(
     subscriptOffset?: number
   }
 ) {
-  const numberStr = BigNumber(number).toFormat();
+  const numberStr = BigNumber(number).toFixed();
   const numberOfZero = countZeros(numberStr);
   const significantDigits = options?.significantDigits || 5;
   const zeroCountOffset = options?.subscriptOffset ? (options?.subscriptOffset + 1) : 5;
@@ -425,6 +430,8 @@ export function subscriptFormat(
     }));
   }
 
-  const result = `0.0${getSubcriptChars(numberStr)}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
+  const subscriptChars = getSubcriptChars(numberStr);
+
+  const result = `0.0${subscriptChars}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
   return result;
 }

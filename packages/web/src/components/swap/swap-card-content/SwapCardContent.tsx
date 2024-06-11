@@ -51,9 +51,13 @@ const SwapCardContent: React.FC<ContentProps> = ({
         changeTokenAAmount("", true);
       }
       if (value !== "" && !isAmount(value)) return;
-      changeTokenAAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
+      changeTokenAAmount(
+        value
+          .replace(/^0+(?=\d)|(\.\d*)$/g, "$1")
+          .replace(new RegExp(`^(\d+\.\d{${tokenA?.decimals}})\d+$`, "g"), "$1")
+      );
     },
-    [changeTokenAAmount],
+    [changeTokenAAmount, tokenA?.decimals],
   );
 
   const onChangeTokenBAmount = useCallback(
@@ -63,9 +67,13 @@ const SwapCardContent: React.FC<ContentProps> = ({
         changeTokenBAmount("", true);
       }
       if (value !== "" && !isAmount(value)) return;
-      changeTokenBAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
+      changeTokenBAmount(
+        value
+          .replace(/^0+(?=\d)|(\.\d*)$/g, "$1")
+          .replace(new RegExp(`^(\d+\.\d{${tokenB?.decimals}})\d+$`, "g"), "$1")
+      );
     },
-    [changeTokenBAmount],
+    [changeTokenBAmount, tokenB?.decimals],
   );
 
   const handleAutoFillTokenA = useCallback(() => {
@@ -123,19 +131,19 @@ const SwapCardContent: React.FC<ContentProps> = ({
 
   const tokenAAmount = useMemo(() => {
     if (swapTokenInfo.tokenAAmount.includes("e")) {
-      return BigNumber(swapTokenInfo.tokenAAmount).toFixed();
+      return BigNumber(swapTokenInfo.tokenAAmount).toFixed(tokenA?.decimals ?? 0);
     }
 
     return swapTokenInfo.tokenAAmount;
-  }, [swapTokenInfo.tokenAAmount]);
+  }, [swapTokenInfo.tokenAAmount, tokenA?.decimals]);
 
   const tokenBAmount = useMemo(() => {
     if (swapTokenInfo.tokenBAmount.includes("e")) {
-      return BigNumber(swapTokenInfo.tokenBAmount).toFixed();
+      return BigNumber(swapTokenInfo.tokenBAmount).toFixed(swapTokenInfo?.tokenBDecimals ?? 0);
     }
 
     return swapTokenInfo.tokenBAmount;
-  }, [swapTokenInfo.tokenBAmount]);
+  }, [swapTokenInfo.tokenBAmount, swapTokenInfo.tokenBDecimals]);
 
   return (
     <ContentWrapper>

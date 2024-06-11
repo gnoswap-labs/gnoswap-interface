@@ -104,8 +104,9 @@ export class NotificationRepositoryImpl implements NotificationRepository {
         return `Unstaked <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "CLAIM":
         const token0Display = Number(tx?.tokenAAmount) ? `<span>${token0Amount}</span> <span>${token0symbol}</span>` : "";
-        const token1Display = Number(tx?.tokenAAmount) ? `and <span>${token1Amount}</span> <span>${token1symbol}</span>` : "";
-        return `Claimed ${token0Display} ${token1Display}`;
+        const token1Display = Number(tx?.tokenBAmount) ? `<span>${token1Amount}</span> <span>${token1symbol}</span>` : "";
+        const claimStr = [token0Display, token1Display].filter(item => item).join(" and ");
+        return `Claimed ${claimStr}`;
       case "WITHDRAW":
         return `Sent <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       case "DEPOSIT":
@@ -123,7 +124,6 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   groupTransactionsByDate = (
     transactions: AccountActivity[],
   ): TransactionGroupsType[] => {
-    console.log("🚀 ~ NotificationRepositoryImpl ~ transactions:", transactions.filter(item => item.actionType === "CLAIM"));
     const today = dayjs();
     const todayTransactions: TransactionModel[] = [];
     const pastWeekTransactions: TransactionModel[] = [];
@@ -134,6 +134,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     const seenTxs = this.getSeenTx();
 
     for (const tx of transactions.filter(item => item.actionType === "CLAIM") ?? []) {
+
       /**
        * *If tx is removed then ignore it
        **/
@@ -142,7 +143,9 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       /**
        * *If tx both amounts are `0` ignore it
        **/
-      if (!Number(tx.tokenAAmount) && !Number(tx.tokenBAmount)) continue;
+      if (!Number(tx.tokenAAmount) && !Number(tx.tokenBAmount)) {
+        continue;
+      }
 
       const tokenA = {
         ...tx.tokenA,
@@ -167,7 +170,6 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       };
 
       if (tokenA)
-
         if (transactionDate.isSame(today, "day")) {
           todayTransactions.push(txModel);
         } else if (transactionDate.isAfter(today.subtract(7, "day"))) {

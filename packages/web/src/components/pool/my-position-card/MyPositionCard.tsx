@@ -30,7 +30,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
-import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
@@ -326,7 +326,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }, [position.reward]);
 
   const stringPrice = useMemo(() => {
-    const price = tickToPriceStr(position?.pool?.currentTick, { decimals: 40 });
+    const price = tickToPriceStr(position?.pool?.currentTick, { decimals: 40, isFormat: true });
     if (isSwap) {
       return (
         <>
@@ -473,6 +473,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       position.tickUpper, {
       isEnd: isEndTick,
       decimals: 40,
+      isFormat: false,
     });
 
     if (isFullRange) {
@@ -484,12 +485,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
 
     if (!isSwap) {
-      return maxPrice;
+      return formatTokenExchangeRate(maxPrice);
     }
 
-    return convertToKMB(`${Number(1 / Number(minPrice))}`, {
-      maximumFractionDigits: 6,
-    });
+    return formatTokenExchangeRate(`${Number(1 / Number(minPrice))}`);
   }, [
     position.tickLower,
     position.tickUpper,
@@ -894,7 +893,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <div>
                 1&nbsp;
                 {(!isSwap ? tokenA : tokenB)?.symbol} =&nbsp;
-                {formatTokenExchangeRate(minPriceStr)}&nbsp;
+                {minPriceStr}&nbsp;
                 {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(<span className={startClass}>{!isSwap ? minTickLabel : maxTickLabel}</span>)&nbsp;
                 <Tooltip
                   placement="top"
@@ -912,7 +911,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </div>
               <div>
                 ~&nbsp;
-                {formatTokenExchangeRate(maxPriceStr)} &nbsp;
+                {maxPriceStr} &nbsp;
                 {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={endClass}>
                   {!isSwap ? maxTickLabel : minTickLabel}

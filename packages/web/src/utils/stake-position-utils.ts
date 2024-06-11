@@ -95,8 +95,8 @@ export const convertToKMB = (
       maximumFractionDigits: 0,
       minimumFractionDigits: 0,
     });
-    if (numberPrice < 0.000001 && numberPrice >= 0) return "0.000001";
-    if (numberPrice < 1 && numberPrice >= 0) return `${Number(numberPrice.toFixed(options?.maximumFractionDigits ?? 6))}`;
+    if (!options?.ignoreSmallValueFormat && numberPrice < 0.000001 && numberPrice >= 0) return "0.000001";
+    if (numberPrice < 1 && numberPrice >= 0) return `${Number(numberPrice.toFixed(options?.maximumSignificantDigits ?? 5))}`;
 
     const result = numberPrice.toLocaleString("en-US", {
       maximumSignificantDigits: maximumSignificantDigits,

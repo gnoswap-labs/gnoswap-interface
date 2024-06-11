@@ -116,6 +116,7 @@ const SelectPriceRangeCustomController = forwardRef<
       setDisplayValue(greaterThan1Transform(BigNumber(value).toFixed()));
       return;
     }
+    console.log("🚀 ~ formatControllerValue ~ subscriptFormat(BigNumber(value).toFixed():", subscriptFormat(BigNumber(value).toFixed()));
 
     setDisplayValue(subscriptFormat(BigNumber(value).toFixed()));
   }, [feeTier, priceRatio]);

@@ -133,10 +133,8 @@ export function tickToPriceStr(
     isEnd?: boolean,
     decimals?: number,
     isFormat?: boolean,
-  } = {
-      isFormat: true,
-      isEnd: false,
-    }) {
+  }) {
+  const isFormat = options?.isFormat === undefined ? true : false;
   if (options?.isEnd) {
     return tick < 0 ? "0" : "∞";
   }
@@ -149,9 +147,13 @@ export function tickToPriceStr(
     return "0";
   }
 
-  return convertToKMB(result.replace(/,/g, ""), {
-    ignoreSmallValueFormat: true
-  });
+  if (isFormat) {
+    return convertToKMB(result.replace(/,/g, ""), {
+      ignoreSmallValueFormat: true
+    });
+  }
+
+  return result;
 }
 
 export function feeBoostByPrices(

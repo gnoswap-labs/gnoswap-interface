@@ -318,6 +318,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       isRounding: false,
       lestThan1Decimals: 2,
       forcedDecimals: true,
+      isKMBFormat: true,
     });
   }, [position.reward, tokenPrices]);
 
