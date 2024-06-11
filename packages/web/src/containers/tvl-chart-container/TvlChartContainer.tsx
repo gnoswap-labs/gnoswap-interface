@@ -11,6 +11,9 @@ export interface TvlPriceInfo {
   amount: string;
 }
 
+export const TvlChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
+export type TvlChartGraphPeriodType = (typeof TvlChartGraphPeriods)[number];
+
 export interface TvlChartInfo {
   xAxisLabels: string[];
   datas: {

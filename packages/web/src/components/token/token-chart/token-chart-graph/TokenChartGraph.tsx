@@ -43,6 +43,7 @@ const FORMAT_DATE_LENGTH = 95;
 
 function makeTimePeriodFormatInfo(period: TokenChartGraphPeriodType) {
   const offset = new Date().getTimezoneOffset();
+  console.log("🚀 ~ makeTimePeriodFormatInfo ~ offset:", offset);
   switch (period) {
     case "1D":
       return {
@@ -202,10 +203,10 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           }))}
           firstPointColor={theme.color.border05}
           customData={customData}
+          displayLastDayAsNow={true}
         />
         <div
-          className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""
-            }`}
+          className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""}`}
         >
           {displayXAxisLabels.map((value, index) => (
             <TokenChartGraphXLabel key={index} x={value.position}>

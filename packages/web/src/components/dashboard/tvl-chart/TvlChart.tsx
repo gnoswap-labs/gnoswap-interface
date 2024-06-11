@@ -35,6 +35,7 @@ const TvlChart: React.FC<TvlChartItemProps> = ({
         {!loading && <TvlChartGraph
           xAxisLabels={tvlChartInfo.xAxisLabels}
           datas={tvlChartInfo.datas}
+          tvlChartType={tvlChartType}
         />}
         {loading && <LoadingTVLChart>
           <LoadingSpinner />

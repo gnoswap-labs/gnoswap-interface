@@ -83,6 +83,7 @@ export interface LineGraphProps {
   baseLineLabelsTransform?: (value: string) => string;
   graphBorder?: [boolean, boolean, boolean, boolean];
   baseLineLabelsStyle?: React.CSSProperties;
+  displayLastDayAsNow?: boolean;
 }
 
 export interface LineGraphRef {
@@ -160,6 +161,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   baseLineLabelsTransform,
   baseLineLabelsStyle,
   firstPointColor,
+  displayLastDayAsNow = false,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -167,6 +169,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [chartPoint, setChartPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const [points, setPoints] = useState<Point[]>([]);
+  console.log("🚀 ~ .padStart ~ points:", points);
   const [baseLineYAxis, setBaseLineYAxis] = useState<string[]>([]);
   const [baseLineNumberWidth, setBaseLineNumberWidth] = useState<number>(0);
   const { height: customHeight = 0, locationTooltip } = customData;
@@ -653,7 +656,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 </span>
                 {location.pathname !== "/dashboard" && (
                   <span className="time">
-                    {currentPointIndex === datas.length - 1
+                    {(currentPointIndex === datas.length - 1 && displayLastDayAsNow)
                       ? parseTimeTVL(getLocalizeTime(new Date().toString()))
                         .time
                       : parseTimeTVL(datas[currentPointIndex]?.time)?.time ||
