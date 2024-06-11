@@ -1,35 +1,41 @@
 import StakePosition from "@components/stake/stake-position/StakePosition";
-import { useLoading } from "@hooks/common/use-loading";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useSubmitPositionModal } from "@hooks/earn/use-submit-position-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import useRouter from "@hooks/common/use-custom-router";
-import React, { useCallback, useState, useEffect, useMemo } from "react";
+import React, { useCallback, useState, useMemo } from "react";
+import { encryptId } from "@utils/common";
 
 const StakePositionContainer: React.FC = () => {
   const router = useRouter();
-  const { account, connected, connectAccount } = useWallet();
-  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const poolPath = (router.query["pool-path"] ?? "") as string;
+  const { connected, connectAccount } = useWallet();
   const {
     positions: allPositionData,
-    getPositionsByPoolId,
     isFetchedPosition: isFetched,
-    loadingPositionById,
-  } = usePositionData();
+    loading: isLoadingAllPositions,
+  } = usePositionData({
+    isClosed: false,
+    poolPath: encryptId(poolPath),
+    queryOption: {
+      enabled: !!poolPath
+    }
+  });
   const [checkedList, setCheckedList] = useState<string[]>([]);
+  // For this domain only show `closed = false` && `staked = false` position
+  const unstakedPositions = useMemo(() => allPositionData.filter(item => !item.staked), [allPositionData]);
+
   const { openModal } = useSubmitPositionModal({
-    positions: positions,
+    positions: unstakedPositions,
     selectedIds: checkedList,
   });
-  const { isLoading: isLoadingCommon } = useLoading();
 
   const checkedAll = useMemo(() => {
-    if (positions.length === 0) {
+    if (unstakedPositions.length === 0) {
       return false;
     }
-    return positions.length === checkedList.length;
-  }, [positions, checkedList]);
+    return unstakedPositions.length === checkedList.length;
+  }, [unstakedPositions.length, checkedList.length]);
 
   const onCheckedItem = useCallback(
     (isChecked: boolean, path: string) => {
@@ -48,9 +54,9 @@ const StakePositionContainer: React.FC = () => {
       setCheckedList([]);
       return;
     }
-    const checkedList = positions.map(position => position.id);
+    const checkedList = unstakedPositions.map(unstakedPosition => unstakedPosition.id);
     setCheckedList(checkedList);
-  }, [checkedAll, positions]);
+  }, [checkedAll, unstakedPositions]);
 
   const submitPosition = useCallback(() => {
     if (!connected) {
@@ -60,40 +66,21 @@ const StakePositionContainer: React.FC = () => {
     }
   }, [openModal, connected, connectAccount]);
 
-  useEffect(() => {
-    // For this domain only show `closed = false` && `staked = false` position
-    const poolPath = router.query["pool-path"] as string;
-    if (!account?.address) {
-      return;
-    }
-    if (!poolPath) {
-      setPositions(
-        allPositionData.filter(item => !item.staked && !item.closed),
-      );
-      return;
-    }
-    setPositions(
-      getPositionsByPoolId(poolPath).filter(
-        item => !item.staked && !item.closed,
-      ),
-    );
-  }, [account?.address, getPositionsByPoolId, allPositionData, router.query]);
-
   const isEmpty = useMemo(() => {
     if (!connected) return true;
-    return positions.length === 0 && isFetched;
-  }, [connected, isFetched, positions]);
+    return unstakedPositions.length === 0 && isFetched;
+  }, [connected, isFetched, unstakedPositions.length]);
 
   return (
     <StakePosition
-      unstakedPositions={positions}
+      unstakedPositions={unstakedPositions}
       checkedList={checkedList}
       onCheckedItem={onCheckedItem}
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
       submitPosition={submitPosition}
       isEmpty={isEmpty}
-      isLoading={isLoadingCommon || loadingPositionById}
+      isLoading={isLoadingAllPositions}
       connected={connected}
     />
   );

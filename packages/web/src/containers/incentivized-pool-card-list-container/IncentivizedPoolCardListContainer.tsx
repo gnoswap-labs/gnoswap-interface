@@ -96,6 +96,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     }
   }, [width]);
 
+
   return (
     <IncentivizedPoolCardList
       incentivizedPools={incentivizePools}

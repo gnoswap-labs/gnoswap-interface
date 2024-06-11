@@ -1,8 +1,6 @@
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useCallback, useMemo } from "react";
-import { makeId } from "@utils/common";
 import {
   useGetPositionsByAddress,
   useMakePoolPositions,
@@ -10,6 +8,8 @@ import {
 import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "./use-loading";
 import { PATH, PATH_10SECOND, PATH_60SECOND } from "@constants/common.constant";
+import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
+import { PositionModel } from "@models/position/position-model";
 
 function secToMilliSec(sec: number) {
   return sec * 1000;
@@ -18,13 +18,15 @@ function secToMilliSec(sec: number) {
 export interface UsePositionDataOption {
   address?: string;
   isClosed?: boolean;
+  poolPath?: string;
+  queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
 }
 
 export const usePositionData = (options?: UsePositionDataOption) => {
   const router = useRouter();
   const { back } = router.query;
   const { account, connected: walletConnected } = useWallet();
-  const { pools, isFetchedPools } = usePoolData();
+  const { pools, loading: isLoadingPool } = usePoolData();
 
   const fetchedAddress = useMemo(() => {
     return options?.address || account?.address;
@@ -34,10 +36,13 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     data,
     isError,
     isFetched: isFetchedPosition,
+    isLoading: isLoadingPosition
   } = useGetPositionsByAddress({
     address: fetchedAddress as string,
     isClosed: options?.isClosed,
+    poolPath: options?.poolPath,
     queryOptions: {
+      ...options?.queryOption,
       refetchInterval: () => {
         if (PATH.includes(router.pathname)) return secToMilliSec(back ? 3 : 15);
 
@@ -50,9 +55,9 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     },
   });
 
-  const { isLoading } = useLoading();
+  const { isLoading: isCommonLoading } = useLoading();
 
-  const { data: positions = [], isFetched: isFetchedPoolPositions } =
+  const { data: positions = [], isFetched: isFetchedPoolPositions, isLoading: isLoadingPoolPositions } =
     useMakePoolPositions(data, pools, isFetchedPosition);
 
   const availableStake = useMemo(() => {
@@ -86,33 +91,22 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     return positions;
   }, [isFetchedPoolPositions, positions]);
 
-  const getPositionsByPoolId = useCallback(
-    (poolId: string): PoolPositionModel[] => {
-      if (!isFetchedPoolPositions) {
-        return [];
-      }
-      return positions.filter(
-        poolPositions => makeId(poolPositions.poolPath) === poolId,
-      );
-    },
-    [isFetchedPoolPositions, positions],
-  );
-
-  const getPositionsByPoolPath = useCallback(
-    (poolPath: string): PoolPositionModel[] => {
-      const poolId = makeId(poolPath);
-      return getPositionsByPoolId(poolId);
-    },
-    [getPositionsByPoolId],
-  );
 
   const loading = useMemo(() => {
-    return (!isFetchedPools && walletConnected) || isLoading;
-  }, [isFetchedPools, isLoading, walletConnected]);
-
-  const loadingPositionById = useMemo(() => {
-    return (!isFetchedPoolPositions && walletConnected) || isLoading;
-  }, [isFetchedPoolPositions, isLoading, walletConnected]);
+    return (isLoadingPool
+      || isLoadingPosition
+      || isCommonLoading
+      || isLoadingPoolPositions)
+      && walletConnected
+      && !!account;
+  }, [
+    isCommonLoading,
+    isLoadingPool,
+    isLoadingPoolPositions,
+    isLoadingPosition,
+    walletConnected,
+    account
+  ]);
 
   return {
     availableStake,
@@ -120,10 +114,8 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     positions,
     checkStakedPool,
     getPositions,
-    getPositionsByPoolId,
-    getPositionsByPoolPath,
     isFetchedPosition,
     loading,
-    loadingPositionById,
+    isLoadingPool,
   };
 };

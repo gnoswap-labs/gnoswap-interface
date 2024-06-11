@@ -1,23 +1,27 @@
 import RemoveLiquidity from "@components/remove/remove-liquidity/RemoveLiquidity";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useRemovePositionModal } from "@hooks/earn/use-remove-position-modal";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePositionData } from "@hooks/common/use-position-data";
 import useRouter from "@hooks/common/use-custom-router";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useLoading } from "@hooks/common/use-loading";
+import { encryptId } from "@utils/common";
 
 const RemoveLiquidityContainer: React.FC = () => {
   const router = useRouter();
-  const { account, connected } = useWallet();
-  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const { connected } = useWallet();
   const [checkedList, setCheckedList] = useState<string[]>([]);
-  const { getPositionsByPoolId, loadingPositionById } = usePositionData();
+  const poolPath = router.query["pool-path"] as string;
+  const { positions, loading: isLoadingPositions } = usePositionData({
+    isClosed: false,
+    poolPath: encryptId(poolPath),
+    queryOption: {
+      enabled: !!poolPath
+    }
+  });
   const { openModal } = useRemovePositionModal({
     positions: positions,
     selectedIds: checkedList,
   });
-  const { isLoading: isLoadingCommon } = useLoading();
 
   const stakedPositions = useMemo(() => {
     if (!connected) return [];
@@ -61,21 +65,6 @@ const RemoveLiquidityContainer: React.FC = () => {
     openModal();
   }, [openModal]);
 
-  useEffect(() => {
-    // For this domain only show `closed = false` position
-    const poolPath = router.query["pool-path"] as string;
-    if (!poolPath) {
-      return;
-    }
-    if (account?.address) {
-      const postions_ = getPositionsByPoolId(poolPath).filter(
-        item => !item.closed,
-      );
-      setPositions(postions_);
-      return;
-    }
-  }, [account?.address, getPositionsByPoolId, router.query]);
-
   return (
     <RemoveLiquidity
       stakedPositions={stakedPositions}
@@ -85,7 +74,7 @@ const RemoveLiquidityContainer: React.FC = () => {
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
       removeLiquidity={removeLiquidity}
-      isLoading={isLoadingCommon || loadingPositionById}
+      isLoading={isLoadingPositions}
     />
   );
 };

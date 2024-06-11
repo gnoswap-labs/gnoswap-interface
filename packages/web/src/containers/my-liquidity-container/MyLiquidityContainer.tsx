@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -10,7 +9,6 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import useRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePosition } from "@hooks/common/use-position";
 import {
   makeBroadcastClaimMessage,
@@ -21,6 +19,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useGetUsernameByAddress } from "@query/address/queries";
 import { toUnitFormat } from "@utils/number-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { encryptId } from "@utils/common";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -35,14 +34,20 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
-  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading, loadingPositionById } =
-    usePositionData({ address });
+  const poolPath = (router.query["pool-path"] ?? "") as string;
+  const { positions, loading: isLoadingPosition } = usePositionData({
+    address,
+    poolPath: encryptId(poolPath),
+    queryOption: {
+      enabled: !!poolPath
+    }
+  });
   const { claimAll } = usePosition(positions);
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
   const { tokenPrices } = useTokenData();
+
 
   const {
     broadcastSuccess,
@@ -144,18 +149,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     });
   }, [claimAll, router, setLoadingTransactionClaim, positions, openModal]);
 
-  useEffect(() => {
-    const poolPath = router.query["pool-path"] as string;
-    if (!poolPath) {
-      return;
-    }
-    if (!visiblePositions) {
-      return;
-    }
-    const temp = getPositionsByPoolId(poolPath);
-    setPositions(temp);
-  }, [router.query, visiblePositions, loadingPositionById]);
-
   const filteredPosition = useMemo(() => {
     if (isShowClosePosition) return positions;
 
@@ -166,6 +159,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
   };
+
 
   return (
     <MyLiquidity
@@ -183,7 +177,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       currentIndex={currentIndex}
       claimAll={claimAllReward}
       isShowRemovePositionButton={isShowRemovePositionButton}
-      loading={loading}
+      loading={isLoadingPosition}
       loadingTransactionClaim={loadingTransactionClaim}
       isShowClosePosition={isShowClosePosition}
       handleSetIsClosePosition={handleSetIsClosePosition}
@@ -194,7 +188,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         )
       }
       showClosePositionButton={showClosePositionButton}
-      isLoadingPositionsById={loadingPositionById}
       tokenPrices={tokenPrices}
     />
   );

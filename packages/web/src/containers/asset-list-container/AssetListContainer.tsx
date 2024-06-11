@@ -18,7 +18,7 @@ import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
 import { toPriceFormat } from "@utils/number-utils";
-import { useGetPositionsByAddress } from "@query/positions";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -157,8 +157,8 @@ const AssetListContainer: React.FC = () => {
     refetchInterval: 60 * 1000,
   });
   const {
-    isLoading: loadingPositions,
-  } = useGetPositionsByAddress({
+    loading: loadingPositions,
+  } = usePositionData({
     isClosed: false,
   });
 

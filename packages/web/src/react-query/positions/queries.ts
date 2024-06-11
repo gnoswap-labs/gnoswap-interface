@@ -23,14 +23,16 @@ export const useGetPositionsByAddress = (
 ) => {
   const { positionRepository } = useGnoswapContext();
   const { account } = useWallet();
+  const key = [
+    QUERY_KEY.positions,
+    options?.address || account?.address,
+    options?.poolPath,
+    options?.isClosed,
+  ];
+  console.log("🚀 ~ key:", key);
 
   return useQuery<PositionModel[], Error>({
-    queryKey: [
-      QUERY_KEY.positions,
-      options?.address,
-      options?.poolPath,
-      options?.isClosed,
-    ].filter(item => (item !== undefined)),
+    queryKey: key.filter(item => (item !== undefined)),
     queryFn: async () => {
       const data = await positionRepository
         .getPositionsByAddress(options?.address || account?.address || "", {
@@ -43,7 +45,7 @@ export const useGetPositionsByAddress = (
         });
       return data;
     },
-    enabled: (!!options?.address || !!account?.address),
+    enabled: options?.queryOptions?.enabled && (!!options?.address || !!account?.address),
     ...options?.queryOptions,
   });
 };

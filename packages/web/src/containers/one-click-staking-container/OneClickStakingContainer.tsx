@@ -4,11 +4,11 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
-import { checkGnotPath, makeId } from "@utils/common";
+import { checkGnotPath, encryptId, makeId } from "@utils/common";
 import { initialPool } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { useGetPoolDetailByPath } from "@query/pools";
-import { useGetPositionsByAddress } from "@query/positions";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 const OneClickStakingContainer: React.FC = () => {
   const router = useRouter();
@@ -38,9 +38,12 @@ const OneClickStakingContainer: React.FC = () => {
     return [...tokenPair, feeTier].join(":");
   }, [router.query, tokenPair]);
 
-  const { data: positions = [], isLoading: isLoadingPosition } = useGetPositionsByAddress({
+  const { positions, loading: isLoadingPosition } = usePositionData({
     isClosed: false,
-    poolPath: (poolId ?? poolPath ?? "")
+    poolPath: encryptId(poolId ?? poolPath ?? ""),
+    queryOption: {
+      enabled: !!poolId || !!poolPath
+    }
   });
 
   const {

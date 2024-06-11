@@ -13,10 +13,10 @@ import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { useGetPositionsByAddress } from "@query/positions";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 const WalletPositionCardListContainer: React.FC = () => {
   const { getGnotPath } = useGnotToGnot();
@@ -26,17 +26,16 @@ const WalletPositionCardListContainer: React.FC = () => {
   const { width } = useWindowSize();
   const { connected } = useWallet();
   const {
-    isFetched: isFetchedPosition,
-    isLoading: loadingPositions,
-    data: positionsData = [],
-  } = useGetPositionsByAddress({
+    isFetchedPosition,
+    loading: loadingPositions,
+    positions: positionsData = [],
+  } = usePositionData({
     isClosed: false,
   });
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
 
-  const { pools } = usePoolData();
-  const { loading } = usePoolData();
+  const { pools, loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { isSwitchNetwork } = useWallet();

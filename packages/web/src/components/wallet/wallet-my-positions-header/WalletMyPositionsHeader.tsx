@@ -11,9 +11,9 @@ const WalletMyPositionsHeader: React.FC = () => {
   const { isSwitchNetwork } = useWallet();
 
   const {
-    data: positions = [],
-    isFetched: isFetchedPosition
-  } = useGetPositionsByAddress({
+    positions,
+    isFetchedPosition: isFetchedPosition
+  } = usePositionData({
     isClosed: false,
   })
   if (!isFetchedPosition || isSwitchNetwork) return null;

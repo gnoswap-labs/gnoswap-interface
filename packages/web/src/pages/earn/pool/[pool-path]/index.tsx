@@ -11,7 +11,6 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { useLoading } from "@hooks/common/use-loading";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { API_URL } from "@constants/environment.constant";
 import { PoolResponse } from "@repositories/pool";
@@ -22,11 +21,6 @@ import { HTTP_5XX_ERROR } from "@constants/common.constant";
 
 export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async (context) => {
   const poolPath = (context.query["pool-path"] || "") as string;
-  const positionId = (context.query["position-id"] || "") as string;
-
-  if (positionId) {
-
-  }
 
   const res = await fetch(API_URL + "/pools/" + encodeURIComponent(encryptId(poolPath)));
 
@@ -59,12 +53,11 @@ export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (asy
 export default function Pool({ pool }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const { account } = useWallet();
-  const poolPath = router.query["pool-path"] || "";
-  const { data = pool } = useGetPoolDetailByPath(poolPath as string, {
+  const poolPath = (router.query["pool-path"] || "") as string;
+  const { data = pool } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
     initialData: pool
   });
-  const { isLoading: isLoadingCommon } = useLoading();
 
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
@@ -79,15 +72,23 @@ export default function Pool({ pool }: InferGetServerSidePropsType<typeof getSer
   }, [initializedData]);
 
 
-  const { isFetchedPosition, loading, getPositionsByPoolId, positions, loadingPositionById } =
-    usePositionData({ address });
+  const {
+    isFetchedPosition,
+    loading,
+    positions,
+  } = usePositionData({
+    address,
+    poolPath: encryptId(poolPath),
+    queryOption: {
+      enabled: !!poolPath,
+    }
+  });
 
   const isStaking = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {
       return true;
     }
-    const temp = getPositionsByPoolId(poolPath as string);
-    const stakedPositions = temp.filter(position => position.staked);
+    const stakedPositions = positions.filter(position => position.staked);
     if (stakedPositions.length > 0) {
       return true;
     }
@@ -95,13 +96,12 @@ export default function Pool({ pool }: InferGetServerSidePropsType<typeof getSer
       return true;
     }
     return false;
-  }, [data?.incentiveType, getPositionsByPoolId, poolPath]);
+  }, [data?.incentiveType, positions]);
 
   useEffect(() => {
     if (
       hash === "staking"
       && !loading
-      && !isLoadingCommon
       && isFetchedPosition
       && isStaking
     ) {
@@ -120,8 +120,7 @@ export default function Pool({ pool }: InferGetServerSidePropsType<typeof getSer
       address &&
       isFetchedPosition &&
       !loading &&
-      !loadingPositionById &&
-      !isLoadingCommon
+      poolPath
     ) {
       if (hash && hash !== "staking") {
         setTimeout(() => {
@@ -156,10 +155,9 @@ export default function Pool({ pool }: InferGetServerSidePropsType<typeof getSer
     hash,
     address,
     loading,
-    isLoadingCommon,
     positions.length,
     isStaking,
-    loadingPositionById
+    poolPath,
   ]);
 
   return (

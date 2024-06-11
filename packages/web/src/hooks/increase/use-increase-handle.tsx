@@ -26,6 +26,7 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useMemo, useCallback, useState, useEffect } from "react";
+import { encryptId } from "@utils/common";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -54,7 +55,10 @@ export const useIncreaseHandle = () => {
     return !selectedPosition;
   }, [selectedPosition]);
 
-  const { positions } = usePositionData();
+  const { positions } = usePositionData({
+    poolPath: encryptId(poolPath)
+  });
+
   useEffect(() => {
     if (!selectedPosition && positions.length > 0 && positionId) {
       const position = positions.find(

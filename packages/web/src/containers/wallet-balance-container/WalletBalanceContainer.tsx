@@ -18,12 +18,11 @@ import { TokenModel } from "@models/token/token-model";
 import { useGetTokenPrices } from "@query/token";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useState, useMemo } from "react";
-import { useLoading } from "@hooks/common/use-loading";
 import { isEmptyObject } from "@utils/validation-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
-import { useGetPositionsByAddress } from "@query/positions";
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -50,14 +49,11 @@ const WalletBalanceContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
-  const { isLoading } = useLoading();
+  // const { isLoading } = useLoading();
 
   const { balances: balancesPrice, loadingBalance } = useTokenData();
 
-  const { data: positions = [], isLoading: loadingPositions } =
-    useGetPositionsByAddress({
-      isClosed: false,
-    });
+  const { positions, loading: loadingPositions } = usePositionData({ isClosed: false });
 
   const isLoadingPosition = useMemo(
     () => connected && loadingPositions,
@@ -131,7 +127,6 @@ const WalletBalanceContainer: React.FC = () => {
     return (
       isLoadingPosition ||
       loadingConnect === "loading" ||
-      isLoading ||
       isLoadingTokenPrices ||
       loadingBalance ||
       !!(isEmptyObject(balancesPrice) && account?.address)
@@ -139,7 +134,6 @@ const WalletBalanceContainer: React.FC = () => {
   }, [
     isLoadingPosition,
     loadingConnect,
-    isLoading,
     account?.address,
     balancesPrice,
     isLoadingTokenPrices,

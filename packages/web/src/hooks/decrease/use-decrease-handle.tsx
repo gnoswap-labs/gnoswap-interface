@@ -14,6 +14,7 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo, useState, useEffect } from "react";
+import { encryptId } from "@utils/common";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -52,7 +53,9 @@ export const useDecreaseHandle = () => {
   const [percent, setPercent] = useState<number>(50);
   const { tokenPrices } = useTokenData();
 
-  const { positions } = usePositionData();
+  const { positions } = usePositionData({
+    poolPath: encryptId(poolPath)
+  });
 
   const loading = useMemo(() => {
     return !selectedPosition;
