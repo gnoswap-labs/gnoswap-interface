@@ -8,7 +8,7 @@ import { tickToPriceStr } from "@utils/swap-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -476,7 +476,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           })
           .reduce<{ [key in number]: string }>((acc, current) => {
             if (!acc[current]) {
-              acc[current] = tickToPriceStr(current, { decimals: 40 }).toString();
+              const priceStr = tickToPriceStr(current, { decimals: 40, isFormat: false });
+
+              acc[current] = formatTokenExchangeRate(
+                priceStr, {
+                maxSignificantDigits: 6,
+                minLimit: 0.000001,
+                isInfinite: priceStr === "∞"
+              }
+              );
             }
             return acc;
           }, {});

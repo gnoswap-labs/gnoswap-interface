@@ -27,7 +27,6 @@ import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { tickToPrice } from "@utils/swap-utils";
 import { MAX_TICK } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
-import { numberToFormat } from "@utils/string-utils";
 import IconRemove from "../icons/IconRemove";
 import IconAdd from "../icons/IconAdd";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -144,7 +143,10 @@ const SelectPriceRangeCustom = forwardRef<
       return (
         <>
           1 {currentTokenA.symbol} =&nbsp;
-          {formatTokenExchangeRate(selectPool.currentPrice.toString())}&nbsp;
+          {formatTokenExchangeRate(selectPool.currentPrice.toString(), {
+            maxSignificantDigits: 6,
+            minLimit: 0.000001
+          })}&nbsp;
           {currentTokenB.symbol}
         </>
       );
@@ -165,7 +167,10 @@ const SelectPriceRangeCustom = forwardRef<
         return (
           <>
             1 {currentTokenA.symbol} = &nbsp;
-            {formatTokenExchangeRate(numberToFormat(defaultPrice, { decimals: 4 }))}
+            {formatTokenExchangeRate(defaultPrice, {
+              maxSignificantDigits: 6,
+              minLimit: 0.000001
+            })}
             &nbsp;{currentTokenB.symbol}
           </>
         );
@@ -173,7 +178,10 @@ const SelectPriceRangeCustom = forwardRef<
       return (
         <>
           1 {currentTokenA.symbol} =&nbsp;
-          {formatTokenExchangeRate(startingPriceValue)}
+          {formatTokenExchangeRate(startingPriceValue, {
+            maxSignificantDigits: 6,
+            minLimit: 0.000001
+          })}
           &nbsp; {currentTokenB.symbol}
         </>
       );

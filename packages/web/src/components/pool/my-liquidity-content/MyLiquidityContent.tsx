@@ -344,13 +344,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
   const logoDaily = useMemo(() => {
     const temp = claimableRewardInfo?.SWAP_FEE;
-    return temp?.map(item => getGnotPath(item.token).logoURI) || [];
+    return temp?.map(item => ({ src: getGnotPath(item.token).logoURI })) || [];
   }, [claimableRewardInfo?.SWAP_FEE, getGnotPath]);
 
   const logoReward = useMemo(() => {
     const temp = claimableRewardInfo?.INTERNAL;
     const rewardTokens = positionData?.rewardTokens || [];
-    const rewardLogo = rewardTokens?.map(item => getGnotPath(item).logoURI) || [];
+    const rewardLogo = rewardTokens?.map(item => ({ src: getGnotPath(item).logoURI })) || [];
     return [...new Set([...rewardLogo, ...temp?.map(item => getGnotPath(item.token).logoURI) || []])];
   }, [claimableRewardInfo, getGnotPath, positionData]);
 

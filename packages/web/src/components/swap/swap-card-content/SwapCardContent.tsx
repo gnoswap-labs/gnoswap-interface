@@ -44,8 +44,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
   const tokenB = swapTokenInfo.tokenB;
   const direction = swapSummaryInfo?.swapDirection;
 
-  const tokenARegex = useMemo(() => new RegExp(`^(\d+\.\d{${tokenA?.decimals}})\d+$`), [tokenA?.decimals]);
-  const tokenBRegex = useMemo(() => new RegExp(`^(\d+\.\d{${tokenB?.decimals}})\d+$`), [tokenB?.decimals]);
   const digitRegex = useMemo(() => /^0+(?=\d)|(\.\d*)$/g, []);
 
   const onChangeTokenAAmount = useCallback(
@@ -55,14 +53,11 @@ const SwapCardContent: React.FC<ContentProps> = ({
         changeTokenAAmount("", true);
       }
       if (value !== "" && !isAmount(value)) return;
-      console.log(tokenARegex.test(e.target.value));
       changeTokenAAmount(
-        value
-          // .replace(tokenARegex, "$1")
-          .replace(digitRegex, "$1")
+        value.replace(digitRegex, "$1")
       );
     },
-    [changeTokenAAmount, digitRegex, tokenARegex],
+    [changeTokenAAmount, digitRegex],
   );
 
   const onChangeTokenBAmount = useCallback(
@@ -73,12 +68,10 @@ const SwapCardContent: React.FC<ContentProps> = ({
       }
       if (value !== "" && !isAmount(value)) return;
       changeTokenBAmount(
-        value
-          // .replace(tokenBRegex, "$1")
-          .replace(digitRegex, "$1")
+        value.replace(digitRegex, "$1")
       );
     },
-    [changeTokenBAmount, digitRegex, tokenBRegex],
+    [changeTokenBAmount, digitRegex],
   );
 
   const handleAutoFillTokenA = useCallback(() => {

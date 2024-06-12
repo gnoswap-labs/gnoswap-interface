@@ -23,6 +23,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
   breakpoint,
   onClearAll,
 }) => {
+  console.log("🚀 ~ txsGroupsInformation:", txsGroupsInformation);
   const listRef = useRef<HTMLDivElement | null>(null);
 
   return (

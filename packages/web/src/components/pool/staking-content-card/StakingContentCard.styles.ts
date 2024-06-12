@@ -97,9 +97,9 @@ export const StakingContentCardWrapper = styled.div<Props>`
         }
         .content-text {
           color: ${({ theme }) => theme.color.text04};
-          ${fonts.body12}
+          ${fonts.body11}
           ${media.mobile} {
-            ${fonts.p6}
+            ${fonts.p5}
             font-size: 11px;
           }
         }
@@ -226,12 +226,15 @@ export const StakingContentCardWrapper = styled.div<Props>`
         cursor: default;
         color: ${({ theme }) => theme.color.text03};
         ${fonts.body6}
+        font-weight: 600;
         ${media.tablet} {
           ${fonts.body8}
           font-size: 17px;
+          font-weight: 600;
         }
         ${media.mobile} {
           ${fonts.body12}
+          font-weight: 600;
         }
       }
       .apr-gd-text {

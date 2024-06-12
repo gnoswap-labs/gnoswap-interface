@@ -50,7 +50,10 @@ export function PairRatio({
       return "∞";
     }
 
-    return formatTokenExchangeRate(Number(value).toString());
+    return formatTokenExchangeRate(Number(value).toString(), {
+      maxSignificantDigits: 6,
+      isSmallValueFormat: true
+    });
   }
 
   return (<PairRatioWrapper>

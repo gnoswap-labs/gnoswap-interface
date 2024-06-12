@@ -47,8 +47,12 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
-    const rewardLogo = rewardData?.map(item => getGnotPath(item).logoURI) || [];
-    const temp = rewardTokens.map(token => getGnotPath(token).logoURI);
+    const rewardLogo = rewardData?.map(item => ({
+      src: getGnotPath(item).logoURI,
+    })) || [];
+    const temp = rewardTokens.map(token => ({
+      src: getGnotPath(token).logoURI,
+    }));
     return [...new Set([...temp, ...rewardLogo])];
   }, [rewardTokens, pool]);
 
@@ -173,20 +177,19 @@ const StakingContent: React.FC<StakingContentProps> = ({
             style={{
               width: "100%",
               height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
-              fontType: `${
-                breakpoint === DEVICE_TYPE.WEB
-                  ? "body7"
-                  : breakpoint === DEVICE_TYPE.MOBILE
+              fontType: `${breakpoint === DEVICE_TYPE.WEB
+                ? "body7"
+                : breakpoint === DEVICE_TYPE.MOBILE
                   ? "p2"
                   : "body9"
-              }`,
+                }`,
               textColor: "text01",
               bgColor: "background01",
               padding: "10px 16px",
               gap: "8px",
             }}
             className={type < 3 ? "change-weight" : "receive-button"}
-            onClick={() => {}}
+            onClick={() => { }}
           />
         )}
       </div>

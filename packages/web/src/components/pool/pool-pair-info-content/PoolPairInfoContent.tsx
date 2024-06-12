@@ -82,8 +82,12 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.volume24h]);
 
   const aprValue = useMemo(() => {
-    const aprStr = numberToRate(pool.totalApr);
+    const aprStr = numberToRate(pool.totalApr, { isRounding: false });
     const totalAPR = pool.totalApr || 0;
+    if (Number(pool.tvl) < 0.01) {
+      return "0%";
+    }
+
     if (Number(totalAPR) >= 100) {
       return (
         <>
@@ -93,7 +97,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       );
     }
     return aprStr;
-  }, [pool.totalApr]);
+  }, [pool.totalApr, pool.tvl]);
 
   const liquidityChangedStr = useMemo((): string => {
     return `${numberToFormat(Math.abs(pool.tvlChange), {
@@ -128,11 +132,20 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.currentTick]);
 
   const feeLogo = useMemo(() => {
-    return [pool?.tokenA?.logoURI, pool?.tokenB?.logoURI];
-  }, [pool]);
+    return [
+      {
+        src: getGnotPath(pool.tokenA)?.logoURI,
+      },
+      {
+        src: getGnotPath(pool.tokenB)?.logoURI,
+      }
+    ];
+  }, [pool.tokenA, pool.tokenB]);
 
   const stakeLogo = useMemo(() => {
-    return pool?.rewardTokens?.map(item => getGnotPath(item)?.logoURI);
+    return pool?.rewardTokens?.map(item => ({
+      src: getGnotPath(item)?.logoURI,
+    }));
   }, [pool?.rewardTokens]);
 
   const isHideBar = useMemo(() => {
@@ -275,8 +288,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               placement="top"
               FloatingContent={
                 <TooltipAPR
-                  feeAPR={pool?.feeApr}
-                  stakingAPR={pool?.stakingApr}
+                  feeAPR={Number(pool.tvl) < 0.01 ? "0" : pool?.feeApr}
+                  stakingAPR={Number(pool.tvl) < 0.01 ? "0" : pool?.stakingApr}
                   feeLogo={feeLogo}
                   stakeLogo={stakeLogo}
                 />

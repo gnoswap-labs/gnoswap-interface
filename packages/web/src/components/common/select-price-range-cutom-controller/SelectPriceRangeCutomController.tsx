@@ -99,10 +99,6 @@ const SelectPriceRangeCustomController = forwardRef<
       return;
     }
     const currentValue = BigNumber(value).multipliedBy(priceRatio ?? 1).toNumber();
-    // if (currentValue < 0.00000001) {
-    //   setDisplayValue("0");
-    //   return;
-    // }
     const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
     if (currentValue <= minPrice) {
       setDisplayValue("0");
@@ -116,7 +112,6 @@ const SelectPriceRangeCustomController = forwardRef<
       setDisplayValue(greaterThan1Transform(BigNumber(value).toFixed()));
       return;
     }
-    console.log("🚀 ~ formatControllerValue ~ subscriptFormat(BigNumber(value).toFixed():", subscriptFormat(BigNumber(value).toFixed()));
 
     setDisplayValue(subscriptFormat(BigNumber(value).toFixed()));
   }, [feeTier, priceRatio]);
@@ -176,7 +171,10 @@ const SelectPriceRangeCustomController = forwardRef<
       return "∞";
     }
 
-    return formatTokenExchangeRate(Number(current));
+    return formatTokenExchangeRate(Number(current), {
+      maxSignificantDigits: 6,
+      minLimit: 0.000001
+    });
   }, [current, feeTier]);
 
   const priceValueString = (

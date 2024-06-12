@@ -37,7 +37,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
         logoURI: getGnotPath(item).logoURI,
       };
     });
-    const temp = tempRewardTokens.map(token => token.logoURI);
+    const temp = tempRewardTokens.map(token => ({ src: token.logoURI, tooltipContent: token.symbol }));
     const logos = [...new Set(temp)];
     return <OverlapLogo logos={logos} size={20} />;
   }, [rewardTokens]);

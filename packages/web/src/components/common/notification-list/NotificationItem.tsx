@@ -27,8 +27,8 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     <TxsListItem key={title}>
       <TxsDateAgoTitle>{title}</TxsDateAgoTitle>
       {txs.map((item: TransactionModel, idx: number) => {
-        const shouldShowTokenALogo = Number(item.rawValue?.tokenAAmount);
-        const shouldShowTokenBLogo = Number(item.rawValue?.tokenAAmount);
+        const shouldShowTokenALogo = !!Number(item.rawValue?.tokenAAmount);
+        const shouldShowTokenBLogo = !!Number(item.rawValue?.tokenBAmount);
 
         if (breakpoint === DEVICE_TYPE.MOBILE) {
           return (

@@ -56,6 +56,7 @@ import {
   CHAINS,
 } from "@constants/environment.constant";
 import { NetworkClient } from "@common/clients/network-client";
+import { useRouter } from "next/router";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -103,6 +104,7 @@ export const GnoswapContext = createContext<GnoswapContextProps | null>(null);
 const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
+  const router = useRouter();
   const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
   const [status, setStatus] = useAtom(WalletState.status);
@@ -171,7 +173,9 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
 
     switch (currentChainId) {
       case DEV_CHAIN_ID:
-        setNetworkClient(new AxiosClient(DEV_API_URL));
+        setNetworkClient(new AxiosClient(DEV_API_URL, () => {
+          router.push("/500");
+        }));
         setRouterAPIClient(new AxiosClient(DEV_ROUTER_API_URL));
         setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
         break;
@@ -182,7 +186,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl));
         break;
     }
-  }, [loadedProviders, status, walletAccount, walletAccount?.chainId]);
+  }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);
 
   const accountRepository = useMemo(() => {
     return new AccountRepositoryImpl(
