@@ -6,6 +6,7 @@ import { wrapper } from "./PoolIncentivizeDetails.styles";
 import { DistributionPeriodDate } from "../pool-incentivize/PoolIncentivize";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { TokenModel } from "@models/token/token-model";
+import { getDateUtcToLocal } from "@common/utils/date-util";
 
 interface PoolIncentivizeDetailsProps {
   details: PoolSelectItemInfo | null;
@@ -17,9 +18,8 @@ interface PoolIncentivizeDetailsProps {
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
   const utcDate: Date = new Date(Date.UTC(myDate?.year || 0, (myDate?.month || 1) - 1, (myDate?.date || 0) + (days || 0), 0, 0, 0));
-  const formattedDate: string =
-    utcDate.toISOString().replace(/T/, " ").replace(/\..+/, "") + " (UTC)";
-  return formattedDate;
+  const formattedDate = getDateUtcToLocal(utcDate);
+  return formattedDate.value;
 }
 
 const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
@@ -29,7 +29,6 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   amount,
   token,
 }) => {
-
   return (
     <div css={wrapper}>
       <section>
@@ -63,7 +62,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
         <h5 className="section-title">Period</h5>
         <div className="section-info">
           <span className="select-date">
-            {formatDate(startDate, 0)}
+            {formatDate(startDate)}
             <br />- {formatDate(startDate, period)}
           </span>
           <span className="period-desc">

@@ -187,7 +187,10 @@ export const useEarnAddLiquidityConfirmModal = ({
       return "∞";
     }
 
-    return formatTokenExchangeRate(Number(price));
+    return formatTokenExchangeRate(Number(price), {
+      maxSignificantDigits: 6,
+      minLimit: 0.000001
+    });
   };
 
   const priceRangeInfo = useMemo(() => {

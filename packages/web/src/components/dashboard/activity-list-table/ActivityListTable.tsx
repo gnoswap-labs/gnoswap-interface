@@ -104,7 +104,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
             activities.map((item, idx) => (
               <ActivityInfo item={item} idx={idx + 1} key={idx} />
             ))}
-          {!isFetched && <TableSkeleton info={ACTIVITY_INFO} className="activity-table"/>}
+          {!isFetched && <TableSkeleton info={ACTIVITY_INFO} className="activity-table" />}
         </div>
       </div>
     </TableWrapper>
@@ -145,7 +145,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
             activities.map((item, idx) => (
               <MobileActivityInfo item={item} idx={idx + 1} key={idx} />
             ))}
-          {!isFetched && <TableSkeleton info={MOBILE_ACTIVITY_INFO} className="activity-table"/>}
+          {!isFetched && <TableSkeleton info={MOBILE_ACTIVITY_INFO} className="activity-table" />}
         </div>
       </div>
     </TableWrapper>

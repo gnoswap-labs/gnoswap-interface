@@ -9,6 +9,8 @@ import {
   PositionInfoWrapper,
   TableColumn,
   TableColumnTooltipContent,
+  TimeNoteWrapper,
+  TimeWrapper,
 } from "./PositionInfo.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
@@ -52,7 +54,8 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
             placement="top"
             FloatingContent={
               <TableColumnTooltipContent>
-                {`${timeFormat.value} (UTC+${timeFormat.offsetHours})`}
+                <TimeWrapper>{timeFormat.value}</TimeWrapper>
+                <TimeNoteWrapper>*Based on your local time</TimeNoteWrapper>
               </TableColumnTooltipContent>
             }
           >

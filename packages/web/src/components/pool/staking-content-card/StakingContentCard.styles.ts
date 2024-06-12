@@ -109,9 +109,11 @@ export const StakingContentCardWrapper = styled.div<Props>`
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           ${fonts.body12}
+          font-weight: 500;
           ${media.mobile} {
             ${fonts.p6}
             font-size: 11px;
+            font-weight: 500;
           }
         }
         .tooltip-icon {
@@ -244,12 +246,15 @@ export const StakingContentCardWrapper = styled.div<Props>`
         -webkit-text-fill-color: transparent;
         cursor: default;
         ${fonts.body6}
+        font-weight: 600;
         ${media.tablet} {
           ${fonts.body8}
           font-size: 17px;
+          font-weight: 600;
         }
         ${media.mobile} {
           ${fonts.body12}
+          font-weight: 600;
         }
       }
       .coin-info {

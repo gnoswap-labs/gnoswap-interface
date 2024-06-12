@@ -1,6 +1,6 @@
 import { TokenModel } from "@models/token/token-model";
 import Tooltip from "../tooltip/Tooltip";
-import { OverlapTokenLogoImageWrapper, OverlapTokenLogoStyleProps, OverlapTokenLogoWrapper } from "./OverlapTokenLogo.styles";
+import { OverlapTokenLogoImageWrapper, OverlapTokenLogoStyleProps, OverlapTokenLogoWrapper, TokenSymbolWrapper } from "./OverlapTokenLogo.styles";
 
 interface OverlapTokenLogoProps extends OverlapTokenLogoStyleProps {
   tokens: TokenModel[];
@@ -10,7 +10,7 @@ const OverlapTokenLogo = ({ tokens, size = 36 }: OverlapTokenLogoProps) => {
   return (
     <OverlapTokenLogoWrapper size={size}>
       {tokens.map((token, index) =>
-        <Tooltip key={`${index}${token.logoURI}`} placement="top" FloatingContent={<span>{token.symbol}</span>}>
+        <Tooltip key={`${index}${token.logoURI}`} placement="top" FloatingContent={<TokenSymbolWrapper>{token.symbol}</TokenSymbolWrapper>}>
           <OverlapTokenLogoImageWrapper
             key={index}
             overlap={index > 0 ? (size / 3) : 0}

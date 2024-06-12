@@ -40,9 +40,15 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
 
     const currentPriceStr = useMemo(() => {
       if (!swap) {
-        return `1 ${tokenA.info.symbol} = ${formatTokenExchangeRate(currentPrice)} ${tokenB.info.symbol}`;
+        return `1 ${tokenA.info.symbol} = ${formatTokenExchangeRate(currentPrice, {
+          maxSignificantDigits: 6,
+          minLimit: 0.000001
+        })} ${tokenB.info.symbol}`;
       }
-      return `1 ${tokenB.info.symbol} = ${formatTokenExchangeRate(1 / Number(currentPrice))} ${tokenA.info.symbol}`;
+      return `1 ${tokenB.info.symbol} = ${formatTokenExchangeRate(1 / Number(currentPrice), {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001
+      })} ${tokenA.info.symbol}`;
     }, [currentPrice, tokenA.info.symbol, tokenB.info.symbol, swap]);
 
     const rangeStatus = useMemo(() => {

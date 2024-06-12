@@ -8,6 +8,8 @@ import {
   TokenInfoWrapper,
   IconButton,
   TableColumnTooltipContent,
+  TimeWrapper,
+  TimeNoteWrapper,
 } from "./ActivityInfo.styles";
 import {
   ACTIVITY_TD_WIDTH,
@@ -37,6 +39,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
   } = item;
   const adjective = useMemo(() => ["for", "and"], []);
   const timeFormat = getDateUtcToLocal(time);
+  console.log("🚀 ~ time:", time);
 
   const actionText = useMemo(() => {
     if (action.split(" ").some(i => adjective.includes(i))) {
@@ -100,7 +103,8 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
             placement="top"
             FloatingContent={
               <TableColumnTooltipContent>
-                {`${timeFormat.value} (UTC+${timeFormat.offsetHours})`}
+                <TimeWrapper>{`${timeFormat.value}`}</TimeWrapper>
+                <TimeNoteWrapper>*Based on your local time</TimeNoteWrapper>
               </TableColumnTooltipContent>
             }
           >
@@ -176,7 +180,8 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
             placement="top"
             FloatingContent={
               <TableColumnTooltipContent>
-                {`${timeFormat.toString()}`}
+                <TimeWrapper>{`${timeFormat.toUTCString()}`}</TimeWrapper>
+                <TimeNoteWrapper>*Based on your local time</TimeNoteWrapper>
               </TableColumnTooltipContent>
             }
           >
