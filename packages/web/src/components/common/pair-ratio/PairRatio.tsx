@@ -52,7 +52,7 @@ export function PairRatio({
 
     return formatTokenExchangeRate(Number(value).toString(), {
       maxSignificantDigits: 6,
-      isSmallValueFormat: true
+      minLimit: 0.000001
     });
   }
 

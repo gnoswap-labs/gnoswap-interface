@@ -119,7 +119,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
   const adjective = ["for", "and"];
-  const timeFormat = getDateUtcToLocal(time);
+  const timeFormat = new Date(time);
   return (
     <TokenInfoWrapper>
       <HoverSection>
@@ -176,7 +176,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
             placement="top"
             FloatingContent={
               <TableColumnTooltipContent>
-                {`${timeFormat.value} (UTC+${timeFormat.offsetHours})`}
+                {`${timeFormat.toString()}`}
               </TableColumnTooltipContent>
             }
           >
