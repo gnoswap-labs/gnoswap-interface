@@ -7,6 +7,7 @@ interface Props {
   className?: string;
   width: number;
   mobileWidth?: number;
+  missingLogoClassName?: string
 }
 
 const MissingLogo: React.FC<Props> = ({
@@ -15,6 +16,7 @@ const MissingLogo: React.FC<Props> = ({
   url,
   width,
   mobileWidth,
+  missingLogoClassName,
 }) => {
   return (
     <>
@@ -24,7 +26,7 @@ const MissingLogo: React.FC<Props> = ({
         <LogoWrapper
           width={width}
           mobileWidth={mobileWidth}
-          className="missing-logo"
+          className={`missing-logo ${missingLogoClassName}`}
         >
           {(symbol || "").slice(0, 3)}
         </LogoWrapper>

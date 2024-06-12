@@ -134,7 +134,7 @@ export function tickToPriceStr(
     decimals?: number,
     isFormat?: boolean,
   }) {
-  const isFormat = options?.isFormat === undefined ? true : false;
+  const isFormat = options?.isFormat === undefined ? true : options?.isFormat;
   if (options?.isEnd) {
     return tick < 0 ? "0" : "∞";
   }
