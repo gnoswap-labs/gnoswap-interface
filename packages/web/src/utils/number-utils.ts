@@ -132,7 +132,15 @@ export const toUnitFormat = (
  */
 export const toPriceFormat = (
   value: BigNumber | string | number,
-  options?: {
+  {
+    usd = false,
+    isKMBFormat = true,
+    isSmallValueShorten = false,
+    isRounding = true,
+    lestThan1Decimals = 3,
+    greaterThan1Decimals = 2,
+    forcedDecimals = false,
+  }: {
     usd?: boolean,
     isKMBFormat?: boolean,
     isSmallValueShorten?: boolean,
@@ -140,18 +148,9 @@ export const toPriceFormat = (
     lestThan1Decimals?: number;
     greaterThan1Decimals?: number;
     forcedDecimals?: boolean;
-  }
+  } = {}
 ): string => {
-  const usd = options?.usd || false;
-  const isKMBFormat = options?.isKMBFormat || true;
-  const isSmallValueShorten = options?.isSmallValueShorten || false;
-  const isRounding = options?.isRounding || true;
-  const forcedDecimals = options?.forcedDecimals || false;
-  const lestThan1Decimals = options?.lestThan1Decimals || 3;
-  const greaterThan1Decimals = options?.greaterThan1Decimals || 2;
-
   if (!isNumber(value)) {
-    // TODO : Error Check
     return usd ? "$0" : "0";
   }
   const bigNumber = BigNumber(value).abs();

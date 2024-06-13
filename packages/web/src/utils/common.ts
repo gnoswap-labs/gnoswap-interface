@@ -60,15 +60,13 @@ export const parseJson = (data: string) => {
 export const checkPositivePrice = (
   currentPrice: string,
   checkPrice: string,
-  { shortenSmallPercent,
-    shortenSmallChange,
+  {
+    shortenSmallPercent = false,
+    shortenSmallChange = false,
   }: {
     shortenSmallPercent?: boolean;
     shortenSmallChange?: boolean;
-  } = {
-      shortenSmallPercent: false,
-      shortenSmallChange: false,
-    }
+  } = {}
 ) => {
   const currentAsNumber = Number(currentPrice);
   const checkAsNumber = Number(checkPrice);
@@ -90,7 +88,7 @@ export const checkPositivePrice = (
     return toPriceFormat(BigNumber(currentAsNumber).dividedBy(checkAsNumber || 1).minus(1).multipliedBy(100).abs().toFixed());
   })();
 
-  const isEmpty = !currentPrice && !checkPrice || (!currentAsNumber && !checkAsNumber);
+  const isEmpty = !currentPrice || !checkPrice;
 
   const status = (() => {
     if (isEmpty) {

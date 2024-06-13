@@ -200,7 +200,14 @@ const VolumeChartContainer: React.FC = () => {
       changeVolumeChartType={changeVolumeChartType}
       volumePriceInfo={{
         amount: allTimeVolumeUsd
-          ? toPriceFormat(Number(allTimeVolumeUsd), { usd: true, isRounding: false, isKMBFormat: false })
+          ? toPriceFormat(
+            Number(allTimeVolumeUsd), {
+            usd: true,
+            isRounding: false,
+            isKMBFormat: false,
+            greaterThan1Decimals: 1,
+            lestThan1Decimals: 1,
+          })
           : "-",
         fee: allTimeFeeUsd
           ? toUnitFormat(Number(allTimeFeeUsd), true, false, false)

@@ -65,7 +65,6 @@ function compareAmountFn(
 function handleAmount(changed: string, token: TokenModel | null) {
   let value = changed;
   const decimals = token?.decimals || 0;
-  console.log("🚀 ~ handleAmount ~ decimals:", decimals);
   if (!value || BigNumber(value).isZero()) {
     value = changed;
   } else {

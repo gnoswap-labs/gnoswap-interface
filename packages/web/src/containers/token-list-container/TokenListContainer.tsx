@@ -142,9 +142,9 @@ const TokenListContainer: React.FC = () => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>({
-    key: TABLE_HEAD.INDEX,
-    direction: "asc",
-    firstActive: true,
+    key: TABLE_HEAD.VOLUME,
+    direction: "desc",
+    firstActive: false,
   });
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
@@ -216,6 +216,7 @@ const TokenListContainer: React.FC = () => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
 
     let temp = tokens
+      // let temp = (tokens?.[0] ? [tokens?.[0]] : [])
       .filter((token: TokenModel) => token.path !== wugnotPath)
       .map((item: TokenModel) => {
         const isGnot = item.path === "gnot";

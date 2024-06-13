@@ -67,7 +67,10 @@ const PoolListContainer: React.FC = () => {
   const [poolType, setPoolType] = useState<POOL_TYPE>(POOL_TYPE.ALL);
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
-  const [sortOption, setTokenSortOption] = useState<PoolSortOption>();
+  const [sortOption, setTokenSortOption] = useState<PoolSortOption>({
+    key: TABLE_HEAD.TVL,
+    direction: "desc",
+  });
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useRouter();
@@ -270,8 +273,8 @@ const PoolListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setTokenSortOption({
         key,

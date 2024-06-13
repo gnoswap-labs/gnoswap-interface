@@ -235,9 +235,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
               && Math.abs(currentItem.value - previous1Item.value) >= 0.001
             ) {
               const fakeItemValue = new BigNumber(currentItem.value)
-                .minus(BigNumber(currentItem.value).minus(BigNumber(previous1Item.value)).dividedBy(15))
+                .minus(
+                  BigNumber(currentItem.value)
+                    .minus(BigNumber(previous1Item.value))
+                    .dividedBy(15)
+                )
                 .toNumber();
-
 
               return {
                 value: fakeItemValue,
@@ -249,19 +252,37 @@ const LineGraph: React.FC<LineGraphProps> = ({
           if (previous2Item && previous1Item && next1Item)
             if (Math.abs(previous2Item.value - previous1Item.value) < 0.001
               && Math.abs(previous1Item.value - currentItem.value) < 0.001
-              && (next1Item.value - currentItem.value) >= 0.001
             ) {
-              const fakeItemValue = new BigNumber(currentItem.value)
-                .plus(BigNumber(next1Item.value).minus(BigNumber(currentItem.value)).dividedBy(15))
-                .toNumber();
+              if (currentItem.value - next1Item.value >= 0.01) {
+                const fakeItemValue = new BigNumber(currentItem.value)
+                  .plus(
+                    BigNumber(next1Item.value)
+                      .minus(BigNumber(currentItem.value))
+                      .dividedBy(15)
+                  )
+                  .toNumber();
 
+                return {
+                  value: fakeItemValue,
+                  time: new Date(item.time).getTime(),
+                };
+              }
 
-              return {
-                value: fakeItemValue,
-                time: new Date(item.time).getTime(),
-              };
+              if (next1Item.value - currentItem.value >= 0.01) {
+                const fakeItemValue = new BigNumber(currentItem.value)
+                  .plus(
+                    BigNumber(next1Item.value)
+                      .minus(BigNumber(currentItem.value))
+                      .dividedBy(15)
+                  )
+                  .toNumber();
+
+                return {
+                  value: fakeItemValue,
+                  time: new Date(item.time).getTime(),
+                };
+              }
             }
-
           return item;
         });
       }

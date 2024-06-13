@@ -25,16 +25,24 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   connected,
   amount,
 }) => {
+  console.log("🚀 ~ amount:", amount);
   const disabledSelectPair = useMemo(() => {
     return changable !== true;
   }, [changable]);
 
+  const digitRegex = useMemo(() => /^0+(?=\d)|(\.\d*)$/g, []);
+
   const onChangeAmountInput = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
+    if (value === "") {
+      changeAmount("");
+    }
     if (value !== "" && !isAmount(value)) return;
-    const formattedValue = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
-    changeAmount(formattedValue);
-  }, [changeAmount]);
+
+    changeAmount(
+      value.replace(digitRegex, "$1")
+    );
+  }, [changeAmount, digitRegex]);
 
   const handleFillBalance = useCallback(() => {
     if (connected) {
@@ -74,7 +82,6 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
         <input
           value={amount}
           className="amount-text"
-          type="number"
           onChange={onChangeAmountInput}
           placeholder="0"
           onKeyUp={preventArrowKeys}

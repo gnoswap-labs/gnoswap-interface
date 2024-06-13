@@ -13,6 +13,25 @@ export interface TokenAmountInputModel {
   changeAmount: (amount: string) => void;
 }
 
+function handleAmount(changed: string, token: TokenModel | null) {
+  let value = changed;
+  const decimals = token?.decimals || 0;
+  if (!value || BigNumber(value).isZero()) {
+    value = changed;
+  } else {
+    value = BigNumber(value).toFixed(decimals || 0, 1);
+  }
+
+  if (BigNumber(changed).isEqualTo(value)) {
+    const dotIndex = changed.indexOf(".");
+    if (dotIndex === -1 || changed.length - dotIndex - 1 < decimals) {
+      value = changed;
+    }
+  }
+
+  return value;
+}
+
 export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputModel => {
   const [amount, setAmount] = useState<string>("0");
   const [balance, setBalance] = useState<string>("0");
@@ -38,6 +57,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   }, [tokenPrices, amount, token]);
 
   const changeAmount = useCallback((value: string) => {
+    console.log("🚀 ~ changeAmount ~ value:", value);
     if (!token) {
       return;
     }
@@ -52,10 +72,11 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
       setAmount("0");
       return;
     }
-    setAmount(amount.toString());
-    if (tokenPrices[checkGnotPath(token.path)]) {
-    }
-  }, [token, tokenPrices]);
+
+    const result = handleAmount(value, token);
+
+    setAmount(result);
+  }, [token]);
 
   return {
     token,
