@@ -82,12 +82,3 @@ export const TableColumnTooltipContent = styled.div`
   word-break: break-all;
   ${fonts.body12};
 `;
-
-export const TimeWrapper = styled.div`
-  margin-bottom: 8px;
-`;
-
-export const TimeNoteWrapper = styled.div`
-  ${fonts.p4}
-  color: ${({ theme }) => theme.color.text04}
-`;

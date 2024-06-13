@@ -49,11 +49,10 @@ const WalletBalanceContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
-  // const { isLoading } = useLoading();
 
   const { balances: balancesPrice, loadingBalance } = useTokenData();
 
-  const { positions, loading: loadingPositions } = usePositionData({ isClosed: false });
+  const { positions, loading: loadingPositions } = usePositionData();
 
   const isLoadingPosition = useMemo(
     () => connected && loadingPositions,

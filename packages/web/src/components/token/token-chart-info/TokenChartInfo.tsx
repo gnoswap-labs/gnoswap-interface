@@ -18,7 +18,7 @@ export interface TokenChartInfoProps {
       denom: string;
       status: MATH_NEGATIVE_TYPE;
     };
-    changedRate: number;
+    changedRate: string;
   };
   isEmpty: boolean;
   loading: boolean;
@@ -66,7 +66,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
       return "-";
     }
 
-    return `${priceInfo.changedRate.toFixed(2)}%`;
+    return priceInfo.changedRate;
   }, [isEmpty, priceInfo.changedRate]);
 
   return (

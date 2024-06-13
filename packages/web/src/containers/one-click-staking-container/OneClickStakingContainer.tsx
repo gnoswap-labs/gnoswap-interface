@@ -18,6 +18,7 @@ const OneClickStakingContainer: React.FC = () => {
     router.query?.["pool-path"] === undefined
       ? null
       : `${router.query?.["pool-path"]}`;
+  console.log("🚀 ~ poolId:", poolId);
 
   const tokenPair = useMemo(() => {
     const tokenAPath = router.query?.["tokenA"] as string;
@@ -49,7 +50,7 @@ const OneClickStakingContainer: React.FC = () => {
   const {
     data = initialPool as PoolDetailModel,
     isLoading: isLoadingPoolInfo,
-  } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  } = useGetPoolDetailByPath((poolPath || poolId) as string, { enabled: !!poolPath || !!poolId });
 
   const stakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];

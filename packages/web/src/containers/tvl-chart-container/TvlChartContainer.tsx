@@ -2,7 +2,7 @@ import React, { useCallback, useState, useMemo } from "react";
 import TvlChart from "@components/dashboard/tvl-chart/TvlChart";
 import { CHART_TYPE } from "@constants/option.constant";
 import dayjs from "dayjs";
-import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
+import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { getLocalizeTime } from "@utils/chart";
 import { useGetDashboardTVL } from "@query/dashboard";
@@ -213,7 +213,13 @@ const TvlChartContainer: React.FC = () => {
       changeTvlChartType={changeTvlChartType}
       tvlPriceInfo={{
         amount: tvlData?.latest
-          ? `$${removeTrailingZeros(prettyNumber(tvlData?.latest))}`
+          ? `${toPriceFormat(tvlData?.latest, {
+            isKMBFormat: false,
+            usd: true,
+            lestThan1Decimals: 1,
+            greaterThan1Decimals: 1,
+            forcedDecimals: true,
+          })}`
           : "-",
       }}
       tvlChartInfo={chartData ?? { xAxisLabels: [], datas: [] }}

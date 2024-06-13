@@ -84,6 +84,7 @@ export interface LineGraphProps {
   graphBorder?: [boolean, boolean, boolean, boolean];
   baseLineLabelsStyle?: React.CSSProperties;
   displayLastDayAsNow?: boolean;
+  popupYValueFormatter?: (value: string) => string
 }
 
 export interface LineGraphRef {
@@ -162,6 +163,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   baseLineLabelsStyle,
   firstPointColor,
   displayLastDayAsNow = false,
+  popupYValueFormatter,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -169,7 +171,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [chartPoint, setChartPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const [points, setPoints] = useState<Point[]>([]);
-  console.log("🚀 ~ .padStart ~ points:", points);
   const [baseLineYAxis, setBaseLineYAxis] = useState<string[]>([]);
   const [baseLineNumberWidth, setBaseLineNumberWidth] = useState<number>(0);
   const { height: customHeight = 0, locationTooltip } = customData;
@@ -686,10 +687,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 )}
               </div>
               <div className="tooltip-header">
-                <span className="value">{toPriceFormat(
-                  BigNumber(datas[currentPointIndex]?.value).toString(),
-                  { usd: true, isRounding: false }
-                )}</span>
+                <span className="value">{popupYValueFormatter
+                  ? popupYValueFormatter(datas[currentPointIndex]?.value)
+                  : toPriceFormat(
+                    BigNumber(datas[currentPointIndex]?.value).toString(),
+                    { usd: true, isRounding: false }
+                  )}</span>
               </div>
             </LineGraphTooltipWrapper>
           ) : null

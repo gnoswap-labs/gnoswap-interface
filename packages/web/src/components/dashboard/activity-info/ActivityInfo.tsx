@@ -8,8 +8,6 @@ import {
   TokenInfoWrapper,
   IconButton,
   TableColumnTooltipContent,
-  TimeWrapper,
-  TimeNoteWrapper,
 } from "./ActivityInfo.styles";
 import {
   ACTIVITY_TD_WIDTH,
@@ -19,7 +17,8 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { formatAddress } from "@utils/string-utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { getDateDiff, getDateUtcToLocal } from "@common/utils/date-util";
+import { getDateDiff } from "@common/utils/date-util";
+import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 dayjs.extend(relativeTime);
 
 interface ActivityInfoProps {
@@ -38,8 +37,6 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
     time
   } = item;
   const adjective = useMemo(() => ["for", "and"], []);
-  const timeFormat = getDateUtcToLocal(time);
-  console.log("🚀 ~ time:", time);
 
   const actionText = useMemo(() => {
     if (action.split(" ").some(i => adjective.includes(i))) {
@@ -99,18 +96,10 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
           </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_TD_WIDTH[5]}>
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <TableColumnTooltipContent>
-                <TimeWrapper>{`${timeFormat.value}`}</TimeWrapper>
-                <TimeNoteWrapper>*Based on your local time</TimeNoteWrapper>
-              </TableColumnTooltipContent>
-            }
-          >
+          <DateTimeTooltip date={time}>
             <span className="token-index tooltip-label">{getDateDiff(time)}</span>
             {/* <span className="token-index tooltip-label">{dayjs(time).fromNow()}</span> */}
-          </Tooltip>
+          </DateTimeTooltip>
         </TableColumn>
       </HoverSection>
     </TokenInfoWrapper>
@@ -123,7 +112,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
   const adjective = ["for", "and"];
-  const timeFormat = new Date(time);
+
   return (
     <TokenInfoWrapper>
       <HoverSection>
@@ -176,17 +165,9 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
           </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={MOBILE_ACTIVITY_TD_WIDTH[5]}>
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <TableColumnTooltipContent>
-                <TimeWrapper>{`${timeFormat.toUTCString()}`}</TimeWrapper>
-                <TimeNoteWrapper>*Based on your local time</TimeNoteWrapper>
-              </TableColumnTooltipContent>
-            }
-          >
+          <DateTimeTooltip date={time}>
             <span className="token-index">{dayjs(time).fromNow()}</span>
-          </Tooltip>
+          </DateTimeTooltip>
         </TableColumn>
       </HoverSection>
     </TokenInfoWrapper>

@@ -3,10 +3,10 @@ import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
 import React, { useCallback, useMemo } from "react";
 import { TvlChartGraphWrapper } from "./TvlChartGraph.styles";
-// import { useWindowSize } from "@hooks/common/use-window-size";
-// import { DEVICE_TYPE } from "@styles/media";
 import dayjs from "dayjs";
 import { CHART_TYPE } from "@constants/option.constant";
+import { toPriceFormat } from "@utils/number-utils";
+import BigNumber from "bignumber.js";
 export interface TvlChartGraphProps {
   datas: {
     amount: {
@@ -32,33 +32,6 @@ const DATE_HOUR_VALUE = 60 * DATE_MINUTE_VALUE;
 const FORMAT_DATE = "MMM D, YYYY";
 const FORMAT_DATE_LENGTH = 95;
 
-// const calculateMiddleIndices = (totalLabels = 0, countXAxis = 0) => {
-//   const indices = new Set<number>();
-//   // Helper function to add indices
-//   const addIndices = (start: number, end: number) => {
-//     const mid = Math.floor((start + end) / 2);
-//     if (!indices.has(mid)) {
-//       indices.add(mid);
-//       if (indices.size < countXAxis) {
-//         // Add midpoint of the left subarray
-//         addIndices(start, mid - 1);
-//         // Add midpoint of the right subarray
-//         addIndices(mid + 1, end);
-//       }
-//     }
-//   };
-
-//   // Always include the first and last labels
-//   indices.add(0);
-//   indices.add(totalLabels - 1);
-
-//   // Begin by adding the middle of the entire array
-//   addIndices(0, totalLabels - 1);
-
-//   // Convert to array and sort to ensure the correct order
-//   return Array.from(indices).sort((a, b) => b - a);
-// };
-
 
 function makeTimePeriodFormatInfo() {
   const offset = new Date().getTimezoneOffset();
@@ -72,11 +45,9 @@ function makeTimePeriodFormatInfo() {
 
 const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
   datas,
-  // xAxisLabels,
 }) => {
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
-  // const { breakpoint } = useWindowSize();
 
   const xAxisRange = useMemo(() => {
     const times = datas.map(d => new Date(d.time).getTime());
@@ -150,7 +121,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
       };
     });
   }, [xAxisRange, size.width, scaleX, revertX]);
-  console.log("🚀 ~ constxAxisLabels:XAxisLabel[]=useMemo ~ xAxisLabels:", xAxisLabels);
 
 
   const mappedData = useMemo(() => {
@@ -179,16 +149,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     );
   }, [datas, hasOnlyOnePoint, size.width, xAxisLabels]);
 
-  // const countXAxis = useMemo(() => {
-  //   if (breakpoint !== DEVICE_TYPE.MOBILE)
-  //     return Math.floor(((size.width || 0) + 20 - 25) / 100);
-  //   return Math.floor(((size.width || 0) + 20 - 8) / 80);
-  // }, [size.width, breakpoint]);
-
-  // const labelIndicesToShow = useMemo(() => {
-  //   return calculateMiddleIndices(xAxisLabels.length, Math.min(countXAxis, 4));
-  // }, [countXAxis, xAxisLabels.length]);
-
   return (
     <TvlChartGraphWrapper>
       <div className="data-wrapper">
@@ -206,6 +166,14 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
               height: 36,
               locationTooltip: 170,
             }}
+            popupYValueFormatter={(value) => toPriceFormat(
+              BigNumber(value).toFixed(), {
+              isRounding: false,
+              usd: true,
+              greaterThan1Decimals: 1,
+              lestThan1Decimals: 1,
+              isKMBFormat: false,
+            })}
           />
         </div>
         <div className={`xaxis-wrapper ${hasOnlyOnePoint ? "center" : ""}`}>

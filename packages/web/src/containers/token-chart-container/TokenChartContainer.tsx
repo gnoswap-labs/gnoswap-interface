@@ -64,7 +64,7 @@ export interface TokenInfo {
       denom: string;
       status: MATH_NEGATIVE_TYPE;
     };
-    changedRate: number;
+    changedRate: string;
   };
 }
 
@@ -96,7 +96,7 @@ const dummyTokenInfo: TokenInfo = {
       denom: "",
       status: MATH_NEGATIVE_TYPE.NONE,
     },
-    changedRate: 0,
+    changedRate: "0",
   },
 };
 
@@ -197,8 +197,9 @@ const TokenChartContainer: React.FC = () => {
     if (tokenB) {
       const dataToday = checkPositivePrice(
         pricesBefore.latestPrice,
-        pricesBefore.priceToday,
-      );
+        pricesBefore.priceToday, {
+        displayStatusSign: false,
+      });
 
       setTokenInfo(() => ({
         token: {
@@ -218,7 +219,7 @@ const TokenChartContainer: React.FC = () => {
             denom: "USD",
             status: dataToday.status,
           },
-          changedRate: Math.abs(Number(dataToday.percentValue || 0)),
+          changedRate: dataToday.percentDisplay,
         },
       }));
       if (!fromSelectToken && !tokenB.logoURI) {

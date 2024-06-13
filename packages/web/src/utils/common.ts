@@ -63,9 +63,11 @@ export const checkPositivePrice = (
   {
     shortenSmallPercent = false,
     shortenSmallChange = false,
+    displayStatusSign = true,
   }: {
     shortenSmallPercent?: boolean;
     shortenSmallChange?: boolean;
+    displayStatusSign?: boolean;
   } = {}
 ) => {
   const currentAsNumber = Number(currentPrice);
@@ -102,9 +104,7 @@ export const checkPositivePrice = (
     return MATH_NEGATIVE_TYPE.NEGATIVE;
   })();
 
-  const statusSign = status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+";
-
-
+  const statusSign = displayStatusSign ? (status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+") : "";
 
   const percentDisplay = (() => {
     if (status === MATH_NEGATIVE_TYPE.NONE) return "-";
@@ -121,7 +121,7 @@ export const checkPositivePrice = (
       return statusSign + "0.00%";
     }
 
-    return statusSign + BigNumber(percentValue || 0).toFixed(2) + "%";
+    return statusSign + BigNumber(percentValue || 0).abs().toFixed(2) + "%";
   })();
   const price = (() => {
     if (status === MATH_NEGATIVE_TYPE.NONE) {

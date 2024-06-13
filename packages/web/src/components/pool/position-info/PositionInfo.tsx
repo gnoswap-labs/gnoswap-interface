@@ -8,17 +8,13 @@ import {
   IconButton,
   PositionInfoWrapper,
   TableColumn,
-  TableColumnTooltipContent,
-  TimeNoteWrapper,
-  TimeWrapper,
 } from "./PositionInfo.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { prettyNumber } from "@utils/number-utils";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import { getDateUtcToLocal } from "@common/utils/date-util";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { MOBILE_POSITION_HISTORY_INFO, POSITION_HISTORY_INFO, TABLET_POSITION_HISTORY_INFO } from "@constants/skeleton.constant";
+import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 
 dayjs.extend(relativeTime);
 
@@ -44,23 +40,14 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
       : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
         ? TABLET_POSITION_HISTORY_INFO
         : POSITION_HISTORY_INFO;
-  const timeFormat = getDateUtcToLocal(time);
 
   return (
     <PositionInfoWrapper key={key}>
       <HoverSection>
         <TableColumn className="left" tdWidth={tableInfo.list[0].width}>
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <TableColumnTooltipContent>
-                <TimeWrapper>{timeFormat.value}</TimeWrapper>
-                <TimeNoteWrapper>*Based on your local time</TimeNoteWrapper>
-              </TableColumnTooltipContent>
-            }
-          >
+          <DateTimeTooltip date={time}>
             <span className="token-index">{dayjs(time).fromNow()}</span>
-          </Tooltip>
+          </DateTimeTooltip>
         </TableColumn>
         <TableColumn className="left" tdWidth={tableInfo.list[1].width}>
           <span className="position-index">

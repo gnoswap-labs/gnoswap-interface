@@ -7,6 +7,7 @@ import { DistributionPeriodDate } from "../pool-incentivize/PoolIncentivize";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { getDateUtcToLocal } from "@common/utils/date-util";
+import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 
 interface PoolIncentivizeDetailsProps {
   details: PoolSelectItemInfo | null;
@@ -61,10 +62,12 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
       <section className="period-section">
         <h5 className="section-title">Period</h5>
         <div className="section-info">
-          <span className="select-date">
-            {formatDate(startDate)}
-            <br />- {formatDate(startDate, period)}
-          </span>
+          <DateTimeTooltip>
+            <span className="select-date">
+              {formatDate(startDate)}
+              <br />- {formatDate(startDate, period)}
+            </span>
+          </DateTimeTooltip>
           <span className="period-desc">
             {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()} {token?.symbol} will be distributed daily
           </span>
