@@ -18,7 +18,8 @@ const TokenSwapContainer: React.FC = () => {
   const { getGnotPath } = useGnotToGnot();
   const path = router.query["token-path"] as string;
   const tokenAPath = router.query["tokenA"] as string;
-  const { data: tokenB = null, isFetched } = useGetTokenByPath(path, {
+  // Prefetched by server side
+  const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
   });
   const { data: tokenA = null } = useGetTokenByPath(tokenAPath, {
@@ -66,9 +67,37 @@ const TokenSwapContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (isFetched) {
-      let request = {};
-      if (tokenA && tokenB && tokenA.symbol !== tokenB?.symbol) {
+    let request = {};
+    if (tokenA && tokenB && tokenA.symbol !== tokenB?.symbol) {
+      request = {
+        tokenB: {
+          ...tokenB,
+          path: getGnotPath(tokenB).path,
+          symbol: getGnotPath(tokenB).symbol,
+          logoURI: getGnotPath(tokenB).logoURI,
+          name: getGnotPath(tokenB).name,
+        },
+        tokenA: {
+          ...tokenA,
+          path: getGnotPath(tokenA).path,
+          symbol: getGnotPath(tokenA).symbol,
+          logoURI: getGnotPath(tokenA).logoURI,
+          name: getGnotPath(tokenA).name,
+        },
+      };
+    } else if (tokenA) {
+      request = {
+        tokenA: {
+          ...tokenA,
+          path: getGnotPath(tokenA).path,
+          symbol: getGnotPath(tokenA).symbol,
+          logoURI: getGnotPath(tokenA).logoURI,
+          name: getGnotPath(tokenA).name,
+        },
+      };
+    } else {
+      if (swapValue?.tokenA?.symbol === tokenB?.symbol) request = {};
+      else {
         request = {
           tokenB: {
             ...tokenB,
@@ -77,51 +106,21 @@ const TokenSwapContainer: React.FC = () => {
             logoURI: getGnotPath(tokenB).logoURI,
             name: getGnotPath(tokenB).name,
           },
-          tokenA: {
-            ...tokenA,
-            path: getGnotPath(tokenA).path,
-            symbol: getGnotPath(tokenA).symbol,
-            logoURI: getGnotPath(tokenA).logoURI,
-            name: getGnotPath(tokenA).name,
-          },
         };
-      } else if (tokenA) {
-        request = {
-          tokenA: {
-            ...tokenA,
-            path: getGnotPath(tokenA).path,
-            symbol: getGnotPath(tokenA).symbol,
-            logoURI: getGnotPath(tokenA).logoURI,
-            name: getGnotPath(tokenA).name,
-          },
-        };
-      } else {
-        if (swapValue?.tokenA?.symbol === tokenB?.symbol) request = {};
-        else {
-          request = {
-            tokenB: {
-              ...tokenB,
-              path: getGnotPath(tokenB).path,
-              symbol: getGnotPath(tokenB).symbol,
-              logoURI: getGnotPath(tokenB).logoURI,
-              name: getGnotPath(tokenB).name,
-            },
-          };
-        }
       }
-      setSwapValue(prev => {
-        return {
-          ...prev,
-          ...request,
-        };
-      });
     }
-  }, [tokenB, isFetched, tokenA]);
+    setSwapValue(prev => {
+      return {
+        ...prev,
+        ...request,
+      };
+    });
+  }, [tokenB, tokenA, swapValue?.tokenA?.symbol]);
 
   const handleChangeTokenB = (token: TokenModel) => {
     if (
       swapValue?.tokenB?.path ===
-        encryptId(router?.query?.["token-path"] as string) &&
+      encryptId(router?.query?.["token-path"] as string) &&
       swapValue?.tokenA?.symbol !== token?.symbol
     ) {
       router.push(`/tokens/${makeId(token.path)}`);
@@ -132,7 +131,7 @@ const TokenSwapContainer: React.FC = () => {
   const handleChangeTokenA = (token: TokenModel) => {
     if (
       swapValue?.tokenA?.path ===
-        encryptId(router?.query?.["token-path"] as string) &&
+      encryptId(router?.query?.["token-path"] as string) &&
       swapValue?.tokenB?.symbol !== token?.symbol
     ) {
       router.push(`/tokens/${makeId(token.path)}`);

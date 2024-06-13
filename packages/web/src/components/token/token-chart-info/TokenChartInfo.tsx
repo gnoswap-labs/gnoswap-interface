@@ -31,16 +31,19 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
   isEmpty,
 }) => {
   const rateClass = useMemo(() => {
+    if (isEmpty) return "";
+
     switch (priceInfo.amount.status) {
       case MATH_NEGATIVE_TYPE.POSITIVE:
         return "up";
       case MATH_NEGATIVE_TYPE.NEGATIVE:
         return "down";
+      case MATH_NEGATIVE_TYPE.NONE:
       default:
-        if (isEmpty) return "-";
-        return "up";
+        return "";
     }
   }, [isEmpty, priceInfo.amount.status]);
+
 
   const statusIcon = useMemo(() => {
     switch (priceInfo.amount.status) {

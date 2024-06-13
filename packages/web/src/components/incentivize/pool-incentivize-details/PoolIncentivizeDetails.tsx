@@ -8,6 +8,7 @@ import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
+import dayjs from "dayjs";
 
 interface PoolIncentivizeDetailsProps {
   details: PoolSelectItemInfo | null;
@@ -18,8 +19,8 @@ interface PoolIncentivizeDetailsProps {
 }
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
-  const utcDate: Date = new Date(Date.UTC(myDate?.year || 0, (myDate?.month || 1) - 1, (myDate?.date || 0) + (days || 0), 0, 0, 0));
-  const formattedDate = getDateUtcToLocal(utcDate);
+  const utcDate = dayjs(Date.parse(`${myDate?.year}-${myDate?.month}-${(myDate?.date || 0)}`)).add(days || 0, "day");
+  const formattedDate = getDateUtcToLocal(utcDate.toDate());
   return formattedDate.value;
 }
 

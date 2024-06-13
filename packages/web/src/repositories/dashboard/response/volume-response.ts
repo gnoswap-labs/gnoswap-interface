@@ -12,11 +12,16 @@ interface VolumeDataItem {
   volumeUsd: string;
 }
 
+interface FeeDataItem {
+  date: string;
+  feeUsd: string;
+}
+
 export interface Fee {
-  last7d: string | number
-  last30d: string | number
-  last90d: string | number
-  all: string | number
+  last7d: FeeDataItem[];
+  last30d: FeeDataItem[];
+  last90d: FeeDataItem[];
+  all: FeeDataItem[];
 }
 
 export interface VolumeData {

@@ -200,7 +200,6 @@ const TokenChartContainer: React.FC = () => {
         pricesBefore.priceToday, {
         displayStatusSign: false,
       });
-
       setTokenInfo(() => ({
         token: {
           name: getGnotPath(tokenB).name,

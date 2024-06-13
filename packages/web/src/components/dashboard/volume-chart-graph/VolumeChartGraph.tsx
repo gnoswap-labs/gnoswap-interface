@@ -48,9 +48,7 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
   const currentData = useMemo(() => datas, [datas]);
-  // const currentData = useMemo(() => [datas[0]], [datas]);
   const currentXAxisLabels = useMemo(() => xAxisLabels, [xAxisLabels]);
-  // const currentXAxisLabels = useMemo(() => [xAxisLabels[0]], [xAxisLabels]);
   const hasOnlyOneData = useMemo(() => currentData.length === 1, [currentData.length]);
 
   const countXAxis = useMemo(() => {

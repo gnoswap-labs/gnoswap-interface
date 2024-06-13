@@ -54,7 +54,7 @@ export function ExchangeRateGraphContent({
         break;
     }
 
-    return result.sort((a, b) => {
+    return (result ?? [])?.sort((a, b) => {
       return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
   }, [poolData.priceRatio, selectedScope]);
