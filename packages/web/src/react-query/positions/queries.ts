@@ -29,7 +29,6 @@ export const useGetPositionsByAddress = (
     options?.poolPath,
     options?.isClosed,
   ];
-  console.log("🚀 ~ key:", key);
 
   return useQuery<PositionModel[], Error>({
     queryKey: key.filter(item => (item !== undefined)),

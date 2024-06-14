@@ -47,10 +47,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
-    console.log("🚀 ~ rewardTokenLogos ~ rewardData:", rewardData);
     const rewardLogo = rewardData?.map(item => getGnotPath(item).logoURI) || [];
     const temp = rewardTokens.map(token => getGnotPath(token).logoURI);
-    console.log("🚀 ~ rewardTokenLogos ~ rewardTokens:", rewardTokens);
     return [...new Set([...temp, ...rewardLogo])].filter(item => item).map(item => ({ src: item }));
   }, [rewardTokens, pool]);
 

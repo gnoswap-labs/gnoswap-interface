@@ -142,7 +142,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
 
     return swapTokenInfo.tokenBAmount;
   }, [swapTokenInfo.tokenBAmount, tokenB?.decimals]);
-  console.log("🚀 ~ tokenBAmount ~ tokenBAmount:", tokenBAmount);
 
   return (
     <ContentWrapper>

@@ -57,7 +57,6 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   }, [tokenPrices, amount, token]);
 
   const changeAmount = useCallback((value: string) => {
-    console.log("🚀 ~ changeAmount ~ value:", value);
     if (!token) {
       return;
     }

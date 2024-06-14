@@ -43,7 +43,6 @@ const FORMAT_DATE_LENGTH = 95;
 
 function makeTimePeriodFormatInfo(period: TokenChartGraphPeriodType) {
   const offset = new Date().getTimezoneOffset();
-  console.log("🚀 ~ makeTimePeriodFormatInfo ~ offset:", offset);
   switch (period) {
     case "1D":
       return {

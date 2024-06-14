@@ -28,15 +28,12 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
   changeTokenAAmount,
   changeTokenBAmount,
 }) => {
-  console.log("🚀 234234 ~ tokenAInput:", tokenAInput.token?.path);
-  console.log("🚀 234234 ~ compareToken:", compareToken?.path);
   const isSelectTokenA = useMemo(() => {
     if (compareToken?.path === null || tokenAInput?.token?.path === null) {
       return null;
     }
     return (compareToken?.path !== tokenAInput.token?.path);
   }, [compareToken?.path, tokenAInput.token]);
-  console.log("🚀 ~ isSelectTokenA ~ isSelectTokenA:", isSelectTokenA);
 
   const visibleTokenA = useMemo(() => {
     if (isSelectTokenA === null || depositRatio === null) {

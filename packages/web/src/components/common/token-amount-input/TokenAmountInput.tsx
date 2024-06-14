@@ -25,7 +25,6 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   connected,
   amount,
 }) => {
-  console.log("🚀 ~ amount:", amount);
   const disabledSelectPair = useMemo(() => {
     return changable !== true;
   }, [changable]);

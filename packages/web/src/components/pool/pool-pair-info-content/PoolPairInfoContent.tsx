@@ -128,7 +128,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 
   const currentPrice = useMemo(() => {
     const price = tickToPriceStr(pool.currentTick, { decimals: 40, isFormat: false });
-    console.log("🚀 ~ currentPrice ~ price:", price);
 
     return formatTokenExchangeRate(
       price, {

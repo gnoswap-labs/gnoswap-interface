@@ -32,7 +32,6 @@ export function ExchangeRateGraphContent({
   onMouseMove,
   onMouseOut,
 }: ExchangeRateGraphContentProps) {
-  console.log("🚀 ~ poolData:", poolData.price);
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
