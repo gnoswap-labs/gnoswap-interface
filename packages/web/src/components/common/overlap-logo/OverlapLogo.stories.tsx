@@ -14,6 +14,6 @@ const Template: ComponentStory<typeof OverlapLogo> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  logos: ["https://picsum.photos/id/7/36/36", "https://picsum.photos/id/101/36/36"],
+  logos: [{ src: "https://picsum.photos/id/7/36/36" }, { src: "https://picsum.photos/id/101/36/36" }],
   size: 36,
 };

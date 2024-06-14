@@ -9,6 +9,8 @@ import EarnMyPositionContainer from "@containers/earn-my-position-container/Earn
 import { useWallet } from "@hooks/wallet/use-wallet";
 import useRouter from "@hooks/common/use-custom-router";
 
+
+
 export default function Earn() {
   const { account } = useWallet();
   const router = useRouter();

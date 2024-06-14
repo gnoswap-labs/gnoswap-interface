@@ -22,8 +22,8 @@ export const useLoading = () => {
   });
 
   const { isFetched: isFetchedPosition } = useGetPositionsByAddress(
-    address || "",
     {
+      address: address || "",
       queryOptions: {
         enabled: false,
       },

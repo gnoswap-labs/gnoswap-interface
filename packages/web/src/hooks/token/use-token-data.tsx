@@ -128,7 +128,7 @@ export const useTokenData = () => {
           logoURI: getGnotPath(token).logoURI,
         },
         upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
-        content: data1D.percent.replace(/[+-]/g, ""),
+        content: data1D.percentDisplay.replace(/[+-]/g, ""),
       };
     });
   }, [tokens, tokenPrices]);

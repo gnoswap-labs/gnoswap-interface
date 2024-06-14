@@ -28,7 +28,6 @@ interface MyLiquidityProps {
   handleSetIsClosePosition: () => void;
   isHiddenAddPosition: boolean;
   showClosePositionButton: boolean;
-  isLoadingPositionsById: boolean;
   tokenPrices: Record<string, TokenPriceModel>;
 }
 
@@ -53,14 +52,12 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   handleSetIsClosePosition,
   isHiddenAddPosition,
   showClosePositionButton,
-  isLoadingPositionsById,
   tokenPrices,
 }) => {
   return (
     <>
-      <MyLiquidityWrapperAnchor id="liquidity-wrapper" />
-
       <MyLiquidityWrapper>
+        <MyLiquidityWrapperAnchor id={"liquidity-wrapper"} />
         <div className="liquidity-wrap">
           <MyLiquidityHeader
             isOtherPosition={isOtherPosition}
@@ -75,7 +72,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             handleSetIsClosePosition={handleSetIsClosePosition}
             isHiddenAddPosition={isHiddenAddPosition}
             showClosePositionButton={showClosePositionButton}
-            isLoadingPositionsById={isLoadingPositionsById}
+            isLoadingPositionsById={loading}
           />
           <MyLiquidityContent
             connected={connected}
@@ -85,7 +82,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             claimAll={claimAll}
             loadingTransactionClaim={loadingTransactionClaim}
             isOtherPosition={isHiddenAddPosition}
-            isLoadingPositionsById={isLoadingPositionsById}
+            isLoadingPositionsById={loading}
             tokenPrices={tokenPrices}
           />
         </div>

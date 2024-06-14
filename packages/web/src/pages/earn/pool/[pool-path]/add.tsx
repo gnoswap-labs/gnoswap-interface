@@ -12,6 +12,9 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
 import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
+import { getServerSideProps } from "./index";
+
+export { getServerSideProps };
 
 export default function EarnAdd() {
   const { width } = useWindowSize();
@@ -29,9 +32,8 @@ export default function EarnAdd() {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${
-                getGnotPath(data?.tokenB).symbol
-              } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol
+            } (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },

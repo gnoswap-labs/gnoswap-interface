@@ -64,7 +64,7 @@ export interface TokenInfo {
       denom: string;
       status: MATH_NEGATIVE_TYPE;
     };
-    changedRate: number;
+    changedRate: string;
   };
 }
 
@@ -96,7 +96,7 @@ const dummyTokenInfo: TokenInfo = {
       denom: "",
       status: MATH_NEGATIVE_TYPE.NONE,
     },
-    changedRate: 0,
+    changedRate: "0",
   },
 };
 
@@ -197,10 +197,9 @@ const TokenChartContainer: React.FC = () => {
     if (tokenB) {
       const dataToday = checkPositivePrice(
         pricesBefore.latestPrice,
-        pricesBefore.priceToday,
-        19,
-      );
-
+        pricesBefore.priceToday, {
+        displayStatusSign: false,
+      });
       setTokenInfo(() => ({
         token: {
           name: getGnotPath(tokenB).name,
@@ -219,7 +218,7 @@ const TokenChartContainer: React.FC = () => {
             denom: "USD",
             status: dataToday.status,
           },
-          changedRate: Math.abs(Number(dataToday.value || 0)),
+          changedRate: dataToday.percentDisplay,
         },
       }));
       if (!fromSelectToken && !tokenB.logoURI) {
@@ -313,8 +312,16 @@ const TokenChartContainer: React.FC = () => {
       spaceBetweenLeftYAxisWithFirstLabel,
     );
 
-    const lastDate = new Date(chartData[chartData.length - 1]?.date);
-    lastDate.setMinutes(lastDate.getMinutes() + 30);
+    const lastTime = chartData.length >= 1 ? new Date(chartData[chartData.length - 1]?.date) : undefined;
+    const last2Time = chartData.length >= 2 ? new Date(chartData[chartData.length - 2]?.date) : undefined;
+    const latestTimeGap = (() => {
+      if (lastTime && last2Time) return lastTime.getTime() - last2Time.getTime();
+    })();
+    const fakeLastTime = (() => {
+      if (lastTime && latestTimeGap) return new Date(lastTime.getTime() + latestTimeGap);
+
+      return new Date();
+    })();
 
     const datas =
       chartData?.length > 0
@@ -330,10 +337,10 @@ const TokenChartContainer: React.FC = () => {
           }),
           {
             amount: {
-              value: `${currentPrice}`,
+              value: (pricesBefore.latestPrice || 0).toString(),
               denom: "",
             },
-            time: getLocalizeTime(lastDate),
+            time: getLocalizeTime(fakeLastTime),
           },
         ]
         : [];

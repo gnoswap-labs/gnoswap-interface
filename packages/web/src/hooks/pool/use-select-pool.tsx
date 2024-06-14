@@ -448,7 +448,8 @@ export const useSelectPool = ({
       return feeBoostRateByPrices(minPriceLimit, maxPrice);
     }
     return feeBoostRateByPrices(minPrice, maxPrice);
-  }, [startPrice, maxPrice, minPrice, feeTier]);
+  }, [maxPrice, minPrice, feeTier]);
+
 
   const estimatedAPR = useMemo(() => {
     return null;

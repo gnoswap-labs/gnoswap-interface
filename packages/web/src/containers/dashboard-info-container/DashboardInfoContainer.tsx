@@ -108,11 +108,11 @@ const DashboardInfoContainer: React.FC = () => {
       dashboardTokenInfo={{
         gnosAmount: toPriceFormat(tokenData?.gnsPrice ?? "0", {
           usd: true,
-          isFormat: false,
+          isKMBFormat: false,
         }),
         gnotAmount: toPriceFormat(tokenData?.gnotPrice ?? "0", {
           usd: true,
-          isFormat: false,
+          isKMBFormat: false,
         }),
       }}
       supplyOverviewInfo={{
@@ -125,7 +125,11 @@ const DashboardInfoContainer: React.FC = () => {
         totalStaked: (() => {
           if (isNaN(Number(tokenData?.gnsTotalStaked ?? 0))) return "-";
 
-          return formatPrice(tokenData?.gnsTotalStaked, "GNS");
+          return toPriceFormat(
+            tokenData?.gnsTotalStaked ?? 0, {
+            isKMBFormat: false,
+            isRounding: false
+          }) + " GNS";
         })(),
         progressBar: progressBar,
         stakingRatio: stakingRatio,

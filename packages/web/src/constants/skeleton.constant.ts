@@ -31,6 +31,20 @@ export interface PulseSkeletonParams {
   tone?: "200" | "300" | "400" | "500" | "600";
 }
 
+export interface TableInfoType {
+  title: TABLE_TITLE;
+  total: number;
+  tdWidth?: number[];
+  list: List[];
+}
+interface List {
+  width: number;
+  type: SHAPE_TYPES;
+  left: boolean;
+  className?: string;
+  skeletonWidth: number;
+}
+
 const getPulseBackground = (
   tone: PulseSkeletonParams["tone"],
   theme: Theme,
@@ -268,10 +282,8 @@ export const skeletonBalanceDetail = (
     }
   `;
 
-export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
-export const POOL_TD_WIDTH_TABLET = [199, 150, 150, 150, 140, 150, 160];
-export const POOL_TD_WIDTH_SMALL_TABLET = [185, 110, 110, 100, 80, 104, 160];
-export const POOL_TD_WIDTH_MOBILE = [210, 110, 140, 120, 100, 106, 160];
+
+
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [300, 300, 250, 250, 120, 138];
 export const TABLET_ASSET_TD_WIDTH = [220, 240, 190, 190, 120, 138];
@@ -292,9 +304,7 @@ export const TOKEN_TD_WIDTH = [
 export const MOBILE_TOKEN_TD_WIDTH = [160, 160];
 export const MOBILE_ACTIVITY_TD_WIDTH = [210, 110, 140, 140, 160, 200];
 export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 198];
-export const POSITION_HISTORY_TD_WIDTH = [280, 280, 266, 266, 265];
-export const TABLET_POSITION_HISTORY_TD_WIDTH = [280, 240, 140, 220, 218];
-export const MOBILE_POSITION_HISTORY_TD_WIDTH = [160, 150, 120, 153, 151];
+
 
 export const LEADERBOARD_TD_WIDTH = [120, 400, 200, 200, 200, 240];
 export const MOBILE_LEADERBOARD_TD_WIDTH = [50, 150, 128];
@@ -324,60 +334,60 @@ export const emptyArrayInit = (total: number) => {
 export const POOL_INFO = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  tdWidth: POOL_TD_WIDTH,
+  // tdWidth: POOL_TD_WIDTH,
   list: [
-    { width: 240, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 170, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 198, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 240, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 170, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
+    { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 102 },
+    { width: 198, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 102 },
   ],
 };
 
 export const POOL_INFO_SMALL_TABLET = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  tdWidth: POOL_TD_WIDTH_SMALL_TABLET,
+  // tdWidth: POOL_TD_WIDTH_SMALL_TABLET,
   list: [
-    { width: 185, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
-    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 185, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 185 },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 110 },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 110 },
+    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 100 },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
+    { width: 104, type: SHAPE_TYPES.CIRCLE, left: false, skeletonWidth: 20 },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 160 },
   ],
 };
 
 export const POOL_INFO_TABLET = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  tdWidth: POOL_TD_WIDTH_TABLET,
+  // tdWidth: POOL_TD_WIDTH_TABLET,
   list: [
-    { width: 199, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
-    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 199, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 150, type: SHAPE_TYPES.CIRCLE, left: false, skeletonWidth: 20 },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 102 },
   ],
 };
 
 export const POOL_INFO_MOBILE = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  tdWidth: POOL_TD_WIDTH_MOBILE,
+  // tdWidth: POOL_TD_WIDTH_MOBILE,
   list: [
-    { width: 210, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
-    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 210, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 140 },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 110 },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 140 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 100 },
+    { width: 106, type: SHAPE_TYPES.CIRCLE, left: false, skeletonWidth: 20 },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 160 },
   ],
 };
 
@@ -386,16 +396,30 @@ export const ASSET_INFO = {
   total: 15,
   tdWidth: ASSET_TD_WIDTH,
   list: [
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "" },
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "" },
     {
       width: 161,
+      skeletonWidth: 161,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: ""
+    },
+    {
+      width: 161,
+      skeletonWidth: 161,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: ""
+    },
+    {
+      width: 161,
+      skeletonWidth: 161,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "left-padding",
     },
     {
       width: 161,
+      skeletonWidth: 161,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "left-padding",
@@ -407,21 +431,29 @@ export const ASSET_INFO_TABLET = {
   total: 15,
   tdWidth: TABLET_ASSET_TD_WIDTH,
   list: [
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
     {
       width: 120,
+      skeletonWidth: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true
+    },
+    {
+      width: 120,
+      skeletonWidth: 120,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "padding-12",
     },
     {
       width: 120,
+      skeletonWidth: 120,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "left-padding",
     },
     {
       width: 120,
+      skeletonWidth: 120,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "left-padding",
@@ -434,16 +466,28 @@ export const ASSET_INFO_MOBILE = {
   total: 15,
   tdWidth: MOBILE_ASSET_TD_WIDTH,
   list: [
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
     {
       width: 120,
+      skeletonWidth: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true
+    },
+    {
+      width: 120,
+      skeletonWidth: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true
+    },
+    {
+      width: 120,
+      skeletonWidth: 120,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "left-padding",
     },
     {
       width: 120,
+      skeletonWidth: 120,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "left-padding",
@@ -456,63 +500,79 @@ export const TOKEN_INFO = {
   total: 15,
   tdWidth: TOKEN_TD_WIDTH,
   list: [
-    { width: 10, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "" },
+    {
+      width: 10,
+      skeletonWidth: 10,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "",
+    },
     {
       width: 199,
+      skeletonWidth: 199,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "left-padding",
     },
     {
       width: 105,
+      skeletonWidth: 105,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right-padding-16",
     },
     {
       width: 85,
+      skeletonWidth: 85,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right-padding-16",
     },
     {
       width: 85,
+      skeletonWidth: 85,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right-padding-16",
     },
     {
       width: 85,
+      skeletonWidth: 85,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right-padding-16",
     },
     {
       width: 140,
+      skeletonWidth: 140,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right-padding-16",
     },
     {
       width: 140,
+      skeletonWidth: 140,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right-padding-12",
     },
     {
       width: 138,
+      skeletonWidth: 138,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right-padding-12",
     },
     {
       width: 201,
+      skeletonWidth: 201,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right-padding-12",
     },
     {
       width: 124,
+      skeletonWidth: 124,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right-padding-12",
@@ -527,34 +587,38 @@ export const LEADER_INFO = {
   list: [
     {
       width: 120 / 4,
+      skeletonWidth: 120 / 4,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "center",
     },
     {
       width: 400 / 2,
+      skeletonWidth: 400 / 2,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
     },
     {
       width: 200 / 2,
+      skeletonWidth: 200 / 2,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
     },
     {
       width: 200 / 2,
-
+      skeletonWidth: 200 / 2,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
     },
     {
       width: 200 / 2,
-
+      skeletonWidth: 200 / 2,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
     },
     {
       width: 240 / 3,
+      skeletonWidth: 240 / 3,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "padding-50",
@@ -569,34 +633,39 @@ export const TABLET_LEADER_INFO = {
   list: [
     {
       width: 120 / 4,
+      skeletonWidth: 120 / 4,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       className: "center",
     },
     {
       width: 300 / 2,
+      skeletonWidth: 300 / 2,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
     },
     {
       width: 170 / 2,
+      skeletonWidth: 170 / 2,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
     },
     {
       width: 170 / 2,
+      skeletonWidth: 170 / 2,
 
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
     },
     {
       width: 170 / 2,
-
+      skeletonWidth: 170 / 2,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
     },
     {
       width: 170 / 3,
+      skeletonWidth: 170 / 3,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "padding-50",
@@ -609,17 +678,24 @@ export const MOBILE_LEADER_INFO = {
   total: 15,
   tdWidth: MOBILE_LEADERBOARD_TD_WIDTH,
   list: [
-    { width: 50 / 2, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    {
+      width: 50 / 2,
+      skeletonWidth: 50 / 2,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false
+    },
     {
       width: 150,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "flex-grow start",
+      skeletonWidth: 150,
     },
     {
       width: 128,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
+      skeletonWidth: 120,
     },
   ],
 };
@@ -629,8 +705,18 @@ export const MOBILE_TOKEN_INFO = {
   total: 15,
   tdWidth: MOBILE_TOKEN_TD_WIDTH,
   list: [
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    {
+      width: 120,
+      skeletonWidth: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true
+    },
+    {
+      width: 120,
+      skeletonWidth: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false
+    },
   ],
 };
 
@@ -645,12 +731,12 @@ export const ACTIVITY_INFO = {
   total: 15,
   tdWidth: ACTIVITY_TD_WIDTH,
   list: [
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
   ],
 };
 
@@ -659,97 +745,123 @@ export const LEADERBOARD_INFO = {
   total: 15,
   tdWidth: LEADERBOARD_TD_WIDTH,
   list: [
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
   ],
 };
 
-export const POSITION_HISTORY_INFO = {
+
+export const POSITION_HISTORY_INFO: TableInfoType = {
   title: TABLE_TITLE.POSITION_HISTORY,
   total: 5,
-  tdWidth: POSITION_HISTORY_TD_WIDTH,
   list: [
-    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 280, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 150 },
+    { width: 280, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 150 },
+    {
+      width: 266,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+      skeletonWidth: 120,
+    },
+    {
+      width: 266,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+      skeletonWidth: 120,
+    },
+    {
+      width: 265,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+      skeletonWidth: 120,
+    },
+  ],
+};
+
+
+export const TABLET_POSITION_HISTORY_INFO: TableInfoType = {
+  title: TABLE_TITLE.POSITION_HISTORY,
+  total: 5,
+  list: [
+    {
+      width: 280,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      skeletonWidth: 224
+    },
+    {
+      width: 240,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      skeletonWidth: 184
+    },
+    {
+      width: 140,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+      skeletonWidth: 84
+    },
+    {
+      width: 220,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+      skeletonWidth: 164
+    },
+    {
+      width: 218,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+      skeletonWidth: 162,
+    },
+  ],
+};
+
+export const MOBILE_POSITION_HISTORY_INFO: TableInfoType = {
+  title: TABLE_TITLE.POSITION_HISTORY,
+  total: 5,
+  list: [
+    {
+      width: 160,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      skeletonWidth: 132
+    },
+    {
+      width: 150,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      skeletonWidth: 122
+    },
     {
       width: 120,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right",
+      skeletonWidth: 92,
     },
     {
-      width: 120,
+      width: 153,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right",
+      skeletonWidth: 125,
     },
     {
-      width: 120,
+      width: 151,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       className: "right",
-    },
-  ],
-};
-
-export const TABLET_POSITION_HISTORY_INFO = {
-  title: TABLE_TITLE.POSITION_HISTORY,
-  total: 5,
-  tdWidth: TABLET_POSITION_HISTORY_TD_WIDTH,
-  list: [
-    { width: 224, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 184, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    {
-      width: 84,
-      type: SHAPE_TYPES.ROUNDED_SQUARE,
-      left: false,
-      className: "right",
-    },
-    {
-      width: 164,
-      type: SHAPE_TYPES.ROUNDED_SQUARE,
-      left: false,
-      className: "right",
-    },
-    ,
-    {
-      width: 162,
-      type: SHAPE_TYPES.ROUNDED_SQUARE,
-      left: false,
-      className: "right",
-    },
-    ,
-  ],
-};
-
-export const MOBILE_POSITION_HISTORY_INFO = {
-  title: TABLE_TITLE.POSITION_HISTORY,
-  total: 5,
-  tdWidth: MOBILE_POSITION_HISTORY_TD_WIDTH,
-  list: [
-    { width: 132, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 122, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    {
-      width: 92,
-      type: SHAPE_TYPES.ROUNDED_SQUARE,
-      left: false,
-      className: "right",
-    },
-    {
-      width: 125,
-      type: SHAPE_TYPES.ROUNDED_SQUARE,
-      left: false,
-      className: "right",
-    },
-    {
-      width: 123,
-      type: SHAPE_TYPES.ROUNDED_SQUARE,
-      left: false,
-      className: "right",
+      skeletonWidth: 123,
     },
   ],
 };
@@ -759,11 +871,11 @@ export const MOBILE_ACTIVITY_INFO = {
   total: 15,
   tdWidth: MOBILE_TOKEN_TD_WIDTH,
   list: [
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
+    { width: 20, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 20 },
   ],
 };

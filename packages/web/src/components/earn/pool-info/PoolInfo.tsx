@@ -1,10 +1,4 @@
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import {
-  POOL_TD_WIDTH,
-  POOL_TD_WIDTH_MOBILE,
-  POOL_TD_WIDTH_SMALL_TABLET,
-  POOL_TD_WIDTH_TABLET,
-} from "@constants/skeleton.constant";
 import React, { useMemo } from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
@@ -14,6 +8,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { DEVICE_TYPE } from "@styles/media";
 import { numberToRate } from "@utils/string-utils";
 import PoolInfoLazyChart from "../pool-info-lazy-chart/PoolInfoLazyChart";
+import { POOL_INFO, POOL_INFO_MOBILE, POOL_INFO_SMALL_TABLET, POOL_INFO_TABLET } from "@constants/skeleton.constant";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -42,23 +37,22 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
         logoURI: getGnotPath(item).logoURI,
       };
     });
-    const temp = tempRewardTokens.map(token => token.logoURI);
+    const temp = tempRewardTokens.map(token => ({ src: token.logoURI, tooltipContent: token.symbol }));
     const logos = [...new Set(temp)];
     return <OverlapLogo logos={logos} size={20} />;
   }, [rewardTokens]);
 
-  const tdWidth =
-    breakpoint === DEVICE_TYPE.MOBILE
-      ? POOL_TD_WIDTH_MOBILE
-      : breakpoint === DEVICE_TYPE.TABLET_M
-      ? POOL_TD_WIDTH_SMALL_TABLET
+  const cellWidths = breakpoint === DEVICE_TYPE.MOBILE
+    ? POOL_INFO_MOBILE
+    : breakpoint === DEVICE_TYPE.TABLET_M
+      ? POOL_INFO_SMALL_TABLET
       : breakpoint === DEVICE_TYPE.TABLET
-      ? POOL_TD_WIDTH_TABLET
-      : POOL_TD_WIDTH;
+        ? POOL_INFO_TABLET
+        : POOL_INFO;
 
   return (
     <PoolInfoWrapper onClick={() => routeItem(poolId)}>
-      <TableColumn className="left" tdWidth={tdWidth[0]}>
+      <TableColumn className="left" tdWidth={cellWidths.list[0].width}>
         <DoubleLogo
           left={tokenA.logoURI}
           right={tokenB.logoURI}
@@ -70,25 +64,25 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
         <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
       </TableColumn>
       {/* TVL */}
-      <TableColumn tdWidth={tdWidth[1]}>
+      <TableColumn tdWidth={cellWidths.list[1].width}>
         <span className="liquidity">{tvl}</span>
       </TableColumn>
       {/* Volume (24h) */}
-      <TableColumn tdWidth={tdWidth[2]}>
+      <TableColumn tdWidth={cellWidths.list[2].width}>
         <span className="volume">{volume24h}</span>
       </TableColumn>
       {/* Fee (24h) */}
-      <TableColumn tdWidth={tdWidth[3]}>
+      <TableColumn tdWidth={cellWidths.list[3].width}>
         <span className="fees">{fees24h}</span>
       </TableColumn>
       {/* APR */}
-      <TableColumn tdWidth={tdWidth[4]}>
+      <TableColumn tdWidth={cellWidths.list[4].width}>
         <span className="apr">{numberToRate(apr)}</span>
       </TableColumn>
-      <TableColumn tdWidth={tdWidth[5]}>{rewardImage}</TableColumn>
-      <TableColumn tdWidth={tdWidth[6]} onClick={e => e.stopPropagation()}>
+      <TableColumn tdWidth={cellWidths.list[5].width}>{rewardImage}</TableColumn>
+      <TableColumn tdWidth={cellWidths.list[6].width} onClick={e => e.stopPropagation()}>
         <div className="chart-wrapper">
-          <PoolInfoLazyChart pool={pool} width={tdWidth[6]} />
+          <PoolInfoLazyChart pool={pool} width={cellWidths.list[6].skeletonWidth} />
         </div>
       </TableColumn>
     </PoolInfoWrapper>

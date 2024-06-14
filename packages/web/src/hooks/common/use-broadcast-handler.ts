@@ -119,8 +119,8 @@ export function makeBroadcastSwapMessage(
   hash?: string,
 ): INoticeContent {
   function description() {
-    const tokenA = BigNumber(data.tokenAAmount).toFormat(2);
-    const tokenB = BigNumber(data.tokenBAmount).toFormat(2);
+    const tokenA = BigNumber(data.tokenAAmount).toFormat();
+    const tokenB = BigNumber(data.tokenBAmount).toFormat();
     const request = {
       tokenA,
       tokenB,

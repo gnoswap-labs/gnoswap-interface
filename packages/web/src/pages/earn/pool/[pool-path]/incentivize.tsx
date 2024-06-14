@@ -9,10 +9,15 @@ import React, { useMemo } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useLoading } from "@hooks/common/use-loading";
+import { getServerSideProps } from "./index";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+
+export { getServerSideProps };
 
 export default function PoolIncentivize() {
   const { breakpoint } = useWindowSize();
   const router = useRouter();
+  const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"];
 
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
@@ -26,10 +31,9 @@ export default function PoolIncentivize() {
       {
         title:
           breakpoint === DEVICE_TYPE.WEB ||
-          breakpoint === DEVICE_TYPE.MEDIUM_WEB
-            ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${
-                Number(data?.fee) / 10000
-              }%)`
+            breakpoint === DEVICE_TYPE.MEDIUM_WEB
+            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
+            }%)`
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },

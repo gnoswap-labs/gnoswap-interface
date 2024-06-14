@@ -168,7 +168,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
         text: dayjs(datetime).format(formatInfo.format),
       };
     });
-  }, [xAxisRange, currentTab, size.width, scaleX]);
+  }, [xAxisRange, currentTab, size.width, scaleX, revertX]);
 
   // Filter the list of X-axis labels to display
   const displayXAxisLabels: XAxisLabel[] = useMemo(() => {
@@ -202,10 +202,10 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           }))}
           firstPointColor={theme.color.border05}
           customData={customData}
+          displayLastDayAsNow={true}
         />
         <div
-          className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""
-            }`}
+          className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""}`}
         >
           {displayXAxisLabels.map((value, index) => (
             <TokenChartGraphXLabel key={index} x={value.position}>

@@ -11,6 +11,7 @@ import {
 } from "@hooks/common/use-broadcast-handler";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import BigNumber from "bignumber.js";
 
 const DAY_TIME = 24 * 60 * 60;
 const MILLISECONDS = 1000;
@@ -54,9 +55,11 @@ const IncentivizePoolModalContainer = () => {
     // `endTime` adds the period time to the start unix time.
     const endTime = startTime + period * DAY_TIME;
 
+    const displayAmount = BigNumber(dataModal.amount).toFormat();
+
     broadcastLoading(
       makeBroadcastIncentivizeMessage("pending", {
-        tokenAmount: dataModal.amount,
+        tokenAmount: displayAmount,
         tokenSymbol: dataModal?.token?.symbol,
       }),
     );
@@ -76,7 +79,7 @@ const IncentivizePoolModalContainer = () => {
             setTimeout(() => {
               broadcastSuccess(
                 makeBroadcastIncentivizeMessage("success", {
-                  tokenAmount: dataModal.amount,
+                  tokenAmount: displayAmount,
                   tokenSymbol: dataModal?.token?.symbol,
                 }),
               );
@@ -96,7 +99,7 @@ const IncentivizePoolModalContainer = () => {
             setTimeout(() => {
               broadcastError(
                 makeBroadcastIncentivizeMessage("error", {
-                  tokenAmount: dataModal.amount,
+                  tokenAmount: displayAmount,
                   tokenSymbol: dataModal?.token?.symbol,
                 }),
               );
@@ -105,7 +108,7 @@ const IncentivizePoolModalContainer = () => {
           } else {
             broadcastRejected(
               makeBroadcastIncentivizeMessage("error", {
-                tokenAmount: dataModal.amount,
+                tokenAmount: displayAmount,
                 tokenSymbol: dataModal?.token?.symbol,
               }),
             );

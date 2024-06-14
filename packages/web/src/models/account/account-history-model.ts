@@ -1,5 +1,6 @@
 import { TokenPairInfo } from "@models/token/token-pair-info";
 import { NotificationType, StatusOptions } from "@common/values/data-constant";
+import { AccountActivity } from "@repositories/notification";
 
 export interface AccountHistoryModel {
   txs: Array<TransactionModel>;
@@ -12,4 +13,5 @@ export interface TransactionModel {
   createdAt: string;
   content?: string;
   isRead?: boolean;
+  rawValue?: AccountActivity;
 }

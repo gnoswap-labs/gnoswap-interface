@@ -2,7 +2,7 @@ import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokenData } from "./use-token-data";
-import { convertToMB } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import { checkGnotPath } from "@utils/common";
 
 export interface TokenAmountInputModel {
@@ -13,10 +13,28 @@ export interface TokenAmountInputModel {
   changeAmount: (amount: string) => void;
 }
 
+function handleAmount(changed: string, token: TokenModel | null) {
+  let value = changed;
+  const decimals = token?.decimals || 0;
+  if (!value || BigNumber(value).isZero()) {
+    value = changed;
+  } else {
+    value = BigNumber(value).toFixed(decimals || 0, 1);
+  }
+
+  if (BigNumber(changed).isEqualTo(value)) {
+    const dotIndex = changed.indexOf(".");
+    if (dotIndex === -1 || changed.length - dotIndex - 1 < decimals) {
+      value = changed;
+    }
+  }
+
+  return value;
+}
+
 export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputModel => {
   const [amount, setAmount] = useState<string>("0");
   const [balance, setBalance] = useState<string>("0");
-  const [usd, setUSD] = useState<number>();
   const { displayBalanceMap, tokenPrices } = useTokenData();
 
   useEffect(() => {
@@ -29,12 +47,14 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   }, [displayBalanceMap, token]);
 
   const usdValue = useMemo(() => {
-
-    if (!usd || !(Number(amount))) {
+    if (!tokenPrices || !(Number(amount)) || !token) {
       return "-";
     }
-    return `$${convertToMB(usd.toString())}`;
-  }, [usd, amount]);
+
+    const usd = BigNumber(tokenPrices[checkGnotPath(token.path)]?.usd ?? 0).multipliedBy(amount).toNumber();
+
+    return `$${convertToKMB(usd.toString(), { isIgnoreKFormat: true, maximumFractionDigits: 20 })}`;
+  }, [tokenPrices, amount, token]);
 
   const changeAmount = useCallback((value: string) => {
     if (!token) {
@@ -51,12 +71,11 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
       setAmount("0");
       return;
     }
-    setAmount(amount.toString());
-    if (tokenPrices[checkGnotPath(token.path)]) {
-      const usd = BigNumber(tokenPrices[checkGnotPath(token.path)].usd).multipliedBy(value.toString()).toNumber();
-      setUSD(usd);
-    }
-  }, [token, tokenPrices]);
+
+    const result = handleAmount(value, token);
+
+    setAmount(result);
+  }, [token]);
 
   return {
     token,

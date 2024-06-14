@@ -5,6 +5,8 @@ import DepositModal, { DEFAULT_DEPOSIT_GNOT } from "./DepositModal";
 import { DEVICE_TYPE } from "@styles/media";
 import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AppRouterContext } from "next/dist/shared/lib/app-router-context";
+import { createMockRouter } from "../../../test-utils/createMockRouter";
 
 describe("DepositModal Component", () => {
   it("DepositModal render", () => {
@@ -27,15 +29,17 @@ describe("DepositModal Component", () => {
     });
 
     render(
-      <QueryClientProvider client={queryClient}>
-        <JotaiProvider>
-          <GnoswapThemeProvider>
-            <GnoswapServiceProvider>
-              <DepositModal {...mockProps} />
-            </GnoswapServiceProvider>
-          </GnoswapThemeProvider>
-        </JotaiProvider>,
-      </QueryClientProvider>
+      <AppRouterContext.Provider value={createMockRouter({})}>
+        <QueryClientProvider client={queryClient}>
+          <JotaiProvider>
+            <GnoswapThemeProvider>
+              <GnoswapServiceProvider>
+                <DepositModal {...mockProps} />
+              </GnoswapServiceProvider>
+            </GnoswapThemeProvider>
+          </JotaiProvider>,
+        </QueryClientProvider>
+      </AppRouterContext.Provider>
     );
   });
 });

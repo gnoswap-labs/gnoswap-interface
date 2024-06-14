@@ -98,7 +98,7 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
 
   const estimatedAmount: string | null = useMemo(() => {
     if (!currentSwapAmount || error) {
-      return "0";
+      return null;
     }
 
     if (swapState !== "SUCCESS" || !estimatedSwapResult) {
@@ -117,13 +117,13 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
       const tokenAmountLimit =
         direction === "EXACT_IN"
           ? BigNumber(estimatedAmount)
-            .minus(slippageAmountNumber)
-            .shiftedBy(shift)
-            .toNumber()
+              .minus(slippageAmountNumber)
+              .shiftedBy(shift)
+              .toNumber()
           : BigNumber(estimatedAmount)
-            .plus(slippageAmountNumber)
-            .shiftedBy(shift)
-            .toNumber();
+              .plus(slippageAmountNumber)
+              .shiftedBy(shift)
+              .toNumber();
 
       if (tokenAmountLimit <= 0) {
         return 0;

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, {
   useEffect,
   useMemo,
@@ -95,7 +94,8 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     } else {
       return true;
     }
-  }, [incentivizePools, width]);
+  }, [width]);
+
 
   return (
     <IncentivizedPoolCardList

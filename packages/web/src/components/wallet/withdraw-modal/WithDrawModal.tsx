@@ -13,7 +13,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { convertToMB } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useRef, useState, useMemo } from "react";
@@ -91,13 +91,15 @@ const WithDrawModal: React.FC<Props> = ({
     handleSubmit(amount, address);
   };
 
-  const getNativeToken = () => {
+  const nativeToken = useMemo(() => {
     if (!tokens || tokens.length === 0) return null;
     return tokens.find(token => token.type === "native");
-  };
+  }, [tokens]);
 
-  const currentAvailableBalance =
-    displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null;
+  const currentAvailableBalance = useMemo(
+    () => displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null,
+    [displayBalanceMap, withdrawInfo?.path]
+  );
 
   const isDisabledWithdraw =
     !Number(amount ?? 0) ||
@@ -105,30 +107,34 @@ const WithDrawModal: React.FC<Props> = ({
     !withdrawInfo ||
     !addressValidationCheck(address) ||
     BigNumber(amount || "0").isGreaterThan(BigNumber(currentAvailableBalance || "0"));
-  const estimateFee = 0.000001;
-  const nativeToken = getNativeToken();
-  const estimateFeeUSD =
-    0.000001 *
-    (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0);
-  const estimatePrice =
-    withdrawInfo?.wrappedPath && !!amount && amount !== "0"
-      ? convertToMB(
+
+  const estimateFee = useMemo(() => 0.000001, []);
+
+  const estimateFeeUSD = useMemo(
+    () => 0.000001 * (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0),
+    [nativeToken?.wrappedPath, tokenPrices]
+  );
+
+  const estimatePrice = useMemo(
+    () => withdrawInfo?.wrappedPath && !!amount && amount !== "0"
+      ? "$" + convertToKMB(
         BigNumber(+amount)
           .multipliedBy(
             Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
           )
-          .toString(),
-      )
-      : undefined;
-
+          .toString(), {
+        isIgnoreKFormat: true
+      })
+      : "-",
+    [amount, tokenPrices, withdrawInfo?.wrappedPath]
+  );
 
   const handleEnterAllBalanceAvailable = () => {
     if (currentAvailableBalance) {
       setAmount(`${currentAvailableBalance}`);
     }
   };
-  const text = useMemo(() => {
-
+  const buttonText = useMemo(() => {
     if (!withdrawInfo) {
       return "Select a Token";
     }
@@ -189,7 +195,7 @@ const WithDrawModal: React.FC<Props> = ({
                 </div>
                 <div className="info">
                   <span className="price-text">
-                    {estimatePrice ? `$${estimatePrice}` : "-"}
+                    {estimatePrice}
                   </span>
                   <span
                     className="balance-text"
@@ -277,7 +283,7 @@ const WithDrawModal: React.FC<Props> = ({
             <Button
               disabled={isDisabledWithdraw}
               onClick={onSubmit}
-              text={text}
+              text={buttonText}
               className="btn-withdraw"
               style={{
                 fullWidth: true,

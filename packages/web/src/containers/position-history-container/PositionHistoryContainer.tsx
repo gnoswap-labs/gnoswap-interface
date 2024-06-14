@@ -42,7 +42,7 @@ const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({
 
   return (
     <PositionHistoryList
-      list={historyList}
+      list={historyList.filter((item) => (item.amountA || item.amountB))}
       isLoading={isLoading || isLoadingCommon}
       isFetched={isFetched}
       breakpoint={breakpoint}

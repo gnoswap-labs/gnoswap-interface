@@ -31,6 +31,35 @@ export const wrapper = (theme: Theme) => css`
       fill: ${theme.color.icon03};
     }
   }
+
+  .token-symbol-path {
+    ${mixins.flexbox("row", "center", "center")}
+    ${fonts.p3};
+    gap: 4px;
+    
+    .token-path {
+      ${mixins.flexbox("row", "center", "center")}
+      ${fonts.p3};
+      gap: 2px;
+      &:hover {
+        color: ${theme.color.text10};
+        cursor: pointer;
+        .path-link-icon {
+          path {
+            fill: ${theme.color.text10};
+          }
+        }
+      }
+      color: ${theme.color.text04};
+      
+      .path-link-icon {
+        width: 10px;
+        height: 10px;
+        fill: ${theme.color.text04}
+      };
+    }
+  }
+
   @media (max-width: 1180px) {
     height: 24px;
   }

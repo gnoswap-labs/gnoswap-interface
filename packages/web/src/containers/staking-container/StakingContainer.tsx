@@ -9,11 +9,12 @@ import { TokenModel } from "@models/token/token-model";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolDetailByPath } from "@query/pools";
-import { useLoading } from "@hooks/common/use-loading";
 import { StakingPeriodType } from "@constants/option.constant";
 import useUrlParam from "@hooks/common/use-url-param";
 import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
+import { encryptId } from "@utils/common";
+
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const StakingContainer: React.FC = () => {
@@ -26,16 +27,8 @@ const StakingContainer: React.FC = () => {
   const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });
-
-  const [allPosition, setAllPosition] = useState<PoolPositionModel[]>([]);
-  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const router = useRouter();
-  const { getGnotPath } = useGnotToGnot();
-  const poolPath = router.query["pool-path"] || "";
-  const { data = null } = useGetPoolDetailByPath(poolPath as string, {
-    enabled: !!poolPath,
-  });
-  const { isLoading: isLoadingCommon } = useLoading();
+  const poolPath = (router.query["pool-path"] || "") as string;
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
@@ -45,9 +38,20 @@ const StakingContainer: React.FC = () => {
     return address;
   }, [initializedData]);
 
-  const { getPositionsByPoolId, loading: isLoadingPosition } = usePositionData({
+  const { positions: allPositions, loading: isLoadingPosition } = usePositionData({
     address,
+    poolPath: encryptId(poolPath),
+    queryOption: {
+      enabled: !!poolPath
+    }
   });
+
+  const { getGnotPath } = useGnotToGnot();
+
+  const { data = null } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
+  const stakedPositions = useMemo(() => allPositions.filter(item => item.staked), [allPositions]);
 
   const pool = useMemo(() => {
     if (!data) return null;
@@ -78,22 +82,9 @@ const StakingContainer: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const poolPath = router.query["pool-path"] as string;
-    if (!poolPath) {
-      return;
-    }
-    if (account?.address || address) {
-      const temp = getPositionsByPoolId(poolPath);
-      const stakedPositions = temp.filter(position => position.staked);
-      setPositions(stakedPositions);
-      setAllPosition(temp);
-    }
-  }, [account?.address, router.query, address]);
-
   const isDisabledButton = useMemo(() => {
-    return isSwitchNetwork || !connectedWallet || positions.length == 0;
-  }, [isSwitchNetwork, connectedWallet, positions]);
+    return isSwitchNetwork || !connectedWallet || stakedPositions.length == 0;
+  }, [isSwitchNetwork, connectedWallet, stakedPositions]);
 
   const totalApr = useMemo(() => {
     const apr = BigNumber(pool?.stakingApr || 0).toFormat(0);
@@ -106,8 +97,8 @@ const StakingContainer: React.FC = () => {
       tokenPair.push(pool.tokenA);
       tokenPair.push(pool.tokenB);
     }
-    const rewardTokenMap = positions
-      .flatMap(position => position.reward)
+    const rewardTokenMap = stakedPositions
+      .flatMap(stakedPosition => stakedPosition.reward)
       .reduce<{ [key in string]: TokenModel }>((accum, current) => {
         if (
           tokenPair.findIndex(
@@ -120,7 +111,7 @@ const StakingContainer: React.FC = () => {
       }, {});
     const extraTokens = Object.values(rewardTokenMap);
     return [...tokenPair, ...extraTokens];
-  }, [pool, positions]);
+  }, [pool, stakedPositions]);
 
   const handleClickStakeRedirect = useCallback(() => {
     router.push(`/earn/pool/${router.query["pool-path"]}/stake`);
@@ -139,7 +130,7 @@ const StakingContainer: React.FC = () => {
   }, []);
 
   const stakingPositionMap = useMemo(() => {
-    return positions.reduce<{
+    return stakedPositions.reduce<{
       [key in StakingPeriodType]: PoolPositionModel[];
     }>(
       (accum, current) => {
@@ -163,14 +154,14 @@ const StakingContainer: React.FC = () => {
         MAX: [],
       },
     );
-  }, [positions]);
+  }, [stakedPositions]);
 
   useEffect(() => {
-    if (allPosition.length === 0) {
+    if (allPositions.length === 0) {
       setType(0);
       return;
     }
-    if (positions.length === 0) {
+    if (stakedPositions.length === 0) {
       setType(1);
       return;
     }
@@ -184,13 +175,13 @@ const StakingContainer: React.FC = () => {
       return;
     }
     setType(0);
-  }, [allPosition.length, positions.length, stakingPositionMap["MAX"].length]);
+  }, [allPositions.length, stakedPositions.length, stakingPositionMap]);
 
   return (
     <Staking
       pool={pool}
       totalApr={totalApr}
-      positions={positions}
+      positions={stakedPositions}
       rewardTokens={rewardTokens}
       breakpoint={breakpoint}
       mobile={mobile}
@@ -198,7 +189,7 @@ const StakingContainer: React.FC = () => {
       type={type}
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
-      loading={isLoadingPool || isLoadingPosition || isLoadingCommon}
+      loading={isLoadingPool || isLoadingPosition}
       isOtherPosition={
         !!(
           (address && account?.address && address !== account?.address) ||

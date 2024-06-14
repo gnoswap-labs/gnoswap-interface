@@ -9,28 +9,34 @@ import { isGNOTPath } from "@utils/common";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 interface UseGetPositionsByAddressOptions {
+  address?: string,
   isClosed?: boolean;
+  poolPath?: string;
   queryOptions?: UseQueryOptions<PositionModel[], Error>;
 }
 
 export const useGetPositionsByAddress = (
-  address: string,
   options?: UseGetPositionsByAddressOptions,
 ) => {
   const { positionRepository } = useGnoswapContext();
+  const { account } = useWallet();
+  const key = [
+    QUERY_KEY.positions,
+    options?.address || account?.address,
+    options?.poolPath,
+    options?.isClosed,
+  ];
 
   return useQuery<PositionModel[], Error>({
-    queryKey: [
-      QUERY_KEY.positions,
-      address,
-      ...(options?.isClosed !== undefined ? [options?.isClosed] : []),
-    ],
+    queryKey: key.filter(item => (item !== undefined)),
     queryFn: async () => {
       const data = await positionRepository
-        .getPositionsByAddress(address, {
+        .getPositionsByAddress(options?.address || account?.address || "", {
           isClosed: options?.isClosed,
+          poolPath: encodeURIComponent(options?.poolPath ?? ""),
         })
         .catch(e => {
           console.error(e);
@@ -38,7 +44,7 @@ export const useGetPositionsByAddress = (
         });
       return data;
     },
-    enabled: !!address,
+    enabled: options?.queryOptions?.enabled && (!!options?.address || !!account?.address),
     ...options?.queryOptions,
   });
 };

@@ -11,19 +11,21 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { useLoading } from "@hooks/common/use-loading";
+import { getServerSideProps } from "./index";
+import { encryptId } from "@utils/common";
+
+export { getServerSideProps };
 
 export default function Pool() {
   const router = useRouter();
   const { account } = useWallet();
-  const poolPath = router.query["pool-path"] || "";
+  const poolPath = (router.query["pool-path"] || "") as string;
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
   const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });
-  const { isLoading } = useLoading();
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
@@ -33,7 +35,13 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { loading, isFetchedPosition } = usePositionData({ address });
+  const { loading, isFetchedPosition } = usePositionData({
+    address,
+    poolPath: encryptId(poolPath),
+    queryOption: {
+      enabled: !!poolPath
+    }
+  });
 
   const isStaking = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {
@@ -46,7 +54,7 @@ export default function Pool() {
   }, [data?.incentiveType]);
 
   useEffect(() => {
-    if (!loading && isFetchedPosition && !isLoading) {
+    if (!loading && isFetchedPosition) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -56,7 +64,7 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [loading, isFetchedPosition, isLoading]);
+  }, [loading, isFetchedPosition]);
 
   return (
     <PoolLayout

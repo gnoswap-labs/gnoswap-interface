@@ -123,19 +123,19 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenABalance !== "-") {
       if (dataTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat();
+      return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat(2);
     }
     return "-";
-  }, [isSwitchNetwork, connected, dataTokenInfo.tokenABalance, dataTokenInfo.tokenADecimals]);
+  }, [isSwitchNetwork, connected, dataTokenInfo.tokenABalance]);
 
   const balanceBDisplay = useMemo(() => {
     if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenBBalance !== "-") {
       if (dataTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat();
+      return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat(2);
     }
     return "-";
-  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork, dataTokenInfo.tokenBDecimals]);
+  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork]);
 
   return (
     <div css={wrapper}>

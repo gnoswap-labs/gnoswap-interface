@@ -4,6 +4,9 @@ import { media } from "@styles/media";
 interface ContentToolTipProps {
   themeKey: "dark" | "light";
 }
+export const BaseTooltipWrapper = styled.div`
+`;
+
 
 export const Content = styled.div<ContentToolTipProps>`
   color: ${({ theme }) => theme.color.text02};

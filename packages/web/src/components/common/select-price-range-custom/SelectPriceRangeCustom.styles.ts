@@ -142,6 +142,10 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     align-items: center;
     gap: 24px;
     position: relative;
+    > * {
+      flex: 1
+      width: 50%;
+    }
     .dim-content-3 {
       position: absolute;
       bottom: -24px;

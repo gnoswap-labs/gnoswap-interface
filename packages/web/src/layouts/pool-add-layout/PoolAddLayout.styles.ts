@@ -45,7 +45,6 @@ export const wrapper = (theme: Theme) => css`
     &.margin-bottom {
       margin-bottom: 16px;
     }
-    /* padding: 0 24px 0 16px; */
     .fake-div {
     }
   }

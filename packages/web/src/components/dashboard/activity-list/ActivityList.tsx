@@ -1,5 +1,3 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
 import React from "react";
 import {
   ACTIVITY_TYPE,
@@ -9,9 +7,8 @@ import {
 } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
 import ActivityListHeader from "@components/dashboard/activity-list-header/ActivityListHeader";
 import ActivityListTable from "@components/dashboard/activity-list-table/ActivityListTable";
-import Pagination from "@components/common/pagination/Pagination";
 import { ActivityListWrapper } from "./ActivityList.styles";
-import { DeviceSize, DEVICE_TYPE } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 interface ActivityItem {
   activities: Activity[];
   isFetched: boolean;
@@ -30,13 +27,9 @@ interface ActivityItem {
 const ActivityList: React.FC<ActivityItem> = ({
   activities,
   isFetched,
-  error,
   activityType = ACTIVITY_TYPE.ALL,
   sortOption,
   changeActivityType,
-  currentPage,
-  totalPage,
-  movePage,
   isSortOption,
   sort,
   breakpoint,

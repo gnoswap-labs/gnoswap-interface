@@ -199,8 +199,8 @@ const HeaderContainer: React.FC = () => {
           priceOf1d: {
             status: dataToday.status,
             value:
-              dataToday.percent !== "-"
-                ? dataToday.percent.replace(/[+-]/g, "")
+              dataToday.percentDisplay !== "-"
+                ? dataToday.percentDisplay.replace(/[+-]/g, "")
                 : "0.00%",
           },
         };
@@ -217,13 +217,12 @@ const HeaderContainer: React.FC = () => {
         });
         return {
           ...item,
-          apr: `${
-            !item_.apr
-              ? "-"
-              : Number(item_.apr) > 10
+          apr: `${!item_.apr
+            ? "-"
+            : Number(item_.apr) > 10
               ? `${item_.apr}% APR`
               : `${Number(item_.apr).toFixed(2)}% APR`
-          }`,
+            }`,
           price: price,
         };
       }
@@ -317,8 +316,8 @@ const HeaderContainer: React.FC = () => {
           priceOf1d: {
             status: dataToday.status,
             value:
-              dataToday.percent !== "-"
-                ? dataToday.percent.replace(/[+-]/g, "")
+              dataToday.percentDisplay !== "-"
+                ? dataToday.percentDisplay.replace(/[+-]/g, "")
                 : "0.00%",
           },
           tokenB: {

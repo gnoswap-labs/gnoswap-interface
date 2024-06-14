@@ -83,6 +83,8 @@ export interface LineGraphProps {
   baseLineLabelsTransform?: (value: string) => string;
   graphBorder?: [boolean, boolean, boolean, boolean];
   baseLineLabelsStyle?: React.CSSProperties;
+  displayLastDayAsNow?: boolean;
+  popupYValueFormatter?: (value: string) => string
 }
 
 export interface LineGraphRef {
@@ -160,6 +162,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
   baseLineLabelsTransform,
   baseLineLabelsStyle,
   firstPointColor,
+  displayLastDayAsNow = false,
+  popupYValueFormatter,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -200,19 +204,93 @@ const LineGraph: React.FC<LineGraphProps> = ({
     width: number,
     height: number,
   ) => {
-    const mappedDatas = datas.map(data => ({
-      value: new BigNumber(data.value).toNumber(),
-      time: new Date(data.time).getTime(),
-    }));
+    let minValue: number;
+    let maxValue: number;
+    let minTime: number;
+    let maxTime: number;
+
+    const mappedDatas = (() => {
+      const newDatas = datas.map(item => ({
+        value: new BigNumber(item.value).toNumber(),
+        time: new Date(item.time).getTime(),
+      }));
+
+      const values = newDatas.map(data => data.value);
+      const times = newDatas.map(data => data.time);
+
+      minValue = Math.min(...values);
+      maxValue = Math.max(...values);
+      minTime = Math.min(...times);
+      maxTime = Math.max(...times);
+
+      if (smooth) {
+        return newDatas.map((item, index) => {
+          const currentItem = item;
+          const previous2Item = index > 1 ? newDatas[index - 2] : null;
+          const previous1Item = index !== 0 ? newDatas[index - 1] : null;
+          const next1Item = index !== length - 1 ? newDatas[index + 1] : null;
+          const next2Item = index !== length - 2 ? newDatas[index + 2] : null;
+          if (previous1Item && next1Item && next2Item) {
+            if (Math.abs(next1Item.value - next2Item.value) < 0.001
+              && Math.abs(currentItem.value - next1Item.value) < 0.001
+              && Math.abs(currentItem.value - previous1Item.value) >= 0.001
+            ) {
+              const fakeItemValue = new BigNumber(currentItem.value)
+                .minus(
+                  BigNumber(currentItem.value)
+                    .minus(BigNumber(previous1Item.value))
+                    .dividedBy(15)
+                )
+                .toNumber();
+
+              return {
+                value: fakeItemValue,
+                time: new Date(item.time).getTime(),
+              };
+            }
+
+          }
+          if (previous2Item && previous1Item && next1Item)
+            if (Math.abs(previous2Item.value - previous1Item.value) < 0.001
+              && Math.abs(previous1Item.value - currentItem.value) < 0.001
+            ) {
+              if (currentItem.value - next1Item.value >= 0.01) {
+                const fakeItemValue = new BigNumber(currentItem.value)
+                  .plus(
+                    BigNumber(next1Item.value)
+                      .minus(BigNumber(currentItem.value))
+                      .dividedBy(15)
+                  )
+                  .toNumber();
+
+                return {
+                  value: fakeItemValue,
+                  time: new Date(item.time).getTime(),
+                };
+              }
+
+              if (next1Item.value - currentItem.value >= 0.01) {
+                const fakeItemValue = new BigNumber(currentItem.value)
+                  .plus(
+                    BigNumber(next1Item.value)
+                      .minus(BigNumber(currentItem.value))
+                      .dividedBy(15)
+                  )
+                  .toNumber();
+
+                return {
+                  value: fakeItemValue,
+                  time: new Date(item.time).getTime(),
+                };
+              }
+            }
+          return item;
+        });
+      }
+
+      return newDatas;
+    })();
     const gapRatio = 0.1;
-
-    const values = mappedDatas.map(data => data.value);
-    const times = mappedDatas.map(data => data.time);
-
-    const minValue = Math.min(...values);
-    const maxValue = Math.max(...values);
-    const minTime = Math.min(...times);
-    const maxTime = Math.max(...times);
 
     const minValueBigNumber = BigNumber(minValue);
     const maxValueBigNumber = BigNumber(maxValue);
@@ -598,9 +676,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 <span className="date">
                   {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
                 </span>
-                {location.pathname !== "/dashboard" && (
+                {(
                   <span className="time">
-                    {currentPointIndex === datas.length - 1
+                    {(currentPointIndex === datas.length - 1 && displayLastDayAsNow)
                       ? parseTimeTVL(getLocalizeTime(new Date().toString()))
                         .time
                       : parseTimeTVL(datas[currentPointIndex]?.time)?.time ||
@@ -609,10 +687,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 )}
               </div>
               <div className="tooltip-header">
-                <span className="value">{toPriceFormat(
-                  BigNumber(datas[currentPointIndex]?.value).toString(),
-                  { usd: true, isRounding: false }
-                )}</span>
+                <span className="value">{popupYValueFormatter
+                  ? popupYValueFormatter(datas[currentPointIndex]?.value)
+                  : toPriceFormat(
+                    BigNumber(datas[currentPointIndex]?.value).toString(),
+                    { usd: true, isRounding: false }
+                  )}</span>
               </div>
             </LineGraphTooltipWrapper>
           ) : null
@@ -742,20 +822,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   className="first-line"
                 />
               )}
-              {/* {
-                centerLineColor && (
-                  <line
-                    stroke={centerLineColor}
-                    strokeWidth={1}
-                    x1={0}
-                    y1={firstPoint.y}
-                    x2={width}
-                    y2={firstPoint.y}
-                    strokeDasharray={0}
-                    className="center-line"
-                  />
-                )
-              } */}
               {isFocus() && currentPoint && (
                 <line
                   stroke={color}

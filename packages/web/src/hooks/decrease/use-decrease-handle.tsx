@@ -14,6 +14,7 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo, useState, useEffect } from "react";
+import { encryptId } from "@utils/common";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -52,7 +53,9 @@ export const useDecreaseHandle = () => {
   const [percent, setPercent] = useState<number>(50);
   const { tokenPrices } = useTokenData();
 
-  const { positions } = usePositionData();
+  const { positions } = usePositionData({
+    poolPath: encryptId(poolPath)
+  });
 
   const loading = useMemo(() => {
     return !selectedPosition;
@@ -80,7 +83,11 @@ export const useDecreaseHandle = () => {
       selectedPosition?.tickLower,
       selectedPosition?.pool.fee,
     );
-    const minPrice = tickToPriceStr(selectedPosition?.tickLower, 40, isEndTick);
+    const minPrice = tickToPriceStr(
+      selectedPosition?.tickLower, {
+      decimals: 40,
+      isEnd: isEndTick
+    });
     return `${minPrice}`;
   }, [selectedPosition?.tickUpper, selectedPosition?.tickLower]);
 
@@ -91,7 +98,11 @@ export const useDecreaseHandle = () => {
       selectedPosition?.pool.fee,
     );
 
-    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, 40, isEndTick);
+    const maxPrice = tickToPriceStr(
+      selectedPosition?.tickUpper, {
+      decimals: 40,
+      isEnd: isEndTick
+    });
 
     return maxPrice;
   }, [selectedPosition?.tickLower, selectedPosition?.tickUpper]);
@@ -250,8 +261,8 @@ export const useDecreaseHandle = () => {
       poolAmountUSDB: numberToUSD(
         (tokenBAmount * Number(tokenBPrice) * percent) / 100,
       ),
-      unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
-      unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
+      unClaimTokenAAmount: BigNumber(unClaimTokenAAmount).toFormat(),
+      unClaimTokenBAmount: BigNumber(unClaimTokenBAmount).toFormat(),
       unClaimTokenAAmountUSD: numberToUSD(
         unClaimTokenAAmount * Number(tokenAPrice),
       ),

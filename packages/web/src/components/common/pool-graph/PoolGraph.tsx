@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PoolGraphTooltipWrapper, PoolGraphWrapper } from "./PoolGraph.styles";
 import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -8,7 +8,7 @@ import { tickToPriceStr } from "@utils/swap-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -85,6 +85,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   isSwap = false,
   showBar = true,
 }) => {
+  const graphIdRef = useRef(Math.random());
   const defaultMinX = Math.min(...(bins).map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
@@ -96,7 +97,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
 
-  const isSmallWidth = useMemo(() => width < 300, [width]);
+  const getBinId = useCallback((index: number) => `pool-graph-bin-${graphIdRef.current}-${index}`, []);
 
   // D3 - Dimension Definition
   const minX = d3.min(bins, bin => bin.minTick - defaultMinX) || 0;
@@ -140,7 +141,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       maxTickSwap: temp[fullLength - i - 1].maxTick,
     }));
     return !isSwap ? temp : revereTemp;
-  }, [bins, boundsHeight, defaultMinX, poolPrice, isSwap]);
+  }, [bins, boundsHeight, defaultMinX, poolPrice, isSwap, binsMyAmount]);
 
   const maxHeight = d3.max(resolvedBins, bin => bin.reserveTokenMap) || 0;
 
@@ -239,8 +240,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (currentTick) {
       rects
         .append("line")
-        .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
-        .attr("x2", centerPosition + tickSpacing / 2 - 0.5)
+        .attr("x1", centerPosition + tickSpacing / 2)
+        .attr("x2", centerPosition + tickSpacing / 2)
         .attr("y1", 0)
         .attr("y2", boundsHeight)
         .attr("stroke-dasharray", 3)
@@ -249,39 +250,71 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     }
 
     // D3 - Draw bins as bars
-    if (!showBar) {
-      return;
+    if (showBar) {
+      rects
+        .selectAll("rects")
+        .data(resolvedBins)
+        .enter()
+        .append("g")
+        .attr("class", "bin-wrapper")
+        .attr("id", bin => getBinId(bin.index))
+        .each(function (bin) {
+          d3
+            .select(this)
+            .append("rect")
+            .style("fill", "transparent")
+            .attr("class", "bin-inner")
+            .style("stroke-width", "0")
+            .attr("x", scaleX(bin.minTick))
+            .attr("width", scaleX(bin.maxTick - bin.minTick))
+            .attr("y", () => {
+              const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+              return (
+                scaleYComputation -
+                (scaleYComputation > height - 3 && scaleYComputation !== height
+                  ? 3
+                  : 0)
+              );
+            })
+            .attr("height", () => {
+              const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+              return (
+                boundsHeight -
+                scaleYComputation +
+                (scaleYComputation > height - 3 && scaleYComputation !== height
+                  ? 3
+                  : 0)
+              );
+            });
+          d3
+            .select(this)
+            .append("rect")
+            .style("fill", fillByBin(bin))
+            .attr("class", "bin-inner")
+            .style("stroke-width", "0")
+            .attr("x", scaleX(bin.minTick) + 1)
+            .attr("width", scaleX(bin.maxTick - bin.minTick) - 1)
+            .attr("y", () => {
+              const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+              return (
+                scaleYComputation -
+                (scaleYComputation > height - 3 && scaleYComputation !== height
+                  ? 3
+                  : 0)
+              );
+            })
+            .attr("height", () => {
+              const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+              return (
+                boundsHeight -
+                scaleYComputation +
+                (scaleYComputation > height - 3 && scaleYComputation !== height
+                  ? 3
+                  : 0)
+              );
+            });
+        });
     }
-
-    rects
-      .selectAll("rects")
-      .data(resolvedBins)
-      .enter()
-      .append("rect")
-      .style("fill", bin => fillByBin(bin))
-      .style("stroke-width", "0")
-      .attr("class", "rects")
-      .attr("x", bin => scaleX(bin.minTick))
-      .attr("y", bin => {
-        const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-        return (
-          scaleYComputation -
-          (scaleYComputation > height - 3 && scaleYComputation !== height
-            ? 3
-            : 0)
-        );
-      })
-      .attr("width", tickSpacing - 1)
-      .attr("height", bin => {
-        const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-        return (
-          boundsHeight -
-          scaleYComputation +
-          (scaleYComputation > height - 3 && scaleYComputation !== height
-            ? 3
-            : 0)
-        );
-      });
   }
 
   function onMouseoverChartBin(event: MouseEvent) {
@@ -291,23 +324,35 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const currentBin = resolvedBins.find(bin => {
-      const minX = scaleX(bin.minTick);
-      const maxX = scaleX(bin.maxTick);
-      const barWidth = maxX - minX;
-      const maxGapRatio = isSmallWidth ? 0 : 0.09;
-      const minGapRatio = isSmallWidth ? 0 : 0.06;
-      const maxGap = barWidth * maxGapRatio;
-      const minGap = barWidth * minGapRatio;
-
       if (mouseY < 0.000001 || mouseY > height) {
         return false;
       }
       if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
         return false;
       }
-      return mouseX > minX - minGap && mouseX < maxX - maxGap;
-    });
+      const isHoveringCurrentBin = document
+        .getElementById(getBinId(bin.index))
+        ?.matches(":hover");
 
+      const isHoveringPreviousBin = document
+        .getElementById(getBinId(bin.index - 1))
+        ?.matches(":hover");
+      const isHoveringNextBin = document
+        .getElementById(getBinId(bin.index + 1))
+        ?.matches(":hover");
+
+      const isHoveringIndex = (() => {
+        if (isHoveringCurrentBin) return bin.index;
+
+        if (isHoveringPreviousBin) return bin.index - 1;
+
+        if (isHoveringNextBin) return bin.index + 1;
+      })();
+
+      if (isHoveringIndex !== 0 && !isHoveringIndex) return false;
+
+      return bin.index === isHoveringIndex;
+    });
     if (currentBin?.index && (currentBin?.index !== lastHoverBinIndexRef.current)) {
       lastHoverBinIndexRef.current = currentBin?.index;
     }
@@ -431,7 +476,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           })
           .reduce<{ [key in number]: string }>((acc, current) => {
             if (!acc[current]) {
-              acc[current] = tickToPriceStr(current, 40).toString();
+              const priceStr = tickToPriceStr(current, { decimals: 40, isFormat: false });
+
+              acc[current] = formatTokenExchangeRate(
+                priceStr, {
+                maxSignificantDigits: 6,
+                minLimit: 0.000001,
+                isInfinite: priceStr === "∞",
+                fixedDecimalDigits: 6
+              });
             }
             return acc;
           }, {});

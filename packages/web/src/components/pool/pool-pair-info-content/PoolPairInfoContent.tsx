@@ -10,7 +10,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { numberToFormat, numberToRate } from "@utils/string-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
@@ -23,7 +23,6 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { toUnitFormat } from "@utils/number-utils";
-import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 interface PoolPairInfoContentProps {
@@ -82,8 +81,12 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.volume24h]);
 
   const aprValue = useMemo(() => {
-    const aprStr = numberToRate(pool.totalApr);
+    const aprStr = numberToRate(pool.totalApr, { isRounding: false });
     const totalAPR = pool.totalApr || 0;
+    if (Number(pool.tvl) < 0.01) {
+      return "0%";
+    }
+
     if (Number(totalAPR) >= 100) {
       return (
         <>
@@ -93,7 +96,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       );
     }
     return aprStr;
-  }, [pool.totalApr]);
+  }, [pool.totalApr, pool.tvl]);
 
   const liquidityChangedStr = useMemo((): string => {
     return `${numberToFormat(Math.abs(pool.tvlChange), {
@@ -103,7 +106,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.tvlChange]);
 
   const volumeChangedStr = useMemo((): string => {
-    return `${numberToFormat(pool.volumeChange24h, {
+    return `${numberToFormat(Math.abs(pool.volumeChange24h), {
       decimals: 2,
       forceDecimals: true,
     })}%`;
@@ -124,15 +127,31 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
   const currentPrice = useMemo(() => {
-    return tickToPriceStr(pool.currentTick, 40);
+    const price = tickToPriceStr(pool.currentTick, { decimals: 40, isFormat: false });
+
+    return formatTokenExchangeRate(
+      price, {
+      maxSignificantDigits: 6,
+      fixedDecimalDigits: 6,
+      minLimit: 0.000001,
+    });
   }, [pool?.currentTick]);
 
   const feeLogo = useMemo(() => {
-    return [pool?.tokenA?.logoURI, pool?.tokenB?.logoURI];
-  }, [pool]);
+    return [
+      {
+        src: getGnotPath(pool.tokenA)?.logoURI,
+      },
+      {
+        src: getGnotPath(pool.tokenB)?.logoURI,
+      }
+    ];
+  }, [pool.tokenA, pool.tokenB]);
 
   const stakeLogo = useMemo(() => {
-    return pool?.rewardTokens?.map(item => getGnotPath(item)?.logoURI);
+    return pool?.rewardTokens?.map(item => ({
+      src: getGnotPath(item)?.logoURI,
+    }));
   }, [pool?.rewardTokens]);
 
   const isHideBar = useMemo(() => {
@@ -189,9 +208,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   <span>
                     {convertToKMB(`${tokenABalance}`)}{" "}
                     <span
-                      className={`token-symbol ${
-                        isWrapText ? "wrap-text" : ""
-                      }`}
+                      className={`token-symbol ${isWrapText ? "wrap-text" : ""
+                        }`}
                     >
                       {pool?.tokenA?.symbol}
                     </span>{" "}
@@ -211,9 +229,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   <span>
                     {convertToKMB(`${tokenBBalance}`)}{" "}
                     <span
-                      className={`token-symbol ${
-                        isWrapText ? "wrap-text" : ""
-                      }`}
+                      className={`token-symbol ${isWrapText ? "wrap-text" : ""
+                        }`}
                     >
                       {pool?.tokenB?.symbol}
                     </span>{" "}
@@ -237,8 +254,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             <div className="wrapper-value">
               <strong>{volumeValue}</strong>
               <div>
-                <IconTriangleArrowUpV2 />{" "}
-                <span className="positive"> {volumeChangedStr}</span>
+                {pool.volumeChange24h >= 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}{" "}
+                <span className={pool.volumeChange24h >= 0 ? "positive" : "negative"}> {volumeChangedStr}</span>
               </div>
             </div>
           )}
@@ -277,14 +294,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               placement="top"
               FloatingContent={
                 <TooltipAPR
-                  feeAPR={pool?.feeApr}
-                  stakingAPR={pool?.stakingApr}
+                  feeAPR={Number(pool.tvl) < 0.01 ? "0" : pool?.feeApr}
+                  stakingAPR={Number(pool.tvl) < 0.01 ? "0" : pool?.stakingApr}
                   feeLogo={feeLogo}
                   stakeLogo={stakeLogo}
                 />
               }
             >
-              <strong>{aprValue}</strong>
+              <strong className="apr-content">{aprValue}</strong>
             </Tooltip>
           )}
           {loading && (
@@ -331,7 +348,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   {width >= 768 && `1 ${pool?.tokenA?.symbol}`} ={" "}
-                  <ExchangeRate value={currentPrice} /> {pool?.tokenB?.symbol}
+                  {currentPrice} {pool?.tokenB?.symbol}
                 </div>
               )}
               {loading && (
@@ -354,14 +371,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   {width >= 768 && `1 ${pool?.tokenB?.symbol}`} ={" "}
-                  <ExchangeRate
-                    value={convertToKMB(
-                      `${Number(
-                        Number(1 / pool.price).toFixed(width > 400 ? 6 : 2),
-                      )}`,
-                      { maximumFractionDigits: 6 },
-                    )}
-                  />{" "}
+                  {formatTokenExchangeRate(Number(1 / pool.price).toFixed(width > 400 ? 6 : 2))}{" "}
                   {pool?.tokenA?.symbol}
                 </div>
               )}

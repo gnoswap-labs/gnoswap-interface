@@ -77,8 +77,6 @@ export const useDecreasePositionModal = ({
       return false;
     }
 
-
-
     broadcastLoading(
       makeBroadcastRemoveMessage("pending", {
         tokenASymbol: tokenA.symbol,

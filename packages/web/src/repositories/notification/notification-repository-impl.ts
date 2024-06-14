@@ -91,23 +91,27 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     const token1Amount = prettyNumberFloatInteger(tx?.tokenBAmount);
     const token1symbol = this.replaceToken(tx?.tokenB?.symbol);
 
+    const token0Display = Number(tx?.tokenAAmount) ? `<span>${token0Amount}</span> <span>${token0symbol}</span>` : "";
+    const token1Display = Number(tx?.tokenBAmount) ? `<span>${token1Amount}</span> <span>${token1symbol}</span>` : "";
+    const tokenStr = [token0Display, token1Display].filter(item => item).join(" and ");
+
     switch (tx.actionType) {
       case "SWAP":
-        return `Swapped <span>${token0Amount}</span> <span>${token0symbol}</span> for <span>${token1Amount}</span> <span>${token1symbol}</span>`;
+        return `Swapped ${tokenStr}`;
       case "ADD":
-        return `Added <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
+        return `Added ${tokenStr}`;
       case "REMOVE":
-        return `Removed <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
+        return `Removed ${tokenStr}`;
       case "STAKE":
-        return `Staked <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
+        return `Staked ${tokenStr}`;
       case "UNSTAKE":
-        return `Unstaked <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
+        return `Unstaked ${tokenStr}`;
       case "CLAIM":
-        return `Claimed <span>${token0Amount}</span> <span>${token0symbol}</span>`;
+        return `Claimed ${tokenStr}`;
       case "WITHDRAW":
-        return `Sent <span>${token0Amount}</span> <span>${token0symbol}</span>`;
+        return `Sent ${token0Display}`;
       case "DEPOSIT":
-        return `Received <span>${token0Amount}</span> <span>${token0symbol}</span>`;
+        return `Received ${token0Display}>`;
       default:
         return `${this.capitalizeFirstLetter(
           tx.actionType,
@@ -131,10 +135,18 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     const seenTxs = this.getSeenTx();
 
     for (const tx of transactions ?? []) {
+
       /**
        * *If tx is removed then ignore it
        **/
       if (removedTxs.includes(tx.txHash)) continue;
+
+      /**
+       * *If tx both amounts are `0` ignore it
+       **/
+      if (!Number(tx.tokenAAmount) && !Number(tx.tokenBAmount)) {
+        continue;
+      }
 
       const tokenA = {
         ...tx.tokenA,
@@ -156,17 +168,19 @@ export class NotificationRepositoryImpl implements NotificationRepository {
         createdAt: tx.time,
         content: this.getNotificationMessage(tx),
         isRead: seenTxs.includes(tx.txHash), // * Check if transaction is already seen
+        rawValue: tx,
       };
 
-      if (transactionDate.isSame(today, "day")) {
-        todayTransactions.push(txModel);
-      } else if (transactionDate.isAfter(today.subtract(7, "day"))) {
-        pastWeekTransactions.push(txModel);
-      } else if (transactionDate.isAfter(today.subtract(30, "day"))) {
-        pastMonthTransactions.push(txModel);
-      } else {
-        olderTransactions.push(txModel);
-      }
+      if (tokenA)
+        if (transactionDate.isSame(today, "day")) {
+          todayTransactions.push(txModel);
+        } else if (transactionDate.isAfter(today.subtract(7, "day"))) {
+          pastWeekTransactions.push(txModel);
+        } else if (transactionDate.isAfter(today.subtract(30, "day"))) {
+          pastMonthTransactions.push(txModel);
+        } else {
+          olderTransactions.push(txModel);
+        }
     }
 
     const res = [];

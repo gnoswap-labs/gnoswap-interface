@@ -129,21 +129,31 @@ export function tickToPrice(tick: number) {
 
 export function tickToPriceStr(
   tick: number,
-  decimals?: number,
-  isEnd?: boolean,
-) {
-  if (isEnd) {
+  options: {
+    isEnd?: boolean,
+    decimals?: number,
+    isFormat?: boolean,
+  }) {
+  const isFormat = options?.isFormat === undefined ? true : options?.isFormat;
+  if (options?.isEnd) {
     return tick < 0 ? "0" : "∞";
   }
 
-  const decimalsLimit = decimals || 4;
+  const decimalsLimit = options?.decimals || 4;
   const result = BigNumber(tickToPrice(tick).toString())
     .toFormat(decimalsLimit)
     .replace(/\.?0+$/, "");
   if (result === "0") {
     return "0";
   }
-  return convertToKMB(result.replace(/,/g, ""));
+
+  if (isFormat) {
+    return convertToKMB(result.replace(/,/g, ""), {
+      ignoreSmallValueFormat: true
+    });
+  }
+
+  return result;
 }
 
 export function feeBoostByPrices(

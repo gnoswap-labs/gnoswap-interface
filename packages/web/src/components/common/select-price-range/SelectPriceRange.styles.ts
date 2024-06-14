@@ -12,7 +12,7 @@ export const SelectPriceRangeWrapper = styled.div`
   visibility: hidden;
   overflow: hidden;
   &.open {
-    max-height: 700px;
+    max-height: 747px;
     visibility: visible;
     ${media.mobile} {
       max-height: 828px;
