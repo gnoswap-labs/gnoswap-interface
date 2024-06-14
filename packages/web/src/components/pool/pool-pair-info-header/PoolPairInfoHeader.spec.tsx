@@ -6,7 +6,8 @@ import { PoolRepositoryMock } from "@repositories/pool";
 import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context";
-import { createMockRouter } from "src/test-utils/createMockRouter";
+import { createMockRouter } from "../../../test-utils/createMockRouter";
+
 const poolRepository = new PoolRepositoryMock();
 
 describe("PoolPairInfoHeader Component", () => {

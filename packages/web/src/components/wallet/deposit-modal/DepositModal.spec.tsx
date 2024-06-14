@@ -6,7 +6,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context";
-import { createMockRouter } from "src/test-utils/createMockRouter";
+import { createMockRouter } from "../../../test-utils/createMockRouter";
 
 describe("DepositModal Component", () => {
   it("DepositModal render", () => {
