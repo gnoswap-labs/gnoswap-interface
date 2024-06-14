@@ -70,7 +70,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const { width } = useWindowSize();
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const GRAPH_WIDTH = useMemo(() => Math.min(width - (width > 767 ? 224 : 80), 1216), [width]);
+  const GRAPH_WIDTH = useMemo(
+    () => Math.min(width - (width > 767 ? 224 : 80), 1216),
+    [width],
+  );
   const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const [copied, setCopy] = useCopy();
   const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40);
@@ -102,9 +105,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return true;
   }, [position]);
 
-  const getTokenPrice = useCallback((priceId: string) => {
-    return tokenPrices?.[priceId]?.usd;
-  }, [tokenPrices]);
+  const getTokenPrice = useCallback(
+    (priceId: string) => {
+      return tokenPrices?.[priceId]?.usd;
+    },
+    [tokenPrices],
+  );
 
   const tokenABalanceUSD = useMemo(() => {
     const tokenAUSD = Number(getTokenPrice(tokenA.priceID) || "1");
@@ -149,7 +155,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       sumOfBalances === 0
         ? 0.5
         : tokenABalance /
-        (tokenABalance + tokenBBalance / position?.pool?.price);
+          (tokenABalance + tokenBBalance / position?.pool?.price);
     return [
       {
         token: tokenA,
@@ -194,7 +200,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           item => item.token.priceID === current.rewardToken.priceID,
         );
 
-
         if (index !== -1) {
           accum[current.rewardType][index] = {
             ...accum[current.rewardType][index],
@@ -202,7 +207,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               accum[current.rewardType][index].claimableAmount +
               current.claimableAmount,
             claimableUSD: accum[current.rewardType][index].claimableUSD + 1,
-            accumulatedRewardOf1dUsd: Number(current.accuReward1D ?? 0) * Number(getTokenPrice(current.rewardToken.priceID) ?? 0)
+            accumulatedRewardOf1dUsd:
+              Number(current.accuReward1D ?? 0) *
+              Number(getTokenPrice(current.rewardToken.priceID) ?? 0),
           };
         } else {
           accum[current.rewardType].push({
@@ -217,8 +224,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               Number(current.totalAmount) *
               Number(getTokenPrice(current.rewardToken.priceID) || 0),
             claimableUSD: Number(current.claimableUsd) || 0,
-            accumulatedRewardOf1d: current.accuReward1D ? Number(current.accuReward1D) : 0,
-            accumulatedRewardOf1dUsd: Number(current.accuReward1D ?? 0) * Number(getTokenPrice(current.rewardToken.priceID) ?? 0)
+            accumulatedRewardOf1d: current.accuReward1D
+              ? Number(current.accuReward1D)
+              : 0,
+            accumulatedRewardOf1dUsd:
+              Number(current.accuReward1D ?? 0) *
+              Number(getTokenPrice(current.rewardToken.priceID) ?? 0),
           });
         }
         return accum;
@@ -267,20 +278,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return "$0";
     }
 
-    const totalDailyEarningValue = (Object.values(totalRewardInfo)).flatMap(item => item).reduce((acc, current) => {
-      return acc + Number(current.accumulatedRewardOf1dUsd);
-    }, 0);
+    const totalDailyEarningValue = Object.values(totalRewardInfo)
+      .flatMap(item => item)
+      .reduce((acc, current) => {
+        return acc + Number(current.accumulatedRewardOf1dUsd);
+      }, 0);
 
-    return toPriceFormat(
-      totalDailyEarningValue, {
+    return toPriceFormat(totalDailyEarningValue, {
       usd: true,
       minLimit: 0.01,
       isRounding: false,
       fixedLessThan1Decimal: 2,
     });
   }, [isClosed, totalRewardInfo]);
-
-
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
     useMemo(() => {
@@ -327,7 +337,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }, [position.reward]);
 
   const stringPrice = useMemo(() => {
-    const price = tickToPriceStr(position?.pool?.currentTick, { decimals: 40, isFormat: false });
+    const price = tickToPriceStr(position?.pool?.currentTick, {
+      decimals: 40,
+      isFormat: false,
+    });
     if (isSwap) {
       return (
         <>
@@ -337,20 +350,21 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             maxSignificantDigits: 6,
             fixedDecimalDigits: 6,
             minLimit: 0.000001,
-          })}
-          {" "}
+          })}{" "}
           {tokenA?.symbol}
         </>
       );
     }
     return (
       <>
-        1 {tokenA?.symbol} = {formatTokenExchangeRate(price, {
+        1 {tokenA?.symbol} ={" "}
+        {formatTokenExchangeRate(price, {
           isInfinite: price === "∞",
           maxSignificantDigits: 6,
           fixedDecimalDigits: 6,
           minLimit: 0.000001,
-        })} {tokenB?.symbol}
+        })}{" "}
+        {tokenB?.symbol}
       </>
     );
   }, [
@@ -403,7 +417,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -421,7 +435,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -436,11 +450,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
     const maxPrice = tickToPrice(position.tickUpper);
-    const minPrice = tickToPriceStr(
-      position.tickLower, {
+    const minPrice = tickToPriceStr(position.tickLower, {
       isEnd: isEndTick,
       decimals: 40,
-    },);
+    });
 
     if (minPrice && isNaN(Number(minPrice))) {
       return minPrice;
@@ -453,7 +466,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
 
     return formatTokenExchangeRate(`${Number(1 / Number(maxPrice))}`);
-  }, [position.tickLower, position.pool.fee, position.tickUpper, isFullRange, isSwap]);
+  }, [
+    position.tickLower,
+    position.pool.fee,
+    position.tickUpper,
+    isFullRange,
+    isSwap,
+  ]);
 
   const currentPrice = useMemo(() => {
     return !isSwap
@@ -480,8 +499,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     const minPrice = tickToPrice(position.tickLower);
 
-    const maxPrice = tickToPriceStr(
-      position.tickUpper, {
+    const maxPrice = tickToPriceStr(position.tickUpper, {
       isEnd: isEndTick,
       decimals: 40,
       isFormat: false,
@@ -523,8 +541,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     if (maxTickRate >= 1000) return ">999%";
 
-    return `${maxTickRate > 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
-      }%`;
+    return `${maxTickRate > 1 ? "+" : ""}${
+      Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+    }%`;
   }, [maxTickRate]);
 
   const startClass = useMemo(() => {
@@ -539,28 +558,28 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       setSelectedPosition(position);
       router.push(
         "/earn/pool/" +
-        router.query["pool-path"] +
-        "/" +
-        position?.id +
-        "/decrease-liquidity",
+          router.query["pool-path"] +
+          "/" +
+          position?.id +
+          "/decrease-liquidity",
       );
     } else if (text === "Increase Liquidity") {
       setSelectedPosition(position);
       router.push(
         "/earn/pool/" +
-        router.query["pool-path"] +
-        "/" +
-        position?.id +
-        "/increase-liquidity",
+          router.query["pool-path"] +
+          "/" +
+          position?.id +
+          "/increase-liquidity",
       );
     } else {
       setSelectedPosition(position);
       router.push(
         "/earn/pool/" +
-        router.query["pool-path"] +
-        "/" +
-        position?.id +
-        "/reposition",
+          router.query["pool-path"] +
+          "/" +
+          position?.id +
+          "/reposition",
       );
     }
   };
@@ -599,7 +618,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
-      <MyPositionCardWrapper type={inRange} $isClosed={isClosed}>
+      <MyPositionCardWrapper type={`${inRange}`} $isClosed={`${isClosed}`}>
         <div className="box-title">
           <div className="box-header">
             <div className="box-left">
@@ -634,7 +653,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                       <div
                         onClick={() =>
                           setCopy(
-                            `${window.location.host + window.location.pathname
+                            `${
+                              window.location.host + window.location.pathname
                             }?addr=${address}#${position.id}`,
                           )
                         }
@@ -684,7 +704,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                         <div
                           onClick={() =>
                             setCopy(
-                              `${window.location.host + window.location.pathname
+                              `${
+                                window.location.host + window.location.pathname
                               }?addr=${address}#${position.id}`,
                             )
                           }
@@ -724,7 +745,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 onClick={() =>
                   router.push(
                     router.asPath +
-                    `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`,
+                      `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`,
                   )
                 }
               />
@@ -866,8 +887,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     position.closed
                       ? RANGE_STATUS_OPTION.NONE
                       : inRange
-                        ? RANGE_STATUS_OPTION.IN
-                        : RANGE_STATUS_OPTION.OUT
+                      ? RANGE_STATUS_OPTION.IN
+                      : RANGE_STATUS_OPTION.OUT
                   }
                 />
               </div>
@@ -905,7 +926,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 1&nbsp;
                 {(!isSwap ? tokenA : tokenB)?.symbol} =&nbsp;
                 {minPriceStr}&nbsp;
-                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(<span className={startClass}>{!isSwap ? minTickLabel : maxTickLabel}</span>)&nbsp;
+                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+                <span className={startClass}>
+                  {!isSwap ? minTickLabel : maxTickLabel}
+                </span>
+                )&nbsp;
                 <Tooltip
                   placement="top"
                   FloatingContent={

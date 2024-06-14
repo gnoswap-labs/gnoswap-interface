@@ -50,7 +50,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
     />
     {loading ? (
       Array.from({ length: 3 }).map((_, idx) => (
-        <ProposalDetailSkeleton key={idx} />
+        <ProposalDetailSkeleton key={`skeleton-${idx}`} />
       ))
     ) : (
       <>
