@@ -15,7 +15,8 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { PoolModel } from "@models/pool/pool-model";
 import { encryptId } from "@utils/common";
 
-export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async (context) => {
+export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async () => {
+  // export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async (context) => {
   // const poolPath = (context.query["pool-path"] || "") as string;
 
   // const res = await fetch(API_URL + "/pools/" + encodeURIComponent(encryptId(poolPath)));
