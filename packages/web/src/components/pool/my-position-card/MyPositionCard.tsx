@@ -618,7 +618,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
-      <MyPositionCardWrapper type={`${inRange}`} $isClosed={`${isClosed}`}>
+      <MyPositionCardWrapper type={isClosed ? "closed" : "none"}>
         <div className="box-title">
           <div className="box-header">
             <div className="box-left">
