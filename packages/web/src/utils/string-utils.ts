@@ -43,24 +43,28 @@ export function makePairName({
 
 export function numberToFormat(
   num: string | number,
-  options?: { decimals?: number; forceDecimals?: boolean },
+  options?: {
+    decimals?: number;
+    forceDecimals?: boolean
+  },
 ) {
   const decimal = options?.forceDecimals
     ? options?.decimals
     : Number.isInteger(Number(num))
-    ? 0
-    : options?.decimals;
+      ? 0
+      : options?.decimals;
   return isNumber(Number(num)) ? BigNumber(num).toFormat(decimal || 0) : "0";
 }
 
 export function numberToRate(
   num: string | number | null | undefined,
-  options?: { decimals?: number; minLimit?: number; errorText?: string },
+  options?: { decimals?: number; minLimit?: number; errorText?: string, isRounding?: boolean },
 ) {
-  const { decimal, minLimit, errorText } = {
+  const { decimal, minLimit, errorText, isRounding } = {
     decimal: 1,
     minLimit: 0.1,
     errorText: "-",
+    isRounding: true,
     ...(options || {}),
   };
 
@@ -81,6 +85,12 @@ export function numberToRate(
 
   if (numBN.isLessThan(minLimit)) {
     return `<${BigNumber(minLimit).toFormat()}%`;
+  }
+
+  if (!isRounding) {
+    const temp = numBN.toFormat(decimal + 1);
+
+    return `${temp.substring(0, temp.length - 1)}%`;
   }
 
   return `${numBN.toFormat(decimal)}%`;
@@ -107,5 +117,5 @@ export function displayTickNumber(range: number[], tick: number) {
   }
   const fixedPosition =
     Array.from(rangeGapSplit[1], v => v).findIndex(v => v !== "0") + 1;
-  return tickToPriceStr(tick, fixedPosition + 1);
+  return tickToPriceStr(tick, { decimals: fixedPosition + 1 });
 }

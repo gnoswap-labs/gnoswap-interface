@@ -142,9 +142,9 @@ const TokenListContainer: React.FC = () => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>({
-    key: TABLE_HEAD.INDEX,
-    direction: "asc",
-    firstActive: true,
+    key: TABLE_HEAD.VOLUME,
+    direction: "desc",
+    firstActive: false,
   });
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
@@ -216,6 +216,7 @@ const TokenListContainer: React.FC = () => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
 
     let temp = tokens
+      // let temp = (tokens?.[0] ? [tokens?.[0]] : [])
       .filter((token: TokenModel) => token.path !== wugnotPath)
       .map((item: TokenModel) => {
         const isGnot = item.path === "gnot";
@@ -309,39 +310,44 @@ const TokenListContainer: React.FC = () => {
           volume24h: `$${Math.floor(
             Number(transferData.volumeUsd24h || 0),
           ).toLocaleString()}`,
-          price: toPriceFormat(usdFormat, { usd: true }),
+          price: toPriceFormat(
+            usdFormat, {
+            usd: true,
+            isRounding: false,
+            fixedLessThan1Significant: 3,
+          }),
           priceOf1d: {
             status: dataToday.status,
             value:
-              dataToday.percent !== "-"
-                ? dataToday.percent.replace(/[+-]/g, "")
-                : dataToday.percent,
+              dataToday.percentDisplay !== "-"
+                ? dataToday.percentDisplay.replace(/[+-]/g, "")
+                : dataToday.percentDisplay,
             realValue:
-              dataToday.percent === "-"
+              dataToday.percentDisplay === "-"
                 ? -100000000000
-                : Number(dataToday.percent.replace(/[%]/g, "")),
+                : Number(dataToday.percentDisplay.replace(/[%]/g, "")),
           },
           priceOf7d: {
             status: data7day.status,
             value:
-              data7day.percent !== "-"
-                ? data7day.percent.replace(/[+-]/g, "")
-                : data7day.percent,
+              data7day.percentDisplay !== "-"
+                ? data7day.percentDisplay.replace(/[+-]/g, "")
+                : data7day.percentDisplay,
             realValue:
-              data7day.percent === "-"
+              data7day.percentDisplay === "-"
                 ? -100000000000
-                : Number(data7day.percent.replace(/[%]/g, "")),
+                : Number(data7day.percentDisplay.replace(/[%]/g, "")),
           },
           priceOf30d: {
             status: data30D.status,
             value:
-              data30D.percent !== "-"
-                ? data30D.percent.replace(/[+-]/g, "")
-                : data30D.percent,
+              data30D.percentDisplay !== "-"
+                ? data30D.percentDisplay.replace(/[+-]/g, "")
+                : data30D.percentDisplay,
             realValue:
-              data30D.percent === "-"
+              data30D.percentDisplay === "-"
                 ? -100000000000
-                : Number(data30D.percent.replace(/[%]/g, "")),
+                : Number(data30D.percentDisplay.replace(/[%]/g, "")),
           },
           idx: 1,
           graphStatus,

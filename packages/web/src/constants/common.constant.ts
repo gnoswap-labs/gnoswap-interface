@@ -12,3 +12,5 @@ export const PATH_60SECOND = [
   "/earn/pool/[pool-path]/unstake",
   "/earn/pool/[pool-path]",
 ];
+
+export const HTTP_5XX_ERROR = [500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511];

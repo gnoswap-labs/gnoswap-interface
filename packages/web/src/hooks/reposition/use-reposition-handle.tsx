@@ -29,7 +29,7 @@ import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { convertToKMB } from "@utils/stake-position-utils";
-import { checkGnotPath } from "@utils/common";
+import { checkGnotPath, encryptId } from "@utils/common";
 import { useEstimateSwap } from "@query/router";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
@@ -56,7 +56,9 @@ export const useRepositionHandle = () => {
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account } = useWallet();
-  const { positions } = usePositionData();
+  const { positions } = usePositionData({
+    poolPath: encryptId(poolPath)
+  });
   const { openModal: openConfirmModal, update: updateConfirmModalData } =
     useTransactionConfirmModal();
 
@@ -99,8 +101,8 @@ export const useRepositionHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-      ? RANGE_STATUS_OPTION.IN
-      : RANGE_STATUS_OPTION.OUT;
+        ? RANGE_STATUS_OPTION.IN
+        : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -189,13 +191,13 @@ export const useRepositionHandle = () => {
       : 1 / selectPool.currentPrice;
     const originPrices = ordered
       ? {
-          minPrice: tickToPrice(selectedPosition.tickLower),
-          maxPrice: tickToPrice(selectedPosition.tickUpper),
-        }
+        minPrice: tickToPrice(selectedPosition.tickLower),
+        maxPrice: tickToPrice(selectedPosition.tickUpper),
+      }
       : {
-          minPrice: tickToPrice(-1 * selectedPosition.tickUpper),
-          maxPrice: tickToPrice(-1 * selectedPosition.tickLower),
-        };
+        minPrice: tickToPrice(-1 * selectedPosition.tickUpper),
+        maxPrice: tickToPrice(-1 * selectedPosition.tickLower),
+      };
     const depositPrices = {
       minPrice: selectPool.minPrice,
       maxPrice: selectPool.maxPrice,
@@ -219,7 +221,7 @@ export const useRepositionHandle = () => {
       originDepositAmounts.amountA.toString(),
     ).dividedBy(
       Number(originDepositAmounts.amountA.toString()) +
-        Number(originDepositAmounts.amountB.toString()),
+      Number(originDepositAmounts.amountB.toString()),
     );
     const currentDepositRatioBN = BigNumber(
       Number(depositAmounts.amountA),

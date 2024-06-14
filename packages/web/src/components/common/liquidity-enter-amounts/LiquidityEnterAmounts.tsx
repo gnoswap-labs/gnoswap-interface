@@ -63,8 +63,8 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <TokenAmountInput {...tokenAInput} connected={connected} changeToken={changeTokenA} changeAmount={changeTokenAAmount} />
-            <TokenAmountInput {...tokenBInput} connected={connected} changeToken={changeTokenB} changeAmount={changeTokenBAmount} />
+            <TokenAmountInput key={tokenAInput.token?.path} {...tokenAInput} connected={connected} changeToken={changeTokenA} changeAmount={changeTokenAAmount} />
+            <TokenAmountInput key={tokenBInput.token?.path}  {...tokenBInput} connected={connected} changeToken={changeTokenB} changeAmount={changeTokenBAmount} />
             <div className="arrow">
               <div className="shape">
                 <IconAdd className="add-icon" />

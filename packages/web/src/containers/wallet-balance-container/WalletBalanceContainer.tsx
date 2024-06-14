@@ -1,5 +1,4 @@
 // TODO : remove eslint-disable after work
-/* eslint-disable */
 import { ERROR_VALUE } from "@common/errors/adena";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
@@ -10,7 +9,6 @@ import {
   useBroadcastHandler,
 } from "@hooks/common/use-broadcast-handler";
 import { usePosition } from "@hooks/common/use-position";
-import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -20,12 +18,11 @@ import { TokenModel } from "@models/token/token-model";
 import { useGetTokenPrices } from "@query/token";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useState, useMemo } from "react";
-import { useLoading } from "@hooks/common/use-loading";
 import { isEmptyObject } from "@utils/validation-utils";
-import { toNumberFormat, toUnitFormat } from "@utils/number-utils";
+import { toUnitFormat } from "@utils/number-utils";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
-import { useGetPositionsByAddress } from "@query/positions";
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -45,22 +42,18 @@ export interface BalanceDetailInfo {
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();
-  const [address, setAddress] = useState("");
+  const [address,] = useState("");
   const { breakpoint } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
-  const { isLoading } = useLoading();
 
-  const { balances: balancesPrice } = useTokenData();
+  const { balances: balancesPrice, loadingBalance } = useTokenData();
 
-  const { data: positions = [], isLoading: loadingPositions } =
-    useGetPositionsByAddress(account?.address ?? "", {
-      isClosed: false,
-      queryOptions: { enabled: !!account?.address },
-    });
+  const { positions, loading: loadingPositions } = usePositionData();
+
   const isLoadingPosition = useMemo(
     () => connected && loadingPositions,
     [connected, loadingPositions],
@@ -74,7 +67,7 @@ const WalletBalanceContainer: React.FC = () => {
     broadcastRejected,
   } = useBroadcastHandler();
   const { openModal } = useTransactionConfirmModal();
-  const { data: tokenPrices = {} } = useGetTokenPrices();
+  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } = useGetTokenPrices();
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
     setIsShowDepositModal(true);
@@ -121,7 +114,7 @@ const WalletBalanceContainer: React.FC = () => {
           openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
-            () => {},
+            () => { },
             true,
           );
           setLoadingTransactionClaim(false);
@@ -133,15 +126,17 @@ const WalletBalanceContainer: React.FC = () => {
     return (
       isLoadingPosition ||
       loadingConnect === "loading" ||
-      isLoading ||
+      isLoadingTokenPrices ||
+      loadingBalance ||
       !!(isEmptyObject(balancesPrice) && account?.address)
     );
   }, [
     isLoadingPosition,
     loadingConnect,
-    isLoading,
     account?.address,
     balancesPrice,
+    isLoadingTokenPrices,
+    loadingBalance,
   ]);
 
   const availableBalance = useMemo(() => {
@@ -208,7 +203,6 @@ const WalletBalanceContainer: React.FC = () => {
     unStakedBalance,
     stakedBalance,
     claimableRewards,
-    availableBalance,
   ]);
 
   const closeDeposit = () => {

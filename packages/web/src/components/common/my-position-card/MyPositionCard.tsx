@@ -27,6 +27,7 @@ import { numberToRate } from "@utils/string-utils";
 import { useGetLazyPositionBins } from "@query/positions";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -216,9 +217,21 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
-    const minPrice = tickToPriceStr(position.tickLower, 40, isEndTick);
-    const tokenAPriceStr = isFullRange ? "0 " : minPrice;
-    return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
+
+    const minPrice = tickToPriceStr(position.tickLower, {
+      decimals: 40,
+      isEnd: isEndTick,
+      isFormat: false,
+    });
+
+    if (isFullRange) return "0";
+
+    return formatTokenExchangeRate(minPrice, {
+      minLimit: 0.000001,
+      maxSignificantDigits: 6,
+      fixedDecimalDigits: 6,
+      isInfinite: minPrice === "∞",
+    });
   }, [
     tokenB.path,
     tokenB.symbol,
@@ -230,9 +243,20 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const maxPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
-    const maxPrice = tickToPriceStr(position.tickUpper, 40, isEndTick);
-    const tokenBPriceStr = isFullRange ? "∞ " : maxPrice;
-    return `${tokenBPriceStr}`;
+    const maxPrice = tickToPriceStr(position.tickUpper, {
+      decimals: 40,
+      isEnd: isEndTick,
+      isFormat: false,
+    });
+
+    if (isFullRange) return "∞";
+
+    return formatTokenExchangeRate(maxPrice, {
+      maxSignificantDigits: 6,
+      minLimit: 0.000001,
+      isInfinite: maxPrice === "∞",
+      fixedDecimalDigits: 6,
+    });
   }, [
     tokenB.path,
     tokenB.symbol,
@@ -305,7 +329,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return acc + Number(current.accuReward1D ?? 0) * currentTokenPrice;
     }, 0);
 
-    return toPriceFormat(value, { usd: true, isFormat: true });
+    return toPriceFormat(value, {
+      usd: true,
+      lestThan1Decimals: 2,
+      isRounding: false,
+      minLimit: 0.01,
+      fixedLessThan1Decimal: 2,
+    });
   }, [position.reward, tokenPrices]);
 
   return (

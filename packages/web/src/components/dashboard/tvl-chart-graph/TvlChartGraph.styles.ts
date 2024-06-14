@@ -34,6 +34,9 @@ export const TvlChartGraphWrapper = styled.div`
 
     .xaxis-wrapper {
       ${mixins.flexbox("row", "center", "space-between")};
+      &.center {
+        ${mixins.flexbox("row", "center", "center")};
+      }
       width: 100%;
       height: 17px;
       flex-shrink: 0;

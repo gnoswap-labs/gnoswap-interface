@@ -1,7 +1,5 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState } from "react";
 import { HeaderWrapper } from "./MyLiquidityHeader.styles";
 import Switch from "@components/common/switch/Switch";
 import { SCANNER_URL } from "@common/values";
@@ -68,15 +66,15 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
         return <>
           <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
           <span>{`’s Positions ${!isLoadingPositionsById ? `(${positionLength})` : ""}`}</span>
-        </>
+        </>;
       }
 
       if (connectedWallet) {
-        return <span>{`My Positions ${!isLoadingPositionsById ? `(${positionLength})` : ""}`}</span>
+        return <span>{`My Positions ${!isLoadingPositionsById ? `(${positionLength})` : ""}`}</span>;
       }
 
-      return <span>{"My Positions"}</span>
-    }
+      return <span>{"My Positions"}</span>;
+    };
 
     const canCopy = (isOtherPosition || connectedWallet);
 
@@ -104,8 +102,8 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
           />
         </div>
       )}
-    </div>
-  }
+    </div>;
+  };
 
   return (
     <HeaderWrapper>

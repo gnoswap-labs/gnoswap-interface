@@ -1,30 +1,34 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import UnstakeLiquidity from "@components/unstake/unstake-liquidity/UnstakeLiquidity";
 import { useUnstakePositionModal } from "@hooks/earn/use-unstake-position-modal";
 import useRouter from "@hooks/common/use-custom-router";
-import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { useLoading } from "@hooks/common/use-loading";
+import { encryptId } from "@utils/common";
 
 const UnstakeLiquidityContainer: React.FC = () => {
   const router = useRouter();
-  const { account } = useWallet();
-  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loadingPositionById } = usePositionData();
+  const poolPath = (router.query["pool-path"] ?? "") as string;
+  const { positions: allPosition, loading: isPositionsLoading } = usePositionData({
+    poolPath: encryptId(poolPath),
+    queryOption: {
+      enabled: !!poolPath
+    }
+  });
   const [checkedList, setCheckedList] = useState<string[]>([]);
+
+  const stakedPositions = useMemo(() => allPosition.filter(item => item.staked), [allPosition]);
+
   const { openModal } = useUnstakePositionModal({
-    positions,
+    positions: stakedPositions,
     selectedIds: checkedList,
   });
-  const { isLoading } = useLoading();
 
   const checkedAll = useMemo(() => {
-    if (positions.length === 0) {
+    if (stakedPositions.length === 0) {
       return false;
     }
-    return positions.length === checkedList.length;
-  }, [positions, checkedList]);
+    return stakedPositions.length === checkedList.length;
+  }, [stakedPositions, checkedList]);
 
   const onCheckedItem = useCallback(
     (isChecked: boolean, path: string) => {
@@ -43,19 +47,9 @@ const UnstakeLiquidityContainer: React.FC = () => {
       setCheckedList([]);
       return;
     }
-    const checkedList = positions.map(position => position.id);
+    const checkedList = stakedPositions.map(stakedPosition => stakedPosition.id);
     setCheckedList(checkedList);
-  }, [checkedAll, positions]);
-
-  useEffect(() => {
-    const poolPath = router.query["pool-path"] as string;
-    if (!poolPath) {
-      return;
-    }
-    if (account?.address) {
-      setPositions(getPositionsByPoolId(poolPath).filter(item => item.staked));
-    }
-  }, [account?.address, getPositionsByPoolId, router.query]);
+  }, [checkedAll, stakedPositions]);
 
   const handleConfirmUnstake = useCallback(() => {
     openModal();
@@ -63,13 +57,13 @@ const UnstakeLiquidityContainer: React.FC = () => {
 
   return (
     <UnstakeLiquidity
-      stakedPositions={positions}
+      stakedPositions={stakedPositions}
       checkedList={checkedList}
       onCheckedItem={onCheckedItem}
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
       handleConfirmUnstake={handleConfirmUnstake}
-      isLoading={isLoading || loadingPositionById}
+      isLoading={isPositionsLoading}
     />
   );
 };

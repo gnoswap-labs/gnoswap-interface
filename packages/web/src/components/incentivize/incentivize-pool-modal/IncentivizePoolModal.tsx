@@ -1,10 +1,13 @@
 
+import { getDateUtcToLocal } from "@common/utils/date-util";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolModel } from "@models/pool/pool-model";
+import dayjs from "dayjs";
 import React, { useCallback } from "react";
 import { DistributionPeriodDate } from "../pool-incentivize/PoolIncentivize";
 import { IncentivizePoolModalWrapper } from "./IncentivizePoolModal.styles";
@@ -20,10 +23,9 @@ interface Props {
 }
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
-  const utcDate: Date = new Date(Date.UTC(myDate?.year || 0, (myDate?.month || 1) - 1, (myDate?.date || 0) + (days || 0), 0, 0, 0));
-  const formattedDate: string =
-    utcDate.toISOString().replace(/T/, " ").replace(/\..+/, "") + " (UTC)";
-  return formattedDate;
+  const utcDate = dayjs(Date.parse(`${myDate?.year}-${myDate?.month}-${(myDate?.date || 0)}`)).add(days || 0, "day");
+  const formattedDate = getDateUtcToLocal(utcDate.toDate());
+  return formattedDate.value;
 }
 
 const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, data, pool }) => {
@@ -66,8 +68,10 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
               <div>
                 <div className="label">Period</div>
                 <div className="value-content value-content-column">
-                  <div className="value">{formatDate(date, 0)} <br />
-                    - {formatDate(date, period)}</div>
+                  <DateTimeTooltip>
+                    <div className="value">{formatDate(date, 0)} <br />
+                      - {formatDate(date, period)}</div>
+                  </DateTimeTooltip>
                   <div className="sub-value">{Number((Number(data?.amount || 0) / period).toFixed(2)).toLocaleString()} {data?.token?.symbol} will be distributed daily</div>
                 </div>
               </div>

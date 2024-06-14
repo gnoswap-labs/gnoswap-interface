@@ -3,10 +3,17 @@ import Breadcrumbs from "@components/common/breadcrumbs/Breadcrumbs";
 import useRouter from "@hooks/common/use-custom-router";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGetTokenByPath } from "@query/token";
+import { ITokenResponse } from "@repositories/token";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
+export type BreadcrumbTypes = "TOKEN_SYMBOL" | "OTHERs";
 export interface Steps {
   title: string;
   path?: string;
+  options?: {
+    type?: BreadcrumbTypes;
+    token?: ITokenResponse;
+  }
 }
 
 // const stepsDummy: Steps[] = [
@@ -28,7 +35,7 @@ const getMapping: any = (symbol: any) => {
 };
 
 interface Props {
-  listBreadcrumb?: { title: string; path: string }[];
+  listBreadcrumb?: Steps[];
   isLoading?: boolean;
   w?: string;
 }
@@ -39,11 +46,13 @@ const BreadcrumbsContainer: React.FC<Props> = ({
   w = "200px",
 }) => {
   const router = useRouter();
+  const { getGnotPath } = useGnotToGnot();
   const path = router.query["token-path"] as string;
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,
   });
+
   const removePoolSteps = useMemo(() => {
     if (listBreadcrumb) {
       return listBreadcrumb;
@@ -56,11 +65,11 @@ const BreadcrumbsContainer: React.FC<Props> = ({
       {
         title:
           getMapping(tokenB?.symbol || "")[router.pathname as any] ||
-          `${tokenB?.symbol || "BTC"}`,
+          `${getGnotPath(tokenB)?.symbol || "BTC"}`,
         path: "",
       },
     ];
-  }, [tokenB, getMapping, listBreadcrumb]);
+  }, [listBreadcrumb, tokenB?.symbol, router.pathname]);
 
   const onClickPath = (path: string) => {
     router.push(path);

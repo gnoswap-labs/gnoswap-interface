@@ -17,10 +17,14 @@ export const PoolGraphWrapper = styled.div`
     box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   }
   svg {
-    rect {
-      stroke: ${({ theme }) => theme.color.background06};
+    .bin-wrapper {
+      .bin-inner {
+        stroke: ${({ theme }) => theme.color.background06};
+      }
       &:hover {
-        opacity: 0.4;
+        .bin-inner { 
+          opacity: 0.4;
+        }
       }
     }
   }

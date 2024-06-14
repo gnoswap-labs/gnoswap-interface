@@ -1,3 +1,4 @@
+import { HTTP_5XX_ERROR } from "@constants/common.constant";
 import axios, { AxiosResponse } from "axios";
 import { NetworkClient } from "./network-client";
 import {
@@ -10,9 +11,19 @@ import {
 
 export class AxiosClient implements NetworkClient {
   private baseURL: string;
+  private serverErrorCb: () => void;
 
-  constructor(baseURL?: string) {
+  constructor(baseURL?: string, serverErrorCb?: () => void) {
     this.baseURL = baseURL || "";
+    this.serverErrorCb = serverErrorCb ?? (() => { });
+
+    axios.interceptors.response.use((res) => {
+      if (HTTP_5XX_ERROR.includes(res.status)) {
+        this.serverErrorCb?.();
+      }
+
+      return res;
+    });
   }
 
   public get = <R>(params: HttpGetRequestParam): Promise<HttpResponse<R>> => {

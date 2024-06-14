@@ -2,10 +2,10 @@ import React from "react";
 import {
   ASSET_TD_WIDTH,
   emptyArrayInit,
-  type SHAPE_TYPES,
   pulseSkeletonStyle,
   TABLE_TITLE,
   MOBILE_ASSET_TD_WIDTH,
+  TableInfoType,
 } from "@constants/skeleton.constant";
 import { cx } from "@emotion/css";
 import {
@@ -19,18 +19,7 @@ import {
 } from "@components/wallet/asset-info/AssetInfo";
 import { DEVICE_TYPE } from "@styles/media";
 
-export interface TableInfoType {
-  title: TABLE_TITLE;
-  total: number;
-  tdWidth: number[];
-  list: List[];
-}
-interface List {
-  width: number;
-  type: SHAPE_TYPES;
-  left: boolean;
-  className?: string;
-}
+
 interface TableSkeletonProps {
   info: TableInfoType;
   breakpoint?: DEVICE_TYPE;
@@ -39,7 +28,7 @@ interface TableSkeletonProps {
 
 const TableSkeleton: React.FC<TableSkeletonProps> = ({ info, breakpoint, className }) => {
 
-  const ASSET_TD = breakpoint === DEVICE_TYPE.MOBILE ? MOBILE_ASSET_TD_WIDTH: ASSET_TD_WIDTH;
+  const ASSET_TD = breakpoint === DEVICE_TYPE.MOBILE ? MOBILE_ASSET_TD_WIDTH : ASSET_TD_WIDTH;
 
   return (
     <>
@@ -52,10 +41,10 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({ info, breakpoint, classNa
                 left: item.left,
                 [item.className as string]: true,
               })}
-              tdWidth={info.tdWidth[idx]}
+              tdWidth={info.list[idx].width}
             >
               <span
-                css={pulseSkeletonStyle({ w: item.width, type: item.type })}
+                css={pulseSkeletonStyle({ w: item.skeletonWidth, type: item.type })}
               />
             </SkeletonItem>
           ))}

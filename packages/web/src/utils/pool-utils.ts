@@ -20,12 +20,12 @@ export function toMaxPriceStr(tick: number) {
   if (isMaxTick(tick)) {
     return "∞";
   }
-  return tickToPriceStr(tick, 6);
+  return tickToPriceStr(tick, { decimals: 6 });
 }
 
 export function toMinPriceStr(tick: number) {
   if (isMinTick(tick)) {
     return "0";
   }
-  return tickToPriceStr(tick, 6);
+  return tickToPriceStr(tick, { decimals: 6 });
 }

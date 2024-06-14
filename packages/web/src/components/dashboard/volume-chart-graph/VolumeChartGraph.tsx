@@ -8,6 +8,7 @@ import { DEVICE_TYPE } from "@styles/media";
 
 export interface VolumeChartGraphProps {
   datas: string[];
+  fees: string[];
   times: string[];
   xAxisLabels: string[];
 }
@@ -43,14 +44,13 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
   datas,
   xAxisLabels,
   times,
+  fees,
 }) => {
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
   const currentData = useMemo(() => datas, [datas]);
-  // const currentData = useMemo(() => [datas[0]], [datas]);
   const currentXAxisLabels = useMemo(() => xAxisLabels, [xAxisLabels]);
-  // const currentXAxisLabels = useMemo(() => [xAxisLabels[0]], [xAxisLabels]);
   const hasOnlyOneData = useMemo(() => currentData.length === 1, [currentData.length]);
 
   const countXAxis = useMemo(() => {
@@ -83,6 +83,7 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
             hoverColor={theme.color.background04}
             strokeWidth={size.width * 0.022}
             datas={currentData}
+            fees={fees}
             minGap={minGap}
             customData={{
               height: 24,

@@ -8,16 +8,14 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetPositionsByAddress } from "@query/positions";
 
 const WalletMyPositionsHeader: React.FC = () => {
-  const { account } = useWallet();
-  const {
-    data: positions = [],
-    isFetched: isFetchedPosition
-  } = useGetPositionsByAddress(
-    account?.address ?? '', {
-    isClosed: false,
-    queryOptions: { enabled: !!account?.address }
-  })
   const { isSwitchNetwork } = useWallet();
+
+  const {
+    positions,
+    isFetchedPosition: isFetchedPosition
+  } = usePositionData({
+    isClosed: false,
+  })
   if (!isFetchedPosition || isSwitchNetwork) return null;
 
   return (

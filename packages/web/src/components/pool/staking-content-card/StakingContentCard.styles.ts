@@ -97,9 +97,9 @@ export const StakingContentCardWrapper = styled.div<Props>`
         }
         .content-text {
           color: ${({ theme }) => theme.color.text04};
-          ${fonts.body12}
+          ${fonts.body11}
           ${media.mobile} {
-            ${fonts.p6}
+            ${fonts.p5}
             font-size: 11px;
           }
         }
@@ -109,9 +109,11 @@ export const StakingContentCardWrapper = styled.div<Props>`
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           ${fonts.body12}
+          font-weight: 500;
           ${media.mobile} {
             ${fonts.p6}
             font-size: 11px;
+            font-weight: 500;
           }
         }
         .tooltip-icon {
@@ -158,8 +160,8 @@ export const StakingContentCardWrapper = styled.div<Props>`
             
           }
           pointer-events: ${({ nonTotal }) => {
-            return nonTotal ? "none" : "initial";
-          }};
+    return nonTotal ? "none" : "initial";
+  }};
           &:hover {
             span {
               color: ${({ theme }) => theme.color.text07};
@@ -223,18 +225,18 @@ export const StakingContentCardWrapper = styled.div<Props>`
         gap: 8px;
       }
       .apr-text {
+        cursor: default;
         color: ${({ theme }) => theme.color.text03};
         ${fonts.body6}
+        font-weight: 600;
         ${media.tablet} {
           ${fonts.body8}
           font-size: 17px;
+          font-weight: 600;
         }
         ${media.mobile} {
           ${fonts.body12}
-        }
-        &:hover {
-          cursor: default;
-          color: ${({ theme }) => theme.color.text07};
+          font-weight: 600;
         }
       }
       .apr-gd-text {
@@ -244,12 +246,15 @@ export const StakingContentCardWrapper = styled.div<Props>`
         -webkit-text-fill-color: transparent;
         cursor: default;
         ${fonts.body6}
+        font-weight: 600;
         ${media.tablet} {
           ${fonts.body8}
           font-size: 17px;
+          font-weight: 600;
         }
         ${media.mobile} {
           ${fonts.body12}
+          font-weight: 600;
         }
       }
       .coin-info {

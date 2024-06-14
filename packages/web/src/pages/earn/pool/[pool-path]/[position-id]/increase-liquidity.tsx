@@ -10,6 +10,9 @@ import { DeviceSize } from "@styles/media";
 import useRouter from "@hooks/common/use-custom-router";
 import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
+import { getServerSideProps } from "../index";
+
+export { getServerSideProps };
 
 export default function IncreaseLiquidity() {
   const { width } = useWindowSize();
@@ -27,9 +30,8 @@ export default function IncreaseLiquidity() {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${
-                getGnotPath(data?.tokenB).symbol
-              } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol
+            } (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },

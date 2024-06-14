@@ -10,7 +10,7 @@ import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { CommonState, SwapState } from "@states/index";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSwap } from "./use-swap";
 import { TNoticeType } from "src/context/NoticeContext";
 import {
@@ -95,12 +95,19 @@ export const useSwapHandler = () => {
   } = swapValue;
 
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
-  const [tokenAAmount, setTokenAAmount] = useState<string>(
-    defaultTokenAAmount ?? "",
+  const [tokenAAmount = "", setTokenAAmount] = useState(
+    defaultTokenAAmount ?? undefined,
   );
-  const [tokenBAmount, setTokenBAmount] = useState<string>(
-    !defaultTokenAAmount && defaultTokenBAmount ? defaultTokenBAmount : "",
+  const estimateFlagRef = useRef(0);
+
+  const [tokenBAmount = "", setTokenBAmount] = useState(() =>
+    !defaultTokenAAmount
+      ? defaultTokenBAmount
+        ? defaultTokenBAmount
+        : undefined
+      : undefined,
   );
+
   const [submitted, setSubmitted] = useState(false);
 
   const [copied, setCopied] = useState(false);
@@ -351,7 +358,6 @@ export const useSwapHandler = () => {
         gasFeeUSD: BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber(),
         swapRateAction,
         swapRate1USD,
-        direction: type,
       };
     }
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
@@ -374,9 +380,12 @@ export const useSwapHandler = () => {
       type === "EXACT_IN"
         ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
         : BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
-    const priceImpactNum = tokenAUSDAmount !== 0 ? BigNumber(tokenBUSDAmount - tokenAUSDAmount)
-      .multipliedBy(100)
-      .dividedBy(tokenAUSDAmount) : BigNumber(0);
+    const priceImpactNum =
+      tokenAUSDAmount !== 0
+        ? BigNumber(tokenBUSDAmount - tokenAUSDAmount)
+            .multipliedBy(100)
+            .dividedBy(tokenAUSDAmount)
+        : BigNumber(0);
     const priceImpact = priceImpactNum.isGreaterThan(100)
       ? 100
       : Number(priceImpactNum.toFixed(2));
@@ -409,7 +418,7 @@ export const useSwapHandler = () => {
     gasFeeAmount,
     tokenAmountLimit,
     swapRateAction,
-    type
+    type,
   ]);
 
   const isAvailSwap = useMemo(() => {
@@ -508,7 +517,7 @@ export const useSwapHandler = () => {
 
   const changeTokenBAmount = useCallback(
     (changed: string, none?: boolean) => {
-      const value = handleAmount(changed, tokenA);
+      const value = handleAmount(changed, tokenB);
 
       if (none) {
         setIsLoading(false);
@@ -782,19 +791,26 @@ export const useSwapHandler = () => {
     updateTokens();
     updateTokenPrices();
     if (!isEmptyObject(router?.query)) return;
-    setTokenAAmount("");
-    setTokenBAmount("");
   }, []);
 
   useEffect(() => {
     if (!tokenA?.symbol || !tokenB?.symbol) {
       return;
     }
+    if (estimateFlagRef.current === 0) {
+      if (!!defaultTokenAAmount) {
+        estimateFlagRef.current += 1;
+        changeTokenAAmount(defaultTokenAAmount);
+        return;
+      }
+      if (!!defaultTokenBAmount) {
+        estimateFlagRef.current += 1;
+        changeTokenBAmount(defaultTokenBAmount);
+        return;
+      }
+    }
 
-    if (
-      (defaultTokenAAmount || defaultTokenBAmount) &&
-      (!!Number(tokenAAmount) || !!Number(tokenBAmount))
-    ) {
+    if (!!Number(tokenAAmount) || !!Number(tokenBAmount)) {
       setIsLoading(true);
     }
   }, [

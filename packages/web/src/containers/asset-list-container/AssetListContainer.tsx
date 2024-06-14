@@ -18,7 +18,7 @@ import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
 import { toPriceFormat } from "@utils/number-utils";
-import { useGetPositionsByAddress } from "@query/positions";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -157,11 +157,9 @@ const AssetListContainer: React.FC = () => {
     refetchInterval: 60 * 1000,
   });
   const {
-    isLoading: loadingPositions,
-  } = useGetPositionsByAddress(
-    account?.address ?? "", {
+    loading: loadingPositions,
+  } = usePositionData({
     isClosed: false,
-    queryOptions: { enabled: !!account?.address }
   });
 
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
@@ -239,7 +237,7 @@ const AssetListContainer: React.FC = () => {
             ? "-"
             : checkPrice
               ? "<$0.01"
-              : toPriceFormat(price, { isFormat: false }),
+              : toPriceFormat(price, { isKMBFormat: false }),
           balance: isSwitchNetwork
             ? "0"
             : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),

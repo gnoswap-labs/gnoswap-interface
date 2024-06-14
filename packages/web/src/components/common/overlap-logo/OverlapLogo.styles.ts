@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -25,4 +26,8 @@ export const OverlapLogoImageWrapper = styled.div<OverlapLogoImageProps>`
     height: ${({ size }) => `${size}px`};
     border-radius: 50%;
   }
+`;
+
+export const TokenSymbolWrapper = styled.div`
+  ${fonts.p1}
 `;

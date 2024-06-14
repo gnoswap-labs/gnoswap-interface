@@ -36,81 +36,68 @@ export function ExchangeRateGraphContent({
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
 
+  const sortedRawDataByType = useMemo(() => {
+    const data = poolData.priceRatio;
+    let result = [];
+
+    switch (selectedScope) {
+      case "30D":
+        result = data?.["30d"];
+        break;
+      case "ALL":
+        result = data?.all;
+        break;
+      case "7D":
+      default:
+        result = data?.["7d"];
+        break;
+    }
+
+    return (result ?? [])?.sort((a, b) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+  }, [poolData.priceRatio, selectedScope]);
 
   const dataMemo = useMemo(() => {
-    const data = poolData.priceRatio;
+    const lastTime = sortedRawDataByType.length >= 1 ? new Date(sortedRawDataByType[sortedRawDataByType.length - 1]?.date) : undefined;
+    const last2Time = sortedRawDataByType.length >= 2 ? new Date(sortedRawDataByType[sortedRawDataByType.length - 2]?.date) : undefined;
+    const latestTimeGap = (() => {
+      if (lastTime && last2Time) return lastTime.getTime() - last2Time.getTime();
+    })();
 
-    const getCurrentData = () => {
-      switch (selectedScope) {
-        case "30D":
-          return data?.["30d"];
-        case "ALL":
-          return data?.all;
-        case "7D":
-        default:
-          return data?.["7d"];
+    const fakeLastTime = (() => {
+      if (lastTime && latestTimeGap) return new Date(lastTime.getTime() + latestTimeGap);
+
+      return new Date();
+    })();
+
+    const dataByType = [
+      ...sortedRawDataByType,
+      {
+        date: fakeLastTime.toString(),
+        ratio: poolData.price,
       }
-    };
+    ];
 
-    const dataByType = getCurrentData();
+    return dataByType?.map((item, index) => {
+      const value = (() => {
+        if (!item.ratio || item.ratio === "0") return "0";
 
-    return dataByType
-      ?.map(item => ({
-        time: item.date,
-        value: item.ratio,
-      }))
-      .sort((a, b) => {
-        return new Date(b.time).getTime() - new Date(a.time).getTime();
-      })
-      .reduce((pre: any, next: any) => {
-        const value = (() => {
-          if (!next.value || next.value === 0) return 0;
+        if (index === dataByType.length - 1) return item.ratio.toString();
 
-          if (isReversed) return (1 / Number(next.value)).toString();
+        return isReversed ? (1 / Number(item.ratio)).toString() : item.ratio.toString();
+      })();
 
-          return next.value;
-        })();
-
-        return [
-          ...pre,
-          {
-            value: value,
-            time: getLocalizeTime(next.time),
-          },
-        ];
-      }, []);
-  }, [isReversed, poolData.priceRatio, selectedScope]);
+      return {
+        value: value,
+        time: getLocalizeTime(item.date),
+      };
+    });
+  }, [isReversed, poolData.price, sortedRawDataByType]);
 
   const xAxisLabels = useMemo(() => {
-    const data = poolData.priceRatio;
-
-    const getCurrentData = () => {
-      switch (selectedScope) {
-        case "30D":
-          return data?.["30d"];
-        case "ALL":
-          return data?.["all"];
-        case "7D":
-        default:
-          return data?.["7d"];
-      }
-    };
-
-    const dataByType = getCurrentData();
-
-    return dataByType
-      ?.map(item => ({
-        time: item.date,
-        value: item.ratio.toString(),
-      }))
-      .sort((a, b) => {
-        return new Date(b.time).getTime() - new Date(a.time).getTime();
-      })
-      .reduce((pre: any, next: any) => {
-        const time = parseDate(next.time);
-        return [...pre, time];
-      }, []);
-  }, [poolData.priceRatio, selectedScope]);
+    return sortedRawDataByType?.map(item => parseDate(item.date));
+  }, [sortedRawDataByType]);
 
 
   const hasSingleData = useMemo(() => dataMemo?.length === 1, [dataMemo]);
@@ -131,7 +118,7 @@ export function ExchangeRateGraphContent({
 
     return Array.from({ length: countXAxis }, (_, index) =>
       Math.floor(spacing * index),
-    ).reverse();
+    );
   }, [countXAxis, hasSingleData, xAxisLabels]);
 
   return (

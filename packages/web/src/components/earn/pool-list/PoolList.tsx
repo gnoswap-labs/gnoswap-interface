@@ -1,7 +1,5 @@
 // TODO : remove eslint-disable after work
-/* eslint-disable */
 import {
-  Pool,
   POOL_TYPE,
   PoolSortOption,
   TABLE_HEAD,

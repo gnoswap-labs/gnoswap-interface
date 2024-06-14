@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import IncreaseLiquidity from "@components/increase/increase-liquidity/IncreaseLiquidity";
 import { useIncreaseHandle } from "@hooks/increase/use-increase-handle";
 import { useIncreasePositionModal } from "@hooks/increase/use-increase-position-modal";
@@ -23,7 +23,6 @@ const IncreaseLiquidityContainer: React.FC = () => {
     slippage,
     changeSlippage,
     buttonType,
-    selectPool,
     isDepositTokenA,
     isDepositTokenB,
     loading,
@@ -42,18 +41,6 @@ const IncreaseLiquidityContainer: React.FC = () => {
     isDepositTokenA,
     isDepositTokenB,
   });
-
-  useEffect(() => {
-    if (selectPool.feeTier && fee && minPriceStr && maxPriceStr) {
-      selectPool.resetRange();
-      selectPool.setMinPosition(Number(minPriceStr));
-      selectPool.setMaxPosition(Number(maxPriceStr));
-    }
-  }, [fee, minPriceStr, maxPriceStr, selectPool.feeTier]);
-
-  const onSubmit = () => {
-    openModal();
-  };
 
   if (!tokenA || !tokenB || loading) return <IncreaseLiquidityLoading />;
 
@@ -77,7 +64,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
       slippage={slippage}
       changeSlippage={changeSlippage}
       buttonType={buttonType}
-      onSubmit={onSubmit}
+      onSubmit={openModal}
     />
   );
 };

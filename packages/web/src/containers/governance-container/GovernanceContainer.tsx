@@ -1,6 +1,4 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
-import React, { useState } from "react";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import GovernanceSummary from "@components/governance/governance-summary/GovernanceSummary";
 

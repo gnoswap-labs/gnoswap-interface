@@ -116,7 +116,10 @@ const OneClickStaking: React.FC<Props> = ({
   const rewardTokens = useMemo(() => {
     return [
       ...new Set(
-        pool?.rewardTokens?.map(item => getGnotPath(item).logoURI) || [],
+        pool?.rewardTokens?.map(item => ({
+          src: getGnotPath(item).logoURI,
+          tooltipContent: item.symbol
+        })) || [],
       ),
     ];
   }, [pool.rewardTokens]);

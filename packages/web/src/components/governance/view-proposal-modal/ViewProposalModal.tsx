@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
@@ -117,9 +116,8 @@ const BoxQuorum = ({
         {optionVote === "NO" && showBadge}
       </div>
       <div
-        className={`box-quorum ${
-          optionVote === "ABSTAIN" ? "active-quorum" : ""
-        }`}
+        className={`box-quorum ${optionVote === "ABSTAIN" ? "active-quorum" : ""
+          }`}
         onClick={() => setOptionVote("ABSTAIN")}
       >
         <span>Abstain</span>
@@ -202,7 +200,7 @@ const ViewProposalModal: React.FC<Props> = ({
 
   const handleSelectVoting = useCallback(() => {
     handleSelectVote();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [optionVote, handleSelectVote]);
 
   const disableButton = useMemo(() => {
@@ -225,8 +223,8 @@ const ViewProposalModal: React.FC<Props> = ({
     return proposalDetail.typeVote
       ? "Already Vote"
       : optionVote === ""
-      ? "Select Voting Option"
-      : "Vote";
+        ? "Select Voting Option"
+        : "Vote";
   }, [isConnected, isSwitchNetwork, proposalDetail, optionVote]);
 
   if (!proposalDetail) return null;
@@ -266,9 +264,8 @@ const ViewProposalModal: React.FC<Props> = ({
                 {MAPPING_STATUS[proposalDetail.status]}
                 <div className="status time">
                   <IconOutlineClock className="status-icon" />{" "}
-                  {`Voting ${
-                    proposalDetail.status === "ACTIVE" ? "Ends in" : "Ended1"
-                  } ${dayjs(proposalDetail.timeEnd).fromNow()} `}
+                  {`Voting ${proposalDetail.status === "ACTIVE" ? "Ends in" : "Ended1"
+                    } ${dayjs(proposalDetail.timeEnd).fromNow()} `}
                   <br />
                   {proposalDetail.timeEnd}
                 </div>
@@ -285,14 +282,12 @@ const ViewProposalModal: React.FC<Props> = ({
               <ProgressWrapper>
                 <ProgressBar
                   rateWidth={`${proposalDetail.yesOfQuorum}%`}
-                  abstainOfQuorumWidth={`${
-                    proposalDetail.abstainOfQuorum +
+                  abstainOfQuorumWidth={`${proposalDetail.abstainOfQuorum +
                     proposalDetail.yesOfQuorum +
                     proposalDetail.noOfQuorum
-                  }%`}
-                  noOfQuorumWidth={`${
-                    proposalDetail.noOfQuorum + proposalDetail.yesOfQuorum
-                  }%`}
+                    }%`}
+                  noOfQuorumWidth={`${proposalDetail.noOfQuorum + proposalDetail.yesOfQuorum
+                    }%`}
                 >
                   <FloatingTooltip
                     className="float-progress"

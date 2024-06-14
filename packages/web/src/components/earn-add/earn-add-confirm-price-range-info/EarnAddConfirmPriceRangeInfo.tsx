@@ -4,9 +4,10 @@ import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { EarnAddConfirmPriceRangeInfoSection, EarnAddConfirmPriceRangeInfoWrapper, ToolTipContentWrapper } from "./EarnAddConfirmPriceRangeInfo.styles";
-import { numberToFormat, numberToRate } from "@utils/string-utils";
+import { numberToRate } from "@utils/string-utils";
 import { EarnAddConfirmAmountInfoProps } from "../earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
 import IconSwap from "@components/common/icons/IconSwap";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 export interface EarnAddConfirmPriceRangeInfoProps extends EarnAddConfirmAmountInfoProps {
   currentPrice: string;
@@ -39,9 +40,15 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
 
     const currentPriceStr = useMemo(() => {
       if (!swap) {
-        return `1 ${tokenA.info.symbol} = ${numberToFormat(currentPrice, { decimals: 4 })} ${tokenB.info.symbol}`;
+        return `1 ${tokenA.info.symbol} = ${formatTokenExchangeRate(currentPrice, {
+          maxSignificantDigits: 6,
+          minLimit: 0.000001
+        })} ${tokenB.info.symbol}`;
       }
-      return `1 ${tokenB.info.symbol} = ${numberToFormat(1 / Number(currentPrice), { decimals: 4 })} ${tokenA.info.symbol}`;
+      return `1 ${tokenB.info.symbol} = ${formatTokenExchangeRate(1 / Number(currentPrice), {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001
+      })} ${tokenA.info.symbol}`;
     }, [currentPrice, tokenA.info.symbol, tokenB.info.symbol, swap]);
 
     const rangeStatus = useMemo(() => {

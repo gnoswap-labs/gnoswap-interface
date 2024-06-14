@@ -11,16 +11,55 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { useLoading } from "@hooks/common/use-loading";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { PoolModel } from "@models/pool/pool-model";
+import { encryptId } from "@utils/common";
 
-export default function Pool() {
+export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async () => {
+  // export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async (context) => {
+  // const poolPath = (context.query["pool-path"] || "") as string;
+
+  // const res = await fetch(API_URL + "/pools/" + encodeURIComponent(encryptId(poolPath)));
+
+  // if (HTTP_5XX_ERROR.includes(res.status)) {
+  //   return {
+  //     redirect: {
+  //       destination: "/500",
+  //       permanent: false
+  //     }
+  //   };
+  // }
+
+  // if (res.status === 404) {
+  //   return { notFound: true };
+  // }
+
+  // if (res.status === 200) {
+  //   const poolRes = (await res.json()).data as PoolResponse;
+
+  //   return {
+  //     props: {
+  //       pool: PoolMapper.fromResponse(poolRes)
+  //     }
+  //   };
+  // }
+
+  return { props: {} };
+});
+
+export default function Pool({ pool }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const { account } = useWallet();
-  const poolPath = router.query["pool-path"] || "";
-  const { data = null } = useGetPoolDetailByPath(poolPath as string, {
+  const poolPath = (router.query["pool-path"] || "") as string;
+  const { data = pool } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
+    initialData: pool,
+    onError: (err: any) => {
+      if (err["response"]["status"] === 404) {
+        router.push("/404");
+      }
+    }
   });
-  const { isLoading: isLoadingCommon } = useLoading();
 
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
@@ -34,15 +73,24 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { isFetchedPosition, loading, getPositionsByPoolId, positions } =
-    usePositionData({ address });
+
+  const {
+    isFetchedPosition,
+    loading,
+    positions,
+  } = usePositionData({
+    address,
+    poolPath: encryptId(poolPath),
+    queryOption: {
+      enabled: !!poolPath,
+    }
+  });
 
   const isStaking = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {
       return true;
     }
-    const temp = getPositionsByPoolId(poolPath as string);
-    const stakedPositions = temp.filter(position => position.staked);
+    const stakedPositions = positions.filter(position => position.staked);
     if (stakedPositions.length > 0) {
       return true;
     }
@@ -50,18 +98,17 @@ export default function Pool() {
       return true;
     }
     return false;
-  }, [data?.incentiveType, poolPath]);
+  }, [data?.incentiveType, positions]);
 
   useEffect(() => {
     if (
       hash === "staking"
       && !loading
-      && !isLoadingCommon
       && isFetchedPosition
       && isStaking
     ) {
-      const positionContainerElement = document.getElementById("staking-container");
-      const topPosition = positionContainerElement?.getBoundingClientRect().top;
+      const positionContainerElement = document.getElementById("staking");
+      const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
         return;
       }
@@ -70,38 +117,49 @@ export default function Pool() {
       });
       return;
     }
-    if (address && isFetchedPosition && !loading) {
-      if (hash) {
-        const positionContainerElement = document.getElementById(`${hash}`);
-        const topPosition =
-          positionContainerElement?.getBoundingClientRect().top;
-        if (!topPosition) {
-          return;
-        }
-        window.scrollTo({
-          top: topPosition,
+
+    if (
+      address &&
+      isFetchedPosition &&
+      !loading &&
+      poolPath
+    ) {
+      if (hash && hash !== "staking") {
+        setTimeout(() => {
+          const positionContainerElement = document.getElementById(`${hash}`);
+          const topPosition =
+            positionContainerElement?.offsetTop;
+          if (!topPosition) {
+            return;
+          }
+          window.scrollTo({
+            top: topPosition,
+          });
         });
-      } else {
+        return;
+      }
+
+      setTimeout(() => {
         const positionContainerElement =
           document.getElementById("liquidity-wrapper");
         const topPosition =
-          positionContainerElement?.getBoundingClientRect().top;
+          positionContainerElement?.offsetTop;
         if (!topPosition) {
           return;
         }
         window.scrollTo({
           top: topPosition,
         });
-      }
+      });
     }
   }, [
     isFetchedPosition,
     hash,
     address,
     loading,
-    isLoadingCommon,
     positions.length,
     isStaking,
+    poolPath,
   ]);
 
   return (

@@ -93,7 +93,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
     if (connected && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0)
-        .toFormat();
+        .toFormat(2);
     }
     return "-";
   }, [connected, swapTokenInfo.tokenABalance]);
@@ -102,7 +102,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
     if (connected && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0)
-        .toFormat();
+        .toFormat(2);
     }
     return "-";
   }, [connected, swapTokenInfo.tokenBBalance]);

@@ -16,7 +16,7 @@ import {
   arrow,
   flip,
 } from "@floating-ui/react";
-import { Content } from "./Tooltip.styles";
+import { BaseTooltipWrapper, Content } from "./Tooltip.styles";
 import { useTheme } from "@emotion/react";
 import { Z_INDEX } from "@styles/zIndex";
 import { useAtomValue } from "jotai";
@@ -92,16 +92,17 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
 
   return (
     <>
-      <div
+      <BaseTooltipWrapper
         ref={childrenRef}
         data-state={open ? "open" : "closed"}
         style={{
           display: "flex",
           width: width && width,
         }}
+        className="base-tooltip-wrapper"
       >
         {children}
-      </div>
+      </BaseTooltipWrapper>
       <FloatingPortal>
         {open && (
           <div

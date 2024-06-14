@@ -120,10 +120,12 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: `${toPriceFormat(item.tokenPrice, {
+        price: toPriceFormat(
+          item.tokenPrice, {
           usd: true,
           isRounding: false,
-        })}`,
+          fixedLessThan1Significant: 3,
+        }),
         change: {
           status:
             Number(priceChange) >= 0
@@ -150,10 +152,12 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: `${toPriceFormat(item.tokenPrice, {
+        price: toPriceFormat(
+          item.tokenPrice, {
           usd: true,
           isRounding: false,
-        })}`,
+          fixedLessThan1Significant: 3,
+        }),
         change: {
           status:
             Number(priceChange) >= 0

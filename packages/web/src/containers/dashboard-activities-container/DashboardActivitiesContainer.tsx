@@ -182,7 +182,7 @@ const DashboardActivitiesContainer: React.FC = () => {
 
   return (
     <ActivityList
-      activities={(activities ?? []).slice(0, 30).map(x => formatActivity(x))}
+      activities={(activities.filter(item => Number(item.tokenAAmount) || Number(item.tokenBAmount)) ?? []).slice(0, 30).map(x => formatActivity(x))}
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

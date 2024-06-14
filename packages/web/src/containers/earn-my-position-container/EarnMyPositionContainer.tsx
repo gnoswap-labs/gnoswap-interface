@@ -17,7 +17,6 @@ import { ValuesType } from "utility-types";
 import { useAtom, useAtomValue } from "jotai";
 import { EarnState, ThemeState } from "@states/index";
 import { useGetUsernameByAddress } from "@query/address/queries";
-import { useLoading } from "@hooks/common/use-loading";
 import { PositionModel } from "@models/position/position-model";
 
 export const POSITION_CONTENT_LABEL = {
@@ -63,7 +62,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(
     EarnState.isViewMorePositions,
   );
-  const { isLoading: isLoadingCommon } = useLoading();
 
   const themeKey = useAtomValue(ThemeState.themeKey);
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -205,7 +203,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       connect={connect}
       loading={
         isLoadingPool ||
-        isLoadingCommon ||
         (connected ? isLoadingPosition || !isFetchedPosition : false)
       }
       fetched={isFetchedPools && isFetchedPosition}

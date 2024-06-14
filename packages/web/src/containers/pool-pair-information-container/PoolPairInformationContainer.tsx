@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 import PoolPairInformation from "@components/pool/pool-pair-information/PoolPairInformation";
 import { makeSwapFeeTier } from "@utils/swap-utils";
@@ -6,10 +6,8 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { useLoading } from "@hooks/common/use-loading";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { encryptId } from "@utils/common";
 
 export interface pathProps {
   title: string;
@@ -85,15 +83,16 @@ const PoolPairInformationContainer: React.FC<
 > = ({ address }) => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
-  const poolPath = router.query["pool-path"] || "";
+  const poolPath = (router.query["pool-path"] || "") as string;
   const { data = initialPool as PoolDetailModel, isLoading: loading } =
     useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-  const { isLoading: isLoadingCommon } = useLoading();
-  const [, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData({
+  const { loading: loadingPosition } = usePositionData({
     address,
+    poolPath: encryptId(poolPath),
+    queryOption: {
+      enabled: !!poolPath,
+    }
   });
-  const { connected: connectedWallet, account } = useWallet();
   const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(
     poolPath as string,
     40,
@@ -101,19 +100,6 @@ const PoolPairInformationContainer: React.FC<
       enabled: !!poolPath,
     },
   );
-  useEffect(() => {
-    const poolPath = router.query["pool-path"] as string;
-    if (!poolPath) {
-      return;
-    }
-    if (!connectedWallet) {
-      return;
-    }
-    if (account?.address) {
-      const temp = getPositionsByPoolId(poolPath);
-      setPositions(temp);
-    }
-  }, [account?.address, router.query, connectedWallet]);
 
   const onClickPath = (path: string) => {
     router.push(path);
@@ -152,9 +138,9 @@ const PoolPairInformationContainer: React.FC<
       menu={menu}
       onClickPath={onClickPath}
       feeStr={feeStr}
-      loading={loading || isLoadingCommon || loadingPosition}
+      loading={loading || loadingPosition}
       loadingBins={
-        loading || isLoadingCommon || loadingPosition || isLoadingBins
+        loading || loadingPosition || isLoadingBins
       }
       poolBins={bins}
     />

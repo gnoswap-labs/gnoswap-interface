@@ -1,12 +1,5 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 
-import {
-  MOBILE_POSITION_HISTORY_TD_WIDTH,
-  POSITION_HISTORY_TD_WIDTH,
-  TABLET_POSITION_HISTORY_TD_WIDTH,
-} from "@constants/skeleton.constant";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import React from "react";
@@ -15,14 +8,13 @@ import {
   IconButton,
   PositionInfoWrapper,
   TableColumn,
-  TableColumnTooltipContent,
 } from "./PositionInfo.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
-import { prettyNumber, prettyNumberFloatInteger } from "@utils/number-utils";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import { getDateUtcToLocal } from "@common/utils/date-util";
+import { prettyNumber } from "@utils/number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
+import { MOBILE_POSITION_HISTORY_INFO, POSITION_HISTORY_INFO, TABLET_POSITION_HISTORY_INFO } from "@constants/skeleton.constant";
+import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 
 dayjs.extend(relativeTime);
 
@@ -42,30 +34,22 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
   tokenBSymbol,
 }) => {
   const { time, type, usdValue, amountA, amountB, txHash } = item;
-  const td =
+  const tableInfo =
     breakpoint === DEVICE_TYPE.MOBILE
-      ? MOBILE_POSITION_HISTORY_TD_WIDTH
+      ? MOBILE_POSITION_HISTORY_INFO
       : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
-        ? TABLET_POSITION_HISTORY_TD_WIDTH
-        : POSITION_HISTORY_TD_WIDTH;
-  const timeFormat = getDateUtcToLocal(time);
+        ? TABLET_POSITION_HISTORY_INFO
+        : POSITION_HISTORY_INFO;
 
   return (
     <PositionInfoWrapper key={key}>
       <HoverSection>
-        <TableColumn className="left" tdWidth={td[0]}>
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <TableColumnTooltipContent>
-                {`${timeFormat.value} (UTC+${timeFormat.offsetHours})`}
-              </TableColumnTooltipContent>
-            }
-          >
+        <TableColumn className="left" tdWidth={tableInfo.list[0].width}>
+          <DateTimeTooltip date={time}>
             <span className="token-index">{dayjs(time).fromNow()}</span>
-          </Tooltip>
+          </DateTimeTooltip>
         </TableColumn>
-        <TableColumn className="left" tdWidth={td[1]}>
+        <TableColumn className="left" tdWidth={tableInfo.list[1].width}>
           <span className="position-index">
             {type}
             <IconButton
@@ -77,13 +61,13 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
             </IconButton>
           </span>
         </TableColumn>
-        <TableColumn className="right" tdWidth={td[2]}>
+        <TableColumn className="right" tdWidth={tableInfo.list[2].width}>
           <span className="position-index">{Number(item.usdValue) < 0.01 && Number(usdValue) ? "<$0.01" : `$${prettyNumber(item.usdValue)}`}</span>
         </TableColumn>
-        <TableColumn className="right" tdWidth={td[3]}>
+        <TableColumn className="right" tdWidth={tableInfo.list[3].width}>
           <span className="position-index">{`${convertToKMB(amountA.toString())} ${tokenASymbol}`}</span>
         </TableColumn>
-        <TableColumn className="right" tdWidth={td[4]}>
+        <TableColumn className="right" tdWidth={tableInfo.list[4].width}>
           <span className="position-index">{`${convertToKMB(amountB.toString())} ${tokenBSymbol}`}</span>
         </TableColumn>
       </HoverSection>
