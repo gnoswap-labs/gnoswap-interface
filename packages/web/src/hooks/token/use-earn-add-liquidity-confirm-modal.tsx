@@ -210,7 +210,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       return {
         currentPrice,
         inRange: true,
-        minPrice: "0.0000",
+        minPrice: "0",
         maxPrice: "∞",
         priceLabelMin: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,
         priceLabelMax: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,

@@ -3,7 +3,6 @@ import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { isNumber } from "./number-utils";
 import { tickToPrice, tickToPriceStr } from "./swap-utils";
-import { roundDownDecimalNumber } from "./regex";
 
 /**
  * Shortens an address by N characters.
@@ -89,7 +88,9 @@ export function numberToRate(
   }
 
   if (!isRounding) {
-    return `${numBN.toFixed(decimal + 1).match(roundDownDecimalNumber(1))?.toString()}%`;
+    const temp = numBN.toFormat(decimal + 1);
+
+    return `${temp.substring(0, temp.length - 1)}%`;
   }
 
   return `${numBN.toFormat(decimal)}%`;

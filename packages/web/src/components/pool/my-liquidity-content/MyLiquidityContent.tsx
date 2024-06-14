@@ -13,13 +13,14 @@ import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
 import { numberToFormat } from "@utils/string-utils";
 import { toPriceFormat, toUnitFormat } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { TokenModel } from "@models/token/token-model";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -354,18 +355,23 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
   const logoDaily = useMemo(() => {
     const temp = claimableRewardInfo?.SWAP_FEE;
-    return temp?.map(item => ({ src: getGnotPath(item.token).logoURI })) || [];
+    return temp?.map(item => item.token) || [];
   }, [claimableRewardInfo?.SWAP_FEE, getGnotPath]);
 
   const logoReward = useMemo(() => {
-    const temp = claimableRewardInfo?.INTERNAL;
+    const temp = claimableRewardInfo?.INTERNAL.map(item => item.token) ?? [];
     const rewardTokens = positionData?.rewardTokens || [];
-    const rewardLogo = rewardTokens?.map(item => (getGnotPath(item).logoURI)) || [];
-    return [...new Set([
-      ...rewardLogo,
-      ...temp?.map(item => (getGnotPath(item.token).logoURI)) || []
-    ])].map(item => ({ src: item }));
+    const tokenList = [...temp, ...rewardTokens];
+    return tokenList.reduce((acc: TokenModel[], current) => {
+      const currentExist = acc.find(item => item.path === current.path);
+
+      return [
+        ...acc,
+        ...(currentExist ? [current] : []),
+      ];
+    }, []);
   }, [claimableRewardInfo, getGnotPath, positionData]);
+  console.log("🚀 ~ logoReward ~ logoReward:", logoReward);
 
   const rewardDaily = useMemo(() => {
     const temp = [...(aprRewardInfo?.INTERNAL ?? []), ...(aprRewardInfo?.EXTERNAL ?? [])];
@@ -479,8 +485,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           <div className="total-daily">
             <div className="content-wrap">
               <span>Fees</span>
-              {breakpoint === DEVICE_TYPE.WEB && <OverlapLogo
-                logos={logoDaily}
+              {breakpoint === DEVICE_TYPE.WEB && <OverlapTokenLogo
+                tokens={logoDaily}
                 size={20}
               />}
               <span className="apr-value">{feeDaily}</span>
@@ -488,8 +494,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <div className="divider"></div>
             <div className="content-wrap content-reward">
               <span>Rewards</span>
-              {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && <OverlapLogo
-                logos={logoReward}
+              {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && <OverlapTokenLogo
+                tokens={logoReward}
                 size={20}
               />}
               <span className="apr-value">{rewardDaily}</span>
@@ -618,8 +624,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               <div className="total-daily">
                 <div className="content-wrap">
                   <span>Fees</span>
-                  {breakpoint === DEVICE_TYPE.WEB && <OverlapLogo
-                    logos={logoDaily}
+                  {breakpoint === DEVICE_TYPE.WEB && <OverlapTokenLogo
+                    tokens={logoDaily}
                     size={20}
                   />}
                   <span className="apr-value">{feeClaim}</span>
@@ -627,8 +633,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 <div className="divider"></div>
                 <div className="content-wrap content-reward">
                   <span>Rewards</span>
-                  {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && <OverlapLogo
-                    logos={logoReward}
+                  {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && <OverlapTokenLogo
+                    tokens={logoReward}
                     size={20}
                   />}
                   <span className="apr-value">{rewardClaim}</span>

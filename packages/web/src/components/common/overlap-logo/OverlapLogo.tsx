@@ -18,7 +18,6 @@ const OverlapLogo = ({ logos, size = 36 }: OverlapLogoProps) => {
           key={`${index}${logo.src}`}
           placement="top"
           FloatingContent={logo.tooltipContent ? <TokenSymbolWrapper>{logo.tooltipContent}</TokenSymbolWrapper> : undefined}
-          floatClassName="token-logo-tooltip"
         >
           <OverlapLogoImageWrapper
             overlap={index > 0 ? (size / 3) : 0}
