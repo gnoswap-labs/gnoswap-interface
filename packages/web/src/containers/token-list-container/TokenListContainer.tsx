@@ -314,6 +314,7 @@ const TokenListContainer: React.FC = () => {
             usdFormat, {
             usd: true,
             isRounding: false,
+            fixedLessThan1Significant: 3,
           }),
           priceOf1d: {
             status: dataToday.status,

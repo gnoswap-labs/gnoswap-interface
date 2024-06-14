@@ -138,9 +138,10 @@ export const toPriceFormat = (
     isRounding = true,
     lestThan1Decimals = 3,
     greaterThan1Decimals = 2,
-    forcedDecimals = false,
     forcedGreaterThan1Decimals = true,
     minLimit,
+    fixedLessThan1Decimal,
+    fixedLessThan1Significant,
   }: {
     usd?: boolean,
     isKMBFormat?: boolean,
@@ -150,6 +151,8 @@ export const toPriceFormat = (
     forcedDecimals?: boolean;
     minLimit?: number;
     forcedGreaterThan1Decimals?: boolean;
+    fixedLessThan1Decimal?: number;
+    fixedLessThan1Significant?: number;
   } = {}
 ): string => {
   if (!isNumber(value)) {
@@ -196,19 +199,28 @@ export const toPriceFormat = (
 
   const negativeSignLength = bigNumber.isLessThan(0) ? 1 : 0;
   if (Number(bigNumber) < 1) {
-    const finalLestThan1Decimals = lestThan1Decimals + negativeSignLength;
+    const finalLestThan1Decimals = lestThan1Decimals;
 
     if (!isRounding) {
       const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
-        maximumSignificantDigits: finalLestThan1Decimals + 1,
-        minimumSignificantDigits: finalLestThan1Decimals + 1,
+        maximumFractionDigits: fixedLessThan1Decimal ? (fixedLessThan1Decimal + 1) : undefined,
+        minimumFractionDigits: fixedLessThan1Decimal ? (fixedLessThan1Decimal + 1) : undefined,
+        minimumSignificantDigits: (!fixedLessThan1Decimal && fixedLessThan1Significant) ? finalLestThan1Decimals + 1 : undefined,
+        maximumSignificantDigits: !fixedLessThan1Decimal ? finalLestThan1Decimals + 1 : undefined
       });
-      return negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
+      const [, decimalPart] = tempNum.split(".");
+      const significantNumberLength = Number(decimalPart).toString().length;
+
+      if (decimalPart?.length > finalLestThan1Decimals && significantNumberLength > finalLestThan1Decimals) {
+        return negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
+      }
     }
 
     return negativeSign + prefix + bigNumber.toNumber().toLocaleString("en-US", {
-      maximumSignificantDigits: finalLestThan1Decimals,
-      minimumFractionDigits: forcedDecimals ? finalLestThan1Decimals : undefined
+      maximumFractionDigits: fixedLessThan1Decimal ? (fixedLessThan1Decimal) : undefined,
+      minimumFractionDigits: fixedLessThan1Decimal ? (fixedLessThan1Decimal) : undefined,
+      minimumSignificantDigits: (!fixedLessThan1Decimal && fixedLessThan1Significant) ? finalLestThan1Decimals : undefined,
+      maximumSignificantDigits: !fixedLessThan1Decimal ? finalLestThan1Decimals : undefined
     });
   }
 
@@ -220,7 +232,7 @@ export const toPriceFormat = (
   });
   const [, decimalPart] = tempNum.split(".");
 
-  if (!isRounding && !bigNumber.isInteger() && decimalPart?.length >= 3) {
+  if (!isRounding && !bigNumber.isInteger() && decimalPart?.length >= finalGreaterThan1Decimals) {
     return negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
   }
 

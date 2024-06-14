@@ -44,13 +44,15 @@ export const formatTokenExchangeRate = (
     forcedIntegerDecimals = 0,
     maxSignificantDigits = 5,
     isInfinite = false,
-    minLimit
+    minLimit,
+    fixedDecimalDigits,
   }: {
     isIgnoreKFormat?: boolean;
     forcedIntegerDecimals?: number;
     maxSignificantDigits?: number;
     minLimit?: number;
     isInfinite?: boolean;
+    fixedDecimalDigits?: number;
   } = {}
 ) => {
   const inputAsNumber = Number(inputNumber.toString().replace(/,/g, ""));
@@ -67,9 +69,17 @@ export const formatTokenExchangeRate = (
       minimumFractionDigits: forcedIntegerDecimals,
     });
 
-    return inputAsNumber.toLocaleString("en-US", {
+    const numberWithSignificant = inputAsNumber.toLocaleString("en-US", {
       maximumSignificantDigits: maxSignificantDigits,
     });
+
+    if (fixedDecimalDigits) {
+      return Number(numberWithSignificant.replace(/,/g, "")).toLocaleString("en-US", {
+        maximumFractionDigits: fixedDecimalDigits,
+      });
+    }
+
+    return numberWithSignificant;
   }
 
   return convertToKMB(inputNumber.toString(), {
@@ -87,6 +97,7 @@ export const convertToKMB = (
     isIgnoreKFormat?: boolean,
     usd?: boolean,
     ignoreSmallValueFormat?: boolean,
+    fixDisplayDecimals?: number,
   }): string => {
   if (Number.isNaN(Number(price.replace(/,/g, "")))) return "-";
   const numberPrice = Number(price.replace(/,/g, ""));
@@ -106,12 +117,18 @@ export const convertToKMB = (
     if (!options?.ignoreSmallValueFormat && numberPrice < 0.000001 && numberPrice >= 0) return "0.000001";
     if (numberPrice < 1 && numberPrice >= 0) return `${Number(numberPrice.toFixed(options?.maximumSignificantDigits ?? 5))}`;
 
-    const result = numberPrice.toLocaleString("en-US", {
+    let result = numberPrice.toLocaleString("en-US", {
       maximumSignificantDigits: maximumSignificantDigits,
       minimumSignificantDigits: options?.minimumSignificantDigits,
       maximumFractionDigits: options?.maximumFractionDigits,
       minimumFractionDigits: options?.minimumFractionDigits,
     });
+
+    if (options?.fixDisplayDecimals) {
+      result = Number(result.replace(/,/g, "")).toLocaleString("en-US", {
+        maximumFractionDigits: options?.fixDisplayDecimals,
+      });
+    }
 
     // Remove trailing zeros
     if (result.includes(".")) return removeTrailingZeros(result);

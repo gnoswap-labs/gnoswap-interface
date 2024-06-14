@@ -23,7 +23,6 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { toUnitFormat } from "@utils/number-utils";
-import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 interface PoolPairInfoContentProps {
@@ -128,7 +127,15 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
   const currentPrice = useMemo(() => {
-    return tickToPriceStr(pool.currentTick, { decimals: 40 });
+    const price = tickToPriceStr(pool.currentTick, { decimals: 40, isFormat: false });
+    console.log("🚀 ~ currentPrice ~ price:", price);
+
+    return formatTokenExchangeRate(
+      price, {
+      maxSignificantDigits: 6,
+      fixedDecimalDigits: 6,
+      minLimit: 0.000001,
+    });
   }, [pool?.currentTick]);
 
   const feeLogo = useMemo(() => {
@@ -342,7 +349,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   {width >= 768 && `1 ${pool?.tokenA?.symbol}`} ={" "}
-                  <ExchangeRate value={currentPrice} /> {pool?.tokenB?.symbol}
+                  {currentPrice} {pool?.tokenB?.symbol}
                 </div>
               )}
               {loading && (

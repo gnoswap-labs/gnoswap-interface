@@ -482,9 +482,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
                 priceStr, {
                 maxSignificantDigits: 6,
                 minLimit: 0.000001,
-                isInfinite: priceStr === "∞"
-              }
-              );
+                isInfinite: priceStr === "∞",
+                fixedDecimalDigits: 6
+              });
             }
             return acc;
           }, {});

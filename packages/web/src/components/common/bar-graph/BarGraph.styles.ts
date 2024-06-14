@@ -27,11 +27,11 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
       pointer-events: auto;
       &:hover {
         fill: ${(props) =>
-          props.svgColor === "default" ? ({ hoverColor }) => hoverColor : ""};
+    props.svgColor === "default" ? ({ hoverColor }) => hoverColor : ""};
         opacity: ${(props) => (props.svgColor === "incentivized" ? 0.4 : 1)};
         + path {
           fill: ${(props) =>
-            props.svgColor === "default" ? ({ hoverColor }) => hoverColor : ""};
+    props.svgColor === "default" ? ({ hoverColor }) => hoverColor : ""};
           opacity: ${(props) => (props.svgColor === "incentivized" ? 0.4 : 1)};
         }
       }
@@ -75,6 +75,7 @@ export const BarGraphTooltipWrapper = styled.div`
 
   & .tooltip-body {
     ${fonts.body12};
+    ${mixins.flexbox("row", "center", "space-between")}
     color: ${({ theme }) => theme.color.text04};
     .time {
       margin-left: 40px;

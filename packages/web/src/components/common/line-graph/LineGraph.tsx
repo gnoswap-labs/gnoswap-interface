@@ -676,7 +676,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 <span className="date">
                   {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
                 </span>
-                {location.pathname !== "/dashboard" && (
+                {(
                   <span className="time">
                     {(currentPointIndex === datas.length - 1 && displayLastDayAsNow)
                       ? parseTimeTVL(getLocalizeTime(new Date().toString()))

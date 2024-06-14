@@ -27,6 +27,7 @@ import { numberToRate } from "@utils/string-utils";
 import { useGetLazyPositionBins } from "@query/positions";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -214,13 +215,29 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
+
     const minPrice = tickToPriceStr(
       position.tickLower, {
       decimals: 40,
       isEnd: isEndTick,
+      isFormat: true,
     });
-    const tokenAPriceStr = isFullRange ? "0 " : minPrice;
-    return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
+    if (isFullRange) return "0";
+
+    return formatTokenExchangeRate(minPrice, {
+      minLimit: 0.000001,
+      maxSignificantDigits: 6,
+      fixedDecimalDigits: 6,
+      isInfinite: minPrice === "∞",
+    });
+
+    // const minPrice = tickToPriceStr(
+    //   position.tickLower, {
+    //   decimals: 40,
+    //   isEnd: isEndTick,
+    // });
+    // const tokenAPriceStr = isFullRange ? "0 " : minPrice;
+    // return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
   }, [
     tokenB.path,
     tokenB.symbol,
@@ -238,8 +255,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       isEnd: isEndTick,
       isFormat: true,
     });
-    const tokenBPriceStr = isFullRange ? "∞ " : maxPrice;
-    return `${tokenBPriceStr}`;
+
+    if (isFullRange) return "∞";
+
+    return formatTokenExchangeRate(
+      maxPrice, {
+      maxSignificantDigits: 6,
+      minLimit: 0.000001,
+      isInfinite: maxPrice === "∞",
+      fixedDecimalDigits: 6
+    });
+    // const tokenBPriceStr = isFullRange ? "∞ " : maxPrice;
+    // return `${tokenBPriceStr}`;
   }, [
     tokenB.path,
     tokenB.symbol,
@@ -318,6 +345,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       lestThan1Decimals: 2,
       isRounding: false,
       minLimit: 0.01,
+      fixedLessThan1Decimal: 2,
     });
   }, [position.reward, tokenPrices]);
 

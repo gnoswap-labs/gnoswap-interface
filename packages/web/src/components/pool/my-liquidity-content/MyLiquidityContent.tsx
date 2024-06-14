@@ -201,7 +201,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }, 0)
       : 0;
 
-    return toUnitFormat(claimableUsdValue, true, true);
+    return toPriceFormat(claimableUsdValue, {
+      usd: true,
+      minLimit: 0.01,
+      fixedLessThan1Decimal: 2,
+    });
   }, [positions, isDisplay, claimableRewardInfo]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {

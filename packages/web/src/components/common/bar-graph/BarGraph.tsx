@@ -287,6 +287,9 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 <span className="date">
                   {parseTime(times[currentPointIndex]).date}
                 </span>
+                <span className="date">
+                  {parseTime(times[currentPointIndex]).time}
+                </span>
               </div>
               <div className="tooltip-header">
                 <span className="label">Trading Volume</span>

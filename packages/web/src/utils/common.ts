@@ -135,11 +135,23 @@ export const checkPositivePrice = (
 
       return statusSign + toPriceFormat(
         BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(),
+        {
+          usd: true,
+          isKMBFormat: false,
+          fixedLessThan1Decimal: 3,
+          forcedGreaterThan1Decimals: true,
+        }
       );
     }
 
     return statusSign + toPriceFormat(
-      BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(2),
+      BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(),
+      {
+        usd: true,
+        isKMBFormat: false,
+        fixedLessThan1Decimal: 3,
+        forcedGreaterThan1Decimals: true,
+      }
     );
   })();
 

@@ -276,6 +276,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       usd: true,
       minLimit: 0.01,
       isRounding: false,
+      fixedLessThan1Decimal: 2,
     });
   }, [isClosed, totalRewardInfo]);
 
@@ -326,12 +327,17 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }, [position.reward]);
 
   const stringPrice = useMemo(() => {
-    const price = tickToPriceStr(position?.pool?.currentTick, { decimals: 40, isFormat: true });
+    const price = tickToPriceStr(position?.pool?.currentTick, { decimals: 40, isFormat: false });
     if (isSwap) {
       return (
         <>
           1 {tokenB?.symbol} ={" "}
-          {formatTokenExchangeRate(1 / position?.pool?.price)}
+          {formatTokenExchangeRate(1 / position?.pool?.price, {
+            isInfinite: price === "∞",
+            maxSignificantDigits: 6,
+            fixedDecimalDigits: 6,
+            minLimit: 0.000001,
+          })}
           {" "}
           {tokenA?.symbol}
         </>
@@ -339,7 +345,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       <>
-        1 {tokenA?.symbol} = {formatTokenExchangeRate(price)} {tokenB?.symbol}
+        1 {tokenA?.symbol} = {formatTokenExchangeRate(price, {
+          isInfinite: price === "∞",
+          maxSignificantDigits: 6,
+          fixedDecimalDigits: 6,
+          minLimit: 0.000001,
+        })} {tokenB?.symbol}
       </>
     );
   }, [
