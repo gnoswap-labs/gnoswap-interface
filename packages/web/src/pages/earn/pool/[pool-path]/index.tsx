@@ -12,40 +12,36 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { API_URL } from "@constants/environment.constant";
-import { PoolResponse } from "@repositories/pool";
 import { PoolModel } from "@models/pool/pool-model";
-import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { encryptId } from "@utils/common";
-import { HTTP_5XX_ERROR } from "@constants/common.constant";
 
 export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async (context) => {
-  const poolPath = (context.query["pool-path"] || "") as string;
+  // const poolPath = (context.query["pool-path"] || "") as string;
 
-  const res = await fetch(API_URL + "/pools/" + encodeURIComponent(encryptId(poolPath)));
+  // const res = await fetch(API_URL + "/pools/" + encodeURIComponent(encryptId(poolPath)));
 
-  if (HTTP_5XX_ERROR.includes(res.status)) {
-    return {
-      redirect: {
-        destination: "/500",
-        permanent: false
-      }
-    };
-  }
+  // if (HTTP_5XX_ERROR.includes(res.status)) {
+  //   return {
+  //     redirect: {
+  //       destination: "/500",
+  //       permanent: false
+  //     }
+  //   };
+  // }
 
-  if (res.status === 404) {
-    return { notFound: true };
-  }
+  // if (res.status === 404) {
+  //   return { notFound: true };
+  // }
 
-  if (res.status === 200) {
-    const poolRes = (await res.json()).data as PoolResponse;
+  // if (res.status === 200) {
+  //   const poolRes = (await res.json()).data as PoolResponse;
 
-    return {
-      props: {
-        pool: PoolMapper.fromResponse(poolRes)
-      }
-    };
-  }
+  //   return {
+  //     props: {
+  //       pool: PoolMapper.fromResponse(poolRes)
+  //     }
+  //   };
+  // }
 
   return { props: {} };
 });
@@ -56,7 +52,12 @@ export default function Pool({ pool }: InferGetServerSidePropsType<typeof getSer
   const poolPath = (router.query["pool-path"] || "") as string;
   const { data = pool } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
-    initialData: pool
+    initialData: pool,
+    onError: (err: any) => {
+      if (err["response"]["status"] === 404) {
+        router.push("/404");
+      }
+    }
   });
 
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
