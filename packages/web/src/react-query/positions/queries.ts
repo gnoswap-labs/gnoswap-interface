@@ -12,7 +12,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
 
 interface UseGetPositionsByAddressOptions {
-  address?: string,
+  address?: string;
   isClosed?: boolean;
   poolPath?: string;
   queryOptions?: UseQueryOptions<PositionModel[], Error>;
@@ -31,8 +31,12 @@ export const useGetPositionsByAddress = (
   ];
 
   return useQuery<PositionModel[], Error>({
-    queryKey: key.filter(item => (item !== undefined)),
+    queryKey: key.filter(item => item !== undefined),
     queryFn: async () => {
+      if (!options?.address && !account?.address) {
+        return [];
+      }
+
       const data = await positionRepository
         .getPositionsByAddress(options?.address || account?.address || "", {
           isClosed: options?.isClosed,
@@ -44,7 +48,9 @@ export const useGetPositionsByAddress = (
         });
       return data;
     },
-    enabled: options?.queryOptions?.enabled && (!!options?.address || !!account?.address),
+    enabled:
+      options?.queryOptions?.enabled &&
+      !!(options?.address || account?.address),
     ...options?.queryOptions,
   });
 };
