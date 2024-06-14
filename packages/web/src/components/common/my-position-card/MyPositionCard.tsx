@@ -146,10 +146,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minTickLabel = useMemo(() => {
     return minTickRate * -1 > 1000
       ? ">999%"
-      : `${minTickRate < 0 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-        ? "<1"
-        : Math.round(minTickRate * -1)
-      }%`;
+      : `${minTickRate < 0 ? "+" : ""}${
+          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+            ? "<1"
+            : Math.round(minTickRate * -1)
+        }%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
@@ -159,8 +160,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     return maxTickRate >= 1000
       ? ">999%"
-      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
-      }%`;
+      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${
+          Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+        }%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
@@ -183,7 +185,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -201,7 +203,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -216,8 +218,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
 
-    const minPrice = tickToPriceStr(
-      position.tickLower, {
+    const minPrice = tickToPriceStr(position.tickLower, {
       decimals: 40,
       isEnd: isEndTick,
       isFormat: false,
@@ -231,14 +232,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       fixedDecimalDigits: 6,
       isInfinite: minPrice === "∞",
     });
-
-    // const minPrice = tickToPriceStr(
-    //   position.tickLower, {
-    //   decimals: 40,
-    //   isEnd: isEndTick,
-    // });
-    // const tokenAPriceStr = isFullRange ? "0 " : minPrice;
-    // return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
   }, [
     tokenB.path,
     tokenB.symbol,
@@ -250,8 +243,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const maxPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
-    const maxPrice = tickToPriceStr(
-      position.tickUpper, {
+    const maxPrice = tickToPriceStr(position.tickUpper, {
       decimals: 40,
       isEnd: isEndTick,
       isFormat: false,
@@ -259,15 +251,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     if (isFullRange) return "∞";
 
-    return formatTokenExchangeRate(
-      maxPrice, {
+    return formatTokenExchangeRate(maxPrice, {
       maxSignificantDigits: 6,
       minLimit: 0.000001,
       isInfinite: maxPrice === "∞",
-      fixedDecimalDigits: 6
+      fixedDecimalDigits: 6,
     });
-    // const tokenBPriceStr = isFullRange ? "∞ " : maxPrice;
-    // return `${tokenBPriceStr}`;
   }, [
     tokenB.path,
     tokenB.symbol,
@@ -340,8 +329,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return acc + Number(current.accuReward1D ?? 0) * currentTokenPrice;
     }, 0);
 
-    return toPriceFormat(
-      value, {
+    return toPriceFormat(value, {
       usd: true,
       lestThan1Decimals: 2,
       isRounding: false,
@@ -382,8 +370,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
                   : inRange
-                    ? RANGE_STATUS_OPTION.IN
-                    : RANGE_STATUS_OPTION.OUT
+                  ? RANGE_STATUS_OPTION.IN
+                  : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>

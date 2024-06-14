@@ -28,14 +28,8 @@ interface ActivityInfoProps {
 }
 
 const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
-  const {
-    action,
-    totalValue,
-    tokenAmountOne,
-    tokenAmountTwo,
-    account,
-    time
-  } = item;
+  const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
+    item;
   const adjective = useMemo(() => ["for", "and"], []);
 
   const actionText = useMemo(() => {
@@ -43,7 +37,9 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
       return action.split(" ").map((text, idx) => {
         return idx === action.split(" ").length - 1 ||
           idx === action.split(" ").length - 3 ? (
-          <span key={idx} className="symbol-text">{text}</span>
+          <span key={idx} className="symbol-text">
+            {text}
+          </span>
         ) : (
           text + " "
         );
@@ -52,7 +48,9 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
 
     return action.split(" ").map((text, idx) => {
       return idx === action.split(" ").length - 1 ? (
-        <span key={idx} className="symbol-text">{text}</span>
+        <span key={idx} className="symbol-text">
+          {text}
+        </span>
       ) : (
         text + " "
       );
@@ -87,18 +85,19 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
           <Tooltip
             placement="top"
             FloatingContent={
-              <TableColumnTooltipContent>
-                {account}
-              </TableColumnTooltipContent>
+              <TableColumnTooltipContent>{account}</TableColumnTooltipContent>
             }
           >
-            <span className="token-index tooltip-label">{formatAddress(account || "")}</span>
+            <span className="token-index tooltip-label">
+              {formatAddress(account || "")}
+            </span>
           </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_TD_WIDTH[5]}>
           <DateTimeTooltip date={time}>
-            <span className="token-index tooltip-label">{getDateDiff(time)}</span>
-            {/* <span className="token-index tooltip-label">{dayjs(time).fromNow()}</span> */}
+            <span className="token-index tooltip-label">
+              {getDateDiff(time)}
+            </span>
           </DateTimeTooltip>
         </TableColumn>
       </HoverSection>
@@ -106,9 +105,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
   );
 };
 
-export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
-  item,
-}) => {
+export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
   const adjective = ["for", "and"];
@@ -120,20 +117,24 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
           <span className="token-index">
             {action.split(" ").some(i => adjective.includes(i))
               ? action.split(" ").map((text, idx) => {
-                return idx === action.split(" ").length - 1 ||
-                  idx === action.split(" ").length - 3 ? (
-                  <span key={idx} className="symbol-text">{text}</span>
-                ) : (
-                  text + " "
-                );
-              })
+                  return idx === action.split(" ").length - 1 ||
+                    idx === action.split(" ").length - 3 ? (
+                    <span key={idx} className="symbol-text">
+                      {text}
+                    </span>
+                  ) : (
+                    text + " "
+                  );
+                })
               : action.split(" ").map((text, idx) => {
-                return idx === action.split(" ").length - 1 ? (
-                  <span key={idx} className="symbol-text">{text}</span>
-                ) : (
-                  text + " "
-                );
-              })}
+                  return idx === action.split(" ").length - 1 ? (
+                    <span key={idx} className="symbol-text">
+                      {text}
+                    </span>
+                  ) : (
+                    text + " "
+                  );
+                })}
             <IconButton
               onClick={() => {
                 alert("open Link");
@@ -156,9 +157,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
           <Tooltip
             placement="top"
             FloatingContent={
-              <TableColumnTooltipContent>
-                {account}
-              </TableColumnTooltipContent>
+              <TableColumnTooltipContent>{account}</TableColumnTooltipContent>
             }
           >
             <span className="token-index">{formatAddress(account)}</span>

@@ -23,9 +23,7 @@ export const notEmptyStringType = (v: string) => {
 };
 
 export function isAmount(str: string) {
-  console.log("🚀 ~ isAmount ~ str:", str);
   const regex = /^\d+(\.\d*)?$/;
   const regex2 = /^\d+(\,\d*)?$/;
-  console.log("🚀 ~ isAmount ~ regex2:", regex2.test(str));
   return regex.test(str) || regex2.test(str);
 }

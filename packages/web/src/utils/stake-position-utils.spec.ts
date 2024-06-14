@@ -1,4 +1,4 @@
-import { formatTokenExchangeRate } from './stake-position-utils';
+import { formatTokenExchangeRate } from "./stake-position-utils";
 
 describe("tokenExchangeRateFormat, token exchange rate format", () => {
   test("12347 to 12.35K", () => {

@@ -27,8 +27,10 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     <TxsListItem key={title}>
       <TxsDateAgoTitle>{title}</TxsDateAgoTitle>
       {txs.map((item: TransactionModel, idx: number) => {
-        const shouldShowTokenALogo = !!Number(item.rawValue?.tokenAAmount);
-        const shouldShowTokenBLogo = !!Number(item.rawValue?.tokenBAmount);
+        const shouldShowTokenALogo =
+          item.rawValue && item.rawValue.tokenAAmount !== "";
+        const shouldShowTokenBLogo =
+          item.rawValue && item.rawValue.tokenBAmount !== "";
 
         if (breakpoint === DEVICE_TYPE.MOBILE) {
           return (
@@ -45,20 +47,28 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                 <div className="coin-info">
                   {item.txType === 1 ? (
                     <DoubleLogo>
-                      {shouldShowTokenALogo && <MissingLogo
-                        symbol={item?.tokenInfo?.tokenA?.symbol}
-                        url={item?.tokenInfo?.tokenA?.logoURI}
-                        width={24}
-                        mobileWidth={24}
-                      />}
-                      {shouldShowTokenBLogo && <MissingLogo
-                        symbol={item?.tokenInfo?.tokenB?.symbol}
-                        url={item?.tokenInfo?.tokenB?.logoURI}
-                        width={24}
-                        mobileWidth={24}
-                        className={shouldShowTokenALogo ? "right-logo" : undefined}
-                        missingLogoClassName={shouldShowTokenALogo ? "right-logo" : undefined}
-                      />}
+                      {shouldShowTokenALogo && (
+                        <MissingLogo
+                          symbol={item?.tokenInfo?.tokenA?.symbol}
+                          url={item?.tokenInfo?.tokenA?.logoURI}
+                          width={24}
+                          mobileWidth={24}
+                        />
+                      )}
+                      {shouldShowTokenBLogo && (
+                        <MissingLogo
+                          symbol={item?.tokenInfo?.tokenB?.symbol}
+                          url={item?.tokenInfo?.tokenB?.logoURI}
+                          width={24}
+                          mobileWidth={24}
+                          className={
+                            shouldShowTokenALogo ? "right-logo" : undefined
+                          }
+                          missingLogoClassName={
+                            shouldShowTokenALogo ? "right-logo" : undefined
+                          }
+                        />
+                      )}
                     </DoubleLogo>
                   ) : (
                     <DoubleLogo>
@@ -70,7 +80,10 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                       />
                     </DoubleLogo>
                   )}
-                  <div className="content-wrap" dangerouslySetInnerHTML={{ __html: item.content || "" }} />
+                  <div
+                    className="content-wrap"
+                    dangerouslySetInnerHTML={{ __html: item.content || "" }}
+                  />
                 </div>
               </div>
               {item.status === "SUCCESS" ? (
@@ -98,20 +111,26 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
           >
             {item.txType === 1 ? (
               <DoubleLogoWrapperTest>
-                {shouldShowTokenALogo && < MissingLogo
-                  symbol={item?.tokenInfo?.tokenA?.symbol}
-                  url={item?.tokenInfo?.tokenA?.logoURI}
-                  width={24}
-                  mobileWidth={24}
-                />}
-                {shouldShowTokenBLogo && < MissingLogo
-                  symbol={item?.tokenInfo?.tokenB?.symbol}
-                  url={item?.tokenInfo?.tokenB?.logoURI}
-                  width={24}
-                  mobileWidth={24}
-                  className={shouldShowTokenALogo ? "right-logo" : undefined}
-                  missingLogoClassName={shouldShowTokenALogo ? "right-logo" : undefined}
-                />}
+                {shouldShowTokenALogo && (
+                  <MissingLogo
+                    symbol={item?.tokenInfo?.tokenA?.symbol}
+                    url={item?.tokenInfo?.tokenA?.logoURI}
+                    width={24}
+                    mobileWidth={24}
+                  />
+                )}
+                {shouldShowTokenBLogo && (
+                  <MissingLogo
+                    symbol={item?.tokenInfo?.tokenB?.symbol}
+                    url={item?.tokenInfo?.tokenB?.logoURI}
+                    width={24}
+                    mobileWidth={24}
+                    className={shouldShowTokenALogo ? "right-logo" : undefined}
+                    missingLogoClassName={
+                      shouldShowTokenALogo ? "right-logo" : undefined
+                    }
+                  />
+                )}
               </DoubleLogoWrapperTest>
             ) : (
               <DoubleLogoWrapperTest>
@@ -123,7 +142,10 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                 />
               </DoubleLogoWrapperTest>
             )}
-            <div className="summary-content" dangerouslySetInnerHTML={{ __html: item.content || "" }} />
+            <div
+              className="summary-content"
+              dangerouslySetInnerHTML={{ __html: item.content || "" }}
+            />
             {item.status === "SUCCESS" ? (
               <IconCircleInCheck className="success-icon status-icon" />
             ) : item.status === "FAILED" ? (

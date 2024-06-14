@@ -81,13 +81,7 @@ function handleAmount(changed: string, token: TokenModel | null) {
   return value;
 }
 
-export const useSwapHandler = ({
-  // defaultTokenAAmount,
-  // defaultTokenBAmount,
-}: {
-  defaultTokenAAmount?: string,
-  defaultTokenBAmount?: string,
-} = {}) => {
+export const useSwapHandler = () => {
   const router = useRouter();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -106,8 +100,12 @@ export const useSwapHandler = ({
   );
   const estimateFlagRef = useRef(0);
 
-  const [tokenBAmount = "", setTokenBAmount] = useState(
-    () => !defaultTokenAAmount ? (defaultTokenBAmount ? defaultTokenBAmount : undefined) : undefined,
+  const [tokenBAmount = "", setTokenBAmount] = useState(() =>
+    !defaultTokenAAmount
+      ? defaultTokenBAmount
+        ? defaultTokenBAmount
+        : undefined
+      : undefined,
   );
 
   const [submitted, setSubmitted] = useState(false);
@@ -382,9 +380,12 @@ export const useSwapHandler = ({
       type === "EXACT_IN"
         ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
         : BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
-    const priceImpactNum = tokenAUSDAmount !== 0 ? BigNumber(tokenBUSDAmount - tokenAUSDAmount)
-      .multipliedBy(100)
-      .dividedBy(tokenAUSDAmount) : BigNumber(0);
+    const priceImpactNum =
+      tokenAUSDAmount !== 0
+        ? BigNumber(tokenBUSDAmount - tokenAUSDAmount)
+            .multipliedBy(100)
+            .dividedBy(tokenAUSDAmount)
+        : BigNumber(0);
     const priceImpact = priceImpactNum.isGreaterThan(100)
       ? 100
       : Number(priceImpactNum.toFixed(2));
@@ -417,7 +418,7 @@ export const useSwapHandler = ({
     gasFeeAmount,
     tokenAmountLimit,
     swapRateAction,
-    type
+    type,
   ]);
 
   const isAvailSwap = useMemo(() => {
@@ -681,12 +682,13 @@ export const useSwapHandler = ({
               swapTokenInfo.tokenAAmount,
             ).toLocaleString("en-US", {
               maximumFractionDigits: 6,
-            })}</span> <span>${swapTokenInfo?.tokenA?.symbol
-              }</span> for <span>${Number(
-                swapTokenInfo.tokenBAmount,
-              ).toLocaleString("en-US", {
-                maximumFractionDigits: 6,
-              })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+            })}</span> <span>${
+              swapTokenInfo?.tokenA?.symbol
+            }</span> for <span>${Number(
+              swapTokenInfo.tokenBAmount,
+            ).toLocaleString("en-US", {
+              maximumFractionDigits: 6,
+            })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
           },
           {
             timeout: 50000,
@@ -708,10 +710,10 @@ export const useSwapHandler = ({
       tokenAAmount: isExactIn
         ? tokenAAmount
         : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() ||
-        "0",
+          "0",
       tokenBAmount: isExactIn
         ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() ||
-        "0"
+          "0"
         : tokenBAmount,
     };
 
@@ -807,7 +809,6 @@ export const useSwapHandler = ({
         return;
       }
     }
-
 
     if (!!Number(tokenAAmount) || !!Number(tokenBAmount)) {
       setIsLoading(true);

@@ -13,10 +13,6 @@ import {
   POOL_INFO_MOBILE,
   POOL_INFO_SMALL_TABLET,
   POOL_INFO_TABLET,
-  // POOL_TD_WIDTH,
-  // POOL_TD_WIDTH_MOBILE,
-  // POOL_TD_WIDTH_SMALL_TABLET,
-  // POOL_TD_WIDTH_TABLET,
 } from "@constants/skeleton.constant";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
@@ -69,22 +65,14 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
     return TABLE_HEAD.POOL_NAME === head;
   };
 
-  // const tdWidth =
-  //   breakpoint === DEVICE_TYPE.MOBILE
-  //     ? POOL_INFO_MOBILE.list
-  //     : breakpoint === DEVICE_TYPE.TABLET_M
-  //       ? POOL_TD_WIDTH_SMALL_TABLET
-  //       : breakpoint === DEVICE_TYPE.TABLET
-  //         ? POOL_TD_WIDTH_TABLET
-  //         : POOL_TD_WIDTH;
   const poolInfo =
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_INFO_MOBILE
       : breakpoint === DEVICE_TYPE.TABLET_M
-        ? POOL_INFO_SMALL_TABLET
-        : breakpoint === DEVICE_TYPE.TABLET
-          ? POOL_INFO_TABLET
-          : POOL_INFO;
+      ? POOL_INFO_SMALL_TABLET
+      : breakpoint === DEVICE_TYPE.TABLET
+      ? POOL_INFO_TABLET
+      : POOL_INFO;
 
   return (
     <TableWrapper>
@@ -92,29 +80,33 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
         {Object.values(TABLE_HEAD).map((head, idx) => {
           const canSort = SORT_SUPPORT_HEAD.includes(head);
 
-          return <TableColumn
-            key={idx}
-            className={cx({
-              left: isAlignLeft(head),
-              sort: isSortOption(head) && canSort,
-            })}
-            tdWidth={poolInfo.list[idx].width}
-          >
-            <span
-              className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
-              onClick={canSort ? () => onClickTableHead(head) : undefined}
+          return (
+            <TableColumn
+              key={idx}
+              className={cx({
+                left: isAlignLeft(head),
+                sort: isSortOption(head) && canSort,
+              })}
+              tdWidth={poolInfo.list[idx].width}
             >
-              {canSort && <>
-                {isAscendingOption(head) && (
-                  <IconTriangleArrowUp className="icon asc" />
+              <span
+                className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
+                onClick={canSort ? () => onClickTableHead(head) : undefined}
+              >
+                {canSort && (
+                  <>
+                    {isAscendingOption(head) && (
+                      <IconTriangleArrowUp className="icon asc" />
+                    )}
+                    {isDescendingOption(head) && (
+                      <IconTriangleArrowDown className="icon desc" />
+                    )}
+                  </>
                 )}
-                {isDescendingOption(head) && (
-                  <IconTriangleArrowDown className="icon desc" />
-                )}
-              </>}
-              {head}
-            </span>
-          </TableColumn>;
+                {head}
+              </span>
+            </TableColumn>
+          );
         })}
       </div>
       <div className="pool-list-body">

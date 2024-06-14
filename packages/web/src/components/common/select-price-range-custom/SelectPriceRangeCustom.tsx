@@ -145,8 +145,9 @@ const SelectPriceRangeCustom = forwardRef<
           1 {currentTokenA.symbol} =&nbsp;
           {formatTokenExchangeRate(selectPool.currentPrice.toString(), {
             maxSignificantDigits: 6,
-            minLimit: 0.000001
-          })}&nbsp;
+            minLimit: 0.000001,
+          })}
+          &nbsp;
           {currentTokenB.symbol}
         </>
       );
@@ -169,7 +170,7 @@ const SelectPriceRangeCustom = forwardRef<
             1 {currentTokenA.symbol} = &nbsp;
             {formatTokenExchangeRate(defaultPrice, {
               maxSignificantDigits: 6,
-              minLimit: 0.000001
+              minLimit: 0.000001,
             })}
             &nbsp;{currentTokenB.symbol}
           </>
@@ -180,7 +181,7 @@ const SelectPriceRangeCustom = forwardRef<
           1 {currentTokenA.symbol} =&nbsp;
           {formatTokenExchangeRate(startingPriceValue, {
             maxSignificantDigits: 6,
-            minLimit: 0.000001
+            minLimit: 0.000001,
           })}
           &nbsp; {currentTokenB.symbol}
         </>
@@ -423,7 +424,7 @@ const SelectPriceRangeCustom = forwardRef<
               onBlur={updateStartingPrice}
               onFocus={() => setTempPrice("")}
               placeholder="Enter price"
-              type={"nu"}
+              type={"number"}
             />
           </StartingPriceWrapper>
         )}
@@ -442,19 +443,21 @@ const SelectPriceRangeCustom = forwardRef<
                   <div className="button-option-contaier">
                     <div className="graph-option-wrapper">
                       <span
-                        className={`graph-option-item decrease ${isLoading || showDim || !availMoveLeft
-                          ? "disabled-option"
-                          : ""
-                          }`}
+                        className={`graph-option-item decrease ${
+                          isLoading || showDim || !availMoveLeft
+                            ? "disabled-option"
+                            : ""
+                        }`}
                         onClick={moveLeft}
                       >
                         <IconKeyboardArrowLeft />
                       </span>
                       <span
-                        className={`graph-option-item increase ${isLoading || showDim || !availMoveRight
-                          ? "disabled-option"
-                          : ""
-                          }`}
+                        className={`graph-option-item increase ${
+                          isLoading || showDim || !availMoveRight
+                            ? "disabled-option"
+                            : ""
+                        }`}
                         onClick={moveRight}
                       >
                         <IconKeyboardArrowRight />
@@ -462,19 +465,21 @@ const SelectPriceRangeCustom = forwardRef<
                     </div>
                     <div className="graph-option-wrapper">
                       <span
-                        className={`graph-option-item decrease ${isLoading || showDim || !availZoomOut
-                          ? "disabled-option"
-                          : ""
-                          }`}
+                        className={`graph-option-item decrease ${
+                          isLoading || showDim || !availZoomOut
+                            ? "disabled-option"
+                            : ""
+                        }`}
                         onClick={zoomOut}
                       >
                         <IconRemove />
                       </span>
                       <span
-                        className={`graph-option-item increase ${isLoading || showDim || !availZoomIn
-                          ? "disabled-option"
-                          : ""
-                          }`}
+                        className={`graph-option-item increase ${
+                          isLoading || showDim || !availZoomIn
+                            ? "disabled-option"
+                            : ""
+                        }`}
                         onClick={zoomIn}
                       >
                         <IconAdd />
@@ -495,7 +500,11 @@ const SelectPriceRangeCustom = forwardRef<
                   {!showDim && (
                     <div className="current-price-wrapper">
                       <span>Current Price</span>
-                      <span style={{ wordBreak: "break-all", textAlign: "center" }}>{currentPriceStr}</span>
+                      <span
+                        style={{ wordBreak: "break-all", textAlign: "center" }}
+                      >
+                        {currentPriceStr}
+                      </span>
                     </div>
                   )}
                   {showDim && (
