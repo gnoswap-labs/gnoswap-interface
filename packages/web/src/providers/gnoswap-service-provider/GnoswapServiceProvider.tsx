@@ -56,7 +56,7 @@ import {
   CHAINS,
 } from "@constants/environment.constant";
 import { NetworkClient } from "@common/clients/network-client";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface GnoswapContextProps {
   initialized: boolean;
