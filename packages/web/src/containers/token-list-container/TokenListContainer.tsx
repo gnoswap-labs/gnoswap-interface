@@ -310,7 +310,11 @@ const TokenListContainer: React.FC = () => {
           volume24h: `$${Math.floor(
             Number(transferData.volumeUsd24h || 0),
           ).toLocaleString()}`,
-          price: toPriceFormat(usdFormat, { usd: true }),
+          price: toPriceFormat(
+            usdFormat, {
+            usd: true,
+            isRounding: false,
+          }),
           priceOf1d: {
             status: dataToday.status,
             value:

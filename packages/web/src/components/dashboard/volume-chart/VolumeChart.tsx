@@ -36,6 +36,7 @@ const VolumeChart: React.FC<VolumeChartItemProps> = ({
         xAxisLabels={volumeChartInfo.xAxisLabels}
         datas={volumeChartInfo.datas}
         times={volumeChartInfo.times}
+        fees={volumeChartInfo.fees}
       />}
       {loading && <LoadingVolumnChart>
         <LoadingSpinner />

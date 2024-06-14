@@ -123,13 +123,13 @@ const TokenInfoContentContainer: React.FC = () => {
     return {
       popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
       tvl: market.lockedTokensUsd
-        ? `${toPriceFormat(market.lockedTokensUsd, { isSmallValueShorten: true, usd: true })}`
+        ? `${toPriceFormat(market.lockedTokensUsd, { minLimit: 0.01, usd: true })}`
         : "-",
       volume24h: market.volumeUsd24h
-        ? `${toPriceFormat(Number(market.volumeUsd24h).toString(), { isSmallValueShorten: true, usd: true })}`
+        ? `${toPriceFormat(Number(market.volumeUsd24h).toString(), { minLimit: 0.01, usd: true })}`
         : "-",
       fees24h: feeUsd24h
-        ? `${toPriceFormat(feeUsd24h, { isSmallValueShorten: true, usd: true })}`
+        ? `${toPriceFormat(feeUsd24h, { minLimit: 0.01, usd: true })}`
         : "-",
     };
   }, [market.lockedTokensUsd, market.popularity, market.volumeUsd24h, feeUsd24h]);

@@ -8,7 +8,7 @@ import {
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { Global, css } from "@emotion/react";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormat, toUnitFormat } from "@utils/number-utils";
 
 export interface BarGraphProps {
   className?: string;
@@ -25,6 +25,7 @@ export interface BarGraphProps {
   currentIndex?: number;
   customData?: { height: number; locationTooltip: number };
   times?: string[];
+  fees: string[];
   radiusBorder?: number;
 }
 
@@ -84,6 +85,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
   customData = { height: 0, locationTooltip: 0 },
   times = [],
   radiusBorder = 0,
+  fees,
 }) => {
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
@@ -292,7 +294,10 @@ const BarGraph: React.FC<BarGraphProps> = ({
               </div>
               <div className="tooltip-header">
                 <span className="label">Fees</span>
-                <span className="value">-</span>
+                <span className="value">{toPriceFormat(fees[currentPointIndex], {
+                  isKMBFormat: false,
+                  usd: true,
+                })}</span>
               </div>
             </BarGraphTooltipWrapper>
           ) : tooltipOption === "incentivized" &&

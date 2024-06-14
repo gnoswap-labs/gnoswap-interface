@@ -4,6 +4,7 @@ import useRouter from "@hooks/common/use-custom-router";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGetTokenByPath } from "@query/token";
 import { ITokenResponse } from "@repositories/token";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export type BreadcrumbTypes = "TOKEN_SYMBOL" | "OTHERs";
 export interface Steps {
@@ -45,6 +46,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
   w = "200px",
 }) => {
   const router = useRouter();
+  const { getGnotPath } = useGnotToGnot();
   const path = router.query["token-path"] as string;
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
@@ -63,7 +65,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
       {
         title:
           getMapping(tokenB?.symbol || "")[router.pathname as any] ||
-          `${tokenB?.symbol || "BTC"}`,
+          `${getGnotPath(tokenB)?.symbol || "BTC"}`,
         path: "",
       },
     ];

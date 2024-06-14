@@ -315,10 +315,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return toPriceFormat(
       value, {
       usd: true,
-      isRounding: false,
       lestThan1Decimals: 2,
-      forcedDecimals: true,
-      isKMBFormat: true,
+      isRounding: false,
+      minLimit: 0.01,
     });
   }, [position.reward, tokenPrices]);
 

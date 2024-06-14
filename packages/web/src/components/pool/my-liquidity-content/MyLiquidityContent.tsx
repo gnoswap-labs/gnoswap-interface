@@ -18,7 +18,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
 import { numberToFormat } from "@utils/string-utils";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormat, toUnitFormat } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
 
 interface MyLiquidityContentProps {
@@ -272,7 +272,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
       return positionAcc + currentPositionDailyReward;
     }, 0);
-    return toUnitFormat(claimableUsdValue, true, true);
+    return toPriceFormat(claimableUsdValue, {
+      usd: true,
+      forcedDecimals: true,
+      lestThan1Decimals: 2,
+      isKMBFormat: false,
+      minLimit: 0.01,
+    });
   }, [isDisplay, positions]);
 
   const claimable = useMemo(() => {
@@ -350,8 +356,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const logoReward = useMemo(() => {
     const temp = claimableRewardInfo?.INTERNAL;
     const rewardTokens = positionData?.rewardTokens || [];
-    const rewardLogo = rewardTokens?.map(item => ({ src: getGnotPath(item).logoURI })) || [];
-    return [...new Set([...rewardLogo, ...temp?.map(item => getGnotPath(item.token).logoURI) || []])];
+    const rewardLogo = rewardTokens?.map(item => (getGnotPath(item).logoURI)) || [];
+    return [...new Set([
+      ...rewardLogo,
+      ...temp?.map(item => (getGnotPath(item.token).logoURI)) || []
+    ])].map(item => ({ src: item }));
   }, [claimableRewardInfo, getGnotPath, positionData]);
 
   const rewardDaily = useMemo(() => {

@@ -274,7 +274,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return toPriceFormat(
       totalDailyEarningValue, {
       usd: true,
-      isSmallValueShorten: true,
+      minLimit: 0.01,
       isRounding: false,
     });
   }, [isClosed, totalRewardInfo]);

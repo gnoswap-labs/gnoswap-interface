@@ -135,19 +135,21 @@ export const toPriceFormat = (
   {
     usd = false,
     isKMBFormat = true,
-    isSmallValueShorten = false,
     isRounding = true,
     lestThan1Decimals = 3,
     greaterThan1Decimals = 2,
     forcedDecimals = false,
+    forcedGreaterThan1Decimals = true,
+    minLimit,
   }: {
     usd?: boolean,
     isKMBFormat?: boolean,
-    isSmallValueShorten?: boolean,
     isRounding?: boolean,
     lestThan1Decimals?: number;
     greaterThan1Decimals?: number;
     forcedDecimals?: boolean;
+    minLimit?: number;
+    forcedGreaterThan1Decimals?: boolean;
   } = {}
 ): string => {
   if (!isNumber(value)) {
@@ -184,8 +186,8 @@ export const toPriceFormat = (
     }
   }
 
-  if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0) && isSmallValueShorten) {
-    return (usd ? "<$" : "<") + "0.01";
+  if (minLimit && bigNumber.isLessThan(minLimit) && bigNumber.isGreaterThan(0)) {
+    return (usd ? "<$" : "<") + minLimit.toString();
   }
 
   if (bigNumber.isEqualTo(0)) {
@@ -213,7 +215,7 @@ export const toPriceFormat = (
   const finalGreaterThan1Decimals = (greaterThan1Decimals ?? 2) + negativeSignLength;
 
   const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
-    minimumFractionDigits: finalGreaterThan1Decimals + 1,
+    minimumFractionDigits: forcedGreaterThan1Decimals ? finalGreaterThan1Decimals + 1 : 0,
     maximumFractionDigits: finalGreaterThan1Decimals + 1,
   });
   const [, decimalPart] = tempNum.split(".");
@@ -226,7 +228,7 @@ export const toPriceFormat = (
     .toNumber()
     .toLocaleString("en", {
       maximumFractionDigits: finalGreaterThan1Decimals,
-      minimumFractionDigits: forcedDecimals ? finalGreaterThan1Decimals : undefined
+      minimumFractionDigits: forcedGreaterThan1Decimals ? finalGreaterThan1Decimals : undefined
     });
 };
 
