@@ -220,8 +220,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       position.tickLower, {
       decimals: 40,
       isEnd: isEndTick,
-      isFormat: true,
+      isFormat: false,
     });
+
     if (isFullRange) return "0";
 
     return formatTokenExchangeRate(minPrice, {
@@ -253,7 +254,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       position.tickUpper, {
       decimals: 40,
       isEnd: isEndTick,
-      isFormat: true,
+      isFormat: false,
     });
 
     if (isFullRange) return "∞";
