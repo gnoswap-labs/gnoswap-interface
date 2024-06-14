@@ -1,3 +1,7 @@
+import {
+  UMAMI_SCRIPT_URL,
+  UMAMI_WEBSITE_ID,
+} from "@constants/environment.constant";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 class MyDocument extends Document {
@@ -18,6 +22,13 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
             rel="stylesheet"
           />
+          {UMAMI_SCRIPT_URL && UMAMI_WEBSITE_ID && (
+            <script
+              defer
+              src={UMAMI_SCRIPT_URL}
+              data-website-id={UMAMI_WEBSITE_ID}
+            />
+          )}
         </Head>
         <body>
           <Main />
