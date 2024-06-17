@@ -131,10 +131,18 @@ const HomeSwapContainer: React.FC = () => {
   ]);
 
   const swapNow = useCallback(() => {
+    const direction = (() => {
+      if (tokenAAmount) return "EXACT_IN";
+
+      if (tokenBAmount) return "EXACT_OUT";
+
+      return "EXACT_IN";
+    })();
+
     const queries = [
       `from=${tokenA?.path}`,
       `to=${tokenB?.path}`,
-      `direction=${swapDirection}`,
+      `direction=${direction}`,
       ...(tokenAAmount ? [`token_a_amount=${tokenAAmount}`] : []),
       ...(tokenBAmount ? [`token_b_amount=${tokenBAmount}`] : []),
     ];

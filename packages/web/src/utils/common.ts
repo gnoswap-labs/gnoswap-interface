@@ -87,7 +87,12 @@ export const checkPositivePrice = (
       return "Infinity";
     }
 
-    return toPriceFormat(BigNumber(currentAsNumber).dividedBy(checkAsNumber || 1).minus(1).multipliedBy(100).abs().toFixed());
+    return BigNumber(currentAsNumber)
+      .dividedBy(checkAsNumber || 1)
+      .minus(1)
+      .multipliedBy(100)
+      .abs()
+      .toFixed();
   })();
 
   const isEmpty = !currentPrice || !checkPrice;
@@ -157,7 +162,7 @@ export const checkPositivePrice = (
 
   return {
     status: status,
-    percentValue: percentValue,
+    // percentValue: percentValue,
     isEmpty: isEmpty,
     percentDisplay: percentDisplay,
     price: price,
