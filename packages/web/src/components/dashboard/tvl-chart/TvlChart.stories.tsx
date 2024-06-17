@@ -28,14 +28,11 @@ Default.args = {
   tvlChartType: CHART_TYPE["7D"],
   changeTvlChartType: action("changeTvlChartType"),
   tvlPriceInfo: { amount: "$100,450,000" },
-  tvlChartInfo: {
-    xAxisLabels: ["1", "2", "3", "4", "5"],
-    datas: [
-      createData(1),
-      createData(2),
-      createData(3),
-      createData(4),
-      createData(5),
-    ],
-  },
+  tvlChartDatas: [
+    createData(1),
+    createData(2),
+    createData(3),
+    createData(4),
+    createData(5),
+  ]
 };

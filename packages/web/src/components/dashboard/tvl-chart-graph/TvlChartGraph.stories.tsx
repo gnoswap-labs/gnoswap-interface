@@ -25,7 +25,6 @@ export const Default: StoryObj<TvlChartGraphProps> = {
       createData(4),
       createData(5),
     ],
-    xAxisLabels: ["1", "2", "3", "4", "5"],
     yAxisLabels: ["1", "2", "3", "4", "5"],
   },
 };
