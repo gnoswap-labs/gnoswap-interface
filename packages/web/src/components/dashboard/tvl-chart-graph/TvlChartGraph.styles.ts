@@ -67,7 +67,7 @@ export const TvlChartGraphWrapper = styled.div`
     margin-left: 15px;
     margin-top: -10px;
     margin-bottom: 30px;
-    justify-content: space-between;
+    justify-content: space-evenly;
 
     span {
       ${fonts.body12};

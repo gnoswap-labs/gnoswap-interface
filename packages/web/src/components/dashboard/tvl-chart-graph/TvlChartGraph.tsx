@@ -15,7 +15,6 @@ export interface TvlChartGraphProps {
     };
     time: string;
   }[];
-  xAxisLabels: string[];
   tvlChartType: CHART_TYPE;
   yAxisLabels?: string[];
 }
@@ -60,7 +59,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     };
   }, [datas]);
 
-  const hasOnlyOnePoint = useMemo(() => (xAxisRange.maxX - xAxisRange.minX === 0), [xAxisRange.maxX, xAxisRange.minX]);
 
   const scaleX = useCallback(
     (value: number) => {
@@ -133,11 +131,20 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     }));
   }, [datas]);
 
+  // const hasOnlyOnePoint = useMemo(() => (xAxisRange.maxX - xAxisRange.minX === 0), [xAxisRange.maxX, xAxisRange.minX]);
+
+
   const displayXAxisLabels: XAxisLabel[] = useMemo(() => {
     const formatInfo = makeTimePeriodFormatInfo();
     const minimumXAxis = formatInfo.textLength / 2; // text size and padding
 
-    if (hasOnlyOnePoint) {
+
+    const result = xAxisLabels.filter(
+      label =>
+        label.position > minimumXAxis &&
+        label.position < size.width - minimumXAxis,
+    );
+    if (result.length === 1) {
       return [{
         position: size.width / 2,
         value: new Date(datas[0].time).getTime(),
@@ -145,13 +152,11 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
       }];
     }
 
-    return xAxisLabels.filter(
-      label =>
-        label.position > minimumXAxis &&
-        label.position < size.width - minimumXAxis,
-    );
-  }, [datas, hasOnlyOnePoint, size.width, xAxisLabels]);
-  console.log("🚀 ~ constdisplayXAxisLabels:XAxisLabel[]=useMemo ~ displayXAxisLabels:", displayXAxisLabels);
+    return result;
+  }, [datas, size.width, xAxisLabels]);
+
+  const hasOnlyOneLabel = useMemo(() => displayXAxisLabels.length === 1, [displayXAxisLabels.length]);
+
 
   return (
     <TvlChartGraphWrapper>
@@ -180,7 +185,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
             })}
           />
         </div>
-        <div className={`xaxis-wrapper ${hasOnlyOnePoint ? "center" : ""}`}>
+        <div className={`xaxis-wrapper ${hasOnlyOneLabel ? "center" : ""}`}>
           {displayXAxisLabels.map((value, index) => (
             <span key={index}>{value?.text}</span>
           ))}

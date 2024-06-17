@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useMemo } from "react";
 import TvlChart from "@components/dashboard/tvl-chart/TvlChart";
 import { CHART_TYPE } from "@constants/option.constant";
-import dayjs from "dayjs";
 import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { getLocalizeTime } from "@utils/chart";
@@ -14,21 +13,13 @@ export interface TvlPriceInfo {
 export const TvlChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TvlChartGraphPeriodType = (typeof TvlChartGraphPeriods)[number];
 
-export interface TvlChartInfo {
-  xAxisLabels: string[];
-  datas: {
-    amount: {
-      value: string;
-      denom: string;
-    };
-    time: string;
-  }[];
-}
-
-const parseDate = (dateString: string) => {
-  const date = dayjs(dateString);
-  return date.format("MMM D, YYYY");
-};
+export type TvlChartData = {
+  amount: {
+    value: string;
+    denom: string;
+  };
+  time: string;
+}[];
 
 // const generateData = (chartType: CHART_TYPE) => {
 //   const mappingLength: Record<CHART_TYPE, number> = {
@@ -164,54 +155,41 @@ const TvlChartContainer: React.FC = () => {
   }, []);
   const chartData = useMemo(() => {
     if (!tvlData?.all)
-      return {
-        xAxisLabels: [],
-        datas: [],
-      };
-    let chartData = tvlData?.last7d;
+      return [];
+    let currentChartData = tvlData?.last7d;
 
     switch (tvlChartType) {
       case "30D":
-        chartData = tvlData?.last30d;
+        currentChartData = tvlData?.last30d;
         break;
       case "90D":
-        chartData = tvlData?.last90d;
+        currentChartData = tvlData?.last90d;
         break;
       case "ALL":
-        chartData = tvlData?.all;
+        currentChartData = tvlData?.all;
         break;
       case "7D":
       default:
-        chartData = tvlData?.last7d;
+        currentChartData = tvlData?.last7d;
         break;
     }
 
-
-
-    return chartData?.reduce(
+    return currentChartData?.reduce(
       (pre: any, next: any) => {
-        const time = parseDate(next.date);
-
-
-        return {
-          xAxisLabels: [...pre.xAxisLabels, time],
-          datas: [
-            ...pre.datas,
-            {
-              amount: {
-                value: next.tvlUsd || 0,
-                denom: "USD",
-              },
-              time: getLocalizeTime(next.date),
+        return [
+          ...pre,
+          {
+            amount: {
+              value: next.tvlUsd || 0,
+              denom: "USD",
             },
-          ],
-        };
+            time: getLocalizeTime(next.date),
+          },
+        ];
       },
-      { xAxisLabels: [], datas: [] } as TvlChartInfo,
+      [] as TvlChartData,
     );
   }, [tvlChartType, tvlData]);
-
-  console.log("🚀 ~ chartData ~ chartData:", chartData);
 
   return (
     <TvlChart
@@ -228,7 +206,7 @@ const TvlChartContainer: React.FC = () => {
           })}`
           : "-",
       }}
-      tvlChartInfo={chartData ?? { xAxisLabels: [], datas: [] }}
+      tvlChartDatas={chartData.splice(0, 6)}
       loading={isLoading || isLoadingCommon}
     />
   );
