@@ -85,6 +85,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
   });
+  console.log("🚀 ~ placement:", placement);
   const childrenRef = useMergeRefs([refs.setReference]);
   const floatingRef = useMergeRefs([refs.setFloating]);
   const themeKey = useAtomValue(ThemeState.themeKey);

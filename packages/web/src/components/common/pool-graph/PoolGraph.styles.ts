@@ -147,21 +147,21 @@ export const PoolGraphTooltipWrapper = styled.div`
       }
     }
 
-    ${customMediaQuery(400)} {
+    /* ${customMediaQuery(400)} {
       .amount {
         .token-amount-value {
           font-size: 12px;
         }
       }
-    }
+    } */
 
-    ${customMediaQuery(360)} {
+    /* ${customMediaQuery(360)} {
       .price-range {
         &.price-range-value{
         font-size: 10px;
       }
       }
-    }
+    } */
 
    
 

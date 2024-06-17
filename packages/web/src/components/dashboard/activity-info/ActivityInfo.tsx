@@ -117,24 +117,24 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
           <span className="token-index">
             {action.split(" ").some(i => adjective.includes(i))
               ? action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ||
-                    idx === action.split(" ").length - 3 ? (
-                    <span key={idx} className="symbol-text">
-                      {text}
-                    </span>
-                  ) : (
-                    text + " "
-                  );
-                })
+                return idx === action.split(" ").length - 1 ||
+                  idx === action.split(" ").length - 3 ? (
+                  <span key={idx} className="symbol-text">
+                    {text}
+                  </span>
+                ) : (
+                  text + " "
+                );
+              })
               : action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ? (
-                    <span key={idx} className="symbol-text">
-                      {text}
-                    </span>
-                  ) : (
-                    text + " "
-                  );
-                })}
+                return idx === action.split(" ").length - 1 ? (
+                  <span key={idx} className="symbol-text">
+                    {text}
+                  </span>
+                ) : (
+                  text + " "
+                );
+              })}
             <IconButton
               onClick={() => {
                 alert("open Link");
@@ -164,7 +164,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
           </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={MOBILE_ACTIVITY_TD_WIDTH[5]}>
-          <DateTimeTooltip date={time}>
+          <DateTimeTooltip placement={"top-end"} date={time}>
             <span className="token-index">{dayjs(time).fromNow()}</span>
           </DateTimeTooltip>
         </TableColumn>

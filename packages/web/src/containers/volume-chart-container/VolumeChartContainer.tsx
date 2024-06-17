@@ -5,7 +5,7 @@ import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import dayjs from "dayjs";
 import { useLoading } from "@hooks/common/use-loading";
-import { toPriceFormat, toUnitFormat } from "@utils/number-utils";
+import { toPriceFormat } from "@utils/number-utils";
 import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
 
 export interface VolumePriceInfo {
@@ -226,7 +226,14 @@ const VolumeChartContainer: React.FC = () => {
           })
           : "-",
         fee: allTimeFeeUsd
-          ? toUnitFormat(Number(allTimeFeeUsd), true, false, false)
+          ? toPriceFormat(
+            allTimeFeeUsd, {
+            usd: true,
+            isRounding: false,
+            isKMBFormat: false,
+            greaterThan1Decimals: 1,
+            lestThan1Decimals: 1,
+          })
           : "-",
       }}
       volumeChartInfo={chartData}

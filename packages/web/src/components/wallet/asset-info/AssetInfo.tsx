@@ -133,7 +133,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn
         className="name-col left-padding left"
         tdWidth={TABLET_ASSET_TD_WIDTH[0]}
-        onClick={() => onClickItem(symbol)}
+        onClick={() => onClickItem(path)}
       >
         <MissingLogo
           symbol={symbol}
@@ -179,7 +179,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn
         className="name-col left-padding left"
         tdWidth={MOBILE_ASSET_TD_WIDTH[0]}
-        onClick={() => onClickItem(symbol)}
+        onClick={() => onClickItem(path)}
       >
         <MissingLogo
           symbol={symbol}
