@@ -235,15 +235,9 @@ const TokenListContainer: React.FC = () => {
           (_item: TokenModel) => _item.path === splitMostLiquidity[1],
         );
 
-        // TODO: Remove after testing
-        const fakeDataForFoo = item.symbol === "FOO" ? {
-          latestPrice: "1000",
-          priceToday: "1"
-        } : undefined;
-
         const dataToday = checkPositivePrice(
-          fakeDataForFoo ? fakeDataForFoo.latestPrice : transferData.pricesBefore?.latestPrice,
-          fakeDataForFoo ? fakeDataForFoo.priceToday : transferData.pricesBefore?.priceToday,
+          transferData.pricesBefore?.latestPrice,
+          transferData.pricesBefore?.priceToday,
         );
 
         const data7day = checkPositivePrice(
