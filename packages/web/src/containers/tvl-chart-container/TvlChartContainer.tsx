@@ -202,11 +202,11 @@ const TvlChartContainer: React.FC = () => {
             usd: true,
             lestThan1Decimals: 1,
             greaterThan1Decimals: 1,
-            forcedDecimals: true,
+            forcedGreaterThan1Decimals: false,
           })}`
           : "-",
       }}
-      tvlChartDatas={chartData.splice(0, 6)}
+      tvlChartDatas={chartData}
       loading={isLoading || isLoadingCommon}
     />
   );

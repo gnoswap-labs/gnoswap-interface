@@ -299,6 +299,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                   isKMBFormat: false,
                   greaterThan1Decimals: 1,
                   lestThan1Decimals: 1,
+                  forcedGreaterThan1Decimals: false,
                 })}</span>
               </div>
               <div className="tooltip-header">
@@ -310,6 +311,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                     isKMBFormat: false,
                     greaterThan1Decimals: 1,
                     lestThan1Decimals: 1,
+                    forcedGreaterThan1Decimals: false,
                   })}</span>
               </div>
             </BarGraphTooltipWrapper>

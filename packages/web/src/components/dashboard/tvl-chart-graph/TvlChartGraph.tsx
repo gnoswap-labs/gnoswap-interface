@@ -180,6 +180,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
               isRounding: false,
               usd: true,
               greaterThan1Decimals: 1,
+              forcedGreaterThan1Decimals: false,
               lestThan1Decimals: 1,
               isKMBFormat: false,
             })}

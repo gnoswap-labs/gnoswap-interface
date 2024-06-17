@@ -231,9 +231,16 @@ export const toPriceFormat = (
     maximumFractionDigits: finalGreaterThan1Decimals + 1,
   });
   const [, decimalPart] = tempNum.split(".");
+  console.log("🚀 ~ decimalPart:", decimalPart);
 
-  if (!isRounding && !bigNumber.isInteger() && decimalPart?.length >= finalGreaterThan1Decimals) {
-    return negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
+  if (!isRounding && !bigNumber.isInteger() && decimalPart?.length > finalGreaterThan1Decimals) {
+    const result = negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
+
+    const [notRoundingIntPart, notRoundingDecimalPart] = result.split(".");
+
+    if (notRoundingDecimalPart === "0") return notRoundingIntPart;
+
+    return result;
   }
 
   return negativeSign + prefix + bigNumber.decimalPlaces(finalGreaterThan1Decimals)

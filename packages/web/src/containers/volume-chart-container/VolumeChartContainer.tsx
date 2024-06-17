@@ -223,6 +223,7 @@ const VolumeChartContainer: React.FC = () => {
             isKMBFormat: false,
             greaterThan1Decimals: 1,
             lestThan1Decimals: 1,
+            forcedGreaterThan1Decimals: false,
           })
           : "-",
         fee: allTimeFeeUsd
@@ -233,6 +234,7 @@ const VolumeChartContainer: React.FC = () => {
             isKMBFormat: false,
             greaterThan1Decimals: 1,
             lestThan1Decimals: 1,
+            forcedGreaterThan1Decimals: false,
           })
           : "-",
       }}
