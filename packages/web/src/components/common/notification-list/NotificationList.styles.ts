@@ -44,8 +44,6 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
     top: calc(100vh - ${({ emptyData }) => (emptyData ? "157px" : "426px")});
     padding: 24px 0px;
     min-width: 360px;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
   }
   .list-container {
     ${media.mobile} {

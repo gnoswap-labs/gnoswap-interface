@@ -14,6 +14,9 @@ const globalStyle = (theme: Theme) => css`
     min-width: 360px;
     height: 100%;
     font-family: Inter, sans-serif;
+    position: fixed;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 
   body {
