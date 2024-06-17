@@ -42,7 +42,7 @@ export interface BalanceDetailInfo {
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();
-  const [address,] = useState("");
+  const [address] = useState("");
   const { breakpoint } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
@@ -67,7 +67,8 @@ const WalletBalanceContainer: React.FC = () => {
     broadcastRejected,
   } = useBroadcastHandler();
   const { openModal } = useTransactionConfirmModal();
-  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } = useGetTokenPrices();
+  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } =
+    useGetTokenPrices();
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
     setIsShowDepositModal(true);
@@ -114,7 +115,7 @@ const WalletBalanceContainer: React.FC = () => {
           openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
-            () => { },
+            () => {},
             true,
           );
           setLoadingTransactionClaim(false);
@@ -127,7 +128,7 @@ const WalletBalanceContainer: React.FC = () => {
       isLoadingPosition ||
       loadingConnect === "loading" ||
       isLoadingTokenPrices ||
-      loadingBalance ||
+      (account?.address && loadingBalance) ||
       !!(isEmptyObject(balancesPrice) && account?.address)
     );
   }, [
@@ -198,12 +199,7 @@ const WalletBalanceContainer: React.FC = () => {
       .plus(claimableRewards)
       .decimalPlaces(2)
       .toFormat(availableBalance === 0 ? 0 : 2);
-  }, [
-    availableBalance,
-    unStakedBalance,
-    stakedBalance,
-    claimableRewards,
-  ]);
+  }, [availableBalance, unStakedBalance, stakedBalance, claimableRewards]);
 
   const closeDeposit = () => {
     setIsShowDepositModal(false);

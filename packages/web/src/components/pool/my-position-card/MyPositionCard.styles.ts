@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 interface Props {
-  type: boolean;
-  $isClosed: boolean;
+  type: "closed" | "none";
 }
 
 export const PositionCardAnchor = styled.div`
@@ -28,7 +28,8 @@ export const MyPositionCardWrapper = styled.div<Props>`
   gap: 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border01};
-  background-color: ${({ theme, $isClosed }) => $isClosed ? theme.color.background29 : theme.color.background03};
+  background-color: ${({ theme, type }) =>
+    type === "closed" ? theme.color.background29 : theme.color.background03};
   ${media.tablet} {
     padding: 24px 24px 0 24px;
     border-radius: 10px;
@@ -53,7 +54,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;
         .visible-badge {
-          visibility: hidden; 
+          visibility: hidden;
         }
         .link-page {
           ${mixins.flexbox("row", "center", "flex-start")};
@@ -108,7 +109,8 @@ export const MyPositionCardWrapper = styled.div<Props>`
         ${media.mobile} {
           ${fonts.body7};
         }
-        color: ${({ theme, $isClosed }) => !$isClosed ? theme.color.text02 : theme.color.text10};
+        color: ${({ theme, type }) =>
+          type !== "closed" ? theme.color.text02 : theme.color.text10};
       }
       .flex-button {
         ${mixins.flexbox("row", "center", "center")};
@@ -194,11 +196,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
           }
         }
         &.out-range {
-          background: linear-gradient(
-            270deg,
-            #536CD7 0%,
-            #233DBD 100%
-          );
+          background: linear-gradient(270deg, #536cd7 0%, #233dbd 100%);
           .current {
             color: ${({ theme }) => theme.color.text27};
           }
@@ -226,7 +224,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
           }
         }
       }
-      @media (max-width: 360px){
+      @media (max-width: 360px) {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
         gap: 16px;
         .select-box {
@@ -335,7 +333,8 @@ export const MyPositionCardWrapper = styled.div<Props>`
         &:hover {
           color: ${({ theme }) => theme.color.text07};
         }
-        color: ${({ theme, $isClosed }) => !$isClosed ? theme.color.text02 : theme.color.text10};
+        color: ${({ theme, type }) =>
+          type !== "closed" ? theme.color.text02 : theme.color.text10};
         &.disabled {
           pointer-events: none;
         }
@@ -412,7 +411,6 @@ export const MyPositionCardWrapper = styled.div<Props>`
       ${media.mobile} {
         ${mixins.flexbox("column", "center", "center")};
         > div {
-
         }
       }
     }
@@ -460,7 +458,6 @@ export const TooltipContent = styled.div`
     color: ${({ theme }) => theme.color.text02};
   }
 `;
-
 
 export const RewardsContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "space-between")};
@@ -561,8 +558,8 @@ export const CopyTooltip = styled.div`
     }
 
     & .rotate-90 {
-        transform: rotate(90deg);
-        margin-right: -10px;
+      transform: rotate(90deg);
+      margin-right: -10px;
     }
   }
 `;

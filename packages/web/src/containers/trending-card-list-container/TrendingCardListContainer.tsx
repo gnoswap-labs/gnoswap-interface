@@ -11,6 +11,7 @@ import { makeId } from "@utils/common";
 import { toPriceFormat } from "@utils/number-utils";
 import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useMemo } from "react";
+import BigNumber from "bignumber.js";
 
 const defaultToken = {
   path: "",
@@ -89,7 +90,7 @@ const TrendingCardListContainer: React.FC = () => {
           },
           price: `${toPriceFormat(item.tokenPrice, { usd: true })}`,
           upDown: status as UpDownType,
-          content: `${Number(priceChange).toFixed(2)}%`,
+          content: `${BigNumber(priceChange).abs().toFixed(2)}%`,
         };
       })
       .slice(0, 3);
