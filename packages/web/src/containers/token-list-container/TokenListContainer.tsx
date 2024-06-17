@@ -40,7 +40,7 @@ export interface Token {
   marketCap: string;
   liquidity: string;
   volume24h: string;
-  mostLiquidPool: MostLiquidPool;
+  mostLiquidPool?: MostLiquidPool;
   last7days: number[];
   idx: number;
   graphStatus: MATH_NEGATIVE_TYPE;
@@ -265,7 +265,7 @@ const TokenListContainer: React.FC = () => {
             symbol: item.symbol,
             logoURI: item.logoURI,
           },
-          mostLiquidPool: {
+          mostLiquidPool: tempTokenPrice?.mostLiquidityPool ? {
             poolId: Math.floor(Math.random() * 50 + 1).toString(),
             tokenPair: {
               tokenA: {
@@ -285,7 +285,7 @@ const TokenListContainer: React.FC = () => {
               splitMostLiquidity.length > 1
                 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}`
                 : "0.02%",
-          },
+          } : undefined,
           last7days: [
             ...(transferData?.last7d
               ?.sort(
