@@ -88,6 +88,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
 
     // Find the maximum number of labels and time intervals for each graph container size.
     const maxLabelCount = Math.floor((size.width - 24) / formatInfo.textLength);
+
     const spacingCount = Math.ceil(
       Math.ceil((maxX - minX) / formatInfo.minimumSpacing) / maxLabelCount,
     );
@@ -100,17 +101,18 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
 
     let startXWithOffset = startX;
 
-    if (formatInfo.minimumSpacing >= DATE_HOUR_VALUE * 24) {
-      const offsetValue = formatInfo.offset * DATE_MINUTE_VALUE;
+    // if (formatInfo.minimumSpacing >= DATE_HOUR_VALUE * 24) {
+    const offsetValue = formatInfo.offset * DATE_MINUTE_VALUE;
 
-      if (startX + offsetValue > minPositionX) {
-        startXWithOffset = startX + offsetValue;
-      } else {
-        startXWithOffset = startX + offsetValue + timeDiff;
-      }
+    if (startX + offsetValue > minPositionX) {
+      startXWithOffset = startX + offsetValue;
+    } else {
+      startXWithOffset = startX + offsetValue + timeDiff;
     }
+    // }
 
     const length = Math.ceil((maxX - minX) / timeDiff);
+    console.log("🚀 ~ constxAxisLabels:XAxisLabel[]=useMemo ~ length:", length);
 
     return Array.from({ length }, (_, index) => {
       const datetime = startXWithOffset + index * timeDiff;
@@ -121,6 +123,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
       };
     });
   }, [xAxisRange, size.width, scaleX, revertX]);
+
 
 
   const mappedData = useMemo(() => {
@@ -148,6 +151,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
         label.position < size.width - minimumXAxis,
     );
   }, [datas, hasOnlyOnePoint, size.width, xAxisLabels]);
+  console.log("🚀 ~ constdisplayXAxisLabels:XAxisLabel[]=useMemo ~ displayXAxisLabels:", displayXAxisLabels);
 
   return (
     <TvlChartGraphWrapper>

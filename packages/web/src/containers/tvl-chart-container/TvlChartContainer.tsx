@@ -186,9 +186,13 @@ const TvlChartContainer: React.FC = () => {
         break;
     }
 
+
+
     return chartData?.reduce(
       (pre: any, next: any) => {
         const time = parseDate(next.date);
+
+
         return {
           xAxisLabels: [...pre.xAxisLabels, time],
           datas: [
@@ -206,6 +210,8 @@ const TvlChartContainer: React.FC = () => {
       { xAxisLabels: [], datas: [] } as TvlChartInfo,
     );
   }, [tvlChartType, tvlData]);
+
+  console.log("🚀 ~ chartData ~ chartData:", chartData);
 
   return (
     <TvlChart
