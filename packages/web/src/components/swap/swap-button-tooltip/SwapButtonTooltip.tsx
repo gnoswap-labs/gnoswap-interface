@@ -31,6 +31,9 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
 
   const gasFeeStr = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.gasFee;
+
+    if (Number(swapSummaryInfo.gasFee) < 0.01) return "<$0.01";
+
     return `${toNumberFormat(amount)} ${currency}`;
   }, [swapSummaryInfo.gasFee]);
 

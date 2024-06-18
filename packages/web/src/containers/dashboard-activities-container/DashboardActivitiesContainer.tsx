@@ -142,26 +142,29 @@ const DashboardActivitiesContainer: React.FC = () => {
   };
 
   const formatActivity = (res: OnchainActivityData): Activity => {
+    console.log("🚀 ~ formatActivity ~ res:", res);
     const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
     const tokenASymbol = res.tokenA.symbol;
     const tokenBSymbol = res.tokenB.symbol;
+    const shouldShowTokenAAmount = !!res.tokenBAmount && !!Number(res.tokenAAmount);
+    const shouldShowTokenBAmount = !!res.tokenBAmount && !!Number(res.tokenBAmount);
 
     const actionText = (() => {
       const action = capitalizeFirstLetter(res.actionType);
-      const tokenAText = tokenASymbol ? " " + replaceToken(tokenASymbol) : "";
-      const tokenBText = tokenBSymbol ? " " + replaceToken(tokenBSymbol) : "";
+      const tokenAText = (shouldShowTokenAAmount && tokenASymbol) ? " " + replaceToken(tokenASymbol) : "";
+      const tokenBText = (shouldShowTokenBAmount && tokenBSymbol) ? " " + replaceToken(tokenBSymbol) : "";
       const haveOneToken = !tokenAText || !tokenBText;
       const conjunction = !haveOneToken ? " " + (res.actionType === "SWAP" ? "for" : "and") : "";
 
       return `${action}${tokenAText}${conjunction}${tokenBText}`;
     })();
 
-    const tokenAAmount = tokenASymbol ? `${convertToKMB(
+    const tokenAAmount = (tokenASymbol && shouldShowTokenAAmount) ? `${convertToKMB(
       res.tokenAAmount,
       { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
     )} ${replaceToken(res.tokenA.symbol)}` : "-";
 
-    const tokenBAmount = tokenBSymbol ? `${convertToKMB(
+    const tokenBAmount = (tokenBSymbol && shouldShowTokenBAmount) ? `${convertToKMB(
       res.tokenBAmount,
       { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
     )} ${replaceToken(res.tokenB.symbol)}` : "-";
@@ -182,7 +185,7 @@ const DashboardActivitiesContainer: React.FC = () => {
 
   return (
     <ActivityList
-      activities={(activities.filter(item => Number(item.tokenAAmount) || Number(item.tokenBAmount)) ?? []).slice(0, 30).map(x => formatActivity(x))}
+      activities={(activities.filter(item => Number(item.tokenAAmount) || Number(item.tokenBAmount)) ?? []).slice(0, 1).map(x => formatActivity(x))}
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}
