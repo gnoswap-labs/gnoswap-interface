@@ -476,7 +476,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       minLimit: 0.000001,
       maxSignificantDigits: 6,
       fixedDecimalDigits: 6,
-      isInfinite: minPrice === "∞",
     });
   }, [
     position.tickLower,
@@ -538,7 +537,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       minLimit: 0.000001,
       maxSignificantDigits: 6,
       fixedDecimalDigits: 6,
-      isInfinite: maxPrice === "∞",
     });
   }, [
     position.tickLower,
@@ -556,7 +554,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
 
     return (minTickRate < -1 ? "+" : "") + Math.round(minTickRate * -1) + "%";
-  }, [minTickRate, isSwap]);
+  }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
     if (maxTickRate === 999) return `>${maxTickRate}%`;

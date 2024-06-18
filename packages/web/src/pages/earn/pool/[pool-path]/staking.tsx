@@ -11,10 +11,10 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { getServerSideProps } from "./index";
 import { encryptId } from "@utils/common";
+// import { getServerSideProps } from "./index";
 
-export { getServerSideProps };
+// export { getServerSideProps };
 
 export default function Pool() {
   const router = useRouter();

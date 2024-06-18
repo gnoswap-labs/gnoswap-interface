@@ -10,9 +10,9 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
-import { getServerSideProps } from "./index";
+// import { getServerSideProps } from "./index";
 
-export { getServerSideProps };
+// export { getServerSideProps };
 
 export default function Earn() {
   const { width } = useWindowSize();

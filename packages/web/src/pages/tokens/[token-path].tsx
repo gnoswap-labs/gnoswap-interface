@@ -14,57 +14,19 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useGetTokenByPath } from "@query/token";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { encryptId } from "@utils/common";
-import { API_URL } from "@constants/environment.constant";
-import { ITokenResponse } from "@repositories/token";
-import { HTTP_5XX_ERROR } from "@constants/common.constant";
 
-export const getServerSideProps: GetServerSideProps<{ token?: ITokenResponse }> = (async (context) => {
-  const tokenPath = (context.query["token-path"] ?? "") as string;
-
-  if (!tokenPath) {
-    return { notFound: true };
-  }
-
-  const res = await fetch(API_URL + "/token-metas/" + encodeURIComponent(encryptId(tokenPath)));
-
-  if (HTTP_5XX_ERROR.includes(res.status)) {
-    return {
-      redirect: {
-        destination: "/500",
-        permanent: false
-      }
-    };
-  }
-
-  if (res.status === 404) {
-    return { notFound: true };
-  }
-
-  if (res.status === 200) {
-    const token = (await res.json()).data as ITokenResponse;
-
-    return {
-      props: {
-        token: token
-      }
-    };
-  }
-
-  return {
-    props: {}
-  };
-});
-
-export default function Token({ token: tokenFromServer }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Token() {
   const { isLoading } = useLoading();
   const router = useRouter();
   const path = router.query["token-path"] as string;
-  const { data: token = tokenFromServer } = useGetTokenByPath(path, {
+  const { data: token } = useGetTokenByPath(path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,
-    initialData: tokenFromServer
+    onError: (err: any) => {
+      if (err["response"]["status"] === 404) {
+        router.push("/404");
+      }
+    }
   });
 
   const steps = useMemo(() => {

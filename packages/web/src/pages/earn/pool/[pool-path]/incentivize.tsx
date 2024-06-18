@@ -9,10 +9,10 @@ import React, { useMemo } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useLoading } from "@hooks/common/use-loading";
-import { getServerSideProps } from "./index";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+// import { getServerSideProps } from "./index";
 
-export { getServerSideProps };
+// export { getServerSideProps };
 
 export default function PoolIncentivize() {
   const { breakpoint } = useWindowSize();
