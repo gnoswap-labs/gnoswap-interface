@@ -72,7 +72,6 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   };
 
   const onClickPoolItem = (item?: MostLiquidPool) => {
-    console.log("🚀 ~ onClickPoolItem ~ item:", item);
     if (!item) return;
 
     const poolPath = `${item.tokenPair.tokenA.path}:${item.tokenPair.tokenB.path

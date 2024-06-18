@@ -142,7 +142,6 @@ const DashboardActivitiesContainer: React.FC = () => {
   };
 
   const formatActivity = (res: OnchainActivityData): Activity => {
-    console.log("🚀 ~ formatActivity ~ res:", res);
     const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
     const tokenASymbol = res.tokenA.symbol;
     const tokenBSymbol = res.tokenB.symbol;
@@ -185,7 +184,7 @@ const DashboardActivitiesContainer: React.FC = () => {
 
   return (
     <ActivityList
-      activities={(activities.filter(item => Number(item.tokenAAmount) || Number(item.tokenBAmount)) ?? []).slice(0, 1).map(x => formatActivity(x))}
+      activities={(activities.filter(item => Number(item.tokenAAmount) || Number(item.tokenBAmount)) ?? []).map(x => formatActivity(x))}
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

@@ -231,7 +231,6 @@ export const toPriceFormat = (
     maximumFractionDigits: finalGreaterThan1Decimals + 1,
   });
   const [, decimalPart] = tempNum.split(".");
-  console.log("🚀 ~ decimalPart:", decimalPart);
 
   if (!isRounding && !bigNumber.isInteger() && decimalPart?.length > finalGreaterThan1Decimals) {
     const result = negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);

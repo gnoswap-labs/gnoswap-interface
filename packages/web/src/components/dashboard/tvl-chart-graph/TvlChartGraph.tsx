@@ -2,7 +2,7 @@ import LineGraph from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
 import React, { useCallback, useMemo } from "react";
-import { TvlChartGraphWrapper } from "./TvlChartGraph.styles";
+import { TokenChartGraphXLabel, TvlChartGraphWrapper } from "./TvlChartGraph.styles";
 import dayjs from "dayjs";
 import { CHART_TYPE } from "@constants/option.constant";
 import { toPriceFormat } from "@utils/number-utils";
@@ -110,7 +110,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     // }
 
     const length = Math.ceil((maxX - minX) / timeDiff);
-    console.log("🚀 ~ constxAxisLabels:XAxisLabel[]=useMemo ~ length:", length);
 
     return Array.from({ length }, (_, index) => {
       const datetime = startXWithOffset + index * timeDiff;
@@ -188,7 +187,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
         </div>
         <div className={`xaxis-wrapper ${hasOnlyOneLabel ? "center" : ""}`}>
           {displayXAxisLabels.map((value, index) => (
-            <span key={index}>{value?.text}</span>
+            <TokenChartGraphXLabel x={value.position} key={index}>{value?.text}</TokenChartGraphXLabel>
           ))}
           {/* {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (
             <span key={index}>{label}</span>

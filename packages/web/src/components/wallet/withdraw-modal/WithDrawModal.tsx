@@ -63,7 +63,6 @@ const WithDrawModal: React.FC<Props> = ({
   const { account } = useWallet();
 
   const { tokens, tokenPrices, displayBalanceMap } = useTokenData();
-  console.log("🚀 ~ displayBalanceMap:", displayBalanceMap);
 
   useEscCloseModal(close);
   usePositionModal(modalRef);
