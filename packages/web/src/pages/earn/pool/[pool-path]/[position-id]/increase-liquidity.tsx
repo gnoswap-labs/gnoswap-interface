@@ -10,9 +10,6 @@ import { DeviceSize } from "@styles/media";
 import useRouter from "@hooks/common/use-custom-router";
 import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
-// import { getServerSideProps } from "../index";
-
-// export { getServerSideProps };
 
 export default function IncreaseLiquidity() {
   const { width } = useWindowSize();

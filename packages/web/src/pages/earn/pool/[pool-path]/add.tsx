@@ -12,9 +12,6 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
 import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
-// import { getServerSideProps } from "./index";
-
-// export { getServerSideProps };
 
 export default function EarnAdd() {
   const { width } = useWindowSize();

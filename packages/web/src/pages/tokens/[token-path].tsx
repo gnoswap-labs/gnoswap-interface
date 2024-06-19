@@ -11,9 +11,13 @@ import TrendingCryptoCardListContainer from "@containers/trending-crypto-card-li
 import TrendingCryptos from "@components/token/trending-cryptos/TrendingCryptos";
 import GainerAndLoserContainer from "@containers/gainer-and-loser-container/GainerAndLoserContainer";
 import { useLoading } from "@hooks/common/use-loading";
-import { useGetTokenByPath } from "@query/token";
+import { useGetTokenByPath, useGetTokenPricesByPath } from "@query/token";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { toPriceFormat } from "@utils/number-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export default function Token() {
   const { isLoading } = useLoading();
@@ -28,6 +32,12 @@ export default function Token() {
       }
     }
   });
+  const {
+    data: {
+      usd: currentPrice = "0",
+    } = {},
+  } = useGetTokenPricesByPath(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
+  const { getGnotPath } = useGnotToGnot();
 
   const steps = useMemo(() => {
     return [
@@ -46,20 +56,35 @@ export default function Token() {
     ];
   }, [token]);
 
+  const price = useMemo(() => toPriceFormat(
+    currentPrice, {
+    usd: true,
+    isRounding: false,
+    fixedLessThan1Decimal: 3,
+  }), [currentPrice]);
+
+  const wrappedToken = useMemo(() => getGnotPath(token), [getGnotPath, token]);
+
   return (
-    <TokenLayout
-      header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={steps} isLoading={isLoading} w="102px" />}
-      chart={<TokenChartContainer />}
-      info={<TokenInfoContentContainer />}
-      description={<TokenDescriptionContainer />}
-      swap={<TokenSwapContainer />}
-      bestPools={<BestPoolsContainer />}
-      trending={
-        <TrendingCryptos cardList={<TrendingCryptoCardListContainer />} />
-      }
-      gainersAndLosers={<GainerAndLoserContainer />}
-      footer={<Footer />}
-    />
+    <>
+      <SEOHeader
+        title={`${price} | ${wrappedToken?.name}(${wrappedToken?.symbol})`}
+        pageDescription={`Buy or Sell ${wrappedToken.symbol} on Gnoswap.`}
+      />
+      <TokenLayout
+        header={<HeaderContainer />}
+        breadcrumbs={<BreadcrumbsContainer listBreadcrumb={steps} isLoading={isLoading} w="102px" />}
+        chart={<TokenChartContainer />}
+        info={<TokenInfoContentContainer />}
+        description={<TokenDescriptionContainer />}
+        swap={<TokenSwapContainer />}
+        bestPools={<BestPoolsContainer />}
+        trending={
+          <TrendingCryptos cardList={<TrendingCryptoCardListContainer />} />
+        }
+        gainersAndLosers={<GainerAndLoserContainer />}
+        footer={<Footer />}
+      />
+    </>
   );
 }

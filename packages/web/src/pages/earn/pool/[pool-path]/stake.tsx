@@ -10,9 +10,9 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
-// import { getServerSideProps } from "./index";
-
-// export { getServerSideProps };
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { makeSwapFeeTier } from "@utils/swap-utils";
 
 export default function Earn() {
   const { width } = useWindowSize();
@@ -39,17 +39,50 @@ export default function Earn() {
     ];
   }, [data, width]);
 
+
+  const feeStr = useMemo(() => {
+    const feeTier = data?.fee;
+
+    if (!feeTier) {
+      return null;
+    }
+    return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
+  }, [data?.fee]);
+
+
+  const poolInfoText = useMemo(
+    () => `Stake Position to ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB)?.symbol} (${feeStr || "0"})`,
+    [
+      data?.tokenA,
+      data?.tokenB,
+      feeStr,
+      getGnotPath
+    ]
+  );
+
+  const title = useMemo(() => {
+    if (data) return `${poolInfoText}`;
+
+    return "Stake Position";
+  }, [data, poolInfoText]);
+
   return (
-    <StakePositionLayout
-      header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoadingCommon || isLoading}
-        />
-      }
-      stakeLiquidity={<StakePositionContainer />}
-      footer={<Footer />}
-    />
+    <>
+      <SEOHeader
+        title={title}
+        pageDescription="Create your own positions and provide liquidity to earn staking rewards."
+      />
+      <StakePositionLayout
+        header={<HeaderContainer />}
+        breadcrumbs={
+          <BreadcrumbsContainer
+            listBreadcrumb={listBreadcrumb}
+            isLoading={isLoadingCommon || isLoading}
+          />
+        }
+        stakeLiquidity={<StakePositionContainer />}
+        footer={<Footer />}
+      />
+    </>
   );
 }

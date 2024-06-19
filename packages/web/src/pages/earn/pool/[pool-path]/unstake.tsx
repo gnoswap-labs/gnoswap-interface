@@ -10,9 +10,9 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
-// import { getServerSideProps } from "./index";
-
-// export { getServerSideProps };
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+import SEOHeader from "@components/common/seo-header/seo-header";
 
 export default function Earn() {
   const { width } = useWindowSize();
@@ -39,17 +39,49 @@ export default function Earn() {
     ];
   }, [data, width]);
 
+  const feeStr = useMemo(() => {
+    const feeTier = data?.fee;
+
+    if (!feeTier) {
+      return null;
+    }
+    return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
+  }, [data?.fee]);
+
+
+  const poolInfoText = useMemo(
+    () => `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB)?.symbol} (${feeStr || "0"})`,
+    [
+      data?.tokenA,
+      data?.tokenB,
+      feeStr,
+      getGnotPath
+    ]
+  );
+
+  const title = useMemo(() => {
+    if (data) return `Unstake Position from ${poolInfoText}`;
+
+    return "Unstake Position";
+  }, [data, poolInfoText]);
+
   return (
-    <UnstakeLiquidityLayout
-      header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoadingCommon || isLoading}
-        />
-      }
-      unstakeLiquidity={<UnstakeLiquidityContainer />}
-      footer={<Footer />}
-    />
+    <>
+      <SEOHeader
+        title={title}
+        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
+      />
+      <UnstakeLiquidityLayout
+        header={<HeaderContainer />}
+        breadcrumbs={
+          <BreadcrumbsContainer
+            listBreadcrumb={listBreadcrumb}
+            isLoading={isLoadingCommon || isLoading}
+          />
+        }
+        unstakeLiquidity={<UnstakeLiquidityContainer />}
+        footer={<Footer />}
+      />
+    </>
   );
 }

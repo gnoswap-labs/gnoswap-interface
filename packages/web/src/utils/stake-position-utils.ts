@@ -62,7 +62,7 @@ export const formatTokenExchangeRate = (
   if (Number.isNaN(inputAsNumber)) return "-";
 
   if (inputAsNumber < 1e3) {
-    if (minLimit && inputAsNumber < minLimit && inputAsNumber > 0) return `${minLimit}`;
+    if (minLimit && inputAsNumber < minLimit && inputAsNumber > 0) return `<${minLimit}`;
 
     if (Number.isInteger(inputAsNumber)) return inputAsNumber.toLocaleString("en-US", {
       maximumFractionDigits: forcedIntegerDecimals,

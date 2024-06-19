@@ -12,9 +12,6 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { encryptId } from "@utils/common";
-// import { getServerSideProps } from "./index";
-
-// export { getServerSideProps };
 
 export default function Pool() {
   const router = useRouter();
@@ -64,7 +61,7 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [loading, isFetchedPosition]);
+  }, [isFetchedPosition, loading]);
 
   return (
     <PoolLayout

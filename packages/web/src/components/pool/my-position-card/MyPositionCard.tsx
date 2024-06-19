@@ -719,12 +719,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     {!loading && (
                       <div className="link-page">
                         <span className="product-id">ID #{position.id}</span>
-                        <div
-                          onClick={() =>
+                        {!position.closed && <div
+                          onClick={() => {
                             setCopy(
                               `${window.location.host + window.location.pathname
                               }?addr=${address}#${position.id}`,
-                            )
+                            );
+                          }
                           }
                         >
                           <IconLinkPage className="icon-link" />
@@ -741,7 +742,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                               )}
                             </CopyTooltip>
                           )}
-                        </div>
+                        </div>}
                       </div>
                     )}
                   </div>

@@ -145,8 +145,8 @@ const DashboardActivitiesContainer: React.FC = () => {
     const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
     const tokenASymbol = res.tokenA.symbol;
     const tokenBSymbol = res.tokenB.symbol;
-    const shouldShowTokenAAmount = !!res.tokenBAmount && !!Number(res.tokenAAmount);
-    const shouldShowTokenBAmount = !!res.tokenBAmount && !!Number(res.tokenBAmount);
+    const shouldShowTokenAAmount = res.actionType !== "CLAIM" || (!!res.tokenAAmount && !!Number(res.tokenAAmount));
+    const shouldShowTokenBAmount = res.actionType !== "CLAIM" || !!res.tokenBAmount && !!Number(res.tokenBAmount);
 
     const actionText = (() => {
       const action = capitalizeFirstLetter(res.actionType);
@@ -184,7 +184,7 @@ const DashboardActivitiesContainer: React.FC = () => {
 
   return (
     <ActivityList
-      activities={(activities.filter(item => Number(item.tokenAAmount) || Number(item.tokenBAmount)) ?? []).map(x => formatActivity(x))}
+      activities={(activities.filter(item => (Number(item.tokenAAmount)) || Number(item.tokenBAmount)) ?? []).filter(item => item.actionType === "CLAIM").map(x => formatActivity(x))}
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

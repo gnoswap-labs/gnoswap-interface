@@ -5,6 +5,7 @@ import { RewardType } from "@constants/option.constant";
 import { prettyNumberFloatInteger, toLowerUnitFormat } from "@utils/number-utils";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 export interface MyPositionRewardContentProps {
   rewardInfo: { [key in RewardType]: PositionRewardInfo[] };
@@ -60,10 +61,12 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
           {swapFeeRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={getGnotPath(reward.token).logoURI}
-                  alt="token logo"
+                <MissingLogo
+                  symbol={getGnotPath(reward.token).symbol}
+                  url={getGnotPath(reward.token).logoURI}
                   className="token-logo"
+                  width={20}
+                  mobileWidth={20}
                 />
                 <span className="position">
                   {getGnotPath(reward.token).symbol}
@@ -86,10 +89,12 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
           {stakingRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={getGnotPath(reward.token).logoURI}
-                  alt="token logo"
+                <MissingLogo
+                  symbol={getGnotPath(reward.token).symbol}
+                  url={getGnotPath(reward.token).logoURI}
                   className="token-logo"
+                  width={20}
+                  mobileWidth={20}
                 />
                 <span className="position">
                   {getGnotPath(reward.token).symbol}
@@ -112,10 +117,12 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
           {externalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={getGnotPath(reward.token).logoURI}
-                  alt="token logo"
+                <MissingLogo
+                  symbol={getGnotPath(reward.token).symbol}
+                  url={getGnotPath(reward.token).logoURI}
                   className="token-logo"
+                  width={20}
+                  mobileWidth={20}
                 />
                 <span className="position">
                   {getGnotPath(reward.token).symbol}
