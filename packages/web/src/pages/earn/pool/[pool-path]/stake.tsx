@@ -51,7 +51,7 @@ export default function Earn() {
 
 
   const poolInfoText = useMemo(
-    () => `Stake Position to ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB)?.symbol} (${feeStr || "0"})`,
+    () => `Stake Position to ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB)?.symbol} ${feeStr || "0"}`,
     [
       data?.tokenA,
       data?.tokenB,

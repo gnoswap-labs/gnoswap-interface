@@ -4,6 +4,7 @@ import mixins from "@styles/mixins";
 
 export interface OverlapTokenLogoStyleProps {
   size?: number;
+  mobileSize?: number;
 }
 
 export const OverlapTokenLogoWrapper = styled.div<OverlapTokenLogoStyleProps>`

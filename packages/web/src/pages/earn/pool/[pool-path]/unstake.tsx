@@ -50,7 +50,7 @@ export default function Earn() {
 
 
   const poolInfoText = useMemo(
-    () => `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB)?.symbol} (${feeStr || "0"})`,
+    () => `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB)?.symbol} ${feeStr || "0"}`,
     [
       data?.tokenA,
       data?.tokenB,

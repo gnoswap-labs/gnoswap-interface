@@ -21,7 +21,7 @@ export default function Earn() {
 
   const title = useMemo(() => {
     if (addr) {
-      return `${formatAddress(addr)}'s Positions | Gnoswap`;
+      return `${formatAddress(addr)} | Positions | Earn on Gnoswap`;
     }
 
     return "Earn | Gnoswap";

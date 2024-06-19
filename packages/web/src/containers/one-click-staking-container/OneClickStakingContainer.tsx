@@ -9,6 +9,7 @@ import { initialPool } from "@containers/pool-pair-information-container/PoolPai
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { usePoolData } from "@hooks/pool/use-pool-data";
 
 const OneClickStakingContainer: React.FC = () => {
   const router = useRouter();
@@ -29,6 +30,9 @@ const OneClickStakingContainer: React.FC = () => {
 
     return [checkGnotPath(tokenAPath), checkGnotPath(tokenBPath)].sort();
   }, [router.query]);
+  const { pools } = usePoolData();
+
+
 
   const poolPath = useMemo(() => {
     const feeTier = router.query?.["fee_tier"] as string;
@@ -38,18 +42,23 @@ const OneClickStakingContainer: React.FC = () => {
     return [...tokenPair, feeTier].join(":");
   }, [router.query, tokenPair]);
 
+  const shouldFetchPool = useMemo(() => {
+    return pools.some(pool => pool.poolPath === (poolId || poolPath));
+  }, [poolId, poolPath, pools]);
+
   const { positions, loading: isLoadingPosition } = usePositionData({
     isClosed: false,
     poolPath: encryptId(poolId ?? poolPath ?? ""),
     queryOption: {
-      enabled: !!poolId || !!poolPath
+      // TODO: remove debug code
+      enabled: (!!poolId || !!poolPath)
     }
   });
 
   const {
     data = initialPool as PoolDetailModel,
     isLoading: isLoadingPoolInfo,
-  } = useGetPoolDetailByPath((poolPath || poolId) as string, { enabled: !!poolPath || !!poolId });
+  } = useGetPoolDetailByPath((poolPath || poolId) as string, { enabled: (!!poolPath || !!poolId) && shouldFetchPool });
 
   const stakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];

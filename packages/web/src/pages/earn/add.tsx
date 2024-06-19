@@ -49,7 +49,7 @@ export default function EarnAdd() {
     const tokenA = tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined;
     const tokenB = tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined;
 
-    if (tokenA && tokenB && feeStr) return `Add Position to ${getGnotPath(tokenA).symbol}/${getGnotPath(tokenB).symbol} (${feeStr || "0"})`;
+    if (tokenA && tokenB && feeStr) return `Add Position to ${getGnotPath(tokenA).symbol}/${getGnotPath(tokenB).symbol} ${feeStr || "0"}`;
 
     return "Add Position to Gnoswap Pools";
   }, [feeStr, getGnotPath, router.query, tokens]);

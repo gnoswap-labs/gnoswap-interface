@@ -264,6 +264,7 @@ export const useSelectPool = ({
 
       const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
         }`;
+
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
       if (!poolRes) {
         return Promise.resolve({ chainData: null, dbData: null });
@@ -271,10 +272,12 @@ export const useSelectPool = ({
 
       const convertPath = encryptId(poolPath);
 
-      await queryClient.prefetchQuery({
-        queryKey: [QUERY_KEY.poolDetail, convertPath],
-        queryFn: () => poolRepository.getPoolDetailByPoolPath(poolPath),
-      });
+      if (isCreate) {
+        await queryClient.prefetchQuery({
+          queryKey: [QUERY_KEY.poolDetail, convertPath],
+          queryFn: () => poolRepository.getPoolDetailByPoolPath(poolPath),
+        });
+      }
       const poolResFromDb = await poolRepository.getPoolDetailByPoolPath(
         convertPath,
       );

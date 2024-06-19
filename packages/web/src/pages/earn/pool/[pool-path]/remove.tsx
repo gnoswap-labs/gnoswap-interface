@@ -51,7 +51,7 @@ export default function Earn() {
   }, [data?.fee]);
 
   const title = useMemo(() => {
-    return `Remove Position From ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${feeStr ?? "0"})`;
+    return `Remove Position From ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr ?? "0"}`;
 
   }, [data?.tokenA, data?.tokenB, feeStr, getGnotPath]);
 

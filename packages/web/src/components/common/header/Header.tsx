@@ -31,6 +31,8 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { ITokenResponse } from "@repositories/token";
 import { BLOCKED_PAGES } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import Button, { ButtonHierarchy } from "../button/Button";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 interface HeaderProps {
   pathname?: string;
@@ -91,6 +93,7 @@ const Header: React.FC<HeaderProps> = ({
   const { width } = useWindowSize();
   const router = useCustomRouter();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
+  const { networkClient } = useGnoswapContext();
 
   const navigationItems = useMemo(() => {
     // Make path by page name
@@ -159,6 +162,18 @@ const Header: React.FC<HeaderProps> = ({
             </Navigation>
           </LeftSection>
           <RightSection>
+            {/* TODO: Remove debug code */}
+            <Button
+              text="Test 500"
+              style={{
+                hierarchy: ButtonHierarchy.Primary,
+                height: 36,
+                padding: "16px",
+              }}
+              onClick={async () => {
+                await networkClient?.get({ url: "https://mpb55236ab0a2979788c.free.beeceptor.com/data" });
+              }}
+            />
             <SearchContainer>
               <SearchButton onClick={onSearchMenuToggle}>
                 <IconSearch className="search-icon" />
@@ -183,6 +198,7 @@ const Header: React.FC<HeaderProps> = ({
                 gnotToken={gnotToken}
               />
             </SearchContainer>
+
             <NotificationButton breakpoint={breakpoint} />
           </RightSection>
         </HeaderContainer>

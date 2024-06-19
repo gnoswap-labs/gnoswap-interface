@@ -31,7 +31,7 @@ export default function PoolIncentivize() {
 
 
   const poolInfoText = useMemo(
-    () => `${getGnotPath(currentPool?.tokenA).symbol}/${getGnotPath(currentPool?.tokenB)?.symbol} (${feeStr || "0"})`,
+    () => `${getGnotPath(currentPool?.tokenA).symbol}/${getGnotPath(currentPool?.tokenB)?.symbol} ${feeStr || "0"}`,
     [
       currentPool?.tokenA,
       currentPool?.tokenB,

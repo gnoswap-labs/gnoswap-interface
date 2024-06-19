@@ -45,6 +45,7 @@ import Button from "@components/common/button/Button";
 import { useGetPositionBins } from "@query/positions";
 import { toPriceFormat } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -650,19 +651,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   )}
                   {!loading && (
                     <div className="coin-info">
-                      <MissingLogo
-                        symbol={tokenA.symbol}
-                        url={tokenA.logoURI}
-                        className="token-logo"
-                        width={36}
-                        mobileWidth={24}
-                      />
-                      <MissingLogo
-                        symbol={tokenB.symbol}
-                        url={tokenB.logoURI}
-                        className="token-logo"
-                        width={36}
-                        mobileWidth={24}
+                      <OverlapTokenLogo
+                        tokens={[tokenA, tokenB]}
+                        size={36}
+                        mobileSize={24}
                       />
                     </div>
                   )}
@@ -670,11 +662,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     <div className="link-page">
                       <span className="product-id">ID #{position.id}</span>
                       <div
-                        onClick={() =>
+                        onClick={() => {
+                          if (position.closed) {
+                            setCopy(
+                              `${window.location.host + window.location.pathname
+                              }?addr=${address}`,
+                            );
+                          }
+
                           setCopy(
                             `${window.location.host + window.location.pathname
                             }?addr=${address}#${position.id}`,
-                          )
+                          );
+                        }
                         }
                       >
                         <IconLinkPage className="icon-link" />
@@ -719,14 +719,20 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     {!loading && (
                       <div className="link-page">
                         <span className="product-id">ID #{position.id}</span>
-                        {!position.closed && <div
+                        <div
                           onClick={() => {
+                            if (position.closed) {
+                              setCopy(
+                                `${window.location.host + window.location.pathname
+                                }?addr=${address}`,
+                              );
+                            }
+
                             setCopy(
                               `${window.location.host + window.location.pathname
                               }?addr=${address}#${position.id}`,
                             );
-                          }
-                          }
+                          }}
                         >
                           <IconLinkPage className="icon-link" />
                           {copied && (
@@ -742,7 +748,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                               )}
                             </CopyTooltip>
                           )}
-                        </div>}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -756,17 +762,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="flex-button">
-              <Button
+              {!position.closed && <Button
                 text="Copy Positioning"
                 className="copy-button"
                 style={{}}
-                onClick={() =>
+                onClick={() => {
                   router.push(
                     router.asPath +
                     `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`,
-                  )
+                  );
                 }
-              />
+                }
+              />}
               {!position.staked &&
                 !isClosed &&
                 !isHiddenAddPosition &&

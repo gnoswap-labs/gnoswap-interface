@@ -154,7 +154,7 @@ export default function Pool() {
 
 
   const title = useMemo(() => {
-    const poolInfoText = ` ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${feeStr || "0"})`;
+    const poolInfoText = ` ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr || "0"}`;
 
     if (address) {
       return `${formatAddress(address)} | ${poolInfoText} | Earn on Gnoswap`;
