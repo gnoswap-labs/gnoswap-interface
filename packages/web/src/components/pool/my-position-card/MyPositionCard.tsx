@@ -663,11 +663,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                       <span className="product-id">ID #{position.id}</span>
                       <div
                         onClick={() => {
-                          if (position.closed) {
+
+                          if (isClosed) {
                             setCopy(
                               `${window.location.host + window.location.pathname
                               }?addr=${address}`,
                             );
+                            return;
                           }
 
                           setCopy(
@@ -721,11 +723,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                         <span className="product-id">ID #{position.id}</span>
                         <div
                           onClick={() => {
-                            if (position.closed) {
+                            if (isClosed) {
                               setCopy(
                                 `${window.location.host + window.location.pathname
                                 }?addr=${address}`,
                               );
+                              return;
                             }
 
                             setCopy(
@@ -762,7 +765,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="flex-button">
-              {!position.closed && <Button
+              {!isClosed && <Button
                 text="Copy Positioning"
                 className="copy-button"
                 style={{}}
@@ -909,7 +912,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <div className="range-badge">
                 <RangeBadge
                   status={
-                    position.closed
+                    isClosed
                       ? RANGE_STATUS_OPTION.NONE
                       : inRange
                         ? RANGE_STATUS_OPTION.IN

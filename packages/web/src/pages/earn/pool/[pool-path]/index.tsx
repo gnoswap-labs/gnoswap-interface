@@ -88,6 +88,7 @@ export default function Pool() {
       return;
     }
 
+
     if (
       address &&
       isFetchedPosition &&
@@ -95,8 +96,26 @@ export default function Pool() {
       poolPath
     ) {
       if (hash && hash !== "staking") {
+        const position = positions.find(item => item.id === hash);
+        const isClosedPosition = !position || position?.closed;
+
+        if (isClosedPosition) {
+          setTimeout(() => {
+            const positionContainerElement =
+              document.getElementById("liquidity-wrapper");
+            const topPosition =
+              positionContainerElement?.offsetTop;
+            if (!topPosition) {
+              return;
+            }
+            window.scrollTo({
+              top: topPosition,
+            });
+          });
+        }
+
         setTimeout(() => {
-          if (positions.find(item => item.id === hash)?.closed) {
+          if (isClosedPosition) {
             const positionContainerElement =
               document.getElementById("liquidity-wrapper");
             const topPosition =
@@ -143,6 +162,7 @@ export default function Pool() {
     isStaking,
     poolPath,
     positions,
+    router
   ]);
 
   const feeStr = useMemo(() => {
@@ -154,7 +174,7 @@ export default function Pool() {
 
 
   const title = useMemo(() => {
-    const poolInfoText = ` ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr || "0"}`;
+    const poolInfoText = `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr || "0"}`;
 
     if (address) {
       return `${formatAddress(address)} | ${poolInfoText} | Earn on Gnoswap`;

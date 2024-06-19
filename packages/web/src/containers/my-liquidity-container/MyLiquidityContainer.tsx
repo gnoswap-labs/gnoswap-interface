@@ -159,6 +159,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
   };
+  console.log("🚀 ~ filteredPosition ~ filteredPosition:", filteredPosition);
 
 
   return (
