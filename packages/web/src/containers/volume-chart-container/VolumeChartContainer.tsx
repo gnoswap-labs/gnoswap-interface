@@ -202,7 +202,7 @@ const VolumeChartContainer: React.FC = () => {
         return {
           xAxisLabels: [...pre.xAxisLabels, time],
           datas: [...pre.datas, next.volumeUsd],
-          times: [...pre.times, time],
+          times: [...pre.times, next.date],
           fees: fees,
         };
       },

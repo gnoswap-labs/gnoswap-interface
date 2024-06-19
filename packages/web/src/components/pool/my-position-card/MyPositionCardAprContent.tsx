@@ -40,7 +40,6 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
         <React.Fragment>
           <div className="list">
             <span className="title">Swap Fees</span>
-            <span className="note">Based on 7d avg</span>
           </div>
           {swapFeeRewards.map((reward, index) => (
             <div key={index} className="list">
@@ -57,7 +56,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true })}%
+                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true, isRounding: false })}%
               </span>
             </div>
           ))}
@@ -85,7 +84,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, { decimals: 2 })}%
+                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true, isRounding: false })}%
               </span>
             </div>
           ))}
@@ -113,7 +112,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, { decimals: 2 })}%
+                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true, isRounding: false })}%
               </span>
             </div>
           ))}

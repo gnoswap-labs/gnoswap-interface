@@ -1,8 +1,8 @@
 import { TokenPairInfo } from "@models/token/token-pair-info";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-import { isNumber } from "./number-utils";
 import { tickToPrice, tickToPriceStr } from "./swap-utils";
+import { isNumber, removeTrailingZeros } from "./number-utils";
 
 /**
  * Shortens an address by N characters.
@@ -43,17 +43,39 @@ export function makePairName({
 
 export function numberToFormat(
   num: string | number,
-  options?: {
+  {
+    isRounding = true,
+    forceDecimals,
+    decimals,
+  }: {
     decimals?: number;
     forceDecimals?: boolean
-  },
+    isRounding?: boolean;
+  } = {},
 ) {
-  const decimal = options?.forceDecimals
-    ? options?.decimals
+  console.log("🚀 ~ num:", num);
+  const decimal = forceDecimals
+    ? decimals
     : Number.isInteger(Number(num))
       ? 0
-      : options?.decimals;
-  return isNumber(Number(num)) ? BigNumber(num).toFormat(decimal || 0) : "0";
+      : decimals;
+
+  if (!isNumber(Number(num))) {
+    return "0";
+  }
+
+  if (!isRounding && decimal) {
+    const temp = BigNumber(num).toFormat((decimal || 0) + 1);
+    const [intPart, decimalPart] = temp.split(".");
+
+    if (!forceDecimals) {
+      return removeTrailingZeros(intPart + "." + decimalPart.substring(0, decimal));
+    }
+
+    return intPart + "." + decimalPart.substring(0, decimal);
+  }
+
+  return BigNumber(num).toFormat(decimal || 0);
 }
 
 export function numberToRate(

@@ -74,6 +74,7 @@ interface GnoswapContextProps {
   notificationRepository: NotificationRepository;
   walletRepository: WalletRepository;
   leaderboardRepository: LeaderboardRepository;
+  localStorageClient: WebStorageClient;
 }
 
 const getSessionId = () => {
@@ -283,6 +284,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         notificationRepository,
         walletRepository,
         leaderboardRepository,
+        localStorageClient,
       }}
     >
       {loadedProviders && children}

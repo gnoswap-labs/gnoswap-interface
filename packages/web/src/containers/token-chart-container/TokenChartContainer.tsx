@@ -162,6 +162,9 @@ const TokenChartContainer: React.FC = () => {
       setFromSelectToken(false);
       clearModal();
     },
+    onClickClose: () => {
+      router.push("/");
+    }
   });
   const path = router.query["token-path"] as string;
   const { data: tokenB } = useGetTokenByPath(path, {
@@ -195,17 +198,11 @@ const TokenChartContainer: React.FC = () => {
   const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
   useEffect(() => {
     if (tokenB) {
-      // TODO: Remove test code
       const dataToday = checkPositivePrice(
-        "100",
-        "1", {
+        pricesBefore.latestPrice,
+        pricesBefore.priceToday, {
         displayStatusSign: false,
       });
-      // const dataToday = checkPositivePrice(
-      //   pricesBefore.latestPrice,
-      //   pricesBefore.priceToday, {
-      //   displayStatusSign: false,
-      // });
       setTokenInfo(() => ({
         token: {
           name: getGnotPath(tokenB).name,

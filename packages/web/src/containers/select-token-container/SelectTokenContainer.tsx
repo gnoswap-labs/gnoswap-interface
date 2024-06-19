@@ -12,6 +12,7 @@ import BigNumber from "bignumber.js";
 import { parseJson } from "@utils/common";
 import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useRouter } from "next/router";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -61,6 +62,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   callback,
   modalRef,
 }) => {
+  const router = useRouter();
   const { breakpoint } = useWindowSize();
   const {
     tokens,
@@ -85,6 +87,9 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       changeToken?.(value);
       close();
     },
+    onClickClose: () => {
+      router.push("/");
+    }
   });
 
   const defaultTokens = useMemo(() => {
