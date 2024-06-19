@@ -195,11 +195,17 @@ const TokenChartContainer: React.FC = () => {
   const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
   useEffect(() => {
     if (tokenB) {
+      // TODO: Remove test code
       const dataToday = checkPositivePrice(
-        pricesBefore.latestPrice,
-        pricesBefore.priceToday, {
+        "100",
+        "1", {
         displayStatusSign: false,
       });
+      // const dataToday = checkPositivePrice(
+      //   pricesBefore.latestPrice,
+      //   pricesBefore.priceToday, {
+      //   displayStatusSign: false,
+      // });
       setTokenInfo(() => ({
         token: {
           name: getGnotPath(tokenB).name,

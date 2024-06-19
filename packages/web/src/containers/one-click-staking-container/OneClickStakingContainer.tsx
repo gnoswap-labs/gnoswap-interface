@@ -50,7 +50,6 @@ const OneClickStakingContainer: React.FC = () => {
     isClosed: false,
     poolPath: encryptId(poolId ?? poolPath ?? ""),
     queryOption: {
-      // TODO: remove debug code
       enabled: (!!poolId || !!poolPath)
     }
   });

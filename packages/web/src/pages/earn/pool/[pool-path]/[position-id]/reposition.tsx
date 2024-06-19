@@ -10,11 +10,13 @@ import { DeviceSize } from "@styles/media";
 import useRouter from "@hooks/common/use-custom-router";
 import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
+import SEOHeader from "@components/common/seo-header/seo-header";
 
 export default function EarnAdd() {
   const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.query["pool-path"] || "";
+  const positionId = router.query["position-id"] || "";
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
@@ -36,17 +38,25 @@ export default function EarnAdd() {
     ];
   }, [data, width]);
 
+  const title = useMemo(() => `Reposition in #${positionId}`, [positionId]);
+
   return (
-    <RepositionLayout
-      header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoadingCommon || isLoading}
-        />
-      }
-      reposition={<RepositionContainer />}
-      footer={<Footer />}
-    />
+    <>
+      <SEOHeader
+        title={title}
+        pageDescription="Add incentives to pools for liquidity providers to bootstrap liquidity."
+      />
+      <RepositionLayout
+        header={<HeaderContainer />}
+        breadcrumbs={
+          <BreadcrumbsContainer
+            listBreadcrumb={listBreadcrumb}
+            isLoading={isLoadingCommon || isLoading}
+          />
+        }
+        reposition={<RepositionContainer />}
+        footer={<Footer />}
+      />
+    </>
   );
 }
