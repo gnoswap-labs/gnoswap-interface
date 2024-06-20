@@ -13,6 +13,7 @@ import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { TokenModel } from "@models/token/token-model";
 import { toUnitFormat } from "@utils/number-utils";
 import { numberToRate } from "@utils/string-utils";
+import IconStar from "@components/common/icons/IconStar";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -132,6 +133,12 @@ const OneClickStaking: React.FC<Props> = ({
 
   const stakingApr = useMemo(() => {
     if (isLoadingPool) return "-";
+
+    if (Number(pool.stakingApr) > 0) {
+      return <>
+        <IconStar size={20} /> {numberToRate(pool.stakingApr)}
+      </>;
+    }
 
     return numberToRate(pool.stakingApr);
   }, [isLoadingPool, pool.stakingApr]);

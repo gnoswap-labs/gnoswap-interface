@@ -28,6 +28,7 @@ import { useGetLazyPositionBins } from "@query/positions";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import IconStar from "../icons/IconStar";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -122,6 +123,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
+    if (Number(position.apr) > 100) {
+      return <>
+        <IconStar size={20} />{numberToRate(position.apr)}
+      </>;
+    }
+
     return numberToRate(position.apr);
   }, [position.apr]);
 
@@ -373,7 +380,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="list-content">
               <span>{positionUsdValueStr}</span>
-              {aprStr}
+              <span className="apr-value">{aprStr}</span>
             </div>
             <div className="list-header mt-4">
               <span className="label-text">{POSITION_CONTENT_LABEL.DAILY}</span>
