@@ -128,13 +128,19 @@ const OneClickStaking: React.FC<Props> = ({
   const feeApr = useMemo(() => {
     if (isLoadingPool) return "-";
 
+    if (Number(pool.feeApr) > 100) {
+      return <>
+        <IconStar size={20} /> {numberToRate(pool.feeApr)}
+      </>;
+    }
+
     return numberToRate(pool.feeApr);
   }, [isLoadingPool, pool.feeApr]);
 
   const stakingApr = useMemo(() => {
     if (isLoadingPool) return "-";
 
-    if (Number(pool.stakingApr) > 0) {
+    if (Number(pool.stakingApr) > 100) {
       return <>
         <IconStar size={20} /> {numberToRate(pool.stakingApr)}
       </>;
@@ -171,14 +177,14 @@ const OneClickStaking: React.FC<Props> = ({
             leftSymbol={tokenARevert?.symbol || ""}
             rightSymbol={tokenBRevert?.symbol || ""}
           />}
-          {feeApr}
+          <span className="fee-apr-value">{feeApr}</span>
         </div>
       </div>
       <div>
         <div className="label">Staking APR</div>
         <div className="value">
           <OverlapLogo logos={rewardTokens} size={24} />
-          {stakingApr}
+          <span className="staking-apr-value">{stakingApr}</span>
         </div>
       </div>
     </div>;
