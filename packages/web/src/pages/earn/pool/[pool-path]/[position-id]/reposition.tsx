@@ -45,6 +45,7 @@ export default function EarnAdd() {
       <SEOHeader
         title={title}
         pageDescription="Add incentives to pools for liquidity providers to bootstrap liquidity."
+        ogDescription="Manage your positions to earn trading fees."
       />
       <RepositionLayout
         header={<HeaderContainer />}

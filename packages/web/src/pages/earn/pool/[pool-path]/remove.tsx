@@ -59,6 +59,8 @@ export default function Earn() {
       <SEOHeader
         title={title}
         pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
+        ogTitle="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity"
+        ogDescription="Manage your positions to earn trading fees."
       />
       <PoolRemoveLayout
         header={<HeaderContainer />}

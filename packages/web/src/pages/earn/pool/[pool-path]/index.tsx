@@ -189,11 +189,18 @@ export default function Pool() {
     feeStr,
   ]);
 
+  const ogDescription = useMemo(() => {
+    if (address) return "Create your own positions and provide liquidity to earn trading fees.";
+
+    return "Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency.";
+  }, [address]);
+
   return (
     <>
       <SEOHeader
         title={title}
         pageDescription="Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency."
+        ogDescription={ogDescription}
       />
       <PoolLayout
         header={<HeaderContainer />}

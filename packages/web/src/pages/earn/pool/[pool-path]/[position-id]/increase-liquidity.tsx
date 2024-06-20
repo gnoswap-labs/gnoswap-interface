@@ -45,6 +45,7 @@ export default function IncreaseLiquidity() {
       <SEOHeader
         title={title}
         pageDescription="Add incentives to pools for liquidity providers to bootstrap liquidity."
+        ogDescription="Manage your positions to earn trading fees."
       />
       <IncreaseLiquidityLayout
         header={<HeaderContainer />}

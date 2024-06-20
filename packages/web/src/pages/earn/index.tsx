@@ -35,11 +35,20 @@ export default function Earn() {
     return "The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders.";
   }, [addr]);
 
+  const ogDescription = useMemo(() => {
+    if (addr) {
+      return "Create your own positions and provide liquidity to earn trading fees.";
+    }
+
+    return "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.";
+  }, [addr]);
+
   return (
     <>
       <SEOHeader
         title={title}
         pageDescription={description}
+        ogDescription={ogDescription}
       />
       <EarnLayout
         header={<HeaderContainer />}

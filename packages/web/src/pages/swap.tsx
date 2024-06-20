@@ -11,19 +11,30 @@ import { useMemo } from "react";
 export default function Swap() {
   const [swapInfo] = useAtom(SwapState.swap);
 
-  const headerTitle = useMemo(() => {
+  const title = useMemo(() => {
+
     if (swapInfo.tokenA && swapInfo.tokenB) {
       return `Swap ${swapInfo.tokenA.symbol} to ${swapInfo.tokenB.symbol} | Gnoswap`;
+    }
+
+    if (swapInfo.tokenA) {
+      return `Swap ${swapInfo.tokenA.symbol} | Gnoswap`;
     }
 
     return "Swap | Gnoswap";
   }, [swapInfo.tokenA, swapInfo.tokenB]);
 
+  const ogTitle = useMemo(() => {
+    return "Gnoland(GNOT) | Gnoswap";
+  }, []);
+
   return (
     <>
       <SEOHeader
-        title={headerTitle}
+        title={title}
+        ogTitle={ogTitle}
         pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
+        ogDescription="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity."
       />
       <SwapLayout
         header={<HeaderContainer />}

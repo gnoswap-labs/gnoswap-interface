@@ -70,6 +70,7 @@ export default function Token() {
       <SEOHeader
         title={`${price} | ${wrappedToken?.name}(${wrappedToken?.symbol})`}
         pageDescription={`Buy or Sell ${wrappedToken.symbol} on Gnoswap.`}
+        ogDescription={`Buy or Sell ${wrappedToken.symbol} on Gnoswap.`}
       />
       <TokenLayout
         header={<HeaderContainer />}

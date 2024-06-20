@@ -17,7 +17,7 @@ export default function Custom500() {
     <>
       <SEOHeader
         title={"Page Unavailable!"}
-        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
+        pageDescription=""
       />
       <Custom500Layout
         header={<HeaderContainer />}

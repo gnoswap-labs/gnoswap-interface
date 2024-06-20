@@ -70,6 +70,7 @@ export default function Earn() {
       <SEOHeader
         title={title}
         pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
+        ogDescription="Manage your positions to earn trading fees."
       />
       <UnstakeLiquidityLayout
         header={<HeaderContainer />}

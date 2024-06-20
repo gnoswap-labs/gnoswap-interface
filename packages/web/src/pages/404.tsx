@@ -17,7 +17,7 @@ export default function Custom404() {
     <>
       <SEOHeader
         title={"404: Page Not Found!"}
-        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
+        pageDescription=""
       />
       <Custom404Layout
         header={<HeaderContainer />}
