@@ -9,7 +9,7 @@ import TvlChartSelectTab from "../tvl-chart-select-tab/TvlChartSelectTab";
 import { ChartWrapper, LoadingTVLChart, TvlChartWrapper } from "./TvlChart.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
-interface TvlChartItemProps {
+export interface TvlChartItemProps {
   tvlChartType: CHART_TYPE;
   tvlPriceInfo: TvlPriceInfo;
   tvlChartDatas: TvlChartData;
