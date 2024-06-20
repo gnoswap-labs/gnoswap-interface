@@ -54,7 +54,6 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   showClosePositionButton,
   tokenPrices,
 }) => {
-  console.log("🚀 ~ positions:", positions);
   return (
     <>
       <MyLiquidityWrapper>

@@ -10,7 +10,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { numberToFormat, numberToRate } from "@utils/string-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
@@ -206,7 +206,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   <span>
-                    {convertToKMB(`${tokenABalance}`)}{" "}
+                    {formatTokenExchangeRate(tokenABalance, {
+                      minLimit: 0.000001,
+                      maxSignificantDigits: 6,
+                      fixedDecimalDigits: 6,
+                    })}{" "}
                     <span
                       className={`token-symbol ${isWrapText ? "wrap-text" : ""
                         }`}
@@ -227,7 +231,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   <span>
-                    {convertToKMB(`${tokenBBalance}`)}{" "}
+                    {formatTokenExchangeRate(`${tokenBBalance}`, {
+                      minLimit: 0.000001,
+                      maxSignificantDigits: 6,
+                      fixedDecimalDigits: 6,
+                    })}{" "}
                     <span
                       className={`token-symbol ${isWrapText ? "wrap-text" : ""
                         }`}

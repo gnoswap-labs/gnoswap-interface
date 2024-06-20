@@ -130,9 +130,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     }));
   }, [datas]);
 
-  // const hasOnlyOnePoint = useMemo(() => (xAxisRange.maxX - xAxisRange.minX === 0), [xAxisRange.maxX, xAxisRange.minX]);
-
-
   const displayXAxisLabels: XAxisLabel[] = useMemo(() => {
     const formatInfo = makeTimePeriodFormatInfo();
     const minimumXAxis = formatInfo.textLength / 2; // text size and padding
@@ -155,7 +152,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
   }, [datas, size.width, xAxisLabels]);
 
   const hasOnlyOneLabel = useMemo(() => displayXAxisLabels.length === 1, [displayXAxisLabels.length]);
-
 
   return (
     <TvlChartGraphWrapper>

@@ -53,7 +53,6 @@ export function numberToFormat(
     isRounding?: boolean;
   } = {},
 ) {
-  console.log("🚀 ~ num:", num);
   const decimal = forceDecimals
     ? decimals
     : Number.isInteger(Number(num))

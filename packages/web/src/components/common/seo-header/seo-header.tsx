@@ -15,8 +15,7 @@ const SEOHeader: React.FC<SEOHeaderProps> = ({ title, pageDescription }) => {
   return <Head>
     <title>{title}</title>
     {pageDescription && <meta>{pageDescription}</meta>}
-    <link rel="icon" href="favicon.svg" />
-    <meta name="keywords" content="Swap, Earn, Gnoswap, Liquidity, DeFi, trader" />
+    <link rel="icon" href={`${imagePath}favicon.svg`} />
 
     <meta property="og:image" content={`${imagePath}opengraph-image.png`} />
     <meta property="og:url" content={window.location.origin} />

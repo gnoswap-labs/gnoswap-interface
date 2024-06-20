@@ -21,7 +21,6 @@ export default function Earn() {
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
-  console.log("🚀 ~ Earn ~ data:", data);
 
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
