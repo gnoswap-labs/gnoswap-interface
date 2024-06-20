@@ -9,10 +9,11 @@ const SEOHeader: React.FC<SEOHeaderProps> = ({ title, pageDescription }) => {
   return <Head>
     <title>{title}</title>
     {pageDescription && <meta>{pageDescription}</meta>}
-    <meta property="og:image" content="open-graph" />
-    <meta property="og:url" content="https://beta.gnoswap.io/" />
-    <meta property="og:title" content="The One-stop Gnoland DeFi Platform | Gnoswap" />
-    <meta property="og:description" content="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders." />
+    <meta property="og:image" content="opengraph-image.png" />
+    <meta property="og:image:url" content="opengraph-image.png" />
+    <meta property="og:url" content={window.location.origin} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
   </Head>;
 };
 
