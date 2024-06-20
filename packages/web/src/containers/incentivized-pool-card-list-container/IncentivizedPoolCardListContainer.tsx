@@ -81,10 +81,14 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
 
   const handleScroll = () => {
     if (divRef.current) {
+      const listChildWidth = divRef.current.children[0].clientWidth;
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(
-        Math.min(Math.floor(currentScrollX / 332) + 1, incentivizePools.length),
-      );
+
+      let result = Math.min(Math.floor(currentScrollX / listChildWidth) + 1, incentivizePools.length);
+
+      if (result < 1) return result = 1;
+
+      setCurrentIndex(result);
     }
   };
 

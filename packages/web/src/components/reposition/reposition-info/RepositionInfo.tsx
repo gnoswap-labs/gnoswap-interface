@@ -32,7 +32,7 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
       <div className="deposit-ratio common-bg">
         <div>
           <div>
-            <p className="label">Current Price</p>
+            <p className="label">Deposit Ratio</p>
             <Tooltip
               placement="top"
               FloatingContent={
@@ -79,8 +79,7 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The deposit ratio of the two tokens is determined based on the
-                  current price and the set price range.
+                  The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.
                 </ToolTipContentWrapper>
               }
             >
@@ -96,8 +95,7 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The deposit ratio of the two tokens is determined based on the
-                  current price and the set price range.
+                  The estimated APR from swap fees is calculated based on the selected price range of the position.
                 </ToolTipContentWrapper>
               }
             >

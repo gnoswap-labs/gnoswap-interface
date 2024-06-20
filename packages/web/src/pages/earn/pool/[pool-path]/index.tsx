@@ -11,49 +11,20 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { PoolModel } from "@models/pool/pool-model";
 import { encryptId } from "@utils/common";
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { formatAddress } from "@utils/string-utils";
 
-export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async () => {
-  // export const getServerSideProps: GetServerSideProps<{ pool?: PoolModel }> = (async (context) => {
-  // const poolPath = (context.query["pool-path"] || "") as string;
-
-  // const res = await fetch(API_URL + "/pools/" + encodeURIComponent(encryptId(poolPath)));
-
-  // if (HTTP_5XX_ERROR.includes(res.status)) {
-  //   return {
-  //     redirect: {
-  //       destination: "/500",
-  //       permanent: false
-  //     }
-  //   };
-  // }
-
-  // if (res.status === 404) {
-  //   return { notFound: true };
-  // }
-
-  // if (res.status === 200) {
-  //   const poolRes = (await res.json()).data as PoolResponse;
-
-  //   return {
-  //     props: {
-  //       pool: PoolMapper.fromResponse(poolRes)
-  //     }
-  //   };
-  // }
-
-  return { props: {} };
-});
-
-export default function Pool({ pool }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Pool() {
   const router = useRouter();
   const { account } = useWallet();
   const poolPath = (router.query["pool-path"] || "") as string;
-  const { data = pool } = useGetPoolDetailByPath(poolPath, {
+  const { getGnotPath } = useGnotToGnot();
+  const { data } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
-    initialData: pool,
     onError: (err: any) => {
       if (err["response"]["status"] === 404) {
         router.push("/404");
@@ -72,7 +43,6 @@ export default function Pool({ pool }: InferGetServerSidePropsType<typeof getSer
     }
     return address;
   }, [initializedData]);
-
 
   const {
     isFetchedPosition,
@@ -118,6 +88,7 @@ export default function Pool({ pool }: InferGetServerSidePropsType<typeof getSer
       return;
     }
 
+
     if (
       address &&
       isFetchedPosition &&
@@ -125,7 +96,38 @@ export default function Pool({ pool }: InferGetServerSidePropsType<typeof getSer
       poolPath
     ) {
       if (hash && hash !== "staking") {
+        const position = positions.find(item => item.id === hash);
+        const isClosedPosition = !position || position?.closed;
+
+        if (isClosedPosition) {
+          setTimeout(() => {
+            const positionContainerElement =
+              document.getElementById("liquidity-wrapper");
+            const topPosition =
+              positionContainerElement?.offsetTop;
+            if (!topPosition) {
+              return;
+            }
+            window.scrollTo({
+              top: topPosition,
+            });
+          });
+        }
+
         setTimeout(() => {
+          if (isClosedPosition) {
+            const positionContainerElement =
+              document.getElementById("liquidity-wrapper");
+            const topPosition =
+              positionContainerElement?.offsetTop;
+            if (!topPosition) {
+              return;
+            }
+            window.scrollTo({
+              top: topPosition,
+            });
+          }
+
           const positionContainerElement = document.getElementById(`${hash}`);
           const topPosition =
             positionContainerElement?.offsetTop;
@@ -157,19 +159,57 @@ export default function Pool({ pool }: InferGetServerSidePropsType<typeof getSer
     hash,
     address,
     loading,
-    positions.length,
     isStaking,
     poolPath,
+    positions,
+    router
   ]);
 
+  const feeStr = useMemo(() => {
+    if (!data?.fee) {
+      return null;
+    }
+    return SwapFeeTierInfoMap[makeSwapFeeTier(data.fee)]?.rateStr;
+  }, [data?.fee]);
+
+
+  const title = useMemo(() => {
+    const poolInfoText = `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr || "0"}`;
+
+    if (address) {
+      return `${formatAddress(address)} | ${poolInfoText} | Earn on Gnoswap`;
+    }
+
+    return `${poolInfoText} | Earn on Gnoswap`;
+  }, [
+    address,
+    getGnotPath,
+    data?.tokenA,
+    data?.tokenB,
+    feeStr,
+  ]);
+
+  const ogDescription = useMemo(() => {
+    if (address) return "Create your own positions and provide liquidity to earn trading fees.";
+
+    return "Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency.";
+  }, [address]);
+
   return (
-    <PoolLayout
-      header={<HeaderContainer />}
-      poolPairInformation={<PoolPairInformationContainer />}
-      liquidity={<MyLiquidityContainer address={address} />}
-      staking={isStaking ? <StakingContainer /> : null}
-      footer={<Footer />}
-      isStaking={isStaking}
-    />
+    <>
+      <SEOHeader
+        title={title}
+        pageDescription="Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency."
+        ogDescription={ogDescription}
+      />
+      <PoolLayout
+        header={<HeaderContainer />}
+        poolPairInformation={<PoolPairInformationContainer />}
+        liquidity={<MyLiquidityContainer address={address} />}
+        staking={isStaking ? <StakingContainer /> : null}
+        footer={<Footer />}
+        isStaking={isStaking}
+      />
+    </>
   );
 }

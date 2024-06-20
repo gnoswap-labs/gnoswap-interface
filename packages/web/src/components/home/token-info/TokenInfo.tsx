@@ -71,10 +71,12 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     router.push("/tokens/" + makeId(path));
   };
 
-  const onClickPoolItem = (item: MostLiquidPool) => {
+  const onClickPoolItem = (item?: MostLiquidPool) => {
+    if (!item) return;
+
     const poolPath = `${item.tokenPair.tokenA.path}:${item.tokenPair.tokenB.path
       }:${Number(item.feeRate.slice(0, item.feeRate.length - 1)) * 10000}`;
-    if (item.tokenPair.tokenA.logoURI) {
+    if (!!item.tokenPair.tokenA.path || !!item.tokenPair.tokenB.path) {
       location.href = `/earn/pool/${makeId(poolPath)}`;
     }
   };
@@ -173,14 +175,14 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
       <HoverSection
         onClick={() => onClickPoolItem(mostLiquidPool)}
         className={
-          !!mostLiquidPool.tokenPair.tokenA.logoURI ? "" : "disabled-pointer"
+          mostLiquidPool ? "" : "disabled-pointer"
         }
       >
         <TableColumn
           className="liquid-col padding-12"
           tdWidth={TOKEN_TD_WIDTH[9]}
         >
-          {mostLiquidPool.tokenPair.tokenA.logoURI ? (
+          {mostLiquidPool ? (
             <>
               <DoubleLogo
                 left={mostLiquidPool.tokenPair.tokenA.logoURI}

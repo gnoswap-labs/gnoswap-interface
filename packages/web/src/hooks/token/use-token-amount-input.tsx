@@ -53,7 +53,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
 
     const usd = BigNumber(tokenPrices[checkGnotPath(token.path)]?.usd ?? 0).multipliedBy(amount).toNumber();
 
-    return `$${convertToKMB(usd.toString(), { isIgnoreKFormat: true, maximumFractionDigits: 20 })}`;
+    return `$${convertToKMB(usd.toString(), { isIgnoreKFormat: true, maximumFractionDigits: 2 })}`;
   }, [tokenPrices, amount, token]);
 
   const changeAmount = useCallback((value: string) => {

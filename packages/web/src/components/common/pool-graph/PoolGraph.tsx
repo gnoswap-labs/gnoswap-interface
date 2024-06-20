@@ -8,7 +8,7 @@ import { tickToPriceStr } from "@utils/swap-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
-import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -417,23 +417,39 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       tokenA: tokenA,
       tokenB: tokenB,
       tokenAAmount: tokenAAmountStr
-        ? convertToKMB(tokenAAmountStr.toString())
+        ? formatTokenExchangeRate(tokenAAmountStr.toString(), {
+          maxSignificantDigits: 6,
+          minLimit: 0.000001,
+          fixedDecimalDigits: 6
+        })
         : "-",
       tokenBAmount: tokenBAmountStr
-        ? convertToKMB(tokenBAmountStr.toString())
+        ? formatTokenExchangeRate(tokenBAmountStr.toString(), {
+          maxSignificantDigits: 6,
+          minLimit: 0.000001,
+          fixedDecimalDigits: 6
+        })
         : "-",
       myTokenAAmount:
         index < 20
           ? "-"
           : index > 19 && `${currentBin.reserveTokenAMyAmount}` === "0"
             ? "<0.000001"
-            : convertToKMB((myTokenAAmountStr || "-").toString()) || "-",
+            : formatTokenExchangeRate((myTokenAAmountStr).toString(), {
+              maxSignificantDigits: 6,
+              minLimit: 0.000001,
+              fixedDecimalDigits: 6
+            }) || "-",
       myTokenBAmount:
         index > 19
           ? "-"
           : index < 20 && `${currentBin.reserveTokenBMyAmount}` === "0"
             ? "<0.000001"
-            : convertToKMB((myTokenBAmountStr || "-").toString()) || "-",
+            : formatTokenExchangeRate((myTokenBAmountStr).toString(), {
+              maxSignificantDigits: 6,
+              minLimit: 0.000001,
+              fixedDecimalDigits: 6
+            }) || "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
       tokenAPrice: tickOfPrices[currentTick || 0],

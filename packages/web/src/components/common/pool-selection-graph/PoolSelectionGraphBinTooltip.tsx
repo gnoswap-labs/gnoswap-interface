@@ -134,19 +134,17 @@ export const PoolSelectionGraphBinTooptip: React.FC<
               mobileWidth={20}
             />
             <span
-              className={`hidden ${
-                (tooltipInfo.tokenAAmount || "0").length > 21
+              className={`hidden ${(tooltipInfo.tokenAAmount || "0").length > 21
                   ? "small-font"
                   : ""
-              }`}
+                }`}
             >
               {tooltipInfo.tokenAAmount || "0"}
             </span>
           </span>
           <span
-            className={`price-range ${
-              (tokenAPriceRangeStr.length || 0) > 21 ? "small-font" : ""
-            }`}
+            className={`price-range ${(tokenAPriceRangeStr.length || 0) > 21 ? "small-font" : ""
+              }`}
           >
             {tokenAPriceRangeStr}
           </span>
@@ -171,19 +169,17 @@ export const PoolSelectionGraphBinTooptip: React.FC<
               mobileWidth={20}
             />
             <span
-              className={`hidden ${
-                (tooltipInfo.tokenBAmount || "0").length > 21
+              className={`hidden ${(tooltipInfo.tokenBAmount || "0").length > 21
                   ? "small-font"
                   : ""
-              }`}
+                }`}
             >
               {tooltipInfo.tokenBAmount || "0"}
             </span>
           </span>
           <span
-            className={`price-range ${
-              (tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""
-            }`}
+            className={`price-range ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""
+              }`}
           >
             {tokenBPriceRangeStr}
           </span>

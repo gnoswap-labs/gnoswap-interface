@@ -26,11 +26,11 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
   return (
     <TxsListItem key={title}>
       <TxsDateAgoTitle>{title}</TxsDateAgoTitle>
-      {txs.map((item: TransactionModel, idx: number) => {
+      {txs.slice(0, 4).map((item: TransactionModel, idx: number) => {
         const shouldShowTokenALogo =
-          item.rawValue && item.rawValue.tokenAAmount !== "";
+          !!item.rawValue && !!item.rawValue.tokenAAmount && !!Number(item.rawValue.tokenAAmount);
         const shouldShowTokenBLogo =
-          item.rawValue && item.rawValue.tokenBAmount !== "";
+          !!item.rawValue && !!item.rawValue.tokenBAmount && !!Number(item.rawValue.tokenBAmount);
 
         if (breakpoint === DEVICE_TYPE.MOBILE) {
           return (

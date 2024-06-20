@@ -37,6 +37,7 @@ export const TvlChartGraphWrapper = styled.div`
       &.center {
         ${mixins.flexbox("row", "center", "center")};
       }
+      position: relative;
       width: 100%;
       height: 17px;
       flex-shrink: 0;
@@ -67,7 +68,7 @@ export const TvlChartGraphWrapper = styled.div`
     margin-left: 15px;
     margin-top: -10px;
     margin-bottom: 30px;
-    justify-content: space-between;
+    justify-content: space-evenly;
 
     span {
       ${fonts.body12};
@@ -75,3 +76,24 @@ export const TvlChartGraphWrapper = styled.div`
     }
   }
 `;
+
+export const TokenChartGraphXLabel = styled.span<{
+  x: number;
+}>`
+  position: absolute;
+  display: block;
+  min-width: 80px;
+  left: ${({ x }) => `${x}px`};
+  ${fonts.body12};
+  color: ${({ theme }) => theme.color.text04};
+  transform: translate(-50%, 0);
+  text-align: center;
+  overflow: visible;
+  word-break: keep-all;
+  white-space: nowrap;
+
+  ${media.mobile} {
+    ${fonts.p7};
+  }
+`;
+

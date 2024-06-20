@@ -35,13 +35,14 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const poolPath = (router.query["pool-path"] ?? "") as string;
-  const { positions, loading: isLoadingPosition } = usePositionData({
+  const { positions: positions, loading: isLoadingPosition } = usePositionData({
     address,
     poolPath: encryptId(poolPath),
     queryOption: {
       enabled: !!poolPath
     }
   });
+
   const { claimAll } = usePosition(positions);
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
@@ -150,7 +151,21 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   }, [claimAll, router, setLoadingTransactionClaim, positions, openModal]);
 
   const filteredPosition = useMemo(() => {
-    if (isShowClosePosition) return positions;
+    if (isShowClosePosition) {
+      return positions
+        .sort((a, b) => {
+          const aClosedLabel = a.closed ? 0 : 1;
+          const bClosedLabel = b.closed ? 0 : 1;
+          return bClosedLabel - aClosedLabel;
+        })
+        .sort((a, b) => Number(b.positionUsdValue ?? 0) - Number(a.positionUsdValue ?? 0))
+        .sort((a, b) => {
+          if (a.closed && b.closed) {
+            return Number(b.id ?? 0) - Number(a.id ?? 0);
+          }
+          return 0;
+        });
+    }
 
     return positions.filter(item => item.closed === false)
       .sort((a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue));
@@ -159,7 +174,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
   };
-
 
   return (
     <MyLiquidity

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
-import { customMediaQuery, media } from "@styles/media";
+import { media } from "@styles/media";
 
 export const PoolGraphWrapper = styled.div`
   position: relative;
@@ -146,24 +146,6 @@ export const PoolGraphTooltipWrapper = styled.div`
         }
       }
     }
-
-    ${customMediaQuery(400)} {
-      .amount {
-        .token-amount-value {
-          font-size: 12px;
-        }
-      }
-    }
-
-    ${customMediaQuery(360)} {
-      .price-range {
-        &.price-range-value{
-        font-size: 10px;
-      }
-      }
-    }
-
-   
 
     .price-range {
       width: 100%;

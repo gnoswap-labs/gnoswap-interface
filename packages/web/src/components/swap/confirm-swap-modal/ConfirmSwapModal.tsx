@@ -72,6 +72,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
   const gasFeeUSDStr = useMemo(() => {
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
+
+    if (Number(gasFeeUSD) < 0.01) return "<$0.01";
+
     return `$${toNumberFormat(gasFeeUSD)}`;
   }, [swapSummaryInfo.gasFeeUSD]);
 

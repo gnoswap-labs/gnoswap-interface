@@ -53,6 +53,11 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
 
   const gasFeeUSDStr = useMemo(() => {
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
+
+    if (Number(gasFeeUSD)) {
+      return "<$0.01";
+    }
+
     return `$${gasFeeUSD}`;
   }, [swapSummaryInfo.gasFeeUSD]);
 

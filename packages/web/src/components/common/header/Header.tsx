@@ -136,7 +136,7 @@ const Header: React.FC<HeaderProps> = ({
                         key={item.title}
                         className={
                           pathname === item.path ||
-                          (item?.subPath || []).some(_ => pathname.includes(_))
+                            (item?.subPath || []).some(_ => pathname.includes(_))
                             ? "selected"
                             : ""
                         }
@@ -183,6 +183,7 @@ const Header: React.FC<HeaderProps> = ({
                 gnotToken={gnotToken}
               />
             </SearchContainer>
+
             <NotificationButton breakpoint={breakpoint} />
           </RightSection>
         </HeaderContainer>
@@ -194,7 +195,7 @@ const Header: React.FC<HeaderProps> = ({
                   key={item.title}
                   className={
                     pathname === item.path ||
-                    (item.subPath || []).some(_ => pathname.includes(_))
+                      (item.subPath || []).some(_ => pathname.includes(_))
                       ? "selected"
                       : ""
                   }

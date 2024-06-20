@@ -21,7 +21,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
-import { formatUsdNumber3Digits, toPriceFormat } from "@utils/number-utils";
+import { toPriceFormat } from "@utils/number-utils";
 import { numberToRate } from "@utils/string-utils";
 
 interface NegativeStatusType {
@@ -188,8 +188,7 @@ const HeaderContainer: React.FC = () => {
           transferData.pricesBefore?.priceToday,
         );
 
-        const usdFormat = formatUsdNumber3Digits(transferData.usd);
-        const price = toPriceFormat(usdFormat || "0", {
+        const price = toPriceFormat(transferData.usd || "0", {
           usd: true,
           isRounding: false,
         });
@@ -243,7 +242,7 @@ const HeaderContainer: React.FC = () => {
 
     return temp
       .map((item: PoolModel) => {
-        const price = toPriceFormat(item.tvl || "0", { usd: true });
+        const price = toPriceFormat(item.tvl || "0", { usd: true, });
         const aprRate = numberToRate(item.apr);
 
         return {
@@ -297,8 +296,7 @@ const HeaderContainer: React.FC = () => {
           transferData.pricesBefore?.latestPrice,
           transferData.pricesBefore?.priceToday,
         );
-        const usdFormat = formatUsdNumber3Digits(transferData.usd);
-        const price = toPriceFormat(usdFormat || "0", {
+        const price = toPriceFormat(transferData.usd || "0", {
           usd: true,
           isRounding: false,
         });

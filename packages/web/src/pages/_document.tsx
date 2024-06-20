@@ -10,12 +10,7 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <meta charSet="utf-8" />
-          <meta property="og:title" content="Gnoswap" />
-          <meta property="og:image" content="" />
-          <meta property="og:description" content="" />
-          <meta property="og:url" content="//" />
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <meta name="keywords" content="Swap, Earn, Gnoswap, Liquidity, DeFi, trader" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link

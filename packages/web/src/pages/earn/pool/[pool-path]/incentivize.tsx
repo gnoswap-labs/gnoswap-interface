@@ -9,10 +9,10 @@ import React, { useMemo } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useLoading } from "@hooks/common/use-loading";
-import { getServerSideProps } from "./index";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-
-export { getServerSideProps };
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 
 export default function PoolIncentivize() {
   const { breakpoint } = useWindowSize();
@@ -41,17 +41,48 @@ export default function PoolIncentivize() {
     ];
   }, [data, breakpoint]);
 
+  const feeStr = useMemo(() => {
+    const feeTier = data?.fee;
+
+    if (!feeTier) {
+      return null;
+    }
+    return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
+  }, [data?.fee]);
+
+  const poolInfoText = useMemo(
+    () => `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB)?.symbol} ${feeStr || "0"}`,
+    [
+      data?.tokenA,
+      data?.tokenB,
+      feeStr,
+      getGnotPath
+    ]
+  );
+
+  const title = useMemo(() => {
+    if (data) return `Incentivize ${poolInfoText}`;
+
+    return "Incentivize Gnoswap Pools";
+  }, [data, poolInfoText]);
+
   return (
-    <PoolIncentivizeLayout
-      header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoadingCommon || isLoading}
-        />
-      }
-      poolIncentivize={<PoolAddIncentivizeContainer />}
-      footer={<Footer />}
-    />
+    <>
+      <SEOHeader
+        title={title}
+        pageDescription="Add incentives to pools for liquidity providers to bootstrap liquidity. "
+      />
+      <PoolIncentivizeLayout
+        header={<HeaderContainer />}
+        breadcrumbs={
+          <BreadcrumbsContainer
+            listBreadcrumb={listBreadcrumb}
+            isLoading={isLoadingCommon || isLoading}
+          />
+        }
+        poolIncentivize={<PoolAddIncentivizeContainer />}
+        footer={<Footer />}
+      />
+    </>
   );
 }

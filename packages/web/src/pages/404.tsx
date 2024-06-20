@@ -6,6 +6,7 @@ import Custom404Layout from "@layouts/custom-404/Custom404Layout";
 import useRouter from "@hooks/common/use-custom-router";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
+import SEOHeader from "@components/common/seo-header/seo-header";
 
 export default function Custom404() {
   const router = useRouter();
@@ -13,12 +14,18 @@ export default function Custom404() {
   const themeKey = useAtomValue(ThemeState.themeKey);
 
   return (
-    <Custom404Layout
-      header={<HeaderContainer />}
-      icon404={<IconGnoswap404 themeKey={themeKey} className="icon-404" />}
-      goBackClick={goBackClick}
-      footer={<Footer />}
-      themeKey={themeKey}
-    />
+    <>
+      <SEOHeader
+        title={"404: Page Not Found!"}
+        pageDescription=""
+      />
+      <Custom404Layout
+        header={<HeaderContainer />}
+        icon404={<IconGnoswap404 themeKey={themeKey} className="icon-404" />}
+        goBackClick={goBackClick}
+        footer={<Footer />}
+        themeKey={themeKey}
+      />
+    </>
   );
 }

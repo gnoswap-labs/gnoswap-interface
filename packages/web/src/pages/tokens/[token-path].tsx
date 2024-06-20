@@ -11,61 +11,33 @@ import TrendingCryptoCardListContainer from "@containers/trending-crypto-card-li
 import TrendingCryptos from "@components/token/trending-cryptos/TrendingCryptos";
 import GainerAndLoserContainer from "@containers/gainer-and-loser-container/GainerAndLoserContainer";
 import { useLoading } from "@hooks/common/use-loading";
-import { useGetTokenByPath } from "@query/token";
+import { useGetTokenByPath, useGetTokenPricesByPath } from "@query/token";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { encryptId } from "@utils/common";
-import { API_URL } from "@constants/environment.constant";
-import { ITokenResponse } from "@repositories/token";
-import { HTTP_5XX_ERROR } from "@constants/common.constant";
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { toPriceFormat } from "@utils/number-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
-export const getServerSideProps: GetServerSideProps<{ token?: ITokenResponse }> = (async (context) => {
-  const tokenPath = (context.query["token-path"] ?? "") as string;
-
-  if (!tokenPath) {
-    return { notFound: true };
-  }
-
-  const res = await fetch(API_URL + "/token-metas/" + encodeURIComponent(encryptId(tokenPath)));
-
-  if (HTTP_5XX_ERROR.includes(res.status)) {
-    return {
-      redirect: {
-        destination: "/500",
-        permanent: false
-      }
-    };
-  }
-
-  if (res.status === 404) {
-    return { notFound: true };
-  }
-
-  if (res.status === 200) {
-    const token = (await res.json()).data as ITokenResponse;
-
-    return {
-      props: {
-        token: token
-      }
-    };
-  }
-
-  return {
-    props: {}
-  };
-});
-
-export default function Token({ token: tokenFromServer }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Token() {
   const { isLoading } = useLoading();
   const router = useRouter();
   const path = router.query["token-path"] as string;
-  const { data: token = tokenFromServer } = useGetTokenByPath(path, {
+  const { data: token } = useGetTokenByPath(path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,
-    initialData: tokenFromServer
+    onError: (err: any) => {
+      if (err["response"]["status"] === 404) {
+        router.push("/404");
+      }
+    }
   });
+  const {
+    data: {
+      usd: currentPrice = "0",
+    } = {},
+  } = useGetTokenPricesByPath(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
+  const { getGnotPath } = useGnotToGnot();
 
   const steps = useMemo(() => {
     return [
@@ -84,20 +56,36 @@ export default function Token({ token: tokenFromServer }: InferGetServerSideProp
     ];
   }, [token]);
 
+  const price = useMemo(() => toPriceFormat(
+    currentPrice, {
+    usd: true,
+    isRounding: false,
+    fixedLessThan1Decimal: 3,
+  }), [currentPrice]);
+
+  const wrappedToken = useMemo(() => getGnotPath(token), [getGnotPath, token]);
+
   return (
-    <TokenLayout
-      header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={steps} isLoading={isLoading} w="102px" />}
-      chart={<TokenChartContainer />}
-      info={<TokenInfoContentContainer />}
-      description={<TokenDescriptionContainer />}
-      swap={<TokenSwapContainer />}
-      bestPools={<BestPoolsContainer />}
-      trending={
-        <TrendingCryptos cardList={<TrendingCryptoCardListContainer />} />
-      }
-      gainersAndLosers={<GainerAndLoserContainer />}
-      footer={<Footer />}
-    />
+    <>
+      <SEOHeader
+        title={`${price} | ${wrappedToken?.name}(${wrappedToken?.symbol})`}
+        pageDescription={`Buy or Sell ${wrappedToken.symbol} on Gnoswap.`}
+        ogDescription={`Buy or Sell ${wrappedToken.symbol} on Gnoswap.`}
+      />
+      <TokenLayout
+        header={<HeaderContainer />}
+        breadcrumbs={<BreadcrumbsContainer listBreadcrumb={steps} isLoading={isLoading} w="102px" />}
+        chart={<TokenChartContainer />}
+        info={<TokenInfoContentContainer />}
+        description={<TokenDescriptionContainer />}
+        swap={<TokenSwapContainer />}
+        bestPools={<BestPoolsContainer />}
+        trending={
+          <TrendingCryptos cardList={<TrendingCryptoCardListContainer />} />
+        }
+        gainersAndLosers={<GainerAndLoserContainer />}
+        footer={<Footer />}
+      />
+    </>
   );
 }

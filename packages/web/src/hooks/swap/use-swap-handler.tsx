@@ -4,7 +4,6 @@ import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { AmountModel } from "@models/common/amount-model";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { CommonState, SwapState } from "@states/index";
@@ -34,7 +33,7 @@ import {
 } from "@hooks/common/use-broadcast-handler";
 import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import { ERROR_VALUE } from "@common/errors/adena";
-import { MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
+import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -112,10 +111,6 @@ export const useSwapHandler = () => {
 
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
-  const [gasFeeAmount] = useState<AmountModel>({
-    amount: 0.000001,
-    currency: "GNOT",
-  });
   const [openedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { setNotice } = useNotice();
@@ -162,10 +157,15 @@ export const useSwapHandler = () => {
 
   usePreventScroll(openedConfirmModal);
 
+  const gnotToken = useMemo(() => ((tokens).find(item => item.symbol === "GNOT")), [tokens]);
+  const defaultGasFeeAmount = useMemo(() => BigNumber(DEFAULT_GAS_FEE).shiftedBy(-(gnotToken?.decimals ?? 0)).toNumber(), [gnotToken?.decimals]);
+  const gasFeeUSD = useMemo(() => getTokenUSDPrice(checkGnotPath(gnotToken?.path ?? ""), defaultGasFeeAmount) ?? 0, [defaultGasFeeAmount, getTokenUSDPrice, gnotToken?.path]);
+
   const swapRouteInfos: SwapRouteInfo[] = useMemo(() => {
     if (!tokenA || !tokenB) {
       return [];
     }
+
     return estimatedRoutes.map(route => ({
       version: "V1",
       from: tokenA,
@@ -173,10 +173,10 @@ export const useSwapHandler = () => {
       pools: route.pools,
       weight: route.quote,
       gasFee: {
-        amount: 1,
-        currency: "ugnot",
+        amount: defaultGasFeeAmount,
+        currency: "GNOT",
       },
-      gasFeeUSD: 1,
+      gasFeeUSD,
     }));
   }, [estimatedRoutes, tokenA, tokenB]);
 
@@ -342,6 +342,7 @@ export const useSwapHandler = () => {
       swapRateAction === "ATOB"
         ? getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1
         : getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1;
+
     if (isSameToken) {
       return {
         tokenA,
@@ -354,8 +355,11 @@ export const useSwapHandler = () => {
           amount: Number(tokenAAmount),
           currency: tokenB.symbol,
         },
-        gasFee: gasFeeAmount,
-        gasFeeUSD: BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber(),
+        gasFee: {
+          amount: defaultGasFeeAmount,
+          currency: "GNOT"
+        },
+        gasFeeUSD,
         swapRateAction,
         swapRate1USD,
       };
@@ -383,13 +387,12 @@ export const useSwapHandler = () => {
     const priceImpactNum =
       tokenAUSDAmount !== 0
         ? BigNumber(tokenBUSDAmount - tokenAUSDAmount)
-            .multipliedBy(100)
-            .dividedBy(tokenAUSDAmount)
+          .multipliedBy(100)
+          .dividedBy(tokenAUSDAmount)
         : BigNumber(0);
     const priceImpact = priceImpactNum.isGreaterThan(100)
       ? 100
       : Number(priceImpactNum.toFixed(2));
-    const gasFeeUSD = BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber();
 
     return {
       tokenA,
@@ -402,8 +405,11 @@ export const useSwapHandler = () => {
         amount: makeDisplayTokenAmount(targetTokenB, tokenAmountLimit) || 0,
         currency: targetTokenB.symbol,
       },
-      gasFee: gasFeeAmount,
-      gasFeeUSD,
+      gasFee: {
+        amount: defaultGasFeeAmount,
+        currency: "GNOT"
+      },
+      gasFeeUSD: gasFeeUSD,
       swapRateAction,
       swapRate1USD,
       direction: type,
@@ -415,10 +421,13 @@ export const useSwapHandler = () => {
     type,
     tokenAAmount,
     tokenBAmount,
-    gasFeeAmount,
     tokenAmountLimit,
     swapRateAction,
     type,
+    gnotToken,
+    defaultGasFeeAmount,
+    gasFeeUSD,
+    tokenPrices,
   ]);
 
   const isAvailSwap = useMemo(() => {
@@ -682,13 +691,12 @@ export const useSwapHandler = () => {
               swapTokenInfo.tokenAAmount,
             ).toLocaleString("en-US", {
               maximumFractionDigits: 6,
-            })}</span> <span>${
-              swapTokenInfo?.tokenA?.symbol
-            }</span> for <span>${Number(
-              swapTokenInfo.tokenBAmount,
-            ).toLocaleString("en-US", {
-              maximumFractionDigits: 6,
-            })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+            })}</span> <span>${swapTokenInfo?.tokenA?.symbol
+              }</span> for <span>${Number(
+                swapTokenInfo.tokenBAmount,
+              ).toLocaleString("en-US", {
+                maximumFractionDigits: 6,
+              })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
           },
           {
             timeout: 50000,
@@ -710,10 +718,10 @@ export const useSwapHandler = () => {
       tokenAAmount: isExactIn
         ? tokenAAmount
         : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() ||
-          "0",
+        "0",
       tokenBAmount: isExactIn
         ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() ||
-          "0"
+        "0"
         : tokenBAmount,
     };
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SwapCard from "@components/swap/swap-card/SwapCard";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { SwapDirectionType } from "@common/values";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import useRouter from "@hooks/common/use-custom-router";
@@ -67,9 +66,15 @@ const SwapContainer: React.FC = () => {
     const currentTokenA =
       tokens.find(token => token.path === query.from) || null;
     const currentTokenB = tokens.find(token => token.path === query.to) || null;
-    const direction = query.direction as SwapDirectionType;
     const tokenAAmountQuery = (query.token_a_amount ?? "") as string;
     const tokenBAmountQuery = (query.token_b_amount ?? "") as string;
+    const direction = (() => {
+      if (tokenAAmountQuery) return "EXACT_IN";
+
+      if (tokenBAmountQuery) return "EXACT_OUT";
+
+      return "EXACT_IN";
+    })();
     if (!currentTokenA && !currentTokenB) return;
     setSwapValue({
       tokenA: currentTokenA,

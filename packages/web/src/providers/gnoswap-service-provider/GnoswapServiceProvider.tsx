@@ -61,6 +61,7 @@ import { useRouter } from "next/navigation";
 interface GnoswapContextProps {
   initialized: boolean;
   rpcProvider: GnoProvider | null;
+  networkClient: NetworkClient | null;
   accountRepository: AccountRepository;
   liquidityRepository: LiquidityRepository;
   poolRepository: PoolRepository;
@@ -73,6 +74,7 @@ interface GnoswapContextProps {
   notificationRepository: NotificationRepository;
   walletRepository: WalletRepository;
   leaderboardRepository: LeaderboardRepository;
+  localStorageClient: WebStorageClient;
 }
 
 const getSessionId = () => {
@@ -181,7 +183,9 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         break;
       case DEFAULT_CHAIN_ID:
       default:
-        setNetworkClient(new AxiosClient(API_URL));
+        setNetworkClient(new AxiosClient(API_URL, () => {
+          router.push("/500");
+        }));
         setRouterAPIClient(new AxiosClient(ROUTER_API_URL));
         setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl));
         break;
@@ -267,6 +271,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       value={{
         initialized,
         rpcProvider,
+        networkClient,
         accountRepository,
         liquidityRepository,
         poolRepository,
@@ -279,6 +284,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         notificationRepository,
         walletRepository,
         leaderboardRepository,
+        localStorageClient,
       }}
     >
       {loadedProviders && children}

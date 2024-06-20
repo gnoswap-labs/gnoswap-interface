@@ -10,14 +10,13 @@ import { DeviceSize } from "@styles/media";
 import useRouter from "@hooks/common/use-custom-router";
 import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
-import { getServerSideProps } from "../index";
-
-export { getServerSideProps };
+import SEOHeader from "@components/common/seo-header/seo-header";
 
 export default function IncreaseLiquidity() {
   const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.query["pool-path"] || "";
+  const positionId = router.query["position-id"] || "";
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
@@ -39,17 +38,26 @@ export default function IncreaseLiquidity() {
     ];
   }, [data, width]);
 
+  const title = useMemo(() => `Increase Liquidity in #${positionId}`, [positionId]);
+
   return (
-    <IncreaseLiquidityLayout
-      header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoadingCommon || isLoading}
-        />
-      }
-      increaseLiquidity={<IncreaseLiquidityContainer />}
-      footer={<Footer />}
-    />
+    <>
+      <SEOHeader
+        title={title}
+        pageDescription="Add incentives to pools for liquidity providers to bootstrap liquidity."
+        ogDescription="Manage your positions to earn trading fees."
+      />
+      <IncreaseLiquidityLayout
+        header={<HeaderContainer />}
+        breadcrumbs={
+          <BreadcrumbsContainer
+            listBreadcrumb={listBreadcrumb}
+            isLoading={isLoadingCommon || isLoading}
+          />
+        }
+        increaseLiquidity={<IncreaseLiquidityContainer />}
+        footer={<Footer />}
+      />
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import { HTTP_5XX_ERROR } from "@constants/common.constant";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { NetworkClient } from "./network-client";
 import {
   HttpDeleteRequestParam,
@@ -15,14 +15,20 @@ export class AxiosClient implements NetworkClient {
 
   constructor(baseURL?: string, serverErrorCb?: () => void) {
     this.baseURL = baseURL || "";
-    this.serverErrorCb = serverErrorCb ?? (() => { });
+    this.serverErrorCb = serverErrorCb ?? (() => { return; });
 
     axios.interceptors.response.use((res) => {
-      if (HTTP_5XX_ERROR.includes(res.status)) {
+      if (HTTP_5XX_ERROR.includes(res?.status)) {
         this.serverErrorCb?.();
       }
 
       return res;
+    }, (err: AxiosError) => {
+      if (HTTP_5XX_ERROR.includes(err.response?.status ?? 0)) {
+        this.serverErrorCb?.();
+      }
+
+      return Promise.reject(err);
     });
   }
 
