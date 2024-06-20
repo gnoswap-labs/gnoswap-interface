@@ -162,7 +162,6 @@ export const checkPositivePrice = (
 
   return {
     status: status,
-    // percentValue: percentValue,
     isEmpty: isEmpty,
     percentDisplay: percentDisplay,
     price: price,

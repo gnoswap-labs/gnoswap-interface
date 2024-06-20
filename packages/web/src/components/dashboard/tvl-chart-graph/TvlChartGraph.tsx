@@ -99,7 +99,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
 
     let startXWithOffset = startX;
 
-    // if (formatInfo.minimumSpacing >= DATE_HOUR_VALUE * 24) {
     const offsetValue = formatInfo.offset * DATE_MINUTE_VALUE;
 
     if (startX + offsetValue > minPositionX) {
@@ -107,7 +106,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     } else {
       startXWithOffset = startX + offsetValue + timeDiff;
     }
-    // }
 
     const length = Math.ceil((maxX - minX) / timeDiff);
 

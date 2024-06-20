@@ -435,23 +435,17 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           ? "-"
           : index > 19 && `${currentBin.reserveTokenAMyAmount}` === "0"
             ? "<0.000001"
-            : formatTokenExchangeRate((myTokenAAmountStr || "-").toString(), {
+            : formatTokenExchangeRate((myTokenAAmountStr).toString(), {
               maxSignificantDigits: 6,
               minLimit: 0.000001,
               fixedDecimalDigits: 6
             }) || "-",
-      // myTokenAAmount:
-      //   index < 20
-      //     ? "-"
-      //     : index > 19 && `${currentBin.reserveTokenAMyAmount}` === "0"
-      //       ? "<0.000001"
-      //       : convertToKMB((myTokenAAmountStr || "-").toString()) || "-",
       myTokenBAmount:
         index > 19
           ? "-"
           : index < 20 && `${currentBin.reserveTokenBMyAmount}` === "0"
             ? "<0.000001"
-            : formatTokenExchangeRate((myTokenBAmountStr || "-").toString(), {
+            : formatTokenExchangeRate((myTokenBAmountStr).toString(), {
               maxSignificantDigits: 6,
               minLimit: 0.000001,
               fixedDecimalDigits: 6
