@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export interface SEOHeaderProps {
   title: string;
@@ -6,19 +7,27 @@ export interface SEOHeaderProps {
 }
 
 const SEOHeader: React.FC<SEOHeaderProps> = ({ title, pageDescription }) => {
+  const router = useRouter();
+
+  const folderLevel = router.asPath.split("/").length - 2;
+  const imagePath = folderLevel <= 0 ? "" : new Array(folderLevel).fill("..").join("/") + "/";
+
   return <Head>
     <title>{title}</title>
     {pageDescription && <meta>{pageDescription}</meta>}
-    <meta property="og:image" content="opengraph-image.png" />
-    <meta property="og:url" content={window.location.origin} />
-    <meta property="og:title" content="The One-stop Gnoland DeFi Platform | Gnoswap" />
-    <meta property="og:description" content="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders." />
+    <link rel="icon" href="favicon.svg" />
+    <meta name="keywords" content="Swap, Earn, Gnoswap, Liquidity, DeFi, trader" />
 
-    <meta name="twitter:image:src" content="opengraph-image.png" />
-    <meta name="twitter:image" content="opengraph-image.png" />
+    <meta property="og:image" content={`${imagePath}opengraph-image.png`} />
+    <meta property="og:url" content={window.location.origin} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={pageDescription} />
+
+    <meta name="twitter:image:src" content={`${imagePath}opengraph-image.png`} />
+    <meta name="twitter:image" content={`${imagePath}opengraph-image.png`} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="The One-stop Gnoland DeFi Platform | Gnoswap" />
-    <meta name="twitter:description" content="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders." />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={pageDescription} />
   </Head>;
 };
 

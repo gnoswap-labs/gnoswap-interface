@@ -15,7 +15,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { formatUsdNumber3Digits, toPriceFormat } from "@utils/number-utils";
+import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
 
@@ -255,7 +255,6 @@ const TokenListContainer: React.FC = () => {
           transferData.pricesBefore?.latestPrice,
           transferData.pricesBefore?.price30d,
         );
-        const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
 
         return {
           ...transferData,
@@ -311,7 +310,7 @@ const TokenListContainer: React.FC = () => {
             Number(transferData.volumeUsd24h || 0),
           ).toLocaleString()}`,
           price: toPriceFormat(
-            usdFormat, {
+            transferData.usd, {
             usd: true,
             isRounding: false,
             fixedLessThan1Significant: 3,
