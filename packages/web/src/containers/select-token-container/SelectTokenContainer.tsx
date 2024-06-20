@@ -126,29 +126,31 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     );
   }, [keyword, tokens, balances, tokenPrices]);
 
+  const close = useCallback(() => {
+    clearModal();
+    callback?.(true);
+  }, [clearModal, callback]);
+
   const selectToken = useCallback(
     (token: TokenModel) => {
       if (!changeToken) {
         return;
       }
-      if (token.logoURI) {
+      if (token.path) {
         changeToken(token);
         close();
       } else {
         openTradingModal(token);
       }
     },
-    [changeToken, openTradingModal],
+    [changeToken, close, openTradingModal],
   );
 
   const changeKeyword = useCallback((keyword: string) => {
     setKeyword(keyword);
   }, []);
 
-  const close = useCallback(() => {
-    clearModal();
-    callback?.(true);
-  }, [clearModal, callback]);
+
 
   useEscCloseModal(close);
 
