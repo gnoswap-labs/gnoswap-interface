@@ -1,21 +1,23 @@
 import React from "react";
-import { EarnAddConfirmFeeInfoSection, EarnAddConfirmFeeInfoWrapper } from "./EarnAddConfirmFeeInfo.styles";
+import { CreationFeeErrorMsgWrapper, EarnAddConfirmFeeInfoSection, EarnAddConfirmFeeInfoWrapper } from "./EarnAddConfirmFeeInfo.styles";
 import { TokenInfo } from "@models/token/token-info";
 
 export interface EarnAddConfirmFeeInfoProps {
   token?: TokenInfo;
   fee: string;
+  errorMsg?: string;
 }
 
 const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
   token,
   fee,
+  errorMsg,
 }) => {
+
   return (
     <EarnAddConfirmFeeInfoWrapper>
       <p>Pool Creation Fee</p>
-
-      <EarnAddConfirmFeeInfoSection>
+      <EarnAddConfirmFeeInfoSection $hasError={!!errorMsg}>
         <div className="token-info">
           <img src={token?.logoURI} alt="token logo" />
           <div>{token?.symbol}</div>
@@ -24,6 +26,9 @@ const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
           <span>{fee}</span>
         </div>
       </EarnAddConfirmFeeInfoSection>
+      {errorMsg && <CreationFeeErrorMsgWrapper>
+        {errorMsg}
+      </CreationFeeErrorMsgWrapper>}
     </EarnAddConfirmFeeInfoWrapper>
   );
 };

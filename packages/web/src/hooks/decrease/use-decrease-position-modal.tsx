@@ -18,6 +18,7 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo } from "react";
 import { IPooledTokenInfo } from "./use-decrease-handle";
 import BigNumber from "bignumber.js";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 export interface Props {
   openModal: () => void;
@@ -77,6 +78,7 @@ export const useDecreasePositionModal = ({
       return false;
     }
 
+
     broadcastLoading(
       makeBroadcastRemoveMessage("pending", {
         tokenASymbol: tokenA.symbol,
@@ -116,12 +118,12 @@ export const useDecreasePositionModal = ({
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (
-            (resultData.removedTokenAAmount || 0)
+            makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0
           ).toLocaleString("en-US", {
             maximumFractionDigits: 6,
           });
           const tokenBAmount = (
-            resultData.removedTokenBAmount || 0
+            makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0
           ).toLocaleString("en-US", {
             maximumFractionDigits: 6,
           });

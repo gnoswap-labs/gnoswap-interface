@@ -35,6 +35,7 @@ interface Props {
   feeInfo: {
     token?: TokenModel;
     fee: string;
+    errorMsg?: string;
   };
   confirm: () => void;
   close: () => void;

@@ -50,16 +50,18 @@ export default function Earn() {
   }, [data?.fee]);
 
   const title = useMemo(() => {
-    return `Remove Position From ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr ?? "0"}`;
+    if (data) {
+      return `Remove Position From ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr ?? "0"}`;
+    }
 
-  }, [data?.tokenA, data?.tokenB, feeStr, getGnotPath]);
+    return "Remove Position";
+  }, [data, feeStr, getGnotPath]);
 
   return (
     <>
       <SEOHeader
         title={title}
-        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
-        ogTitle="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity"
+        pageDescription="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity."
         ogDescription="Manage your positions to earn trading fees."
       />
       <PoolRemoveLayout

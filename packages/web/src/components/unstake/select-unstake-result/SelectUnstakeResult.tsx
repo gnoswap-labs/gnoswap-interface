@@ -52,8 +52,8 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 {BigNumber(pooledTokenInfo.amount).isZero()
                   ? "0"
                   : pooledTokenInfo.amount.toLocaleString("en", {
-                      minimumFractionDigits: 6,
-                    })}
+                    minimumFractionDigits: 6,
+                  })}
               </strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>

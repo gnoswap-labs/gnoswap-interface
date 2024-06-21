@@ -53,6 +53,7 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     const tokenAData = positions
       .filter(item => item.pool.tokenA.path === tokenA.path)
       .flatMap(item => item.reward)
+      .filter(item => item.rewardType === "EXTERNAL" || item.rewardType === "INTERNAL")
       .reduce(
         (accum, reward) => ({
           tokenAmount: accum.tokenAmount + Number(reward.claimableAmount),
@@ -63,6 +64,7 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     const tokenBData = positions
       .filter(item => item.pool.tokenB.path === tokenB.path)
       .flatMap(item => item.reward)
+      .filter(item => item.rewardType === "EXTERNAL" || item.rewardType === "INTERNAL")
       .reduce(
         (accum, reward) => ({
           tokenAmount: accum.tokenAmount + Number(reward.claimableAmount),

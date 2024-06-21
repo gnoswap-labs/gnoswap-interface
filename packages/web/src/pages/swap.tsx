@@ -17,24 +17,15 @@ export default function Swap() {
       return `Swap ${swapInfo.tokenA.symbol} to ${swapInfo.tokenB.symbol} | Gnoswap`;
     }
 
-    if (swapInfo.tokenA) {
-      return `Swap ${swapInfo.tokenA.symbol} | Gnoswap`;
-    }
-
     return "Swap | Gnoswap";
   }, [swapInfo.tokenA, swapInfo.tokenB]);
-
-  const ogTitle = useMemo(() => {
-    return "Gnoland(GNOT) | Gnoswap";
-  }, []);
 
   return (
     <>
       <SEOHeader
         title={title}
-        ogTitle={ogTitle}
-        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
-        ogDescription="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity."
+        pageDescription="Manage your positions to earn trading fees."
+        ogDescription="Manage your positions to earn trading fees."
       />
       <SwapLayout
         header={<HeaderContainer />}

@@ -52,7 +52,6 @@ const StakingContainer: React.FC = () => {
     enabled: !!poolPath,
   });
   const stakedPositions = useMemo(() => allPositions.filter(item => item.staked), [allPositions]);
-
   const pool = useMemo(() => {
     if (!data) return null;
     return {
@@ -181,7 +180,7 @@ const StakingContainer: React.FC = () => {
     <Staking
       pool={pool}
       totalApr={totalApr}
-      positions={stakedPositions}
+      stakedPosition={stakedPositions}
       rewardTokens={rewardTokens}
       breakpoint={breakpoint}
       mobile={mobile}

@@ -16,7 +16,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 interface StakingContentProps {
   totalApr: string;
-  positions: PoolPositionModel[];
+  stakedPosition: PoolPositionModel[];
   rewardTokens: TokenModel[];
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
@@ -36,7 +36,7 @@ const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const StakingContent: React.FC<StakingContentProps> = ({
   totalApr,
-  positions,
+  stakedPosition,
   rewardTokens,
   breakpoint,
   mobile,
@@ -65,7 +65,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   }, [rewardTokens, pool]);
 
   const stakingPositionMap = useMemo(() => {
-    return positions.reduce<{
+    return stakedPosition.reduce<{
       [key in StakingPeriodType]: PoolPositionModel[];
     }>(
       (accum, current) => {
@@ -89,7 +89,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
         MAX: [],
       },
     );
-  }, [positions]);
+  }, [stakedPosition]);
 
   const checkPoints = useMemo((): StakingPeriodType[] => {
     let checkPointIndex = -1;

@@ -58,7 +58,7 @@ const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({
       </div>
       <div className="transaction-state">
         <span className="submitted">Waiting for Confirmation</span>
-        <div className="swap-message" dangerouslySetInnerHTML={{ __html: description || ""}} />
+        <div className="swap-message" dangerouslySetInnerHTML={{ __html: description || "" }} />
         <div className="view-transaction">
           <span>Confirm this transaction in your wallet</span>
         </div>
@@ -132,7 +132,7 @@ const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({
         <span className="submitted">Broadcasting Failed</span>
         <div className="view-transaction">
           <span>
-            Your transcation has not been broadcasted. <br className="br" />
+            Your transaction has not been broadcasted. <br className="br" />
             Please try again.
           </span>
         </div>
