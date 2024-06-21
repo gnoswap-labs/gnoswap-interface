@@ -336,6 +336,16 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     });
   }, [position.reward, tokenPrices]);
 
+  const boxHeaderId = useMemo(() => position.id + "box-header", [position.id]);
+
+  const shouldShortenRangeBadge = useMemo(() => {
+    const titleElement = document.getElementById(boxHeaderId);
+    if ((titleElement?.clientWidth ?? 0) > 210) {
+      return true;
+    }
+    return false;
+  }, [boxHeaderId]);
+
   return (
     <MyPositionCardWrapperBorder
       className={`${position.staked && inRange !== null ? "special-card" : ""}`}
@@ -349,7 +359,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           disabled={inRange === null}
         >
           <div className="title-wrapper">
-            <div className="box-header">
+            <div id={boxHeaderId} className="box-header">
               <DoubleLogo
                 left={tokenA.logoURI}
                 right={tokenB.logoURI}
@@ -364,6 +374,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <RangeBadge
               className={inRange === null ? "disabled-range" : ""}
+              isShorten={shouldShortenRangeBadge}
               status={
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE

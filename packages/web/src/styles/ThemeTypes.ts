@@ -30,6 +30,7 @@ export interface ThemeColorType {
   background27: string;
   background28: string;
   background29: string;
+  background30: string;
   bgLoading: string;
   backgroundOpacity: string;
   backgroundOpacity2: string;
@@ -68,6 +69,7 @@ export interface ThemeColorType {
   border17: string;
   border18: string;
   border19: string;
+  border20: string;
   text01: string;
   text02: string;
   text03: string;
@@ -100,6 +102,7 @@ export interface ThemeColorType {
   text30: string;
   text31: string;
   text32: string;
+  text33: string;
   icon01: string;
   icon02: string;
   icon03: string;
@@ -119,6 +122,7 @@ export interface ThemeColorType {
   icon18: string;
   icon19: string;
   icon20: string;
+  icon21: string;
   hover01: string;
   hover02: string;
   hover03: string;

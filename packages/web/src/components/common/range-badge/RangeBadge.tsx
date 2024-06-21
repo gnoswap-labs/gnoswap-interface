@@ -1,4 +1,5 @@
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import { useMemo } from "react";
 import {
   RangeDot,
   RangeBadgeText,
@@ -8,15 +9,40 @@ import {
 export interface RangeBadgeProps {
   status: RANGE_STATUS_OPTION;
   className?: string;
+  isShorten?: boolean;
 }
 
-const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className }) => (
-  <RangeBadgeWrapper className={className}>
+const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isShorten }) => {
+  const statusText = useMemo(() => {
+    if (isShorten) {
+      switch (status) {
+        case RANGE_STATUS_OPTION.IN:
+          return "In";
+        case RANGE_STATUS_OPTION.OUT:
+          return "Out";
+        case RANGE_STATUS_OPTION.NONE:
+        default:
+          return "Closed";
+      }
+    }
+
+    switch (status) {
+      case RANGE_STATUS_OPTION.IN:
+        return "In-range";
+      case RANGE_STATUS_OPTION.OUT:
+        return "Out-range";
+      case RANGE_STATUS_OPTION.NONE:
+      default:
+        return "Closed";
+    }
+  }, [isShorten, status]);
+
+  return <RangeBadgeWrapper className={className} >
     <RangeDot status={status} />
     <RangeBadgeText status={status}>
-      {status === RANGE_STATUS_OPTION.IN ? "In-range" : status === RANGE_STATUS_OPTION.OUT ? "Out-range" : "Closed"}
+      {statusText}
     </RangeBadgeText>
-  </RangeBadgeWrapper>
-);
+  </RangeBadgeWrapper >;
+};
 
 export default RangeBadge;

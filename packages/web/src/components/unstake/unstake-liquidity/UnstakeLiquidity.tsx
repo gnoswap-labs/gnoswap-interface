@@ -2,9 +2,11 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import React, { useMemo } from "react";
 import SelectLiquidity from "@components/unstake/select-liquidity/SelectLiquidity";
 import SelectUnstakeResult from "@components/unstake/select-unstake-result/SelectUnstakeResult";
-import { wrapper } from "./UnstakeLiquidity.styles";
+import { StakeWarningContentWrapper, wrapper } from "./UnstakeLiquidity.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import WarningCard from "@components/common/warning-card/WarningCard";
 
 interface UnstakeLiquidityProps {
   stakedPositions: PoolPositionModel[];
@@ -42,14 +44,25 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
         isLoading={isLoading}
       />
       <SelectUnstakeResult positions={selectedPositions} />
-      {selectedPositions.length > 0 && <div className="unstake-des">
-        <h5>Your Staking Progress Will be Reset</h5>
+      {selectedPositions.length > 0 && <WarningCard
+        title={"Your Staking Progress Will be Reset"}
+        icon={<IconCircleExclamationMark />}
+        content={<StakeWarningContentWrapper>
+          <p>This will completely reset your staking progress. Once you re-stake, you will have to wait 30 days to start receiving max staking rewards. Be sure to understand how the warm-up period works before unstaking.</p>
+          <a href="/">
+            Learn More
+            <IconOpenLink className="icon-link" />
+          </a>
+        </StakeWarningContentWrapper>}
+      />}
+      {/* {selectedPositions.length > 0 && <div className="unstake-des">
+        <h5><IconCircleExclamationMark /> Your Staking Progress Will be Reset</h5>
         <p>This will completely reset your staking progress. Once you re-stake, you will have to wait 30 days to start receiving max staking rewards. Be sure to understand how the warm-up period works before unstaking.</p>
         <a href="/">
           Learn More
           <IconOpenLink className="icon-link" />
         </a>
-      </div>}
+      </div>} */}
       <Button
         text={checkedList.length === 0 ? "Select Position" : "Unstake Position"}
         style={{

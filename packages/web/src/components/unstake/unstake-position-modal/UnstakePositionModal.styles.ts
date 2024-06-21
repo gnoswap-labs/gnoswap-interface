@@ -223,3 +223,9 @@ export const ToolTipContentWrapper = styled.div<Props>`
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
 `;
+
+export const UnstakeWarningContentWrapper = styled.div`
+  .unstake-percent {
+    font-weight: 600;
+  }
+`;

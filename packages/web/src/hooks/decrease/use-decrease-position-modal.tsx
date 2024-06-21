@@ -19,6 +19,8 @@ import { useCallback, useMemo } from "react";
 import { IPooledTokenInfo } from "./use-decrease-handle";
 import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useClearModal } from "@hooks/common/use-clear-modal";
 
 export interface Props {
   openModal: () => void;
@@ -50,6 +52,16 @@ export const useDecreasePositionModal = ({
   const router = useRouter();
   const { address } = useAddress();
   const { positionRepository } = useGnoswapContext();
+  const clearModal = useClearModal();
+
+  const onCloseConfirmTransactionModal = useCallback(() => {
+    clearModal();
+    router.back();
+  }, [clearModal, router]);
+
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    confirmCallback: onCloseConfirmTransactionModal,
+  });
 
   const {
     broadcastRejected,
@@ -77,7 +89,6 @@ export const useDecreasePositionModal = ({
     if (!address || !tokenA || !tokenB) {
       return false;
     }
-
 
     broadcastLoading(
       makeBroadcastRemoveMessage("pending", {
@@ -137,7 +148,9 @@ export const useDecreasePositionModal = ({
             }),
           );
         }, 1000);
-        router.back();
+
+        console.log("2384729834789237");
+        openTransactionConfirmModal();
       } else if (
         result.code === 4000 &&
         result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type

@@ -6,7 +6,6 @@ export const EarnAddConfirmFeeInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 8px;
 
   p {
     ${fonts.body12}
@@ -25,6 +24,8 @@ export const EarnAddConfirmFeeInfoSection = styled(
   background: ${({ theme }) => theme.color.background20};
   border: ${({ $hasError, theme }) => $hasError && `1px solid ${theme.color.red01}`};
   ${fonts.body9}
+  margin-top: 8px;
+  ${({ $hasError }) => $hasError ? "margin-bottom: 6px;" : ""};
 
   .token-info {
     display: flex;
@@ -44,6 +45,6 @@ export const EarnAddConfirmFeeInfoSection = styled(
 `;
 
 export const CreationFeeErrorMsgWrapper = styled.div`
-  ${fonts.body11}
+  ${fonts.p3}
   color: ${({ theme }) => theme.color.red01}
 `;

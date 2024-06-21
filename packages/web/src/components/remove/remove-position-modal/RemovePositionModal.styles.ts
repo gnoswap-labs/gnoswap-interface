@@ -230,3 +230,9 @@ export const ToolTipContentWrapper = styled.div<Props>`
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
 `;
+
+export const RemoveWarningContentWrapper = styled.div`
+  .remove-percent {
+    font-weight: 600;
+  }
+`;

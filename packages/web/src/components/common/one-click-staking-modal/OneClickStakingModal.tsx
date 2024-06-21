@@ -77,12 +77,13 @@ const OneClickStakingModal: React.FC<Props> = ({
           <div>
             <Button
               text="Confirm One-Click Staking"
+              disabled={!!feeInfo.errorMsg}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
               }}
               className="button-confirm"
-              onClick={confirm}
+              onClick={feeInfo.errorMsg ? undefined : confirm}
             />
           </div>
         </div>

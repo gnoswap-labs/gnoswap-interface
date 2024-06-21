@@ -11,6 +11,7 @@ import {
 } from "@hooks/common/use-broadcast-handler";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 
 interface SubmitPositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -31,6 +32,21 @@ const SubmitPositionModalContainer = ({
   const router = useRouter();
   const clearModal = useClearModal();
   const { tokenPrices } = useTokenData();
+
+  const onCloseConfirmTransactionModal = useCallback(() => {
+    clearModal();
+    const pathName = router.pathname;
+    if (pathName === "/earn/stake") {
+      router.push("/earn?back=q");
+    } else {
+      router.push(router.asPath.replace("/stake", ""));
+    }
+  }, [clearModal, router]);
+
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    confirmCallback: onCloseConfirmTransactionModal,
+  });
+
 
   const pooledTokenInfos = useMemo(() => {
     if (positions.length === 0) {
@@ -59,9 +75,6 @@ const SubmitPositionModalContainer = ({
       },
     ];
   }, [positions, tokenPrices]);
-  const close = useCallback(() => {
-    clearModal();
-  }, [clearModal]);
 
   const onSubmit = useCallback(async () => {
     const address = account?.address;
@@ -107,12 +120,8 @@ const SubmitPositionModalContainer = ({
             }),
           );
         }, 1000);
-        const pathName = router.pathname;
-        if (pathName === "/earn/stake") {
-          router.push("/earn?back=q");
-        } else {
-          router.push(router.asPath.replace("/stake", ""));
-        }
+        openTransactionConfirmModal();
+
       } else if (
         result.code === 4000 &&
         result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
@@ -154,7 +163,7 @@ const SubmitPositionModalContainer = ({
   return (
     <SubmitPositionModal
       positions={positions}
-      close={close}
+      close={clearModal}
       onSubmit={onSubmit}
     />
   );

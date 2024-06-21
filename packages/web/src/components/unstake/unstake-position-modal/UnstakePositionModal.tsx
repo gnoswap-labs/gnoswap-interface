@@ -5,11 +5,14 @@ import IconClose from "@components/common/icons/IconCancel";
 import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
-import React, { useCallback } from "react";
-import { Divider, ToolTipContentWrapper, UnstakePositionModalWrapper } from "./UnstakePositionModal.styles";
+import React, { useCallback, useMemo } from "react";
+import { Divider, ToolTipContentWrapper, UnstakePositionModalWrapper, UnstakeWarningContentWrapper } from "./UnstakePositionModal.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
+import WarningCard from "@components/common/warning-card/WarningCard";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import { numberToRate } from "@utils/string-utils";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -22,6 +25,17 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
+
+  const currentPercent = useMemo(() => {
+    return numberToRate(positions.flatMap(item => item.reward).reduce((acc, current) => {
+      return acc + Number(current.apr || 0);
+    }, 0) ?? 0);
+  }, [positions]);
+  const unstakePercent = useMemo(() => {
+    return numberToRate(positions.flatMap(item => item.reward).filter(item => item.rewardType === "SWAP_FEE").reduce((acc, current) => {
+      return acc + Number(current.apr || 0);
+    }, 0) ?? 0);
+  }, [positions]);
 
   return (
     <UnstakePositionModalWrapper>
@@ -100,6 +114,13 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
               </div>
             </div>
           </div>
+          <WarningCard
+            title={"Important Note"}
+            icon={<IconCircleExclamationMark />}
+            content={<UnstakeWarningContentWrapper>
+              Your APR will reduce from  {currentPercent} → <span className="unstake-percent">{unstakePercent}</span>
+            </UnstakeWarningContentWrapper>}
+          />
           <div>
             <Button
               text="Confirm Unstake Position"

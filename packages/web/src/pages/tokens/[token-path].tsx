@@ -65,10 +65,13 @@ export default function Token() {
 
   const wrappedToken = useMemo(() => getGnotPath(token), [getGnotPath, token]);
 
+  const ogTitle = useMemo(() => `${wrappedToken?.name}(${wrappedToken?.symbol}) | Gnoswap`, [wrappedToken?.name, wrappedToken?.symbol]);
+
   return (
     <>
       <SEOHeader
         title={`${price} | ${wrappedToken?.name}(${wrappedToken?.symbol})`}
+        ogTitle={ogTitle}
         pageDescription={`Buy or Sell ${wrappedToken.symbol} on Gnoswap.`}
         ogDescription={`Buy or Sell ${wrappedToken.symbol} on Gnoswap.`}
       />
