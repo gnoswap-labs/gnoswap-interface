@@ -35,7 +35,7 @@ const RepositionContainer: React.FC = () => {
     repositionAmounts,
     removePosition,
     swapRemainToken,
-    addPosition,
+    reposition,
   } = useRepositionHandle();
 
   const { openModal } = useRepositionModalContainer({
@@ -53,7 +53,7 @@ const RepositionContainer: React.FC = () => {
     repositionAmounts,
     removePosition,
     swapRemainToken,
-    addPosition,
+    reposition,
   });
 
   const onSubmit = () => {

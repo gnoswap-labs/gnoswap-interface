@@ -6,12 +6,12 @@ import RepositionInfo from "@components/reposition/reposition-info/RepositionInf
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
-import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
 import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
 import React, { useCallback, useState } from "react";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconClose from "../icons/IconCancel";
 import { RepositionModalWrapper } from "./RepositionModal.styles";
+import { RepositionLiquidityResponse } from "@repositories/position/response";
 
 interface Props {
   close: () => void;
@@ -37,10 +37,10 @@ interface Props {
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
-  addPosition: (
+  reposition: (
     swapToken: TokenModel,
     swapAmount: string,
-  ) => Promise<WalletResponse<AddLiquidityResponse> | null>;
+  ) => Promise<WalletResponse<RepositionLiquidityResponse | null> | null>;
 }
 
 const RepositionModal: React.FC<Props> = ({
@@ -55,7 +55,7 @@ const RepositionModal: React.FC<Props> = ({
   repositionAmounts,
   removePosition,
   swapRemainToken,
-  addPosition,
+  reposition,
 }) => {
   const [confirm, setConfirm] = useState(false);
 
@@ -102,7 +102,7 @@ const RepositionModal: React.FC<Props> = ({
               <RepositionBroadcastProgress
                 removePosition={removePosition}
                 swapRemainToken={swapRemainToken}
-                addPosition={addPosition}
+                reposition={reposition}
                 closeModal={close}
               />
             </React.Fragment>

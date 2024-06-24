@@ -409,7 +409,7 @@ export const useRepositionHandle = () => {
       swapRouterRepository,
     ]);
 
-  const addPosition = useCallback(
+  const reposition = useCallback(
     async (
       swapToken: TokenModel,
       swapAmount: string,
@@ -531,6 +531,6 @@ export const useRepositionHandle = () => {
     repositionAmounts: estimatedRepositionAmounts,
     removePosition,
     swapRemainToken,
-    addPosition,
+    reposition,
   };
 };
