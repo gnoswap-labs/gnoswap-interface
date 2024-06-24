@@ -59,7 +59,7 @@ import {
   WRAPPED_GNOT_PATH,
   PACKAGE_GNOSWAP_CONST_PATH,
 } from "@constants/environment.constant";
-import { MAX_UINT64, tickToSqrtPriceX96 } from "@utils/math.utils";
+import { tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import {
   checkGnotPath,
@@ -274,17 +274,14 @@ export class PoolRepositoryImpl implements PoolRepository {
       );
     }
 
-    // If withStaking, approve WUGNOT to the Position contract.
-    if (withStaking) {
-      if ([tokenAPath, tokenBPath].includes(GNOT_TOKEN.path)) {
-        approveMessages.push(
-          makeApproveMessage(
-            WRAPPED_GNOT_PATH,
-            [PACKAGE_POSITION_ADDRESS, MAX_UINT64.toString()],
-            caller,
-          ),
-        );
-      }
+    if ([tokenAPath, tokenBPath].includes(GNOT_TOKEN.path)) {
+      approveMessages.push(
+        makeApproveMessage(
+          WRAPPED_GNOT_PATH,
+          [PACKAGE_POSITION_ADDRESS, sendAmount || "0"],
+          caller,
+        ),
+      );
     }
 
     const makeMintMessage = withStaking
@@ -409,17 +406,14 @@ export class PoolRepositoryImpl implements PoolRepository {
       );
     }
 
-    // If withStaking and use GNOT, approve WUGNOT to the Position contract.
-    if (withStaking) {
-      if ([tokenAPath, tokenBPath].includes(GNOT_TOKEN.path)) {
-        approveMessages.push(
-          makeApproveMessage(
-            WRAPPED_GNOT_PATH,
-            [PACKAGE_POSITION_ADDRESS, MAX_UINT64.toString()],
-            caller,
-          ),
-        );
-      }
+    if ([tokenAPath, tokenBPath].includes(GNOT_TOKEN.path)) {
+      approveMessages.push(
+        makeApproveMessage(
+          WRAPPED_GNOT_PATH,
+          [PACKAGE_POSITION_ADDRESS, sendAmount || "0"],
+          caller,
+        ),
+      );
     }
 
     // Make mint transaction message
