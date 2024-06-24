@@ -213,6 +213,16 @@ const AssetListContainer: React.FC = () => {
     }
   }, [tokens]);
 
+  const fixedTokens = useMemo(() => {
+    const gnot = tokens.find(item => item.symbol === GNOT_SYMBOL);
+    const gns = tokens.find(item => item.symbol === GNS_SYMBOL);
+
+    return [
+      gnot,
+      gns,
+    ].filter(item => !!item);
+  }, [tokens]);
+
   const filteredTokens = useMemo(() => {
     const COLLAPSED_LENGTH = 15;
     const temp: SortedProps[] = tokens

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
@@ -59,6 +59,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isHiddenStart] = useState(false);
   const [viewMyRange, setViewMyRange] = useState(false);
   const [isMouseoverGraph, setIsMouseoverGraph] = useState(false);
+  const [shortenInRange, setShortenInRange] = useState(false);
 
   const { data: bins40, isFetched: isFetchedBins } = useGetLazyPositionBins(
     position.lpTokenId,
@@ -336,15 +337,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     });
   }, [position.reward, tokenPrices]);
 
-  const boxHeaderId = useMemo(() => position.id + "box-header", [position.id]);
+  const boxHeaderId = useMemo(() => position.id + "-box-header", [position.id]);
 
-  const shouldShortenRangeBadge = useMemo(() => {
+  useLayoutEffect(() => {
     const titleElement = document.getElementById(boxHeaderId);
-    if ((titleElement?.clientWidth ?? 0) > 210) {
-      return true;
-    }
-    return false;
-  }, [boxHeaderId]);
+    setShortenInRange((titleElement?.clientWidth || 0) > 210);
+  }, [inRange, boxHeaderId]);
 
   return (
     <MyPositionCardWrapperBorder
@@ -374,7 +372,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <RangeBadge
               className={inRange === null ? "disabled-range" : ""}
-              isShorten={shouldShortenRangeBadge}
+              isShorten={shortenInRange}
               status={
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
