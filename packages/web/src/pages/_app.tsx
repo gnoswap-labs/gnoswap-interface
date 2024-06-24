@@ -27,6 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
         },
       }),
   );
+  // const { canScrollUp } = useScrollUp();
 
   return (
     <QueryClientProvider client={queryClient}>

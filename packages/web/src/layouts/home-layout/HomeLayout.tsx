@@ -1,3 +1,4 @@
+import { getCanScrollUpId } from "@constants/common.constant";
 import React from "react";
 import {
   BrandContainer,
@@ -31,11 +32,11 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
   tokenList,
   footer,
   banner,
-}) => (
-  <HomeLayoutWrapper>
+}) => {
+  return <HomeLayoutWrapper>
     {header}
     <HeroSection>
-      <BrandContainer>
+      <BrandContainer id={getCanScrollUpId("bcd")}>
         {brand}
         {swap}
       </BrandContainer>
@@ -45,12 +46,12 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
         {recently}
       </CardContainer>
     </HeroSection>
-    <TokensSection>
+    <TokensSection id={getCanScrollUpId("abc")}>
       <TokensContainer>{tokenList}</TokensContainer>
     </TokensSection>
     <BannerContainer>{banner}</BannerContainer>
     {footer}
-  </HomeLayoutWrapper>
-);
+  </HomeLayoutWrapper>;
+};
 
 export default HomeLayout;

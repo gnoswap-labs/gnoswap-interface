@@ -7,10 +7,13 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { PoolModel } from "@models/pool/pool-model";
+import { numberToRate } from "@utils/string-utils";
 
 interface SelectStakeResultProps {
   positions: PoolPositionModel[];
   isHiddenBadge?: boolean;
+  pool?: PoolModel;
 }
 
 const HOVER_TEXT =
@@ -19,6 +22,7 @@ const HOVER_TEXT =
 const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   positions,
   isHiddenBadge = false,
+  pool,
 }) => {
   const { tokenPrices } = useTokenData();
 
@@ -54,8 +58,14 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   }, [positions]);
 
   const stakingAPR = useMemo(() => {
-    return "0%";
-  }, []);
+    if (!pool?.stakingApr) return "-";
+
+    if (Number(pool?.stakingApr) === 0) {
+      return "0%";
+    }
+
+    return `${numberToRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${numberToRate(pool?.stakingApr)}`;
+  }, [pool?.stakingApr]);
 
   if (positions.length === 0) return <></>;
   return (
