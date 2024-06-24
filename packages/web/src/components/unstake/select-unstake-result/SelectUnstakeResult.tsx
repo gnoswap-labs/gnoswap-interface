@@ -35,7 +35,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 })}
               </strong>
             </div>
-            <span className="dallor">{pooledTokenInfo.amountUSD}</span>
+            <span className="dollar-value">{pooledTokenInfo.amountUSD}</span>
           </li>
         ))}
         {unclaimedRewards.map((pooledTokenInfo, index) => (

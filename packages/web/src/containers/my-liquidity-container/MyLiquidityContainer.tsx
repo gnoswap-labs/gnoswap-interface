@@ -72,28 +72,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     enabled: !!address,
   });
 
-  const haveClosedPosition = useMemo(
-    () => positions.some(item => item.closed),
-    [positions],
-  );
-  const haveNotClosedPosition = useMemo(
-    () => positions.some(item => !item.closed),
-    [positions],
-  );
 
-  const showClosePositionButton = useMemo(() => {
-    if (!connectedWallet || isSwitchNetwork) {
-      return false;
-    }
-    return haveClosedPosition;
-  }, [connectedWallet, haveClosedPosition, isSwitchNetwork]);
 
-  const isShowRemovePositionButton = useMemo(() => {
-    if (!connectedWallet || isSwitchNetwork) {
-      return false;
-    }
-    return haveNotClosedPosition;
-  }, [connectedWallet, haveNotClosedPosition, isSwitchNetwork]);
+
 
   const handleClickAddPosition = useCallback(() => {
     router.push(`/earn/pool/${router.query["pool-path"]}/add`);
@@ -150,37 +131,54 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     });
   }, [claimAll, router, setLoadingTransactionClaim, positions, openModal]);
 
-  const filteredPosition = useMemo(() => {
-    if (isShowClosePosition) {
-      return positions
-        .sort((a, b) => {
-          const aClosedLabel = a.closed ? 0 : 1;
-          const bClosedLabel = b.closed ? 0 : 1;
-          return bClosedLabel - aClosedLabel;
-        })
-        .sort((a, b) => Number(b.positionUsdValue ?? 0) - Number(a.positionUsdValue ?? 0))
-        .sort((a, b) => {
-          if (a.closed && b.closed) {
-            return Number(b.id ?? 0) - Number(a.id ?? 0);
-          }
-          return 0;
-        });
-    }
-
-    return positions.filter(item => item.closed === false)
-      .sort((a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue));
-  }, [isShowClosePosition, positions]);
-
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
   };
+
+  const openedPosition = useMemo(() => {
+    return positions.filter(item => !item.closed)
+      .filter(item => !item.closed)
+      .sort((a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue)) ?? [];
+  }, [positions]);
+
+  const closedPosition = useMemo(() => {
+    return positions
+      .filter(item => item.closed)
+      .sort((a, b) => {
+        return Number(a.id ?? 0) - Number(b.id ?? 0);
+      }) ?? [];
+  }, [positions]);
+
+  const haveClosedPosition = useMemo(
+    () => closedPosition.length > 0,
+    [closedPosition.length],
+  );
+  const haveNotClosedPosition = useMemo(
+    () => openedPosition.length > 0,
+    [openedPosition.length],
+  );
+
+  const showClosePositionButton = useMemo(() => {
+    if (!connectedWallet || isSwitchNetwork) {
+      return false;
+    }
+    return haveClosedPosition;
+  }, [connectedWallet, haveClosedPosition, isSwitchNetwork]);
+
+  const isShowRemovePositionButton = useMemo(() => {
+    if (!connectedWallet || isSwitchNetwork) {
+      return false;
+    }
+    return haveNotClosedPosition;
+  }, [connectedWallet, haveNotClosedPosition, isSwitchNetwork]);
 
   return (
     <MyLiquidity
       address={address || account?.address || null}
       addressName={addressName}
       isOtherPosition={isOtherPosition}
-      positions={visiblePositions ? filteredPosition : []}
+      positions={visiblePositions ? openedPosition : []}
+      closedPosition={closedPosition}
       breakpoint={breakpoint}
       connected={connectedWallet}
       isSwitchNetwork={isSwitchNetwork}

@@ -36,6 +36,7 @@ import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { useRouterBack } from "@hooks/common/use-router-back";
+import { numberToRate } from "@utils/string-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -190,7 +191,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return {
       depositRatio,
       feeBoost,
-      estimatedApr: selectPool.poolInfo?.dbData?.feeApr ?? "-",
+      estimatedApr: numberToRate(selectPool.estimatedAPR) ?? "-",
     };
   }, [
     selectPool.compareToken?.symbol,
@@ -199,7 +200,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     selectPool.selectedFullRange,
     tokenA?.symbol,
     tokenB?.symbol,
-    selectPool.poolInfo?.dbData?.feeApr
+    selectPool.estimatedAPR,
   ]);
 
   const submitType: AddLiquiditySubmitType = useMemo(() => {

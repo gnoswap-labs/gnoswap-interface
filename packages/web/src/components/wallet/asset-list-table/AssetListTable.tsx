@@ -11,12 +11,9 @@ import {
   ASSET_INFO,
   ASSET_INFO_MOBILE,
   ASSET_INFO_TABLET,
-  ASSET_TD_WIDTH,
-  MOBILE_ASSET_TD_WIDTH,
-  TABLET_ASSET_TD_WIDTH,
 } from "@constants/skeleton.constant";
 import { cx } from "@emotion/css";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { DEVICE_TYPE } from "@styles/media";
@@ -63,14 +60,15 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
     sort(head);
   };
 
-  const isAlignLeft = (head: ASSET_HEAD) => {
-    return (
-      ASSET_HEAD.ASSET === head ||
-      ASSET_HEAD.BALANCE === head ||
-      ASSET_HEAD.CHAIN === head ||
-      ASSET_HEAD.AMOUNT === head
-    );
-  };
+  const tdWidth = useMemo(() => {
+    return breakpoint === DEVICE_TYPE.WEB
+      ? ASSET_INFO
+      : breakpoint !== DEVICE_TYPE.MOBILE
+        ? ASSET_INFO_TABLET
+        : ASSET_INFO_MOBILE;
+  }, [breakpoint]);
+  console.log("🚀 ~ tdWidth ~ tdWidth:", tdWidth);
+
   return (
     <AssetListTableWrapper>
       <div className="asset-list-head">
@@ -78,16 +76,10 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
           <TableColumn
             key={idx}
             className={cx({
-              left: isAlignLeft(head),
+              left: tdWidth.list?.[idx]?.left,
               sort: isSortOption(head),
             })}
-            tdWidth={
-              breakpoint === DEVICE_TYPE.WEB
-                ? ASSET_TD_WIDTH[idx]
-                : breakpoint !== DEVICE_TYPE.MOBILE
-                  ? TABLET_ASSET_TD_WIDTH[idx]
-                  : MOBILE_ASSET_TD_WIDTH[idx]
-            }
+            tdWidth={tdWidth.list?.[idx]?.width}
           >
             <span
               className={Object.keys(ASSET_HEAD)[idx].toLowerCase()}
@@ -119,7 +111,10 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               breakpoint={breakpoint}
             />
           ))}
-        {!isFetched && <TableSkeleton className="skeleton" info={breakpoint === DEVICE_TYPE.WEB ? ASSET_INFO : breakpoint !== DEVICE_TYPE.MOBILE ? ASSET_INFO_TABLET : ASSET_INFO_MOBILE} breakpoint={breakpoint} />}
+        {!isFetched && <TableSkeleton
+          className="skeleton"
+          info={breakpoint === DEVICE_TYPE.WEB ? ASSET_INFO : breakpoint !== DEVICE_TYPE.MOBILE ? ASSET_INFO_TABLET : ASSET_INFO_MOBILE}
+          breakpoint={breakpoint} />}
       </div>
     </AssetListTableWrapper>
   );

@@ -9,7 +9,7 @@ import { RewardType } from "@constants/option.constant";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -87,7 +87,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           makeDisplayTokenAmount(
             reward.rewardToken,
             Number(reward.totalAmount) *
-              Number(tokenPrices[reward.rewardToken.priceID]?.usd),
+            Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
         claimableAmount: Number(reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsd),
@@ -113,7 +113,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             accumulatedRewardOf1dUsd:
               existReward.accumulatedRewardOf1dUsd +
               rewardInfo.accumulatedRewardOf1d *
-                Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
+              Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
@@ -206,10 +206,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     }
     const claimableUsdValue = claimableRewardInfo
       ? Object.values(claimableRewardInfo)
-          .flatMap(item => item)
-          .reduce((accum, current) => {
-            return accum + Number(current.accumulatedRewardOf1dUsd);
-          }, 0)
+        .flatMap(item => item)
+        .reduce((accum, current) => {
+          return accum + Number(current.accumulatedRewardOf1dUsd);
+        }, 0)
       : 0;
 
     return toPriceFormat(claimableUsdValue, {
@@ -235,7 +235,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           makeDisplayTokenAmount(
             reward.rewardToken,
             Number(reward.totalAmount) *
-              Number(tokenPrices[reward.rewardToken.priceID]?.usd || 0),
+            Number(tokenPrices[reward.rewardToken.priceID]?.usd || 0),
           ) || 0,
         claimableAmount:
           makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) ||
@@ -265,7 +265,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               accumulatedRewardOf1dUsd:
                 existReward.accumulatedRewardOf1dUsd +
                 rewardInfo.accumulatedRewardOf1d *
-                  Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
+                Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
             };
           } else {
             infoMap[rewardInfo.token.priceID] = {
@@ -384,8 +384,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       temp?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) ||
       0;
     if (sumUSD > 0 && sumUSD <= 0.01) return "<$0.01";
+    console.log("🚀 ~ feeDaily ~ sumUSD:", sumUSD);
 
-    return formatUsdNumber(`${sumUSD}`, 2, true);
+    return toPriceFormat(`${"0.202"}`, {
+      minLimit: 0.01,
+      isRounding: false,
+      lestThan1Decimals: 2,
+      greaterThan1Decimals: 2,
+      usd: true,
+    });
   }, [aprRewardInfo?.SWAP_FEE]);
 
   const feeClaim = useMemo(() => {
@@ -622,7 +629,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <h4>Total Claimable Rewards</h4>
             <div className="claim-wrap">
               {!loading &&
-              (isShowClaimableRewardInfo || isShowUnclaimableRewardInfo) ? (
+                (isShowClaimableRewardInfo || isShowUnclaimableRewardInfo) ? (
                 <Tooltip
                   placement="top"
                   FloatingContent={

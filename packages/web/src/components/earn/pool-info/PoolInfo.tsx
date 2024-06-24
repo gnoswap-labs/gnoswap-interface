@@ -9,6 +9,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { numberToRate } from "@utils/string-utils";
 import PoolInfoLazyChart from "../pool-info-lazy-chart/PoolInfoLazyChart";
 import { POOL_INFO, POOL_INFO_MOBILE, POOL_INFO_SMALL_TABLET, POOL_INFO_TABLET } from "@constants/skeleton.constant";
+import IconStar from "@components/common/icons/IconStar";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -40,7 +41,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     const temp = tempRewardTokens.map(token => ({ src: token.logoURI, tooltipContent: token.symbol }));
     const logos = [...new Set(temp)];
     return <OverlapLogo logos={logos} size={20} />;
-  }, [rewardTokens]);
+  }, [getGnotPath, rewardTokens]);
 
   const cellWidths = breakpoint === DEVICE_TYPE.MOBILE
     ? POOL_INFO_MOBILE
@@ -77,7 +78,10 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
       </TableColumn>
       {/* APR */}
       <TableColumn tdWidth={cellWidths.list[4].width}>
-        <span className="apr">{numberToRate(apr)}</span>
+        <span className="apr">
+          {Number(apr) > 100 && <IconStar size={20} />}
+          {numberToRate(apr)}
+        </span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>{rewardImage}</TableColumn>
       <TableColumn tdWidth={cellWidths.list[6].width} onClick={e => e.stopPropagation()}>

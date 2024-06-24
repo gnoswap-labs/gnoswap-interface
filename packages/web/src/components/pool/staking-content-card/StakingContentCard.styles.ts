@@ -219,11 +219,15 @@ export const StakingContentCardWrapper = styled.div<Props>`
     .apr {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 16px;
+      &.small-gap {
+        gap: 4px;
+      }
       ${media.mobile} {
         justify-content: flex-end;
         align-items: center;
         gap: 8px;
       }
+     
       .apr-text {
         cursor: default;
         color: ${({ theme }) => theme.color.text03};

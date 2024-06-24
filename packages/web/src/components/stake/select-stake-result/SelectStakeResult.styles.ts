@@ -61,7 +61,7 @@ export const wrapper = (theme: Theme) => css`
   .result-section {
     ${mixins.flexbox("column", "center", "center")};
     color: ${theme.color.text02};
-    ${fonts.body12}
+    
     .result-value {
       margin-left: auto;
     }
@@ -72,11 +72,13 @@ export const wrapper = (theme: Theme) => css`
     }
     .total-amount-box {
       height: 24px;
+      ${fonts.body9}
       ${media.mobile} {
         height: 18px;
       }
     }
     .apr-box {
+      ${fonts.body12}
       height: 18px;
     }
     h5 {

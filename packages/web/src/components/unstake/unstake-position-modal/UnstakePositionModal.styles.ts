@@ -106,16 +106,16 @@ export const UnstakePositionModalWrapper = styled.div`
           }
           .label-large {
             color: ${({ theme }) => theme.color.text04};
-            ${fonts.body10}
+            ${fonts.body9}
             ${media.mobile} {
               ${fonts.body12};
             }
           }
           .value-large {
-            ${fonts.body6}
+            ${fonts.body9}
             color: ${({ theme }) => theme.color.text02};
             ${media.mobile} {
-              ${fonts.body8};
+              ${fonts.body12};
             }
           }
           .unstake-bar {

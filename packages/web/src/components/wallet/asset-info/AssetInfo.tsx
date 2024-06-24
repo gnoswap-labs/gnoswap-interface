@@ -1,13 +1,8 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import IconDownload from "@components/common/icons/IconDownload";
 import IconUpload from "@components/common/icons/IconUpload";
 import { Asset } from "@containers/asset-list-container/AssetListContainer";
 import { AssetInfoWrapper, LoadButton, TableColumn } from "./AssetInfo.styles";
-import {
-  ASSET_TD_WIDTH,
-  MOBILE_ASSET_TD_WIDTH,
-  TABLET_ASSET_TD_WIDTH,
-} from "@constants/skeleton.constant";
 import { DEVICE_TYPE } from "@styles/media";
 import BigNumber from "bignumber.js";
 import { makeId } from "@utils/common";
@@ -15,6 +10,7 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { useTheme } from "@emotion/react";
 import { isNativeToken } from "@models/token/token-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { ASSET_INFO, ASSET_INFO_MOBILE, ASSET_INFO_TABLET } from "@constants/skeleton.constant";
 
 interface AssetInfoProps {
   asset: Asset;
@@ -34,6 +30,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
 }) => {
   const theme = useTheme();
   const { logoURI, name, symbol, balance, type, path, price } = asset;
+  const [shortenPath, setShortenPath] = useState(false);
+
   const onClickItem = useCallback((path: string) => {
     location.href = `/tokens/${makeId(path)}`;
   }, []);
@@ -59,19 +57,36 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
 
     if (isNativeToken(asset)) return "Native coin";
 
+
     const tokenPathArr = path_?.split("/") ?? [];
 
     if (tokenPathArr?.length <= 0) return path_;
 
     const lastPath = tokenPathArr[tokenPathArr?.length - 1];
 
+
+
     if (lastPath.length >= 12) {
       return "..." + tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1);
     }
+    "";
+    if (shortenPath) {
+      return `.../${lastPath}`;
+    }
 
     return path_.replace("gno.land", "...");
-  }, [asset, path]);
+  }, [asset, path, shortenPath]);
 
+  const mobileColId = useMemo(() => asset.symbol + "_ASSET_INFO", [asset.symbol]);
+
+  useLayoutEffect(() => {
+    if (breakpoint === DEVICE_TYPE.MOBILE) {
+      const element = document.getElementById(mobileColId);
+      if ((element?.clientWidth || 0) > 165) {
+        setShortenPath(true);
+      }
+    }
+  }, [breakpoint, mobileColId]);
 
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
     e.stopPropagation();
@@ -82,11 +97,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     }
   }, []);
 
+
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
       <TableColumn
+        id={asset.symbol}
         className="name-col left-padding left pointer "
-        tdWidth={ASSET_TD_WIDTH[0]}
+        tdWidth={ASSET_INFO.list?.[0].width}
         onClick={() => onClickItem(path)}
       >
         <MissingLogo
@@ -110,21 +127,21 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
           <span className="token-symbol">{symbol}</span>
         </div>
       </TableColumn>
-      <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[1]}>
+      <TableColumn className="left" tdWidth={ASSET_INFO.list?.[1].width}>
         <span className="chain">
           {type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}
         </span>
       </TableColumn>
-      <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[2]}>
+      <TableColumn className="left" tdWidth={ASSET_INFO.list?.[2].width}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[3]}>
+      <TableColumn className="left" tdWidth={ASSET_INFO.list?.[3].width}>
         <span className="balance">{priceData}</span>
       </TableColumn>
-      <TableColumn tdWidth={ASSET_TD_WIDTH[4]}>
+      <TableColumn tdWidth={ASSET_INFO.list?.[4].width}>
         <DepositButton onClick={onClickDeposit} />
       </TableColumn>
-      <TableColumn tdWidth={ASSET_TD_WIDTH[5]}>
+      <TableColumn tdWidth={ASSET_INFO.list?.[5].width}>
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
@@ -132,7 +149,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     <AssetInfoWrapper>
       <TableColumn
         className="name-col left-padding left"
-        tdWidth={TABLET_ASSET_TD_WIDTH[0]}
+        tdWidth={ASSET_INFO_TABLET.list[0].width}
         onClick={() => onClickItem(path)}
       >
         <MissingLogo
@@ -156,21 +173,21 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
           <span className="token-symbol">{symbol}</span>
         </div>
       </TableColumn>
-      <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[1]}>
+      <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[1].width}>
         <span className="chain">
           {type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}
         </span>
       </TableColumn>
-      <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[2]}>
+      <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[2].width}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
+      <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[3].width}>
         <span className="balance">{priceData}</span>
       </TableColumn>
-      <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[4]}>
+      <TableColumn tdWidth={ASSET_INFO_TABLET.list[4].width}>
         <DepositButton onClick={onClickDeposit} />
       </TableColumn>
-      <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[5]}>
+      <TableColumn tdWidth={ASSET_INFO_TABLET.list[5].width}>
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
@@ -178,7 +195,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     <AssetInfoWrapper>
       <TableColumn
         className="name-col left-padding left"
-        tdWidth={MOBILE_ASSET_TD_WIDTH[0]}
+        tdWidth={ASSET_INFO_MOBILE.list[0].width}
         onClick={() => onClickItem(path)}
       >
         <MissingLogo
@@ -188,7 +205,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
           width={28}
           mobileWidth={28}
         />
-        <div className="token-name-symbol-path">
+        <div className="token-name-symbol-path" id={mobileColId}>
           <div className="token-name-path">
             <strong className="token-name">{name}</strong>
             <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, path)}>
@@ -202,21 +219,21 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
           <span className="token-symbol">{symbol}</span>
         </div>
       </TableColumn>
-      <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[1]}>
+      <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[1].width}>
         <span className="chain">
           {type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}
         </span>
       </TableColumn>
-      <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[2]}>
+      <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[2].width}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[3]}>
+      <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[3].width}>
         <span className="balance">{priceData}</span>
       </TableColumn>
-      <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[4]}>
+      <TableColumn tdWidth={ASSET_INFO_MOBILE.list[4].width}>
         <DepositButton onClick={onClickDeposit} />
       </TableColumn>
-      <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[5]}>
+      <TableColumn tdWidth={ASSET_INFO_MOBILE.list[5].width}>
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>

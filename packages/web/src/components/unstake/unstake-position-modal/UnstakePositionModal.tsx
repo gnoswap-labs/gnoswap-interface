@@ -27,14 +27,40 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
   }, [close]);
 
   const currentPercent = useMemo(() => {
-    return numberToRate(positions.flatMap(item => item.reward).reduce((acc, current) => {
-      return acc + Number(current.apr || 0);
-    }, 0) ?? 0);
+    const result = positions
+      .flatMap(
+        ({ reward, usdValue }) => reward
+          .map((item) => ({ ...item, usdValue: usdValue }))
+      ).reduce((acc, current) => {
+        return {
+          unstakeUsd: acc.unstakeUsd + (Number(current.apr || 0) * Number(current.usdValue)),
+          allUsd: acc.allUsd + current.usdValue
+        };
+      }, {
+        unstakeUsd: 0,
+        allUsd: 0,
+      }) ?? 0;
+
+    return numberToRate(result.unstakeUsd / result.allUsd);
   }, [positions]);
-  const unstakePercent = useMemo(() => {
-    return numberToRate(positions.flatMap(item => item.reward).filter(item => item.rewardType === "SWAP_FEE").reduce((acc, current) => {
-      return acc + Number(current.apr || 0);
-    }, 0) ?? 0);
+
+  const swapFeePercent = useMemo(() => {
+    const result = positions
+      .flatMap(
+        ({ reward, usdValue }) => reward
+          .map((item) => ({ ...item, usdValue: usdValue }))
+          .filter(item => item.rewardType === "SWAP_FEE")
+      ).reduce((acc, current) => {
+        return {
+          unstakeUsd: acc.unstakeUsd + (Number(current.apr || 0) * Number(current.usdValue)),
+          allUsd: acc.allUsd + current.usdValue
+        };
+      }, {
+        unstakeUsd: 0,
+        allUsd: 0,
+      }) ?? 0;
+
+    return numberToRate(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
   return (
@@ -118,7 +144,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
             title={"Important Note"}
             icon={<IconCircleExclamationMark />}
             content={<UnstakeWarningContentWrapper>
-              Your APR will reduce from  {currentPercent} → <span className="unstake-percent">{unstakePercent}</span>
+              Your APR will reduce from  {currentPercent} → <span className="unstake-percent">{swapFeePercent}</span>
             </UnstakeWarningContentWrapper>}
           />
           <div>

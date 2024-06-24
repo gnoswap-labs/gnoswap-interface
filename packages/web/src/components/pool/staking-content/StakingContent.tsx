@@ -9,10 +9,10 @@ import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.style
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
-import OverlapLogo, { ILogoData } from "@components/common/overlap-logo/OverlapLogo";
 import { STAKING_PERIOS, StakingPeriodType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
 interface StakingContentProps {
   totalApr: string;
@@ -48,21 +48,27 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
     const rewardLogo = rewardData?.map(item => ({
-      src: getGnotPath(item).logoURI,
-      tooltipContent: getGnotPath(item).symbol,
+      ...item,
+      logoURI: getGnotPath(item).logoURI,
+      symbol: getGnotPath(item).symbol,
+      path: getGnotPath(item).path,
+      name: getGnotPath(item).name,
     })) || [];
     const temp = rewardTokens.map(token => ({
-      src: getGnotPath(token).logoURI,
-      tooltipContent: getGnotPath(token).symbol,
+      ...token,
+      logoURI: getGnotPath(token).logoURI,
+      symbol: getGnotPath(token).symbol,
+      path: getGnotPath(token).path,
+      name: getGnotPath(token).name,
     }));
-    return [...temp, ...rewardLogo].reduce((acc: ILogoData[], current) => {
-      if (!acc.find(item => item.src === current.src)) {
+    return [...temp, ...rewardLogo].reduce((acc: TokenModel[], current) => {
+      if (!acc.find(item => item.logoURI === current.logoURI)) {
         acc.push(current);
       }
 
       return acc;
-    }, []) as ILogoData[];
-  }, [rewardTokens, pool]);
+    }, []) as TokenModel[];
+  }, [pool?.rewardTokens, rewardTokens, getGnotPath]);
 
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
@@ -125,7 +131,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             <span className="to-mobile">to</span>
             <span className="apr">{totalApr} APR </span>
             <div className="coin-info">
-              <OverlapLogo logos={rewardTokenLogos} />
+              <OverlapTokenLogo tokens={rewardTokenLogos} />
             </div>
           </div>
         )}

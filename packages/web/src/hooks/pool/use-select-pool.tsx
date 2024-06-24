@@ -455,8 +455,10 @@ export const useSelectPool = ({
 
 
   const estimatedAPR = useMemo(() => {
-    return null;
-  }, []);
+    return Number(poolInfo?.dbData?.feeApr || 0) * Number(feeBoost ?? 0);
+  }, [feeBoost, poolInfo?.dbData?.feeApr]);
+  console.log("🚀 ~ estimatedAPR ~ poolInfo:", poolInfo);
+  console.log("🚀 ~ estimatedAPR ~ estimatedAPR:", estimatedAPR);
 
   const tickSpacing = useMemo(
     () => poolInfo?.chainData?.tickSpacing || 1,

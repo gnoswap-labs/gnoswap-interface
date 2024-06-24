@@ -25,6 +25,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { PositionModel } from "@models/position/position-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import BigNumber from "bignumber.js";
+import IconStar from "@components/common/icons/IconStar";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -151,14 +152,13 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
       <div className="left">
         <div className="mobile-wrap">
           <div
-            className={`check-wrap ${
-              !checkedStep ? "check-wrap-not-active" : ""
-            }`}
+            className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""
+              }`}
           >
             {checkedStep && <IconCheck />}
 
             {breakpoint === DEVICE_TYPE.MOBILE ||
-            breakpoint === DEVICE_TYPE.TABLET_M ? (
+              breakpoint === DEVICE_TYPE.TABLET_M ? (
               <div className="check-line-long">
                 {checkedStep ? (
                   <IconLineLong />
@@ -254,7 +254,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
             </SkeletonEarnDetailWrapper>
           )}
           {!loading && (
-            <div className="apr">
+            <div className="apr small-gap">
+              {Number(stakingApr) > 100 && <IconStar />}
               <span className="apr-text">{aprStr}</span>
             </div>
           )}
@@ -332,9 +333,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
       <div className="left">
         <div className="mobile-wrap">
           <div
-            className={`check-wrap ${
-              !checkedStep ? "check-wrap-not-active" : ""
-            }`}
+            className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""
+              }`}
           >
             {checkedStep && <IconCheck />}
           </div>
