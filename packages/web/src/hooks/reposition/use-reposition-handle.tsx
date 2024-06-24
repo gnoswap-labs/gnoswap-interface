@@ -15,7 +15,6 @@ import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
-import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
 import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
 import { IncreaseState } from "@states/index";
 import { MAX_UINT64 } from "@utils/math.utils";
@@ -32,6 +31,7 @@ import { convertToKMB } from "@utils/stake-position-utils";
 import { checkGnotPath, encryptId } from "@utils/common";
 import { useEstimateSwap } from "@query/router";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { RepositionLiquidityResponse } from "@repositories/position/response";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -51,13 +51,12 @@ export const useRepositionHandle = () => {
   );
 
   const { address } = useAddress();
-  const { swapRouterRepository, positionRepository, poolRepository } =
-    useGnoswapContext();
+  const { swapRouterRepository, positionRepository } = useGnoswapContext();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account } = useWallet();
   const { positions } = usePositionData({
-    poolPath: encryptId(poolPath)
+    poolPath: encryptId(poolPath),
   });
   const { openModal: openConfirmModal, update: updateConfirmModalData } =
     useTransactionConfirmModal();
@@ -101,8 +100,8 @@ export const useRepositionHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -191,13 +190,13 @@ export const useRepositionHandle = () => {
       : 1 / selectPool.currentPrice;
     const originPrices = ordered
       ? {
-        minPrice: tickToPrice(selectedPosition.tickLower),
-        maxPrice: tickToPrice(selectedPosition.tickUpper),
-      }
+          minPrice: tickToPrice(selectedPosition.tickLower),
+          maxPrice: tickToPrice(selectedPosition.tickUpper),
+        }
       : {
-        minPrice: tickToPrice(-1 * selectedPosition.tickUpper),
-        maxPrice: tickToPrice(-1 * selectedPosition.tickLower),
-      };
+          minPrice: tickToPrice(-1 * selectedPosition.tickUpper),
+          maxPrice: tickToPrice(-1 * selectedPosition.tickLower),
+        };
     const depositPrices = {
       minPrice: selectPool.minPrice,
       maxPrice: selectPool.maxPrice,
@@ -221,7 +220,7 @@ export const useRepositionHandle = () => {
       originDepositAmounts.amountA.toString(),
     ).dividedBy(
       Number(originDepositAmounts.amountA.toString()) +
-      Number(originDepositAmounts.amountB.toString()),
+        Number(originDepositAmounts.amountB.toString()),
     );
     const currentDepositRatioBN = BigNumber(
       Number(depositAmounts.amountA),
@@ -414,7 +413,7 @@ export const useRepositionHandle = () => {
     async (
       swapToken: TokenModel,
       swapAmount: string,
-    ): Promise<WalletResponse<AddLiquidityResponse> | null> => {
+    ): Promise<WalletResponse<RepositionLiquidityResponse | null> | null> => {
       if (
         !address ||
         !selectedPosition ||
@@ -441,14 +440,14 @@ export const useRepositionHandle = () => {
         ? repositionAmounts.amountB.toString()
         : BigNumber(currentAmounts.amountB).plus(swapAmount).toString();
 
-      return poolRepository
-        .addLiquidity({
+      return positionRepository
+        .repositionLiquidity({
+          lpTokenId: selectedPosition.lpTokenId,
           tokenA,
           tokenB,
           tokenAAmount,
           tokenBAmount,
           slippage: Number(MAX_UINT64),
-          feeTier: selectPool.feeTier,
           minTick: priceToNearTick(
             selectPool.minPrice,
             SwapFeeTierInfoMap[selectPool.feeTier].tickSpacing,
@@ -479,7 +478,7 @@ export const useRepositionHandle = () => {
       selectPool.minPrice,
       selectPool.maxPrice,
       repositionAmounts,
-      poolRepository,
+      positionRepository,
     ],
   );
 

@@ -11,17 +11,25 @@ import { IPositionHistoryModel } from "@models/position/position-history-model";
 import {
   DecreaseLiquidityResponse,
   IncreaseLiquidityResponse,
+  RepositionLiquidityResponse,
 } from "./response";
-import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
+import {
+  DecreaseLiquidityRequest,
+  IncreaseLiquidityRequest,
+  RepositionLiquidityRequest,
+} from "./request";
 import { PositionBinModel } from "@models/position/position-bin-model";
 
 export interface PositionRepository {
-  getPositionsByAddress: (address: string, options?: { isClosed?: boolean, poolPath?: string, }) => Promise<PositionModel[]>;
+  getPositionsByAddress: (
+    address: string,
+    options?: { isClosed?: boolean; poolPath?: string },
+  ) => Promise<PositionModel[]>;
 
   getPositionBins: (
     lpTokenId: string,
     count: 20 | 40,
-  ) => Promise<PositionBinModel[]>
+  ) => Promise<PositionBinModel[]>;
 
   claimAll: (
     request: ClaimAllRequest,
@@ -42,6 +50,10 @@ export interface PositionRepository {
   decreaseLiquidity: (
     request: DecreaseLiquidityRequest,
   ) => Promise<WalletResponse<DecreaseLiquidityResponse | null>>;
+
+  repositionLiquidity: (
+    request: RepositionLiquidityRequest,
+  ) => Promise<WalletResponse<RepositionLiquidityResponse | null>>;
 
   removeLiquidity: (
     request: RemoveLiquidityRequest,

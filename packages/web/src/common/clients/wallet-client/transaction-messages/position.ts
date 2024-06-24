@@ -102,11 +102,37 @@ export function makePositionIncreaseLiquidityMessage(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
-      `${amount0Desired}`, // Maximum amount of tokenA to offer
       `${amount1Desired}`, // Maximum amount of tokenB to offer
+      `${amount0Desired}`, // Maximum amount of tokenA to offer
       `${amount0Min}`, // Minimum amount of tokenA to provide
       `${amount1Min}`, // Minimum amount of tokenB to provide
       "9999999999", // Deadline UTC time
+    ],
+    caller,
+  });
+}
+
+export function makePositionRepositionLiquidityMessage(
+  lpTokenId: string,
+  minTick: number,
+  maxTick: number,
+  tokenAAmount: string,
+  tokenBAmount: string,
+  caller: string,
+  sendAmount: string | null,
+) {
+  const send = makeGNOTSendAmount(sendAmount);
+
+  return makeTransactionMessage({
+    send,
+    func: "Reposition",
+    packagePath: PACKAGE_POSITION_PATH,
+    args: [
+      lpTokenId, // LP Token ID
+      `${minTick}`, // position's minimal tick
+      `${maxTick}`, // position's maximal tick
+      `${tokenAAmount}`, // Maximum amount of tokenB to offer
+      `${tokenBAmount}`, // Maximum amount of tokenA to offer
     ],
     caller,
   });
