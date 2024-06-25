@@ -60,7 +60,6 @@ export default function Token() {
     currentPrice, {
     usd: true,
     isRounding: false,
-    fixedLessThan1Decimal: 3,
   }), [currentPrice]);
 
   const wrappedToken = useMemo(() => getGnotPath(token), [getGnotPath, token]);

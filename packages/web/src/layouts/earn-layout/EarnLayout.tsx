@@ -1,3 +1,4 @@
+import { getCanScrollUpId } from "@constants/common.constant";
 import React from "react";
 import { EarnLayoutWrapper } from "./EarnLayout.styles";
 
@@ -25,7 +26,7 @@ const EarnLayout: React.FC<WalletLayoutProps> = ({
         <div className="incentivized">{incentivizedPools}</div>
       </div>
     </section>
-    <div className="background-wrapper">
+    <div className="background-wrapper" id={getCanScrollUpId("pool-list")}>
       <div className="background"></div>
       <section className="pools-section">
         <div className="pools-container">

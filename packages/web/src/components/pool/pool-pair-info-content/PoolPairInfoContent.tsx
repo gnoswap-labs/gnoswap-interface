@@ -73,14 +73,20 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [depositRatio]);
 
   const liquidityValue = useMemo((): string => {
+    if (!pool.tvl) return "-";
+
     return toUnitFormat(pool.tvl, true, true);
   }, [pool.tvl]);
 
   const volumeValue = useMemo((): string => {
+    if (!pool.volume24h) return "-";
+
     return toUnitFormat(pool.volume24h, true, true);
   }, [pool.volume24h]);
 
   const aprValue = useMemo(() => {
+    if (!pool.totalApr) return "-";
+
     const aprStr = numberToRate(pool.totalApr, { isRounding: false });
     const totalAPR = pool.totalApr || 0;
     if (Number(pool.tvl) < 0.01) {
@@ -113,10 +119,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.volumeChange24h]);
 
   const feeChangedStr = useMemo((): string => {
+    if (!pool.feeUsd24h) return "-";
+
     return toUnitFormat(pool.feeUsd24h, true, true);
   }, [pool.feeUsd24h]);
 
   const rewardChangedStr = useMemo((): string => {
+    if (!pool.rewards24hUsd) return "-";
+
     return toUnitFormat(pool.rewards24hUsd, true, true);
   }, [pool.rewards24hUsd]);
 
@@ -182,7 +192,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && (
             <div className="wrapper-value">
               <strong>{liquidityValue}</strong>
-              <div>
+              {pool.tvlChange ? <div>
                 {pool.tvlChange >= 0 ? (
                   <IconTriangleArrowUpV2 />
                 ) : (
@@ -192,7 +202,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   {" "}
                   {liquidityChangedStr}
                 </span>
-              </div>
+              </div> : "-"}
             </div>
           )}
           <div className="section-info">
@@ -261,10 +271,10 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && (
             <div className="wrapper-value">
               <strong>{volumeValue}</strong>
-              <div>
+              {pool.volumeChange24h ? <div>
                 {pool.volumeChange24h >= 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}{" "}
                 <span className={pool.volumeChange24h >= 0 ? "positive" : "negative"}> {volumeChangedStr}</span>
-              </div>
+              </div> : "-"}
             </div>
           )}
           {loading && (
@@ -283,7 +293,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             {!loading && (
               <div className="section-image">
                 <span>
-                  {toUnitFormat(pool.allTimeVolumeUsd ?? 0, true, true)}
+                  {pool.allTimeVolumeUsd ? toUnitFormat(pool.allTimeVolumeUsd, true, true) : "-"}
                 </span>
               </div>
             )}
@@ -302,8 +312,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               placement="top"
               FloatingContent={
                 <TooltipAPR
-                  feeAPR={Number(pool.tvl) < 0.01 ? "0" : pool?.feeApr}
-                  stakingAPR={Number(pool.tvl) < 0.01 ? "0" : pool?.stakingApr}
+                  feeAPR={pool?.feeApr}
+                  stakingAPR={pool?.stakingApr}
                   feeLogo={feeLogo}
                   stakeLogo={stakeLogo}
                 />

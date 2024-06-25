@@ -10,10 +10,13 @@ export interface RangeBadgeProps {
   status: RANGE_STATUS_OPTION;
   className?: string;
   isShorten?: boolean;
+  isClosed?: boolean;
 }
 
-const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isShorten }) => {
+const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isShorten, isClosed }) => {
   const statusText = useMemo(() => {
+    if (isClosed) return "Closed";
+
     if (isShorten) {
       switch (status) {
         case RANGE_STATUS_OPTION.IN:
@@ -22,7 +25,7 @@ const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isShorten })
           return "Out";
         case RANGE_STATUS_OPTION.NONE:
         default:
-          return "Closed";
+          return "";
       }
     }
 
@@ -35,7 +38,7 @@ const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isShorten })
       default:
         return "Closed";
     }
-  }, [isShorten, status]);
+  }, [isClosed, isShorten, status]);
 
   return <RangeBadgeWrapper className={className} >
     <RangeDot status={status} />

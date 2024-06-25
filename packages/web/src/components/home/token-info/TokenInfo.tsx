@@ -11,6 +11,7 @@ import { cx } from "@emotion/css";
 import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import {
   HoverSection,
+  PriceValueWrapper,
   TableColumn,
   TokenInfoWrapper,
 } from "./TokenInfo.styles";
@@ -141,7 +142,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           </div>
         </TableColumn>
         <TableColumn className="right-padding-16" tdWidth={TOKEN_TD_WIDTH[2]}>
-          <span>{price}</span>
+          {price === "--" ? <PriceValueWrapper>{price}</PriceValueWrapper> : price}
         </TableColumn>
         <TableColumn
           tdWidth={TOKEN_TD_WIDTH[3]}

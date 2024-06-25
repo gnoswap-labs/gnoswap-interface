@@ -64,29 +64,36 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
 
     const lastPath = tokenPathArr[tokenPathArr?.length - 1];
 
-
+    if (shortenPath) {
+      return "";
+    }
 
     if (lastPath.length >= 12) {
       return "..." + tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1);
-    }
-    "";
-    if (shortenPath) {
-      return `.../${lastPath}`;
     }
 
     return path_.replace("gno.land", "...");
   }, [asset, path, shortenPath]);
 
-  const mobileColId = useMemo(() => asset.symbol + "_ASSET_INFO", [asset.symbol]);
+  const assetColId = useMemo(() => asset.symbol + "_ASSET_INFO", [asset.symbol]);
 
   useLayoutEffect(() => {
-    if (breakpoint === DEVICE_TYPE.MOBILE) {
-      const element = document.getElementById(mobileColId);
-      if ((element?.clientWidth || 0) > 165) {
-        setShortenPath(true);
-      }
+    const element = document.getElementById(assetColId);
+    if ((element?.clientWidth || 0) > 165
+      && (breakpoint === DEVICE_TYPE.TABLET
+        || breakpoint === DEVICE_TYPE.TABLET_M
+        || breakpoint === DEVICE_TYPE.TABLET_S
+        || breakpoint === DEVICE_TYPE.MEDIUM_TABLET
+        || breakpoint === DEVICE_TYPE.MOBILE
+      )) {
+      setShortenPath(true);
+      return;
     }
-  }, [breakpoint, mobileColId]);
+
+    if (breakpoint === DEVICE_TYPE.WEB || breakpoint === DEVICE_TYPE.MEDIUM_WEB) {
+      setShortenPath(false);
+    }
+  }, [assetColId, breakpoint]);
 
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
     e.stopPropagation();
@@ -113,7 +120,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
           width={28}
           mobileWidth={28}
         />
-        <div className="token-name-symbol-path">
+        <div className="token-name-symbol-path" id={assetColId}>
           <div className="token-name-path">
             <strong className="token-name">{name}</strong>
             <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, path)}>
@@ -159,7 +166,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
           width={28}
           mobileWidth={28}
         />
-        <div className="token-name-symbol-path">
+        <div className="token-name-symbol-path" id={assetColId}>
           <div className="token-name-path">
             <strong className="token-name">{name}</strong>
             <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, path)}>
@@ -205,7 +212,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
           width={28}
           mobileWidth={28}
         />
-        <div className="token-name-symbol-path" id={mobileColId}>
+        <div className="token-name-symbol-path" id={assetColId}>
           <div className="token-name-path">
             <strong className="token-name">{name}</strong>
             <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, path)}>

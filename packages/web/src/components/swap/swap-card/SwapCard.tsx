@@ -95,6 +95,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
             openConfirmModal={openConfirmModal}
             openConnectWallet={openConnectWallet}
             text={swapButtonText}
+            isLoading={isLoading}
             switchNetwork={switchNetwork}
           />
         </div>
@@ -108,6 +109,7 @@ interface SwapButtonProps {
   isAvailSwap: boolean;
   text: string;
   isSwitchNetwork: boolean;
+  isLoading: boolean;
 
   openConfirmModal: () => void;
   openConnectWallet: () => void;
@@ -122,6 +124,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
   openConnectWallet,
   isSwitchNetwork,
   switchNetwork,
+  isLoading,
 }) => {
   const defaultStyle = {
     fullWidth: true,
@@ -135,6 +138,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
         style={defaultStyle}
         onClick={openConnectWallet}
         className="button-swap"
+        disabled={isLoading}
       />
     );
   }
@@ -146,6 +150,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
         style={defaultStyle}
         onClick={switchNetwork}
         className="button-swap"
+        disabled={isLoading}
       />
     );
   }
@@ -154,6 +159,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
     return (
       <Button
         text={text}
+        disabled={isLoading}
         style={{
           ...defaultStyle,
           hierarchy: ButtonHierarchy.Gray,
@@ -168,6 +174,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
       style={defaultStyle}
       onClick={openConfirmModal}
       className="button-swap"
+      disabled={isLoading}
     />
   );
 };

@@ -666,7 +666,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         }) === 1;
       const priceOfMaxLiquidity =
         pools
-          .sort((pool1: PoolModel, pool2: PoolModel) => pool2.tvl - pool1.tvl)
+          .sort((pool1: PoolModel, pool2: PoolModel) => Number(pool2.tvl) - Number(pool1.tvl))
           .at(0)?.price || null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse

@@ -36,6 +36,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
       return {
         ...item,
         logoURI: getGnotPath(item).logoURI,
+        symbol: getGnotPath(item).symbol,
       };
     });
     const temp = tempRewardTokens.map(token => ({ src: token.logoURI, tooltipContent: token.symbol }));

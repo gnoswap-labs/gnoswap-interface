@@ -25,7 +25,7 @@ export interface PoolModel {
 
   currentTick: number;
 
-  tvl: number;
+  tvl: string;
 
   tvlChange: number;
 

@@ -371,6 +371,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </div>
             </div>
             <RangeBadge
+              isClosed={position.closed}
               className={inRange === null ? "disabled-range" : ""}
               isShorten={shortenInRange}
               status={

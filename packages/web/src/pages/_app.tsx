@@ -12,6 +12,7 @@ import ModalContainer from "@containers/modal-container/ModalContainer";
 import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 import BackgroundContainer from "@containers/background-container/BackgroundContainer";
 import Notice from "@components/common/notice/NoticeToast";
+import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWrapper";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -27,7 +28,6 @@ export default function App({ Component, pageProps }: AppProps) {
         },
       }),
   );
-  // const { canScrollUp } = useScrollUp();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -37,7 +37,9 @@ export default function App({ Component, pageProps }: AppProps) {
             <GnoswapThemeProvider>
               <BackgroundContainer>
                 <Notice>
-                  <Component {...pageProps} />
+                  <ScrollTopWrapper>
+                    <Component {...pageProps} />
+                  </ScrollTopWrapper>
                   <GnoswapModalProvider selector={"portal-root"}>
                     <ModalContainer />
                   </GnoswapModalProvider>

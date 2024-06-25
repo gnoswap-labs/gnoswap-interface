@@ -1,3 +1,4 @@
+import { getCanScrollUpId } from "@constants/common.constant";
 import React from "react";
 import { DashboardLayoutWrapper } from "./DashboardLayout.styles";
 
@@ -30,7 +31,7 @@ const DashboardLayout: React.FC<DashboradLayoutProps> = ({
       </div>
       <div className="dashboard-info-container">{info}</div>
     </section>
-    <div className="background-wrapper">
+    <div className="background-wrapper" id={getCanScrollUpId("activities-list")}>
       <div className="background"></div>
       <section className="activities-section">
         <div className="activities-container">{activities}</div>

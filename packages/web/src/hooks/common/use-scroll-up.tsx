@@ -1,18 +1,20 @@
 import { CAN_SCROLL_UP_ID } from "@constants/common.constant";
-import * as CommonState from "@states/common";
-import { useAtom } from "jotai";
-import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 
 export const useScrollUp = () => {
-  const [canScrollUp, setCanScrollUp] = useAtom(CommonState.canScrollUpState);
-  const [currentSection, setCurrentSection] = useAtom(CommonState.currentSection);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    window.addEventListener("scroll", () => {
-      const anyElement = document.querySelector(`[id^=\"${CAN_SCROLL_UP_ID}\"]`);
+    const anyElement = document.querySelector(`[id^=\"${CAN_SCROLL_UP_ID}\"]`);
+
+    if (!anyElement) return;
+
+    const findSpecificArea = () => {
 
       if (anyElement) {
-        const reachedTop = anyElement.getBoundingClientRect().top === 64;
+        const reachedTop = anyElement.getBoundingClientRect().top < 90;
 
         if (reachedTop) {
           setCanScrollUp(true);
@@ -20,13 +22,27 @@ export const useScrollUp = () => {
           setCanScrollUp(false);
         }
       }
-    });
-  }, [setCanScrollUp]);
+    };
+    const handleRouteChange = () => {
+      setCanScrollUp(false);
+    };
+
+    router.events.on("routeChangeStart", handleRouteChange);
+    window.addEventListener("scroll", findSpecificArea);
+
+    return () => {
+      window.removeEventListener("scroll", findSpecificArea);
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
+  }, []);
+
+  const scrollUp = useCallback(() => {
+    window.scroll({ top: 0, left: 0, behavior: "smooth" });
+  }, []);
 
   return {
-    setCurrentSection,
-    currentSection,
     canScrollUp,
-    setCanScrollUp
+    setCanScrollUp,
+    scrollUp
   };
 };
