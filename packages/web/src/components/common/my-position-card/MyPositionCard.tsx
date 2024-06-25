@@ -32,7 +32,7 @@ import IconStar from "../icons/IconStar";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
-  movePoolDetail: (id: string) => void;
+  movePoolDetail: (poolId: string, positionId: string) => void;
   mobile: boolean;
   currentIndex?: number;
   themeKey: "dark" | "light";
@@ -352,7 +352,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       <div className="base-border">
         <MyPositionCardWrapper
           staked={position.staked}
-          onClick={() => movePoolDetail(pool.id)}
+          onClick={() => movePoolDetail(pool.id, position.id)}
           viewMyRange={viewMyRange}
           disabled={inRange === null}
         >

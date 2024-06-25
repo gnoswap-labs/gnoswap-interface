@@ -49,6 +49,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
                 checked={invisibleZeroBalance}
                 onChange={toggleInvisibleZeroBalance}
                 hasLabel={true}
+                labelText={"Hide zero amount"}
               />
             )}
             {searchIcon ? (

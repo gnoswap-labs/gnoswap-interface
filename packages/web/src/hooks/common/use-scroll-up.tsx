@@ -9,10 +9,7 @@ export const useScrollUp = () => {
   useEffect(() => {
     const anyElement = document.querySelector(`[id^=\"${CAN_SCROLL_UP_ID}\"]`);
 
-    if (!anyElement) return;
-
     const findSpecificArea = () => {
-
       if (anyElement) {
         const reachedTop = anyElement.getBoundingClientRect().top < 90;
 

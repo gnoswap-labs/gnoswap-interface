@@ -108,12 +108,11 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, [router]);
 
   const movePoolDetail = useCallback(
-    (id: string) => {
-      let query = "";
-      if (address && address.length > 0) {
-        query = `?addr=${address}`;
-      }
-      router.push(`/earn/pool/${id}${query}`);
+    (poolId: string, positionId: string) => {
+      const query = address && address.length > 0 ? `?addr=${address}` : "";
+      const positionHash = `#${positionId}`;
+
+      router.push(`/earn/pool/${poolId}${query}${positionHash}`);
     },
     [router, address],
   );

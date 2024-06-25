@@ -12,6 +12,7 @@ import {
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useGetPoolDetailByPath } from "@query/pools";
 
 interface SubmitPositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -32,6 +33,10 @@ const SubmitPositionModalContainer = ({
   const router = useRouter();
   const clearModal = useClearModal();
   const { tokenPrices } = useTokenData();
+  const poolPath = router.query["pool-path"] as string;
+  const { data: pool } = useGetPoolDetailByPath(poolPath, {
+    enabled: !!poolPath
+  });
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
@@ -165,6 +170,7 @@ const SubmitPositionModalContainer = ({
       positions={positions}
       close={clearModal}
       onSubmit={onSubmit}
+      pool={pool}
     />
   );
 };

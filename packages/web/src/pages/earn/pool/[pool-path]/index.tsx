@@ -90,7 +90,6 @@ export default function Pool() {
 
 
     if (
-      address &&
       isFetchedPosition &&
       !loading &&
       poolPath
