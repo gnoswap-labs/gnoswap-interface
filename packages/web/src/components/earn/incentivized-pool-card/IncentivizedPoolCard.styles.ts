@@ -4,18 +4,18 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const PoolCardWrapperWrapperBorder = styled.div`
-  &.special-card {
+  min-width: 322px; 
+  ${media.tablet} {
     min-width: 322px;
+  }
+  ${media.mobile} {
+    min-width: 290px;
+  }
+  &.special-card {
     background: ${({ theme }) => theme.color.backgroundGradient4};
     border-radius: 10px;
     padding: 1px;
     height: fit-content;
-    ${media.tablet} {
-      min-width: 322px;
-    }
-    ${media.mobile} {
-      min-width: 290px;
-    }
     .base-border {
       border-radius: 10px;
       background: ${({ theme }) => theme.color.background01};

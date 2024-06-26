@@ -3,11 +3,7 @@ import { PropsWithChildren } from "react";
 import IconArrowUp from "../icons/IconArrowUp";
 import { ScrollTopButton, ScrollTopContainer } from "./ScrollTopWrapper.styles";
 
-export interface ScrollTopWrapperProps { }
-
-function ScrollTopWrapper({
-  children
-}: PropsWithChildren<ScrollTopWrapperProps>) {
+function ScrollTopWrapper({ children }: PropsWithChildren) {
   const { scrollUp, canScrollUp } = useScrollUp();
 
   return (<ScrollTopContainer>

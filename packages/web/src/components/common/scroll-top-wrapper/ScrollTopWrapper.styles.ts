@@ -8,28 +8,9 @@ export const ScrollTopContainer = styled.div`
 
 
 export const ScrollTopButton = styled.button<{ $hidden: boolean }>`
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  @keyframes fadeOut {
-    0% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
+  opacity: ${({ $hidden }) => $hidden ? "0" : "1"};
+  transition: all .2s;
+  visibility: ${({ $hidden }) => $hidden ? "hidden" : "visible"};
   ${mixins.flexbox("row", "center", "center")}
   position: fixed;
   cursor: pointer;
@@ -39,11 +20,7 @@ export const ScrollTopButton = styled.button<{ $hidden: boolean }>`
   bottom: 76px;
   right: 16px;
   border-radius: 8px;
-  animation: fadeIn 1s linear forwards;
   &:hover {
     background-color:  ${({ theme }) => theme.color.background04Hover};
   }
-  ${({ $hidden }) => $hidden && `
-    animation: fadeOut 1s linear forwards;
-  `}
 `;

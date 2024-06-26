@@ -4,12 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 
 export const useScrollUp = () => {
   const [canScrollUp, setCanScrollUp] = useState(false);
+  const [scrollStarted, setScrollStarted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const anyElement = document.querySelector(`[id^=\"${CAN_SCROLL_UP_ID}\"]`);
 
     const findSpecificArea = () => {
+      setScrollStarted(true);
       if (anyElement) {
         const reachedTop = anyElement.getBoundingClientRect().top < 300;
 
@@ -44,6 +46,7 @@ export const useScrollUp = () => {
   return {
     canScrollUp,
     setCanScrollUp,
-    scrollUp
+    scrollUp,
+    scrollStarted,
   };
 };
