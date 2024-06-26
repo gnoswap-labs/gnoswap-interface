@@ -416,9 +416,16 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
   const logoDaily = useMemo(() => {
     const swapFee = claimableRewardInfo?.SWAP_FEE;
-    return (
-      swapFee?.map(item => ({ ...item.token, ...getGnotPath(item.token) })) || []
-    );
+    return swapFee?.flatMap(item => item.token).reduce<TokenModel[]>(
+      (acc: TokenModel[], current) => {
+        const token = acc.find(item => item.path === current.path);
+        if (token) {
+          acc.push({ ...token, ...getGnotPath(token) });
+        }
+        return acc;
+      },
+      [],
+    ) ?? [];
   }, [claimableRewardInfo?.SWAP_FEE, getGnotPath]);
 
   const logoReward = useMemo(() => {

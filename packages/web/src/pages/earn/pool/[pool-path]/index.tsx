@@ -89,7 +89,9 @@ export default function Pool() {
     }
 
 
+
     if (
+      address &&
       isFetchedPosition &&
       !loading &&
       poolPath
@@ -152,6 +154,56 @@ export default function Pool() {
           top: topPosition,
         });
       });
+    }
+
+    if (hash && hash !== "staking" &&
+      isFetchedPosition &&
+      !loading &&
+      poolPath
+    ) {
+      const position = positions.find(item => item.id === hash);
+      const isClosedPosition = !position || position?.closed;
+
+      if (isClosedPosition) {
+        setTimeout(() => {
+          const positionContainerElement =
+            document.getElementById("liquidity-wrapper");
+          const topPosition =
+            positionContainerElement?.offsetTop;
+          if (!topPosition) {
+            return;
+          }
+          window.scrollTo({
+            top: topPosition,
+          });
+        });
+      }
+
+      setTimeout(() => {
+        if (isClosedPosition) {
+          const positionContainerElement =
+            document.getElementById("liquidity-wrapper");
+          const topPosition =
+            positionContainerElement?.offsetTop;
+          if (!topPosition) {
+            return;
+          }
+          window.scrollTo({
+            top: topPosition,
+          });
+        }
+
+        const positionContainerElement = document.getElementById(`${hash}`);
+        const topPosition =
+          positionContainerElement?.offsetTop;
+        if (!topPosition) {
+          return;
+        }
+        window.scrollTo({
+          top: topPosition,
+        });
+      });
+      return;
     }
   }, [
     isFetchedPosition,

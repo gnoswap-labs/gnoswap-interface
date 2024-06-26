@@ -60,6 +60,8 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   const stakingAPR = useMemo(() => {
     if (!pool?.stakingApr) return "-";
 
+    if (!Number(pool?.stakingApr || 0)) return "0%";
+
     return `${numberToRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${numberToRate(pool?.stakingApr)}`;
   }, [pool?.stakingApr]);
 

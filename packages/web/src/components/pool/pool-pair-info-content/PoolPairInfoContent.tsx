@@ -149,20 +149,17 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 
   const feeLogo = useMemo(() => {
     return [
-      {
-        src: getGnotPath(pool.tokenA)?.logoURI,
-      },
-      {
-        src: getGnotPath(pool.tokenB)?.logoURI,
-      }
+      { ...pool.tokenA, ...getGnotPath(pool.tokenA) },
+      { ...pool.tokenB, ...getGnotPath(pool.tokenB) }
     ];
-  }, [pool.tokenA, pool.tokenB]);
+  }, [getGnotPath, pool.tokenA, pool.tokenB]);
 
   const stakeLogo = useMemo(() => {
     return pool?.rewardTokens?.map(item => ({
-      src: getGnotPath(item)?.logoURI,
+      ...item,
+      ...getGnotPath(item),
     }));
-  }, [pool?.rewardTokens]);
+  }, [getGnotPath, pool?.rewardTokens]);
 
   const isHideBar = useMemo(() => {
     const isAllReserveZeroPoolBin = poolBins?.every(

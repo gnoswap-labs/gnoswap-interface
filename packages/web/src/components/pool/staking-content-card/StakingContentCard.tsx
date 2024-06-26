@@ -140,12 +140,15 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
     return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
   }, [positionRewards, tokenPrices]);
 
+  const aprNumber = useMemo(
+    () => BigNumber(stakingApr)
+      .multipliedBy(STAKING_PERIOD_INFO[period].rate),
+    [period, stakingApr]);
+
   const aprStr = useMemo(() => {
-    const periodStakingApr = BigNumber(stakingApr)
-      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
-      .toFormat(0);
+    const periodStakingApr = aprNumber.toFormat(0);
     return `${periodStakingApr}% APR`;
-  }, [period, stakingApr]);
+  }, [aprNumber]);
 
   return (
     <StakingContentCardWrapper nonTotal={!hasPosition}>
@@ -255,7 +258,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
           )}
           {!loading && (
             <div className="apr small-gap">
-              {Number(stakingApr) > 100 && <IconStar />}
+              {aprNumber.isGreaterThan(100) && <IconStar />}
               <span className="apr-text">{aprStr}</span>
             </div>
           )}
@@ -321,12 +324,16 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
     return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
   }, [positionRewards, tokenPrices]);
 
+  const aprNumber = useMemo(
+    () => BigNumber(stakingApr)
+      .multipliedBy(STAKING_PERIOD_INFO[period].rate),
+    [period, stakingApr]
+  );
+
   const aprStr = useMemo(() => {
-    const periodStakingApr = BigNumber(stakingApr)
-      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
-      .toFormat(0);
+    const periodStakingApr = aprNumber.toFormat(0);
     return `${periodStakingApr}% APR`;
-  }, [period, stakingApr]);
+  }, [aprNumber]);
 
   return (
     <StakingContentCardWrapper nonTotal={!hasPosition}>
@@ -416,7 +423,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
             </SkeletonEarnDetailWrapper>
           )}
           {!loading && (
-            <div className="apr">
+            <div className="apr small-gap">
+              {aprNumber.isGreaterThan(100) && <IconStar />}
               <span className="apr-gd-text">{aprStr}</span>
             </div>
           )}

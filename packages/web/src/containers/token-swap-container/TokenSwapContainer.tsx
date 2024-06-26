@@ -1,4 +1,4 @@
-import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
+// import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import TokenSwap from "@components/token/token-swap/TokenSwap";
 import React, { useState, useEffect } from "react";
 import { useAtomValue } from "jotai";
@@ -34,9 +34,9 @@ const TokenSwapContainer: React.FC = () => {
     swapRouteInfos,
     isAvailSwap,
     swapButtonText,
-    submitted,
-    swapResult,
-    openedConfirmModal,
+    // submitted,
+    // swapResult,
+    // openedConfirmModal,
     slippage,
     setSwapValue,
     changeTokenA,
@@ -47,9 +47,9 @@ const TokenSwapContainer: React.FC = () => {
     switchSwapDirection,
     openConfirmModal,
     openConnectWallet,
-    closeModal,
+    // closeModal,
     copyURL,
-    executeSwap,
+    // executeSwap,
     isSwitchNetwork,
     isLoading,
     swapValue,
@@ -163,7 +163,7 @@ const TokenSwapContainer: React.FC = () => {
         swapRouteInfos={swapRouteInfos}
         setSwapRateAction={setSwapRateAction}
       />
-      {openedConfirmModal && swapSummaryInfo && (
+      {/* {openedConfirmModal && swapSummaryInfo && (
         <ConfirmSwapModal
           submitted={submitted}
           swapTokenInfo={swapTokenInfo}
@@ -172,7 +172,7 @@ const TokenSwapContainer: React.FC = () => {
           swap={executeSwap}
           close={closeModal}
         />
-      )}
+      )} */}
       {openedSlippage && (
         <SettingMenuModal
           slippage={slippage}

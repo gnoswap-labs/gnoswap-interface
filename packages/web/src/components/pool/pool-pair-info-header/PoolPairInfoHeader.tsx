@@ -1,10 +1,10 @@
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { TokenModel } from "@models/token/token-model";
 import React, { useMemo } from "react";
 import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
 interface PoolPairInfoHeaderProps {
   tokenA: TokenModel;
@@ -33,7 +33,20 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   }, [incentivizedType]);
 
   const rewardTokenLogos = useMemo(() => {
-    return [...new Set(rewardTokens.map(token => ({ src: getGnotPath(token).logoURI, tooltipContent: token.symbol })))];
+    return rewardTokens.reduce((acc, current) => {
+      const existToken = acc.some(item => item.path === current.path);
+
+      if (!existToken) {
+        acc.push({
+          ...current,
+          logoURI: getGnotPath(current).logoURI,
+          symbol: getGnotPath(current).symbol,
+          path: getGnotPath(current).path,
+        });
+      }
+
+      return acc;
+    }, [] as TokenModel[]);
   }, [getGnotPath, rewardTokens]);
 
   return (
@@ -54,9 +67,9 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
         {incentivezedStr && <div className="badge">
           {incentivezedStr}
           {rewardTokenLogos.length > 0 && (
-            <OverlapLogo
+            <OverlapTokenLogo
               size={18}
-              logos={rewardTokenLogos}
+              tokens={rewardTokenLogos}
             />
           )}
         </div>}

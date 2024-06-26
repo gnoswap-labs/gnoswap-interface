@@ -9,11 +9,11 @@ import { useMemo, useState, useEffect } from "react";
 import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { TokenModel } from "@models/token/token-model";
 import { toUnitFormat } from "@utils/number-utils";
 import { numberToRate } from "@utils/string-utils";
 import IconStar from "@components/common/icons/IconStar";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -115,15 +115,21 @@ const OneClickStaking: React.FC<Props> = ({
   }, [isLoadingPool, pool.feeUsd24h]);
 
   const rewardTokens = useMemo(() => {
-    return [
-      ...new Set(
-        pool?.rewardTokens?.map(item => ({
-          src: getGnotPath(item).logoURI,
-          tooltipContent: item.symbol
-        })) || [],
-      ),
-    ];
-  }, [pool.rewardTokens]);
+    return pool?.rewardTokens.reduce((acc, current) => {
+      const existToken = acc.some(item => item.path === current.path);
+
+      if (!existToken) {
+        acc.push({
+          ...current,
+          logoURI: getGnotPath(current).logoURI,
+          symbol: getGnotPath(current).symbol,
+          path: getGnotPath(current).path,
+        });
+      }
+
+      return acc;
+    }, [] as TokenModel[]);
+  }, [getGnotPath, pool?.rewardTokens]);
 
   const feeApr = useMemo(() => {
     if (isLoadingPool) return "-";
@@ -183,7 +189,7 @@ const OneClickStaking: React.FC<Props> = ({
       <div>
         <div className="label">Staking APR</div>
         <div className="value">
-          <OverlapLogo logos={rewardTokens} size={24} />
+          <OverlapTokenLogo tokens={rewardTokens} size={24} />
           <span className="staking-apr-value">{stakingApr}</span>
         </div>
       </div>

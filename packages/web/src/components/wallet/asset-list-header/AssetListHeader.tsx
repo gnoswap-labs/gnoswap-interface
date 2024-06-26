@@ -70,6 +70,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
                   checked={invisibleZeroBalance}
                   onChange={toggleInvisibleZeroBalance}
                   hasLabel={true}
+                  labelText={"Hide zero amount"}
                 />
                 <div className="icon-wrap" onClick={onTogleSearch}>
                   <IconSearch className="search-icon" />
@@ -85,6 +86,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
             checked={invisibleZeroBalance}
             onChange={toggleInvisibleZeroBalance}
             hasLabel={true}
+            labelText={"Hide zero amount"}
           />
           <SearchInput
             width={300}

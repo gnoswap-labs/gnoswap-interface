@@ -15,11 +15,15 @@ export const useScrollUp = () => {
 
         if (reachedTop) {
           setCanScrollUp(true);
-        } else {
-          setCanScrollUp(false);
+          return;
         }
+
+        setCanScrollUp(false);
+        return;
       }
+      setCanScrollUp(false);
     };
+
     const handleRouteChange = () => {
       setCanScrollUp(false);
     };
@@ -31,7 +35,7 @@ export const useScrollUp = () => {
       window.removeEventListener("scroll", findSpecificArea);
       router.events.off("routeChangeStart", handleRouteChange);
     };
-  }, []);
+  }, [router.asPath, router.events]);
 
   const scrollUp = useCallback(() => {
     window.scroll({ top: 0, left: 0, behavior: "smooth" });
