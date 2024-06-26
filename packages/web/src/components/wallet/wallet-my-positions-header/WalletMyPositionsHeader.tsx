@@ -20,7 +20,7 @@ const WalletMyPositionsHeader: React.FC = () => {
 
   return (
     <div css={wrapper}>
-      <h2>{`My Positions (${positions.length})`}</h2>
+      {positions.length > 0 && <h2>{`My Positions (${positions.length})`}</h2>}
     </div>
   );
 };

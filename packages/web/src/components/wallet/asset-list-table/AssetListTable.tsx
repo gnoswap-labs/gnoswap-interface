@@ -67,7 +67,6 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
         ? ASSET_INFO_TABLET
         : ASSET_INFO_MOBILE;
   }, [breakpoint]);
-  console.log("🚀 ~ tdWidth ~ tdWidth:", tdWidth);
 
   return (
     <AssetListTableWrapper>
@@ -98,7 +97,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
       </div>
       <div className="asset-list-body">
         {isFetched && assets.length === 0 && (
-          <div css={noDataText}>No data found</div>
+          <div css={noDataText}>No tokens found</div>
         )}
         {isFetched &&
           assets.length > 0 &&

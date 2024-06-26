@@ -5,6 +5,8 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolModel } from "@models/pool/pool-model";
 import dayjs from "dayjs";
@@ -29,6 +31,8 @@ function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
 }
 
 const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, data, pool }) => {
+  const { getGnotPath } = useGnotToGnot();
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -61,7 +65,11 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
               <div>
                 <div className="label">Total Amount</div>
                 <div className="value-content">
-                  <img className="image-logo" src={data?.token?.logoURI || ""} alt="logo" />
+                  <MissingLogo
+                    symbol={getGnotPath(data?.token)?.symbol}
+                    width={24}
+                    url={getGnotPath(data?.token)?.logoURI || ""}
+                  />
                   <div className="value">{Number(data?.amount).toLocaleString()} {data?.token?.symbol}</div>
                 </div>
               </div>

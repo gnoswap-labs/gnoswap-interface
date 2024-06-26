@@ -229,10 +229,10 @@ const AssetListContainer: React.FC = () => {
         tokenPrice: tokenPrice || 0,
         sortPrice: price.toString(),
       };
-    }).filter(
-      asset => invisibleZeroBalance === false || filterZeroBalance(asset),
-    );
-  }, [balances, displayBalanceMap, invisibleZeroBalance, isSwitchNetwork, tokenPrices, tokens]);
+    }).filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset))
+      .filter((asset) => filterKeyword(asset, keyword))
+      .filter((asset) => filterType(asset, assetType));
+  }, [balances, displayBalanceMap, invisibleZeroBalance, isSwitchNetwork, tokenPrices, tokens, keyword, assetType]);
 
   const filteredTokens = useMemo(() => {
     const COLLAPSED_LENGTH = 15;

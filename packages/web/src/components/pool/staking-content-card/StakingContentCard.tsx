@@ -1,4 +1,3 @@
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconCheck from "@components/common/icons/IconCheck";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconLine from "@components/common/icons/IconLine";
@@ -26,6 +25,8 @@ import { PositionModel } from "@models/position/position-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import BigNumber from "bignumber.js";
 import IconStar from "@components/common/icons/IconStar";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -45,6 +46,8 @@ const PriceTooltipContent = ({
   positions: PoolPositionModel[];
   period: number;
 }) => {
+  const { getGnotPath } = useGnotToGnot();
+
   const getRemainTime = useCallback(
     (position: PositionModel) => {
       const stakedTime = new Date(position.stakedAt).getTime();
@@ -62,10 +65,12 @@ const PriceTooltipContent = ({
         return (
           <React.Fragment key={index}>
             <div className="list list-logo">
-              <DoubleLogo
+              <OverlapTokenLogo
+                tokens={[
+                  { ...position.pool.tokenA, ...getGnotPath(position.pool.tokenA) },
+                  { ...position.pool.tokenB, ...getGnotPath(position.pool.tokenB) },
+                ]}
                 size={18}
-                left={position.pool.tokenA.logoURI}
-                right={position.pool.tokenB.logoURI}
               />
               <span className="title">ID #{position.lpTokenId}</span>
             </div>

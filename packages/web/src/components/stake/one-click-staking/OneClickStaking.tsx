@@ -3,7 +3,6 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
 import { PositionModel } from "@models/position/position-model";
 import { useMemo, useState, useEffect } from "react";
 import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
@@ -200,12 +199,12 @@ const OneClickStaking: React.FC<Props> = ({
   return (
     <OneClickStakingWrapper>
       <div className="token-pair">
-        <DoubleLogo
-          left={tokenARevert?.logoURI || ""}
-          right={tokenBRevert?.logoURI || ""}
+        <OverlapTokenLogo
+          tokens={[
+            tokenARevert,
+            tokenBRevert
+          ]}
           size={24}
-          leftSymbol={tokenARevert?.symbol || ""}
-          rightSymbol={tokenBRevert?.symbol || ""}
         />
         <span className="token-name">{`${tokenARevert?.symbol}/${tokenBRevert?.symbol}`}</span>
       </div>
@@ -226,11 +225,12 @@ const OneClickStaking: React.FC<Props> = ({
               <div className="content" key={index}>
                 <div className="label">
                   {!isLoadingPool && (
-                    <DoubleTokenLogo
-                      left={tokenARevert}
-                      right={tokenBRevert}
+                    <OverlapTokenLogo
+                      tokens={[
+                        tokenARevert,
+                        tokenBRevert
+                      ]}
                       size={24}
-                      fontSize={8}
                     />
                   )}
                   ID #{item.id}
@@ -257,11 +257,11 @@ const OneClickStaking: React.FC<Props> = ({
             {stakedPositions.map((item, index) => (
               <div className="content" key={index}>
                 <div className="label">
-                  <DoubleTokenLogo
-                    left={tokenARevert}
-                    right={tokenBRevert}
+                  <OverlapTokenLogo
+                    tokens={[
+                      tokenARevert, tokenBRevert
+                    ]}
                     size={24}
-                    fontSize={8}
                   />
                   ID #{item.id}
                 </div>

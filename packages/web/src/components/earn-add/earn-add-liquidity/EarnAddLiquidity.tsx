@@ -21,7 +21,6 @@ import {
 import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
 import SelectPair from "@components/common/select-pair/SelectPair";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import { PoolModel } from "@models/pool/pool-model";
 import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
@@ -36,6 +35,7 @@ import { SelectPool } from "@hooks/pool/use-select-pool";
 import IconFailed from "@components/common/icons/IconFailed";
 import { isEmptyObject } from "@utils/validation-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -142,14 +142,6 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const existTokenPair = useMemo(() => {
     return tokenA !== null && tokenB !== null;
   }, [tokenA, tokenB]);
-
-  const tokenALogo = useMemo(() => {
-    return tokenA?.logoURI || "";
-  }, [tokenA]);
-
-  const tokenBLogo = useMemo(() => {
-    return tokenB?.logoURI || "";
-  }, [tokenB]);
 
   const selectedFeeRate = useMemo(() => {
     if (!feeTier) {
@@ -284,6 +276,13 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     [selectPool.renderState, isLoadingCommon],
   );
 
+  const tokenPair = useMemo(() => {
+    return [
+      isKeepToken ? tokenA : tokenB,
+      !isKeepToken ? tokenA : tokenB
+    ].filter(item => item !== null) as TokenModel[];
+  }, [isKeepToken, tokenA, tokenB]);
+
   return (
     <EarnAddLiquidityWrapper>
       <h3>Add Position</h3>
@@ -295,12 +294,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           >
             <h5>1. Select Pair</h5>
             {!isEarnAdd && existTokenPair && (
-              <DoubleLogo
-                left={isKeepToken ? tokenALogo : tokenBLogo}
-                right={!isKeepToken ? tokenALogo : tokenBLogo}
-                size={30}
-                leftSymbol={tokenA?.symbol || ""}
-                rightSymbol={tokenB?.symbol || ""}
+              <OverlapTokenLogo
+                tokens={tokenPair}
+                size={32}
               />
             )}
           </div>

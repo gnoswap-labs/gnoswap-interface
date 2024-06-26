@@ -7,7 +7,8 @@ interface Props {
   className?: string;
   width: number;
   mobileWidth?: number;
-  missingLogoClassName?: string
+  missingLogoClassName?: string;
+  placeholderFontSize?: number;
 }
 
 const MissingLogo: React.FC<Props> = ({
@@ -17,6 +18,7 @@ const MissingLogo: React.FC<Props> = ({
   width,
   mobileWidth,
   missingLogoClassName,
+  placeholderFontSize,
 }) => {
   return (
     <>
@@ -27,6 +29,7 @@ const MissingLogo: React.FC<Props> = ({
           width={width}
           mobileWidth={mobileWidth}
           className={`missing-logo ${missingLogoClassName}`}
+          placeholderFontSize={placeholderFontSize}
         >
           {(symbol || "").slice(0, 3)}
         </LogoWrapper>

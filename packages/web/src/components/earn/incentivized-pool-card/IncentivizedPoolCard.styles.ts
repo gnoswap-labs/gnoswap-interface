@@ -78,6 +78,8 @@ export const PoolCardWrapper = styled.div`
         font-size: 20px;
         line-height: 28px;
         font-weight: 500;
+        overflow: hidden;
+      text-overflow: ellipsis;
       }
     }
     .box-group {

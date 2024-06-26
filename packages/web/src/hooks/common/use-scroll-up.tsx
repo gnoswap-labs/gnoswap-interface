@@ -11,7 +11,7 @@ export const useScrollUp = () => {
 
     const findSpecificArea = () => {
       if (anyElement) {
-        const reachedTop = anyElement.getBoundingClientRect().top < 90;
+        const reachedTop = anyElement.getBoundingClientRect().top < 300;
 
         if (reachedTop) {
           setCanScrollUp(true);

@@ -22,6 +22,7 @@ interface Props {
 
 const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
   const { unclaimedRewards, totalLiquidityUSD } = useUnstakeData({ positions });
+  console.log("🚀 ~ unclaimedRewards:", unclaimedRewards);
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -94,7 +95,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
               ))}
             </div>
           </div>
-          <div className="box-item box-item-unclaim">
+          {unclaimedRewards.length > 0 && <div className="box-item box-item-unclaim">
             <h4>Unclaimed Rewards</h4>
             <div className="item-content">
               {unclaimedRewards.map((rewardInfo, index) => (
@@ -128,7 +129,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
           <Divider />
           <div className="box-item">
             <div className="item-content">

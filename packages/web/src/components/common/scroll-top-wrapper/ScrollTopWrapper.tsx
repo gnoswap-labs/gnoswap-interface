@@ -12,9 +12,9 @@ function ScrollTopWrapper({
 
   return (<ScrollTopContainer>
     {children}
-    {canScrollUp && <ScrollTopButton onClick={scrollUp}>
+    <ScrollTopButton $hidden={!canScrollUp} onClick={scrollUp}>
       <IconArrowUp width="40" height="40" />
-    </ScrollTopButton>}
+    </ScrollTopButton>
   </ScrollTopContainer>);
 }
 

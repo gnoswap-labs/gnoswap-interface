@@ -88,10 +88,6 @@ export const IncentivizePoolModalWrapper = styled.div`
               ${fonts.body12}
               color: ${({ theme }) => theme.color.text03};
             }
-            .image-logo {
-              width: 24px;
-              height: 24px;
-            }
             .sub-value {
               color: ${({ theme }) => theme.color.text04};
               justify-content: right;

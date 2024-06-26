@@ -12,6 +12,8 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { convertLiquidityUsdToKMB, convertLiquidityUsdValue } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 interface RemoveLiquiditySelectListItemProps {
   position: PoolPositionModel;
@@ -25,16 +27,20 @@ interface TooltipProps {
   disabled: boolean;
 }
 
-
-
 const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
-  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: number) => {
+  const { getGnotPath } = useGnotToGnot();
+
+  const renderTokenValue = (token: TokenModel, tokenBalance: number) => {
     const tokenBalanceByTokenDecimal = BigNumber(tokenBalance || 0).toFormat();
 
     return <TokenValueWrapper>
       <div className="value">
-        <img src={imgUri} alt="token logo" />
-        {tokeSymbol}
+        <MissingLogo
+          url={getGnotPath(token).logoURI}
+          symbol={getGnotPath(token).symbol}
+          width={20}
+        />
+        {token.symbol}
       </div>
       <div className="value">{tokenBalanceByTokenDecimal}</div>
     </TokenValueWrapper>;
@@ -48,14 +54,10 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
           <div className="title">#{position.id}</div>
         </TokenTitleWrapper>
         {renderTokenValue(
-          position.pool.tokenA.logoURI,
-          position.pool.tokenA.symbol,
           position.pool.tokenA,
           position.tokenABalance,
         )}
         {renderTokenValue(
-          position.pool.tokenB.logoURI,
-          position.pool.tokenB.symbol,
           position.pool.tokenB,
           position.tokenBBalance,
         )}
