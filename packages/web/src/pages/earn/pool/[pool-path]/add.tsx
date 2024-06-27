@@ -17,6 +17,7 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { checkGnotPath } from "@utils/common";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function EarnAdd() {
   const { width } = useWindowSize();
@@ -53,24 +54,32 @@ export default function EarnAdd() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [data?.fee]);
 
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/add"], []);
+
   const title = useMemo(() => {
     const tokenAPath = data?.tokenA.path;
     const tokenBPath = data?.tokenB.path;
 
-    const tokenA = tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined;
-    const tokenB = tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined;
+    const tokenA = getGnotPath(tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined);
+    const tokenB = getGnotPath(tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined);
 
-    if (tokenA && tokenB && feeStr) return `Add Position to ${getGnotPath(tokenA).symbol}/${getGnotPath(tokenB).symbol} ${feeStr || "0"}`;
-
-    return "Add Position to Gnoswap Pools";
-  }, [data?.tokenA.path, data?.tokenB.path, feeStr, getGnotPath, tokens]);
+    return seoInfo.title([tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[]);
+  }, [
+    data?.tokenA.path,
+    data?.tokenB.path,
+    feeStr,
+    getGnotPath,
+    seoInfo,
+    tokens
+  ]);
 
   return (
     <>
       <SEOHeader
         title={title}
-        pageDescription={"Create your own positions and provide liquidity to earn trading fees."}
-        ogDescription={"Create your own positions and provide liquidity to earn trading fees."}
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
       />
       <PoolAddLayout
         header={<HeaderContainer />}

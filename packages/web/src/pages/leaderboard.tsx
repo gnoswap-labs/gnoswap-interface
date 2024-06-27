@@ -4,14 +4,19 @@ import LeaderboardLayout from "@layouts/leaderboard-layout/LeaderboardLayout";
 import LeaderboardListLayout from "@layouts/leaderboard-list-layout/LeaderboardListLayout";
 import LeaderboardSubHeaderContainer from "@containers/leaderboard-subheader-container/LeaderboardSubheaderContainer";
 import SEOHeader from "@components/common/seo-header/seo-header";
+import { useMemo } from "react";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function Leaderboard() {
+  const seoInfo = useMemo(() => SEOInfo["/leaderboard"], []);
+
   return (
     <>
       <SEOHeader
-        title={"Leaderboard | Gnoswap"}
-        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
-        ogDescription="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity."
+        title={seoInfo.title()}
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo.ogTitle?.()}
+        ogDescription={seoInfo.ogDesc?.()}
       />
       <LeaderboardLayout
         header={<HeaderContainer />}

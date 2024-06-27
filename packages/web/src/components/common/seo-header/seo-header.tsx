@@ -16,7 +16,7 @@ const SEOHeader: React.FC<SEOHeaderProps> = ({ title, pageDescription, ogDescrip
 
   return <Head>
     <title>{title}</title>
-    {pageDescription && <meta>{pageDescription}</meta>}
+    {pageDescription && <meta name="description" content={pageDescription} />}
     <link rel="icon" href={"/favicon.ico"} />
     <link rel="apple-touch-icon" href="/apple-icon.png" />
 

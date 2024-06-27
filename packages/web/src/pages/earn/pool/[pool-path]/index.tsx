@@ -16,6 +16,7 @@ import SEOHeader from "@components/common/seo-header/seo-header";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { SEOInfo } from "@constants/common.constant";
 import { formatAddress } from "@utils/string-utils";
 
 export default function Pool() {
@@ -223,35 +224,33 @@ export default function Pool() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(data.fee)]?.rateStr;
   }, [data?.fee]);
 
+  const seoInfo = useMemo(() => SEOInfo[address ? "/earn/pool/[pool-path]?address" : "/earn/pool/[pool-path]"], [address]);
 
   const title = useMemo(() => {
-    const poolInfoText = `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr || "0"}`;
+    const tokenA = getGnotPath(data?.tokenA);
+    const tokenB = getGnotPath(data?.tokenB);
 
-    if (address) {
-      return `${formatAddress(address)} | ${poolInfoText} | Earn on Gnoswap`;
-    }
-
-    return `${poolInfoText} | Earn on Gnoswap`;
+    return seoInfo.title([
+      address ? formatAddress(address) : undefined,
+      tokenA?.symbol,
+      tokenB?.symbol,
+      feeStr
+    ].filter(item => item) as string[]);
   }, [
-    address,
     getGnotPath,
     data?.tokenA,
     data?.tokenB,
-    feeStr,
-  ]);
-
-  const ogDescription = useMemo(() => {
-    if (address) return "Create your own positions and provide liquidity to earn trading fees.";
-
-    return "Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency.";
-  }, [address]);
+    seoInfo,
+    address,
+    feeStr]);
 
   return (
     <>
       <SEOHeader
         title={title}
-        pageDescription="Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency."
-        ogDescription={ogDescription}
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
       />
       <PoolLayout
         header={<HeaderContainer />}

@@ -7,25 +7,30 @@ import SEOHeader from "@components/common/seo-header/seo-header";
 import { useAtom } from "jotai";
 import * as SwapState from "@states/swap";
 import { useMemo } from "react";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function Swap() {
   const [swapInfo] = useAtom(SwapState.swap);
 
-  const title = useMemo(() => {
+  const seoInfo = useMemo(() => SEOInfo["/swap"], []);
 
-    if (swapInfo.tokenA && swapInfo.tokenB) {
-      return `Swap ${swapInfo.tokenA.symbol} to ${swapInfo.tokenB.symbol} | Gnoswap`;
-    }
-
-    return "Swap | Gnoswap";
-  }, [swapInfo.tokenA, swapInfo.tokenB]);
+  const title = useMemo(() => seoInfo.title([
+    swapInfo.tokenA?.symbol,
+    swapInfo.tokenB?.symbol,
+  ].filter(item => item) as string[]
+  ), [
+    seoInfo,
+    swapInfo.tokenA?.symbol,
+    swapInfo.tokenB?.symbol
+  ]);
 
   return (
     <>
       <SEOHeader
         title={title}
-        pageDescription="Manage your positions to earn trading fees."
-        ogDescription="Manage your positions to earn trading fees."
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo.ogTitle?.()}
+        ogDescription={seoInfo.ogDesc?.()}
       />
       <SwapLayout
         header={<HeaderContainer />}

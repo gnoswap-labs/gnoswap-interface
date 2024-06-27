@@ -11,6 +11,7 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import SEOHeader from "@components/common/seo-header/seo-header";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function DecreaseLiquidity() {
   const { width } = useWindowSize();
@@ -38,14 +39,15 @@ export default function DecreaseLiquidity() {
     ];
   }, [data, width]);
 
-  const title = useMemo(() => `Decrease Liquidity in #${positionId}`, [positionId]);
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/[position-id]/decrease-liquidity"], []);
 
   return (
     <>
       <SEOHeader
-        title={title}
-        pageDescription="Add incentives to pools for liquidity providers to bootstrap liquidity."
-        ogDescription="Manage your positions to earn trading fees."
+        title={seoInfo.title([positionId as string])}
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
       />
       <IncreaseLiquidityLayout
         header={<HeaderContainer />}

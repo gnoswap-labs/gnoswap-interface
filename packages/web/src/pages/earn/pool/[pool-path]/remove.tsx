@@ -13,6 +13,7 @@ import { DeviceSize } from "@styles/media";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import SEOHeader from "@components/common/seo-header/seo-header";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function Earn() {
   const { width } = useWindowSize();
@@ -49,20 +50,33 @@ export default function Earn() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [data?.fee]);
 
-  const title = useMemo(() => {
-    if (data) {
-      return `Remove Position From ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr ?? "0"}`;
-    }
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/remove"], []);
 
-    return "Remove Position";
-  }, [data, feeStr, getGnotPath]);
+  const title = useMemo(() => {
+    const tokenA = getGnotPath(data?.tokenA);
+    const tokenB = getGnotPath(data?.tokenB);
+
+    return seoInfo.title([
+      tokenA?.symbol,
+      tokenB?.symbol,
+      feeStr
+    ].filter(item => item) as string[]);
+  }, [
+    data?.tokenA,
+    data?.tokenB,
+    feeStr,
+    getGnotPath,
+    seoInfo
+  ]);
+
 
   return (
     <>
       <SEOHeader
         title={title}
-        pageDescription="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity."
-        ogDescription="Manage your positions to earn trading fees."
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
       />
       <PoolRemoveLayout
         header={<HeaderContainer />}
