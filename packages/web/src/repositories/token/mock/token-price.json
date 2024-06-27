@@ -27,9 +27,10 @@
     "price91d": ""
   },
   "volumeUsd24h": "",
+  "lockedTokensUsd": "",
   "last7d": [
     {
-      "date": "",
+      "time": "",
       "price": ""
     }
   ]
