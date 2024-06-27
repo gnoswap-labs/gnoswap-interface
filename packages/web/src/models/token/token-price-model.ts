@@ -11,10 +11,9 @@ export interface TokenPriceModel {
   liquidity: string;
   volume: string;
   mostLiquidityPool: string;
-  last7d: { date: string, price: string }[];
+  last7d: { time: string; price: string }[];
   pricesBefore: IPricesBefore;
   volumeUsd24h: string;
   feeUsd24h: string;
   lockedTokensUsd: string;
 }
-

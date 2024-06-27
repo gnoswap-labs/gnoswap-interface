@@ -200,8 +200,8 @@ const TokenListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setSortOption({
         key,
@@ -247,7 +247,7 @@ const TokenListContainer: React.FC = () => {
         const graphStatus = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
           tempTokenPrice.last7d?.sort(
-            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+            (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
           )?.[0].price,
         ).status;
 
@@ -264,57 +264,66 @@ const TokenListContainer: React.FC = () => {
             symbol: item.symbol,
             logoURI: item.logoURI,
           },
-          mostLiquidPool: tempTokenPrice?.mostLiquidityPool ? {
-            poolId: Math.floor(Math.random() * 50 + 1).toString(),
-            tokenPair: {
-              tokenA: {
-                path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
-                name: getGnotPath(tempTokenA?.[0]).name,
-                symbol: getGnotPath(tempTokenA?.[0]).symbol,
-                logoURI: getGnotPath(tempTokenA?.[0]).logoURI,
-              },
-              tokenB: {
-                path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
-                name: getGnotPath(tempTokenB?.[0]).name,
-                symbol: getGnotPath(tempTokenB?.[0]).symbol,
-                logoURI: getGnotPath(tempTokenB?.[0]).logoURI,
-              },
-            },
-            feeRate:
-              splitMostLiquidity.length > 1
-                ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}`
-                : "0.02%",
-          } : undefined,
+          mostLiquidPool: tempTokenPrice?.mostLiquidityPool
+            ? {
+                poolId: Math.floor(Math.random() * 50 + 1).toString(),
+                tokenPair: {
+                  tokenA: {
+                    path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
+                    name: getGnotPath(tempTokenA?.[0]).name,
+                    symbol: getGnotPath(tempTokenA?.[0]).symbol,
+                    logoURI: getGnotPath(tempTokenA?.[0]).logoURI,
+                  },
+                  tokenB: {
+                    path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
+                    name: getGnotPath(tempTokenB?.[0]).name,
+                    symbol: getGnotPath(tempTokenB?.[0]).symbol,
+                    logoURI: getGnotPath(tempTokenB?.[0]).logoURI,
+                  },
+                },
+                feeRate:
+                  splitMostLiquidity.length > 1
+                    ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}`
+                    : "0.02%",
+              }
+            : undefined,
           last7days: [
             ...(transferData?.last7d
               ?.sort(
                 (a, b) =>
-                  new Date(a.date).getTime() - new Date(b.date).getTime(),
+                  new Date(a.time).getTime() - new Date(b.time).getTime(),
               )
               .map(item => Number(item.price || 0)) || []),
-            ...transferData?.pricesBefore?.latestPrice
+            ...(transferData?.pricesBefore?.latestPrice
               ? [Number(transferData?.pricesBefore?.latestPrice)]
-              : [],
+              : []),
           ],
-          marketCap: transferData.marketCap ? `$${Math.floor(
-            Number(
-              (isGnot
-                ? 1000000000 * Number(transferData.usd)
-                : transferData.marketCap) || 0,
-            ),
-          ).toLocaleString()}` : "-",
-          liquidity: transferData.lockedTokensUsd ? `$${Math.floor(
-            Number(transferData.lockedTokensUsd || 0),
-          ).toLocaleString()}` : "-",
-          volume24h: transferData.volumeUsd24h ? `$${Math.floor(
-            Number(transferData.volumeUsd24h || 0),
-          ).toLocaleString()}` : "-",
-          price: transferData.usd ? toPriceFormat(
-            transferData.usd, {
-            usd: true,
-            isRounding: false,
-            fixedLessThan1Significant: 3,
-          }) : "--",
+          marketCap: transferData.marketCap
+            ? `$${Math.floor(
+                Number(
+                  (isGnot
+                    ? 1000000000 * Number(transferData.usd)
+                    : transferData.marketCap) || 0,
+                ),
+              ).toLocaleString()}`
+            : "-",
+          liquidity: transferData.lockedTokensUsd
+            ? `$${Math.floor(
+                Number(transferData.lockedTokensUsd || 0),
+              ).toLocaleString()}`
+            : "-",
+          volume24h: transferData.volumeUsd24h
+            ? `$${Math.floor(
+                Number(transferData.volumeUsd24h || 0),
+              ).toLocaleString()}`
+            : "-",
+          price: transferData.usd
+            ? toPriceFormat(transferData.usd, {
+                usd: true,
+                isRounding: false,
+                fixedLessThan1Significant: 3,
+              })
+            : "--",
           priceOf1d: {
             status: dataToday.status,
             value:
@@ -354,11 +363,16 @@ const TokenListContainer: React.FC = () => {
         };
       });
 
-
     temp.sort((a: Token, b: Token) => {
-      const volumeCompare = Number(b.volume24h.replace(/,/g, "").slice(1)) - Number(a.volume24h.replace(/,/g, "").slice(1));
-      const marketCapCompare = Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1));
-      const liquidityCompare = Number(b.liquidity.replace(/,/g, "").slice(1)) - Number(a.liquidity.replace(/,/g, "").slice(1));
+      const volumeCompare =
+        Number(b.volume24h.replace(/,/g, "").slice(1)) -
+        Number(a.volume24h.replace(/,/g, "").slice(1));
+      const marketCapCompare =
+        Number(b.marketCap.replace(/,/g, "").slice(1)) -
+        Number(a.marketCap.replace(/,/g, "").slice(1));
+      const liquidityCompare =
+        Number(b.liquidity.replace(/,/g, "").slice(1)) -
+        Number(a.liquidity.replace(/,/g, "").slice(1));
       const alphabeticalCompare = a.token.name.localeCompare(b.token.name);
 
       if (volumeCompare !== 0) {
@@ -371,7 +385,7 @@ const TokenListContainer: React.FC = () => {
         return alphabeticalCompare;
       }
     });
-    temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
+    temp = temp.filter((item: Token) => item.token.path.includes(grc20));
     return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
   }, [tokenType, tokens, wugnotPath, tokenPrices]);
 
@@ -448,9 +462,17 @@ const TokenListContainer: React.FC = () => {
         }
       } else if (sortOption.key === TABLE_HEAD.MARKET_CAP) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: Token, b: Token) => Number(a.marketCap.replace(/,/g, "").slice(1)) - Number(b.marketCap.replace(/,/g, "").slice(1)));
+          temp.sort(
+            (a: Token, b: Token) =>
+              Number(a.marketCap.replace(/,/g, "").slice(1)) -
+              Number(b.marketCap.replace(/,/g, "").slice(1)),
+          );
         } else {
-          temp.sort((a: Token, b: Token) => - Number(a.marketCap.replace(/,/g, "").slice(1)) + Number(b.marketCap.replace(/,/g, "").slice(1)));
+          temp.sort(
+            (a: Token, b: Token) =>
+              -Number(a.marketCap.replace(/,/g, "").slice(1)) +
+              Number(b.marketCap.replace(/,/g, "").slice(1)),
+          );
         }
       } else if (sortOption.key === TABLE_HEAD.VOLUME) {
         if (sortOption.direction === "asc") {
@@ -487,8 +509,11 @@ const TokenListContainer: React.FC = () => {
           );
         }
       } else {
-        temp
-          .sort((a: Token, b: Token) => - Number(a.volume24h.replace(/,/g, "").slice(1)) + Number(b.volume24h.replace(/,/g, "").slice(1)));
+        temp.sort(
+          (a: Token, b: Token) =>
+            -Number(a.volume24h.replace(/,/g, "").slice(1)) +
+            Number(b.volume24h.replace(/,/g, "").slice(1)),
+        );
       }
     }
     return temp.slice(
