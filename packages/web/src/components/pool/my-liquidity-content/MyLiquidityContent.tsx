@@ -395,7 +395,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       0;
     if (sumUSD > 0 && sumUSD <= 0.01) return "<$0.01";
 
-    return toPriceFormat(`${"0.202"}`, {
+    return toPriceFormat(`${sumUSD}`, {
       minLimit: 0.01,
       isRounding: false,
       lestThan1Decimals: 2,

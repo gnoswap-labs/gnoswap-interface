@@ -285,9 +285,6 @@ export const skeletonBalanceDetail = (
 
 
 export const TOKEN_SEARCH_WIDTH = [400];
-// export const ASSET_TD_WIDTH = [300, 300, 250, 250, 120, 138];
-// export const TABLET_ASSET_TD_WIDTH = [220, 240, 190, 190, 120, 138];
-// export const MOBILE_ASSET_TD_WIDTH = [230, 230, 195, 195, 90, 120];
 export const TOKEN_TD_WIDTH = [
   56,
   199,

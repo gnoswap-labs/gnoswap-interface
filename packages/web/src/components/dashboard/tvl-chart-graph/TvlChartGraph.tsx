@@ -106,7 +106,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     } else {
       startXWithOffset = startX + offsetValue + timeDiff;
     }
-    // }
 
     const length = Math.ceil((maxX - minX) / timeDiff);
 

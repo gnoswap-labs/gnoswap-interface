@@ -124,7 +124,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                     connected={connected}
                     tokenPrices={tokenPrices}
                   />
-                ))}              </div>
+                ))}
+              </div>
             </div>
             {showedPosition.length > 1 && <div className="box-indicator">
               <span className="current-page">{currentIndex}</span>

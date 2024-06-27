@@ -9,7 +9,6 @@ const HighestAprsCardListContainer: React.FC = () => {
   const router = useRouter();
   const { breakpoint } = useWindowSize();
   const { higestAPRs } = usePoolData();
-  console.log("🚀 ~ higestAPRs:", higestAPRs);
   const { isLoadingHighestAPRPools } = useLoading();
 
   const onClickItem = useCallback((path: string) => {

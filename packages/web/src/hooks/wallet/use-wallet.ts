@@ -108,7 +108,6 @@ export const useWallet = () => {
       }
       setLoadingConnect("done");
     } catch (error) {
-      console.log("🚀 ~ switchNetwork ~ error:", error);
     }
   }, [accountRepository, setWalletAccount]);
 
@@ -157,7 +156,6 @@ export const useWallet = () => {
         setLoadingConnect("error");
       }
     } catch (error) {
-      console.log("🚀 ~ connectAccount ~ error:", error);
     }
 
   };

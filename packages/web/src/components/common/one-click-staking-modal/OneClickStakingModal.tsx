@@ -53,6 +53,12 @@ const OneClickStakingModal: React.FC<Props> = ({
     close();
   }, [close]);
 
+  const onClickConfirm = useCallback(() => {
+    if (!feeInfo.errorMsg) {
+      confirm();
+    }
+  }, [confirm, feeInfo.errorMsg]);
+
   return (
     <OneClickStakingModalWrapper>
       <div className="modal-body">
@@ -83,7 +89,7 @@ const OneClickStakingModal: React.FC<Props> = ({
                 fullWidth: true,
               }}
               className="button-confirm"
-              onClick={feeInfo.errorMsg ? undefined : confirm}
+              onClick={onClickConfirm}
             />
           </div>
         </div>

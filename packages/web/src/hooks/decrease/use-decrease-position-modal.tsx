@@ -149,7 +149,6 @@ export const useDecreasePositionModal = ({
           );
         }, 1000);
 
-        console.log("2384729834789237");
         openTransactionConfirmModal();
       } else if (
         result.code === 4000 &&

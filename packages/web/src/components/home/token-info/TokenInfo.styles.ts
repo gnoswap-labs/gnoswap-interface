@@ -135,7 +135,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-      },
+      }
       .token-symbol {
         ${fonts.p4};
         color: ${({ theme }) => theme.color.text04};

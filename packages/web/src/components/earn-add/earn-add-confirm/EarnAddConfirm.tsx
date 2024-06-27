@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { EarnAddConfirmWrapper } from "./EarnAddConfirm.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
@@ -49,6 +49,12 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
   confirm,
   close,
 }) => {
+  const onClickConfirm = useCallback(() => {
+    if (!feeInfo.errorMsg) {
+      confirm();
+    }
+  }, [confirm, feeInfo.errorMsg]);
+
   return (
     <EarnAddConfirmWrapper>
       <div className="confirm-header">
@@ -68,7 +74,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
 
       <Button
         text="Confirm Add Position"
-        onClick={feeInfo.errorMsg ? undefined : confirm}
+        onClick={onClickConfirm}
         disabled={!!feeInfo.errorMsg}
         style={{
           hierarchy: ButtonHierarchy.Primary,
