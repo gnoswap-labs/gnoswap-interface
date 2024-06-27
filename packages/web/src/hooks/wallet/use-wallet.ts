@@ -1,4 +1,3 @@
-// import { network } from './../../states/common';
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -91,7 +90,7 @@ export const useWallet = () => {
       }
 
       if (walletClient === null) {
-        connectAdenaClient(true);
+        connectAdenaClient();
       }
     } catch (err) {
       console.log(err);
@@ -99,56 +98,66 @@ export const useWallet = () => {
   }
 
   const switchNetwork = useCallback(async () => {
-    setLoadingConnect("loading");
-    const res = await accountRepository.switchNetwork(CHAIN_ID);
-    if (res.code === 0) {
-      const account = await accountRepository.getAccount();
-      setWalletAccount(account);
-      accountRepository.setConnectedWallet(true);
+    try {
+      setLoadingConnect("loading");
+      const res = await accountRepository.switchNetwork(CHAIN_ID);
+      if (res.code === 0) {
+        const account = await accountRepository.getAccount();
+        setWalletAccount(account);
+        accountRepository.setConnectedWallet(true);
+      }
+      setLoadingConnect("done");
+    } catch (error) {
     }
-    setLoadingConnect("done");
   }, [accountRepository, setWalletAccount]);
 
-  const connectAdenaClient = useCallback(
-    (isInit?: boolean) => {
-      if (!isInit) {
-        setLoadingConnect("loading");
-      }
-      const adena = AdenaClient.createAdenaClient();
-      if (adena !== null) {
-        adena.initAdena();
-      } else {
-        window.open("https://adena.app/");
-      }
-      setWalletClient(adena);
-    },
+  const connectAdenaClient = useCallback(() => {
+    if (loadingConnect !== "initial") {
+      setLoadingConnect("loading");
+    }
+    const adena = AdenaClient.createAdenaClient();
+    if (adena !== null) {
+      adena.initAdena();
+    } else {
+      window.open("https://adena.app/");
+    }
+    setWalletClient(adena);
+  },
     [sessionId, setWalletClient, setLoadingConnect],
   );
 
   const connectAccount = async () => {
-    setLoadingConnect("loading");
-    const established = await accountRepository
-      .addEstablishedSite()
-      .catch(() => null);
+    try {
+      setLoadingConnect("loading");
+      const established = await accountRepository
+        .addEstablishedSite()
+        .catch(() => null);
 
-    if (established === null) {
-      return;
-    }
-
-    if (established.code === 0 || established.code === 4001) {
-      const account = await accountRepository.getAccount();
-      sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
-      const availNetwork = CHAINS.includes(account.chainId);
-      if (!availNetwork) {
-        switchNetwork();
+      if (established === null) {
+        return;
       }
-      setWalletAccount(account);
-      accountRepository.setConnectedWallet(true);
-      setLoadingConnect("done");
-    } else {
-      accountRepository.setConnectedWallet(false);
-      setLoadingConnect("error");
+      if (established.code === 4000) {
+        disconnectWallet();
+        return;
+      }
+
+      if (established.code === 0 || established.code === 4001) {
+        const account = await accountRepository.getAccount();
+        sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+        const availNetwork = CHAINS.includes(account.chainId);
+        if (!availNetwork) {
+          switchNetwork();
+        }
+        setWalletAccount(account);
+        accountRepository.setConnectedWallet(true);
+        setLoadingConnect("done");
+      } else {
+        accountRepository.setConnectedWallet(false);
+        setLoadingConnect("error");
+      }
+    } catch (error) {
     }
+
   };
 
   function updateWalletEvents(walletClient: WalletClient | null) {
@@ -162,8 +171,10 @@ export const useWallet = () => {
         });
         connectAdenaClient();
       });
-      walletClient.addEventChangedNetwork(() => connectAdenaClient());
-    } catch {}
+      walletClient.addEventChangedNetwork(() => {
+        connectAdenaClient();
+      });
+    } catch { }
   }
 
   const isSwitchNetwork = useMemo(() => {

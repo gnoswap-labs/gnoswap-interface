@@ -543,7 +543,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
           return false;
         }) === 1;
       const priceOfMaxLiquidity =
-        pools.sort((p1, p2) => p2.tvl - p1.tvl).at(0)?.price || null;
+        pools.sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price || null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse
           ? 1 / priceOfMaxLiquidity

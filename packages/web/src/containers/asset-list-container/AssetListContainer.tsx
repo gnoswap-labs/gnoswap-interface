@@ -1,5 +1,5 @@
 // TODO : remove eslint-disable after work
-import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
+import { GNOT_SYMBOL, GNOT_TOKEN_DEFAULT, GNS_SYMBOL, GNS_TOKEN, WUGNOT_SYMBOL, WUGNOT_TOKEN } from "@common/values/token-constant";
 import AssetList from "@components/wallet/asset-list/AssetList";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
@@ -94,44 +94,6 @@ interface SortedProps extends TokenModel {
   sortPrice?: string;
 }
 
-const handleSort = (list: SortedProps[]) => {
-  const gnot = list.find(a => a.symbol === GNOT_SYMBOL);
-  const gnos = list.find(a => a.symbol === GNS_SYMBOL);
-  const valueOfBalance = list
-    .filter(
-      a =>
-        a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL,
-    )
-    .sort((a, b) => {
-      const priceA = parseFloat((a.price || "0").replace(/,/g, ""));
-      const priceB = parseFloat((b.price || "0").replace(/,/g, ""));
-      return priceB - priceA;
-    });
-  const amountOfBalance = list
-    .filter(
-      a =>
-        a.price !== "-" &&
-        a.symbol !== GNOT_SYMBOL &&
-        a.symbol !== GNS_SYMBOL &&
-        !valueOfBalance.includes(a) &&
-        a.tokenPrice > 0,
-    )
-    .sort((a, b) => b.tokenPrice - a.tokenPrice);
-  const alphabest = list
-    .filter(
-      a =>
-        !amountOfBalance.includes(a) &&
-        a.symbol !== GNOT_SYMBOL &&
-        a.symbol !== GNS_SYMBOL &&
-        !valueOfBalance.includes(a),
-    )
-    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-  const rs = [];
-  gnot && rs.push(gnot);
-  gnos && rs.push(gnos);
-  return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
-};
-
 const AssetListContainer: React.FC = () => {
   const { connected, account, isSwitchNetwork } = useWallet();
 
@@ -207,15 +169,78 @@ const AssetListContainer: React.FC = () => {
 
     if (tokens?.length === 0) {
       setTokenSortOption({
-        key: "Asset",
-        direction: "asc",
+        key: "Balance",
+        direction: "desc",
       });
     }
   }, [tokens]);
 
+  const fixedTokens: SortedProps[] = useMemo(() => {
+    let gnot = GNOT_TOKEN_DEFAULT as TokenModel;
+    let wugnot = WUGNOT_TOKEN as TokenModel;
+    let gns = GNS_TOKEN as TokenModel;
+    let foundCount = 0;
+
+    for (let index = 0; index < tokens.length; index++) {
+      if (foundCount === 3) {
+        break;
+      }
+
+      if (tokens[index].symbol === GNOT_SYMBOL) {
+        foundCount++;
+        gnot = tokens[index];
+      }
+      if (tokens[index].symbol === GNS_SYMBOL) {
+        foundCount++;
+        gns = tokens[index];
+      }
+      if (tokens[index].symbol === WUGNOT_SYMBOL) {
+        foundCount++;
+        wugnot = tokens[index];
+      }
+    }
+
+    return [gnot, wugnot, gns].map(item => {
+      const tokenPrice = balances[item.priceID];
+      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
+        return {
+          price: "-",
+          balance: "0",
+          ...item,
+          tokenPrice: tokenPrice || 0,
+          sortPrice: "0",
+        };
+      }
+      const price = BigNumber(tokenPrice)
+        .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
+        .dividedBy(10 ** 6);
+      const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
+      return {
+        ...item,
+        price: isSwitchNetwork
+          ? "-"
+          : checkPrice
+            ? "<$0.01"
+            : toPriceFormat(price, { isKMBFormat: false, isRounding: false }),
+        balance: isSwitchNetwork
+          ? "0"
+          : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+        tokenPrice: tokenPrice || 0,
+        sortPrice: price.toString(),
+      };
+    }).filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset))
+      .filter((asset) => filterKeyword(asset, keyword))
+      .filter((asset) => filterType(asset, assetType));
+  }, [balances, displayBalanceMap, invisibleZeroBalance, isSwitchNetwork, tokenPrices, tokens, keyword, assetType]);
+
   const filteredTokens = useMemo(() => {
     const COLLAPSED_LENGTH = 15;
-    const temp: SortedProps[] = tokens
+    let mappedTokens: SortedProps[] = tokens
+      .filter(item =>
+        item.symbol !== GNOT_SYMBOL
+        && item.symbol !== GNS_SYMBOL
+        && item.symbol !== WUGNOT_SYMBOL
+      )
       .map(item => {
         const tokenPrice = balances[item.priceID];
         if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
@@ -237,7 +262,7 @@ const AssetListContainer: React.FC = () => {
             ? "-"
             : checkPrice
               ? "<$0.01"
-              : toPriceFormat(price, { isKMBFormat: false }),
+              : toPriceFormat(price, { isKMBFormat: false, isRounding: false }),
           balance: isSwitchNetwork
             ? "0"
             : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
@@ -249,17 +274,15 @@ const AssetListContainer: React.FC = () => {
         asset => invisibleZeroBalance === false || filterZeroBalance(asset),
       );
 
-    let sortedData = handleSort(temp || []);
-
     if (sortOption?.key === "Asset") {
-      sortedData = sortedData.sort((x, y) => {
+      mappedTokens = mappedTokens.sort((x, y) => {
         return sortOption?.direction === "asc"
           ? x.name.localeCompare(y.name)
           : y.name.localeCompare(x.name);
       });
     }
     if (sortOption?.key === "Chain") {
-      sortedData = sortedData.sort((x, y) => {
+      mappedTokens = mappedTokens.sort((x, y) => {
         return sortOption?.direction === "asc"
           ? x.type.localeCompare(y.type)
           : y.type.localeCompare(x.type);
@@ -267,7 +290,7 @@ const AssetListContainer: React.FC = () => {
     }
 
     if (sortOption?.key === "Amount") {
-      sortedData = sortedData.sort((x, y) => {
+      mappedTokens = mappedTokens.sort((x, y) => {
         return sortOption?.direction === "desc"
           ? Number(y.balance) - Number(x.balance)
           : Number(x.balance) - Number(y.balance);
@@ -275,7 +298,7 @@ const AssetListContainer: React.FC = () => {
     }
 
     if (sortOption?.key === "Balance") {
-      sortedData = sortedData.sort((x, y) => {
+      mappedTokens = mappedTokens.sort((x, y) => {
         if (
           x.sortPrice === undefined ||
           y.sortPrice === undefined ||
@@ -290,13 +313,13 @@ const AssetListContainer: React.FC = () => {
       });
     }
 
-    sortedData = sortedData
-      .filter((asset: any) => filterType(asset, assetType))
-      .filter((asset: any) => filterKeyword(asset, keyword));
+    mappedTokens = mappedTokens
+      .filter((asset) => filterType(asset, assetType))
+      .filter((asset) => filterKeyword(asset, keyword));
 
     const resultFilteredAssets = extended
-      ? sortedData
-      : sortedData.slice(0, Math.min(sortedData.length, COLLAPSED_LENGTH));
+      ? mappedTokens
+      : mappedTokens.slice(0, Math.min(mappedTokens.length, COLLAPSED_LENGTH));
 
     return resultFilteredAssets;
   }, [
@@ -421,7 +444,10 @@ const AssetListContainer: React.FC = () => {
   return (
     <>
       <AssetList
-        assets={filteredTokens}
+        assets={[
+          ...fixedTokens,
+          ...filteredTokens
+        ]}
         isFetched={
           isFetched &&
           !isLoadingTokens &&

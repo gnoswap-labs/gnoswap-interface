@@ -46,11 +46,20 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   }, [pool.incentiveType]);
 
   const rewardTokensInfo = useMemo(() => {
-    const allRewardTokens = pool.rewardTokens;
+    const allRewardTokens = pool.rewardTokens.map(item => ({
+      ...item,
+      logoURI: getGnotPath(item).logoURI,
+      path: getGnotPath(item).path,
+      symbol: getGnotPath(item).symbol,
+      name: getGnotPath(item).name,
+    }));
     const temp = allRewardTokens.map(item => {
       return {
         ...item,
         logoURI: getGnotPath(item).logoURI,
+        path: getGnotPath(item).path,
+        symbol: getGnotPath(item).symbol,
+        name: getGnotPath(item).name,
       };
     });
     const uniqueLogoURIs = new Set();
@@ -62,7 +71,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
       return false;
     });
     return filteredArray;
-  }, [pool.rewardTokens]);
+  }, [getGnotPath, pool.rewardTokens]);
 
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);

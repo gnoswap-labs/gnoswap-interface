@@ -5,6 +5,8 @@ import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import { useCallback, useMemo } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { numberToRate } from "@utils/string-utils";
+import IconStar from "@components/common/icons/IconStar";
 
 interface CardListPoolItemProps {
   index: number;
@@ -61,7 +63,8 @@ const CardListPoolItem: React.FC<CardListPoolItemProps> = ({
       <span className="list-content">{poolFeeRate}</span>
       {visibleUp && <IconTriangleArrowUp className="arrow-up" />}
       {visibleDown && <IconTriangleArrowDown className="arrow-down" />}
-      <span className="notation-value">{item.content}</span>
+      {Number(item.apr) > 100 && <IconStar size={20} />}
+      <span className="notation-value apr-value">{numberToRate(item.apr)}</span>
     </ListItem>
   );
 };

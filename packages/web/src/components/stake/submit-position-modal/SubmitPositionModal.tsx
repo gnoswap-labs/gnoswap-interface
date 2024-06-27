@@ -4,8 +4,10 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { numberToUSD } from "@utils/number-utils";
+import { numberToRate } from "@utils/string-utils";
 import React, { useCallback, useMemo } from "react";
 import { Divider, SubmitPositionModalWrapper, ToolTipContentWrapper } from "./SubmitPositionModal.styles";
 
@@ -13,9 +15,10 @@ interface Props {
   positions: PoolPositionModel[];
   close: () => void;
   onSubmit: () => void;
+  pool?: PoolModel;
 }
 
-const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
+const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool }) => {
   const totalLiquidityUSD = useMemo(() => {
     const totalLiquidity = positions.reduce((accum, position) => accum + Number(position.positionUsdValue), 0);
     return numberToUSD(totalLiquidity);
@@ -24,6 +27,12 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
+
+  const stakingAPR = useMemo(() => {
+    if (!pool?.stakingApr) return "-";
+
+    return `${numberToRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${numberToRate(pool?.stakingApr)}`;
+  }, [pool?.stakingApr]);
 
   return (
     <SubmitPositionModalWrapper>
@@ -50,7 +59,7 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
                     <IconInfo />
                   </Tooltip>
                 </div>
-                <div className="value">-</div>
+                <div className="value">{stakingAPR}</div>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight"
 import React from "react";
 import { LinkButton, WalletLayoutWrapper } from "./WalletLayout.styles";
 import Link from "next/link";
+import { getCanScrollUpId } from "@constants/common.constant";
 
 interface WalletLayoutProps {
   header: React.ReactNode;
@@ -34,7 +35,7 @@ const WalletLayout: React.FC<WalletLayoutProps> = ({
         </div>
       </div>
     </section>
-    <div className="background-wrapper">
+    <div className="background-wrapper" id={getCanScrollUpId("asset-list")}>
       <div className="background"></div>
       <section className="wallet-detail-section">
         <div className="detail-container">

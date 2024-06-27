@@ -15,6 +15,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function EarnAdd() {
   const router = useRouter();
@@ -42,23 +43,36 @@ export default function EarnAdd() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [router.query]);
 
+
+  const seoInfo = useMemo(() => SEOInfo["/earn/add"], []);
+
   const title = useMemo(() => {
     const tokenAPath = router.query?.["tokenA"] as string | undefined;
     const tokenBPath = router.query?.["tokenB"] as string | undefined;
 
-    const tokenA = tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined;
-    const tokenB = tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined;
+    const tokenA = getGnotPath(tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined);
+    const tokenB = getGnotPath(tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined);
 
-    if (tokenA && tokenB && feeStr) return `Add Position to ${getGnotPath(tokenA).symbol}/${getGnotPath(tokenB).symbol} ${feeStr || "0"}`;
-
-    return "Add Position to Gnoswap Pools";
-  }, [feeStr, getGnotPath, router.query, tokens]);
+    return seoInfo.title([
+      tokenA?.symbol,
+      tokenB?.symbol,
+      feeStr
+    ].filter(item => item) as string[]);
+  }, [
+    feeStr,
+    router.query,
+    seoInfo,
+    tokens,
+    getGnotPath,
+  ]);
 
   return (
     <>
       <SEOHeader
         title={title}
-        pageDescription="Create your own positions and provide liquidity to earn trading fees."
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
       />
       <EarnAddLayout
         header={<HeaderContainer />}

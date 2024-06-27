@@ -1,4 +1,3 @@
-// TODO : remove eslint-disable after work
 import {
   POOL_TYPE,
   PoolSortOption,

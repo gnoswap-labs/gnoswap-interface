@@ -1,4 +1,3 @@
-// TODO : remove eslint-disable after work
 import React, { useMemo } from "react";
 import { type Activity } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
 import IconOpenLink from "@components/common/icons/IconOpenLink";

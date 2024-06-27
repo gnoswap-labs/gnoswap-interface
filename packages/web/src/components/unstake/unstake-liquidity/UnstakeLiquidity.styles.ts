@@ -5,6 +5,7 @@ import iconChecked from "@components/common/icons/svg/icon-checked.svg";
 import iconCheckboxBlank from "@components/common/icons/svg/icon-checkbox-blank.svg";
 import iconCheckboxUnsure from "@components/common/icons/svg/icon-checkbox-unsure.svg";
 import { media } from "@styles/media";
+import styled from "@emotion/styled";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -28,33 +29,6 @@ export const wrapper = (theme: Theme) => css`
   ${media.mobile} {
     padding: 15px;
     gap: 12px;
-  }
-  .unstake-des {
-    background-color: ${theme.color.backgroundOpacity4};
-    border-radius: 8px;
-    padding: 12px 16px;
-    p, h5, a {
-      ${fonts.body12}
-      color: ${theme.color.text08};
-    }
-    .icon-link {
-      width: 16px;
-      height: 16px;
-      * {
-        fill: ${theme.color.icon14};
-      }
-    }
-    h5 {
-      font-weight: 600;
-    }
-    p {
-      margin: 16px 0 24px;
-    }
-    a {
-      ${mixins.flexbox("rpw", "center", "flex-start")};
-      gap: 4px;
-      font-weight: 600;
-    }
   }
   .button-confirm {
     gap: 8px;
@@ -103,5 +77,23 @@ export const inputStyle = (theme: Theme) => css`
     background-color: ${theme.color.text04};
     mask-image: url(${iconCheckboxUnsure});
     cursor: default;
+  }
+`;
+
+export const StakeWarningContentWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start")};
+  gap: 16px;
+
+  .icon-link {
+    width: 16px;
+    height: 16px;
+    * {
+      fill: ${({ theme }) => theme.color.icon21};
+    }
+  }
+  a {
+    ${mixins.flexbox("row", "center")};
+    gap: 4px;
+    font-weight: 600;
   }
 `;

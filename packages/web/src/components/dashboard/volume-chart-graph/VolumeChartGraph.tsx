@@ -97,12 +97,6 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
           {labelIndicesToShow.map((x, i) => (
             <span key={i}>{xAxisLabels[x]}</span>
           ))}
-
-          {/* {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (
-            <span key={index} className="label">
-              {label}
-            </span>
-          ))} */}
         </div>
       </div>
     </VolumeChartGraphWrapper>

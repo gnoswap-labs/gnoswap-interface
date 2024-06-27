@@ -570,16 +570,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
     [points],
   );
 
-  // const getFillGraphLine = useCallback(
-  //   (smooth?: boolean) => {
-  //     return `M 0,${height} ${getGraphLine(
-  //       smooth,
-  //       true,
-  //     )} L ${width},${height}Z`;
-  //   },
-  //   [getGraphLine, height, width],
-  // );
-
   const firstPoint = useMemo(() => {
     if (points.length === 0) {
       return { x: 0, y: 0 };

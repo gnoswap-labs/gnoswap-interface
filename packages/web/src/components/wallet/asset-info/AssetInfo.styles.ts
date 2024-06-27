@@ -72,7 +72,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       gap: 2px;
       
       .token-name-path {
-        ${mixins.flexbox("row", "baseline", "start")}
+        ${mixins.flexbox("row", "flex-end", "start")}
         gap: 8px;
 
         .token-path {
