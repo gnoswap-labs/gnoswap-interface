@@ -31,7 +31,7 @@ export default function PoolIncentivize() {
   }, [currentPool?.fee]);
 
 
-  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/incentivize"], []);
+  const seoInfo = useMemo(() => SEOInfo["/earn/incentivize"], []);
 
   const title = useMemo(() => {
     const tokenA = getGnotPath(currentPool?.tokenA);

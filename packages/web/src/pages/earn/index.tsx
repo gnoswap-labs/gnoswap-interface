@@ -21,7 +21,6 @@ export default function Earn() {
   const isOtherPosition = !!(addr && addr !== account?.address);
 
   const seoInfo = useMemo(() => SEOInfo[addr ? "/earn?address" : "/earn"], [addr]);
-  console.log("🚀 ~ Earn ~ seoInfo:", seoInfo.desc());
 
   return (
     <>
