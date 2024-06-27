@@ -61,3 +61,5 @@ export const previousPageScroll = atom<{ page: string; height: number }>({
   page: "",
   height: 0,
 });
+
+export const unCommonTokenWarningStatus = atom<Array<string>>([]);

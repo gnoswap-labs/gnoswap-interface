@@ -6,10 +6,11 @@ import React, { useCallback, useState } from "react";
 
 interface Props {
   onClickConfirm: () => void;
-  token: {[key in string]: string} | TokenModel;
+  onClose: () => void;
+  token: { [key in string]: string } | TokenModel;
 }
 
-const TokenTradingModalContainer:React.FC<Props> = ({ onClickConfirm, token }) => {
+const TokenTradingModalContainer: React.FC<Props> = ({ onClickConfirm, token, onClose }) => {
   const clearModal = useClearModal();
   const [checked, setChecked] = useState(false);
   const handleChecked = async () => {
@@ -28,8 +29,9 @@ const TokenTradingModalContainer:React.FC<Props> = ({ onClickConfirm, token }) =
   };
 
   const close = useCallback(() => {
+    onClose();
     clearModal();
-  }, [clearModal]);
+  }, [clearModal, onClose]);
 
   return <TokenTradingModal
     close={close}

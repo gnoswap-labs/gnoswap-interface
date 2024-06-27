@@ -198,15 +198,17 @@ const SwapCardContent: React.FC<ContentProps> = ({
         </div>
       </div>
 
-      {swapSummaryInfo && isShowInfoSection && (
-        <SwapCardContentDetail
-          swapSummaryInfo={swapSummaryInfo}
-          swapRouteInfos={swapRouteInfos}
-          isLoading={isLoading}
-          setSwapRateAction={setSwapRateAction}
-        />
-      )}
-    </ContentWrapper>
+      {
+        swapSummaryInfo && isShowInfoSection && (
+          <SwapCardContentDetail
+            swapSummaryInfo={swapSummaryInfo}
+            swapRouteInfos={swapRouteInfos}
+            isLoading={isLoading}
+            setSwapRateAction={setSwapRateAction}
+          />
+        )
+      }
+    </ContentWrapper >
   );
 };
 

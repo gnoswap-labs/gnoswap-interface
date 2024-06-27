@@ -10,9 +10,9 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
-import { getServerSideProps } from "./index";
-
-export { getServerSideProps };
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+import SEOHeader from "@components/common/seo-header/seo-header";
 
 export default function Earn() {
   const { width } = useWindowSize();
@@ -21,6 +21,7 @@ export default function Earn() {
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
+
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 
@@ -38,17 +39,40 @@ export default function Earn() {
       { title: "Remove Position", path: "" },
     ];
   }, [data, width]);
+
+  const feeStr = useMemo(() => {
+    const feeTier = data?.fee;
+
+    if (!feeTier) {
+      return null;
+    }
+    return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
+  }, [data?.fee]);
+
+  const title = useMemo(() => {
+    return `Remove Position From ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} ${feeStr ?? "0"}`;
+
+  }, [data?.tokenA, data?.tokenB, feeStr, getGnotPath]);
+
   return (
-    <PoolRemoveLayout
-      header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoadingCommon || isLoading}
-        />
-      }
-      removeLiquidity={<RemoveLiquidityContainer />}
-      footer={<Footer />}
-    />
+    <>
+      <SEOHeader
+        title={title}
+        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
+        ogTitle="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity"
+        ogDescription="Manage your positions to earn trading fees."
+      />
+      <PoolRemoveLayout
+        header={<HeaderContainer />}
+        breadcrumbs={
+          <BreadcrumbsContainer
+            listBreadcrumb={listBreadcrumb}
+            isLoading={isLoadingCommon || isLoading}
+          />
+        }
+        removeLiquidity={<RemoveLiquidityContainer />}
+        footer={<Footer />}
+      />
+    </>
   );
 }

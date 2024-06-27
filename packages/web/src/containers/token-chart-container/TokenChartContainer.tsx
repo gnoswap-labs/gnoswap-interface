@@ -162,6 +162,9 @@ const TokenChartContainer: React.FC = () => {
       setFromSelectToken(false);
       clearModal();
     },
+    onClickClose: () => {
+      router.push("/");
+    }
   });
   const path = router.query["token-path"] as string;
   const { data: tokenB } = useGetTokenByPath(path, {

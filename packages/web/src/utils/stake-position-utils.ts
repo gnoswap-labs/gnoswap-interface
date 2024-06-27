@@ -62,7 +62,7 @@ export const formatTokenExchangeRate = (
   if (Number.isNaN(inputAsNumber)) return "-";
 
   if (inputAsNumber < 1e3) {
-    if (minLimit && inputAsNumber < minLimit && inputAsNumber > 0) return `${minLimit}`;
+    if (minLimit && inputAsNumber < minLimit && inputAsNumber > 0) return `<${minLimit}`;
 
     if (Number.isInteger(inputAsNumber)) return inputAsNumber.toLocaleString("en-US", {
       maximumFractionDigits: forcedIntegerDecimals,
@@ -101,6 +101,7 @@ export const convertToKMB = (
   }): string => {
   if (Number.isNaN(Number(price.replace(/,/g, "")))) return "-";
   const numberPrice = Number(price.replace(/,/g, ""));
+
   const numberPriceAbs = Math.abs(Number(price.replace(/,/g, "")));
   const isNegative = numberPrice < 0;
   const negativeSymbol = isNegative ? "-" : "";
@@ -114,7 +115,9 @@ export const convertToKMB = (
       maximumFractionDigits: 0,
       minimumFractionDigits: 0,
     });
-    if (!options?.ignoreSmallValueFormat && numberPrice < 0.000001 && numberPrice >= 0) return "0.000001";
+    if (!(options?.ignoreSmallValueFormat ?? false) && numberPrice < 0.000001 && numberPrice > 0) {
+      return "<0.000001";
+    }
     if (numberPrice < 1 && numberPrice >= 0) return `${Number(numberPrice.toFixed(options?.maximumSignificantDigits ?? 5))}`;
 
     let result = numberPrice.toLocaleString("en-US", {

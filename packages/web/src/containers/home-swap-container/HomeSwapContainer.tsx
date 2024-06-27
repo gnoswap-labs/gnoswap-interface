@@ -1,4 +1,3 @@
-import { SwapDirectionType } from "@common/values";
 import HomeSwap from "@components/home/home-swap/HomeSwap";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -48,8 +47,6 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenAAmount, setTokenAAmount] = useState<string>("");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
   const [tokenBAmount, setTokenBAmount] = useState<string>("");
-  const [swapDirection, setSwapDirection] =
-    useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
   const { connected, isSwitchNetwork } = useWallet();
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -112,14 +109,13 @@ const HomeSwapContainer: React.FC = () => {
       tokenBBalance,
       tokenBUSD,
       tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
-      direction: swapDirection,
+      direction: "EXACT_IN",
       slippage,
       tokenADecimals: tokenA?.decimals,
       tokenBDecimals: tokenB?.decimals,
     };
   }, [
     slippage,
-    swapDirection,
     tokenA,
     tokenAAmount,
     tokenABalance,
@@ -131,23 +127,30 @@ const HomeSwapContainer: React.FC = () => {
   ]);
 
   const swapNow = useCallback(() => {
+    const direction = (() => {
+      if (tokenAAmount) return "EXACT_IN";
+
+      if (tokenBAmount) return "EXACT_OUT";
+
+      return "EXACT_IN";
+    })();
+
     const queries = [
       `from=${tokenA?.path}`,
       `to=${tokenB?.path}`,
-      `direction=${swapDirection}`,
+      `direction=${direction}`,
       ...(tokenAAmount ? [`token_a_amount=${tokenAAmount}`] : []),
       ...(tokenBAmount ? [`token_b_amount=${tokenBAmount}`] : []),
     ];
     const queriesString = queries.join("&");
-    if (!!swapDirection && (!!tokenAAmount || !!tokenBAmount)) {
+    if ((!!tokenAAmount || !!tokenBAmount)) {
       router.push(`/swap?${queriesString}`);
     }
-  }, [router, swapDirection, tokenA, tokenB, tokenAAmount, tokenBAmount]);
+  }, [router, tokenA, tokenB, tokenAAmount, tokenBAmount]);
 
   const onSubmitSwapValue = () => {
     setTokenA(tokenB);
     setTokenB(tokenA);
-    setSwapDirection(prev => (prev === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN"));
     setTokenAAmount(tokenBAmount);
     setTokenBAmount(tokenAAmount);
   };

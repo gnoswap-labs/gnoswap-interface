@@ -8,6 +8,7 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { priceToTick } from "@utils/swap-utils";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
+import { useRouter } from "next/navigation";
 
 export const useGetPoolCreationFee = (
   options?: UseQueryOptions<number, Error>,
@@ -90,11 +91,18 @@ export const useGetPoolDetailByPath = (
 ) => {
   const { poolRepository } = useGnoswapContext();
   const convertPath = encryptId(path);
+  const router = useRouter();
+
   return useQuery<PoolDetailModel, Error>({
     queryKey: [QUERY_KEY.poolDetail, convertPath],
     queryFn: async () => {
       const data = await poolRepository.getPoolDetailByPoolPath(convertPath);
       return data;
+    },
+    onError: (err: any) => {
+      if (err["response"]["status"] === 404) {
+        router.push("/404");
+      }
     },
     ...options,
   });

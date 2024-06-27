@@ -15,7 +15,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { formatUsdNumber3Digits, toPriceFormat } from "@utils/number-utils";
+import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
 
@@ -40,7 +40,7 @@ export interface Token {
   marketCap: string;
   liquidity: string;
   volume24h: string;
-  mostLiquidPool: MostLiquidPool;
+  mostLiquidPool?: MostLiquidPool;
   last7days: number[];
   idx: number;
   graphStatus: MATH_NEGATIVE_TYPE;
@@ -255,7 +255,6 @@ const TokenListContainer: React.FC = () => {
           transferData.pricesBefore?.latestPrice,
           transferData.pricesBefore?.price30d,
         );
-        const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
 
         return {
           ...transferData,
@@ -265,7 +264,7 @@ const TokenListContainer: React.FC = () => {
             symbol: item.symbol,
             logoURI: item.logoURI,
           },
-          mostLiquidPool: {
+          mostLiquidPool: tempTokenPrice?.mostLiquidityPool ? {
             poolId: Math.floor(Math.random() * 50 + 1).toString(),
             tokenPair: {
               tokenA: {
@@ -285,7 +284,7 @@ const TokenListContainer: React.FC = () => {
               splitMostLiquidity.length > 1
                 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}`
                 : "0.02%",
-          },
+          } : undefined,
           last7days: [
             ...(transferData?.last7d
               ?.sort(
@@ -311,7 +310,7 @@ const TokenListContainer: React.FC = () => {
             Number(transferData.volumeUsd24h || 0),
           ).toLocaleString()}`,
           price: toPriceFormat(
-            usdFormat, {
+            transferData.usd, {
             usd: true,
             isRounding: false,
             fixedLessThan1Significant: 3,

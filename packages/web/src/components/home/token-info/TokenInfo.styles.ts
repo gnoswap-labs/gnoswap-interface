@@ -70,11 +70,19 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       font-weight: 500;
     }
   }
+  .liquid-text-wrapper {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 8px;
+    text-align: right;
+  }
   &.liquid-col {
     gap: 8px;
   }
   .liquid-symbol {
     margin: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &.last7days-graph {
@@ -140,7 +148,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     ${fonts.body12};
     color: ${({ theme }) => theme.color.text04};
   }
+  
   .fee-rate {
     ${fonts.body11};
+    
   }
 `;

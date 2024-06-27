@@ -25,8 +25,8 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
     return width && width > 1920
       ? "-250px"
       : width && width > 1440
-      ? `-${(width - 1440) / 2 + 10}px`
-      : "-10px";
+        ? `-${(width - 1440) / 2 + 10}px`
+        : "-10px";
   }};
   left: ${({ width }) => {
     return width && width < 768 && "0px";
@@ -41,7 +41,7 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
     position: fixed;
     width: 100%;
     height: ${({ emptyData }) => (emptyData ? "157px" : "426px")};
-    top: calc(100vh - ${({ emptyData }) => (emptyData ? "157px" : "426px")});
+    top: calc(100% - ${({ emptyData }) => (emptyData ? "157px" : "426px")});
     padding: 24px 0px;
     min-width: 360px;
   }
@@ -174,7 +174,7 @@ export const NoDataText = styled.span`
   color: ${({ theme }) => theme.color.text04};
   padding: 0px 24px;
   width: 100%;
-  height: 34px;
+  height: 100%;
   margin-top: 100px;
 
   ${media.tablet} {

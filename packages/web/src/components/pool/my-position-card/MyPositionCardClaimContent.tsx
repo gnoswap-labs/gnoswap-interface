@@ -148,7 +148,13 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
           {externalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <MissingLogo symbol={getGnotPath(reward.token).symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20} />
+                <MissingLogo
+                  symbol={getGnotPath(reward.token).symbol}
+                  url={getGnotPath(reward.token).logoURI}
+                  className="token-logo"
+                  width={20}
+                  mobileWidth={20}
+                />
                 <span className="position">
                   {getGnotPath(reward.token).symbol}
                 </span>

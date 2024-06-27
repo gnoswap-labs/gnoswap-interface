@@ -4,6 +4,7 @@ import { RewardType } from "@constants/option.constant";
 import { numberToFormat } from "@utils/string-utils";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 export interface MyPositionAprContentProps {
   rewardInfo: { [key in RewardType]: PositionAPRInfo[] };
@@ -39,22 +40,23 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
         <React.Fragment>
           <div className="list">
             <span className="title">Swap Fees</span>
-            <span className="note">Based on 7d avg</span>
           </div>
           {swapFeeRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={getGnotPath(reward.token).logoURI}
-                  alt="token logo"
+                <MissingLogo
+                  symbol={getGnotPath(reward.token).symbol}
+                  url={getGnotPath(reward.token).logoURI}
                   className="token-logo"
+                  width={20}
+                  mobileWidth={20}
                 />
                 <span className="position">
                   {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true })}%
+                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true, isRounding: false })}%
               </span>
             </div>
           ))}
@@ -70,17 +72,19 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
           {internalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={getGnotPath(reward.token).logoURI}
-                  alt="token logo"
+                <MissingLogo
+                  symbol={getGnotPath(reward.token).symbol}
+                  url={getGnotPath(reward.token).logoURI}
                   className="token-logo"
+                  width={20}
+                  mobileWidth={20}
                 />
                 <span className="position">
                   {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, { decimals: 2 })}%
+                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true, isRounding: false })}%
               </span>
             </div>
           ))}
@@ -96,17 +100,19 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
           {externalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={getGnotPath(reward.token).logoURI}
-                  alt="token logo"
+                <MissingLogo
+                  symbol={getGnotPath(reward.token).symbol}
+                  url={getGnotPath(reward.token).logoURI}
                   className="token-logo"
+                  width={20}
+                  mobileWidth={20}
                 />
                 <span className="position">
                   {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, { decimals: 2 })}%
+                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true, isRounding: false })}%
               </span>
             </div>
           ))}

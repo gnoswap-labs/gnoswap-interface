@@ -2,7 +2,7 @@ import LineGraph from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
 import React, { useCallback, useMemo } from "react";
-import { TvlChartGraphWrapper } from "./TvlChartGraph.styles";
+import { TokenChartGraphXLabel, TvlChartGraphWrapper } from "./TvlChartGraph.styles";
 import dayjs from "dayjs";
 import { CHART_TYPE } from "@constants/option.constant";
 import { toPriceFormat } from "@utils/number-utils";
@@ -15,7 +15,6 @@ export interface TvlChartGraphProps {
     };
     time: string;
   }[];
-  xAxisLabels: string[];
   tvlChartType: CHART_TYPE;
   yAxisLabels?: string[];
 }
@@ -60,7 +59,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     };
   }, [datas]);
 
-  const hasOnlyOnePoint = useMemo(() => (xAxisRange.maxX - xAxisRange.minX === 0), [xAxisRange.maxX, xAxisRange.minX]);
 
   const scaleX = useCallback(
     (value: number) => {
@@ -88,6 +86,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
 
     // Find the maximum number of labels and time intervals for each graph container size.
     const maxLabelCount = Math.floor((size.width - 24) / formatInfo.textLength);
+
     const spacingCount = Math.ceil(
       Math.ceil((maxX - minX) / formatInfo.minimumSpacing) / maxLabelCount,
     );
@@ -100,14 +99,12 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
 
     let startXWithOffset = startX;
 
-    if (formatInfo.minimumSpacing >= DATE_HOUR_VALUE * 24) {
-      const offsetValue = formatInfo.offset * DATE_MINUTE_VALUE;
+    const offsetValue = formatInfo.offset * DATE_MINUTE_VALUE;
 
-      if (startX + offsetValue > minPositionX) {
-        startXWithOffset = startX + offsetValue;
-      } else {
-        startXWithOffset = startX + offsetValue + timeDiff;
-      }
+    if (startX + offsetValue > minPositionX) {
+      startXWithOffset = startX + offsetValue;
+    } else {
+      startXWithOffset = startX + offsetValue + timeDiff;
     }
 
     const length = Math.ceil((maxX - minX) / timeDiff);
@@ -123,6 +120,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
   }, [xAxisRange, size.width, scaleX, revertX]);
 
 
+
   const mappedData = useMemo(() => {
     return datas.map(data => ({
       value: data.amount.value,
@@ -134,7 +132,13 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     const formatInfo = makeTimePeriodFormatInfo();
     const minimumXAxis = formatInfo.textLength / 2; // text size and padding
 
-    if (hasOnlyOnePoint) {
+
+    const result = xAxisLabels.filter(
+      label =>
+        label.position > minimumXAxis &&
+        label.position < size.width - minimumXAxis,
+    );
+    if (result.length === 1) {
       return [{
         position: size.width / 2,
         value: new Date(datas[0].time).getTime(),
@@ -142,12 +146,10 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
       }];
     }
 
-    return xAxisLabels.filter(
-      label =>
-        label.position > minimumXAxis &&
-        label.position < size.width - minimumXAxis,
-    );
-  }, [datas, hasOnlyOnePoint, size.width, xAxisLabels]);
+    return result;
+  }, [datas, size.width, xAxisLabels]);
+
+  const hasOnlyOneLabel = useMemo(() => displayXAxisLabels.length === 1, [displayXAxisLabels.length]);
 
   return (
     <TvlChartGraphWrapper>
@@ -171,14 +173,15 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
               isRounding: false,
               usd: true,
               greaterThan1Decimals: 1,
+              forcedGreaterThan1Decimals: false,
               lestThan1Decimals: 1,
               isKMBFormat: false,
             })}
           />
         </div>
-        <div className={`xaxis-wrapper ${hasOnlyOnePoint ? "center" : ""}`}>
+        <div className={`xaxis-wrapper ${hasOnlyOneLabel ? "center" : ""}`}>
           {displayXAxisLabels.map((value, index) => (
-            <span key={index}>{value?.text}</span>
+            <TokenChartGraphXLabel x={value.position} key={index}>{value?.text}</TokenChartGraphXLabel>
           ))}
           {/* {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (
             <span key={index}>{label}</span>

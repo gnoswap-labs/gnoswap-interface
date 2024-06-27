@@ -19,6 +19,12 @@
   },
   {
     "name": "GNO.LAND",
+    "chainId": "qa.gnoswap",
+    "rpcUrl": "https://qa.rpc.gnoswap.io",
+    "wsUrl": "wss://qa.rpc.gnoswap.io/websocket"
+  },
+  {
+    "name": "GNO.LAND",
     "chainId": "dev.gnoswap",
     "rpcUrl": "https://dev.rpc.gnoswap.io",
     "wsUrl": "wss://dev.rpc.gnoswap.io/websocket"

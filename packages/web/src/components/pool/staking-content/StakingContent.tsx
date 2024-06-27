@@ -9,7 +9,7 @@ import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.style
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
-import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
+import OverlapLogo, { ILogoData } from "@components/common/overlap-logo/OverlapLogo";
 import { STAKING_PERIOS, StakingPeriodType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
@@ -47,9 +47,21 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
-    const rewardLogo = rewardData?.map(item => getGnotPath(item).logoURI) || [];
-    const temp = rewardTokens.map(token => getGnotPath(token).logoURI);
-    return [...new Set([...temp, ...rewardLogo])].filter(item => item).map(item => ({ src: item }));
+    const rewardLogo = rewardData?.map(item => ({
+      src: getGnotPath(item).logoURI,
+      tooltipContent: getGnotPath(item).symbol,
+    })) || [];
+    const temp = rewardTokens.map(token => ({
+      src: getGnotPath(token).logoURI,
+      tooltipContent: getGnotPath(token).symbol,
+    }));
+    return [...temp, ...rewardLogo].reduce((acc: ILogoData[], current) => {
+      if (!acc.find(item => item.src === current.src)) {
+        acc.push(current);
+      }
+
+      return acc;
+    }, []) as ILogoData[];
   }, [rewardTokens, pool]);
 
   const stakingPositionMap = useMemo(() => {

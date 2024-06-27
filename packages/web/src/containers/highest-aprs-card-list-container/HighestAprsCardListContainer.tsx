@@ -11,19 +11,9 @@ const HighestAprsCardListContainer: React.FC = () => {
   const { higestAPRs } = usePoolData();
   const { isLoadingHighestAPRPools } = useLoading();
 
-  const movePoolDetails = useCallback(
-    (path: string) => {
-      router.push("/earn/pool/" + path);
-    },
-    [router],
-  );
-
-  const onClickItem = useCallback(
-    (path: string) => {
-      movePoolDetails(path);
-    },
-    [movePoolDetails],
-  );
+  const onClickItem = useCallback((path: string) => {
+    router.push("/earn/pool/" + path);
+  }, []);
 
   return (
     <HighestAprsCardList
