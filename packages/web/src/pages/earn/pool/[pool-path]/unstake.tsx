@@ -13,6 +13,7 @@ import { DeviceSize } from "@styles/media";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import SEOHeader from "@components/common/seo-header/seo-header";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function Earn() {
   const { width } = useWindowSize();
@@ -49,28 +50,32 @@ export default function Earn() {
   }, [data?.fee]);
 
 
-  const poolInfoText = useMemo(
-    () => `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB)?.symbol} ${feeStr || "0"}`,
-    [
-      data?.tokenA,
-      data?.tokenB,
-      feeStr,
-      getGnotPath
-    ]
-  );
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/unstake"], []);
 
   const title = useMemo(() => {
-    if (data) return `Unstake Position from ${poolInfoText}`;
+    const tokenA = getGnotPath(data?.tokenA);
+    const tokenB = getGnotPath(data?.tokenB);
 
-    return "Unstake Position";
-  }, [data, poolInfoText]);
+    return seoInfo.title([
+      tokenA?.symbol,
+      tokenB?.symbol,
+      feeStr
+    ].filter(item => item) as string[]);
+  }, [
+    data?.tokenA,
+    data?.tokenB,
+    feeStr,
+    getGnotPath,
+    seoInfo
+  ]);
 
   return (
     <>
       <SEOHeader
         title={title}
-        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
-        ogDescription="Manage your positions to earn trading fees."
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
       />
       <UnstakeLiquidityLayout
         header={<HeaderContainer />}

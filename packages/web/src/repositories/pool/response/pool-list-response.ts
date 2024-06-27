@@ -32,7 +32,7 @@ export interface PoolResponse {
 
   bins40: PoolBinModel[];
 
-  tvl: number;
+  tvl: string;
 
   tvlChange: number;
 

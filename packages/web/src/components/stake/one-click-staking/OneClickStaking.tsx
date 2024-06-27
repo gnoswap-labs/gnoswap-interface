@@ -3,16 +3,16 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
 import { PositionModel } from "@models/position/position-model";
 import { useMemo, useState, useEffect } from "react";
 import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { TokenModel } from "@models/token/token-model";
 import { toUnitFormat } from "@utils/number-utils";
 import { numberToRate } from "@utils/string-utils";
+import IconStar from "@components/common/icons/IconStar";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -114,24 +114,42 @@ const OneClickStaking: React.FC<Props> = ({
   }, [isLoadingPool, pool.feeUsd24h]);
 
   const rewardTokens = useMemo(() => {
-    return [
-      ...new Set(
-        pool?.rewardTokens?.map(item => ({
-          src: getGnotPath(item).logoURI,
-          tooltipContent: item.symbol
-        })) || [],
-      ),
-    ];
-  }, [pool.rewardTokens]);
+    return pool?.rewardTokens.reduce((acc, current) => {
+      const existToken = acc.some(item => item.path === current.path);
+
+      if (!existToken) {
+        acc.push({
+          ...current,
+          logoURI: getGnotPath(current).logoURI,
+          symbol: getGnotPath(current).symbol,
+          path: getGnotPath(current).path,
+        });
+      }
+
+      return acc;
+    }, [] as TokenModel[]);
+  }, [getGnotPath, pool?.rewardTokens]);
 
   const feeApr = useMemo(() => {
     if (isLoadingPool) return "-";
+
+    if (Number(pool.feeApr) > 100) {
+      return <>
+        <IconStar size={20} /> {numberToRate(pool.feeApr)}
+      </>;
+    }
 
     return numberToRate(pool.feeApr);
   }, [isLoadingPool, pool.feeApr]);
 
   const stakingApr = useMemo(() => {
     if (isLoadingPool) return "-";
+
+    if (Number(pool.stakingApr) > 100) {
+      return <>
+        <IconStar size={20} /> {numberToRate(pool.stakingApr)}
+      </>;
+    }
 
     return numberToRate(pool.stakingApr);
   }, [isLoadingPool, pool.stakingApr]);
@@ -164,14 +182,14 @@ const OneClickStaking: React.FC<Props> = ({
             leftSymbol={tokenARevert?.symbol || ""}
             rightSymbol={tokenBRevert?.symbol || ""}
           />}
-          {feeApr}
+          <span className="fee-apr-value">{feeApr}</span>
         </div>
       </div>
       <div>
         <div className="label">Staking APR</div>
         <div className="value">
-          <OverlapLogo logos={rewardTokens} size={24} />
-          {stakingApr}
+          <OverlapTokenLogo tokens={rewardTokens} size={24} />
+          <span className="staking-apr-value">{stakingApr}</span>
         </div>
       </div>
     </div>;
@@ -181,12 +199,12 @@ const OneClickStaking: React.FC<Props> = ({
   return (
     <OneClickStakingWrapper>
       <div className="token-pair">
-        <DoubleLogo
-          left={tokenARevert?.logoURI || ""}
-          right={tokenBRevert?.logoURI || ""}
+        <OverlapTokenLogo
+          tokens={[
+            tokenARevert,
+            tokenBRevert
+          ]}
           size={24}
-          leftSymbol={tokenARevert?.symbol || ""}
-          rightSymbol={tokenBRevert?.symbol || ""}
         />
         <span className="token-name">{`${tokenARevert?.symbol}/${tokenBRevert?.symbol}`}</span>
       </div>
@@ -207,11 +225,12 @@ const OneClickStaking: React.FC<Props> = ({
               <div className="content" key={index}>
                 <div className="label">
                   {!isLoadingPool && (
-                    <DoubleTokenLogo
-                      left={tokenARevert}
-                      right={tokenBRevert}
+                    <OverlapTokenLogo
+                      tokens={[
+                        tokenARevert,
+                        tokenBRevert
+                      ]}
                       size={24}
-                      fontSize={8}
                     />
                   )}
                   ID #{item.id}
@@ -238,11 +257,11 @@ const OneClickStaking: React.FC<Props> = ({
             {stakedPositions.map((item, index) => (
               <div className="content" key={index}>
                 <div className="label">
-                  <DoubleTokenLogo
-                    left={tokenARevert}
-                    right={tokenBRevert}
+                  <OverlapTokenLogo
+                    tokens={[
+                      tokenARevert, tokenBRevert
+                    ]}
                     size={24}
-                    fontSize={8}
                   />
                   ID #{item.id}
                 </div>

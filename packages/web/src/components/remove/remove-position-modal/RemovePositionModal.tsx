@@ -5,23 +5,40 @@ import IconClose from "@components/common/icons/IconCancel";
 import { useRemoveData } from "@hooks/stake/use-remove-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
-import React, { useCallback } from "react";
-import { Divider, RemovePositionModalWrapper, ToolTipContentWrapper } from "./RemovePositionModal.styles";
+import React, { useCallback, useMemo } from "react";
+import { Divider, RemovePositionModalWrapper, RemoveWarningContentWrapper, ToolTipContentWrapper } from "./RemovePositionModal.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
+import WarningCard from "@components/common/warning-card/WarningCard";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import { numberToRate } from "@utils/string-utils";
 
 interface Props {
-  positions: PoolPositionModel[];
+  selectedPosition: PoolPositionModel[];
+  allPositions: PoolPositionModel[];
   close: () => void;
   onSubmit: () => void;
 }
 
-const RemovePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
-  const { unclaimedRewards, totalLiquidityUSD } = useRemoveData({ positions });
+const RemovePositionModal: React.FC<Props> = ({ selectedPosition, close, onSubmit, allPositions }) => {
+  const { unclaimedRewards, totalLiquidityUSD } = useRemoveData({ selectedPosition });
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
+
+  const warningPercent = useMemo(() => {
+    const selectRemoveUsd = selectedPosition.reduce((acc, current) => {
+      return acc + Number(current.usdValue || 0) * Number(current.apr || 0);
+    }, 0);
+    const allUsd = allPositions.reduce((acc, current) => {
+      return acc + Number(current.usdValue || 0);
+    }, 0);
+
+    if (selectRemoveUsd === 0) return "0%";
+    if (allUsd === 0) return "-";
+    return numberToRate(selectRemoveUsd / allUsd);
+  }, [allPositions, selectedPosition]);
 
   return (
     <RemovePositionModalWrapper>
@@ -36,7 +53,7 @@ const RemovePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
           <div className="box-item">
             <h4>Positions</h4>
             <div className="item-content">
-              {positions.map((position, index) => (
+              {selectedPosition.map((position, index) => (
                 <div key={index}>
                   <div className="label-logo">
                     <DoubleLogo
@@ -101,6 +118,13 @@ const RemovePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
                 </div>
               </div>
             </div>
+            <WarningCard
+              title={"Important Note"}
+              icon={<IconCircleExclamationMark />}
+              content={<RemoveWarningContentWrapper>
+                You will stop earning swap fee rewards of <span className="remove-percent">{warningPercent} APR</span>
+              </RemoveWarningContentWrapper>}
+            />
             <div className="button-wrapper">
               <Button
                 text="Confirm Remove Position"

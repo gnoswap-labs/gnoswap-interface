@@ -21,7 +21,7 @@ export interface EarnMyPositionsProps {
   availableStake: boolean;
   connect: () => void;
   moveEarnAdd: () => void;
-  movePoolDetail: (poolId: string) => void;
+  movePoolDetail: (poolId: string, positionId: string) => void;
   moveEarnStake: () => void;
   mobile: boolean;
   divRef: React.RefObject<HTMLDivElement>;

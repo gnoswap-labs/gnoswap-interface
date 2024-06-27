@@ -64,13 +64,12 @@ export const RemoveLiquiditySelectResultWrapper = styled.div`
 
   .total-section {
     ${mixins.flexbox("row", "center", "space-between")};
+    ${fonts.body9};
     h5 {
-      ${fonts.body12};
       color: ${({ theme }) => theme.color.text04}
     }
     
     .total-value {
-      ${fonts.body12}
       color: ${({ theme }) => theme.color.text02}
     }
     ${media.mobile} {

@@ -1,10 +1,8 @@
 import React from "react";
 import {
-  ASSET_TD_WIDTH,
   emptyArrayInit,
   pulseSkeletonStyle,
   TABLE_TITLE,
-  MOBILE_ASSET_TD_WIDTH,
   TableInfoType,
 } from "@constants/skeleton.constant";
 import { cx } from "@emotion/css";
@@ -26,15 +24,14 @@ interface TableSkeletonProps {
   className?: string;
 }
 
-const TableSkeleton: React.FC<TableSkeletonProps> = ({ info, breakpoint, className }) => {
-
-  const ASSET_TD = breakpoint === DEVICE_TYPE.MOBILE ? MOBILE_ASSET_TD_WIDTH : ASSET_TD_WIDTH;
+const TableSkeleton: React.FC<TableSkeletonProps> = ({ info, className }) => {
+  const ASSET_TD = info.list.map(item => item.skeletonWidth);
 
   return (
     <>
       {emptyArrayInit(info.total).map((_, index) => (
         <SkeletonWrapper key={index} title={info.title} className={className}>
-          {info.list.map((item, idx) => (
+          {info.list.filter(item => !item.hideSkeleton).map((item, idx) => (
             <SkeletonItem
               key={idx}
               className={cx({

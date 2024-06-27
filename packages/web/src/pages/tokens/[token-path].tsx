@@ -18,6 +18,7 @@ import SEOHeader from "@components/common/seo-header/seo-header";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { toPriceFormat } from "@utils/number-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function Token() {
   const { isLoading } = useLoading();
@@ -60,17 +61,51 @@ export default function Token() {
     currentPrice, {
     usd: true,
     isRounding: false,
-    fixedLessThan1Decimal: 3,
   }), [currentPrice]);
 
   const wrappedToken = useMemo(() => getGnotPath(token), [getGnotPath, token]);
 
+  const seoInfo = useMemo(() => SEOInfo["token/[token-path]"], []);
+
+  const title = useMemo(() => {
+    if (currentPrice && token) {
+      return `${price} | ${wrappedToken?.name}(${wrappedToken?.symbol})`;
+    }
+
+    return seoInfo.title([
+      currentPrice ? price : undefined,
+      token ? wrappedToken.name : undefined,
+      token ? wrappedToken.symbol : undefined,
+    ].filter(item => item));
+  }, [currentPrice, price, seoInfo, token, wrappedToken.name, wrappedToken.symbol]);
+
+  const ogTitle = useMemo(
+    () => seoInfo.ogTitle?.([
+      token ? wrappedToken?.name : undefined,
+      token ? wrappedToken?.symbol : undefined,
+    ].filter(item => item)
+    ), [
+    seoInfo,
+    token,
+    wrappedToken?.name,
+    wrappedToken?.symbol
+  ]);
+  const ogDesc = useMemo(
+    () => seoInfo.ogDesc?.([
+      token ? wrappedToken?.symbol : undefined,
+    ].filter(item => item)
+    ), [
+    seoInfo,
+    token,
+    wrappedToken?.symbol
+  ]);
+
   return (
     <>
       <SEOHeader
-        title={`${price} | ${wrappedToken?.name}(${wrappedToken?.symbol})`}
-        pageDescription={`Buy or Sell ${wrappedToken.symbol} on Gnoswap.`}
-        ogDescription={`Buy or Sell ${wrappedToken.symbol} on Gnoswap.`}
+        title={title}
+        ogTitle={ogTitle}
+        pageDescription={ogDesc}
       />
       <TokenLayout
         header={<HeaderContainer />}

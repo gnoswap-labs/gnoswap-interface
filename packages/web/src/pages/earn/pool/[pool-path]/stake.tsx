@@ -13,6 +13,7 @@ import { DeviceSize } from "@styles/media";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function Earn() {
   const { width } = useWindowSize();
@@ -50,27 +51,32 @@ export default function Earn() {
   }, [data?.fee]);
 
 
-  const poolInfoText = useMemo(
-    () => `Stake Position to ${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB)?.symbol} ${feeStr || "0"}`,
-    [
-      data?.tokenA,
-      data?.tokenB,
-      feeStr,
-      getGnotPath
-    ]
-  );
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/stake"], []);
 
   const title = useMemo(() => {
-    if (data) return `${poolInfoText}`;
+    const tokenA = getGnotPath(data?.tokenA);
+    const tokenB = getGnotPath(data?.tokenB);
 
-    return "Stake Position";
-  }, [data, poolInfoText]);
+    return seoInfo.title([
+      tokenA?.symbol,
+      tokenB?.symbol,
+      feeStr
+    ].filter(item => item) as string[]);
+  }, [
+    data?.tokenA,
+    data?.tokenB,
+    feeStr,
+    getGnotPath,
+    seoInfo
+  ]);
 
   return (
     <>
       <SEOHeader
         title={title}
-        pageDescription="Create your own positions and provide liquidity to earn staking rewards."
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
       />
       <StakePositionLayout
         header={<HeaderContainer />}

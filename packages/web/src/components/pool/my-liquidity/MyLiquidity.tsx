@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import MyLiquidityContent from "@components/pool/my-liquidity-content/MyLiquidityContent";
 import MyLiquidityHeader from "@components/pool/my-liquidity-header/MyLiquidityHeader";
 import { PoolDivider, MyLiquidityWrapper, MyLiquidityWrapperAnchor } from "./MyLiquidity.styles";
@@ -12,6 +12,7 @@ interface MyLiquidityProps {
   addressName: string;
   isOtherPosition: boolean;
   positions: PoolPositionModel[]
+  closedPosition: PoolPositionModel[]
   breakpoint: DEVICE_TYPE;
   connected: boolean;
   isSwitchNetwork: boolean;
@@ -53,7 +54,13 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isHiddenAddPosition,
   showClosePositionButton,
   tokenPrices,
+  closedPosition
 }) => {
+  const showedPosition = useMemo(() => [
+    ...positions,
+    ...(isShowClosePosition ? closedPosition : [])
+  ], [closedPosition, isShowClosePosition, positions]);
+
   return (
     <>
       <MyLiquidityWrapper>
@@ -64,7 +71,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             connectedWallet={connected}
             address={address}
             addressName={addressName}
-            positionLength={positions.length}
+            positionLength={showedPosition.length}
             isShowRemovePositionButton={isShowRemovePositionButton}
             handleClickAddPosition={handleClickAddPosition}
             handleClickRemovePosition={handleClickRemovePosition}
@@ -88,23 +95,25 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
         </div>
         {positions.length > 0 && <PoolDivider />}
         {breakpoint !== DEVICE_TYPE.MOBILE ? (
-          positions.map((position: PoolPositionModel, index: number) => (
-            <MyPositionCard
-              position={position}
-              key={index.toString() + position.id}
-              breakpoint={breakpoint}
-              loading={loading}
-              address={address || ""}
-              isHiddenAddPosition={isHiddenAddPosition}
-              connected={connected}
-              tokenPrices={tokenPrices}
-            />
-          ))
+          <>
+            {showedPosition.map((position: PoolPositionModel, index: number) => (
+              <MyPositionCard
+                position={position}
+                key={index.toString() + position.id}
+                breakpoint={breakpoint}
+                loading={loading}
+                address={address || ""}
+                isHiddenAddPosition={isHiddenAddPosition}
+                connected={connected}
+                tokenPrices={tokenPrices}
+              />
+            ))}
+          </>
         ) : (
           <>
             <div className="slider-wrap clearfix" ref={divRef} onScroll={onScroll}>
               <div className={"box-slider full-width"}>
-                {positions.map((position: PoolPositionModel, index: number) => (
+                {showedPosition.map((position: PoolPositionModel, index: number) => (
                   <MyPositionCard
                     position={position}
                     key={index.toString() + position.id}
@@ -118,10 +127,10 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                 ))}
               </div>
             </div>
-            {positions.length > 1 && <div className="box-indicator">
+            {showedPosition.length > 1 && <div className="box-indicator">
               <span className="current-page">{currentIndex}</span>
               <span>/</span>
-              <span>{positions.length}</span>
+              <span>{showedPosition.length}</span>
             </div>}
           </>
         )}

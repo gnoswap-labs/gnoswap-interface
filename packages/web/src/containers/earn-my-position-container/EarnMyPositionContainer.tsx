@@ -17,7 +17,6 @@ import { ValuesType } from "utility-types";
 import { useAtom, useAtomValue } from "jotai";
 import { EarnState, ThemeState } from "@states/index";
 import { useGetUsernameByAddress } from "@query/address/queries";
-import { PositionModel } from "@models/position/position-model";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -109,12 +108,11 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, [router]);
 
   const movePoolDetail = useCallback(
-    (id: string) => {
-      let query = "";
-      if (address && address.length > 0) {
-        query = `?addr=${address}`;
-      }
-      router.push(`/earn/pool/${id}${query}`);
+    (poolId: string, positionId: string) => {
+      const query = address && address.length > 0 ? `?addr=${address}` : "";
+      const positionHash = `#${positionId}`;
+
+      router.push(`/earn/pool/${poolId}${query}${positionHash}`);
     },
     [router, address],
   );
@@ -146,41 +144,47 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     setIsViewMorePositions(!isViewMorePositions);
   }, [isViewMorePositions]);
 
-  const dataMapping = useMemo(() => {
-    let temp = positions;
-    if (!isClosed) {
-      temp = positions.filter((_: PositionModel) => _.closed === false);
-    }
-    temp = temp.sort(
+  const openPosition = useMemo(() => {
+    return positions.filter(item => !item.closed).sort(
       (x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue),
     );
+  }, [positions]);
+
+  const closedPosition = useMemo(() => {
+    return positions.filter(item => item.closed);
+  }, [positions]);
+
+  const showedPosition = useMemo(() => {
+    return [
+      ...openPosition,
+      ...(isClosed ? closedPosition : [])
+    ];
+  }, [closedPosition, isClosed, openPosition]);
+
+  const dataMapping = useMemo(() => {
     if (!isViewMorePositions) {
       if (width > 1180) {
-        return temp.slice(0, 4);
-      } else if (width > 920) {
-        return temp.slice(0, 3);
-      } else return temp;
-    } else return temp;
-  }, [positions, isClosed, isViewMorePositions, width]);
+        return showedPosition.slice(0, 4);
+      }
+      if (width > 920) {
+        return showedPosition.slice(0, 3);
+      }
+    }
+    return showedPosition;
+  }, [isViewMorePositions, width, showedPosition]);
 
   const handleChangeClosed = () => {
     setIsClosed(!isClosed);
   };
 
-  const allPositionLength = useMemo(() => positions.length, [positions]);
-  const openPositionLength = useMemo(
-    () => positions.filter((_: PositionModel) => _.closed === false).length,
-    [positions],
-  );
-
   const visiblePositions = useMemo(() => {
-    const noClosedPosition = positions.every(item => !item.closed);
+    const noClosedPosition = closedPosition.length <= 0;
 
     if ((!connected && !address) || noClosedPosition) {
       return false;
     }
     return true;
-  }, [address, connected, positions]);
+  }, [address, closedPosition.length, connected]);
 
   const highestApr = useMemo(() => {
     return pools.reduce((acc, current) => {
@@ -197,7 +201,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       addressName={addressName}
       isOtherPosition={!!isOtherPosition}
       visiblePositions={visiblePositions}
-      positionLength={isClosed ? allPositionLength : openPositionLength}
+      positionLength={showedPosition.length}
       connected={connected}
       availableStake={availableStake}
       connect={connect}

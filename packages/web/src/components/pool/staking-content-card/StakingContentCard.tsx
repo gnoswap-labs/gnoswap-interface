@@ -1,4 +1,3 @@
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconCheck from "@components/common/icons/IconCheck";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconLine from "@components/common/icons/IconLine";
@@ -25,6 +24,9 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { PositionModel } from "@models/position/position-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import BigNumber from "bignumber.js";
+import IconStar from "@components/common/icons/IconStar";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -44,6 +46,8 @@ const PriceTooltipContent = ({
   positions: PoolPositionModel[];
   period: number;
 }) => {
+  const { getGnotPath } = useGnotToGnot();
+
   const getRemainTime = useCallback(
     (position: PositionModel) => {
       const stakedTime = new Date(position.stakedAt).getTime();
@@ -61,10 +65,12 @@ const PriceTooltipContent = ({
         return (
           <React.Fragment key={index}>
             <div className="list list-logo">
-              <DoubleLogo
+              <OverlapTokenLogo
+                tokens={[
+                  { ...position.pool.tokenA, ...getGnotPath(position.pool.tokenA) },
+                  { ...position.pool.tokenB, ...getGnotPath(position.pool.tokenB) },
+                ]}
                 size={18}
-                left={position.pool.tokenA.logoURI}
-                right={position.pool.tokenB.logoURI}
               />
               <span className="title">ID #{position.lpTokenId}</span>
             </div>
@@ -139,26 +145,28 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
     return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
   }, [positionRewards, tokenPrices]);
 
+  const aprNumber = useMemo(
+    () => BigNumber(stakingApr)
+      .multipliedBy(STAKING_PERIOD_INFO[period].rate),
+    [period, stakingApr]);
+
   const aprStr = useMemo(() => {
-    const periodStakingApr = BigNumber(stakingApr)
-      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
-      .toFormat(0);
+    const periodStakingApr = aprNumber.toFormat(0);
     return `${periodStakingApr}% APR`;
-  }, [period, stakingApr]);
+  }, [aprNumber]);
 
   return (
     <StakingContentCardWrapper nonTotal={!hasPosition}>
       <div className="left">
         <div className="mobile-wrap">
           <div
-            className={`check-wrap ${
-              !checkedStep ? "check-wrap-not-active" : ""
-            }`}
+            className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""
+              }`}
           >
             {checkedStep && <IconCheck />}
 
             {breakpoint === DEVICE_TYPE.MOBILE ||
-            breakpoint === DEVICE_TYPE.TABLET_M ? (
+              breakpoint === DEVICE_TYPE.TABLET_M ? (
               <div className="check-line-long">
                 {checkedStep ? (
                   <IconLineLong />
@@ -254,7 +262,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
             </SkeletonEarnDetailWrapper>
           )}
           {!loading && (
-            <div className="apr">
+            <div className="apr small-gap">
+              {aprNumber.isGreaterThan(100) && <IconStar />}
               <span className="apr-text">{aprStr}</span>
             </div>
           )}
@@ -320,21 +329,24 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
     return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
   }, [positionRewards, tokenPrices]);
 
+  const aprNumber = useMemo(
+    () => BigNumber(stakingApr)
+      .multipliedBy(STAKING_PERIOD_INFO[period].rate),
+    [period, stakingApr]
+  );
+
   const aprStr = useMemo(() => {
-    const periodStakingApr = BigNumber(stakingApr)
-      .multipliedBy(STAKING_PERIOD_INFO[period].rate)
-      .toFormat(0);
+    const periodStakingApr = aprNumber.toFormat(0);
     return `${periodStakingApr}% APR`;
-  }, [period, stakingApr]);
+  }, [aprNumber]);
 
   return (
     <StakingContentCardWrapper nonTotal={!hasPosition}>
       <div className="left">
         <div className="mobile-wrap">
           <div
-            className={`check-wrap ${
-              !checkedStep ? "check-wrap-not-active" : ""
-            }`}
+            className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""
+              }`}
           >
             {checkedStep && <IconCheck />}
           </div>
@@ -416,7 +428,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
             </SkeletonEarnDetailWrapper>
           )}
           {!loading && (
-            <div className="apr">
+            <div className="apr small-gap">
+              {aprNumber.isGreaterThan(100) && <IconStar />}
               <span className="apr-gd-text">{aprStr}</span>
             </div>
           )}

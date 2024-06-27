@@ -6,14 +6,19 @@ import VolumeChartContainer from "@containers/volume-chart-container/VolumeChart
 import DashboardInfoContainer from "@containers/dashboard-info-container/DashboardInfoContainer";
 import DashboardActivitiesContainer from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
 import SEOHeader from "@components/common/seo-header/seo-header";
+import { SEOInfo } from "@constants/common.constant";
+import { useMemo } from "react";
 
 export default function Dashboard() {
+  const seoInfo = useMemo(() => SEOInfo["/dashboard"], []);
+
   return (
     <>
       <SEOHeader
-        title={"Dashboard | Gnoswap"}
-        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
-        ogDescription="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity."
+        title={seoInfo.title()}
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo.ogTitle?.()}
+        ogDescription={seoInfo.ogDesc?.()}
       />
       <DashboardLayout
         header={<HeaderContainer />}

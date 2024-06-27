@@ -32,9 +32,12 @@ export const wrapper = (theme: Theme) => css`
     flex: 1;
     min-width: 60px;
   }
-  .tvl,
-  .apr {
+  .tvl {
     text-align: right;
+  }
+  .apr {
+    ${mixins.flexbox("flex", "center", "flex-end")}
+    gap: 4px;
   }
 
   ul {

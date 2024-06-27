@@ -9,6 +9,8 @@ import { TokenModel } from "@models/token/token-model";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 import dayjs from "dayjs";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface PoolIncentivizeDetailsProps {
   details: PoolSelectItemInfo | null;
@@ -31,6 +33,8 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   amount,
   token,
 }) => {
+  const { getGnotPath } = useGnotToGnot();
+
   return (
     <div css={wrapper}>
       <section>
@@ -52,10 +56,10 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
       <section>
         <h5 className="section-title">Total Amount</h5>
         {amount && token ? <div className="section-info">
-          <img
-            src={token.logoURI}
-            alt="token-logo"
-            className="token-logo"
+          <MissingLogo
+            symbol={getGnotPath(token)?.symbol}
+            width={24}
+            url={getGnotPath(token)?.logoURI || ""}
           />
           <span className="total-amount-value">{Number(amount).toLocaleString()} {token.symbol}</span>
         </div> : <div className="section-info">-</div>}

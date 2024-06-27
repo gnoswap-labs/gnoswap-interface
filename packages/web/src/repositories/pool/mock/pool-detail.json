@@ -26,7 +26,7 @@
       "priceID": "gno.land/r/foo"
     },
     "incentiveType": "INCENTIVIZED",
-    "tvl": 1182782.0,
+    "tvl": "1182782.0",
     "tvlChange": 118278200.0,
     "volume24h": 1182797.0,
     "volumeChange": 118279700.0,

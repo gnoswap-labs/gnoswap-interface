@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
@@ -28,10 +28,11 @@ import { useGetLazyPositionBins } from "@query/positions";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import IconStar from "../icons/IconStar";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
-  movePoolDetail: (id: string) => void;
+  movePoolDetail: (poolId: string, positionId: string) => void;
   mobile: boolean;
   currentIndex?: number;
   themeKey: "dark" | "light";
@@ -58,6 +59,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isHiddenStart] = useState(false);
   const [viewMyRange, setViewMyRange] = useState(false);
   const [isMouseoverGraph, setIsMouseoverGraph] = useState(false);
+  const [shortenInRange, setShortenInRange] = useState(false);
 
   const { data: bins40, isFetched: isFetchedBins } = useGetLazyPositionBins(
     position.lpTokenId,
@@ -122,6 +124,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
+    if (Number(position.apr) > 100) {
+      return <>
+        <IconStar size={20} />{numberToRate(position.apr)}
+      </>;
+    }
+
     return numberToRate(position.apr);
   }, [position.apr]);
 
@@ -329,6 +337,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     });
   }, [position.reward, tokenPrices]);
 
+  const boxHeaderId = useMemo(() => position.id + "-box-header", [position.id]);
+
+  useLayoutEffect(() => {
+    const titleElement = document.getElementById(boxHeaderId);
+    setShortenInRange((titleElement?.clientWidth || 0) > 210);
+  }, [inRange, boxHeaderId]);
+
   return (
     <MyPositionCardWrapperBorder
       className={`${position.staked && inRange !== null ? "special-card" : ""}`}
@@ -337,12 +352,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       <div className="base-border">
         <MyPositionCardWrapper
           staked={position.staked}
-          onClick={() => movePoolDetail(pool.id)}
+          onClick={() => movePoolDetail(pool.id, position.id)}
           viewMyRange={viewMyRange}
           disabled={inRange === null}
         >
           <div className="title-wrapper">
-            <div className="box-header">
+            <div id={boxHeaderId} className="box-header">
               <DoubleLogo
                 left={tokenA.logoURI}
                 right={tokenB.logoURI}
@@ -356,7 +371,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </div>
             </div>
             <RangeBadge
+              isClosed={position.closed}
               className={inRange === null ? "disabled-range" : ""}
+              isShorten={shortenInRange}
               status={
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
@@ -373,7 +390,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="list-content">
               <span>{positionUsdValueStr}</span>
-              {aprStr}
+              <span className="apr-value">{aprStr}</span>
             </div>
             <div className="list-header mt-4">
               <span className="label-text">{POSITION_CONTENT_LABEL.DAILY}</span>

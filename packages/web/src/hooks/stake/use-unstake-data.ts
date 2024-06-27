@@ -1,5 +1,7 @@
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenModel } from "@models/token/token-model";
 import { numberToUSD } from "@utils/number-utils";
 import { useMemo } from "react";
 
@@ -9,6 +11,7 @@ export interface UnstakeDataProps {
 
 export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
   const { tokenPrices } = useTokenData();
+  const { getGnotPath } = useGnotToGnot();
 
   const pooledTokenInfos = useMemo(() => {
     if (positions.length === 0) {
@@ -48,43 +51,46 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     if (positions.length === 0) {
       return [];
     }
-    const tokenA = positions[0].pool.tokenA;
-    const tokenB = positions[0].pool.tokenB;
-    const tokenAData = positions
-      .filter(item => item.pool.tokenA.path === tokenA.path)
+
+    return positions
       .flatMap(item => item.reward)
-      .reduce(
-        (accum, reward) => ({
-          tokenAmount: accum.tokenAmount + Number(reward.claimableAmount),
-          tokenUsd: accum.tokenUsd + Number(reward.claimableUsd)
-        }),
-        { tokenAmount: 0, tokenUsd: 0 },
-      );
-    const tokenBData = positions
-      .filter(item => item.pool.tokenB.path === tokenB.path)
-      .flatMap(item => item.reward)
-      .reduce(
-        (accum, reward) => ({
-          tokenAmount: accum.tokenAmount + Number(reward.claimableAmount),
-          tokenUsd: accum.tokenUsd + Number(reward.claimableUsd)
-        }),
-        { tokenAmount: 0, tokenUsd: 0 },
-      );
-    return [
-      {
-        token: tokenA,
-        amount: tokenAData.tokenAmount,
-        amountUSD: numberToUSD(tokenAData.tokenUsd),
-        rawAmountUsd: tokenBData.tokenUsd,
-      },
-      {
-        token: tokenB,
-        amount: tokenBData.tokenAmount,
-        amountUSD: numberToUSD(tokenBData.tokenUsd),
-        rawAmountUsd: tokenBData.tokenUsd,
-      },
-    ];
-  }, [positions]);
+      .filter(item => item.rewardType === "EXTERNAL" || item.rewardType === "INTERNAL")
+      .reduce((acc, current) => {
+        const currentToken = current.rewardToken;
+        const checkGnotToken = getGnotPath(currentToken);
+
+        const existedData = acc.findIndex(item => item.token.priceID === currentToken.priceID);
+
+        if (existedData === -1) {
+          return [
+            ...acc,
+            {
+              token: {
+                ...currentToken,
+                ...checkGnotToken,
+              },
+              amount: Number(current.claimableAmount),
+              rawAmountUsd: Number(current.claimableUsd),
+              amountUSD: numberToUSD(Number(current.claimableUsd) ?? 0)
+            }
+          ];
+        }
+
+        acc[existedData] = {
+          ...acc[existedData],
+          amount: acc[existedData].amount + Number(current.claimableAmount),
+          rawAmountUsd: acc[existedData].rawAmountUsd + Number(current.claimableUsd),
+          amountUSD: numberToUSD(Number(acc[existedData].rawAmountUsd + Number(current.claimableUsd)) ?? 0)
+        };
+
+        return acc;
+      }, [] as {
+        token: TokenModel,
+        amount: number,
+        rawAmountUsd: number,
+        amountUSD: string,
+      }[]);
+  }, [getGnotPath, positions]);
 
   const totalLiquidityUSD = useMemo(() => {
     if (positions.length === 0) {

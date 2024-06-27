@@ -10,6 +10,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import SEOHeader from "@components/common/seo-header/seo-header";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function PoolIncentivize() {
   const [currentPool] = useAtom(EarnState.pool);
@@ -30,27 +31,31 @@ export default function PoolIncentivize() {
   }, [currentPool?.fee]);
 
 
-  const poolInfoText = useMemo(
-    () => `${getGnotPath(currentPool?.tokenA).symbol}/${getGnotPath(currentPool?.tokenB)?.symbol} ${feeStr || "0"}`,
-    [
-      currentPool?.tokenA,
-      currentPool?.tokenB,
-      feeStr,
-      getGnotPath
-    ]
-  );
+  const seoInfo = useMemo(() => SEOInfo["/earn/incentivize"], []);
 
   const title = useMemo(() => {
-    if (currentPool) return `Incentivize ${poolInfoText}`;
+    const tokenA = getGnotPath(currentPool?.tokenA);
+    const tokenB = getGnotPath(currentPool?.tokenB);
 
-    return "Incentivize Gnoswap Pools";
-  }, [currentPool, poolInfoText]);
-
+    return seoInfo.title([
+      tokenA?.symbol,
+      tokenB?.symbol,
+      feeStr
+    ].filter(item => item) as string[]);
+  }, [
+    currentPool?.tokenA,
+    currentPool?.tokenB,
+    feeStr,
+    getGnotPath,
+    seoInfo
+  ]);
   return (
     <>
       <SEOHeader
         title={title}
-        pageDescription="Add incentives to pools for liquidity providers to bootstrap liquidity. "
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
       />
       <PoolIncentivizeLayout
         header={<HeaderContainer />}

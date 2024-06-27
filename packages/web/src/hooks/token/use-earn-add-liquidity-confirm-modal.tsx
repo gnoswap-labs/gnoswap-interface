@@ -89,7 +89,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     broadcastError,
   } = useBroadcastHandler();
   const router = useRouter();
-  const { tokens } = useTokenData();
+  const { tokens, displayBalanceMap } = useTokenData();
   const { data: creationFee, refetch: refetchGetPoolCreationFee } =
     useGetPoolCreationFee({});
 
@@ -259,14 +259,32 @@ export const useEarnAddLiquidityConfirmModal = ({
 
   const gnsToken = tokens.find(item => item.priceID === GNS_TOKEN_PATH);
 
-  const feeInfo = useMemo((): { token?: TokenModel; fee: string } => {
+  const feeInfo = useMemo((): { token?: TokenModel; fee: string; errorMsg?: string } => {
     return {
       token: gnsToken,
       fee: gnsToken
         ? `${makeDisplayTokenAmount(gnsToken, creationFee || 0)}`
         : "",
+      errorMsg: (() => {
+        if (!gnsToken) return;
+
+        let totalGnsAmount = makeDisplayTokenAmount(gnsToken, creationFee || 0) || 0;
+        const gnsBalance = displayBalanceMap[gnsToken?.priceID ?? ""] || 0;
+
+        if (tokenA?.priceID === GNS_TOKEN_PATH) {
+          totalGnsAmount += Number(tokenAAmount);
+        }
+
+        if (tokenB?.priceID === GNS_TOKEN_PATH) {
+          totalGnsAmount += Number(tokenBAmount);
+        }
+
+        if (totalGnsAmount > gnsBalance) {
+          return "Insufficient balance";
+        }
+      })()
     };
-  }, [creationFee, gnsToken]);
+  }, [creationFee, displayBalanceMap, gnsToken, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const close = useCallback(() => {
     setOpenedModal(false);

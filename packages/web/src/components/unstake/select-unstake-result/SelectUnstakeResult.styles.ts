@@ -34,7 +34,6 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
     height: 39px;
     ${mixins.flexbox("column", "flex-end", "center")};
-    /* gap: 5px; */
     .main-info {
       width: 100%;
       height: 24px;
@@ -52,7 +51,7 @@ export const wrapper = (theme: Theme) => css`
       }
     }
 
-    .dallor {
+    .dollar-value {
       ${fonts.p4}
       color: ${theme.color.text04}
     }
@@ -61,7 +60,7 @@ export const wrapper = (theme: Theme) => css`
   .result-section {
     ${mixins.flexbox("column", "center", "center")};
     color: ${theme.color.text02};
-    ${fonts.body12}
+    ${fonts.body9}
     .result-value {
       margin-left: auto;
     }
@@ -81,7 +80,7 @@ export const wrapper = (theme: Theme) => css`
     }
     h5 {
       margin-right: 4px;
-      &.total-amount-title, &.apr-title {
+      &.total-amount-title{
         margin-right: 4px;
         color: ${theme.color.text04};
       }

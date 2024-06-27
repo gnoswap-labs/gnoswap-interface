@@ -431,7 +431,7 @@ export const useSwapHandler = () => {
   ]);
 
   const isAvailSwap = useMemo(() => {
-    return swapButtonState === "SWAP";
+    return swapButtonState === "SWAP" || swapButtonState === "WRAP";
   }, [swapButtonState]);
 
   const openConfirmModal = useCallback(() => {

@@ -35,6 +35,7 @@ interface Props {
   feeInfo: {
     token?: TokenModel;
     fee: string;
+    errorMsg?: string;
   };
   confirm: () => void;
   close: () => void;
@@ -51,6 +52,12 @@ const OneClickStakingModal: React.FC<Props> = ({
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
+
+  const onClickConfirm = useCallback(() => {
+    if (!feeInfo.errorMsg) {
+      confirm();
+    }
+  }, [confirm, feeInfo.errorMsg]);
 
   return (
     <OneClickStakingModalWrapper>
@@ -76,12 +83,13 @@ const OneClickStakingModal: React.FC<Props> = ({
           <div>
             <Button
               text="Confirm One-Click Staking"
+              disabled={!!feeInfo.errorMsg}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
               }}
               className="button-confirm"
-              onClick={confirm}
+              onClick={onClickConfirm}
             />
           </div>
         </div>

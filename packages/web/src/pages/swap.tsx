@@ -7,34 +7,30 @@ import SEOHeader from "@components/common/seo-header/seo-header";
 import { useAtom } from "jotai";
 import * as SwapState from "@states/swap";
 import { useMemo } from "react";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function Swap() {
   const [swapInfo] = useAtom(SwapState.swap);
 
-  const title = useMemo(() => {
+  const seoInfo = useMemo(() => SEOInfo["/swap"], []);
 
-    if (swapInfo.tokenA && swapInfo.tokenB) {
-      return `Swap ${swapInfo.tokenA.symbol} to ${swapInfo.tokenB.symbol} | Gnoswap`;
-    }
-
-    if (swapInfo.tokenA) {
-      return `Swap ${swapInfo.tokenA.symbol} | Gnoswap`;
-    }
-
-    return "Swap | Gnoswap";
-  }, [swapInfo.tokenA, swapInfo.tokenB]);
-
-  const ogTitle = useMemo(() => {
-    return "Gnoland(GNOT) | Gnoswap";
-  }, []);
+  const title = useMemo(() => seoInfo.title([
+    swapInfo.tokenA?.symbol,
+    swapInfo.tokenB?.symbol,
+  ].filter(item => item) as string[]
+  ), [
+    seoInfo,
+    swapInfo.tokenA?.symbol,
+    swapInfo.tokenB?.symbol
+  ]);
 
   return (
     <>
       <SEOHeader
         title={title}
-        ogTitle={ogTitle}
-        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
-        ogDescription="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity."
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo.ogTitle?.()}
+        ogDescription={seoInfo.ogDesc?.()}
       />
       <SwapLayout
         header={<HeaderContainer />}

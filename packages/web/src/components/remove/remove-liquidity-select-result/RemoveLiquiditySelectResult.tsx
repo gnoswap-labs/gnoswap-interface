@@ -15,7 +15,7 @@ const RemoveLiquiditySelectResult: React.FC<
 > = ({
   positions
 }) => {
-    const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } = useRemoveData({ positions });
+    const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } = useRemoveData({ selectedPosition: positions });
 
     if (positions.length === 0) return <></>;
 

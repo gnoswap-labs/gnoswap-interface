@@ -9,7 +9,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 interface StakingProps {
   totalApr: string;
-  positions: PoolPositionModel[];
+  stakedPosition: PoolPositionModel[];
   rewardTokens: TokenModel[];
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
@@ -24,7 +24,7 @@ interface StakingProps {
 
 const Staking: React.FC<StakingProps> = ({
   totalApr,
-  positions,
+  stakedPosition,
   rewardTokens,
   breakpoint,
   mobile,
@@ -45,14 +45,14 @@ const Staking: React.FC<StakingProps> = ({
           isDisabledButton={isDisabledButton}
           handleClickStakeRedirect={handleClickStakeRedirect}
           handleClickUnStakeRedirect={handleClickUnStakeRedirect}
-          isUnstake={positions.length > 0}
+          isUnstake={stakedPosition.length > 0}
           isOtherPosition={isOtherPosition}
           isStaked={(pool?.rewardTokens?.length || 0) > 0}
         />
         <StakingContent
           pool={pool}
           totalApr={totalApr}
-          positions={positions}
+          stakedPosition={stakedPosition}
           rewardTokens={rewardTokens}
           breakpoint={breakpoint}
           mobile={mobile}

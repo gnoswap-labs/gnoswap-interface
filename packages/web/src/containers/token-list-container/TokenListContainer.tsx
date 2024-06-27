@@ -296,25 +296,25 @@ const TokenListContainer: React.FC = () => {
               ? [Number(transferData?.pricesBefore?.latestPrice)]
               : [],
           ],
-          marketCap: `$${Math.floor(
+          marketCap: transferData.marketCap ? `$${Math.floor(
             Number(
               (isGnot
                 ? 1000000000 * Number(transferData.usd)
                 : transferData.marketCap) || 0,
             ),
-          ).toLocaleString()}`,
-          liquidity: `$${Math.floor(
+          ).toLocaleString()}` : "-",
+          liquidity: transferData.lockedTokensUsd ? `$${Math.floor(
             Number(transferData.lockedTokensUsd || 0),
-          ).toLocaleString()}`,
-          volume24h: `$${Math.floor(
+          ).toLocaleString()}` : "-",
+          volume24h: transferData.volumeUsd24h ? `$${Math.floor(
             Number(transferData.volumeUsd24h || 0),
-          ).toLocaleString()}`,
-          price: toPriceFormat(
+          ).toLocaleString()}` : "-",
+          price: transferData.usd ? toPriceFormat(
             transferData.usd, {
             usd: true,
             isRounding: false,
             fixedLessThan1Significant: 3,
-          }),
+          }) : "--",
           priceOf1d: {
             status: dataToday.status,
             value:
