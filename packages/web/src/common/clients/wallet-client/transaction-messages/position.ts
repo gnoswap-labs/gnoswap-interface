@@ -102,8 +102,8 @@ export function makePositionIncreaseLiquidityMessage(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
-      `${amount1Desired}`, // Maximum amount of tokenB to offer
       `${amount0Desired}`, // Maximum amount of tokenA to offer
+      `${amount1Desired}`, // Maximum amount of tokenB to offer
       `${amount0Min}`, // Minimum amount of tokenA to provide
       `${amount1Min}`, // Minimum amount of tokenB to provide
       "9999999999", // Deadline UTC time
