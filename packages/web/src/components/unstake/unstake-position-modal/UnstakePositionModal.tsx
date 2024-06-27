@@ -5,11 +5,14 @@ import IconClose from "@components/common/icons/IconCancel";
 import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
-import React, { useCallback } from "react";
-import { Divider, ToolTipContentWrapper, UnstakePositionModalWrapper } from "./UnstakePositionModal.styles";
+import React, { useCallback, useMemo } from "react";
+import { Divider, ToolTipContentWrapper, UnstakePositionModalWrapper, UnstakeWarningContentWrapper } from "./UnstakePositionModal.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
+import WarningCard from "@components/common/warning-card/WarningCard";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import { numberToRate } from "@utils/string-utils";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -22,6 +25,43 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
+
+  const currentPercent = useMemo(() => {
+    const result = positions
+      .flatMap(
+        ({ reward, usdValue }) => reward
+          .map((item) => ({ ...item, usdValue: usdValue }))
+      ).reduce((acc, current) => {
+        return {
+          unstakeUsd: acc.unstakeUsd + (Number(current.apr || 0) * Number(current.usdValue)),
+          allUsd: acc.allUsd + current.usdValue
+        };
+      }, {
+        unstakeUsd: 0,
+        allUsd: 0,
+      }) ?? 0;
+
+    return numberToRate(result.unstakeUsd / result.allUsd);
+  }, [positions]);
+
+  const swapFeePercent = useMemo(() => {
+    const result = positions
+      .flatMap(
+        ({ reward, usdValue }) => reward
+          .map((item) => ({ ...item, usdValue: usdValue }))
+          .filter(item => item.rewardType === "SWAP_FEE")
+      ).reduce((acc, current) => {
+        return {
+          unstakeUsd: acc.unstakeUsd + (Number(current.apr || 0) * Number(current.usdValue)),
+          allUsd: acc.allUsd + current.usdValue
+        };
+      }, {
+        unstakeUsd: 0,
+        allUsd: 0,
+      }) ?? 0;
+
+    return numberToRate(result.unstakeUsd / result.allUsd);
+  }, [positions]);
 
   return (
     <UnstakePositionModalWrapper>
@@ -54,7 +94,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
               ))}
             </div>
           </div>
-          <div className="box-item box-item-unclaim">
+          {unclaimedRewards.length > 0 && <div className="box-item box-item-unclaim">
             <h4>Unclaimed Rewards</h4>
             <div className="item-content">
               {unclaimedRewards.map((rewardInfo, index) => (
@@ -88,7 +128,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
           <Divider />
           <div className="box-item">
             <div className="item-content">
@@ -100,6 +140,13 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
               </div>
             </div>
           </div>
+          <WarningCard
+            title={"Important Note"}
+            icon={<IconCircleExclamationMark />}
+            content={<UnstakeWarningContentWrapper>
+              Your APR will reduce from  {currentPercent} → <span className="unstake-percent">{swapFeePercent}</span>
+            </UnstakeWarningContentWrapper>}
+          />
           <div>
             <Button
               text="Confirm Unstake Position"

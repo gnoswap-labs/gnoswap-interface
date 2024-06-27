@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import IconGnoswap404 from "@components/common/icons/IconGnoswap404";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
@@ -7,17 +7,22 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import SEOHeader from "@components/common/seo-header/seo-header";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function Custom404() {
   const router = useRouter();
   const goBackClick = () => router.back();
   const themeKey = useAtomValue(ThemeState.themeKey);
 
+  const seoInfo = useMemo(() => SEOInfo["/404"], []);
+
   return (
     <>
       <SEOHeader
-        title={"404: Page Not Found!"}
-        pageDescription=""
+        title={seoInfo.title()}
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo.ogTitle?.()}
+        ogDescription={seoInfo.ogDesc?.()}
       />
       <Custom404Layout
         header={<HeaderContainer />}

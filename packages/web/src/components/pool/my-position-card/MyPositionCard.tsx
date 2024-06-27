@@ -127,7 +127,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getTokenPrice, position.tokenBBalance, tokenB]);
 
   const positionBalanceUSD = useMemo(() => {
-    if (isClosed) {
+    if (isClosed || !position.positionUsdValue) {
       return "-";
     }
     if (
@@ -206,8 +206,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             claimableAmount:
               accum[current.rewardType][index].claimableAmount +
               current.claimableAmount,
-            claimableUSD: accum[current.rewardType][index].claimableUSD + 1,
-            accumulatedRewardOf1dUsd:
+            claimableUSD: accum[current.rewardType][index].claimableUSD ?? 0 + Number(current.claimableUsd),
+            accumulatedRewardOf1dUsd: accum[current.rewardType][index].accumulatedRewardOf1dUsd +
               Number(current.accuReward1D ?? 0) *
               Number(getTokenPrice(current.rewardToken.priceID) ?? 0),
           };
@@ -247,15 +247,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getTokenPrice, position.reward]);
 
   const totalRewardUSD = useMemo(() => {
-    if (isClosed) {
+    const isEmpty = !position.reward
+      || position.reward.length === 0
+      || position.reward.every(item => item.claimableUsd);
+
+    if (isClosed || isEmpty) {
       return "-";
     }
-    const reward = position.reward;
-    if (reward.length === 0 || !reward) {
-      return "$0";
-    }
 
-    const usdValue = reward.reduce<number>(
+    const usdValue = position.reward.reduce<number>(
       (acc, current) => acc + Number(current.claimableUsd),
       0,
     );
@@ -271,11 +271,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [isClosed, position.reward]);
 
   const totalDailyEarning = useMemo(() => {
-    if (isClosed) {
+    const isEmpty = !totalRewardInfo
+      || position.reward.length === 0
+      || position.reward.every(item => !item.accuReward1D);
+
+    if (isClosed || isEmpty) {
       return "-";
-    }
-    if (!totalRewardInfo) {
-      return "$0";
     }
 
     const totalDailyEarningValue = Object.values(totalRewardInfo)
@@ -290,7 +291,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       isRounding: false,
       fixedLessThan1Decimal: 2,
     });
-  }, [isClosed, totalRewardInfo]);
+  }, [isClosed, position.reward, totalRewardInfo]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
     useMemo(() => {

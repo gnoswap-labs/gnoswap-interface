@@ -5,6 +5,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useState, useMemo } from "react";
 import { encryptId } from "@utils/common";
+import { useGetPoolDetailByPath } from "@query/pools";
 
 const StakePositionContainer: React.FC = () => {
   const router = useRouter();
@@ -20,6 +21,9 @@ const StakePositionContainer: React.FC = () => {
     queryOption: {
       enabled: !!poolPath
     }
+  });
+  const { data: poolDetail } = useGetPoolDetailByPath(poolPath, {
+    enabled: !!poolPath
   });
   const [checkedList, setCheckedList] = useState<string[]>([]);
   // For this domain only show `closed = false` && `staked = false` position
@@ -82,6 +86,7 @@ const StakePositionContainer: React.FC = () => {
       isEmpty={isEmpty}
       isLoading={isLoadingAllPositions}
       connected={connected}
+      pool={poolDetail}
     />
   );
 };

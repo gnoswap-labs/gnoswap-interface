@@ -13,7 +13,7 @@ interface MyPositionCardListProps {
   onClickLoadMore?: () => void;
   positions: PoolPositionModel[];
   currentIndex: number;
-  movePoolDetail: (id: string) => void;
+  movePoolDetail: (poolId: string, positionId: string) => void;
   mobile: boolean;
   divRef?: React.RefObject<HTMLDivElement>;
   onScroll?: () => void;

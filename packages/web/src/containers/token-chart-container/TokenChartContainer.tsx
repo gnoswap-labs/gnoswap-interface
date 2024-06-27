@@ -195,7 +195,8 @@ const TokenChartContainer: React.FC = () => {
   });
 
 
-  const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
+  const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon || path);
+
   useEffect(() => {
     if (tokenB) {
       const dataToday = checkPositivePrice(

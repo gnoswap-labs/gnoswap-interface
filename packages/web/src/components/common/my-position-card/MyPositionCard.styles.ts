@@ -47,20 +47,20 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
   }
   &:hover {
     box-shadow: ${({ viewMyRange }) => {
-      return !viewMyRange ? "8px 8px 20px rgba(0, 0, 0, 0.08)" : "none";
-    }};
+    return !viewMyRange ? "8px 8px 20px rgba(0, 0, 0, 0.08)" : "none";
+  }};
     .base-border {
       > div {
         background-color: ${({ theme, viewMyRange }) => {
-          return viewMyRange ? "none" : theme.color.background02;
-        }};
+    return viewMyRange ? "none" : theme.color.background02;
+  }};
       }
     }
   }
   &:before {
     display: ${({ viewMyRange }) => {
-      return !viewMyRange ? "none" : "block";
-    }};
+    return !viewMyRange ? "none" : "block";
+  }};
     position: absolute;
     content: "";
     top: 0;
@@ -97,12 +97,12 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   cursor: pointer;
   &:hover {
     background-color: ${({ viewMyRange, theme }) => {
-      return viewMyRange ? "none" : theme.color.background02;
-    }};
+    return viewMyRange ? "none" : theme.color.background02;
+  }};
     border: 1px solid
       ${({ viewMyRange, theme }) => {
-        return viewMyRange ? "none" : theme.color.border14;
-      }};
+    return viewMyRange ? "none" : theme.color.border14;
+  }};
   }
   .title-wrapper {
     ${mixins.flexbox("row", "center", "space-between")};
@@ -159,9 +159,14 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
       ${mixins.flexbox("row", "center", "space-between")};
       ${fonts.body9};
       width: 100%;
-      spam {
+      span {
         ${fonts.body9};
       }
+
+       & .apr-value {
+        ${mixins.flexbox("row", "center", "flex-end")};
+
+       }
     }
   }
 

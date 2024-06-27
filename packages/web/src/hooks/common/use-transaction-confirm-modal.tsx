@@ -31,12 +31,12 @@ export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalPro
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
 
-  const closeModal = useCallback(() => {
+  const closeModal = useCallback((isClear = false) => {
     setOpenedModal(false);
     setModalContent(null);
     setTransactionModalData(null);
-    props?.closeCallback?.();
-  }, [setModalContent, setOpenedModal, setTransactionModalData, transactionModalData]);
+    !isClear && props?.closeCallback?.();
+  }, [setModalContent, setOpenedModal, setTransactionModalData, transactionModalData, props]);
 
   const confirm = useCallback(() => {
     closeModal();
@@ -45,7 +45,7 @@ export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalPro
     if (transactionModalData?.callback) {
       transactionModalData?.callback();
     }
-  }, [closeModal, transactionModalData, account]);
+  }, [closeModal, transactionModalData, account, props]);
 
   const update = useCallback(
     (
@@ -83,11 +83,11 @@ export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalPro
     return () => {
       setModalContent(null);
     };
-  }, [closeModal, setModalContent, transactionModalData]);
+  }, [closeModal, confirm, setModalContent, transactionModalData]);
 
   useEffect(() => {
     return () => {
-      closeModal();
+      closeModal(true);
     };
   }, []);
 

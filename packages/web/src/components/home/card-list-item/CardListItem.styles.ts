@@ -66,12 +66,15 @@ export const ListItem = styled.li<{ upDown: UpDownType, disabled?: boolean }>`
     color: #596782;
   }
   .notation-value {
+    &.apr-value {
+      margin-left: 4px;
+    }
     font-weight: 700;
     color: ${({ theme, upDown }) => {
-      if (upDown === "up") return theme.color.green01;
-      if (upDown === "down") return theme.color.red01;
-      return theme.color.text01;
-    }};
+    if (upDown === "up") return theme.color.green01;
+    if (upDown === "down") return theme.color.red01;
+    return theme.color.text01;
+  }};
   }
 `;
 

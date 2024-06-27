@@ -10,6 +10,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import useRouter from "@hooks/common/use-custom-router";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { formatAddress } from "@utils/string-utils";
+import { SEOInfo } from "@constants/common.constant";
 
 
 
@@ -19,36 +20,15 @@ export default function Earn() {
   const addr = router?.query?.addr as string;
   const isOtherPosition = !!(addr && addr !== account?.address);
 
-  const title = useMemo(() => {
-    if (addr) {
-      return `${formatAddress(addr)} | Positions | Earn on Gnoswap`;
-    }
-
-    return "Earn | Gnoswap";
-  }, [addr]);
-
-  const description = useMemo(() => {
-    if (addr) {
-      return "Create your own positions and provide liquidity to earn trading fees.";
-    }
-
-    return "The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders.";
-  }, [addr]);
-
-  const ogDescription = useMemo(() => {
-    if (addr) {
-      return "Create your own positions and provide liquidity to earn trading fees.";
-    }
-
-    return "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.";
-  }, [addr]);
+  const seoInfo = useMemo(() => SEOInfo[addr ? "/earn?address" : "/earn"], [addr]);
 
   return (
     <>
       <SEOHeader
-        title={title}
-        pageDescription={description}
-        ogDescription={ogDescription}
+        title={seoInfo.title([addr ? formatAddress(addr) : undefined].filter(item => item) as string[])}
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
       />
       <EarnLayout
         header={<HeaderContainer />}

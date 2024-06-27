@@ -1,6 +1,7 @@
 import Footer from "@components/common/footer/Footer";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import Banner from "@components/home/banner/Banner";
+import { SEOInfo } from "@constants/common.constant";
 import GnoswapBrandContainer from "@containers/gnoswap-brand-container/GnoswapBrandContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import HighestAprsCardListContainer from "@containers/highest-aprs-card-list-container/HighestAprsCardListContainer";
@@ -9,14 +10,18 @@ import RecentlyAddedCardListContainer from "@containers/recently-added-card-list
 import TokenListContainer from "@containers/token-list-container/TokenListContainer";
 import TrendingCardListContainer from "@containers/trending-card-list-container/TrendingCardListContainer";
 import HomeLayout from "@layouts/home-layout/HomeLayout";
+import { useMemo } from "react";
 
 export default function Home() {
+  const seoInfo = useMemo(() => SEOInfo["/"], []);
+
   return (
     <>
       <SEOHeader
-        title="The One-stop Gnoland DeFi Platform | Gnoswap"
-        pageDescription="The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders."
-        ogDescription="Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity."
+        title={seoInfo.title()}
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo.ogTitle?.()}
+        ogDescription={seoInfo.ogDesc?.()}
       />
       <HomeLayout
         header={<HeaderContainer />}

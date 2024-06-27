@@ -20,10 +20,6 @@ export const wrapper = (theme: Theme) => css`
     .section-title {
       color: ${theme.color.text04};
     }
-    .token-logo {
-      width: 24px;
-      height: 24px;
-    }
     span {
       color: ${theme.color.text03};
     }

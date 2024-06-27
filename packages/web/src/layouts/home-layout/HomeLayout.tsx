@@ -8,6 +8,7 @@ import {
   TokensContainer,
   BannerContainer,
 } from "./HomeLayout.styles";
+import { getCanScrollUpId } from "@constants/common.constant";
 
 interface HomeLayoutProps {
   header: React.ReactNode;
@@ -31,8 +32,8 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
   tokenList,
   footer,
   banner,
-}) => (
-  <HomeLayoutWrapper>
+}) => {
+  return <HomeLayoutWrapper>
     {header}
     <HeroSection>
       <BrandContainer>
@@ -45,12 +46,12 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
         {recently}
       </CardContainer>
     </HeroSection>
-    <TokensSection>
+    <TokensSection id={getCanScrollUpId("token-list")}>
       <TokensContainer>{tokenList}</TokensContainer>
     </TokensSection>
     <BannerContainer>{banner}</BannerContainer>
     {footer}
-  </HomeLayoutWrapper>
-);
+  </HomeLayoutWrapper>;
+};
 
 export default HomeLayout;

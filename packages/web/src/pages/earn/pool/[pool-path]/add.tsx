@@ -12,16 +12,23 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
 import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+import { checkGnotPath } from "@utils/common";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { SEOInfo } from "@constants/common.constant";
 
 export default function EarnAdd() {
   const { width } = useWindowSize();
   const router = useRouter();
-  const poolPath = router.query["pool-path"] || "";
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
+  const poolPath = (router.query["pool-path"] || "") as string;
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
   });
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
+  const { tokens } = useTokenData();
 
   const listBreadcrumb = useMemo(() => {
     return [
@@ -38,19 +45,55 @@ export default function EarnAdd() {
     ];
   }, [data, width]);
 
+  const feeStr = useMemo(() => {
+    const feeTier = data?.fee;
+
+    if (!feeTier) {
+      return null;
+    }
+    return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
+  }, [data?.fee]);
+
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/add"], []);
+
+  const title = useMemo(() => {
+    const tokenAPath = data?.tokenA.path;
+    const tokenBPath = data?.tokenB.path;
+
+    const tokenA = getGnotPath(tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined);
+    const tokenB = getGnotPath(tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined);
+
+    return seoInfo.title([tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[]);
+  }, [
+    data?.tokenA.path,
+    data?.tokenB.path,
+    feeStr,
+    getGnotPath,
+    seoInfo,
+    tokens
+  ]);
+
   return (
-    <PoolAddLayout
-      header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoadingCommon || isLoading}
-        />
-      }
-      addLiquidity={<PoolAddLiquidityContainer />}
-      oneStaking={<OneClickStakingContainer />}
-      exchangeRateGraph={<ExchangeRateGraphContainer />}
-      footer={<Footer />}
-    />
+    <>
+      <SEOHeader
+        title={title}
+        pageDescription={seoInfo.desc()}
+        ogTitle={seoInfo?.ogTitle?.()}
+        ogDescription={seoInfo?.ogDesc?.()}
+      />
+      <PoolAddLayout
+        header={<HeaderContainer />}
+        breadcrumbs={
+          <BreadcrumbsContainer
+            listBreadcrumb={listBreadcrumb}
+            isLoading={isLoadingCommon || isLoading}
+          />
+        }
+        addLiquidity={<PoolAddLiquidityContainer />}
+        oneStaking={<OneClickStakingContainer />}
+        exchangeRateGraph={<ExchangeRateGraphContainer />}
+        footer={<Footer />}
+      />
+    </>
   );
 }

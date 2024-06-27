@@ -12,13 +12,16 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { checkGnotPath } from "@utils/common";
 import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 
 interface RemovePositionModalContainerProps {
-  positions: PoolPositionModel[];
+  selectedPosition: PoolPositionModel[];
+  allPosition: PoolPositionModel[];
 }
 
 const RemovePositionModalContainer = ({
-  positions,
+  selectedPosition,
+  allPosition,
 }: RemovePositionModalContainerProps) => {
   const { account } = useWallet();
   const { positionRepository } = useGnoswapContext();
@@ -31,25 +34,30 @@ const RemovePositionModalContainer = ({
     broadcastError,
     broadcastPending,
   } = useBroadcastHandler();
-  const { pooledTokenInfos } = useRemoveData({ positions });
+  const { pooledTokenInfos } = useRemoveData({ selectedPosition });
 
-  const close = useCallback(() => {
+  const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
-  }, [clearModal]);
+    router.push(router.asPath.replace("/remove", ""));
+  }, [clearModal, router]);
+
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    closeCallback: onCloseConfirmTransactionModal,
+  });
 
   const onSubmit = useCallback(async () => {
     const address = account?.address;
     if (!address) {
       return null;
     }
-    const lpTokenIds = positions.map(position => position.id);
+    const lpTokenIds = selectedPosition.map(position => position.id);
     const approveTokenPaths = [
       ...new Set(
-        positions.flatMap(position => [
+        selectedPosition.flatMap(position => [
           position.pool.tokenA.wrappedPath ||
-            checkGnotPath(position.pool.tokenA.path),
+          checkGnotPath(position.pool.tokenA.path),
           position.pool.tokenB.wrappedPath ||
-            checkGnotPath(position.pool.tokenB.path),
+          checkGnotPath(position.pool.tokenB.path),
         ]),
       ),
     ];
@@ -92,8 +100,7 @@ const RemovePositionModalContainer = ({
               ),
             }),
           );
-          router.push(router.asPath.replace("/remove", ""));
-          clearModal();
+          openTransactionConfirmModal();
         }, 1000);
       } else if (
         result.code === 4000 &&
@@ -134,12 +141,13 @@ const RemovePositionModalContainer = ({
         );
       }
     }
-  }, [account?.address, clearModal, positionRepository, positions, router]);
+  }, [account?.address, clearModal, positionRepository, selectedPosition, router]);
 
   return (
     <RemovePositionModal
-      positions={positions}
-      close={close}
+      selectedPosition={selectedPosition}
+      allPositions={allPosition}
+      close={clearModal}
       onSubmit={onSubmit}
     />
   );

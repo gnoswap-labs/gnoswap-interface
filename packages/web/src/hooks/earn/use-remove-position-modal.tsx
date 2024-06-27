@@ -19,8 +19,8 @@ export const useRemovePositionModal = ({ positions, selectedIds }: Props) => {
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
-    setModalContent(<RemovePositionModalContainer positions={selectedPositions} />);
-  }, [selectedPositions, setModalContent, setOpenedModal]);
+    setModalContent(<RemovePositionModalContainer allPosition={positions} selectedPosition={selectedPositions} />);
+  }, [positions, selectedPositions, setModalContent, setOpenedModal]);
 
   return {
     openModal,

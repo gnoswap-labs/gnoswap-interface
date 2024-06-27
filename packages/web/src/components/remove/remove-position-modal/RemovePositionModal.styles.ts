@@ -106,13 +106,13 @@ export const RemovePositionModalWrapper = styled.div`
           }
           .label-large {
             color: ${({ theme }) => theme.color.text04};
-            ${fonts.body10}
+            ${fonts.body9}
             ${media.mobile} {
               ${fonts.body12};
             }
           }
           .value-large {
-            ${fonts.body6}
+            ${fonts.body9}
             color: ${({ theme }) => theme.color.text02};
             ${media.mobile} {
               ${fonts.body8};
@@ -229,4 +229,10 @@ export const ToolTipContentWrapper = styled.div<Props>`
   width: ${({ width }) => width ? width : "268px"};
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
+`;
+
+export const RemoveWarningContentWrapper = styled.div`
+  .remove-percent {
+    font-weight: 600;
+  }
 `;

@@ -1,12 +1,14 @@
 import { TokenModel } from "@models/token/token-model";
+import MissingLogo from "../missing-logo/MissingLogo";
 import Tooltip from "../tooltip/Tooltip";
 import { OverlapTokenLogoImageWrapper, OverlapTokenLogoStyleProps, OverlapTokenLogoWrapper, TokenSymbolWrapper } from "./OverlapTokenLogo.styles";
 
 interface OverlapTokenLogoProps extends OverlapTokenLogoStyleProps {
   tokens: TokenModel[];
+  placeholderFontSize?: number;
 }
 
-const OverlapTokenLogo = ({ tokens, size = 36 }: OverlapTokenLogoProps) => {
+const OverlapTokenLogo = ({ tokens, size = 36, placeholderFontSize }: OverlapTokenLogoProps) => {
   return (
     <OverlapTokenLogoWrapper size={size}>
       {tokens.map((token, index) =>
@@ -16,11 +18,12 @@ const OverlapTokenLogo = ({ tokens, size = 36 }: OverlapTokenLogoProps) => {
             overlap={index > 0 ? (size / 3) : 0}
             size={size}
           >
-            {token.logoURI ? (
-              <img src={token.logoURI} alt="logo-image" />
-            ) : (
-              <div className="missing-logo right-logo">{token.symbol.slice(0, 3)}</div>
-            )}
+            <MissingLogo
+              width={size}
+              url={token.logoURI}
+              symbol={token.symbol.slice(0, 3)}
+              placeholderFontSize={placeholderFontSize}
+            />
           </OverlapTokenLogoImageWrapper>
         </Tooltip>
       )}

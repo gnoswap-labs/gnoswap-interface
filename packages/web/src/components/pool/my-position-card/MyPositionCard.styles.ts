@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
@@ -110,7 +109,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
           ${fonts.body7};
         }
         color: ${({ theme, type }) =>
-          type !== "closed" ? theme.color.text02 : theme.color.text10};
+    type !== "closed" ? theme.color.text02 : theme.color.text10};
       }
       .flex-button {
         ${mixins.flexbox("row", "center", "center")};
@@ -334,7 +333,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
           color: ${({ theme }) => theme.color.text07};
         }
         color: ${({ theme, type }) =>
-          type !== "closed" ? theme.color.text02 : theme.color.text10};
+    type !== "closed" ? theme.color.text02 : theme.color.text10};
         &.disabled {
           pointer-events: none;
         }

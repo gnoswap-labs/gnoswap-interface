@@ -55,4 +55,8 @@ export const PoolInfoWrapper = styled.div`
     width: 20px;
     height: 20px;
   }
+  .apr {
+    ${mixins.flexbox("row", "center", "flex-start")}
+    gap: 4px;
+  }
 `;

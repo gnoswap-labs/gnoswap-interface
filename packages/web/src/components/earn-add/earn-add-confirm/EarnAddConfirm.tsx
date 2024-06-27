@@ -35,6 +35,7 @@ export interface EarnAddConfirmProps {
   feeInfo: {
     token?: TokenModel;
     fee: string;
+    errorMsg?: string;
   };
   confirm: () => void;
   close: () => void;
@@ -67,7 +68,8 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
 
       <Button
         text="Confirm Add Position"
-        onClick={confirm}
+        onClick={feeInfo.errorMsg ? undefined : confirm}
+        disabled={!!feeInfo.errorMsg}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,

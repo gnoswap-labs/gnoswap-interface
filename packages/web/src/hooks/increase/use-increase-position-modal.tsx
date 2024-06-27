@@ -19,6 +19,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo } from "react";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 
 export interface Props {
   openModal: () => void;
@@ -63,6 +64,14 @@ export const useIncreasePositionModal = ({
   const { address } = useAddress();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
+
+  const onCloseConfirmTransactionModal = useCallback(() => {
+    router.back();
+  }, [router]);
+
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    closeCallback: onCloseConfirmTransactionModal,
+  });
 
   const amountInfo = useMemo(() => {
     if (!tokenA || !tokenB || !swapFeeTier) {
@@ -144,7 +153,8 @@ export const useIncreasePositionModal = ({
             }),
           );
         }, 1000);
-        router.back();
+
+        openTransactionConfirmModal();
       } else if (
         result.code === 4000 &&
         result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type

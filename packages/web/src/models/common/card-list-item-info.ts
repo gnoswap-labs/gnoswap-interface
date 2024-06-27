@@ -12,7 +12,7 @@ export interface CardListTokenInfo {
 export interface CardListPoolInfo {
   pool: PoolModel;
   upDown: UpDownType;
-  content: string;
+  apr: string;
 }
 
 export interface CardListKeyStats {
