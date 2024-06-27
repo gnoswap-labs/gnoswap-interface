@@ -167,15 +167,13 @@ export const useWallet = () => {
       return;
     }
     try {
-      walletClient.addEventChangedAccount((accountId) => {
-        console.log("🚀 ~ walletClient.addEventChangedAccount ~ accountId:", accountId);
+      walletClient.addEventChangedAccount(() => {
         queryClient.invalidateQueries({
           queryKey: balanceQueryKey,
         });
         connectAdenaClient();
       });
-      walletClient.addEventChangedNetwork((network) => {
-        console.log("🚀 ~ walletClient.addEventChangedNetwork ~ network:", network);
+      walletClient.addEventChangedNetwork(() => {
         connectAdenaClient();
       });
     } catch { }

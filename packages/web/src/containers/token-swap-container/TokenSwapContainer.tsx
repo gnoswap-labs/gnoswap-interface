@@ -163,16 +163,6 @@ const TokenSwapContainer: React.FC = () => {
         swapRouteInfos={swapRouteInfos}
         setSwapRateAction={setSwapRateAction}
       />
-      {/* {openedConfirmModal && swapSummaryInfo && (
-        <ConfirmSwapModal
-          submitted={submitted}
-          swapTokenInfo={swapTokenInfo}
-          swapSummaryInfo={swapSummaryInfo}
-          swapResult={swapResult}
-          swap={executeSwap}
-          close={closeModal}
-        />
-      )} */}
       {openedSlippage && (
         <SettingMenuModal
           slippage={slippage}

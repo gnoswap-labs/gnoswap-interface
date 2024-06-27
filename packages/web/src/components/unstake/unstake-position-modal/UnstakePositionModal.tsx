@@ -22,7 +22,6 @@ interface Props {
 
 const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
   const { unclaimedRewards, totalLiquidityUSD } = useUnstakeData({ positions });
-  console.log("🚀 ~ unclaimedRewards:", unclaimedRewards);
   const onClickClose = useCallback(() => {
     close();
   }, [close]);

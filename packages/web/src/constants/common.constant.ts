@@ -19,7 +19,6 @@ export const CAN_SCROLL_UP_ID = "CAN_SCROLL_UP_ID";
 
 export const getCanScrollUpId = (id: string) => `${CAN_SCROLL_UP_ID}_${id}`;
 
-
 export type PageKey =
   "/"
   | "/earn"
@@ -103,7 +102,7 @@ export const SEOInfo: Record<PageKey, {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
         return `${tokenASymbol}/${tokenBSymbol} ${feeTier} | Earn on Gnoswap`;
       }
-      return "The One-stop Gnoland DeFi Platform | Gnoswap";
+      return DefaultTitle;
     },
     desc: () => "Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency.",
   },
@@ -113,7 +112,7 @@ export const SEOInfo: Record<PageKey, {
         const [address, tokenASymbol, tokenBSymbol, feeTier] = params;
         return `${address} | ${tokenASymbol}/${tokenBSymbol} ${feeTier} | Earn on Gnoswap`;
       }
-      return "The One-stop Gnoland DeFi Platform | Gnoswap";
+      return DefaultTitle;
     },
     desc: () => "Create your own positions and provide liquidity to earn trading fees.",
   },
@@ -207,7 +206,7 @@ export const SEOInfo: Record<PageKey, {
         const [tokenPrice, tokenName, tokenSymbol] = params;
         return `${tokenPrice} | ${tokenName}(${tokenSymbol})`;
       }
-      return "The One-stop Gnoland DeFi Platform | Gnoswap";
+      return DefaultTitle;
     },
     desc: (params = []) => {
       if (params.length === 1) {

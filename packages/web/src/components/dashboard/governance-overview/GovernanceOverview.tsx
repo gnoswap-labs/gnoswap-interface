@@ -28,13 +28,6 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
   <GovernanceOverviewWrapper>
     <GovernanceOverviewTitleWrapper>
       <div>Governance Overview</div>
-      {/* <LabelIconButton
-        onClick={() => {
-          alert("open Link");
-        }}
-      >
-        <IconOpenLink className="action-icon" />
-      </LabelIconButton> */}
     </GovernanceOverviewTitleWrapper>
     <GovernanceWrapper>
       <div className="total-issued">

@@ -185,9 +185,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
           {displayXAxisLabels.map((value, index) => (
             <TokenChartGraphXLabel x={value.position} key={index}>{value?.text}</TokenChartGraphXLabel>
           ))}
-          {/* {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (
-            <span key={index}>{label}</span>
-          ))} */}
         </div>
       </div>
     </TvlChartGraphWrapper>

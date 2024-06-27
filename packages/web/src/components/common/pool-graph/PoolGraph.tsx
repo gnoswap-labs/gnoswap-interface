@@ -440,12 +440,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
               minLimit: 0.000001,
               fixedDecimalDigits: 6
             }) || "-",
-      // myTokenAAmount:
-      //   index < 20
-      //     ? "-"
-      //     : index > 19 && `${currentBin.reserveTokenAMyAmount}` === "0"
-      //       ? "<0.000001"
-      //       : convertToKMB((myTokenAAmountStr || "-").toString()) || "-",
       myTokenBAmount:
         index > 19
           ? "-"

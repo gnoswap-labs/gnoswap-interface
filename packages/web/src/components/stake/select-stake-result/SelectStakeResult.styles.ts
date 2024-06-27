@@ -34,7 +34,6 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
     height: 39px;
     ${mixins.flexbox("column", "flex-end", "center")};
-    /* gap: 5px; */
     .main-info {
       width: 100%;
       height: 24px;

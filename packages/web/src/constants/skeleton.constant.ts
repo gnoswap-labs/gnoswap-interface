@@ -81,7 +81,6 @@ export const pulseSkeletonStyle = ({
       position: relative;
       width: ${width};
       height: ${type === SHAPE_TYPES.CIRCLE ? `${width}px` : `${height}`};
-      /* background: ${theme.color.background05}; */
       overflow: hidden;
       border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
       &::after {

@@ -140,7 +140,6 @@ export const WithdrawContent = styled.div`
     .network {
       ${mixins.flexbox("row", "center")};
       color: ${({ theme }) => theme.color.text01};
-      /* ${fonts.body9}; */
       gap: 8px;
 
       font-size: 16px;

@@ -55,14 +55,6 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
           </a>
         </StakeWarningContentWrapper>}
       />}
-      {/* {selectedPositions.length > 0 && <div className="unstake-des">
-        <h5><IconCircleExclamationMark /> Your Staking Progress Will be Reset</h5>
-        <p>This will completely reset your staking progress. Once you re-stake, you will have to wait 30 days to start receiving max staking rewards. Be sure to understand how the warm-up period works before unstaking.</p>
-        <a href="/">
-          Learn More
-          <IconOpenLink className="icon-link" />
-        </a>
-      </div>} */}
       <Button
         text={checkedList.length === 0 ? "Select Position" : "Unstake Position"}
         style={{
