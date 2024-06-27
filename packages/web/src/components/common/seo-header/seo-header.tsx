@@ -16,8 +16,10 @@ const SEOHeader: React.FC<SEOHeaderProps> = ({ title, pageDescription, ogDescrip
 
   return <Head>
     <title>{title}</title>
-    {pageDescription && <meta>{pageDescription}</meta>}
-    <link rel="icon" href={`${imagePath}favicon.svg`} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {pageDescription && <meta name="description" content={pageDescription} />}
+    <link rel="icon" href={"/favicon.ico"} />
+    <link rel="apple-touch-icon" href="/apple-icon.png" />
 
     <meta property="og:image" content={`${imagePath}opengraph-image.png`} />
     <meta property="og:url" content={window.location.origin} />

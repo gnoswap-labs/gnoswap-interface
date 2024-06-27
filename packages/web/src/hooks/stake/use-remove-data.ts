@@ -4,23 +4,23 @@ import { numberToUSD } from "@utils/number-utils";
 import { useMemo } from "react";
 
 export interface RemoveDataProps {
-  positions: PoolPositionModel[];
+  selectedPosition: PoolPositionModel[];
 }
 
-export const useRemoveData = ({ positions }: RemoveDataProps) => {
+export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
   const { tokenPrices } = useTokenData();
 
   const pooledTokenInfos = useMemo(() => {
-    if (positions.length === 0) {
+    if (selectedPosition.length === 0) {
       return [];
     }
-    const tokenA = positions[0].pool.tokenA;
-    const tokenB = positions[0].pool.tokenB;
-    const pooledTokenAAmount = positions.reduce(
+    const tokenA = selectedPosition[0].pool.tokenA;
+    const tokenB = selectedPosition[0].pool.tokenB;
+    const pooledTokenAAmount = selectedPosition.reduce(
       (accum, position) => accum + position.tokenABalance,
       0,
     );
-    const pooledTokenBAmount = positions.reduce(
+    const pooledTokenBAmount = selectedPosition.reduce(
       (accum, position) => accum + position.tokenBBalance,
       0,
     );
@@ -40,19 +40,19 @@ export const useRemoveData = ({ positions }: RemoveDataProps) => {
         amountUSD: numberToUSD(tokenBAmount * Number(tokenBPrice)),
       },
     ];
-  }, [positions, tokenPrices]);
+  }, [selectedPosition, tokenPrices]);
 
   const unclaimedRewards = useMemo(() => {
-    if (positions.length === 0) {
+    if (selectedPosition.length === 0) {
       return [];
     }
-    const tokenA = positions[0].pool.tokenA;
-    const tokenB = positions[0].pool.tokenB;
-    const pooledTokenAAmount = positions.reduce(
+    const tokenA = selectedPosition[0].pool.tokenA;
+    const tokenB = selectedPosition[0].pool.tokenB;
+    const pooledTokenAAmount = selectedPosition.reduce(
       (accum, position) => accum + position.unclaimedFeeAAmount,
       0,
     );
-    const pooledTokenBAmount = positions.reduce(
+    const pooledTokenBAmount = selectedPosition.reduce(
       (accum, position) => accum + position.unclaimedFeeBAmount,
       0,
     );
@@ -72,18 +72,18 @@ export const useRemoveData = ({ positions }: RemoveDataProps) => {
         amountUSD: numberToUSD(tokenBAmount * Number(tokenBPrice)),
       },
     ];
-  }, [positions, tokenPrices]);
+  }, [selectedPosition, tokenPrices]);
 
   const totalLiquidityUSD = useMemo(() => {
-    if (positions.length === 0) {
+    if (selectedPosition.length === 0) {
       return "-";
     }
-    const totalUSDValue = positions.reduce(
+    const totalUSDValue = selectedPosition.reduce(
       (accum, position) => accum + Number(position.positionUsdValue),
       0,
     );
     return numberToUSD(totalUSDValue);
-  }, [positions]);
+  }, [selectedPosition]);
 
   return {
     pooledTokenInfos,

@@ -48,6 +48,10 @@ export const OneClickStakingWrapper = styled.div`
     }
     .value {
       color: ${({ theme }) => theme.color.text02};
+
+      .staking-apr-value, .fee-apr-value {
+        ${mixins.flexbox("row", "center", "flex-end")};
+      }
     }
   }
   .unstake-info, .stake-info {

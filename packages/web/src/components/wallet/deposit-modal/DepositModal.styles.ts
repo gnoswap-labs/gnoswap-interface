@@ -284,51 +284,21 @@ export const IconButton = styled.div`
   }
 `;
 
-export const BoxDescription = styled.div`
-  padding: 16px;
-  width: 100%;
-  border-radius: 8px;
+export const DepositWarningContentWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start")}
   gap: 16px;
-
-  .title { 
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    ${mixins.flexbox("row", "center")}
-    gap: 8px;
-
-    svg {
-      width: 16px;
-      height: 14px;
-    }
-  }
-
-  .fail-icon {
-    * {
-      fill: ${({ theme }) => theme.color.icon14};
-    }
-  }
-  background: ${({ theme }) => theme.color.background19};
-  color: ${({ theme }) => theme.color.text08};
 
   ul {
     padding: 0 16px;
     line-height: 130%;
 
     li {
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
       list-style: disc outside;
-      line-height: 130%;
     }
   }
 
   .learn-more-box {
     ${mixins.flexbox("row", "center")}
-    font-size: 14px;
-    font-style: normal;
     font-weight: 600;
     gap: 4px;
     cursor: pointer;

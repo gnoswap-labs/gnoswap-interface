@@ -39,10 +39,6 @@ const DecreaseLiquidityContainer: React.FC = () => {
     pooledTokenInfos,
   });
 
-  const onSubmit = () => {
-    openModal();
-  };
-
   if (!tokenA || !tokenB || loading) return <DecreaseLiquidityLoading />;
 
   return (
@@ -55,7 +51,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
       rangeStatus={rangeStatus}
       aprFee={aprFee}
       priceRangeSummary={priceRangeSummary}
-      onSubmit={onSubmit}
+      onSubmit={openModal}
       percent={percent}
       handlePercent={(value: number) => setPercent(value)}
       pooledTokenInfos={pooledTokenInfos}

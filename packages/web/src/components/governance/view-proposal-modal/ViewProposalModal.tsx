@@ -200,7 +200,6 @@ const ViewProposalModal: React.FC<Props> = ({
 
   const handleSelectVoting = useCallback(() => {
     handleSelectVote();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [optionVote, handleSelectVote]);
 
   const disableButton = useMemo(() => {

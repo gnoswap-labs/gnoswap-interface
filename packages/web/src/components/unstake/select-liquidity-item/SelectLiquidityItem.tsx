@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -9,6 +8,8 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { convertLiquidityUsdToKMB, convertLiquidityUsdValue } from "@utils/stake-position-utils";
 import BigNumber from "bignumber.js";
 import { TokenModel } from "@models/token/token-model";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 interface SelectLiquidityItemProps {
   position: PoolPositionModel;
@@ -18,13 +19,19 @@ interface SelectLiquidityItemProps {
 }
 
 const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({ position }) => {
-  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: number) => {
+  const { getGnotPath } = useGnotToGnot();
+
+  const renderTokenValue = (token: TokenModel, tokenBalance: number) => {
     const tokenBalanceByTokenDecimal = BigNumber(tokenBalance || 0).toFormat();
 
     return <TokenValueWrapper>
       <div className="value">
-        <img src={imgUri} alt="token logo" />
-        {tokeSymbol}
+        <MissingLogo
+          url={getGnotPath(token).logoURI}
+          symbol={getGnotPath(token).symbol}
+          width={20}
+        />
+        {token.symbol}
       </div>
       <div className="value">{tokenBalanceByTokenDecimal}</div>
     </TokenValueWrapper>;
@@ -38,14 +45,10 @@ const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({ position })
         <div className="title">#{position.id}</div>
       </TokenTitleWrapper>
       {renderTokenValue(
-        position.pool.tokenA.logoURI,
-        position.pool.tokenA.symbol,
         position.pool.tokenA,
         position.tokenABalance,
       )}
       {renderTokenValue(
-        position.pool.tokenB.logoURI,
-        position.pool.tokenB.symbol,
         position.pool.tokenB,
         position.tokenBBalance,
       )}

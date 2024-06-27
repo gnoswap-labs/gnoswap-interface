@@ -3,6 +3,7 @@ import { OverlapLogoImageWrapper, OverlapLogoStyleProps, OverlapLogoWrapper, Tok
 
 export interface ILogoData {
   src: string,
+  symbol: string,
   tooltipContent?: string
 }
 
@@ -24,7 +25,11 @@ const OverlapLogo = ({ logos, size = 36 }: OverlapLogoProps) => {
             size={size}
             className="overlap-logo-wrapper"
           >
-            <img src={logo.src} alt="logo-image" />
+            {logo.src ? (
+              <img src={logo.src} alt="logo-image" />
+            ) : (
+              <div className="missing-logo right-logo">{logo.symbol}</div>
+            )}
           </OverlapLogoImageWrapper>
         </Tooltip>
       )

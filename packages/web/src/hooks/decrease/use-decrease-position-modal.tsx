@@ -18,6 +18,9 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo } from "react";
 import { IPooledTokenInfo } from "./use-decrease-handle";
 import BigNumber from "bignumber.js";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useClearModal } from "@hooks/common/use-clear-modal";
 
 export interface Props {
   openModal: () => void;
@@ -49,6 +52,16 @@ export const useDecreasePositionModal = ({
   const router = useRouter();
   const { address } = useAddress();
   const { positionRepository } = useGnoswapContext();
+  const clearModal = useClearModal();
+
+  const onCloseConfirmTransactionModal = useCallback(() => {
+    clearModal();
+    router.back();
+  }, [clearModal, router]);
+
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    confirmCallback: onCloseConfirmTransactionModal,
+  });
 
   const {
     broadcastRejected,
@@ -116,12 +129,12 @@ export const useDecreasePositionModal = ({
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (
-            (resultData.removedTokenAAmount || 0)
+            makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0
           ).toLocaleString("en-US", {
             maximumFractionDigits: 6,
           });
           const tokenBAmount = (
-            resultData.removedTokenBAmount || 0
+            makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0
           ).toLocaleString("en-US", {
             maximumFractionDigits: 6,
           });
@@ -135,7 +148,8 @@ export const useDecreasePositionModal = ({
             }),
           );
         }, 1000);
-        router.back();
+
+        openTransactionConfirmModal();
       } else if (
         result.code === 4000 &&
         result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type

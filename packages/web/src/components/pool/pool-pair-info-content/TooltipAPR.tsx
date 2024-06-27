@@ -1,13 +1,14 @@
-import OverlapLogo, { ILogoData } from "@components/common/overlap-logo/OverlapLogo";
 import { ToolTipAPRWrapper } from "./TooltipAPR.styles";
 import React from "react";
 import { numberToRate } from "@utils/string-utils";
+import { TokenModel } from "@models/token/token-model";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
 interface Props {
   feeAPR: string;
   stakingAPR: string;
-  feeLogo: ILogoData[];
-  stakeLogo: ILogoData[];
+  feeLogo: TokenModel[];
+  stakeLogo: TokenModel[];
 }
 
 const TooltipAPR: React.FC<Props> = ({
@@ -22,14 +23,14 @@ const TooltipAPR: React.FC<Props> = ({
       <div className="item">
         <div className="label">Fee APR</div>
         <div className="value">
-          <OverlapLogo logos={feeLogo} size={20} />
+          <OverlapTokenLogo tokens={feeLogo} size={20} />
           <div>{numberToRate(feeAPR, { isRounding: false })}</div>
         </div>
       </div>
       <div className="item">
         <div className="label">Staking APR</div>
         <div className="value">
-          <OverlapLogo logos={stakeLogo} size={20} />
+          <OverlapTokenLogo tokens={stakeLogo} size={20} />
           <div>{numberToRate(stakingAPR, { isRounding: false })}</div>
         </div>
       </div>

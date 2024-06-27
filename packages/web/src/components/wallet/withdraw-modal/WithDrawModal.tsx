@@ -1,12 +1,14 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
-import IconFailed from "@components/common/icons/IconFailed";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconNewTab from "@components/common/icons/IconNewTab";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import WarningCard from "@components/common/warning-card/WarningCard";
+import { useTheme } from "@emotion/react";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePositionModal } from "@hooks/common/use-postion-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -19,11 +21,11 @@ import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useRef, useState, useMemo } from "react";
 import {
-  BoxDescription,
   WithDrawModalBackground,
   WithDrawModalWrapper,
   WithdrawContent,
   WithdrawTooltipContent,
+  WithDrawWarningContentWrapper,
 } from "./WithDrawModal.styles";
 
 const DEFAULT_WITHDRAW_GNOT = GNOT_TOKEN;
@@ -57,6 +59,7 @@ const WithDrawModal: React.FC<Props> = ({
   isConfirm,
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const theme = useTheme();
   const [amount, setAmount] = useState("");
   const [address, setAddress] = useState("");
 
@@ -253,29 +256,28 @@ const WithDrawModal: React.FC<Props> = ({
               </div>
             </WithdrawContent>
 
-            <BoxDescription>
-              <div className="title">
-                <IconFailed className="fail-icon" />
-                <p>Important Notes</p>
-              </div>
-              <ul>
-                <li>
-                  Double-check to confirm that your withdrawal address above is
-                  correct and on the Gnoland Mainnet blockchain.
-                </li>
-                <li>
-                  DO NOT send tokens to contract addresses. Sending tokens to a
-                  contract address may result in the loss of your funds.
-                </li>
-                <li>The transaction CANNOT be cancelled once sent.</li>
-              </ul>
+            <WarningCard
+              icon={<IconCircleExclamationMark />}
+              title={"Important Notes"}
+              content={<WithDrawWarningContentWrapper>
+                <ul>
+                  <li>
+                    Double-check to confirm that your withdrawal address above is
+                    correct and on the Gnoland Mainnet blockchain.
+                  </li>
+                  <li>
+                    DO NOT send tokens to contract addresses. Sending tokens to a
+                    contract address may result in the loss of your funds.
+                  </li>
+                  <li>The transaction CANNOT be cancelled once sent.</li>
+                </ul>
 
-              <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
-                <p>Learn More</p>
-                <IconNewTab color="#788feb" />
-              </a>
-            </BoxDescription>
-
+                <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
+                  <p>Learn More</p>
+                  <IconNewTab color={theme.color.icon21} />
+                </a>
+              </WithDrawWarningContentWrapper>}
+            />
             <WithdrawContent>
               <div className="estimate-box">
                 <p className="estimate-fee">Estimated Network Fee</p>

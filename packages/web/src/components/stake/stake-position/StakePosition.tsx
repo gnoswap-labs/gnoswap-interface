@@ -5,6 +5,7 @@ import { ValuesType } from "utility-types";
 import SelectLiquidity from "@components/stake/select-liquidity/SelectLiquidity";
 import SelectStakeResult from "@components/stake/select-stake-result/SelectStakeResult";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { PoolModel } from "@models/pool/pool-model";
 
 interface StakePositionProps {
   unstakedPositions: PoolPositionModel[];
@@ -17,6 +18,7 @@ interface StakePositionProps {
   isEmpty: boolean;
   isLoading: boolean;
   connected: boolean;
+  pool?: PoolModel;
 }
 
 export const CONTENT_TITLE = {
@@ -37,6 +39,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
   isEmpty,
   isLoading,
   connected,
+  pool,
 }) => {
   const isEmptyCheckList = useMemo(() => {
     return checkedList.length === 0 && connected;
@@ -62,6 +65,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
       <SelectStakeResult
         positions={selectedPositions}
         isHiddenBadge
+        pool={pool}
       />
       <Button
         className="button-stake-position"

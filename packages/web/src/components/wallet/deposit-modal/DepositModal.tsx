@@ -1,13 +1,15 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
-import IconFailed from "@components/common/icons/IconFailed";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconNewTab from "@components/common/icons/IconNewTab";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import { QRCodeGenerator } from "@components/common/qr-code/QRCode";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import WarningCard from "@components/common/warning-card/WarningCard";
+import { useTheme } from "@emotion/react";
 import { useCopy } from "@hooks/common/use-copy";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePositionModal } from "@hooks/common/use-postion-modal";
@@ -16,12 +18,12 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import React, { useRef } from "react";
 import {
-  BoxDescription,
   DepositBoxContent,
   DepositLabel,
   DepositModalBackground,
   DepositModalWrapper,
   DepositTooltipContent,
+  DepositWarningContentWrapper,
 } from "./DepositModal.styles";
 
 export const DEFAULT_DEPOSIT_GNOT = GNOT_TOKEN;
@@ -48,6 +50,7 @@ const DepositModal: React.FC<Props> = ({
   const modalRef = useRef<HTMLDivElement | null>(null);
   const { account } = useWallet();
   const [copied, copy] = useCopy();
+  const theme = useTheme();
 
   useEscCloseModal(close);
   usePositionModal(modalRef);
@@ -151,32 +154,32 @@ const DepositModal: React.FC<Props> = ({
               </DepositBoxContent>
             </DepositLabel>
 
-            <BoxDescription>
-              <div className="title">
-                <IconFailed className="fail-icon" />
-                <p>Important Notes</p>
-              </div>
-              <ul>
-                <li>
-                  Double-check to confirm that your deposit address above
-                  matches the address in your connected wallet.
-                </li>
-                <li>
-                  Only send supported tokens to this deposit address. Depositing
-                  any other cryptocurrencies to this address will result in the
-                  loss of your funds.
-                </li>
-              </ul>
+            <WarningCard
+              icon={<IconCircleExclamationMark />}
+              title={"Important Notes"}
+              content={<DepositWarningContentWrapper>
+                <ul>
+                  <li>
+                    Double-check to confirm that your deposit address above
+                    matches the address in your connected wallet.
+                  </li>
+                  <li>
+                    Only send supported tokens to this deposit address. Depositing
+                    any other cryptocurrencies to this address will result in the
+                    loss of your funds.
+                  </li>
+                </ul>
 
-              <a
-                href="https://beta.gnoswap.io/"
-                target="_blank"
-                className="learn-more-box"
-              >
-                <p>Learn More</p>
-                <IconNewTab color="#788feb" />
-              </a>
-            </BoxDescription>
+                <a
+                  href="https://beta.gnoswap.io/"
+                  target="_blank"
+                  className="learn-more-box"
+                >
+                  <p>Learn More</p>
+                  <IconNewTab color={theme.color.icon21} />
+                </a>
+              </DepositWarningContentWrapper>}
+            />
 
             <Button
               onClick={close}

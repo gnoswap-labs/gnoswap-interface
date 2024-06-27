@@ -31,11 +31,21 @@ const IncentivizePoolModalContainer = () => {
   const [startDate] = useAtom(EarnState.date);
   const [dataModal] = useAtom(EarnState.dataModal);
   const [pool] = useAtom(EarnState.pool);
-  const { openModal } = useTransactionConfirmModal();
 
-  const close = useCallback(() => {
+  const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
-  }, [clearModal]);
+
+    const pathName = router.pathname;
+    if (pathName === "/earn/incentivize") {
+      router.push("/earn?back=q");
+    } else {
+      router.push(router.asPath.replace("/incentivize", ""));
+    }
+  }, [clearModal, router]);
+
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    closeCallback: onCloseConfirmTransactionModal,
+  });
 
   const onSubmit = useCallback(() => {
     if (!pool || !dataModal?.token) {
@@ -83,14 +93,8 @@ const IncentivizePoolModalContainer = () => {
                   tokenSymbol: dataModal?.token?.symbol,
                 }),
               );
-              openModal();
+              openTransactionConfirmModal();
             }, 1000);
-            const pathName = router.pathname;
-            if (pathName === "/earn/incentivize") {
-              router.push("/earn?back=q");
-            } else {
-              router.push(router.asPath.replace("/incentivize", ""));
-            }
           } else if (
             response.code === 4000 &&
             response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
@@ -103,7 +107,7 @@ const IncentivizePoolModalContainer = () => {
                   tokenSymbol: dataModal?.token?.symbol,
                 }),
               );
-              openModal();
+              openTransactionConfirmModal();
             }, 1000);
           } else {
             broadcastRejected(
@@ -112,7 +116,7 @@ const IncentivizePoolModalContainer = () => {
                 tokenSymbol: dataModal?.token?.symbol,
               }),
             );
-            openModal();
+            openTransactionConfirmModal();
           }
         }
         return response;
@@ -134,7 +138,7 @@ const IncentivizePoolModalContainer = () => {
 
   return (
     <IncentivizePoolModal
-      close={close}
+      close={clearModal}
       onSubmit={onSubmit}
       data={dataModal}
       date={startDate}

@@ -135,7 +135,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-      },
+      }
       .token-symbol {
         ${fonts.p4};
         color: ${({ theme }) => theme.color.text04};
@@ -153,4 +153,10 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     ${fonts.body11};
     
   }
+`;
+
+export const PriceValueWrapper = styled.div`
+  background: ${({ theme }) => theme.color.background06};
+  padding: 0px 4px;
+  border-radius: 4px;
 `;

@@ -102,6 +102,7 @@ export const SwapLiquidityWrapper = styled.div`
       .apr {
         flex: 1 0 0;
         text-align: right;
+        
       }
 
     }
@@ -151,6 +152,10 @@ export const SwapLiquidityWrapper = styled.div`
         ${media.mobile} {
           ${fonts.p2}
         }
+      }
+      .apr {
+        ${mixins.flexbox("row", "center", "flex-end")};
+
       }
     }
   }
