@@ -35,7 +35,7 @@ export default function Token() {
       }
     },
   });
-  const { data: { usd: currentPrice = "0" } = {} } = useGetTokenPricesByPath(
+  const { data: { usd: currentPrice } = {} } = useGetTokenPricesByPath(
     path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
     { enabled: !!path },
   );
@@ -58,14 +58,16 @@ export default function Token() {
     ];
   }, [token]);
 
-  const price = useMemo(
-    () =>
-      toPriceFormat(currentPrice, {
+  const price = useMemo(() => {
+    if (currentPrice) {
+      return toPriceFormat(currentPrice, {
         usd: true,
         isRounding: false,
-      }),
-    [currentPrice],
-  );
+      });
+    }
+
+    return null;
+  }, [currentPrice]);
 
   const wrappedToken = useMemo(() => getGnotPath(token), [getGnotPath, token]);
 

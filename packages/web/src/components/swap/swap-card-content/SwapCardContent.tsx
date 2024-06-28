@@ -33,6 +33,7 @@ interface ContentProps {
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
   isSwitchNetwork: boolean;
   priceImpactStatus: PriceImpactStatus;
+  isSameToken: boolean;
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
@@ -49,6 +50,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   setSwapRateAction,
   isSwitchNetwork,
   priceImpactStatus,
+  isSameToken,
 }) => {
   const theme = useTheme();
   const tokenA = swapTokenInfo.tokenA;
@@ -250,17 +252,19 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </span>
         </div>
       </div>
-      <SwapDetailSectionWrapper>
-        {swapSummaryInfo && isShowInfoSection && (
-          <SwapCardContentDetail
-            swapSummaryInfo={swapSummaryInfo}
-            swapRouteInfos={swapRouteInfos}
-            isLoading={isLoading}
-            setSwapRateAction={setSwapRateAction}
-            priceImpactStatus={priceImpactStatus}
-          />
-        )}
-      </SwapDetailSectionWrapper>
+      {!isSameToken && (
+        <SwapDetailSectionWrapper>
+          {swapSummaryInfo && isShowInfoSection && (
+            <SwapCardContentDetail
+              swapSummaryInfo={swapSummaryInfo}
+              swapRouteInfos={swapRouteInfos}
+              isLoading={isLoading}
+              setSwapRateAction={setSwapRateAction}
+              priceImpactStatus={priceImpactStatus}
+            />
+          )}
+        </SwapDetailSectionWrapper>
+      )}
     </ContentWrapper>
   );
 };

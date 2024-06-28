@@ -31,6 +31,7 @@ interface SwapCardProps {
   themeKey: "dark" | "light";
   isSwitchNetwork: boolean;
   isLoading: boolean;
+  isSameToken: boolean;
 
   changeTokenA: (token: TokenModel) => void;
   changeTokenAAmount: (value: string, none?: boolean) => void;
@@ -72,6 +73,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   isLoading,
   setSwapRateAction,
   priceImpactStatus,
+  isSameToken,
 }) => {
   const theme = useTheme();
 
@@ -99,6 +101,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           setSwapRateAction={setSwapRateAction}
           isSwitchNetwork={isSwitchNetwork}
           priceImpactStatus={priceImpactStatus}
+          isSameToken={isSameToken}
         />
         {!isLoading && priceImpactStatus === "HIGH" && (
           <SwapWarningSection>

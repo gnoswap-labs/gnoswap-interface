@@ -208,7 +208,7 @@ export const SEOInfo: Record<PageKey, {
       const tokenNameDisplay = `${tokenName}${tokenSymbolDisplay}`;
       const titleDisplay = [tokenPrice, tokenNameDisplay].filter(item => item).join(" | ");
 
-      if (titleDisplay) return titleDisplay;
+      if (titleDisplay && tokenName) return titleDisplay;
 
       return DefaultTitle;
     },

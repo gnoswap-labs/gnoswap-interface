@@ -1006,5 +1006,6 @@ export const useSwapHandler = () => {
     setSwapRateAction,
     setTokenAAmount,
     priceImpactStatus,
+    isSameToken,
   };
 };
