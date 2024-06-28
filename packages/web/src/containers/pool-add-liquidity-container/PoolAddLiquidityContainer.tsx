@@ -36,6 +36,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { useRouterBack } from "@hooks/common/use-router-back";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { numberToRate } from "@utils/string-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -94,7 +95,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     useState<PriceRangeType | null>();
   const [ticksFromUrl, setTickFromUrl] = useState<DefaultTick>();
   const { getGnotPath } = useGnotToGnot();
-
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
@@ -180,7 +180,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return {
       depositRatio,
       feeBoost,
-      estimatedApr: "-",
+      estimatedApr: numberToRate(selectPool.estimatedAPR) ?? "-",
     };
   }, [
     selectPool.currentPrice,
@@ -495,21 +495,21 @@ const EarnAddLiquidityContainer: React.FC = () => {
         ...prev,
         tokenA: currentTokenA
           ? {
-            ...currentTokenA,
-            path: getGnotPath(currentTokenA).path,
-            name: getGnotPath(currentTokenA).name,
-            symbol: getGnotPath(currentTokenA).symbol,
-            logoURI: getGnotPath(currentTokenA).logoURI,
-          }
+              ...currentTokenA,
+              path: getGnotPath(currentTokenA).path,
+              name: getGnotPath(currentTokenA).name,
+              symbol: getGnotPath(currentTokenA).symbol,
+              logoURI: getGnotPath(currentTokenA).logoURI,
+            }
           : null,
         tokenB: currentTokenB
           ? {
-            ...currentTokenB,
-            path: getGnotPath(currentTokenB).path,
-            name: getGnotPath(currentTokenB).name,
-            symbol: getGnotPath(currentTokenB).symbol,
-            logoURI: getGnotPath(currentTokenB).logoURI,
-          }
+              ...currentTokenB,
+              path: getGnotPath(currentTokenB).path,
+              name: getGnotPath(currentTokenB).name,
+              symbol: getGnotPath(currentTokenB).symbol,
+              logoURI: getGnotPath(currentTokenB).logoURI,
+            }
           : null,
       }));
       return;
@@ -543,7 +543,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
           return false;
         }) === 1;
       const priceOfMaxLiquidity =
-        pools.sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price || null;
+        pools.sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price ||
+        null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse
           ? 1 / priceOfMaxLiquidity

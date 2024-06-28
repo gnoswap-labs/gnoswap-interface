@@ -159,3 +159,28 @@ export const SelectPairButton = styled.div`
     }
   }
 `;
+
+export const PriceInfoWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")}
+`;
+
+export const PriceImpactWrapper = styled.div<{ priceImpact?: number }>`
+  ${mixins.flexbox("row", "center", "flex-start")}
+  gap: 4px;
+  ${fonts.body12};
+  ${media.mobile} {
+    ${fonts.p2};
+  }
+  ${({ priceImpact }) => {
+    if (!priceImpact) return "";
+    if (priceImpact > 0) return "color: green;";
+    if (priceImpact <= -10) return "color: red;";
+    return "color: orange;";
+  }};
+  margin-left: 8px;
+`;
+
+export const SwapDetailSectionWrapper = styled.div`
+  width: 100%;
+`;
+

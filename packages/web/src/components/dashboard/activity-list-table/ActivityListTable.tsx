@@ -17,9 +17,8 @@ import {
 } from "./ActivityListTable.styles";
 import {
   ACTIVITY_INFO,
-  ACTIVITY_TD_WIDTH,
   MOBILE_ACTIVITY_INFO,
-  MOBILE_ACTIVITY_TD_WIDTH,
+  // MOBILE_ACTIVITY_TD_WIDTH,
 } from "@constants/skeleton.constant";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
@@ -78,7 +77,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
                 left: isAlignLeft(head),
                 sort: isSortOption(head),
               })}
-              tdWidth={ACTIVITY_TD_WIDTH[idx]}
+              tdWidth={ACTIVITY_INFO.list[idx].width}
             >
               <span
                 className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
@@ -99,12 +98,15 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
           {isFetched && activities.length === 0 && (
             <div css={noDataText}>No tokens found</div>
           )}
-          {isFetched &&
+          {/* {isFetched &&
             activities.length > 0 &&
             activities.map((item, idx) => (
               <ActivityInfo item={item} idx={idx + 1} key={idx} />
-            ))}
-          {!isFetched && <TableSkeleton info={ACTIVITY_INFO} className="activity-table" />}
+            ))} */}
+          {/* {!isFetched && (
+            <TableSkeleton info={ACTIVITY_INFO} className="activity-table" />
+          )} */}
+          {<TableSkeleton info={ACTIVITY_INFO} className="activity-table" />}
         </div>
       </div>
     </TableWrapper>
@@ -119,7 +121,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
                 left: isAlignLeft(head),
                 sort: isSortOption(head),
               })}
-              tdWidth={MOBILE_ACTIVITY_TD_WIDTH[idx]}
+              tdWidth={MOBILE_ACTIVITY_INFO.list[idx].width}
             >
               <span
                 className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
@@ -140,12 +142,23 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
           {isFetched && activities.length === 0 && (
             <div css={noDataText}>No tokens found</div>
           )}
-          {isFetched &&
+          {/* {isFetched &&
             activities.length > 0 &&
             activities.map((item, idx) => (
               <MobileActivityInfo item={item} idx={idx + 1} key={idx} />
-            ))}
-          {!isFetched && <TableSkeleton info={MOBILE_ACTIVITY_INFO} className="activity-table" />}
+            ))} */}
+          {
+            <TableSkeleton
+              info={MOBILE_ACTIVITY_INFO}
+              className="activity-table"
+            />
+          }
+          {/* {!isFetched && (
+            <TableSkeleton
+              info={MOBILE_ACTIVITY_INFO}
+              className="activity-table"
+            />
+          )} */}
         </div>
       </div>
     </TableWrapper>

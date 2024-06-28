@@ -1,5 +1,9 @@
 import React, { useMemo } from "react";
-import { FeeWrapper, SwapDivider, ToolTipContentWrapper } from "./SwapCardFeeInfo.styles";
+import {
+  FeeWrapper,
+  SwapDivider,
+  ToolTipContentWrapper,
+} from "./SwapCardFeeInfo.styles";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import IconRouter from "@components/common/icons/IconRouter";
@@ -11,12 +15,14 @@ import { toNumberFormat } from "@utils/number-utils";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 
 interface ContentProps {
   openedRouteInfo: boolean;
   toggleRouteInfo: () => void;
   swapSummaryInfo: SwapSummaryInfo;
   isLoading: boolean;
+  priceImpactStatus: PriceImpactStatus;
 }
 
 const SwapCardFeeInfo: React.FC<ContentProps> = ({
@@ -24,9 +30,11 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
   toggleRouteInfo,
   swapSummaryInfo,
   isLoading,
+  priceImpactStatus,
 }) => {
   const priceImpactStr = useMemo(() => {
     const priceImpact = swapSummaryInfo.priceImpact;
+
     return `${priceImpact}%`;
   }, [swapSummaryInfo.priceImpact]);
 
@@ -53,12 +61,31 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
     return `$${toNumberFormat(gasFeeUSD)}`;
   }, [swapSummaryInfo.gasFeeUSD]);
 
+  const priceImpactStatusDisplay = useMemo(() => {
+    switch (priceImpactStatus) {
+      case "LOW":
+        return "Low";
+      case "MEDIUM":
+        return "Medium";
+      case "HIGH":
+        return "High";
+      case "POSITIVE":
+        return "Positive";
+      case "NONE":
+        return "";
+      default:
+        break;
+    }
+  }, [priceImpactStatus]);
+
   return (
     <FeeWrapper>
       <div className="price-impact">
         <span className="gray-text">Price Impact</span>
         {!isLoading ? (
-          <span className="white-text">{priceImpactStr}</span>
+          <span className="white-text">
+            {priceImpactStatusDisplay} {priceImpactStr}
+          </span>
         ) : (
           <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
         )}
@@ -75,7 +102,15 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
       <div className="received">
         <div className="protocol">
           <span className="">Protocol Fee</span>
-          <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The amount of fees charged on each trade that goes to the protocol.</ToolTipContentWrapper>}>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <ToolTipContentWrapper>
+                The amount of fees charged on each trade that goes to the
+                protocol.
+              </ToolTipContentWrapper>
+            }
+          >
             <IconInfo />
           </Tooltip>
         </div>

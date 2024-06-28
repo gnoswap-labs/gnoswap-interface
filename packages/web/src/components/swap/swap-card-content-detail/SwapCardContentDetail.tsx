@@ -14,12 +14,14 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
   swapRouteInfos: SwapRouteInfo[];
   isLoading: boolean;
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
+  priceImpactStatus: PriceImpactStatus;
 }
 
 export const convertSwapRate = (value: number) => {
@@ -32,6 +34,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   swapRouteInfos,
   isLoading,
   setSwapRateAction,
+  priceImpactStatus,
 }) => {
   const { breakpoint } = useWindowSize();
   const [openedDetailInfo, setOpenedDetailInfo] = useState(false);
@@ -40,15 +43,29 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
     if (swapRateAction === "ATOB") {
-      return <>1 {tokenA.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenB.symbol}</>;
+      return (
+        <>
+          1 {tokenA.symbol} =&nbsp;
+          <ExchangeRate value={convertSwapRate(swapRate)} />
+          &nbsp;{tokenB.symbol}
+        </>
+      );
     } else {
-      return <>1 {tokenB.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenA.symbol}</>;
+      return (
+        <>
+          1 {tokenB.symbol} =&nbsp;
+          <ExchangeRate value={convertSwapRate(swapRate)} />
+          &nbsp;{tokenA.symbol}
+        </>
+      );
     }
   }, [swapSummaryInfo]);
 
   const swapRate1USD = useMemo(() => {
     const swapRate1USD = swapSummaryInfo.swapRate1USD;
-    return convertToKMB(formatUsdNumber3Digits(swapRate1USD), { isIgnoreKFormat: true });
+    return convertToKMB(formatUsdNumber3Digits(swapRate1USD), {
+      isIgnoreKFormat: true,
+    });
   }, [swapSummaryInfo.swapRate1USD]);
 
   const gasFeeUSDStr = useMemo(() => {
@@ -70,7 +87,9 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   }, [openedRouteInfo]);
 
   const handleSwapRate = useCallback(() => {
-    setSwapRateAction(swapSummaryInfo.swapRateAction === "ATOB" ? "BTOA" : "ATOB");
+    setSwapRateAction(
+      swapSummaryInfo.swapRateAction === "ATOB" ? "BTOA" : "ATOB",
+    );
   }, [swapSummaryInfo.swapRateAction]);
 
   return (
@@ -87,7 +106,6 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
                 {breakpoint !== DEVICE_TYPE.MOBILE && (
                   <span className="exchange-price">{`($${swapRate1USD})`}</span>
                 )}
-
               </div>
             )}
             {isLoading && (
@@ -123,6 +141,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
                 toggleRouteInfo={toggleRouteInfo}
                 swapSummaryInfo={swapSummaryInfo}
                 isLoading={isLoading}
+                priceImpactStatus={priceImpactStatus}
               />
             )}
             {openedRouteInfo && (

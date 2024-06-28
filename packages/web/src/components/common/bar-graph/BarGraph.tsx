@@ -94,7 +94,10 @@ const BarGraph: React.FC<BarGraphProps> = ({
   const { height: customHeight = 0, locationTooltip = 0 } = customData;
   const [chartPoint, setChartPoint] = useState<Point>();
 
-  const hasOnlyOneData = useMemo(() => (datas?.length ?? 0) === 1, [datas?.length]);
+  const hasOnlyOneData = useMemo(
+    () => (datas?.length ?? 0) === 1,
+    [datas?.length],
+  );
 
   const getStrokeWidth = useCallback(() => {
     const maxStorkeWidth = BigNumber(
@@ -106,10 +109,10 @@ const BarGraph: React.FC<BarGraphProps> = ({
   const getGraphPoints = useCallback(() => {
     const strokeWidth = getStrokeWidth();
     const mappedDatas = datas.map((data, index) => {
-      return ({
+      return {
         value: new BigNumber(data).toNumber(),
         x: index + 1,
-      });
+      };
     });
 
     const values = mappedDatas.map(data => data.value);
@@ -154,7 +157,11 @@ const BarGraph: React.FC<BarGraphProps> = ({
 
     return mappedDatas.map<Point>(data => ({
       x: optimizeTime(data.x, width, strokeWidth),
-      y: Number(optimizeValue(data.value, height)) < 180 && Number(optimizeValue(data.value, height)) > 177 ? 177 : optimizeValue(data.value, height),
+      y:
+        Number(optimizeValue(data.value, height)) < 180 &&
+        Number(optimizeValue(data.value, height)) > 177
+          ? 177
+          : optimizeValue(data.value, height),
     }));
   }, [datas, getStrokeWidth, height, width]);
 
@@ -293,26 +300,30 @@ const BarGraph: React.FC<BarGraphProps> = ({
               </div>
               <div className="tooltip-header">
                 <span className="label">Trading Volume</span>
-                <span className="value">{toPriceFormat(datas[currentPointIndex], {
-                  usd: true,
-                  isRounding: false,
-                  isKMBFormat: false,
-                  greaterThan1Decimals: 1,
-                  lestThan1Decimals: 1,
-                  forcedGreaterThan1Decimals: false,
-                })}</span>
-              </div>
-              <div className="tooltip-header">
-                <span className="label">Fees</span>
-                <span className="value">{
-                  toPriceFormat(fees[currentPointIndex], {
+                <span className="value">
+                  {toPriceFormat(datas[currentPointIndex], {
                     usd: true,
                     isRounding: false,
                     isKMBFormat: false,
                     greaterThan1Decimals: 1,
                     lestThan1Decimals: 1,
                     forcedGreaterThan1Decimals: false,
-                  })}</span>
+                  })}
+                </span>
+              </div>
+              <div className="tooltip-header">
+                <span className="label">Fees</span>
+                <span className="value">
+                  {toPriceFormat(fees[currentPointIndex], {
+                    usd: true,
+                    isRounding: false,
+                    isKMBFormat: false,
+                    greaterThan1Decimals: 1,
+                    lestThan1Decimals: 1,
+                    forcedGreaterThan1Decimals: false,
+                    minLimit: 0.01,
+                  })}
+                </span>
               </div>
             </BarGraphTooltipWrapper>
           ) : tooltipOption === "incentivized" &&
@@ -367,8 +378,9 @@ const BarGraph: React.FC<BarGraphProps> = ({
             getGraphPoints().map((point, index) => (
               <path
                 key={index}
-                d={`M${point.x} ${point.y + 1} h${getStrokeWidth()} v${height - (point.y + 1)
-                  } h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
+                d={`M${point.x} ${point.y + 1} h${getStrokeWidth()} v${
+                  height - (point.y + 1)
+                } h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
                 fill={getStorkeColor(index)}
               />
             ))}

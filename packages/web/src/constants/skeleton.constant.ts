@@ -299,9 +299,6 @@ export const TOKEN_TD_WIDTH = [
   124,
 ];
 export const MOBILE_TOKEN_TD_WIDTH = [160, 160];
-export const MOBILE_ACTIVITY_TD_WIDTH = [210, 110, 140, 140, 160, 200];
-export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 198];
-
 
 export const LEADERBOARD_TD_WIDTH = [120, 400, 200, 200, 200, 240];
 export const MOBILE_LEADERBOARD_TD_WIDTH = [50, 150, 128];
@@ -773,17 +770,18 @@ export const TOKEN_SEARCH_INFO = {
   tdWidth: TOKEN_SEARCH_WIDTH,
   list: [{ width: 400, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false }],
 };
+
+
 export const ACTIVITY_INFO = {
   title: TABLE_TITLE.ACTIVITY_TABLE,
   total: 15,
-  tdWidth: ACTIVITY_TD_WIDTH,
   list: [
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
+    { width: 240, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
+    { width: 230, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 230, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 230, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
+    { width: 230, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
+    { width: 198, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
   ],
 };
 
@@ -913,16 +911,17 @@ export const MOBILE_POSITION_HISTORY_INFO: TableInfoType = {
   ],
 };
 
+// export const MOBILE_ACTIVITY_TD_WIDTH = [210, 110, 140, 140, 160, 200];
+
 export const MOBILE_ACTIVITY_INFO = {
   title: TABLE_TITLE.ACTIVITY_TABLE,
   total: 15,
-  tdWidth: MOBILE_TOKEN_TD_WIDTH,
   list: [
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161 },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120 },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
-    { width: 20, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 20 },
+    { width: 210, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, skeletonWidth: 161, },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120, className: "right-padding-16" },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120, className: "right-padding-16" },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 120, className: "right-padding-16" },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80, className: "right-padding-16" },
+    { width: 198, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, skeletonWidth: 80 },
   ],
 };

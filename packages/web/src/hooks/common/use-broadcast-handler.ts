@@ -37,6 +37,12 @@ import {
   SUCCESS_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE,
   SUCCESS_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE,
   mapMessageByTemplate,
+  PEDING_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
 } from "@utils/template";
 
 /**
@@ -359,6 +365,98 @@ export function makeBroadcastAddLiquidityMessage(
   }
   return {
     title: "Add Liquidity",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastWrapTokenMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function title() {
+    switch (type) {
+      case "pending":
+        return "Wrap - Pending!";
+      case "success":
+        return "Wrap - Success!";
+      case "error":
+        return "Wrap - Failure!";
+    }
+  }
+  function description() {
+    switch (type) {
+      case "pending":
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+      case "success":
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+      case "error":
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+    }
+  }
+  return {
+    title: title(),
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastUnwrapTokenMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function title() {
+    switch (type) {
+      case "pending":
+        return "Unwrap - Pending!";
+      case "success":
+        return "Unwrap - Success!";
+      case "error":
+        return "Unwrap - Failure!";
+    }
+  }
+  function description() {
+    switch (type) {
+      case "pending":
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+      case "success":
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+      case "error":
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+    }
+  }
+  return {
+    title: title(),
     description: description(),
     scannerUrl: hash ? makeScannerURL(hash) : "",
   };

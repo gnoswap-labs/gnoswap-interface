@@ -22,6 +22,8 @@ interface ConfirmSwapModalProps {
   swapTokenInfo: SwapTokenInfo;
   swapSummaryInfo: SwapSummaryInfo;
   swapResult: SwapResultInfo | null;
+  title: string;
+  isWrapOrUnwrap: boolean;
 
   swap: () => void;
   close: () => void;
@@ -34,10 +36,18 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   swapResult,
   swap,
   close,
+  title,
+  isWrapOrUnwrap,
 }) => {
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
-    return <>1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenB.symbol}</>;
+    return (
+      <>
+        1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;
+        <ExchangeRate value={convertSwapRate(swapRate)} />
+        &nbsp;{tokenB.symbol}
+      </>
+    );
   }, [swapSummaryInfo]);
 
   const swapRateUSDStr = useMemo(() => {
@@ -81,15 +91,16 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   return (
     <ConfirmModal>
       <div
-        className={`modal-body ${swapResult === null && submitted
-          ? "modal-body-loading"
-          : submitted
+        className={`modal-body ${
+          swapResult === null && submitted
+            ? "modal-body-loading"
+            : submitted
             ? "submitted-modal"
             : ""
-          }`}
+        }`}
       >
         <div className="modal-header">
-          <span>Confirm Swap</span>
+          <span>{title}</span>
           <div className="close-wrap" onClick={close}>
             <IconClose className="close-icon" />
           </div>
@@ -146,38 +157,42 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
             </div>
           </div>
           <div className="gas-info">
-            <div className="price-impact">
-              <span className="gray-text">Price Impact</span>
-              <span className="white-text">{priceImpactStr}</span>
-            </div>
-            <div className="slippage">
-              <span className="gray-text">Max. Slippage</span>
-              <span className="white-text">{slippageStr}</span>
-            </div>
-            <SwapDivider />
-            <div className="received">
-              <span className="gray-text">{guaranteedTypeStr}</span>
-              <span className="white-text">{guaranteedStr}</span>
-            </div>
-            <div className="received">
-              <div className="protocol">
-                <div>
-                  <span className="">Protocol Fee</span>
-                  <Tooltip
-                    placement="top"
-                    FloatingContent={
-                      <ToolTipContentWrapper>
-                        The amount of fees charged on each trade that goes to
-                        the protocol.
-                      </ToolTipContentWrapper>
-                    }
-                  >
-                    <IconInfo />
-                  </Tooltip>
+            {!isWrapOrUnwrap && (
+              <>
+                <div className="price-impact">
+                  <span className="gray-text">Price Impact</span>
+                  <span className="white-text">{priceImpactStr}</span>
                 </div>
-                <span className="white-text">0%</span>
-              </div>
-            </div>
+                <div className="slippage">
+                  <span className="gray-text">Max. Slippage</span>
+                  <span className="white-text">{slippageStr}</span>
+                </div>
+                <SwapDivider />
+                <div className="received">
+                  <span className="gray-text">{guaranteedTypeStr}</span>
+                  <span className="white-text">{guaranteedStr}</span>
+                </div>
+                <div className="received">
+                  <div className="protocol">
+                    <div>
+                      <span className="">Protocol Fee</span>
+                      <Tooltip
+                        placement="top"
+                        FloatingContent={
+                          <ToolTipContentWrapper>
+                            The amount of fees charged on each trade that goes
+                            to the protocol.
+                          </ToolTipContentWrapper>
+                        }
+                      >
+                        <IconInfo />
+                      </Tooltip>
+                    </div>
+                    <span className="white-text">0%</span>
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="gas-fee">
               <span className="gray-text">Network Gas Fee</span>
@@ -190,7 +205,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
         </div>
         <div className="modal-button">
           <Button
-            text="Confirm Swap"
+            text={title}
             style={{
               fullWidth: true,
               height: 57,
