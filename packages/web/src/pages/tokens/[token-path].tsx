@@ -1,7 +1,9 @@
 import Footer from "@components/common/footer/Footer";
 import TokenChartContainer from "@containers/token-chart-container/TokenChartContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import BreadcrumbsContainer, { BreadcrumbTypes } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
+import BreadcrumbsContainer, {
+  BreadcrumbTypes,
+} from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import TokenLayout from "@layouts/token-layout/TokenLayout";
 import TokenInfoContentContainer from "@containers/token-info-content-container/TokenInfoContentContainer";
 import TokenDescriptionContainer from "@containers/token-description-container/TokenDescriptionContainer";
@@ -31,13 +33,12 @@ export default function Token() {
       if (err["response"]["status"] === 404) {
         router.push("/404");
       }
-    }
+    },
   });
-  const {
-    data: {
-      usd: currentPrice = "0",
-    } = {},
-  } = useGetTokenPricesByPath(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
+  const { data: { usd: currentPrice = "0" } = {} } = useGetTokenPricesByPath(
+    path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
+    { enabled: !!path },
+  );
   const { getGnotPath } = useGnotToGnot();
 
   const steps = useMemo(() => {
@@ -51,65 +52,72 @@ export default function Token() {
         path: "",
         options: {
           type: "TOKEN_SYMBOL" as BreadcrumbTypes,
-          token: token
-        }
+          token: token,
+        },
       },
     ];
   }, [token]);
 
-  const price = useMemo(() => toPriceFormat(
-    currentPrice, {
-    usd: true,
-    isRounding: false,
-  }), [currentPrice]);
+  const price = useMemo(
+    () =>
+      toPriceFormat(currentPrice, {
+        usd: true,
+        isRounding: false,
+      }),
+    [currentPrice],
+  );
 
   const wrappedToken = useMemo(() => getGnotPath(token), [getGnotPath, token]);
 
   const seoInfo = useMemo(() => SEOInfo["token/[token-path]"], []);
 
   const title = useMemo(() => {
-    if (currentPrice && token) {
-      return `${price} | ${wrappedToken?.name}(${wrappedToken?.symbol})`;
-    }
-
-    return seoInfo.title([
-      currentPrice ? price : undefined,
-      token ? wrappedToken.name : undefined,
-      token ? wrappedToken.symbol : undefined,
-    ].filter(item => item));
-  }, [currentPrice, price, seoInfo, token, wrappedToken.name, wrappedToken.symbol]);
+    return seoInfo.title(
+      [
+        currentPrice ? price : undefined,
+        token ? wrappedToken.name : undefined,
+        token ? wrappedToken.symbol : undefined,
+      ].filter(item => item),
+    );
+  }, [
+    currentPrice,
+    price,
+    seoInfo,
+    token,
+    wrappedToken.name,
+    wrappedToken.symbol,
+  ]);
 
   const ogTitle = useMemo(
-    () => seoInfo.ogTitle?.([
-      token ? wrappedToken?.name : undefined,
-      token ? wrappedToken?.symbol : undefined,
-    ].filter(item => item)
-    ), [
-    seoInfo,
-    token,
-    wrappedToken?.name,
-    wrappedToken?.symbol
-  ]);
-  const ogDesc = useMemo(
-    () => seoInfo.ogDesc?.([
-      token ? wrappedToken?.symbol : undefined,
-    ].filter(item => item)
-    ), [
-    seoInfo,
-    token,
-    wrappedToken?.symbol
-  ]);
+    () =>
+      seoInfo.ogTitle?.(
+        [
+          token ? wrappedToken?.name : undefined,
+          token ? wrappedToken?.symbol : undefined,
+        ].filter(item => item),
+      ),
+    [seoInfo, token, wrappedToken?.name, wrappedToken?.symbol],
+  );
+  const desc = useMemo(
+    () =>
+      seoInfo.desc?.(
+        [token ? wrappedToken?.symbol : undefined].filter(item => item),
+      ),
+    [seoInfo, token, wrappedToken?.symbol],
+  );
 
   return (
     <>
-      <SEOHeader
-        title={title}
-        ogTitle={ogTitle}
-        pageDescription={ogDesc}
-      />
+      <SEOHeader title={title} ogTitle={ogTitle} pageDescription={desc} />
       <TokenLayout
         header={<HeaderContainer />}
-        breadcrumbs={<BreadcrumbsContainer listBreadcrumb={steps} isLoading={isLoading} w="102px" />}
+        breadcrumbs={
+          <BreadcrumbsContainer
+            listBreadcrumb={steps}
+            isLoading={isLoading}
+            w="102px"
+          />
+        }
         chart={<TokenChartContainer />}
         info={<TokenInfoContentContainer />}
         description={<TokenDescriptionContainer />}

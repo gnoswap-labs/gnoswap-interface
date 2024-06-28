@@ -217,7 +217,7 @@ export const SEOInfo: Record<PageKey, {
       return "Buy or Sell Token on Gnoswap.";
     },
     ogTitle: (params = []) => {
-      if (params.length === 1) {
+      if (params.length === 2) {
         const [tokenName, tokenSymbol] = params;
         return `${tokenName}(${tokenSymbol}) | Gnoswap`;
       }
