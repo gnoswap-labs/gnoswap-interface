@@ -11,7 +11,11 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetTokenByPath, useGetTokenDetailByPath, useGetTokenPricesByPath } from "@query/token";
+import {
+  useGetTokenByPath,
+  useGetTokenDetailByPath,
+  useGetTokenPricesByPath,
+} from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
@@ -107,7 +111,7 @@ function createXAxisDatas(
   date: Date[],
   space: number,
 ) {
-  const setData = chartData.slice(space).map(entry => entry.date.split(" ")[0]);
+  const setData = chartData.slice(space).map(entry => entry.time.split(" ")[0]);
   const labelX = getLabelChartV2(
     setData,
     Math.round((setData.length - space) / (numberAxis - 1)),
@@ -164,7 +168,7 @@ const TokenChartContainer: React.FC = () => {
     },
     onClickClose: () => {
       router.push("/");
-    }
+    },
   });
   const path = router.query["token-path"] as string;
   const { data: tokenB } = useGetTokenByPath(path, {
@@ -172,12 +176,7 @@ const TokenChartContainer: React.FC = () => {
     refetchInterval: 1000 * 10,
   });
   const {
-    data: {
-      prices1d = [],
-      prices7d = [],
-      prices1m = [],
-      prices1y = [],
-    } = {},
+    data: { prices1d = [], prices7d = [], prices1m = [], prices1y = [] } = {},
     isLoading,
   } = useGetTokenDetailByPath(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
@@ -185,25 +184,25 @@ const TokenChartContainer: React.FC = () => {
   });
 
   const {
-    data: {
-      usd: currentPrice,
-      pricesBefore = priceChangeDetailInit,
-    } = {}
+    data: { usd: currentPrice, pricesBefore = priceChangeDetailInit } = {},
   } = useGetTokenPricesByPath(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,
   });
 
-
-  const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon || path);
+  const [componentRef, size] = useComponentSize(
+    isLoading || isLoadingCommon || path,
+  );
 
   useEffect(() => {
     if (tokenB) {
       const dataToday = checkPositivePrice(
         pricesBefore.latestPrice,
-        pricesBefore.priceToday, {
-        displayStatusSign: false,
-      });
+        pricesBefore.priceToday,
+        {
+          displayStatusSign: false,
+        },
+      );
       setTokenInfo(() => ({
         token: {
           name: getGnotPath(tokenB).name,
@@ -216,8 +215,8 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: currentPrice ?
-              toPriceFormat(currentPrice, { usd: true, isRounding: false })
+            value: currentPrice
+              ? toPriceFormat(currentPrice, { usd: true, isRounding: false })
               : "",
             denom: "USD",
             status: dataToday.status,
@@ -232,7 +231,15 @@ const TokenChartContainer: React.FC = () => {
         });
       }
     }
-  }, [router.query, pricesBefore.latestPrice, currentPrice, tokenB, gnot, pricesBefore.priceToday, fromSelectToken]);
+  }, [
+    router.query,
+    pricesBefore.latestPrice,
+    currentPrice,
+    tokenB,
+    gnot,
+    pricesBefore.priceToday,
+    fromSelectToken,
+  ]);
 
   const changeTab = useCallback((tab: string) => {
     const currentTab =
@@ -244,12 +251,12 @@ const TokenChartContainer: React.FC = () => {
     if (breakpoint === DEVICE_TYPE.MOBILE)
       return Math.floor(
         ((size.width || 0) + 20 - 25) /
-        (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
+          (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
       );
 
     return Math.floor(
       ((size.width || 0) + 20 - 8) /
-      (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
+        (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
     );
   }, [size.width, breakpoint, currentTab]);
 
@@ -270,7 +277,7 @@ const TokenChartContainer: React.FC = () => {
     return temp
       .map(item => ({
         ...item,
-        date: item.date,
+        date: item.time,
       }))
       .reverse();
   }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
@@ -281,18 +288,18 @@ const TokenChartContainer: React.FC = () => {
       currentTab === TokenChartGraphPeriods[0]
         ? 144
         : currentTab === TokenChartGraphPeriods[1]
-          ? 168
-          : currentTab === TokenChartGraphPeriods[2]
-            ? 180
-            : currentTab === TokenChartGraphPeriods[3]
-              ? 365
-              : 144;
+        ? 168
+        : currentTab === TokenChartGraphPeriods[2]
+        ? 180
+        : currentTab === TokenChartGraphPeriods[3]
+        ? 365
+        : 144;
     const currentLength = chartData.length;
     const startTime = Math.max(0, currentLength - length - 1);
 
     const temp = generateDateSequence(
-      getLocalizeTime(chartData?.[startTime]?.date),
-      getLocalizeTime(chartData[currentLength - 1]?.date),
+      getLocalizeTime(chartData?.[startTime]?.time),
+      getLocalizeTime(chartData[currentLength - 1]?.time),
       countXAxis > 2 ? Math.floor(24 / Math.min(countXAxis, 7)) : 3,
     );
 
@@ -316,13 +323,21 @@ const TokenChartContainer: React.FC = () => {
       spaceBetweenLeftYAxisWithFirstLabel,
     );
 
-    const lastTime = chartData.length >= 1 ? new Date(chartData[chartData.length - 1]?.date) : undefined;
-    const last2Time = chartData.length >= 2 ? new Date(chartData[chartData.length - 2]?.date) : undefined;
+    const lastTime =
+      chartData.length >= 1
+        ? new Date(chartData[chartData.length - 1]?.time)
+        : undefined;
+    const last2Time =
+      chartData.length >= 2
+        ? new Date(chartData[chartData.length - 2]?.time)
+        : undefined;
     const latestTimeGap = (() => {
-      if (lastTime && last2Time) return lastTime.getTime() - last2Time.getTime();
+      if (lastTime && last2Time)
+        return lastTime.getTime() - last2Time.getTime();
     })();
     const fakeLastTime = (() => {
-      if (lastTime && latestTimeGap) return new Date(lastTime.getTime() + latestTimeGap);
+      if (lastTime && latestTimeGap)
+        return new Date(lastTime.getTime() + latestTimeGap);
 
       return new Date();
     })();
@@ -330,23 +345,23 @@ const TokenChartContainer: React.FC = () => {
     const datas =
       chartData?.length > 0
         ? [
-          ...chartData.map((item: IPriceResponse) => {
-            return {
+            ...chartData.map((item: IPriceResponse) => {
+              return {
+                amount: {
+                  value: `${item.price}`,
+                  denom: "",
+                },
+                time: getLocalizeTime(item.time),
+              };
+            }),
+            {
               amount: {
-                value: `${item.price}`,
+                value: (pricesBefore.latestPrice || 0).toString(),
                 denom: "",
               },
-              time: getLocalizeTime(item.date),
-            };
-          }),
-          {
-            amount: {
-              value: (pricesBefore.latestPrice || 0).toString(),
-              denom: "",
+              time: getLocalizeTime(fakeLastTime),
             },
-            time: getLocalizeTime(fakeLastTime),
-          },
-        ]
+          ]
         : [];
 
     const yAxisLabels = getYAxisLabels(
