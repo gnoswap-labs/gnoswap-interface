@@ -160,7 +160,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   }, [swapTokenInfo.tokenBAmount, tokenB?.decimals]);
 
   const showPriceImpact = useMemo(
-    () => !isLoading && swapSummaryInfo?.priceImpact,
+    () => !isLoading && !!swapSummaryInfo?.priceImpact,
     [isLoading, swapSummaryInfo?.priceImpact],
   );
 
@@ -229,7 +229,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
               {swapTokenInfo.tokenBUSDStr}
             </span>
             {showPriceImpact && (
-              <PriceImpactWrapper priceImpact={swapSummaryInfo?.priceImpact}>
+              <PriceImpactWrapper priceImpact={priceImpactStatus}>
                 {priceImpactStatus === "HIGH" && (
                   <IconTriangleWarningOutlined stroke={theme.color.red01} />
                 )}

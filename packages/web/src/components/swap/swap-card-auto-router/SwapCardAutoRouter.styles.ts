@@ -124,3 +124,7 @@ export const DotLine = styled.hr`
   border: 0px;
   border-top: 2px dotted ${({ theme }) => theme.color.border03};
 `;
+
+export const AutoRoutePoolInfoWrapper = styled.div`
+  ${fonts.body12}
+`;

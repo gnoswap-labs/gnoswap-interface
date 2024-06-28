@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
-import IconNote from "@components/common/icons/IconNote";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import SwapCardFeeInfo from "../swap-card-fee-info/SwapCardFeeInfo";
@@ -15,6 +14,7 @@ import { formatUsdNumber3Digits } from "@utils/number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { IconGasFilled } from "@components/common/icons/IconsGasFilled";
 
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -114,7 +114,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
               </div>
             )}
             <div className="price-info">
-              <IconNote className="price-icon note-icon" />
+              <IconGasFilled className="price-icon note-icon" />
               <span>{gasFeeUSDStr}</span>
               {openedDetailInfo ? (
                 <IconStrokeArrowUp

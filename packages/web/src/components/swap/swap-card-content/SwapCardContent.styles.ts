@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
@@ -164,19 +165,26 @@ export const PriceInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")}
 `;
 
-export const PriceImpactWrapper = styled.div<{ priceImpact?: number }>`
+export const PriceImpactWrapper = styled.div<{ priceImpact?: PriceImpactStatus }>`
   ${mixins.flexbox("row", "center", "flex-start")}
   gap: 4px;
   ${fonts.body12};
   ${media.mobile} {
     ${fonts.p2};
   }
-  ${({ priceImpact }) => {
-    if (!priceImpact) return "";
-    if (priceImpact > 0) return "color: green;";
-    if (priceImpact <= -10) return "color: red;";
-    return "color: orange;";
-  }};
+  ${({ priceImpact, theme }) => {
+    switch (priceImpact) {
+      case "HIGH":
+        return `color: ${theme.color.red01};`;
+      case "LOW":
+      default:
+        return `color: ${theme.color.text04};`;
+      case "POSITIVE":
+        return `color: ${theme.color.green01};`;
+      case "MEDIUM":
+        return `color: ${theme.color.goldenrod};`;
+    }
+  }}
   margin-left: 8px;
 `;
 

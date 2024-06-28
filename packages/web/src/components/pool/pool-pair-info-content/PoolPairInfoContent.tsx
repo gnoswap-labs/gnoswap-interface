@@ -25,6 +25,8 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { toUnitFormat } from "@utils/number-utils";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -46,10 +48,12 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const tokenABalance = useMemo(() => {
     return pool.tokenABalance || 0;
   }, [pool.tokenABalance]);
+  console.log("🚀 ~ tokenABalance ~ tokenABalance:", tokenABalance);
 
   const tokenBBalance = useMemo(() => {
     return pool.tokenBBalance || 0;
   }, [pool.tokenBBalance]);
+  console.log("🚀 ~ tokenBBalance ~ tokenBBalance:", tokenBBalance);
 
   const depositRatio = useMemo(() => {
     const sumOfBalances = Number(tokenABalance) + Number(tokenBBalance);
@@ -137,10 +141,12 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
   const currentPrice = useMemo(() => {
-    const price = tickToPriceStr(pool.currentTick, { decimals: 40, isFormat: false });
+    const price = tickToPriceStr(pool.currentTick, {
+      decimals: 40,
+      isFormat: false,
+    });
 
-    return formatTokenExchangeRate(
-      price, {
+    return formatTokenExchangeRate(price, {
       maxSignificantDigits: 6,
       fixedDecimalDigits: 6,
       minLimit: 0.000001,
@@ -150,7 +156,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const feeLogo = useMemo(() => {
     return [
       { ...pool.tokenA, ...getGnotPath(pool.tokenA) },
-      { ...pool.tokenB, ...getGnotPath(pool.tokenB) }
+      { ...pool.tokenB, ...getGnotPath(pool.tokenB) },
     ];
   }, [getGnotPath, pool.tokenA, pool.tokenB]);
 
@@ -189,71 +195,107 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && (
             <div className="wrapper-value">
               <strong>{liquidityValue}</strong>
-              {pool.tvlChange ? <div>
-                {pool.tvlChange >= 0 ? (
-                  <IconTriangleArrowUpV2 />
-                ) : (
-                  <IconTriangleArrowDownV2 />
-                )}{" "}
-                <span className={pool.tvlChange >= 0 ? "positive" : "negative"}>
-                  {" "}
-                  {liquidityChangedStr}
-                </span>
-              </div> : "-"}
+              {pool.tvlChange ? (
+                <div>
+                  {pool.tvlChange >= 0 ? (
+                    <IconTriangleArrowUpV2 />
+                  ) : (
+                    <IconTriangleArrowDownV2 />
+                  )}{" "}
+                  <span
+                    className={pool.tvlChange >= 0 ? "positive" : "negative"}
+                  >
+                    {" "}
+                    {liquidityChangedStr}
+                  </span>
+                </div>
+              ) : (
+                "-"
+              )}
             </div>
           )}
           <div className="section-info">
             {!loading && (
               <>
-                <div className="section-image">
-                  <MissingLogo
-                    symbol={pool?.tokenA?.symbol}
-                    url={pool?.tokenA?.logoURI}
-                    width={20}
-                    className="image-logo"
-                  />
-                  <span>
+                <Tooltip
+                  placement="top"
+                  isShouldShowed={tokenBBalance >= 1e3}
+                  FloatingContent={
+                    <div>
+                      {formatTokenExchangeRate(tokenABalance, {
+                        minLimit: makeDisplayTokenAmount(pool.tokenA, 1),
+                        maxSignificantDigits: pool?.tokenA?.decimals,
+                        isIgnoreKMBFormat: true,
+                      })}{" "}
+                      <span>{pool?.tokenA?.symbol}</span>{" "}
+                    </div>
+                  }
+                >
+                  <div className="section-image">
+                    <MissingLogo
+                      symbol={pool?.tokenA?.symbol}
+                      url={pool?.tokenA?.logoURI}
+                      width={20}
+                      className="image-logo"
+                    />
                     {formatTokenExchangeRate(tokenABalance, {
-                      minLimit: 0.000001,
-                      maxSignificantDigits: 6,
-                      fixedDecimalDigits: 6,
+                      minLimit: makeDisplayTokenAmount(pool.tokenA, 1),
+                      maxSignificantDigits: pool?.tokenA?.decimals,
+                      fixedDecimalDigits: pool?.tokenA?.decimals,
                     })}{" "}
                     <span
-                      className={`token-symbol ${isWrapText ? "wrap-text" : ""
-                        }`}
+                      className={`token-symbol ${
+                        isWrapText ? "wrap-text" : ""
+                      }`}
                     >
                       {pool?.tokenA?.symbol}
                     </span>{" "}
                     <span className="token-percent">
                       {depositRatioStrOfTokenA}
                     </span>
-                  </span>
-                </div>
+                  </div>
+                </Tooltip>
                 <div className="divider"></div>
-                <div className="section-image">
-                  <MissingLogo
-                    symbol={pool?.tokenB?.symbol}
-                    url={pool?.tokenB?.logoURI}
-                    width={20}
-                    className="image-logo"
-                  />
-                  <span>
-                    {formatTokenExchangeRate(`${tokenBBalance}`, {
-                      minLimit: 0.000001,
-                      maxSignificantDigits: 6,
-                      fixedDecimalDigits: 6,
-                    })}{" "}
-                    <span
-                      className={`token-symbol ${isWrapText ? "wrap-text" : ""
+                <Tooltip
+                  placement="top"
+                  isShouldShowed={tokenABalance >= 1e3}
+                  FloatingContent={
+                    <div>
+                      {formatTokenExchangeRate(tokenBBalance, {
+                        minLimit: 1 / Math.pow(10, pool.tokenB?.decimals),
+                        maxSignificantDigits: pool?.tokenB?.decimals,
+                        isIgnoreKMBFormat: true,
+                      })}{" "}
+                      <span>{pool?.tokenB?.symbol}</span>{" "}
+                    </div>
+                  }
+                >
+                  <div className="section-image">
+                    <MissingLogo
+                      symbol={pool?.tokenB?.symbol}
+                      url={pool?.tokenB?.logoURI}
+                      width={20}
+                      className="image-logo"
+                    />
+                    <span>
+                      {formatTokenExchangeRate(`${tokenBBalance}`, {
+                        minLimit: 1 / Math.pow(10, pool.tokenB?.decimals),
+                        maxSignificantDigits: pool?.tokenB?.decimals,
+                        fixedDecimalDigits: pool?.tokenB?.decimals,
+                      })}{" "}
+                      <span
+                        className={`token-symbol ${
+                          isWrapText ? "wrap-text" : ""
                         }`}
-                    >
-                      {pool?.tokenB?.symbol}
-                    </span>{" "}
-                    <span className="token-percent">
-                      {depositRatioStrOfTokenB}
+                      >
+                        {pool?.tokenB?.symbol}
+                      </span>{" "}
+                      <span className="token-percent">
+                        {depositRatioStrOfTokenB}
+                      </span>
                     </span>
-                  </span>
-                </div>
+                  </div>
+                </Tooltip>
               </>
             )}
             {loading && (
@@ -268,10 +310,25 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && (
             <div className="wrapper-value">
               <strong>{volumeValue}</strong>
-              {pool.volumeChange24h ? <div>
-                {pool.volumeChange24h >= 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}{" "}
-                <span className={pool.volumeChange24h >= 0 ? "positive" : "negative"}> {volumeChangedStr}</span>
-              </div> : "-"}
+              {pool.volumeChange24h ? (
+                <div>
+                  {pool.volumeChange24h >= 0 ? (
+                    <IconTriangleArrowUpV2 />
+                  ) : (
+                    <IconTriangleArrowDownV2 />
+                  )}{" "}
+                  <span
+                    className={
+                      pool.volumeChange24h >= 0 ? "positive" : "negative"
+                    }
+                  >
+                    {" "}
+                    {volumeChangedStr}
+                  </span>
+                </div>
+              ) : (
+                "-"
+              )}
             </div>
           )}
           {loading && (
@@ -290,7 +347,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             {!loading && (
               <div className="section-image">
                 <span>
-                  {pool.allTimeVolumeUsd ? toUnitFormat(pool.allTimeVolumeUsd, true, true) : "-"}
+                  {pool.allTimeVolumeUsd
+                    ? toUnitFormat(pool.allTimeVolumeUsd, true, true)
+                    : "-"}
                 </span>
               </div>
             )}
@@ -362,8 +421,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     width={20}
                     className="image-logo"
                   />
-                  {width >= 768 && `1 ${pool?.tokenA?.symbol}`} ={" "}
-                  {currentPrice} {pool?.tokenB?.symbol}
+                  {width >= 768 && `1 ${pool?.tokenA?.symbol}`} = {currentPrice}{" "}
+                  {pool?.tokenB?.symbol}
                 </div>
               )}
               {loading && (
@@ -386,7 +445,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   {width >= 768 && `1 ${pool?.tokenB?.symbol}`} ={" "}
-                  {formatTokenExchangeRate(Number(1 / pool.price).toFixed(width > 400 ? 6 : 2))}{" "}
+                  {formatTokenExchangeRate(
+                    Number(1 / pool.price).toFixed(width > 400 ? 6 : 2),
+                  )}{" "}
                   {pool?.tokenA?.symbol}
                 </div>
               )}

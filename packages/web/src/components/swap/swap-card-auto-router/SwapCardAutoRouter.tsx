@@ -1,11 +1,16 @@
 import React, { useMemo } from "react";
-import { AutoRouterWrapper, DotLine } from "./SwapCardAutoRouter.styles";
+import {
+  AutoRoutePoolInfoWrapper,
+  AutoRouterWrapper,
+  DotLine,
+} from "./SwapCardAutoRouter.styles";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { useTokenImage } from "@hooks/token/use-token-image";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import Tooltip from "@components/common/tooltip/Tooltip";
 
 interface ContentProps {
   swapRouteInfos: SwapRouteInfo[];
@@ -19,8 +24,6 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
   isLoading,
 }) => {
   const bestGasFee = useMemo(() => {
-
-
     const totalGasFee = swapRouteInfos.reduce(
       (prev, current) => prev + current.gasFeeUSD,
       0,
@@ -104,16 +107,27 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
       <DotLine />
       {routeInfos.map((routeInfo, index) => (
         <React.Fragment key={`pool-${index}`}>
-          <div className="pair-fee">
-            <DoubleLogo
-              left={getTokenImage(routeInfo.fromToken) || ""}
-              right={getTokenImage(routeInfo.toToken) || ""}
-              size={16}
-              leftSymbol={getTokenSymbol(routeInfo.fromToken) || ""}
-              rightSymbol={getTokenSymbol(routeInfo.toToken) || ""}
-            />
-            <h1>{routeInfo.fee}</h1>
-          </div>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <AutoRoutePoolInfoWrapper>
+                {getTokenSymbol(routeInfo.fromToken)}
+                {"/"}
+                {getTokenSymbol(routeInfo.toToken)} {routeInfo.fee}
+              </AutoRoutePoolInfoWrapper>
+            }
+          >
+            <div className="pair-fee">
+              <DoubleLogo
+                left={getTokenImage(routeInfo.fromToken) || ""}
+                right={getTokenImage(routeInfo.toToken) || ""}
+                size={16}
+                leftSymbol={getTokenSymbol(routeInfo.fromToken) || ""}
+                rightSymbol={getTokenSymbol(routeInfo.toToken) || ""}
+              />
+              <h1>{routeInfo.fee}</h1>
+            </div>
+          </Tooltip>
           {index < 2 && <DotLine />}
         </React.Fragment>
       ))}

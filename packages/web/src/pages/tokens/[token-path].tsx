@@ -72,13 +72,11 @@ export default function Token() {
   const seoInfo = useMemo(() => SEOInfo["token/[token-path]"], []);
 
   const title = useMemo(() => {
-    return seoInfo.title(
-      [
-        currentPrice ? price : undefined,
-        token ? wrappedToken.name : undefined,
-        token ? wrappedToken.symbol : undefined,
-      ].filter(item => item),
-    );
+    return seoInfo.title([
+      currentPrice ? price : undefined,
+      token ? wrappedToken.name : undefined,
+      token ? wrappedToken.symbol : undefined,
+    ]);
   }, [
     currentPrice,
     price,
@@ -108,7 +106,12 @@ export default function Token() {
 
   return (
     <>
-      <SEOHeader title={title} ogTitle={ogTitle} pageDescription={desc} />
+      <SEOHeader
+        title={title}
+        ogTitle={ogTitle}
+        pageDescription={desc}
+        ogDescription={seoInfo.ogDesc?.()}
+      />
       <TokenLayout
         header={<HeaderContainer />}
         breadcrumbs={

@@ -380,16 +380,7 @@ export function makeBroadcastWrapTokenMessage(
   },
   hash?: string,
 ): INoticeContent {
-  function title() {
-    switch (type) {
-      case "pending":
-        return "Wrap - Pending!";
-      case "success":
-        return "Wrap - Success!";
-      case "error":
-        return "Wrap - Failure!";
-    }
-  }
+
   function description() {
     switch (type) {
       case "pending":
@@ -410,7 +401,7 @@ export function makeBroadcastWrapTokenMessage(
     }
   }
   return {
-    title: title(),
+    title: "Wrap",
     description: description(),
     scannerUrl: hash ? makeScannerURL(hash) : "",
   };
@@ -426,16 +417,6 @@ export function makeBroadcastUnwrapTokenMessage(
   },
   hash?: string,
 ): INoticeContent {
-  function title() {
-    switch (type) {
-      case "pending":
-        return "Unwrap - Pending!";
-      case "success":
-        return "Unwrap - Success!";
-      case "error":
-        return "Unwrap - Failure!";
-    }
-  }
   function description() {
     switch (type) {
       case "pending":
@@ -456,7 +437,7 @@ export function makeBroadcastUnwrapTokenMessage(
     }
   }
   return {
-    title: title(),
+    title: "Unwrap",
     description: description(),
     scannerUrl: hash ? makeScannerURL(hash) : "",
   };

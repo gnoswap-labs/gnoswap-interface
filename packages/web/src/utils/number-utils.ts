@@ -127,6 +127,132 @@ export const toUnitFormat = (
   return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });
 };
 
+export const toKMBFormat = (
+  value: BigNumber | string | number, {
+    usd = false,
+  }: {
+    usd?: boolean,
+  } = {}
+) => {
+  const valueWithoutComma = value.toString().replace(/,/g, "");
+
+  if (!isNumber(valueWithoutComma)) {
+    return usd ? "$0" : "0";
+  }
+
+  const bigNumber = BigNumber(valueWithoutComma).abs();
+  const prefix = (usd ? "$" : "");
+  const negativeSign = BigNumber(value).isLessThan(0) ? "-" : "";
+
+  if (bigNumber.isGreaterThanOrEqualTo(1e9)) {
+    return (
+      negativeSign + prefix +
+      bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
+      unitsUpperCase.billion
+    );
+  }
+
+  if (bigNumber.isGreaterThanOrEqualTo(1e6)) {
+    return (
+      negativeSign + prefix +
+      bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
+      unitsUpperCase.million
+    );
+  }
+
+  if (bigNumber.isGreaterThanOrEqualTo(1e3)) {
+    return (
+      negativeSign + prefix +
+      bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
+      unitsUpperCase.thousand
+    );
+  }
+};
+
+export const toPriceFormatNotRounding = (
+  value: BigNumber | string | number,
+  {
+    usd = false,
+    isKMBFormat = true,
+    lestThan1Decimals = 3,
+    lessThan1Significant,
+    greaterThan1Decimals = 2,
+    fixedGreaterThan1 = false,
+    minLimit,
+    fixedLessThan1 = false,
+  }: {
+    usd?: boolean,
+    isKMBFormat?: boolean,
+    lestThan1Decimals?: number;
+    lessThan1Significant?: number;
+    fixedLessThan1?: boolean;
+    greaterThan1Decimals?: number;
+    fixedGreaterThan1?: boolean;
+    minLimit?: number;
+    fixedDecimalForInteger?: boolean
+    fixedIntegerDecimal?: boolean
+  } = {}
+): string => {
+  const valueWithoutComma = value.toString().replace(/,/g, "");
+
+  if (!isNumber(valueWithoutComma)) {
+    return usd ? "$0" : "0";
+  }
+  const bigNumber = BigNumber(valueWithoutComma).abs();
+  const prefix = (usd ? "$" : "");
+  const negativeSign = BigNumber(valueWithoutComma).isLessThan(0) ? "-" : "";
+
+  if (minLimit && bigNumber.isLessThan(minLimit)) {
+    return (usd ? "<$" : "<") + minLimit.toString();
+  }
+
+  if (bigNumber.isEqualTo(0)) {
+    if (fixedLessThan1) return prefix + BigNumber(0).toFixed(lessThan1Significant || lestThan1Decimals);
+
+    return prefix + "0";
+  }
+
+
+  if (isKMBFormat) {
+    const kmbNumber = toKMBFormat(valueWithoutComma, { usd });
+    if (kmbNumber) return kmbNumber;
+  }
+
+  const negativeSignLength = bigNumber.isLessThan(0) ? 1 : 0;
+
+  if (Number(bigNumber) < 1) {
+    const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
+      maximumFractionDigits: lestThan1Decimals + 1,
+      minimumFractionDigits: lestThan1Decimals + 1,
+      minimumSignificantDigits: lessThan1Significant ? lessThan1Significant + 1 : undefined,
+      maximumSignificantDigits: lessThan1Significant ? lessThan1Significant + 1 : undefined,
+    }).replace(/,/g, "");
+
+    const cutNumber = tempNum.substring(0, tempNum.length - 1);
+
+    if (fixedLessThan1) {
+      return negativeSign + prefix + cutNumber;
+    }
+
+    return negativeSign + prefix + BigNumber(cutNumber).toFormat();
+  }
+
+  const finalGreaterThan1Decimals = greaterThan1Decimals + negativeSignLength;
+
+  const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
+    minimumFractionDigits: finalGreaterThan1Decimals + 1,
+    maximumFractionDigits: finalGreaterThan1Decimals + 1,
+  }).replace(/,/g, "");
+
+  const cutNumber = tempNum.substring(0, tempNum.length - 1);
+
+  if (fixedGreaterThan1) {
+    return negativeSign + prefix + cutNumber;
+  }
+
+  return negativeSign + prefix + BigNumber(cutNumber).toFormat();
+};
+
 /**
  * version 2 of @toUnitFormat
  */
@@ -155,37 +281,19 @@ export const toPriceFormat = (
     fixedLessThan1Significant?: number;
   } = {}
 ): string => {
-  if (!isNumber(value)) {
+  const valueWithoutComma = value.toString().replace(/,/g, "");
+
+  if (!isNumber(valueWithoutComma)) {
     return usd ? "$0" : "0";
   }
-  const bigNumber = BigNumber(value).abs();
+  const bigNumber = BigNumber(valueWithoutComma).abs();
   const prefix = (usd ? "$" : "");
-  const negativeSign = BigNumber(value).isLessThan(0) ? "-" : "";
+  const negativeSign = BigNumber(valueWithoutComma).isLessThan(0) ? "-" : "";
 
   if (isKMBFormat) {
-    if (bigNumber.isGreaterThan(1e9)) {
-      return (
-        negativeSign + prefix +
-        bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
-        unitsUpperCase.billion
-      );
-    }
-
-    if (bigNumber.isGreaterThan(1e6)) {
-      return (
-        negativeSign + prefix +
-        bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
-        unitsUpperCase.million
-      );
-    }
-
-    if (bigNumber.isGreaterThan(1e3)) {
-
-      return (
-        negativeSign + prefix +
-        bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
-        unitsUpperCase.thousand
-      );
+    const kmbNumber = toKMBFormat(value, { usd });
+    if (kmbNumber) {
+      return kmbNumber;
     }
   }
 

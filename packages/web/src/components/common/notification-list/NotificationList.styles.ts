@@ -174,7 +174,6 @@ export const NoDataText = styled.span`
   color: ${({ theme }) => theme.color.text04};
   padding: 0px 24px;
   width: 100%;
-  height: 100%;
   margin-top: 100px;
 
   ${media.tablet} {

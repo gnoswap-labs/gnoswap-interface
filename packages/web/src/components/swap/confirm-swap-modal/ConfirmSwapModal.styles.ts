@@ -3,6 +3,7 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { Z_INDEX } from "@styles/zIndex";
 import { media } from "@styles/media";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 
 export const ConfirmSwapModalBackground = styled.div`
   z-index: ${Z_INDEX.modal};
@@ -382,4 +383,63 @@ export const SwapDivider = styled.div`
   height: 1px;
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
+`;
+
+export const PriceImpactWrapper = styled.div<{ priceImpact?: PriceImpactStatus }>`
+  ${mixins.flexbox("row", "center", "flex-start")}
+  gap: 4px;
+  ${fonts.body12};
+  ${media.mobile} {
+    ${fonts.p2};
+  }
+  ${({ priceImpact, theme }) => {
+    switch (priceImpact) {
+      case "HIGH":
+        return `color: ${theme.color.red01};`;
+      case "LOW":
+      default:
+        return `color: ${theme.color.text04};`;
+      case "POSITIVE":
+        return `color: ${theme.color.green01};`;
+      case "MEDIUM":
+        return `color: ${theme.color.goldenrod};`;
+    }
+  }}
+  margin-left: 8px;
+`;
+
+export const PriceImpactStatusWrapper = styled.span<{
+  priceImpact: PriceImpactStatus;
+}>`
+   ${({ priceImpact, theme }) => {
+    switch (priceImpact) {
+      case "HIGH":
+        return `color: ${theme.color.red01};`;
+      case "LOW":
+        return `color: ${theme.color.text10};`;
+      default:
+        return `color: ${theme.color.text04};`;
+      case "POSITIVE":
+        return `color: ${theme.color.green01};`;
+      case "MEDIUM":
+        return `color: ${theme.color.goldenrod};`;
+    }
+  }}
+`;
+export const PriceImpactStrWrapper = styled.span<{
+  priceImpact: PriceImpactStatus;
+}>`
+  ${({ priceImpact, theme }) => {
+    switch (priceImpact) {
+      case "HIGH":
+        return `color: ${theme.color.red01};`;
+      case "LOW":
+      default:
+        return `color: ${theme.color.text04};`;
+      case "POSITIVE":
+        return `color: ${theme.color.green01};`;
+      case "MEDIUM":
+        return `color: ${theme.color.goldenrod};`;
+    }
+  }}
 `;

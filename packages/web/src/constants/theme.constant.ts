@@ -73,6 +73,7 @@ const palette = {
   gray400Opacity06: "#59678299",
   gray200Opacity: "#C3D2EA80",
   gray300Opacity06: "#90A2C099",
+  goldenrod: "#D7A423"
 };
 
 const colors = {
@@ -294,6 +295,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   select: colors.dark.gray600Hover1,
   redDark: colors.global.redDark,
   greenDark: colors.global.greenDark,
+  goldenrod: colors.global.goldenrod,
   shadow: colors.global.shadowDark,
   shadow01: colors.global.shadowDark1,
   shadow02: colors.global.shadowDark,
@@ -449,6 +451,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   select: colors.global.white,
   redDark: colors.global.redDark,
   greenDark: colors.global.greenDark,
+  goldenrod: colors.global.goldenrod,
   shadow: colors.global.shadowLight,
   shadow01: colors.global.shadowLight,
   shadow02: colors.global.none,

@@ -142,6 +142,7 @@ export interface ThemeColorType {
   select: string;
   redDark: string;
   greenDark: string;
+  goldenrod: string;
   shadow: string;
   shadow01: string;
   shadow02: string;

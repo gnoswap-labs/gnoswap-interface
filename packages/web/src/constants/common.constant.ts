@@ -44,7 +44,7 @@ export type PageKey =
   | "/swap"
   | "/wallet";
 
-export type StringParamsArr = string[];
+export type StringParamsArr = (string | undefined)[];
 
 export type StringWithParamsArr = (params?: StringParamsArr) => string;
 
@@ -202,10 +202,14 @@ export const SEOInfo: Record<PageKey, {
   },
   "token/[token-path]": {
     title: (params = []) => {
-      if (params.length === 3) {
-        const [tokenPrice, tokenName, tokenSymbol] = params;
-        return `${tokenPrice} | ${tokenName}(${tokenSymbol})`;
-      }
+      // Template => `$1.02 | Gnoswap(GNS)`
+      const [tokenPrice, tokenName, tokenSymbol] = params;
+      const tokenSymbolDisplay = tokenSymbol ? `(${tokenSymbol})` : "";
+      const tokenNameDisplay = `${tokenName}${tokenSymbolDisplay}`;
+      const titleDisplay = [tokenPrice, tokenNameDisplay].filter(item => item).join(" | ");
+
+      if (titleDisplay) return titleDisplay;
+
       return DefaultTitle;
     },
     desc: (params = []) => {

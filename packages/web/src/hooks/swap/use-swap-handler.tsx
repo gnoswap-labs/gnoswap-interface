@@ -229,7 +229,7 @@ export const useSwapHandler = () => {
 
   const priceImpact = useMemo(() => {
     if (!tokenA || !tokenB) {
-      return null;
+      return BigNumber(0);
     }
 
     const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
@@ -249,7 +249,7 @@ export const useSwapHandler = () => {
             .multipliedBy(100)
             .dividedBy(tokenAUSDAmount)
         : BigNumber(0);
-    return priceImpactNum;
+    return BigNumber(priceImpactNum.toFixed(2));
   }, [tokenA, tokenAAmount, tokenB, tokenBAmount, tokenPrices]);
 
   const priceImpactStatus: PriceImpactStatus = useMemo(() => {
@@ -441,14 +441,6 @@ export const useSwapHandler = () => {
     const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
     const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
 
-    const tokenAUSDAmount =
-      (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) *
-      Number(tokenAUSDValue);
-
-    const tokenBUSDAmount =
-      (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) *
-      Number(tokenBUSDValue);
-
     const swapRate =
       swapRateAction === "ATOB"
         ? Number(tokenBAmount) / Number(tokenAAmount)
@@ -457,15 +449,6 @@ export const useSwapHandler = () => {
       type === "EXACT_IN"
         ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
         : BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
-    const priceImpactNum =
-      tokenAUSDAmount !== 0
-        ? BigNumber(tokenBUSDAmount - tokenAUSDAmount)
-            .multipliedBy(100)
-            .dividedBy(tokenAUSDAmount)
-        : BigNumber(0);
-    const priceImpact = priceImpactNum.isGreaterThan(100)
-      ? 100
-      : Number(priceImpactNum.toFixed(2));
 
     return {
       tokenA,
@@ -473,7 +456,9 @@ export const useSwapHandler = () => {
       swapDirection: type,
       swapRate,
       swapRateUSD,
-      priceImpact,
+      priceImpact: priceImpact?.isGreaterThan(100)
+        ? 100
+        : Number(priceImpact?.toFixed(2)),
       guaranteedAmount: {
         amount: makeDisplayTokenAmount(targetTokenB, tokenAmountLimit) || 0,
         currency: targetTokenB.symbol,
@@ -501,6 +486,7 @@ export const useSwapHandler = () => {
     defaultGasFeeAmount,
     gasFeeUSD,
     tokenPrices,
+    priceImpact,
   ]);
 
   const isAvailSwap = useMemo(() => {
@@ -528,6 +514,7 @@ export const useSwapHandler = () => {
         isWrapOrUnwrap={
           swapButtonState === "WRAP" || swapButtonState === "UNWRAP"
         }
+        priceImpactStatus={priceImpactStatus}
         title={(() => {
           switch (swapButtonState) {
             case "SWAP":
@@ -536,13 +523,23 @@ export const useSwapHandler = () => {
               return "Confirm Wrap";
             case "UNWRAP":
               return "Confirm Unwrap";
+            case "HIGHT_PRICE_IMPACT":
+              return "Swap Anyway";
             default:
               return "";
           }
         })()}
       />,
     );
-  }, [submitted, swapResult, swapSummaryInfo, swapTokenInfo, swapButtonState]);
+  }, [
+    submitted,
+    swapResult,
+    swapSummaryInfo,
+    swapTokenInfo,
+    swapButtonState,
+    priceImpactStatus,
+    isLoading,
+  ]);
 
   const openConnectWallet = useCallback(() => {
     openModal();

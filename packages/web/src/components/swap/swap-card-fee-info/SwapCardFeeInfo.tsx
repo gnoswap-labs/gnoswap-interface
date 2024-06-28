@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
 import {
   FeeWrapper,
+  PriceImpactStatusWrapper,
+  PriceImpactStrWrapper,
   SwapDivider,
   ToolTipContentWrapper,
 } from "./SwapCardFeeInfo.styles";
@@ -72,9 +74,8 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
       case "POSITIVE":
         return "Positive";
       case "NONE":
-        return "";
       default:
-        break;
+        return "";
     }
   }, [priceImpactStatus]);
 
@@ -84,7 +85,15 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
         <span className="gray-text">Price Impact</span>
         {!isLoading ? (
           <span className="white-text">
-            {priceImpactStatusDisplay} {priceImpactStr}
+            <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
+              {priceImpactStatusDisplay}
+            </PriceImpactStatusWrapper>{" "}
+            <PriceImpactStrWrapper priceImpact={priceImpactStatus}>
+              {"("}
+              {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
+              {priceImpactStr}
+              {")"}
+            </PriceImpactStrWrapper>
           </span>
         ) : (
           <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
