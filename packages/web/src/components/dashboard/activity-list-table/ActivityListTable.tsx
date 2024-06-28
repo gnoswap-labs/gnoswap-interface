@@ -4,9 +4,6 @@ import {
   TABLE_HEAD,
   type Activity,
 } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
-import ActivityInfo, {
-  MobileActivityInfo,
-} from "@components/dashboard/activity-info/ActivityInfo";
 import { cx } from "@emotion/css";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import {
@@ -18,11 +15,13 @@ import {
 import {
   ACTIVITY_INFO,
   MOBILE_ACTIVITY_INFO,
-  // MOBILE_ACTIVITY_TD_WIDTH,
 } from "@constants/skeleton.constant";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { DEVICE_TYPE } from "@styles/media";
+import ActivityInfo, {
+  MobileActivityInfo,
+} from "../activity-info/ActivityInfo";
 
 interface ActivityListTableProps {
   activities: Activity[];
@@ -98,15 +97,14 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
           {isFetched && activities.length === 0 && (
             <div css={noDataText}>No tokens found</div>
           )}
-          {/* {isFetched &&
+          {isFetched &&
             activities.length > 0 &&
             activities.map((item, idx) => (
               <ActivityInfo item={item} idx={idx + 1} key={idx} />
-            ))} */}
-          {/* {!isFetched && (
+            ))}
+          {!isFetched && (
             <TableSkeleton info={ACTIVITY_INFO} className="activity-table" />
-          )} */}
-          {<TableSkeleton info={ACTIVITY_INFO} className="activity-table" />}
+          )}
         </div>
       </div>
     </TableWrapper>
@@ -142,23 +140,17 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
           {isFetched && activities.length === 0 && (
             <div css={noDataText}>No tokens found</div>
           )}
-          {/* {isFetched &&
+          {isFetched &&
             activities.length > 0 &&
             activities.map((item, idx) => (
               <MobileActivityInfo item={item} idx={idx + 1} key={idx} />
-            ))} */}
+            ))}
           {
             <TableSkeleton
               info={MOBILE_ACTIVITY_INFO}
               className="activity-table"
             />
           }
-          {/* {!isFetched && (
-            <TableSkeleton
-              info={MOBILE_ACTIVITY_INFO}
-              className="activity-table"
-            />
-          )} */}
         </div>
       </div>
     </TableWrapper>
