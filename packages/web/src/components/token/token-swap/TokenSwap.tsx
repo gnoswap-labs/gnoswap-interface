@@ -13,6 +13,7 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
 import BigNumber from "bignumber.js";
 import { roundDownDecimalNumber } from "@utils/regex";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -36,6 +37,7 @@ export interface TokenSwapProps {
   changeTokenBAmount: (value: string, none?: boolean) => void;
   switchSwapDirection: () => void;
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
+  priceImpactStatus: PriceImpactStatus;
 }
 
 function isAmount(str: string) {
@@ -64,6 +66,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   swapSummaryInfo,
   swapRouteInfos,
   setSwapRateAction,
+  priceImpactStatus,
 }) => {
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
@@ -95,14 +98,18 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
 
   const handleAutoFillTokenA = useCallback(() => {
     if (connected) {
-      const formatValue = parseFloat(dataTokenInfo.tokenABalance.replace(/,/g, "")).toString();
+      const formatValue = parseFloat(
+        dataTokenInfo.tokenABalance.replace(/,/g, ""),
+      ).toString();
       changeTokenAAmount(formatValue);
     }
   }, [changeTokenAAmount, connected, dataTokenInfo]);
 
   const handleAutoFillTokenB = useCallback(() => {
     if (connected) {
-      const formatValue = parseFloat(dataTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
+      const formatValue = parseFloat(
+        dataTokenInfo.tokenBBalance.replace(/,/g, ""),
+      ).toString();
       changeTokenBAmount(formatValue);
     }
   }, [changeTokenBAmount, connected, dataTokenInfo]);
@@ -116,14 +123,23 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   }, [connected, connectWallet, swapNow, isSwitchNetwork]);
 
   const isShowInfoSection = useMemo(() => {
-    return (!!Number(dataTokenInfo.tokenAAmount) && !!Number(dataTokenInfo.tokenBAmount)) || isLoading;
+    return (
+      (!!Number(dataTokenInfo.tokenAAmount) &&
+        !!Number(dataTokenInfo.tokenBAmount)) ||
+      isLoading
+    );
   }, [dataTokenInfo, isLoading]);
 
   const balanceADisplay = useMemo(() => {
     if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenABalance !== "-") {
       if (dataTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat(2);
+      return BigNumber(
+        dataTokenInfo.tokenABalance
+          .replace(/,/g, "")
+          .match(roundDownDecimalNumber(2))
+          ?.toString() ?? 0,
+      ).toFormat(2);
     }
     return "-";
   }, [isSwitchNetwork, connected, dataTokenInfo.tokenABalance]);
@@ -132,7 +148,12 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenBBalance !== "-") {
       if (dataTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat(2);
+      return BigNumber(
+        dataTokenInfo.tokenBBalance
+          .replace(/,/g, "")
+          .match(roundDownDecimalNumber(2))
+          ?.toString() ?? 0,
+      ).toFormat(2);
     }
     return "-";
   }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork]);
@@ -162,7 +183,9 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         <div className="from">
           <div className="amount">
             <input
-              className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
+              className={`amount-text ${
+                isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""
+              }`}
               value={dataTokenInfo.tokenAAmount}
               onChange={onChangeTokenAAmount}
               placeholder="0"
@@ -172,8 +195,19 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>{dataTokenInfo.tokenAUSDStr}</span>
-            <span className={`balance-text ${tokenA && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenA}>
+            <span
+              className={`price-text ${
+                isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""
+              }`}
+            >
+              {dataTokenInfo.tokenAUSDStr}
+            </span>
+            <span
+              className={`balance-text ${
+                tokenA && connected && "balance-text-disabled"
+              }`}
+              onClick={handleAutoFillTokenA}
+            >
               Balance: {balanceADisplay}
             </span>
           </div>
@@ -181,7 +215,9 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         <div className="to">
           <div className="amount">
             <input
-              className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
+              className={`amount-text ${
+                isLoading && direction === "EXACT_IN" ? "text-opacity" : ""
+              }`}
               value={dataTokenInfo.tokenBAmount}
               onChange={onChangeTokenBAmount}
               placeholder="0"
@@ -191,8 +227,19 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className={`price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}>{dataTokenInfo.tokenBUSDStr}</span>
-            <span className={`balance-text ${tokenB && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenB}>
+            <span
+              className={`price-text ${
+                isLoading && direction === "EXACT_IN" ? "text-opacity" : ""
+              }`}
+            >
+              {dataTokenInfo.tokenBUSDStr}
+            </span>
+            <span
+              className={`balance-text ${
+                tokenB && connected && "balance-text-disabled"
+              }`}
+              onClick={handleAutoFillTokenB}
+            >
               Balance: {balanceBDisplay}
             </span>
           </div>
@@ -209,6 +256,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           swapRouteInfos={swapRouteInfos}
           isLoading={isLoading}
           setSwapRateAction={setSwapRateAction}
+          priceImpactStatus={priceImpactStatus}
         />
       )}
       <div className="footer">

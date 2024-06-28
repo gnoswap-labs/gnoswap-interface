@@ -55,6 +55,7 @@ const TokenSwapContainer: React.FC = () => {
     swapValue,
     setSwapRateAction,
     setTokenAAmount,
+    priceImpactStatus,
   } = useSwapHandler();
 
   useEffect(() => {
@@ -120,7 +121,7 @@ const TokenSwapContainer: React.FC = () => {
   const handleChangeTokenB = (token: TokenModel) => {
     if (
       swapValue?.tokenB?.path ===
-      encryptId(router?.query?.["token-path"] as string) &&
+        encryptId(router?.query?.["token-path"] as string) &&
       swapValue?.tokenA?.symbol !== token?.symbol
     ) {
       router.push(`/tokens/${makeId(token.path)}`);
@@ -131,7 +132,7 @@ const TokenSwapContainer: React.FC = () => {
   const handleChangeTokenA = (token: TokenModel) => {
     if (
       swapValue?.tokenA?.path ===
-      encryptId(router?.query?.["token-path"] as string) &&
+        encryptId(router?.query?.["token-path"] as string) &&
       swapValue?.tokenB?.symbol !== token?.symbol
     ) {
       router.push(`/tokens/${makeId(token.path)}`);
@@ -162,6 +163,7 @@ const TokenSwapContainer: React.FC = () => {
         swapSummaryInfo={swapSummaryInfo}
         swapRouteInfos={swapRouteInfos}
         setSwapRateAction={setSwapRateAction}
+        priceImpactStatus={priceImpactStatus}
       />
       {openedSlippage && (
         <SettingMenuModal
