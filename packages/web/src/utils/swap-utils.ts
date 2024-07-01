@@ -38,7 +38,9 @@ export function makeSwapFeeTierByTickSpacing(
 }
 
 export function priceToTick(price: number | bigint) {
+  console.log("🚀 ~ priceToTick ~ price:", price);
   const logPrice = Math.log(Number(price));
+  console.log("🚀 ~ priceToTick ~ logPrice:", logPrice);
   return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }
 
@@ -229,6 +231,8 @@ export function getDepositAmountsByAmountA(
   }
 
   const currentPriceX96 = tickToSqrtPriceX96(priceToTick(currentPrice));
+  console.log("🚀 234234234 ~ currentPriceX96:", currentPriceX96);
+  console.log("🚀 234234234 ~ currentPrice:", currentPrice);
   const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
   const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
