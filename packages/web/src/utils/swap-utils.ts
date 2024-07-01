@@ -38,9 +38,7 @@ export function makeSwapFeeTierByTickSpacing(
 }
 
 export function priceToTick(price: number | bigint) {
-  console.log("🚀 ~ priceToTick ~ price:", price);
   const logPrice = Math.log(Number(price));
-  console.log("🚀 ~ priceToTick ~ logPrice:", logPrice);
   return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }
 
