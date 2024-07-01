@@ -7,12 +7,12 @@ import {
 import RepositionModalContainer from "@containers/reposition-modal-container/RepoitionModalContainer";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
-import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
 import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { IPriceRange } from "./use-reposition-handle";
+import { RepositionLiquidityResponse } from "@repositories/position/response";
 
 export interface Props {
   openModal: () => void;
@@ -33,10 +33,10 @@ export interface RepositionModalProps {
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
-  addPosition: (
+  reposition: (
     swapToken: TokenModel,
     swapAmount: string,
-  ) => Promise<WalletResponse<AddLiquidityResponse> | null>;
+  ) => Promise<WalletResponse<RepositionLiquidityResponse | null> | null>;
 }
 
 export const useRepositionModalContainer = ({
@@ -54,7 +54,7 @@ export const useRepositionModalContainer = ({
   repositionAmounts,
   removePosition,
   swapRemainToken,
-  addPosition,
+  reposition,
 }: RepositionModalProps): Props => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -95,7 +95,7 @@ export const useRepositionModalContainer = ({
         repositionAmounts={repositionAmounts}
         removePosition={removePosition}
         swapRemainToken={swapRemainToken}
-        addPosition={addPosition}
+        reposition={reposition}
       />,
     );
   }, [
@@ -111,7 +111,7 @@ export const useRepositionModalContainer = ({
     repositionAmounts,
     removePosition,
     swapRemainToken,
-    addPosition,
+    reposition,
   ]);
 
   return {
