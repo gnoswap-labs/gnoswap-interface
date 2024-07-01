@@ -229,8 +229,6 @@ export function getDepositAmountsByAmountA(
   }
 
   const currentPriceX96 = tickToSqrtPriceX96(priceToTick(currentPrice));
-  console.log("🚀 234234234 ~ currentPriceX96:", currentPriceX96);
-  console.log("🚀 234234234 ~ currentPrice:", currentPrice);
   const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
   const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
