@@ -14,6 +14,8 @@ interface RemoveLiquidityProps {
   checkedAll: boolean;
   removeLiquidity: () => void;
   isLoading: boolean;
+  shouldUnwrap: boolean;
+  setShouldUnwrap: () => void;
 }
 
 const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
@@ -25,14 +27,17 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   checkedAll,
   removeLiquidity,
   isLoading,
+  shouldUnwrap,
+  setShouldUnwrap,
 }) => {
-
   const disabledRemoveLiquidity = useMemo(() => {
     return checkedList.length === 0;
   }, [checkedList.length]);
 
   const selectedPositions = useMemo(() => {
-    return unstakedPositions.filter(position => checkedList.includes(position.id));
+    return unstakedPositions.filter(position =>
+      checkedList.includes(position.id),
+    );
   }, [checkedList, unstakedPositions]);
 
   return (
@@ -47,7 +52,11 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
         checkedAll={checkedAll}
         isLoading={isLoading}
       />
-      <RemoveLiquiditySelectResult positions={selectedPositions} />
+      <RemoveLiquiditySelectResult
+        positions={selectedPositions}
+        shouldUnwrap={shouldUnwrap}
+        setShouldUnwrap={setShouldUnwrap}
+      />
       <Button
         text={disabledRemoveLiquidity ? "Select Position" : "Remove Position"}
         disabled={disabledRemoveLiquidity}

@@ -505,7 +505,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       makePositionDecreaseLiquidityMessage(
         lpTokenId,
         decreaseLiquidityRatio,
-        true,
+        request.existWrappedToken,
         caller,
       ),
     );

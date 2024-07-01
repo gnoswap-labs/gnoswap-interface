@@ -20,8 +20,8 @@ export const usePoolData = () => {
       router.pathname === "/"
         ? 10 * 1000
         : router.pathname === PATH_60SECOND
-          ? 60 * 1000
-          : false,
+        ? 60 * 1000
+        : false,
   });
 
   const forceRefetch = useForceRefetchQuery();
@@ -34,19 +34,19 @@ export const usePoolData = () => {
         ...item,
         tokenA: item.tokenA
           ? {
-            ...item.tokenA,
-            symbol: getGnotPath(item.tokenA).symbol,
-            logoURI: getGnotPath(item.tokenA).logoURI,
-            name: getGnotPath(item.tokenA).name,
-          }
+              ...item.tokenA,
+              symbol: getGnotPath(item.tokenA).symbol,
+              logoURI: getGnotPath(item.tokenA).logoURI,
+              name: getGnotPath(item.tokenA).name,
+            }
           : item.tokenA,
         tokenB: item.tokenB
           ? {
-            ...item.tokenB,
-            symbol: getGnotPath(item.tokenB).symbol,
-            logoURI: getGnotPath(item.tokenB).logoURI,
-            name: getGnotPath(item.tokenB).name,
-          }
+              ...item.tokenB,
+              symbol: getGnotPath(item.tokenB).symbol,
+              logoURI: getGnotPath(item.tokenB).logoURI,
+              name: getGnotPath(item.tokenB).name,
+            }
           : item.tokenB,
       };
     });

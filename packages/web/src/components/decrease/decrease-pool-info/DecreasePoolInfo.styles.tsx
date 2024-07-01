@@ -51,8 +51,10 @@ export const DecreasePoolInfoWrapper = styled.div`
       width: 100%;
     }
   }
-  .divider {
-    width: 100%;
-    border-top: 1px solid ${({ theme }) => theme.color.border02};
-  }
+`;
+
+export const GnotCollectSwitchWrapper = styled.div`
+  width: 100%;
+  ${mixins.flexbox("row", "center", "space-between")}
+  ${fonts.body12}
 `;

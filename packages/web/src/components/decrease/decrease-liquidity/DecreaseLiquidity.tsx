@@ -20,6 +20,8 @@ interface DecreaseLiquidityProps {
   percent: number;
   handlePercent: (value: number) => void;
   pooledTokenInfos: any;
+  shouldUnwrap: boolean;
+  setShouldUnwrap: () => void;
 }
 
 const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
@@ -35,6 +37,8 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
   handlePercent,
   percent,
   pooledTokenInfos,
+  shouldUnwrap,
+  setShouldUnwrap,
 }) => {
   return (
     <DecreaseLiquidityWrapper>
@@ -58,6 +62,8 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
           handlePercent={handlePercent}
           percent={percent}
           pooledTokenInfos={pooledTokenInfos}
+          shouldUnwrap={shouldUnwrap}
+          setShouldUnwrap={setShouldUnwrap}
         />
       </article>
       <Button

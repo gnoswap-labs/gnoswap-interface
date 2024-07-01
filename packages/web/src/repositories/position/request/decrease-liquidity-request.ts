@@ -12,4 +12,6 @@ export interface DecreaseLiquidityRequest {
   deadline?: string;
 
   caller: string;
+
+  existWrappedToken: boolean;
 }

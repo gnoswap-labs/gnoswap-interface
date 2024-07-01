@@ -233,7 +233,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     };
   };
 
-  public wrapToken = async (request: WrapTokenRequest): Promise<string> => {
+  public wrapToken = async (request: WrapTokenRequest): Promise<WalletResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -258,13 +258,12 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       gasFee: 1,
       memo: "",
     });
-    if (response.code !== 0) {
-      throw new SwapError("SWAP_FAILED");
-    }
-    return response.status;
+    return {
+      ...response,
+    };
   };
 
-  public unwrapToken = async (request: UnwrapTokenRequest): Promise<string> => {
+  public unwrapToken = async (request: UnwrapTokenRequest): Promise<WalletResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -285,10 +284,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       gasFee: 1,
       memo: "",
     });
-    if (response.code !== 0) {
-      throw new SwapError("SWAP_FAILED");
-    }
-    return response.status;
+    return response;
   };
 }
 

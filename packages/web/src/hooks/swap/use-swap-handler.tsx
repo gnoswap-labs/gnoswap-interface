@@ -760,6 +760,105 @@ export const useSwapHandler = () => {
     }
   };
 
+  const handleWrapAndUnwrap = () => {
+    if (!tokenA || !tokenB) {
+      return;
+    }
+
+    const isExactIn = type === "EXACT_IN";
+    const swapAmount = isExactIn ? tokenAAmount : tokenBAmount;
+
+    const messageData = {
+      tokenASymbol: tokenA.symbol,
+      tokenBSymbol: tokenB.symbol,
+      tokenAAmount: swapAmount,
+      tokenBAmount: swapAmount,
+    };
+
+    if (isNativeToken(tokenA)) {
+      broadcastLoading(makeBroadcastWrapTokenMessage("pending", messageData));
+      openTransactionConfirmModal();
+
+      wrap(swapAmount)
+        .then(response => {
+          if (response?.code === 0) {
+            broadcastPending();
+            setTimeout(() => {
+              const tokenAAmountStr = tokenAAmount;
+              const tokenBAmountStr = tokenBAmount;
+              broadcastSuccess(
+                makeBroadcastWrapTokenMessage("success", {
+                  ...messageData,
+                  tokenAAmount: tokenAAmountStr || "0",
+                  tokenBAmount: tokenBAmountStr || "0",
+                }),
+                onFinishSwap,
+              );
+            }, 1000);
+            openTransactionConfirmModal();
+          } else if (response?.type === ERROR_VALUE.TRANSACTION_REJECTED.type) {
+            broadcastRejected(
+              makeBroadcastWrapTokenMessage("error", messageData),
+            );
+            openTransactionConfirmModal();
+          } else {
+            broadcastError(
+              makeBroadcastWrapTokenMessage("error", messageData),
+              onFinishSwap,
+            );
+            openTransactionConfirmModal();
+          }
+        })
+        .catch(() => {
+          setSwapResult({
+            success: false,
+            hash: "",
+          });
+        });
+    } else {
+      broadcastLoading(makeBroadcastUnwrapTokenMessage("pending", messageData));
+      openTransactionConfirmModal();
+
+      unwrap(swapAmount)
+        .then(response => {
+          if (response?.status === "success") {
+            broadcastPending();
+            setTimeout(() => {
+              const tokenAAmountStr = tokenAAmount;
+              const tokenBAmountStr = tokenBAmount;
+              broadcastSuccess(
+                makeBroadcastUnwrapTokenMessage("success", {
+                  ...messageData,
+                  tokenAAmount: tokenAAmountStr || "0",
+                  tokenBAmount: tokenBAmountStr || "0",
+                }),
+                onFinishSwap,
+              );
+            }, 1000);
+            openTransactionConfirmModal();
+          } else if (response?.type === ERROR_VALUE.TRANSACTION_REJECTED.type) {
+            broadcastRejected(
+              makeBroadcastUnwrapTokenMessage("error", messageData),
+            );
+            openTransactionConfirmModal();
+          } else {
+            broadcastError(
+              makeBroadcastUnwrapTokenMessage("error", messageData),
+              onFinishSwap,
+            );
+            openTransactionConfirmModal();
+          }
+        })
+        .catch(() => {
+          setSwapResult({
+            success: false,
+            hash: "",
+          });
+        });
+    }
+    return;
+  };
+
   function executeSwap() {
     if (!tokenA || !tokenB) {
       return;
@@ -784,84 +883,7 @@ export const useSwapHandler = () => {
 
     // Handle Wrap and Unwrap
     if (isSameToken) {
-      const wrapAndUnwrapMessage = {
-        ...broadcastMessage,
-        tokenBAmount: broadcastMessage.tokenAAmount,
-      };
-
-      if (isNativeToken(tokenA)) {
-        broadcastLoading(
-          makeBroadcastWrapTokenMessage("pending", wrapAndUnwrapMessage),
-        );
-        openTransactionConfirmModal();
-
-        wrap(swapAmount)
-          .then(response => {
-            if (response === "success") {
-              broadcastPending();
-              setTimeout(() => {
-                const tokenAAmountStr = tokenAAmount;
-                const tokenBAmountStr = tokenBAmount;
-                broadcastSuccess(
-                  makeBroadcastWrapTokenMessage("success", {
-                    ...broadcastMessage,
-                    tokenAAmount: tokenAAmountStr || "0",
-                    tokenBAmount: tokenBAmountStr || "0",
-                  }),
-                  onFinishSwap,
-                );
-              }, 1000);
-              openTransactionConfirmModal();
-            } else {
-              broadcastRejected(
-                makeBroadcastWrapTokenMessage("error", broadcastMessage),
-              );
-              openTransactionConfirmModal();
-            }
-          })
-          .catch(() => {
-            setSwapResult({
-              success: false,
-              hash: "",
-            });
-          });
-      } else {
-        broadcastLoading(
-          makeBroadcastUnwrapTokenMessage("pending", wrapAndUnwrapMessage),
-        );
-        openTransactionConfirmModal();
-
-        unwrap(swapAmount)
-          .then(response => {
-            if (response === "success") {
-              broadcastPending();
-              setTimeout(() => {
-                const tokenAAmountStr = tokenAAmount;
-                const tokenBAmountStr = tokenBAmount;
-                broadcastSuccess(
-                  makeBroadcastUnwrapTokenMessage("success", {
-                    ...broadcastMessage,
-                    tokenAAmount: tokenAAmountStr || "0",
-                    tokenBAmount: tokenBAmountStr || "0",
-                  }),
-                  onFinishSwap,
-                );
-              }, 1000);
-              openTransactionConfirmModal();
-            } else {
-              broadcastRejected(
-                makeBroadcastUnwrapTokenMessage("error", broadcastMessage),
-              );
-              openTransactionConfirmModal();
-            }
-          })
-          .catch(() => {
-            setSwapResult({
-              success: false,
-              hash: "",
-            });
-          });
-      }
+      handleWrapAndUnwrap();
       return;
     }
 

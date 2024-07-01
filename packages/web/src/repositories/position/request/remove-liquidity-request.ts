@@ -4,4 +4,6 @@ export interface RemoveLiquidityRequest {
   tokenPaths: string[];
 
   caller: string;
+
+  existWrappedToken: boolean;
 }

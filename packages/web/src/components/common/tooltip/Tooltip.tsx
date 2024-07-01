@@ -73,6 +73,7 @@ interface TooltipProps {
   FloatingContent: React.ReactNode;
   width?: CSSProperties["width"];
   floatClassName?: string;
+  className?: string;
   isShouldShowed?: boolean;
 }
 
@@ -83,6 +84,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   width,
   floatClassName,
   isShouldShowed = true,
+  className,
 }) => {
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
@@ -101,7 +103,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
           display: "flex",
           width: width && width,
         }}
-        className="base-tooltip-wrapper"
+        className={`base-tooltip-wrapper ${className}`}
       >
         {children}
       </BaseTooltipWrapper>

@@ -219,7 +219,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <>
                 <Tooltip
                   placement="top"
-                  isShouldShowed={tokenBBalance >= 1e3}
+                  isShouldShowed={tokenABalance >= 1e3}
                   FloatingContent={
                     <div>
                       {formatTokenExchangeRate(tokenABalance, {
@@ -231,7 +231,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     </div>
                   }
                 >
-                  <div className="section-image">
+                  <div
+                    className={`section-image ${
+                      tokenABalance >= 1e3 ? "can-hover" : ""
+                    }`}
+                  >
                     <MissingLogo
                       symbol={pool?.tokenA?.symbol}
                       url={pool?.tokenA?.logoURI}
@@ -258,7 +262,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 <div className="divider"></div>
                 <Tooltip
                   placement="top"
-                  isShouldShowed={tokenABalance >= 1e3}
+                  isShouldShowed={tokenBBalance >= 1e3}
                   FloatingContent={
                     <div>
                       {formatTokenExchangeRate(tokenBBalance, {
@@ -270,7 +274,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     </div>
                   }
                 >
-                  <div className="section-image">
+                  <div
+                    className={`section-image ${
+                      tokenBBalance >= 1e3 ? "can-hover" : ""
+                    }`}
+                  >
                     <MissingLogo
                       symbol={pool?.tokenB?.symbol}
                       url={pool?.tokenB?.logoURI}

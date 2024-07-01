@@ -59,10 +59,18 @@ const DecreasePositionModal: React.FC<Props> = ({
               {...amountInfo}
               isShowProtocolFee
               pooledTokenInfos={pooledTokenInfos}
+              shouldUnwrap={false}
+              setShouldUnwrap={() => {
+                return;
+              }}
             />
           </div>
 
-          <BalanceChange {...amountInfo} pooledTokenInfos={pooledTokenInfos} title="Balance Changes" />
+          <BalanceChange
+            {...amountInfo}
+            pooledTokenInfos={pooledTokenInfos}
+            title="Balance Changes"
+          />
           <div>
             <Button
               onClick={confirm}

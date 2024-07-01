@@ -7,9 +7,14 @@ import { useCallback, useMemo } from "react";
 export interface Props {
   positions: PoolPositionModel[];
   selectedIds: string[];
+  shouldUnwrap: boolean;
 }
 
-export const useRemovePositionModal = ({ positions, selectedIds }: Props) => {
+export const useRemovePositionModal = ({
+  positions,
+  selectedIds,
+  shouldUnwrap,
+}: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -19,8 +24,20 @@ export const useRemovePositionModal = ({ positions, selectedIds }: Props) => {
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
-    setModalContent(<RemovePositionModalContainer allPosition={positions} selectedPosition={selectedPositions} />);
-  }, [positions, selectedPositions, setModalContent, setOpenedModal]);
+    setModalContent(
+      <RemovePositionModalContainer
+        allPosition={positions}
+        selectedPosition={selectedPositions}
+        shouldUnwrap={shouldUnwrap}
+      />,
+    );
+  }, [
+    positions,
+    selectedPositions,
+    setModalContent,
+    setOpenedModal,
+    shouldUnwrap,
+  ]);
 
   return {
     openModal,

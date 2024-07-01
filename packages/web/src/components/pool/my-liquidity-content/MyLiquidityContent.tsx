@@ -1,7 +1,11 @@
 import React, { useMemo } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { MyLiquidityContentWrapper } from "./MyLiquidityContent.styles";
+import {
+  AmountDisplayWrapper,
+  MyLiquidityContentWrapper,
+  TokenAmountTooltipContentWrapper,
+} from "./MyLiquidityContent.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -9,7 +13,7 @@ import { RewardType } from "@constants/option.constant";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -512,41 +516,89 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         )}
         {!loading && positions.length > 0 && (
           <div className="sub-content">
-            <div className="sub-content-detail">
+            <Tooltip
+              placement="top"
+              isShouldShowed={tokenABalance >= 1e3}
+              className="sub-content-detail"
+              FloatingContent={
+                <TokenAmountTooltipContentWrapper>
+                  <MissingLogo
+                    symbol={positionData?.tokenA?.symbol}
+                    url={positionData?.tokenA?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  {formatTokenExchangeRate(tokenABalance, {
+                    minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
+                    maxSignificantDigits: positionData?.tokenB?.decimals,
+                    isIgnoreKMBFormat: true,
+                  })}{" "}
+                  <span>{positionData?.tokenB?.symbol}</span>{" "}
+                </TokenAmountTooltipContentWrapper>
+              }
+            >
               <MissingLogo
                 symbol={positionData?.tokenA?.symbol}
                 url={positionData?.tokenA?.logoURI}
                 width={20}
                 className="image-logo"
               />
-              <span>
-                {convertToKMB(`${tokenABalance}`)}{" "}
+              <AmountDisplayWrapper $canHover={tokenABalance >= 1e3}>
+                {formatTokenExchangeRate(`${tokenABalance}`, {
+                  minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
+                  maxSignificantDigits: positionData?.tokenB?.decimals,
+                  fixedDecimalDigits: positionData?.tokenB?.decimals,
+                })}{" "}
                 <span
                   className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}
                 >
                   {positionData?.tokenA?.symbol}
                 </span>{" "}
                 <span className="token-percent">{depositRatioStrOfTokenA}</span>
-              </span>
-            </div>
+              </AmountDisplayWrapper>
+            </Tooltip>
             <div className="divider"></div>
-            <div className="sub-content-detail">
+            <Tooltip
+              placement="top"
+              isShouldShowed={tokenBBalance >= 1e3}
+              className="sub-content-detail"
+              FloatingContent={
+                <TokenAmountTooltipContentWrapper>
+                  <MissingLogo
+                    symbol={positionData?.tokenA?.symbol}
+                    url={positionData?.tokenA?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  {formatTokenExchangeRate(tokenBBalance, {
+                    minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
+                    maxSignificantDigits: positionData?.tokenB?.decimals,
+                    isIgnoreKMBFormat: true,
+                  })}{" "}
+                  <span>{positionData?.tokenB?.symbol}</span>{" "}
+                </TokenAmountTooltipContentWrapper>
+              }
+            >
               <MissingLogo
                 symbol={positionData?.tokenB?.symbol}
                 url={positionData?.tokenB?.logoURI}
                 width={20}
                 className="image-logo"
               />
-              <span>
-                {convertToKMB(`${tokenBBalance}`)}{" "}
+              <AmountDisplayWrapper $canHover={tokenBBalance >= 1e3}>
+                {formatTokenExchangeRate(`${tokenBBalance}`, {
+                  minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
+                  maxSignificantDigits: positionData?.tokenB?.decimals,
+                  fixedDecimalDigits: positionData?.tokenB?.decimals,
+                })}{" "}
                 <span
                   className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}
                 >
                   {positionData?.tokenB?.symbol}
                 </span>{" "}
                 <span className="token-percent">{depositRatioStrOfTokenB}</span>
-              </span>
-            </div>
+              </AmountDisplayWrapper>
+            </Tooltip>
           </div>
         )}
       </section>
