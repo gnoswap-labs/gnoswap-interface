@@ -780,7 +780,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                   text="Copy Positioning"
                   className="copy-button"
                   style={{
-                    textColor: "text01",
+                    textColor: "text14",
                   }}
                   onClick={() => {
                     const queryParamsArr = [
@@ -791,26 +791,18 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
 
                     if (router.asPath.includes("?")) {
                       const urlWithoutQuery = router.asPath.split("?")[0];
-                      const lastQuery = `last_query=${
-                        router.asPath.split("?")[1]
-                      }`;
 
                       router.push(
-                        urlWithoutQuery +
-                          `/add?${[...queryParamsArr, lastQuery].join("&")}`,
+                        urlWithoutQuery + `/add?${queryParamsArr.join("&")}`,
                       );
                       return;
                     }
 
                     if (router.asPath.includes("#")) {
                       const urlWithoutHash = router.asPath.split("#")[0];
-                      const lastQuery = `last_query=${
-                        router.asPath.split("?")[1]
-                      }`;
 
                       router.push(
-                        urlWithoutHash +
-                          `/add?${[...queryParamsArr, lastQuery].join("&")}`,
+                        urlWithoutHash + `/add?${queryParamsArr.join("&")}`,
                       );
                       return;
                     }
