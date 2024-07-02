@@ -4,7 +4,6 @@ import {
   PriceImpactStatusWrapper,
   PriceImpactStrWrapper,
   PriceImpactWrapper,
-  SwapDivider,
 } from "./ConfirmSwapModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
@@ -219,10 +218,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </span>
                 </div>
                 <div className="slippage">
-                  <span className="gray-text">Max. Slippage</span>
+                  <span className="gray-text">Slippage Set.</span>
                   <span className="white-text">{slippageStr}</span>
                 </div>
-                <SwapDivider />
                 <div className="received">
                   <span className="gray-text">{guaranteedTypeStr}</span>
                   <span className="white-text">{guaranteedStr}</span>

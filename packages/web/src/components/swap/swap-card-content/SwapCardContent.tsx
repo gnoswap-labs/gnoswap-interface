@@ -261,6 +261,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
               isLoading={isLoading}
               setSwapRateAction={setSwapRateAction}
               priceImpactStatus={priceImpactStatus}
+              swapTokenInfo={swapTokenInfo}
             />
           )}
         </SwapDetailSectionWrapper>

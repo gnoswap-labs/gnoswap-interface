@@ -29,9 +29,7 @@ export const FeeWrapper = styled.div`
   .white-text {
     color: ${({ theme }) => theme.color.text10};
   }
-  .received,
-  .gas-fee,
-  .price-impact {
+  .swap-fee-row {
     ${mixins.flexbox("row", "flex-start", "space-between")};
     width: 100%;
     align-self: stretch;

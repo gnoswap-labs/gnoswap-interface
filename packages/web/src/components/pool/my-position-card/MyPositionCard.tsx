@@ -250,7 +250,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getTokenPrice, position.reward]);
 
   const totalRewardUSD = useMemo(() => {
-    console.log("🚀 ~ totalRewardUSD ~ position:", position.reward);
     const isEmpty =
       !position.reward ||
       position.reward.length === 0 ||

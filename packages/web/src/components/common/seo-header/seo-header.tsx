@@ -14,8 +14,6 @@ const SEOHeader: React.FC<SEOHeaderProps> = ({
   ogDescription,
   ogTitle,
 }) => {
-  console.log("🚀 ~ pageDescription:", pageDescription);
-  console.log("🚀 ~ ogDescription:", ogDescription);
   const router = useRouter();
 
   const folderLevel = router.asPath.split("/").length - 2;

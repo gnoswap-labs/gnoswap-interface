@@ -49,12 +49,10 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const tokenABalance = useMemo(() => {
     return pool.tokenABalance || 0;
   }, [pool.tokenABalance]);
-  console.log("🚀 ~ tokenABalance ~ tokenABalance:", tokenABalance);
 
   const tokenBBalance = useMemo(() => {
     return pool.tokenBBalance || 0;
   }, [pool.tokenBBalance]);
-  console.log("🚀 ~ tokenBBalance ~ tokenBBalance:", tokenBBalance);
 
   const depositRatio = useMemo(() => {
     const sumOfBalances = Number(tokenABalance) + Number(tokenBBalance);
@@ -381,8 +379,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               placement="top"
               FloatingContent={
                 <TooltipAPR
-                  feeAPR={pool?.feeApr}
-                  stakingAPR={pool?.stakingApr}
+                  feeAPR={Number(pool.tvl) < 0.01 ? "0" : pool?.feeApr}
+                  stakingAPR={Number(pool.tvl) < 0.01 ? "0" : pool?.stakingApr}
                   feeLogo={feeLogo}
                   stakeLogo={stakeLogo}
                 />

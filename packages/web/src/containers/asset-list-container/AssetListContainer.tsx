@@ -24,7 +24,7 @@ import { isEmptyObject } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
-import { toPriceFormat } from "@utils/number-utils";
+import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface AssetSortOption {
@@ -222,14 +222,17 @@ const AssetListContainer: React.FC = () => {
         const price = BigNumber(tokenPrice)
           .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
           .dividedBy(10 ** 6);
-        const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
         return {
           ...item,
           price: isSwitchNetwork
             ? "-"
-            : checkPrice
-            ? "<$0.01"
-            : toPriceFormat(price, { isKMBFormat: false, isRounding: false }),
+            : toPriceFormatNotRounding(price, {
+                isKMBFormat: false,
+                fixedGreaterThan1: true,
+                fixedLessThan1: true,
+                minLimit: 0.01,
+                usd: true,
+              }),
           balance: isSwitchNetwork
             ? "0"
             : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
@@ -264,7 +267,7 @@ const AssetListContainer: React.FC = () => {
       )
       .map(item => {
         const tokenPrice = balances[item.priceID];
-        if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
+        if (!tokenPrice || Number.isNaN(tokenPrice)) {
           return {
             price: "-",
             balance: "0",
@@ -276,14 +279,17 @@ const AssetListContainer: React.FC = () => {
         const price = BigNumber(tokenPrice)
           .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
           .dividedBy(10 ** 6);
-        const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
         return {
           ...item,
           price: isSwitchNetwork
             ? "-"
-            : checkPrice
-            ? "<$0.01"
-            : toPriceFormat(price, { isKMBFormat: false, isRounding: false }),
+            : toPriceFormatNotRounding(price, {
+                isKMBFormat: false,
+                fixedGreaterThan1: true,
+                fixedLessThan1: true,
+                minLimit: 0.01,
+                usd: true,
+              }),
           balance: isSwitchNetwork
             ? "0"
             : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),

@@ -54,6 +54,7 @@ export const usePoolData = () => {
 
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
     const sortedTokens = pools
+      .filter(item => Number(item.tvl) > 0.01)
       .sort((p1, p2) => {
         const p2Apr = p2.apr || 0;
         const p1Apr = p1.apr || 0;

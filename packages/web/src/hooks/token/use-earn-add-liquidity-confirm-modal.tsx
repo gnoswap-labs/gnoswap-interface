@@ -211,7 +211,7 @@ export const useEarnAddLiquidityConfirmModal = ({
         inRange: true,
         minPrice: "0",
         maxPrice: "∞",
-        priceLabelMin: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,
+        priceLabelMin: `1 ${tokenASymbol} = 0 ${tokenBSymbol}`,
         priceLabelMax: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,
         feeBoost: "x1",
         estimatedAPR: "N/A",
@@ -244,6 +244,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     ) {
       inRange = false;
     }
+
     return {
       currentPrice,
       inRange,

@@ -15,6 +15,7 @@ import { convertToKMB } from "@utils/stake-position-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { IconGasFilled } from "@components/common/icons/IconsGasFilled";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
 
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -22,6 +23,7 @@ interface ContentProps {
   isLoading: boolean;
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
   priceImpactStatus: PriceImpactStatus;
+  swapTokenInfo: SwapTokenInfo;
 }
 
 export const convertSwapRate = (value: number) => {
@@ -35,10 +37,10 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   isLoading,
   setSwapRateAction,
   priceImpactStatus,
+  swapTokenInfo,
 }) => {
   const { breakpoint } = useWindowSize();
   const [openedDetailInfo, setOpenedDetailInfo] = useState(false);
-  const [openedRouteInfo, setOpenedRouteInfo] = useState(false);
 
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
@@ -81,10 +83,6 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   const toggleDetailInfo = useCallback(() => {
     setOpenedDetailInfo(!openedDetailInfo);
   }, [openedDetailInfo]);
-
-  const toggleRouteInfo = useCallback(() => {
-    setOpenedRouteInfo(!openedRouteInfo);
-  }, [openedRouteInfo]);
 
   const handleSwapRate = useCallback(() => {
     setSwapRateAction(
@@ -137,20 +135,17 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
           <div className="fee-section">
             {openedDetailInfo && (
               <SwapCardFeeInfo
-                openedRouteInfo={openedRouteInfo}
-                toggleRouteInfo={toggleRouteInfo}
                 swapSummaryInfo={swapSummaryInfo}
                 isLoading={isLoading}
                 priceImpactStatus={priceImpactStatus}
+                swapTokenInfo={swapTokenInfo}
               />
             )}
-            {openedRouteInfo && (
-              <SwapCardAutoRouter
-                swapRouteInfos={swapRouteInfos}
-                swapSummaryInfo={swapSummaryInfo}
-                isLoading={isLoading}
-              />
-            )}
+            <SwapCardAutoRouter
+              swapRouteInfos={swapRouteInfos}
+              swapSummaryInfo={swapSummaryInfo}
+              isLoading={isLoading}
+            />
           </div>
         </FeelWrapper>
       )}
