@@ -36,6 +36,8 @@ const IncreaseMaxMin: React.FC<IncreaseMaxMinProps> = ({
   rangeStatus,
   feeRate,
 }) => {
+  console.log("🚀 ~ maxPriceStr:", maxPriceStr);
+  console.log("🚀 ~ minPriceStr:", minPriceStr);
   const { breakpoint } = useWindowSize();
   return (
     <IncreaseMaxMinWrapper>
@@ -51,7 +53,9 @@ const IncreaseMaxMin: React.FC<IncreaseMaxMinProps> = ({
             leftSymbol={tokenA?.info?.symbol || ""}
             rightSymbol={tokenB?.info?.symbol || ""}
           />
-          {breakpoint === DEVICE_TYPE.MOBILE ? "" : `${tokenA?.info.symbol}/${tokenB?.info.symbol}`}
+          {breakpoint === DEVICE_TYPE.MOBILE
+            ? ""
+            : `${tokenA?.info.symbol}/${tokenB?.info.symbol}`}
           <Badge text={feeRate} type={BADGE_TYPE.DARK_DEFAULT} />
         </div>
         <RangeBadge status={rangeStatus} />

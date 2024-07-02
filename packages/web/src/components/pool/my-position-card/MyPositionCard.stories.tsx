@@ -1,6 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import MyPositionCard from "./MyPositionCard";
+import MyPositionCard from "./MyDetailedPositionCard";
 import { css } from "@emotion/react";
 import { DEVICE_TYPE } from "@styles/media";
 

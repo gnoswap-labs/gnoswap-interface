@@ -247,7 +247,7 @@ export const toPriceFormatNotRounding = (
   const cutNumber = tempNum.substring(0, tempNum.length - 1);
 
   if (fixedGreaterThan1) {
-    return negativeSign + prefix + BigNumber(cutNumber).toFormat();
+    return negativeSign + prefix + BigNumber(cutNumber).toFormat(greaterThan1Decimals);
   }
 
   return negativeSign + prefix + BigNumber(cutNumber).toFormat();

@@ -121,11 +121,17 @@ export const useRepositionHandle = () => {
 
   const minPriceStr = useMemo(() => {
     if (!selectPool.minPrice) return "-";
+
+    if (selectPool.selectedFullRange) return "0";
+
     return convertToKMB(selectPool.minPrice.toString());
   }, [selectPool]);
 
   const maxPriceStr = useMemo(() => {
     if (!selectPool.maxPrice) return "-";
+
+    if (selectPool.selectedFullRange) return "∞";
+
     return convertToKMB(selectPool.maxPrice.toString());
   }, [selectPool]);
 
@@ -534,5 +540,6 @@ export const useRepositionHandle = () => {
     removePosition,
     swapRemainToken,
     addPosition,
+    selectedPosition,
   };
 };

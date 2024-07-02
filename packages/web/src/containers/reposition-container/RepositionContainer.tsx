@@ -36,6 +36,7 @@ const RepositionContainer: React.FC = () => {
     removePosition,
     swapRemainToken,
     addPosition,
+    selectedPosition,
   } = useRepositionHandle();
 
   const { openModal } = useRepositionModalContainer({
@@ -87,6 +88,7 @@ const RepositionContainer: React.FC = () => {
       priceRange={priceRange}
       currentAmounts={currentAmounts}
       repositionAmounts={repositionAmounts}
+      selectedPosition={selectedPosition}
     />
   );
 };

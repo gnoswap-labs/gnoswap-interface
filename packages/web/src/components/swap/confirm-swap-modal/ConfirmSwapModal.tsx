@@ -218,7 +218,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </span>
                 </div>
                 <div className="slippage">
-                  <span className="gray-text">Slippage Set.</span>
+                  <span className="gray-text">Slippage Set</span>
                   <span className="white-text">{slippageStr}</span>
                 </div>
                 <div className="received">

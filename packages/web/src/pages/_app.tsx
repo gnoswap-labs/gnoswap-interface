@@ -13,6 +13,7 @@ import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapS
 import BackgroundContainer from "@containers/background-container/BackgroundContainer";
 import Notice from "@components/common/notice/NoticeToast";
 import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWrapper";
+import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -30,25 +31,27 @@ export default function App({ Component, pageProps }: AppProps) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Hydrate state={pageProps.dehydratedState}>
-        <JotaiProvider>
-          <GnoswapServiceProvider>
-            <GnoswapThemeProvider>
-              <BackgroundContainer>
-                <Notice>
-                  <ScrollTopWrapper>
-                    <Component {...pageProps} />
-                  </ScrollTopWrapper>
-                  <GnoswapModalProvider selector={"portal-root"}>
-                    <ModalContainer />
-                  </GnoswapModalProvider>
-                </Notice>
-              </BackgroundContainer>
-            </GnoswapThemeProvider>
-          </GnoswapServiceProvider>
-        </JotaiProvider>
-      </Hydrate>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <JotaiProvider>
+            <GnoswapServiceProvider>
+              <GnoswapThemeProvider>
+                <BackgroundContainer>
+                  <Notice>
+                    <ScrollTopWrapper>
+                      <Component {...pageProps} />
+                    </ScrollTopWrapper>
+                    <GnoswapModalProvider selector={"portal-root"}>
+                      <ModalContainer />
+                    </GnoswapModalProvider>
+                  </Notice>
+                </BackgroundContainer>
+              </GnoswapThemeProvider>
+            </GnoswapServiceProvider>
+          </JotaiProvider>
+        </Hydrate>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }

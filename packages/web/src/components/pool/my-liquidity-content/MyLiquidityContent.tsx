@@ -565,8 +565,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               FloatingContent={
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo
-                    symbol={positionData?.tokenA?.symbol}
-                    url={positionData?.tokenA?.logoURI}
+                    symbol={positionData?.tokenB?.symbol}
+                    url={positionData?.tokenB?.logoURI}
                     width={20}
                     className="image-logo"
                   />

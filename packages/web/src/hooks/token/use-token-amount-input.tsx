@@ -2,8 +2,8 @@ import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokenData } from "./use-token-data";
-import { convertToKMB } from "@utils/stake-position-utils";
 import { checkGnotPath } from "@utils/common";
+import { toPriceFormatNotRounding } from "@utils/number-utils";
 
 export interface TokenAmountInputModel {
   token: TokenModel | null;
@@ -32,7 +32,9 @@ function handleAmount(changed: string, token: TokenModel | null) {
   return value;
 }
 
-export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputModel => {
+export const useTokenAmountInput = (
+  token: TokenModel | null,
+): TokenAmountInputModel => {
   const [amount, setAmount] = useState<string>("0");
   const [balance, setBalance] = useState<string>("0");
   const { displayBalanceMap, tokenPrices } = useTokenData();
@@ -47,35 +49,47 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   }, [displayBalanceMap, token]);
 
   const usdValue = useMemo(() => {
-    if (!tokenPrices || !(Number(amount)) || !token) {
+    if (!tokenPrices || !Number(amount) || !token) {
       return "-";
     }
 
-    const usd = BigNumber(tokenPrices[checkGnotPath(token.path)]?.usd ?? 0).multipliedBy(amount).toNumber();
+    const usd = BigNumber(tokenPrices[checkGnotPath(token.path)]?.usd ?? 0)
+      .multipliedBy(amount)
+      .toNumber();
 
-    return `$${convertToKMB(usd.toString(), { isIgnoreKFormat: true, maximumFractionDigits: 2 })}`;
+    return toPriceFormatNotRounding(usd, {
+      isKMBFormat: false,
+      lessThan1Significant: 2,
+      greaterThan1Decimals: 2,
+      fixedGreaterThan1: true,
+      fixedLessThan1: true,
+      usd: true,
+    });
   }, [tokenPrices, amount, token]);
 
-  const changeAmount = useCallback((value: string) => {
-    if (!token) {
-      return;
-    }
+  const changeAmount = useCallback(
+    (value: string) => {
+      if (!token) {
+        return;
+      }
 
-    if (/^0\.0(?:0*)$/.test(value)) {
-      setAmount(value);
-      return;
-    }
+      if (/^0\.0(?:0*)$/.test(value)) {
+        setAmount(value);
+        return;
+      }
 
-    const amount = BigNumber(value);
-    if (amount.isNaN() || !amount.isFinite()) {
-      setAmount("0");
-      return;
-    }
+      const amount = BigNumber(value);
+      if (amount.isNaN() || !amount.isFinite()) {
+        setAmount("0");
+        return;
+      }
 
-    const result = handleAmount(value, token);
+      const result = handleAmount(value, token);
 
-    setAmount(result);
-  }, [token]);
+      setAmount(result);
+    },
+    [token],
+  );
 
   return {
     token,

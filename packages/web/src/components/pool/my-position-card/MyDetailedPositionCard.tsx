@@ -47,7 +47,7 @@ import { toPriceFormat } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
-interface MyPositionCardProps {
+interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
   breakpoint: DEVICE_TYPE;
   loading: boolean;
@@ -57,7 +57,7 @@ interface MyPositionCardProps {
   tokenPrices: Record<string, TokenPriceModel>;
 }
 
-const MyPositionCard: React.FC<MyPositionCardProps> = ({
+const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   position,
   breakpoint,
   loading,
@@ -779,11 +779,44 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 <Button
                   text="Copy Positioning"
                   className="copy-button"
-                  style={{}}
+                  style={{
+                    textColor: "text01",
+                  }}
                   onClick={() => {
+                    const queryParamsArr = [
+                      `tickLower=${position.tickLower}`,
+                      `tickUpper=${position.tickUpper}`,
+                      "price_range_type=Custom",
+                    ];
+
+                    if (router.asPath.includes("?")) {
+                      const urlWithoutQuery = router.asPath.split("?")[0];
+                      const lastQuery = `last_query=${
+                        router.asPath.split("?")[1]
+                      }`;
+
+                      router.push(
+                        urlWithoutQuery +
+                          `/add?${[...queryParamsArr, lastQuery].join("&")}`,
+                      );
+                      return;
+                    }
+
+                    if (router.asPath.includes("#")) {
+                      const urlWithoutHash = router.asPath.split("#")[0];
+                      const lastQuery = `last_query=${
+                        router.asPath.split("?")[1]
+                      }`;
+
+                      router.push(
+                        urlWithoutHash +
+                          `/add?${[...queryParamsArr, lastQuery].join("&")}`,
+                      );
+                      return;
+                    }
+
                     router.push(
-                      router.asPath +
-                        `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`,
+                      router.asPath + `/add?${queryParamsArr.join("&")}`,
                     );
                   }}
                 />
@@ -1020,4 +1053,4 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   );
 };
 
-export default MyPositionCard;
+export default MyDetailedPositionCard;

@@ -71,6 +71,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 
 const EarnAddLiquidityContainer: React.FC = () => {
   const router = useRouter();
+  console.log("🚀 ~ router:", router.query["last_query"]);
   useRouterBack();
   const [initialized, setInitialized] = useState(false);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -248,6 +249,11 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     updateTokens();
     updateTokenPrices();
+  }, []);
+
+  useEffect(() => {
+    if (router.query["last_query"]) {
+    }
   }, []);
 
   const selectSwapFeeTier = useCallback(
