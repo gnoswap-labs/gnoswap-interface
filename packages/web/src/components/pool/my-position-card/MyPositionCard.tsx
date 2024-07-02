@@ -789,22 +789,23 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   }}
                 />
               )}
-              {!position.staked &&
-                !isClosed &&
-                !isHiddenAddPosition &&
-                connected && (
-                  <SelectBox
-                    current={"Manage"}
-                    items={[
-                      "Reposition",
-                      "Increase Liquidity",
-                      "Decrease Liquidity",
-                    ]}
-                    select={handleSelect}
-                    render={period => <ManageItem>{period}</ManageItem>}
-                    className={!inRange ? "out-range" : ""}
-                  />
-                )}
+              {!position.staked && !isHiddenAddPosition && connected && (
+                <SelectBox
+                  current={"Manage"}
+                  items={
+                    isClosed
+                      ? ["Increase Liquidity"]
+                      : [
+                          "Reposition",
+                          "Increase Liquidity",
+                          "Decrease Liquidity",
+                        ]
+                  }
+                  select={handleSelect}
+                  render={period => <ManageItem>{period}</ManageItem>}
+                  className={!inRange ? "out-range" : ""}
+                />
+              )}
             </div>
           </div>
         </div>

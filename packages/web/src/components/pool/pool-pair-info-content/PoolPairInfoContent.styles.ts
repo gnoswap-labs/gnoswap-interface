@@ -367,3 +367,8 @@ export const LoadingChart = styled.div`
     }
   }
 `;
+
+export const TokenAmountTooltipContentWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")}
+  gap: 4px;
+`;

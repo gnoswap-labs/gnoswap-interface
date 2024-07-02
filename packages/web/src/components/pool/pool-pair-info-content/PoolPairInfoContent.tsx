@@ -4,6 +4,7 @@ import {
   ContentWrapper,
   LoadingChart,
   PoolPairInfoContentWrapper,
+  TokenAmountTooltipContentWrapper,
 } from "./PoolPairInfoContent.styles";
 import IconStar from "@components/common/icons/IconStar";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
@@ -221,88 +222,92 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   placement="top"
                   isShouldShowed={tokenABalance >= 1e3}
                   FloatingContent={
-                    <div>
+                    <TokenAmountTooltipContentWrapper>
+                      <MissingLogo
+                        symbol={pool?.tokenA?.symbol}
+                        url={pool?.tokenA?.logoURI}
+                        width={20}
+                        className="image-logo"
+                      />
                       {formatTokenExchangeRate(tokenABalance, {
                         minLimit: makeDisplayTokenAmount(pool.tokenA, 1),
                         maxSignificantDigits: pool?.tokenA?.decimals,
                         isIgnoreKMBFormat: true,
                       })}{" "}
                       <span>{pool?.tokenA?.symbol}</span>{" "}
-                    </div>
+                    </TokenAmountTooltipContentWrapper>
                   }
+                  className={`section-image ${
+                    tokenABalance >= 1e3 ? "can-hover" : ""
+                  }`}
                 >
-                  <div
-                    className={`section-image ${
-                      tokenABalance >= 1e3 ? "can-hover" : ""
-                    }`}
+                  <MissingLogo
+                    symbol={pool?.tokenA?.symbol}
+                    url={pool?.tokenA?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  {formatTokenExchangeRate(tokenABalance, {
+                    minLimit: makeDisplayTokenAmount(pool.tokenA, 1),
+                    maxSignificantDigits: pool?.tokenA?.decimals,
+                    fixedDecimalDigits: pool?.tokenA?.decimals,
+                  })}{" "}
+                  <span
+                    className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}
                   >
-                    <MissingLogo
-                      symbol={pool?.tokenA?.symbol}
-                      url={pool?.tokenA?.logoURI}
-                      width={20}
-                      className="image-logo"
-                    />
-                    {formatTokenExchangeRate(tokenABalance, {
-                      minLimit: makeDisplayTokenAmount(pool.tokenA, 1),
-                      maxSignificantDigits: pool?.tokenA?.decimals,
-                      fixedDecimalDigits: pool?.tokenA?.decimals,
-                    })}{" "}
-                    <span
-                      className={`token-symbol ${
-                        isWrapText ? "wrap-text" : ""
-                      }`}
-                    >
-                      {pool?.tokenA?.symbol}
-                    </span>{" "}
-                    <span className="token-percent">
-                      {depositRatioStrOfTokenA}
-                    </span>
-                  </div>
+                    {pool?.tokenA?.symbol}
+                  </span>{" "}
+                  <span className="token-percent">
+                    {depositRatioStrOfTokenA}
+                  </span>
                 </Tooltip>
                 <div className="divider"></div>
                 <Tooltip
                   placement="top"
                   isShouldShowed={tokenBBalance >= 1e3}
                   FloatingContent={
-                    <div>
+                    <TokenAmountTooltipContentWrapper>
+                      <MissingLogo
+                        symbol={pool?.tokenB?.symbol}
+                        url={pool?.tokenB?.logoURI}
+                        width={20}
+                        className="image-logo"
+                      />
                       {formatTokenExchangeRate(tokenBBalance, {
                         minLimit: 1 / Math.pow(10, pool.tokenB?.decimals),
                         maxSignificantDigits: pool?.tokenB?.decimals,
                         isIgnoreKMBFormat: true,
                       })}{" "}
                       <span>{pool?.tokenB?.symbol}</span>{" "}
-                    </div>
+                    </TokenAmountTooltipContentWrapper>
                   }
+                  className={`section-image ${
+                    tokenBBalance >= 1e3 ? "can-hover" : ""
+                  }`}
                 >
-                  <div
-                    className={`section-image ${
-                      tokenBBalance >= 1e3 ? "can-hover" : ""
-                    }`}
-                  >
-                    <MissingLogo
-                      symbol={pool?.tokenB?.symbol}
-                      url={pool?.tokenB?.logoURI}
-                      width={20}
-                      className="image-logo"
-                    />
-                    <span>
-                      {formatTokenExchangeRate(`${tokenBBalance}`, {
-                        minLimit: 1 / Math.pow(10, pool.tokenB?.decimals),
-                        maxSignificantDigits: pool?.tokenB?.decimals,
-                        fixedDecimalDigits: pool?.tokenB?.decimals,
-                      })}{" "}
-                      <span
-                        className={`token-symbol ${
-                          isWrapText ? "wrap-text" : ""
-                        }`}
-                      >
-                        {pool?.tokenB?.symbol}
-                      </span>{" "}
-                      <span className="token-percent">
-                        {depositRatioStrOfTokenB}
-                      </span>
+                  <MissingLogo
+                    symbol={pool?.tokenB?.symbol}
+                    url={pool?.tokenB?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  <span>
+                    {formatTokenExchangeRate(`${tokenBBalance}`, {
+                      minLimit: 1 / Math.pow(10, pool.tokenB?.decimals),
+                      maxSignificantDigits: pool?.tokenB?.decimals,
+                      fixedDecimalDigits: pool?.tokenB?.decimals,
+                    })}{" "}
+                    <span
+                      className={`token-symbol ${
+                        isWrapText ? "wrap-text" : ""
+                      }`}
+                    >
+                      {pool?.tokenB?.symbol}
+                    </span>{" "}
+                    <span className="token-percent">
+                      {depositRatioStrOfTokenB}
                     </span>
-                  </div>
+                  </span>
                 </Tooltip>
               </>
             )}

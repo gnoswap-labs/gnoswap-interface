@@ -529,11 +529,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     className="image-logo"
                   />
                   {formatTokenExchangeRate(tokenABalance, {
-                    minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
-                    maxSignificantDigits: positionData?.tokenB?.decimals,
+                    minLimit: 1 / Math.pow(10, positionData.tokenA?.decimals),
+                    maxSignificantDigits: positionData?.tokenA?.decimals,
                     isIgnoreKMBFormat: true,
                   })}{" "}
-                  <span>{positionData?.tokenB?.symbol}</span>{" "}
+                  <span>{positionData?.tokenA?.symbol}</span>{" "}
                 </TokenAmountTooltipContentWrapper>
               }
             >
@@ -545,9 +545,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               />
               <AmountDisplayWrapper $canHover={tokenABalance >= 1e3}>
                 {formatTokenExchangeRate(`${tokenABalance}`, {
-                  minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
-                  maxSignificantDigits: positionData?.tokenB?.decimals,
-                  fixedDecimalDigits: positionData?.tokenB?.decimals,
+                  minLimit: 1 / Math.pow(10, positionData.tokenA?.decimals),
+                  maxSignificantDigits: positionData?.tokenA?.decimals,
+                  fixedDecimalDigits: positionData?.tokenA?.decimals,
                 })}{" "}
                 <span
                   className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}
