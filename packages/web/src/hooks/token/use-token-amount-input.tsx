@@ -57,6 +57,8 @@ export const useTokenAmountInput = (
       .multipliedBy(amount)
       .toNumber();
 
+    if (!tokenPrices[checkGnotPath(token.path)]?.usd) return "-";
+
     return toPriceFormatNotRounding(usd, {
       isKMBFormat: false,
       lessThan1Significant: 2,
