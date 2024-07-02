@@ -156,7 +156,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 `;
 
 export const PriceValueWrapper = styled.div`
-  background: ${({ theme }) => theme.color.background12};
+  background: ${({ theme }) => theme.color.background32};
   padding: 0px 4px;
   border-radius: 4px;
 `;

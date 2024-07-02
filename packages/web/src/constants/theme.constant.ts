@@ -73,7 +73,8 @@ const palette = {
   gray400Opacity06: "#59678299",
   gray200Opacity: "#C3D2EA80",
   gray300Opacity06: "#90A2C099",
-  goldenrod: "#D7A423"
+  goldenrod: "#D7A423",
+  azureishWhite: "#e0e8f480"
 };
 
 const colors = {
@@ -185,6 +186,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   background29: colors.dark.gray600Opacity25,
   background30: colors.global.orangeOpacity008,
   background31: colors.global.redOpacity15,
+  background32: colors.dark.gray500BG,
   bgLoading: colors.global.black2,
   backgroundOpacity: colors.dark.blackOpacity07BG,
   backgroundOpacity2: colors.dark.blackOpacity07BG,
@@ -341,6 +343,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   background29: colors.white.whiteBG,
   background30: colors.global.orangeOpacity008,
   background31: colors.global.redOpacity15,
+  background32: colors.global.azureishWhite,
   bgLoading: colors.white.whiteBG,
   backgroundOpacity: colors.white.gray100Opacity05BG,
   backgroundOpacity2: colors.white.whiteOpacity07BG,

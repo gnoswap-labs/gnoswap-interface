@@ -803,7 +803,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   }
                   select={handleSelect}
                   render={period => <ManageItem>{period}</ManageItem>}
-                  className={!inRange ? "out-range" : ""}
+                  className={!inRange && !isClosed ? "out-range" : ""}
                 />
               )}
             </div>
