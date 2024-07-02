@@ -164,6 +164,7 @@ const TokenSwapContainer: React.FC = () => {
         swapRouteInfos={swapRouteInfos}
         setSwapRateAction={setSwapRateAction}
         priceImpactStatus={priceImpactStatus}
+        swapTokenInfo={swapTokenInfo}
       />
       {openedSlippage && (
         <SettingMenuModal
