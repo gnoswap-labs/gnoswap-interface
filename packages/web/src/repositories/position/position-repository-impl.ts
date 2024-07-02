@@ -427,7 +427,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     const decreaseLiquidityMessage = makePositionDecreaseLiquidityMessage(
       lpTokenId,
       decreaseRatio,
-      true,
+      request.existWrappedToken,
       caller,
     );
 

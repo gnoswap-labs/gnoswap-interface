@@ -149,7 +149,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
                 onClickPath(e, path)
               }
             >
-              <div>{tokenPathDisplay}</div>
+              {tokenPathDisplay && <div>{tokenPathDisplay}</div>}
               <IconOpenLink
                 viewBox="0 0 22 22"
                 fill={theme.color.text04}
@@ -201,7 +201,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
                 onClickPath(e, path)
               }
             >
-              <div>{tokenPathDisplay}</div>
+              {tokenPathDisplay && <div>{tokenPathDisplay}</div>}
               <IconOpenLink
                 viewBox="0 0 22 22"
                 fill={theme.color.text04}
@@ -253,7 +253,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
                 onClickPath(e, path)
               }
             >
-              <div>{tokenPathDisplay}</div>
+              {tokenPathDisplay && <div>{tokenPathDisplay}</div>}
               <IconOpenLink
                 viewBox="0 0 22 22"
                 fill={theme.color.text04}

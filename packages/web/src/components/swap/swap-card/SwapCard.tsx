@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import {
   HighPriceWarningContentWrapper,
@@ -77,6 +77,11 @@ const SwapCard: React.FC<SwapCardProps> = ({
 }) => {
   const theme = useTheme();
 
+  const shouldShowPriceImpactWarning = useMemo(
+    () => !isSameToken && !isLoading && priceImpactStatus === "HIGH",
+    [isLoading, priceImpactStatus, isSameToken],
+  );
+
   return (
     <>
       <SwapCardWrapper>
@@ -103,7 +108,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           priceImpactStatus={priceImpactStatus}
           isSameToken={isSameToken}
         />
-        {!isLoading && priceImpactStatus === "HIGH" && (
+        {shouldShowPriceImpactWarning && (
           <SwapWarningSection>
             <WarningCard
               type={"Error"}

@@ -143,6 +143,7 @@ export const useSwapHandler = () => {
     direction: type,
     slippage,
   });
+  console.log("🚀 ~ useSwapHandler ~ estimatedRoutes:", estimatedRoutes);
 
   const { openModal: openTransactionConfirmModal } =
     useTransactionConfirmModal();
@@ -992,6 +993,12 @@ export const useSwapHandler = () => {
     type,
     tokenB?.symbol,
   ]);
+
+  useEffect(() => {
+    if (tokenAAmount) {
+      setTokenBAmount(tokenAAmount);
+    }
+  }, [isSameToken, tokenAAmount]);
 
   return {
     slippage,

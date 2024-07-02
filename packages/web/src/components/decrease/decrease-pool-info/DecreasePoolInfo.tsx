@@ -161,7 +161,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
         <>
           <Divider />
           <GnotCollectSwitchWrapper>
-            <div>Collect as WGNOT</div>
+            <div>Collect as WUGNOT</div>
             <Switch checked={shouldUnwrap} onChange={setShouldUnwrap} />
           </GnotCollectSwitchWrapper>
         </>

@@ -172,7 +172,7 @@ export const SEOInfo: Record<PageKey, {
     title: (params = []) => {
       if (params.length === 1) {
         const [positionId] = params;
-        return `Reposition in ${positionId}`;
+        return `Reposition in #${positionId}`;
       }
       return "Reposition";
     },
@@ -184,7 +184,7 @@ export const SEOInfo: Record<PageKey, {
     title: (params = []) => {
       if (params.length === 1) {
         const [positionId] = params;
-        return `Increase liquidity in ${positionId}`;
+        return `Increase liquidity in #${positionId}`;
       }
       return "Increase liquidity";
     },
@@ -194,7 +194,7 @@ export const SEOInfo: Record<PageKey, {
     title: (params = []) => {
       if (params.length === 1) {
         const [positionId] = params;
-        return `Decrease liquidity in ${positionId}`;
+        return `Decrease liquidity in #${positionId}`;
       }
       return "Decrease liquidity";
     },

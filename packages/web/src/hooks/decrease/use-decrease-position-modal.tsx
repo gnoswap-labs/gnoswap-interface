@@ -109,7 +109,7 @@ export const useDecreasePositionModal = ({
   ]);
 
   const canUnwrap = useMemo(() => {
-    return shouldUnwrap || !!gnotToken || !!gnotAmount;
+    return shouldUnwrap && !!gnotToken && !!gnotAmount;
   }, [gnotAmount, gnotToken, shouldUnwrap]);
 
   const tokenTransform = useCallback(
