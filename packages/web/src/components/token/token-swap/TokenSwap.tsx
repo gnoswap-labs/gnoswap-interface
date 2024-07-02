@@ -14,6 +14,7 @@ import SwapCardContentDetail from "@components/swap/swap-card-content-detail/Swa
 import BigNumber from "bignumber.js";
 import { roundDownDecimalNumber } from "@utils/regex";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -26,6 +27,7 @@ export interface TokenSwapProps {
   isAvailSwap: boolean;
   swapSummaryInfo: SwapSummaryInfo | null;
   swapRouteInfos: SwapRouteInfo[];
+  swapTokenInfo: SwapTokenInfo;
 
   swapNow: () => void;
   handleSetting: () => void;
@@ -67,6 +69,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   swapRouteInfos,
   setSwapRateAction,
   priceImpactStatus,
+  swapTokenInfo,
 }) => {
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
@@ -257,6 +260,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           isLoading={isLoading}
           setSwapRateAction={setSwapRateAction}
           priceImpactStatus={priceImpactStatus}
+          swapTokenInfo={swapTokenInfo}
         />
       )}
       <div className="footer">
