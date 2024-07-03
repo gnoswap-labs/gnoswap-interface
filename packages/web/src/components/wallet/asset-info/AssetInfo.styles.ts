@@ -70,6 +70,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       ${mixins.flexbox("column", "start", "start")}
       margin: 0px 8px;
       gap: 2px;
+      cursor: pointer;
       
       .token-name-path {
         ${mixins.flexbox("row", "flex-end", "start")}

@@ -245,18 +245,22 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     width={20}
                     className="image-logo"
                   />
-                  {formatTokenExchangeRate(tokenABalance, {
-                    minLimit: makeDisplayTokenAmount(pool.tokenA, 1),
-                    maxSignificantDigits: pool?.tokenA?.decimals,
-                    fixedDecimalDigits: pool?.tokenA?.decimals,
-                  })}{" "}
-                  <span
-                    className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}
-                  >
-                    {pool?.tokenA?.symbol}
-                  </span>{" "}
-                  <span className="token-percent">
-                    {depositRatioStrOfTokenA}
+                  <span>
+                    {formatTokenExchangeRate(tokenABalance, {
+                      minLimit: makeDisplayTokenAmount(pool.tokenA, 1),
+                      maxSignificantDigits: pool?.tokenA?.decimals,
+                      fixedDecimalDigits: pool?.tokenA?.decimals,
+                    })}{" "}
+                    <span
+                      className={`token-symbol ${
+                        isWrapText ? "wrap-text" : ""
+                      }`}
+                    >
+                      {pool?.tokenA?.symbol}
+                    </span>{" "}
+                    <span className="token-percent">
+                      {depositRatioStrOfTokenA}
+                    </span>
                   </span>
                 </Tooltip>
                 <div className="divider"></div>
