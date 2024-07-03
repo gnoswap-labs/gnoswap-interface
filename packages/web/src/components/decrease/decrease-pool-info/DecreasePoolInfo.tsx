@@ -20,8 +20,8 @@ interface Props {
   tokenB: TokenModel;
   isShowProtocolFee?: boolean;
   pooledTokenInfos: any;
-  isWrap: boolean;
-  setIsWrap: () => void;
+  isWrap?: boolean;
+  setIsWrap?: () => void;
   displayGnotSwitch?: boolean;
 }
 
@@ -30,8 +30,10 @@ const DecreasePoolInfo: React.FC<Props> = ({
   tokenB,
   pooledTokenInfos,
   isShowProtocolFee = false,
-  isWrap,
-  setIsWrap,
+  isWrap = false,
+  setIsWrap = () => {
+    return;
+  },
   displayGnotSwitch = false,
 }) => {
   const { breakpoint } = useWindowSize();

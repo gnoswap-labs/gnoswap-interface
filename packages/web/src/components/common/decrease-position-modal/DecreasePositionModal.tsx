@@ -59,10 +59,6 @@ const DecreasePositionModal: React.FC<Props> = ({
               {...amountInfo}
               isShowProtocolFee
               pooledTokenInfos={pooledTokenInfos}
-              shouldUnwrap={false}
-              setShouldUnwrap={() => {
-                return;
-              }}
             />
           </div>
 
