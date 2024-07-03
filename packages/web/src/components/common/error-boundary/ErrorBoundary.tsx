@@ -27,11 +27,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     this.setState({ hasError: true });
   }
 
-  componentDidUpdate(): void {
-    if (this.state.hasError) {
-      this.props.router.push("/500");
-    }
-  }
+  // componentDidUpdate(): void {
+  //   if (this.state.hasError) {
+  //     this.props.router.push("/500");
+  //   }
+  // }
 
   render() {
     if (this.state.hasError) {
