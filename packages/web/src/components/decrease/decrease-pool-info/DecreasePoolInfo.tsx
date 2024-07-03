@@ -20,8 +20,8 @@ interface Props {
   tokenB: TokenModel;
   isShowProtocolFee?: boolean;
   pooledTokenInfos: any;
-  shouldUnwrap: boolean;
-  setShouldUnwrap: () => void;
+  isWrap: boolean;
+  setIsWrap: () => void;
   displayGnotSwitch?: boolean;
 }
 
@@ -30,8 +30,8 @@ const DecreasePoolInfo: React.FC<Props> = ({
   tokenB,
   pooledTokenInfos,
   isShowProtocolFee = false,
-  shouldUnwrap,
-  setShouldUnwrap,
+  isWrap,
+  setIsWrap,
   displayGnotSwitch = false,
 }) => {
   const { breakpoint } = useWindowSize();
@@ -162,7 +162,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
           <Divider />
           <GnotCollectSwitchWrapper>
             <div>Collect as WUGNOT</div>
-            <Switch checked={shouldUnwrap} onChange={setShouldUnwrap} />
+            <Switch checked={isWrap} onChange={setIsWrap} />
           </GnotCollectSwitchWrapper>
         </>
       )}

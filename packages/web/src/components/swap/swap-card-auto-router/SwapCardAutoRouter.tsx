@@ -23,18 +23,6 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
   swapSummaryInfo,
   isLoading,
 }) => {
-  const bestGasFee = useMemo(() => {
-    const totalGasFee = swapRouteInfos.reduce(
-      (prev, current) => prev + current.gasFeeUSD,
-      0,
-    );
-
-    if (totalGasFee < 0.01) {
-      return "<$0.01";
-    }
-    return `~$${totalGasFee}`;
-  }, [swapRouteInfos]);
-
   return (
     <AutoRouterWrapper>
       {isLoading ? (
@@ -48,9 +36,6 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
               swapSummaryInfo={swapSummaryInfo}
             />
           ))}
-          <p className="gas-description">
-            {`Best price route costs ${bestGasFee} in gas. This route optimizes your total output by considering split routes, multiple hops, and the gas cost of each step.`}
-          </p>
         </>
       )}
     </AutoRouterWrapper>
@@ -101,7 +86,6 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
         mobileWidth={24}
       />
       <div className="left-box">
-        {/* {routeInfos.length < 3 && <div className="left-badge">{swapRouteInfo.version}</div>} */}
         <span>{weightStr}</span>
       </div>
       <DotLine />

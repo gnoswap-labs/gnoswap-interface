@@ -147,21 +147,17 @@ const PoolListContainer: React.FC = () => {
   );
 
   const sortedPoolListInfos = useMemo(() => {
-    const temp = poolListInfos
-      .filter(
-        item => item.poolId === "gno.land_r_demo_foo:gno.land_r_demo_gns:500",
-      )
-      .filter(info => {
-        if (keyword !== "") {
-          return (
-            info.tokenA.name.toLowerCase().includes(keyword.toLowerCase()) ||
-            info.tokenB.name.toLowerCase().includes(keyword.toLowerCase()) ||
-            info.tokenA.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
-            info.tokenB.symbol.toLowerCase().includes(keyword.toLowerCase())
-          );
-        }
-        return true;
-      });
+    const temp = poolListInfos.filter(info => {
+      if (keyword !== "") {
+        return (
+          info.tokenA.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          info.tokenB.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          info.tokenA.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
+          info.tokenB.symbol.toLowerCase().includes(keyword.toLowerCase())
+        );
+      }
+      return true;
+    });
     if (sortOption) {
       if (sortOption.key === TABLE_HEAD.POOL_NAME) {
         if (sortOption.direction === "asc") {

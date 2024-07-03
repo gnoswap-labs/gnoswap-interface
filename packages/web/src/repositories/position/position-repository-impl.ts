@@ -394,7 +394,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenId, tokenA, tokenB, decreaseRatio, caller } = request;
+    const { lpTokenId, tokenA, tokenB, decreaseRatio, caller, existWrappedToken } = request;
 
     const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
     const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
@@ -427,7 +427,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     const decreaseLiquidityMessage = makePositionDecreaseLiquidityMessage(
       lpTokenId,
       decreaseRatio,
-      request.existWrappedToken,
+      existWrappedToken,
       caller,
     );
 
@@ -477,7 +477,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenIds, tokenPaths, caller } = request;
+    const { lpTokenIds, tokenPaths, caller, existWrappedToken } = request;
     const decreaseLiquidityRatio = 100;
 
     // Make Approve messages that can be managed by a Pool package of tokens.
@@ -505,7 +505,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       makePositionDecreaseLiquidityMessage(
         lpTokenId,
         decreaseLiquidityRatio,
-        request.existWrappedToken,
+        existWrappedToken,
         caller,
       ),
     );

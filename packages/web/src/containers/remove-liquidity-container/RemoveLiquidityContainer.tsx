@@ -10,7 +10,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   const router = useRouter();
   const { connected } = useWallet();
   const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [shouldUnwrap, setShouldUnwrap] = useState(false);
+  const [isWrap, setIsWrap] = useState(false);
   const poolPath = router.query["pool-path"] as string;
   const { positions, loading: isLoadingPositions } = usePositionData({
     isClosed: false,
@@ -22,7 +22,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   const { openModal } = useRemovePositionModal({
     positions: positions,
     selectedIds: checkedList,
-    shouldUnwrap,
+    isWrap,
   });
 
   const stakedPositions = useMemo(() => {
@@ -77,8 +77,8 @@ const RemoveLiquidityContainer: React.FC = () => {
       checkedAll={checkedAll}
       removeLiquidity={removeLiquidity}
       isLoading={isLoadingPositions}
-      shouldUnwrap={shouldUnwrap}
-      setShouldUnwrap={() => setShouldUnwrap(prev => !prev)}
+      isWrap={isWrap}
+      setIsWrap={() => setIsWrap(prev => !prev)}
     />
   );
 };

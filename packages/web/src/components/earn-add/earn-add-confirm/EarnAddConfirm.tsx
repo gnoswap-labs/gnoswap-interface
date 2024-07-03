@@ -50,9 +50,11 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
   close,
 }) => {
   const onClickConfirm = useCallback(() => {
-    if (isPoolCreation && !feeInfo.errorMsg) {
-      confirm();
+    if (isPoolCreation && feeInfo.errorMsg) {
+      return;
     }
+
+    confirm();
   }, [confirm, feeInfo.errorMsg, isPoolCreation]);
 
   return (

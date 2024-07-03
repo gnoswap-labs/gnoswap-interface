@@ -641,6 +641,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   const hasOnlyOnePoint = useMemo(() => datas.length === 1, [datas.length]);
 
+  const dateDisplay = useMemo(() => {
+    if (displayLastDayAsNow && datas.length - 1 === currentPointIndex) {
+      return parseTimeTVL(getLocalizeTime(new Date().toString()));
+    }
+
+    return parseTimeTVL(datas[currentPointIndex]?.time);
+  }, [currentPointIndex, datas, displayLastDayAsNow]);
+
   return (
     <LineGraphWrapper
       className={className}
@@ -660,19 +668,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
           hasTooltipContent && isShowTooltip && currentPointIndex > -1 ? (
             <LineGraphTooltipWrapper>
               <div className="tooltip-body">
-                <span className="date">
-                  {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
-                </span>
-                {
-                  <span className="time">
-                    {currentPointIndex === datas.length - 1 &&
-                    displayLastDayAsNow
-                      ? parseTimeTVL(getLocalizeTime(new Date().toString()))
-                          .time
-                      : parseTimeTVL(datas[currentPointIndex]?.time)?.time ||
-                        "0"}
-                  </span>
-                }
+                <span className="date">{dateDisplay.date}</span>
+                <span className="time">{dateDisplay.time}</span>
               </div>
               <div className="tooltip-header">
                 <span className="value">

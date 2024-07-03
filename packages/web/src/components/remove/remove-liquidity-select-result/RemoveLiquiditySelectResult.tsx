@@ -14,13 +14,13 @@ import { GNOT_TOKEN } from "@common/values/token-constant";
 
 interface RemoveLiquiditySelectResultProps {
   positions: PoolPositionModel[];
-  shouldUnwrap: boolean;
-  setShouldUnwrap: () => void;
+  isWrap: boolean;
+  setIsWrap: () => void;
 }
 
 const RemoveLiquiditySelectResult: React.FC<
   RemoveLiquiditySelectResultProps
-> = ({ positions, shouldUnwrap, setShouldUnwrap }) => {
+> = ({ positions, isWrap, setIsWrap }) => {
   const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } =
     useRemoveData({ selectedPosition: positions });
 
@@ -83,7 +83,7 @@ const RemoveLiquiditySelectResult: React.FC<
             <Divider />
             <GnotCollectSwitchWrapper>
               <div>Collect as WUGNOT</div>
-              <Switch checked={shouldUnwrap} onChange={setShouldUnwrap} />
+              <Switch checked={isWrap} onChange={setIsWrap} />
             </GnotCollectSwitchWrapper>
           </>
         )}

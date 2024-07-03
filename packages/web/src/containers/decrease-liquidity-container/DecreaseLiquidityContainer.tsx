@@ -11,7 +11,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     (Array.isArray(router.query["position-id"])
       ? router.query["position-id"][0]
       : router.query["position-id"]) || "";
-  const [shouldUnwrap, setShouldUnwrap] = useState(false);
+  const [isWrap, setIsWrap] = useState(false);
 
   const {
     loading,
@@ -38,7 +38,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     rangeStatus,
     percent,
     pooledTokenInfos,
-    shouldUnwrap,
+    isWrap,
   });
 
   if (!tokenA || !tokenB || loading) return <DecreaseLiquidityLoading />;
@@ -57,8 +57,8 @@ const DecreaseLiquidityContainer: React.FC = () => {
       percent={percent}
       handlePercent={(value: number) => setPercent(value)}
       pooledTokenInfos={pooledTokenInfos}
-      shouldUnwrap={shouldUnwrap}
-      setShouldUnwrap={() => setShouldUnwrap(prev => !prev)}
+      isWrap={isWrap}
+      setIsWrap={() => setIsWrap(prev => !prev)}
     />
   );
 };

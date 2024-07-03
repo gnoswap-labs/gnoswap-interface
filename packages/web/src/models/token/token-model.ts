@@ -36,7 +36,7 @@ export interface TokenModel {
 
   denom?: string;
 
-  priceID: string
+  priceID: string;
 }
 
 export interface NativeTokenModel extends TokenModel {
@@ -45,4 +45,8 @@ export interface NativeTokenModel extends TokenModel {
 
 export function isNativeToken(token: TokenModel): token is NativeTokenModel {
   return token.type.toLowerCase() === "native";
+}
+
+export function isNativeTokenByType(type: "native" | string) {
+  return type.toLowerCase() === "native";
 }

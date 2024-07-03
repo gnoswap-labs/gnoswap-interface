@@ -15,8 +15,6 @@ import { useMemo } from "react";
 export default function Home() {
   const seoInfo = useMemo(() => SEOInfo["/"], []);
 
-  throw Error("Test Error Boundaries");
-
   return (
     <>
       <SEOHeader

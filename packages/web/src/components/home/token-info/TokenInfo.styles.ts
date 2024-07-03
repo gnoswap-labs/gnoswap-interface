@@ -33,7 +33,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   height: 100%;
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
-  
+
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
@@ -88,70 +88,15 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.last7days-graph {
     display: flex;
   }
-  
-  &.name-col {
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
-
-    .token-logo {
-      margin-top: 2px;
-    }
-
-    .token-name-symbol-path {
-      ${mixins.flexbox("column", "start", "start")}
-      margin: 0px 8px;
-      gap: 2px;
-      
-      .token-name-path {
-        ${mixins.flexbox("row", "baseline", "start")}
-        gap: 8px;
-
-        .token-path {
-          &:hover {
-            color: ${({ theme }) => theme.color.text03};
-            .path-link-icon {
-              path {
-                fill: ${({ theme }) => theme.color.text03};
-              }
-            }
-          }
-          ${mixins.flexbox("row", "center", "flex-start")}
-          ${fonts.p6};
-          color: ${({ theme }) => theme.color.text04};
-          background-color: ${({ theme }) => theme.color.background26};
-          padding: 2px 4px;
-          gap: 2px;
-          border-radius: 4px;
-          white-space: nowrap;
-
-          .path-link-icon {
-            width: 10px;
-            height: 10px;
-            fill: ${({ theme }) => theme.color.text04};
-          }
-        }
-      }
-      .token-name {
-        font-size: 15px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .token-symbol {
-        ${fonts.p4};
-        color: ${({ theme }) => theme.color.text04};
-      }
-    }
-  }
 
   .fee-rate,
   .token-index {
     ${fonts.body12};
     color: ${({ theme }) => theme.color.text04};
   }
-  
+
   .fee-rate {
     ${fonts.body11};
-    
   }
 `;
 

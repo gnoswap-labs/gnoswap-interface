@@ -19,7 +19,6 @@ import { useCallback, useMemo } from "react";
 import { IPooledTokenInfo } from "./use-decrease-handle";
 import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 
@@ -37,7 +36,7 @@ export interface DecreasePositionModal {
   rangeStatus: RANGE_STATUS_OPTION;
   percent: number;
   pooledTokenInfos: IPooledTokenInfo | null;
-  shouldUnwrap: boolean;
+  isWrap: boolean;
 }
 
 export const useDecreasePositionModal = ({
@@ -50,23 +49,17 @@ export const useDecreasePositionModal = ({
   rangeStatus,
   percent,
   pooledTokenInfos,
-  shouldUnwrap,
+  isWrap,
 }: DecreasePositionModal): Props => {
   const router = useRouter();
   const { address } = useAddress();
   const { positionRepository } = useGnoswapContext();
   const clearModal = useClearModal();
 
-  const onCloseConfirmTransactionModal = useCallback(() => {
+  const onSuccessClose = useCallback(() => {
     clearModal();
     router.back();
   }, [clearModal, router]);
-
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
-    {
-      confirmCallback: onCloseConfirmTransactionModal,
-    },
-  );
 
   const {
     broadcastRejected,
@@ -108,21 +101,21 @@ export const useDecreasePositionModal = ({
     tokenB?.path,
   ]);
 
-  const canUnwrap = useMemo(() => {
-    return shouldUnwrap && !!gnotToken && !!gnotAmount;
-  }, [gnotAmount, gnotToken, shouldUnwrap]);
+  const willWrap = useMemo(() => {
+    return isWrap && !!gnotToken && !!gnotAmount;
+  }, [gnotAmount, gnotToken, isWrap]);
 
   const tokenTransform = useCallback(
     (token: TokenModel) => {
       if (token.path === GNOT_TOKEN.path) {
-        if (canUnwrap) {
+        if (willWrap) {
           return WUGNOT_TOKEN;
         }
       }
 
       return token;
     },
-    [canUnwrap],
+    [willWrap],
   );
 
   const amountInfo = useMemo(() => {
@@ -174,7 +167,8 @@ export const useDecreasePositionModal = ({
         tokenA,
         tokenB,
         caller: address,
-        existWrappedToken: canUnwrap,
+        // existWrappedToken: “true” when received as GNOT or “false” when received as Wrapped GNOT.
+        existWrappedToken: !willWrap,
       })
       .catch(() => null);
 
@@ -182,10 +176,10 @@ export const useDecreasePositionModal = ({
       tokenASymbol: tokenTransform(tokenA).symbol,
       tokenBSymbol: tokenTransform(tokenB).symbol,
       tokenAAmount: Number(poolAmountA).toLocaleString("en-US", {
-        maximumFractionDigits: 6,
+        maximumFractionDigits: tokenA.decimals,
       }),
       tokenBAmount: Number(poolAmountB).toLocaleString("en-US", {
-        maximumFractionDigits: 6,
+        maximumFractionDigits: tokenB.decimals,
       }),
     };
 
@@ -213,10 +207,11 @@ export const useDecreasePositionModal = ({
               tokenAAmount,
               tokenBAmount,
             }),
+            onSuccessClose,
           );
         }, 1000);
 
-        openTransactionConfirmModal();
+        // openTransactionConfirmModal();
       } else if (
         result.code === 4000 &&
         result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
@@ -238,7 +233,7 @@ export const useDecreasePositionModal = ({
     router,
     tokenA,
     tokenB,
-    canUnwrap,
+    willWrap,
   ]);
 
   const openModal = useCallback(() => {

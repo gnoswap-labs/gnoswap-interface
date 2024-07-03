@@ -20,13 +20,13 @@ import { TokenModel } from "@models/token/token-model";
 interface RemovePositionModalContainerProps {
   selectedPosition: PoolPositionModel[];
   allPosition: PoolPositionModel[];
-  shouldUnwrap: boolean;
+  isWrap: boolean;
 }
 
 const RemovePositionModalContainer = ({
   selectedPosition,
   allPosition,
-  shouldUnwrap,
+  isWrap,
 }: RemovePositionModalContainerProps) => {
   const { account } = useWallet();
   const { positionRepository } = useGnoswapContext();
@@ -58,7 +58,9 @@ const RemovePositionModalContainer = ({
   const gnotToken = useMemo(
     () =>
       selectedPosition.find(item => item.pool.tokenA.path === GNOT_TOKEN.path)
-        ?.pool.tokenA,
+        ?.pool.tokenA ||
+      selectedPosition.find(item => item.pool.tokenB.path === GNOT_TOKEN.path)
+        ?.pool.tokenB,
     [selectedPosition],
   );
 
@@ -75,22 +77,22 @@ const RemovePositionModalContainer = ({
     );
   }, [gnotToken?.path, pooledTokenInfos, unclaimedRewards]);
 
-  const canUnwrap = useMemo(
-    () => shouldUnwrap && !!gnotToken && !!gnotAmount,
-    [gnotAmount, gnotToken, shouldUnwrap],
+  const willWrap = useMemo(
+    () => isWrap && !!gnotToken && !!gnotAmount,
+    [gnotAmount, gnotToken, isWrap],
   );
 
   const tokenTransform = useCallback(
     (token: TokenModel) => {
       if (token.path === GNOT_TOKEN.path) {
-        if (canUnwrap) {
+        if (willWrap) {
           return WUGNOT_TOKEN;
         }
       }
 
       return token;
     },
-    [canUnwrap],
+    [willWrap],
   );
 
   const onSubmit = useCallback(async () => {
@@ -128,7 +130,8 @@ const RemovePositionModalContainer = ({
         lpTokenIds,
         tokenPaths: approveTokenPaths,
         caller: address,
-        existWrappedToken: canUnwrap,
+        // existWrappedToken: “true” when received as GNOT or “false” when received as Wrapped GNOT.
+        existWrappedToken: !willWrap,
       })
       .catch(() => null);
 
@@ -172,8 +175,8 @@ const RemovePositionModalContainer = ({
     router,
     pooledTokenInfos,
     gnotToken,
-    shouldUnwrap,
-    canUnwrap,
+    willWrap,
+    tokenTransform,
   ]);
 
   return (

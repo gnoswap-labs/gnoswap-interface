@@ -35,25 +35,23 @@ export const PoolListWrapper = styled.div<Props>`
   grid-gap: 24px;
   grid-template-columns: repeat(4, 13.4em);
   overflow-x: scroll;
-  @media (min-width: 1440px) {
-    overflow-x: visible;
-  }
-
-  @media (max-width: 920px) {
-    grid-gap: 12px;
-    grid-template-columns: repeat(auto-fill, 290px);
-    grid-auto-flow: column;
-    grid-auto-columns: 322px;
-  }
-
   .card-skeleton {
     height: 321px;
     border-radius: 10px;
     box-shadow: ${({ theme }) => theme.color.shadow02};
   }
 
+  @media (min-width: 1440px) {
+    overflow-x: visible;
+  }
   ${media.tablet} {
     grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 920px) {
+    grid-gap: 12px;
+    grid-template-columns: repeat(auto-fill, 290px);
+    grid-auto-flow: column;
+    grid-auto-columns: 322px;
   }
   ${media.mobile} {
     overflow-x: auto;
