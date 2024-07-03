@@ -1,4 +1,4 @@
-import { Component, ErrorInfo, ReactNode } from "react";
+import { Component, ReactNode } from "react";
 import { NextRouter, withRouter } from "next/router";
 
 interface ErrorBoundaryProps {
@@ -18,17 +18,22 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     this.state = { hasError: false };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch() {
     this.setState({ hasError: true });
+  }
 
-    console.error("Error caught by ErrorBoundary:", error, errorInfo);
+  componentDidUpdate(): void {
+    if (this.state.hasError) {
+      this.props.router.push("/500");
+    }
   }
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) return this.props.fallback;
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
 
-      this.props.router.push("/500");
       return;
     }
 
