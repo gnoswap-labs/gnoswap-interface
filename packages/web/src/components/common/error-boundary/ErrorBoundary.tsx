@@ -17,7 +17,7 @@ interface ErrorBoundaryState {
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.props.router.events.on("routeChangeStart", () => {
+    this.props.router.events.on("beforeHistoryChange", () => {
       this.setState({ hasError: false });
     });
     this.state = { hasError: false };
