@@ -143,7 +143,6 @@ export const useSwapHandler = () => {
     direction: type,
     slippage,
   });
-  console.log("🚀 ~ useSwapHandler ~ estimatedRoutes:", estimatedRoutes);
 
   const { openModal: openTransactionConfirmModal } =
     useTransactionConfirmModal();

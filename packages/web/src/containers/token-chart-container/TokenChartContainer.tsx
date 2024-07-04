@@ -341,7 +341,6 @@ const TokenChartContainer: React.FC = () => {
 
       return new Date();
     })();
-    console.log("🚀 ~ fakeLastTime ~ fakeLastTime:", new Date(fakeLastTime));
 
     const datas =
       chartData?.length > 0

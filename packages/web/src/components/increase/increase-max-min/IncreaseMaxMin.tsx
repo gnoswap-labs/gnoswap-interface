@@ -36,8 +36,6 @@ const IncreaseMaxMin: React.FC<IncreaseMaxMinProps> = ({
   rangeStatus,
   feeRate,
 }) => {
-  console.log("🚀 ~ maxPriceStr:", maxPriceStr);
-  console.log("🚀 ~ minPriceStr:", minPriceStr);
   const { breakpoint } = useWindowSize();
   return (
     <IncreaseMaxMinWrapper>
