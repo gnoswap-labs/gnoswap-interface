@@ -49,13 +49,6 @@ export const PoolListWrapper = styled.div<Props>`
   }
   @media (max-width: 920px) {
     grid-gap: 12px;
-    grid-template-columns: repeat(auto-fill, 290px);
-    grid-auto-flow: column;
-    grid-auto-columns: 322px;
-  }
-  ${media.mobile} {
-    overflow-x: auto;
-    grid-gap: 12px;
     grid-template-columns: repeat(auto-fill, 322px);
     grid-auto-flow: column;
     grid-auto-columns: 322px;

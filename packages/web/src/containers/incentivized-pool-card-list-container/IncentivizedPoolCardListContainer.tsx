@@ -84,22 +84,24 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       const listChildWidth = divRef.current.children[0].clientWidth;
       const currentScrollX = divRef.current.scrollLeft;
 
-      let result = Math.min(Math.floor(currentScrollX / listChildWidth) + 1, incentivizePools.length);
+      let result = Math.min(
+        Math.floor(currentScrollX / listChildWidth) + 1,
+        incentivizePools.length,
+      );
 
-      if (result < 1) return result = 1;
+      if (result < 1) return (result = 1);
 
       setCurrentIndex(result);
     }
   };
 
   const showPagination = useMemo(() => {
-    if (width >= 920) {
+    if (width > 920) {
       return false;
     } else {
       return true;
     }
   }, [width]);
-
 
   return (
     <IncentivizedPoolCardList

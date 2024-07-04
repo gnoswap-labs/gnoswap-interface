@@ -21,11 +21,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
 import { numberToFormat } from "@utils/string-utils";
-import {
-  toPriceFormat,
-  toPriceFormatNotRounding,
-  toUnitFormat,
-} from "@utils/number-utils";
+import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { TokenModel } from "@models/token/token-model";
@@ -224,11 +220,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           }, 0)
       : 0;
 
-    return toPriceFormat(claimableUsdValue, {
+    return `${toPriceFormatNotRounding(claimableUsdValue, {
       usd: true,
       minLimit: 0.01,
-      fixedLessThan1Decimal: 2,
-    });
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+    })}`;
   }, [positions, isDisplay, claimableRewardInfo]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
@@ -407,12 +405,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ) || 0;
     if (sumUSD > 0 && sumUSD <= 0.01) return "<$0.01";
 
-    return toPriceFormat(`${sumUSD}`, {
-      minLimit: 0.01,
-      isRounding: false,
-      lestThan1Decimals: 2,
-      greaterThan1Decimals: 2,
+    return toPriceFormatNotRounding(sumUSD, {
       usd: true,
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+      minLimit: 0.01,
     });
   }, [aprRewardInfo?.SWAP_FEE, isDisplay]);
 
@@ -425,7 +423,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         (accum, current) => accum + current.claimableUsdValue,
         0,
       ) || 0;
-    return toUnitFormat(`${sumUSD}`, true, true);
+    return toPriceFormatNotRounding(sumUSD, {
+      usd: true,
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+      minLimit: 0.01,
+    });
   }, [claimableRewardInfo?.SWAP_FEE, isDisplay]);
 
   const logoDaily = useMemo(() => {
@@ -477,8 +481,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         (accum, current) => accum + current.accuReward1DPrice,
         0,
       ) || 0;
-    return toUnitFormat(`${sumUSD}`, true, true);
-  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL]);
+
+    return toPriceFormatNotRounding(sumUSD, {
+      usd: true,
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+      minLimit: 0.01,
+    });
+  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL, isDisplay]);
 
   const rewardClaim = useMemo(() => {
     if (!isDisplay) return "-";
@@ -492,7 +503,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         (accum, current) => accum + current.claimableUsdValue,
         0,
       ) || 0;
-    return toUnitFormat(`${sumUSD}`, true, true);
+
+    return toPriceFormatNotRounding(sumUSD, {
+      usd: true,
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+      minLimit: 0.01,
+    });
   }, [claimableRewardInfo?.EXTERNAL, claimableRewardInfo?.INTERNAL, isDisplay]);
 
   return (
@@ -566,7 +584,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo
                     symbol={positionData?.tokenB?.symbol}
-                    url={positionData?.tokenB?.logoURI}
+                    url={positionData?.tokenA?.logoURI}
                     width={20}
                     className="image-logo"
                   />
