@@ -202,5 +202,6 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
     estimateSwapRoute,
     wrap,
     unwrap,
+    resetSwapAmount: () => setSwapAmount(""),
   };
 };

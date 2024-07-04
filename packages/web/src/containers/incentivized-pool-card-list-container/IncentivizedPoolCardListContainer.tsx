@@ -79,7 +79,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     }
   }, [page]);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (divRef.current) {
       const itemGap = 12;
       const parentWidth = divRef.current.clientWidth;
@@ -118,7 +118,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
               centerScreenX,
           );
 
-        return 0;
+        return -1;
       };
 
       const checkValidElement = (index: number) => {
@@ -163,7 +163,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
         }
       }
     }
-  };
+  }, [incentivizePools.length]);
 
   const showPagination = useMemo(() => {
     if (width > 920) {
