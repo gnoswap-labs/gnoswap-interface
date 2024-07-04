@@ -87,8 +87,8 @@ export interface SelectPool {
   isChangeMinMax: boolean;
   setIsChangeMinMax: (value: boolean) => void;
   poolInfo?: {
-    chainData: PoolDetailRPCModel | null | undefined,
-    dbData: PoolModel | null | undefined,
+    chainData: PoolDetailRPCModel | null | undefined;
+    dbData: PoolModel | null | undefined;
   };
 }
 
@@ -262,8 +262,9 @@ export const useSelectPool = ({
         });
       }
 
-      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
-        }`;
+      const poolPath = `${tokenPair?.join(":")}:${
+        SwapFeeTierInfoMap[feeTier].fee
+      }`;
 
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
       if (!poolRes) {
@@ -285,19 +286,19 @@ export const useSelectPool = ({
       const changedPoolInfo =
         isReverse === false
           ? {
-            ...poolRes,
-            price: poolResFromDb.price,
-          }
+              ...poolRes,
+              price: poolResFromDb.price,
+            }
           : {
-            ...poolRes,
-            price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
-            ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
-            positions: poolRes.positions.map(position => ({
-              ...position,
-              tickLower: position.tickUpper * -1,
-              tickUpper: position.tickLower * -1,
-            })),
-          };
+              ...poolRes,
+              price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
+              ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
+              positions: poolRes.positions.map(position => ({
+                ...position,
+                tickLower: position.tickUpper * -1,
+                tickUpper: position.tickLower * -1,
+              })),
+            };
 
       return Promise.resolve<{
         chainData: PoolDetailRPCModel | null;
@@ -453,7 +454,6 @@ export const useSelectPool = ({
     return feeBoostRateByPrices(minPrice, maxPrice);
   }, [maxPrice, minPrice, feeTier]);
 
-
   const estimatedAPR = useMemo(() => {
     return Number(poolInfo?.dbData?.feeApr || 0) * Number(feeBoost ?? 0);
   }, [feeBoost, poolInfo?.dbData?.feeApr]);
@@ -481,6 +481,7 @@ export const useSelectPool = ({
     if (num === 0) {
       const { minPrice } = SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
       setMinPosition(minPrice);
+      return;
     }
     setMinPosition(num);
   }, []);
@@ -606,7 +607,6 @@ export const useSelectPool = ({
     if (!options || !feeTier) {
       return;
     }
-
     const feeStr = `${SwapFeeTierInfoMap[feeTier].fee}`;
     const isEndMinTick = isEndTickBy(options.tickLower, feeStr);
     const isEndMaxTick = isEndTickBy(options.tickUpper, feeStr);

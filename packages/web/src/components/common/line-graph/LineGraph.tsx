@@ -736,7 +736,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                           y1={currentHeight}
                           y2={currentHeight}
                           stroke="grey"
-                          stroke-width="1"
+                          strokeWidth="1"
                           strokeDasharray={3}
                           opacity={0.2}
                         />
