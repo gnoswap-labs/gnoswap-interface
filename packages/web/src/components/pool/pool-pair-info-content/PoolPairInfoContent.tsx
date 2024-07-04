@@ -19,7 +19,6 @@ import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { tickToPriceStr } from "@utils/swap-utils";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -139,18 +138,23 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     );
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
-  const currentPrice = useMemo(() => {
-    const price = tickToPriceStr(pool.currentTick, {
-      decimals: 40,
-      isFormat: false,
-    });
+  const currentPrice = useMemo(
+    () =>
+      formatTokenExchangeRate(pool.price, {
+        maxSignificantDigits: 6,
+        fixedDecimalDigits: 6,
+        minLimit: 0.000001,
+      }),
+    [pool.price],
+  );
 
-    return formatTokenExchangeRate(price, {
+  const currentPriceReverse = useMemo(() => {
+    return formatTokenExchangeRate(1 / pool.price, {
       maxSignificantDigits: 6,
       fixedDecimalDigits: 6,
       minLimit: 0.000001,
     });
-  }, [pool?.currentTick]);
+  }, [pool.price]);
 
   const feeLogo = useMemo(() => {
     return [
@@ -460,10 +464,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   {width >= 768 && `1 ${pool?.tokenB?.symbol}`} ={" "}
-                  {formatTokenExchangeRate(
-                    Number(1 / pool.price).toFixed(width > 400 ? 6 : 2),
-                  )}{" "}
-                  {pool?.tokenA?.symbol}
+                  {currentPriceReverse} {pool?.tokenA?.symbol}
                 </div>
               )}
             </div>
