@@ -1,3 +1,4 @@
+import { SCANNER_URL } from "@common/values";
 import { useTheme } from "@emotion/react";
 import { DEVICE_TYPE } from "@styles/media";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
@@ -74,12 +75,9 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
       if (path === "gnot") {
-        window.open("https://gnoscan.io/", "_blank");
+        window.open(SCANNER_URL, "_blank");
       } else {
-        window.open(
-          "https://gnoscan.io/tokens/" + encodeURIComponent(path),
-          "_blank",
-        );
+        window.open(`${SCANNER_URL}/tokens/${path}`, "_blank");
       }
     },
     [path],
