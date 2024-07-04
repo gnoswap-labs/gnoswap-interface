@@ -342,7 +342,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   </span>
                 </div>
               ) : (
-                "-"
+                ""
               )}
             </div>
           )}

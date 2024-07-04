@@ -13,7 +13,6 @@ import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
 import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
@@ -46,9 +45,7 @@ export const useRepositionHandle = () => {
   const poolPath = router.query["pool-path"] as string;
   const positionId = router.query["position-id"] as string;
 
-  const [selectedPosition, setSelectedPosition] = useAtom(
-    IncreaseState.selectedPosition,
-  );
+  const [defaultPosition] = useAtom(IncreaseState.selectedPosition);
 
   const { address } = useAddress();
   const { swapRouterRepository, positionRepository, poolRepository } =
@@ -59,6 +56,14 @@ export const useRepositionHandle = () => {
   const { positions } = usePositionData({
     poolPath: encryptId(poolPath),
   });
+
+  const selectedPosition = useMemo(
+    () =>
+      positions.find(item => item.id.toString() === positionId) ||
+      defaultPosition,
+    [defaultPosition, positionId, positions],
+  );
+
   const { openModal: openConfirmModal, update: updateConfirmModalData } =
     useTransactionConfirmModal();
 
@@ -75,7 +80,7 @@ export const useRepositionHandle = () => {
       symbol: getGnotPath(selectedPosition?.pool.tokenA).symbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenA).logoURI,
     };
-  }, [selectedPosition?.pool]);
+  }, [selectedPosition?.pool, selectedPosition]);
 
   const tokenB: TokenModel | null = useMemo(() => {
     if (!selectedPosition) return null;
@@ -85,7 +90,7 @@ export const useRepositionHandle = () => {
       symbol: getGnotPath(selectedPosition?.pool.tokenB).symbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenB).logoURI,
     };
-  }, [selectedPosition?.pool]);
+  }, [selectedPosition?.pool, selectedPosition]);
 
   const inRange = useMemo(() => {
     if (!selectedPosition) return false;
@@ -489,19 +494,6 @@ export const useRepositionHandle = () => {
       poolRepository,
     ],
   );
-
-  useEffect(() => {
-    if (!selectedPosition && positions.length > 0 && positionId) {
-      const position = positions.filter(
-        (_: PoolPositionModel) => _.id === positionId,
-      )?.[0];
-      if (position) {
-        setSelectedPosition(position);
-      } else {
-        router.push(`/earn/pool/${poolPath}`);
-      }
-    }
-  }, [selectedPosition, positions, positionId, poolPath]);
 
   useEffect(() => {
     if (!account && poolPath) {

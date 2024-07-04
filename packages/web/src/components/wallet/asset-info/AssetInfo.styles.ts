@@ -44,25 +44,6 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.left-padding {
     padding: 16px 16px 16px 0;
   }
-  .missing-logo {
-    ${mixins.flexbox("row", "center", "center")};
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    color: ${({ theme }) => theme.color.text02};
-    background-color: ${({ theme }) => theme.color.text04};
-    ${fonts.p7}
-    ${media.mobile} {
-      font-size: 8px;
-      line-height: 10px;
-    }
-    margin-left: 15px;
-    margin-top: 2px;
-  }
-  .logo {
-    margin-top: 2px;
-    margin-left: 15px;
-  }
 
   &.name-col {
     padding: 16px;
