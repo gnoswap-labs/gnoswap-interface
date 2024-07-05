@@ -116,7 +116,7 @@ const SelectPriceRangeCustom = forwardRef<
       const compareTokenPaths = [
         checkGnotPath(tokenA.path),
         checkGnotPath(tokenB.path),
-      ].sort();
+      ];
       return (
         compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path)
       );
