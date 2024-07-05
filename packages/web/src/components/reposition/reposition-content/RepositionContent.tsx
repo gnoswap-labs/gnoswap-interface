@@ -19,8 +19,8 @@ import { ToolTipContentWrapper } from "../reposition-select-range/RepositionSele
 import { RepositionContentWrapper } from "./RepositionContent.styles";
 
 interface RepositionContentProps {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
   fee: string;
   maxPriceStr: string;
   minPriceStr: string;
@@ -43,6 +43,7 @@ interface RepositionContentProps {
   currentAmounts: { amountA: number; amountB: number } | null;
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
   selectedPosition: PoolPositionModel | null;
+  isLoadingPosition: boolean;
 }
 
 const RepositionContent: React.FC<RepositionContentProps> = ({
@@ -62,6 +63,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   currentAmounts,
   repositionAmounts,
   selectedPosition,
+  isLoadingPosition,
 }) => {
   return (
     <RepositionContentWrapper>
@@ -91,6 +93,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           rangeStatus={rangeStatus}
           priceRangeSummary={priceRangeSummary}
           selectedPosition={selectedPosition}
+          isLoadingPosition={isLoadingPosition}
         />
       </article>
       <article>
@@ -107,6 +110,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           priceRanges={priceRanges}
           priceRange={priceRange}
           changePriceRange={changePriceRange}
+          isLoadingPosition={isLoadingPosition}
         />
       </article>
 
@@ -117,6 +121,8 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           currentAmounts={currentAmounts}
           repositionAmounts={repositionAmounts}
           isHiddenCurrentBalance={false}
+          isLoadingPosition={isLoadingPosition}
+          selectPool={selectPool}
         />
       </article>
 

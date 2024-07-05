@@ -38,6 +38,7 @@ const RepositionContainer: React.FC = () => {
     swapRemainToken,
     addPosition,
     selectedPosition,
+    isLoadingPosition,
   } = useRepositionHandle();
 
   const { openModal } = useRepositionModalContainer({
@@ -61,8 +62,6 @@ const RepositionContainer: React.FC = () => {
   const onSubmit = () => {
     openModal();
   };
-
-  if (!tokenA || !tokenB) return <></>;
 
   return (
     <RepositionContent
@@ -90,6 +89,7 @@ const RepositionContainer: React.FC = () => {
       currentAmounts={currentAmounts}
       repositionAmounts={repositionAmounts}
       selectedPosition={selectedPosition}
+      isLoadingPosition={isLoadingPosition}
     />
   );
 };

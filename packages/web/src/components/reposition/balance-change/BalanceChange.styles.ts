@@ -69,6 +69,13 @@ export const BalanceChangeWrapper = styled.div<Props>`
       color: ${({ theme }) => theme.color.text03};
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
+
+      &.right {
+        ${mixins.flexbox("row", "center", "flex-end")};
+      }
+      &.dimmed {
+        color: ${({ theme }) => theme.color.text04};
+      }
     }
     p {
       &:nth-of-type(1) {
@@ -77,9 +84,6 @@ export const BalanceChangeWrapper = styled.div<Props>`
       &:nth-of-type(2) {
         flex: 1;
         text-align: right;
-        ${media.mobile} {
-          display: none;
-        }
       }
       &:nth-of-type(3) {
         text-align: right;

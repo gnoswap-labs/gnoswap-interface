@@ -53,7 +53,7 @@ export const useRepositionHandle = () => {
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account } = useWallet();
-  const { positions } = usePositionData({
+  const { positions, loading: isLoadingPosition } = usePositionData({
     poolPath: encryptId(poolPath),
   });
 
@@ -548,5 +548,6 @@ export const useRepositionHandle = () => {
     swapRemainToken,
     addPosition,
     selectedPosition,
+    isLoadingPosition,
   };
 };

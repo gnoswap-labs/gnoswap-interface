@@ -87,6 +87,38 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return toUnitFormat(pool.volume24h, true, true);
   }, [pool.volume24h]);
 
+  const volumeChangedValue = useMemo(() => {
+    if (!pool.volume24h) return "";
+
+    if (!pool.volumeChange24h) {
+      return (
+        <div>
+          <IconTriangleArrowUpV2 />{" "}
+          <span className={"positive"}> {"0.00%"}</span>
+        </div>
+      );
+    }
+
+    const volumeChangedStr = `${numberToFormat(Math.abs(pool.volumeChange24h), {
+      decimals: 2,
+      forceDecimals: true,
+    })}%`;
+
+    return (
+      <div>
+        {pool.volumeChange24h >= 0 ? (
+          <IconTriangleArrowUpV2 />
+        ) : (
+          <IconTriangleArrowDownV2 />
+        )}{" "}
+        <span className={pool.volumeChange24h >= 0 ? "positive" : "negative"}>
+          {" "}
+          {volumeChangedStr}
+        </span>
+      </div>
+    );
+  }, [pool.volume24h, pool.volumeChange24h]);
+
   const aprValue = useMemo(() => {
     if (!pool.totalApr) return "-";
 
@@ -107,19 +139,36 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return aprStr;
   }, [pool.totalApr, pool.tvl]);
 
-  const liquidityChangedStr = useMemo((): string => {
-    return `${numberToFormat(Math.abs(pool.tvlChange), {
-      decimals: 2,
-      forceDecimals: true,
-    })}%`;
-  }, [pool.tvlChange]);
+  const liquidityChangedValue = useMemo(() => {
+    if (!pool.tvl) return "";
 
-  const volumeChangedStr = useMemo((): string => {
-    return `${numberToFormat(Math.abs(pool.volumeChange24h), {
+    if (!pool.tvlChange) {
+      return (
+        <div>
+          <IconTriangleArrowUpV2 />
+        </div>
+      );
+    }
+
+    const liquidityChangedStr = `${numberToFormat(Math.abs(pool.tvlChange), {
       decimals: 2,
       forceDecimals: true,
     })}%`;
-  }, [pool.volumeChange24h]);
+
+    return (
+      <div>
+        {pool.tvlChange >= 0 ? (
+          <IconTriangleArrowUpV2 />
+        ) : (
+          <IconTriangleArrowDownV2 />
+        )}{" "}
+        <span className={pool.tvlChange >= 0 ? "positive" : "negative"}>
+          {" "}
+          {liquidityChangedStr}
+        </span>
+      </div>
+    );
+  }, [pool.tvl, pool.tvlChange]);
 
   const feeChangedStr = useMemo((): string => {
     if (!pool.feeUsd24h) return "-";
@@ -189,44 +238,35 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return isAllReserveZeroPoolBin;
   }, [poolBins]);
 
+  const tvlDisplay = useMemo(() => {
+    if (loading) {
+      return (
+        <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <span
+            css={pulseSkeletonStyle({
+              h: 20,
+              w: "170px",
+              smallTableWidth: 140,
+            })}
+          />
+        </SkeletonEarnDetailWrapper>
+      );
+    }
+
+    return (
+      <div className="wrapper-value">
+        <strong>{liquidityValue}</strong>
+        {liquidityChangedValue}
+      </div>
+    );
+  }, [liquidityChangedValue, liquidityValue, loading]);
+
   return (
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
         <section>
           <h4>TVL</h4>
-          {loading && (
-            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-              <span
-                css={pulseSkeletonStyle({
-                  h: 20,
-                  w: "170px",
-                  smallTableWidth: 140,
-                })}
-              />
-            </SkeletonEarnDetailWrapper>
-          )}
-          {!loading && (
-            <div className="wrapper-value">
-              <strong>{liquidityValue}</strong>
-              {pool.tvlChange ? (
-                <div>
-                  {pool.tvlChange >= 0 ? (
-                    <IconTriangleArrowUpV2 />
-                  ) : (
-                    <IconTriangleArrowDownV2 />
-                  )}{" "}
-                  <span
-                    className={pool.tvlChange >= 0 ? "positive" : "negative"}
-                  >
-                    {" "}
-                    {liquidityChangedStr}
-                  </span>
-                </div>
-              ) : (
-                ""
-              )}
-            </div>
-          )}
+          {tvlDisplay}
           <div className="section-info">
             {!loading && (
               <>
@@ -339,25 +379,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && (
             <div className="wrapper-value">
               <strong>{volumeValue}</strong>
-              {pool.volumeChange24h ? (
-                <div>
-                  {pool.volumeChange24h >= 0 ? (
-                    <IconTriangleArrowUpV2 />
-                  ) : (
-                    <IconTriangleArrowDownV2 />
-                  )}{" "}
-                  <span
-                    className={
-                      pool.volumeChange24h >= 0 ? "positive" : "negative"
-                    }
-                  >
-                    {" "}
-                    {volumeChangedStr}
-                  </span>
-                </div>
-              ) : (
-                ""
-              )}
+              {volumeChangedValue}
             </div>
           )}
           {loading && (
