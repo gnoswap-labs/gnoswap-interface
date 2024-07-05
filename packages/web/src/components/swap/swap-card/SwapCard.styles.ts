@@ -49,3 +49,12 @@ export const SwapCardWrapper = styled.div`
     cursor: pointer;
   }
 `;
+
+
+export const SwapWarningSection = styled.div`
+`;
+
+export const HighPriceWarningContentWrapper = styled.div`
+  ${mixins.flexbox("row", "flex-start", "flex-start")};
+  gap: 8px;
+`;

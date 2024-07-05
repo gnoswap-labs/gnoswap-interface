@@ -9,6 +9,7 @@ import {
 } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import React from "react";
 import BalanceChange from "../balance-change/BalanceChange";
@@ -41,6 +42,7 @@ interface RepositionContentProps {
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
   currentAmounts: { amountA: number; amountB: number } | null;
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
+  selectedPosition: PoolPositionModel | null;
 }
 
 const RepositionContent: React.FC<RepositionContentProps> = ({
@@ -59,6 +61,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   changePriceRange,
   currentAmounts,
   repositionAmounts,
+  selectedPosition,
 }) => {
   return (
     <RepositionContentWrapper>
@@ -87,6 +90,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           maxPriceStr={maxPriceStr}
           rangeStatus={rangeStatus}
           priceRangeSummary={priceRangeSummary}
+          selectedPosition={selectedPosition}
         />
       </article>
       <article>

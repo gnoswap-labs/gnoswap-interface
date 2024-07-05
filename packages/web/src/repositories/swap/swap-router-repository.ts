@@ -18,7 +18,7 @@ export interface SwapRouterRepository {
     request: SwapRouteRequest,
   ) => Promise<WalletResponse<SwapRouteResponse>>;
 
-  wrapToken: (request: WrapTokenRequest) => Promise<string>;
+  wrapToken: (request: WrapTokenRequest) => Promise<WalletResponse>;
 
-  unwrapToken: (request: UnwrapTokenRequest) => Promise<string>;
+  unwrapToken: (request: UnwrapTokenRequest) => Promise<WalletResponse>;
 }

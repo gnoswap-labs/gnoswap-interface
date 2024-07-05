@@ -1,5 +1,8 @@
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { DecreasePoolInfoWrapper } from "./DecreasePoolInfo.styles";
+import {
+  DecreasePoolInfoWrapper,
+  GnotCollectSwitchWrapper,
+} from "./DecreasePoolInfo.styles";
 import { TokenModel } from "@models/token/token-model";
 import React, { useMemo } from "react";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -9,12 +12,17 @@ import IconInfo from "@components/common/icons/IconInfo";
 import { ToolTipContentWrapper } from "../decrease-select-position/DecreaseSelectPosition.styles";
 import BigNumber from "bignumber.js";
 import { removeTrailingZeros } from "@utils/number-utils";
+import { Divider } from "@components/common/select-token/SelectToken.styles";
+import Switch from "@components/common/switch/Switch";
 
 interface Props {
   tokenA: TokenModel;
   tokenB: TokenModel;
   isShowProtocolFee?: boolean;
   pooledTokenInfos: any;
+  isWrap?: boolean;
+  setIsWrap?: () => void;
+  displayGnotSwitch?: boolean;
 }
 
 const DecreasePoolInfo: React.FC<Props> = ({
@@ -22,6 +30,11 @@ const DecreasePoolInfo: React.FC<Props> = ({
   tokenB,
   pooledTokenInfos,
   isShowProtocolFee = false,
+  isWrap = false,
+  setIsWrap = () => {
+    return;
+  },
+  displayGnotSwitch = false,
 }) => {
   const { breakpoint } = useWindowSize();
 
@@ -30,7 +43,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
       return BigNumber(pooledTokenInfos?.poolAmountA).toFormat();
     }
 
-    return removeTrailingZeros(BigNumber(pooledTokenInfos?.poolAmountA).toFormat(tokenA.decimals));
+    return removeTrailingZeros(
+      BigNumber(pooledTokenInfos?.poolAmountA).toFormat(tokenA.decimals),
+    );
   }, [pooledTokenInfos?.poolAmountA, tokenA.decimals]);
 
   const poolBMount = useMemo(() => {
@@ -38,7 +53,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
       return BigNumber(pooledTokenInfos?.poolAmountB).toFormat();
     }
 
-    return removeTrailingZeros(BigNumber(pooledTokenInfos?.poolAmountB).toFormat(tokenB.decimals));
+    return removeTrailingZeros(
+      BigNumber(pooledTokenInfos?.poolAmountB).toFormat(tokenB.decimals),
+    );
   }, [pooledTokenInfos?.poolAmountB, tokenB.decimals]);
 
   const unclaimedPoolAAMount = useMemo(() => {
@@ -46,7 +63,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
       return BigNumber(pooledTokenInfos?.unClaimTokenAAmount).toFormat();
     }
 
-    return BigNumber(pooledTokenInfos?.unClaimTokenAAmount).toFormat(tokenA.decimals);
+    return BigNumber(pooledTokenInfos?.unClaimTokenAAmount).toFormat(
+      tokenA.decimals,
+    );
   }, [pooledTokenInfos?.unClaimTokenAAmount, tokenA.decimals]);
 
   const unclaimedPoolBAMount = useMemo(() => {
@@ -54,7 +73,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
       return BigNumber(pooledTokenInfos?.unClaimTokenBAmount).toFormat();
     }
 
-    return BigNumber(pooledTokenInfos?.unClaimTokenBAmount).toFormat(tokenA.decimals);
+    return BigNumber(pooledTokenInfos?.unClaimTokenBAmount).toFormat(
+      tokenA.decimals,
+    );
   }, [pooledTokenInfos?.unClaimTokenBAmount, tokenA.decimals]);
 
   const isNotMobile = breakpoint !== DEVICE_TYPE.MOBILE;
@@ -63,7 +84,11 @@ const DecreasePoolInfo: React.FC<Props> = ({
       <div className="box-info">
         <div className="value">
           <div>
-            <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} />
+            <MissingLogo
+              symbol={tokenA?.symbol}
+              url={tokenA?.logoURI}
+              width={24}
+            />
             <p>Pooled {isNotMobile ? tokenA?.symbol : ""}</p>
           </div>
           <p>{poolAMount}</p>
@@ -73,7 +98,11 @@ const DecreasePoolInfo: React.FC<Props> = ({
       <div className="box-info">
         <div className="value">
           <div>
-            <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} />
+            <MissingLogo
+              symbol={tokenB?.symbol}
+              url={tokenB?.logoURI}
+              width={24}
+            />
             <p>Pooled {isNotMobile ? tokenB?.symbol : ""}</p>
           </div>
           <p>{poolBMount}</p>
@@ -83,7 +112,11 @@ const DecreasePoolInfo: React.FC<Props> = ({
       <div className="box-info">
         <div className="value">
           <div>
-            <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} />
+            <MissingLogo
+              symbol={tokenA?.symbol}
+              url={tokenA?.logoURI}
+              width={24}
+            />
             <p>Unclaimed {isNotMobile ? tokenA?.symbol : ""} Fees</p>
           </div>
           <p>{unclaimedPoolAAMount}</p>
@@ -93,24 +126,48 @@ const DecreasePoolInfo: React.FC<Props> = ({
       <div className="box-info">
         <div className="value">
           <div>
-            <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} />
+            <MissingLogo
+              symbol={tokenB?.symbol}
+              url={tokenB?.logoURI}
+              width={24}
+            />
             <p>Unclaimed {isNotMobile ? tokenB?.symbol : ""} Fees</p>
           </div>
           <p>{unclaimedPoolBAMount}</p>
         </div>
         <div className="usd">{pooledTokenInfos?.unClaimTokenBAmountUSD}</div>
       </div>
-      {isShowProtocolFee && <div className="divider"></div>}
-      {isShowProtocolFee && <div className="box-info">
-        <div className="value">
-          <p className="protocol-fee">Protocol Fee
-            <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The amount of fees charged on the unclaimed fees that goes to the protocol.</ToolTipContentWrapper>}>
-              <IconInfo />
-            </Tooltip>
-          </p>
-          <p className="usd protocol-fee">0%</p>
+      {isShowProtocolFee && <Divider />}
+      {isShowProtocolFee && (
+        <div className="box-info">
+          <div className="value">
+            <p className="protocol-fee">
+              Protocol Fee
+              <Tooltip
+                placement="top"
+                FloatingContent={
+                  <ToolTipContentWrapper>
+                    The amount of fees charged on the unclaimed fees that goes
+                    to the protocol.
+                  </ToolTipContentWrapper>
+                }
+              >
+                <IconInfo />
+              </Tooltip>
+            </p>
+            <p className="usd protocol-fee">0%</p>
+          </div>
         </div>
-      </div>}
+      )}
+      {displayGnotSwitch && (
+        <>
+          <Divider />
+          <GnotCollectSwitchWrapper>
+            <div>Collect as WUGNOT</div>
+            <Switch checked={isWrap} onChange={setIsWrap} />
+          </GnotCollectSwitchWrapper>
+        </>
+      )}
     </DecreasePoolInfoWrapper>
   );
 };

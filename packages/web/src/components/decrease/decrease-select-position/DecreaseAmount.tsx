@@ -10,6 +10,8 @@ export interface DecreaseSelectPositionProps {
   percent: number;
   handlePercent: (value: number) => void;
   pooledTokenInfos: any;
+  isWrap: boolean;
+  setIsWrap: () => void;
 }
 
 const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
@@ -18,6 +20,8 @@ const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
   percent,
   handlePercent,
   pooledTokenInfos,
+  isWrap,
+  setIsWrap,
 }) => {
   return (
     <DecreaseSelectPositionWrapper>
@@ -28,17 +32,32 @@ const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
         <div className="decrease-percent">
           <p>{percent}%</p>
           <div>
-            <div className="box-percent" onClick={() => handlePercent(25)}>25%</div>
-            <div className="box-percent" onClick={() => handlePercent(50)}>50%</div>
-            <div className="box-percent" onClick={() => handlePercent(75)}>75%</div>
-            <div className="box-percent" onClick={() => handlePercent(100)}>Max</div>
+            <div className="box-percent" onClick={() => handlePercent(25)}>
+              25%
+            </div>
+            <div className="box-percent" onClick={() => handlePercent(50)}>
+              50%
+            </div>
+            <div className="box-percent" onClick={() => handlePercent(75)}>
+              75%
+            </div>
+            <div className="box-percent" onClick={() => handlePercent(100)}>
+              Max
+            </div>
           </div>
         </div>
         <div className="range">
           <Range percent={percent} handlePercent={handlePercent} />
         </div>
       </div>
-      <DecreasePoolInfo tokenA={tokenA} tokenB={tokenB} pooledTokenInfos={pooledTokenInfos} />
+      <DecreasePoolInfo
+        tokenA={tokenA}
+        tokenB={tokenB}
+        pooledTokenInfos={pooledTokenInfos}
+        isWrap={isWrap}
+        setIsWrap={setIsWrap}
+        displayGnotSwitch
+      />
     </DecreaseSelectPositionWrapper>
   );
 };

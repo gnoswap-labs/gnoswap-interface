@@ -3,8 +3,10 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
+import { toPriceFormat } from "@utils/number-utils";
 import React from "react";
 import { RepositionSelectPositionWrapper } from "./RepositionSelectPosition.styles";
 
@@ -17,12 +19,14 @@ export interface RepositionSelectPositionProps {
   rangeStatus: RANGE_STATUS_OPTION;
   aprFee: number;
   priceRangeSummary: IPriceRange;
+  selectedPosition: PoolPositionModel | null;
 }
 
 const RepositionSelectPosition: React.FC<RepositionSelectPositionProps> = ({
   tokenA,
   tokenB,
   fee,
+  selectedPosition,
 }) => {
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
@@ -41,7 +45,12 @@ const RepositionSelectPosition: React.FC<RepositionSelectPositionProps> = ({
           {isMobile ? "" : `${tokenA?.symbol}/${tokenB?.symbol}`}
           <Badge text={fee} type={BADGE_TYPE.DARK_DEFAULT} />
         </div>
-        <p className="price-position">$145,541.02</p>
+        <p className="price-position">
+          {toPriceFormat(selectedPosition?.usdValue, {
+            usd: true,
+            isKMBFormat: false,
+          })}
+        </p>
       </div>
     </RepositionSelectPositionWrapper>
   );

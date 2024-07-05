@@ -131,11 +131,8 @@ const PoolListContainer: React.FC = () => {
     return Number(value.replace(/,/g, "").slice(1));
   };
 
-  const sortedPoolListInfos = useMemo(() => {
-    function filteredPoolType(
-      poolType: POOL_TYPE,
-      incentivizedType: INCENTIVE_TYPE,
-    ) {
+  const filteredPoolType = useCallback(
+    (poolType: POOL_TYPE, incentivizedType: INCENTIVE_TYPE) => {
       switch (poolType) {
         case "Incentivized":
           return incentivizedType !== "NONE_INCENTIVIZED";
@@ -145,8 +142,11 @@ const PoolListContainer: React.FC = () => {
           break;
       }
       return true;
-    }
+    },
+    [],
+  );
 
+  const sortedPoolListInfos = useMemo(() => {
     const temp = poolListInfos.filter(info => {
       if (keyword !== "") {
         return (
@@ -273,8 +273,8 @@ const PoolListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setTokenSortOption({
         key,

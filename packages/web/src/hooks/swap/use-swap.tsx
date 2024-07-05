@@ -131,6 +131,38 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
     setSwapAmount(amount || "0");
   }, []);
 
+  const wrap = useCallback(
+    async (tokenAmount: string) => {
+      if (!account) {
+        return null;
+      }
+      if (!selectedTokenPair) {
+        return null;
+      }
+      return swapRouterRepository.wrapToken({
+        token: tokenA,
+        tokenAmount,
+      });
+    },
+    [account, selectedTokenPair, swapRouterRepository, tokenA],
+  );
+
+  const unwrap = useCallback(
+    async (tokenAmount: string) => {
+      if (!account) {
+        return null;
+      }
+      if (!selectedTokenPair) {
+        return null;
+      }
+      return swapRouterRepository.unwrapToken({
+        token: tokenA,
+        tokenAmount,
+      });
+    },
+    [account, selectedTokenPair, swapRouterRepository, tokenA],
+  );
+
   const swap = useCallback(
     async (estimatedRoutes: EstimatedRoute[], tokenAmount: string) => {
       if (!account) {
@@ -168,5 +200,7 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
     swapState,
     swap,
     estimateSwapRoute,
+    wrap,
+    unwrap,
   };
 };

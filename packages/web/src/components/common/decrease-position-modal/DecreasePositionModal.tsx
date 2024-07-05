@@ -62,7 +62,11 @@ const DecreasePositionModal: React.FC<Props> = ({
             />
           </div>
 
-          <BalanceChange {...amountInfo} pooledTokenInfos={pooledTokenInfos} title="Balance Changes" />
+          <BalanceChange
+            {...amountInfo}
+            pooledTokenInfos={pooledTokenInfos}
+            title="Balance Changes"
+          />
           <div>
             <Button
               onClick={confirm}

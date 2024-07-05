@@ -1,5 +1,10 @@
 import React, { useMemo } from "react";
-import { ConfirmModal, SwapDivider } from "./ConfirmSwapModal.styles";
+import {
+  ConfirmModal,
+  PriceImpactStatusWrapper,
+  PriceImpactStrWrapper,
+  PriceImpactWrapper,
+} from "./ConfirmSwapModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -16,12 +21,18 @@ import IconInfo from "@components/common/icons/IconInfo";
 import { ToolTipContentWrapper } from "../swap-card-fee-info/SwapCardFeeInfo.styles";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import { convertSwapRate } from "../swap-card-content-detail/SwapCardContentDetail";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { useTheme } from "@emotion/react";
+import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
   swapTokenInfo: SwapTokenInfo;
   swapSummaryInfo: SwapSummaryInfo;
   swapResult: SwapResultInfo | null;
+  title: string;
+  isWrapOrUnwrap: boolean;
+  priceImpactStatus: PriceImpactStatus;
 
   swap: () => void;
   close: () => void;
@@ -34,10 +45,21 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   swapResult,
   swap,
   close,
+  title,
+  isWrapOrUnwrap,
+  priceImpactStatus,
 }) => {
+  const theme = useTheme();
+
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
-    return <>1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;<ExchangeRate value={convertSwapRate(swapRate)} />&nbsp;{tokenB.symbol}</>;
+    return (
+      <>
+        1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;
+        <ExchangeRate value={convertSwapRate(swapRate)} />
+        &nbsp;{tokenB.symbol}
+      </>
+    );
   }, [swapSummaryInfo]);
 
   const swapRateUSDStr = useMemo(() => {
@@ -78,18 +100,40 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     return `$${toNumberFormat(gasFeeUSD)}`;
   }, [swapSummaryInfo.gasFeeUSD]);
 
+  const showPriceImpact = useMemo(
+    () => !!swapSummaryInfo?.priceImpact,
+    [swapSummaryInfo?.priceImpact],
+  );
+
+  const priceImpactStatusDisplay = useMemo(() => {
+    switch (priceImpactStatus) {
+      case "LOW":
+        return "Low";
+      case "MEDIUM":
+        return "Medium";
+      case "HIGH":
+        return "High";
+      case "POSITIVE":
+        return "Positive";
+      case "NONE":
+      default:
+        return "";
+    }
+  }, [priceImpactStatus]);
+
   return (
     <ConfirmModal>
       <div
-        className={`modal-body ${swapResult === null && submitted
-          ? "modal-body-loading"
-          : submitted
+        className={`modal-body ${
+          swapResult === null && submitted
+            ? "modal-body-loading"
+            : submitted
             ? "submitted-modal"
             : ""
-          }`}
+        }`}
       >
         <div className="modal-header">
-          <span>Confirm Swap</span>
+          <span>{title}</span>
           <div className="close-wrap" onClick={close}>
             <IconClose className="close-icon" />
           </div>
@@ -136,6 +180,17 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               </div>
               <div className="amount-info">
                 <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
+                {showPriceImpact && (
+                  <PriceImpactWrapper priceImpact={priceImpactStatus}>
+                    {priceImpactStatus === "HIGH" && (
+                      <IconTriangleWarningOutlined stroke={theme.color.red01} />
+                    )}
+                    {"("}
+                    {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
+                    {swapSummaryInfo?.priceImpact}
+                    {"%)"}
+                  </PriceImpactWrapper>
+                )}
               </div>
             </div>
           </div>
@@ -146,38 +201,51 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
             </div>
           </div>
           <div className="gas-info">
-            <div className="price-impact">
-              <span className="gray-text">Price Impact</span>
-              <span className="white-text">{priceImpactStr}</span>
-            </div>
-            <div className="slippage">
-              <span className="gray-text">Max. Slippage</span>
-              <span className="white-text">{slippageStr}</span>
-            </div>
-            <SwapDivider />
-            <div className="received">
-              <span className="gray-text">{guaranteedTypeStr}</span>
-              <span className="white-text">{guaranteedStr}</span>
-            </div>
-            <div className="received">
-              <div className="protocol">
-                <div>
-                  <span className="">Protocol Fee</span>
-                  <Tooltip
-                    placement="top"
-                    FloatingContent={
-                      <ToolTipContentWrapper>
-                        The amount of fees charged on each trade that goes to
-                        the protocol.
-                      </ToolTipContentWrapper>
-                    }
-                  >
-                    <IconInfo />
-                  </Tooltip>
+            {!isWrapOrUnwrap && (
+              <>
+                <div className="price-impact">
+                  <span className="gray-text">Price Impact</span>
+                  <span className="white-text">
+                    <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
+                      {priceImpactStatusDisplay}
+                    </PriceImpactStatusWrapper>{" "}
+                    <PriceImpactStrWrapper priceImpact={priceImpactStatus}>
+                      {"("}
+                      {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
+                      {priceImpactStr}
+                      {")"}
+                    </PriceImpactStrWrapper>
+                  </span>
                 </div>
-                <span className="white-text">0%</span>
-              </div>
-            </div>
+                <div className="slippage">
+                  <span className="gray-text">Slippage Set</span>
+                  <span className="white-text">{slippageStr}</span>
+                </div>
+                <div className="received">
+                  <span className="gray-text">{guaranteedTypeStr}</span>
+                  <span className="white-text">{guaranteedStr}</span>
+                </div>
+                <div className="received">
+                  <div className="protocol">
+                    <div>
+                      <span className="">Protocol Fee</span>
+                      <Tooltip
+                        placement="top"
+                        FloatingContent={
+                          <ToolTipContentWrapper>
+                            The amount of fees charged on each trade that goes
+                            to the protocol.
+                          </ToolTipContentWrapper>
+                        }
+                      >
+                        <IconInfo />
+                      </Tooltip>
+                    </div>
+                    <span className="white-text">0%</span>
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="gas-fee">
               <span className="gray-text">Network Gas Fee</span>
@@ -190,7 +258,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
         </div>
         <div className="modal-button">
           <Button
-            text="Confirm Swap"
+            text={title}
             style={{
               fullWidth: true,
               height: 57,

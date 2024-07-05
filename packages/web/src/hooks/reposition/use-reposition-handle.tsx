@@ -13,7 +13,6 @@ import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
 import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
@@ -46,9 +45,7 @@ export const useRepositionHandle = () => {
   const poolPath = router.query["pool-path"] as string;
   const positionId = router.query["position-id"] as string;
 
-  const [selectedPosition, setSelectedPosition] = useAtom(
-    IncreaseState.selectedPosition,
-  );
+  const [defaultPosition] = useAtom(IncreaseState.selectedPosition);
 
   const { address } = useAddress();
   const { swapRouterRepository, positionRepository, poolRepository } =
@@ -57,8 +54,16 @@ export const useRepositionHandle = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account } = useWallet();
   const { positions } = usePositionData({
-    poolPath: encryptId(poolPath)
+    poolPath: encryptId(poolPath),
   });
+
+  const selectedPosition = useMemo(
+    () =>
+      positions.find(item => item.id.toString() === positionId) ||
+      defaultPosition,
+    [defaultPosition, positionId, positions],
+  );
+
   const { openModal: openConfirmModal, update: updateConfirmModalData } =
     useTransactionConfirmModal();
 
@@ -75,7 +80,7 @@ export const useRepositionHandle = () => {
       symbol: getGnotPath(selectedPosition?.pool.tokenA).symbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenA).logoURI,
     };
-  }, [selectedPosition?.pool]);
+  }, [selectedPosition?.pool, selectedPosition]);
 
   const tokenB: TokenModel | null = useMemo(() => {
     if (!selectedPosition) return null;
@@ -85,7 +90,7 @@ export const useRepositionHandle = () => {
       symbol: getGnotPath(selectedPosition?.pool.tokenB).symbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenB).logoURI,
     };
-  }, [selectedPosition?.pool]);
+  }, [selectedPosition?.pool, selectedPosition]);
 
   const inRange = useMemo(() => {
     if (!selectedPosition) return false;
@@ -101,8 +106,8 @@ export const useRepositionHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -121,11 +126,17 @@ export const useRepositionHandle = () => {
 
   const minPriceStr = useMemo(() => {
     if (!selectPool.minPrice) return "-";
+
+    if (selectPool.selectedFullRange) return "0";
+
     return convertToKMB(selectPool.minPrice.toString());
   }, [selectPool]);
 
   const maxPriceStr = useMemo(() => {
     if (!selectPool.maxPrice) return "-";
+
+    if (selectPool.selectedFullRange) return "∞";
+
     return convertToKMB(selectPool.maxPrice.toString());
   }, [selectPool]);
 
@@ -191,13 +202,13 @@ export const useRepositionHandle = () => {
       : 1 / selectPool.currentPrice;
     const originPrices = ordered
       ? {
-        minPrice: tickToPrice(selectedPosition.tickLower),
-        maxPrice: tickToPrice(selectedPosition.tickUpper),
-      }
+          minPrice: tickToPrice(selectedPosition.tickLower),
+          maxPrice: tickToPrice(selectedPosition.tickUpper),
+        }
       : {
-        minPrice: tickToPrice(-1 * selectedPosition.tickUpper),
-        maxPrice: tickToPrice(-1 * selectedPosition.tickLower),
-      };
+          minPrice: tickToPrice(-1 * selectedPosition.tickUpper),
+          maxPrice: tickToPrice(-1 * selectedPosition.tickLower),
+        };
     const depositPrices = {
       minPrice: selectPool.minPrice,
       maxPrice: selectPool.maxPrice,
@@ -221,7 +232,7 @@ export const useRepositionHandle = () => {
       originDepositAmounts.amountA.toString(),
     ).dividedBy(
       Number(originDepositAmounts.amountA.toString()) +
-      Number(originDepositAmounts.amountB.toString()),
+        Number(originDepositAmounts.amountB.toString()),
     );
     const currentDepositRatioBN = BigNumber(
       Number(depositAmounts.amountA),
@@ -386,6 +397,7 @@ export const useRepositionHandle = () => {
             selectedPosition.pool.tokenA.path,
             selectedPosition.pool.tokenB.path,
           ],
+          existWrappedToken: true,
         })
         .catch(() => null);
     }, [selectedPosition, positionRepository, address]);
@@ -484,19 +496,6 @@ export const useRepositionHandle = () => {
   );
 
   useEffect(() => {
-    if (!selectedPosition && positions.length > 0 && positionId) {
-      const position = positions.filter(
-        (_: PoolPositionModel) => _.id === positionId,
-      )?.[0];
-      if (position) {
-        setSelectedPosition(position);
-      } else {
-        router.push(`/earn/pool/${poolPath}`);
-      }
-    }
-  }, [selectedPosition, positions, positionId, poolPath]);
-
-  useEffect(() => {
     if (!account && poolPath) {
       router.push(`/earn/pool/${poolPath}`);
     }
@@ -533,5 +532,6 @@ export const useRepositionHandle = () => {
     removePosition,
     swapRemainToken,
     addPosition,
+    selectedPosition,
   };
 };

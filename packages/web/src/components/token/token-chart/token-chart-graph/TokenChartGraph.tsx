@@ -4,7 +4,7 @@ import React, { useCallback, useMemo } from "react";
 import {
   TokenChartGraphWrapper,
   TokenChartGraphXLabel,
-  YAxisLabelWrapper
+  YAxisLabelWrapper,
 } from "./TokenChartGraph.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { TokenChartGraphPeriodType } from "@containers/token-chart-container/TokenChartContainer";
@@ -202,10 +202,12 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           }))}
           firstPointColor={theme.color.border05}
           customData={customData}
-          displayLastDayAsNow={true}
+          displayLastDayAsNow
         />
         <div
-          className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""}`}
+          className={`xaxis-wrapper ${
+            xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""
+          }`}
         >
           {displayXAxisLabels.map((value, index) => (
             <TokenChartGraphXLabel key={index} x={value.position}>
@@ -214,7 +216,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           ))}
         </div>
       </div>
-      <YAxisLabelWrapper width={Number(longestYAxisValue.length) / 8 * 58}>
+      <YAxisLabelWrapper width={(Number(longestYAxisValue.length) / 8) * 58}>
         {yAxisLabels.map((label, index) => (
           <span key={index} className={`label ${typeYAxis}`}>
             ${label}

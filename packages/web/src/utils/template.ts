@@ -231,3 +231,63 @@ export const ERROR_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE = `
     <span>{tokenBSymbol}</span>
   </div>
   `;
+
+/* WRAP TOKEN */
+export const PEDING_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE = `
+  Wrapping
+    <span>{tokenAAmount}</span> 
+    <span>{tokenASymbol}</span> 
+    to 
+    <span>{tokenBAmount}</span> 
+    <span>{tokenBSymbol}</span>
+  `;
+export const SUCCESS_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE = `
+  <div>
+    Wrapped 
+    <span>{tokenAAmount}</span> 
+    <span>{tokenASymbol}</span> 
+    to 
+    <span>{tokenBAmount}</span> 
+    <span>{tokenBSymbol}</span>
+  </div>
+  `;
+export const ERROR_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE = `
+  <div>
+    Failed to wrap 
+    <span>{tokenAAmount}</span> 
+    <span>{tokenASymbol}</span> 
+    to 
+    <span>{tokenBAmount}</span> 
+    <span>{tokenBSymbol}</span>
+  </div>
+  `;
+
+/* UNWRAP TOKEN */
+export const PEDING_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE = `
+  Unwrapping
+    <span>{tokenAAmount}</span> 
+    <span>{tokenASymbol}</span> 
+    to 
+    <span>{tokenBAmount}</span> 
+    <span>{tokenBSymbol}</span>
+  `;
+export const SUCCESS_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE = `
+  <div>
+    Unwrapped 
+    <span>{tokenAAmount}</span> 
+    <span>{tokenASymbol}</span> 
+    to 
+    <span>{tokenBAmount}</span> 
+    <span>{tokenBSymbol}</span>
+  </div>
+  `;
+export const ERROR_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE = `
+  <div>
+    Failed to unwrap 
+    <span>{tokenAAmount}</span> 
+    <span>{tokenASymbol}</span> 
+    to 
+    <span>{tokenBAmount}</span> 
+    <span>{tokenBSymbol}</span>
+  </div>
+  `;

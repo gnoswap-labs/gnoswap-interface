@@ -79,3 +79,9 @@ export const RemoveLiquiditySelectResultWrapper = styled.div`
 s    }
   }
 `;
+
+export const GnotCollectSwitchWrapper = styled.div`
+  width: 100%;
+  ${fonts.body12}
+  ${mixins.flexbox("row", "center", "space-between")}
+`;

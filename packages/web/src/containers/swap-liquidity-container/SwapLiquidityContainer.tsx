@@ -7,9 +7,8 @@ import useRouter from "@hooks/common/use-custom-router";
 import { PoolModel } from "@models/pool/pool-model";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import { convertToKMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormatRounding } from "@utils/number-utils";
 
 export interface LiquidityInfo {
   feeTier: string;
@@ -100,21 +99,28 @@ const SwapLiquidityContainer: React.FC = () => {
 
   const liquidityListRandom = useMemo(() => {
     let count = 0;
-    const temp = dummyLiquidityList.map(_ => {
-      const poolItem = poolDetail.filter(
+    const formattedPoolData = dummyLiquidityList.map(_ => {
+      const poolItem = poolDetail.find(
         (item: PoolModel) => Number(item.fee) === Number(_.feeTier) * 10000,
       );
-      if (poolItem.length > 0) {
+      if (poolItem) {
         count++;
         return {
           ..._,
-          volume: `${toUnitFormat(Number(poolItem[0].volume24h), true, true)}`,
-          liquidity: `$${convertToKMB(poolItem[0].tvl.toString(), {
-            maximumFractionDigits: 2,
-          })}`,
-          apr: (poolItem?.[0]?.apr ?? "").toString(),
+          volume: toPriceFormatRounding(Number(poolItem.volume24h), {
+            usd: true,
+            minLimit: 0.01,
+            lestThan1Decimals: 2,
+          }),
+          liquidity: toPriceFormatRounding(poolItem.tvl, {
+            usd: true,
+            lestThan1Decimals: 2,
+            greaterThan1Decimals: 2,
+            minLimit: 0.01,
+          }),
+          apr: (poolItem?.apr ?? "").toString(),
           active: true,
-          id: poolItem[0].id,
+          id: poolItem.id,
         };
       }
       return _;
@@ -122,7 +128,7 @@ const SwapLiquidityContainer: React.FC = () => {
     if (count === 0) {
       return [];
     }
-    return temp;
+    return formattedPoolData;
   }, [poolDetail]);
 
   const tokenAData = useMemo(() => {

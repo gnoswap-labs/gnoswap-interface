@@ -129,6 +129,9 @@ export const PoolPairInfoContentWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
       color: ${({ theme }) => theme.color.text10};
+      &.can-hover:hover {
+        color: ${({ theme }) => theme.color.text07};
+      }
       
       > span {
         ${fonts.body11}
@@ -220,6 +223,7 @@ export const PoolPairInfoContentWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 10px;
     min-height: 20px;
+   
     ${media.tabletMiddle} {
       ${mixins.flexbox("row", "center", "flex-start")};
       &.flex-row {
@@ -362,4 +366,9 @@ export const LoadingChart = styled.div`
       background-color: ${({ theme }) => theme.color.background15};
     }
   }
+`;
+
+export const TokenAmountTooltipContentWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")}
+  gap: 4px;
 `;

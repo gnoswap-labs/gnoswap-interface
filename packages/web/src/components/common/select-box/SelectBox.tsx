@@ -12,7 +12,6 @@ export interface SelectBoxProps<ItemType = unknown> {
   className?: string;
 }
 
-
 const SelectBox: <ItemType>(p: SelectBoxProps<ItemType>) => JSX.Element = ({
   current,
   items,
@@ -33,13 +32,18 @@ const SelectBox: <ItemType>(p: SelectBoxProps<ItemType>) => JSX.Element = ({
   }, [current]);
 
   return (
-    <SelectBoxWrapper ref={boxRef} className={`select-box ${className}`} onClick={toggleModal}>
+    <SelectBoxWrapper
+      ref={boxRef}
+      className={`select-box ${className}`}
+      onClick={toggleModal}
+    >
       <div className="selected-wrapper">
         <span className="current">{selectedItemName}</span>
-        {opened ?
-          <IconArrowUp className="icon-arrow" /> :
+        {opened ? (
+          <IconArrowUp className="icon-arrow" />
+        ) : (
           <IconArrowDown className="icon-arrow" />
-        }
+        )}
       </div>
 
       <SelectBoxModalWrapper className={`${opened ? "open" : ""} select-item`}>

@@ -20,8 +20,8 @@ export const usePoolData = () => {
       router.pathname === "/"
         ? 10 * 1000
         : router.pathname === PATH_60SECOND
-          ? 60 * 1000
-          : false,
+        ? 60 * 1000
+        : false,
   });
 
   const forceRefetch = useForceRefetchQuery();
@@ -34,19 +34,19 @@ export const usePoolData = () => {
         ...item,
         tokenA: item.tokenA
           ? {
-            ...item.tokenA,
-            symbol: getGnotPath(item.tokenA).symbol,
-            logoURI: getGnotPath(item.tokenA).logoURI,
-            name: getGnotPath(item.tokenA).name,
-          }
+              ...item.tokenA,
+              symbol: getGnotPath(item.tokenA).symbol,
+              logoURI: getGnotPath(item.tokenA).logoURI,
+              name: getGnotPath(item.tokenA).name,
+            }
           : item.tokenA,
         tokenB: item.tokenB
           ? {
-            ...item.tokenB,
-            symbol: getGnotPath(item.tokenB).symbol,
-            logoURI: getGnotPath(item.tokenB).logoURI,
-            name: getGnotPath(item.tokenB).name,
-          }
+              ...item.tokenB,
+              symbol: getGnotPath(item.tokenB).symbol,
+              logoURI: getGnotPath(item.tokenB).logoURI,
+              name: getGnotPath(item.tokenB).name,
+            }
           : item.tokenB,
       };
     });
@@ -54,6 +54,7 @@ export const usePoolData = () => {
 
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
     const sortedTokens = pools
+      .filter(item => Number(item.tvl) > 0.01)
       .sort((p1, p2) => {
         const p2Apr = p2.apr || 0;
         const p1Apr = p1.apr || 0;

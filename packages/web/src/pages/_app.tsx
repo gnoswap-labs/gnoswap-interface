@@ -13,6 +13,8 @@ import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapS
 import BackgroundContainer from "@containers/background-container/BackgroundContainer";
 import Notice from "@components/common/notice/NoticeToast";
 import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWrapper";
+import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
+import Custom500 from "./500";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -38,7 +40,9 @@ export default function App({ Component, pageProps }: AppProps) {
               <BackgroundContainer>
                 <Notice>
                   <ScrollTopWrapper>
-                    <Component {...pageProps} />
+                    <ErrorBoundary fallback={<Custom500 />}>
+                      <Component {...pageProps} />
+                    </ErrorBoundary>
                   </ScrollTopWrapper>
                   <GnoswapModalProvider selector={"portal-root"}>
                     <ModalContainer />

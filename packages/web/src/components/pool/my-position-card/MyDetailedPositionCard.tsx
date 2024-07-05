@@ -47,7 +47,7 @@ import { toPriceFormat } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
-interface MyPositionCardProps {
+interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
   breakpoint: DEVICE_TYPE;
   loading: boolean;
@@ -57,7 +57,7 @@ interface MyPositionCardProps {
   tokenPrices: Record<string, TokenPriceModel>;
 }
 
-const MyPositionCard: React.FC<MyPositionCardProps> = ({
+const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   position,
   breakpoint,
   loading,
@@ -155,7 +155,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       sumOfBalances === 0
         ? 0.5
         : tokenABalance /
-        (tokenABalance + tokenBBalance / position?.pool?.price);
+          (tokenABalance + tokenBBalance / position?.pool?.price);
     return [
       {
         token: tokenA,
@@ -206,10 +206,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             claimableAmount:
               accum[current.rewardType][index].claimableAmount +
               current.claimableAmount,
-            claimableUSD: accum[current.rewardType][index].claimableUSD ?? 0 + Number(current.claimableUsd),
-            accumulatedRewardOf1dUsd: accum[current.rewardType][index].accumulatedRewardOf1dUsd +
+            claimableUSD:
+              accum[current.rewardType][index].claimableUSD ??
+              0 + Number(current.claimableUsd),
+            accumulatedRewardOf1dUsd:
+              accum[current.rewardType][index].accumulatedRewardOf1dUsd +
               Number(current.accuReward1D ?? 0) *
-              Number(getTokenPrice(current.rewardToken.priceID) ?? 0),
+                Number(getTokenPrice(current.rewardToken.priceID) ?? 0),
           };
         } else {
           accum[current.rewardType].push({
@@ -247,9 +250,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getTokenPrice, position.reward]);
 
   const totalRewardUSD = useMemo(() => {
-    const isEmpty = !position.reward
-      || position.reward.length === 0
-      || position.reward.every(item => item.claimableUsd);
+    const isEmpty =
+      !position.reward ||
+      position.reward.length === 0 ||
+      position.reward.every(item => !item.claimableUsd);
 
     if (isClosed || isEmpty) {
       return "-";
@@ -271,9 +275,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [isClosed, position.reward]);
 
   const totalDailyEarning = useMemo(() => {
-    const isEmpty = !totalRewardInfo
-      || position.reward.length === 0
-      || position.reward.every(item => !item.accuReward1D);
+    const isEmpty =
+      !totalRewardInfo ||
+      position.reward.length === 0 ||
+      position.reward.every(item => !item.accuReward1D);
 
     if (isClosed || isEmpty) {
       return "-";
@@ -418,7 +423,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -436,7 +441,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -563,8 +568,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     if (maxTickRate >= 1000) return ">999%";
 
-    return `${maxTickRate > 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
-      }%`;
+    return `${maxTickRate > 1 ? "+" : ""}${
+      Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+    }%`;
   }, [maxTickRate]);
 
   const startClass = useMemo(() => {
@@ -579,28 +585,28 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       setSelectedPosition(position);
       router.push(
         "/earn/pool/" +
-        router.query["pool-path"] +
-        "/" +
-        position?.id +
-        "/decrease-liquidity",
+          router.query["pool-path"] +
+          "/" +
+          position?.id +
+          "/decrease-liquidity",
       );
     } else if (text === "Increase Liquidity") {
       setSelectedPosition(position);
       router.push(
         "/earn/pool/" +
-        router.query["pool-path"] +
-        "/" +
-        position?.id +
-        "/increase-liquidity",
+          router.query["pool-path"] +
+          "/" +
+          position?.id +
+          "/increase-liquidity",
       );
     } else {
       setSelectedPosition(position);
       router.push(
         "/earn/pool/" +
-        router.query["pool-path"] +
-        "/" +
-        position?.id +
-        "/reposition",
+          router.query["pool-path"] +
+          "/" +
+          position?.id +
+          "/reposition",
       );
     }
   };
@@ -664,21 +670,21 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                       <span className="product-id">ID #{position.id}</span>
                       <div
                         onClick={() => {
-
                           if (isClosed) {
                             setCopy(
-                              `${window.location.host + window.location.pathname
+                              `${
+                                window.location.host + window.location.pathname
                               }?addr=${address}`,
                             );
                             return;
                           }
 
                           setCopy(
-                            `${window.location.host + window.location.pathname
+                            `${
+                              window.location.host + window.location.pathname
                             }?addr=${address}#${position.id}`,
                           );
-                        }
-                        }
+                        }}
                       >
                         <IconLinkPage className="icon-link" />
                         {copied && (
@@ -726,14 +732,17 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                           onClick={() => {
                             if (isClosed) {
                               setCopy(
-                                `${window.location.host + window.location.pathname
+                                `${
+                                  window.location.host +
+                                  window.location.pathname
                                 }?addr=${address}`,
                               );
                               return;
                             }
 
                             setCopy(
-                              `${window.location.host + window.location.pathname
+                              `${
+                                window.location.host + window.location.pathname
                               }?addr=${address}#${position.id}`,
                             );
                           }}
@@ -766,34 +775,61 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="flex-button">
-              {!isClosed && <Button
-                text="Copy Positioning"
-                className="copy-button"
-                style={{}}
-                onClick={() => {
-                  router.push(
-                    router.asPath +
-                    `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`,
-                  );
-                }
-                }
-              />}
-              {!position.staked &&
-                !isClosed &&
-                !isHiddenAddPosition &&
-                connected && (
-                  <SelectBox
-                    current={"Manage"}
-                    items={[
-                      "Reposition",
-                      "Increase Liquidity",
-                      "Decrease Liquidity",
-                    ]}
-                    select={handleSelect}
-                    render={period => <ManageItem>{period}</ManageItem>}
-                    className={!inRange ? "out-range" : ""}
-                  />
-                )}
+              {!isClosed && (
+                <Button
+                  text="Copy Positioning"
+                  className="copy-button"
+                  style={{
+                    textColor: "text14",
+                  }}
+                  onClick={() => {
+                    const queryParamsArr = [
+                      `tickLower=${position.tickLower}`,
+                      `tickUpper=${position.tickUpper}`,
+                      "price_range_type=Custom",
+                    ];
+
+                    if (router.asPath.includes("?")) {
+                      const urlWithoutQuery = router.asPath.split("?")[0];
+
+                      router.push(
+                        urlWithoutQuery + `/add?${queryParamsArr.join("&")}`,
+                      );
+                      return;
+                    }
+
+                    if (router.asPath.includes("#")) {
+                      const urlWithoutHash = router.asPath.split("#")[0];
+
+                      router.push(
+                        urlWithoutHash + `/add?${queryParamsArr.join("&")}`,
+                      );
+                      return;
+                    }
+
+                    router.push(
+                      router.asPath + `/add?${queryParamsArr.join("&")}`,
+                    );
+                  }}
+                />
+              )}
+              {!position.staked && !isHiddenAddPosition && connected && (
+                <SelectBox
+                  current={"Manage"}
+                  items={
+                    isClosed
+                      ? ["Increase Liquidity"]
+                      : [
+                          "Reposition",
+                          "Increase Liquidity",
+                          "Decrease Liquidity",
+                        ]
+                  }
+                  select={handleSelect}
+                  render={period => <ManageItem>{period}</ManageItem>}
+                  className={!inRange && !isClosed ? "out-range" : ""}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -916,8 +952,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     isClosed
                       ? RANGE_STATUS_OPTION.NONE
                       : inRange
-                        ? RANGE_STATUS_OPTION.IN
-                        : RANGE_STATUS_OPTION.OUT
+                      ? RANGE_STATUS_OPTION.IN
+                      : RANGE_STATUS_OPTION.OUT
                   }
                 />
               </div>
@@ -1009,4 +1045,4 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   );
 };
 
-export default MyPositionCard;
+export default MyDetailedPositionCard;

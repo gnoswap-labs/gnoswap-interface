@@ -13,6 +13,8 @@ import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-
 import { TokenModel } from "@models/token/token-model";
 
 export interface RepositionBroadcastProgressProps {
+  tokenA: TokenModel;
+  tokenB: TokenModel;
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
   addPosition: (
@@ -24,7 +26,14 @@ export interface RepositionBroadcastProgressProps {
 
 const RepositionBroadcastProgress: React.FC<
   RepositionBroadcastProgressProps
-> = ({ removePosition, addPosition, swapRemainToken, closeModal }) => {
+> = ({
+  removePosition,
+  addPosition,
+  swapRemainToken,
+  closeModal,
+  tokenA,
+  tokenB,
+}) => {
   const [removePositionState, setRemovePositionState] =
     useState<ProgressStateType>("NONE");
   const [swapState, setSwapState] = useState<ProgressStateType>("NONE");
@@ -208,7 +217,7 @@ const RepositionBroadcastProgress: React.FC<
               isActive(swapState),
             )}
           >
-            Swap GNS for GNOT
+            Swap {tokenA.symbol} for {tokenB.symbol}
           </span>
         </div>
         <RepositionBroadcastProgressState

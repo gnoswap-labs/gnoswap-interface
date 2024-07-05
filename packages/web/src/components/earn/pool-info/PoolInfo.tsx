@@ -7,7 +7,12 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { DEVICE_TYPE } from "@styles/media";
 import { numberToRate } from "@utils/string-utils";
 import PoolInfoLazyChart from "../pool-info-lazy-chart/PoolInfoLazyChart";
-import { POOL_INFO, POOL_INFO_MOBILE, POOL_INFO_SMALL_TABLET, POOL_INFO_TABLET } from "@constants/skeleton.constant";
+import {
+  POOL_INFO,
+  POOL_INFO_MOBILE,
+  POOL_INFO_SMALL_TABLET,
+  POOL_INFO_TABLET,
+} from "@constants/skeleton.constant";
 import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { TokenModel } from "@models/token/token-model";
@@ -51,13 +56,24 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     return <OverlapTokenLogo tokens={tokenData} size={20} />;
   }, [getGnotPath, rewardTokens]);
 
-  const cellWidths = breakpoint === DEVICE_TYPE.MOBILE
-    ? POOL_INFO_MOBILE
-    : breakpoint === DEVICE_TYPE.TABLET_M
+  const cellWidths =
+    breakpoint === DEVICE_TYPE.MOBILE
+      ? POOL_INFO_MOBILE
+      : breakpoint === DEVICE_TYPE.TABLET_M
       ? POOL_INFO_SMALL_TABLET
       : breakpoint === DEVICE_TYPE.TABLET
-        ? POOL_INFO_TABLET
-        : POOL_INFO;
+      ? POOL_INFO_TABLET
+      : POOL_INFO;
+
+  const aprDisplay = useMemo(() => {
+    if (tvl === "<$0.01") return "0%";
+    return (
+      <>
+        {Number(apr) > 100 && <IconStar size={20} />}
+        {numberToRate(apr)}
+      </>
+    );
+  }, [apr, tvl]);
 
   return (
     <PoolInfoWrapper onClick={() => routeItem(poolId)}>
@@ -86,15 +102,20 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
       </TableColumn>
       {/* APR */}
       <TableColumn tdWidth={cellWidths.list[4].width}>
-        <span className="apr">
-          {Number(apr) > 100 && <IconStar size={20} />}
-          {numberToRate(apr)}
-        </span>
+        <span className="apr">{aprDisplay}</span>
       </TableColumn>
-      <TableColumn tdWidth={cellWidths.list[5].width}>{rewardTokenLogos}</TableColumn>
-      <TableColumn tdWidth={cellWidths.list[6].width} onClick={e => e.stopPropagation()}>
+      <TableColumn tdWidth={cellWidths.list[5].width}>
+        {rewardTokenLogos}
+      </TableColumn>
+      <TableColumn
+        tdWidth={cellWidths.list[6].width}
+        onClick={e => e.stopPropagation()}
+      >
         <div className="chart-wrapper">
-          <PoolInfoLazyChart pool={pool} width={cellWidths.list[6].skeletonWidth} />
+          <PoolInfoLazyChart
+            pool={pool}
+            width={cellWidths.list[6].skeletonWidth}
+          />
         </div>
       </TableColumn>
     </PoolInfoWrapper>

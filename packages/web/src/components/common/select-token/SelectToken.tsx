@@ -21,6 +21,7 @@ import { TokenState } from "@states/index";
 import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { removeDuplicatesByWrappedPath } from "@utils/common";
+import { SCANNER_URL } from "@common/values/data-constant";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -68,7 +69,12 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const getTokenPrice = useCallback(
     (token: TokenModel) => {
       const tokenPrice = tokenPrices[token.path];
-      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice) || isSwitchNetwork) {
+      if (
+        !tokenPrice ||
+        tokenPrice === null ||
+        Number.isNaN(tokenPrice) ||
+        isSwitchNetwork
+      ) {
         return "-";
       }
       return BigNumber(tokenPrice).toFormat();
@@ -156,9 +162,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
       e.stopPropagation();
       if (path === "gnot") {
-        window.open("https://gnoscan.io/", "_blank");
+        window.open(SCANNER_URL, "_blank");
       } else {
-        window.open("https://gnoscan.io/tokens/" + encodeURIComponent(path), "_blank");
+        window.open(`${SCANNER_URL}/tokens/${path}`, "_blank");
       }
     },
     [],
@@ -194,8 +200,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         <div className="token-select">
           {getTokensRecent.map((token, index) => (
             <div
-              className={`token-button ${themeKey === "dark" && "border-button-none"
-                }`}
+              className={`token-button ${
+                themeKey === "dark" && "border-button-none"
+              }`}
               key={index}
               onClick={() => onClickToken(token)}
             >
@@ -213,8 +220,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       </div>
       <Divider />
       <div
-        className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
-          }`}
+        className={`token-list-wrapper ${
+          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
+        }`}
       >
         {tokens.length > 0 &&
           tokens.map((token, index) => (
@@ -251,7 +259,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                         e: React.MouseEvent<HTMLDivElement, MouseEvent>,
                       ) => onClickPath(e, token.path)}
                     >
-                      <div>{isNativeToken(token) ? "Native Coin" : token.path}</div>
+                      <div>
+                        {isNativeToken(token) ? "Native Coin" : token.path}
+                      </div>
                       <IconNewTab />
                     </div>
                   </div>

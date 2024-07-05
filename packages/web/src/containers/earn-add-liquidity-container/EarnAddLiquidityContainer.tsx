@@ -666,7 +666,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
         }) === 1;
       const priceOfMaxLiquidity =
         pools
-          .sort((pool1: PoolModel, pool2: PoolModel) => Number(pool2.tvl) - Number(pool1.tvl))
+          .sort(
+            (pool1: PoolModel, pool2: PoolModel) =>
+              Number(pool2.tvl) - Number(pool1.tvl),
+          )
           .at(0)?.price || null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse
@@ -725,12 +728,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     const nextTickLower =
       isNumber(selectPool.minPosition || "") ||
-        isFinite(selectPool.minPosition || 0)
+      isFinite(selectPool.minPosition || 0)
         ? priceToTick(selectPool.minPosition || 0)
         : null;
     const nextTickUpper =
       isNumber(selectPool.maxPosition || "") ||
-        isFinite(selectPool.maxPosition || 0)
+      isFinite(selectPool.maxPosition || 0)
         ? priceToTick(selectPool.maxPosition || 0)
         : null;
 

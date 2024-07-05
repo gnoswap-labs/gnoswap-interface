@@ -31,24 +31,30 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
 
   const digitRegex = useMemo(() => /^0+(?=\d)|(\.\d*)$/g, []);
 
-  const onChangeAmountInput = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (value === "") {
-      changeAmount("");
-    }
-    if (value !== "" && !isAmount(value)) return;
+  const onChangeAmountInput = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      if (value === "") {
+        changeAmount("");
+      }
+      if (value !== "" && !isAmount(value)) return;
 
-    changeAmount(
-      value.replace(digitRegex, "$1")
-    );
-  }, [changeAmount, digitRegex]);
+      changeAmount(value.replace(digitRegex, "$1"));
+    },
+    [changeAmount, digitRegex],
+  );
 
   const handleFillBalance = useCallback(() => {
     if (connected) {
       const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
       if (token && isNativeToken(token)) {
         const nativeFullBalance = BigNumber(formatValue)
-          .minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0)
+          .minus(
+            makeDisplayTokenAmount(
+              token,
+              DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE,
+            ) || 0,
+          )
           .toString();
         changeAmount(nativeFullBalance);
       } else {
@@ -61,8 +67,13 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
     if (connected && balance !== "-") {
       if (balance === "0") return 0;
 
-      const result = BigNumber((balance.replace(/,/g, "")
-        .toString().match(roundDownDecimalNumber(2)))?.toString() ?? 0).toFormat(2);
+      const result = BigNumber(
+        balance
+          .replace(/,/g, "")
+          .toString()
+          .match(roundDownDecimalNumber(2))
+          ?.toString() ?? 0,
+      ).toFormat(2);
 
       return result;
     }
@@ -97,7 +108,12 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       </div>
       <div className="info">
         <span className="price-text disable-pointer ">{usdValue}</span>
-        <span className={`balance-text ${!connected ? "disable-pointer" : ""}`} onClick={handleFillBalance}>Balance: {balanceADisplay}</span>
+        <span
+          className={`balance-text ${!connected ? "disable-pointer" : ""}`}
+          onClick={handleFillBalance}
+        >
+          Balance: {balanceADisplay}
+        </span>
       </div>
     </TokenAmountInputWrapper>
   );

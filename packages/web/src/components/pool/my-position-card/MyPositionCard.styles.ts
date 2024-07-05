@@ -108,8 +108,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         ${media.mobile} {
           ${fonts.body7};
         }
-        color: ${({ theme, type }) =>
-    type !== "closed" ? theme.color.text02 : theme.color.text10};
+        color: ${({ theme, type }) => type !== "closed" ? theme.color.text02 : theme.color.text10};
       }
       .flex-button {
         ${mixins.flexbox("row", "center", "center")};

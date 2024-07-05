@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { SwapCardWrapper } from "./SwapCard.styles";
+import {
+  HighPriceWarningContentWrapper,
+  SwapCardWrapper,
+  SwapWarningSection,
+} from "./SwapCard.styles";
 import SwapCardHeader from "../swap-card-header/SwapCardHeader";
 import SwapCardContent from "../swap-card-content/SwapCardContent";
 import { TokenModel } from "@models/token/token-model";
@@ -8,6 +12,10 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
+import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
+import { useTheme } from "@emotion/react";
+import WarningCard from "@components/common/warning-card/WarningCard";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 
 interface SwapCardProps {
   connectedWallet: boolean;
@@ -23,6 +31,7 @@ interface SwapCardProps {
   themeKey: "dark" | "light";
   isSwitchNetwork: boolean;
   isLoading: boolean;
+  isSameToken: boolean;
 
   changeTokenA: (token: TokenModel) => void;
   changeTokenAAmount: (value: string, none?: boolean) => void;
@@ -38,6 +47,7 @@ interface SwapCardProps {
   swap: () => void;
   switchNetwork: () => void;
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
+  priceImpactStatus: PriceImpactStatus;
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
@@ -62,7 +72,16 @@ const SwapCard: React.FC<SwapCardProps> = ({
   switchNetwork,
   isLoading,
   setSwapRateAction,
+  priceImpactStatus,
+  isSameToken,
 }) => {
+  const theme = useTheme();
+
+  const shouldShowPriceImpactWarning = useMemo(
+    () => !isSameToken && !isLoading && priceImpactStatus === "HIGH",
+    [isLoading, priceImpactStatus, isSameToken],
+  );
+
   return (
     <>
       <SwapCardWrapper>
@@ -86,7 +105,32 @@ const SwapCard: React.FC<SwapCardProps> = ({
           isLoading={isLoading}
           setSwapRateAction={setSwapRateAction}
           isSwitchNetwork={isSwitchNetwork}
+          priceImpactStatus={priceImpactStatus}
+          isSameToken={isSameToken}
         />
+        {shouldShowPriceImpactWarning && (
+          <SwapWarningSection>
+            <WarningCard
+              type={"Error"}
+              hasBorder={false}
+              content={
+                <HighPriceWarningContentWrapper>
+                  <IconTriangleWarningOutlined
+                    stroke={theme.color.red01}
+                    width={"20"}
+                    height={"20"}
+                  />
+                  <p>
+                    High price impact! Your trade may result in a sharp change
+                    in price.
+                  </p>
+                </HighPriceWarningContentWrapper>
+              }
+              icon={<IconTriangleWarningOutlined stroke={theme.color.red01} />}
+            />
+          </SwapWarningSection>
+        )}
+
         <div className="footer">
           <SwapButton
             isSwitchNetwork={isSwitchNetwork}

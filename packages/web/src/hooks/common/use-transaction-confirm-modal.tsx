@@ -22,7 +22,9 @@ export interface UseTransactionConfirmModalProps {
   closeCallback?: () => void;
 }
 
-export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalProps): TransactionConfirmModalResponse => {
+export const useTransactionConfirmModal = (
+  props?: UseTransactionConfirmModalProps,
+): TransactionConfirmModalResponse => {
   const [, setOpenedModal] = useAtom(CommonState.openedTransactionModal);
   const [, setModalContent] = useAtom(CommonState.transactionModalContent);
   const [transactionModalData, setTransactionModalData] = useAtom(
@@ -31,12 +33,21 @@ export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalPro
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
 
-  const closeModal = useCallback((isClear = false) => {
-    setOpenedModal(false);
-    setModalContent(null);
-    setTransactionModalData(null);
-    !isClear && props?.closeCallback?.();
-  }, [setModalContent, setOpenedModal, setTransactionModalData, transactionModalData, props]);
+  const closeModal = useCallback(
+    (isClear = false) => {
+      setOpenedModal(false);
+      setModalContent(null);
+      setTransactionModalData(null);
+      !isClear && props?.closeCallback?.();
+    },
+    [
+      setModalContent,
+      setOpenedModal,
+      setTransactionModalData,
+      transactionModalData,
+      props,
+    ],
+  );
 
   const confirm = useCallback(() => {
     closeModal();

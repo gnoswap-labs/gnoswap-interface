@@ -30,8 +30,9 @@ export default function EarnAdd() {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol
-            } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${
+                getGnotPath(data?.tokenB).symbol
+              } (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },
@@ -39,7 +40,10 @@ export default function EarnAdd() {
     ];
   }, [data, width]);
 
-  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/[position-id]/reposition"], []);
+  const seoInfo = useMemo(
+    () => SEOInfo["/earn/pool/[pool-path]/[position-id]/reposition"],
+    [],
+  );
 
   return (
     <>

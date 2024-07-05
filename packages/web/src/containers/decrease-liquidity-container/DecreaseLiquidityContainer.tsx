@@ -3,7 +3,7 @@ import DecreaseLiquidityLoading from "@components/decrease/decrease-liquidity/De
 import { useDecreaseHandle } from "@hooks/decrease/use-decrease-handle";
 import { useDecreasePositionModal } from "@hooks/decrease/use-decrease-position-modal";
 import useRouter from "@hooks/common/use-custom-router";
-import React from "react";
+import React, { useState } from "react";
 
 const DecreaseLiquidityContainer: React.FC = () => {
   const router = useRouter();
@@ -11,6 +11,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     (Array.isArray(router.query["position-id"])
       ? router.query["position-id"][0]
       : router.query["position-id"]) || "";
+  const [isWrap, setIsWrap] = useState(false);
 
   const {
     loading,
@@ -37,6 +38,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     rangeStatus,
     percent,
     pooledTokenInfos,
+    isWrap,
   });
 
   if (!tokenA || !tokenB || loading) return <DecreaseLiquidityLoading />;
@@ -55,6 +57,8 @@ const DecreaseLiquidityContainer: React.FC = () => {
       percent={percent}
       handlePercent={(value: number) => setPercent(value)}
       pooledTokenInfos={pooledTokenInfos}
+      isWrap={isWrap}
+      setIsWrap={() => setIsWrap(prev => !prev)}
     />
   );
 };

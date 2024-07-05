@@ -9,7 +9,11 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { numberToUSD } from "@utils/number-utils";
 import { numberToRate } from "@utils/string-utils";
 import React, { useCallback, useMemo } from "react";
-import { Divider, SubmitPositionModalWrapper, ToolTipContentWrapper } from "./SubmitPositionModal.styles";
+import {
+  Divider,
+  SubmitPositionModalWrapper,
+  ToolTipContentWrapper,
+} from "./SubmitPositionModal.styles";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -18,9 +22,17 @@ interface Props {
   pool?: PoolModel;
 }
 
-const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool }) => {
+const SubmitPositionModal: React.FC<Props> = ({
+  positions,
+  close,
+  onSubmit,
+  pool,
+}) => {
   const totalLiquidityUSD = useMemo(() => {
-    const totalLiquidity = positions.reduce((accum, position) => accum + Number(position.positionUsdValue), 0);
+    const totalLiquidity = positions.reduce(
+      (accum, position) => accum + Number(position.positionUsdValue),
+      0,
+    );
     return numberToUSD(totalLiquidity);
   }, [positions]);
 
@@ -31,7 +43,11 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool
   const stakingAPR = useMemo(() => {
     if (!pool?.stakingApr) return "-";
 
-    return `${numberToRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${numberToRate(pool?.stakingApr)}`;
+    if (Number(pool.stakingApr) === 0) return "0%";
+
+    return `${numberToRate(
+      Number(pool?.stakingApr || 0) * 0.3,
+    )} ~ ${numberToRate(pool?.stakingApr)}`;
   }, [pool?.stakingApr]);
 
   return (
@@ -52,9 +68,13 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool
                   Staking APR
                   <Tooltip
                     placement="top"
-                    FloatingContent={<ToolTipContentWrapper>
-                      The estimated APR range is calculated by applying a dynamic multiplier to your staked position, based on the staking duration.
-                    </ToolTipContentWrapper>}
+                    FloatingContent={
+                      <ToolTipContentWrapper>
+                        The estimated APR range is calculated by applying a
+                        dynamic multiplier to your staked position, based on the
+                        staking duration.
+                      </ToolTipContentWrapper>
+                    }
                   >
                     <IconInfo />
                   </Tooltip>
@@ -77,9 +97,15 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool
                       rightSymbol={position.pool.tokenB.symbol}
                     />
                     <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
-                    <Badge className="position-bar" text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
+                    <Badge
+                      className="position-bar"
+                      text={`${Number(position.pool.fee) / 10000}%`}
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                    />
                   </div>
-                  <div className="value">{numberToUSD(Number(position.positionUsdValue))}</div>
+                  <div className="value">
+                    {numberToUSD(Number(position.positionUsdValue))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -88,9 +114,7 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool
           <div className="box-item">
             <div className="item-content">
               <div>
-                <div className="label-large">
-                  Total Amount
-                </div>
+                <div className="label-large">Total Amount</div>
                 <div className="value-large">{totalLiquidityUSD}</div>
               </div>
             </div>

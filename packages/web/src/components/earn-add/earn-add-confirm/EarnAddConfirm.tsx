@@ -50,10 +50,12 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
   close,
 }) => {
   const onClickConfirm = useCallback(() => {
-    if (!feeInfo.errorMsg) {
-      confirm();
+    if (isPoolCreation && feeInfo.errorMsg) {
+      return;
     }
-  }, [confirm, feeInfo.errorMsg]);
+
+    confirm();
+  }, [confirm, feeInfo.errorMsg, isPoolCreation]);
 
   return (
     <EarnAddConfirmWrapper>
@@ -68,14 +70,12 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
 
       <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} {...amountInfo} />
 
-      {isPoolCreation && (
-        <EarnAddConfirmFeeInfo {...feeInfo} />
-      )}
+      {isPoolCreation && <EarnAddConfirmFeeInfo {...feeInfo} />}
 
       <Button
         text="Confirm Add Position"
         onClick={onClickConfirm}
-        disabled={!!feeInfo.errorMsg}
+        disabled={isPoolCreation && !!feeInfo.errorMsg}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,

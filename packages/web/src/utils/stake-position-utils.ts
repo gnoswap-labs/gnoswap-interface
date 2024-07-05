@@ -41,6 +41,7 @@ export const convertToMB = (price: string, maximumFractionDigits?: number) => {
 export const formatTokenExchangeRate = (
   inputNumber: string | number | BigNumber, {
     isIgnoreKFormat = false,
+    isIgnoreKMBFormat = false,
     forcedIntegerDecimals = 0,
     maxSignificantDigits = 5,
     isInfinite = false,
@@ -50,9 +51,10 @@ export const formatTokenExchangeRate = (
     isIgnoreKFormat?: boolean;
     forcedIntegerDecimals?: number;
     maxSignificantDigits?: number;
-    minLimit?: number;
+    minLimit?: number | null;
     isInfinite?: boolean;
     fixedDecimalDigits?: number;
+    isIgnoreKMBFormat?: boolean
   } = {}
 ) => {
   const inputAsNumber = Number(inputNumber.toString().replace(/,/g, ""));
@@ -61,9 +63,9 @@ export const formatTokenExchangeRate = (
 
   if (Number.isNaN(inputAsNumber)) return "-";
 
-  if (inputAsNumber < 1e3) {
-    if (minLimit && inputAsNumber < minLimit && inputAsNumber > 0) return `<${minLimit}`;
+  if (minLimit && inputAsNumber < minLimit && inputAsNumber > 0) return `<${minLimit}`;
 
+  if (inputAsNumber < 1e3) {
     if (Number.isInteger(inputAsNumber)) return inputAsNumber.toLocaleString("en-US", {
       maximumFractionDigits: forcedIntegerDecimals,
       minimumFractionDigits: forcedIntegerDecimals,
@@ -80,6 +82,18 @@ export const formatTokenExchangeRate = (
     }
 
     return numberWithSignificant;
+  }
+
+  if (isIgnoreKMBFormat && inputAsNumber >= 1e3) {
+    if (fixedDecimalDigits) {
+      return inputAsNumber.toLocaleString("en-US", {
+        minimumFractionDigits: maxSignificantDigits
+      });
+    }
+
+    return inputAsNumber.toLocaleString("en-US", {
+      maximumFractionDigits: maxSignificantDigits
+    });
   }
 
   return convertToKMB(inputNumber.toString(), {

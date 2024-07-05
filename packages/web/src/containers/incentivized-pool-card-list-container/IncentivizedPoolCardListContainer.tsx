@@ -81,25 +81,97 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
 
   const handleScroll = () => {
     if (divRef.current) {
+      const itemGap = 12;
+      const parentWidth = divRef.current.clientWidth;
+      const children = divRef.current.children;
       const listChildWidth = divRef.current.children[0].clientWidth;
+      const childrenLength = incentivizePools.length;
+
+      const totalItemWidth = childrenLength * listChildWidth;
+      const totalGapWidth = itemGap * (childrenLength - 1);
+
+      const maxScrollWidth = totalItemWidth + totalGapWidth - parentWidth;
       const currentScrollX = divRef.current.scrollLeft;
 
-      let result = Math.min(Math.floor(currentScrollX / listChildWidth) + 1, incentivizePools.length);
+      const maybeNextDisplayIndex =
+        Math.floor(currentScrollX / (listChildWidth + itemGap)) + 2;
 
-      if (result < 1) return result = 1;
+      const centerScreenX = document.body.clientWidth / 2;
 
-      setCurrentIndex(result);
+      if (currentScrollX === 0) {
+        setCurrentIndex(1);
+        return;
+      }
+
+      if (maxScrollWidth === currentScrollX) {
+        setCurrentIndex(childrenLength);
+        return;
+      }
+
+      const getLengthFromElementCenterToScreenCenter = (
+        element: Element | null,
+      ) => {
+        if (element)
+          return Math.abs(
+            element?.getBoundingClientRect().x +
+              listChildWidth / 2 -
+              centerScreenX,
+          );
+
+        return 0;
+      };
+
+      const checkValidElement = (index: number) => {
+        if (index < childrenLength) {
+          return children[index];
+        }
+        return null;
+      };
+
+      if (childrenLength >= 3) {
+        const maybeNextIndex = maybeNextDisplayIndex - 1;
+
+        const previous1Element = checkValidElement(maybeNextIndex - 1);
+        const currentElement = checkValidElement(maybeNextIndex);
+        const next1Element = checkValidElement(maybeNextIndex + 1);
+
+        const previousElementCenterXToScreenCenterX =
+          getLengthFromElementCenterToScreenCenter(previous1Element);
+        const currentElementCenterXToScreenCenterX =
+          getLengthFromElementCenterToScreenCenter(currentElement);
+        const nextElementCenterXToScreenCenterX =
+          getLengthFromElementCenterToScreenCenter(next1Element);
+
+        const minLength = Math.min(
+          ...[
+            previousElementCenterXToScreenCenterX,
+            currentElementCenterXToScreenCenterX,
+            nextElementCenterXToScreenCenterX,
+          ],
+        );
+
+        switch (minLength) {
+          case previousElementCenterXToScreenCenterX:
+            setCurrentIndex(maybeNextDisplayIndex - 1);
+            break;
+          case nextElementCenterXToScreenCenterX:
+            setCurrentIndex(maybeNextDisplayIndex + 1);
+            break;
+          case currentElementCenterXToScreenCenterX:
+            setCurrentIndex(maybeNextDisplayIndex);
+            break;
+        }
+      }
     }
   };
 
   const showPagination = useMemo(() => {
-    if (width >= 920) {
+    if (width > 920) {
       return false;
     } else {
       return true;
     }
   }, [width]);
-
 
   return (
     <IncentivizedPoolCardList

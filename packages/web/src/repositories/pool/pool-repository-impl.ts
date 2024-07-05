@@ -222,8 +222,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-      ? tokenBAmountRaw
-      : null;
+        ? tokenBAmountRaw
+        : null;
 
     const createPoolMessages = [];
 
@@ -381,8 +381,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-      ? tokenBAmountRaw
-      : null;
+        ? tokenBAmountRaw
+        : null;
 
     const approveMessages: TransactionMessage[] = [];
 
