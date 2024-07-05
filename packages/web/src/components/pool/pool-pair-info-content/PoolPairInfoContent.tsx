@@ -26,6 +26,7 @@ import { toUnitFormat } from "@utils/number-utils";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import BigNumber from "bignumber.js";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -138,23 +139,32 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     );
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
-  const currentPrice = useMemo(
-    () =>
-      formatTokenExchangeRate(pool.price, {
-        maxSignificantDigits: 6,
-        fixedDecimalDigits: 6,
-        minLimit: 0.000001,
-      }),
-    [pool.price],
-  );
+  const currentPriceRatioNumber = useMemo(() => {
+    const tokenADecimals = pool.tokenA.decimals || 0;
+    const tokenBDecimals = pool.tokenB.decimals || 0;
 
-  const currentPriceReverse = useMemo(() => {
-    return formatTokenExchangeRate(1 / pool.price, {
+    return BigNumber(pool.price)
+      .shiftedBy(-tokenADecimals + tokenBDecimals)
+      .toNumber();
+  }, [pool.price, pool.tokenA.decimals, pool.tokenB.decimals]);
+
+  const currentPriceRatio = useMemo(() => {
+    return formatTokenExchangeRate(currentPriceRatioNumber, {
       maxSignificantDigits: 6,
       fixedDecimalDigits: 6,
       minLimit: 0.000001,
     });
-  }, [pool.price]);
+  }, [currentPriceRatioNumber]);
+
+  const currentPriceReverse = useMemo(() => {
+    if (currentPriceRatioNumber === 0) return "-";
+
+    return formatTokenExchangeRate(1 / currentPriceRatioNumber, {
+      maxSignificantDigits: 6,
+      fixedDecimalDigits: 6,
+      minLimit: 0.000001,
+    });
+  }, [currentPriceRatioNumber]);
 
   const feeLogo = useMemo(() => {
     return [
@@ -213,7 +223,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   </span>
                 </div>
               ) : (
-                "-"
+                ""
               )}
             </div>
           )}
@@ -440,8 +450,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     width={20}
                     className="image-logo"
                   />
-                  {width >= 768 && `1 ${pool?.tokenA?.symbol}`} = {currentPrice}{" "}
-                  {pool?.tokenB?.symbol}
+                  {width >= 768 && `1 ${pool?.tokenA?.symbol}`} ={" "}
+                  {currentPriceRatio} {pool?.tokenB?.symbol}
                 </div>
               )}
               {loading && (

@@ -110,15 +110,25 @@ const SelectPriceRangeCustomController = forwardRef<
           setDisplayValue("-");
           return;
         }
-        const currentValue = BigNumber(value)
-          .multipliedBy(priceRatio ?? 1)
-          .toNumber();
+
         const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
-        if (selectedFullRange && currentValue <= minPrice) {
+        const currentValue = BigNumber(value)
+          .shiftedBy(priceRatio || 0)
+          .toNumber();
+
+        const minPriceWithRatio = BigNumber(minPrice)
+          .shiftedBy(priceRatio || 0)
+          .toNumber();
+
+        const maxPriceWithRatio = BigNumber(maxPrice)
+          .shiftedBy(priceRatio || 0)
+          .toNumber();
+
+        if (selectedFullRange && currentValue <= minPriceWithRatio) {
           setDisplayValue("0");
           return;
         }
-        if (currentValue / maxPrice > 0.9) {
+        if (currentValue / maxPriceWithRatio > 0.9) {
           setDisplayValue("∞");
           return;
         }

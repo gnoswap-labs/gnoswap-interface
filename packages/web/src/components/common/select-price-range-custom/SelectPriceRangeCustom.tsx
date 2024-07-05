@@ -386,6 +386,11 @@ const SelectPriceRangeCustom = forwardRef<
       return startingPriceValue;
     }, [startingPriceValue, tempPrice]);
 
+    const decimalsRatio = useMemo(
+      () => tokenB.decimals - tokenA.decimals || 0,
+      [tokenA.decimals, tokenB.decimals],
+    );
+
     if (selectPool.renderState() === "NONE") {
       return <></>;
     }
@@ -571,7 +576,7 @@ const SelectPriceRangeCustom = forwardRef<
                         }
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
                         ref={minPriceRangeCustomRef}
-                        priceRatio={tokenA.decimals / tokenB.decimals}
+                        priceRatio={decimalsRatio}
                       />
                       <SelectPriceRangeCustomController
                         title="Max Price"
@@ -599,7 +604,7 @@ const SelectPriceRangeCustom = forwardRef<
                         }
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
                         ref={maxPriceRangeCustomRef}
-                        priceRatio={tokenA.decimals / tokenB.decimals}
+                        priceRatio={decimalsRatio}
                       />
                     </div>
                     <div className="extra-wrapper">

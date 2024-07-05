@@ -223,7 +223,7 @@ export const SEOInfo: Record<
         .filter(item => item)
         .join(" | ");
 
-      if (titleDisplay && tokenName && tokenSymbol) return titleDisplay;
+      if (tokenName && tokenSymbol && tokenPrice) return titleDisplay;
 
       return DefaultTitle;
     },
