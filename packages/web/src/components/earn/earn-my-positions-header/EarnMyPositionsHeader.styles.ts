@@ -16,6 +16,7 @@ export const PositionsWrapper = styled.div`
   .header-content {
     width: auto;
     ${mixins.flexbox("row", "center", "space-between")};
+    margin-right: 24px;
     .switch-button {
       display: none;
     }
@@ -51,6 +52,7 @@ export const PositionsWrapper = styled.div`
   .button-wrapper {
     ${mixins.flexbox("row", "center", "flex-end")};
     gap: 8px;
+    white-space: nowrap;
     .switch-button {
       margin-right: 28px;
     }
@@ -64,4 +66,8 @@ export const PositionsWrapper = styled.div`
       }
     }
   }
+`;
+
+export const HeaderTextWrapper = styled.h2`
+  white-space: nowrap;
 `;
