@@ -55,6 +55,7 @@ export const usePool = ({
     isLoading: isLoadingRPCPools,
     refetch: refetchRPCPools,
   } = useGetRPCPoolsBy(allPoolPaths);
+  console.log("🚀 ~ rpcPools:", rpcPools);
 
   const feetierOfLiquidityMap: { [key in string]: number } | null =
     useMemo(() => {
@@ -62,6 +63,7 @@ export const usePool = ({
         return null;
       }
       const feetierOfLiquidityMap: { [key in string]: number } = {};
+
       const totalLiquidities = rpcPools
         .map(info => info.liquidity)
         .reduce((total, cur) => total + cur, 0n);
