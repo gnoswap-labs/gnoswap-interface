@@ -29,7 +29,7 @@ interface WalletConnectProps {
   isSwitchNetwork: boolean;
   loadingConnect: string;
   gnotBalance?: number;
-  isLoadingGnotBalance?: boolean
+  isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
 }
 
@@ -94,7 +94,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   }, [account]);
 
   const onMenuToggle = () => {
-    setToggle((prev) => ({
+    setToggle(prev => ({
       ...prev,
       walletConnect: !prev.walletConnect,
     }));
@@ -105,7 +105,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   }, [loadingConnect]);
 
   const onClickChangeLanguage = () => {
-    setToggle((prev) => ({
+    setToggle(prev => ({
       ...prev,
       showLanguage: !prev.showLanguage,
     }));
@@ -141,20 +141,28 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
             arrowColor: "text18",
             padding: "10px 16px",
             gap: "8px",
-            height: 36
+            height: 36,
           }}
           onClick={onMenuToggle}
         />
       ) : (
         <Button
           text={isLoading ? "" : "Wallet Login"}
-          rightIcon={isLoading ? <LoadingSpinner className="loading-button" /> : <IconStrokeArrowDown className="arrow-icon" />}
+          rightIcon={
+            isLoading ? (
+              <LoadingSpinner className="loading-button" />
+            ) : (
+              <IconStrokeArrowDown className="arrow-icon" />
+            )
+          }
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
             width: 136,
             height: 36,
-            padding: isLoading ? "8.5px 16px 7.5px 20px" : "10px 16px 10px 20px",
+            padding: isLoading
+              ? "8.5px 16px 7.5px 20px"
+              : "10px 16px 10px 20px",
             justify: "space-between",
           }}
           onClick={onMenuToggle}
@@ -176,7 +184,9 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           gnotToken={gnotToken}
         />
       )}
-      {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />}
+      {toggle.showLanguage && (
+        <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />
+      )}
       <ToolTipGlobalStyle />
     </WalletConnectorButtonWrapper>
   );

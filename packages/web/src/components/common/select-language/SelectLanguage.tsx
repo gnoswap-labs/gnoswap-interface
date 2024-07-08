@@ -40,6 +40,7 @@ const SelectLanguage: React.FC<Props> = ({ onClickChangeLanguage }) => {
           {LANGUAGES.map(item => (
             <div
               onClick={() => {
+                onClickChangeLanguage();
                 const { pathname, asPath, query } = router;
                 router.push({ pathname, query }, asPath, {
                   locale: item.code,
