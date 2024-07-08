@@ -7,6 +7,8 @@ import {
   TokenInfoWrapper,
   IconButton,
   TableColumnTooltipContent,
+  MobileActivitiesWrapper,
+  MobileTableColumn,
 } from "./ActivityInfo.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { formatAddress } from "@utils/string-utils";
@@ -110,13 +112,13 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
   const adjective = ["for", "and"];
 
   return (
-    <TokenInfoWrapper>
+    <MobileActivitiesWrapper>
       <HoverSection>
-        <TableColumn
+        <MobileTableColumn
           className="left"
           tdWidth={MOBILE_ACTIVITY_INFO.list[0].width}
         >
-          <span className="token-index">
+          <span className="cell">
             {action.split(" ").some(i => adjective.includes(i))
               ? action.split(" ").map((text, idx) => {
                   return idx === action.split(" ").length - 1 ||
@@ -145,26 +147,26 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
               <IconOpenLink className="action-icon" />
             </IconButton>
           </span>
-        </TableColumn>
-        <TableColumn
+        </MobileTableColumn>
+        <MobileTableColumn
           className="right"
           tdWidth={MOBILE_ACTIVITY_INFO.list[1].width}
         >
-          <span className="token-index">{totalValue}</span>
-        </TableColumn>
-        <TableColumn
+          <span className="cell">{totalValue}</span>
+        </MobileTableColumn>
+        <MobileTableColumn
           className="right"
           tdWidth={MOBILE_ACTIVITY_INFO.list[2].width}
         >
-          <span className="token-index">{tokenAmountOne}</span>
-        </TableColumn>
-        <TableColumn
+          <span className="cell token-amount">{tokenAmountOne}</span>
+        </MobileTableColumn>
+        <MobileTableColumn
           className="right"
           tdWidth={MOBILE_ACTIVITY_INFO.list[3].width}
         >
-          <span className="token-index">{tokenAmountTwo}</span>
-        </TableColumn>
-        <TableColumn
+          <span className="cell token-amount">{tokenAmountTwo}</span>
+        </MobileTableColumn>
+        <MobileTableColumn
           className="right"
           tdWidth={MOBILE_ACTIVITY_INFO.list[4].width}
         >
@@ -174,19 +176,19 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
               <TableColumnTooltipContent>{account}</TableColumnTooltipContent>
             }
           >
-            <span className="token-index">{formatAddress(account)}</span>
+            <span className="cell">{formatAddress(account)}</span>
           </Tooltip>
-        </TableColumn>
-        <TableColumn
+        </MobileTableColumn>
+        <MobileTableColumn
           className="right"
           tdWidth={MOBILE_ACTIVITY_INFO.list[5].width}
         >
           <DateTimeTooltip placement={"top-end"} date={time}>
-            <span className="token-index">{dayjs(time).fromNow()}</span>
+            <span className="cell">{dayjs(time).fromNow()}</span>
           </DateTimeTooltip>
-        </TableColumn>
+        </MobileTableColumn>
       </HoverSection>
-    </TokenInfoWrapper>
+    </MobileActivitiesWrapper>
   );
 };
 export default ActivityInfo;

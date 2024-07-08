@@ -158,7 +158,7 @@ export const toKMBFormat = (
     return (
       negativeSign +
       prefix +
-      bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
+      bigNumber.dividedBy(Math.pow(10, 9)).toFixed(2) +
       unitsUpperCase.billion
     );
   }
@@ -167,7 +167,7 @@ export const toKMBFormat = (
     return (
       negativeSign +
       prefix +
-      bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
+      bigNumber.dividedBy(Math.pow(10, 6)).toFixed(2) +
       unitsUpperCase.million
     );
   }
@@ -176,7 +176,7 @@ export const toKMBFormat = (
     return (
       negativeSign +
       prefix +
-      bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
+      bigNumber.dividedBy(Math.pow(10, 3)).toFixed(2) +
       unitsUpperCase.thousand
     );
   }

@@ -148,7 +148,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }
     return showedPosition;
   }, [isViewMorePositions, width, showedPosition]);
-  console.log("🚀 ~ showedPosition ~ showedPosition:", showedPosition);
 
   const handleScroll = useCallback(() => {
     if (divRef.current) {
@@ -221,27 +220,42 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
           ],
         );
 
+        let nextIndex = maybeNextDisplayIndex;
+
         switch (minLength) {
           case previousElementCenterXToScreenCenterX:
-            setCurrentIndex(maybeNextDisplayIndex - 1);
+            nextIndex = maybeNextDisplayIndex - 1;
             break;
           case nextElementCenterXToScreenCenterX:
-            setCurrentIndex(maybeNextDisplayIndex + 1);
+            nextIndex = maybeNextDisplayIndex + 1;
             break;
           case currentElementCenterXToScreenCenterX:
-            setCurrentIndex(maybeNextDisplayIndex);
+            nextIndex = maybeNextDisplayIndex;
             break;
         }
+
+        if (nextIndex > childrenLength) {
+          setCurrentIndex(childrenLength);
+          return;
+        }
+
+        if (nextIndex < 1) {
+          setCurrentIndex(1);
+          return;
+        }
+
+        setCurrentIndex(nextIndex);
       }
     }
   }, [showedPosition.length]);
+
   const showPagination = useMemo(() => {
     if (width >= 920) {
       return false;
     } else {
       return true;
     }
-  }, [positions, width]);
+  }, [width]);
 
   const handleClickLoadMore = useCallback(() => {
     setIsViewMorePositions(!isViewMorePositions);

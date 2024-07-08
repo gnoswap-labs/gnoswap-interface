@@ -301,8 +301,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
               <div className="tooltip-header">
                 <span className="label">Trading Volume</span>
                 <span className="value">
-                  {toPriceFormatNotRounding(0, {
-                    // {toPriceFormatNotRounding(datas[currentPointIndex], {
+                  {toPriceFormatNotRounding(datas[currentPointIndex], {
                     usd: true,
                     isKMBFormat: false,
                     greaterThan1Decimals: 1,

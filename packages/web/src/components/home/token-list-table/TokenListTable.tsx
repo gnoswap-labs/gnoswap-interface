@@ -44,14 +44,22 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
 }) => {
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
-      return sortOption?.key === head && sortOption.direction === "asc" && !sortOption.firstActive;
+      return (
+        sortOption?.key === head &&
+        sortOption.direction === "asc" &&
+        !sortOption.firstActive
+      );
     },
     [sortOption],
   );
 
   const isDescendingOption = useCallback(
     (head: TABLE_HEAD) => {
-      return sortOption?.key === head && sortOption.direction === "desc" && !sortOption.firstActive;
+      return (
+        sortOption?.key === head &&
+        sortOption.direction === "desc" &&
+        !sortOption.firstActive
+      );
     },
     [sortOption],
   );
@@ -78,10 +86,10 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
                 idx >= 7
                   ? "right-padding-12"
                   : idx >= 2
-                    ? "right-padding-16"
-                    : idx === 1
-                      ? "left-padding"
-                      : "",
+                  ? "right-padding-16"
+                  : idx === 1
+                  ? "left-padding"
+                  : "",
                 {
                   left: isAlignLeft(head),
                   sort: isSortOption(head),
@@ -113,6 +121,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
             tokens.map((item, idx) => (
               <TokenInfo item={item} idx={idx + 1} key={idx} />
             ))}
+          {<TableSkeleton info={TOKEN_INFO} />}
           {!isFetched && <TableSkeleton info={TOKEN_INFO} />}
         </div>
       </div>

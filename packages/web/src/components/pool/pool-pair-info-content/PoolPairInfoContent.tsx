@@ -22,7 +22,7 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormatRounding, toUnitFormat } from "@utils/number-utils";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -399,7 +399,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <div className="section-image">
                 <span>
                   {pool.allTimeVolumeUsd
-                    ? toUnitFormat(pool.allTimeVolumeUsd, true, true)
+                    ? toPriceFormatRounding(pool.allTimeVolumeUsd, {
+                        usd: true,
+                        minLimit: 0.01,
+                        fixedGreaterThan1: true,
+                        fixedLessThan1: true,
+                        lestThan1Decimals: 2,
+                      })
                     : "-"}
                 </span>
               </div>

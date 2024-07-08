@@ -150,17 +150,31 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
           ],
         );
 
+        let nextIndex = maybeNextDisplayIndex;
+
         switch (minLength) {
           case previousElementCenterXToScreenCenterX:
-            setCurrentIndex(maybeNextDisplayIndex - 1);
+            nextIndex = maybeNextDisplayIndex - 1;
             break;
           case nextElementCenterXToScreenCenterX:
-            setCurrentIndex(maybeNextDisplayIndex + 1);
+            nextIndex = maybeNextDisplayIndex + 1;
             break;
           case currentElementCenterXToScreenCenterX:
-            setCurrentIndex(maybeNextDisplayIndex);
+            nextIndex = maybeNextDisplayIndex;
             break;
         }
+
+        if (nextIndex > childrenLength) {
+          setCurrentIndex(childrenLength);
+          return;
+        }
+
+        if (nextIndex < 1) {
+          setCurrentIndex(1);
+          return;
+        }
+
+        setCurrentIndex(nextIndex);
       }
     }
   }, [incentivizePools.length]);
