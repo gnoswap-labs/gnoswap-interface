@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconCopy from "@components/common/icons/IconCopy";
@@ -27,6 +22,7 @@ import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
 import { roundDownDecimalNumber } from "@utils/regex";
 import BigNumber from "bignumber.js";
 import { ITokenResponse } from "@repositories/token";
+import { useTranslation } from "next-i18next";
 
 const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
@@ -97,6 +93,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   gnotToken,
   isLoadingGnotBalance,
 }) => {
+  const { i18n } = useTranslation();
+
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
     try {
@@ -116,17 +114,26 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const balanceText = useMemo(() => {
-    const balance = isLoadingGnotBalance ? account?.balances?.[0].amount : gnotBalance;
+    const balance = isLoadingGnotBalance
+      ? account?.balances?.[0].amount
+      : gnotBalance;
 
-    const formattedPrice = BigNumber(balance ?? 0)
-      .shiftedBy((gnotToken?.decimals ?? 0) * -1)
-      .toString()
-      .match(roundDownDecimalNumber(6))?.toString() ?? 0;
+    const formattedPrice =
+      BigNumber(balance ?? 0)
+        .shiftedBy((gnotToken?.decimals ?? 0) * -1)
+        .toString()
+        .match(roundDownDecimalNumber(6))
+        ?.toString() ?? 0;
 
     const price = BigNumber(formattedPrice).toFormat();
 
     return `${price} GNOT` || "0 GNOT";
-  }, [account?.balances, gnotBalance, gnotToken?.decimals, isLoadingGnotBalance]);
+  }, [
+    account?.balances,
+    gnotBalance,
+    gnotToken?.decimals,
+    isLoadingGnotBalance,
+  ]);
 
   const onClickDisconnect = useCallback(() => {
     disconnectWallet();
@@ -195,7 +202,9 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         <div className="theme-container">
           <ThemeSelector className="mt-16">
             <span>Language</span>
-            <div className="language" onClick={onClickChangeLanguage}>EN <IconStrokeArrowRight /></div>
+            <div className="language" onClick={onClickChangeLanguage}>
+              {i18n.language.toUpperCase()} <IconStrokeArrowRight />
+            </div>
           </ThemeSelector>
         </div>
         <div className="theme-container">
@@ -206,7 +215,6 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         </div>
       </WalletConnectorMenuWrapper>
       <Overlay onClick={onMenuToggle} />
-
     </>
   );
 };

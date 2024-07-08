@@ -11,7 +11,6 @@ import TokenListContainer from "@containers/token-list-container/TokenListContai
 import TrendingCardListContainer from "@containers/trending-card-list-container/TrendingCardListContainer";
 import HomeLayout from "@layouts/home-layout/HomeLayout";
 import { useMemo } from "react";
-
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getStaticProps({ locale }: { locale: string }) {
