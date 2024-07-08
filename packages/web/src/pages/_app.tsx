@@ -15,7 +15,7 @@ import Notice from "@components/common/notice/NoticeToast";
 import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWrapper";
 import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
 import Custom500 from "./500";
-import { appWithTranslation } from "next-i18next";
+import { appWithTranslation, UserConfig } from "next-i18next";
 import nextI18NextConfig from "../../next-i18next.config.js";
 
 function App({ Component, pageProps }: AppProps) {
@@ -59,4 +59,6 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default appWithTranslation(App, nextI18NextConfig);
+/// Cast to fix type error from next-i18next.
+/// Reference: https://github.com/i18next/next-i18next/issues/2049
+export default appWithTranslation(App, nextI18NextConfig as UserConfig);
