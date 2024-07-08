@@ -16,6 +16,7 @@ import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWra
 import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
 import Custom500 from "./500";
 import { appWithTranslation } from "next-i18next";
+import nextI18NextConfig from "../../next-i18next.config.js";
 
 function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -58,4 +59,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default appWithTranslation(App);
+export default appWithTranslation(App, nextI18NextConfig);
