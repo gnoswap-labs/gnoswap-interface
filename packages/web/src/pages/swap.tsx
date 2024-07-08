@@ -8,21 +8,30 @@ import { useAtom } from "jotai";
 import * as SwapState from "@states/swap";
 import { useMemo } from "react";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+    },
+  };
+}
 
 export default function Swap() {
   const [swapInfo] = useAtom(SwapState.swap);
 
   const seoInfo = useMemo(() => SEOInfo["/swap"], []);
 
-  const title = useMemo(() => seoInfo.title([
-    swapInfo.tokenA?.symbol,
-    swapInfo.tokenB?.symbol,
-  ].filter(item => item) as string[]
-  ), [
-    seoInfo,
-    swapInfo.tokenA?.symbol,
-    swapInfo.tokenB?.symbol
-  ]);
+  const title = useMemo(
+    () =>
+      seoInfo.title(
+        [swapInfo.tokenA?.symbol, swapInfo.tokenB?.symbol].filter(
+          item => item,
+        ) as string[],
+      ),
+    [seoInfo, swapInfo.tokenA?.symbol, swapInfo.tokenB?.symbol],
+  );
 
   return (
     <>

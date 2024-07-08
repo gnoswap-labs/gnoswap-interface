@@ -21,6 +21,15 @@ import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+    },
+  };
+}
 
 export default function Token() {
   const { isLoading } = useLoading();

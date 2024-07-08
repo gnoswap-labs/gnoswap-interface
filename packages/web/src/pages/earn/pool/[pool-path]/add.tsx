@@ -18,6 +18,15 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import { checkGnotPath } from "@utils/common";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+    },
+  };
+}
 
 export default function EarnAdd() {
   const { width } = useWindowSize();
@@ -36,8 +45,9 @@ export default function EarnAdd() {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol
-            } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${
+                getGnotPath(data?.tokenB).symbol
+              } (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },
@@ -60,17 +70,27 @@ export default function EarnAdd() {
     const tokenAPath = data?.tokenA.path;
     const tokenBPath = data?.tokenB.path;
 
-    const tokenA = getGnotPath(tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined);
-    const tokenB = getGnotPath(tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined);
+    const tokenA = getGnotPath(
+      tokenAPath
+        ? tokens.find(item => item.path === checkGnotPath(tokenAPath))
+        : undefined,
+    );
+    const tokenB = getGnotPath(
+      tokenBPath
+        ? tokens.find(item => item.path === checkGnotPath(tokenBPath))
+        : undefined,
+    );
 
-    return seoInfo.title([tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[]);
+    return seoInfo.title(
+      [tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[],
+    );
   }, [
     data?.tokenA.path,
     data?.tokenB.path,
     feeStr,
     getGnotPath,
     seoInfo,
-    tokens
+    tokens,
   ]);
 
   return (

@@ -12,6 +12,15 @@ import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+    },
+  };
+}
 
 export default function EarnAdd() {
   const { width } = useWindowSize();

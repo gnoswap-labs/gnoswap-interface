@@ -12,6 +12,20 @@ import TrendingCardListContainer from "@containers/trending-card-list-container/
 import HomeLayout from "@layouts/home-layout/HomeLayout";
 import { useMemo } from "react";
 
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        "HeaderFooter",
+        "Main",
+        "common",
+      ])),
+    },
+  };
+}
+
 export default function Home() {
   const seoInfo = useMemo(() => SEOInfo["/"], []);
 

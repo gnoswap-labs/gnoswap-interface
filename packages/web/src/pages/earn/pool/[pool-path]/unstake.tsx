@@ -14,6 +14,15 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+    },
+  };
+}
 
 export default function Earn() {
   const { width } = useWindowSize();
@@ -31,8 +40,9 @@ export default function Earn() {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol
-            } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${
+                getGnotPath(data?.tokenB).symbol
+              } (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool/${poolPath}`,
       },
@@ -49,25 +59,16 @@ export default function Earn() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [data?.fee]);
 
-
   const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/unstake"], []);
 
   const title = useMemo(() => {
     const tokenA = getGnotPath(data?.tokenA);
     const tokenB = getGnotPath(data?.tokenB);
 
-    return seoInfo.title([
-      tokenA?.symbol,
-      tokenB?.symbol,
-      feeStr
-    ].filter(item => item) as string[]);
-  }, [
-    data?.tokenA,
-    data?.tokenB,
-    feeStr,
-    getGnotPath,
-    seoInfo
-  ]);
+    return seoInfo.title(
+      [tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[],
+    );
+  }, [data?.tokenA, data?.tokenB, feeStr, getGnotPath, seoInfo]);
 
   return (
     <>

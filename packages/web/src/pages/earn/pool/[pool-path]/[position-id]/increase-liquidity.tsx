@@ -12,6 +12,15 @@ import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+    },
+  };
+}
 
 export default function IncreaseLiquidity() {
   const { width } = useWindowSize();
@@ -30,8 +39,9 @@ export default function IncreaseLiquidity() {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol
-            } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${
+                getGnotPath(data?.tokenB).symbol
+              } (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },
@@ -39,7 +49,10 @@ export default function IncreaseLiquidity() {
     ];
   }, [data, width]);
 
-  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/[position-id]/increase-liquidity"], []);
+  const seoInfo = useMemo(
+    () => SEOInfo["/earn/pool/[pool-path]/[position-id]/increase-liquidity"],
+    [],
+  );
 
   return (
     <>
