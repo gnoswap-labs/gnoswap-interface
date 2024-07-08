@@ -47,7 +47,7 @@ function Anchor({ path, title, icon, newTab = false, className }: AnchorProps) {
 
 const Footer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { t } = useTranslation("HeaderFooter");
+  const { t } = useTranslation();
 
   return (
     <FooterWrapper>

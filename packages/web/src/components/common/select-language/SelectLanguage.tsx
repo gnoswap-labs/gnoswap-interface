@@ -23,7 +23,7 @@ interface Props {
 }
 
 const SelectLanguage: React.FC<Props> = ({ onClickChangeLanguage }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const router = useRouter();
 
   return (
@@ -33,7 +33,7 @@ const SelectLanguage: React.FC<Props> = ({ onClickChangeLanguage }) => {
           <div onClick={onClickChangeLanguage}>
             <IconStrokeArrowLeft />
           </div>
-          <p>Language</p>
+          <p>{t("HeaderFooter:language")}</p>
           <div></div>
         </div>
         <div className="list">

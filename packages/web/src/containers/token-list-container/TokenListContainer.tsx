@@ -55,21 +55,21 @@ export interface SortOption {
 
 export const TABLE_HEAD = {
   INDEX: "#",
-  NAME: "Name",
-  PRICE: "Price",
+  NAME: "Main:tokenList.header.nameCol",
+  PRICE: "Main:tokenList.header.priceCol",
   PRICE_OF_1D: "1d",
   PRICE_OF_7D: "7d",
   PRICE_OF_30D: "30d",
-  MARKET_CAP: "Market Cap",
+  MARKET_CAP: "Main:tokenList.header.mostLiquidCol",
   LIQUIDITY: "TVL",
-  VOLUME: "Volume (24h)",
-  MOST_LIQUID_POOL: "Most Liquid Pool",
-  LAST_7_DAYS: "Last 7 days",
+  VOLUME: "Main:tokenList.header.volumeCol",
+  MOST_LIQUID_POOL: "Main:tokenList.header.mostLiquidCol",
+  LAST_7_DAYS: "Main:tokenList.header.last7daysCol",
 } as const;
 
 export const TABLE_HEAD_MOBILE = {
-  NAME: "Name",
-  PRICE: "Price",
+  NAME: "Main:tokenList.header.nameCol",
+  PRICE: "Main:tokenList.header.priceCol",
 } as const;
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
@@ -189,7 +189,11 @@ const TokenListContainer: React.FC = () => {
   }, []);
 
   const isSortOption = useCallback((head: TABLE_HEAD) => {
-    const disableItems = ["Most Liquid Pool", "Last 7 days"];
+    const disableItems = [
+      TABLE_HEAD.MOST_LIQUID_POOL.toString(),
+      TABLE_HEAD.LAST_7_DAYS.toString(),
+    ];
+
     return !disableItems.includes(head);
   }, []);
 

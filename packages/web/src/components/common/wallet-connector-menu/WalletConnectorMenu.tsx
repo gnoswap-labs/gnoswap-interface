@@ -93,7 +93,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   gnotToken,
   isLoadingGnotBalance,
 }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -168,7 +168,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             </MenuHeader>
             {isSwitchNetwork ? (
               <Button
-                text="Switch Network"
+                text={t("HeaderFooter:switchNetwork")}
                 onClick={switchNetwork}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
@@ -186,7 +186,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         ) : (
           <div className="button-container">
             <Button
-              text="Wallet Login"
+              text={t("HeaderFooter:walletLogin")}
               onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
@@ -201,7 +201,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
 
         <div className="theme-container">
           <ThemeSelector className="mt-16">
-            <span>Language</span>
+            <span>{t("HeaderFooter:language")}</span>
             <div className="language" onClick={onClickChangeLanguage}>
               {i18n.language.toUpperCase()} <IconStrokeArrowRight />
             </div>
@@ -209,7 +209,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         </div>
         <div className="theme-container">
           <ThemeSelector>
-            <span>Theme</span>
+            <span>{t("HeaderFooter:theme")}</span>
             <ThemeModeContainer />
           </ThemeSelector>
         </div>
