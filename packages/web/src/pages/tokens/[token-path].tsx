@@ -22,8 +22,16 @@ import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { GetStaticPaths } from "next";
 
-export async function getServerSideProps({ locale }: { locale: string }) {
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: "blocking", //indicates the type of fallback
+  };
+};
+
+export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ["HeaderFooter"])),
@@ -35,6 +43,7 @@ export default function Token() {
   const { isLoading } = useLoading();
   const router = useRouter();
   const path = router.query["token-path"] as string;
+
   const { data: token } = useGetTokenByPath(path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,
