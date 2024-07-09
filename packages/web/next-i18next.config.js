@@ -8,4 +8,8 @@ module.exports = {
     locales: ["en", "zh", "hi", "es", "de", "fr", "ru", "ja", "ko"],
     localeDetection: false,
   },
+  reloadOnPrerender: isDev,
+  localePath: !isBrowser
+    ? require("path").resolve("./public/locales")
+    : "/locales",
 };
