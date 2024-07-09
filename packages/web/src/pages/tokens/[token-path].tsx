@@ -26,6 +26,7 @@ export default function Token() {
   const { isLoading } = useLoading();
   const router = useRouter();
   const path = router.query["token-path"] as string;
+
   const { data: token } = useGetTokenByPath(path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,

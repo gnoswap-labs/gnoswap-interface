@@ -121,7 +121,6 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
             tokens.map((item, idx) => (
               <TokenInfo item={item} idx={idx + 1} key={idx} />
             ))}
-          {<TableSkeleton info={TOKEN_INFO} />}
           {!isFetched && <TableSkeleton info={TOKEN_INFO} />}
         </div>
       </div>

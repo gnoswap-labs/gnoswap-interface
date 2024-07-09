@@ -1,17 +1,12 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "space-between")};
-  > div {
-    ${mixins.flexbox("row", "center", "flex-start")};
-    width: 170px;
-    ${media.mobile} {
-      width: 130px;
-    }
-  }
+
   ${fonts.body12};
   color: ${theme.color.text02};
   width: 100%;
@@ -28,6 +23,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .name {
     margin: 0px 8px;
+    white-space: nowrap;
   }
   .symbol {
     color: ${theme.color.text04};
@@ -50,4 +46,9 @@ export const wrapper = (theme: Theme) => css`
   ${media.mobile} {
     gap: 8px;
   }
+`;
+
+export const NameSectionWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")};
+  min-width: 170px;
 `;

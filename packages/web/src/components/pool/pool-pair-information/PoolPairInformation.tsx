@@ -71,7 +71,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
         <PoolPairInfoContent
           poolBins={poolBins}
           pool={pool}
-          loading={loading}
+          loading={true}
           loadingBins={loadingBins}
         />
       </div>

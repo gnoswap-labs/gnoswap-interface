@@ -1,10 +1,13 @@
 import React, { useMemo } from "react";
 import {
   AprDivider,
+  AprSectionWrapper,
   ContentWrapper,
   LoadingChart,
   PoolPairInfoContentWrapper,
   TokenAmountTooltipContentWrapper,
+  TvlSectionWrapper,
+  VolumeSectionWrapper,
 } from "./PoolPairInfoContent.styles";
 import IconStar from "@components/common/icons/IconStar";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
@@ -264,7 +267,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   return (
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
-        <section>
+        <TvlSectionWrapper>
           <h4>TVL</h4>
           {tvlDisplay}
           <div className="section-info">
@@ -373,8 +376,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </SkeletonEarnDetailWrapper>
             )}
           </div>
-        </section>
-        <section>
+        </TvlSectionWrapper>
+        <VolumeSectionWrapper>
           <h4>Volume 24h</h4>
           {!loading && (
             <div className="wrapper-value">
@@ -417,8 +420,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </SkeletonEarnDetailWrapper>
             )}
           </div>
-        </section>
-        <section>
+        </VolumeSectionWrapper>
+        <AprSectionWrapper>
           <h4>APR</h4>
           {!loading && (
             <Tooltip
@@ -437,7 +440,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           )}
           {loading && (
             <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-              <span css={pulseSkeletonStyle({ h: 20, w: "170px" })} />
+              <span
+                css={pulseSkeletonStyle({
+                  h: 20,
+                  w: "170px",
+                  smallTableWidth: "130",
+                })}
+              />
             </SkeletonEarnDetailWrapper>
           )}
           <div className="apr-info">
@@ -463,7 +472,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               )}
             </div>
           </div>
-        </section>
+        </AprSectionWrapper>
       </PoolPairInfoContentWrapper>
       <section className="chart-chart-container">
         <div className="position-wrapper-chart">

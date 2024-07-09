@@ -18,18 +18,18 @@ export const wrapper = (theme: Theme) => css`
   }
   .pair {
     min-width: 170px;
-    flex: 1.5;
-    @media (max-width: 768px) and (min-width: 400px) {
+    /* flex: 1.5; */
+    /* @media (max-width: 768px) and (min-width: 400px) {
       min-width: 130px;
       max-width: 130px;
-    }
+    } */
   }
   .tvl {
-    flex: 1;
+    /* flex: 1; */
     min-width: 90px;
   }
   .apr {
-    flex: 1;
+    /* flex: 1; */
     min-width: 60px;
   }
   .tvl {
@@ -48,12 +48,12 @@ export const wrapper = (theme: Theme) => css`
       gap: 4px;
       .pair {
         ${mixins.flexbox("row", "center", "flex-start")};
-        flex: 1.5;
+        /* flex: 1.5; */
         min-width: 170px;
-        @media (max-width: 768px) and (min-width: 400px) {
+        /* @media (max-width: 768px) and (min-width: 400px) {
           min-width: 130px;
           max-width: 130px;
-        }
+        } */
       }
       gap: 4px;
       width: 100%;

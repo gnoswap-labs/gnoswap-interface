@@ -5,7 +5,6 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import useRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenModel } from "@models/token/token-model";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolDetailByPath } from "@query/pools";
@@ -38,20 +37,24 @@ const StakingContainer: React.FC = () => {
     return address;
   }, [initializedData]);
 
-  const { positions: allPositions, loading: isLoadingPosition } = usePositionData({
-    address,
-    poolPath: encryptId(poolPath),
-    queryOption: {
-      enabled: !!poolPath
-    }
-  });
+  const { positions: allPositions, loading: isLoadingPosition } =
+    usePositionData({
+      address,
+      poolPath: encryptId(poolPath),
+      queryOption: {
+        enabled: !!poolPath,
+      },
+    });
 
   const { getGnotPath } = useGnotToGnot();
 
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
-  const stakedPositions = useMemo(() => allPositions.filter(item => item.staked), [allPositions]);
+  const stakedPositions = useMemo(
+    () => allPositions.filter(item => item.staked),
+    [allPositions],
+  );
   const pool = useMemo(() => {
     if (!data) return null;
     return {
@@ -89,28 +92,6 @@ const StakingContainer: React.FC = () => {
     const apr = BigNumber(pool?.stakingApr || 0).toFormat(0);
     return `${apr}%`;
   }, [pool?.stakingApr]);
-
-  const rewardTokens = useMemo(() => {
-    const tokenPair: TokenModel[] = [];
-    if (pool) {
-      tokenPair.push(pool.tokenA);
-      tokenPair.push(pool.tokenB);
-    }
-    const rewardTokenMap = stakedPositions
-      .flatMap(stakedPosition => stakedPosition.reward)
-      .reduce<{ [key in string]: TokenModel }>((accum, current) => {
-        if (
-          tokenPair.findIndex(
-            token => token.priceID === current.rewardToken.priceID,
-          ) > -1
-        ) {
-          accum[current.rewardToken.priceID] = current.rewardToken;
-        }
-        return accum;
-      }, {});
-    const extraTokens = Object.values(rewardTokenMap);
-    return [...tokenPair, ...extraTokens];
-  }, [pool, stakedPositions]);
 
   const handleClickStakeRedirect = useCallback(() => {
     router.push(`/earn/pool/${router.query["pool-path"]}/stake`);
@@ -181,7 +162,6 @@ const StakingContainer: React.FC = () => {
       pool={pool}
       totalApr={totalApr}
       stakedPosition={stakedPositions}
-      rewardTokens={rewardTokens}
       breakpoint={breakpoint}
       mobile={mobile}
       isDisabledButton={isDisabledButton}

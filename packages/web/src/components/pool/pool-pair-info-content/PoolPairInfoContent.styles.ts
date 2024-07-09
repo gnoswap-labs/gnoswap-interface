@@ -110,107 +110,6 @@ export const PoolPairInfoContentWrapper = styled.div`
     flex-direction: column;
   }
 
-  section {
-    ${mixins.flexbox("column", "flex-start", "flex-start")};
-    width: 100%;
-    padding: 24px 36px;
-    gap: 16px;
-    flex: 1 0 0;
-    &:not(:first-of-type) {
-      border-left: 1px solid ${({ theme }) => theme.color.border02};
-    }
-    .image-logo {
-      width: 20px;
-      height: 20px;
-    }
-    .section-image {
-      ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 4px;
-      color: ${({ theme }) => theme.color.text10};
-      &.can-hover:hover {
-        color: ${({ theme }) => theme.color.text07};
-      }
-
-      > span {
-        ${fonts.body11}
-        .token-symbol {
-          display: inline;
-          @media (max-width: 1222px) {
-            display: none;
-          }
-          ${media.tablet} {
-            display: none;
-          }
-          ${media.tabletMiddle} {
-            display: none;
-          }
-          ${media.mobile} {
-            display: none;
-          }
-        }
-        .wrap-text {
-          @media (max-width: 1343px) {
-            display: none;
-          }
-        }
-        .token-percent {
-          display: inline;
-          ${media.tablet} {
-            display: none;
-          }
-          ${media.tabletMiddle} {
-            display: none;
-          }
-          ${media.mobile} {
-            display: inline;
-          }
-        }
-      }
-    }
-    .divider {
-      height: 12px;
-      border-left: 1px solid ${({ theme }) => theme.color.border02};
-    }
-    .wrapper-value {
-      ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 8px;
-      > div {
-        ${mixins.flexbox("row", "center", "flex-start")};
-        margin-top: 8px;
-        gap: 4px;
-        strong {
-          font-weight: 700 !important;
-        }
-        span {
-          font-weight: 700 !important;
-        }
-        svg {
-          width: 6px;
-        }
-        ${media.mobile} {
-          margin-top: 6px;
-        }
-      }
-    }
-    .apr-content {
-      &:hover {
-        color: ${({ theme }) => theme.color.text07};
-        cursor: default;
-      }
-    }
-    ${media.tablet} {
-      padding: 24px;
-    }
-    ${media.mobile} {
-      padding: 12px;
-      gap: 8px;
-      &:not(:first-of-type) {
-        border-top: 1px solid ${({ theme }) => theme.color.border02};
-      }
-      border-left: none !important;
-    }
-  }
-
   .negative {
     color: ${({ theme }) => theme.color.red01};
   }
@@ -234,45 +133,6 @@ export const PoolPairInfoContentWrapper = styled.div`
     }
     ${media.mobile} {
       ${mixins.flexbox("row", "center", "flex-start")};
-    }
-  }
-
-  .apr-info {
-    ${mixins.flexbox("row", "center", "flex-start")};
-    gap: 10px;
-    height: 20px;
-
-    .content-wrap {
-      ${mixins.flexbox("", "center", "flex-start")};
-      gap: 8px;
-      .apr-value {
-        ${fonts.body11}
-        color: ${({ theme }) => theme.color.text10};
-      }
-    }
-    ${media.tablet} {
-      ${mixins.flexbox("column", "flex-start", "flex-start")};
-      .content-wrap {
-        &.content-reward {
-          display: none;
-        }
-      }
-    }
-    ${media.tabletMiddle} {
-      ${mixins.flexbox("column", "flex-start", "flex-start")};
-      .content-wrap {
-        &.content-reward {
-          display: none;
-        }
-      }
-    }
-    ${media.mobile} {
-      ${mixins.flexbox("row", "center", "flex-start")};
-      .content-wrap {
-        &.content-reward {
-          display: flex;
-        }
-      }
     }
   }
 
@@ -372,4 +232,149 @@ export const LoadingChart = styled.div`
 export const TokenAmountTooltipContentWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")}
   gap: 4px;
+`;
+
+export const SectionWrapper = styled.section`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 100%;
+  padding: 24px 36px;
+  gap: 16px;
+  flex: 1 0 0;
+  &:not(:first-of-type) {
+    border-left: 1px solid ${({ theme }) => theme.color.border02};
+  }
+  .image-logo {
+    width: 20px;
+    height: 20px;
+  }
+  .section-image {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 4px;
+    color: ${({ theme }) => theme.color.text10};
+    &.can-hover:hover {
+      color: ${({ theme }) => theme.color.text07};
+    }
+
+    > span {
+      ${fonts.body11}
+      .token-symbol {
+        display: inline;
+        @media (max-width: 1222px) {
+          display: none;
+        }
+        ${media.tablet} {
+          display: none;
+        }
+        ${media.tabletMiddle} {
+          display: none;
+        }
+        ${media.mobile} {
+          display: none;
+        }
+      }
+      .wrap-text {
+        @media (max-width: 1343px) {
+          display: none;
+        }
+      }
+      .token-percent {
+        display: inline;
+        ${media.tablet} {
+          display: none;
+        }
+        ${media.tabletMiddle} {
+          display: none;
+        }
+        ${media.mobile} {
+          display: inline;
+        }
+      }
+    }
+  }
+  .divider {
+    height: 12px;
+    border-left: 1px solid ${({ theme }) => theme.color.border02};
+  }
+  .wrapper-value {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 8px;
+    > div {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      margin-top: 8px;
+      gap: 4px;
+      strong {
+        font-weight: 700 !important;
+      }
+      span {
+        font-weight: 700 !important;
+      }
+      svg {
+        width: 6px;
+      }
+      ${media.mobile} {
+        margin-top: 6px;
+      }
+    }
+  }
+
+  ${media.tablet} {
+    padding: 24px;
+  }
+  ${media.mobile} {
+    padding: 12px;
+    gap: 8px;
+    &:not(:first-of-type) {
+      border-top: 1px solid ${({ theme }) => theme.color.border02};
+    }
+    border-left: none !important;
+  }
+`;
+
+export const TvlSectionWrapper = styled(SectionWrapper)``;
+export const VolumeSectionWrapper = styled(SectionWrapper)``;
+export const AprSectionWrapper = styled(SectionWrapper)`
+  .apr-content {
+    &:hover {
+      color: ${({ theme }) => theme.color.text07};
+      cursor: default;
+    }
+  }
+  .apr-info {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 10px;
+    height: 20px;
+
+    .content-wrap {
+      ${mixins.flexbox("", "center", "flex-start")};
+      gap: 8px;
+      .apr-value {
+        ${fonts.body11}
+        color: ${({ theme }) => theme.color.text10};
+      }
+    }
+    ${media.tablet} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      .content-wrap {
+        &.content-reward {
+          display: none;
+        }
+      }
+    }
+    ${media.tabletMiddle} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      .content-wrap {
+        &.content-reward {
+          display: none;
+        }
+      }
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      .content-wrap {
+        &.content-reward {
+          display: flex;
+        }
+      }
+    }
+  }
 `;
