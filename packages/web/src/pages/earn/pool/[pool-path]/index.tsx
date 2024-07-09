@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
 import PoolLayout from "@layouts/pool-layout/PoolLayout";
@@ -24,13 +24,14 @@ export default function Pool() {
   const { account } = useWallet();
   const poolPath = (router.query["pool-path"] || "") as string;
   const { getGnotPath } = useGnotToGnot();
+  const jumpFlagRef = useRef(false);
   const { data } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
     onError: (err: any) => {
       if (err["response"]["status"] === 404) {
         router.push("/404");
       }
-    }
+    },
   });
 
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
@@ -45,16 +46,12 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const {
-    isFetchedPosition,
-    loading,
-    positions,
-  } = usePositionData({
+  const { isFetchedPosition, loading, positions } = usePositionData({
     address,
     poolPath: encryptId(poolPath),
     queryOption: {
       enabled: !!poolPath,
-    }
+    },
   });
 
   const isStaking = useMemo(() => {
@@ -72,12 +69,7 @@ export default function Pool() {
   }, [data?.incentiveType, positions]);
 
   useEffect(() => {
-    if (
-      hash === "staking"
-      && !loading
-      && isFetchedPosition
-      && isStaking
-    ) {
+    if (hash === "staking" && !loading && isFetchedPosition && isStaking) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -89,38 +81,23 @@ export default function Pool() {
       return;
     }
 
-
     if (
       address &&
       isFetchedPosition &&
       !loading &&
-      poolPath
+      poolPath &&
+      !jumpFlagRef.current
     ) {
       if (hash && hash !== "staking") {
         const position = positions.find(item => item.id === hash);
         const isClosedPosition = !position || position?.closed;
 
-        if (isClosedPosition) {
-          setTimeout(() => {
-            const positionContainerElement =
-              document.getElementById("liquidity-wrapper");
-            const topPosition =
-              positionContainerElement?.offsetTop;
-            if (!topPosition) {
-              return;
-            }
-            window.scrollTo({
-              top: topPosition,
-            });
-          });
-        }
-
+        jumpFlagRef.current = true;
         setTimeout(() => {
           if (isClosedPosition) {
             const positionContainerElement =
               document.getElementById("liquidity-wrapper");
-            const topPosition =
-              positionContainerElement?.offsetTop;
+            const topPosition = positionContainerElement?.offsetTop;
             if (!topPosition) {
               return;
             }
@@ -130,8 +107,7 @@ export default function Pool() {
           }
 
           const positionContainerElement = document.getElementById(`${hash}`);
-          const topPosition =
-            positionContainerElement?.offsetTop;
+          const topPosition = positionContainerElement?.offsetTop;
           if (!topPosition) {
             return;
           }
@@ -142,11 +118,11 @@ export default function Pool() {
         return;
       }
 
+      jumpFlagRef.current = true;
       setTimeout(() => {
         const positionContainerElement =
           document.getElementById("liquidity-wrapper");
-        const topPosition =
-          positionContainerElement?.offsetTop;
+        const topPosition = positionContainerElement?.offsetTop;
         if (!topPosition) {
           return;
         }
@@ -156,35 +132,24 @@ export default function Pool() {
       });
     }
 
-    if (hash && hash !== "staking" &&
+    if (
+      hash &&
+      hash !== "staking" &&
       isFetchedPosition &&
       !loading &&
-      poolPath
+      poolPath &&
+      !jumpFlagRef.current
     ) {
+      console.log("🚀 ~ useEffect ~ hash:", hash);
       const position = positions.find(item => item.id === hash);
       const isClosedPosition = !position || position?.closed;
 
-      if (isClosedPosition) {
-        setTimeout(() => {
-          const positionContainerElement =
-            document.getElementById("liquidity-wrapper");
-          const topPosition =
-            positionContainerElement?.offsetTop;
-          if (!topPosition) {
-            return;
-          }
-          window.scrollTo({
-            top: topPosition,
-          });
-        });
-      }
-
+      jumpFlagRef.current = true;
       setTimeout(() => {
         if (isClosedPosition) {
           const positionContainerElement =
             document.getElementById("liquidity-wrapper");
-          const topPosition =
-            positionContainerElement?.offsetTop;
+          const topPosition = positionContainerElement?.offsetTop;
           if (!topPosition) {
             return;
           }
@@ -194,8 +159,7 @@ export default function Pool() {
         }
 
         const positionContainerElement = document.getElementById(`${hash}`);
-        const topPosition =
-          positionContainerElement?.offsetTop;
+        const topPosition = positionContainerElement?.offsetTop;
         if (!topPosition) {
           return;
         }
@@ -213,7 +177,7 @@ export default function Pool() {
     isStaking,
     poolPath,
     positions,
-    router
+    router,
   ]);
 
   const feeStr = useMemo(() => {
@@ -223,25 +187,27 @@ export default function Pool() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(data.fee)]?.rateStr;
   }, [data?.fee]);
 
-  const seoInfo = useMemo(() => SEOInfo[address ? "/earn/pool/[pool-path]?address" : "/earn/pool/[pool-path]"], [address]);
+  const seoInfo = useMemo(
+    () =>
+      SEOInfo[
+        address ? "/earn/pool/[pool-path]?address" : "/earn/pool/[pool-path]"
+      ],
+    [address],
+  );
 
   const title = useMemo(() => {
     const tokenA = getGnotPath(data?.tokenA);
     const tokenB = getGnotPath(data?.tokenB);
 
-    return seoInfo.title([
-      address ? formatAddress(address) : undefined,
-      tokenA?.symbol,
-      tokenB?.symbol,
-      feeStr
-    ].filter(item => item) as string[]);
-  }, [
-    getGnotPath,
-    data?.tokenA,
-    data?.tokenB,
-    seoInfo,
-    address,
-    feeStr]);
+    return seoInfo.title(
+      [
+        address ? formatAddress(address) : undefined,
+        tokenA?.symbol,
+        tokenB?.symbol,
+        feeStr,
+      ].filter(item => item) as string[],
+    );
+  }, [getGnotPath, data?.tokenA, data?.tokenB, seoInfo, address, feeStr]);
 
   return (
     <>
