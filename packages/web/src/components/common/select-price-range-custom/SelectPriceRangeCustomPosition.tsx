@@ -283,19 +283,21 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <div className="button-option-contaier">
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${isLoading || showDim || !availMoveLeft
-                        ? "disabled-option"
-                        : ""
-                        }`}
+                      className={`graph-option-item decrease ${
+                        isLoading || showDim || !availMoveLeft
+                          ? "disabled-option"
+                          : ""
+                      }`}
                       onClick={moveLeft}
                     >
                       <IconKeyboardArrowLeft />
                     </span>
                     <span
-                      className={`graph-option-item increase ${isLoading || showDim || !availMoveRight
-                        ? "disabled-option"
-                        : ""
-                        }`}
+                      className={`graph-option-item increase ${
+                        isLoading || showDim || !availMoveRight
+                          ? "disabled-option"
+                          : ""
+                      }`}
                       onClick={moveRight}
                     >
                       <IconKeyboardArrowRight />
@@ -303,19 +305,21 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   </div>
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${isLoading || showDim || !availZoomOut
-                        ? "disabled-option"
-                        : ""
-                        }`}
+                      className={`graph-option-item decrease ${
+                        isLoading || showDim || !availZoomOut
+                          ? "disabled-option"
+                          : ""
+                      }`}
                       onClick={zoomOut}
                     >
                       <IconRemove />
                     </span>
                     <span
-                      className={`graph-option-item increase ${isLoading || showDim || !availZoomIn
-                        ? "disabled-option"
-                        : ""
-                        }`}
+                      className={`graph-option-item increase ${
+                        isLoading || showDim || !availZoomIn
+                          ? "disabled-option"
+                          : ""
+                      }`}
                       onClick={zoomIn}
                     >
                       <IconAdd />
@@ -362,7 +366,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       height={GRAPH_HEIGHT}
                       position="top"
                       offset={selectPool.bins?.length}
-                      price={selectPool.currentPrice || 1}
+                      price={currentPrice || 0}
                       flip={flip}
                       fullRange={selectPool.selectedFullRange}
                       zoomLevel={selectPool.zoomLevel}

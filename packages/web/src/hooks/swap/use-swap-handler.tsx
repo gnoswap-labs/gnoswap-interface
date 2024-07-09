@@ -566,6 +566,18 @@ export const useSwapHandler = () => {
     });
   }, [queryClient]);
 
+  console.log(
+    "🚀 ~ onFinishSwap ~ queryClient:",
+    queryClient
+      .getQueryCache()
+      .findAll([QUERY_KEY.router])
+      .map(item => ({
+        key: item.queryKey,
+        data: item.state.data,
+      }))
+      .filter(item => item.data),
+  );
+
   useEffect(() => {
     if (!tokens.length) {
       return;
@@ -578,10 +590,12 @@ export const useSwapHandler = () => {
 
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
+      console.log("🚀 ~ useSwapHandler ~ changed:", changed);
       const value = handleAmount(changed, tokenA);
       estimateSwapRoute(value);
 
       if (isSameToken) {
+        console.log("🚀 ~ useSwapHandler ~ isSameToken:", isSameToken);
         setTokenAAmount(value);
         setTokenBAmount(value);
         setSwapValue(prev => ({
@@ -627,6 +641,18 @@ export const useSwapHandler = () => {
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenB);
 
+      if (isSameToken) {
+        setTokenAAmount(value);
+        setTokenBAmount(value);
+        setSwapValue(prev => ({
+          ...prev,
+          tokenAAmount: value,
+          tokenBAmount: value,
+          type: "EXACT_IN",
+        }));
+        return;
+      }
+
       if (none) {
         setIsLoading(false);
         return;
@@ -652,10 +678,26 @@ export const useSwapHandler = () => {
     [isSameToken, tokenA, tokenB],
   );
 
+  const isSameTokenFn = useCallback(
+    (tokenA_: TokenModel | null, tokenB_: TokenModel | null) => {
+      if (!tokenA_ || !tokenB_) {
+        return false;
+      }
+      if (isNativeToken(tokenA_)) {
+        return tokenA_.wrappedPath === tokenB_.path;
+      }
+      if (isNativeToken(tokenB_)) {
+        return tokenA_.path === tokenB_.wrappedPath;
+      }
+      return false;
+    },
+    [],
+  );
+
   const changeTokenA = useCallback(
     (token: TokenModel) => {
       let changedSwapDirection = type;
-      if (tokenB?.symbol === token.symbol) {
+      if (isSameTokenFn(tokenB, token)) {
         changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
         setTokenAAmount(tokenBAmount);
         setTokenBAmount(tokenAAmount);
@@ -670,13 +712,14 @@ export const useSwapHandler = () => {
         setIsLoading(true);
       }
     },
-    [tokenA, tokenB, type, tokenBAmount, tokenAAmount],
+    [tokenA, tokenB, type, tokenBAmount, tokenAAmount, isSameToken],
   );
 
   const changeTokenB = useCallback(
     (token: TokenModel) => {
+      console.log("🚀 ~ useSwapHandler ~ token:", token);
       let changedSwapDirection = type;
-      if (tokenA?.symbol === token.symbol) {
+      if (isSameTokenFn(tokenA, token)) {
         changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
         setTokenAAmount(tokenBAmount);
         setTokenBAmount(tokenAAmount);
@@ -691,7 +734,7 @@ export const useSwapHandler = () => {
         setIsLoading(true);
       }
     },
-    [tokenA, type, tokenBAmount, tokenAAmount, swapValue],
+    [tokenA, type, tokenBAmount, tokenAAmount, swapValue, isSameToken],
   );
 
   const switchSwapDirection = useCallback(() => {
@@ -994,12 +1037,6 @@ export const useSwapHandler = () => {
     type,
     tokenB?.symbol,
   ]);
-
-  useEffect(() => {
-    if (tokenAAmount) {
-      setTokenBAmount(tokenAAmount);
-    }
-  }, [isSameToken, tokenAAmount]);
 
   return {
     slippage,

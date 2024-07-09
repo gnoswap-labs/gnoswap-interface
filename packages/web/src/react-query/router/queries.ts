@@ -29,7 +29,7 @@ export const useEstimateSwap = (
       request?.outputToken?.path || "",
       request?.exactType || "",
       request?.tokenAmount || "",
-    ],
+    ].filter(item => item),
     queryFn: async () => {
       if (
         !request ||
@@ -43,6 +43,7 @@ export const useEstimateSwap = (
       const inputToken = request.inputToken;
       const outputToken = request.outputToken;
       const tokenAmount = Number(request.tokenAmount);
+      console.log("🚀 ~ queryFn: ~ tokenAmount:", tokenAmount);
 
       const result = await wait<EstimateSwapRouteResponse | null>(
         async () =>
@@ -68,6 +69,7 @@ export const useEstimateSwap = (
         (accumulated, current) => accumulated + current.quote,
         0,
       );
+
       if (availRoute < 100) {
         throw new SwapError("NOT_FOUND_SWAP_POOL");
       }

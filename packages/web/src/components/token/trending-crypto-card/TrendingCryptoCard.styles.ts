@@ -31,11 +31,13 @@ export const wrapper = (theme: Theme) => css`
   .price {
     min-width: 90px;
     text-align: right;
+    flex: 1;
   }
   .change {
     min-width: 60px;
     text-align: right;
     color: ${theme.color.green01};
+    flex: 1;
     &.negative {
       color: ${theme.color.red01};
     }
@@ -51,4 +53,9 @@ export const wrapper = (theme: Theme) => css`
 export const NameSectionWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   min-width: 170px;
+  flex: 1.5;
+  @media (max-width: 768px) and (min-width: 400px) {
+    min-width: 130px;
+    max-width: 130px;
+  }
 `;

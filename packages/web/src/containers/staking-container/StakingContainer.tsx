@@ -74,7 +74,7 @@ const StakingContainer: React.FC = () => {
         logoURI: getGnotPath(data.tokenB).logoURI,
       },
     };
-  }, [data]);
+  }, [data, getGnotPath]);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {

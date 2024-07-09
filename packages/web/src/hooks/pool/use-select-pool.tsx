@@ -603,6 +603,7 @@ export const useSelectPool = ({
       setLatestPoolPath(poolInfo.chainData?.poolPath ?? "");
     }
   }, [isCreate, poolInfo, startPrice]);
+  console.log("🚀 ~ useEffect ~ poolInfo.chainData:", poolInfo?.chainData);
 
   useEffect(() => {
     if (!options || !feeTier) {
