@@ -23,6 +23,7 @@ import { roundDownDecimalNumber } from "@utils/regex";
 import BigNumber from "bignumber.js";
 import { ITokenResponse } from "@repositories/token";
 import { useTranslation } from "next-i18next";
+import { LANGUAGES } from "@constants/common.constant";
 
 const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
@@ -203,7 +204,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
           <ThemeSelector className="mt-16">
             <span>{t("HeaderFooter:language")}</span>
             <div className="language" onClick={onClickChangeLanguage}>
-              {i18n.language.toUpperCase()} <IconStrokeArrowRight />
+              {LANGUAGES.find(item => item.code === i18n.language)?.name}{" "}
+              <IconStrokeArrowRight />
             </div>
           </ThemeSelector>
         </div>

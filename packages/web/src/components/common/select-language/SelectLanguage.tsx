@@ -5,18 +5,7 @@ import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import { Overlay } from "../wallet-connector-menu/WalletConnectorMenu.styles";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-
-const LANGUAGES = [
-  { code: "en", name: "English" },
-  { code: "zh", name: "Chinese" },
-  { code: "fr", name: "French" },
-  { code: "de", name: "German" },
-  { code: "hi", name: "Hindi" },
-  { code: "ja", name: "Japanese" },
-  { code: "ko", name: "Korean" },
-  { code: "ru", name: "Russian" },
-  { code: "es", name: "Spanish" },
-];
+import { LANGUAGES } from "@constants/common.constant";
 
 interface Props {
   onClickChangeLanguage: () => void;
