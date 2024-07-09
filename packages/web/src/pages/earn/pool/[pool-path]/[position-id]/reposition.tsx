@@ -12,23 +12,22 @@ import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { GetStaticPaths } from "next";
+// import { serverSideTranslations } from "next-i18next/serverSideTranslations";import { GetStaticPaths } from "next";
 
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
-  return {
-    paths: [], //indicates that no page needs be created at build time
-    fallback: "blocking", //indicates the type of fallback
-  };
-};
+// export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+//   return {
+//     paths: [], //indicates that no page needs be created at build time
+//     fallback: "blocking", //indicates the type of fallback
+//   };
+// };
 
-export async function getStaticProps({ locale }: { locale: string }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
-    },
-  };
-}
+// export async function getStaticProps({ locale }: { locale: string }) {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+//     },
+//   };
+// }
 
 export default function EarnAdd() {
   const { width } = useWindowSize();

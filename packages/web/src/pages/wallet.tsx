@@ -9,15 +9,14 @@ import WalletPositionCardListContainer from "@containers/wallet-position-card-li
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { useMemo } from "react";
 import { SEOInfo } from "@constants/common.constant";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-
-export async function getServerSideProps({ locale }: { locale: string }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
-    },
-  };
-}
+// import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+// export async function getServerSideProps({ locale }: { locale: string }) {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+//     },
+//   };
+// }
 
 export default function Wallet() {
   const seoInfo = useMemo(() => SEOInfo["/wallet"], []);

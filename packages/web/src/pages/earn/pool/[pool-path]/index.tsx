@@ -18,15 +18,14 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { SEOInfo } from "@constants/common.constant";
 import { formatAddress } from "@utils/string-utils";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-
-export async function getServerSideProps({ locale }: { locale: string }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
-    },
-  };
-}
+// import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+// export async function getServerSideProps({ locale }: { locale: string }) {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+//     },
+//   };
+// }
 
 export default function Pool() {
   const router = useRouter();

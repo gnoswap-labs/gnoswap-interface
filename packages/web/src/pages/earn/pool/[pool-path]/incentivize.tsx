@@ -14,15 +14,14 @@ import SEOHeader from "@components/common/seo-header/seo-header";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { SEOInfo } from "@constants/common.constant";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-
-export async function getServerSideProps({ locale }: { locale: string }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
-    },
-  };
-}
+// import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+// export async function getServerSideProps({ locale }: { locale: string }) {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+//     },
+//   };
+// }
 
 export default function PoolIncentivize() {
   const { breakpoint } = useWindowSize();

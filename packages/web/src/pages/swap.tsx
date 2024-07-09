@@ -8,15 +8,14 @@ import { useAtom } from "jotai";
 import * as SwapState from "@states/swap";
 import { useMemo } from "react";
 import { SEOInfo } from "@constants/common.constant";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-
-export async function getServerSideProps({ locale }: { locale: string }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
-    },
-  };
-}
+// import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+// export async function getServerSideProps({ locale }: { locale: string }) {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+//     },
+//   };
+// }
 
 export default function Swap() {
   const [swapInfo] = useAtom(SwapState.swap);
