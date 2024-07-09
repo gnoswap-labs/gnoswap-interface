@@ -1567,7 +1567,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.9":
+"@babel/runtime@npm:^7.22.15, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.9":
   version: 7.24.7
   resolution: "@babel/runtime@npm:7.24.7"
   dependencies:
@@ -2182,6 +2182,9 @@ __metadata:
     eslint-config-next: "npm:13.2.3"
     husky: "npm:8.0.3"
     i18next: "npm:^23.11.5"
+    i18next-chained-backend: "npm:^4.6.2"
+    i18next-http-backend: "npm:^2.5.2"
+    i18next-localstorage-backend: "npm:^4.2.0"
     i18nexus-cli: "npm:^3.4.0"
     jest: "npm:29.4.3"
     jest-environment-jsdom: "npm:29.5.0"
@@ -8506,6 +8509,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-fetch@npm:4.0.0":
+  version: 4.0.0
+  resolution: "cross-fetch@npm:4.0.0"
+  dependencies:
+    node-fetch: "npm:^2.6.12"
+  checksum: 10/e231a71926644ef122d334a3a4e73d9ba3ba4b480a8a277fb9badc434c1ba905b3d60c8034e18b348361a09afbec40ba9371036801ba2b675a7b84588f9f55d8
+  languageName: node
+  linkType: hard
+
 "cross-spawn@npm:7.0.3, cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
@@ -11853,10 +11865,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"i18next-chained-backend@npm:^4.6.2":
+  version: 4.6.2
+  resolution: "i18next-chained-backend@npm:4.6.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.2"
+  checksum: 10/53a07f35f748b33218d562072b64a35137ad7ae32129e134be0cda8a3b4a9c49b9b5a385a97e7ccad4190da1ad3d05f34d48ced1cf06a3eb2cf397e8c648e3e3
+  languageName: node
+  linkType: hard
+
 "i18next-fs-backend@npm:^2.3.1":
   version: 2.3.1
   resolution: "i18next-fs-backend@npm:2.3.1"
   checksum: 10/ebabf882c3a295887b82dd15fb84414da5e4aca4a59246db618965fbdc2be585e7c4699c9bb280940c04487cd33a568d3a972f794c079def320f15482f2dc6ca
+  languageName: node
+  linkType: hard
+
+"i18next-http-backend@npm:^2.5.2":
+  version: 2.5.2
+  resolution: "i18next-http-backend@npm:2.5.2"
+  dependencies:
+    cross-fetch: "npm:4.0.0"
+  checksum: 10/3cdaea60df9d199366dd9b4c5c0f4bbd55cd4480b49d13037381a2ba825b514cc6fda7c0bb475e879eb7e94daa62d88d96d3c74bed3e57443d3b527d70abf64b
+  languageName: node
+  linkType: hard
+
+"i18next-localstorage-backend@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "i18next-localstorage-backend@npm:4.2.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.22.15"
+  checksum: 10/4ef3f4c97726c53fd6180b8a12274dbc975b9e07bfec1d1224b931190ea605b9a624a35a9badbe0bd9900394a369ba0696d9b61d6a6aa9335ba3d6dde4d1219f
   languageName: node
   linkType: hard
 
@@ -14799,6 +14838,20 @@ __metadata:
     encoding:
       optional: true
   checksum: 10/4d04273c97e3829b3fb070b9b2c14c9f6ecff9afd1d3d8043fb39d1d2440b23e2ddbdbab1b2f879bf71fa23275bf5711e777256e5784d1852333965a6cea38ab
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^2.6.12":
+  version: 2.7.0
+  resolution: "node-fetch@npm:2.7.0"
+  dependencies:
+    whatwg-url: "npm:^5.0.0"
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 10/b24f8a3dc937f388192e59bcf9d0857d7b6940a2496f328381641cb616efccc9866e89ec43f2ec956bbd6c3d3ee05524ce77fe7b29ccd34692b3a16f237d6676
   languageName: node
   linkType: hard
 
