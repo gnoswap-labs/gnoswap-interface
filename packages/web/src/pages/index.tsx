@@ -10,21 +10,34 @@ import RecentlyAddedCardListContainer from "@containers/recently-added-card-list
 import TokenListContainer from "@containers/token-list-container/TokenListContainer";
 import TrendingCardListContainer from "@containers/trending-card-list-container/TrendingCardListContainer";
 import HomeLayout from "@layouts/home-layout/HomeLayout";
-import { useMemo } from "react";
-// import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-// export async function getServerSideProps({ locale }: { locale: string }) {
-//   return {
-//     props: {
-//       ...(await serverSideTranslations(locale, [
-//         "HeaderFooter",
-//         "Main",
-//         "common",
-//       ])),
-//     },
-//   };
-// }
+import { useTranslation } from "next-i18next";
+import { useEffect, useMemo } from "react";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getServerSideProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, [
+        "HeaderFooter",
+        "Main",
+        "common",
+      ])),
+    },
+  };
+}
 
 export default function Home() {
+  const { i18n } = useTranslation(["HeaderFooter", "common", "Main"], {
+    bindI18n: "languageChanged loaded",
+  });
+  useEffect(() => {
+    i18n.reloadResources(i18n.resolvedLanguage, [
+      "HeaderFooter",
+      "common",
+      "Main",
+    ]);
+  }, []);
+
   const seoInfo = useMemo(() => SEOInfo["/"], []);
 
   return (

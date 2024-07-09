@@ -14,18 +14,27 @@ import TrendingCryptos from "@components/token/trending-cryptos/TrendingCryptos"
 import GainerAndLoserContainer from "@containers/gainer-and-loser-container/GainerAndLoserContainer";
 import { useLoading } from "@hooks/common/use-loading";
 import { useGetTokenByPath, useGetTokenPricesByPath } from "@query/token";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { SEOInfo } from "@constants/common.constant";
+import { useTranslation } from "next-i18next";
 
 export default function Token() {
   const { isLoading } = useLoading();
   const router = useRouter();
   const path = router.query["token-path"] as string;
+
+  const { i18n } = useTranslation(["HeaderFooter", "common"], {
+    bindI18n: "languageChanged loaded",
+  });
+
+  useEffect(() => {
+    i18n.reloadResources(i18n.resolvedLanguage, ["HeaderFooter", "common"]);
+  }, []);
 
   const { data: token } = useGetTokenByPath(path, {
     enabled: !!path,
