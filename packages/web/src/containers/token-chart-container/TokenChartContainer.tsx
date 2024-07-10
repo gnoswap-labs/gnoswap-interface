@@ -342,27 +342,27 @@ const TokenChartContainer: React.FC = () => {
       return new Date();
     })();
 
-    const datas =
-      chartData?.length > 0
-        ? [
-            ...chartData.map((item: IPriceResponse) => {
-              return {
-                amount: {
-                  value: `${item.price}`,
-                  denom: "",
-                },
-                time: getLocalizeTime(item.time),
-              };
-            }),
-            {
-              amount: {
-                value: (pricesBefore.latestPrice || 0).toString(),
-                denom: "",
-              },
-              time: getLocalizeTime(fakeLastTime),
-            },
-          ]
-        : [];
+    let lastPrice ="";
+
+    const datas = [
+      {
+        amount: {
+          value: (pricesBefore.latestPrice || 0).toString(),
+          denom: "",
+        },
+        time: getLocalizeTime(new Date()),
+      },
+      ...chartData.reverse().map((item: IPriceResponse) => {
+        if (item.price !== "") lastPrice = item.price;
+        return ({
+          amount: {
+            value: `${item.price === "" ? lastPrice : item.price}`,
+            denom: "",
+          },
+          time: getLocalizeTime(item.time),
+        });
+      })
+    ].reverse();
 
     const yAxisLabels = getYAxisLabels(
       datas.map(item => BigNumber(item.amount.value).toFormat(6)),
