@@ -28,6 +28,7 @@ const OneClickStaking: React.FC<Props> = ({
   pool,
   isLoadingPool,
 }) => {
+  console.log("🚀 ~ pool:", pool);
   const [swapValue] = useAtom(SwapState.swap);
   const { getGnotPath } = useGnotToGnot();
   const { tokenA: tokenAInfo = null, tokenB: tokenBInfo = null } = swapValue;
@@ -38,22 +39,22 @@ const OneClickStaking: React.FC<Props> = ({
 
   const tokenA = tokenAInfo
     ? {
-      ...tokenAInfo,
-      logoURI: getGnotPath(tokenAInfo).logoURI,
-      path: getGnotPath(tokenAInfo).path,
-      name: getGnotPath(tokenAInfo).name,
-      symbol: getGnotPath(tokenAInfo).symbol,
-    }
+        ...tokenAInfo,
+        logoURI: getGnotPath(tokenAInfo).logoURI,
+        path: getGnotPath(tokenAInfo).path,
+        name: getGnotPath(tokenAInfo).name,
+        symbol: getGnotPath(tokenAInfo).symbol,
+      }
     : null;
 
   const tokenB = tokenBInfo
     ? {
-      ...tokenBInfo,
-      logoURI: getGnotPath(tokenBInfo).logoURI,
-      path: getGnotPath(tokenBInfo).path,
-      name: getGnotPath(tokenBInfo).name,
-      symbol: getGnotPath(tokenBInfo).symbol,
-    }
+        ...tokenBInfo,
+        logoURI: getGnotPath(tokenBInfo).logoURI,
+        path: getGnotPath(tokenBInfo).path,
+        name: getGnotPath(tokenBInfo).name,
+        symbol: getGnotPath(tokenBInfo).symbol,
+      }
     : null;
 
   useEffect(() => {
@@ -86,7 +87,7 @@ const OneClickStaking: React.FC<Props> = ({
   }, [unstakedPositions]);
 
   const liquidityValue = useMemo((): string => {
-    if (isLoadingPool) return "$0";
+    if (isLoadingPool || !pool.tvl) return "-";
 
     return formatUsdNumber(
       Math.round(Number(pool.tvl)).toString(),
@@ -96,7 +97,7 @@ const OneClickStaking: React.FC<Props> = ({
   }, [isLoadingPool, pool.tvl]);
 
   const volumeValue = useMemo((): string => {
-    if (isLoadingPool) return "$0";
+    if (isLoadingPool || !pool.volume24h) return "-";
 
     return formatUsdNumber(
       Math.round(Number(pool.volume24h)).toString(),
@@ -106,7 +107,7 @@ const OneClickStaking: React.FC<Props> = ({
   }, [isLoadingPool, pool.volume24h]);
 
   const feeChangedStr = useMemo((): string => {
-    if (isLoadingPool) return "$0";
+    if (isLoadingPool || !pool.feeUsd24h) return "-";
 
     return `$${convertToKMB(`${Math.round(Number(pool.feeUsd24h))}`, {
       maximumFractionDigits: 2,
@@ -134,9 +135,11 @@ const OneClickStaking: React.FC<Props> = ({
     if (isLoadingPool) return "-";
 
     if (Number(pool.feeApr) > 100) {
-      return <>
-        <IconStar size={20} /> {numberToRate(pool.feeApr)}
-      </>;
+      return (
+        <>
+          <IconStar size={20} /> {numberToRate(pool.feeApr)}
+        </>
+      );
     }
 
     return numberToRate(pool.feeApr);
@@ -146,9 +149,11 @@ const OneClickStaking: React.FC<Props> = ({
     if (isLoadingPool) return "-";
 
     if (Number(pool.stakingApr) > 100) {
-      return <>
-        <IconStar size={20} /> {numberToRate(pool.stakingApr)}
-      </>;
+      return (
+        <>
+          <IconStar size={20} /> {numberToRate(pool.stakingApr)}
+        </>
+      );
     }
 
     return numberToRate(pool.stakingApr);
@@ -159,121 +164,110 @@ const OneClickStaking: React.FC<Props> = ({
   }
 
   function renderPositionInfo() {
-    return <div className="one-click-info">
-      <div>
-        <div className="label">TVL</div>
-        <div className="value">{liquidityValue}</div>
-      </div>
-      <div>
-        <div className="label">Volume 24h</div>
-        <div className="value">{volumeValue}</div>
-      </div>
-      <div>
-        <div className="label">Fee 24h</div>
-        <div className="value">{feeChangedStr}</div>
-      </div>
-      <div>
-        <div className="label">Fee APR</div>
-        <div className="value">
-          {!isLoadingPool && <DoubleLogo
-            left={tokenARevert?.logoURI || ""}
-            right={tokenBRevert?.logoURI || ""}
-            size={24}
-            leftSymbol={tokenARevert?.symbol || ""}
-            rightSymbol={tokenBRevert?.symbol || ""}
-          />}
-          <span className="fee-apr-value">{feeApr}</span>
+    return (
+      <div className="one-click-info">
+        <div>
+          <div className="label">TVL</div>
+          <div className="value">{liquidityValue}</div>
+        </div>
+        <div>
+          <div className="label">Volume 24h</div>
+          <div className="value">{volumeValue}</div>
+        </div>
+        <div>
+          <div className="label">Fee 24h</div>
+          <div className="value">{feeChangedStr}</div>
+        </div>
+        <div>
+          <div className="label">Fee APR</div>
+          <div className="value">
+            {!isLoadingPool && (
+              <DoubleLogo
+                left={tokenARevert?.logoURI || ""}
+                right={tokenBRevert?.logoURI || ""}
+                size={24}
+                leftSymbol={tokenARevert?.symbol || ""}
+                rightSymbol={tokenBRevert?.symbol || ""}
+              />
+            )}
+            <span className="fee-apr-value">{feeApr}</span>
+          </div>
+        </div>
+        <div>
+          <div className="label">Staking APR</div>
+          <div className="value">
+            <OverlapTokenLogo tokens={rewardTokens} size={24} />
+            <span className="staking-apr-value">{stakingApr}</span>
+          </div>
         </div>
       </div>
-      <div>
-        <div className="label">Staking APR</div>
-        <div className="value">
-          <OverlapTokenLogo tokens={rewardTokens} size={24} />
-          <span className="staking-apr-value">{stakingApr}</span>
-        </div>
-      </div>
-    </div>;
+    );
   }
-
 
   return (
     <OneClickStakingWrapper>
       <div className="token-pair">
-        <OverlapTokenLogo
-          tokens={[
-            tokenARevert,
-            tokenBRevert
-          ]}
-          size={24}
-        />
+        <OverlapTokenLogo tokens={[tokenARevert, tokenBRevert]} size={24} />
         <span className="token-name">{`${tokenARevert?.symbol}/${tokenBRevert?.symbol}`}</span>
       </div>
       {renderPositionInfo()}
       {(isStakedPositions || isUnstakedPositions) && !isLoadingPool && (
         <Divider />
       )}
-      {
-        isUnstakedPositions && !isLoadingPool && (
-          <div className="unstake-info">
-            <div className="title">
-              <div className="label">My Unstaked Positions</div>
+      {isUnstakedPositions && !isLoadingPool && (
+        <div className="unstake-info">
+          <div className="title">
+            <div className="label">My Unstaked Positions</div>
+            <div className="value" onClick={handleClickGotoStaking}>
+              Go to Staking <IconStrokeArrowRight />
+            </div>
+          </div>
+          {unstakedPositions.map((item, index) => (
+            <div className="content" key={index}>
+              <div className="label">
+                {!isLoadingPool && (
+                  <OverlapTokenLogo
+                    tokens={[tokenARevert, tokenBRevert]}
+                    size={24}
+                  />
+                )}
+                ID #{item.id}
+              </div>
+              <div className="value">
+                {toUnitFormat(item.positionUsdValue, true, true)}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {isStakedPositions && !isLoadingPool && (
+        <div className="stake-info">
+          <div className="title">
+            <div className="label">My Staked Positions</div>
+            {!isUnstakedPositions && (
               <div className="value" onClick={handleClickGotoStaking}>
                 Go to Staking <IconStrokeArrowRight />
               </div>
-            </div>
-            {unstakedPositions.map((item, index) => (
-              <div className="content" key={index}>
-                <div className="label">
-                  {!isLoadingPool && (
-                    <OverlapTokenLogo
-                      tokens={[
-                        tokenARevert,
-                        tokenBRevert
-                      ]}
-                      size={24}
-                    />
-                  )}
-                  ID #{item.id}
-                </div >
-                <div className="value">
-                  {toUnitFormat(item.positionUsdValue, true, true)}
-                </div>
-              </div >
-            ))}
-          </div >
-        )}
-
-      {
-        isStakedPositions && !isLoadingPool && (
-          <div className="stake-info">
-            <div className="title">
-              <div className="label">My Staked Positions</div>
-              {!isUnstakedPositions && (
-                <div className="value" onClick={handleClickGotoStaking}>
-                  Go to Staking <IconStrokeArrowRight />
-                </div>
-              )}
-            </div>
-            {stakedPositions.map((item, index) => (
-              <div className="content" key={index}>
-                <div className="label">
-                  <OverlapTokenLogo
-                    tokens={[
-                      tokenARevert, tokenBRevert
-                    ]}
-                    size={24}
-                  />
-                  ID #{item.id}
-                </div>
-                <div className="value">
-                  {toUnitFormat(item.positionUsdValue, true, true)}
-                </div>
-              </div>
-            ))}
+            )}
           </div>
-        )
-      }
-    </OneClickStakingWrapper >
+          {stakedPositions.map((item, index) => (
+            <div className="content" key={index}>
+              <div className="label">
+                <OverlapTokenLogo
+                  tokens={[tokenARevert, tokenBRevert]}
+                  size={24}
+                />
+                ID #{item.id}
+              </div>
+              <div className="value">
+                {toUnitFormat(item.positionUsdValue, true, true)}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </OneClickStakingWrapper>
   );
 };
 

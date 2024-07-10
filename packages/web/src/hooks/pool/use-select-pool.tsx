@@ -86,10 +86,6 @@ export interface SelectPool {
   ) => void;
   isChangeMinMax: boolean;
   setIsChangeMinMax: (value: boolean) => void;
-  poolInfo?: {
-    chainData: PoolDetailRPCModel | null | undefined;
-    dbData: PoolModel | null | undefined;
-  };
   isLoading: boolean;
 }
 
@@ -222,6 +218,28 @@ export const useSelectPool = ({
         });
       }
 
+      const defaultPoolInfo: PoolDetailRPCModel = {
+        poolPath: "",
+        tokenAPath: "",
+        tokenBPath: "",
+        fee: 0,
+        tokenABalance: 0n,
+        tokenBBalance: 0n,
+        tickSpacing: SwapFeeTierInfoMap[feeTier].tickSpacing,
+        maxLiquidityPerTick: 0,
+        price: 0,
+        sqrtPriceX96: 0n,
+        tick: 0,
+        feeProtocol: 0,
+        tokenAProtocolFee: 0,
+        tokenBProtocolFee: 0,
+        liquidity: 0n,
+        ticks: [],
+        tickDetails: {},
+        tickBitmaps: [],
+        positions: [],
+      };
+
       if (isCreate) {
         if (!startPrice) {
           return await Promise.resolve<{
@@ -233,25 +251,8 @@ export const useSelectPool = ({
           });
         }
         const poolInfo: PoolDetailRPCModel = {
-          poolPath: "",
-          tokenAPath: "",
-          tokenBPath: "",
-          fee: 0,
-          tokenABalance: 0n,
-          tokenBBalance: 0n,
-          tickSpacing: SwapFeeTierInfoMap[feeTier].tickSpacing,
-          maxLiquidityPerTick: 0,
+          ...defaultPoolInfo,
           price: startPrice,
-          sqrtPriceX96: 0n,
-          tick: 0,
-          feeProtocol: 0,
-          tokenAProtocolFee: 0,
-          tokenBProtocolFee: 0,
-          liquidity: 0n,
-          ticks: [],
-          tickDetails: {},
-          tickBitmaps: [],
-          positions: [],
         };
 
         return Promise.resolve<{
@@ -267,9 +268,12 @@ export const useSelectPool = ({
         SwapFeeTierInfoMap[feeTier].fee
       }`;
 
-      const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
-      if (!poolRes) {
-        return Promise.resolve({ chainData: null, dbData: null });
+      let poolRes: PoolDetailRPCModel | null = null;
+
+      try {
+        poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
+      } catch (error) {
+        console.log("queryFn: ~ error:", error);
       }
 
       const convertPath = encryptId(poolPath);
@@ -280,26 +284,59 @@ export const useSelectPool = ({
           queryFn: () => poolRepository.getPoolDetailByPoolPath(poolPath),
         });
       }
-      const poolResFromDb = await poolRepository.getPoolDetailByPoolPath(
-        convertPath,
-      );
 
-      const changedPoolInfo =
-        isReverse === false
-          ? {
-              ...poolRes,
-              price: poolResFromDb.price,
-            }
-          : {
-              ...poolRes,
-              price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
-              ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
-              positions: poolRes.positions.map(position => ({
-                ...position,
-                tickLower: position.tickUpper * -1,
-                tickUpper: position.tickLower * -1,
-              })),
-            };
+      let poolResFromDb: PoolModel | null = null;
+
+      try {
+        poolResFromDb = await poolRepository.getPoolDetailByPoolPath(
+          convertPath,
+        );
+      } catch (error) {
+        console.log(" error:", error);
+      }
+
+      if (!poolRes && !poolResFromDb) {
+        return Promise.resolve({ chainData: null, dbData: null });
+      }
+
+      const price = (() => {
+        if (!poolResFromDb?.price || poolResFromDb?.price === 0) return 0;
+
+        if (!isReverse) return poolResFromDb.price;
+
+        return 1 / poolResFromDb.price;
+      })();
+
+      const ticks = (() => {
+        if (poolRes) {
+          return Object.keys(poolRes.ticks).map(tick => Number(tick) * -1);
+        }
+
+        return [];
+      })();
+
+      const positions = (() => {
+        if (poolRes) {
+          if (isReverse) {
+            return poolRes.positions.map(position => ({
+              ...position,
+              tickLower: position.tickUpper * -1,
+              tickUpper: position.tickLower * -1,
+            }));
+          }
+
+          return poolRes.positions;
+        }
+        return [];
+      })();
+
+      const changedPoolInfo = {
+        ...defaultPoolInfo,
+        ...poolRes,
+        ticks,
+        positions,
+        price,
+      };
 
       return Promise.resolve<{
         chainData: PoolDetailRPCModel | null;
@@ -315,9 +352,8 @@ export const useSelectPool = ({
   useEffect(() => {
     setPoolInfoQuery({
       isLoading: isLoadingPoolInfo,
-      data: poolInfo?.chainData,
     });
-  }, [isLoadingPoolInfo, poolInfo, setPoolInfoQuery]);
+  }, [isLoadingPoolInfo, setPoolInfoQuery]);
 
   useEffect(() => {
     priceRangeRef.current = [...defaultPriceRange];
@@ -603,7 +639,6 @@ export const useSelectPool = ({
       setLatestPoolPath(poolInfo.chainData?.poolPath ?? "");
     }
   }, [isCreate, poolInfo, startPrice]);
-  console.log("🚀 ~ useEffect ~ poolInfo.chainData:", poolInfo?.chainData);
 
   useEffect(() => {
     if (!options || !feeTier) {
@@ -664,7 +699,6 @@ export const useSelectPool = ({
     setInteractionType,
     isChangeMinMax,
     setIsChangeMinMax,
-    poolInfo,
     isLoading: isLoading || isLoadingPoolInfo,
   };
 };

@@ -48,7 +48,7 @@ export const RecentdummyToken: Token[] = [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "recent",
     token: {
-      path: "gno.land/r/demo/gns",
+      path: "gno.land/r/gnoswap/gns",
       name: "GNS",
       symbol: "APR",
       logoURI: "/gnos.svg",
@@ -59,7 +59,7 @@ export const RecentdummyToken: Token[] = [
       value: "52.4",
     },
     tokenB: {
-      path: "gno.land/r/demo/gns",
+      path: "gno.land/r/gnoswap/gns",
       name: "GNOT",
       symbol: "GNOT",
       logoURI:
@@ -74,7 +74,7 @@ export const RecentdummyToken: Token[] = [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "recent",
     token: {
-      path: "gno.land/r/demo/gns",
+      path: "gno.land/r/gnoswap/gns",
       name: "GNS",
       symbol: "APR",
       logoURI: "/gnos.svg",
@@ -85,7 +85,7 @@ export const RecentdummyToken: Token[] = [
       value: "107.4",
     },
     tokenB: {
-      path: "gno.land/r/demo/gns",
+      path: "gno.land/r/gnoswap/gns",
       name: "GNOT",
       symbol: "GNOT",
       logoURI:
@@ -99,7 +99,7 @@ export const RecentdummyToken: Token[] = [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "recent",
     token: {
-      path: "gno.land/r/demo/gns",
+      path: "gno.land/r/gnoswap/gns",
       name: "GNS",
       symbol: "APR",
       logoURI: "/gnos.svg",
@@ -110,7 +110,7 @@ export const RecentdummyToken: Token[] = [
       value: "31.4",
     },
     tokenB: {
-      path: "gno.land/r/demo/gns",
+      path: "gno.land/r/gnoswap/gns",
       name: "GNOT",
       symbol: "GNOT",
       logoURI:
@@ -127,7 +127,7 @@ export const PopulardummyToken: Token[] = [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "popular",
     token: {
-      path: "gno.land/r/demo/gns",
+      path: "gno.land/r/demo/gnoswap",
       name: "Gnoland",
       symbol: "GNOT",
       logoURI:
@@ -216,12 +216,13 @@ const HeaderContainer: React.FC = () => {
         });
         return {
           ...item,
-          apr: `${!item_.apr
-            ? "-"
-            : Number(item_.apr) > 10
+          apr: `${
+            !item_.apr
+              ? "-"
+              : Number(item_.apr) > 10
               ? `${item_.apr}% APR`
               : `${Number(item_.apr).toFixed(2)}% APR`
-            }`,
+          }`,
           price: price,
         };
       }
@@ -242,7 +243,7 @@ const HeaderContainer: React.FC = () => {
 
     return temp
       .map((item: PoolModel) => {
-        const price = toPriceFormat(item.tvl || "0", { usd: true, });
+        const price = toPriceFormat(item.tvl || "0", { usd: true });
         const aprRate = numberToRate(item.apr);
 
         return {

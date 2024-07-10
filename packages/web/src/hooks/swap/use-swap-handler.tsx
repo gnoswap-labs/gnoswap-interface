@@ -237,8 +237,8 @@ export const useSwapHandler = () => {
       return BigNumber(0);
     }
 
-    const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
-    const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
+    const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 0;
+    const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 0;
 
     const tokenAUSDAmount =
       (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) *

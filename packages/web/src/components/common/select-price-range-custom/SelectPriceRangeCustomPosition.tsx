@@ -59,9 +59,12 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     [selectPool.renderState, isLoadingCommon],
   );
 
-  const availSelect =
-    Array.isArray(selectPool.liquidityOfTickPoints) &&
-    selectPool.renderState() === "DONE";
+  const availSelect = useMemo(
+    () =>
+      Array.isArray(selectPool.liquidityOfTickPoints) &&
+      selectPool.renderState() === "DONE",
+    [selectPool],
+  );
 
   const flip = useMemo(() => {
     if (!selectPool.compareToken) {

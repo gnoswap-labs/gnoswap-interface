@@ -18,7 +18,10 @@ export const useGetPoolCreationFee = (
   return useQuery<number, Error>({
     queryKey: [QUERY_KEY.poolCreationFee],
     queryFn: async () => {
-      return poolRepository.getCreationFee();
+      const res = await poolRepository.getCreationFee();
+      console.log("🚀 ~ queryFn: ~ res:", res);
+
+      return res;
     },
     ...options,
   });
@@ -100,7 +103,7 @@ export const useGetPoolDetailByPath = (
       return data;
     },
     onError: (err: any) => {
-      if (err["response"]["status"] === 404) {
+      if (err["response"]?.["status"] === 404) {
         router.push("/404");
       }
     },

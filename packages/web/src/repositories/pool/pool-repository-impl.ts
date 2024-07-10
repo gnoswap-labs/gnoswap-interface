@@ -57,7 +57,6 @@ import {
   GNS_TOKEN_PATH,
   PACKAGE_POSITION_ADDRESS,
   WRAPPED_GNOT_PATH,
-  PACKAGE_GNOSWAP_CONST_PATH,
 } from "@constants/environment.constant";
 import { tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -89,13 +88,13 @@ export class PoolRepositoryImpl implements PoolRepository {
 
   getCreationFee = async (): Promise<number> => {
     try {
-      if (!PACKAGE_GNOSWAP_CONST_PATH || !this.rpcProvider) {
+      if (!PACKAGE_POOL_PATH || !this.rpcProvider) {
         throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
       }
 
       const param = makeABCIParams("GetPoolCreationFee", []);
       const response = await this.rpcProvider.evaluateExpression(
-        PACKAGE_GNOSWAP_CONST_PATH,
+        PACKAGE_POOL_PATH,
         param,
       );
 
@@ -222,8 +221,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-        ? tokenBAmountRaw
-        : null;
+      ? tokenBAmountRaw
+      : null;
 
     const createPoolMessages = [];
 
@@ -381,8 +380,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-        ? tokenBAmountRaw
-        : null;
+      ? tokenBAmountRaw
+      : null;
 
     const approveMessages: TransactionMessage[] = [];
 

@@ -1,5 +1,9 @@
 import React from "react";
-import { CreationFeeErrorMsgWrapper, EarnAddConfirmFeeInfoSection, EarnAddConfirmFeeInfoWrapper } from "./EarnAddConfirmFeeInfo.styles";
+import {
+  CreationFeeErrorMsgWrapper,
+  EarnAddConfirmFeeInfoSection,
+  EarnAddConfirmFeeInfoWrapper,
+} from "./EarnAddConfirmFeeInfo.styles";
 import { TokenInfo } from "@models/token/token-info";
 
 export interface EarnAddConfirmFeeInfoProps {
@@ -13,6 +17,7 @@ const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
   fee,
   errorMsg,
 }) => {
+  console.log("🚀 ~ token?.logoURI:", token?.logoURI);
 
   return (
     <EarnAddConfirmFeeInfoWrapper>
@@ -26,9 +31,9 @@ const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
           <span>{fee}</span>
         </div>
       </EarnAddConfirmFeeInfoSection>
-      {errorMsg && <CreationFeeErrorMsgWrapper>
-        {errorMsg}
-      </CreationFeeErrorMsgWrapper>}
+      {errorMsg && (
+        <CreationFeeErrorMsgWrapper>{errorMsg}</CreationFeeErrorMsgWrapper>
+      )}
     </EarnAddConfirmFeeInfoWrapper>
   );
 };

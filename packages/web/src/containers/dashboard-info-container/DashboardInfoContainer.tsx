@@ -10,6 +10,7 @@ import {
   toPriceFormat,
 } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import BigNumber from "bignumber.js";
 
 export interface DashboardTokenInfo {
   gnosAmount: string;
@@ -48,9 +49,9 @@ const formatPrice = (price?: string, unit?: string) => {
   }
   return price
     ? `$${Number(formatUsdNumber3Digits(price)).toLocaleString("en", {
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-    })}`
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      })}`
     : "-";
 };
 
@@ -116,7 +117,9 @@ const DashboardInfoContainer: React.FC = () => {
         }),
       }}
       supplyOverviewInfo={{
-        circulatingSupply: formatPrice(tokenData?.gnsCirculatingSupply, "GNS"),
+        circulatingSupply: BigNumber(
+          tokenData?.gnsCirculatingSupply || "-",
+        ).toFormat(0),
         dailyBlockEmissions: formatPrice(
           tokenData?.gnsDailyBlockEmissions,
           "GNS",
@@ -125,11 +128,12 @@ const DashboardInfoContainer: React.FC = () => {
         totalStaked: (() => {
           if (isNaN(Number(tokenData?.gnsTotalStaked ?? 0))) return "-";
 
-          return toPriceFormat(
-            tokenData?.gnsTotalStaked ?? 0, {
-            isKMBFormat: false,
-            isRounding: false
-          }) + " GNS";
+          return (
+            toPriceFormat(tokenData?.gnsTotalStaked ?? 0, {
+              isKMBFormat: false,
+              isRounding: false,
+            }) + " GNS"
+          );
         })(),
         progressBar: progressBar,
         stakingRatio: stakingRatio,
