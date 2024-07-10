@@ -117,7 +117,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
         </div>
         <div className="token-list-body">
           {isFetched && tokens.length === 0 && (
-            <div css={noDataText}>No tokens found</div>
+            <div css={noDataText}>{t("Main:tokenList.emptyText")}</div>
           )}
           {isFetched &&
             tokens.length > 0 &&
