@@ -60,7 +60,7 @@ export const TABLE_HEAD = {
   PRICE_OF_1D: "1d",
   PRICE_OF_7D: "7d",
   PRICE_OF_30D: "30d",
-  MARKET_CAP: "Main:tokenList.header.mostLiquidCol",
+  MARKET_CAP: "Main:tokenList.header.marketCapCol",
   LIQUIDITY: "TVL",
   VOLUME: "Main:tokenList.header.volumeCol",
   MOST_LIQUID_POOL: "Main:tokenList.header.mostLiquidCol",
