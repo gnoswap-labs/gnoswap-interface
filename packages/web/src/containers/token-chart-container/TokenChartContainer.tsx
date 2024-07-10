@@ -278,8 +278,7 @@ const TokenChartContainer: React.FC = () => {
       .map(item => ({
         ...item,
         date: item.time,
-      }))
-      .reverse();
+      }));
   }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
 
   const getChartInfo = useCallback(() => {
@@ -323,9 +322,7 @@ const TokenChartContainer: React.FC = () => {
       spaceBetweenLeftYAxisWithFirstLabel,
     );
 
-    let lastPrice ="";
-
-    const datas = [
+    const lastData = [
       {
         amount: {
           value: (pricesBefore.latestPrice || 0).toString(),
@@ -333,17 +330,19 @@ const TokenChartContainer: React.FC = () => {
         },
         time: getLocalizeTime(new Date()),
       },
-      ...chartData.reverse().map((item: IPriceResponse) => {
-        if (item.price !== "") lastPrice = item.price;
-        return ({
-          amount: {
-            value: `${item.price === "" ? lastPrice : item.price}`,
-            denom: "",
-          },
-          time: getLocalizeTime(item.time),
-        });
-      })
-    ].reverse();
+    ];
+
+    let lastPrice ="";
+    const datas = lastData.concat(chartData.map((item: IPriceResponse) => {
+      if (item.price !== "") lastPrice = item.price;
+      return ({
+        amount: {
+          value: `${item.price === "" ? lastPrice : item.price}`,
+          denom: "",
+        },
+        time: getLocalizeTime(item.time),
+      });
+    })).reverse();
 
     const yAxisLabels = getYAxisLabels(
       datas.map(item => BigNumber(item.amount.value).toFormat(6)),
