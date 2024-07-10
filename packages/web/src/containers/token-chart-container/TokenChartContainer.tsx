@@ -278,8 +278,7 @@ const TokenChartContainer: React.FC = () => {
       .map(item => ({
         ...item,
         date: item.time,
-      }))
-      .reverse();
+      }));
   }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
 
   const getChartInfo = useCallback(() => {
@@ -323,46 +322,22 @@ const TokenChartContainer: React.FC = () => {
       spaceBetweenLeftYAxisWithFirstLabel,
     );
 
-    const lastTime =
-      chartData.length >= 1
-        ? new Date(chartData[chartData.length - 1]?.time)
-        : undefined;
-    const last2Time =
-      chartData.length >= 2
-        ? new Date(chartData[chartData.length - 2]?.time)
-        : undefined;
-    const latestTimeGap = (() => {
-      if (lastTime && last2Time)
-        return lastTime.getTime() - last2Time.getTime();
-    })();
-    const fakeLastTime = (() => {
-      if (lastTime && latestTimeGap)
-        return new Date(lastTime.getTime() + latestTimeGap);
-
-      return new Date();
-    })();
-
-    const datas =
-      chartData?.length > 0
-        ? [
-            ...chartData.map((item: IPriceResponse) => {
-              return {
-                amount: {
-                  value: `${item.price}`,
-                  denom: "",
-                },
-                time: getLocalizeTime(item.time),
-              };
-            }),
-            {
-              amount: {
-                value: (pricesBefore.latestPrice || 0).toString(),
-                denom: "",
-              },
-              time: getLocalizeTime(fakeLastTime),
-            },
-          ]
-        : [];
+    const datas = [
+      {
+        amount: {
+          value: (pricesBefore.latestPrice || 0).toString(),
+          denom: "",
+        },
+        time: getLocalizeTime(new Date()),
+      },
+      ...chartData.map((item: IPriceResponse) => ({
+          amount: {
+            value: `${item.price}`,
+            denom: "",
+          },
+          time: getLocalizeTime(item.time),
+        }))
+    ].reverse();
 
     const yAxisLabels = getYAxisLabels(
       datas.map(item => BigNumber(item.amount.value).toFormat(6)),
