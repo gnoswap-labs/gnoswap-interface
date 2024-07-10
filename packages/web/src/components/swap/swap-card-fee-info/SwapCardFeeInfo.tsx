@@ -135,7 +135,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
         {isLoading ? (
           <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
         ) : (
-          <span className="white-text">0%</span>
+          <span className="white-text">{swapSummaryInfo.protocolFee}</span>
         )}
       </div>
       <div className="swap-fee-row  gas-fee">

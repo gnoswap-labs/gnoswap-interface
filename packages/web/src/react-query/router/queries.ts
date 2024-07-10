@@ -80,3 +80,17 @@ export const useEstimateSwap = (
     ...options,
   });
 };
+
+export const useGetSwapFee = (options?: UseQueryOptions<number, Error>) => {
+  const { swapRouterRepository } = useGnoswapContext();
+
+  return useQuery<number, Error>({
+    queryKey: [QUERY_KEY.swapFee],
+    queryFn: async () => {
+      const res = await swapRouterRepository.getSwapFee();
+
+      return res;
+    },
+    ...options,
+  });
+};

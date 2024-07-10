@@ -30,7 +30,8 @@ import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapMod
 import { ERROR_VALUE } from "@common/errors/adena";
 import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEY } from "@query/router";
+import { QUERY_KEY, useGetSwapFee } from "@query/router";
+import { numberToRate } from "@utils/string-utils";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -148,6 +149,7 @@ export const useSwapHandler = () => {
     direction: type,
     slippage,
   });
+  const { data: swapFee } = useGetSwapFee();
 
   const { openModal: openTransactionConfirmModal } =
     useTransactionConfirmModal();
@@ -421,6 +423,12 @@ export const useSwapHandler = () => {
         ? getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1
         : getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1;
 
+    const protocolFee = numberToRate((swapFee || 0) / 100);
+    console.log(
+      "🚀 ~ constswapSummaryInfo:SwapSummaryInfo|null=useMemo ~ protocolFee:",
+      protocolFee,
+    );
+
     if (isSameToken) {
       return {
         tokenA,
@@ -440,6 +448,7 @@ export const useSwapHandler = () => {
         gasFeeUSD,
         swapRateAction,
         swapRate1USD,
+        protocolFee,
       };
     }
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
@@ -476,6 +485,7 @@ export const useSwapHandler = () => {
       swapRateAction,
       swapRate1USD,
       direction: type,
+      protocolFee,
     };
   }, [
     tokenA,
@@ -492,6 +502,7 @@ export const useSwapHandler = () => {
     gasFeeUSD,
     tokenPrices,
     priceImpact,
+    swapFee,
   ]);
 
   const isAvailSwap = useMemo(() => {

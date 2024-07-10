@@ -19,7 +19,38 @@ export const useGetPoolCreationFee = (
     queryKey: [QUERY_KEY.poolCreationFee],
     queryFn: async () => {
       const res = await poolRepository.getCreationFee();
-      console.log("🚀 ~ queryFn: ~ res:", res);
+
+      return res;
+    },
+    ...options,
+  });
+};
+
+export const useGetWithdrawalFee = (
+  options?: UseQueryOptions<number, Error>,
+) => {
+  const { poolRepository } = useGnoswapContext();
+
+  return useQuery<number, Error>({
+    queryKey: [QUERY_KEY.poolWithdrawalFee],
+    queryFn: async () => {
+      const res = await poolRepository.getWithdrawalFee();
+
+      return res;
+    },
+    ...options,
+  });
+};
+
+export const useGetUnstakingFee = (
+  options?: UseQueryOptions<number, Error>,
+) => {
+  const { poolRepository } = useGnoswapContext();
+
+  return useQuery<number, Error>({
+    queryKey: [QUERY_KEY.unstakingFee],
+    queryFn: async () => {
+      const res = await poolRepository.getUnstakingFee();
 
       return res;
     },

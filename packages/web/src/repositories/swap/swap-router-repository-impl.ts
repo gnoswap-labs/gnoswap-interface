@@ -33,6 +33,7 @@ import { checkGnotPath, toNativePath } from "@utils/common";
 import { NetworkClient } from "@common/clients/network-client";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
+import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 
 const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
@@ -233,7 +234,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     };
   };
 
-  public wrapToken = async (request: WrapTokenRequest): Promise<WalletResponse> => {
+  public wrapToken = async (
+    request: WrapTokenRequest,
+  ): Promise<WalletResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -263,7 +266,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     };
   };
 
-  public unwrapToken = async (request: UnwrapTokenRequest): Promise<WalletResponse> => {
+  public unwrapToken = async (
+    request: UnwrapTokenRequest,
+  ): Promise<WalletResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -285,6 +290,25 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       memo: "",
     });
     return response;
+  };
+
+  getSwapFee = async (): Promise<number> => {
+    try {
+      if (!PACKAGE_ROUTER_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetSwapFee", []);
+      const response = await this.rpcProvider.evaluateExpression(
+        PACKAGE_ROUTER_PATH,
+        param,
+      );
+
+      return evaluateExpressionToNumber(response);
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
   };
 }
 

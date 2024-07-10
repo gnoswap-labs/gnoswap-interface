@@ -90,10 +90,9 @@ export const useEarnAddLiquidityConfirmModal = ({
     broadcastError,
   } = useBroadcastHandler();
   const router = useRouter();
-  const { tokens, displayBalanceMap } = useTokenData();
+  const { displayBalanceMap } = useTokenData();
   const { data: creationFee, refetch: refetchGetPoolCreationFee } =
     useGetPoolCreationFee();
-  console.log("🚀 ~ creationFee:", creationFee);
 
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -258,8 +257,6 @@ export const useEarnAddLiquidityConfirmModal = ({
       estimatedAPR: "N/A",
     };
   }, [selectPool, tokenA, tokenB]);
-
-  console.log("🚀 ~ tokens:", tokens);
 
   const feeInfo = useMemo((): {
     token?: TokenModel;

@@ -57,6 +57,7 @@ import {
   GNS_TOKEN_PATH,
   PACKAGE_POSITION_ADDRESS,
   WRAPPED_GNOT_PATH,
+  PACKAGE_STAKER_PATH,
 } from "@constants/environment.constant";
 import { tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -95,6 +96,44 @@ export class PoolRepositoryImpl implements PoolRepository {
       const param = makeABCIParams("GetPoolCreationFee", []);
       const response = await this.rpcProvider.evaluateExpression(
         PACKAGE_POOL_PATH,
+        param,
+      );
+
+      return evaluateExpressionToNumber(response);
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
+  };
+
+  getWithdrawalFee = async (): Promise<number> => {
+    try {
+      if (!PACKAGE_POOL_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetWithdrawalFee", []);
+      const response = await this.rpcProvider.evaluateExpression(
+        PACKAGE_POOL_PATH,
+        param,
+      );
+
+      return evaluateExpressionToNumber(response);
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
+  };
+
+  getUnstakingFee = async (): Promise<number> => {
+    try {
+      if (!PACKAGE_STAKER_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetUnstakingFee", []);
+      const response = await this.rpcProvider.evaluateExpression(
+        PACKAGE_STAKER_PATH,
         param,
       );
 
