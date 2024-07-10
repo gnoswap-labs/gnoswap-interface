@@ -323,25 +323,6 @@ const TokenChartContainer: React.FC = () => {
       spaceBetweenLeftYAxisWithFirstLabel,
     );
 
-    const lastTime =
-      chartData.length >= 1
-        ? new Date(chartData[chartData.length - 1]?.time)
-        : undefined;
-    const last2Time =
-      chartData.length >= 2
-        ? new Date(chartData[chartData.length - 2]?.time)
-        : undefined;
-    const latestTimeGap = (() => {
-      if (lastTime && last2Time)
-        return lastTime.getTime() - last2Time.getTime();
-    })();
-    const fakeLastTime = (() => {
-      if (lastTime && latestTimeGap)
-        return new Date(lastTime.getTime() + latestTimeGap);
-
-      return new Date();
-    })();
-
     let lastPrice ="";
 
     const datas = [
