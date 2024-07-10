@@ -48,6 +48,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   gasFeeUSD: 0.1,
   swapRateAction: "ATOB",
   swapRate1USD: 1,
+  protocolFee: "0%",
 };
 
 const swapTokenInfo: SwapTokenInfo = {

@@ -5,7 +5,6 @@ import { css } from "@emotion/react";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 
-
 const swapSummaryInfo: SwapSummaryInfo = {
   tokenA: {
     type: "grc20",
@@ -15,9 +14,10 @@ const swapSummaryInfo: SwapSummaryInfo = {
     path: "gno.land/r/foo",
     decimals: 4,
     symbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    logoURI:
+      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
-    address: ""
+    address: "",
   },
   tokenB: {
     type: "grc20",
@@ -27,9 +27,10 @@ const swapSummaryInfo: SwapSummaryInfo = {
     path: "gno.land/r/foo",
     decimals: 4,
     symbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    logoURI:
+      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
-    address: ""
+    address: "",
   },
   swapDirection: "EXACT_IN",
   swapRate: 1.14,
@@ -37,51 +38,56 @@ const swapSummaryInfo: SwapSummaryInfo = {
   priceImpact: 0.3,
   guaranteedAmount: {
     amount: 45124,
-    currency: "GNOT"
+    currency: "GNOT",
   },
   gasFee: {
     amount: 0.000001,
-    currency: "GNOT"
+    currency: "GNOT",
   },
   gasFeeUSD: 0.1,
   swapRateAction: "ATOB",
   swapRate1USD: 1,
+  protocolFee: "0%",
 };
 
-export const swapRouteInfos: SwapRouteInfo[] = [{
-  from: {
-    type: "grc20",
-    chainId: "dev.gnoswap",
-    createdAt: "2023-12-08T03:57:43Z",
-    name: "Foo",
-    path: "gno.land/r/foo",
-    decimals: 4,
-    symbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceID: "gno.land/r/foo",
-    address: ""
+export const swapRouteInfos: SwapRouteInfo[] = [
+  {
+    from: {
+      type: "grc20",
+      chainId: "dev.gnoswap",
+      createdAt: "2023-12-08T03:57:43Z",
+      name: "Foo",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      logoURI:
+        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      priceID: "gno.land/r/foo",
+      address: "",
+    },
+    to: {
+      type: "grc20",
+      chainId: "dev.gnoswap",
+      createdAt: "2023-12-08T03:57:43Z",
+      name: "Foo",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      logoURI:
+        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      priceID: "gno.land/r/foo",
+      address: "",
+    },
+    gasFee: {
+      amount: 0.000001,
+      currency: "GNOT",
+    },
+    gasFeeUSD: 0.1,
+    pools: [],
+    version: "V1",
+    weight: 100,
   },
-  to: {
-    type: "grc20",
-    chainId: "dev.gnoswap",
-    createdAt: "2023-12-08T03:57:43Z",
-    name: "Foo",
-    path: "gno.land/r/foo",
-    decimals: 4,
-    symbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceID: "gno.land/r/foo",
-    address: ""
-  },
-  gasFee: {
-    amount: 0.000001,
-    currency: "GNOT"
-  },
-  gasFeeUSD: 0.1,
-  pools: [],
-  version: "V1",
-  weight: 100,
-}];
+];
 
 export default {
   title: "swap/SwapCard",
@@ -100,7 +106,7 @@ export const Default = Template.bind({});
 Default.args = {
   swapSummaryInfo,
   swapRouteInfos,
-  swapButtonText: "Swap"
+  swapButtonText: "Swap",
 };
 
 const wrapper = () => css`
