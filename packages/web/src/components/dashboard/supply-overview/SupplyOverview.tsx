@@ -93,7 +93,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           </div>
           {!loading ? (
             <div className="supply-value">
-              {supplyOverviewInfo.circulatingSupply}
+              {supplyOverviewInfo.circulatingSupply} GNS
             </div>
           ) : (
             <LoadingText />
@@ -115,7 +115,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         <div className="daily-block-emissions-tooltip">
           {!loading ? (
             <div className="supply-value">
-              {supplyOverviewInfo.dailyBlockEmissions} GNS
+              {supplyOverviewInfo.dailyBlockEmissions}
             </div>
           ) : (
             <LoadingText />
