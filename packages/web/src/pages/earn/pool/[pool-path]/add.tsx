@@ -18,14 +18,15 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import { checkGnotPath } from "@utils/common";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { SEOInfo } from "@constants/common.constant";
-// import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-// export async function getServerSideProps({ locale }: { locale: string }) {
-//   return {
-//     props: {
-//       ...(await serverSideTranslations(locale, ["HeaderFooter"])),
-//     },
-//   };
-// }
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getServerSideProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+    },
+  };
+}
 
 export default function EarnAdd() {
   const { width } = useWindowSize();

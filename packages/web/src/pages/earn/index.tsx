@@ -11,14 +11,15 @@ import useRouter from "@hooks/common/use-custom-router";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { formatAddress } from "@utils/string-utils";
 import { SEOInfo } from "@constants/common.constant";
-// import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-// export async function getServerSideProps({ locale }: { locale: string }) {
-//   return {
-//     props: {
-//       ...(await serverSideTranslations(locale, ["HeaderFooter"])),
-//     },
-//   };
-// }
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getServerSideProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+    },
+  };
+}
 
 export default function Earn() {
   const { account } = useWallet();

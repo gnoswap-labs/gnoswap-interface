@@ -49,15 +49,15 @@ export function numberToFormat(
     decimals,
   }: {
     decimals?: number;
-    forceDecimals?: boolean
+    forceDecimals?: boolean;
     isRounding?: boolean;
   } = {},
 ) {
   const decimal = forceDecimals
     ? decimals
     : Number.isInteger(Number(num))
-      ? 0
-      : decimals;
+    ? 0
+    : decimals;
 
   if (!isNumber(Number(num))) {
     return "0";
@@ -68,7 +68,9 @@ export function numberToFormat(
     const [intPart, decimalPart] = temp.split(".");
 
     if (!forceDecimals) {
-      return removeTrailingZeros(intPart + "." + decimalPart.substring(0, decimal));
+      return removeTrailingZeros(
+        intPart + "." + decimalPart.substring(0, decimal),
+      );
     }
 
     return intPart + "." + decimalPart.substring(0, decimal);
@@ -79,7 +81,12 @@ export function numberToFormat(
 
 export function numberToRate(
   num: string | number | null | undefined,
-  options?: { decimals?: number; minLimit?: number; errorText?: string, isRounding?: boolean },
+  options?: {
+    decimals?: number;
+    minLimit?: number;
+    errorText?: string;
+    isRounding?: boolean;
+  },
 ) {
   const { decimal, minLimit, errorText, isRounding } = {
     decimal: 1,
@@ -140,3 +147,6 @@ export function displayTickNumber(range: number[], tick: number) {
     Array.from(rangeGapSplit[1], v => v).findIndex(v => v !== "0") + 1;
   return tickToPriceStr(tick, { decimals: fixedPosition + 1 });
 }
+
+export const capitalize = (s: string) =>
+  (s && s[0].toUpperCase() + s.slice(1)) || "";
