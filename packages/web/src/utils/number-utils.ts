@@ -218,11 +218,6 @@ export const toPriceFormatNotRounding = (
   }
 
   if (bigNumber.isEqualTo(0)) {
-    if (fixedLessThan1)
-      return (
-        prefix + BigNumber(0).toFixed(lessThan1Significant || lestThan1Decimals)
-      );
-
     return prefix + "0";
   }
 

@@ -43,7 +43,7 @@ import BigNumber from "bignumber.js";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import Button from "@components/common/button/Button";
 import { useGetPositionBins } from "@query/positions";
-import { toPriceFormat } from "@utils/number-utils";
+import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
@@ -271,7 +271,14 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       return "<$0.01";
     }
 
-    return `$${numberToFormat(`${usdValue}`, { decimals: 2 })}`;
+    return `${toPriceFormatNotRounding(`${usdValue}`, {
+      usd: true,
+      lestThan1Decimals: 2,
+      greaterThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+      minLimit: 0.01,
+    })}`;
   }, [isClosed, position.reward]);
 
   const totalDailyEarning = useMemo(() => {
@@ -290,11 +297,22 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         return acc + Number(current.accumulatedRewardOf1dUsd);
       }, 0);
 
-    return toPriceFormat(totalDailyEarningValue, {
+    return `${toPriceFormatNotRounding(0.21783612376, {
       usd: true,
       minLimit: 0.01,
-      isRounding: false,
-      fixedLessThan1Decimal: 2,
+      lestThan1Decimals: 2,
+      greaterThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+    })}`;
+
+    return toPriceFormatNotRounding(totalDailyEarningValue, {
+      usd: true,
+      minLimit: 0.01,
+      lestThan1Decimals: 2,
+      greaterThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
     });
   }, [isClosed, position.reward, totalRewardInfo]);
 

@@ -169,7 +169,7 @@ const UnstakePositionModal: React.FC<Props> = ({
                       </Tooltip>
                     </div>
                     <span className="white-text">
-                      {unstakingFee ? `${(unstakingFee || 0) / 100}%s` : "-"}
+                      {unstakingFee ? `${(unstakingFee || 0) / 100}%` : "-"}
                     </span>
                   </div>
                 </div>
