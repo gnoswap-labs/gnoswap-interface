@@ -24,6 +24,7 @@ import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDow
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { DEVICE_TYPE } from "@styles/media";
 import MobileTokenInfo from "../mobile-token-info/MobileTokenInfo";
+import { useTranslation } from "next-i18next";
 
 interface TokenListTableProps {
   tokens: Token[];
@@ -42,6 +43,8 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
   isFetched,
   breakpoint,
 }) => {
+  const { t } = useTranslation();
+
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
       return (
@@ -107,14 +110,14 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
                 {isDescendingOption(head) && (
                   <IconTriangleArrowDown className="icon desc" />
                 )}
-                {head}
+                {t(head)}
               </span>
             </TableHeader>
           ))}
         </div>
         <div className="token-list-body">
           {isFetched && tokens.length === 0 && (
-            <div css={noDataText}>No tokens found</div>
+            <div css={noDataText}>{t("Main:tokenList.emptyText")}</div>
           )}
           {isFetched &&
             tokens.length > 0 &&
@@ -148,14 +151,14 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
                 {isDescendingOption(head) && (
                   <IconTriangleArrowDown className="icon desc" />
                 )}
-                {head}
+                {t(head)}
               </span>
             </MobileTableHeader>
           ))}
         </div>
         <div className="token-list-body">
           {isFetched && tokens.length === 0 && (
-            <div css={noDataText}>No tokens found</div>
+            <div css={noDataText}>{t("Main:tokenList.emptyText")}</div>
           )}
           {isFetched &&
             tokens.length > 0 &&

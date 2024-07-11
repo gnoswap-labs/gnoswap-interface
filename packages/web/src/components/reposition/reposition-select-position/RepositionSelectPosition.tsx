@@ -8,7 +8,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { toPriceFormatRounding } from "@utils/number-utils";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { RepositionSelectPositionWrapper } from "./RepositionSelectPosition.styles";
 
 export interface RepositionSelectPositionProps {

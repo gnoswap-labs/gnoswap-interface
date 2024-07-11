@@ -133,7 +133,11 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const tokenAmountRaw = makeRawTokenAmount(targetToken, tokenAmount) || "0";
     const tokenAmountLimitRaw =
       makeRawTokenAmount(resultToken, tokenAmountLimit) || "0";
-    const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
+    const routesQuery = makeRoutesQuery(
+      estimatedRoutes,
+      checkGnotPath(inputToken.path),
+    );
+    console.log(routesQuery);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
 
     const inputTokenWrappedPath = checkGnotPath(inputToken.path);

@@ -116,10 +116,10 @@ const RemovePositionModalContainer = ({
       tokenASymbol: tokenTransform(pooledTokenInfos?.[0].token).symbol,
       tokenBSymbol: tokenTransform(pooledTokenInfos?.[1]?.token).symbol,
       tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", {
-        maximumFractionDigits: 6,
+        maximumFractionDigits: pooledTokenInfos?.[0].token.decimals,
       }),
       tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", {
-        maximumFractionDigits: 6,
+        maximumFractionDigits: pooledTokenInfos?.[1].token.decimals,
       }),
     };
 

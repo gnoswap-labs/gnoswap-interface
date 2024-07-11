@@ -26,6 +26,7 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
+import { SCANNER_URL } from "@common/values";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -124,12 +125,9 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
       e.stopPropagation();
       if (path === "gnot") {
-        window.open("https://gnoscan.io/", "_blank");
+        window.open(SCANNER_URL, "_blank");
       } else {
-        window.open(
-          "https://gnoscan.io/tokens/" + encodeURIComponent(path),
-          "_blank",
-        );
+        window.open(`${SCANNER_URL}/tokens/${path}`, "_blank");
       }
     },
     [],

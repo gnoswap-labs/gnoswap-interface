@@ -191,3 +191,6 @@ export function displayTickNumber(range: number[], tick: number) {
     Array.from(rangeGapSplit[1], v => v).findIndex(v => v !== "0") + 1;
   return tickToPriceStr(tick, { decimals: fixedPosition + 1 });
 }
+
+export const capitalize = (s: string) =>
+  (s && s[0].toUpperCase() + s.slice(1)) || "";

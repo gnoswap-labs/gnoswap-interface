@@ -15,7 +15,6 @@ import { removeTrailingZeros } from "@utils/number-utils";
 import { Divider } from "@components/common/select-token/SelectToken.styles";
 import Switch from "@components/common/switch/Switch";
 import { useGetWithdrawalFee } from "@query/pools";
-import { formatApr } from "@utils/string-utils";
 
 interface Props {
   tokenA: TokenModel;
@@ -159,7 +158,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
               </Tooltip>
             </p>
             <p className="usd protocol-fee">
-              {withdrawalFee ? formatApr((withdrawalFee || 0) / 100) : "-"}
+              {withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}
             </p>
           </div>
         </div>

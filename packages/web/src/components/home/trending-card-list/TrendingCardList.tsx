@@ -9,6 +9,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { cx } from "@emotion/css";
+import { useTranslation } from "next-i18next";
 interface TrendingCardListProps {
   list: Array<CardListTokenInfo>;
   device: DEVICE_TYPE;
@@ -22,12 +23,16 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
   onClickItem,
   loading,
 }) => {
+  const { t } = useTranslation();
+
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
 
   return visible ? (
-    <TrendingCardListWrapper className={cx("loading", { "empty-status": loading })}>
+    <TrendingCardListWrapper
+      className={cx("loading", { "empty-status": loading })}
+    >
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />
@@ -36,7 +41,7 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
         <div>
           <h2>
             <IconFlame className="icon-flame" />
-            Trending
+            {t("Main:trending")}
           </h2>
         </div>
       )}
@@ -56,7 +61,9 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
         <CardList list={list} onClickItem={onClickItem} />
       )}
     </TrendingCardListWrapper>
-  ) : <React.Fragment/>;
+  ) : (
+    <React.Fragment />
+  );
 };
 
 export default TrendingCardList;

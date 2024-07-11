@@ -16,6 +16,15 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getServerSideProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+    },
+  };
+}
 
 export default function EarnAdd() {
   const router = useRouter();
@@ -43,28 +52,27 @@ export default function EarnAdd() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [router.query]);
 
-
   const seoInfo = useMemo(() => SEOInfo["/earn/add"], []);
 
   const title = useMemo(() => {
     const tokenAPath = router.query?.["tokenA"] as string | undefined;
     const tokenBPath = router.query?.["tokenB"] as string | undefined;
 
-    const tokenA = getGnotPath(tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined);
-    const tokenB = getGnotPath(tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined);
+    const tokenA = getGnotPath(
+      tokenAPath
+        ? tokens.find(item => item.path === checkGnotPath(tokenAPath))
+        : undefined,
+    );
+    const tokenB = getGnotPath(
+      tokenBPath
+        ? tokens.find(item => item.path === checkGnotPath(tokenBPath))
+        : undefined,
+    );
 
-    return seoInfo.title([
-      tokenA?.symbol,
-      tokenB?.symbol,
-      feeStr
-    ].filter(item => item) as string[]);
-  }, [
-    feeStr,
-    router.query,
-    seoInfo,
-    tokens,
-    getGnotPath,
-  ]);
+    return seoInfo.title(
+      [tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[],
+    );
+  }, [feeStr, router.query, seoInfo, tokens, getGnotPath]);
 
   return (
     <>

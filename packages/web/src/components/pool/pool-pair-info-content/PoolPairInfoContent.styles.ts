@@ -136,6 +136,45 @@ export const PoolPairInfoContentWrapper = styled.div`
     }
   }
 
+  .apr-info {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 10px;
+    height: 20px;
+
+    .content-wrap {
+      ${mixins.flexbox("", "center", "flex-start")};
+      gap: 8px;
+      .apr-value {
+        ${fonts.body11}
+        color: ${({ theme }) => theme.color.text10};
+      }
+    }
+    ${media.tablet} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      .content-wrap {
+        &.content-reward {
+          display: none;
+        }
+      }
+    }
+    ${media.tabletMiddle} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      .content-wrap {
+        &.content-reward {
+          display: none;
+        }
+      }
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      .content-wrap {
+        &.content-reward {
+          display: flex;
+        }
+      }
+    }
+  }
+
   .has-tooltip {
     cursor: default;
     transition: color 0.3s ease;

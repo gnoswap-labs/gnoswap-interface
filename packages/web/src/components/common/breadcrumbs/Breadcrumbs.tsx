@@ -6,6 +6,7 @@ import { wrapper } from "./Breadcrumbs.styles";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import IconOpenLink from "../icons/IconOpenLink";
 import { useTheme } from "@emotion/react";
+import { SCANNER_URL } from "@common/values";
 
 interface BreadcrumbsProps {
   steps: Steps[];
@@ -42,12 +43,9 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
       e.stopPropagation();
       if (path === "gnot") {
-        window.open("https://gnoscan.io/", "_blank");
+        window.open(SCANNER_URL, "_blank");
       } else {
-        window.open(
-          "https://gnoscan.io/tokens/" + encodeURIComponent(path),
-          "_blank",
-        );
+        window.open(`${SCANNER_URL}/tokens/${path}`, "_blank");
       }
     },
     [],

@@ -572,18 +572,6 @@ export const useSwapHandler = () => {
     });
   }, [queryClient]);
 
-  console.log(
-    "🚀 ~ onFinishSwap ~ queryClient:",
-    queryClient
-      .getQueryCache()
-      .findAll([QUERY_KEY.router])
-      .map(item => ({
-        key: item.queryKey,
-        data: item.state.data,
-      }))
-      .filter(item => item.data),
-  );
-
   useEffect(() => {
     if (!tokens.length) {
       return;
@@ -1052,6 +1040,12 @@ export const useSwapHandler = () => {
     type,
     tokenB?.symbol,
   ]);
+
+  useEffect(() => {
+    if (tokenAAmount) {
+      setTokenBAmount(tokenAAmount);
+    }
+  }, [isSameToken, tokenAAmount]);
 
   return {
     slippage,

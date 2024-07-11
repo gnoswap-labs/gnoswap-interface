@@ -3,72 +3,48 @@ import { SelectLanguageWrapper } from "./SelectLanguage.styles";
 import IconStrokeArrowLeft from "../icons/IconStrokeArrowLeft";
 import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import { Overlay } from "../wallet-connector-menu/WalletConnectorMenu.styles";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import { LANGUAGES } from "@constants/common.constant";
 
 interface Props {
   onClickChangeLanguage: () => void;
 }
 
-const SelectLanguage: React.FC<Props> = ({
-  onClickChangeLanguage,
-}) => {
+const SelectLanguage: React.FC<Props> = ({ onClickChangeLanguage }) => {
+  const { i18n, t } = useTranslation();
+  const router = useRouter();
 
   return (
     <>
-    <SelectLanguageWrapper width={window?.innerWidth}>
-      <div className="header">
-        <div onClick={onClickChangeLanguage}><IconStrokeArrowLeft /></div>
-        <p>Language</p>
-        <div></div>
-      </div>
-      <div className="list">
-        <div>
-          <p>English</p>
-          <IconCircleInCheck />
+      <SelectLanguageWrapper width={window?.innerWidth}>
+        <div className="header">
+          <div onClick={onClickChangeLanguage}>
+            <IconStrokeArrowLeft />
+          </div>
+          <p>{t("HeaderFooter:language")}</p>
+          <div></div>
         </div>
-        <div>
-          <p>Afrikaans</p>
+        <div className="list">
+          {LANGUAGES.map(item => (
+            <div
+              onClick={() => {
+                onClickChangeLanguage();
+                const { pathname, asPath, query } = router;
+                router.push({ pathname, query }, asPath, {
+                  locale: item.code,
+                });
+              }}
+              key={item.code}
+            >
+              <p>{item.name}</p>
+              {i18n.language === item.code && <IconCircleInCheck />}
+            </div>
+          ))}
         </div>
-        <div>
-          <p>العربية</p>
-        </div>
-        <div>
-          <p>Català</p>
-        </div>
-        <div>
-          <p>Algeria</p>
-        </div>
-        <div>
-          <p>Angola</p>
-        </div>
-        <div>
-          <p>Benin</p>
-        </div>
-        <div>
-          <p>Botswana</p>
-        </div>
-        <div>
-          <p>Burkina Faso</p>
-        </div>
-        <div>
-          <p>Burundi</p>
-        </div>
-        <div>
-          <p>Cabo Verde</p>
-        </div>
-        <div>
-          <p>Cameroon</p>
-        </div>
-        <div>
-          <p>Chad</p>
-        </div>
-        <div>
-          <p>Congo</p>
-        </div>
-      </div>
-    </SelectLanguageWrapper>
-    <Overlay onClick={onClickChangeLanguage} />
+      </SelectLanguageWrapper>
+      <Overlay onClick={onClickChangeLanguage} />
     </>
-
   );
 };
 
