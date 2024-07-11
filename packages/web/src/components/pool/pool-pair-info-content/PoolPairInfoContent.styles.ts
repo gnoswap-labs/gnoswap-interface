@@ -130,8 +130,7 @@ export const PoolPairInfoContentWrapper = styled.div`
       &.can-hover:hover {
         color: ${({ theme }) => theme.color.text07};
       }
-
-      > span {
+      <<<<<<< HEAD =======>>>>>>>develop > span {
         ${fonts.body11}
         .token-symbol {
           display: inline;
@@ -221,12 +220,11 @@ export const PoolPairInfoContentWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 10px;
     min-height: 20px;
-
-    &.flex-row {
+    <<<<<<< HEAD &.flex-row {
       white-space: nowrap;
     }
 
-    ${media.tabletMiddle} {
+    =======>>>>>>>develop ${media.tabletMiddle} {
       ${mixins.flexbox("row", "center", "flex-start")};
       &.flex-row {
         ${mixins.flexbox("row", "center", "flex-start")};

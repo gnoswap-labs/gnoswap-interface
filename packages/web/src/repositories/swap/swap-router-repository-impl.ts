@@ -132,7 +132,11 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const tokenAmountRaw = makeRawTokenAmount(targetToken, tokenAmount) || "0";
     const tokenAmountLimitRaw =
       makeRawTokenAmount(resultToken, tokenAmountLimit) || "0";
-    const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
+    const routesQuery = makeRoutesQuery(
+      estimatedRoutes,
+      checkGnotPath(inputToken.path),
+    );
+    console.log(routesQuery);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
 
     const inputTokenWrappedPath = checkGnotPath(inputToken.path);
@@ -233,7 +237,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     };
   };
 
-  public wrapToken = async (request: WrapTokenRequest): Promise<WalletResponse> => {
+  public wrapToken = async (
+    request: WrapTokenRequest,
+  ): Promise<WalletResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -263,7 +269,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     };
   };
 
-  public unwrapToken = async (request: UnwrapTokenRequest): Promise<WalletResponse> => {
+  public unwrapToken = async (
+    request: UnwrapTokenRequest,
+  ): Promise<WalletResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }

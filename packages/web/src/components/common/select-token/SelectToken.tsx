@@ -21,6 +21,7 @@ import { TokenState } from "@states/index";
 import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { removeDuplicatesByWrappedPath } from "@utils/common";
+import { SCANNER_URL } from "@common/values/data-constant";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -161,12 +162,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
       e.stopPropagation();
       if (path === "gnot") {
-        window.open("https://gnoscan.io/", "_blank");
+        window.open(SCANNER_URL, "_blank");
       } else {
-        window.open(
-          "https://gnoscan.io/tokens/" + encodeURIComponent(path),
-          "_blank",
-        );
+        window.open(`${SCANNER_URL}/tokens/${path}`, "_blank");
       }
     },
     [],

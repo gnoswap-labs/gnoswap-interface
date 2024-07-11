@@ -50,8 +50,8 @@ export const FOOTER_RIGHT_NAV = [
         newTab: false,
       },
       {
-        title: "HeaderFooter:stakePosi",
-        path: "/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000#staking",
+        title: "Stake Position",
+        path: "/earn/pool/gno.land_r_demo_wugnot:gno.land_r_gnoswap_gns:3000#staking",
         newTab: false,
       },
       {
