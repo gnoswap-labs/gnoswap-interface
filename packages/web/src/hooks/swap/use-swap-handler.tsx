@@ -31,7 +31,6 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY, useGetSwapFee } from "@query/router";
-import { numberToRate } from "@utils/string-utils";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -423,11 +422,7 @@ export const useSwapHandler = () => {
         ? getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1
         : getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1;
 
-    const protocolFee = numberToRate((swapFee || 0) / 100);
-    console.log(
-      "🚀 ~ constswapSummaryInfo:SwapSummaryInfo|null=useMemo ~ protocolFee:",
-      protocolFee,
-    );
+    const protocolFee = `${(swapFee || 0) / 100}%`;
 
     if (isSameToken) {
       return {

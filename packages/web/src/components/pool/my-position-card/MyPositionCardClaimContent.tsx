@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { RewardsContent, TooltipDivider } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormat } from "@utils/number-utils";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { convertToKMB } from "@utils/stake-position-utils";
@@ -54,7 +54,10 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       (accum, current) => accum + current.claimableUSD,
       0,
     );
-    return toUnitFormat(sumUSD, true);
+    return toPriceFormat(sumUSD, {
+      minLimit: 0.01,
+      usd: true,
+    });
   }, [rewardInfo]);
 
   const internalRewardUSD = useMemo(() => {
@@ -65,7 +68,10 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       (accum, current) => accum + current.claimableUSD,
       0,
     );
-    return toUnitFormat(sumUSD, true);
+    return toPriceFormat(sumUSD, {
+      minLimit: 0.01,
+      usd: true,
+    });
   }, [rewardInfo]);
 
   const externalRewardUSD = useMemo(() => {
@@ -76,7 +82,10 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       (accum, current) => accum + current.claimableUSD,
       0,
     );
-    return toUnitFormat(sumUSD, true);
+    return toPriceFormat(sumUSD, {
+      minLimit: 0.01,
+      usd: true,
+    });
   }, [rewardInfo]);
 
   return (
@@ -102,7 +111,9 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(`${Number(reward.claimableAmount)}`)}
+                {convertToKMB(`${Number(reward.claimableAmount)}`, {
+                  usd: true,
+                })}
               </span>
             </div>
           ))}
@@ -131,7 +142,9 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(`${Number(reward.claimableAmount)}`)}
+                {convertToKMB(`${Number(reward.claimableAmount)}`, {
+                  usd: true,
+                })}
               </span>
             </div>
           ))}
@@ -160,7 +173,9 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(`${Number(reward.claimableAmount)}`)}
+                {convertToKMB(`${Number(reward.claimableAmount)}`, {
+                  usd: true,
+                })}
               </span>
             </div>
           ))}

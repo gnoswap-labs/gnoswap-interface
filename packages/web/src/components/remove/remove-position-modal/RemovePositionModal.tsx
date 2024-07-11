@@ -131,9 +131,7 @@ const RemovePositionModal: React.FC<Props> = ({
                       </Tooltip>
                     </div>
                     <span className="white-text">
-                      {withdrawalFee
-                        ? numberToRate((withdrawalFee || 0) / 100)
-                        : "-"}
+                      {withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}
                     </span>
                   </div>
                 </div>

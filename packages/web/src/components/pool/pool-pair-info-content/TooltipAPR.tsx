@@ -1,6 +1,6 @@
 import { ToolTipAPRWrapper } from "./TooltipAPR.styles";
 import React from "react";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 import { TokenModel } from "@models/token/token-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
@@ -24,14 +24,14 @@ const TooltipAPR: React.FC<Props> = ({
         <div className="label">Fee APR</div>
         <div className="value">
           <OverlapTokenLogo tokens={feeLogo} size={20} />
-          <div>{numberToRate(feeAPR, { decimals: 2, minLimit: 0.01 })}</div>
+          <div>{formatApr(feeAPR)}</div>
         </div>
       </div>
       <div className="item">
         <div className="label">Staking APR</div>
         <div className="value">
           <OverlapTokenLogo tokens={stakeLogo} size={20} />
-          <div>{numberToRate(stakingAPR, { decimals: 2, minLimit: 0.01 })}</div>
+          <div>{formatApr(stakingAPR)}</div>
         </div>
       </div>
     </ToolTipAPRWrapper>

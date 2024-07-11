@@ -8,7 +8,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PoolModel } from "@models/pool/pool-model";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 
 interface SelectStakeResultProps {
   positions: PoolPositionModel[];
@@ -32,28 +32,40 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
     }
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
-    const pooledTokenAAmount = positions.reduce((accum, position) => accum + position.tokenABalance, 0);
-    const pooledTokenBAmount = positions.reduce((accum, position) => accum + position.tokenBBalance, 0);
+    const pooledTokenAAmount = positions.reduce(
+      (accum, position) => accum + position.tokenABalance,
+      0,
+    );
+    const pooledTokenBAmount = positions.reduce(
+      (accum, position) => accum + position.tokenBBalance,
+      0,
+    );
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
-    return [{
-      token: tokenA,
-      amount: tokenAAmount,
-      amountUSD: numberToUSD(tokenAAmount * Number(tokenAPrice))
-    }, {
-      token: tokenB,
-      amount: tokenBAmount,
-      amountUSD: numberToUSD(tokenBAmount * Number(tokenBPrice))
-    }];
+    return [
+      {
+        token: tokenA,
+        amount: tokenAAmount,
+        amountUSD: numberToUSD(tokenAAmount * Number(tokenAPrice)),
+      },
+      {
+        token: tokenB,
+        amount: tokenBAmount,
+        amountUSD: numberToUSD(tokenBAmount * Number(tokenBPrice)),
+      },
+    ];
   }, [positions, tokenPrices]);
 
   const totalLiquidityUSD = useMemo(() => {
     if (positions.length === 0) {
       return "-";
     }
-    const totalUSDValue = positions.reduce((accum, position) => accum + Number(position.positionUsdValue), 0);
+    const totalUSDValue = positions.reduce(
+      (accum, position) => accum + Number(position.positionUsdValue),
+      0,
+    );
     return numberToUSD(totalUSDValue);
   }, [positions]);
 
@@ -62,7 +74,9 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
 
     if (!Number(pool?.stakingApr || 0)) return "0%";
 
-    return `${numberToRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${numberToRate(pool?.stakingApr)}`;
+    return `${formatApr(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatApr(
+      pool?.stakingApr,
+    )}`;
   }, [pool?.stakingApr]);
 
   if (positions.length === 0) return <></>;
@@ -79,7 +93,9 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
                 mobileWidth={24}
               />
               <p>Pooled {pooledTokenInfo.token.symbol}</p>
-              <strong>{formatNumberToLocaleString(pooledTokenInfo.amount)}</strong>
+              <strong>
+                {formatNumberToLocaleString(pooledTokenInfo.amount)}
+              </strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>
           </li>
@@ -88,13 +104,20 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       <div className="result-section">
         <div className="total-amount-box">
           <h5 className="total-amount-title">Total Amount</h5>
-          {!isHiddenBadge && <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />}
+          {!isHiddenBadge && (
+            <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />
+          )}
           <span className="result-value">{totalLiquidityUSD}</span>
         </div>
         <div className="apr-box">
           <h5 className="apr-title">Staking APR</h5>
           <div className="hover-info">
-            <Tooltip placement="top" FloatingContent={<HoverTextWrapper>{HOVER_TEXT}</HoverTextWrapper>}>
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <HoverTextWrapper>{HOVER_TEXT}</HoverTextWrapper>
+              }
+            >
               <IconInfo className="icon-info" />
             </Tooltip>
           </div>

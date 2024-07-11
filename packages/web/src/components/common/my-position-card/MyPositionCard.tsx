@@ -26,12 +26,12 @@ import {
   toPriceFormatNotRounding,
   toPriceFormatRounding,
 } from "@utils/number-utils";
-import { numberToRate } from "@utils/string-utils";
 import { useGetLazyPositionBins } from "@query/positions";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconStar from "../icons/IconStar";
+import { formatApr } from "@utils/string-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -136,10 +136,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return (
       <>
         {Number(position.apr) > 100 && <IconStar size={20} />}
-        {numberToRate(position.apr, {
-          decimals: 2,
-          minLimit: 0.01,
-        })}
+        {formatApr(position.apr)}
       </>
     );
   }, [position.apr]);

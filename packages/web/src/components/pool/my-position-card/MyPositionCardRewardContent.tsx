@@ -2,7 +2,10 @@
 import React, { useMemo } from "react";
 import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
-import { prettyNumberFloatInteger, toLowerUnitFormat } from "@utils/number-utils";
+import {
+  prettyNumberFloatInteger,
+  toPriceFormatNotRounding,
+} from "@utils/number-utils";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -11,7 +14,9 @@ export interface MyPositionRewardContentProps {
   rewardInfo: { [key in RewardType]: PositionRewardInfo[] };
 }
 
-export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = ({ rewardInfo }) => {
+export const MyPositionRewardContent: React.FC<
+  MyPositionRewardContentProps
+> = ({ rewardInfo }) => {
   const { getGnotPath } = useGnotToGnot();
 
   const swapFeeRewards = useMemo(() => {
@@ -36,19 +41,41 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
   }, [rewardInfo.EXTERNAL]);
 
   const swapFeeRewardUSD = useMemo(() => {
-    const sumUSD = rewardInfo.SWAP_FEE.reduce((accum, current) => accum + current.claimableUSD, 0);
-    return toLowerUnitFormat(sumUSD, true);
-  }, [rewardInfo.SWAP_FEE]);
+    const sumUSD =
+      swapFeeRewards?.reduce(
+        (accum, current) => accum + current.claimableUSD,
+        0,
+      ) || 0;
+    return toPriceFormatNotRounding(sumUSD, {
+      usd: true,
+      minLimit: 0.01,
+      lestThan1Decimals: 2,
+    });
+  }, [swapFeeRewards]);
 
   const stakingRewardUSD = useMemo(() => {
-    const sumUSD = rewardInfo.INTERNAL.reduce((accum, current) => accum + current.claimableUSD, 0);
-    return toLowerUnitFormat(sumUSD, true);
+    const sumUSD = rewardInfo.INTERNAL.reduce(
+      (accum, current) => accum + current.claimableUSD,
+      0,
+    );
+    return toPriceFormatNotRounding(sumUSD, {
+      usd: true,
+      minLimit: 0.01,
+      lestThan1Decimals: 2,
+    });
   }, [rewardInfo.INTERNAL]);
 
   const externalRewardUSD = useMemo(() => {
-    const sumUSD = rewardInfo.STAKING.reduce((accum, current) => accum + current.claimableUSD, 0);
-    return toLowerUnitFormat(sumUSD, true);
-  }, [rewardInfo.STAKING]);
+    const sumUSD = rewardInfo.EXTERNAL.reduce(
+      (accum, current) => accum + current.claimableUSD,
+      0,
+    );
+    return toPriceFormatNotRounding(sumUSD, {
+      usd: true,
+      minLimit: 0.01,
+      lestThan1Decimals: 2,
+    });
+  }, [rewardInfo.EXTERNAL]);
 
   return (
     <RewardsContent>

@@ -11,7 +11,7 @@ import {
 } from "./PoolPairInfoContent.styles";
 import IconStar from "@components/common/icons/IconStar";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { numberToFormat, numberToRate } from "@utils/string-utils";
+import { formatApr, numberToFormat } from "@utils/string-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -125,10 +125,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const aprValue = useMemo(() => {
     if (!pool.totalApr) return "-";
 
-    const aprStr = numberToRate(pool.totalApr, {
-      decimals: 2,
-      minLimit: 0.01,
-    });
+    const aprStr = formatApr(pool.totalApr);
     const totalAPR = pool.totalApr || 0;
     if (Number(pool.tvl) < 0.01) {
       return "0%";

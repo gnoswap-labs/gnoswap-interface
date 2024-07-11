@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import { TokenModel } from "@models/token/token-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 import IconStar from "@components/common/icons/IconStar";
 
 interface SwapLiquidityProps {
@@ -42,16 +42,27 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
   tokenB,
   createPool,
 }) => {
-
   return (
     <SwapLiquidityWrapper>
       <div className="box-header">
         <div className="coin-pair">
           <div className="gnos-image-wrapper">
-            <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="coin-logo" width={24} mobileWidth={24} />
+            <MissingLogo
+              symbol={tokenA.symbol}
+              url={tokenA.logoURI}
+              className="coin-logo"
+              width={24}
+              mobileWidth={24}
+            />
           </div>
           <div className="gnot-image-wrapper">
-            <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="coin-logo" width={24} mobileWidth={24} />
+            <MissingLogo
+              symbol={tokenB.symbol}
+              url={tokenB.logoURI}
+              className="coin-logo"
+              width={24}
+              mobileWidth={24}
+            />
           </div>
         </div>
         <span>
@@ -94,14 +105,26 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
             const showStar = Number(liquidity.apr) > 100;
 
             return (
-              <Link href={obj.pathname} as={obj.as} key={idx} className={`${!liquidity.active ? "inacitve-liquidity" : ""}`}>
-                <div className={`fee-info ${!liquidity.active ? "inacitve-liquidity" : ""}`}>
+              <Link
+                href={obj.pathname}
+                as={obj.as}
+                key={idx}
+                className={`${!liquidity.active ? "inacitve-liquidity" : ""}`}
+              >
+                <div
+                  className={`fee-info ${
+                    !liquidity.active ? "inacitve-liquidity" : ""
+                  }`}
+                >
                   <span className="badge-wrap">
                     <div className="badge">{liquidity.feeTier}%</div>
                   </span>
                   <span className="volume">{liquidity.volume}</span>
                   <span className="liquidity">{liquidity.liquidity}</span>
-                  <span className="apr">{showStar && <IconStar size={20} />}{numberToRate(liquidity.apr)}</span>
+                  <span className="apr">
+                    {showStar && <IconStar size={20} />}
+                    {formatApr(liquidity.apr)}
+                  </span>
                 </div>
               </Link>
             );

@@ -123,6 +123,51 @@ export function numberToRate(
   return `${numBN.toFormat(decimals)}%`;
 }
 
+/// Cloned from numberToRate
+export function formatApr(
+  num: string | number | null | undefined,
+  {
+    decimals = 2,
+    minLimit = 0.01,
+    errorText = "-",
+    isRounding = true,
+    haveMinLimit = true,
+  }: {
+    decimals?: number;
+    minLimit?: number;
+    errorText?: string;
+    isRounding?: boolean;
+    haveMinLimit?: boolean;
+  } = {},
+) {
+  if (
+    num === null ||
+    num === undefined ||
+    num === "" ||
+    BigNumber(num).isNaN()
+  ) {
+    return errorText;
+  }
+
+  const numBN = BigNumber(num);
+
+  if (numBN.isZero()) {
+    return "0%";
+  }
+
+  if (haveMinLimit && numBN.isLessThan(minLimit)) {
+    return `<${BigNumber(minLimit).toFormat()}%`;
+  }
+
+  if (!isRounding) {
+    const temp = numBN.toFormat(decimals + 1);
+
+    return `${temp.substring(0, temp.length - 1)}%`;
+  }
+
+  return `${numBN.toFormat(decimals)}%`;
+}
+
 export function numberToString(num: string | number, decimals?: number) {
   const decimal = Number.isInteger(Number(num)) ? 0 : decimals;
   return BigNumber(num).toFixed(decimal || 0);

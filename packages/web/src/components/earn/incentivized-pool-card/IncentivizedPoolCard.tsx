@@ -13,7 +13,7 @@ import {
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { numberToFormat, numberToRate } from "@utils/string-utils";
+import { formatApr, numberToFormat } from "@utils/string-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface IncentivizedPoolCardProps {
@@ -121,9 +121,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               <div className="list-content">
                 <span className="value-text">{pool.liquidity}</span>
                 <span className="value-text">
-                  {pool.apr
-                    ? numberToRate(pool.apr, { decimals: 2, minLimit: 0.01 })
-                    : "-"}
+                  {pool.apr ? formatApr(pool.apr) : "-"}
                 </span>
               </div>
             </div>

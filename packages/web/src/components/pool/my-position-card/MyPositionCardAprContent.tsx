@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
-import { numberToFormat } from "@utils/string-utils";
+import { formatApr, numberToFormat } from "@utils/string-utils";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -10,7 +10,9 @@ export interface MyPositionAprContentProps {
   rewardInfo: { [key in RewardType]: PositionAPRInfo[] };
 }
 
-export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewardInfo }) => {
+export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
+  rewardInfo,
+}) => {
   const { getGnotPath } = useGnotToGnot();
 
   const swapFeeRewards = useMemo(() => {
@@ -55,9 +57,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                   {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
                 </span>
               </div>
-              <span className="position">
-                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true, isRounding: false })}%
-              </span>
+              <span className="position">{formatApr(reward.apr)}</span>
             </div>
           ))}
         </React.Fragment>
@@ -83,9 +83,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                   {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
                 </span>
               </div>
-              <span className="position">
-                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true, isRounding: false })}%
-              </span>
+              <span className="position">{formatApr(reward.apr)}</span>
             </div>
           ))}
         </React.Fragment>
@@ -111,9 +109,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                   {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
                 </span>
               </div>
-              <span className="position">
-                {numberToFormat(reward.apr, { decimals: 1, forceDecimals: true, isRounding: false })}%
-              </span>
+              <span className="position">{formatApr(reward.apr)}</span>
             </div>
           ))}
         </React.Fragment>

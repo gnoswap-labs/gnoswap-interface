@@ -10,7 +10,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { TokenModel } from "@models/token/token-model";
 import { toUnitFormat } from "@utils/number-utils";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 interface Props {
@@ -134,29 +134,23 @@ const OneClickStaking: React.FC<Props> = ({
   const feeApr = useMemo(() => {
     if (isLoadingPool) return "-";
 
-    if (Number(pool.feeApr) > 100) {
-      return (
-        <>
-          <IconStar size={20} /> {numberToRate(pool.feeApr)}
-        </>
-      );
-    }
-
-    return numberToRate(pool.feeApr);
+    return (
+      <>
+        {Number(pool.feeApr) > 100 && <IconStar size={20} />}
+        {formatApr(pool.feeApr)}
+      </>
+    );
   }, [isLoadingPool, pool.feeApr]);
 
   const stakingApr = useMemo(() => {
     if (isLoadingPool) return "-";
 
-    if (Number(pool.stakingApr) > 100) {
-      return (
-        <>
-          <IconStar size={20} /> {numberToRate(pool.stakingApr)}
-        </>
-      );
-    }
-
-    return numberToRate(pool.stakingApr);
+    return (
+      <>
+        {Number(pool.stakingApr) > 100 && <IconStar size={20} />}{" "}
+        {formatApr(pool.stakingApr)}
+      </>
+    );
   }, [isLoadingPool, pool.stakingApr]);
 
   if (!tokenA || !tokenB || !tokenARevert || !tokenBRevert) {

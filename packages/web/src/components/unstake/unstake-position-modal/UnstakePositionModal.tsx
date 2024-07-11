@@ -18,7 +18,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 import { useGetUnstakingFee } from "@query/pools";
 
 interface Props {
@@ -59,10 +59,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           },
         ) ?? 0;
 
-    return numberToRate(result.unstakeUsd / result.allUsd, {
-      decimals: 2,
-      minLimit: 0.01,
-    });
+    return formatApr(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
   const swapFeePercent = useMemo(() => {
@@ -88,10 +85,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           },
         ) ?? 0;
 
-    return numberToRate(result.unstakeUsd / result.allUsd, {
-      haveMinLimit: false,
-      decimals: 2,
-    });
+    return formatApr(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
   return (
@@ -175,9 +169,7 @@ const UnstakePositionModal: React.FC<Props> = ({
                       </Tooltip>
                     </div>
                     <span className="white-text">
-                      {unstakingFee
-                        ? numberToRate((unstakingFee || 0) / 100)
-                        : "-"}
+                      {unstakingFee ? `${(unstakingFee || 0) / 100}%s` : "-"}
                     </span>
                   </div>
                 </div>

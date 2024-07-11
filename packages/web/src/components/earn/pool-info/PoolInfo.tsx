@@ -5,7 +5,7 @@ import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { DEVICE_TYPE } from "@styles/media";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 import PoolInfoLazyChart from "../pool-info-lazy-chart/PoolInfoLazyChart";
 import {
   POOL_INFO,
@@ -70,7 +70,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     return (
       <>
         {Number(apr) > 100 && <IconStar size={20} />}
-        {numberToRate(apr, { decimals: 2, minLimit: 0.01 })}
+        {formatApr(apr, { decimals: 2, minLimit: 0.01 })}
       </>
     );
   }, [apr, tvl]);

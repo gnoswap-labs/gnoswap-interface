@@ -395,14 +395,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [positionData?.tokenB?.symbol, positionData?.tokenA?.symbol]);
 
   const feeDaily = useMemo(() => {
-    const isEmpty =
-      positions
-        .flatMap(item => item.reward)
-        .filter(item => item.rewardType === "SWAP_FEE" && item.accuReward1D)
-        .length === 0;
-
-    if (!isDisplay || isEmpty) return "-";
-
     const swapFee = aprRewardInfo?.SWAP_FEE;
     const sumUSD =
       swapFee?.reduce(
@@ -410,6 +402,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         0,
       ) || 0;
     if (sumUSD > 0 && sumUSD <= 0.01) return "<$0.01";
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
 
     return toPriceFormatNotRounding(sumUSD, {
       usd: true,
@@ -421,21 +417,18 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [aprRewardInfo?.SWAP_FEE, isDisplay]);
 
   const feeClaim = useMemo(() => {
-    const isEmpty =
-      positions
-        .flatMap(item => item.reward)
-        .filter(item => item.rewardType === "SWAP_FEE" && item.claimableUsd)
-        .length === 0;
-
     const swapFeeReward = claimableRewardInfo?.SWAP_FEE;
-
-    if (!isDisplay || isEmpty) return "-";
 
     const sumUSD =
       swapFeeReward?.reduce(
         (accum, current) => accum + current.claimableUsdValue,
         0,
       ) || 0;
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
+
     return toPriceFormatNotRounding(sumUSD, {
       usd: true,
       lestThan1Decimals: 2,
@@ -443,7 +436,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       fixedGreaterThan1: true,
       minLimit: 0.01,
     });
-  }, [claimableRewardInfo?.SWAP_FEE, isDisplay, positions]);
+  }, [claimableRewardInfo?.SWAP_FEE, isDisplay]);
 
   const logoDaily = useMemo(() => {
     const swapFee = claimableRewardInfo?.SWAP_FEE;
@@ -483,18 +476,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo?.INTERNAL, getGnotPath, positionData?.rewardTokens]);
 
   const rewardDaily = useMemo(() => {
-    const isEmpty =
-      positions
-        .flatMap(item => item.reward)
-        .filter(
-          item =>
-            (item.rewardType === "EXTERNAL" ||
-              item.rewardType === "INTERNAL") &&
-            item.accuReward1D,
-        ).length === 0;
-
-    if (!isDisplay || isEmpty) return "-";
-
     const rewards = [
       ...(aprRewardInfo?.INTERNAL ?? []),
       ...(aprRewardInfo?.EXTERNAL ?? []),
@@ -506,6 +487,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         0,
       ) || 0;
 
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
+
     return toPriceFormatNotRounding(sumUSD, {
       usd: true,
       lestThan1Decimals: 2,
@@ -513,7 +498,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       fixedGreaterThan1: true,
       minLimit: 0.01,
     });
-  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL, isDisplay, positions]);
+  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL, isDisplay]);
 
   const rewardClaim = useMemo(() => {
     const rewards = [
@@ -521,23 +506,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ...(claimableRewardInfo?.INTERNAL ?? []),
     ];
 
-    const isEmpty =
-      positions
-        .flatMap(item => item.reward)
-        .filter(
-          item =>
-            (item.rewardType === "EXTERNAL" ||
-              item.rewardType === "INTERNAL") &&
-            item.claimableUsd,
-        ).length === 0;
-
-    if (!isDisplay || isEmpty) return "-";
-
     const sumUSD =
       rewards?.reduce(
         (accum, current) => accum + current.claimableUsdValue,
         0,
       ) || 0;
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
 
     return toPriceFormatNotRounding(sumUSD, {
       usd: true,
@@ -546,12 +523,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       fixedGreaterThan1: true,
       minLimit: 0.01,
     });
-  }, [
-    claimableRewardInfo?.EXTERNAL,
-    claimableRewardInfo?.INTERNAL,
-    isDisplay,
-    positions,
-  ]);
+  }, [claimableRewardInfo?.EXTERNAL, claimableRewardInfo?.INTERNAL, isDisplay]);
 
   return (
     <MyLiquidityContentWrapper>

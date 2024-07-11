@@ -22,7 +22,7 @@ import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { toPriceFormat } from "@utils/number-utils";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -244,7 +244,7 @@ const HeaderContainer: React.FC = () => {
     return temp
       .map((item: PoolModel) => {
         const price = toPriceFormat(item.tvl || "0", { usd: true });
-        const aprRate = numberToRate(item.apr);
+        const aprRate = formatApr(item.apr);
 
         return {
           path: "",
