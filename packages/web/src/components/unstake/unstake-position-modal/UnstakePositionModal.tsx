@@ -59,7 +59,10 @@ const UnstakePositionModal: React.FC<Props> = ({
           },
         ) ?? 0;
 
-    return numberToRate(result.unstakeUsd / result.allUsd);
+    return numberToRate(result.unstakeUsd / result.allUsd, {
+      decimals: 2,
+      minLimit: 0.01,
+    });
   }, [positions]);
 
   const swapFeePercent = useMemo(() => {
@@ -85,7 +88,10 @@ const UnstakePositionModal: React.FC<Props> = ({
           },
         ) ?? 0;
 
-    return numberToRate(result.unstakeUsd / result.allUsd);
+    return numberToRate(result.unstakeUsd / result.allUsd, {
+      haveMinLimit: false,
+      decimals: 2,
+    });
   }, [positions]);
 
   return (

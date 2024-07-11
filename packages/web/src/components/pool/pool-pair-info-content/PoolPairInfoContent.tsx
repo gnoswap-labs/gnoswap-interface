@@ -125,7 +125,10 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const aprValue = useMemo(() => {
     if (!pool.totalApr) return "-";
 
-    const aprStr = numberToRate(pool.totalApr, { isRounding: false });
+    const aprStr = numberToRate(pool.totalApr, {
+      decimals: 2,
+      minLimit: 0.01,
+    });
     const totalAPR = pool.totalApr || 0;
     if (Number(pool.tvl) < 0.01) {
       return "0%";

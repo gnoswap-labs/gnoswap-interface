@@ -121,7 +121,9 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               <div className="list-content">
                 <span className="value-text">{pool.liquidity}</span>
                 <span className="value-text">
-                  {pool.apr ? numberToRate(pool.apr) : "-"}
+                  {pool.apr
+                    ? numberToRate(pool.apr, { decimals: 2, minLimit: 0.01 })
+                    : "-"}
                 </span>
               </div>
             </div>

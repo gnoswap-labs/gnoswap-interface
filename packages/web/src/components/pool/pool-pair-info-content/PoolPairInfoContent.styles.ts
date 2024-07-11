@@ -232,6 +232,7 @@ export const LoadingChart = styled.div`
 export const TokenAmountTooltipContentWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")}
   gap: 4px;
+  ${fonts.body12}
 `;
 
 export const SectionWrapper = styled.section`

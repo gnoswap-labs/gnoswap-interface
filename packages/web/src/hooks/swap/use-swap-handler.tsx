@@ -1001,6 +1001,15 @@ export const useSwapHandler = () => {
     }
 
     if (swapState !== "SUCCESS" && estimatedAmount === null) {
+      if (swapState === "NO_LIQUIDITY") {
+        if (type === "EXACT_IN") {
+          setTokenBAmount("");
+        } else {
+          setTokenAAmount("");
+        }
+        return;
+      }
+
       return;
     }
 

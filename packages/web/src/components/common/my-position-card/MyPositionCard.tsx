@@ -133,16 +133,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const aprStr = useMemo(() => {
     if (!position.apr) return "-";
 
-    if (Number(position.apr) > 100) {
-      return (
-        <>
-          <IconStar size={20} />
-          {numberToRate(position.apr)}
-        </>
-      );
-    }
-
-    return numberToRate(position.apr);
+    return (
+      <>
+        {Number(position.apr) > 100 && <IconStar size={20} />}
+        {numberToRate(position.apr, {
+          decimals: 2,
+          minLimit: 0.01,
+        })}
+      </>
+    );
   }, [position.apr]);
 
   const currentPrice = useMemo(() => {

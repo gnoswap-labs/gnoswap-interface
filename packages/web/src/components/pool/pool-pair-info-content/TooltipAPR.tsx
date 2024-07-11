@@ -24,14 +24,14 @@ const TooltipAPR: React.FC<Props> = ({
         <div className="label">Fee APR</div>
         <div className="value">
           <OverlapTokenLogo tokens={feeLogo} size={20} />
-          <div>{numberToRate(feeAPR, { isRounding: false })}</div>
+          <div>{numberToRate(feeAPR, { decimals: 2, minLimit: 0.01 })}</div>
         </div>
       </div>
       <div className="item">
         <div className="label">Staking APR</div>
         <div className="value">
           <OverlapTokenLogo tokens={stakeLogo} size={20} />
-          <div>{numberToRate(stakingAPR, { isRounding: false })}</div>
+          <div>{numberToRate(stakingAPR, { decimals: 2, minLimit: 0.01 })}</div>
         </div>
       </div>
     </ToolTipAPRWrapper>

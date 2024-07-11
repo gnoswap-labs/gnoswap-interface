@@ -70,7 +70,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     return (
       <>
         {Number(apr) > 100 && <IconStar size={20} />}
-        {numberToRate(apr)}
+        {numberToRate(apr, { decimals: 2, minLimit: 0.01 })}
       </>
     );
   }, [apr, tvl]);
