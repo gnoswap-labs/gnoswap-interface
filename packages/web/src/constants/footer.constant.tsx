@@ -70,7 +70,7 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "helpSection.item.faq",
+        title: "FAQ",
         path: "/",
         newTab: true,
       },

@@ -101,7 +101,7 @@ export const AnchorStyle = styled.a`
 
 export const SecondSection = styled.div`
   display: grid;
-  /* max-width: 802px; */
+  max-width: 802px;
   width: 100%;
   column-gap: 80px;
   grid-template-columns: repeat(5, auto);
