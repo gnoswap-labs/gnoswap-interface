@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "i18nexus pull &&  next build",
-    "start": "i18nexus pull &&  next start",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint",
     "format": "prettier --write src",
     "test": "jest --watch",
