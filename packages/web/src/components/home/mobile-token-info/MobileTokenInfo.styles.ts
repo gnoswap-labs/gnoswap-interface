@@ -84,7 +84,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       ${mixins.flexbox("column", "start", "start")}
       margin: 0px 8px;
       gap: 2px;
-      
+
       .token-name-path {
         ${mixins.flexbox("row", "baseline", "start")}
         gap: 8px;
@@ -117,7 +117,8 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-      },
+      }
+      ,
       .token-symbol {
         ${fonts.p4};
         color: ${({ theme }) => theme.color.text04};
@@ -151,8 +152,6 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     display: flex;
     padding: 16px;
   }
-
-  
 
   .token-index {
     padding: 0px 16px 0px 8px;

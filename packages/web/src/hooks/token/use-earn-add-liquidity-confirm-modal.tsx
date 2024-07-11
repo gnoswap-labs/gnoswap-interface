@@ -143,9 +143,9 @@ export const useEarnAddLiquidityConfirmModal = ({
       return null;
     }
     const tokenAUsdValue =
-      tokenAAmount === "0" ? "$0" : tokenAAmountInput.usdValue;
+      tokenAAmount === "0" ? "-" : tokenAAmountInput.usdValue;
     const tokenBUsdValue =
-      tokenBAmount === "0" ? "$0" : tokenBAmountInput.usdValue;
+      tokenBAmount === "0" ? "-" : tokenBAmountInput.usdValue;
     return {
       tokenA: {
         info: tokenA,

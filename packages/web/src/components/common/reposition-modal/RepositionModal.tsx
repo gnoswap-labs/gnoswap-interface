@@ -94,6 +94,7 @@ const RepositionModal: React.FC<Props> = ({
             tokenB={amountInfo?.tokenB?.info}
             currentAmounts={currentAmounts}
             repositionAmounts={repositionAmounts}
+            isLoadingPosition={false}
           />
 
           {confirm ? (

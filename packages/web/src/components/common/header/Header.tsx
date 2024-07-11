@@ -31,6 +31,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { ITokenResponse } from "@repositories/token";
 import { BLOCKED_PAGES } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useTranslation } from "next-i18next";
 
 interface HeaderProps {
   pathname?: string;
@@ -91,6 +92,7 @@ const Header: React.FC<HeaderProps> = ({
   const { width } = useWindowSize();
   const router = useCustomRouter();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
+  const { t } = useTranslation();
 
   const navigationItems = useMemo(() => {
     // Make path by page name
@@ -133,10 +135,10 @@ const Header: React.FC<HeaderProps> = ({
                   <ul>
                     {navigationItems.map(item => (
                       <li
-                        key={item.title}
+                        key={t(item.title)}
                         className={
                           pathname === item.path ||
-                            (item?.subPath || []).some(_ => pathname.includes(_))
+                          (item?.subPath || []).some(_ => pathname.includes(_))
                             ? "selected"
                             : ""
                         }
@@ -145,7 +147,7 @@ const Header: React.FC<HeaderProps> = ({
                           className="link"
                           onClick={() => router.push(item.path)}
                         >
-                          {item.title}
+                          {t(item.title)}
                         </span>
                       </li>
                     ))}
@@ -166,7 +168,7 @@ const Header: React.FC<HeaderProps> = ({
               {connected && width > DeviceSize[DEVICE_TYPE.TABLET_S] && (
                 <DepositButton onClick={() => changeTokenDeposit()}>
                   <IconDownload />
-                  <span>Deposit</span>
+                  <span>{t("HeaderFooter:deposit")}</span>
                 </DepositButton>
               )}
               <WalletConnectorButton
@@ -192,15 +194,15 @@ const Header: React.FC<HeaderProps> = ({
             <BottomNavContainer>
               {navigationItems.map(item => (
                 <BottomNavItem
-                  key={item.title}
+                  key={t(item.title)}
                   className={
                     pathname === item.path ||
-                      (item.subPath || []).some(_ => pathname.includes(_))
+                    (item.subPath || []).some(_ => pathname.includes(_))
                       ? "selected"
                       : ""
                   }
                 >
-                  <Link href={item.path}>{item.title}</Link>
+                  <Link href={item.path}>{t(item.title)}</Link>
                 </BottomNavItem>
               ))}
               <SubMenuButton

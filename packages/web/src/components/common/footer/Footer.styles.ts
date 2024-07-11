@@ -21,6 +21,7 @@ export const FooterContainer = styled.div`
   max-width: ${ContainerWidth.WEB_CONTAINER};
   width: 100%;
   padding: 0px 40px;
+  gap: 80px;
   ${media.tablet} {
     max-width: ${ContainerWidth.TABLET_CONTAINER};
   }
@@ -111,7 +112,6 @@ export const SecondSection = styled.div`
     justify-content: space-between;
     gap: 32px;
     flex-wrap: wrap;
-    
   }
   @media (max-width: 820px) {
     justify-content: flex-start;

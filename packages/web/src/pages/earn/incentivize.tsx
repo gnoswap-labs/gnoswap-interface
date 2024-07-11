@@ -11,6 +11,15 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getServerSideProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+    },
+  };
+}
 
 export default function PoolIncentivize() {
   const [currentPool] = useAtom(EarnState.pool);
@@ -30,25 +39,16 @@ export default function PoolIncentivize() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [currentPool?.fee]);
 
-
   const seoInfo = useMemo(() => SEOInfo["/earn/incentivize"], []);
 
   const title = useMemo(() => {
     const tokenA = getGnotPath(currentPool?.tokenA);
     const tokenB = getGnotPath(currentPool?.tokenB);
 
-    return seoInfo.title([
-      tokenA?.symbol,
-      tokenB?.symbol,
-      feeStr
-    ].filter(item => item) as string[]);
-  }, [
-    currentPool?.tokenA,
-    currentPool?.tokenB,
-    feeStr,
-    getGnotPath,
-    seoInfo
-  ]);
+    return seoInfo.title(
+      [tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[],
+    );
+  }, [currentPool?.tokenA, currentPool?.tokenB, feeStr, getGnotPath, seoInfo]);
   return (
     <>
       <SEOHeader

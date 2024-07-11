@@ -8,6 +8,7 @@ import { makeId } from "@utils/common";
 import { toUnitFormat } from "@utils/number-utils";
 import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
+import { useTranslation } from "next-i18next";
 
 const RecentlyAddedCardListContainer: React.FC = () => {
   const router = useRouter();
@@ -16,16 +17,17 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   const { data: tvlData } = useGetDashboardTVL();
   const { data } = useGetDashboardVolume();
   const { data: chainData } = useGetChainList();
+  const { t } = useTranslation();
 
   const { fees24hUsd } = data || {};
 
   const list: CardListKeyStats[] = [
     {
-      label: "Total Value Locked",
+      label: t("Main:keyStatCard.totalValueLocked"),
       content: toUnitFormat(tvlData?.latest || "0", true, true),
     },
     {
-      label: "Swap Volume 24h",
+      label: t("Main:keyStatCard.swapVol24"),
       content: toUnitFormat(
         Number(chainData?.stat?.volume24hUsd ?? 0),
         true,
@@ -33,7 +35,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
       ),
     },
     {
-      label: "Swap Fees 24h",
+      label: t("Main:keyStatCard.swapFee24"),
       content: toUnitFormat(fees24hUsd || "0", true, true),
     },
   ];

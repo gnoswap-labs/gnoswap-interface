@@ -62,17 +62,7 @@ export interface PoolResponse {
 
   stakingApr: string;
 
-
   // TODO Remove later
 
-  // feeChange: number;
-
   id?: string;
-
-  volumeChange: number;
-
-  // totalVolume: number;
-
-  // name: string;
 }
-

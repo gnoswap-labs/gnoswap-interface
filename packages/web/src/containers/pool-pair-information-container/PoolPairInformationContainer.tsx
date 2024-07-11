@@ -48,7 +48,6 @@ export const initialPool: PoolDetailModel = {
   tvl: "0",
   tvlChange: 0,
   volume24h: 0,
-  volumeChange: 0,
   rewards24hUsd: 0,
   id: "",
   apr: "0",
@@ -91,7 +90,7 @@ const PoolPairInformationContainer: React.FC<
     poolPath: encryptId(poolPath),
     queryOption: {
       enabled: !!poolPath,
-    }
+    },
   });
   const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(
     poolPath as string,
@@ -139,9 +138,7 @@ const PoolPairInformationContainer: React.FC<
       onClickPath={onClickPath}
       feeStr={feeStr}
       loading={loading || loadingPosition}
-      loadingBins={
-        loading || loadingPosition || isLoadingBins
-      }
+      loadingBins={loading || loadingPosition || isLoadingBins}
       poolBins={bins}
     />
   );

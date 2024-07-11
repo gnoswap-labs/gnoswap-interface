@@ -62,6 +62,7 @@ export const usePool = ({
         return null;
       }
       const feetierOfLiquidityMap: { [key in string]: number } = {};
+
       const totalLiquidities = rpcPools
         .map(info => info.liquidity)
         .reduce((total, cur) => total + cur, 0n);

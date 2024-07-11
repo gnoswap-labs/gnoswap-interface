@@ -8,6 +8,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import BigNumber from "bignumber.js";
 import { SwapValue } from "@states/swap";
 import { roundDownDecimalNumber } from "@utils/regex";
+import { useTranslation } from "next-i18next";
 
 interface HomeSwapProps {
   changeTokenAAmount: (value: string) => void;
@@ -32,6 +33,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   connected,
   changeTokenBAmount,
 }) => {
+  const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
@@ -71,9 +73,9 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
   const handleAutoFillTokenA = useCallback(() => {
     if (connected) {
-      const formatValue = (parseFloat(
+      const formatValue = parseFloat(
         swapTokenInfo.tokenABalance.replace(/,/g, ""),
-      )).toString();
+      ).toString();
       setFromAmount(formatValue);
       changeTokenAAmount(formatValue);
     }
@@ -81,9 +83,9 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
   const handleAutoFillTokenB = useCallback(() => {
     if (connected) {
-      const formatValue = (parseFloat(
+      const formatValue = parseFloat(
         swapTokenInfo.tokenBBalance.replace(/,/g, ""),
-      )).toString();
+      ).toString();
       setToAmount(formatValue);
       changeTokenBAmount(formatValue);
     }
@@ -92,8 +94,12 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   const balanceADisplay = useMemo(() => {
     if (connected && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0)
-        .toFormat(2);
+      return BigNumber(
+        swapTokenInfo.tokenABalance
+          .replace(/,/g, "")
+          .match(roundDownDecimalNumber(2))
+          ?.toString() ?? 0,
+      ).toFormat(2);
     }
     return "-";
   }, [connected, swapTokenInfo.tokenABalance]);
@@ -101,8 +107,12 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   const balanceBDisplay = useMemo(() => {
     if (connected && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0)
-        .toFormat(2);
+      return BigNumber(
+        swapTokenInfo.tokenBBalance
+          .replace(/,/g, "")
+          .match(roundDownDecimalNumber(2))
+          ?.toString() ?? 0,
+      ).toFormat(2);
     }
     return "-";
   }, [connected, swapTokenInfo.tokenBBalance]);
@@ -110,7 +120,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
       <div className="header">
-        <span className="title">Swap</span>
+        <span className="title">{t("Main:swap")}</span>
       </div>
       <div className="inputs">
         <div className="from">
@@ -132,11 +142,12 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
             <span
-              className={`balance-text ${connected ? "balance-text-disabled" : ""
-                }`}
+              className={`balance-text ${
+                connected ? "balance-text-disabled" : ""
+              }`}
               onClick={handleAutoFillTokenA}
             >
-              {`Balance: ${balanceADisplay}`}
+              {`${t("Main:bal")}: ${balanceADisplay}`}
             </span>
           </div>
         </div>
@@ -159,11 +170,12 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
             <span
-              className={`balance-text ${connected ? "balance-text-disabled" : ""
-                }`}
+              className={`balance-text ${
+                connected ? "balance-text-disabled" : ""
+              }`}
               onClick={handleAutoFillTokenB}
             >
-              Balance: {balanceBDisplay}
+              {t("Main:bal")}: {balanceBDisplay}
             </span>
           </div>
         </div>
@@ -176,7 +188,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
       <div className="footer">
         <Button
-          text="Swap Now"
+          text={t("Main:swapNowBtn")}
           style={{
             fullWidth: true,
             height: 50,

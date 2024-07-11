@@ -584,7 +584,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo
                     symbol={positionData?.tokenB?.symbol}
-                    url={positionData?.tokenA?.logoURI}
+                    url={positionData?.tokenB?.logoURI}
                     width={20}
                     className="image-logo"
                   />

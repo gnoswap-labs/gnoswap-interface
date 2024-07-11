@@ -5,6 +5,15 @@ import GovernanceContainer from "@containers/governance-container/GovernanceCont
 import ProposalListContainer from "@containers/proposal-list-container/ProposalListContainer";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getServerSideProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+    },
+  };
+}
 
 export default function Dashboard() {
   const seoInfo = SEOInfo["/governance"];

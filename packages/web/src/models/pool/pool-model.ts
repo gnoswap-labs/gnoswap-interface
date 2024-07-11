@@ -2,9 +2,7 @@ import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
 
-
 export interface PoolModel {
-
   rewards24hUsd: number;
 
   volumeChange24h: number;
@@ -54,8 +52,6 @@ export interface PoolModel {
   liquidity: string;
 
   //TODO Remove later
-  volumeChange: number;
-
   id: string;
 }
 
@@ -70,7 +66,6 @@ export interface IPoolDetailResponse {
   tvl: string;
   tvlChange: string;
   volume: string;
-  volumeChange: string;
   totalVolume: string;
   apr: string;
   fee: string;
@@ -93,7 +88,7 @@ export interface IPoolPriceRatioItem {
 export interface IPoolPriceRatio {
   "7d": IPoolPriceRatioItem[];
   "30d": IPoolPriceRatioItem[];
-  "all": IPoolPriceRatioItem[];
+  all: IPoolPriceRatioItem[];
 }
 
 export interface ITokenA {

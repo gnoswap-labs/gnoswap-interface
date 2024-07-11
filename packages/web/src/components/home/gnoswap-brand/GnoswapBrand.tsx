@@ -14,6 +14,7 @@ import {
   DescriptionTitle,
   DescriptionContainer,
 } from "./GnoswapBrand.styles";
+import { useTranslation } from "next-i18next";
 
 export const SNS_TYPE = {
   GITHUB: "github",
@@ -34,6 +35,8 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
   onClickSns,
   windowSize,
 }) => {
+  const { t } = useTranslation();
+
   const onClickGithub = useCallback(
     () => onClickSns(SNS_TYPE.GITHUB),
     [onClickSns],
@@ -62,12 +65,10 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
   return (
     <GnoswapBrandWrapper>
       <HeroTitleContainer>
-        <TitleWrapper>
-          <span>Swap</span> and <span>Earn</span>
-          <br />
-          on Gnoswap
-        </TitleWrapper>
-        <SubTitleWrapper>the One-stop Gnoland DeFi Platform</SubTitleWrapper>
+        <TitleWrapper
+          dangerouslySetInnerHTML={{ __html: t("Main:brand.introduction") }}
+        />
+        <SubTitleWrapper>{t("Main:theOne")}</SubTitleWrapper>
       </HeroTitleContainer>
       {windowSize > DeviceSize.mobile && (
         <DescriptionContainer>
@@ -89,12 +90,12 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
             </button>
           </div>
           <DescriptionTitle>
-            The first Concentrated Liquidity AMM DEX built using Gnolang <br />
-            to offer the most simplified and user-friendly DeFi experience for traders.
+            {t("Main:theFirst")} <br />
+            {t("Main:toOffer")} <br />
           </DescriptionTitle>
-        </DescriptionContainer >
+        </DescriptionContainer>
       )}
-    </GnoswapBrandWrapper >
+    </GnoswapBrandWrapper>
   );
 };
 

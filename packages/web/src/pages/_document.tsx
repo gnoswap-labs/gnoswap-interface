@@ -3,14 +3,21 @@ import {
   UMAMI_WEBSITE_ID,
 } from "@constants/environment.constant";
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import i18nextConfig from "../../next-i18next.config";
 
 class MyDocument extends Document {
   render() {
+    const currentLocale =
+      this.props.__NEXT_DATA__.locale || i18nextConfig.i18n.defaultLocale;
+
     return (
-      <Html>
+      <Html lang={currentLocale}>
         <Head>
           <meta charSet="utf-8" />
-          <meta name="keywords" content="Swap, Earn, Gnoswap, Liquidity, DeFi, trader" />
+          <meta
+            name="keywords"
+            content="Swap, Earn, Gnoswap, Liquidity, DeFi, trader"
+          />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link

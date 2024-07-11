@@ -21,7 +21,34 @@ interface PoolIncentivizeDetailsProps {
 }
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
-  const utcDate = dayjs(Date.parse(`${myDate?.year}-${myDate?.month}-${(myDate?.date || 0)}`)).add(days || 0, "day");
+  const month = (() => {
+    if (!myDate?.month) {
+      return "00";
+    }
+
+    if (myDate?.month < 10) {
+      return `0${myDate?.month}`;
+    }
+
+    return myDate?.month;
+  })();
+
+  const day = (() => {
+    if (!myDate?.date) {
+      return "00";
+    }
+
+    if (myDate?.date < 10) {
+      return `0${myDate?.date}`;
+    }
+
+    return myDate?.date;
+  })();
+
+  const utcDate = dayjs(Date.parse(`${myDate?.year}-${month}-${day}`)).add(
+    days || 0,
+    "day",
+  );
   const formattedDate = getDateUtcToLocal(utcDate.toDate());
   return formattedDate.value;
 }
@@ -39,30 +66,41 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
     <div css={wrapper}>
       <section>
         <h5 className="section-title">Pool</h5>
-        {details ? <div className="section-info">
-          <DoubleLogo
-            left={details.tokenA.logoURI}
-            right={details.tokenB.logoURI}
-            leftSymbol={details.tokenA.symbol}
-            rightSymbol={details.tokenB.symbol}
-            size={24}
-          />
-          <span className="pair-symbol">
-            {makePairName(details)}
-          </span>
-          <Badge text={`${(Number(details.fee) ?? 0) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
-        </div> : <div className="section-info">-</div>}
+        {details ? (
+          <div className="section-info">
+            <DoubleLogo
+              left={details.tokenA.logoURI}
+              right={details.tokenB.logoURI}
+              leftSymbol={details.tokenA.symbol}
+              rightSymbol={details.tokenB.symbol}
+              size={24}
+            />
+            <span className="pair-symbol">{makePairName(details)}</span>
+            <Badge
+              text={`${(Number(details.fee) ?? 0) / 10000}%`}
+              type={BADGE_TYPE.DARK_DEFAULT}
+            />
+          </div>
+        ) : (
+          <div className="section-info">-</div>
+        )}
       </section>
       <section>
         <h5 className="section-title">Total Amount</h5>
-        {amount && token ? <div className="section-info">
-          <MissingLogo
-            symbol={getGnotPath(token)?.symbol}
-            width={24}
-            url={getGnotPath(token)?.logoURI || ""}
-          />
-          <span className="total-amount-value">{Number(amount).toLocaleString()} {token.symbol}</span>
-        </div> : <div className="section-info">-</div>}
+        {amount && token ? (
+          <div className="section-info">
+            <MissingLogo
+              symbol={getGnotPath(token)?.symbol}
+              width={24}
+              url={getGnotPath(token)?.logoURI || ""}
+            />
+            <span className="total-amount-value">
+              {Number(amount).toLocaleString()} {token.symbol}
+            </span>
+          </div>
+        ) : (
+          <div className="section-info">-</div>
+        )}
       </section>
       <section className="period-section">
         <h5 className="section-title">Period</h5>
@@ -74,7 +112,8 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
             </span>
           </DateTimeTooltip>
           <span className="period-desc">
-            {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()} {token?.symbol} will be distributed daily
+            {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()}{" "}
+            {token?.symbol} will be distributed daily
           </span>
         </div>
       </section>

@@ -90,6 +90,7 @@ export interface SelectPool {
     chainData: PoolDetailRPCModel | null | undefined;
     dbData: PoolModel | null | undefined;
   };
+  isLoading: boolean;
 }
 
 export const useSelectPool = ({
@@ -663,5 +664,6 @@ export const useSelectPool = ({
     isChangeMinMax,
     setIsChangeMinMax,
     poolInfo,
+    isLoading: isLoading || isLoadingPoolInfo,
   };
 };

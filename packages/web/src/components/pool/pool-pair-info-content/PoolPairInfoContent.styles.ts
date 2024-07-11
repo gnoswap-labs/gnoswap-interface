@@ -8,7 +8,7 @@ export const ContentWrapper = styled.div`
   width: 100%;
   border-radius: 8px;
   .chart-chart-container {
-    border-width: 0 1px 1px 1px; 
+    border-width: 0 1px 1px 1px;
     border-style: solid;
     border-color: ${({ theme }) => theme.color.border14};
     border-bottom-left-radius: 10px;
@@ -76,7 +76,6 @@ export const ContentWrapper = styled.div`
       ${media.mobile} {
         ${mixins.flexbox("column", "center", "center")};
         > div {
-
         }
       }
     }
@@ -93,7 +92,6 @@ export const ContentWrapper = styled.div`
         ${mixins.flexbox("column", "center", "center")};
         gap: 8px;
         > div:first-of-type {
-          
         }
       }
     }
@@ -132,8 +130,7 @@ export const PoolPairInfoContentWrapper = styled.div`
       &.can-hover:hover {
         color: ${({ theme }) => theme.color.text07};
       }
-      
-      > span {
+      <<<<<<< HEAD =======>>>>>>>develop > span {
         ${fonts.body11}
         .token-symbol {
           display: inline;
@@ -184,7 +181,7 @@ export const PoolPairInfoContentWrapper = styled.div`
           font-weight: 700 !important;
         }
         span {
-          font-weight: 700 !important;;
+          font-weight: 700 !important;
         }
         svg {
           width: 6px;
@@ -223,8 +220,11 @@ export const PoolPairInfoContentWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 10px;
     min-height: 20px;
-   
-    ${media.tabletMiddle} {
+    <<<<<<< HEAD &.flex-row {
+      white-space: nowrap;
+    }
+
+    =======>>>>>>>develop ${media.tabletMiddle} {
       ${mixins.flexbox("row", "center", "flex-start")};
       &.flex-row {
         ${mixins.flexbox("row", "center", "flex-start")};
@@ -239,7 +239,7 @@ export const PoolPairInfoContentWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 10px;
     height: 20px;
-    
+
     .content-wrap {
       ${mixins.flexbox("", "center", "flex-start")};
       gap: 8px;
@@ -285,7 +285,7 @@ export const PoolPairInfoContentWrapper = styled.div`
   strong {
     ${mixins.flexbox("row", "center", "flex-start")};
     ${fonts.body2};
-    font-weight: 700 !important;;
+    font-weight: 700 !important;
     ${media.tablet} {
       ${fonts.body4};
     }
@@ -297,7 +297,6 @@ export const PoolPairInfoContentWrapper = styled.div`
       }
     }
     color: ${({ theme }) => theme.color.text02};
-
   }
 `;
 

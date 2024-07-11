@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import SearchInput from "@components/common/search-input/SearchInput";
 import SelectTab from "@components/common/select-tab/SelectTab";
 import { POOL_TYPE } from "@containers/pool-list-container/PoolListContainer";
@@ -26,47 +26,56 @@ const PoolListHeader: React.FC<PoolListHeaderProps> = ({
   searchIcon,
   onTogleSearch,
   searchRef,
-}) => (
-  <PoolHeaderWrapper>
-    <div className="title-container">
-      <h2>Pools</h2>
+}) => {
+  const searchInputWidth = useMemo(() => {
+    if (breakpoint === DEVICE_TYPE.WEB) return 300;
+    if (breakpoint === DEVICE_TYPE.TABLET_M) return 180;
+
+    return 250;
+  }, [breakpoint]);
+
+  return (
+    <PoolHeaderWrapper>
+      <div className="title-container">
+        <h2>Pools</h2>
+        {breakpoint !== DEVICE_TYPE.MOBILE ? (
+          <SelectTab
+            selectType={poolType}
+            list={Object.values(POOL_TYPE)}
+            onClick={changePoolType}
+          />
+        ) : searchIcon ? (
+          <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
+            <SearchInput
+              width={200}
+              height={40}
+              value={keyword}
+              onChange={search}
+              className="tokens-search"
+            />
+          </div>
+        ) : (
+          <div className="icon-wrap" onClick={onTogleSearch}>
+            <IconSearch className="search-icon" />
+          </div>
+        )}
+      </div>
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
+        <SearchInput
+          width={searchInputWidth}
+          value={keyword}
+          onChange={search}
+          className="pools-search"
+        />
+      ) : (
         <SelectTab
           selectType={poolType}
           list={Object.values(POOL_TYPE)}
           onClick={changePoolType}
         />
-      ) : searchIcon ? (
-        <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
-          <SearchInput
-            width={200}
-            height={40}
-            value={keyword}
-            onChange={search}
-            className="tokens-search"
-          />
-        </div>
-      ) : (
-        <div className="icon-wrap" onClick={onTogleSearch}>
-          <IconSearch className="search-icon" />
-        </div>
       )}
-    </div>
-    {breakpoint !== DEVICE_TYPE.MOBILE ? (
-      <SearchInput
-        width={breakpoint === DEVICE_TYPE.WEB ? 300 : 250}
-        value={keyword}
-        onChange={search}
-        className="pools-search"
-      />
-    ) : (
-      <SelectTab
-        selectType={poolType}
-        list={Object.values(POOL_TYPE)}
-        onClick={changePoolType}
-      />
-    )}
-  </PoolHeaderWrapper>
-);
+    </PoolHeaderWrapper>
+  );
+};
 
 export default PoolListHeader;

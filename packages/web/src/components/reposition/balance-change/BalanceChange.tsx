@@ -1,19 +1,22 @@
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { TokenModel } from "@models/token/token-model";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { BalanceChangeWrapper } from "./BalanceChange.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { numberToFormat } from "@utils/string-utils";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { SelectPool } from "@hooks/pool/use-select-pool";
 
 export interface BalanceChangeProps {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
   title?: string;
   isHiddenCurrentBalance?: boolean;
   currentAmounts: { amountA: number; amountB: number } | null;
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
+  selectPool?: SelectPool;
+  isLoadingPosition: boolean;
 }
 
 const BalanceChange: React.FC<BalanceChangeProps> = ({
@@ -23,6 +26,8 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
   isHiddenCurrentBalance = true,
   currentAmounts,
   repositionAmounts,
+  selectPool,
+  isLoadingPosition,
 }) => {
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
@@ -77,6 +82,26 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
     });
   }, [repositionAmounts]);
 
+  const isLoading = useMemo(
+    () => isLoadingPosition || selectPool?.isLoading,
+    [isLoadingPosition, selectPool?.isLoading],
+  );
+
+  const withLoading = useCallback(
+    (element: string, width?: number) => {
+      return isLoading ? (
+        <div
+          css={pulseSkeletonStyle({
+            w: width || 100,
+          })}
+        />
+      ) : (
+        element
+      );
+    },
+    [isLoading],
+  );
+
   return (
     <BalanceChangeWrapper>
       <h5>{title}</h5>
@@ -85,82 +110,77 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
           <div className="table-balance-change">
             <p className="label">Token</p>
             <p className="label">Current Balance</p>
-            <p className="label">Current Balance</p>
           </div>
 
           <div className="table-balance-change">
             <p className="value">
               <MissingLogo
-                symbol={tokenA?.symbol}
+                symbol={tokenA?.symbol || ""}
                 url={tokenA?.logoURI}
                 width={24}
               />{" "}
               {tokenA?.symbol}
             </p>
-            <p className="label">{currentTokenAAmount}</p>
-            <p className="label">{currentTokenAAmount}</p>
+            <p className="value right dimmed">
+              {withLoading(currentTokenAAmount)}
+            </p>
           </div>
           <div className="table-balance-change">
             <p className="value">
               <MissingLogo
-                symbol={tokenB?.symbol}
+                symbol={tokenB?.symbol || ""}
                 url={tokenB?.logoURI}
                 width={24}
               />{" "}
               {tokenB?.symbol}
             </p>
-            <p className="label">{currentTokenBAmount}</p>
-            <p className="label">{currentTokenBAmount}</p>
+            <p className="value right dimmed">
+              {withLoading(currentTokenBAmount)}
+            </p>
           </div>
         </div>
       )}
       <div className="select-position common-bg">
         <div className="table-balance-change">
           <p className="label">Token</p>
-          <p className="label">Current Balance</p>
+          {!isMobile && <p className="label">Current Balance</p>}
           <p className="label">New Balance</p>
         </div>
 
         <div className="table-balance-change">
           <p className="value">
             <MissingLogo
-              symbol={tokenA?.symbol}
+              symbol={tokenA?.symbol || ""}
               url={tokenA?.logoURI}
               width={24}
             />{" "}
             {tokenA?.symbol}
           </p>
-          <p className="label">{currentTokenAAmount}</p>
-          <p className="label new-balance">
-            {repositionTokenAAmount !== null ? (
-              repositionTokenAAmount
-            ) : (
-              <div
-                css={pulseSkeletonStyle({ w: 80, h: 18 })}
-                className="loading-skeleton"
-              />
-            )}
+          {!isMobile && (
+            <p className="value right dimmed">
+              {withLoading(currentTokenAAmount)}
+            </p>
+          )}
+          <p className="value right">
+            {withLoading(repositionTokenAAmount ?? "-")}
           </p>
         </div>
         <div className="table-balance-change">
           <p className="value">
             <MissingLogo
-              symbol={tokenB?.symbol}
+              symbol={tokenB?.symbol || ""}
               url={tokenB?.logoURI}
               width={24}
             />{" "}
             {tokenB?.symbol}
           </p>
-          <p className="label">{currentTokenBAmount}</p>
-          <p className="label new-balance">
-            {repositionTokenBAmount !== null ? (
-              repositionTokenBAmount
-            ) : (
-              <div
-                css={pulseSkeletonStyle({ w: 80, h: 18 })}
-                className="loading-skeleton"
-              />
-            )}
+          {!isMobile && (
+            <p className="value right dimmed">
+              {withLoading(currentTokenBAmount)}
+            </p>
+          )}
+          <p className="value right">
+            {withLoading(repositionTokenBAmount ?? "-")}
           </p>
         </div>
       </div>

@@ -54,13 +54,15 @@ const SelectPriceRangeReposition: React.FC<SelectPriceRangeProps> = ({
   return (
     <SelectPriceRangeWrapper className={opened ? "open" : ""}>
       <div className="type-selector-wrapper">
-        {priceRanges.map((item, index) => (
+        {priceRanges?.map((item, index) => (
           <SelectPriceRangeItem
             key={index}
             selected={item.type === priceRange?.type}
-            tooltip={PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type]}
+            tooltip={
+              PriceRangeTooltip[selectPool.feeTier || "NONE"]?.[item.type]
+            }
             priceRangeStr={
-              PriceRangeStr[selectPool.feeTier || "NONE"][item.type]
+              PriceRangeStr[selectPool.feeTier || "NONE"]?.[item.type]
             }
             priceRange={item}
             changePriceRange={changePriceRangeWithClear}

@@ -22,10 +22,11 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormatRounding, toUnitFormat } from "@utils/number-utils";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import BigNumber from "bignumber.js";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -86,6 +87,38 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return toUnitFormat(pool.volume24h, true, true);
   }, [pool.volume24h]);
 
+  const volumeChangedValue = useMemo(() => {
+    if (!pool.volume24h) return "";
+
+    if (!pool.volumeChange24h) {
+      return (
+        <div>
+          <IconTriangleArrowUpV2 />{" "}
+          <span className={"positive"}> {"0.00%"}</span>
+        </div>
+      );
+    }
+
+    const volumeChangedStr = `${numberToFormat(Math.abs(pool.volumeChange24h), {
+      decimals: 2,
+      forceDecimals: true,
+    })}%`;
+
+    return (
+      <div>
+        {pool.volumeChange24h >= 0 ? (
+          <IconTriangleArrowUpV2 />
+        ) : (
+          <IconTriangleArrowDownV2 />
+        )}{" "}
+        <span className={pool.volumeChange24h >= 0 ? "positive" : "negative"}>
+          {" "}
+          {volumeChangedStr}
+        </span>
+      </div>
+    );
+  }, [pool.volume24h, pool.volumeChange24h]);
+
   const aprValue = useMemo(() => {
     if (!pool.totalApr) return "-";
 
@@ -106,19 +139,36 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return aprStr;
   }, [pool.totalApr, pool.tvl]);
 
-  const liquidityChangedStr = useMemo((): string => {
-    return `${numberToFormat(Math.abs(pool.tvlChange), {
-      decimals: 2,
-      forceDecimals: true,
-    })}%`;
-  }, [pool.tvlChange]);
+  const liquidityChangedValue = useMemo(() => {
+    if (!pool.tvl) return "";
 
-  const volumeChangedStr = useMemo((): string => {
-    return `${numberToFormat(Math.abs(pool.volumeChange24h), {
+    if (!pool.tvlChange) {
+      return (
+        <div>
+          <IconTriangleArrowUpV2 />
+        </div>
+      );
+    }
+
+    const liquidityChangedStr = `${numberToFormat(Math.abs(pool.tvlChange), {
       decimals: 2,
       forceDecimals: true,
     })}%`;
-  }, [pool.volumeChange24h]);
+
+    return (
+      <div>
+        {pool.tvlChange >= 0 ? (
+          <IconTriangleArrowUpV2 />
+        ) : (
+          <IconTriangleArrowDownV2 />
+        )}{" "}
+        <span className={pool.tvlChange >= 0 ? "positive" : "negative"}>
+          {" "}
+          {liquidityChangedStr}
+        </span>
+      </div>
+    );
+  }, [pool.tvl, pool.tvlChange]);
 
   const feeChangedStr = useMemo((): string => {
     if (!pool.feeUsd24h) return "-";
@@ -138,23 +188,32 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     );
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
-  const currentPrice = useMemo(
-    () =>
-      formatTokenExchangeRate(pool.price, {
-        maxSignificantDigits: 6,
-        fixedDecimalDigits: 6,
-        minLimit: 0.000001,
-      }),
-    [pool.price],
-  );
+  const currentPriceRatioNumber = useMemo(() => {
+    const tokenADecimals = pool.tokenA.decimals || 0;
+    const tokenBDecimals = pool.tokenB.decimals || 0;
 
-  const currentPriceReverse = useMemo(() => {
-    return formatTokenExchangeRate(1 / pool.price, {
+    return BigNumber(pool.price)
+      .shiftedBy(-tokenADecimals + tokenBDecimals)
+      .toNumber();
+  }, [pool.price, pool.tokenA.decimals, pool.tokenB.decimals]);
+
+  const currentPriceRatio = useMemo(() => {
+    return formatTokenExchangeRate(currentPriceRatioNumber, {
       maxSignificantDigits: 6,
       fixedDecimalDigits: 6,
       minLimit: 0.000001,
     });
-  }, [pool.price]);
+  }, [currentPriceRatioNumber]);
+
+  const currentPriceReverse = useMemo(() => {
+    if (currentPriceRatioNumber === 0) return "-";
+
+    return formatTokenExchangeRate(1 / currentPriceRatioNumber, {
+      maxSignificantDigits: 6,
+      fixedDecimalDigits: 6,
+      minLimit: 0.000001,
+    });
+  }, [currentPriceRatioNumber]);
 
   const feeLogo = useMemo(() => {
     return [
@@ -179,44 +238,35 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return isAllReserveZeroPoolBin;
   }, [poolBins]);
 
+  const tvlDisplay = useMemo(() => {
+    if (loading) {
+      return (
+        <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <span
+            css={pulseSkeletonStyle({
+              h: 20,
+              w: "170px",
+              smallTableWidth: 140,
+            })}
+          />
+        </SkeletonEarnDetailWrapper>
+      );
+    }
+
+    return (
+      <div className="wrapper-value">
+        <strong>{liquidityValue}</strong>
+        {liquidityChangedValue}
+      </div>
+    );
+  }, [liquidityChangedValue, liquidityValue, loading]);
+
   return (
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
         <section>
           <h4>TVL</h4>
-          {loading && (
-            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-              <span
-                css={pulseSkeletonStyle({
-                  h: 20,
-                  w: "170px",
-                  smallTableWidth: 140,
-                })}
-              />
-            </SkeletonEarnDetailWrapper>
-          )}
-          {!loading && (
-            <div className="wrapper-value">
-              <strong>{liquidityValue}</strong>
-              {pool.tvlChange ? (
-                <div>
-                  {pool.tvlChange >= 0 ? (
-                    <IconTriangleArrowUpV2 />
-                  ) : (
-                    <IconTriangleArrowDownV2 />
-                  )}{" "}
-                  <span
-                    className={pool.tvlChange >= 0 ? "positive" : "negative"}
-                  >
-                    {" "}
-                    {liquidityChangedStr}
-                  </span>
-                </div>
-              ) : (
-                "-"
-              )}
-            </div>
-          )}
+          {tvlDisplay}
           <div className="section-info">
             {!loading && (
               <>
@@ -329,25 +379,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && (
             <div className="wrapper-value">
               <strong>{volumeValue}</strong>
-              {pool.volumeChange24h ? (
-                <div>
-                  {pool.volumeChange24h >= 0 ? (
-                    <IconTriangleArrowUpV2 />
-                  ) : (
-                    <IconTriangleArrowDownV2 />
-                  )}{" "}
-                  <span
-                    className={
-                      pool.volumeChange24h >= 0 ? "positive" : "negative"
-                    }
-                  >
-                    {" "}
-                    {volumeChangedStr}
-                  </span>
-                </div>
-              ) : (
-                ""
-              )}
+              {volumeChangedValue}
             </div>
           )}
           {loading && (
@@ -367,7 +399,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <div className="section-image">
                 <span>
                   {pool.allTimeVolumeUsd
-                    ? toUnitFormat(pool.allTimeVolumeUsd, true, true)
+                    ? toPriceFormatRounding(pool.allTimeVolumeUsd, {
+                        usd: true,
+                        minLimit: 0.01,
+                        fixedGreaterThan1: true,
+                        fixedLessThan1: true,
+                        lestThan1Decimals: 2,
+                      })
                     : "-"}
                 </span>
               </div>
@@ -440,8 +478,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     width={20}
                     className="image-logo"
                   />
-                  {width >= 768 && `1 ${pool?.tokenA?.symbol}`} = {currentPrice}{" "}
-                  {pool?.tokenB?.symbol}
+                  {width >= 768 && `1 ${pool?.tokenA?.symbol}`} ={" "}
+                  {currentPriceRatio} {pool?.tokenB?.symbol}
                 </div>
               )}
               {loading && (

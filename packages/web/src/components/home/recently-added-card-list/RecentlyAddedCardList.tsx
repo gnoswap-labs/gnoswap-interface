@@ -11,6 +11,7 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Link from "next/link";
 import { cx } from "@emotion/css";
+import { useTranslation } from "next-i18next";
 
 interface RecentlyAddedCardListProps {
   list: Array<CardListKeyStats>;
@@ -24,12 +25,16 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
   device,
   loading,
 }) => {
+  const { t } = useTranslation();
+
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
 
   return visible ? (
-    <RecentlyAddedCardListWrapper className={cx("loading", { "empty-status": loading })}>
+    <RecentlyAddedCardListWrapper
+      className={cx("loading", { "empty-status": loading })}
+    >
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />
@@ -37,10 +42,11 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
       ) : (
         <div className="header-wrapper">
           <h2>
-            <IconPieChart className="icon-clock" /> Key Stats
+            <IconPieChart className="icon-clock" />{" "}
+            {t("Main:keyStatCard.title")}
           </h2>
           <Link href="/dashboard" className="link-to-dashboard">
-            Go to Dashboard
+            {t("Main:keyStatCard.toDashBoardBtnText")}
             <IconStrokeArrowRight />
           </Link>
         </div>

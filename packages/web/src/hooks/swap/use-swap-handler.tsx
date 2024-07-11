@@ -29,6 +29,8 @@ import {
 import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY } from "@query/router";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -80,6 +82,7 @@ function handleAmount(changed: string, token: TokenModel | null) {
 
 export const useSwapHandler = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -95,6 +98,7 @@ export const useSwapHandler = () => {
   const [tokenAAmount = "", setTokenAAmount] = useState(
     defaultTokenAAmount ?? undefined,
   );
+
   const estimateFlagRef = useRef(0);
 
   const [tokenBAmount = "", setTokenBAmount] = useState(() =>
@@ -137,6 +141,7 @@ export const useSwapHandler = () => {
     estimateSwapRoute,
     wrap,
     unwrap,
+    resetSwapAmount,
   } = useSwap({
     tokenA,
     tokenB,
@@ -555,7 +560,11 @@ export const useSwapHandler = () => {
     closeModal();
     setTokenAAmount("0");
     setTokenBAmount("0");
-  }, []);
+    resetSwapAmount();
+    queryClient.removeQueries({
+      queryKey: [QUERY_KEY.router],
+    });
+  }, [queryClient]);
 
   useEffect(() => {
     if (!tokens.length) {
@@ -640,7 +649,7 @@ export const useSwapHandler = () => {
       estimateSwapRoute(value);
       setTokenBAmount(value);
     },
-    [isSameToken, tokenA, tokenB?.symbol],
+    [isSameToken, tokenA, tokenB],
   );
 
   const changeTokenA = useCallback(
@@ -802,10 +811,7 @@ export const useSwapHandler = () => {
             );
             openTransactionConfirmModal();
           } else {
-            broadcastError(
-              makeBroadcastWrapTokenMessage("error", messageData),
-              onFinishSwap,
-            );
+            broadcastError(makeBroadcastWrapTokenMessage("error", messageData));
             openTransactionConfirmModal();
           }
         })
@@ -844,7 +850,6 @@ export const useSwapHandler = () => {
           } else {
             broadcastError(
               makeBroadcastUnwrapTokenMessage("error", messageData),
-              onFinishSwap,
             );
             openTransactionConfirmModal();
           }
@@ -918,10 +923,7 @@ export const useSwapHandler = () => {
             );
             openTransactionConfirmModal();
           } else {
-            broadcastError(
-              makeBroadcastSwapMessage("error", broadcastMessage),
-              onFinishSwap,
-            );
+            broadcastError(makeBroadcastSwapMessage("error", broadcastMessage));
             openTransactionConfirmModal();
           }
         }

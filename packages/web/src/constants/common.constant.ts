@@ -223,7 +223,7 @@ export const SEOInfo: Record<
         .filter(item => item)
         .join(" | ");
 
-      if (titleDisplay && tokenName && tokenSymbol) return titleDisplay;
+      if (tokenName && tokenSymbol && tokenPrice) return titleDisplay;
 
       return DefaultTitle;
     },
@@ -283,3 +283,15 @@ export const SEOInfo: Record<
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
 };
+
+export const LANGUAGES = [
+  { code: "en", name: "English" },
+  { code: "de", name: "Deutsch" },
+  { code: "es", name: "Español" },
+  { code: "fr", name: "Français" },
+  { code: "ja", name: "日本語" },
+  { code: "ko", name: "한국어" },
+  { code: "ru", name: "Русский" },
+  { code: "zh", name: "中文" },
+  { code: "hi", name: "हिन्दी" },
+];

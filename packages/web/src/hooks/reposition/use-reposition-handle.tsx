@@ -53,7 +53,7 @@ export const useRepositionHandle = () => {
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account } = useWallet();
-  const { positions } = usePositionData({
+  const { positions, loading: isLoadingPosition } = usePositionData({
     poolPath: encryptId(poolPath),
   });
 
@@ -284,35 +284,49 @@ export const useRepositionHandle = () => {
     tokenB,
   ]);
 
-  const estimateSwapRequestByAmounts = useMemo(() => {
-    if (!currentAmounts || !repositionAmounts || !selectedPosition) {
+  const swapAmount = useMemo(() => {
+    if (!currentAmounts || !repositionAmounts) {
       return null;
     }
-
     const { amountA, amountB } = currentAmounts;
     const { amountA: repositionAmountA, amountB: repositionAmountB } =
       repositionAmounts;
 
     const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
     if (isSwapTokenA) {
+      return amountA - repositionAmountA;
+    }
+    return amountB - repositionAmountB;
+  }, [currentAmounts, repositionAmounts]);
+
+  const estimateSwapRequestByAmounts = useMemo(() => {
+    if (!currentAmounts || !repositionAmounts || !selectedPosition) {
+      return null;
+    }
+
+    const { amountA } = currentAmounts;
+    const { amountA: repositionAmountA } = repositionAmounts;
+
+    const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
+    if (isSwapTokenA) {
       return {
         inputToken: selectedPosition.pool.tokenA,
         outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: amountA - repositionAmountA,
+        tokenAmount: swapAmount || 0,
         exactType: "EXACT_IN" as const,
       };
     }
     return {
       inputToken: selectedPosition.pool.tokenB,
       outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: amountB - repositionAmountB,
+      tokenAmount: swapAmount || 0,
       exactType: "EXACT_IN" as const,
     };
-  }, [currentAmounts, repositionAmounts, selectedPosition]);
+  }, [currentAmounts, repositionAmounts, selectedPosition, swapAmount]);
 
   const { data: estimatedRemainSwap, isLoading: isEstimatedRemainSwapLoading } =
     useEstimateSwap(estimateSwapRequestByAmounts, {
-      enabled: !!estimateSwapRequestByAmounts,
+      enabled: !!estimateSwapRequestByAmounts && !!swapAmount,
     });
 
   const estimatedRepositionAmounts = useMemo(() => {
@@ -357,6 +371,7 @@ export const useRepositionHandle = () => {
     estimatedRemainSwap,
     isEstimatedRemainSwapLoading,
     repositionAmounts,
+    selectedPosition,
   ]);
 
   const changeTokenAAmount = useCallback(
@@ -533,5 +548,6 @@ export const useRepositionHandle = () => {
     swapRemainToken,
     addPosition,
     selectedPosition,
+    isLoadingPosition,
   };
 };
