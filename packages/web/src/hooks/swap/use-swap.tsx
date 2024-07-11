@@ -1,6 +1,5 @@
 import { SwapDirectionType } from "@common/values";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useSlippage } from "@hooks/common/use-slippage";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
@@ -16,11 +15,10 @@ interface UseSwapProps {
   slippage: string;
 }
 
-export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
+export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) => {
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
   const [swapAmount, setSwapAmount] = useState<string | null>(null);
-  const { slippage } = useSlippage();
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
@@ -110,13 +108,10 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
 
   const tokenAmountLimit = useMemo(() => {
     if (estimatedAmount && !Number.isNaN(Number(slippage))) {
-      const slippageAmountNumber = BigNumber(estimatedAmount).multipliedBy(
-        Number(slippage) * 0.01,
-      );
       const tokenAmountLimit =
         direction === "EXACT_IN"
-          ? BigNumber(estimatedAmount).minus(slippageAmountNumber).toNumber()
-          : BigNumber(estimatedAmount).plus(slippageAmountNumber).toNumber();
+        ? BigNumber(estimatedAmount).multipliedBy((100 - Number(slippage))/100).toNumber()
+        : BigNumber(estimatedAmount).multipliedBy((100 + Number(slippage))/100).toNumber();
 
       if (tokenAmountLimit <= 0) {
         return 0;
