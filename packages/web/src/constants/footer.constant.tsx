@@ -5,7 +5,7 @@ import IconTwitter from "@components/common/icons/social/IconTwitter";
 import IconDiscord from "@components/common/icons/social/IconDiscord";
 
 export const FOOTER_LEFT_NAV = {
-  content: "HeaderFooter:joinGnoswap",
+  content: "HeaderFooter:introduction",
   menu: [
     {
       title: "github",
@@ -37,110 +37,110 @@ export const FOOTER_LEFT_NAV = {
 
 export const FOOTER_RIGHT_NAV = [
   {
-    content: "Features",
+    content: "HeaderFooter:featuresSection.title",
     menu: [
       {
-        title: "HeaderFooter:swap",
+        title: "HeaderFooter:featuresSection.item.swap",
         path: "/swap",
         newTab: false,
       },
       {
-        title: "HeaderFooter:addPosi",
+        title: "HeaderFooter:featuresSection.item.addPosition",
         path: "/earn/add",
         newTab: false,
       },
       {
-        title: "Stake Position",
+        title: "HeaderFooter:featuresSection.item.stakePosition",
         path: "/earn/pool/gno.land_r_demo_wugnot:gno.land_r_gnoswap_gns:3000#staking",
         newTab: false,
       },
       {
-        title: "HeaderFooter:incenti",
+        title: "HeaderFooter:featuresSection.item.incentivizePool",
         path: "/earn/incentivize",
         newTab: false,
       },
     ],
   },
   {
-    content: "HeaderFooter:help",
+    content: "HeaderFooter:helpSection.title",
     menu: [
       {
-        title: "HeaderFooter:about",
+        title: "HeaderFooter:helpSection.item.aboutUs",
         path: "https://docs.gnoswap.io/welcome",
         newTab: true,
       },
       {
-        title: "FAQ",
+        title: "helpSection.item.faq",
         path: "/",
         newTab: true,
       },
       {
-        title: "HeaderFooter:Twitter",
+        title: "HeaderFooter:helpSection.item.twitter",
         path: "https://twitter.com/gnoswaplabs",
         newTab: true,
       },
       {
-        title: "HeaderFooter:projectOnboarding",
+        title: "HeaderFooter:helpSection.item.projectOnboarding",
         path: "/",
         newTab: true,
       },
     ],
   },
   {
-    content: "HeaderFooter:Developers",
+    content: "HeaderFooter:developersSection.title",
     menu: [
       {
-        title: "HeaderFooter:github",
+        title: "HeaderFooter:developersSection.item.github",
         path: "https://github.com/gnoswap-labs/gnoswap",
         newTab: true,
       },
       {
-        title: "HeaderFooter:docs",
+        title: "HeaderFooter:developersSection.item.docs",
         path: "https://docs.gnoswap.io/contracts/",
         newTab: true,
       },
       {
-        title: "HeaderFooter:audit",
+        title: "HeaderFooter:developersSection.item.audit",
         path: "/",
         newTab: true,
       },
       {
-        title: "HeaderFooter:bug",
-        path: "/",
-        newTab: true,
-      },
-    ],
-  },
-  {
-    content: "HeaderFooter:governance",
-    menu: [
-      {
-        title: "HeaderFooter:forum",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "HeaderFooter:proposals",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "HeaderFooter:vote",
+        title: "HeaderFooter:developersSection.item.bugBounty",
         path: "/",
         newTab: true,
       },
     ],
   },
   {
-    content: "HeaderFooter:policy",
+    content: "HeaderFooter:governanceSection.title",
     menu: [
       {
-        title: "HeaderFooter:terms",
+        title: "HeaderFooter:governanceSection.item.forum",
         path: "/",
         newTab: true,
       },
       {
-        title: "HeaderFooter:privacy",
+        title: "HeaderFooter:governanceSection.item.proposals",
+        path: "/",
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:governanceSection.item.vote",
+        path: "/",
+        newTab: true,
+      },
+    ],
+  },
+  {
+    content: "HeaderFooter:policySection.title",
+    menu: [
+      {
+        title: "HeaderFooter:policySection.item.terms",
+        path: "/",
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:policySection.item.privacyPolicy",
         path: "/",
         newTab: true,
       },
