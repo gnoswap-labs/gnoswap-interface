@@ -2,13 +2,11 @@
 import React, { useMemo } from "react";
 import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
-import {
-  prettyNumberFloatInteger,
-  toPriceFormatNotRounding,
-} from "@utils/number-utils";
+import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 export interface MyPositionRewardContentProps {
   rewardInfo: { [key in RewardType]: PositionRewardInfo[] };
@@ -100,7 +98,7 @@ export const MyPositionRewardContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {prettyNumberFloatInteger(reward.claimableAmount)}
+                {convertToKMB(reward.claimableAmount.toString())}
               </span>
             </div>
           ))}
@@ -128,7 +126,7 @@ export const MyPositionRewardContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {prettyNumberFloatInteger(reward.claimableAmount)}
+                {convertToKMB(reward.claimableAmount.toString())}
               </span>
             </div>
           ))}
@@ -156,7 +154,7 @@ export const MyPositionRewardContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {prettyNumberFloatInteger(reward.claimableAmount)}
+                {convertToKMB(reward.claimableAmount.toString())}
               </span>
             </div>
           ))}

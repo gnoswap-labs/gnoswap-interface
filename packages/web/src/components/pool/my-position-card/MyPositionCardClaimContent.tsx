@@ -111,9 +111,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(`${Number(reward.claimableAmount)}`, {
-                  usd: true,
-                })}
+                {convertToKMB(`${Number(reward.claimableAmount)}`)}
               </span>
             </div>
           ))}
@@ -142,9 +140,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(`${Number(reward.claimableAmount)}`, {
-                  usd: true,
-                })}
+                {convertToKMB(`${Number(reward.claimableAmount)}`)}
               </span>
             </div>
           ))}
@@ -173,9 +169,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(`${Number(reward.claimableAmount)}`, {
-                  usd: true,
-                })}
+                {convertToKMB(`${Number(reward.claimableAmount)}`)}
               </span>
             </div>
           ))}
