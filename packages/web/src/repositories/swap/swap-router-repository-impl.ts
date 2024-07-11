@@ -180,7 +180,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         exactType,
         `${routesQuery}`,
         `${quotes}`,
-        exactType === "EXACT_IN" ? "0" : MAX_UINT64.toString(), // slippage: tokenAmountLimitRaw.toString(),
+        tokenAmountLimitRaw,
       ],
     };
 
