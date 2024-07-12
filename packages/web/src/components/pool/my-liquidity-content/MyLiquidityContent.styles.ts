@@ -44,7 +44,11 @@ export const MyLiquidityContentWrapper = styled.div`
     .loading-button {
       width: 20px;
       height: 20px;
-      background: conic-gradient(from 0deg at 50% 50.63%, #FFFFFF 0deg, #233DBD 360deg);
+      background: conic-gradient(
+        from 0deg at 50% 50.63%,
+        #ffffff 0deg,
+        #233dbd 360deg
+      );
       &::before {
         width: 14.8px;
         height: 14.8px;
@@ -242,14 +246,15 @@ export const AmountDisplayWrapper = styled.div<{ $canHover: boolean }>`
 
   &:hover {
     ${({ $canHover, theme }) => {
-    if ($canHover) {
-      return `color: ${theme.color.text07}`;
-    }
-  }}
+      if ($canHover) {
+        return `color: ${theme.color.text07}`;
+      }
+    }}
   }
 `;
 
 export const TokenAmountTooltipContentWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")}
   gap: 4px;
+  ${fonts.body12}
 `;

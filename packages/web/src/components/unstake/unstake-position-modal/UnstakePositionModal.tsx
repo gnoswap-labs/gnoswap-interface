@@ -18,7 +18,8 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
+import { useGetUnstakingFee } from "@query/pools";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -32,6 +33,7 @@ const UnstakePositionModal: React.FC<Props> = ({
   onSubmit,
 }) => {
   const { unclaimedRewards, totalLiquidityUSD } = useUnstakeData({ positions });
+  const { data: unstakingFee } = useGetUnstakingFee();
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -57,7 +59,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           },
         ) ?? 0;
 
-    return numberToRate(result.unstakeUsd / result.allUsd);
+    return formatApr(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
   const swapFeePercent = useMemo(() => {
@@ -83,7 +85,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           },
         ) ?? 0;
 
-    return numberToRate(result.unstakeUsd / result.allUsd);
+    return formatApr(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
   return (
@@ -166,7 +168,9 @@ const UnstakePositionModal: React.FC<Props> = ({
                         <IconInfo />
                       </Tooltip>
                     </div>
-                    <span className="white-text">0%</span>
+                    <span className="white-text">
+                      {unstakingFee ? `${(unstakingFee || 0) / 100}%` : "-"}
+                    </span>
                   </div>
                 </div>
               </div>

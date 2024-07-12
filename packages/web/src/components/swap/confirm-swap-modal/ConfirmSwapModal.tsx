@@ -241,7 +241,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                         <IconInfo />
                       </Tooltip>
                     </div>
-                    <span className="white-text">0%</span>
+                    <span className="white-text">
+                      {swapSummaryInfo.protocolFee}
+                    </span>
                   </div>
                 </div>
               </>

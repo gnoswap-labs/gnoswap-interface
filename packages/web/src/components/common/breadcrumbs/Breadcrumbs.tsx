@@ -62,7 +62,6 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
           >
             <div>{tokenPathDisplay(step.options.token)}</div>
             <IconOpenLink
-              viewBox="0 0 22 22"
               fill={theme.color.text04}
               className="path-link-icon"
             />

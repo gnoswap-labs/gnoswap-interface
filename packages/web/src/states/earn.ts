@@ -2,7 +2,6 @@ import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { atom } from "jotai";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenModel } from "@models/token/token-model";
-import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 
 interface DistributionPeriodDate {
   year: number;
@@ -11,7 +10,6 @@ interface DistributionPeriodDate {
 }
 
 export interface PoolInfoQuery {
-  data: PoolDetailRPCModel | null | undefined;
   isLoading: boolean;
 }
 
@@ -30,7 +28,6 @@ export const dataModal = atom<TokenAmountInputModel | null>(null);
 export const date = atom<DistributionPeriodDate>(DefaultDate);
 export const pool = atom<PoolModel | null>(null);
 export const poolInfoQuery = atom<PoolInfoQuery>({
-  data: null,
   isLoading: false,
 });
 

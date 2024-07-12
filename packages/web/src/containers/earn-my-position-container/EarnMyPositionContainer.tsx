@@ -119,7 +119,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 
   const moveEarnStake = useCallback(() => {
     router.push(
-      "/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/#staking",
+      "/earn/pool/gno.land_r_gnoswap_gns:gno.land_r_demo_wugnot:3000/#staking",
     );
   }, [router]);
 
@@ -309,7 +309,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       divRef={divRef}
       currentIndex={currentIndex}
       showPagination={showPagination}
-      showLoadMore={positions.length > 4}
+      showLoadMore={showedPosition.length > 4}
       width={width}
       loadMore={!isViewMorePositions}
       onClickLoadMore={handleClickLoadMore}

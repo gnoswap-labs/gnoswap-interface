@@ -12,40 +12,14 @@ import { SwapState } from "@states/index";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 import { checkGnotPath } from "@utils/common";
-const GNOS_PATH = "gno.land/r/demo/gns" || "";
-
-const TOKEN_A: TokenModel = {
-  chainId: "dev",
-  createdAt: "2023-10-10T08:48:46+09:00",
-  name: "Gnoswap",
-  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gnot",
-  decimals: 6,
-  symbol: "GNOT",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-  type: "native",
-  priceID: "gnot",
-};
-const TOKEN_B: TokenModel = {
-  chainId: "dev",
-  createdAt: "2023-10-10T08:48:46+09:00",
-  name: "Gnoswap",
-  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: GNOS_PATH,
-  decimals: 4,
-  symbol: "GNS",
-  logoURI: "/gnos.svg",
-  type: "grc20",
-  priceID: GNOS_PATH,
-};
+import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
   const { tokenPrices, displayBalanceMap } = useTokenData();
-  const [tokenA, setTokenA] = useState<TokenModel | null>(TOKEN_A);
+  const [tokenA, setTokenA] = useState<TokenModel | null>(GNOT_TOKEN);
   const [tokenAAmount, setTokenAAmount] = useState<string>("");
-  const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
+  const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);
   const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const { slippage } = useSlippage();
   const { connected, isSwitchNetwork } = useWallet();
@@ -143,7 +117,7 @@ const HomeSwapContainer: React.FC = () => {
       ...(tokenBAmount ? [`token_b_amount=${tokenBAmount}`] : []),
     ];
     const queriesString = queries.join("&");
-    if ((!!tokenAAmount || !!tokenBAmount)) {
+    if (!!tokenAAmount || !!tokenBAmount) {
       router.push(`/swap?${queriesString}`);
     }
   }, [router, tokenA, tokenB, tokenAAmount, tokenBAmount]);

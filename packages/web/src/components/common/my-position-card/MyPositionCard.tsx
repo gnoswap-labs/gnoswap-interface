@@ -22,13 +22,16 @@ import {
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
-import { toPriceFormat, toUnitFormat } from "@utils/number-utils";
-import { numberToRate } from "@utils/string-utils";
+import {
+  toPriceFormatNotRounding,
+  toPriceFormatRounding,
+} from "@utils/number-utils";
 import { useGetLazyPositionBins } from "@query/positions";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconStar from "../icons/IconStar";
+import { formatApr } from "@utils/string-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -66,7 +69,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     40,
     isMouseoverGraph,
   );
-
 
   const onMouseoverViewMyRange = useCallback(() => {
     setIsMouseoverGraph(true);
@@ -120,17 +122,23 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [pool.tickSpacing]);
 
   const positionUsdValueStr = useMemo(() => {
-    return toUnitFormat(Number(position.positionUsdValue), true, true);
+    if (!position.positionUsdValue || position.positionUsdValue === "0")
+      return "-";
+
+    return toPriceFormatRounding(Number(position.positionUsdValue), {
+      usd: true,
+    });
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
-    if (Number(position.apr) > 100) {
-      return <>
-        <IconStar size={20} />{numberToRate(position.apr)}
-      </>;
-    }
+    if (!position.apr) return "-";
 
-    return numberToRate(position.apr);
+    return (
+      <>
+        {Number(position.apr) > 100 && <IconStar size={20} />}
+        {formatApr(position.apr)}
+      </>
+    );
   }, [position.apr]);
 
   const currentPrice = useMemo(() => {
@@ -155,10 +163,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minTickLabel = useMemo(() => {
     return minTickRate * -1 > 1000
       ? ">999%"
-      : `${minTickRate < 0 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-        ? "<1"
-        : Math.round(minTickRate * -1)
-      }%`;
+      : `${minTickRate < 0 ? "+" : ""}${
+          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+            ? "<1"
+            : Math.round(minTickRate * -1)
+        }%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
@@ -168,8 +177,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     return maxTickRate >= 1000
       ? ">999%"
-      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
-      }%`;
+      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${
+          Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+        }%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
@@ -192,7 +202,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -210,7 +220,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -312,15 +322,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getMaxTick, maxTickRate]);
 
   const claimableUSD = useMemo(() => {
-    const temp = position.reward.reduce(
+    const claimableUSD_ = position.reward.reduce(
       (acc, cur) => Number(cur.claimableUsd) + acc,
       0,
     );
-    return toUnitFormat(temp, true, true);
+    if (claimableUSD_ === 0) return "-";
+
+    return toPriceFormatRounding(claimableUSD_, {
+      usd: true,
+    });
   }, [position.reward]);
 
   const dailyEarning = useMemo(() => {
-    const value = position.reward.reduce((acc, current) => {
+    const dailyEarning_ = position.reward.reduce((acc, current) => {
       const currentTokenPrice = tokenPrices?.[current.rewardToken.priceID]
         ? Number(tokenPrices?.[current.rewardToken.priceID].usd)
         : 0;
@@ -328,12 +342,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return acc + Number(current.accuReward1D ?? 0) * currentTokenPrice;
     }, 0);
 
-    return toPriceFormat(value, {
+    if (dailyEarning_ === 0) return "-";
+
+    return toPriceFormatNotRounding(dailyEarning_, {
       usd: true,
       lestThan1Decimals: 2,
-      isRounding: false,
       minLimit: 0.01,
-      fixedLessThan1Decimal: 2,
+      fixedLessThan1: true,
     });
   }, [position.reward, tokenPrices]);
 
@@ -378,8 +393,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
                   : inRange
-                    ? RANGE_STATUS_OPTION.IN
-                    : RANGE_STATUS_OPTION.OUT
+                  ? RANGE_STATUS_OPTION.IN
+                  : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>

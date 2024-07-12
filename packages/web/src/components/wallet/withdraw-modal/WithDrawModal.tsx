@@ -102,7 +102,7 @@ const WithDrawModal: React.FC<Props> = ({
 
   const currentAvailableBalance = useMemo(
     () => displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null,
-    [displayBalanceMap, withdrawInfo?.path]
+    [displayBalanceMap, withdrawInfo?.path],
   );
 
   const isDisabledWithdraw =
@@ -110,27 +110,35 @@ const WithDrawModal: React.FC<Props> = ({
     !address ||
     !withdrawInfo ||
     !addressValidationCheck(address) ||
-    BigNumber(amount || "0").isGreaterThan(BigNumber(currentAvailableBalance || "0"));
+    BigNumber(amount || "0").isGreaterThan(
+      BigNumber(currentAvailableBalance || "0"),
+    );
 
   const estimateFee = useMemo(() => 0.000001, []);
 
   const estimateFeeUSD = useMemo(
-    () => 0.000001 * (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0),
-    [nativeToken?.wrappedPath, tokenPrices]
+    () =>
+      0.000001 *
+      (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0),
+    [nativeToken?.wrappedPath, tokenPrices],
   );
 
   const estimatePrice = useMemo(
-    () => withdrawInfo?.wrappedPath && !!amount && amount !== "0"
-      ? "$" + convertToKMB(
-        BigNumber(+amount)
-          .multipliedBy(
-            Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
+    () =>
+      withdrawInfo?.wrappedPath && !!amount && amount !== "0"
+        ? "$" +
+          convertToKMB(
+            BigNumber(+amount)
+              .multipliedBy(
+                Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
+              )
+              .toString(),
+            {
+              isIgnoreKFormat: true,
+            },
           )
-          .toString(), {
-        isIgnoreKFormat: true
-      })
-      : "-",
-    [amount, tokenPrices, withdrawInfo?.wrappedPath]
+        : "-",
+    [amount, tokenPrices, withdrawInfo?.wrappedPath],
   );
 
   const handleEnterAllBalanceAvailable = () => {
@@ -148,13 +156,16 @@ const WithDrawModal: React.FC<Props> = ({
     if (Number(amount) < 0.000001) {
       return "Amount Too Low";
     }
-    if ((currentAvailableBalance && BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) || !Number(amount || 0)) {
+    if (
+      (currentAvailableBalance &&
+        BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) ||
+      !Number(amount || 0)
+    ) {
       return "Insufficient Balance";
     }
     if (address === "") return "Enter an Address";
     if (!addressValidationCheck(address)) return "Invalid Address";
     return "Withdraw";
-
   }, [address, amount, currentAvailableBalance, withdrawInfo]);
 
   const estimatedPrice = useMemo(() => {
@@ -198,20 +209,18 @@ const WithDrawModal: React.FC<Props> = ({
                   </div>
                 </div>
                 <div className="info">
-                  <span className="price-text">
-                    {estimatePrice}
-                  </span>
+                  <span className="price-text">{estimatePrice}</span>
                   <span
                     className="balance-text"
                     onClick={handleEnterAllBalanceAvailable}
-                  >{`Available: ${currentAvailableBalance
-                    ? toPriceFormat(currentAvailableBalance, {
-                      isKMBFormat: false,
-                      isRounding: false,
-                    }
-                    )
-                    : "-"
-                    }`}</span>
+                  >{`Available: ${
+                    currentAvailableBalance
+                      ? toPriceFormat(currentAvailableBalance, {
+                          isKMBFormat: false,
+                          isRounding: false,
+                        })
+                      : "-"
+                  }`}</span>
                 </div>
               </div>
             </WithdrawContent>
@@ -259,24 +268,31 @@ const WithDrawModal: React.FC<Props> = ({
             <WarningCard
               icon={<IconCircleExclamationMark />}
               title={"Important Notes"}
-              content={<WithDrawWarningContentWrapper>
-                <ul>
-                  <li>
-                    Double-check to confirm that your withdrawal address above is
-                    correct and on the Gnoland Mainnet blockchain.
-                  </li>
-                  <li>
-                    DO NOT send tokens to contract addresses. Sending tokens to a
-                    contract address may result in the loss of your funds.
-                  </li>
-                  <li>The transaction CANNOT be cancelled once sent.</li>
-                </ul>
+              content={
+                <WithDrawWarningContentWrapper>
+                  <ul>
+                    <li>
+                      Double-check to confirm that your withdrawal address above
+                      is correct and on the Gnoland Mainnet blockchain.
+                    </li>
+                    <li>
+                      DO NOT send tokens to contract addresses. Sending tokens
+                      to a contract address may result in the loss of your
+                      funds.
+                    </li>
+                    <li>The transaction CANNOT be cancelled once sent.</li>
+                  </ul>
 
-                <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
-                  <p>Learn More</p>
-                  <IconNewTab color={theme.color.icon21} />
-                </a>
-              </WithDrawWarningContentWrapper>}
+                  <a
+                    href="https://beta.gnoswap.io/"
+                    target="_blank"
+                    className="learn-more-box"
+                  >
+                    <p>Learn More</p>
+                    <IconNewTab color={theme.color.icon21} />
+                  </a>
+                </WithDrawWarningContentWrapper>
+              }
             />
             <WithdrawContent>
               <div className="estimate-box">

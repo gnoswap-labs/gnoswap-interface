@@ -7,4 +7,6 @@ export enum QUERY_KEY {
   lazyBins = "lazyBins",
   initializeBins = "initializeBins",
   incentivizePools = "incentivizePools",
+  poolWithdrawalFee = "pool_withdrawal_fee",
+  unstakingFee = "unstaking_fee",
 }

@@ -7,7 +7,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { numberToUSD } from "@utils/number-utils";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 import React, { useCallback, useMemo } from "react";
 import {
   Divider,
@@ -45,9 +45,9 @@ const SubmitPositionModal: React.FC<Props> = ({
 
     if (Number(pool.stakingApr) === 0) return "0%";
 
-    return `${numberToRate(
-      Number(pool?.stakingApr || 0) * 0.3,
-    )} ~ ${numberToRate(pool?.stakingApr)}`;
+    return `${formatApr(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatApr(
+      pool?.stakingApr,
+    )}`;
   }, [pool?.stakingApr]);
 
   return (

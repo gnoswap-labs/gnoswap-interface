@@ -30,7 +30,7 @@ import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapMod
 import { ERROR_VALUE } from "@common/errors/adena";
 import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEY } from "@query/router";
+import { QUERY_KEY, useGetSwapFee } from "@query/router";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -148,6 +148,7 @@ export const useSwapHandler = () => {
     direction: type,
     slippage,
   });
+  const { data: swapFee } = useGetSwapFee();
 
   const { openModal: openTransactionConfirmModal } =
     useTransactionConfirmModal();
@@ -237,8 +238,8 @@ export const useSwapHandler = () => {
       return BigNumber(0);
     }
 
-    const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
-    const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
+    const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 0;
+    const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 0;
 
     const tokenAUSDAmount =
       (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) *
@@ -421,6 +422,8 @@ export const useSwapHandler = () => {
         ? getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1
         : getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1;
 
+    const protocolFee = `${(swapFee || 0) / 100}%`;
+
     if (isSameToken) {
       return {
         tokenA,
@@ -440,6 +443,7 @@ export const useSwapHandler = () => {
         gasFeeUSD,
         swapRateAction,
         swapRate1USD,
+        protocolFee,
       };
     }
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
@@ -476,6 +480,7 @@ export const useSwapHandler = () => {
       swapRateAction,
       swapRate1USD,
       direction: type,
+      protocolFee,
     };
   }, [
     tokenA,
@@ -492,6 +497,7 @@ export const useSwapHandler = () => {
     gasFeeUSD,
     tokenPrices,
     priceImpact,
+    swapFee,
   ]);
 
   const isAvailSwap = useMemo(() => {
@@ -627,6 +633,18 @@ export const useSwapHandler = () => {
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenB);
 
+      if (isSameToken) {
+        setTokenAAmount(value);
+        setTokenBAmount(value);
+        setSwapValue(prev => ({
+          ...prev,
+          tokenAAmount: value,
+          tokenBAmount: value,
+          type: "EXACT_IN",
+        }));
+        return;
+      }
+
       if (none) {
         setIsLoading(false);
         return;
@@ -652,10 +670,26 @@ export const useSwapHandler = () => {
     [isSameToken, tokenA, tokenB],
   );
 
+  const isSameTokenFn = useCallback(
+    (tokenA_: TokenModel | null, tokenB_: TokenModel | null) => {
+      if (!tokenA_ || !tokenB_) {
+        return false;
+      }
+      if (isNativeToken(tokenA_)) {
+        return tokenA_.wrappedPath === tokenB_.path;
+      }
+      if (isNativeToken(tokenB_)) {
+        return tokenA_.path === tokenB_.wrappedPath;
+      }
+      return false;
+    },
+    [],
+  );
+
   const changeTokenA = useCallback(
     (token: TokenModel) => {
       let changedSwapDirection = type;
-      if (tokenB?.symbol === token.symbol) {
+      if (isSameTokenFn(tokenB, token)) {
         changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
         setTokenAAmount(tokenBAmount);
         setTokenBAmount(tokenAAmount);
@@ -670,13 +704,13 @@ export const useSwapHandler = () => {
         setIsLoading(true);
       }
     },
-    [tokenA, tokenB, type, tokenBAmount, tokenAAmount],
+    [tokenA, tokenB, type, tokenBAmount, tokenAAmount, isSameToken],
   );
 
   const changeTokenB = useCallback(
     (token: TokenModel) => {
       let changedSwapDirection = type;
-      if (tokenA?.symbol === token.symbol) {
+      if (isSameTokenFn(tokenA, token)) {
         changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
         setTokenAAmount(tokenBAmount);
         setTokenBAmount(tokenAAmount);
@@ -691,7 +725,7 @@ export const useSwapHandler = () => {
         setIsLoading(true);
       }
     },
-    [tokenA, type, tokenBAmount, tokenAAmount, swapValue],
+    [tokenA, type, tokenBAmount, tokenAAmount, swapValue, isSameToken],
   );
 
   const switchSwapDirection = useCallback(() => {
@@ -947,6 +981,15 @@ export const useSwapHandler = () => {
     }
 
     if (swapState !== "SUCCESS" && estimatedAmount === null) {
+      if (swapState === "NO_LIQUIDITY") {
+        if (type === "EXACT_IN") {
+          setTokenBAmount("");
+        } else {
+          setTokenAAmount("");
+        }
+        return;
+      }
+
       return;
     }
 

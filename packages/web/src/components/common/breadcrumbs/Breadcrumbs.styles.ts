@@ -22,7 +22,7 @@ export const wrapper = (theme: Theme) => css`
       cursor: default;
     }
   }
-  
+
   .step-icon {
     width: 16px;
     height: 16px;
@@ -36,11 +36,11 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "center")}
     ${fonts.p3};
     gap: 4px;
-    
+
     .token-path {
       ${mixins.flexbox("row", "center", "center")}
       ${fonts.p3};
-      gap: 2px;
+      gap: 4px;
       &:hover {
         color: ${theme.color.text10};
         cursor: pointer;
@@ -51,12 +51,12 @@ export const wrapper = (theme: Theme) => css`
         }
       }
       color: ${theme.color.text04};
-      
+
       .path-link-icon {
         width: 10px;
         height: 10px;
-        fill: ${theme.color.text04}
-      };
+        fill: ${theme.color.text04};
+      }
     }
   }
 

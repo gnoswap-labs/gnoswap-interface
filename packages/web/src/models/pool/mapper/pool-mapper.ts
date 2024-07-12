@@ -7,7 +7,7 @@ import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
 import { makeId } from "@utils/common";
 import { PoolDetailModel } from "../pool-detail-model";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormatRounding } from "@utils/number-utils";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -37,13 +37,25 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: apr,
-      liquidity: `$${BigNumber(liquidity).toFormat(0)}`,
-      volume24h: toUnitFormat(volume24h || "0", true, true),
-      fees24h: toUnitFormat(feeUsd24h || "0", true, true),
+      liquidity: liquidity ? `$${BigNumber(liquidity).toFormat(0)}` : "-",
+      volume24h: volume24h
+        ? toPriceFormatRounding(volume24h || "0", {
+            usd: true,
+          })
+        : "-",
+      fees24h: feeUsd24h
+        ? toPriceFormatRounding(feeUsd24h || "0", {
+            usd: true,
+          })
+        : "-",
       rewardTokens,
       currentTick,
       price,
-      tvl: toUnitFormat(tvl || "0", true, true),
+      tvl: tvl
+        ? toPriceFormatRounding(tvl || "0", {
+            usd: true,
+          })
+        : "-",
     };
   }
 
@@ -63,7 +75,9 @@ export class PoolMapper {
     };
   }
 
-  public static toCardInfo(poolModel: IncentivizePoolModel): IncentivizePoolCardInfo {
+  public static toCardInfo(
+    poolModel: IncentivizePoolModel,
+  ): IncentivizePoolCardInfo {
     const {
       id,
       currentTick,
@@ -91,9 +105,17 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: apr,
-      liquidity: toUnitFormat(tvl || "0", true, true),
-      volume24h: toUnitFormat(volume24h || "0", true, true),
-      fees24h: toUnitFormat(feeUsd24h || "0", true, true),
+      liquidity: tvl ? `$${BigNumber(tvl).toFormat(0)}` : "-",
+      volume24h: volume24h
+        ? toPriceFormatRounding(volume24h || "0", {
+            usd: true,
+          })
+        : "-",
+      fees24h: feeUsd24h
+        ? toPriceFormatRounding(feeUsd24h || "0", {
+            usd: true,
+          })
+        : "-",
       rewardTokens,
       currentTick,
       price,

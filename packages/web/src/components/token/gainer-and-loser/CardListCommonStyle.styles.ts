@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
@@ -28,13 +29,6 @@ export const cardStyle = (theme: Theme) => css`
   }
   .card-wrap {
     ${mixins.flexbox("row", "center", "space-between")};
-    > div {
-      ${mixins.flexbox("row", "center", "flex-start")};
-      width: 170px;
-      ${media.mobile} {
-        width: 130px;
-      }
-    }
     width: 100%;
     height: 36px;
     padding: 0px 23px;
@@ -59,12 +53,14 @@ export const cardStyle = (theme: Theme) => css`
   }
   .price {
     text-align: right;
-    width: 90px;
+    min-width: 90px;
+    flex: 1;
   }
   .change {
     min-width: 60px;
     text-align: right;
     color: ${theme.color.green01};
+    flex: 1;
     &.negative {
       color: ${theme.color.red01};
     }
@@ -103,5 +99,16 @@ export const loadingWrapper = (theme: Theme) => css`
       width: 38px;
       height: 38px;
     }
+  }
+`;
+
+export const NameSectionWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")};
+  min-width: 170px;
+  white-space: nowrap;
+  flex: 1.5;
+  @media (max-width: 768px) and (min-width: 400px) {
+    min-width: 130px;
+    max-width: 130px;
   }
 `;

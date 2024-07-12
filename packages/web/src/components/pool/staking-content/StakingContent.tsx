@@ -17,7 +17,6 @@ import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapToken
 interface StakingContentProps {
   totalApr: string;
   stakedPosition: PoolPositionModel[];
-  rewardTokens: TokenModel[];
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
   type: number;
@@ -37,7 +36,6 @@ const DAY_TIME = 24 * 60 * 60 * 1000;
 const StakingContent: React.FC<StakingContentProps> = ({
   totalApr,
   stakedPosition,
-  rewardTokens,
   breakpoint,
   mobile,
   type,
@@ -47,28 +45,23 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
-    const rewardLogo = rewardData?.map(item => ({
-      ...item,
-      logoURI: getGnotPath(item).logoURI,
-      symbol: getGnotPath(item).symbol,
-      path: getGnotPath(item).path,
-      name: getGnotPath(item).name,
-    })) || [];
-    const temp = rewardTokens.map(token => ({
-      ...token,
-      logoURI: getGnotPath(token).logoURI,
-      symbol: getGnotPath(token).symbol,
-      path: getGnotPath(token).path,
-      name: getGnotPath(token).name,
-    }));
-    return [...temp, ...rewardLogo].reduce((acc: TokenModel[], current) => {
+    const rewardLogo =
+      rewardData?.map(item => ({
+        ...item,
+        logoURI: getGnotPath(item).logoURI,
+        symbol: getGnotPath(item).symbol,
+        path: getGnotPath(item).path,
+        name: getGnotPath(item).name,
+      })) || [];
+
+    return [...rewardLogo].reduce((acc: TokenModel[], current) => {
       if (!acc.find(item => item.logoURI === current.logoURI)) {
         acc.push(current);
       }
 
       return acc;
     }, []) as TokenModel[];
-  }, [pool?.rewardTokens, rewardTokens, getGnotPath]);
+  }, [pool?.rewardTokens, getGnotPath]);
 
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
@@ -145,7 +138,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 loading={loading}
                 key={index}
                 stakingApr={pool?.stakingApr || "0"}
-                rewardTokens={rewardTokens}
                 period={period}
                 positions={stakingPositionMap[period]}
                 checkPoints={checkPoints}
@@ -154,7 +146,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
             ) : (
               <StakingContentCard
                 key={index}
-                rewardTokens={rewardTokens}
                 stakingApr={pool?.stakingApr || "0"}
                 period={period}
                 positions={stakingPositionMap[period]}
@@ -191,19 +182,20 @@ const StakingContent: React.FC<StakingContentProps> = ({
             style={{
               width: "100%",
               height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
-              fontType: `${breakpoint === DEVICE_TYPE.WEB
-                ? "body7"
-                : breakpoint === DEVICE_TYPE.MOBILE
+              fontType: `${
+                breakpoint === DEVICE_TYPE.WEB
+                  ? "body7"
+                  : breakpoint === DEVICE_TYPE.MOBILE
                   ? "p2"
                   : "body9"
-                }`,
+              }`,
               textColor: "text01",
               bgColor: "background01",
               padding: "10px 16px",
               gap: "8px",
             }}
             className={type < 3 ? "change-weight" : "receive-button"}
-            onClick={() => { }}
+            onClick={() => {}}
           />
         )}
       </div>

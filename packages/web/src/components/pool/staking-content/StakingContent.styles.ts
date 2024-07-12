@@ -65,7 +65,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
         img {
           width: 36px;
           height: 36px;
-          
+
           &:not(:first-of-type) {
             margin-left: -6px;
           }
@@ -90,10 +90,9 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
           }
         }
       }
-      
     }
     .apr {
-      ${fonts.body3}
+      ${fonts.h5}
       ${media.tablet} {
         ${fonts.body7}
       }
@@ -156,7 +155,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     .change-weight {
       max-width: 900px;
       cursor: default;
-      border: 1px solid ${({ theme }) => theme.color.border14};;
+      border: 1px solid ${({ theme }) => theme.color.border14};
       span {
         font-weight: 400;
       }

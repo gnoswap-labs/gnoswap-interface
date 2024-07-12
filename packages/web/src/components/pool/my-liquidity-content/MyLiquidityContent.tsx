@@ -395,8 +395,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [positionData?.tokenB?.symbol, positionData?.tokenA?.symbol]);
 
   const feeDaily = useMemo(() => {
-    if (!isDisplay) return "-";
-
     const swapFee = aprRewardInfo?.SWAP_FEE;
     const sumUSD =
       swapFee?.reduce(
@@ -404,6 +402,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         0,
       ) || 0;
     if (sumUSD > 0 && sumUSD <= 0.01) return "<$0.01";
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
 
     return toPriceFormatNotRounding(sumUSD, {
       usd: true,
@@ -415,14 +417,18 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [aprRewardInfo?.SWAP_FEE, isDisplay]);
 
   const feeClaim = useMemo(() => {
-    if (!isDisplay) return "-";
-
     const swapFeeReward = claimableRewardInfo?.SWAP_FEE;
+
     const sumUSD =
       swapFeeReward?.reduce(
         (accum, current) => accum + current.claimableUsdValue,
         0,
       ) || 0;
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
+
     return toPriceFormatNotRounding(sumUSD, {
       usd: true,
       lestThan1Decimals: 2,
@@ -470,17 +476,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo?.INTERNAL, getGnotPath, positionData?.rewardTokens]);
 
   const rewardDaily = useMemo(() => {
-    if (!isDisplay) return "-";
-
     const rewards = [
       ...(aprRewardInfo?.INTERNAL ?? []),
       ...(aprRewardInfo?.EXTERNAL ?? []),
     ];
+
     const sumUSD =
       rewards?.reduce(
         (accum, current) => accum + current.accuReward1DPrice,
         0,
       ) || 0;
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
 
     return toPriceFormatNotRounding(sumUSD, {
       usd: true,
@@ -492,17 +501,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL, isDisplay]);
 
   const rewardClaim = useMemo(() => {
-    if (!isDisplay) return "-";
-
     const rewards = [
       ...(claimableRewardInfo?.EXTERNAL ?? []),
       ...(claimableRewardInfo?.INTERNAL ?? []),
     ];
+
     const sumUSD =
       rewards?.reduce(
         (accum, current) => accum + current.claimableUsdValue,
         0,
       ) || 0;
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
 
     return toPriceFormatNotRounding(sumUSD, {
       usd: true,
