@@ -127,7 +127,7 @@ export const PopulardummyToken: Token[] = [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "popular",
     token: {
-      path: "gno.land/r/demo/gnoswap",
+      path: "gno.land/r/gnoswap/gns",
       name: "Gnoland",
       symbol: "GNOT",
       logoURI:
