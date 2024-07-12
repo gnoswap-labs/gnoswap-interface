@@ -59,7 +59,6 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
       enabled: currentSwapAmount > 0 && !!tokenA && !!tokenB,
     },
   );
-  console.log("🚀 ~ useSwap ~ error:", error);
 
   const swapState: "NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS" =
     useMemo(() => {

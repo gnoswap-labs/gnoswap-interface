@@ -17,8 +17,6 @@ const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
   fee,
   errorMsg,
 }) => {
-  console.log("🚀 ~ token?.logoURI:", token?.logoURI);
-
   return (
     <EarnAddConfirmFeeInfoWrapper>
       <p>Pool Creation Fee</p>

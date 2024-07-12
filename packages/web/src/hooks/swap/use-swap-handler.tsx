@@ -584,12 +584,10 @@ export const useSwapHandler = () => {
 
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
-      console.log("🚀 ~ useSwapHandler ~ changed:", changed);
       const value = handleAmount(changed, tokenA);
       estimateSwapRoute(value);
 
       if (isSameToken) {
-        console.log("🚀 ~ useSwapHandler ~ isSameToken:", isSameToken);
         setTokenAAmount(value);
         setTokenBAmount(value);
         setSwapValue(prev => ({
@@ -711,7 +709,6 @@ export const useSwapHandler = () => {
 
   const changeTokenB = useCallback(
     (token: TokenModel) => {
-      console.log("🚀 ~ useSwapHandler ~ token:", token);
       let changedSwapDirection = type;
       if (isSameTokenFn(tokenA, token)) {
         changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";

@@ -42,8 +42,6 @@ const HomeSwapContainer: React.FC = () => {
     if (isEmptyObject(displayBalanceMap)) {
       return "-";
     }
-    console.log("🚀 ~ tokenBBalance ~ displayBalanceMap:", displayBalanceMap);
-    console.log("🚀 ~ tokenBBalance ~ tokenB:", tokenB);
     if (tokenB && displayBalanceMap[tokenB.priceID]) {
       const balance = displayBalanceMap[tokenB.priceID] || 0;
       return BigNumber(balance).toFormat(tokenB.decimals);
