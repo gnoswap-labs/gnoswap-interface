@@ -38,11 +38,19 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
     <div
       css={wrapper(Boolean(token), disabled || hiddenModal, isHiddenArrow)}
       onClick={onClickButton}
-      className={`${className} ${token ? "selected-token" : "not-selected-token"}`}
+      className={`${className} ${
+        token ? "selected-token" : "not-selected-token"
+      }`}
     >
       {token ? (
         <div>
-          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
+          <MissingLogo
+            symbol={token.symbol}
+            url={token.logoURI}
+            className="token-logo"
+            width={24}
+            mobileWidth={24}
+          />
           <span className="token-symbol">{token.symbol}</span>
         </div>
       ) : (

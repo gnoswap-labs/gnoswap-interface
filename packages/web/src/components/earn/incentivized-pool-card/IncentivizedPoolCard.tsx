@@ -13,7 +13,7 @@ import {
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { numberToFormat, numberToRate } from "@utils/string-utils";
+import { formatApr, numberToFormat } from "@utils/string-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface IncentivizedPoolCardProps {
@@ -74,7 +74,10 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   }, [getGnotPath, pool.rewardTokens]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin40 = pool.bins40.every(
+      item =>
+        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+    );
 
     return isAllReserveZeroBin40;
   }, [pool]);
@@ -117,10 +120,12 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               </div>
               <div className="list-content">
                 <span className="value-text">{pool.liquidity}</span>
-                <span className="value-text">{numberToRate(pool.apr)}</span>
-              </div >
-            </div >
-          </div >
+                <span className="value-text">
+                  {pool.apr ? formatApr(pool.apr) : "-"}
+                </span>
+              </div>
+            </div>
+          </div>
           <div className="volume-container">
             <div className="volume-header">
               <div className="volume-title">
@@ -154,15 +159,17 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               />
               <div className="price-section">
                 <span className="label-text">{"Current Price"}</span>
-                <span className="label-text">{`1 ${pool.tokenA.symbol
-                  } = ${numberToFormat(pool.price, { decimals: 2 })} ${pool.tokenB.symbol
-                  }`}</span>
+                <span className="label-text">{`1 ${
+                  pool.tokenA.symbol
+                } = ${numberToFormat(pool.price, { decimals: 2 })} ${
+                  pool.tokenB.symbol
+                }`}</span>
               </div>
             </div>
           </div>
-        </PoolCardWrapper >
-      </div >
-    </PoolCardWrapperWrapperBorder >
+        </PoolCardWrapper>
+      </div>
+    </PoolCardWrapperWrapperBorder>
   );
 };
 

@@ -213,16 +213,11 @@ export const toPriceFormatNotRounding = (
   const prefix = usd ? "$" : "";
   const negativeSign = BigNumber(valueWithoutComma).isLessThan(0) ? "-" : "";
 
-  if (minLimit && bigNumber.isLessThan(minLimit)) {
+  if (minLimit && bigNumber.isLessThan(minLimit) && !bigNumber.isEqualTo(0)) {
     return (usd ? "<$" : "<") + minLimit.toString();
   }
 
   if (bigNumber.isEqualTo(0)) {
-    if (fixedLessThan1)
-      return (
-        prefix + BigNumber(0).toFixed(lessThan1Significant || lestThan1Decimals)
-      );
-
     return prefix + "0";
   }
 

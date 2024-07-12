@@ -14,6 +14,7 @@ import BigNumber from "bignumber.js";
 import { removeTrailingZeros } from "@utils/number-utils";
 import { Divider } from "@components/common/select-token/SelectToken.styles";
 import Switch from "@components/common/switch/Switch";
+import { useGetWithdrawalFee } from "@query/pools";
 
 interface Props {
   tokenA: TokenModel;
@@ -37,6 +38,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
   displayGnotSwitch = false,
 }) => {
   const { breakpoint } = useWindowSize();
+  const { data: withdrawalFee } = useGetWithdrawalFee();
 
   const poolAMount = useMemo(() => {
     if (Number.isInteger(Number(pooledTokenInfos?.poolAmountA))) {
@@ -155,7 +157,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
                 <IconInfo />
               </Tooltip>
             </p>
-            <p className="usd protocol-fee">0%</p>
+            <p className="usd protocol-fee">
+              {withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}
+            </p>
           </div>
         </div>
       )}

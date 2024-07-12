@@ -29,7 +29,7 @@ export const useEstimateSwap = (
       request?.outputToken?.path || "",
       request?.exactType || "",
       request?.tokenAmount || "",
-    ],
+    ].filter(item => item),
     queryFn: async () => {
       if (
         !request ||
@@ -59,6 +59,7 @@ export const useEstimateSwap = (
             }),
         300,
       );
+      console.log("🚀 ~ queryFn: ~ result:", result);
 
       if (!result) {
         throw new SwapError("NOT_FOUND_SWAP_POOL");
@@ -68,6 +69,7 @@ export const useEstimateSwap = (
         (accumulated, current) => accumulated + current.quote,
         0,
       );
+
       if (availRoute < 100) {
         throw new SwapError("NOT_FOUND_SWAP_POOL");
       }
@@ -75,6 +77,20 @@ export const useEstimateSwap = (
       return result;
     },
     retry: false,
+    ...options,
+  });
+};
+
+export const useGetSwapFee = (options?: UseQueryOptions<number, Error>) => {
+  const { swapRouterRepository } = useGnoswapContext();
+
+  return useQuery<number, Error>({
+    queryKey: [QUERY_KEY.swapFee],
+    queryFn: async () => {
+      const res = await swapRouterRepository.getSwapFee();
+
+      return res;
+    },
     ...options,
   });
 };

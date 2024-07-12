@@ -5,15 +5,14 @@ export const GNS_TOKEN: TokenModel = {
   chainId: "dev.gnoswap",
   createdAt: "2024-01-24T15:12:21Z",
   name: "Gnoswap",
-  path: "gno.land/r/demo/gns",
+  path: "gno.land/r/gnoswap/gns",
   decimals: 6,
   symbol: "GNS",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-  priceID: "gno.land/r/demo/gns",
+  logoURI: "/gnos.svg",
+  priceID: "gno.land/r/gnoswap/gns",
   description: "GNS is a GRC20 token issued solely for testing purposes.",
   websiteURL: "https://beta.gnoswap.io",
-  wrappedPath: "gno.land/r/demo/gns",
+  wrappedPath: "gno.land/r/gnoswap/gns",
 };
 
 export const GNOT_TOKEN: TokenModel = {
@@ -52,16 +51,18 @@ export const GNOT_TOKEN_DEFAULT: TokenModel = {
 };
 
 export const WUGNOT_TOKEN: TokenModel = {
-  "type": "grc20",
-  "chainId": "portal-loop",
-  "name": "wrapped GNOT",
-  "path": "gno.land/r/demo/wugnot",
-  "decimals": 6,
-  "symbol": "WUGNOT",
-  "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_demo_wugnot.svg",
-  "priceID": "gno.land/r/demo/wugnot",
-  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt ultricies. Nullam nec purus nec nunc tincidunt ultricies.",
-  "websiteURL": "https://gno.land/r/demo/wugnot",
-  "wrappedPath": "gno.land/r/demo/wugnot",
-  "createdAt": "0001-01-01T00:00:00Z"
+  type: "grc20",
+  chainId: "portal-loop",
+  name: "wrapped GNOT",
+  path: "gno.land/r/demo/wugnot",
+  decimals: 6,
+  symbol: "WUGNOT",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_demo_wugnot.svg",
+  priceID: "gno.land/r/demo/wugnot",
+  description:
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt ultricies. Nullam nec purus nec nunc tincidunt ultricies.",
+  websiteURL: "https://gno.land/r/demo/wugnot",
+  wrappedPath: "gno.land/r/demo/wugnot",
+  createdAt: "0001-01-01T00:00:00Z",
 };

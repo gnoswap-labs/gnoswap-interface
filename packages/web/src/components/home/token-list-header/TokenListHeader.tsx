@@ -8,6 +8,7 @@ import {
 } from "./TokenListHeader.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import { DEVICE_TYPE } from "@styles/media";
+import { useTranslation } from "next-i18next";
 
 interface TokenListHeaderProps {
   tokenType: TOKEN_TYPE;
@@ -29,48 +30,54 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
   searchIcon,
   onTogleSearch,
   searchRef,
-}) => (
-  <TokenListHeaderwrapper>
-    <TokenTitleWrapper>
-      <h2>Tokens</h2>
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <TokenListHeaderwrapper>
+      <TokenTitleWrapper>
+        <h2>{t("Main:tokenList.title")}</h2>
+        {breakpoint !== DEVICE_TYPE.MOBILE ? (
+          <SelectTab
+            selectType={tokenType}
+            list={Object.values(TOKEN_TYPE)}
+            onClick={changeTokenType}
+          />
+        ) : searchIcon ? (
+          <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
+            <SearchInput
+              width={200}
+              height={40}
+              value={keyword}
+              onChange={search}
+              className="tokens-search"
+              placeholder={t("Main:search")}
+            />
+          </div>
+        ) : (
+          <div className="icon-wrap" onClick={onTogleSearch}>
+            <IconSearch className="search-icon" />
+          </div>
+        )}
+      </TokenTitleWrapper>
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
+        <SearchInput
+          width={300}
+          value={keyword}
+          onChange={search}
+          className="tokens-search"
+          placeholder={t("Main:search")}
+        />
+      ) : (
         <SelectTab
           selectType={tokenType}
           list={Object.values(TOKEN_TYPE)}
           onClick={changeTokenType}
+          buttonClassName="select-tab-token"
         />
-      ) : searchIcon ? (
-        <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
-          <SearchInput
-            width={200}
-            height={40}
-            value={keyword}
-            onChange={search}
-            className="tokens-search"
-          />
-        </div>
-      ) : (
-        <div className="icon-wrap" onClick={onTogleSearch}>
-          <IconSearch className="search-icon" />
-        </div>
       )}
-    </TokenTitleWrapper>
-    {breakpoint !== DEVICE_TYPE.MOBILE ? (
-      <SearchInput
-        width={300}
-        value={keyword}
-        onChange={search}
-        className="tokens-search"
-      />
-    ) : (
-      <SelectTab
-        selectType={tokenType}
-        list={Object.values(TOKEN_TYPE)}
-        onClick={changeTokenType}
-        buttonClassName="select-tab-token"
-      />
-    )}
-  </TokenListHeaderwrapper>
-);
+    </TokenListHeaderwrapper>
+  );
+};
 
 export default TokenListHeader;

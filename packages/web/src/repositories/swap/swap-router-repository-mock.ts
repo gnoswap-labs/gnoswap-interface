@@ -4,6 +4,9 @@ import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-respon
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 
 export class SwapRouterRepositoryMock implements SwapRouterRepository {
+  public getSwapFee = async () => {
+    return 0;
+  };
   public pools: PoolRPCModel[] = [];
 
   public updatePools(pools: PoolRPCModel[]) {

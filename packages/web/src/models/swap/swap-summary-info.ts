@@ -25,6 +25,8 @@ export interface SwapSummaryInfo {
   swapRateAction: "ATOB" | "BTOA";
 
   swapRate1USD: number;
+
+  protocolFee: string;
 }
 
 export function swapDirectionToGuaranteedType(

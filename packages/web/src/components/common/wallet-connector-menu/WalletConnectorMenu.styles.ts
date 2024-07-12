@@ -62,7 +62,6 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
       svg {
         width: 16px;
         height: 16px;
-        
       }
       svg * {
         fill: ${({ theme }) => theme.color.icon03};

@@ -16,12 +16,15 @@ import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
 import { PositionBinModel } from "@models/position/position-bin-model";
 
 export interface PositionRepository {
-  getPositionsByAddress: (address: string, options?: { isClosed?: boolean, poolPath?: string, }) => Promise<PositionModel[]>;
+  getPositionsByAddress: (
+    address: string,
+    options?: { isClosed?: boolean; poolPath?: string },
+  ) => Promise<PositionModel[]>;
 
   getPositionBins: (
     lpTokenId: string,
     count: 20 | 40,
-  ) => Promise<PositionBinModel[]>
+  ) => Promise<PositionBinModel[]>;
 
   claimAll: (
     request: ClaimAllRequest,
@@ -48,4 +51,6 @@ export interface PositionRepository {
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
   getPositionHistory: (lpTokenId: string) => Promise<IPositionHistoryModel[]>;
+
+  getUnstakingFee: () => Promise<number>;
 }

@@ -5,7 +5,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 import React from "react";
 import {
   RepositionInfoWrapper,
@@ -79,7 +79,9 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.
+                  The multiplier calculated based on the concentration of your
+                  range. This indicates how much more rewards you can earn
+                  compared to a full range position with the same capital.
                 </ToolTipContentWrapper>
               }
             >
@@ -95,14 +97,15 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The estimated APR from swap fees is calculated based on the selected price range of the position.
+                  The estimated APR from swap fees is calculated based on the
+                  selected price range of the position.
                 </ToolTipContentWrapper>
               }
             >
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">{numberToRate(aprFee)}</p>
+          <p className="value">{formatApr(aprFee)}</p>
         </div>
       </div>
     </RepositionInfoWrapper>

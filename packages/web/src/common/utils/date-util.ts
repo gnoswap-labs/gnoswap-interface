@@ -55,7 +55,7 @@ export function formatTime(date: Date): string {
 export function timeToDateStr(time: number | string, measure = 1) {
   const datetime = Number(time) * measure;
   const date = dayjs(datetime);
-  return date.format("DD/MM/YYYY HH:mm:ss");
+  return date.format("YYYY/MM/DD HH:mm:ss");
 }
 
 export function calculateRemainTime(time: number) {

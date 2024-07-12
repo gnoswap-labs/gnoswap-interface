@@ -13,7 +13,7 @@ export interface Steps {
   options?: {
     type?: BreadcrumbTypes;
     token?: ITokenResponse;
-  }
+  };
 }
 
 // const stepsDummy: Steps[] = [
@@ -69,7 +69,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
         path: "",
       },
     ];
-  }, [listBreadcrumb, tokenB?.symbol, router.pathname]);
+  }, [listBreadcrumb, router.pathname, tokenB, getGnotPath]);
 
   const onClickPath = (path: string) => {
     router.push(path);

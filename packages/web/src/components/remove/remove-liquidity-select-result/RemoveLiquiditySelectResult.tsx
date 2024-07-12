@@ -71,7 +71,9 @@ const RemoveLiquiditySelectResult: React.FC<
               <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
               <strong>
                 {removeTrailingZeros(
-                  BigNumber(pooledTokenInfo.amount).toFormat(6),
+                  BigNumber(pooledTokenInfo.amount).toFormat(
+                    pooledTokenInfo.token.decimals,
+                  ),
                 )}
               </strong>
             </div>

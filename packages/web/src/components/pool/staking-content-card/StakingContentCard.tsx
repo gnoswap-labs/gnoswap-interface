@@ -17,7 +17,6 @@ import {
   STAKING_PERIOD_INFO,
   StakingPeriodType,
 } from "@constants/option.constant";
-import { TokenModel } from "@models/token/token-model";
 import { numberToUSD, toUnitFormat } from "@utils/number-utils";
 import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -33,7 +32,6 @@ interface StakingContentCardProps {
   stakingApr: string;
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
-  rewardTokens: TokenModel[];
   breakpoint: DEVICE_TYPE;
   loading: boolean;
 }
@@ -67,8 +65,14 @@ const PriceTooltipContent = ({
             <div className="list list-logo">
               <OverlapTokenLogo
                 tokens={[
-                  { ...position.pool.tokenA, ...getGnotPath(position.pool.tokenA) },
-                  { ...position.pool.tokenB, ...getGnotPath(position.pool.tokenB) },
+                  {
+                    ...position.pool.tokenA,
+                    ...getGnotPath(position.pool.tokenA),
+                  },
+                  {
+                    ...position.pool.tokenB,
+                    ...getGnotPath(position.pool.tokenB),
+                  },
                 ]}
                 size={18}
               />
@@ -146,9 +150,9 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () => BigNumber(stakingApr)
-      .multipliedBy(STAKING_PERIOD_INFO[period].rate),
-    [period, stakingApr]);
+    () => BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate),
+    [period, stakingApr],
+  );
 
   const aprStr = useMemo(() => {
     const periodStakingApr = aprNumber.toFormat(0);
@@ -160,13 +164,14 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
       <div className="left">
         <div className="mobile-wrap">
           <div
-            className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""
-              }`}
+            className={`check-wrap ${
+              !checkedStep ? "check-wrap-not-active" : ""
+            }`}
           >
             {checkedStep && <IconCheck />}
 
             {breakpoint === DEVICE_TYPE.MOBILE ||
-              breakpoint === DEVICE_TYPE.TABLET_M ? (
+            breakpoint === DEVICE_TYPE.TABLET_M ? (
               <div className="check-line-long">
                 {checkedStep ? (
                   <IconLineLong />
@@ -277,7 +282,6 @@ interface SummuryAprProps {
   period: StakingPeriodType;
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
-  rewardTokens: TokenModel[];
   stakingApr: string;
   loading: boolean;
   breakpoint: DEVICE_TYPE;
@@ -330,9 +334,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () => BigNumber(stakingApr)
-      .multipliedBy(STAKING_PERIOD_INFO[period].rate),
-    [period, stakingApr]
+    () => BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate),
+    [period, stakingApr],
   );
 
   const aprStr = useMemo(() => {
@@ -345,8 +348,9 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
       <div className="left">
         <div className="mobile-wrap">
           <div
-            className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""
-              }`}
+            className={`check-wrap ${
+              !checkedStep ? "check-wrap-not-active" : ""
+            }`}
           >
             {checkedStep && <IconCheck />}
           </div>
