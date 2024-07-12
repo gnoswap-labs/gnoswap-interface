@@ -12,6 +12,9 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { isAmount } from "@common/utils/data-check-util";
 import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 
+const SLIPPAGE_MIN = 0;
+const SLIPPAGE_MAX = 50;
+
 interface SettingMenuModalProps {
   slippage: string;
   changeSlippage: (value: string) => void;
@@ -87,11 +90,11 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
     if (inputRef && inputRef.current && !inputRef.current.contains(event.target as Node)) {
       const value = inputRef.current.value;
       if (value === "") {
-        changeSlippage("0");
-        setPrevios("0");
-      } else if (Number(value) > 30) {
-        changeSlippage("30");
-        setPrevios("30");
+        changeSlippage(SLIPPAGE_MIN.toString());
+        setPrevios(SLIPPAGE_MIN.toString());
+      } else if (Number(value) > SLIPPAGE_MAX) {
+        changeSlippage(SLIPPAGE_MAX.toString());
+        setPrevios(SLIPPAGE_MAX.toString());
       } else {
         setPrevios(Number(value).toString());
         changeSlippage(Number(value).toString());
