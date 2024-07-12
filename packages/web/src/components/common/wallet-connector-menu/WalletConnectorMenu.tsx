@@ -24,8 +24,8 @@ import BigNumber from "bignumber.js";
 import { ITokenResponse } from "@repositories/token";
 import { useTranslation } from "next-i18next";
 import { LANGUAGES } from "@constants/common.constant";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
-const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -95,6 +95,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   isLoadingGnotBalance,
 }) => {
   const { i18n, t } = useTranslation();
+  const { getAccountUrl } = useGnoscanUrl();
 
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -109,7 +110,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     }
   };
   const openLinkClick = () => {
-    window.open(`${URL_REDIRECT + account?.address}`, "_blank");
+    window.open(getAccountUrl(account?.address || ""), "_blank");
   };
 
   const menuRef = useRef<HTMLDivElement | null>(null);

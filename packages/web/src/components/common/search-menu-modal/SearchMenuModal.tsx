@@ -16,6 +16,7 @@ import {
   TokenInfoWrapper,
 } from "./SearchMenuModal.styles";
 import IconSearch from "@components/common/icons/IconSearch";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import Badge, { BADGE_TYPE } from "../badge/Badge";
 import DoubleLogo from "../double-logo/DoubleLogo";
 import IconNewTab from "../icons/IconNewTab";
@@ -26,7 +27,6 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
-import { SCANNER_URL } from "@common/values";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -54,6 +54,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   popularTokens,
   recents,
 }) => {
+  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
+
   const [, setRecentsData] = useAtom(TokenState.recents);
   const [widthListPopular, setWidthListPopular] = useState<number[]>(
     popularTokens.map(() => 0),
@@ -125,12 +127,12 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
       e.stopPropagation();
       if (path === "gnot") {
-        window.open(SCANNER_URL, "_blank");
+        window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(`${SCANNER_URL}/tokens/${path}`, "_blank");
+        window.open(getTokenUrl(path), "_blank");
       }
     },
-    [],
+    [getGnoscanUrl, getTokenUrl],
   );
 
   useEffect(() => {
