@@ -108,9 +108,9 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
       if (value === "") {
         changeSlippage("0");
         setPrevios("0");
-      } else if (Number(value) > 30) {
-        changeSlippage("30");
-        setPrevios("30");
+      } else if (Number(value) > 50) {
+        changeSlippage("50");
+        setPrevios("50");
       } else {
         setPrevios(Number(value).toString());
         changeSlippage(Number(value).toString());
