@@ -4,7 +4,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { CommonState, WalletState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
-import NetworkData from "@resources/chains.json";
+import { NetworkData } from "@constants/chains.constant";
 import * as uuid from "uuid";
 import {
   ACCOUNT_SESSION_INFO_KEY,
@@ -12,9 +12,8 @@ import {
   GNOWSWAP_CONNECTED_KEY,
 } from "@states/common";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CHAINS, DEFAULT_CHAIN_ID } from "@constants/environment.constant";
+import { SUPPORT_CHAIN_IDS, DEFAULT_CHAIN_ID } from "@constants/environment.constant";
 
-const CHAIN_ID = DEFAULT_CHAIN_ID;
 const balanceQueryKey = ["token-balance", "ugnot"];
 
 export const useWallet = () => {
@@ -97,10 +96,10 @@ export const useWallet = () => {
     }
   }
 
-  const switchNetwork = useCallback(async () => {
+  const switchNetwork = useCallback(async (network?: string) => {
     try {
       setLoadingConnect("loading");
-      const res = await accountRepository.switchNetwork(CHAIN_ID);
+      const res = await accountRepository.switchNetwork(network || DEFAULT_CHAIN_ID);
       if (res.code === 0) {
         const account = await accountRepository.getAccount();
         setWalletAccount(account);
@@ -144,7 +143,7 @@ export const useWallet = () => {
       if (established.code === 0 || established.code === 4001) {
         const account = await accountRepository.getAccount();
         sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
-        const availNetwork = CHAINS.includes(account.chainId);
+        const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
         if (!availNetwork) {
           switchNetwork();
         }
@@ -179,8 +178,8 @@ export const useWallet = () => {
 
   const isSwitchNetwork = useMemo(() => {
     if (!walletAccount) return true;
-    const network = CHAINS.includes(walletAccount.chainId);
-    return network ? false : true;
+    const availNetwork = SUPPORT_CHAIN_IDS.includes(walletAccount.chainId);
+    return availNetwork ? false : true;
   }, [walletAccount]);
 
   useEffect(() => {

@@ -24,7 +24,7 @@ import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
 import { GnoProvider, GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
-import ChainNetworkInfos from "@resources/chains.json";
+import { NetworkData } from "@constants/chains.constant";
 import { SwapRouterRepository } from "@repositories/swap/swap-router-repository";
 import { SwapRouterRepositoryImpl } from "@repositories/swap/swap-router-repository-impl";
 import { PositionRepository } from "@repositories/position/position-repository";
@@ -47,13 +47,8 @@ import {
 import { LeaderboardRepositoryMock } from "@repositories/leaderboard/leaderboard-repository-mock";
 import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-repository";
 import {
-  API_URL,
   DEFAULT_CHAIN_ID,
-  DEV_CHAIN_ID,
-  ROUTER_API_URL,
-  DEV_API_URL,
-  DEV_ROUTER_API_URL,
-  CHAINS,
+  SUPPORT_CHAIN_IDS,
 } from "@constants/environment.constant";
 import { NetworkClient } from "@common/clients/network-client";
 import { useRouter } from "next/navigation";
@@ -166,30 +161,18 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       return;
     }
 
-    const currentChainId = CHAINS.includes(walletAccount?.chainId || "")
+    const currentChainId = SUPPORT_CHAIN_IDS.includes(walletAccount?.chainId || "")
       ? walletAccount?.chainId
       : DEFAULT_CHAIN_ID;
     const network =
-      ChainNetworkInfos.find(info => info.chainId === currentChainId) ||
-      ChainNetworkInfos[0];
+      NetworkData.find(info => info.chainId === currentChainId) ||
+      NetworkData[0];
 
-    switch (currentChainId) {
-      case DEV_CHAIN_ID:
-        setNetworkClient(new AxiosClient(DEV_API_URL, () => {
-          router.push("/500");
-        }));
-        setRouterAPIClient(new AxiosClient(DEV_ROUTER_API_URL));
-        setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
-        break;
-      case DEFAULT_CHAIN_ID:
-      default:
-        setNetworkClient(new AxiosClient(API_URL, () => {
-          router.push("/500");
-        }));
-        setRouterAPIClient(new AxiosClient(ROUTER_API_URL));
-        setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl));
-        break;
-    }
+    setNetworkClient(new AxiosClient(network.apiUrl, () => {
+      router.push("/500");
+    }));
+    setRouterAPIClient(new AxiosClient(network.routerUrl));
+    setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
   }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);
 
   const accountRepository = useMemo(() => {

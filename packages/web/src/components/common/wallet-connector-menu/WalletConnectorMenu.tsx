@@ -25,7 +25,8 @@ import { ITokenResponse } from "@repositories/token";
 import { useTranslation } from "next-i18next";
 import { LANGUAGES } from "@constants/common.constant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-
+import { useAtomValue } from "jotai";
+import { CommonState } from "@states/index";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -96,6 +97,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
 }) => {
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
+  const network = useAtomValue(CommonState.network);
 
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -212,7 +214,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         </div>
         <div className="theme-container">
           <ThemeSelector>
-            <span>{t("HeaderFooter:theme")}</span>
+            <span title={network.chainId}>{t("HeaderFooter:theme")}</span>
             <ThemeModeContainer />
           </ThemeSelector>
         </div>

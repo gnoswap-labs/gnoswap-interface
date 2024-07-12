@@ -1,9 +1,4 @@
-import {
-  DEV_CHAIN_ID,
-  DEV_GNOSCAN_URL,
-  GNOSCAN_URL,
-} from "@constants/environment.constant";
-import { WalletState } from "@states/index";
+import { CommonState } from "@states/index";
 import { useAtomValue } from "jotai";
 
 export enum GnoscanDataType {
@@ -18,14 +13,14 @@ const TEMP_RPC_URL = "https%3A%2F%2Fdev.rpc.gnoswap.io";
 const TEMP_INDEXER_URL = "https%3A%2F%2Findexer-gnoswap.in.onbloc.xyz";
 
 export const useGnoscanUrl = () => {
-  const account = useAtomValue(WalletState.account);
+  const network = useAtomValue(CommonState.network);
 
   const getGnoscanUrl = (
     type: GnoscanDataType | "" = "",
     params = "",
   ): string => {
-    const chainId = account?.chainId || "";
-    const baseUrl = chainId === DEV_CHAIN_ID ? DEV_GNOSCAN_URL : GNOSCAN_URL;
+    const chainId = network.chainId || "";
+    const baseUrl = network.scannerUrl || "";
     let chainParams = "";
     if (["portal-loop", "test3"].includes(chainId)) {
       chainParams = `chainId=${chainId}`;
