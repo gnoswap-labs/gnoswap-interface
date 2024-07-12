@@ -1,7 +1,7 @@
 import TokenTradingModal from "@components/common/token-trading-modal/TokenTradingModal";
 import { useClearModal } from "@hooks/common/use-clear-modal";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TokenModel } from "@models/token/token-model";
-import { makeId } from "@utils/common";
 import React, { useCallback, useState } from "react";
 
 interface Props {
@@ -12,10 +12,11 @@ interface Props {
 
 const TokenTradingModalContainer: React.FC<Props> = ({ onClickConfirm, token, onClose }) => {
   const clearModal = useClearModal();
+  const { getTokenUrl } = useGnoscanUrl();
   const [checked, setChecked] = useState(false);
   const handleChecked = async () => {
     try {
-      const url = `https://gnoscan.io/tokens/${makeId(token?.path)}`;
+      const url = getTokenUrl(token?.path);
       await navigator.clipboard.writeText(url);
       if (!checked) {
         setChecked(true);

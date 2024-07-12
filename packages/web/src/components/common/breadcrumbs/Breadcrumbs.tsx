@@ -1,12 +1,12 @@
-import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
 import { type Steps } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import { cx } from "@emotion/css";
-import React, { useCallback } from "react";
-import { wrapper } from "./Breadcrumbs.styles";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
-import IconOpenLink from "../icons/IconOpenLink";
 import { useTheme } from "@emotion/react";
-import { SCANNER_URL } from "@common/values";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
+import React, { useCallback } from "react";
+import IconOpenLink from "../icons/IconOpenLink";
+import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
+import { wrapper } from "./Breadcrumbs.styles";
 
 interface BreadcrumbsProps {
   steps: Steps[];
@@ -15,6 +15,7 @@ interface BreadcrumbsProps {
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
   const theme = useTheme();
+  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
 
   const tokenPathDisplay = useCallback((token?: TokenModel) => {
     if (!token) return "";
@@ -43,12 +44,12 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
       e.stopPropagation();
       if (path === "gnot") {
-        window.open(SCANNER_URL, "_blank");
+        window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(`${SCANNER_URL}/tokens/${path}`, "_blank");
+        window.open(getTokenUrl(path), "_blank");
       }
     },
-    [],
+    [getGnoscanUrl, getTokenUrl],
   );
 
   const renderTitle = (step: Steps) => {

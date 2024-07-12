@@ -14,6 +14,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { convertToKMB } from "@utils/stake-position-utils";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 dayjs.extend(relativeTime);
 
 export interface Activity {
@@ -73,6 +74,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   const [activityType, setActivityType] = useState<ACTIVITY_TYPE>(
     ACTIVITY_TYPE.ALL,
   );
+  const { getTxUrl } = useGnoscanUrl();
   const { dashboardRepository } = useGnoswapContext();
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState<SortOption>();
@@ -142,7 +144,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   };
 
   const formatActivity = (res: OnchainActivityData): Activity => {
-    const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
+    const explorerUrl = getTxUrl(res?.txHash);
     const tokenASymbol = res.tokenA.symbol;
     const tokenBSymbol = res.tokenB.symbol;
     const shouldShowTokenAAmount =

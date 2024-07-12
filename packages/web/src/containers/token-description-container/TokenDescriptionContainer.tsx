@@ -3,6 +3,7 @@ import TokenDescription from "@components/token/token-description/TokenDescripti
 import useRouter from "@hooks/common/use-custom-router";
 import { useGetTokenByPath } from "@query/token";
 import { useLoading } from "@hooks/common/use-loading";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 export interface DescriptionInfo {
   token: {
@@ -31,12 +32,13 @@ export const descriptionInit: DescriptionInfo = {
     website_url: "string",
   },
   links: {
-    Website: "gnoswap.io",
-    Gnoscan: "gnoscan.io/tokens/r_demo_grc20_GNOS",
+    Website: "https://gnoswap.io",
+    Gnoscan: "https://gnoscan.io/tokens/r/demo/wugnot",
   },
 };
 
 const TokenDescriptionContainer: React.FC = () => {
+  const { getTokenUrl } = useGnoscanUrl();
   const [descriptionInfo, setDescriptionInfo] =
     useState<DescriptionInfo>(descriptionInit);
   const [copied, setCopied] = useState(false);
@@ -72,11 +74,11 @@ const TokenDescriptionContainer: React.FC = () => {
         },
         links: {
           Website: tokenB.websiteURL || "",
-          Gnoscan: `https://gnoscan.io/tokens/${tokenB.path}`,
+          Gnoscan: getTokenUrl(tokenB.path),
         },
       }));
     }
-  }, [router.query, tokenB]);
+  }, [router.query, tokenB, getTokenUrl]);
 
   return (
     <TokenDescription

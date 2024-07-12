@@ -6,7 +6,7 @@ import {
 } from "./EarnMyPositionsHeader.styles";
 import Switch from "@components/common/switch/Switch";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { SCANNER_URL } from "@common/values";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 export interface EarnMyPositionsHeaderProps {
   address?: string | null;
@@ -38,14 +38,15 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   isClosed,
   handleChangeClosed,
 }) => {
+  const { getAccountUrl } = useGnoscanUrl();
+
   const disabledStake = useMemo(() => {
     return !connected || isSwitchNetwork || !availableStake;
   }, [availableStake, connected, isSwitchNetwork]);
 
   const onClickAddressPosition = useCallback(() => {
-    const scannerUrl = `${SCANNER_URL}/accounts/${address}`;
-    window.open(scannerUrl, "_blank");
-  }, [address]);
+    if (address) window.open(getAccountUrl(address), "_blank");
+  }, [address, getAccountUrl]);
 
   const onClickNewPosition = useCallback(() => {
     moveEarnAdd();
