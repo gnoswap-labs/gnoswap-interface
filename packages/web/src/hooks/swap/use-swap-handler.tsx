@@ -446,7 +446,7 @@ export const useSwapHandler = () => {
         protocolFee,
       };
     }
-    const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
+
     const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
     const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
 
@@ -469,8 +469,8 @@ export const useSwapHandler = () => {
         ? 100
         : Number(priceImpact?.toFixed(2)),
       guaranteedAmount: {
-        amount: makeDisplayTokenAmount(targetTokenB, tokenAmountLimit) || 0,
-        currency: targetTokenB.symbol,
+        amount: tokenAmountLimit || 0,
+        currency: (type === "EXACT_IN" ? tokenB : tokenA).symbol,
       },
       gasFee: {
         amount: defaultGasFeeAmount,
