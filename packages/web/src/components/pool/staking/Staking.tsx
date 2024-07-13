@@ -4,13 +4,11 @@ import StakingHeader from "@components/pool/staking-header/StakingHeader";
 import { StakingAnchor, StakingWrapper } from "./Staking.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenModel } from "@models/token/token-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 interface StakingProps {
   totalApr: string;
   stakedPosition: PoolPositionModel[];
-  rewardTokens: TokenModel[];
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
   isDisabledButton: boolean;
@@ -25,7 +23,6 @@ interface StakingProps {
 const Staking: React.FC<StakingProps> = ({
   totalApr,
   stakedPosition,
-  rewardTokens,
   breakpoint,
   mobile,
   isDisabledButton,
@@ -53,7 +50,6 @@ const Staking: React.FC<StakingProps> = ({
           pool={pool}
           totalApr={totalApr}
           stakedPosition={stakedPosition}
-          rewardTokens={rewardTokens}
           breakpoint={breakpoint}
           mobile={mobile}
           type={type}

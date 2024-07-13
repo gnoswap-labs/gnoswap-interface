@@ -65,9 +65,11 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
   return (
     <GnoswapBrandWrapper>
       <HeroTitleContainer>
-        <TitleWrapper
-          dangerouslySetInnerHTML={{ __html: t("Main:brand.introduction") }}
-        />
+        <TitleWrapper>
+          <span>Swap</span> and <span>Earn</span>
+          <br />
+          on Gnoswap
+        </TitleWrapper>
         <SubTitleWrapper>{t("Main:theOne")}</SubTitleWrapper>
       </HeroTitleContainer>
       {windowSize > DeviceSize.mobile && (

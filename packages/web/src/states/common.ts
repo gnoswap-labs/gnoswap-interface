@@ -3,6 +3,7 @@ import { NetworkModel } from "@models/common/network-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { atom } from "jotai";
 import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
+import { NetworkData } from "@constants/chains.constant";
 
 interface HeaderToggleProps {
   walletConnect: boolean;
@@ -28,7 +29,7 @@ export const breakpoint = atom<DEVICE_TYPE>(DEVICE_TYPE.WEB);
 
 export const currentWidth = atom<number>(0);
 
-export const network = atom<NetworkModel | null>(null);
+export const network = atom<NetworkModel>(NetworkData[0]);
 
 export const slippage = atom<string>(DEFAULT_SLIPPAGE);
 
@@ -41,7 +42,7 @@ export type TransactionConfirmStatus =
 export const transactionModalData = atom<{
   status: TransactionConfirmStatus;
   description: string | null;
-  scannerURL: string | null;
+  txHash: string | null;
   callback?: () => void;
 } | null>(null);
 

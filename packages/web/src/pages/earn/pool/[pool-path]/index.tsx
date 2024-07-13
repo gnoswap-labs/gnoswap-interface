@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
 import PoolLayout from "@layouts/pool-layout/PoolLayout";
@@ -33,6 +33,7 @@ export default function Pool() {
   const { account } = useWallet();
   const poolPath = (router.query["pool-path"] || "") as string;
   const { getGnotPath } = useGnotToGnot();
+  const jumpFlagRef = useRef(false);
   const { data } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
     onError: (err: any) => {
@@ -89,25 +90,18 @@ export default function Pool() {
       return;
     }
 
-    if (address && isFetchedPosition && !loading && poolPath) {
+    if (
+      address &&
+      isFetchedPosition &&
+      !loading &&
+      poolPath &&
+      !jumpFlagRef.current
+    ) {
       if (hash && hash !== "staking") {
         const position = positions.find(item => item.id === hash);
         const isClosedPosition = !position || position?.closed;
 
-        if (isClosedPosition) {
-          setTimeout(() => {
-            const positionContainerElement =
-              document.getElementById("liquidity-wrapper");
-            const topPosition = positionContainerElement?.offsetTop;
-            if (!topPosition) {
-              return;
-            }
-            window.scrollTo({
-              top: topPosition,
-            });
-          });
-        }
-
+        jumpFlagRef.current = true;
         setTimeout(() => {
           if (isClosedPosition) {
             const positionContainerElement =
@@ -133,6 +127,7 @@ export default function Pool() {
         return;
       }
 
+      jumpFlagRef.current = true;
       setTimeout(() => {
         const positionContainerElement =
           document.getElementById("liquidity-wrapper");
@@ -151,25 +146,13 @@ export default function Pool() {
       hash !== "staking" &&
       isFetchedPosition &&
       !loading &&
-      poolPath
+      poolPath &&
+      !jumpFlagRef.current
     ) {
       const position = positions.find(item => item.id === hash);
       const isClosedPosition = !position || position?.closed;
 
-      if (isClosedPosition) {
-        setTimeout(() => {
-          const positionContainerElement =
-            document.getElementById("liquidity-wrapper");
-          const topPosition = positionContainerElement?.offsetTop;
-          if (!topPosition) {
-            return;
-          }
-          window.scrollTo({
-            top: topPosition,
-          });
-        });
-      }
-
+      jumpFlagRef.current = true;
       setTimeout(() => {
         if (isClosedPosition) {
           const positionContainerElement =

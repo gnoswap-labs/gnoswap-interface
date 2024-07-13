@@ -36,7 +36,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { useRouterBack } from "@hooks/common/use-router-back";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -180,7 +180,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return {
       depositRatio,
       feeBoost,
-      estimatedApr: numberToRate(selectPool.estimatedAPR) ?? "-",
+      estimatedApr: formatApr(selectPool.estimatedAPR) ?? "-",
     };
   }, [
     selectPool.currentPrice,

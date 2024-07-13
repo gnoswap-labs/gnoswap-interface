@@ -25,7 +25,7 @@ export const loadingWrapper = (theme: Theme) => css`
   > span {
     margin-top: 6px;
     color: ${theme.color.text04};
-    ${fonts.body11}
+    ${fonts.body11};
   }
   > div {
     width: 48px;
@@ -34,5 +34,6 @@ export const loadingWrapper = (theme: Theme) => css`
       background-color: ${theme.color.background01};
       width: 38px;
       height: 38px;
+    }
   }
 `;

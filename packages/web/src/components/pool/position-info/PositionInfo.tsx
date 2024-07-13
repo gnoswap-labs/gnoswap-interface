@@ -15,6 +15,7 @@ import { prettyNumber } from "@utils/number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { MOBILE_POSITION_HISTORY_INFO, POSITION_HISTORY_INFO, TABLET_POSITION_HISTORY_INFO } from "@constants/skeleton.constant";
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 dayjs.extend(relativeTime);
 
@@ -33,6 +34,7 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
   tokenASymbol,
   tokenBSymbol,
 }) => {
+  const { getTxUrl } = useGnoscanUrl();
   const { time, type, usdValue, amountA, amountB, txHash } = item;
   const tableInfo =
     breakpoint === DEVICE_TYPE.MOBILE
@@ -53,9 +55,7 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
           <span className="position-index">
             {type}
             <IconButton
-              onClick={() => {
-                window.open(`https://gnoscan.io/transactions/details?txhash=${txHash}`, "_blank");
-              }}
+              onClick={() => window.open(getTxUrl(txHash), "_blank")}
             >
               <IconOpenLink className="action-icon" />
             </IconButton>

@@ -8,7 +8,7 @@ import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
 import React, { useMemo } from "react";
 import {
   DepositRatioWrapper,
@@ -153,9 +153,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">
-            {isLoading ? loadingComp : numberToRate(aprFee)}
-          </p>
+          <p className="value">{isLoading ? loadingComp : formatApr(aprFee)}</p>
         </div>
       </div>
     </DepositRatioWrapper>

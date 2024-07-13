@@ -2,12 +2,12 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import React, { useCallback, useState } from "react";
 import { HeaderWrapper } from "./MyLiquidityHeader.styles";
 import Switch from "@components/common/switch/Switch";
-import { SCANNER_URL } from "@common/values";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
 import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
 import { CopyTooltip } from "../my-position-card/MyPositionCard.styles";
 import IconPolygon from "@components/common/icons/IconPolygon";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 interface MyLiquidityHeaderProps {
   isOtherPosition: boolean;
@@ -42,10 +42,10 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
+  const { getAccountUrl } = useGnoscanUrl();
   const onClickAddressPosition = useCallback(() => {
-    const scannerUrl = `${SCANNER_URL}/accounts/${address}`;
-    window.open(scannerUrl, "_blank");
-  }, [address]);
+    if (address) window.open(getAccountUrl(address), "_blank");
+  }, [address, getAccountUrl]);
 
   const onClickCopy = async () => {
     try {

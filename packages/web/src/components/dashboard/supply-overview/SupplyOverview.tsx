@@ -70,7 +70,14 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
       <div className="total-supply">
         <div className="label-title">
           Total Supply
-          <DashboardLabel tooltip={<>The total supply of GNS tokens is <br />1,000,000,000 GNS.</>} />
+          <DashboardLabel
+            tooltip={
+              <>
+                The total supply of GNS tokens is <br />
+                1,000,000,000 GNS.
+              </>
+            }
+          />
         </div>
         {!loading ? (
           <div className="supply-value">{supplyOverviewInfo.totalSupply}</div>
@@ -85,7 +92,9 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
             <DashboardLabel tooltip="The sum of liquid GNS tokens including released vesting allocations and cumulative block emissions." />
           </div>
           {!loading ? (
-            <div className="supply-value">{supplyOverviewInfo.circulatingSupply}</div>
+            <div className="supply-value">
+              {supplyOverviewInfo.circulatingSupply} GNS
+            </div>
           ) : (
             <LoadingText />
           )}
@@ -105,7 +114,9 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         </div>
         <div className="daily-block-emissions-tooltip">
           {!loading ? (
-            <div className="supply-value">{supplyOverviewInfo.dailyBlockEmissions}</div>
+            <div className="supply-value">
+              {supplyOverviewInfo.dailyBlockEmissions}
+            </div>
           ) : (
             <LoadingText />
           )}

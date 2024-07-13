@@ -3,6 +3,7 @@ import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
 import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import IconCircleInMore from "@components/common/icons/IconCircleInMore";
 import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import {
   DoubleLogoWrapperTest,
   TxsDateAgoTitle,
@@ -22,6 +23,7 @@ interface ItemProps {
 
 const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
   const { title, txs } = groups;
+  const { getTxUrl } = useGnoscanUrl();
 
   return (
     <TxsListItem key={title}>
@@ -35,12 +37,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         if (breakpoint === DEVICE_TYPE.MOBILE) {
           return (
             <TransactionItemsWrap
-              onClick={() =>
-                window.open(
-                  `https://gnoscan.io/transactions/details?txhash=${item.txHash}`,
-                  "_blank",
-                )
-              }
+              onClick={() => window.open(getTxUrl(item.txHash), "_blank")}
               key={idx}
             >
               <div className="list">
@@ -101,12 +98,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
 
         return (
           <TxsSummaryItem
-            onClick={() =>
-              window.open(
-                `https://gnoscan.io/transactions/details?txhash=${item.txHash}`,
-                "_blank",
-              )
-            }
+            onClick={() => window.open(getTxUrl(item.txHash), "_blank")}
             key={idx}
           >
             {item.txType === 1 ? (

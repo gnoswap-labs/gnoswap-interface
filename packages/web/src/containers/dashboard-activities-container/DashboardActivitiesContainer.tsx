@@ -11,9 +11,10 @@ import {
 import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
-import { prettyNumber } from "@utils/number-utils";
+import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { convertToKMB } from "@utils/stake-position-utils";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 dayjs.extend(relativeTime);
 
 export interface Activity {
@@ -73,6 +74,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   const [activityType, setActivityType] = useState<ACTIVITY_TYPE>(
     ACTIVITY_TYPE.ALL,
   );
+  const { getTxUrl } = useGnoscanUrl();
   const { dashboardRepository } = useGnoswapContext();
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState<SortOption>();
@@ -125,8 +127,8 @@ const DashboardActivitiesContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setSortOption({
         key,
@@ -142,38 +144,62 @@ const DashboardActivitiesContainer: React.FC = () => {
   };
 
   const formatActivity = (res: OnchainActivityData): Activity => {
-    const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
+    const explorerUrl = getTxUrl(res?.txHash);
     const tokenASymbol = res.tokenA.symbol;
     const tokenBSymbol = res.tokenB.symbol;
-    const shouldShowTokenAAmount = res.actionType !== "CLAIM" || (!!res.tokenAAmount && !!Number(res.tokenAAmount));
-    const shouldShowTokenBAmount = res.actionType !== "CLAIM" || !!res.tokenBAmount && !!Number(res.tokenBAmount);
+    const shouldShowTokenAAmount =
+      res.actionType !== "CLAIM" ||
+      (!!res.tokenAAmount && !!Number(res.tokenAAmount));
+    const shouldShowTokenBAmount =
+      res.actionType !== "CLAIM" ||
+      (!!res.tokenBAmount && !!Number(res.tokenBAmount));
 
     const actionText = (() => {
       const action = capitalizeFirstLetter(res.actionType);
-      const tokenAText = (shouldShowTokenAAmount && tokenASymbol) ? " " + replaceToken(tokenASymbol) : "";
-      const tokenBText = (shouldShowTokenBAmount && tokenBSymbol) ? " " + replaceToken(tokenBSymbol) : "";
+      const tokenAText =
+        shouldShowTokenAAmount && tokenASymbol
+          ? " " + replaceToken(tokenASymbol)
+          : "";
+      const tokenBText =
+        shouldShowTokenBAmount && tokenBSymbol
+          ? " " + replaceToken(tokenBSymbol)
+          : "";
       const haveOneToken = !tokenAText || !tokenBText;
-      const conjunction = !haveOneToken ? " " + (res.actionType === "SWAP" ? "for" : "and") : "";
+      const conjunction = !haveOneToken
+        ? " " + (res.actionType === "SWAP" ? "for" : "and")
+        : "";
 
       return `${action}${tokenAText}${conjunction}${tokenBText}`;
     })();
 
-    const tokenAAmount = (tokenASymbol && shouldShowTokenAAmount) ? `${convertToKMB(
-      res.tokenAAmount,
-      { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
-    )} ${replaceToken(res.tokenA.symbol)}` : "-";
+    const tokenAAmount =
+      tokenASymbol && shouldShowTokenAAmount
+        ? `${convertToKMB(res.tokenAAmount, {
+            maximumSignificantDigits: 10,
+            minimumSignificantDigits: 10,
+          })} ${replaceToken(res.tokenA.symbol)}`
+        : "-";
 
-    const tokenBAmount = (tokenBSymbol && shouldShowTokenBAmount) ? `${convertToKMB(
-      res.tokenBAmount,
-      { maximumSignificantDigits: 10, minimumSignificantDigits: 10 }
-    )} ${replaceToken(res.tokenB.symbol)}` : "-";
+    const tokenBAmount =
+      tokenBSymbol && shouldShowTokenBAmount
+        ? `${convertToKMB(res.tokenBAmount, {
+            maximumSignificantDigits: 10,
+            minimumSignificantDigits: 10,
+          })} ${replaceToken(res.tokenB.symbol)}`
+        : "-";
 
     return {
       action: actionText,
-      totalValue:
-        Number(res.totalUsd) < 0.01 && Number(res.totalUsd)
-          ? "<$0.01"
-          : `$${prettyNumber(res.totalUsd)}`,
+      totalValue: res.totalUsd
+        ? toPriceFormatNotRounding(res.totalUsd, {
+            usd: true,
+            isKMBFormat: false,
+            lestThan1Decimals: 2,
+            greaterThan1Decimals: 2,
+            fixedGreaterThan1: true,
+            fixedLessThan1: true,
+          })
+        : "-",
       tokenAmountOne: tokenAAmount,
       tokenAmountTwo: tokenBAmount,
       account: res.account,
@@ -184,7 +210,11 @@ const DashboardActivitiesContainer: React.FC = () => {
 
   return (
     <ActivityList
-      activities={(activities.filter(item => (Number(item.tokenAAmount)) || Number(item.tokenBAmount)) ?? []).map(x => formatActivity(x))}
+      activities={(
+        activities.filter(
+          item => Number(item.tokenAAmount) || Number(item.tokenBAmount),
+        ) ?? []
+      ).map(x => formatActivity(x))}
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

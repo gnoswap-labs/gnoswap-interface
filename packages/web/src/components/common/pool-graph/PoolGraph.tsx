@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { PoolGraphTooltipWrapper, PoolGraphWrapper } from "./PoolGraph.styles";
 import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -86,7 +92,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   showBar = true,
 }) => {
   const graphIdRef = useRef(Math.random());
-  const defaultMinX = Math.min(...(bins).map(bin => bin.minTick));
+  const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -97,7 +103,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
 
-  const getBinId = useCallback((index: number) => `pool-graph-bin-${graphIdRef.current}-${index}`, []);
+  const getBinId = useCallback(
+    (index: number) => `pool-graph-bin-${graphIdRef.current}-${index}`,
+    [],
+  );
 
   // D3 - Dimension Definition
   const minX = d3.min(bins, bin => bin.minTick - defaultMinX) || 0;
@@ -259,8 +268,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .attr("class", "bin-wrapper")
         .attr("id", bin => getBinId(bin.index))
         .each(function (bin) {
-          d3
-            .select(this)
+          d3.select(this)
             .append("rect")
             .style("fill", "transparent")
             .attr("class", "bin-inner")
@@ -286,8 +294,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
                   : 0)
               );
             });
-          d3
-            .select(this)
+          d3.select(this)
             .append("rect")
             .style("fill", fillByBin(bin))
             .attr("class", "bin-inner")
@@ -353,7 +360,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
       return bin.index === isHoveringIndex;
     });
-    if (currentBin?.index && (currentBin?.index !== lastHoverBinIndexRef.current)) {
+    if (
+      currentBin?.index &&
+      currentBin?.index !== lastHoverBinIndexRef.current
+    ) {
       lastHoverBinIndexRef.current = currentBin?.index;
     }
 
@@ -367,11 +377,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (
       Math.abs(height - mouseY - 0.0001) >
       boundsHeight -
-      scaleY(currentBin.reserveTokenMap) +
-      (scaleY(currentBin.reserveTokenMap) > height - 3 &&
+        scaleY(currentBin.reserveTokenMap) +
+        (scaleY(currentBin.reserveTokenMap) > height - 3 &&
         scaleY(currentBin.reserveTokenMap) !== height
-        ? 3
-        : 0)
+          ? 3
+          : 0)
     ) {
       setPositionX(null);
       setPositionY(null);
@@ -409,7 +419,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       isBlackBar = !!(
         maxTickPosition &&
         minTickPosition &&
-        (scaleX(currentBin.minTick) < scaleX(maxX) - maxTickPosition - tickSpacing ||
+        (scaleX(currentBin.minTick) <
+          scaleX(maxX) - maxTickPosition - tickSpacing ||
           scaleX(currentBin.minTick) > scaleX(maxX) - minTickPosition)
       );
     }
@@ -418,37 +429,37 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       tokenB: tokenB,
       tokenAAmount: tokenAAmountStr
         ? formatTokenExchangeRate(tokenAAmountStr.toString(), {
-          maxSignificantDigits: 6,
-          minLimit: 0.000001,
-          fixedDecimalDigits: 6
-        })
+            maxSignificantDigits: 6,
+            minLimit: 0.000001,
+            fixedDecimalDigits: 6,
+          })
         : "-",
       tokenBAmount: tokenBAmountStr
         ? formatTokenExchangeRate(tokenBAmountStr.toString(), {
-          maxSignificantDigits: 6,
-          minLimit: 0.000001,
-          fixedDecimalDigits: 6
-        })
+            maxSignificantDigits: 6,
+            minLimit: 0.000001,
+            fixedDecimalDigits: 6,
+          })
         : "-",
       myTokenAAmount:
         index < 20
           ? "-"
           : index > 19 && `${currentBin.reserveTokenAMyAmount}` === "0"
-            ? "<0.000001"
-            : formatTokenExchangeRate((myTokenAAmountStr).toString(), {
+          ? "<0.000001"
+          : formatTokenExchangeRate(myTokenAAmountStr.toString(), {
               maxSignificantDigits: 6,
               minLimit: 0.000001,
-              fixedDecimalDigits: 6
+              fixedDecimalDigits: 6,
             }) || "-",
       myTokenBAmount:
         index > 19
           ? "-"
           : index < 20 && `${currentBin.reserveTokenBMyAmount}` === "0"
-            ? "<0.000001"
-            : formatTokenExchangeRate((myTokenBAmountStr).toString(), {
+          ? "<0.000001"
+          : formatTokenExchangeRate(myTokenBAmountStr.toString(), {
               maxSignificantDigits: 6,
               minLimit: 0.000001,
-              fixedDecimalDigits: 6
+              fixedDecimalDigits: 6,
             }) || "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
@@ -492,14 +503,16 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           })
           .reduce<{ [key in number]: string }>((acc, current) => {
             if (!acc[current]) {
-              const priceStr = tickToPriceStr(current, { decimals: 40, isFormat: false });
+              const priceStr = tickToPriceStr(current, {
+                decimals: 40,
+                isFormat: false,
+              });
 
-              acc[current] = formatTokenExchangeRate(
-                priceStr, {
+              acc[current] = formatTokenExchangeRate(priceStr, {
                 maxSignificantDigits: 6,
                 minLimit: 0.000001,
                 isInfinite: priceStr === "∞",
-                fixedDecimalDigits: 6
+                fixedDecimalDigits: 6,
               });
             }
             return acc;
@@ -555,7 +568,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         position={tooltipPosition}
         offset={offset}
         content={
-          (showBar && tooltipInfo) ? (
+          showBar && tooltipInfo ? (
             <PoolGraphTooltipWrapper
               ref={tooltipRef}
               className={`tooltip-container ${themeKey}-shadow}`}
@@ -720,10 +733,11 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           </span>
           <span className="amount total-amount">
             <span
-              className={`token-amount-value hidden ${(tooltipInfo.tokenAAmount || "0").length > 21
-                ? "small-font"
-                : ""
-                }`}
+              className={`token-amount-value hidden ${
+                (tooltipInfo.tokenAAmount || "0").length > 21
+                  ? "small-font"
+                  : ""
+              }`}
             >
               {tooltipInfo.tokenAAmount || "0"}
             </span>
@@ -738,12 +752,13 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             ""
           )}
           <span
-            className={`price-range price-range-value ${(tokenAPriceRangeStr.length || 0) > 21 ? "small-font" : ""
-              }`}
+            className={`price-range price-range-value ${
+              (tokenAPriceRangeStr.length || 0) > 21 ? "small-font" : ""
+            }`}
           >
             {tokenAPriceRangeStr}
           </span>
-        </div >
+        </div>
         <div className="row">
           <span className="token">
             <MissingLogo
@@ -757,10 +772,11 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           </span>
           <span className="amount total-amount">
             <span
-              className={`token-amount-value hidden ${(tooltipInfo.tokenBAmount || "0").length > 21
-                ? "small-font"
-                : ""
-                }`}
+              className={`token-amount-value hidden ${
+                (tooltipInfo.tokenBAmount || "0").length > 21
+                  ? "small-font"
+                  : ""
+              }`}
             >
               {tooltipInfo.tokenBAmount || "0"}
             </span>
@@ -775,14 +791,15 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             ""
           )}
           <span
-            className={`price-range price-range-value ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""
-              }`}
+            className={`price-range price-range-value ${
+              (tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""
+            }`}
           >
             {tokenBPriceRangeStr}
           </span>
-        </div >
-      </div >
-    </div >
+        </div>
+      </div>
+    </div>
   ) : (
     <></>
   );

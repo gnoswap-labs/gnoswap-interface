@@ -24,8 +24,9 @@ import BigNumber from "bignumber.js";
 import { ITokenResponse } from "@repositories/token";
 import { useTranslation } from "next-i18next";
 import { LANGUAGES } from "@constants/common.constant";
-
-const URL_REDIRECT = "https://gnoscan.io/accounts/";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { useAtomValue } from "jotai";
+import { CommonState } from "@states/index";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -95,6 +96,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   isLoadingGnotBalance,
 }) => {
   const { i18n, t } = useTranslation();
+  const { getAccountUrl } = useGnoscanUrl();
+  const network = useAtomValue(CommonState.network);
 
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -109,7 +112,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     }
   };
   const openLinkClick = () => {
-    window.open(`${URL_REDIRECT + account?.address}`, "_blank");
+    window.open(getAccountUrl(account?.address || ""), "_blank");
   };
 
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -211,7 +214,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         </div>
         <div className="theme-container">
           <ThemeSelector>
-            <span>{t("HeaderFooter:theme")}</span>
+            <span title={network.chainId}>{t("HeaderFooter:theme")}</span>
             <ThemeModeContainer />
           </ThemeSelector>
         </div>

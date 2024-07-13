@@ -14,7 +14,7 @@ import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
-import { toUnitFormat } from "@utils/number-utils";
+import { toPriceFormatRounding } from "@utils/number-utils";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
@@ -57,7 +57,7 @@ export const bestPoolListInit: BestPool[] = [
 ];
 
 const BestPoolsContainer: React.FC = () => {
-  const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
+  const { wugnotPath, getGnotPath } = useGnotToGnot();
   const router = useRouter();
   const path = router.query["token-path"] as string;
   const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(
@@ -96,11 +96,15 @@ const BestPoolsContainer: React.FC = () => {
         poolPath: temp?.poolPath || "",
         id: temp?.id || "",
         feeRate: `FEE_${item.fee || "100"}` as SwapFeeTierType,
-        tvl: `${toUnitFormat(item.tvlUsd, true, true)}`,
+        tvl: item.tvlUsd
+          ? `${toPriceFormatRounding(item.tvlUsd, {
+              usd: true,
+            })}`
+          : "-",
         apr: item.apr,
       };
     });
-  }, [bestPools, pools.toString(), gnot, wugnotPath]);
+  }, [bestPools, getGnotPath, pools]);
 
   return (
     <BestPools

@@ -1,5 +1,5 @@
-import { SCANNER_URL } from "@common/values";
 import { useTheme } from "@emotion/react";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import IconOpenLink from "../icons/IconOpenLink";
@@ -20,6 +20,7 @@ export interface TokenInfoCellProps {
 function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const { name, path, symbol, logoURI } = token;
   const theme = useTheme();
+  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const [shortenPath, setShortenPath] = useState(false);
   const elementId = useMemo(
     () => `${Math.random()}${token.path}`,
@@ -75,12 +76,12 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
       if (path === "gnot") {
-        window.open(SCANNER_URL, "_blank");
+        window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(`${SCANNER_URL}/tokens/${path}`, "_blank");
+        window.open(getTokenUrl(path), "_blank");
       }
     },
-    [path],
+    [path, getGnoscanUrl, getTokenUrl],
   );
 
   return (

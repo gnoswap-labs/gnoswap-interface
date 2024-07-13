@@ -28,6 +28,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { useGetPoolCreationFee } from "@query/pools";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { subscriptFormat } from "@utils/number-utils";
+import { GNS_TOKEN } from "@common/values/token-constant";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -89,9 +90,9 @@ export const useEarnAddLiquidityConfirmModal = ({
     broadcastError,
   } = useBroadcastHandler();
   const router = useRouter();
-  const { tokens, displayBalanceMap } = useTokenData();
+  const { displayBalanceMap } = useTokenData();
   const { data: creationFee, refetch: refetchGetPoolCreationFee } =
-    useGetPoolCreationFee({});
+    useGetPoolCreationFee();
 
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -257,24 +258,20 @@ export const useEarnAddLiquidityConfirmModal = ({
     };
   }, [selectPool, tokenA, tokenB]);
 
-  const gnsToken = tokens.find(item => item.priceID === GNS_TOKEN_PATH);
-
   const feeInfo = useMemo((): {
     token?: TokenModel;
     fee: string;
     errorMsg?: string;
   } => {
     return {
-      token: gnsToken,
-      fee: gnsToken
-        ? `${makeDisplayTokenAmount(gnsToken, creationFee || 0)}`
+      token: GNS_TOKEN,
+      fee: GNS_TOKEN
+        ? `${makeDisplayTokenAmount(GNS_TOKEN, creationFee || 0)}`
         : "",
       errorMsg: (() => {
-        if (!gnsToken) return;
-
         let totalGnsAmount =
-          makeDisplayTokenAmount(gnsToken, creationFee || 0) || 0;
-        const gnsBalance = displayBalanceMap[gnsToken?.priceID ?? ""] || 0;
+          makeDisplayTokenAmount(GNS_TOKEN, creationFee || 0) || 0;
+        const gnsBalance = displayBalanceMap[GNS_TOKEN?.priceID ?? ""] || 0;
 
         if (tokenA?.priceID === GNS_TOKEN_PATH) {
           totalGnsAmount += Number(tokenAAmount);
@@ -292,7 +289,6 @@ export const useEarnAddLiquidityConfirmModal = ({
   }, [
     creationFee,
     displayBalanceMap,
-    gnsToken,
     tokenA,
     tokenAAmount,
     tokenB,

@@ -6,13 +6,19 @@ import { useRemoveData } from "@hooks/stake/use-remove-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import React, { useCallback, useMemo } from "react";
-import { Divider, RemovePositionModalWrapper, RemoveWarningContentWrapper, ToolTipContentWrapper } from "./RemovePositionModal.styles";
+import {
+  Divider,
+  RemovePositionModalWrapper,
+  RemoveWarningContentWrapper,
+  ToolTipContentWrapper,
+} from "./RemovePositionModal.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
 import { numberToRate } from "@utils/string-utils";
+import { useGetWithdrawalFee } from "@query/pools";
 
 interface Props {
   selectedPosition: PoolPositionModel[];
@@ -21,8 +27,16 @@ interface Props {
   onSubmit: () => void;
 }
 
-const RemovePositionModal: React.FC<Props> = ({ selectedPosition, close, onSubmit, allPositions }) => {
-  const { unclaimedRewards, totalLiquidityUSD } = useRemoveData({ selectedPosition });
+const RemovePositionModal: React.FC<Props> = ({
+  selectedPosition,
+  close,
+  onSubmit,
+  allPositions,
+}) => {
+  const { unclaimedRewards, totalLiquidityUSD } = useRemoveData({
+    selectedPosition,
+  });
+  const { data: withdrawalFee } = useGetWithdrawalFee();
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -64,9 +78,15 @@ const RemovePositionModal: React.FC<Props> = ({ selectedPosition, close, onSubmi
                       rightSymbol={position.pool.tokenB.symbol}
                     />
                     <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
-                    <Badge className="position-bar" text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
+                    <Badge
+                      className="position-bar"
+                      text={`${Number(position.pool.fee) / 10000}%`}
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                    />
                   </div>
-                  <div className="value">{numberToUSD(Number(position.positionUsdValue))}</div>
+                  <div className="value">
+                    {numberToUSD(Number(position.positionUsdValue))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -86,7 +106,9 @@ const RemovePositionModal: React.FC<Props> = ({ selectedPosition, close, onSubmi
                         />
                         <div>{rewardInfo.token.symbol}</div>
                       </div>
-                      <div className="value">{formatNumberToLocaleString(rewardInfo.amount)}</div>
+                      <div className="value">
+                        {formatNumberToLocaleString(rewardInfo.amount)}
+                      </div>
                     </div>
                     <div className="sub-value">{rewardInfo.amountUSD}</div>
                   </div>
@@ -96,24 +118,30 @@ const RemovePositionModal: React.FC<Props> = ({ selectedPosition, close, onSubmi
                   <div className="protocol">
                     <div>
                       <span className="">Protocol Fee</span>
-                      <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper width="251px">The amount of fees charged on each claim that goes to the protocol.</ToolTipContentWrapper>}>
+                      <Tooltip
+                        placement="top"
+                        FloatingContent={
+                          <ToolTipContentWrapper width="251px">
+                            The amount of fees charged on each claim that goes
+                            to the protocol.
+                          </ToolTipContentWrapper>
+                        }
+                      >
                         <IconInfo />
                       </Tooltip>
                     </div>
-                    <span className="white-text">0%</span>
+                    <span className="white-text">
+                      {withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}
+                    </span>
                   </div>
                 </div>
-
               </div>
-
             </div>
             <Divider />
             <div className="box-item">
               <div className="item-content">
                 <div>
-                  <div className="label-large">
-                    Total Amount
-                  </div>
+                  <div className="label-large">Total Amount</div>
                   <div className="value-large">{totalLiquidityUSD}</div>
                 </div>
               </div>
@@ -121,9 +149,12 @@ const RemovePositionModal: React.FC<Props> = ({ selectedPosition, close, onSubmi
             <WarningCard
               title={"Important Note"}
               icon={<IconCircleExclamationMark />}
-              content={<RemoveWarningContentWrapper>
-                You will stop earning swap fee rewards of <span className="remove-percent">{warningPercent} APR</span>
-              </RemoveWarningContentWrapper>}
+              content={
+                <RemoveWarningContentWrapper>
+                  You will stop earning swap fee rewards of{" "}
+                  <span className="remove-percent">{warningPercent} APR</span>
+                </RemoveWarningContentWrapper>
+              }
             />
             <div className="button-wrapper">
               <Button
