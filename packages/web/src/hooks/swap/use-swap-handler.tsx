@@ -932,7 +932,7 @@ export const useSwapHandler = () => {
     swap(estimatedRoutes, swapAmount)
       .then(response => {
         if (response) {
-            if (response.code === 0) {
+          if (response.code === 0) {
             broadcastPending();
             setTimeout(() => {
               const tokenAAmountStr = isExactIn
@@ -949,7 +949,7 @@ export const useSwapHandler = () => {
                     tokenAAmount: tokenAAmountStr || "0",
                     tokenBAmount: tokenBAmountStr || "0",
                   },
-                  response.data?.hash
+                  response.data?.hash,
                 ),
                 onFinishSwap,
               );
@@ -957,11 +957,21 @@ export const useSwapHandler = () => {
             openTransactionConfirmModal();
           } else if (response.type === ERROR_VALUE.TRANSACTION_REJECTED.type) {
             broadcastRejected(
-              makeBroadcastSwapMessage("error", broadcastMessage, response.data?.hash),
+              makeBroadcastSwapMessage(
+                "error",
+                broadcastMessage,
+                response.data?.hash,
+              ),
             );
             openTransactionConfirmModal();
           } else {
-            broadcastError(makeBroadcastSwapMessage("error", broadcastMessage, response.data?.hash));
+            broadcastError(
+              makeBroadcastSwapMessage(
+                "error",
+                broadcastMessage,
+                response.data?.hash,
+              ),
+            );
             openTransactionConfirmModal();
           }
         }
@@ -1041,12 +1051,6 @@ export const useSwapHandler = () => {
     type,
     tokenB?.symbol,
   ]);
-
-  useEffect(() => {
-    if (tokenAAmount) {
-      setTokenBAmount(tokenAAmount);
-    }
-  }, [isSameToken, tokenAAmount]);
 
   return {
     slippage,
