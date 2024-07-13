@@ -11,7 +11,6 @@ import {
 } from "./PoolPairInfoContent.styles";
 import IconStar from "@components/common/icons/IconStar";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { formatApr, numberToFormat } from "@utils/string-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -25,11 +24,14 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { toPriceFormatRounding, toUnitFormat } from "@utils/number-utils";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+  formatRate,
+} from "@utils/new-number-utils";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -69,25 +71,25 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [tokenABalance, tokenBBalance, pool.price]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
-    const depositStr = `${Math.round(depositRatio * 100)}%`;
+    const depositStr = formatRate(depositRatio * 100, { decimals: 0 });
     return `(${depositStr})`;
   }, [depositRatio]);
 
   const depositRatioStrOfTokenB = useMemo(() => {
-    const depositStr = `${Math.round((1 - depositRatio) * 100)}%`;
+    const depositStr = formatRate((1 - depositRatio) * 100, { decimals: 0 });
     return `(${depositStr})`;
   }, [depositRatio]);
 
   const liquidityValue = useMemo((): string => {
     if (!pool.tvl) return "-";
 
-    return toUnitFormat(pool.tvl, true, true);
+    return formatOtherPrice(pool.tvl);
   }, [pool.tvl]);
 
   const volumeValue = useMemo((): string => {
     if (!pool.volume24h) return "-";
 
-    return toUnitFormat(pool.volume24h, true, true);
+    return formatOtherPrice(pool.volume24h);
   }, [pool.volume24h]);
 
   const volumeChangedValue = useMemo(() => {
@@ -102,10 +104,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       );
     }
 
-    const volumeChangedStr = `${numberToFormat(Math.abs(pool.volumeChange24h), {
-      decimals: 2,
-      forceDecimals: true,
-    })}%`;
+    const volumeChangedStr = formatRate(Math.abs(pool.volumeChange24h));
 
     return (
       <div>
@@ -125,7 +124,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const aprValue = useMemo(() => {
     if (!pool.totalApr) return "-";
 
-    const aprStr = formatApr(pool.totalApr);
+    const aprStr = formatRate(pool.totalApr);
     const totalAPR = pool.totalApr || 0;
     if (Number(pool.tvl) < 0.01) {
       return "0%";
@@ -153,10 +152,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       );
     }
 
-    const liquidityChangedStr = `${numberToFormat(Math.abs(pool.tvlChange), {
-      decimals: 2,
-      forceDecimals: true,
-    })}%`;
+    const liquidityChangedStr = formatRate(Math.abs(pool.tvlChange));
 
     return (
       <div>
@@ -176,13 +172,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const feeChangedStr = useMemo((): string => {
     if (!pool.feeUsd24h) return "-";
 
-    return toUnitFormat(pool.feeUsd24h, true, true);
+    return formatOtherPrice(pool.feeUsd24h);
   }, [pool.feeUsd24h]);
 
   const rewardChangedStr = useMemo((): string => {
     if (!pool.rewards24hUsd) return "-";
 
-    return toUnitFormat(pool.rewards24hUsd, true, true);
+    return formatOtherPrice(pool.rewards24hUsd);
   }, [pool.rewards24hUsd]);
 
   const isWrapText = useMemo(() => {
@@ -275,7 +271,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <>
                 <Tooltip
                   placement="top"
-                  isShouldShowed={tokenABalance >= 1e3}
                   FloatingContent={
                     <TokenAmountTooltipContentWrapper>
                       <MissingLogo
@@ -284,16 +279,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                         width={20}
                         className="image-logo"
                       />
-                      {formatTokenExchangeRate(tokenABalance, {
-                        minLimit: makeDisplayTokenAmount(pool.tokenA, 1),
-                        maxSignificantDigits: pool?.tokenA?.decimals,
-                        isIgnoreKMBFormat: true,
+                      {formatPoolPairAmount(tokenABalance, {
+                        isKMB: false,
                       })}{" "}
                       <span>{pool?.tokenA?.symbol}</span>{" "}
                     </TokenAmountTooltipContentWrapper>
                   }
                   className={`section-image ${
-                    tokenABalance >= 1e3 ? "can-hover" : ""
+                    tokenABalance ? "can-hover" : ""
                   }`}
                 >
                   <MissingLogo
@@ -303,10 +296,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   <span>
-                    {formatTokenExchangeRate(tokenABalance, {
-                      minLimit: makeDisplayTokenAmount(pool.tokenA, 1),
-                      maxSignificantDigits: pool?.tokenA?.decimals,
-                      fixedDecimalDigits: pool?.tokenA?.decimals,
+                    {formatPoolPairAmount(tokenABalance, {
+                      decimals: 2,
                     })}{" "}
                     <span
                       className={`token-symbol ${
@@ -323,7 +314,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 <div className="divider"></div>
                 <Tooltip
                   placement="top"
-                  isShouldShowed={tokenBBalance >= 1e3}
                   FloatingContent={
                     <TokenAmountTooltipContentWrapper>
                       <MissingLogo
@@ -332,16 +322,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                         width={20}
                         className="image-logo"
                       />
-                      {formatTokenExchangeRate(tokenBBalance, {
-                        minLimit: 1 / Math.pow(10, pool.tokenB?.decimals),
-                        maxSignificantDigits: pool?.tokenB?.decimals,
-                        isIgnoreKMBFormat: true,
-                      })}{" "}
+                      {formatPoolPairAmount(tokenBBalance, {
+                        isKMB: false,
+                      })}
                       <span>{pool?.tokenB?.symbol}</span>{" "}
                     </TokenAmountTooltipContentWrapper>
                   }
                   className={`section-image ${
-                    tokenBBalance >= 1e3 ? "can-hover" : ""
+                    tokenBBalance ? "can-hover" : ""
                   }`}
                 >
                   <MissingLogo
@@ -351,11 +339,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   <span>
-                    {formatTokenExchangeRate(`${tokenBBalance}`, {
-                      minLimit: 1 / Math.pow(10, pool.tokenB?.decimals),
-                      maxSignificantDigits: pool?.tokenB?.decimals,
-                      fixedDecimalDigits: pool?.tokenB?.decimals,
-                    })}{" "}
+                    {formatPoolPairAmount(tokenBBalance)}{" "}
                     <span
                       className={`token-symbol ${
                         isWrapText ? "wrap-text" : ""
@@ -400,17 +384,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             <span>All-Time Volume</span>
             {!loading && (
               <div className="section-image">
-                <span>
-                  {pool.allTimeVolumeUsd
-                    ? toPriceFormatRounding(pool.allTimeVolumeUsd, {
-                        usd: true,
-                        minLimit: 0.01,
-                        fixedGreaterThan1: true,
-                        fixedLessThan1: true,
-                        lestThan1Decimals: 2,
-                      })
-                    : "-"}
-                </span>
+                <span>{formatOtherPrice(pool.allTimeVolumeUsd)}</span>
               </div>
             )}
 

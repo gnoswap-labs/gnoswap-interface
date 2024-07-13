@@ -11,8 +11,8 @@ import { IGainer } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolList } from "@query/pools";
 import useRouter from "@hooks/common/use-custom-router";
-import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import { formatPrice, formatRate } from "@utils/new-number-utils";
 
 export const gainersInit = [
   {
@@ -120,24 +120,28 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: toPriceFormat(
-          item.tokenPrice, {
-          usd: true,
-          isRounding: false,
-          fixedLessThan1Significant: 3,
-        }),
+        price: formatPrice(item.tokenPrice, { usd: true }),
         change: {
           status:
             Number(priceChange) >= 0
               ? MATH_NEGATIVE_TYPE.POSITIVE
               : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${Number(priceChange) >= 0 ? "+" : ""}${Number(
-            priceChange,
-          ).toFixed(2)}%`,
+          value: formatRate(priceChange, {
+            showSign: true,
+            allowZeroDecimals: true,
+          }),
         },
       };
     });
-  }, [gainers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.logoURI]);
+  }, [
+    gainers,
+    wugnotPath,
+    tokens,
+    gnot?.path,
+    gnot?.name,
+    gnot?.symbol,
+    gnot?.logoURI,
+  ]);
 
   const loserList = useMemo(() => {
     return losers?.slice(0, 3)?.map((item: IGainer) => {
@@ -152,24 +156,28 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: toPriceFormat(
-          item.tokenPrice, {
-          usd: true,
-          isRounding: false,
-          fixedLessThan1Significant: 3,
-        }),
+        price: formatPrice(item.tokenPrice, { usd: true }),
         change: {
           status:
             Number(priceChange) >= 0
               ? MATH_NEGATIVE_TYPE.POSITIVE
               : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${Number(priceChange) >= 0 ? "+" : ""}${Number(
-            priceChange,
-          ).toFixed(2)}%`,
+          value: formatRate(priceChange, {
+            showSign: true,
+            allowZeroDecimals: true,
+          }),
         },
       };
     });
-  }, [losers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.logoURI]);
+  }, [
+    losers,
+    wugnotPath,
+    tokens,
+    gnot?.path,
+    gnot?.name,
+    gnot?.symbol,
+    gnot?.logoURI,
+  ]);
 
   return (
     <GainerAndLoser

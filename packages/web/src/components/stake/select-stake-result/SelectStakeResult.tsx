@@ -8,7 +8,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PoolModel } from "@models/pool/pool-model";
-import { formatApr } from "@utils/string-utils";
+import { formatRate } from "@utils/new-number-utils";
 
 interface SelectStakeResultProps {
   positions: PoolPositionModel[];
@@ -74,7 +74,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
 
     if (!Number(pool?.stakingApr || 0)) return "0%";
 
-    return `${formatApr(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatApr(
+    return `${formatRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatRate(
       pool?.stakingApr,
     )}`;
   }, [pool?.stakingApr]);

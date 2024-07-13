@@ -26,6 +26,7 @@ import BigNumber from "bignumber.js";
 import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { formatRate } from "@utils/new-number-utils";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -155,8 +156,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   );
 
   const aprStr = useMemo(() => {
-    const periodStakingApr = aprNumber.toFormat(0);
-    return `${periodStakingApr}% APR`;
+    const periodStakingApr = formatRate(aprNumber, { decimals: 0 });
+    return `${periodStakingApr} APR`;
   }, [aprNumber]);
 
   return (
@@ -339,8 +340,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   );
 
   const aprStr = useMemo(() => {
-    const periodStakingApr = aprNumber.toFormat(0);
-    return `${periodStakingApr}% APR`;
+    const periodStakingApr = formatRate(aprNumber, { decimals: 0 });
+    return `${periodStakingApr} APR`;
   }, [aprNumber]);
 
   return (

@@ -38,7 +38,6 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
-import { useTranslation } from "react-i18next";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -94,7 +93,6 @@ const SelectPriceRangeCustom = forwardRef<
       useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
     const maxPriceRangeCustomRef =
       useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
-    const { t } = useTranslation();
 
     const isCustom = true;
 
@@ -618,7 +616,6 @@ const SelectPriceRangeCustom = forwardRef<
                         }}
                       >
                         <IconRefresh />
-                        <span>{t("Add Position:resetR")}</span>
                         <span>Reset</span>
                       </div>
                       <div

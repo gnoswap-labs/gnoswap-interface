@@ -8,10 +8,9 @@ import { TokenModel } from "@models/token/token-model";
 import { useGetChainList, useGetTokensList } from "@query/token";
 import { ITrending } from "@repositories/token";
 import { makeId } from "@utils/common";
-import { toPriceFormat } from "@utils/number-utils";
 import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useMemo } from "react";
-import BigNumber from "bignumber.js";
+import { formatPrice, formatRate } from "@utils/new-number-utils";
 
 const defaultToken = {
   path: "",
@@ -88,9 +87,9 @@ const TrendingCardListContainer: React.FC = () => {
                 ? gnot?.logoURI || ""
                 : tempToken?.logoURI || "",
           },
-          price: `${toPriceFormat(item.tokenPrice, { usd: true })}`,
+          price: formatPrice(item.tokenPrice, { usd: true }),
           upDown: status as UpDownType,
-          content: `${BigNumber(priceChange).abs().toFixed(2)}%`,
+          content: formatRate(priceChange, { allowZeroDecimals: true }),
         };
       })
       .slice(0, 3);

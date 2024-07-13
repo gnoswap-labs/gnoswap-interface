@@ -34,7 +34,6 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { numberToFormat } from "@utils/string-utils";
 import PositionHistory from "./PositionHistory";
 import useRouter from "@hooks/common/use-custom-router";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
@@ -46,6 +45,7 @@ import { useGetPositionBins } from "@query/positions";
 import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
@@ -130,15 +130,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     if (isClosed || !position.positionUsdValue) {
       return "-";
     }
-    if (
-      BigNumber(position.positionUsdValue).isLessThan(0.01) &&
-      BigNumber(position.positionUsdValue).isGreaterThan(0)
-    ) {
-      return "<$0.01";
-    }
-    return `$${numberToFormat(`${position.positionUsdValue}`, {
-      decimals: 2,
-    })}`;
+    return formatOtherPrice(position.positionUsdValue);
   }, [position.positionUsdValue, isClosed]);
 
   const balances = useMemo((): {
@@ -161,13 +153,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         token: tokenA,
         balance: Number(position.tokenABalance),
         balanceUSD: tokenABalanceUSD,
-        percent: `${Math.round(depositRatio * 100)}%`,
+        percent: formatRate(depositRatio * 100, { decimals: 0 }),
       },
       {
         token: tokenB,
         balance: Number(position.tokenBBalance),
         balanceUSD: tokenBBalanceUSD,
-        percent: `${Math.round((1 - depositRatio) * 100)}%`,
+        percent: formatRate((1 - depositRatio) * 100, { decimals: 0 }),
       },
     ];
   }, [
@@ -297,23 +289,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         return acc + Number(current.accumulatedRewardOf1dUsd);
       }, 0);
 
-    return `${toPriceFormatNotRounding(0.21783612376, {
-      usd: true,
-      minLimit: 0.01,
-      lestThan1Decimals: 2,
-      greaterThan1Decimals: 2,
-      fixedLessThan1: true,
-      fixedGreaterThan1: true,
-    })}`;
-
-    return toPriceFormatNotRounding(totalDailyEarningValue, {
-      usd: true,
-      minLimit: 0.01,
-      lestThan1Decimals: 2,
-      greaterThan1Decimals: 2,
-      fixedLessThan1: true,
-      fixedGreaterThan1: true,
-    });
+    return formatOtherPrice(totalDailyEarningValue);
   }, [isClosed, position.reward, totalRewardInfo]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =

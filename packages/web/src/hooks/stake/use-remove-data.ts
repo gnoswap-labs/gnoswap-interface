@@ -1,5 +1,6 @@
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { formatOtherPrice } from "@utils/new-number-utils";
 import { numberToUSD } from "@utils/number-utils";
 import { useMemo } from "react";
 
@@ -64,12 +65,12 @@ export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
       {
         token: tokenA,
         amount: tokenAAmount,
-        amountUSD: numberToUSD(tokenAAmount * Number(tokenAPrice)),
+        amountUSD: formatOtherPrice(tokenAAmount * Number(tokenAPrice)),
       },
       {
         token: tokenB,
         amount: tokenBAmount,
-        amountUSD: numberToUSD(tokenBAmount * Number(tokenBPrice)),
+        amountUSD: formatOtherPrice(tokenBAmount * Number(tokenBPrice)),
       },
     ];
   }, [selectedPosition, tokenPrices]);
@@ -82,7 +83,7 @@ export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
       (accum, position) => accum + Number(position.positionUsdValue),
       0,
     );
-    return numberToUSD(totalUSDValue);
+    return formatOtherPrice(totalUSDValue);
   }, [selectedPosition]);
 
   return {

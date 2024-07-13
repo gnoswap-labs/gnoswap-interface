@@ -15,7 +15,6 @@ import { matchInputNumber } from "@utils/number-utils";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
-import { formatUsdNumber } from "@utils/stake-position-utils";
 import useRouter from "@hooks/common/use-custom-router";
 import { isEmptyObject } from "@utils/validation-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -31,6 +30,7 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY, useGetSwapFee } from "@query/router";
+import { formatPrice } from "@utils/new-number-utils";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -199,37 +199,45 @@ export const useSwapHandler = () => {
       },
       gasFeeUSD,
     }));
-  }, [estimatedRoutes, tokenA, tokenB]);
+  }, [defaultGasFeeAmount, estimatedRoutes, gasFeeUSD, tokenA, tokenB]);
 
   const tokenABalance = useMemo(() => {
-    if (tokenA && !Number.isNaN(displayBalanceMap[tokenA.priceID])) {
-      return BigNumber(displayBalanceMap[tokenA.priceID] || 0).toFormat();
-    }
-    return "-";
-  }, [displayBalanceMap, tokenA]);
+    if (isSwitchNetwork || !tokenA) return "-";
+
+    // Only the balance in the swap card should be formatted the same with price
+    return formatPrice(displayBalanceMap?.[tokenA.priceID]);
+  }, [isSwitchNetwork, displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
-    if (tokenB && !Number.isNaN(displayBalanceMap[tokenB.priceID])) {
-      return BigNumber(displayBalanceMap[tokenB.priceID] || 0).toFormat();
-    }
-    return "-";
-  }, [displayBalanceMap, tokenB]);
+    if (isSwitchNetwork || !tokenB) return "-";
+
+    // Only the balance in the swap card should be formatted the same with price
+    return formatPrice(displayBalanceMap?.[tokenB.priceID]);
+  }, [isSwitchNetwork, displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
-    if (!tokenA || !tokenPrices[checkGnotPath(tokenA.path)]) {
-      return Number.NaN;
+    if (
+      !Number(tokenAAmount) ||
+      !tokenA ||
+      !tokenPrices[checkGnotPath(tokenA.priceID)]
+    ) {
+      return null;
     }
     return BigNumber(tokenAAmount)
-      .multipliedBy(tokenPrices[checkGnotPath(tokenA.path)].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
-    if (!tokenB || !tokenPrices[checkGnotPath(tokenB.path)]) {
-      return Number.NaN;
+    if (
+      !Number(tokenBAmount) ||
+      !tokenB ||
+      !tokenPrices[checkGnotPath(tokenB.priceID)]
+    ) {
+      return null;
     }
     return BigNumber(tokenBAmount)
-      .multipliedBy(tokenPrices[checkGnotPath(tokenB.path)].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd)
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
 
@@ -389,12 +397,12 @@ export const useSwapHandler = () => {
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
-      tokenAUSDStr: formatUsdNumber(tokenAUSD.toString()),
+      tokenAUSDStr: formatPrice(tokenAUSD, { usd: true }),
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
-      tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
+      tokenBUSDStr: formatPrice(tokenBUSD, { usd: true }),
       direction: type,
       slippage,
       tokenADecimals: tokenA?.decimals,

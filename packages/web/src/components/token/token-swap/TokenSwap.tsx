@@ -11,10 +11,9 @@ import { DataTokenInfo } from "@models/token/token-swap-model";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
-import BigNumber from "bignumber.js";
-import { roundDownDecimalNumber } from "@utils/regex";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { formatPrice } from "@utils/new-number-utils";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -133,33 +132,19 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     );
   }, [dataTokenInfo, isLoading]);
 
-  const balanceADisplay = useMemo(() => {
-    if (isSwitchNetwork) return "-";
-    if (connected && dataTokenInfo.tokenABalance !== "-") {
-      if (dataTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(
-        dataTokenInfo.tokenABalance
-          .replace(/,/g, "")
-          .match(roundDownDecimalNumber(2))
-          ?.toString() ?? 0,
-      ).toFormat(2);
-    }
-    return "-";
-  }, [isSwitchNetwork, connected, dataTokenInfo.tokenABalance]);
+  const tokenABalance = useMemo(() => {
+    if (!connected || isSwitchNetwork || !tokenA) return "-";
 
-  const balanceBDisplay = useMemo(() => {
-    if (isSwitchNetwork) return "-";
-    if (connected && dataTokenInfo.tokenBBalance !== "-") {
-      if (dataTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(
-        dataTokenInfo.tokenBBalance
-          .replace(/,/g, "")
-          .match(roundDownDecimalNumber(2))
-          ?.toString() ?? 0,
-      ).toFormat(2);
-    }
-    return "-";
-  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork]);
+    // Only the balance in the swap card should be formatted the same with price
+    return formatPrice(dataTokenInfo.tokenABalance);
+  }, [connected, isSwitchNetwork, tokenA, dataTokenInfo.tokenABalance]);
+
+  const tokenBBalance = useMemo(() => {
+    if (!connected || isSwitchNetwork || !tokenB) return "-";
+
+    // Only the balance in the swap card should be formatted the same with price
+    return formatPrice(dataTokenInfo.tokenBBalance);
+  }, [connected, isSwitchNetwork, tokenB, dataTokenInfo.tokenBBalance]);
 
   return (
     <div css={wrapper}>
@@ -211,7 +196,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenA}
             >
-              Balance: {balanceADisplay}
+              Balance: {tokenABalance}
             </span>
           </div>
         </div>
@@ -243,7 +228,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenB}
             >
-              Balance: {balanceBDisplay}
+              Balance: {tokenBBalance}
             </span>
           </div>
         </div>

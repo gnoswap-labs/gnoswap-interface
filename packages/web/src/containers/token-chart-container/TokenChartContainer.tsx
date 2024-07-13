@@ -26,6 +26,7 @@ import {
   getNumberOfAxis,
 } from "@utils/chart";
 import BigNumber from "bignumber.js";
+import { formatPrice } from "@utils/new-number-utils";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -215,9 +216,7 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: currentPrice
-              ? toPriceFormat(currentPrice, { usd: true, isRounding: false })
-              : "",
+            value: currentPrice ? formatPrice(currentPrice) : "",
             denom: "USD",
             status: dataToday.status,
           },
@@ -274,11 +273,10 @@ const TokenChartContainer: React.FC = () => {
     if (currentTab === TokenChartGraphPeriods[3]) {
       temp = prices1y || [];
     }
-    return temp
-      .map(item => ({
-        ...item,
-        date: item.time,
-      }));
+    return temp.map(item => ({
+      ...item,
+      date: item.time,
+    }));
   }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
 
   const getChartInfo = useCallback(() => {
@@ -331,12 +329,12 @@ const TokenChartContainer: React.FC = () => {
         time: getLocalizeTime(new Date()),
       },
       ...chartData.map((item: IPriceResponse) => ({
-          amount: {
-            value: `${item.price}`,
-            denom: "",
-          },
-          time: getLocalizeTime(item.time),
-        }))
+        amount: {
+          value: `${item.price}`,
+          denom: "",
+        },
+        time: getLocalizeTime(item.time),
+      })),
     ].reverse();
 
     const yAxisLabels = getYAxisLabels(

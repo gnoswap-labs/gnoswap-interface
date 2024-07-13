@@ -5,7 +5,6 @@ import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { DEVICE_TYPE } from "@styles/media";
-import { formatApr } from "@utils/string-utils";
 import PoolInfoLazyChart from "../pool-info-lazy-chart/PoolInfoLazyChart";
 import {
   POOL_INFO,
@@ -16,6 +15,7 @@ import {
 import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { TokenModel } from "@models/token/token-model";
+import { formatRate } from "@utils/new-number-utils";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -70,7 +70,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     return (
       <>
         {Number(apr) > 100 && <IconStar size={20} />}
-        {formatApr(apr)}
+        {formatRate(apr)}
       </>
     );
   }, [apr, tvl]);

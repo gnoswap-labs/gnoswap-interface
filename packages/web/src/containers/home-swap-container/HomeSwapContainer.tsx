@@ -9,14 +9,14 @@ import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import { formatUsdNumber } from "@utils/stake-position-utils";
-import { isEmptyObject } from "@utils/validation-utils";
 import { checkGnotPath } from "@utils/common";
 import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
+import { formatPrice } from "@utils/new-number-utils";
 
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
   const { tokenPrices, displayBalanceMap } = useTokenData();
+  console.log("🚀 ~ displayBalanceMap:", displayBalanceMap);
   const [tokenA, setTokenA] = useState<TokenModel | null>(GNOT_TOKEN);
   const [tokenAAmount, setTokenAAmount] = useState<string>("");
   const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);
@@ -26,32 +26,26 @@ const HomeSwapContainer: React.FC = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
 
   const tokenABalance = useMemo(() => {
-    if (!connected || isSwitchNetwork) return "-";
-    if (tokenA && displayBalanceMap[tokenA.priceID]) {
-      const balance = displayBalanceMap[tokenA.priceID] || 0;
-      return BigNumber(balance).toFormat(tokenA.decimals);
-    }
-    if (isEmptyObject(displayBalanceMap)) {
-      return "-";
-    }
-    return "0";
+    if (!connected || isSwitchNetwork || !tokenA) return "-";
+
+    // Only the balance in the swap card should be formatted the same with price
+    return formatPrice(displayBalanceMap?.[tokenA.priceID], { usd: false });
   }, [isSwitchNetwork, connected, displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
-    if (!connected || isSwitchNetwork) return "-";
-    if (isEmptyObject(displayBalanceMap)) {
-      return "-";
-    }
-    if (tokenB && displayBalanceMap[tokenB.priceID]) {
-      const balance = displayBalanceMap[tokenB.priceID] || 0;
-      return BigNumber(balance).toFormat(tokenB.decimals);
-    }
-    return "0";
+    if (!connected || isSwitchNetwork || !tokenB) return "-";
+
+    // Only the balance in the swap card should be formatted the same with price
+    return formatPrice(displayBalanceMap?.[tokenB.priceID], { usd: false });
   }, [isSwitchNetwork, connected, displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
-    if (!tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]) {
-      return Number.NaN;
+    if (
+      !Number(tokenAAmount) ||
+      !tokenA ||
+      !tokenPrices[checkGnotPath(tokenA.priceID)]
+    ) {
+      return null;
     }
     return BigNumber(tokenAAmount)
       .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
@@ -64,7 +58,7 @@ const HomeSwapContainer: React.FC = () => {
       !tokenB ||
       !tokenPrices[checkGnotPath(tokenB.priceID)]
     ) {
-      return Number.NaN;
+      return null;
     }
     return BigNumber(tokenBAmount)
       .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd)
@@ -77,12 +71,12 @@ const HomeSwapContainer: React.FC = () => {
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
-      tokenAUSDStr: formatUsdNumber(tokenAUSD.toString()),
+      tokenAUSDStr: formatPrice(tokenAUSD),
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
-      tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
+      tokenBUSDStr: formatPrice(tokenBUSD),
       direction: "EXACT_IN",
       slippage,
       tokenADecimals: tokenA?.decimals,

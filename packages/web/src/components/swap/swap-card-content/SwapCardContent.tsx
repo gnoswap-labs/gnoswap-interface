@@ -14,7 +14,6 @@ import { TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import BigNumber from "bignumber.js";
-import { roundDownDecimalNumber } from "@utils/regex";
 import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
 import { useTheme } from "@emotion/react";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
@@ -48,7 +47,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
   connectedWallet,
   isLoading,
   setSwapRateAction,
-  isSwitchNetwork,
   priceImpactStatus,
   isSameToken,
 }) => {
@@ -111,36 +109,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
     );
   }, [swapSummaryInfo, swapTokenInfo, isLoading]);
 
-  const balanceADisplay = useMemo(() => {
-    if (isSwitchNetwork) return "-";
-    if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
-      if (swapTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(
-        swapTokenInfo.tokenABalance
-          .replace(/,/g, "")
-          .toString()
-          .match(roundDownDecimalNumber(2))
-          ?.toString() ?? 0,
-      ).toFormat(2);
-    }
-    return "-";
-  }, [isSwitchNetwork, connectedWallet, swapTokenInfo.tokenABalance]);
-
-  const balanceBDisplay = useMemo(() => {
-    if (isSwitchNetwork) return "-";
-    if (connectedWallet && swapTokenInfo.tokenBBalance !== "-") {
-      if (swapTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(
-        swapTokenInfo.tokenBBalance
-          .replace(/,/g, "")
-          .toString()
-          .match(roundDownDecimalNumber(2))
-          ?.toString() ?? 0,
-      ).toFormat(2);
-    }
-    return "-";
-  }, [swapTokenInfo.tokenBBalance, connectedWallet, isSwitchNetwork]);
-
   const tokenAAmount = useMemo(() => {
     if (swapTokenInfo.tokenAAmount.includes("e")) {
       return BigNumber(swapTokenInfo.tokenAAmount).toFixed(
@@ -197,7 +165,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             }`}
             onClick={handleAutoFillTokenA}
           >
-            Balance: {balanceADisplay}
+            Balance: {swapTokenInfo.tokenABalance}
           </span>
         </div>
         <div className="arrow">
@@ -248,7 +216,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             }`}
             onClick={handleAutoFillTokenB}
           >
-            Balance: {balanceBDisplay}
+            Balance: {swapTokenInfo.tokenBBalance}
           </span>
         </div>
       </div>

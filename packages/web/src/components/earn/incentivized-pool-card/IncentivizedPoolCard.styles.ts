@@ -4,7 +4,7 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const PoolCardWrapperWrapperBorder = styled.div`
-  min-width: 322px; 
+  min-width: 322px;
   ${media.tablet} {
     min-width: 322px;
   }
@@ -79,7 +79,7 @@ export const PoolCardWrapper = styled.div`
         line-height: 28px;
         font-weight: 500;
         overflow: hidden;
-      text-overflow: ellipsis;
+        text-overflow: ellipsis;
       }
     }
     .box-group {
@@ -182,5 +182,9 @@ export const PoolCardWrapper = styled.div`
   }
   .value-text {
     ${fonts.body9};
+
+    &.apr-value {
+      ${mixins.flexbox("row", "center", "flex-end")};
+    }
   }
 `;
