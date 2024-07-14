@@ -4,9 +4,9 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { DashboardTokenResponse } from "@repositories/dashboard/response/token-response";
 import { useQuery } from "@tanstack/react-query";
-import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import BigNumber from "bignumber.js";
+import { formatPrice } from "@utils/new-number-utils";
 
 export interface DashboardTokenInfo {
   gnosAmount: string;
@@ -80,13 +80,11 @@ const DashboardInfoContainer: React.FC = () => {
   return (
     <DashboardInfo
       dashboardTokenInfo={{
-        gnosAmount: toPriceFormat(tokenData?.gnsPrice ?? "0", {
-          usd: true,
-          isKMBFormat: false,
+        gnosAmount: formatPrice(tokenData?.gnsPrice, {
+          isKMB: false,
         }),
-        gnotAmount: toPriceFormat(tokenData?.gnotPrice ?? "0", {
-          usd: true,
-          isKMBFormat: false,
+        gnotAmount: formatPrice(tokenData?.gnotPrice ?? "0", {
+          isKMB: false,
         }),
       }}
       supplyOverviewInfo={{

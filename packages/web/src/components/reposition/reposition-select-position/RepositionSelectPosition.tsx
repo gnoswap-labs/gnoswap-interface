@@ -7,7 +7,7 @@ import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { toPriceFormatRounding } from "@utils/number-utils";
+import { formatPrice } from "@utils/new-number-utils";
 import { useMemo } from "react";
 import { RepositionSelectPositionWrapper } from "./RepositionSelectPosition.styles";
 
@@ -64,9 +64,8 @@ const RepositionSelectPosition: React.FC<RepositionSelectPositionProps> = ({
         />
       );
 
-    return toPriceFormatRounding(selectedPosition?.usdValue || "0", {
-      usd: true,
-      isKMBFormat: false,
+    return formatPrice(selectedPosition?.usdValue, {
+      isKMB: false,
     });
   }, [isLoadingPosition, selectedPosition?.usdValue]);
 

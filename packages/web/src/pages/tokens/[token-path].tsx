@@ -18,11 +18,11 @@ import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
-import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { SEOInfo } from "@constants/common.constant";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { formatPrice } from "@utils/new-number-utils";
 
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
@@ -79,9 +79,7 @@ export default function Token() {
 
   const price = useMemo(() => {
     if (currentPrice) {
-      return toPriceFormatNotRounding(currentPrice, {
-        usd: true,
-      });
+      return formatPrice(currentPrice);
     }
 
     return null;

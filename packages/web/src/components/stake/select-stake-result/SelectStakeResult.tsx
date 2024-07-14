@@ -5,10 +5,10 @@ import React, { useMemo } from "react";
 import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
+import { formatNumberToLocaleString } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PoolModel } from "@models/pool/pool-model";
-import { formatRate } from "@utils/new-number-utils";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 
 interface SelectStakeResultProps {
   positions: PoolPositionModel[];
@@ -48,12 +48,12 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       {
         token: tokenA,
         amount: tokenAAmount,
-        amountUSD: numberToUSD(tokenAAmount * Number(tokenAPrice)),
+        amountUSD: formatOtherPrice(tokenAAmount * Number(tokenAPrice)),
       },
       {
         token: tokenB,
         amount: tokenBAmount,
-        amountUSD: numberToUSD(tokenBAmount * Number(tokenBPrice)),
+        amountUSD: formatOtherPrice(tokenBAmount * Number(tokenBPrice)),
       },
     ];
   }, [positions, tokenPrices]);
@@ -66,7 +66,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       (accum, position) => accum + Number(position.positionUsdValue),
       0,
     );
-    return numberToUSD(totalUSDValue);
+    return formatOtherPrice(totalUSDValue);
   }, [positions]);
 
   const stakingAPR = useMemo(() => {

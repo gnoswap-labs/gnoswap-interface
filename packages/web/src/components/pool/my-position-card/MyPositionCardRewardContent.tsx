@@ -2,11 +2,13 @@
 import React, { useMemo } from "react";
 import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
-import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { convertToKMB } from "@utils/stake-position-utils";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+} from "@utils/new-number-utils";
 
 export interface MyPositionRewardContentProps {
   rewardInfo: { [key in RewardType]: PositionRewardInfo[] };
@@ -44,11 +46,7 @@ export const MyPositionRewardContent: React.FC<
         (accum, current) => accum + current.claimableUSD,
         0,
       ) || 0;
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      minLimit: 0.01,
-      lestThan1Decimals: 2,
-    });
+    return formatOtherPrice(sumUSD);
   }, [swapFeeRewards]);
 
   const stakingRewardUSD = useMemo(() => {
@@ -56,11 +54,7 @@ export const MyPositionRewardContent: React.FC<
       (accum, current) => accum + current.claimableUSD,
       0,
     );
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      minLimit: 0.01,
-      lestThan1Decimals: 2,
-    });
+    return formatOtherPrice(sumUSD);
   }, [rewardInfo.INTERNAL]);
 
   const externalRewardUSD = useMemo(() => {
@@ -68,11 +62,7 @@ export const MyPositionRewardContent: React.FC<
       (accum, current) => accum + current.claimableUSD,
       0,
     );
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      minLimit: 0.01,
-      lestThan1Decimals: 2,
-    });
+    return formatOtherPrice(sumUSD);
   }, [rewardInfo.EXTERNAL]);
 
   return (
@@ -98,7 +88,9 @@ export const MyPositionRewardContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(reward.claimableAmount.toString())}
+                {formatPoolPairAmount(reward.claimableAmount.toString(), {
+                  decimals: reward.token.decimals,
+                })}
               </span>
             </div>
           ))}
@@ -126,7 +118,9 @@ export const MyPositionRewardContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(reward.claimableAmount.toString())}
+                {formatPoolPairAmount(reward.claimableAmount.toString(), {
+                  decimals: reward.token.decimals,
+                })}
               </span>
             </div>
           ))}
@@ -154,7 +148,9 @@ export const MyPositionRewardContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(reward.claimableAmount.toString())}
+                {formatPoolPairAmount(reward.claimableAmount.toString(), {
+                  decimals: reward.token.decimals,
+                })}
               </span>
             </div>
           ))}

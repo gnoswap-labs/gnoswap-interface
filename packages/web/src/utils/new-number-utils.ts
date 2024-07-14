@@ -135,7 +135,7 @@ export const formatTokenAmount = (
 };
 
 export const formatPrice = (
-  value: BigNumber | string | number | null,
+  value?: BigNumber | string | number | null,
   {
     usd = true,
     isKMB = true,
@@ -205,11 +205,13 @@ export const formatOtherPrice = (
     isKMB = true,
     decimals = 2,
     hasMinLimit = true,
+    minLimit,
   }: {
     usd?: boolean;
     isKMB?: boolean;
     decimals?: number;
     hasMinLimit?: boolean;
+    minLimit?: number;
   } = {},
 ): string => {
   if (value === "" || value === null || value === undefined) {
@@ -236,7 +238,7 @@ export const formatOtherPrice = (
     valueAsBigNum.isLessThan(internalMinLimit) &&
     valueAsBigNum.isGreaterThan(0)
   ) {
-    return `<${prefix}${internalMinLimit}`;
+    return `<${prefix}${minLimit || internalMinLimit}`;
   }
 
   if (isKMB) {

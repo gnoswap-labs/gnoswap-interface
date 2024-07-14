@@ -13,6 +13,7 @@ import { STAKING_PERIOS, StakingPeriodType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
 
 interface StakingContentProps {
   totalApr: string;
@@ -122,7 +123,13 @@ const StakingContent: React.FC<StakingContentProps> = ({
         {!loading && (
           <div className="header-wrap">
             <span className="to-mobile">to</span>
-            <span className="apr">{totalApr} APR </span>
+            <Tooltip
+              FloatingContent={<div>View Rewards</div>}
+              placement="top"
+              className="apr"
+            >
+              {totalApr} APR{" "}
+            </Tooltip>
             <div className="coin-info">
               <OverlapTokenLogo tokens={rewardTokenLogos} />
             </div>

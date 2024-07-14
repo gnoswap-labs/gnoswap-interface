@@ -17,6 +17,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -55,9 +56,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
   const gasFeeUSDStr = useMemo(() => {
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
 
-    if (Number(gasFeeUSD) < 0.01) return "<$0.01";
-
-    return `$${toNumberFormat(gasFeeUSD)}`;
+    return formatOtherPrice(gasFeeUSD, { decimals: 0 });
   }, [swapSummaryInfo.gasFeeUSD]);
 
   const slippageStr = useMemo(() => {

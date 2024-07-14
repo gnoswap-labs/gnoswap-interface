@@ -38,11 +38,9 @@ import PositionHistory from "./PositionHistory";
 import useRouter from "@hooks/common/use-custom-router";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
 import { useCopy } from "@hooks/common/use-copy";
-import BigNumber from "bignumber.js";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import Button from "@components/common/button/Button";
 import { useGetPositionBins } from "@query/positions";
-import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
@@ -256,21 +254,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       0,
     );
 
-    if (
-      BigNumber(usdValue).isLessThan(0.01) &&
-      BigNumber(usdValue).isGreaterThan(0)
-    ) {
-      return "<$0.01";
-    }
-
-    return `${toPriceFormatNotRounding(`${usdValue}`, {
-      usd: true,
-      lestThan1Decimals: 2,
-      greaterThan1Decimals: 2,
-      fixedLessThan1: true,
-      fixedGreaterThan1: true,
-      minLimit: 0.01,
-    })}`;
+    return formatOtherPrice(usdValue);
   }, [isClosed, position.reward]);
 
   const totalDailyEarning = useMemo(() => {

@@ -15,7 +15,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { toPriceFormat } from "@utils/number-utils";
+import { formatPrice } from "@utils/new-number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
@@ -215,9 +215,8 @@ const WithDrawModal: React.FC<Props> = ({
                     onClick={handleEnterAllBalanceAvailable}
                   >{`Available: ${
                     currentAvailableBalance
-                      ? toPriceFormat(currentAvailableBalance, {
-                          isKMBFormat: false,
-                          isRounding: false,
+                      ? formatPrice(currentAvailableBalance, {
+                          isKMB: false,
                         })
                       : "-"
                   }`}</span>

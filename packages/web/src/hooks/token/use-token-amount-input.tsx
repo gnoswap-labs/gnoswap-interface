@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokenData } from "./use-token-data";
 import { checkGnotPath } from "@utils/common";
-import { toPriceFormatNotRounding } from "@utils/number-utils";
+import { formatPrice } from "@utils/new-number-utils";
 
 export interface TokenAmountInputModel {
   token: TokenModel | null;
@@ -59,13 +59,8 @@ export const useTokenAmountInput = (
 
     if (!tokenPrices[checkGnotPath(token.path)]?.usd) return "-";
 
-    return toPriceFormatNotRounding(usd, {
-      isKMBFormat: false,
-      lessThan1Significant: 2,
-      greaterThan1Decimals: 2,
-      fixedGreaterThan1: true,
-      fixedLessThan1: true,
-      usd: true,
+    return formatPrice(usd, {
+      isKMB: false,
     });
   }, [tokenPrices, amount, token]);
 

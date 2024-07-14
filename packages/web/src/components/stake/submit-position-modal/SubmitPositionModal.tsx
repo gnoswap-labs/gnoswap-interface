@@ -6,8 +6,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { formatRate } from "@utils/new-number-utils";
-import { numberToUSD } from "@utils/number-utils";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import React, { useCallback, useMemo } from "react";
 import {
   Divider,
@@ -33,7 +32,7 @@ const SubmitPositionModal: React.FC<Props> = ({
       (accum, position) => accum + Number(position.positionUsdValue),
       0,
     );
-    return numberToUSD(totalLiquidity);
+    return formatOtherPrice(totalLiquidity);
   }, [positions]);
 
   const onClickClose = useCallback(() => {
@@ -104,7 +103,7 @@ const SubmitPositionModal: React.FC<Props> = ({
                     />
                   </div>
                   <div className="value">
-                    {numberToUSD(Number(position.positionUsdValue))}
+                    {formatOtherPrice(position.positionUsdValue)}
                   </div>
                 </div>
               ))}

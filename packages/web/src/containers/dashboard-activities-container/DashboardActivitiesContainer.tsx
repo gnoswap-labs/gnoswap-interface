@@ -11,10 +11,10 @@ import {
 import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
-import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { formatPrice } from "@utils/new-number-utils";
 dayjs.extend(relativeTime);
 
 export interface Activity {
@@ -190,16 +190,9 @@ const DashboardActivitiesContainer: React.FC = () => {
 
     return {
       action: actionText,
-      totalValue: res.totalUsd
-        ? toPriceFormatNotRounding(res.totalUsd, {
-            usd: true,
-            isKMBFormat: false,
-            lestThan1Decimals: 2,
-            greaterThan1Decimals: 2,
-            fixedGreaterThan1: true,
-            fixedLessThan1: true,
-          })
-        : "-",
+      totalValue: formatPrice(res.totalUsd, {
+        isKMB: false,
+      }),
       tokenAmountOne: tokenAAmount,
       tokenAmountTwo: tokenBAmount,
       account: res.account,
