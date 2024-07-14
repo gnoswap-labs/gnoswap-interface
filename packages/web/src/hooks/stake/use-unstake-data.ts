@@ -31,17 +31,31 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
+
+    const priceAEmpty =
+      !tokenAPrice || positions.every(item => !item.tokenABalance);
+    const priceBEmpty =
+      !tokenBPrice || positions.every(item => !item.tokenBBalance);
+
     return [
       {
         token: tokenA,
         amount: tokenAAmount,
-        amountUSD: formatOtherPrice(tokenAAmount * Number(tokenAPrice)),
+        amountUSD: priceAEmpty
+          ? formatOtherPrice(tokenAAmount * Number(tokenAPrice), {
+              isKMB: false,
+            })
+          : "-",
         rawAmountUsd: tokenAAmount * Number(tokenAPrice),
       },
       {
         token: tokenB,
         amount: tokenBAmount,
-        amountUSD: formatOtherPrice(tokenBAmount * Number(tokenBPrice)),
+        amountUSD: priceBEmpty
+          ? formatOtherPrice(tokenBAmount * Number(tokenBPrice), {
+              isKMB: false,
+            })
+          : "-",
         rawAmountUsd: tokenBAmount * Number(tokenBPrice),
       },
     ];
@@ -77,7 +91,9 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
                 },
                 amount: Number(current.claimableAmount),
                 rawAmountUsd: Number(current.claimableUsd),
-                amountUSD: formatOtherPrice(Number(current.claimableUsd) ?? 0),
+                amountUSD: formatOtherPrice(current.claimableUsd, {
+                  isKMB: false,
+                }),
               },
             ];
           }
@@ -88,9 +104,10 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
             rawAmountUsd:
               acc[existedData].rawAmountUsd + Number(current.claimableUsd),
             amountUSD: formatOtherPrice(
-              Number(
-                acc[existedData].rawAmountUsd + Number(current.claimableUsd),
-              ) ?? 0,
+              acc[existedData].rawAmountUsd + Number(current.claimableUsd),
+              {
+                isKMB: false,
+              },
             ),
           };
 

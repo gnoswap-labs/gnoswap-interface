@@ -205,14 +205,20 @@ export const useSwapHandler = () => {
     if (isSwitchNetwork || !tokenA) return "-";
 
     // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceMap?.[tokenA.priceID]);
+    return formatPrice(displayBalanceMap?.[tokenA.priceID], {
+      isKMB: false,
+      usd: false,
+    });
   }, [isSwitchNetwork, displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
     if (isSwitchNetwork || !tokenB) return "-";
 
     // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceMap?.[tokenB.priceID]);
+    return formatPrice(displayBalanceMap?.[tokenB.priceID], {
+      isKMB: false,
+      usd: false,
+    });
   }, [isSwitchNetwork, displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
@@ -314,7 +320,7 @@ export const useSwapHandler = () => {
       return "AMOUNT_TOO_LOW";
     }
 
-    if (priceImpactStatus === "HIGH") {
+    if (priceImpactStatus === "HIGH" && estimatedRoutes.length !== 0) {
       return "HIGHT_PRICE_IMPACT";
     }
 
@@ -333,11 +339,13 @@ export const useSwapHandler = () => {
     ) {
       return "INSUFFICIENT_LIQUIDITY";
     }
+
     if (
-      Number(tokenBAmount) > 0 &&
-      tokenAAmount === "0" &&
-      !isLoading &&
-      type === "EXACT_OUT"
+      (Number(tokenBAmount) > 0 &&
+        tokenAAmount === "0" &&
+        !isLoading &&
+        type === "EXACT_OUT") ||
+      estimatedRoutes.length === 0
     ) {
       return "INSUFFICIENT_LIQUIDITY";
     }
@@ -361,6 +369,7 @@ export const useSwapHandler = () => {
     tokenABalance,
     isLoading,
     priceImpactStatus,
+    estimatedRoutes.length,
   ]);
 
   const swapButtonText = useMemo(() => {
@@ -397,12 +406,12 @@ export const useSwapHandler = () => {
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
-      tokenAUSDStr: formatPrice(tokenAUSD, { usd: true }),
+      tokenAUSDStr: formatPrice(tokenAUSD, { usd: true, isKMB: false }),
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
-      tokenBUSDStr: formatPrice(tokenBUSD, { usd: true }),
+      tokenBUSDStr: formatPrice(tokenBUSD, { usd: true, isKMB: false }),
       direction: type,
       slippage,
       tokenADecimals: tokenA?.decimals,

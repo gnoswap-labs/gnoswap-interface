@@ -7,7 +7,7 @@ import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncenti
 import BigNumber from "bignumber.js";
 import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { formatPrice } from "@utils/new-number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -68,7 +68,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       return "-";
     }
 
-    return formatPrice(balance, { isKMB: false });
+    return formatOtherPrice(balance, { isKMB: false });
   }, [balance, connected]);
 
   const preventArrowKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {

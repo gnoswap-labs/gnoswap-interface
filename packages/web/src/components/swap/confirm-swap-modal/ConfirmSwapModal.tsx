@@ -64,7 +64,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   }, [swapSummaryInfo]);
 
   const swapRateUSDStr = useMemo(() => {
-    const swapRateStr = formatOtherPrice(swapSummaryInfo.swapRateUSD);
+    const swapRateStr = formatOtherPrice(swapSummaryInfo.swapRateUSD, {
+      isKMB: false,
+    });
     return `(${swapRateStr})`;
   }, [swapSummaryInfo.swapRateUSD]);
 

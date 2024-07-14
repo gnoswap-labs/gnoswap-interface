@@ -28,16 +28,29 @@ export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
+
+    const priceAEmpty =
+      !tokenAPrice || selectedPosition.every(item => !item.tokenABalance);
+    const priceBEmpty =
+      !tokenBPrice || selectedPosition.every(item => !item.tokenBBalance);
     return [
       {
         token: tokenA,
         amount: tokenAAmount,
-        amountUSD: formatOtherPrice(tokenAAmount * Number(tokenAPrice)),
+        amountUSD: priceAEmpty
+          ? formatOtherPrice(tokenAAmount * Number(tokenAPrice), {
+              isKMB: false,
+            })
+          : "-",
       },
       {
         token: tokenB,
         amount: tokenBAmount,
-        amountUSD: formatOtherPrice(tokenBAmount * Number(tokenBPrice)),
+        amountUSD: priceBEmpty
+          ? formatOtherPrice(tokenBAmount * Number(tokenBPrice), {
+              isKMB: false,
+            })
+          : "-",
       },
     ];
   }, [selectedPosition, tokenPrices]);
@@ -60,16 +73,30 @@ export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
+
+    const priceAEmpty =
+      !tokenAPrice || selectedPosition.every(item => !item.unclaimedFeeAAmount);
+    const priceBEmpty =
+      !tokenBPrice || selectedPosition.every(item => !item.unclaimedFeeBAmount);
+
     return [
       {
         token: tokenA,
         amount: tokenAAmount,
-        amountUSD: formatOtherPrice(tokenAAmount * Number(tokenAPrice)),
+        amountUSD: priceAEmpty
+          ? formatOtherPrice(tokenAAmount * Number(tokenAPrice), {
+              isKMB: false,
+            })
+          : "-",
       },
       {
         token: tokenB,
         amount: tokenBAmount,
-        amountUSD: formatOtherPrice(tokenBAmount * Number(tokenBPrice)),
+        amountUSD: priceBEmpty
+          ? formatOtherPrice(tokenBAmount * Number(tokenBPrice), {
+              isKMB: false,
+            })
+          : "-",
       },
     ];
   }, [selectedPosition, tokenPrices]);
@@ -82,7 +109,9 @@ export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
       (accum, position) => accum + Number(position.positionUsdValue),
       0,
     );
-    return formatOtherPrice(totalUSDValue, { hasMinLimit: false });
+    return formatOtherPrice(totalUSDValue, {
+      isKMB: false,
+    });
   }, [selectedPosition]);
 
   return {

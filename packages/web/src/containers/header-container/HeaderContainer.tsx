@@ -207,9 +207,7 @@ const HeaderContainer: React.FC = () => {
             _.tokenB.symbol === item.tokenB.symbol,
         )?.[0];
         if (!item_) return item;
-        const price = formatPrice(item_?.tvl, {
-          usd: true,
-        });
+        const price = formatPrice(item_?.tvl);
         return {
           ...item,
           apr: `${

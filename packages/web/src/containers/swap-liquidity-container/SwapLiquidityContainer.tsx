@@ -107,7 +107,7 @@ const SwapLiquidityContainer: React.FC = () => {
         count++;
         return {
           ..._,
-          volume: formatOtherPrice(Number(poolItem.volume24h)),
+          volume: formatOtherPrice(poolItem.volume24h),
           liquidity: formatOtherPrice(poolItem.tvl),
           apr: (poolItem?.apr ?? "").toString(),
           active: true,

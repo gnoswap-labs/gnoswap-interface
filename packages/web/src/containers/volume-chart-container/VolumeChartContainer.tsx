@@ -223,6 +223,7 @@ const VolumeChartContainer: React.FC = () => {
       volumePriceInfo={{
         amount: formatOtherPrice(allTimeVolumeUsd, {
           isKMB: false,
+          decimals: 1,
         }),
         fee: formatOtherPrice(allTimeFeeUsd, {
           decimals: 1,

@@ -126,7 +126,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     return (
       <>
         1 {currentTokenA.symbol} =&nbsp;
-        {currentPrice}&nbsp;{currentTokenB.symbol}
+        {formatTokenExchangeRate(currentPrice)}&nbsp;{currentTokenB.symbol}
       </>
     );
   }, [currentTokenA.symbol, currentTokenB.symbol, currentPrice]);

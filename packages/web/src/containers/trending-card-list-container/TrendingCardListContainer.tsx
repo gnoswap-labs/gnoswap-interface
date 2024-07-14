@@ -87,7 +87,7 @@ const TrendingCardListContainer: React.FC = () => {
                 ? gnot?.logoURI || ""
                 : tempToken?.logoURI || "",
           },
-          price: formatPrice(item.tokenPrice, { usd: true }),
+          price: formatPrice(item.tokenPrice),
           upDown: status as UpDownType,
           content: formatRate(priceChange, { allowZeroDecimals: true }),
         };

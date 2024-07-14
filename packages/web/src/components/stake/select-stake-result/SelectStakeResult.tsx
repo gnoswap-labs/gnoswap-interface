@@ -44,29 +44,48 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
+
+    const priceAEmpty =
+      !tokenAPrice || positions.every(item => !item.tokenABalance);
+    const priceBEmpty =
+      !tokenBAmount || positions.every(item => !item.tokenBBalance);
+
     return [
       {
         token: tokenA,
         amount: tokenAAmount,
-        amountUSD: formatOtherPrice(tokenAAmount * Number(tokenAPrice)),
+        amountUSD: priceAEmpty
+          ? formatOtherPrice(tokenAAmount * Number(tokenAPrice), {
+              isKMB: false,
+            })
+          : "-",
       },
       {
         token: tokenB,
         amount: tokenBAmount,
-        amountUSD: formatOtherPrice(tokenBAmount * Number(tokenBPrice)),
+        amountUSD: priceBEmpty
+          ? formatOtherPrice(tokenBAmount * Number(tokenBPrice), {
+              isKMB: false,
+            })
+          : "-",
       },
     ];
   }, [positions, tokenPrices]);
 
   const totalLiquidityUSD = useMemo(() => {
-    if (positions.length === 0) {
+    if (
+      positions.length === 0 ||
+      positions.every(item => !item.positionUsdValue)
+    ) {
       return "-";
     }
     const totalUSDValue = positions.reduce(
       (accum, position) => accum + Number(position.positionUsdValue),
       0,
     );
-    return formatOtherPrice(totalUSDValue);
+    return formatOtherPrice(totalUSDValue, {
+      isKMB: false,
+    });
   }, [positions]);
 
   const stakingAPR = useMemo(() => {

@@ -81,6 +81,7 @@ export const UnstakePositionModalWrapper = styled.div`
           }
           .label-logo {
             gap: 5px;
+            color: ${({ theme }) => theme.color.text03};
             ${mixins.flexbox("row", "center", "center")};
           }
           svg {

@@ -130,8 +130,9 @@ const SwapCardContent: React.FC<ContentProps> = ({
   }, [swapTokenInfo.tokenBAmount, tokenB?.decimals]);
 
   const showPriceImpact = useMemo(
-    () => !isLoading && !!swapSummaryInfo?.priceImpact,
-    [isLoading, swapSummaryInfo?.priceImpact],
+    () =>
+      !isLoading && !!swapSummaryInfo?.priceImpact && swapRouteInfos.length > 0,
+    [isLoading, swapRouteInfos.length, swapSummaryInfo?.priceImpact],
   );
 
   return (

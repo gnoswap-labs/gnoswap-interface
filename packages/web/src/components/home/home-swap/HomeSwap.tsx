@@ -92,7 +92,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
       <div className="header">
-        <span className="title">{t("Main:swap")}</span>
+        <span className="title">{t("common:action.swap")}</span>
       </div>
       <div className="inputs">
         <div className="from">

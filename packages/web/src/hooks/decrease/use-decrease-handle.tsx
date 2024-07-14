@@ -238,6 +238,9 @@ export const useDecreaseHandle = () => {
         .toString(),
       poolAmountUSDA: formatOtherPrice(
         (tokenAAmount * Number(tokenAPrice) * percent) / 100,
+        {
+          isKMB: false,
+        },
       ),
       tokenABalance: tokenAAmount.toString(),
       tokenBBalance: tokenBAmount.toString(),
@@ -258,14 +261,23 @@ export const useDecreaseHandle = () => {
         .toString(),
       poolAmountUSDB: formatOtherPrice(
         (tokenBAmount * Number(tokenBPrice) * percent) / 100,
+        {
+          isKMB: false,
+        },
       ),
       unClaimTokenAAmount: BigNumber(unClaimTokenAAmount).toFormat(),
       unClaimTokenBAmount: BigNumber(unClaimTokenBAmount).toFormat(),
       unClaimTokenAAmountUSD: formatOtherPrice(
         unClaimTokenAAmount * Number(tokenAPrice),
+        {
+          isKMB: false,
+        },
       ),
       unClaimTokenBAmountUSD: formatOtherPrice(
         unClaimTokenBAmount * Number(tokenBPrice),
+        {
+          isKMB: false,
+        },
       ),
     };
   }, [selectedPosition, tokenPrices, percent]);

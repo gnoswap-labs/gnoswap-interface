@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokenData } from "./use-token-data";
 import { checkGnotPath } from "@utils/common";
-import { formatPrice } from "@utils/new-number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface TokenAmountInputModel {
   token: TokenModel | null;
@@ -59,7 +59,7 @@ export const useTokenAmountInput = (
 
     if (!tokenPrices[checkGnotPath(token.path)]?.usd) return "-";
 
-    return formatPrice(usd, {
+    return formatOtherPrice(usd, {
       isKMB: false,
     });
   }, [tokenPrices, amount, token]);

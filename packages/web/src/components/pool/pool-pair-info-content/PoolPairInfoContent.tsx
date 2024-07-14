@@ -148,6 +148,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       return (
         <div>
           <IconTriangleArrowUpV2 />
+          <span className={pool.tvlChange >= 0 ? "positive" : "negative"}>
+            0.00%
+          </span>
         </div>
       );
     }
@@ -339,7 +342,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   <span>
-                    {formatPoolPairAmount(tokenBBalance)}{" "}
+                    {formatPoolPairAmount(tokenBBalance, {
+                      decimals: 2,
+                    })}{" "}
                     <span
                       className={`token-symbol ${
                         isWrapText ? "wrap-text" : ""

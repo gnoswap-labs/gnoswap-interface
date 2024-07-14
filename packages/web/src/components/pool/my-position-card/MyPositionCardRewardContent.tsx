@@ -41,15 +41,23 @@ export const MyPositionRewardContent: React.FC<
   }, [rewardInfo.EXTERNAL]);
 
   const swapFeeRewardUSD = useMemo(() => {
+    const isEmpty = rewardInfo.SWAP_FEE.length === 0;
+
+    if (isEmpty) return "-";
+
     const sumUSD =
       swapFeeRewards?.reduce(
         (accum, current) => accum + current.claimableUSD,
         0,
       ) || 0;
     return formatOtherPrice(sumUSD);
-  }, [swapFeeRewards]);
+  }, [rewardInfo.SWAP_FEE.length, swapFeeRewards]);
 
   const stakingRewardUSD = useMemo(() => {
+    const isEmpty = rewardInfo.INTERNAL.length === 0;
+
+    if (isEmpty) return "-";
+
     const sumUSD = rewardInfo.INTERNAL.reduce(
       (accum, current) => accum + current.claimableUSD,
       0,
@@ -58,6 +66,10 @@ export const MyPositionRewardContent: React.FC<
   }, [rewardInfo.INTERNAL]);
 
   const externalRewardUSD = useMemo(() => {
+    const isEmpty = rewardInfo.EXTERNAL.length === 0;
+
+    if (isEmpty) return "-";
+
     const sumUSD = rewardInfo.EXTERNAL.reduce(
       (accum, current) => accum + current.claimableUSD,
       0,

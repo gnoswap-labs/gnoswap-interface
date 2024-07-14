@@ -13,7 +13,6 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { formatPrice } from "@utils/new-number-utils";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -132,20 +131,6 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     );
   }, [dataTokenInfo, isLoading]);
 
-  const tokenABalance = useMemo(() => {
-    if (!connected || isSwitchNetwork || !tokenA) return "-";
-
-    // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(dataTokenInfo.tokenABalance);
-  }, [connected, isSwitchNetwork, tokenA, dataTokenInfo.tokenABalance]);
-
-  const tokenBBalance = useMemo(() => {
-    if (!connected || isSwitchNetwork || !tokenB) return "-";
-
-    // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(dataTokenInfo.tokenBBalance);
-  }, [connected, isSwitchNetwork, tokenB, dataTokenInfo.tokenBBalance]);
-
   return (
     <div css={wrapper}>
       <div className="header">
@@ -196,7 +181,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenA}
             >
-              Balance: {tokenABalance}
+              Balance: {dataTokenInfo.tokenABalance}
             </span>
           </div>
         </div>
@@ -228,7 +213,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenB}
             >
-              Balance: {tokenBBalance}
+              Balance: {dataTokenInfo.tokenBBalance}
             </span>
           </div>
         </div>

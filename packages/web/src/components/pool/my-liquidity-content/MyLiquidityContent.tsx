@@ -565,7 +565,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <AmountDisplayWrapper $canHover={tokenBBalance >= 1e3}>
-                {formatPoolPairAmount(tokenABalance, {
+                {formatPoolPairAmount(tokenBBalance, {
                   isKMB: false,
                   decimals: 2,
                 })}{" "}

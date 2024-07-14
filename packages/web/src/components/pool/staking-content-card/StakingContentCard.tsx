@@ -82,7 +82,7 @@ const PriceTooltipContent = ({
             <div className="list">
               <span className="label">Total Value</span>
               <span className="content">
-                {formatOtherPrice(position.usdValue, { hasMinLimit: false })}
+                {formatOtherPrice(position.usdValue, { isKMB: false })}
               </span>
             </div>
             <div className="list">

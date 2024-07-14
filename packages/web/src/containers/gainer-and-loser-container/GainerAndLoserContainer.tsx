@@ -120,7 +120,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: formatPrice(item.tokenPrice, { usd: true }),
+        price: formatPrice(item.tokenPrice),
         change: {
           status:
             Number(priceChange) >= 0
@@ -156,7 +156,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
-        price: formatPrice(item.tokenPrice, { usd: true }),
+        price: formatPrice(item.tokenPrice),
         change: {
           status:
             Number(priceChange) >= 0

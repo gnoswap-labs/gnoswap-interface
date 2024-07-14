@@ -216,7 +216,7 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: currentPrice ? formatPrice(currentPrice) : "",
+            value: formatPrice(currentPrice),
             denom: "USD",
             status: dataToday.status,
           },

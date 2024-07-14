@@ -16,7 +16,6 @@ import { formatPrice } from "@utils/new-number-utils";
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
   const { tokenPrices, displayBalanceMap } = useTokenData();
-  console.log("🚀 ~ displayBalanceMap:", displayBalanceMap);
   const [tokenA, setTokenA] = useState<TokenModel | null>(GNOT_TOKEN);
   const [tokenAAmount, setTokenAAmount] = useState<string>("");
   const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);
@@ -29,14 +28,20 @@ const HomeSwapContainer: React.FC = () => {
     if (!connected || isSwitchNetwork || !tokenA) return "-";
 
     // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceMap?.[tokenA.priceID], { usd: false });
+    return formatPrice(displayBalanceMap?.[tokenA.priceID], {
+      usd: false,
+      isKMB: false,
+    });
   }, [isSwitchNetwork, connected, displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
     if (!connected || isSwitchNetwork || !tokenB) return "-";
 
     // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceMap?.[tokenB.priceID], { usd: false });
+    return formatPrice(displayBalanceMap?.[tokenB.priceID], {
+      usd: false,
+      isKMB: false,
+    });
   }, [isSwitchNetwork, connected, displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
@@ -71,12 +76,12 @@ const HomeSwapContainer: React.FC = () => {
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
-      tokenAUSDStr: formatPrice(tokenAUSD),
+      tokenAUSDStr: formatPrice(tokenAUSD, { isKMB: false }),
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
-      tokenBUSDStr: formatPrice(tokenBUSD),
+      tokenBUSDStr: formatPrice(tokenBUSD, { isKMB: false }),
       direction: "EXACT_IN",
       slippage,
       tokenADecimals: tokenA?.decimals,

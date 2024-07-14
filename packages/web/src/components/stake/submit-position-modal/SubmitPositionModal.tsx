@@ -103,7 +103,9 @@ const SubmitPositionModal: React.FC<Props> = ({
                     />
                   </div>
                   <div className="value">
-                    {formatOtherPrice(position.positionUsdValue)}
+                    {formatOtherPrice(position.positionUsdValue, {
+                      isKMB: false,
+                    })}
                   </div>
                 </div>
               ))}

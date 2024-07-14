@@ -49,8 +49,8 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
   }, [rewardInfo]);
 
   const swapFeeRewardUSD = useMemo(() => {
-    if (!rewardInfo) {
-      return 0;
+    if (!rewardInfo || rewardInfo.SWAP_FEE.length === 0) {
+      return "-";
     }
     const sumUSD = rewardInfo.SWAP_FEE.reduce(
       (accum, current) => accum + current.claimableUSD,
@@ -60,8 +60,8 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
   }, [rewardInfo]);
 
   const internalRewardUSD = useMemo(() => {
-    if (!rewardInfo) {
-      return 0;
+    if (!rewardInfo || rewardInfo.INTERNAL.length === 0) {
+      return "-";
     }
     const sumUSD = rewardInfo.INTERNAL.reduce(
       (accum, current) => accum + current.claimableUSD,
@@ -71,8 +71,8 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
   }, [rewardInfo]);
 
   const externalRewardUSD = useMemo(() => {
-    if (!rewardInfo) {
-      return 0;
+    if (!rewardInfo || rewardInfo.EXTERNAL.length === 0) {
+      return "-";
     }
     const sumUSD = rewardInfo.EXTERNAL.reduce(
       (accum, current) => accum + current.claimableUSD,
