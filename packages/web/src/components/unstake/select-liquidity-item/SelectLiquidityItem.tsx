@@ -28,7 +28,7 @@ const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({
 }) => {
   const { getGnotPath } = useGnotToGnot();
 
-  const renderTokenValue = (token: TokenModel, tokenBalance: number) => {
+  const renderTokenValue = (token: TokenModel, tokenBalance: string) => {
     const tokenBalanceByTokenDecimal = BigNumber(tokenBalance || 0).toFormat();
 
     return (

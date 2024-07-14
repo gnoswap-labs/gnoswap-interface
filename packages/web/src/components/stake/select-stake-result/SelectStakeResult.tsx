@@ -33,11 +33,11 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
     const pooledTokenAAmount = positions.reduce(
-      (accum, position) => accum + position.tokenABalance,
+      (accum, position) => accum + Number(position.tokenABalance),
       0,
     );
     const pooledTokenBAmount = positions.reduce(
-      (accum, position) => accum + position.tokenBBalance,
+      (accum, position) => accum + Number(position.tokenBBalance),
       0,
     );
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;

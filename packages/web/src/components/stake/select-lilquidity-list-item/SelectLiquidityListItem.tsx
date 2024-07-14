@@ -3,9 +3,17 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import React, { useMemo } from "react";
-import { TokenTitleWrapper, TokenValueWrapper, tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
+import {
+  TokenTitleWrapper,
+  TokenValueWrapper,
+  tooltipWrapper,
+  wrapper,
+} from "./SelectLiquidityListItem.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { convertLiquidityUsdToKMB, convertLiquidityUsdValue } from "@utils/stake-position-utils";
+import {
+  convertLiquidityUsdToKMB,
+  convertLiquidityUsdValue,
+} from "@utils/stake-position-utils";
 import BigNumber from "bignumber.js";
 import { TokenModel } from "@models/token/token-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -18,25 +26,28 @@ interface SelectLiquidityListItemProps {
   onCheckedItem: (checked: boolean, path: string) => void;
 }
 
-
-
-const TooltipContent: React.FC<{ position: PoolPositionModel, disabled: boolean }> = ({ position, disabled }) => {
+const TooltipContent: React.FC<{
+  position: PoolPositionModel;
+  disabled: boolean;
+}> = ({ position, disabled }) => {
   const { getGnotPath } = useGnotToGnot();
 
-  const renderTokenValue = (token: TokenModel, tokenBalance: number) => {
+  const renderTokenValue = (token: TokenModel, tokenBalance: string) => {
     const tokenBalanceByTokenDecimal = BigNumber(tokenBalance || 0).toFormat();
 
-    return <TokenValueWrapper>
-      <div className="value">
-        <MissingLogo
-          url={getGnotPath(token).logoURI}
-          symbol={getGnotPath(token).symbol}
-          width={20}
-        />
-        {token.symbol}
-      </div>
-      <div className="value">{tokenBalanceByTokenDecimal}</div>
-    </TokenValueWrapper>;
+    return (
+      <TokenValueWrapper>
+        <div className="value">
+          <MissingLogo
+            url={getGnotPath(token).logoURI}
+            symbol={getGnotPath(token).symbol}
+            width={20}
+          />
+          {token.symbol}
+        </div>
+        <div className="value">{tokenBalanceByTokenDecimal}</div>
+      </TokenValueWrapper>
+    );
   };
 
   return (
@@ -45,14 +56,8 @@ const TooltipContent: React.FC<{ position: PoolPositionModel, disabled: boolean 
         <div className="title">Token ID</div>
         <div className="title">#{position.id}</div>
       </TokenTitleWrapper>
-      {renderTokenValue(
-        position.pool.tokenA,
-        position.tokenABalance,
-      )}
-      {renderTokenValue(
-        position.pool.tokenB,
-        position.tokenBBalance,
-      )}
+      {renderTokenValue(position.pool.tokenA, position.tokenABalance)}
+      {renderTokenValue(position.pool.tokenB, position.tokenBBalance)}
       {disabled && <div className="divider"></div>}
       {disabled && (
         <div className="unstake-description">
@@ -84,14 +89,17 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    if (width < 400) return convertLiquidityUsdToKMB(position.positionUsdValue, { prefix: "$" });
+    if (width < 400)
+      return convertLiquidityUsdToKMB(position.positionUsdValue, {
+        prefix: "$",
+      });
 
     return convertLiquidityUsdValue(Number(position.positionUsdValue));
   }, [position.positionUsdValue, width]);
 
   return (
     <li css={wrapper(checked)}>
-      <div className="left-content" >
+      <div className="left-content">
         <input
           id={`checkbox-item-${position.id}`}
           type="checkbox"
@@ -102,16 +110,29 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
         <label htmlFor={`checkbox-item-${position.id}`} />
         <Tooltip
           placement="top"
-          FloatingContent={<TooltipContent position={position} disabled={disabled} />}
+          FloatingContent={
+            <TooltipContent position={position} disabled={disabled} />
+          }
         >
           <div className="logo-wrapper">
-            <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol} />
-            {width > 768 && <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>}
-            <Badge text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
+            <DoubleLogo
+              left={tokenA.logoURI}
+              right={tokenB.logoURI}
+              size={24}
+              leftSymbol={tokenA.symbol}
+              rightSymbol={tokenB.symbol}
+            />
+            {width > 768 && (
+              <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>
+            )}
+            <Badge
+              text={`${Number(position.pool.fee) / 10000}%`}
+              type={BADGE_TYPE.DARK_DEFAULT}
+            />
           </div>
         </Tooltip>
       </div>
-      <span className="liquidity-value" >{liquidityUSD}</span>
+      <span className="liquidity-value">{liquidityUSD}</span>
     </li>
   );
 };

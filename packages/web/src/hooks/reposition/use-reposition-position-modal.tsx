@@ -29,8 +29,8 @@ export interface RepositionModalProps {
   rangeStatus: RANGE_STATUS_OPTION;
   priceRangeSummary: IPriceRange;
   aprFee: number;
-  currentAmounts: { amountA: number; amountB: number } | null;
-  repositionAmounts: { amountA: number | null; amountB: number | null } | null;
+  currentAmounts: { amountA: string; amountB: string } | null;
+  repositionAmounts: { amountA: string | null; amountB: string | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
   addPosition: (
