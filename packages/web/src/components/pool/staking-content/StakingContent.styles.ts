@@ -198,3 +198,7 @@ export const CustomButtonStaking = styled.div`
     display: none;
   }
 `;
+
+export const AprViewRewardTooltipWrapper = styled.div`
+  ${fonts.body12}
+`;

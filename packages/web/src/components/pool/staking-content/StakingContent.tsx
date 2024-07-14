@@ -1,8 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import StakingContentCard, {
   SummuryApr,
 } from "@components/pool/staking-content-card/StakingContentCard";
-import { StakingContentWrapper } from "./StakingContent.styles";
+import {
+  AprViewRewardTooltipWrapper,
+  StakingContentWrapper,
+} from "./StakingContent.styles";
 import Button from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
@@ -44,6 +47,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   pool,
 }) => {
   const { getGnotPath } = useGnotToGnot();
+  const [showAprTooltip, setShowAprTooltip] = useState(false);
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
     const rewardLogo =
@@ -63,6 +67,26 @@ const StakingContent: React.FC<StakingContentProps> = ({
       return acc;
     }, []) as TokenModel[];
   }, [pool?.rewardTokens, getGnotPath]);
+
+  useEffect(() => {
+    const fn = () => {
+      const top = document
+        .getElementById("staking-container")
+        ?.getBoundingClientRect().top;
+
+      if (top && top <= 200) {
+        setShowAprTooltip(true);
+      } else {
+        setShowAprTooltip(false);
+      }
+    };
+
+    window.addEventListener("scroll", fn);
+
+    return () => {
+      window.removeEventListener("scroll", fn);
+    };
+  }, []);
 
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
@@ -124,9 +148,14 @@ const StakingContent: React.FC<StakingContentProps> = ({
           <div className="header-wrap">
             <span className="to-mobile">to</span>
             <Tooltip
-              FloatingContent={<div>View Rewards</div>}
+              FloatingContent={
+                <AprViewRewardTooltipWrapper>
+                  View Rewards
+                </AprViewRewardTooltipWrapper>
+              }
               placement="top"
               className="apr"
+              forcedOpen={showAprTooltip}
             >
               {totalApr} APR{" "}
             </Tooltip>

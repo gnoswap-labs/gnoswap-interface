@@ -20,11 +20,7 @@ import {
   convertToKMB,
   formatTokenExchangeRate,
 } from "@utils/stake-position-utils";
-import {
-  isNumber,
-  removeTrailingZeros,
-  subscriptFormat,
-} from "@utils/number-utils";
+import { isNumber, subscriptFormat } from "@utils/number-utils";
 
 export interface SelectPriceRangeCustomControllerProps {
   title: string;
@@ -137,7 +133,7 @@ const SelectPriceRangeCustomController = forwardRef<
           return;
         }
 
-        setDisplayValue(subscriptFormat(BigNumber(value).toFixed()));
+        setDisplayValue(subscriptFormat(BigNumber(value).toFixed(6)));
       },
       [feeTier, priceRatio, selectedFullRange],
     );
@@ -225,26 +221,24 @@ const SelectPriceRangeCustomController = forwardRef<
     function greaterThan1Transform(numStr: string) {
       const number = Number(numStr);
 
-      const significantNumber = 5;
-      const [intPart] = numStr.split(".");
+      // const significantNumber = 5;
+      // const [intPart] = numStr.split(".");
 
-      if (intPart.length >= significantNumber) {
-        const originalNumber = number;
-        const digitCountRatio = Math.pow(
-          10,
-          intPart.length - significantNumber,
-        );
+      // if (intPart.length >= significantNumber) {
+      //   const originalNumber = number;
+      //   const digitCountRatio = Math.pow(
+      //     10,
+      //     intPart.length - significantNumber,
+      //   );
 
-        const numberWith5SignificantNumber = (
-          Math.round(originalNumber / digitCountRatio) * digitCountRatio
-        ).toString();
+      //   const numberWith5SignificantNumber = (
+      //     Math.round(originalNumber / digitCountRatio) * digitCountRatio
+      //   ).toString();
 
-        return numberWith5SignificantNumber;
-      }
+      //   return numberWith5SignificantNumber;
+      // }
 
-      return removeTrailingZeros(
-        number.toFixed(significantNumber - intPart.length),
-      );
+      return number.toFixed(6, BigNumber.ROUND_DOWN);
     }
 
     useEffect(() => {

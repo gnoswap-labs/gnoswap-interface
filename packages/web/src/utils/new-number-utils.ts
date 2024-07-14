@@ -85,7 +85,9 @@ export const formatRate = (
     return `<${internalMinLimit}%`;
   }
 
-  return sign + BigNumber(amount).toFormat(decimals) + "%";
+  return (
+    sign + BigNumber(amount).toFormat(decimals, BigNumber.ROUND_DOWN) + "%"
+  );
 };
 
 export const formatTokenAmount = (

@@ -14,7 +14,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { useLoading } from "@hooks/common/use-loading";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { formatPrice } from "@utils/new-number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 dayjs.extend(relativeTime);
 
 export interface Activity {
@@ -190,7 +190,7 @@ const DashboardActivitiesContainer: React.FC = () => {
 
     return {
       action: actionText,
-      totalValue: formatPrice(res.totalUsd, {
+      totalValue: formatOtherPrice("0.12999", {
         isKMB: false,
       }),
       tokenAmountOne: tokenAAmount,

@@ -75,6 +75,7 @@ interface TooltipProps {
   floatClassName?: string;
   className?: string;
   isShouldShowed?: boolean;
+  forcedOpen?: boolean;
 }
 
 const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
@@ -85,6 +86,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   floatClassName,
   isShouldShowed = true,
   className,
+  forcedOpen,
 }) => {
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
@@ -93,6 +95,10 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   const floatingRef = useMergeRefs([refs.setFloating]);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const theme = useTheme();
+
+  const showFloat = useMemo(() => {
+    return forcedOpen || (open && isShouldShowed);
+  }, [forcedOpen, isShouldShowed, open]);
 
   return (
     <>
@@ -108,7 +114,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
         {children}
       </BaseTooltipWrapper>
       <FloatingPortal>
-        {open && isShouldShowed && (
+        {showFloat && (
           <div
             ref={floatingRef}
             style={{
