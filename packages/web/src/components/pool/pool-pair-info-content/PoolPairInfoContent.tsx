@@ -69,7 +69,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       (Number(tokenABalance) + Number(tokenBBalance) / pool.price)
     );
   }, [tokenABalance, tokenBBalance, pool.price]);
-  console.log("🚀 ~ depositRatio ~ depositRatio:", depositRatio);
 
   const depositRatioStrOfTokenA = useMemo(() => {
     const depositStr = formatRate(depositRatio * 100, { decimals: 0 });

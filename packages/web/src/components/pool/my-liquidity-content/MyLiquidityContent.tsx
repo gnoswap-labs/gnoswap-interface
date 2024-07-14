@@ -305,6 +305,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const isEmpty = positions
       .flatMap(item => item.reward)
       .every(item => !item.claimableUsd);
+    console.log("🚀 ~ claimableUSD ~ positions:", positions);
 
     if (!isDisplay || isEmpty) {
       return "-";
