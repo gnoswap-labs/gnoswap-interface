@@ -9,7 +9,7 @@ export const formatPoolPairAmount = (
     isKMB = true,
   }: { decimals?: number; minLimit?: number | null; isKMB?: boolean } = {},
 ) => {
-  if (!amount || BigNumber(amount).isNaN()) {
+  if (amount === null || amount === undefined || BigNumber(amount).isNaN()) {
     return "-";
   }
 
@@ -62,7 +62,7 @@ export const formatRate = (
     allowZeroDecimals?: boolean;
   } = {},
 ) => {
-  if (!amount || BigNumber(amount).isNaN()) {
+  if (amount === null || amount === undefined || BigNumber(amount).isNaN()) {
     return "-";
   }
 
@@ -208,12 +208,14 @@ export const formatOtherPrice = (
     decimals = 2,
     hasMinLimit = true,
     minLimit,
+    zeroAsEmpty = false,
   }: {
     usd?: boolean;
     isKMB?: boolean;
     decimals?: number;
     hasMinLimit?: boolean;
     minLimit?: number;
+    zeroAsEmpty?: boolean;
   } = {},
 ): string => {
   if (value === "" || value === null || value === undefined) {
@@ -230,7 +232,11 @@ export const formatOtherPrice = (
 
   if (absValue.isNaN()) return value.toString();
 
-  if (absValue.isEqualTo(0)) return prefix + "0";
+  if (absValue.isEqualTo(0)) {
+    if (zeroAsEmpty) return "-";
+
+    return prefix + "0";
+  }
 
   const internalMinLimit = decimals ? 1 / Math.pow(10, decimals) : null;
 

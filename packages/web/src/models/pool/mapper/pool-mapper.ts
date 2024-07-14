@@ -93,7 +93,7 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: apr,
-      liquidity: tvl ? `$${BigNumber(tvl).toFormat(0)}` : "-",
+      liquidity: formatOtherPrice(tvl),
       volume24h: formatOtherPrice(volume24h),
       fees24h: formatOtherPrice(feeUsd24h),
       rewardTokens,
@@ -143,7 +143,7 @@ export class PoolMapper {
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr ?? "",
       totalApr: pool.totalApr,
-      allTimeVolumeUsd: Number(pool.allTimeVolumeUsd),
+      allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
     };
   }

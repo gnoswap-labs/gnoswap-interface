@@ -69,26 +69,25 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       (Number(tokenABalance) + Number(tokenBBalance) / pool.price)
     );
   }, [tokenABalance, tokenBBalance, pool.price]);
+  console.log("🚀 ~ depositRatio ~ depositRatio:", depositRatio);
 
   const depositRatioStrOfTokenA = useMemo(() => {
     const depositStr = formatRate(depositRatio * 100, { decimals: 0 });
+
     return `(${depositStr})`;
   }, [depositRatio]);
 
   const depositRatioStrOfTokenB = useMemo(() => {
     const depositStr = formatRate((1 - depositRatio) * 100, { decimals: 0 });
+
     return `(${depositStr})`;
   }, [depositRatio]);
 
   const liquidityValue = useMemo((): string => {
-    if (!pool.tvl) return "-";
-
     return formatOtherPrice(pool.tvl);
   }, [pool.tvl]);
 
   const volumeValue = useMemo((): string => {
-    if (!pool.volume24h) return "-";
-
     return formatOtherPrice(pool.volume24h);
   }, [pool.volume24h]);
 
@@ -282,14 +281,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                         width={20}
                         className="image-logo"
                       />
-                      {formatPoolPairAmount(tokenABalance, {
+                      {formatPoolPairAmount(pool.tokenABalance, {
                         isKMB: false,
                       })}{" "}
                       <span>{pool?.tokenA?.symbol}</span>{" "}
                     </TokenAmountTooltipContentWrapper>
                   }
                   className={`section-image ${
-                    tokenABalance ? "can-hover" : ""
+                    pool.tokenABalance ? "can-hover" : ""
                   }`}
                 >
                   <MissingLogo
@@ -299,7 +298,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   <span>
-                    {formatPoolPairAmount(tokenABalance, {
+                    {formatPoolPairAmount(pool.tokenABalance, {
                       decimals: 2,
                     })}{" "}
                     <span
@@ -325,14 +324,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                         width={20}
                         className="image-logo"
                       />
-                      {formatPoolPairAmount(tokenBBalance, {
+                      {formatPoolPairAmount(pool.tokenBBalance, {
                         isKMB: false,
                       })}
                       <span>{pool?.tokenB?.symbol}</span>{" "}
                     </TokenAmountTooltipContentWrapper>
                   }
                   className={`section-image ${
-                    tokenBBalance ? "can-hover" : ""
+                    pool.tokenBBalance ? "can-hover" : ""
                   }`}
                 >
                   <MissingLogo
@@ -342,7 +341,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     className="image-logo"
                   />
                   <span>
-                    {formatPoolPairAmount(tokenBBalance, {
+                    {formatPoolPairAmount(pool.tokenBBalance, {
                       decimals: 2,
                     })}{" "}
                     <span

@@ -68,7 +68,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       return "-";
     }
 
-    return formatOtherPrice(balance, { isKMB: false });
+    return formatOtherPrice(balance, { isKMB: false, usd: false });
   }, [balance, connected]);
 
   const preventArrowKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {

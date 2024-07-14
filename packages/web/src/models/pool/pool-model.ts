@@ -45,7 +45,7 @@ export interface PoolModel {
 
   stakingApr: string;
 
-  allTimeVolumeUsd: number;
+  allTimeVolumeUsd: string;
 
   priceRatio: IPoolPriceRatio;
 

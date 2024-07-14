@@ -3,6 +3,7 @@ import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
 import { toPriceFormat } from "./number-utils";
 import BigNumber from "bignumber.js";
+import { formatRate } from "./new-number-utils";
 
 export function wait<T>(
   runner: () => Promise<T>,
@@ -68,7 +69,7 @@ export const checkPositivePrice = (
     shortenSmallPercent?: boolean;
     shortenSmallChange?: boolean;
     displayStatusSign?: boolean;
-  } = {}
+  } = {},
 ) => {
   const currentAsNumber = Number(currentPrice);
   const checkAsNumber = Number(checkPrice);
@@ -109,7 +110,11 @@ export const checkPositivePrice = (
     return MATH_NEGATIVE_TYPE.NEGATIVE;
   })();
 
-  const statusSign = displayStatusSign ? (status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+") : "";
+  const statusSign = displayStatusSign
+    ? status === MATH_NEGATIVE_TYPE.NEGATIVE
+      ? "-"
+      : "+"
+    : "";
 
   const percentDisplay = (() => {
     if (status === MATH_NEGATIVE_TYPE.NONE) return "-";
@@ -126,7 +131,9 @@ export const checkPositivePrice = (
       return statusSign + "0.00%";
     }
 
-    return statusSign + BigNumber(percentValue || 0).abs().toFixed(2) + "%";
+    return formatRate(percentValue, {
+      showSign: displayStatusSign,
+    });
   })();
   const price = (() => {
     if (status === MATH_NEGATIVE_TYPE.NONE) {
@@ -138,25 +145,31 @@ export const checkPositivePrice = (
         return statusSign + "0.00";
       }
 
-      return statusSign + toPriceFormat(
+      return (
+        statusSign +
+        toPriceFormat(
+          BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(),
+          {
+            usd: true,
+            isKMBFormat: false,
+            fixedLessThan1Decimal: 3,
+            forcedGreaterThan1Decimals: true,
+          },
+        )
+      );
+    }
+
+    return (
+      statusSign +
+      toPriceFormat(
         BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(),
         {
           usd: true,
           isKMBFormat: false,
           fixedLessThan1Decimal: 3,
           forcedGreaterThan1Decimals: true,
-        }
-      );
-    }
-
-    return statusSign + toPriceFormat(
-      BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(),
-      {
-        usd: true,
-        isKMBFormat: false,
-        fixedLessThan1Decimal: 3,
-        forcedGreaterThan1Decimals: true,
-      }
+        },
+      )
     );
   })();
 

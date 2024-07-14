@@ -157,7 +157,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               className="apr"
               forcedOpen={showAprTooltip}
             >
-              {totalApr} APR{" "}
+              {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
             </Tooltip>
             <div className="coin-info">
               <OverlapTokenLogo tokens={rewardTokenLogos} />
@@ -173,7 +173,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               <SummuryApr
                 loading={loading}
                 key={index}
-                stakingApr={pool?.stakingApr || "0"}
+                stakingApr={pool?.stakingApr}
                 period={period}
                 positions={stakingPositionMap[period]}
                 checkPoints={checkPoints}
@@ -182,7 +182,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             ) : (
               <StakingContentCard
                 key={index}
-                stakingApr={pool?.stakingApr || "0"}
+                stakingApr={pool?.stakingApr}
                 period={period}
                 positions={stakingPositionMap[period]}
                 breakpoint={breakpoint}

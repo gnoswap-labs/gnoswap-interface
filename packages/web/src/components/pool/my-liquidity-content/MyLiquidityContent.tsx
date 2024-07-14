@@ -208,7 +208,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const dailyEarning = useMemo(() => {
     const isEmpty = positions
       .flatMap(item => item.reward)
-      .every(item => !item.accuReward1D);
+      .every(item => {
+        return !item.accuReward1D;
+      });
 
     if (!isDisplay || isEmpty) {
       return "-";

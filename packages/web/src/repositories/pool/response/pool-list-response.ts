@@ -52,7 +52,7 @@ export interface PoolResponse {
 
   liquidity: string;
 
-  allTimeVolumeUsd: number;
+  allTimeVolumeUsd: string;
 
   volumeChange24h: number;
 

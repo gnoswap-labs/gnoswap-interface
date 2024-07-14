@@ -30,7 +30,7 @@ import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
-  stakingApr: string;
+  stakingApr?: string;
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
   breakpoint: DEVICE_TYPE;
@@ -82,7 +82,7 @@ const PriceTooltipContent = ({
             <div className="list">
               <span className="label">Total Value</span>
               <span className="content">
-                {formatOtherPrice(position.usdValue, { isKMB: false })}
+                {formatOtherPrice(position.usdValue, { hasMinLimit: false })}
               </span>
             </div>
             <div className="list">
@@ -151,12 +151,18 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () => BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate),
+    () =>
+      stakingApr
+        ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate)
+        : null,
     [period, stakingApr],
   );
 
   const aprStr = useMemo(() => {
     const periodStakingApr = formatRate(aprNumber, { decimals: 0 });
+
+    if (periodStakingApr === "-") return "-";
+
     return `${periodStakingApr} APR`;
   }, [aprNumber]);
 
@@ -269,7 +275,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
           )}
           {!loading && (
             <div className="apr small-gap">
-              {aprNumber.isGreaterThan(100) && <IconStar />}
+              {aprNumber?.isGreaterThan(100) && <IconStar />}
               <span className="apr-text">{aprStr}</span>
             </div>
           )}
@@ -283,7 +289,7 @@ interface SummuryAprProps {
   period: StakingPeriodType;
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
-  stakingApr: string;
+  stakingApr?: string;
   loading: boolean;
   breakpoint: DEVICE_TYPE;
 }
@@ -335,12 +341,18 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () => BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate),
+    () =>
+      stakingApr
+        ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate)
+        : null,
     [period, stakingApr],
   );
 
   const aprStr = useMemo(() => {
     const periodStakingApr = formatRate(aprNumber, { decimals: 0 });
+
+    if (periodStakingApr === "-") return "-";
+
     return `${periodStakingApr} APR`;
   }, [aprNumber]);
 
@@ -434,7 +446,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
           )}
           {!loading && (
             <div className="apr small-gap">
-              {aprNumber.isGreaterThan(100) && <IconStar />}
+              {aprNumber?.isGreaterThan(100) && <IconStar />}
               <span className="apr-gd-text">{aprStr}</span>
             </div>
           )}
