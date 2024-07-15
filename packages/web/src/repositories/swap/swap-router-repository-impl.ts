@@ -21,13 +21,14 @@ import {
   makeRouterTokenApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages/pool";
 import {
+  SendTransactionErrorResponse,
   SendTransactionSuccessResponse,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { TokenError } from "@common/errors/token";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
-import { SwapRouteResponse } from "./response/swap-route-response";
+import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "./response/swap-route-response";
 import { TransactionMessage } from "@common/clients/wallet-client/transaction-messages";
 import { checkGnotPath, toNativePath } from "@utils/common";
 import { NetworkClient } from "@common/clients/network-client";
@@ -110,7 +111,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
   public swapRoute = async (
     request: SwapRouteRequest,
-  ): Promise<WalletResponse<SwapRouteResponse>> => {
+  ): Promise<
+    WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>
+  > => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -192,18 +195,20 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       memo: "",
     });
     if (response.code !== 0 || !response.data) {
+      const { hash } = response.data as SendTransactionErrorResponse;
       return {
         ...response,
-        data: null,
+        data: { hash: hash },
       };
     }
-    const data = response.data as SendTransactionSuccessResponse<string[]>;
-    if (data.data === null || data.data.length === 0) {
+    const { data, hash, height } =
+      response.data as SendTransactionSuccessResponse<string[]>;
+    if (data === null || data.length === 0) {
       return {
         ...response,
         data: {
-          hash: data.hash,
-          height: data.height,
+          hash: hash,
+          height: height,
           resultToken,
           resultAmount: "0",
           slippageAmount: "0",
@@ -211,10 +216,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       };
     }
 
-    // XXX: log swap result
-    console.log("[SWAP RESULT]", response.data);
-
-    const result = exactType === "EXACT_IN" ? data.data[1] : data.data[0];
+    const result = exactType === "EXACT_IN" ? data[1] : data[0];
     const resultAmount =
       makeDisplayTokenAmount(
         resultToken,
@@ -229,8 +231,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return {
       ...response,
       data: {
-        hash: data.hash,
-        height: data.height,
+        hash: hash,
+        height: height,
         resultToken,
         resultAmount: resultAmount,
         slippageAmount,

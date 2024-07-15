@@ -7,7 +7,7 @@ import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
-import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
+import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 import React, { useCallback, useState } from "react";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconClose from "../icons/IconCancel";
@@ -36,7 +36,7 @@ interface Props {
   currentAmounts: { amountA: number; amountB: number } | null;
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
-  swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
+  swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse> | null>;
   addPosition: (
     swapToken: TokenModel,
     swapAmount: string,

@@ -8,7 +8,7 @@ import IconRemovePositionCircle from "@components/common/icons/IconRemovePositio
 import IconSwapCircle from "@components/common/icons/IconSwapCircle";
 import IconAddPositionCircle from "@components/common/icons/IconAddPositionCircle";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
+import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
 import { TokenModel } from "@models/token/token-model";
 
@@ -16,7 +16,7 @@ export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   removePosition: () => Promise<WalletResponse | null>;
-  swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
+  swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse> | null>;
   addPosition: (
     swapToken: TokenModel,
     swapAmount: string,
@@ -37,7 +37,7 @@ const RepositionBroadcastProgress: React.FC<
   const [removePositionState, setRemovePositionState] =
     useState<ProgressStateType>("NONE");
   const [swapState, setSwapState] = useState<ProgressStateType>("NONE");
-  const [swapResult, setSwapResult] = useState<SwapRouteResponse | null>(null);
+  const [swapResult, setSwapResult] = useState<SwapRouteSuccessResponse | null>(null);
   const [addPositionState, setAddPositionState] =
     useState<ProgressStateType>("NONE");
 

@@ -15,7 +15,7 @@ import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
-import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
+import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 import { IncreaseState } from "@states/index";
 import { MAX_UINT64 } from "@utils/math.utils";
 import {
@@ -418,7 +418,7 @@ export const useRepositionHandle = () => {
     }, [selectedPosition, positionRepository, address]);
 
   const swapRemainToken =
-    useCallback(async (): Promise<WalletResponse<SwapRouteResponse> | null> => {
+    useCallback(async (): Promise<WalletResponse<SwapRouteSuccessResponse> | null> => {
       if (!address || !estimatedRemainSwap || !estimateSwapRequestByAmounts) {
         return null;
       }

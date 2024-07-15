@@ -5,7 +5,7 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import { IPriceRange } from "@hooks/reposition/use-reposition-handle";
 import { TokenModel } from "@models/token/token-model";
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
-import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
+import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 import React, { useCallback } from "react";
 
 interface Props {
@@ -30,7 +30,7 @@ interface Props {
   currentAmounts: { amountA: number; amountB: number } | null;
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
-  swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
+  swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse> | null>;
   addPosition: (
     swapToken: TokenModel,
     swapAmount: string,
