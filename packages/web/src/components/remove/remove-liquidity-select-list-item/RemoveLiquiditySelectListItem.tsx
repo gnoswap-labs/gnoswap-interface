@@ -14,14 +14,11 @@ import { tooltipWrapper } from "@components/stake/select-lilquidity-list-item/Se
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import {
-  convertLiquidityUsdToKMB,
-  convertLiquidityUsdValue,
-} from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 interface RemoveLiquiditySelectListItemProps {
   position: PoolPositionModel;
@@ -93,13 +90,8 @@ const RemoveLiquiditySelectListItem: React.FC<
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    if (width < 400)
-      return convertLiquidityUsdToKMB(position.positionUsdValue, {
-        prefix: "$",
-      });
-
-    return convertLiquidityUsdValue(Number(position.positionUsdValue));
-  }, [position.positionUsdValue, width]);
+    return formatOtherPrice(position.positionUsdValue);
+  }, [position.positionUsdValue]);
 
   const feeStr = useMemo(() => {
     return SwapFeeTierInfoMap[makeSwapFeeTier(position.pool.fee)].rateStr;

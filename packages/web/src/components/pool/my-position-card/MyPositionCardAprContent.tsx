@@ -54,7 +54,10 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {formatOtherPrice(reward.accuReward1D)} / day
+                  {formatOtherPrice(reward.accuReward1D, {
+                    usd: false,
+                  })}{" "}
+                  / day
                 </span>
               </div>
               <span className="position">{formatRate(reward.apr)}</span>
@@ -80,7 +83,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {formatOtherPrice(reward.accuReward1D)} / day
+                  {formatOtherPrice(reward.accuReward1D, { usd: false })} / day
                 </span>
               </div>
               <span className="position">{formatRate(reward.apr)}</span>
@@ -106,7 +109,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {formatOtherPrice(reward.accuReward1D)} / day
+                  {formatOtherPrice(reward.accuReward1D, { usd: false })} / day
                 </span>
               </div>
               <span className="position">{formatRate(reward.apr)}</span>

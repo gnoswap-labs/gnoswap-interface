@@ -5,7 +5,7 @@ export interface PositionRewardInfo {
   token: TokenModel;
   balance: number;
   balanceUSD: number;
-  claimableUSD: number;
-  accumulatedRewardOf1d: number;
-  accumulatedRewardOf1dUsd: number;
+  claimableUSD: number | null;
+  accumulatedRewardOf1d: number | null;
+  accumulatedRewardOf1dUsd: number | null;
 }

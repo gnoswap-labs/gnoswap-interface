@@ -217,6 +217,7 @@ const WithDrawModal: React.FC<Props> = ({
                     currentAvailableBalance
                       ? formatPrice(currentAvailableBalance, {
                           isKMB: false,
+                          usd: false,
                         })
                       : "-"
                   }`}</span>

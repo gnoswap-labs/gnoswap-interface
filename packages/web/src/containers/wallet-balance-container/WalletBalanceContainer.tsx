@@ -23,6 +23,7 @@ import { toUnitFormat } from "@utils/number-utils";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -164,22 +165,22 @@ const WalletBalanceContainer: React.FC = () => {
   } = positions.reduce(
     (acc, cur) => {
       acc.totalClaimedRewards = BigNumber(acc.totalClaimedRewards)
-        .plus(cur.totalClaimedUsd ?? "0")
+        .plus(Number(cur.totalClaimedUsd ?? "0"))
         .toNumber();
 
       if (cur.staked) {
         acc.stakedBalance = BigNumber(acc.stakedBalance)
-          .plus(cur.stakedUsdValue ?? "0")
+          .plus(Number(cur.stakedUsdValue ?? "0"))
           .toNumber();
       } else {
         acc.unStakedBalance = BigNumber(acc.unStakedBalance)
-          .plus(cur.totalClaimedUsd ?? "0")
+          .plus(Number(cur.totalClaimedUsd ?? "0"))
           .toNumber();
       }
 
       cur.reward.forEach(x => {
         acc.claimableRewards = BigNumber(acc.claimableRewards)
-          .plus(x.claimableUsd ?? "0")
+          .plus(Number(x.claimableUsd ?? "0"))
           .toNumber();
       });
       return acc;
@@ -193,12 +194,13 @@ const WalletBalanceContainer: React.FC = () => {
   );
 
   const sumTotalBalance = useMemo(() => {
-    return BigNumber(availableBalance)
-      .plus(unStakedBalance)
-      .plus(stakedBalance)
-      .plus(claimableRewards)
-      .decimalPlaces(2)
-      .toFormat(availableBalance === 0 ? 0 : 2);
+    return formatOtherPrice(
+      BigNumber(availableBalance)
+        .plus(unStakedBalance)
+        .plus(stakedBalance)
+        .plus(claimableRewards),
+      { isKMB: false },
+    );
   }, [availableBalance, unStakedBalance, stakedBalance, claimableRewards]);
 
   const closeDeposit = () => {
@@ -245,7 +247,7 @@ const WalletBalanceContainer: React.FC = () => {
       <WalletBalance
         connected={connected}
         balanceSummaryInfo={{
-          amount: isSwitchNetwork ? "$0" : `$${sumTotalBalance}`,
+          amount: isSwitchNetwork ? "-" : sumTotalBalance,
           changeRate: "0.0%",
           loading: loadingTotalBalance,
         }}
@@ -253,7 +255,7 @@ const WalletBalanceContainer: React.FC = () => {
           availableBalance: isSwitchNetwork ? "-" : `${availableBalanceStr}`,
           claimableRewards: isSwitchNetwork ? "-" : `${claimableRewards}`,
           stakedLP: isSwitchNetwork ? "-" : `${stakedBalance}`,
-          unstakingLP: `${unStakedBalance}`,
+          unstakingLP: unStakedBalance.toString(),
           loadingBalance: loadingTotalBalance,
           loadingPositions: loadingTotalBalance,
           totalClaimedRewards: totalClaimedRewards.toString(),

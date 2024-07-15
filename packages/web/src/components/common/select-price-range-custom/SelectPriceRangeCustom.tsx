@@ -141,17 +141,39 @@ const SelectPriceRangeCustom = forwardRef<
         return "-";
       }
 
+      const currentPrice = (() => {
+        if (selectPool.compareToken?.path === tokenA.path) {
+          return (
+            10 ** ((tokenB.decimals || 0) - (tokenA.decimals || 0)) *
+            selectPool.currentPrice
+          );
+        }
+
+        return (
+          10 ** ((tokenA.decimals || 0) - (tokenB.decimals || 0)) *
+          selectPool.currentPrice
+        );
+      })();
+
       return (
         <>
           1 {currentTokenA.symbol} =&nbsp;
-          {formatPoolPairAmount(selectPool.currentPrice.toString(), {
+          {formatPoolPairAmount(currentPrice, {
             decimals: 6,
           })}
           &nbsp;
           {currentTokenB.symbol}
         </>
       );
-    }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
+    }, [
+      currentTokenA.symbol,
+      currentTokenB.symbol,
+      selectPool.compareToken?.path,
+      selectPool.currentPrice,
+      tokenA.decimals,
+      tokenA.path,
+      tokenB.decimals,
+    ]);
 
     useImperativeHandle(ref, () => {
       return { resetRange };

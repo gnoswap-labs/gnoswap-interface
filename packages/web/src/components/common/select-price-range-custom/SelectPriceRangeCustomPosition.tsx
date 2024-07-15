@@ -113,17 +113,37 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       return "-";
     }
 
+    const priceWithDecimal = (() => {
+      if (selectPool.compareToken?.path === tokenA.path) {
+        return (
+          10 ** ((tokenB.decimals || 0) - (tokenA.decimals || 0)) * currentPrice
+        );
+      }
+
+      return (
+        10 ** ((tokenA.decimals || 0) - (tokenB.decimals || 0)) * currentPrice
+      );
+    })();
+
     return (
       <>
         1 {currentTokenA.symbol} =&nbsp;
-        {formatPoolPairAmount(currentPrice, {
+        {formatPoolPairAmount(priceWithDecimal, {
           decimals: 6,
         })}
         &nbsp;
         {currentTokenB.symbol}
       </>
     );
-  }, [currentTokenA.symbol, currentTokenB.symbol, currentPrice]);
+  }, [
+    currentPrice,
+    currentTokenA.symbol,
+    currentTokenB.symbol,
+    selectPool.compareToken?.path,
+    tokenA.path,
+    tokenA.decimals,
+    tokenB.decimals,
+  ]);
 
   const availZoomIn = useMemo(() => {
     return selectPool.zoomLevel < ZOOL_VALUES.length - 1;

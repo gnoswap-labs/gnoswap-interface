@@ -49,7 +49,7 @@ export default function Token() {
     enabled: !!path,
     refetchInterval: 1000 * 10,
     onError: (err: any) => {
-      if (err["response"]["status"] === 404) {
+      if (err?.["response"]?.["status"] === 404) {
         router.push("/404");
       }
     },

@@ -75,8 +75,8 @@ export class PositionMapper {
       rewardToken: reward.rewardToken,
       accuReward1D: reward.accuReward1D,
       apr: reward.apr !== "" ? Number(reward.apr) : null,
-      totalAmount: Number(reward.totalAmount),
-      claimableAmount: Number(reward.claimableAmount),
+      totalAmount: reward.totalAmount,
+      claimableAmount: reward.claimableAmount,
       claimableUsd: reward.claimableUsd,
       rewardType: reward.rewardType.toUpperCase() as RewardType,
     };
