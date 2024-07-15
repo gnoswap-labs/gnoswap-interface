@@ -4,7 +4,6 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { formatNumberToLocaleString } from "@utils/number-utils";
 import React, { useCallback, useMemo } from "react";
 import {
   Divider,
@@ -19,7 +18,11 @@ import IconInfo from "@components/common/icons/IconInfo";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
 import { useGetUnstakingFee } from "@query/pools";
-import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+  formatRate,
+} from "@utils/new-number-utils";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -147,7 +150,10 @@ const UnstakePositionModal: React.FC<Props> = ({
                         </RewardLogoSymbolWrapper>
                       </div>
                       <div className="value">
-                        {formatNumberToLocaleString(rewardInfo.amount)}
+                        {formatPoolPairAmount(rewardInfo.amount, {
+                          decimals: rewardInfo.token.decimals,
+                          isKMB: false,
+                        })}
                       </div>
                     </div>
                     <div className="sub-value">{rewardInfo.amountUSD}</div>
