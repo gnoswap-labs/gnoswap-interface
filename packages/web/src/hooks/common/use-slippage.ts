@@ -11,7 +11,7 @@ export const useSlippage = () => {
   }, []);
 
   const changeSlippage = useCallback(
-    (slippage: string) => {
+    (slippage: number) => {
       setSlippage(slippage);
     },
     [setSlippage],

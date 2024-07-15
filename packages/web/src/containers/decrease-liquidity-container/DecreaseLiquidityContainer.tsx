@@ -1,12 +1,14 @@
 import DecreaseLiquidity from "@components/decrease/decrease-liquidity/DecreaseLiquidity";
 import DecreaseLiquidityLoading from "@components/decrease/decrease-liquidity/DecreaseLiquidityLoading";
+import useRouter from "@hooks/common/use-custom-router";
+import { useSlippage } from "@hooks/common/use-slippage";
 import { useDecreaseHandle } from "@hooks/decrease/use-decrease-handle";
 import { useDecreasePositionModal } from "@hooks/decrease/use-decrease-position-modal";
-import useRouter from "@hooks/common/use-custom-router";
 import React, { useState } from "react";
 
 const DecreaseLiquidityContainer: React.FC = () => {
   const router = useRouter();
+  const {slippage} = useSlippage();
   const positionId =
     (Array.isArray(router.query["position-id"])
       ? router.query["position-id"][0]
@@ -32,6 +34,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     positionId,
     tokenA,
     tokenB,
+    slippage,
     swapFeeTier: `FEE_${fee}` as any,
     minPriceStr,
     maxPriceStr,

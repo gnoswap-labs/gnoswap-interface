@@ -13,8 +13,8 @@ import { isAmount } from "@common/utils/data-check-util";
 import { DEFAULT_SLIPPAGE, MAX_SLIPPAGE, MIN_SLIPPAGE } from "@constants/option.constant";
 
 interface SettingMenuModalProps {
-  slippage: string;
-  changeSlippage: (value: string) => void;
+  slippage: number;
+  changeSlippage: (value: number) => void;
   close: () => void;
   className?: string;
 }
@@ -25,7 +25,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   close,
   className,
 }) => {
-  const [tmpSlippage, setTmpSlippage] = useState<string>(slippage);
+  const [tmpSlippage, setTmpSlippage] = useState<string>(slippage.toString());
   const settingMenuRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const resetButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -41,9 +41,9 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   const closeWithUpdate = useCallback(() => {
     if (inputRef && inputRef.current) {
       if (Number(inputRef.current.value) > MAX_SLIPPAGE) {
-        changeSlippage(MAX_SLIPPAGE.toString());
+        changeSlippage(MAX_SLIPPAGE);
       } else {
-        changeSlippage(inputRef.current.value);
+        changeSlippage(Number(inputRef.current.value));
       }
     }
     close();
@@ -70,7 +70,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   }, [setTmpSlippage]);
 
   const onClickReset = useCallback(() => {
-    setTmpSlippage(DEFAULT_SLIPPAGE);
+    setTmpSlippage(DEFAULT_SLIPPAGE.toString());
   }, [setTmpSlippage]);
 
   const handleEnterKey = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -80,13 +80,13 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
         inputRef.current.blur();
       }
       if (value === "") {
-        changeSlippage(MIN_SLIPPAGE.toString());
-        changeSlippage(MIN_SLIPPAGE.toString());
+        changeSlippage(MIN_SLIPPAGE);
+        setTmpSlippage(MIN_SLIPPAGE.toString());
       } else if (Number(value) > MAX_SLIPPAGE) {
-        changeSlippage(MAX_SLIPPAGE.toString());
+        changeSlippage(MAX_SLIPPAGE);
         setTmpSlippage(MAX_SLIPPAGE.toString());
       } else {
-        changeSlippage(Number(value).toString());
+        changeSlippage(Number(value));
       }
       close();
     }

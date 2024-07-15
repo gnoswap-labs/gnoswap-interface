@@ -48,6 +48,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   gasFeeUSD: 0.1,
   swapRate1USD: 0,
   swapRateAction: "ATOB",
+  protocolFee: ""
 };
 
 const swapTokenInfo: SwapTokenInfo = {
@@ -86,7 +87,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBUSD: 0,
   tokenBUSDStr: "0",
   direction: "EXACT_IN",
-  slippage: "0",
+  slippage: 0,
 };
 
 describe("SwapCardFeeInfo Component", () => {

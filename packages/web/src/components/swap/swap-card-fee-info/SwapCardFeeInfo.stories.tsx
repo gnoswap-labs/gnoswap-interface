@@ -2,7 +2,6 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapCardFeeInfo from "./SwapCardFeeInfo";
 import { css } from "@emotion/react";
-import { action } from "@storybook/addon-actions";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 
@@ -87,7 +86,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBUSD: 0,
   tokenBUSDStr: "0",
   direction: "EXACT_IN",
-  slippage: "0",
+  slippage: 0,
 };
 
 export default {

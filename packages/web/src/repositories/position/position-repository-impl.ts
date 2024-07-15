@@ -346,8 +346,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       lpTokenId,
       tokenAAmountRaw,
       tokenBAmountRaw,
-      "0",
-      "0",
+      request.slippage,
       caller,
       sendAmount,
     );
@@ -400,6 +399,9 @@ export class PositionRepositoryImpl implements PositionRepository {
       lpTokenId,
       tokenA,
       tokenB,
+      tokenAAmount,
+      tokenBAmount,
+      slippage,
       decreaseRatio,
       caller,
       existWrappedToken,
@@ -407,6 +409,9 @@ export class PositionRepositoryImpl implements PositionRepository {
 
     const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
     const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
+
+    const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
+    const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
     // Make Approve messages that can be managed by a Pool package of tokens.
     const approveMessages = [
@@ -436,6 +441,9 @@ export class PositionRepositoryImpl implements PositionRepository {
     const decreaseLiquidityMessage = makePositionDecreaseLiquidityMessage(
       lpTokenId,
       decreaseRatio,
+      tokenAAmountRaw,
+      tokenBAmountRaw,
+      slippage,
       existWrappedToken,
       caller,
     );
@@ -514,6 +522,9 @@ export class PositionRepositoryImpl implements PositionRepository {
       makePositionDecreaseLiquidityMessage(
         lpTokenId,
         decreaseLiquidityRatio,
+        "0",
+        "0",
+        0,
         existWrappedToken,
         caller,
       ),

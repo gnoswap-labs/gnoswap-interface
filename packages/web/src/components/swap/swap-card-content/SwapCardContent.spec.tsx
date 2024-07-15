@@ -3,6 +3,7 @@ import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import SwapCardContent from "./SwapCardContent";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 
 const swapTokenInfo: SwapTokenInfo = {
   tokenA: {
@@ -38,7 +39,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBUSD: 0,
   tokenBUSDStr: "0",
   direction: "EXACT_IN",
-  slippage: "10"
+  slippage: 10
 };
 
 describe("SwapCardContent Component", () => {
@@ -51,8 +52,13 @@ describe("SwapCardContent Component", () => {
       changeTokenAAmount: () => null,
       changeTokenB: () => null,
       changeTokenBAmount: () => null,
-      changeSlippage: () => null,
-      switchSwapDirection: () => null
+      switchSwapDirection: () => null,
+      connectedWallet: false,
+      isLoading: false,
+      setSwapRateAction: (type: "ATOB" | "BTOA") => null,
+      isSwitchNetwork: false,
+      priceImpactStatus: "NONE" as PriceImpactStatus,
+      isSameToken: false,
     };
 
     render(

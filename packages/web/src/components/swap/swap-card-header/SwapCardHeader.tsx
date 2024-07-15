@@ -11,8 +11,8 @@ import {
 interface SwapCardHeaderProps {
   copied: boolean;
   copyURL: () => void;
-  slippage: string;
-  changeSlippage: (value: string) => void;
+  slippage: number;
+  changeSlippage: (value: number) => void;
   themeKey: "dark" | "light";
 }
 const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({

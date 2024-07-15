@@ -31,6 +31,7 @@ export interface IncreasePositionModal {
   tokenB: TokenModel | null;
   tokenAAmountInput: TokenAmountInputModel;
   tokenBAmountInput: TokenAmountInputModel;
+  slippage: number;
   swapFeeTier: SwapFeeTierType | null;
   minPriceStr: string;
   maxPriceStr: string;
@@ -45,6 +46,7 @@ export const useIncreasePositionModal = ({
   tokenB,
   tokenAAmountInput,
   tokenBAmountInput,
+  slippage,
   swapFeeTier,
   minPriceStr,
   maxPriceStr,
@@ -117,6 +119,7 @@ export const useIncreasePositionModal = ({
         tokenB: selectedPosition.pool.tokenB,
         tokenAAmount: Number(tokenAAmountInput.amount),
         tokenBAmount: Number(tokenBAmountInput.amount),
+        slippage: slippage,
         caller: address,
       })
       .catch(() => null);
@@ -206,6 +209,7 @@ export const useIncreasePositionModal = ({
     selectedPosition,
     tokenAAmountInput.amount,
     tokenBAmountInput.amount,
+    slippage,
   ]);
 
   const openModal = useCallback(() => {

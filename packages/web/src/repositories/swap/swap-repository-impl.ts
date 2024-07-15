@@ -161,7 +161,7 @@ export class SwapRepositoryImpl implements SwapRepository {
     return 0;
   };
 
-  public setSlippage = (slippage: string): boolean => {
+  public setSlippage = (slippage: number): boolean => {
     this.localStorageClient.set("slippage", `${slippage}`);
     return true;
   };
