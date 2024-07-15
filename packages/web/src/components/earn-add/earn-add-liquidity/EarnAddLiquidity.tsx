@@ -62,8 +62,8 @@ interface EarnAddLiquidityProps {
   submit: () => void;
   isEarnAdd: boolean;
   connected: boolean;
-  slippage: string;
-  changeSlippage: (value: string) => void;
+  slippage: number;
+  changeSlippage: (value: number) => void;
   submitOneClickStaking: () => void;
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;

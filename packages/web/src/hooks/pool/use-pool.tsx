@@ -147,7 +147,7 @@ export const usePool = ({
       startPrice: string;
       minTick: number;
       maxTick: number;
-      slippage: string;
+      slippage: number;
       withStaking?: boolean;
     }) => {
       if (!tokenA || !tokenB || !account || createPoolFee === undefined) {
@@ -198,7 +198,7 @@ export const usePool = ({
       swapFeeTier: SwapFeeTierType;
       minTick: number;
       maxTick: number;
-      slippage: string;
+      slippage: number;
       withStaking?: boolean;
     }) => {
       if (!tokenA || !tokenB || !account) {

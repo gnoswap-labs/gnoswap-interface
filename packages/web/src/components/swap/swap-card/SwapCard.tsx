@@ -37,7 +37,7 @@ interface SwapCardProps {
   changeTokenAAmount: (value: string, none?: boolean) => void;
   changeTokenB: (token: TokenModel) => void;
   changeTokenBAmount: (value: string, none?: boolean) => void;
-  changeSlippage: (value: string) => void;
+  changeSlippage: (value: number) => void;
 
   switchSwapDirection: () => void;
   openConfirmModal: () => void;

@@ -31,7 +31,7 @@ export const currentWidth = atom<number>(0);
 
 export const network = atom<NetworkModel>(NetworkData[0]);
 
-export const slippage = atom<string>(DEFAULT_SLIPPAGE);
+export const slippage = atom<number>(DEFAULT_SLIPPAGE);
 
 export type TransactionConfirmStatus =
   | "loading"

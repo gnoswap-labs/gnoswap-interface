@@ -27,8 +27,8 @@ interface IncreaseLiquidityProps {
   tokenBAmountInput: TokenAmountInputModel;
   changeTokenAAmount: (amount: string) => void;
   changeTokenBAmount: (amount: string) => void;
-  slippage: string;
-  changeSlippage: (value: string) => void;
+  slippage: number;
+  changeSlippage: (value: number) => void;
   buttonType: INCREASE_BUTTON_TYPE;
   onSubmit: () => void;
 }

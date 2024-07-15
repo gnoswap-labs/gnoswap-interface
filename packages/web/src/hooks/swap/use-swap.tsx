@@ -12,7 +12,7 @@ interface UseSwapProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   direction: SwapDirectionType;
-  slippage: string;
+  slippage: number;
 }
 
 export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) => {

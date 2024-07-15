@@ -18,7 +18,7 @@ export function makePositionMintMessage(
   maxTick: number,
   tokenAAmount: string,
   tokenBAmount: string,
-  slippage: string,
+  slippage: number,
   caller: string,
   sendAmount: string | null,
 ) {
@@ -56,7 +56,7 @@ export function makePositionMintWithStakeMessage(
   maxTick: number,
   tokenAAmount: string,
   tokenBAmount: string,
-  slippage: string,
+  slippage: number,
   caller: string,
   sendAmount: string | null,
 ) {

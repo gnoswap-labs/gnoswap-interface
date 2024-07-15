@@ -333,7 +333,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       maxTick,
       tokenAAmountRaw,
       tokenBAmountRaw,
-      slippage.toString(),
+      slippage,
       caller,
       sendAmount,
     );
@@ -466,7 +466,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       maxTick,
       tokenAAmountRaw,
       tokenBAmountRaw,
-      slippage.toString(),
+      slippage,
       caller,
       sendAmount,
     );

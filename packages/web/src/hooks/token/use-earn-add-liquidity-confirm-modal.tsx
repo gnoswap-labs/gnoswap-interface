@@ -41,7 +41,7 @@ export interface EarnAddLiquidityConfirmModalProps {
 
   selectPool: SelectPool;
 
-  slippage: string;
+  slippage: number;
 
   swapFeeTier: SwapFeeTierType | null;
 
@@ -52,7 +52,7 @@ export interface EarnAddLiquidityConfirmModalProps {
     startPrice: string;
     minTick: number;
     maxTick: number;
-    slippage: string;
+    slippage: number;
     withStaking?: boolean;
   }) => Promise<WalletResponse<CreatePoolResponse> | null>;
 
@@ -62,7 +62,7 @@ export interface EarnAddLiquidityConfirmModalProps {
     swapFeeTier: SwapFeeTierType;
     minTick: number;
     maxTick: number;
-    slippage: string;
+    slippage: number;
     withStaking?: boolean;
   }) => Promise<WalletResponse<AddLiquidityResponse> | null>;
 }
