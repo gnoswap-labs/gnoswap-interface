@@ -60,6 +60,9 @@ const RepositionContainer: React.FC = () => {
   });
 
   const onSubmit = () => {
+    if (buttonType !== "REPOSITION") {
+      return;
+    }
     openModal();
   };
 

@@ -38,7 +38,10 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
+export type REPOSITION_BUTTON_TYPE =
+  | "REPOSITION"
+  | "LOADING"
+  | "INSUFFICIENT_LIQUIDITY";
 
 export const useRepositionHandle = () => {
   const router = useRouter();
@@ -159,16 +162,6 @@ export const useRepositionHandle = () => {
 
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
-
-  const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
-    if (
-      !Number(tokenAAmountInput.amount) ||
-      !Number(tokenBAmountInput.amount)
-    ) {
-      return "ENTER_AMOUNT";
-    }
-    return "INCREASE_LIQUIDITY";
-  }, [tokenAAmountInput, tokenBAmountInput]);
 
   const currentAmounts = useMemo(() => {
     if (!selectedPosition) {
@@ -323,10 +316,23 @@ export const useRepositionHandle = () => {
     };
   }, [currentAmounts, repositionAmounts, selectedPosition, swapAmount]);
 
-  const { data: estimatedRemainSwap, isLoading: isEstimatedRemainSwapLoading } =
-    useEstimateSwap(estimateSwapRequestByAmounts, {
-      enabled: !!estimateSwapRequestByAmounts && !!swapAmount,
-    });
+  const {
+    data: estimatedRemainSwap,
+    isLoading: isEstimatedRemainSwapLoading,
+    isError: isErrorLiquidity,
+  } = useEstimateSwap(estimateSwapRequestByAmounts, {
+    enabled: !!estimateSwapRequestByAmounts && !!swapAmount,
+  });
+
+  const buttonType: REPOSITION_BUTTON_TYPE = useMemo(() => {
+    if (!repositionAmounts || isErrorLiquidity) {
+      return "INSUFFICIENT_LIQUIDITY";
+    }
+    if (isEstimatedRemainSwapLoading) {
+      return "LOADING";
+    }
+    return "REPOSITION";
+  }, [repositionAmounts, isErrorLiquidity, isEstimatedRemainSwapLoading]);
 
   const estimatedRepositionAmounts = useMemo(() => {
     if (!currentAmounts || !repositionAmounts || !selectedPosition) {
@@ -548,5 +554,6 @@ export const useRepositionHandle = () => {
     reposition,
     selectedPosition,
     isLoadingPosition,
+    isErrorLiquidity,
   };
 };
