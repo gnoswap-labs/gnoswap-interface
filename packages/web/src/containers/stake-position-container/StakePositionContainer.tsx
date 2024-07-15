@@ -1,6 +1,6 @@
 import StakePosition from "@components/stake/stake-position/StakePosition";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { useSubmitPositionModal } from "@hooks/earn/use-submit-position-modal";
+import { useStakePositionModal } from "@hooks/earn/use-stake-position-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useState, useMemo } from "react";
@@ -29,7 +29,7 @@ const StakePositionContainer: React.FC = () => {
   // For this domain only show `closed = false` && `staked = false` position
   const unstakedPositions = useMemo(() => allPositionData.filter(item => !item.staked), [allPositionData]);
 
-  const { openModal } = useSubmitPositionModal({
+  const { openModal } = useStakePositionModal({
     positions: unstakedPositions,
     selectedIds: checkedList,
   });

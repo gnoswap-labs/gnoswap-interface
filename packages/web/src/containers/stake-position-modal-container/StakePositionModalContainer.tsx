@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import SubmitPositionModal from "@components/stake/submit-position-modal/SubmitPositionModal";
+import StakePositionModal from "@components/stake/stake-position-modal/StakePositionModal";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -14,13 +14,13 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useGetPoolDetailByPath } from "@query/pools";
 
-interface SubmitPositionModalContainerProps {
+interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];
 }
 
-const SubmitPositionModalContainer = ({
+const StakePositionModalContainer = ({
   positions,
-}: SubmitPositionModalContainerProps) => {
+}: StakePositionModalContainerProps) => {
   const { account } = useWallet();
   const {
     broadcastRejected,
@@ -108,44 +108,32 @@ const SubmitPositionModalContainer = ({
 
     if (result) {
       if (result.code === 0) {
-        broadcastPending();
+        broadcastPending({ txHash: result.data?.hash });
         setTimeout(() => {
           broadcastSuccess(
-            makeBroadcastStakingMessage("success", {
-              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
-              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
-            }),
+            makeBroadcastStakingMessage(
+              "success",
+              {
+                tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+                tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+                tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
+                  "en-US",
+                  { maximumFractionDigits: 6 },
+                ),
+                tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
+                  "en-US",
+                  { maximumFractionDigits: 6 },
+                ),
+              },
+              result.data?.hash,
+            ),
           );
         }, 1000);
         openTransactionConfirmModal();
 
       } else if (
-        result.code === 4000 &&
-        result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status
       ) {
-        broadcastError(
-          makeBroadcastStakingMessage("error", {
-            tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-            tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-              "en-US",
-              { maximumFractionDigits: 6 },
-            ),
-            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-              "en-US",
-              { maximumFractionDigits: 6 },
-            ),
-          }),
-        );
-      } else {
         broadcastRejected(
           makeBroadcastStakingMessage("error", {
             tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
@@ -160,13 +148,32 @@ const SubmitPositionModalContainer = ({
             ),
           }),
         );
+      } else {
+        broadcastError(
+          makeBroadcastStakingMessage(
+            "error",
+            {
+              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
+                "en-US",
+                { maximumFractionDigits: 6 },
+              ),
+              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
+                "en-US",
+                { maximumFractionDigits: 6 },
+              ),
+            },
+            result.data?.hash,
+          ),
+        );
       }
     }
     return result;
   }, [account?.address, positionRepository, positions, router]);
 
   return (
-    <SubmitPositionModal
+    <StakePositionModal
       positions={positions}
       close={clearModal}
       onSubmit={onSubmit}
@@ -175,4 +182,4 @@ const SubmitPositionModalContainer = ({
   );
 };
 
-export default SubmitPositionModalContainer;
+export default StakePositionModalContainer;

@@ -40,7 +40,7 @@ const UnstakePositionModalContainer = ({
     clearModal();
   }, [clearModal]);
 
-  const onSubmit = useCallback(async () => {
+  const unstakeOnSubmit = useCallback(async () => {
     const address = account?.address;
     if (!address) {
       return null;
@@ -65,48 +65,32 @@ const UnstakePositionModalContainer = ({
       .catch(() => null);
     if (result) {
       if (result.code === 0) {
-        broadcastPending();
+        broadcastPending({ txHash: result.data?.hash });
         setTimeout(() => {
           broadcastSuccess(
-            makeBroadcastUnStakingMessage("success", {
-              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
-              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
-            }),
+            makeBroadcastUnStakingMessage(
+              "success",
+              {
+                tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+                tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+                tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
+                  "en-US",
+                  { maximumFractionDigits: 6 },
+                ),
+                tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
+                  "en-US",
+                  { maximumFractionDigits: 6 },
+                ),
+              },
+              result.data?.hash,
+            ),
           );
           openModal();
           // router.push(router.asPath.replace("/unstake", ""));
         }, 1000);
       } else if (
-        result.code === 4000 &&
-        result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status
       ) {
-        broadcastPending();
-        setTimeout(() => {
-          broadcastError(
-            makeBroadcastUnStakingMessage("error", {
-              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
-              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
-            }),
-          );
-          openModal();
-        }, 1000);
-      } else {
         broadcastRejected(
           makeBroadcastUnStakingMessage("error", {
             tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
@@ -122,6 +106,26 @@ const UnstakePositionModalContainer = ({
           }),
         );
         openModal();
+      } else {
+        broadcastError(
+          makeBroadcastUnStakingMessage(
+            "error",
+            {
+              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
+                "en-US",
+                { maximumFractionDigits: 6 },
+              ),
+              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
+                "en-US",
+                { maximumFractionDigits: 6 },
+              ),
+            },
+            result.data?.hash,
+          ),
+        );
+        openModal();
       }
     }
     // if (result) {
@@ -135,7 +139,7 @@ const UnstakePositionModalContainer = ({
     <UnstakePositionModal
       positions={positions}
       close={close}
-      onSubmit={onSubmit}
+      onSubmit={unstakeOnSubmit}
     />
   );
 };
