@@ -100,15 +100,18 @@ export const useIncreasePositionModal = ({
       return false;
     }
 
+    const tokenA = selectedPosition.pool.tokenA;
+    const tokenB = selectedPosition.pool.tokenB;
+
     broadcastLoading(
       makeBroadcastAddLiquidityMessage("pending", {
-        tokenASymbol: selectedPosition.pool.tokenA.symbol,
-        tokenBSymbol: selectedPosition.pool.tokenB.symbol,
+        tokenASymbol: tokenA.symbol,
+        tokenBSymbol: tokenB.symbol,
         tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString("en-US", {
-          maximumFractionDigits: 6,
+          maximumFractionDigits: tokenA.decimals,
         }),
         tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString("en-US", {
-          maximumFractionDigits: 6,
+          maximumFractionDigits: tokenB.decimals,
         }),
       }),
     );
@@ -116,8 +119,8 @@ export const useIncreasePositionModal = ({
     const result = await positionRepository
       .increaseLiquidity({
         lpTokenId: selectedPosition.id,
-        tokenA: selectedPosition.pool.tokenA,
-        tokenB: selectedPosition.pool.tokenB,
+        tokenA: tokenA,
+        tokenB: tokenB,
         tokenAAmount: Number(tokenAAmountInput.amount),
         tokenBAmount: Number(tokenBAmountInput.amount),
         slippage: slippage,
@@ -132,24 +135,18 @@ export const useIncreasePositionModal = ({
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (
-            makeDisplayTokenAmount(
-              selectedPosition.pool.tokenA,
-              resultData.tokenAAmount,
-            ) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: 6 });
+            makeDisplayTokenAmount(tokenA, resultData.tokenAAmount) || 0
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
           const tokenBAmount = (
-            makeDisplayTokenAmount(
-              selectedPosition.pool.tokenB,
-              resultData.tokenBAmount,
-            ) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: 6 });
+            makeDisplayTokenAmount(tokenB, resultData.tokenBAmount) || 0
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
 
           broadcastSuccess(
             makeBroadcastAddLiquidityMessage(
               "success",
               {
-                tokenASymbol: selectedPosition.pool.tokenA.symbol,
-                tokenBSymbol: selectedPosition.pool.tokenB.symbol,
+                tokenASymbol: tokenA.symbol,
+                tokenBSymbol: tokenB.symbol,
                 tokenAAmount,
                 tokenBAmount,
               },
@@ -164,15 +161,15 @@ export const useIncreasePositionModal = ({
       ) {
         broadcastRejected(
           makeBroadcastAddLiquidityMessage("error", {
-            tokenASymbol: selectedPosition.pool.tokenA.symbol,
-            tokenBSymbol: selectedPosition.pool.tokenB.symbol,
+            tokenASymbol: tokenA.symbol,
+            tokenBSymbol: tokenB.symbol,
             tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
               "en-US",
-              { maximumFractionDigits: 6 },
+              { maximumFractionDigits: tokenA.decimals },
             ),
             tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
               "en-US",
-              { maximumFractionDigits: 6 },
+              { maximumFractionDigits: tokenB.decimals },
             ),
           }),
         );
@@ -181,15 +178,15 @@ export const useIncreasePositionModal = ({
           makeBroadcastAddLiquidityMessage(
             "error",
             {
-              tokenASymbol: selectedPosition.pool.tokenA.symbol,
-              tokenBSymbol: selectedPosition.pool.tokenB.symbol,
+              tokenASymbol: tokenA.symbol,
+              tokenBSymbol: tokenB.symbol,
               tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
                 "en-US",
-                { maximumFractionDigits: 6 },
+                { maximumFractionDigits: tokenA.decimals },
               ),
               tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
                 "en-US",
-                { maximumFractionDigits: 6 },
+                { maximumFractionDigits: tokenB.decimals },
               ),
             },
             result?.data?.hash,

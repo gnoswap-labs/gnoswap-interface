@@ -344,10 +344,10 @@ export const useEarnAddLiquidityConfirmModal = ({
           tokenASymbol: tokenA.symbol,
           tokenBSymbol: tokenB.symbol,
           tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-            maximumFractionDigits: 6,
+            maximumFractionDigits: tokenA.decimals,
           }),
           tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-            maximumFractionDigits: 6,
+            maximumFractionDigits: tokenB.decimals,
           }),
         }),
       );
@@ -387,15 +387,11 @@ export const useEarnAddLiquidityConfirmModal = ({
                       tokenBSymbol: resultData.tokenB.symbol || "",
                       tokenAAmount: Number(tokenAAmount).toLocaleString(
                         "en-US",
-                        {
-                          maximumFractionDigits: 6,
-                        },
+                        { maximumFractionDigits: tokenA.decimals },
                       ),
                       tokenBAmount: Number(tokenBAmount).toLocaleString(
                         "en-US",
-                        {
-                          maximumFractionDigits: 6,
-                        },
+                        { maximumFractionDigits: tokenB.decimals },
                       ),
                     },
                     resultData.hash,
@@ -407,19 +403,16 @@ export const useEarnAddLiquidityConfirmModal = ({
               result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
             ) {
               broadcastRejected(
-                makeBroadcastAddLiquidityMessage(
-                  "error",
-                  {
-                    tokenASymbol: tokenA.symbol,
-                    tokenBSymbol: tokenB.symbol,
-                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: 6,
-                    }),
-                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: 6,
-                    }),
-                  },
-                ),
+                makeBroadcastAddLiquidityMessage("error", {
+                  tokenASymbol: tokenA.symbol,
+                  tokenBSymbol: tokenB.symbol,
+                  tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenA.decimals,
+                  }),
+                  tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenB.decimals,
+                  }),
+                }),
               );
             } else {
               broadcastError(
@@ -429,10 +422,10 @@ export const useEarnAddLiquidityConfirmModal = ({
                     tokenASymbol: tokenA.symbol,
                     tokenBSymbol: tokenB.symbol,
                     tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: 6,
+                      maximumFractionDigits: tokenA.decimals,
                     }),
                     tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: 6,
+                      maximumFractionDigits: tokenB.decimals,
                     }),
                   },
                   result?.data?.hash,

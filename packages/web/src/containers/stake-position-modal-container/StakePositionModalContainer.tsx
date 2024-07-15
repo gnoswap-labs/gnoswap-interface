@@ -87,15 +87,17 @@ const StakePositionModalContainer = ({
       return null;
     }
     const lpTokenIds = positions.map(position => position.id);
+    const tokenA = pooledTokenInfos?.[0];
+    const tokenB = pooledTokenInfos?.[1];
     broadcastLoading(
       makeBroadcastStakingMessage("pending", {
-        tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-        tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-        tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", {
-          maximumFractionDigits: 6,
+        tokenASymbol: tokenA?.token?.symbol,
+        tokenBSymbol: tokenB?.token?.symbol,
+        tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
+          maximumFractionDigits: tokenA?.token?.decimals,
         }),
-        tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", {
-          maximumFractionDigits: 6,
+        tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
+          maximumFractionDigits: tokenB?.token?.decimals,
         }),
       }),
     );
@@ -114,16 +116,14 @@ const StakePositionModalContainer = ({
             makeBroadcastStakingMessage(
               "success",
               {
-                tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-                tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-                tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-                  "en-US",
-                  { maximumFractionDigits: 6 },
-                ),
-                tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-                  "en-US",
-                  { maximumFractionDigits: 6 },
-                ),
+                tokenASymbol: tokenA?.token?.symbol,
+                tokenBSymbol: tokenB?.token?.symbol,
+                tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
+                  maximumFractionDigits: tokenA?.token?.decimals,
+                }),
+                tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
+                  maximumFractionDigits: tokenB?.token?.decimals,
+                }),
               },
               result.data?.hash,
             ),
@@ -136,16 +136,14 @@ const StakePositionModalContainer = ({
       ) {
         broadcastRejected(
           makeBroadcastStakingMessage("error", {
-            tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-            tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-              "en-US",
-              { maximumFractionDigits: 6 },
-            ),
-            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-              "en-US",
-              { maximumFractionDigits: 6 },
-            ),
+            tokenASymbol: tokenA?.token?.symbol,
+            tokenBSymbol: tokenB?.token?.symbol,
+            tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
+              maximumFractionDigits: tokenA?.token?.decimals,
+            }),
+            tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
+              maximumFractionDigits: tokenB?.token?.decimals,
+            }),
           }),
         );
       } else {
@@ -153,16 +151,14 @@ const StakePositionModalContainer = ({
           makeBroadcastStakingMessage(
             "error",
             {
-              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
-              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
+              tokenASymbol: tokenA?.token?.symbol,
+              tokenBSymbol: tokenB?.token?.symbol,
+              tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
+                maximumFractionDigits: tokenA?.token?.decimals,
+              }),
+              tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
+                maximumFractionDigits: tokenB?.token?.decimals,
+              }),
             },
             result.data?.hash,
           ),

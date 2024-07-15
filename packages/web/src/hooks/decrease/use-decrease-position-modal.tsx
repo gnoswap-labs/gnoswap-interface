@@ -146,13 +146,13 @@ export const useDecreasePositionModal = ({
         tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
           "en-US",
           {
-            maximumFractionDigits: 6,
+            maximumFractionDigits: tokenTransform(tokenA).decimals,
           },
         ),
         tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString(
           "en-US",
           {
-            maximumFractionDigits: 6,
+            maximumFractionDigits: tokenTransform(tokenB).decimals,
           },
         ),
       }),
@@ -199,10 +199,10 @@ export const useDecreasePositionModal = ({
           // Make display token amount
           const tokenAAmount = (
             makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: 6 });
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
           const tokenBAmount = (
             makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: 6 });
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
 
           broadcastSuccess(
             makeBroadcastRemoveMessage(
