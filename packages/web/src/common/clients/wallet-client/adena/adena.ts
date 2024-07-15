@@ -95,6 +95,7 @@ export interface AdenaSendTransactionSuccessResponseTransaction {
 }
 
 export interface AdenaSendTransactionErrorResponse {
+  hash: string;
   type: string;
   message: string;
 }
