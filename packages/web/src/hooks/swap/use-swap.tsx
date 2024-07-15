@@ -107,11 +107,11 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   }, [currentSwapAmount, error, swapState, estimatedSwapResult]);
 
   const tokenAmountLimit = useMemo(() => {
-    if (estimatedAmount && !Number.isNaN(Number(slippage))) {
+    if (estimatedAmount && !Number.isNaN(slippage)) {
       const tokenAmountLimit =
         direction === "EXACT_IN"
-        ? BigNumber(estimatedAmount).multipliedBy((100 - Number(slippage))/100).toNumber()
-        : BigNumber(estimatedAmount).multipliedBy((100 + Number(slippage))/100).toNumber();
+        ? BigNumber(estimatedAmount).multipliedBy((100 - slippage)/100).toNumber()
+        : BigNumber(estimatedAmount).multipliedBy((100 + slippage)/100).toNumber();
 
       if (tokenAmountLimit <= 0) {
         return 0;
