@@ -3,7 +3,7 @@ import {
   NoticeContext,
   TNoticeType
 } from "@context/NoticeContext";
-import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { useGnoscanUrl, GnoscanDataType } from "@hooks/common/use-gnoscan-url";
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import IconClose from "../icons/IconCancel";
 import IconFailed from "../icons/IconFailed";
@@ -26,32 +26,32 @@ interface NoticeProps {
   content?: INoticeContent;
 }
 
-const TEMP_TX_HASH ="nYtu28RzUIovNjldGq+e8m8S1mVZHsGFYAHyawaWn54=";
-
 const SuccessContent: FC<{ content?: INoticeContent }> = ({ content }) => {
-  const { getTxUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getTxUrl } = useGnoscanUrl();
 
   return content ? (
     <div className="notice-body">
       <IconSuccess className="icon-success" />
       <div>
         <h5>{content.title} - Success!</h5>
-        <div className="description" dangerouslySetInnerHTML={{ __html: content.description || ""}}/>
-        <a href={content.txHash ? getTxUrl(content.txHash) : ""} target="_blank">
-          View transaction <IconNewTab />
-        </a>
+        <div
+          className="description"
+          dangerouslySetInnerHTML={{ __html: content.description || "" }}
+        />
+        {content.txHash ? (
+          <a href={getTxUrl(content.txHash)} target="_blank">
+            View transaction <IconNewTab />
+          </a>
+        ) : null}
       </div>
     </div>
   ) : (
     <div className="notice-body">
       <IconSuccess className="icon-success" />
       <div>
-        <h5>Swap - Success!</h5>
-        <p>Swapped 1541.5 GNOT for 1090.55 GNS</p>
-        <a
-          href={getTxUrl(TEMP_TX_HASH)}
-          target="_blank"
-        >
+        <h5>Success!</h5>
+        <p>Your job was finished successfully</p>
+        <a href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
           View transaction <IconNewTab />
         </a>
       </div>
@@ -60,17 +60,21 @@ const SuccessContent: FC<{ content?: INoticeContent }> = ({ content }) => {
 };
 
 const PendingContent: FC<{ content?: INoticeContent }> = ({ content }: { content?: INoticeContent }) => {
-  const { getTxUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getTxUrl } = useGnoscanUrl();
 
   return content ? (
     <div className="notice-body">
       <LoadingSpinner className="loading-icon" />
       <div>
         <h5>{content.title ? content.title : "Broadcasting Transaction"}</h5>
-        <p className="waiting-confirmation">Waiting for Transaction Confirmation</p>
-        <a href={content.txHash ? getTxUrl(content.txHash) : ""} target="_blank">
-          View transaction <IconNewTab />
-        </a>
+        <p className="waiting-confirmation">
+          Waiting for Transaction Confirmation
+        </p>
+        {content.txHash ? (
+          <a href={getTxUrl(content.txHash)} target="_blank">
+            View transaction <IconNewTab />
+          </a>
+        ) : null}
       </div>
     </div>
   ) : (
@@ -78,11 +82,10 @@ const PendingContent: FC<{ content?: INoticeContent }> = ({ content }: { content
       <LoadingSpinner className="loading-icon" />
       <div>
         <h5>Broadcasting Transaction</h5>
-        <p className="waiting-confirmation">Waiting for Transaction Confirmation</p>
-        <a
-          href={getTxUrl(TEMP_TX_HASH)}
-          target="_blank"
-        >
+        <p className="waiting-confirmation">
+          Waiting for Transaction Confirmation
+        </p>
+        <a href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
           View transaction <IconNewTab />
         </a>
       </div>
@@ -91,26 +94,31 @@ const PendingContent: FC<{ content?: INoticeContent }> = ({ content }: { content
 };
 
 const FailContent: FC<{ content?: INoticeContent }> = ({ content }: { content?: INoticeContent }) => {
-  const { getTxUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getTxUrl } = useGnoscanUrl();
 
   return content ? (
     <div className="notice-body">
       <IconFailed className="icon-success" />
       <div>
         <h5>{content.title} - Failure!</h5>
-        <div className="description" dangerouslySetInnerHTML={{ __html: content.description || ""}}/>
-        <a href={content.txHash ? getTxUrl(content.txHash) : ""} target="_blank">
-          View transaction <IconNewTab />
-        </a>
+        <div
+          className="description"
+          dangerouslySetInnerHTML={{ __html: content.description || "" }}
+        />
+        {content.txHash ? (
+          <a href={getTxUrl(content.txHash)} target="_blank">
+            View transaction <IconNewTab />
+          </a>
+        ) : null}
       </div>
     </div>
   ) : (
     <div className="notice-body">
       <IconFailed className="icon-success" />
       <div>
-        <h5>Swap - Failure!</h5>
-        <p>Failed swapping 0.1 GNOT for 0.12 GNS</p>
-        <a href={getTxUrl(TEMP_TX_HASH)} target="_blank">
+        <h5>Failure!</h5>
+        <p>This notice occur by some problem.</p>
+        <a href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
           View transaction <IconNewTab />
         </a>
       </div>
