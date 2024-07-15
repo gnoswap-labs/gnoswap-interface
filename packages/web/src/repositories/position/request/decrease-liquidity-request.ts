@@ -3,11 +3,17 @@ import { TokenModel } from "@models/token/token-model";
 export interface DecreaseLiquidityRequest {
   lpTokenId: string;
 
+  decreaseRatio: number;
+  
   tokenA: TokenModel;
 
   tokenB: TokenModel;
+  
+  tokenAAmount: number;
 
-  decreaseRatio: number;
+  tokenBAmount: number;
+
+  slippage: number;
 
   deadline?: string;
 

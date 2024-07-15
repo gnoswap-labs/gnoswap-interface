@@ -30,6 +30,7 @@ export interface DecreasePositionModal {
   positionId: string;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
+  slippage: number;
   swapFeeTier: SwapFeeTierType | null;
   minPriceStr: string;
   maxPriceStr: string;
@@ -42,6 +43,7 @@ export interface DecreasePositionModal {
 export const useDecreasePositionModal = ({
   positionId,
   tokenA,
+  slippage,
   tokenB,
   swapFeeTier,
   minPriceStr,
@@ -166,6 +168,9 @@ export const useDecreasePositionModal = ({
         decreaseRatio: percent,
         tokenA,
         tokenB,
+        tokenAAmount: poolAmountA,
+        tokenBAmount: poolAmountB,
+        slippage,
         caller: address,
         // existWrappedToken: “true” when received as GNOT or “false” when received as Wrapped GNOT.
         existWrappedToken: !willWrap,

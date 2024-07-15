@@ -23,7 +23,7 @@ export function makePositionMintMessage(
   sendAmount: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-  const slippageRatio = 0;
+  const slippageRatio = (100 - slippage)/100;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
   const send = makeGNOTSendAmount(sendAmount);
 
@@ -61,7 +61,7 @@ export function makePositionMintWithStakeMessage(
   sendAmount: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-  const slippageRatio = 0;
+  const slippageRatio = (100 - slippage)/100;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
   const send = makeGNOTSendAmount(sendAmount);
 
@@ -89,11 +89,11 @@ export function makePositionIncreaseLiquidityMessage(
   lpTokenId: string,
   amount0Desired: string,
   amount1Desired: string,
-  amount0Min: string,
-  amount1Min: string,
+  slippage: number,
   caller: string,
   sendAmount: string | null,
 ) {
+  const slippageRatio = (100 - slippage)/100;
   const send = makeGNOTSendAmount(sendAmount);
 
   return makeTransactionMessage({
@@ -102,10 +102,10 @@ export function makePositionIncreaseLiquidityMessage(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
-      `${amount0Desired}`, // Maximum amount of tokenA to offer
-      `${amount1Desired}`, // Maximum amount of tokenB to offer
-      `${amount0Min}`, // Minimum amount of tokenA to provide
-      `${amount1Min}`, // Minimum amount of tokenB to provide
+      amount0Desired, // Maximum amount of tokenA to offer
+      amount1Desired, // Maximum amount of tokenB to offer
+      BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenA to provide
+      BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenB to provide
       "9999999999", // Deadline UTC time
     ],
     caller,
@@ -115,9 +115,14 @@ export function makePositionIncreaseLiquidityMessage(
 export function makePositionDecreaseLiquidityMessage(
   lpTokenId: string,
   liquidityRatio: number,
+  amount0Desired: string,
+  amount1Desired: string,
+  slippage: number,
   existWrappedToken: boolean,
   caller: string,
 ) {
+  const slippageRatio = 0;
+
   return makeTransactionMessage({
     send: "",
     func: "DecreaseLiquidity",
@@ -125,8 +130,8 @@ export function makePositionDecreaseLiquidityMessage(
     args: [
       lpTokenId, // LP Token ID
       `${liquidityRatio}`, // Percentage of liquidity to reduce (0 ~ 100)
-      "0", // Minimum quantity of tokenA to decrease liquidity
-      "0", // Minimum quantity of tokenB to decrease liquidity
+      BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenA to decrease liquidity
+      BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
       "9999999999", // Deadline UTC time
       `${existWrappedToken}`, // Whether to receive wrapped tokens as native tokens
     ],
