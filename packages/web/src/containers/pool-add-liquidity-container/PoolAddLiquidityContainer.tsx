@@ -670,11 +670,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
         "",
         `/earn/pool/${router.query["pool-path"]}/add?${queryString}`,
       );
-      // router.push(
-      //   `/earn/pool/${router.query["pool-path"]}/add?${queryString}`,
-      //   undefined,
-      //   { shallow: true },
-      // );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
