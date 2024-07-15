@@ -2,25 +2,25 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
-  SwapFeeTierType,
+  SwapFeeTierType
 } from "@constants/option.constant";
 import IncreasePositionModalContainer from "@containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
 import {
   makeBroadcastAddLiquidityMessage,
-  useBroadcastHandler,
+  useBroadcastHandler
 } from "@hooks/common/use-broadcast-handler";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { IncreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useAtom } from "jotai";
-import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo } from "react";
-import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { IncreaseLiquidityFailedResponse, IncreaseLiquiditySuccessResponse } from "@repositories/position/response";
 
 export interface Props {
   openModal: () => void;
@@ -128,7 +128,7 @@ export const useIncreasePositionModal = ({
     if (result) {
       if (result.code === 0 && result?.data) {
         const resultData = result?.data as IncreaseLiquiditySuccessResponse;
-        broadcastPending();
+        broadcastPending({ txHash: resultData.hash });
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (
@@ -160,10 +160,23 @@ export const useIncreasePositionModal = ({
 
         openTransactionConfirmModal();
       } else if (
-        result.code === 4001 &&
-        result.type === ERROR_VALUE.TRANSACTION_FAILED.type
+        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
-        const resultData = result?.data as IncreaseLiquidityFailedResponse;
+        broadcastRejected(
+          makeBroadcastAddLiquidityMessage("error", {
+            tokenASymbol: selectedPosition.pool.tokenA.symbol,
+            tokenBSymbol: selectedPosition.pool.tokenB.symbol,
+            tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
+              "en-US",
+              { maximumFractionDigits: 6 },
+            ),
+            tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
+              "en-US",
+              { maximumFractionDigits: 6 },
+            ),
+          }),
+        );
+      } else {
         broadcastError(
           makeBroadcastAddLiquidityMessage(
             "error",
@@ -179,23 +192,8 @@ export const useIncreasePositionModal = ({
                 { maximumFractionDigits: 6 },
               ),
             },
-            resultData.hash,
+            result?.data?.hash,
           ),
-        );
-      } else {
-        broadcastRejected(
-          makeBroadcastAddLiquidityMessage("error", {
-            tokenASymbol: selectedPosition.pool.tokenA.symbol,
-            tokenBSymbol: selectedPosition.pool.tokenB.symbol,
-            tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
-              "en-US",
-              { maximumFractionDigits: 6 },
-            ),
-            tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
-              "en-US",
-              { maximumFractionDigits: 6 },
-            ),
-          }),
         );
       }
     }

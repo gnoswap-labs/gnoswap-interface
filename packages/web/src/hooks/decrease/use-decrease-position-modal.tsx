@@ -1,27 +1,29 @@
+import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
+import { useCallback, useMemo } from "react";
+
 import { ERROR_VALUE } from "@common/errors/adena";
+import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
-  SwapFeeTierType,
+  SwapFeeTierType
 } from "@constants/option.constant";
 import DecreasePositionModalContainer from "@containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
 import {
   makeBroadcastRemoveMessage,
-  useBroadcastHandler,
+  useBroadcastHandler
 } from "@hooks/common/use-broadcast-handler";
+import { useClearModal } from "@hooks/common/use-clear-modal";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenModel } from "@models/token/token-model";
+import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
-import { useAtom } from "jotai";
-import useRouter from "@hooks/common/use-custom-router";
-import { useCallback, useMemo } from "react";
-import { IPooledTokenInfo } from "./use-decrease-handle";
-import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useClearModal } from "@hooks/common/use-clear-modal";
-import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
-import { DecreaseLiquidityFailedResponse, DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
+
+import { IPooledTokenInfo } from "./use-decrease-handle";
 
 export interface Props {
   openModal: () => void;
@@ -192,7 +194,7 @@ export const useDecreasePositionModal = ({
     if (result) {
       if (result.code === 0 && result?.data) {
         const resultData = result?.data as DecreaseLiquiditySuccessResponse;
-        broadcastPending();
+        broadcastPending({ txHash: resultData.hash });
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (
@@ -219,20 +221,18 @@ export const useDecreasePositionModal = ({
 
         // openTransactionConfirmModal();
       } else if (
-        result.code === 4001 &&
-        result.type === ERROR_VALUE.TRANSACTION_FAILED.type
+        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
-        const resultData = result?.data as DecreaseLiquidityFailedResponse;
+        broadcastRejected(
+          makeBroadcastRemoveMessage("error", defaultMessageData),
+        );
+      } else {
         broadcastError(
           makeBroadcastRemoveMessage(
             "error",
             defaultMessageData,
-            resultData?.hash || "",
+            result?.data?.hash,
           ),
-        );
-      } else {
-        broadcastRejected(
-          makeBroadcastRemoveMessage("error", defaultMessageData),
         );
       }
     }
