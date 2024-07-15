@@ -1,9 +1,8 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
-import { toPriceFormat } from "./number-utils";
 import BigNumber from "bignumber.js";
-import { formatRate } from "./new-number-utils";
+import { formatPrice, formatRate } from "./new-number-utils";
 
 export function wait<T>(
   runner: () => Promise<T>,
@@ -147,29 +146,18 @@ export const checkPositivePrice = (
 
       return (
         statusSign +
-        toPriceFormat(
-          BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(),
-          {
-            usd: true,
-            isKMBFormat: false,
-            fixedLessThan1Decimal: 3,
-            forcedGreaterThan1Decimals: true,
-          },
-        )
+        formatPrice(BigNumber(checkAsNumber).minus(currentAsNumber).abs(), {
+          isKMB: false,
+        })
       );
     }
 
     return (
       statusSign +
-      toPriceFormat(
-        BigNumber(checkAsNumber).minus(currentAsNumber).abs().toFixed(),
-        {
-          usd: true,
-          isKMBFormat: false,
-          fixedLessThan1Decimal: 3,
-          forcedGreaterThan1Decimals: true,
-        },
-      )
+      formatPrice(BigNumber(checkAsNumber).minus(currentAsNumber).abs(), {
+        usd: true,
+        isKMB: false,
+      })
     );
   })();
 

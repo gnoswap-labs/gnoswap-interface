@@ -37,13 +37,16 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: apr,
-      liquidity: liquidity ? `$${BigNumber(liquidity).toFormat(0)}` : "-",
-      volume24h: formatOtherPrice(volume24h),
-      fees24h: formatOtherPrice(feeUsd24h),
+      liquidity: liquidity,
+      volume24h: volume24h.toString(),
+      fees24h: feeUsd24h.toString(),
+      // liquidity: formatOtherPrice(liquidity, { isKMB: false, decimals: 0 }),
+      // volume24h: formatOtherPrice(volume24h, { isKMB: false, decimals: 0 }),
+      // fees24h: formatOtherPrice(feeUsd24h, { isKMB: false, decimals: 0 }),
       rewardTokens,
       currentTick,
       price,
-      tvl: formatOtherPrice(tvl),
+      tvl: tvl,
     };
   }
 
