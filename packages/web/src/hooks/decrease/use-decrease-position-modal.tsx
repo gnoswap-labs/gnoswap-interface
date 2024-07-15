@@ -21,6 +21,7 @@ import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
+import { DecreaseLiquidityFailedResponse, DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 
 export interface Props {
   openModal: () => void;
@@ -189,39 +190,46 @@ export const useDecreasePositionModal = ({
     };
 
     if (result) {
-      const resultData = result?.data;
-      if (result.code === 0 && resultData) {
+      if (result.code === 0 && result?.data) {
+        const resultData = result?.data as DecreaseLiquiditySuccessResponse;
         broadcastPending();
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (
             makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0
-          ).toLocaleString("en-US", {
-            maximumFractionDigits: 6,
-          });
+          ).toLocaleString("en-US", { maximumFractionDigits: 6 });
           const tokenBAmount = (
             makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0
-          ).toLocaleString("en-US", {
-            maximumFractionDigits: 6,
-          });
+          ).toLocaleString("en-US", { maximumFractionDigits: 6 });
 
           broadcastSuccess(
-            makeBroadcastRemoveMessage("success", {
-              tokenASymbol: tokenTransform(tokenA).symbol,
-              tokenBSymbol: tokenTransform(tokenB).symbol,
-              tokenAAmount,
-              tokenBAmount,
-            }),
+            makeBroadcastRemoveMessage(
+              "success",
+              {
+                tokenASymbol: tokenTransform(tokenA).symbol,
+                tokenBSymbol: tokenTransform(tokenB).symbol,
+                tokenAAmount,
+                tokenBAmount,
+              },
+              resultData.hash,
+            ),
             onSuccessClose,
           );
         }, 1000);
 
         // openTransactionConfirmModal();
       } else if (
-        result.code === 4000 &&
-        result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+        result.code === 4001 &&
+        result.type === ERROR_VALUE.TRANSACTION_FAILED.type
       ) {
-        broadcastError(makeBroadcastRemoveMessage("error", defaultMessageData));
+        const resultData = result?.data as DecreaseLiquidityFailedResponse;
+        broadcastError(
+          makeBroadcastRemoveMessage(
+            "error",
+            defaultMessageData,
+            resultData?.hash || "",
+          ),
+        );
       } else {
         broadcastRejected(
           makeBroadcastRemoveMessage("error", defaultMessageData),

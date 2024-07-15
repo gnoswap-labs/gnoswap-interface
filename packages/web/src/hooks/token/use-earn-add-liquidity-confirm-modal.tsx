@@ -29,6 +29,7 @@ import { useGetPoolCreationFee } from "@query/pools";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { subscriptFormat } from "@utils/number-utils";
 import { GNS_TOKEN } from "@common/values/token-constant";
+import { ERROR_VALUE } from "@common/errors/adena";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -374,32 +375,49 @@ export const useEarnAddLiquidityConfirmModal = ({
               broadcastPending();
               setTimeout(() => {
                 broadcastSuccess(
-                  makeBroadcastAddLiquidityMessage("success", {
-                    tokenASymbol: result.data?.tokenA.symbol || "",
-                    tokenBSymbol: result.data?.tokenB.symbol || "",
+                  makeBroadcastAddLiquidityMessage(
+                    "success",
+                    {
+                      tokenASymbol: result.data?.tokenA.symbol || "",
+                      tokenBSymbol: result.data?.tokenB.symbol || "",
+                      tokenAAmount: Number(tokenAAmount).toLocaleString(
+                        "en-US",
+                        {
+                          maximumFractionDigits: 6,
+                        },
+                      ),
+                      tokenBAmount: Number(tokenBAmount).toLocaleString(
+                        "en-US",
+                        {
+                          maximumFractionDigits: 6,
+                        },
+                      ),
+                    },
+                    result.data?.hash,
+                  ),
+                  moveToBack,
+                );
+              }, 1000);
+              return true;
+            } else if (
+              result.code === 4001 &&
+              result.type === ERROR_VALUE.TRANSACTION_FAILED.type
+            ) {
+              broadcastError(
+                makeBroadcastAddLiquidityMessage(
+                  "error",
+                  {
+                    tokenASymbol: tokenA.symbol,
+                    tokenBSymbol: tokenB.symbol,
                     tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
                       maximumFractionDigits: 6,
                     }),
                     tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
                       maximumFractionDigits: 6,
                     }),
-                  }),
-                  moveToBack,
-                );
-              }, 1000);
-              return true;
-            } else if (result.code === 4000) {
-              broadcastRejected(
-                makeBroadcastAddLiquidityMessage("error", {
-                  tokenASymbol: tokenA.symbol,
-                  tokenBSymbol: tokenB.symbol,
-                  tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
-                  }),
-                  tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
-                  }),
-                }),
+                  },
+                  result.data?.hash,
+                ),
               );
               return true;
             }
@@ -411,7 +429,7 @@ export const useEarnAddLiquidityConfirmModal = ({
           if (broadcasted) {
             return;
           }
-          broadcastError(
+          broadcastRejected(
             makeBroadcastAddLiquidityMessage("error", {
               tokenASymbol: tokenA.symbol,
               tokenBSymbol: tokenB.symbol,

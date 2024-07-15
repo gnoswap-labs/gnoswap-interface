@@ -9,8 +9,10 @@ import {
 } from "@common/clients/wallet-client/protocols";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import {
-  DecreaseLiquidityResponse,
-  IncreaseLiquidityResponse,
+  DecreaseLiquidityFailedResponse,
+  DecreaseLiquiditySuccessResponse,
+  IncreaseLiquidityFailedResponse,
+  IncreaseLiquiditySuccessResponse,
 } from "./response";
 import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
 import { PositionBinModel } from "@models/position/position-bin-model";
@@ -40,11 +42,19 @@ export interface PositionRepository {
 
   increaseLiquidity: (
     request: IncreaseLiquidityRequest,
-  ) => Promise<WalletResponse<IncreaseLiquidityResponse | null>>;
+  ) => Promise<
+    WalletResponse<
+      IncreaseLiquiditySuccessResponse | IncreaseLiquidityFailedResponse | null
+    >
+  >;
 
   decreaseLiquidity: (
     request: DecreaseLiquidityRequest,
-  ) => Promise<WalletResponse<DecreaseLiquidityResponse | null>>;
+  ) => Promise<
+    WalletResponse<
+      DecreaseLiquiditySuccessResponse | DecreaseLiquidityFailedResponse | null
+    >
+  >;
 
   removeLiquidity: (
     request: RemoveLiquidityRequest,
