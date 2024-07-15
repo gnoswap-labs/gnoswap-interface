@@ -77,7 +77,6 @@ const PoolListContainer: React.FC = () => {
   const router = useRouter();
   // const poolListInfos = [];
   const { poolListInfos, updatePools } = usePoolData();
-  console.log("🚀 ~ poolListInfos:", poolListInfos);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { isLoadingPools } = useLoading();
 
@@ -203,12 +202,15 @@ const PoolListContainer: React.FC = () => {
           isKMB: false,
           decimals: 0,
         }),
-        volume24h: formatOtherPrice(item.volume24h, {
+        volume24h: formatOtherPrice(item.volume24h || 0, {
           isKMB: false,
           decimals: 0,
         }),
-        fees24h: formatOtherPrice(item.fees24h, { isKMB: false, decimals: 0 }),
-        tvl: formatOtherPrice(item.tvl.toString(), {
+        fees24h: formatOtherPrice(item.fees24h || 0, {
+          isKMB: false,
+          decimals: 0,
+        }),
+        tvl: formatOtherPrice(item.tvl || 0, {
           isKMB: false,
           decimals: 0,
         }),

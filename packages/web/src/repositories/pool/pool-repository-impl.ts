@@ -68,6 +68,9 @@ import {
   toNativePath,
 } from "@utils/common";
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolStakingResponse } from "./response/pool-staking-response";
+import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
 
 const POOL_PATH = PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
@@ -87,6 +90,23 @@ export class PoolRepositoryImpl implements PoolRepository {
     this.walletClient = walletClient;
   }
 
+  getLatestBlockHeight = async (): Promise<string> => {
+    try {
+      if (!PACKAGE_POOL_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const response = await (
+        await this.rpcProvider.getStatus()
+      ).sync_info.latest_block_height;
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      return "0";
+    }
+  };
+
   getCreationFee = async (): Promise<number> => {
     try {
       if (!PACKAGE_POOL_PATH || !this.rpcProvider) {
@@ -104,6 +124,23 @@ export class PoolRepositoryImpl implements PoolRepository {
       console.error(error);
       return 0;
     }
+  };
+
+  getPoolStakingList = async (
+    poolPath: string,
+  ): Promise<PoolStakingModel[]> => {
+    if (!this.networkClient) {
+      return [];
+    }
+    const response = await this.networkClient.get<{
+      data: PoolStakingResponse[];
+    }>({
+      url: `/staking/${poolPath}`,
+    });
+    const pools = response?.data?.data
+      ? response.data.data.map(PoolStakingMapper.fromResponse)
+      : [];
+    return pools;
   };
 
   getWithdrawalFee = async (): Promise<number> => {
@@ -126,6 +163,25 @@ export class PoolRepositoryImpl implements PoolRepository {
   };
 
   getUnstakingFee = async (): Promise<number> => {
+    try {
+      if (!PACKAGE_STAKER_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetUnstakingFee", []);
+      const response = await this.rpcProvider.evaluateExpression(
+        PACKAGE_STAKER_PATH,
+        param,
+      );
+
+      return evaluateExpressionToNumber(response);
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
+  };
+
+  getChainStatus = async (): Promise<number> => {
     try {
       if (!PACKAGE_STAKER_PATH || !this.rpcProvider) {
         throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
@@ -260,8 +316,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-        ? tokenBAmountRaw
-        : null;
+      ? tokenBAmountRaw
+      : null;
 
     const createPoolMessages = [];
 
@@ -419,8 +475,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-        ? tokenBAmountRaw
-        : null;
+      ? tokenBAmountRaw
+      : null;
 
     const approveMessages: TransactionMessage[] = [];
 

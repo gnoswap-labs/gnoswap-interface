@@ -2,10 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import StakingContentCard, {
   SummuryApr,
 } from "@components/pool/staking-content-card/StakingContentCard";
-import {
-  AprViewRewardTooltipWrapper,
-  StakingContentWrapper,
-} from "./StakingContent.styles";
+import { StakingContentWrapper } from "./StakingContent.styles";
 import Button from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
@@ -17,6 +14,8 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import IncentivizeTokenDetailTooltipContainer from "@containers/incentivize-token-detail-container/IncentivizeTokenDetailTooltipContainer";
+import IncentivizeTokenDetailTooltipContent from "../incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
 
 interface StakingContentProps {
   totalApr: string;
@@ -74,7 +73,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
         .getElementById("staking-container")
         ?.getBoundingClientRect().top;
 
-      if (top && top <= 200) {
+      if (top && top <= 500) {
         setShowAprTooltip(true);
       } else {
         setShowAprTooltip(false);
@@ -149,9 +148,10 @@ const StakingContent: React.FC<StakingContentProps> = ({
             <span className="to-mobile">to</span>
             <Tooltip
               FloatingContent={
-                <AprViewRewardTooltipWrapper>
-                  View Rewards
-                </AprViewRewardTooltipWrapper>
+                <IncentivizeTokenDetailTooltipContainer
+                  poolPath={pool?.poolPath}
+                  Comp={IncentivizeTokenDetailTooltipContent}
+                />
               }
               placement="top"
               className="apr"

@@ -70,7 +70,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     return (
       <>
         {Number(apr) > 100 && <IconStar size={20} />}
-        {formatRate(apr)}
+        {formatRate(apr || 0)}
       </>
     );
   }, [apr, tvl]);

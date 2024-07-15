@@ -51,6 +51,11 @@ export class PoolMapper {
   }
 
   public static toPoolSelectItemInfo(pool: PoolModel): PoolSelectItemInfo {
+    console.log("🚀 ~ PoolMapper ~ toPoolSelectItemInfo ~ pool:", pool.tvl);
+    console.log(
+      "🚀 ~ PoolMapper ~ toPoolSelectItemInfo ~ pool:",
+      BigNumber(pool.tvl).toFixed(),
+    );
     const feeRate =
       Object.values(SwapFeeTierInfoMap).find(
         info => info.fee.toString() === pool.fee,
@@ -58,7 +63,7 @@ export class PoolMapper {
 
     return {
       poolId: pool.id,
-      liquidityAmount: BigNumber(pool.tvl).toFixed(),
+      liquidityAmount: pool.tvl,
       feeRate,
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,

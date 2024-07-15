@@ -9,6 +9,7 @@ import { priceToTick } from "@utils/swap-utils";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { useRouter } from "next/navigation";
+import { PoolStakingModel } from "@models/pool/pool-staking";
 
 export const useGetPoolCreationFee = (
   options?: UseQueryOptions<number, Error>,
@@ -221,6 +222,41 @@ export const useInitializeBins = (
         .sort(bin => bin.minTick);
 
       return bins;
+    },
+    ...options,
+  });
+};
+
+export const useGetPoolStakingListByPoolPath = (
+  poolPath: string,
+  options?: UseQueryOptions<PoolStakingModel[], Error>,
+) => {
+  const { poolRepository } = useGnoswapContext();
+
+  return useQuery<PoolStakingModel[], Error>({
+    queryKey: [QUERY_KEY.poolStakingList],
+    queryFn: async () => {
+      const data = await poolRepository.getPoolStakingList(
+        encodeURIComponent(encryptId(poolPath)),
+      );
+
+      return data;
+    },
+    ...options,
+  });
+};
+
+export const useGetLastedBlockHeight = (
+  options?: UseQueryOptions<string, Error>,
+) => {
+  const { poolRepository } = useGnoswapContext();
+
+  return useQuery<string, Error>({
+    queryKey: [QUERY_KEY.lastedBlockHeight],
+    queryFn: async () => {
+      const data = await poolRepository.getLatestBlockHeight();
+
+      return data;
     },
     ...options,
   });

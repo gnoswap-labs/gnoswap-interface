@@ -16,6 +16,7 @@ import {
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolStakingModel } from "@models/pool/pool-staking";
 
 export interface PoolRepository {
   getPools: () => Promise<PoolModel[]>;
@@ -25,6 +26,8 @@ export interface PoolRepository {
   getWithdrawalFee: () => Promise<number>;
 
   getUnstakingFee: () => Promise<number>;
+
+  getLatestBlockHeight: () => Promise<string>;
 
   getPoolDetailRPCByPoolPath: (
     poolPath: string,
@@ -56,4 +59,6 @@ export interface PoolRepository {
   removeExternalIncentive: (
     request: RemoveExternalIncentiveRequest,
   ) => Promise<string | null>;
+
+  getPoolStakingList: (poolPath: string) => Promise<PoolStakingModel[]>;
 }

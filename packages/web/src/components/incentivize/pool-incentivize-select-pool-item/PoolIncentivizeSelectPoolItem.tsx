@@ -1,5 +1,8 @@
 import React, { useCallback, useMemo } from "react";
-import { PoolIncentivizeSelectPoolItemWrapper, PoolIncentivizeSelectPoolItemDefaultWrapper } from "./PoolIncentivizeSelectPoolItem.styles";
+import {
+  PoolIncentivizeSelectPoolItemWrapper,
+  PoolIncentivizeSelectPoolItemDefaultWrapper,
+} from "./PoolIncentivizeSelectPoolItem.styles";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
@@ -11,18 +14,16 @@ export interface PoolIncentivizeSelectPoolItemProps {
   select: (poolId: string) => void;
 }
 
-const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps> = ({
-  poolSelectItem,
-  visibleLiquidity,
-  select
-}) => {
+const PoolIncentivizeSelectPoolItem: React.FC<
+  PoolIncentivizeSelectPoolItemProps
+> = ({ poolSelectItem, visibleLiquidity, select }) => {
   const selected = poolSelectItem !== null;
 
   const doubleLogos = useMemo(() => {
     if (!selected) {
       return {
         left: "",
-        right: ""
+        right: "",
       };
     }
     return {
@@ -40,8 +41,9 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
     return `${poolSelectItem.tokenA.symbol}/${poolSelectItem.tokenB.symbol}`;
   }, [poolSelectItem]);
 
+  console.log("🚀 ~ liquidity ~ poolSelectItem:", poolSelectItem);
   const liquidity = useMemo(() => {
-    if (!poolSelectItem) {
+    if (!poolSelectItem || !poolSelectItem.liquidityAmount) {
       return "-";
     }
     return `$${convertToKMB(poolSelectItem.liquidityAmount)}`;
@@ -63,17 +65,14 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
   }
 
   return (
-    <PoolIncentivizeSelectPoolItemWrapper visibleLiquidity={visibleLiquidity} onClick={onClickItem}>
+    <PoolIncentivizeSelectPoolItemWrapper
+      visibleLiquidity={visibleLiquidity}
+      onClick={onClickItem}
+    >
       <div className="main-content-wrapper">
-        <DoubleLogo
-          {...doubleLogos}
-          size={24}
-        />
+        <DoubleLogo {...doubleLogos} size={24} />
         <span className="token-pair-name">{tokenPairName}</span>
-        <Badge
-          text={poolSelectItem.feeRate}
-          type={BADGE_TYPE.DARK_DEFAULT}
-        />
+        <Badge text={poolSelectItem.feeRate} type={BADGE_TYPE.DARK_DEFAULT} />
       </div>
 
       {visibleLiquidity && (

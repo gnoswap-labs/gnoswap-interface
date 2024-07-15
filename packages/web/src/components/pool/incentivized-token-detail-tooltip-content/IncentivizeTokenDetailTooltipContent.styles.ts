@@ -1,0 +1,62 @@
+import { fonts } from "@constants/font.constant";
+import styled from "@emotion/styled";
+import mixins from "@styles/mixins";
+
+export const IncentivizeTokenDetailTooltipContent = styled.div`
+  min-width: 348px;
+  ${mixins.flexbox("column", "center", "center")}
+  gap: 8px;
+`;
+
+export const TokenItem = styled.div`
+  width: 100%;
+  ${mixins.flexbox("column", "flex-start", "center")}
+  gap: 8px;
+`;
+
+export const ItemHeader = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")}
+  gap: 5px;
+`;
+
+export const ItemHeaderSymbol = styled.div`
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text01};
+`;
+
+export const ItemHeaderTag = styled.div`
+  ${fonts.p4}
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.color.border02};
+  color: ${({ theme }) => theme.color.text04};
+  padding: 1px 6px;
+  background: ${({ theme }) => theme.color.backgroundOpacity};
+`;
+
+export const DataGrid = styled.div`
+  width: 100%;
+  ${mixins.flexbox("column", "flex-start", "center")}
+  gap: 4px;
+`;
+
+export const DataGridItem = styled.div`
+  width: 100%;
+  gap: 16px;
+  ${mixins.flexbox("row", "center", "space-between")}
+`;
+
+export const ItemDataGridLabel = styled.div`
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text04};
+`;
+
+export const ItemDataGridValue = styled.div`
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text01};
+  gap: 2p;
+`;
+
+export const ItemDataGridValueBlock = styled.span`
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text10};
+`;
