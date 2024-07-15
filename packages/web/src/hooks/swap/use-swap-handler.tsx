@@ -826,27 +826,39 @@ export const useSwapHandler = () => {
       wrap(swapAmount)
         .then(response => {
           if (response?.code === 0) {
-            broadcastPending();
+            broadcastPending({ txHash: response.data?.hash });
             setTimeout(() => {
               const tokenAAmountStr = tokenAAmount;
               const tokenBAmountStr = tokenBAmount;
               broadcastSuccess(
-                makeBroadcastWrapTokenMessage("success", {
-                  ...messageData,
-                  tokenAAmount: tokenAAmountStr || "0",
-                  tokenBAmount: tokenBAmountStr || "0",
-                }),
+                makeBroadcastWrapTokenMessage(
+                  "success",
+                  {
+                    ...messageData,
+                    tokenAAmount: tokenAAmountStr || "0",
+                    tokenBAmount: tokenBAmountStr || "0",
+                  },
+                  response.data?.hash,
+                ),
                 onFinishSwap,
               );
             }, 1000);
             openTransactionConfirmModal();
-          } else if (response?.type === ERROR_VALUE.TRANSACTION_REJECTED.type) {
+          } else if (
+            response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+          ) {
             broadcastRejected(
               makeBroadcastWrapTokenMessage("error", messageData),
             );
             openTransactionConfirmModal();
           } else {
-            broadcastError(makeBroadcastWrapTokenMessage("error", messageData));
+            broadcastError(
+              makeBroadcastWrapTokenMessage(
+                "error",
+                messageData,
+                response?.data?.hash,
+              ),
+            );
             openTransactionConfirmModal();
           }
         })
@@ -863,28 +875,38 @@ export const useSwapHandler = () => {
       unwrap(swapAmount)
         .then(response => {
           if (response?.status === "success") {
-            broadcastPending();
+            broadcastPending({ txHash: response.data?.hash });
             setTimeout(() => {
               const tokenAAmountStr = tokenAAmount;
               const tokenBAmountStr = tokenBAmount;
               broadcastSuccess(
-                makeBroadcastUnwrapTokenMessage("success", {
-                  ...messageData,
-                  tokenAAmount: tokenAAmountStr || "0",
-                  tokenBAmount: tokenBAmountStr || "0",
-                }),
+                makeBroadcastUnwrapTokenMessage(
+                  "success",
+                  {
+                    ...messageData,
+                    tokenAAmount: tokenAAmountStr || "0",
+                    tokenBAmount: tokenBAmountStr || "0",
+                  },
+                  response.data?.hash,
+                ),
                 onFinishSwap,
               );
             }, 1000);
             openTransactionConfirmModal();
-          } else if (response?.type === ERROR_VALUE.TRANSACTION_REJECTED.type) {
+          } else if (
+            response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+          ) {
             broadcastRejected(
               makeBroadcastUnwrapTokenMessage("error", messageData),
             );
             openTransactionConfirmModal();
           } else {
             broadcastError(
-              makeBroadcastUnwrapTokenMessage("error", messageData),
+              makeBroadcastUnwrapTokenMessage(
+                "error",
+                messageData,
+                response?.data?.hash,
+              ),
             );
             openTransactionConfirmModal();
           }

@@ -20,9 +20,13 @@ export interface SwapRouterRepository {
     WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>
   >;
 
-  wrapToken: (request: WrapTokenRequest) => Promise<WalletResponse>;
+  wrapToken: (
+    request: WrapTokenRequest,
+  ) => Promise<WalletResponse<{ hash: string }>>;
 
-  unwrapToken: (request: UnwrapTokenRequest) => Promise<WalletResponse>;
+  unwrapToken: (
+    request: UnwrapTokenRequest,
+  ) => Promise<WalletResponse<{ hash: string }>>;
 
   getSwapFee: () => Promise<number>;
 }

@@ -242,7 +242,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
   public wrapToken = async (
     request: WrapTokenRequest,
-  ): Promise<WalletResponse> => {
+  ): Promise<WalletResponse<{ hash: string }>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -267,14 +267,18 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       gasFee: 1,
       memo: "",
     });
+
     return {
       ...response,
+      data: {
+        hash: response.data?.hash || ""
+      }
     };
   };
 
   public unwrapToken = async (
     request: UnwrapTokenRequest,
-  ): Promise<WalletResponse> => {
+  ): Promise<WalletResponse<{ hash: string }>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -295,7 +299,13 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       gasFee: 1,
       memo: "",
     });
-    return response;
+
+    return {
+      ...response,
+      data: {
+        hash: response.data?.hash || "",
+      },
+    };
   };
 
   getSwapFee = async (): Promise<number> => {
