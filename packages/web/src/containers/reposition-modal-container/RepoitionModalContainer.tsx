@@ -4,8 +4,14 @@ import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { IPriceRange } from "@hooks/reposition/use-reposition-handle";
 import { TokenModel } from "@models/token/token-model";
-import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
-import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
+import {
+  AddLiquidityFailedResponse,
+  AddLiquiditySuccessResponse,
+} from "@repositories/pool/response/add-liquidity-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap/response/swap-route-response";
 import React, { useCallback } from "react";
 
 interface Props {
@@ -30,11 +36,15 @@ interface Props {
   currentAmounts: { amountA: number; amountB: number } | null;
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
-  swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse> | null>;
+  swapRemainToken: () => Promise<WalletResponse<
+    SwapRouteSuccessResponse | SwapRouteFailedResponse
+  > | null>;
   addPosition: (
     swapToken: TokenModel,
     swapAmount: string,
-  ) => Promise<WalletResponse<AddLiquidityResponse> | null>;
+  ) => Promise<WalletResponse<
+    AddLiquiditySuccessResponse | AddLiquidityFailedResponse
+  > | null>;
 }
 
 const RepositionModalContainer: React.FC<Props> = ({

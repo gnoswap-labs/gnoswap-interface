@@ -20,8 +20,8 @@ import {
   makeBroadcastAddLiquidityMessage,
   useBroadcastHandler,
 } from "@hooks/common/use-broadcast-handler";
-import { CreatePoolResponse } from "@repositories/pool/response/create-pool-response";
-import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
+import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "@repositories/pool/response/create-pool-response";
+import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "@repositories/pool/response/add-liquidity-response";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
@@ -55,7 +55,9 @@ export interface EarnAddLiquidityConfirmModalProps {
     maxTick: number;
     slippage: number;
     withStaking?: boolean;
-  }) => Promise<WalletResponse<CreatePoolResponse> | null>;
+  }) => Promise<WalletResponse<
+    CreatePoolSuccessResponse | CreatePoolFailedResponse
+  > | null>;
 
   addLiquidity: (params: {
     tokenAAmount: string;
@@ -65,7 +67,9 @@ export interface EarnAddLiquidityConfirmModalProps {
     maxTick: number;
     slippage: number;
     withStaking?: boolean;
-  }) => Promise<WalletResponse<AddLiquidityResponse> | null>;
+  }) => Promise<WalletResponse<
+    AddLiquiditySuccessResponse | AddLiquidityFailedResponse
+  > | null>;
 }
 export interface SelectTokenModalModel {
   openAddPositionModal: () => void;
@@ -372,14 +376,15 @@ export const useEarnAddLiquidityConfirmModal = ({
         .then(result => {
           if (result) {
             if (result.code === 0) {
-              broadcastPending();
+              const resultData = result?.data as CreatePoolSuccessResponse;
+              broadcastPending({ txHash: resultData.hash });
               setTimeout(() => {
                 broadcastSuccess(
                   makeBroadcastAddLiquidityMessage(
                     "success",
                     {
-                      tokenASymbol: result.data?.tokenA.symbol || "",
-                      tokenBSymbol: result.data?.tokenB.symbol || "",
+                      tokenASymbol: resultData.tokenA.symbol || "",
+                      tokenBSymbol: resultData.tokenB.symbol || "",
                       tokenAAmount: Number(tokenAAmount).toLocaleString(
                         "en-US",
                         {
@@ -393,16 +398,30 @@ export const useEarnAddLiquidityConfirmModal = ({
                         },
                       ),
                     },
-                    result.data?.hash,
+                    resultData.hash,
                   ),
                   moveToBack,
                 );
               }, 1000);
-              return true;
             } else if (
-              result.code === 4001 &&
-              result.type === ERROR_VALUE.TRANSACTION_FAILED.type
+              result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
             ) {
+              broadcastRejected(
+                makeBroadcastAddLiquidityMessage(
+                  "error",
+                  {
+                    tokenASymbol: tokenA.symbol,
+                    tokenBSymbol: tokenB.symbol,
+                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: 6,
+                    }),
+                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: 6,
+                    }),
+                  },
+                ),
+              );
+            } else {
               broadcastError(
                 makeBroadcastAddLiquidityMessage(
                   "error",
@@ -416,31 +435,11 @@ export const useEarnAddLiquidityConfirmModal = ({
                       maximumFractionDigits: 6,
                     }),
                   },
-                  result.data?.hash,
+                  result?.data?.hash,
                 ),
               );
-              return true;
             }
           }
-          return false;
-        })
-        .catch(() => false)
-        .then(broadcasted => {
-          if (broadcasted) {
-            return;
-          }
-          broadcastRejected(
-            makeBroadcastAddLiquidityMessage("error", {
-              tokenASymbol: tokenA.symbol,
-              tokenBSymbol: tokenB.symbol,
-              tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                maximumFractionDigits: 6,
-              }),
-              tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                maximumFractionDigits: 6,
-              }),
-            }),
-          );
         });
     },
     [
