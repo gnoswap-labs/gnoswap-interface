@@ -31,6 +31,7 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY, useGetSwapFee } from "@query/router";
+import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -825,27 +826,39 @@ export const useSwapHandler = () => {
       wrap(swapAmount)
         .then(response => {
           if (response?.code === 0) {
-            broadcastPending();
+            broadcastPending({ txHash: response.data?.hash });
             setTimeout(() => {
               const tokenAAmountStr = tokenAAmount;
               const tokenBAmountStr = tokenBAmount;
               broadcastSuccess(
-                makeBroadcastWrapTokenMessage("success", {
-                  ...messageData,
-                  tokenAAmount: tokenAAmountStr || "0",
-                  tokenBAmount: tokenBAmountStr || "0",
-                }),
+                makeBroadcastWrapTokenMessage(
+                  "success",
+                  {
+                    ...messageData,
+                    tokenAAmount: tokenAAmountStr || "0",
+                    tokenBAmount: tokenBAmountStr || "0",
+                  },
+                  response.data?.hash,
+                ),
                 onFinishSwap,
               );
             }, 1000);
             openTransactionConfirmModal();
-          } else if (response?.type === ERROR_VALUE.TRANSACTION_REJECTED.type) {
+          } else if (
+            response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+          ) {
             broadcastRejected(
               makeBroadcastWrapTokenMessage("error", messageData),
             );
             openTransactionConfirmModal();
           } else {
-            broadcastError(makeBroadcastWrapTokenMessage("error", messageData));
+            broadcastError(
+              makeBroadcastWrapTokenMessage(
+                "error",
+                messageData,
+                response?.data?.hash,
+              ),
+            );
             openTransactionConfirmModal();
           }
         })
@@ -862,28 +875,38 @@ export const useSwapHandler = () => {
       unwrap(swapAmount)
         .then(response => {
           if (response?.status === "success") {
-            broadcastPending();
+            broadcastPending({ txHash: response.data?.hash });
             setTimeout(() => {
               const tokenAAmountStr = tokenAAmount;
               const tokenBAmountStr = tokenBAmount;
               broadcastSuccess(
-                makeBroadcastUnwrapTokenMessage("success", {
-                  ...messageData,
-                  tokenAAmount: tokenAAmountStr || "0",
-                  tokenBAmount: tokenBAmountStr || "0",
-                }),
+                makeBroadcastUnwrapTokenMessage(
+                  "success",
+                  {
+                    ...messageData,
+                    tokenAAmount: tokenAAmountStr || "0",
+                    tokenBAmount: tokenBAmountStr || "0",
+                  },
+                  response.data?.hash,
+                ),
                 onFinishSwap,
               );
             }, 1000);
             openTransactionConfirmModal();
-          } else if (response?.type === ERROR_VALUE.TRANSACTION_REJECTED.type) {
+          } else if (
+            response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+          ) {
             broadcastRejected(
               makeBroadcastUnwrapTokenMessage("error", messageData),
             );
             openTransactionConfirmModal();
           } else {
             broadcastError(
-              makeBroadcastUnwrapTokenMessage("error", messageData),
+              makeBroadcastUnwrapTokenMessage(
+                "error",
+                messageData,
+                response?.data?.hash,
+              ),
             );
             openTransactionConfirmModal();
           }
@@ -933,13 +956,15 @@ export const useSwapHandler = () => {
       .then(response => {
         if (response) {
           if (response.code === 0) {
-            broadcastPending();
+            const responseData =
+              response?.data as SwapRouteSuccessResponse;
+            broadcastPending({ txHash: responseData.hash });
             setTimeout(() => {
               const tokenAAmountStr = isExactIn
                 ? tokenAAmount
-                : response.data?.resultAmount;
+                : responseData.resultAmount;
               const tokenBAmountStr = isExactIn
-                ? response.data?.resultAmount
+                ? responseData.resultAmount
                 : tokenBAmount;
               broadcastSuccess(
                 makeBroadcastSwapMessage(
@@ -949,14 +974,16 @@ export const useSwapHandler = () => {
                     tokenAAmount: tokenAAmountStr || "0",
                     tokenBAmount: tokenBAmountStr || "0",
                   },
-                  response.data?.hash,
+                  responseData.hash,
                 ),
                 onFinishSwap,
               );
             }, 1000);
             openTransactionConfirmModal();
-          } else if (response.type === ERROR_VALUE.TRANSACTION_REJECTED.type) {
-            broadcastRejected(
+          } else if (
+            response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+          ) {
+              broadcastRejected(
               makeBroadcastSwapMessage(
                 "error",
                 broadcastMessage,
@@ -969,7 +996,9 @@ export const useSwapHandler = () => {
               makeBroadcastSwapMessage(
                 "error",
                 broadcastMessage,
-                response.data?.hash,
+                response.type === ERROR_VALUE.TRANSACTION_FAILED.type
+                  ? response.data?.hash
+                  : undefined,
               ),
             );
             openTransactionConfirmModal();

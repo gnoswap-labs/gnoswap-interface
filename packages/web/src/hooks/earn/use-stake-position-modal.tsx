@@ -1,4 +1,4 @@
-import SubmitPositionModalContainer from "@containers/submit-position-modal-container/SubmitPositionModalContainer";
+import StakePositionModalContainer from "@containers/stake-position-modal-container/StakePositionModalContainer";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
@@ -9,10 +9,7 @@ export interface Props {
   selectedIds: string[];
 }
 
-export const useSubmitPositionModal = ({
-  positions,
-  selectedIds,
-}: Props) => {
+export const useStakePositionModal = ({ positions, selectedIds }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -23,7 +20,7 @@ export const useSubmitPositionModal = ({
   const openModal = useCallback(() => {
     setOpenedModal(true);
     setModalContent(
-      <SubmitPositionModalContainer positions={selectedPositions} />
+      <StakePositionModalContainer positions={selectedPositions} />,
     );
   }, [selectedPositions, setModalContent, setOpenedModal]);
 

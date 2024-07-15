@@ -98,25 +98,28 @@ const WalletBalanceContainer: React.FC = () => {
     claimAll().then(response => {
       if (response) {
         if (response.code === 0) {
-          broadcastPending();
+          broadcastPending({txHash: response.data?.hash});
           setTimeout(() => {
-            broadcastSuccess(makeBroadcastClaimMessage("success", data));
+            broadcastSuccess(
+              makeBroadcastClaimMessage("success", data, response.data?.hash),
+            );
             setLoadingTransactionClaim(false);
           }, 1000);
           openModal();
         } else if (
-          response.code === 4000 &&
-          response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+          response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
-          broadcastError(makeBroadcastClaimMessage("error", data));
-          setLoadingTransactionClaim(false);
-          openModal();
-        } else {
-          openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
             () => {},
             true,
+          );
+          setLoadingTransactionClaim(false);
+          openModal();
+        } else {
+          openModal();
+          broadcastError(
+            makeBroadcastClaimMessage("error", data, response.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }

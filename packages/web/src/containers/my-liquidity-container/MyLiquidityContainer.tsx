@@ -49,7 +49,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { openModal } = useTransactionConfirmModal();
   const { tokenPrices } = useTokenData();
 
-
   const {
     broadcastSuccess,
     broadcastPending,
@@ -71,10 +70,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { data: addressName = "" } = useGetUsernameByAddress(address || "", {
     enabled: !!address,
   });
-
-
-
-
 
   const handleClickAddPosition = useCallback(() => {
     router.push(`/earn/pool/${router.query["pool-path"]}/add`);
@@ -105,25 +100,28 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     claimAll().then(response => {
       if (response) {
         if (response.code === 0) {
-          broadcastPending();
+          broadcastPending({ txHash: response.data?.hash });
           setTimeout(() => {
-            broadcastSuccess(makeBroadcastClaimMessage("success", data));
+            broadcastSuccess(
+              makeBroadcastClaimMessage("success", data, response.data?.hash),
+            );
             setLoadingTransactionClaim(false);
           }, 1000);
           openModal();
         } else if (
-          response.code === 4000 &&
-          response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+          response.code === ERROR_VALUE.TRANSACTION_REJECTED.status
         ) {
-          broadcastError(makeBroadcastClaimMessage("error", data));
+          broadcastRejected(
+            makeBroadcastClaimMessage("error", data),
+            () => {},
+            true,
+          );
           setLoadingTransactionClaim(false);
           openModal();
         } else {
           openModal();
-          broadcastRejected(
-            makeBroadcastClaimMessage("error", data),
-            () => { },
-            true,
+          broadcastError(
+            makeBroadcastClaimMessage("error", data, response.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }
