@@ -26,6 +26,8 @@ import {
   formatOtherPrice,
   formatPoolPairAmount,
 } from "@utils/new-number-utils";
+import { isGNOTPath } from "@utils/common";
+import { WUGNOT_TOKEN } from "@common/values/token-constant";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -54,8 +56,29 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const positionData = positions?.[0]?.pool;
 
   const isDisplay = useMemo(() => {
-    return connected === true || positions.length > 0;
-  }, [connected, positions]);
+    const tokenAPrice = isGNOTPath(positionData?.tokenA.path)
+      ? tokenPrices[WUGNOT_TOKEN.priceID]?.usd
+      : tokenPrices[positionData?.tokenA.priceID]?.usd;
+
+    const tokenBPrice = isGNOTPath(positionData?.tokenB.path)
+      ? tokenPrices[WUGNOT_TOKEN.priceID]?.usd
+      : tokenPrices[positionData?.tokenB.priceID]?.usd;
+
+    return (
+      connected === true &&
+      positions.length > 0 &&
+      !!tokenAPrice &&
+      !!tokenBPrice
+    );
+  }, [
+    connected,
+    positionData?.tokenA.path,
+    positionData?.tokenA.priceID,
+    positionData?.tokenB.path,
+    positionData?.tokenB.priceID,
+    positions.length,
+    tokenPrices,
+  ]);
 
   const totalBalance = useMemo(() => {
     const isEmpty = positions.every(item => !item.usdValue);
@@ -165,12 +188,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             accumulatedRewardOf1dUsd: accumulatedRewardOf1dUsd,
           };
         } else {
-          console.log("🚀 324234 ~ tokenPrice:", tokenPrice);
-          console.log(
-            "🚀 324234 ~ rewardInfo.accumulatedRewardOf1d:",
-            rewardInfo.accumulatedRewardOf1d,
-          );
-
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...rewardInfo,
             accumulatedRewardOf1dUsd:
@@ -756,20 +773,29 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <AmountDisplayWrapper $canHover={tokenABalance >= 1e3}>
-                {formatPoolPairAmount(tokenABalance, {
-                  isKMB: false,
-                  decimals: 2,
-                })}{" "}
-                <span className={"token-symbol wrap-text"}>
-                  {positionData?.tokenA?.symbol}
-                </span>{" "}
-                <span className="token-percent">{depositRatioStrOfTokenA}</span>
+                {isDisplay ? (
+                  <>
+                    {formatPoolPairAmount(tokenABalance, {
+                      isKMB: false,
+                      decimals: 2,
+                    })}{" "}
+                    <span className={"token-symbol wrap-text"}>
+                      {positionData?.tokenA?.symbol}
+                    </span>{" "}
+                    <span className="token-percent">
+                      {depositRatioStrOfTokenA}
+                    </span>
+                  </>
+                ) : (
+                  "-"
+                )}
               </AmountDisplayWrapper>
             </Tooltip>
             <div className="divider"></div>
             <Tooltip
               placement="top"
               className="sub-content-detail"
+              isShouldShowed={isDisplay}
               FloatingContent={
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo
@@ -792,14 +818,22 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <AmountDisplayWrapper $canHover={tokenBBalance >= 1e3}>
-                {formatPoolPairAmount(tokenBBalance, {
-                  isKMB: false,
-                  decimals: 2,
-                })}{" "}
-                <span className={"token-symbol  wrap-text"}>
-                  {positionData?.tokenB?.symbol}
-                </span>{" "}
-                <span className="token-percent">{depositRatioStrOfTokenB}</span>
+                {isDisplay ? (
+                  <>
+                    {formatPoolPairAmount(tokenBBalance, {
+                      isKMB: false,
+                      decimals: 2,
+                    })}{" "}
+                    <span className={"token-symbol  wrap-text"}>
+                      {positionData?.tokenB?.symbol}
+                    </span>{" "}
+                    <span className="token-percent">
+                      {depositRatioStrOfTokenB}
+                    </span>
+                  </>
+                ) : (
+                  "-"
+                )}
               </AmountDisplayWrapper>
             </Tooltip>
           </div>

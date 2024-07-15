@@ -26,7 +26,7 @@ export const MyPositionRewardContent: React.FC<
     return rewardInfo.SWAP_FEE;
   }, [rewardInfo.SWAP_FEE]);
 
-  const stakingRewards = useMemo(() => {
+  const internalRewards = useMemo(() => {
     if (rewardInfo.INTERNAL.length === 0) {
       return null;
     }
@@ -41,41 +41,73 @@ export const MyPositionRewardContent: React.FC<
   }, [rewardInfo.EXTERNAL]);
 
   const swapFeeRewardUSD = useMemo(() => {
-    const isEmpty = rewardInfo.SWAP_FEE.length === 0;
+    const isEmpty = !swapFeeRewards || swapFeeRewards?.length === 0;
 
     if (isEmpty) return "-";
 
-    const sumUSD =
-      swapFeeRewards?.reduce(
-        (accum, current) => accum + current.claimableUSD,
-        0,
-      ) || 0;
-    return formatOtherPrice(sumUSD);
-  }, [rewardInfo.SWAP_FEE.length, swapFeeRewards]);
+    const sumUSD = swapFeeRewards?.reduce((accum: null | number, current) => {
+      if (accum === null && current.claimableUSD === null) {
+        return null;
+      }
 
-  const stakingRewardUSD = useMemo(() => {
-    const isEmpty = rewardInfo.INTERNAL.length === 0;
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
+    return formatOtherPrice(sumUSD);
+  }, [swapFeeRewards]);
+
+  const internalRewardUSD = useMemo(() => {
+    const isEmpty = !internalRewards;
 
     if (isEmpty) return "-";
 
-    const sumUSD = rewardInfo.INTERNAL.reduce(
-      (accum, current) => accum + current.claimableUSD,
-      0,
-    );
+    const sumUSD = internalRewards.reduce((accum: null | number, current) => {
+      if (accum === null && current.claimableUSD === null) {
+        return null;
+      }
+
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
     return formatOtherPrice(sumUSD);
-  }, [rewardInfo.INTERNAL]);
+  }, [internalRewards]);
 
   const externalRewardUSD = useMemo(() => {
-    const isEmpty = rewardInfo.EXTERNAL.length === 0;
+    const isEmpty = !externalRewards;
 
     if (isEmpty) return "-";
 
-    const sumUSD = rewardInfo.EXTERNAL.reduce(
-      (accum, current) => accum + current.claimableUSD,
-      0,
-    );
+    const sumUSD = externalRewards.reduce((accum: null | number, current) => {
+      if (accum === null && current.claimableUSD === null) {
+        return null;
+      }
+
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
     return formatOtherPrice(sumUSD);
-  }, [rewardInfo.EXTERNAL]);
+  }, [externalRewards]);
 
   return (
     <RewardsContent>
@@ -108,14 +140,14 @@ export const MyPositionRewardContent: React.FC<
           ))}
         </React.Fragment>
       )}
-      {stakingRewards && <div className="divider" />}
-      {stakingRewards && (
+      {internalRewards && <div className="divider" />}
+      {internalRewards && (
         <React.Fragment>
           <div className="list">
             <span className="title">Internal Rewards</span>
-            <span className="title">{stakingRewardUSD}</span>
+            <span className="title">{internalRewardUSD}</span>
           </div>
-          {stakingRewards.map((reward, index) => (
+          {internalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
                 <MissingLogo

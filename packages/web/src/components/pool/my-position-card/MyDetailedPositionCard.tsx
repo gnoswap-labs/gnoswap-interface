@@ -44,6 +44,8 @@ import { useGetPositionBins } from "@query/positions";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import { WUGNOT_TOKEN } from "@common/values/token-constant";
+import { isGNOTPath } from "@utils/common";
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
@@ -77,6 +79,25 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40);
 
   const isClosed = position.closed;
+
+  const isDisplay = useMemo(() => {
+    const tokenAPrice = isGNOTPath(position.pool?.tokenA.path)
+      ? tokenPrices[WUGNOT_TOKEN.priceID]?.usd
+      : tokenPrices[position.pool?.tokenA.priceID]?.usd;
+
+    const tokenBPrice = isGNOTPath(position.pool?.tokenB.path)
+      ? tokenPrices[WUGNOT_TOKEN.priceID]?.usd
+      : tokenPrices[position.pool?.tokenB.priceID]?.usd;
+
+    return !isClosed && !!tokenAPrice && !!tokenBPrice;
+  }, [
+    isClosed,
+    position.pool?.tokenA.path,
+    position.pool?.tokenA.priceID,
+    position.pool?.tokenB.path,
+    position.pool?.tokenB.priceID,
+    tokenPrices,
+  ]);
 
   const tokenA = useMemo(() => {
     return position.pool.tokenA;
@@ -125,11 +146,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [getTokenPrice, position.tokenBBalance, tokenB]);
 
   const positionBalanceUSD = useMemo(() => {
-    if (isClosed || !position.positionUsdValue) {
+    if (!isDisplay || !position.positionUsdValue) {
       return "-";
     }
     return formatOtherPrice(position.positionUsdValue);
-  }, [position.positionUsdValue, isClosed]);
+  }, [isDisplay, position.positionUsdValue]);
 
   const balances = useMemo((): {
     token: TokenModel;
@@ -174,7 +195,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     | { [key in RewardType]: PositionRewardInfo[] }
     | null => {
     const rewards = position.reward;
-    if (rewards.length === 0) {
+    if (rewards.length === 0 || !isDisplay) {
       return null;
     }
 
@@ -286,30 +307,36 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     );
 
     return totalRewardInfo;
-  }, [getTokenPrice, position.reward, tokenPrices]);
+  }, [getTokenPrice, isDisplay, position.reward, tokenPrices]);
 
   const totalRewardUSD = useMemo(() => {
-    const isEmpty =
-      !position.reward ||
-      position.reward.length === 0 ||
-      position.reward.every(item => !item.claimableUsd);
-
-    if (isClosed || isEmpty) {
+    if (!isDisplay) {
       return "-";
     }
 
-    const usdValue = position.reward.reduce<number>(
-      (acc, current) => acc + Number(current.claimableUsd),
-      0,
-    );
+    const usdValue = position.reward.reduce<number | null>((acc, current) => {
+      if (acc === null && current === null) {
+        return null;
+      }
+
+      if (acc === null) {
+        return Number(current.claimableUsd);
+      }
+
+      if (!current.claimableUsd) {
+        return acc;
+      }
+
+      return acc + Number(current.claimableUsd);
+    }, null);
 
     return formatOtherPrice(usdValue);
-  }, [isClosed, position.reward]);
+  }, [isDisplay, position.reward]);
 
   const totalDailyEarning = useMemo(() => {
     const isEmpty = !totalRewardInfo || position.reward.length === 0;
 
-    if (isClosed || isEmpty) {
+    if (!isDisplay || isEmpty) {
       return "-";
     }
 
@@ -332,7 +359,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       }, null);
 
     return formatOtherPrice(totalDailyEarningValue);
-  }, [isClosed, position.reward, totalRewardInfo]);
+  }, [isDisplay, position.reward.length, totalRewardInfo]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
     useMemo(() => {
@@ -419,7 +446,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         },
       );
       return aprRewardInfo;
-    }, [position.reward]);
+    }, [position.reward, tokenPrices]);
 
   const stringPrice = useMemo(() => {
     const price = tickToPrice(position?.pool?.currentTick);
@@ -918,6 +945,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             {!isClosed && !loading ? (
               <Tooltip
                 placement="top"
+                isShouldShowed={isDisplay}
                 FloatingContent={
                   <div>
                     <BalanceTooltipContent balances={balances} />
@@ -939,6 +967,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             {!isClosed && isShowRewardInfoTooltip && !loading ? (
               <Tooltip
                 placement="top"
+                isShouldShowed={isDisplay}
                 FloatingContent={
                   <div>
                     <MyPositionAprContent rewardInfo={aprRewardInfo} />
@@ -962,7 +991,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           </div>
           <div className="info-box">
             <span className="symbol-text">Claimable Rewards</span>
-            {!isClosed && !loading && isShowTotalRewardInfo ? (
+            {!isClosed && !loading && isShowTotalRewardInfo && isDisplay ? (
               <Tooltip
                 placement="top"
                 FloatingContent={

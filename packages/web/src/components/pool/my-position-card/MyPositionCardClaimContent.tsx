@@ -53,8 +53,22 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       return "-";
     }
     const sumUSD = rewardInfo.SWAP_FEE.reduce(
-      (accum, current) => accum + current.claimableUSD,
-      0,
+      (accum: null | number, current) => {
+        if (accum === null && current.claimableUSD === null) {
+          return null;
+        }
+
+        if (accum === null) {
+          return current.claimableUSD;
+        }
+
+        if (current.claimableUSD === null) {
+          return accum;
+        }
+
+        return accum + current.claimableUSD;
+      },
+      null,
     );
     return formatOtherPrice(sumUSD);
   }, [rewardInfo]);
@@ -64,8 +78,22 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       return "-";
     }
     const sumUSD = rewardInfo.INTERNAL.reduce(
-      (accum, current) => accum + current.claimableUSD,
-      0,
+      (accum: null | number, current) => {
+        if (accum === null && current.claimableUSD === null) {
+          return null;
+        }
+
+        if (accum === null) {
+          return current.claimableUSD;
+        }
+
+        if (current.claimableUSD === null) {
+          return accum;
+        }
+
+        return accum + current.claimableUSD;
+      },
+      null,
     );
     return formatOtherPrice(sumUSD);
   }, [rewardInfo]);
@@ -75,8 +103,22 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       return "-";
     }
     const sumUSD = rewardInfo.EXTERNAL.reduce(
-      (accum, current) => accum + current.claimableUSD,
-      0,
+      (accum: null | number, current) => {
+        if (accum === null && current.claimableUSD === null) {
+          return null;
+        }
+
+        if (accum === null) {
+          return current.claimableUSD;
+        }
+
+        if (current.claimableUSD === null) {
+          return accum;
+        }
+
+        return accum + current.claimableUSD;
+      },
+      null,
     );
     return formatOtherPrice(sumUSD);
   }, [rewardInfo]);
