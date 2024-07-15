@@ -8,10 +8,10 @@ import {
   EarnAddConfirmPriceRangeInfoWrapper,
   ToolTipContentWrapper,
 } from "./EarnAddConfirmPriceRangeInfo.styles";
-import { formatApr } from "@utils/string-utils";
 import { EarnAddConfirmAmountInfoProps } from "../earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
 import IconSwap from "@components/common/icons/IconSwap";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { formatRate } from "@utils/new-number-utils";
 
 export interface EarnAddConfirmPriceRangeInfoProps
   extends EarnAddConfirmAmountInfoProps {
@@ -129,7 +129,7 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
               <IconInfo />
             </Tooltip>
           </div>
-          <span className="value">{formatApr(estimatedAPR)}</span>
+          <span className="value">{formatRate(estimatedAPR)}</span>
         </div>
         {isShowStaking && (
           <div className="row">

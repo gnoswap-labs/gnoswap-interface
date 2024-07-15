@@ -74,12 +74,14 @@ const PoolList: React.FC<TokenListProps> = ({
         themeKey={themeKey}
         breakpoint={breakpoint}
       />
-      {totalPage > 1 && <Pagination
-        currentPage={currentPage}
-        totalPage={totalPage}
-        onPageChange={movePage}
-        siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
-      />}
+      {totalPage > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPage={totalPage}
+          onPageChange={movePage}
+          siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
+        />
+      )}
     </PoolListWrapper>
   );
 };

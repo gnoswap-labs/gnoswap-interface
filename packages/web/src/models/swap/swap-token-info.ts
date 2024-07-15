@@ -8,7 +8,7 @@ export interface SwapTokenInfo {
 
   tokenABalance: string;
 
-  tokenAUSD: number;
+  tokenAUSD: number | null;
 
   tokenAUSDStr: string;
 
@@ -18,7 +18,7 @@ export interface SwapTokenInfo {
 
   tokenBBalance: string;
 
-  tokenBUSD: number;
+  tokenBUSD: number | null;
 
   tokenBUSDStr: string;
 

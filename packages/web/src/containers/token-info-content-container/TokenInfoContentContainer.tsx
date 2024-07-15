@@ -6,7 +6,7 @@ import useRouter from "@hooks/common/use-custom-router";
 import { checkPositivePrice } from "@utils/common";
 import { useLoading } from "@hooks/common/use-loading";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
-import { toPriceFormat } from "@utils/number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export const performanceInit = [
   {
@@ -101,38 +101,36 @@ const priceChangeDetailInit = {
 const TokenInfoContentContainer: React.FC = () => {
   const router = useRouter();
   const path = router.query["token-path"];
-  const {
-    data: {
-      market = marketInformationInit,
-    } = {},
-    isLoading,
-  } = useGetTokenDetailByPath(
-    path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
-    { enabled: !!path },
-  );
+  const { data: { market = marketInformationInit } = {}, isLoading } =
+    useGetTokenDetailByPath(
+      path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
+      { enabled: !!path },
+    );
   const {
     data: {
       usd: currentPrice = "0",
       feeUsd24h,
       pricesBefore = priceChangeDetailInit,
     } = {},
-  } = useGetTokenPricesByPath(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
+  } = useGetTokenPricesByPath(
+    path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
+    { enabled: !!path },
+  );
   const { isLoading: isLoadingCommon } = useLoading();
 
   const marketInformation = useMemo(() => {
     return {
       popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
-      tvl: market.lockedTokensUsd
-        ? `${toPriceFormat(market.lockedTokensUsd, { minLimit: 0.01, usd: true })}`
-        : "-",
-      volume24h: market.volumeUsd24h
-        ? `${toPriceFormat(Number(market.volumeUsd24h).toString(), { minLimit: 0.01, usd: true })}`
-        : "-",
-      fees24h: feeUsd24h
-        ? `${toPriceFormat(feeUsd24h, { minLimit: 0.01, usd: true })}`
-        : "-",
+      tvl: formatOtherPrice(market.lockedTokensUsd),
+      volume24h: formatOtherPrice(market.volumeUsd24h),
+      fees24h: formatOtherPrice(feeUsd24h),
     };
-  }, [market.lockedTokensUsd, market.popularity, market.volumeUsd24h, feeUsd24h]);
+  }, [
+    market.lockedTokensUsd,
+    market.popularity,
+    market.volumeUsd24h,
+    feeUsd24h,
+  ]);
 
   const priceInfomation = useMemo(() => {
     const data1H = checkPositivePrice(currentPrice, pricesBefore.price1h);
@@ -158,25 +156,19 @@ const TokenInfoContentContainer: React.FC = () => {
         value: data30D.percentDisplay,
       },
     };
-  }, [currentPrice, pricesBefore.price1d, pricesBefore.price1h, pricesBefore.price30d, pricesBefore.price7d]);
+  }, [
+    currentPrice,
+    pricesBefore.price1d,
+    pricesBefore.price1h,
+    pricesBefore.price30d,
+    pricesBefore.price7d,
+  ]);
 
   const pricePerformance = useMemo(() => {
-    const dataToday = checkPositivePrice(
-      currentPrice,
-      pricesBefore.priceToday,
-    );
-    const data30day = checkPositivePrice(
-      currentPrice,
-      pricesBefore.price30d,
-    );
-    const data60day = checkPositivePrice(
-      currentPrice,
-      pricesBefore.price60d,
-    );
-    const data90day = checkPositivePrice(
-      currentPrice,
-      pricesBefore.price90d,
-    );
+    const dataToday = checkPositivePrice(currentPrice, pricesBefore.priceToday);
+    const data30day = checkPositivePrice(currentPrice, pricesBefore.price30d);
+    const data60day = checkPositivePrice(currentPrice, pricesBefore.price60d);
+    const data90day = checkPositivePrice(currentPrice, pricesBefore.price90d);
 
     return [
       {
@@ -224,7 +216,13 @@ const TokenInfoContentContainer: React.FC = () => {
         },
       },
     ];
-  }, [currentPrice, pricesBefore.price30d, pricesBefore.price60d, pricesBefore.price90d, pricesBefore.priceToday]);
+  }, [
+    currentPrice,
+    pricesBefore.price30d,
+    pricesBefore.price60d,
+    pricesBefore.price90d,
+    pricesBefore.priceToday,
+  ]);
 
   return (
     <TokenInfoContent

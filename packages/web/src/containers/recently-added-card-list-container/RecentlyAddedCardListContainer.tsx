@@ -5,10 +5,10 @@ import { CardListKeyStats } from "@models/common/card-list-item-info";
 import { useGetDashboardTVL, useGetDashboardVolume } from "@query/dashboard";
 import { useGetChainList } from "@query/token";
 import { makeId } from "@utils/common";
-import { toUnitFormat } from "@utils/number-utils";
 import useRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
 import { useTranslation } from "next-i18next";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 const RecentlyAddedCardListContainer: React.FC = () => {
   const router = useRouter();
@@ -24,19 +24,15 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   const list: CardListKeyStats[] = [
     {
       label: t("Main:keyStatCard.totalValueLocked"),
-      content: toUnitFormat(tvlData?.latest || "0", true, true),
+      content: formatOtherPrice(tvlData?.latest),
     },
     {
       label: t("Main:keyStatCard.swapVol24"),
-      content: toUnitFormat(
-        Number(chainData?.stat?.volume24hUsd ?? 0),
-        true,
-        true,
-      ),
+      content: formatOtherPrice(chainData?.stat?.volume24hUsd),
     },
     {
       label: t("Main:keyStatCard.swapFee24"),
-      content: toUnitFormat(fees24hUsd || "0", true, true),
+      content: formatOtherPrice(fees24hUsd),
     },
   ];
 

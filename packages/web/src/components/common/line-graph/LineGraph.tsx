@@ -3,9 +3,10 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
-import { subscriptFormat, toPriceFormatNotRounding } from "@utils/number-utils";
+import { subscriptFormat } from "@utils/number-utils";
 import { getLocalizeTime } from "@utils/chart";
 import { convertToKMB } from "@utils/stake-position-utils";
+import { formatPrice } from "@utils/new-number-utils";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthX = pointB.x - pointA.x;
@@ -675,14 +676,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 <span className="value">
                   {popupYValueFormatter
                     ? popupYValueFormatter(datas[currentPointIndex]?.value)
-                    : toPriceFormatNotRounding(
-                        datas[currentPointIndex]?.value,
-                        {
-                          usd: true,
-                          lessThan1Significant: 3,
-                          fixedGreaterThan1: true,
-                        },
-                      )}
+                    : formatPrice(datas[currentPointIndex]?.value)}
                 </span>
               </div>
             </LineGraphTooltipWrapper>

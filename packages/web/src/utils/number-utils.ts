@@ -158,7 +158,7 @@ export const toKMBFormat = (
     return (
       negativeSign +
       prefix +
-      bigNumber.dividedBy(Math.pow(10, 9)).toFixed(2) +
+      bigNumber.dividedBy(Math.pow(10, 9)).toFixed(2, BigNumber.ROUND_DOWN) +
       unitsUpperCase.billion
     );
   }
@@ -167,7 +167,7 @@ export const toKMBFormat = (
     return (
       negativeSign +
       prefix +
-      bigNumber.dividedBy(Math.pow(10, 6)).toFixed(2) +
+      bigNumber.dividedBy(Math.pow(10, 6)).toFixed(2, BigNumber.ROUND_DOWN) +
       unitsUpperCase.million
     );
   }
@@ -176,7 +176,7 @@ export const toKMBFormat = (
     return (
       negativeSign +
       prefix +
-      bigNumber.dividedBy(Math.pow(10, 3)).toFixed(2) +
+      bigNumber.dividedBy(Math.pow(10, 3)).toFixed(2, BigNumber.ROUND_DOWN) +
       unitsUpperCase.thousand
     );
   }
@@ -717,10 +717,9 @@ export function subscriptFormat(
     : 5;
 
   if (numberOfZero <= zeroCountOffset) {
-    return removeTrailingZeros(
-      Number(numberStr).toLocaleString("en-US", {
-        maximumSignificantDigits: significantDigits,
-      }),
+    return BigNumber(numberStr).toFixed(
+      significantDigits,
+      BigNumber.ROUND_DOWN,
     );
   }
 

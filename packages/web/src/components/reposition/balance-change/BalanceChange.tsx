@@ -13,8 +13,8 @@ export interface BalanceChangeProps {
   tokenB: TokenModel | null;
   title?: string;
   isHiddenCurrentBalance?: boolean;
-  currentAmounts: { amountA: number; amountB: number } | null;
-  repositionAmounts: { amountA: number | null; amountB: number | null } | null;
+  currentAmounts: { amountA: string; amountB: string } | null;
+  repositionAmounts: { amountA: string | null; amountB: string | null } | null;
   selectPool?: SelectPool;
   isLoadingPosition: boolean;
 }

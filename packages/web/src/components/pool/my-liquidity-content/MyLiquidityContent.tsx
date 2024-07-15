@@ -13,18 +13,21 @@ import { RewardType } from "@constants/option.constant";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
-import { numberToFormat } from "@utils/string-utils";
-import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { TokenModel } from "@models/token/token-model";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+} from "@utils/new-number-utils";
+import { isGNOTPath } from "@utils/common";
+import { WUGNOT_TOKEN } from "@common/values/token-constant";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -53,8 +56,29 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const positionData = positions?.[0]?.pool;
 
   const isDisplay = useMemo(() => {
-    return connected === true || positions.length > 0;
-  }, [connected, positions]);
+    const tokenAPrice = isGNOTPath(positionData?.tokenA.path)
+      ? tokenPrices[WUGNOT_TOKEN.priceID]?.usd
+      : tokenPrices[positionData?.tokenA.priceID]?.usd;
+
+    const tokenBPrice = isGNOTPath(positionData?.tokenB.path)
+      ? tokenPrices[WUGNOT_TOKEN.priceID]?.usd
+      : tokenPrices[positionData?.tokenB.priceID]?.usd;
+
+    return (
+      connected === true &&
+      positions.length > 0 &&
+      !!tokenAPrice &&
+      !!tokenBPrice
+    );
+  }, [
+    connected,
+    positionData?.tokenA.path,
+    positionData?.tokenA.priceID,
+    positionData?.tokenB.path,
+    positionData?.tokenB.priceID,
+    positions.length,
+    tokenPrices,
+  ]);
 
   const totalBalance = useMemo(() => {
     const isEmpty = positions.every(item => !item.usdValue);
@@ -65,7 +89,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const balance = positions.reduce((current, next) => {
       return current + Number(next.usdValue);
     }, 0);
-    return `$${numberToFormat(`${balance}`, { decimals: 2 })}`;
+
+    return formatOtherPrice(balance, { isKMB: false });
   }, [isDisplay, positions]);
 
   const claimableRewardInfo = useMemo(():
@@ -95,38 +120,80 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             Number(reward.totalAmount) *
               Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
-        claimableAmount: Number(reward.claimableAmount) || 0,
-        claimableUSD: Number(reward.claimableUsd),
-        accumulatedRewardOf1d: Number(reward.accuReward1D) || 0,
-        claimableUsdValue: Number(reward.claimableUsd),
+        claimableAmount: reward.claimableAmount
+          ? Number(reward.claimableAmount)
+          : null,
+        claimableUSD: reward.claimableUsd ? Number(reward.claimableUsd) : null,
+        accumulatedRewardOf1d: reward.accuReward1D
+          ? Number(reward.accuReward1D)
+          : null,
+        claimableUsdValue: reward.claimableUsd
+          ? Number(reward.claimableUsd)
+          : null,
       }))
       .forEach(rewardInfo => {
         const existReward =
           infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
+        const tokenPrice = tokenPrices[rewardInfo.token.priceID].usd
+          ? Number(tokenPrices[rewardInfo.token.priceID].usd)
+          : null;
         if (existReward) {
+          const accumulatedRewardOf1d = (() => {
+            if (
+              existReward.accumulatedRewardOf1d === null &&
+              rewardInfo.accumulatedRewardOf1d === null
+            ) {
+              return null;
+            }
+
+            if (existReward.accumulatedRewardOf1d === null) {
+              return rewardInfo.accumulatedRewardOf1d;
+            }
+
+            if (rewardInfo.accumulatedRewardOf1d === null) {
+              return existReward.accumulatedRewardOf1d;
+            }
+
+            return (
+              existReward.accumulatedRewardOf1d +
+              rewardInfo.accumulatedRewardOf1d
+            );
+          })();
+          const accumulatedRewardOf1dUsd =
+            accumulatedRewardOf1d !== null && tokenPrice !== null
+              ? accumulatedRewardOf1d * tokenPrice
+              : null;
+
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
-            balance: existReward.balance + rewardInfo.balance,
-            balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
-            claimableAmount:
-              existReward.claimableAmount + rewardInfo.claimableAmount,
-            claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
-            accumulatedRewardOf1d:
-              existReward.accumulatedRewardOf1d +
-              rewardInfo.accumulatedRewardOf1d,
-            claimableUsdValue:
-              existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-            accumulatedRewardOf1dUsd:
-              existReward.accumulatedRewardOf1dUsd +
-              rewardInfo.accumulatedRewardOf1d *
-                Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
+            claimableUSD: (() => {
+              if (
+                existReward.claimableUSD === null &&
+                rewardInfo.claimableUSD === null
+              ) {
+                return null;
+              }
+
+              if (existReward.claimableUSD === null) {
+                return rewardInfo.claimableUSD;
+              }
+
+              if (rewardInfo.claimableUSD === null) {
+                return existReward.claimableUSD;
+              }
+
+              return existReward.claimableUSD + rewardInfo.claimableUSD;
+            })(),
+            accumulatedRewardOf1d: accumulatedRewardOf1d,
+            accumulatedRewardOf1dUsd: accumulatedRewardOf1dUsd,
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...rewardInfo,
             accumulatedRewardOf1dUsd:
-              rewardInfo.accumulatedRewardOf1d *
-              Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
+              rewardInfo.accumulatedRewardOf1d !== null && tokenPrice !== null
+                ? tokenPrice * rewardInfo.accumulatedRewardOf1d
+                : null,
           };
         }
       });
@@ -160,28 +227,67 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
-        accuReward1D: Number(reward.accuReward1D),
-        apr: Number(reward.apr),
+        accuReward1D: reward.accuReward1D ? Number(reward.accuReward1D) : null,
+        apr: reward.apr ? Number(reward.apr) : null,
       }))
       .forEach(rewardInfo => {
         const existReward =
           infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
-        const tokenPrice = Number(
-          tokenPrices[rewardInfo.token.priceID]?.usd ?? 0,
-        );
+        const tokenPrice = tokenPrices[rewardInfo.token.priceID]?.usd
+          ? Number(tokenPrices[rewardInfo.token.priceID]?.usd)
+          : null;
+
         if (existReward) {
+          const accuReward1D = (() => {
+            if (existReward.accuReward1D === null) {
+              if (rewardInfo.accuReward1D === null) {
+                return null;
+              }
+
+              return rewardInfo.accuReward1D;
+            }
+
+            if (rewardInfo.accuReward1D === null) {
+              return existReward.accuReward1D;
+            }
+
+            return existReward.accuReward1D + rewardInfo.accuReward1D;
+          })();
+
+          const accuReward1DPrice =
+            accuReward1D !== null && tokenPrice !== null
+              ? accuReward1D * tokenPrice
+              : null;
+
+          const apr = (() => {
+            if (existReward.apr === null) {
+              if (rewardInfo.apr === null) {
+                return null;
+              }
+
+              return Number(rewardInfo.apr);
+            }
+
+            if (rewardInfo.apr === null) {
+              return Number(existReward.apr);
+            }
+
+            return Number(existReward.apr) + Number(rewardInfo.apr);
+          })();
+
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
-            accuReward1D: existReward.accuReward1D + rewardInfo.accuReward1D,
-            apr: existReward.apr + rewardInfo.apr,
-            accuReward1DPrice:
-              existReward.accuReward1D * tokenPrice +
-              rewardInfo.accuReward1D * tokenPrice,
+            accuReward1D,
+            accuReward1DPrice,
+            apr: apr,
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...rewardInfo,
-            accuReward1DPrice: rewardInfo.accuReward1D * tokenPrice,
+            accuReward1DPrice:
+              rewardInfo.accuReward1D !== null && tokenPrice !== null
+                ? Number(rewardInfo.accuReward1D) * tokenPrice
+                : null,
           };
         }
       });
@@ -204,30 +310,35 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [aprRewardInfo]);
 
   const dailyEarning = useMemo(() => {
-    const isEmpty = positions
-      .flatMap(item => item.reward)
-      .every(item => !item.accuReward1D);
-
-    if (!isDisplay || isEmpty) {
+    if (!isDisplay) {
       return "-";
     }
 
     const claimableUsdValue = claimableRewardInfo
       ? Object.values(claimableRewardInfo)
           .flatMap(item => item)
-          .reduce((accum, current) => {
-            return accum + Number(current.accumulatedRewardOf1dUsd);
-          }, 0)
-      : 0;
+          .reduce((accum: null | number, current) => {
+            if (
+              (accum === null || accum === undefined) &&
+              current.accumulatedRewardOf1dUsd === null
+            ) {
+              return null;
+            }
 
-    return `${toPriceFormatNotRounding(claimableUsdValue, {
-      usd: true,
-      minLimit: 0.01,
-      lestThan1Decimals: 2,
-      fixedLessThan1: true,
-      fixedGreaterThan1: true,
-    })}`;
-  }, [positions, isDisplay, claimableRewardInfo]);
+            if (accum === null || accum === undefined) {
+              return current.accumulatedRewardOf1dUsd;
+            }
+
+            if (current.accumulatedRewardOf1dUsd === null) {
+              return accum;
+            }
+
+            return accum + current.accumulatedRewardOf1dUsd;
+          }, null as number | null)
+      : null;
+
+    return formatOtherPrice(claimableUsdValue, { isKMB: false });
+  }, [isDisplay, claimableRewardInfo]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
     if (!isDisplay) {
@@ -239,50 +350,117 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
-        balance:
-          makeDisplayTokenAmount(reward.rewardToken, reward.totalAmount) || 0,
-        balanceUSD:
-          makeDisplayTokenAmount(
-            reward.rewardToken,
-            Number(reward.totalAmount) *
-              Number(tokenPrices[reward.rewardToken.priceID]?.usd || 0),
-          ) || 0,
-        claimableAmount:
-          makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) ||
-          0,
-        claimableUSD: Number(reward.claimableUsd),
-        accumulatedRewardOf1d:
-          makeDisplayTokenAmount(
-            reward.rewardToken,
-            reward.accuReward1D || 0,
-          ) || 0,
-        claimableUsdValue: Number(reward.claimableUsd),
+        claimableAmount: reward.claimableAmount
+          ? makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount)
+          : null,
+        claimableUSD: reward.claimableUsd ? Number(reward.claimableUsd) : null,
+        accumulatedRewardOf1d: reward.accuReward1D
+          ? makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D)
+          : null,
       }))
       .forEach(rewardInfo => {
-        if (rewardInfo.claimableAmount > 0) {
+        if (rewardInfo.claimableAmount) {
           const existReward = infoMap[rewardInfo.token.priceID];
+          const tokenPrice = tokenPrices[rewardInfo.token.priceID]?.usd
+            ? Number(tokenPrices[rewardInfo.token.priceID]?.usd)
+            : null;
+
           if (existReward) {
+            const accumulatedRewardOf1d = (() => {
+              if (
+                existReward.accumulatedRewardOf1d === null &&
+                rewardInfo.accumulatedRewardOf1d === null
+              ) {
+                return null;
+              }
+
+              if (existReward.accumulatedRewardOf1d === null) {
+                return rewardInfo.accumulatedRewardOf1d;
+              }
+
+              if (rewardInfo.accumulatedRewardOf1d === null) {
+                return existReward.accumulatedRewardOf1d;
+              }
+
+              return (
+                existReward.accumulatedRewardOf1d +
+                rewardInfo.accumulatedRewardOf1d
+              );
+            })();
+            const accumulatedRewardOf1dUsd =
+              accumulatedRewardOf1d !== null && tokenPrice !== null
+                ? accumulatedRewardOf1d * tokenPrice
+                : null;
+
             infoMap[rewardInfo.token.priceID] = {
               ...existReward,
-              balance: existReward.balance + rewardInfo.balance,
-              balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
-              claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
-              accumulatedRewardOf1d:
-                existReward.accumulatedRewardOf1d +
-                rewardInfo.accumulatedRewardOf1d,
-              claimableUsdValue:
-                existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-              accumulatedRewardOf1dUsd:
-                existReward.accumulatedRewardOf1dUsd +
-                rewardInfo.accumulatedRewardOf1d *
-                  Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
+              claimableAmount: (() => {
+                if (
+                  existReward.claimableAmount === null &&
+                  rewardInfo.claimableAmount === null
+                ) {
+                  return null;
+                }
+
+                if (existReward.claimableAmount === null) {
+                  return rewardInfo.claimableAmount;
+                }
+
+                if (rewardInfo.claimableAmount === null) {
+                  return existReward.claimableAmount;
+                }
+
+                return existReward.claimableAmount + rewardInfo.claimableAmount;
+              })(),
+              claimableUSD: (() => {
+                if (
+                  existReward.claimableUSD === null &&
+                  rewardInfo.claimableUSD === null
+                ) {
+                  return null;
+                }
+
+                if (existReward.claimableUSD === null) {
+                  return rewardInfo.claimableUSD;
+                }
+
+                if (rewardInfo.claimableUSD === null) {
+                  return existReward.claimableUSD;
+                }
+
+                return existReward.claimableUSD + rewardInfo.claimableUSD;
+              })(),
+              accumulatedRewardOf1d: (() => {
+                if (
+                  existReward.accumulatedRewardOf1d === null &&
+                  rewardInfo.accumulatedRewardOf1d === null
+                ) {
+                  return null;
+                }
+
+                if (existReward.accumulatedRewardOf1d === null) {
+                  return rewardInfo.accumulatedRewardOf1d;
+                }
+
+                if (rewardInfo.accumulatedRewardOf1d === null) {
+                  return existReward.accumulatedRewardOf1d;
+                }
+
+                return (
+                  existReward.accumulatedRewardOf1d +
+                  rewardInfo.accumulatedRewardOf1d
+                );
+              })(),
+
+              accumulatedRewardOf1dUsd: accumulatedRewardOf1dUsd,
             };
           } else {
             infoMap[rewardInfo.token.priceID] = {
               ...rewardInfo,
               accumulatedRewardOf1dUsd:
-                rewardInfo.accumulatedRewardOf1d *
-                Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
+                rewardInfo.accumulatedRewardOf1d !== null && tokenPrice !== null
+                  ? rewardInfo.accumulatedRewardOf1d * Number(tokenPrice)
+                  : null,
             };
           }
         }
@@ -312,39 +490,65 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return "-";
     }
 
-    const claimableUsdValue = positions.reduce(
-      (positionAcc, positionCurrent) => {
-        const currentPositionDailyReward = positionCurrent.reward.reduce(
-          (rewardAcc, rewardCurrent) => {
-            return rewardAcc + Number(rewardCurrent.claimableUsd);
-          },
-          0,
-        );
+    const claimableUsdValue = claimableRewardInfo
+      ? Object.values(claimableRewardInfo)
+          .flatMap(item => item)
+          .reduce((accum: null | number, current) => {
+            if (
+              (accum === null || accum === undefined) &&
+              current.claimableUSD === null
+            ) {
+              return null;
+            }
 
-        return positionAcc + currentPositionDailyReward;
-      },
-      0,
-    );
+            if (accum === null || accum === undefined) {
+              return current.claimableUSD;
+            }
 
-    return toPriceFormatNotRounding(claimableUsdValue, {
-      usd: true,
-      isKMBFormat: false,
-      fixedLessThan1: true,
-      lestThan1Decimals: 2,
-      fixedGreaterThan1: true,
-      minLimit: 0.01,
-    });
-  }, [isDisplay, positions]);
+            if (current.claimableUSD === null) {
+              return accum;
+            }
 
-  const claimable = useMemo(() => {
+            return accum + current.claimableUSD;
+          }, null as number | null)
+      : null;
+
+    // const claimableUsdValue = positions.reduce(
+    //   (positionAcc, positionCurrent) => {
+    //     const currentPositionDailyReward = positionCurrent.reward.reduce(
+    //       (rewardAcc, rewardCurrent) => {
+
+    //         return rewardAcc + Number(rewardCurrent.claimableUsd);
+    //       },
+    //       null,
+    //     );
+
+    //     return positionAcc + currentPositionDailyReward;
+    //   },
+    //   0,
+    // );
+
+    return formatOtherPrice(claimableUsdValue, { isKMB: false });
+  }, [claimableRewardInfo, isDisplay, positions]);
+
+  const canClaimAll = useMemo(() => {
     if (!isDisplay || unclaimedRewardInfo === null) {
       return false;
     }
-    return (
-      unclaimedRewardInfo.reduce((accum, current) => {
-        return accum + current.claimableAmount;
-      }, 0) > 0
-    );
+    return unclaimedRewardInfo.reduce((accum: number | null, current) => {
+      if ((accum === null || accum === undefined) && current === null) {
+        return null;
+      }
+
+      if (accum === null || accum === undefined) {
+        return current.claimableAmount;
+      }
+      if (current.claimableAmount === null) {
+        return current.claimableAmount;
+      }
+
+      return accum + current.claimableAmount;
+    }, null as null);
   }, [isDisplay, unclaimedRewardInfo]);
 
   const tokenABalance = useMemo(() => {
@@ -387,55 +591,47 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return `(${depositStr})`;
   }, [depositRatio]);
 
-  const isWrapText = useMemo(() => {
-    return (
-      positionData?.tokenA?.symbol.length === 4 ||
-      positionData?.tokenB?.symbol.length === 4
-    );
-  }, [positionData?.tokenB?.symbol, positionData?.tokenA?.symbol]);
-
   const feeDaily = useMemo(() => {
     const swapFee = aprRewardInfo?.SWAP_FEE;
-    const sumUSD =
-      swapFee?.reduce(
-        (accum, current) => accum + current.accuReward1DPrice,
-        0,
-      ) || 0;
-    if (sumUSD > 0 && sumUSD <= 0.01) return "<$0.01";
+    const sumUsd = swapFee?.reduce((accum: number | null, current) => {
+      if (accum === null || accum === undefined) {
+        if (current.accuReward1DPrice === null) return null;
 
-    const isEmpty = sumUSD === 0;
+        return current.accuReward1DPrice;
+      }
 
-    if (!isDisplay || isEmpty) return "-";
+      if (current.accuReward1DPrice === null) {
+        return accum;
+      }
 
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      lestThan1Decimals: 2,
-      fixedLessThan1: true,
-      fixedGreaterThan1: true,
-      minLimit: 0.01,
-    });
+      return accum + current.accuReward1DPrice;
+    }, null);
+
+    if (!isDisplay) return "-";
+
+    return formatOtherPrice(sumUsd, { isKMB: false });
   }, [aprRewardInfo?.SWAP_FEE, isDisplay]);
 
   const feeClaim = useMemo(() => {
     const swapFeeReward = claimableRewardInfo?.SWAP_FEE;
 
-    const sumUSD =
-      swapFeeReward?.reduce(
-        (accum, current) => accum + current.claimableUsdValue,
-        0,
-      ) || 0;
+    const sumUsd = swapFeeReward?.reduce((accum: number | null, current) => {
+      if (accum === null || accum === undefined) {
+        if (current.claimableUSD === null) return null;
 
-    const isEmpty = sumUSD === 0;
+        return current.claimableUSD;
+      }
 
-    if (!isDisplay || isEmpty) return "-";
+      if (current.claimableUSD === null) {
+        return accum;
+      }
 
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      lestThan1Decimals: 2,
-      fixedLessThan1: true,
-      fixedGreaterThan1: true,
-      minLimit: 0.01,
-    });
+      return accum + current.claimableUSD;
+    }, null);
+
+    if (!isDisplay) return "-";
+
+    return formatOtherPrice(sumUsd, { isKMB: false });
   }, [claimableRewardInfo?.SWAP_FEE, isDisplay]);
 
   const logoDaily = useMemo(() => {
@@ -481,23 +677,27 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ...(aprRewardInfo?.EXTERNAL ?? []),
     ];
 
-    const sumUSD =
-      rewards?.reduce(
-        (accum, current) => accum + current.accuReward1DPrice,
-        0,
-      ) || 0;
+    const sumUSD = rewards?.reduce((accum: number | null, current) => {
+      if (
+        (accum === null || accum === undefined) &&
+        current.accuReward1DPrice === null
+      )
+        return null;
 
-    const isEmpty = sumUSD === 0;
+      if (accum === null) {
+        return current.accuReward1DPrice;
+      }
 
-    if (!isDisplay || isEmpty) return "-";
+      if (current.accuReward1DPrice === null) {
+        return accum;
+      }
 
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      lestThan1Decimals: 2,
-      fixedLessThan1: true,
-      fixedGreaterThan1: true,
-      minLimit: 0.01,
-    });
+      return accum + current.accuReward1DPrice;
+    }, null);
+
+    if (!isDisplay) return "-";
+
+    return formatOtherPrice(sumUSD, { isKMB: false });
   }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL, isDisplay]);
 
   const rewardClaim = useMemo(() => {
@@ -506,23 +706,25 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ...(claimableRewardInfo?.INTERNAL ?? []),
     ];
 
-    const sumUSD =
-      rewards?.reduce(
-        (accum, current) => accum + current.claimableUsdValue,
-        0,
-      ) || 0;
+    const sumUSD = rewards?.reduce((accum: number | null, current) => {
+      if (accum === null && current.claimableUSD === null) return null;
+
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
 
     const isEmpty = sumUSD === 0;
 
     if (!isDisplay || isEmpty) return "-";
 
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      lestThan1Decimals: 2,
-      fixedLessThan1: true,
-      fixedGreaterThan1: true,
-      minLimit: 0.01,
-    });
+    return formatOtherPrice(sumUSD, { isKMB: false });
   }, [claimableRewardInfo?.EXTERNAL, claimableRewardInfo?.INTERNAL, isDisplay]);
 
   return (
@@ -548,7 +750,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           <div className="sub-content">
             <Tooltip
               placement="top"
-              isShouldShowed={tokenABalance >= 1e3}
               className="sub-content-detail"
               FloatingContent={
                 <TokenAmountTooltipContentWrapper>
@@ -558,10 +759,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     width={20}
                     className="image-logo"
                   />
-                  {formatTokenExchangeRate(tokenABalance, {
-                    minLimit: 1 / Math.pow(10, positionData.tokenA?.decimals),
-                    maxSignificantDigits: positionData?.tokenA?.decimals,
-                    isIgnoreKMBFormat: true,
+                  {formatPoolPairAmount(tokenABalance, {
+                    isKMB: false,
                   })}{" "}
                   <span>{positionData?.tokenA?.symbol}</span>{" "}
                 </TokenAmountTooltipContentWrapper>
@@ -574,24 +773,29 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <AmountDisplayWrapper $canHover={tokenABalance >= 1e3}>
-                {formatTokenExchangeRate(`${tokenABalance}`, {
-                  minLimit: 1 / Math.pow(10, positionData.tokenA?.decimals),
-                  maxSignificantDigits: positionData?.tokenA?.decimals,
-                  fixedDecimalDigits: positionData?.tokenA?.decimals,
-                })}{" "}
-                <span
-                  className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}
-                >
-                  {positionData?.tokenA?.symbol}
-                </span>{" "}
-                <span className="token-percent">{depositRatioStrOfTokenA}</span>
+                {isDisplay ? (
+                  <>
+                    {formatPoolPairAmount(tokenABalance, {
+                      isKMB: false,
+                      decimals: 2,
+                    })}{" "}
+                    <span className={"token-symbol wrap-text"}>
+                      {positionData?.tokenA?.symbol}
+                    </span>{" "}
+                    <span className="token-percent">
+                      {depositRatioStrOfTokenA}
+                    </span>
+                  </>
+                ) : (
+                  "-"
+                )}
               </AmountDisplayWrapper>
             </Tooltip>
             <div className="divider"></div>
             <Tooltip
               placement="top"
-              isShouldShowed={tokenBBalance >= 1e3}
               className="sub-content-detail"
+              isShouldShowed={isDisplay}
               FloatingContent={
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo
@@ -600,10 +804,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     width={20}
                     className="image-logo"
                   />
-                  {formatTokenExchangeRate(tokenBBalance, {
-                    minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
-                    maxSignificantDigits: positionData?.tokenB?.decimals,
-                    isIgnoreKMBFormat: true,
+                  {formatPoolPairAmount(tokenBBalance, {
+                    isKMB: false,
                   })}{" "}
                   <span>{positionData?.tokenB?.symbol}</span>{" "}
                 </TokenAmountTooltipContentWrapper>
@@ -616,17 +818,22 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <AmountDisplayWrapper $canHover={tokenBBalance >= 1e3}>
-                {formatTokenExchangeRate(`${tokenBBalance}`, {
-                  minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
-                  maxSignificantDigits: positionData?.tokenB?.decimals,
-                  fixedDecimalDigits: positionData?.tokenB?.decimals,
-                })}{" "}
-                <span
-                  className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}
-                >
-                  {positionData?.tokenB?.symbol}
-                </span>{" "}
-                <span className="token-percent">{depositRatioStrOfTokenB}</span>
+                {isDisplay ? (
+                  <>
+                    {formatPoolPairAmount(tokenBBalance, {
+                      isKMB: false,
+                      decimals: 2,
+                    })}{" "}
+                    <span className={"token-symbol  wrap-text"}>
+                      {positionData?.tokenB?.symbol}
+                    </span>{" "}
+                    <span className="token-percent">
+                      {depositRatioStrOfTokenB}
+                    </span>
+                  </>
+                ) : (
+                  "-"
+                )}
               </AmountDisplayWrapper>
             </Tooltip>
           </div>
@@ -723,10 +930,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 </SkeletonEarnDetailWrapper>
               )}
             </div>
-            {claimable && !isOtherPosition && (
+            {canClaimAll && !isOtherPosition && (
               <Button
                 className="button-claim"
-                disabled={!claimable}
+                disabled={!canClaimAll}
                 text={loadingTransactionClaim ? "" : "Claim All"}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
@@ -780,10 +987,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   />
                 </SkeletonEarnDetailWrapper>
               )}
-              {claimable && !isOtherPosition && (
+              {canClaimAll && !isOtherPosition && (
                 <Button
                   className="button-claim"
-                  disabled={!claimable}
+                  disabled={!canClaimAll}
                   text={loadingTransactionClaim ? "" : "Claim All"}
                   style={{
                     hierarchy: ButtonHierarchy.Primary,

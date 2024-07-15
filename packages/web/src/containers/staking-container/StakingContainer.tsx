@@ -11,8 +11,8 @@ import { useGetPoolDetailByPath } from "@query/pools";
 import { StakingPeriodType } from "@constants/option.constant";
 import useUrlParam from "@hooks/common/use-url-param";
 import { addressValidationCheck } from "@utils/validation-utils";
-import BigNumber from "bignumber.js";
 import { encryptId } from "@utils/common";
+import { formatRate } from "@utils/new-number-utils";
 
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
@@ -89,8 +89,7 @@ const StakingContainer: React.FC = () => {
   }, [isSwitchNetwork, connectedWallet, stakedPositions]);
 
   const totalApr = useMemo(() => {
-    const apr = BigNumber(pool?.stakingApr || 0).toFormat(0);
-    return `${apr}%`;
+    return formatRate(pool?.stakingApr, { decimals: 0 });
   }, [pool?.stakingApr]);
 
   const handleClickStakeRedirect = useCallback(() => {

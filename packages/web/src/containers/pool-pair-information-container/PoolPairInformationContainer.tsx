@@ -65,7 +65,7 @@ export const initialPool: PoolDetailModel = {
   volumeChange24h: 0,
   feeApr: "",
   stakingApr: "",
-  allTimeVolumeUsd: 0,
+  allTimeVolumeUsd: "",
   priceRatio: {
     "7d": [],
     "30d": [],

@@ -78,8 +78,12 @@ const SwapCard: React.FC<SwapCardProps> = ({
   const theme = useTheme();
 
   const shouldShowPriceImpactWarning = useMemo(
-    () => !isSameToken && !isLoading && priceImpactStatus === "HIGH",
-    [isLoading, priceImpactStatus, isSameToken],
+    () =>
+      !isSameToken &&
+      !isLoading &&
+      priceImpactStatus === "HIGH" &&
+      swapRouteInfos.length > 0,
+    [isSameToken, isLoading, priceImpactStatus, swapRouteInfos.length],
   );
 
   return (

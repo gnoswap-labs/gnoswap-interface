@@ -6,11 +6,10 @@ import {
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useRemoveData } from "@hooks/stake/use-remove-data";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import BigNumber from "bignumber.js";
-import { removeTrailingZeros } from "@utils/number-utils";
 import { Divider } from "@components/common/divider/divider";
 import Switch from "@components/common/switch/Switch";
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 interface RemoveLiquiditySelectResultProps {
   positions: PoolPositionModel[];
@@ -51,9 +50,9 @@ const RemoveLiquiditySelectResult: React.FC<
               />
               <p>Pooled {pooledTokenInfo.token.symbol}</p>
               <strong>
-                {removeTrailingZeros(
-                  BigNumber(pooledTokenInfo.amount).toFormat(6),
-                )}
+                {formatPoolPairAmount(pooledTokenInfo.amount, {
+                  decimals: pooledTokenInfo.token.decimals,
+                })}
               </strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>
@@ -70,11 +69,9 @@ const RemoveLiquiditySelectResult: React.FC<
               />
               <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
               <strong>
-                {removeTrailingZeros(
-                  BigNumber(pooledTokenInfo.amount).toFormat(
-                    pooledTokenInfo.token.decimals,
-                  ),
-                )}
+                {formatPoolPairAmount(pooledTokenInfo.amount, {
+                  decimals: pooledTokenInfo.token.decimals,
+                })}
               </strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>

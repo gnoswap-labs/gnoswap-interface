@@ -14,7 +14,7 @@ import {
   swapDirectionToGuaranteedType,
 } from "@models/swap/swap-summary-info";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { numberToUSD, toNumberFormat } from "@utils/number-utils";
+import { toNumberFormat } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
@@ -24,6 +24,7 @@ import { convertSwapRate } from "../swap-card-content-detail/SwapCardContentDeta
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { useTheme } from "@emotion/react";
 import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -63,7 +64,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   }, [swapSummaryInfo]);
 
   const swapRateUSDStr = useMemo(() => {
-    const swapRateStr = numberToUSD(swapSummaryInfo.swapRateUSD);
+    const swapRateStr = formatOtherPrice(swapSummaryInfo.swapRateUSD, {
+      isKMB: false,
+    });
     return `(${swapRateStr})`;
   }, [swapSummaryInfo.swapRateUSD]);
 

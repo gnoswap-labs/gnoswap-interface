@@ -2,11 +2,13 @@
 import React, { useMemo } from "react";
 import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
-import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { convertToKMB } from "@utils/stake-position-utils";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+} from "@utils/new-number-utils";
 
 export interface MyPositionRewardContentProps {
   rewardInfo: { [key in RewardType]: PositionRewardInfo[] };
@@ -24,7 +26,7 @@ export const MyPositionRewardContent: React.FC<
     return rewardInfo.SWAP_FEE;
   }, [rewardInfo.SWAP_FEE]);
 
-  const stakingRewards = useMemo(() => {
+  const internalRewards = useMemo(() => {
     if (rewardInfo.INTERNAL.length === 0) {
       return null;
     }
@@ -39,41 +41,73 @@ export const MyPositionRewardContent: React.FC<
   }, [rewardInfo.EXTERNAL]);
 
   const swapFeeRewardUSD = useMemo(() => {
-    const sumUSD =
-      swapFeeRewards?.reduce(
-        (accum, current) => accum + current.claimableUSD,
-        0,
-      ) || 0;
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      minLimit: 0.01,
-      lestThan1Decimals: 2,
-    });
+    const isEmpty = !swapFeeRewards || swapFeeRewards?.length === 0;
+
+    if (isEmpty) return "-";
+
+    const sumUSD = swapFeeRewards?.reduce((accum: null | number, current) => {
+      if (accum === null && current.claimableUSD === null) {
+        return null;
+      }
+
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
+    return formatOtherPrice(sumUSD);
   }, [swapFeeRewards]);
 
-  const stakingRewardUSD = useMemo(() => {
-    const sumUSD = rewardInfo.INTERNAL.reduce(
-      (accum, current) => accum + current.claimableUSD,
-      0,
-    );
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      minLimit: 0.01,
-      lestThan1Decimals: 2,
-    });
-  }, [rewardInfo.INTERNAL]);
+  const internalRewardUSD = useMemo(() => {
+    const isEmpty = !internalRewards;
+
+    if (isEmpty) return "-";
+
+    const sumUSD = internalRewards.reduce((accum: null | number, current) => {
+      if (accum === null && current.claimableUSD === null) {
+        return null;
+      }
+
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
+    return formatOtherPrice(sumUSD);
+  }, [internalRewards]);
 
   const externalRewardUSD = useMemo(() => {
-    const sumUSD = rewardInfo.EXTERNAL.reduce(
-      (accum, current) => accum + current.claimableUSD,
-      0,
-    );
-    return toPriceFormatNotRounding(sumUSD, {
-      usd: true,
-      minLimit: 0.01,
-      lestThan1Decimals: 2,
-    });
-  }, [rewardInfo.EXTERNAL]);
+    const isEmpty = !externalRewards;
+
+    if (isEmpty) return "-";
+
+    const sumUSD = externalRewards.reduce((accum: null | number, current) => {
+      if (accum === null && current.claimableUSD === null) {
+        return null;
+      }
+
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
+    return formatOtherPrice(sumUSD);
+  }, [externalRewards]);
 
   return (
     <RewardsContent>
@@ -98,20 +132,22 @@ export const MyPositionRewardContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(reward.claimableAmount.toString())}
+                {formatPoolPairAmount(reward.claimableAmount.toString(), {
+                  decimals: reward.token.decimals,
+                })}
               </span>
             </div>
           ))}
         </React.Fragment>
       )}
-      {stakingRewards && <div className="divider" />}
-      {stakingRewards && (
+      {internalRewards && <div className="divider" />}
+      {internalRewards && (
         <React.Fragment>
           <div className="list">
             <span className="title">Internal Rewards</span>
-            <span className="title">{stakingRewardUSD}</span>
+            <span className="title">{internalRewardUSD}</span>
           </div>
-          {stakingRewards.map((reward, index) => (
+          {internalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
                 <MissingLogo
@@ -126,7 +162,9 @@ export const MyPositionRewardContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(reward.claimableAmount.toString())}
+                {formatPoolPairAmount(reward.claimableAmount.toString(), {
+                  decimals: reward.token.decimals,
+                })}
               </span>
             </div>
           ))}
@@ -154,7 +192,9 @@ export const MyPositionRewardContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(reward.claimableAmount.toString())}
+                {formatPoolPairAmount(reward.claimableAmount.toString(), {
+                  decimals: reward.token.decimals,
+                })}
               </span>
             </div>
           ))}

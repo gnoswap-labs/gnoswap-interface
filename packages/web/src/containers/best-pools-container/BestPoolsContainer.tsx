@@ -14,7 +14,7 @@ import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
-import { toPriceFormatRounding } from "@utils/number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
@@ -96,11 +96,7 @@ const BestPoolsContainer: React.FC = () => {
         poolPath: temp?.poolPath || "",
         id: temp?.id || "",
         feeRate: `FEE_${item.fee || "100"}` as SwapFeeTierType,
-        tvl: item.tvlUsd
-          ? `${toPriceFormatRounding(item.tvlUsd, {
-              usd: true,
-            })}`
-          : "-",
+        tvl: formatOtherPrice(item.tvlUsd),
         apr: item.apr,
       };
     });

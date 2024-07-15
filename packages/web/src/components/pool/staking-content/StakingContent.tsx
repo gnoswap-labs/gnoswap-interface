@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import StakingContentCard, {
   SummuryApr,
 } from "@components/pool/staking-content-card/StakingContentCard";
@@ -13,6 +13,9 @@ import { STAKING_PERIOS, StakingPeriodType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import IncentivizeTokenDetailTooltipContainer from "@containers/incentivize-token-detail-container/IncentivizeTokenDetailTooltipContainer";
+import IncentivizeTokenDetailTooltipContent from "../incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
 
 interface StakingContentProps {
   totalApr: string;
@@ -43,6 +46,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   pool,
 }) => {
   const { getGnotPath } = useGnotToGnot();
+  const [showAprTooltip, setShowAprTooltip] = useState(false);
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
     const rewardLogo =
@@ -62,6 +66,26 @@ const StakingContent: React.FC<StakingContentProps> = ({
       return acc;
     }, []) as TokenModel[];
   }, [pool?.rewardTokens, getGnotPath]);
+
+  useEffect(() => {
+    const fn = () => {
+      const top = document
+        .getElementById("staking-container")
+        ?.getBoundingClientRect().top;
+
+      if (top && top <= 500) {
+        setShowAprTooltip(true);
+      } else {
+        setShowAprTooltip(false);
+      }
+    };
+
+    window.addEventListener("scroll", fn);
+
+    return () => {
+      window.removeEventListener("scroll", fn);
+    };
+  }, []);
 
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
@@ -120,13 +144,33 @@ const StakingContent: React.FC<StakingContentProps> = ({
           </span>
         )}
         {!loading && (
-          <div className="header-wrap">
-            <span className="to-mobile">to</span>
-            <span className="apr">{totalApr} APR </span>
-            <div className="coin-info">
-              <OverlapTokenLogo tokens={rewardTokenLogos} />
+          <>
+            <div className="header-wrap">
+              <span className="to-mobile">to</span>
+              <Tooltip
+                FloatingContent={<div>View APR</div>}
+                placement="top"
+                forcedOpen={showAprTooltip}
+                className={"float-view-apr"}
+              >
+                <Tooltip
+                  FloatingContent={
+                    <IncentivizeTokenDetailTooltipContainer
+                      poolPath={pool?.poolPath}
+                      Comp={IncentivizeTokenDetailTooltipContent}
+                    />
+                  }
+                  placement="top"
+                  className="apr"
+                >
+                  {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
+                </Tooltip>
+              </Tooltip>
+              <div className="coin-info">
+                <OverlapTokenLogo tokens={rewardTokenLogos} />
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
       <div className="staking-wrap">
@@ -137,7 +181,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               <SummuryApr
                 loading={loading}
                 key={index}
-                stakingApr={pool?.stakingApr || "0"}
+                stakingApr={pool?.stakingApr}
                 period={period}
                 positions={stakingPositionMap[period]}
                 checkPoints={checkPoints}
@@ -146,7 +190,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             ) : (
               <StakingContentCard
                 key={index}
-                stakingApr={pool?.stakingApr || "0"}
+                stakingApr={pool?.stakingApr}
                 period={period}
                 positions={stakingPositionMap[period]}
                 breakpoint={breakpoint}

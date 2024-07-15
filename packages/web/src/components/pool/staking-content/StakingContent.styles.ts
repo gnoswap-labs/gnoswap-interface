@@ -92,6 +92,11 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       }
     }
     .apr {
+      &:hover {
+        .float-view-apr {
+          visibility: hidden;
+        }
+      }
       ${fonts.h5}
       ${media.tablet} {
         ${fonts.body7}
@@ -197,4 +202,8 @@ export const CustomButtonStaking = styled.div`
   ${media.mobile} {
     display: none;
   }
+`;
+
+export const AprViewRewardTooltipWrapper = styled.div`
+  ${fonts.body12}
 `;

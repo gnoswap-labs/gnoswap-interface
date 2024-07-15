@@ -1,13 +1,11 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import BigNumber from "bignumber.js";
 import { SwapValue } from "@states/swap";
-import { roundDownDecimalNumber } from "@utils/regex";
 import { useTranslation } from "next-i18next";
 
 interface HomeSwapProps {
@@ -79,7 +77,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
       setFromAmount(formatValue);
       changeTokenAAmount(formatValue);
     }
-  }, [swapTokenInfo.tokenABalance, connected, setFromAmount]);
+  }, [connected, swapTokenInfo.tokenABalance, changeTokenAAmount]);
 
   const handleAutoFillTokenB = useCallback(() => {
     if (connected) {
@@ -91,36 +89,10 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
     }
   }, [swapTokenInfo.tokenBBalance, connected, setToAmount, changeTokenBAmount]);
 
-  const balanceADisplay = useMemo(() => {
-    if (connected && swapTokenInfo.tokenABalance !== "-") {
-      if (swapTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(
-        swapTokenInfo.tokenABalance
-          .replace(/,/g, "")
-          .match(roundDownDecimalNumber(2))
-          ?.toString() ?? 0,
-      ).toFormat(2);
-    }
-    return "-";
-  }, [connected, swapTokenInfo.tokenABalance]);
-
-  const balanceBDisplay = useMemo(() => {
-    if (connected && swapTokenInfo.tokenBBalance !== "-") {
-      if (swapTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(
-        swapTokenInfo.tokenBBalance
-          .replace(/,/g, "")
-          .match(roundDownDecimalNumber(2))
-          ?.toString() ?? 0,
-      ).toFormat(2);
-    }
-    return "-";
-  }, [connected, swapTokenInfo.tokenBBalance]);
-
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
       <div className="header">
-        <span className="title">{t("Main:swap")}</span>
+        <span className="title">{t("common:action.swap")}</span>
       </div>
       <div className="inputs">
         <div className="from">
@@ -147,7 +119,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenA}
             >
-              {`${t("Main:bal")}: ${balanceADisplay}`}
+              {`${t("Main:bal")}: ${swapTokenInfo.tokenABalance}`}
             </span>
           </div>
         </div>
@@ -175,7 +147,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenB}
             >
-              {t("Main:bal")}: {balanceBDisplay}
+              {t("Main:bal")}: {swapTokenInfo.tokenBBalance}
             </span>
           </div>
         </div>

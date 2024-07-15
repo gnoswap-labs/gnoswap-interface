@@ -1,15 +1,17 @@
 import React from "react";
 import { TooltipContent } from "./MyPositionCard.styles";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
-import { prettyNumberFloatInteger } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 export interface BalanceTooltipContentProps {
   balances: PositionBalanceInfo[];
 }
 
-export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({ balances }) => {
+export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({
+  balances,
+}) => {
   const { getGnotPath } = useGnotToGnot();
 
   return (
@@ -25,11 +27,11 @@ export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({ ba
               width={20}
               mobileWidth={20}
             />
-            <span className="position">
-              {balance.token.symbol}
-            </span>
+            <span className="position">{balance.token.symbol}</span>
           </div>
-          <span className="position">{prettyNumberFloatInteger(balance.balance || 0)} ({balance.percent})</span>
+          <span className="position">
+            {formatPoolPairAmount(balance.balance)} ({balance.percent})
+          </span>
         </div>
       ))}
     </TooltipContent>

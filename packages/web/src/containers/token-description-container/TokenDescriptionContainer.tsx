@@ -78,7 +78,7 @@ const TokenDescriptionContainer: React.FC = () => {
         },
       }));
     }
-  }, [router.query, tokenB, getTokenUrl]);
+  }, [router.query, tokenB]);
 
   return (
     <TokenDescription

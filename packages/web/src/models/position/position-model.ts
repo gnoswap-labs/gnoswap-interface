@@ -19,15 +19,15 @@ export interface PositionModel {
 
   liquidity: bigint;
 
-  tokenABalance: number;
+  tokenABalance: string;
 
-  tokenBBalance: number;
+  tokenBBalance: string;
 
   positionUsdValue: string;
 
-  unclaimedFeeAAmount: number;
+  unclaimedFeeAAmount: string;
 
-  unclaimedFeeBAmount: number;
+  unclaimedFeeBAmount: string;
 
   apr: string;
 
@@ -51,4 +51,3 @@ export interface PositionModel {
 
   stakedUsdValue: string;
 }
-

@@ -37,7 +37,7 @@ export default function Pool() {
   const { data } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
     onError: (err: any) => {
-      if (err["response"]["status"] === 404) {
+      if (err?.["response"]?.["status"] === 404) {
         router.push("/404");
       }
     },

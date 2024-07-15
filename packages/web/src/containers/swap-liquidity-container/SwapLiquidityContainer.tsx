@@ -8,7 +8,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { toPriceFormatRounding } from "@utils/number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface LiquidityInfo {
   feeTier: string;
@@ -107,17 +107,8 @@ const SwapLiquidityContainer: React.FC = () => {
         count++;
         return {
           ..._,
-          volume: toPriceFormatRounding(Number(poolItem.volume24h), {
-            usd: true,
-            minLimit: 0.01,
-            lestThan1Decimals: 2,
-          }),
-          liquidity: toPriceFormatRounding(poolItem.tvl, {
-            usd: true,
-            lestThan1Decimals: 2,
-            greaterThan1Decimals: 2,
-            minLimit: 0.01,
-          }),
+          volume: formatOtherPrice(poolItem.volume24h),
+          liquidity: formatOtherPrice(poolItem.tvl),
           apr: (poolItem?.apr ?? "").toString(),
           active: true,
           id: poolItem.id,

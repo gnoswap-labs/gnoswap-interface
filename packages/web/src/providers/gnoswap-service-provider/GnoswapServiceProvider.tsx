@@ -161,16 +161,20 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       return;
     }
 
-    const currentChainId = SUPPORT_CHAIN_IDS.includes(walletAccount?.chainId || "")
+    const currentChainId = SUPPORT_CHAIN_IDS.includes(
+      walletAccount?.chainId || "",
+    )
       ? walletAccount?.chainId
       : DEFAULT_CHAIN_ID;
     const network =
       NetworkData.find(info => info.chainId === currentChainId) ||
       NetworkData[0];
 
-    setNetworkClient(new AxiosClient(network.apiUrl, () => {
-      router.push("/500");
-    }));
+    setNetworkClient(
+      new AxiosClient(network.apiUrl, () => {
+        router.push("/500");
+      }),
+    );
     setRouterAPIClient(new AxiosClient(network.routerUrl));
     setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
   }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);

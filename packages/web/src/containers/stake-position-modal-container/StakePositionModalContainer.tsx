@@ -35,7 +35,7 @@ const StakePositionModalContainer = ({
   const { tokenPrices } = useTokenData();
   const poolPath = router.query["pool-path"] as string;
   const { data: pool } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath
+    enabled: !!poolPath,
   });
 
   const onCloseConfirmTransactionModal = useCallback(() => {
@@ -48,10 +48,11 @@ const StakePositionModalContainer = ({
     }
   }, [clearModal, router]);
 
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
-    confirmCallback: onCloseConfirmTransactionModal,
-  });
-
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
+    {
+      confirmCallback: onCloseConfirmTransactionModal,
+    },
+  );
 
   const pooledTokenInfos = useMemo(() => {
     if (positions.length === 0) {
@@ -60,11 +61,11 @@ const StakePositionModalContainer = ({
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
     const pooledTokenAAmount = positions.reduce(
-      (accum, position) => accum + position.tokenABalance,
+      (accum, position) => accum + Number(position.tokenABalance),
       0,
     );
     const pooledTokenBAmount = positions.reduce(
-      (accum, position) => accum + position.tokenBBalance,
+      (accum, position) => accum + Number(position.tokenBBalance),
       0,
     );
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
@@ -130,7 +131,6 @@ const StakePositionModalContainer = ({
           );
         }, 1000);
         openTransactionConfirmModal();
-
       } else if (
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status
       ) {

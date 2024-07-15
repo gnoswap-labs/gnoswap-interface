@@ -21,20 +21,25 @@ export async function getServerSideProps({ locale }: { locale: string }) {
         "HeaderFooter",
         "Main",
         "common",
+        "business",
       ])),
     },
   };
 }
 
 export default function Home() {
-  const { i18n } = useTranslation(["HeaderFooter", "common", "Main"], {
-    bindI18n: "languageChanged loaded",
-  });
+  const { i18n } = useTranslation(
+    ["HeaderFooter", "common", "Main", "business"],
+    {
+      bindI18n: "languageChanged loaded",
+    },
+  );
   useEffect(() => {
     i18n.reloadResources(i18n.resolvedLanguage, [
       "HeaderFooter",
       "common",
       "Main",
+      "business",
     ]);
   }, []);
 

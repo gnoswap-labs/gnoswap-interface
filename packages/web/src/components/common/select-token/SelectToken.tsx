@@ -78,6 +78,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       ) {
         return "-";
       }
+
       return BigNumber(tokenPrice).toFormat();
     },
     [tokenPrices, isSwitchNetwork],

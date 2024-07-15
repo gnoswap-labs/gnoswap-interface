@@ -1,10 +1,10 @@
 import React, { useCallback, useState, useMemo } from "react";
 import TvlChart from "@components/dashboard/tvl-chart/TvlChart";
 import { CHART_TYPE } from "@constants/option.constant";
-import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { getLocalizeTime } from "@utils/chart";
 import { useGetDashboardTVL } from "@query/dashboard";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface TvlPriceInfo {
   amount: string;
@@ -154,8 +154,7 @@ const TvlChartContainer: React.FC = () => {
     setTvlChartType(tvlChartType);
   }, []);
   const chartData = useMemo(() => {
-    if (!tvlData?.all)
-      return [];
+    if (!tvlData?.all) return [];
     let currentChartData = tvlData?.last7d;
 
     switch (tvlChartType) {
@@ -174,21 +173,18 @@ const TvlChartContainer: React.FC = () => {
         break;
     }
 
-    return currentChartData?.reduce(
-      (pre: any, next: any) => {
-        return [
-          ...pre,
-          {
-            amount: {
-              value: next.tvlUsd || 0,
-              denom: "USD",
-            },
-            time: getLocalizeTime(next.date),
+    return currentChartData?.reduce((pre: any, next: any) => {
+      return [
+        ...pre,
+        {
+          amount: {
+            value: next.tvlUsd || 0,
+            denom: "USD",
           },
-        ];
-      },
-      [] as TvlChartData,
-    );
+          time: getLocalizeTime(next.date),
+        },
+      ];
+    }, [] as TvlChartData);
   }, [tvlChartType, tvlData]);
 
   return (
@@ -196,15 +192,10 @@ const TvlChartContainer: React.FC = () => {
       tvlChartType={tvlChartType}
       changeTvlChartType={changeTvlChartType}
       tvlPriceInfo={{
-        amount: tvlData?.latest
-          ? `${toPriceFormat(tvlData?.latest, {
-            isKMBFormat: false,
-            usd: true,
-            lestThan1Decimals: 1,
-            greaterThan1Decimals: 1,
-            forcedGreaterThan1Decimals: false,
-          })}`
-          : "-",
+        amount: formatOtherPrice(tvlData?.latest, {
+          isKMB: false,
+          decimals: 1,
+        }),
       }}
       tvlChartDatas={chartData}
       loading={isLoading || isLoadingCommon}
