@@ -149,7 +149,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     if (!isDisplay || !position.positionUsdValue) {
       return "-";
     }
-    return formatOtherPrice(position.positionUsdValue);
+    return formatOtherPrice(position.positionUsdValue, { isKMB: false });
   }, [isDisplay, position.positionUsdValue]);
 
   const balances = useMemo((): {
@@ -330,7 +330,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       return acc + Number(current.claimableUsd);
     }, null);
 
-    return formatOtherPrice(usdValue);
+    return formatOtherPrice(usdValue, { isKMB: false });
   }, [isDisplay, position.reward]);
 
   const totalDailyEarning = useMemo(() => {
@@ -358,7 +358,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         return acc + current.accumulatedRewardOf1dUsd;
       }, null);
 
-    return formatOtherPrice(totalDailyEarningValue);
+    return formatOtherPrice(totalDailyEarningValue, { isKMB: false });
   }, [isDisplay, position.reward.length, totalRewardInfo]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =

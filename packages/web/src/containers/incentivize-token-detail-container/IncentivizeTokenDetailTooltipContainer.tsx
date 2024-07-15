@@ -19,7 +19,6 @@ function IncentivizeTokenDetailTooltipContainer({
   }>;
   poolPath?: string;
 }) {
-  console.log("🚀 ~ poolPath:", poolPath);
   const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(
     poolPath || "",
     {

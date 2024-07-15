@@ -3,7 +3,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import React from "react";
 import { wrapper } from "./SelectUnstakeResult.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import BigNumber from "bignumber.js";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 interface SelectUnstakeResultProps {
   positions: PoolPositionModel[];
@@ -30,8 +30,8 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
               />
               <p>Pooled {pooledTokenInfo.token.symbol}</p>
               <strong>
-                {pooledTokenInfo.amount.toLocaleString("en", {
-                  minimumFractionDigits: 6,
+                {formatPoolPairAmount(pooledTokenInfo.amount, {
+                  decimals: pooledTokenInfo.token.decimals,
                 })}
               </strong>
             </div>
@@ -49,11 +49,9 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
               />
               <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
               <strong>
-                {BigNumber(pooledTokenInfo.amount).isZero()
-                  ? "0"
-                  : pooledTokenInfo.amount.toLocaleString("en", {
-                      minimumFractionDigits: pooledTokenInfo.token.decimals,
-                    })}
+                {formatPoolPairAmount(pooledTokenInfo.amount, {
+                  decimals: pooledTokenInfo.token.decimals,
+                })}
               </strong>
             </div>
             <span className="dollar-value">{pooledTokenInfo.amountUSD}</span>

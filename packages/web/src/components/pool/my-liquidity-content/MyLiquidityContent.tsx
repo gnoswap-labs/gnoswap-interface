@@ -90,7 +90,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return current + Number(next.usdValue);
     }, 0);
 
-    return formatOtherPrice(balance);
+    return formatOtherPrice(balance, { isKMB: false });
   }, [isDisplay, positions]);
 
   const claimableRewardInfo = useMemo(():
@@ -337,7 +337,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           }, null as number | null)
       : null;
 
-    return formatOtherPrice(claimableUsdValue);
+    return formatOtherPrice(claimableUsdValue, { isKMB: false });
   }, [isDisplay, claimableRewardInfo]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
@@ -528,7 +528,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     //   0,
     // );
 
-    return formatOtherPrice(claimableUsdValue);
+    return formatOtherPrice(claimableUsdValue, { isKMB: false });
   }, [claimableRewardInfo, isDisplay, positions]);
 
   const canClaimAll = useMemo(() => {
@@ -609,7 +609,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     if (!isDisplay) return "-";
 
-    return formatOtherPrice(sumUsd);
+    return formatOtherPrice(sumUsd, { isKMB: false });
   }, [aprRewardInfo?.SWAP_FEE, isDisplay]);
 
   const feeClaim = useMemo(() => {
@@ -631,7 +631,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     if (!isDisplay) return "-";
 
-    return formatOtherPrice(sumUsd);
+    return formatOtherPrice(sumUsd, { isKMB: false });
   }, [claimableRewardInfo?.SWAP_FEE, isDisplay]);
 
   const logoDaily = useMemo(() => {
@@ -697,7 +697,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     if (!isDisplay) return "-";
 
-    return formatOtherPrice(sumUSD);
+    return formatOtherPrice(sumUSD, { isKMB: false });
   }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL, isDisplay]);
 
   const rewardClaim = useMemo(() => {
@@ -724,7 +724,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     if (!isDisplay || isEmpty) return "-";
 
-    return formatOtherPrice(sumUSD);
+    return formatOtherPrice(sumUSD, { isKMB: false });
   }, [claimableRewardInfo?.EXTERNAL, claimableRewardInfo?.INTERNAL, isDisplay]);
 
   return (

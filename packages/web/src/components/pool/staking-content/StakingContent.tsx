@@ -144,25 +144,33 @@ const StakingContent: React.FC<StakingContentProps> = ({
           </span>
         )}
         {!loading && (
-          <div className="header-wrap">
-            <span className="to-mobile">to</span>
-            <Tooltip
-              FloatingContent={
-                <IncentivizeTokenDetailTooltipContainer
-                  poolPath={pool?.poolPath}
-                  Comp={IncentivizeTokenDetailTooltipContent}
-                />
-              }
-              placement="top"
-              className="apr"
-              forcedOpen={showAprTooltip}
-            >
-              {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
-            </Tooltip>
-            <div className="coin-info">
-              <OverlapTokenLogo tokens={rewardTokenLogos} />
+          <>
+            <div className="header-wrap">
+              <span className="to-mobile">to</span>
+              <Tooltip
+                FloatingContent={<div>View APR</div>}
+                placement="top"
+                forcedOpen={showAprTooltip}
+                className={"float-view-apr"}
+              >
+                <Tooltip
+                  FloatingContent={
+                    <IncentivizeTokenDetailTooltipContainer
+                      poolPath={pool?.poolPath}
+                      Comp={IncentivizeTokenDetailTooltipContent}
+                    />
+                  }
+                  placement="top"
+                  className="apr"
+                >
+                  {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
+                </Tooltip>
+              </Tooltip>
+              <div className="coin-info">
+                <OverlapTokenLogo tokens={rewardTokenLogos} />
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
       <div className="staking-wrap">

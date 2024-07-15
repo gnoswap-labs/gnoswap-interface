@@ -92,6 +92,11 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       }
     }
     .apr {
+      &:hover {
+        .float-view-apr {
+          visibility: hidden;
+        }
+      }
       ${fonts.h5}
       ${media.tablet} {
         ${fonts.body7}

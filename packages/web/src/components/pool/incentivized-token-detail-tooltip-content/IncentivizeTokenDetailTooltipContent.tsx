@@ -22,6 +22,7 @@ function IncentivizeTokenDetailTooltipContent({
   latestBlockHeight,
 }: Props) {
   const getStartBlockHeight = (item: PoolStakingModel) => {
+    console.log("🚀 ~ getStartBlockHeight ~ item:", item);
     const now = new Date();
     const tmrDate = new Date();
     tmrDate.setDate(now.getDate() + 1);
@@ -36,7 +37,7 @@ function IncentivizeTokenDetailTooltipContent({
 
     return {
       start: Math.floor(Number(latestBlockHeight) + secondUntilTmr / 2),
-      end: start + TIER_MAP[item?.tier],
+      end: start + TIER_MAP[item?.tier] || 0,
     };
   };
 
@@ -70,7 +71,7 @@ function IncentivizeTokenDetailTooltipContent({
               <S.DataGridItem>
                 <S.ItemDataGridLabel>End Date</S.ItemDataGridLabel>
                 <S.ItemDataGridValue>
-                  {getDateUtcToLocal(new Date(item.endTimestamp)).value}
+                  {getDateUtcToLocal(new Date(item.endTimestamp)).value}{" "}
                   <S.ItemDataGridValueBlock>
                     {"("}Block #{getStartBlockHeight(item).end}
                     {")"}

@@ -20,43 +20,74 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
     const pooledTokenAAmount = positions.reduce(
-      (accum, position) => accum + Number(position.tokenABalance),
-      0,
+      (accum: number | null, position) => {
+        if (accum === null && !position.tokenABalance) return null;
+
+        if (accum === null) {
+          return Number(position.tokenABalance);
+        }
+
+        if (!position.tokenABalance) {
+          return accum;
+        }
+
+        return accum + Number(position.tokenABalance);
+      },
+      null,
     );
     const pooledTokenBAmount = positions.reduce(
-      (accum, position) => accum + Number(position.tokenBBalance),
-      0,
-    );
-    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
-    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
-    const tokenAAmount = Number(pooledTokenAAmount) || 0;
-    const tokenBAmount = Number(pooledTokenBAmount) || 0;
+      (accum: number | null, position) => {
+        if (accum === null && !position.tokenBBalance) return null;
 
-    const priceAEmpty =
-      !tokenAPrice || positions.every(item => !item.tokenABalance);
-    const priceBEmpty =
-      !tokenBPrice || positions.every(item => !item.tokenBBalance);
+        if (accum === null) {
+          return Number(position.tokenBBalance);
+        }
+
+        if (!position.tokenBBalance) {
+          return accum;
+        }
+
+        return accum + Number(position.tokenBBalance);
+      },
+      null,
+    );
+    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd
+      ? Number(tokenPrices[tokenA.priceID]?.usd)
+      : null;
+    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd
+      ? Number(tokenPrices[tokenB.priceID]?.usd)
+      : null;
+    // const tokenAAmount = pooledTokenAAmount;
+    // const tokenBAmount = Number(pooledTokenBAmount) || 0;
 
     return [
       {
         token: tokenA,
-        amount: tokenAAmount,
-        amountUSD: priceAEmpty
-          ? formatOtherPrice(tokenAAmount * Number(tokenAPrice), {
-              isKMB: false,
-            })
-          : "-",
-        rawAmountUsd: tokenAAmount * Number(tokenAPrice),
+        amount: pooledTokenAAmount,
+        amountUSD:
+          pooledTokenAAmount !== null && tokenAPrice !== null
+            ? formatOtherPrice(pooledTokenAAmount * tokenAPrice, {
+                isKMB: false,
+              })
+            : "-",
+        rawAmountUsd:
+          pooledTokenAAmount !== null && tokenAPrice != null
+            ? pooledTokenAAmount * tokenAPrice
+            : null,
       },
       {
         token: tokenB,
-        amount: tokenBAmount,
-        amountUSD: priceBEmpty
-          ? formatOtherPrice(tokenBAmount * Number(tokenBPrice), {
-              isKMB: false,
-            })
-          : "-",
-        rawAmountUsd: tokenBAmount * Number(tokenBPrice),
+        amount: pooledTokenBAmount,
+        amountUSD:
+          pooledTokenBAmount !== null && tokenBPrice !== null
+            ? formatOtherPrice(pooledTokenBAmount * tokenBPrice, {
+                isKMB: false,
+              })
+            : "-",
+        rawAmountUsd:
+          pooledTokenBAmount !== null && tokenBPrice != null
+            ? pooledTokenBAmount * tokenBPrice
+            : null,
       },
     ];
   }, [positions, tokenPrices]);
@@ -89,8 +120,12 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
                   ...currentToken,
                   ...checkGnotToken,
                 },
-                amount: Number(current.claimableAmount),
-                rawAmountUsd: Number(current.claimableUsd),
+                amount: current.claimableAmount
+                  ? Number(current.claimableAmount)
+                  : null,
+                rawAmountUsd: current.claimableUsd
+                  ? Number(current.claimableUsd)
+                  : null,
                 amountUSD: formatOtherPrice(current.claimableUsd, {
                   isKMB: false,
                 }),
@@ -98,25 +133,60 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
             ];
           }
 
+          const amount = (() => {
+            if (acc[existedData].amount === null || !current.claimableAmount) {
+              return null;
+            }
+
+            if (acc[existedData].amount === null) {
+              return Number(current.claimableAmount);
+            }
+
+            if (!current.claimableAmount) {
+              return acc[existedData].amount;
+            }
+
+            return (
+              acc[existedData].amount || 0 + Number(current.claimableAmount)
+            );
+          })();
+
+          const rawAmountUsd = (() => {
+            if (
+              acc[existedData].rawAmountUsd === null ||
+              !current.claimableUsd
+            ) {
+              return null;
+            }
+
+            if (acc[existedData].rawAmountUsd === null) {
+              return Number(current.claimableUsd);
+            }
+
+            if (!current.claimableAmount) {
+              return acc[existedData].rawAmountUsd;
+            }
+
+            return (
+              acc[existedData].rawAmountUsd || 0 + Number(current.claimableUsd)
+            );
+          })();
+
+          const amountUSD = formatOtherPrice(rawAmountUsd, { isKMB: false });
+
           acc[existedData] = {
             ...acc[existedData],
-            amount: acc[existedData].amount + Number(current.claimableAmount),
-            rawAmountUsd:
-              acc[existedData].rawAmountUsd + Number(current.claimableUsd),
-            amountUSD: formatOtherPrice(
-              acc[existedData].rawAmountUsd + Number(current.claimableUsd),
-              {
-                isKMB: false,
-              },
-            ),
+            amount,
+            rawAmountUsd,
+            amountUSD,
           };
 
           return acc;
         },
         [] as {
           token: TokenModel;
-          amount: number;
-          rawAmountUsd: number;
+          amount: number | null;
+          rawAmountUsd: number | null;
           amountUSD: string;
         }[],
       );
@@ -126,10 +196,55 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     if (positions.length === 0) {
       return "-";
     }
-    const totalUSDValue =
-      pooledTokenInfos.reduce((acc, current) => acc + current.rawAmountUsd, 0) +
-      unclaimedRewards.reduce((acc, current) => acc + current.rawAmountUsd, 0);
-    return formatOtherPrice(totalUSDValue);
+    const poolUsd = pooledTokenInfos.reduce((acc: null | number, current) => {
+      if (acc === null && current.rawAmountUsd === null) {
+        return null;
+      }
+
+      if (acc === null) {
+        return current.rawAmountUsd;
+      }
+
+      if (current.rawAmountUsd === null) {
+        return acc;
+      }
+
+      return acc + current.rawAmountUsd;
+    }, null);
+
+    const claimUsd = unclaimedRewards.reduce((acc: null | number, current) => {
+      if (acc === null && current.rawAmountUsd === null) {
+        return null;
+      }
+
+      if (acc === null) {
+        return current.rawAmountUsd;
+      }
+
+      if (current.rawAmountUsd === null) {
+        return acc;
+      }
+
+      return acc + current.rawAmountUsd;
+    }, null);
+
+    const total = (() => {
+      if (poolUsd === null && claimUsd === null) {
+        return null;
+      }
+
+      if (poolUsd === null) {
+        return claimUsd;
+      }
+
+      if (claimUsd === null) {
+        return poolUsd;
+      }
+
+      return poolUsd + claimUsd;
+    })();
+
+    return formatOtherPrice(total);
   }, [pooledTokenInfos, positions.length, unclaimedRewards]);
 
   return {
