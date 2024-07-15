@@ -225,7 +225,7 @@ export const useSwapHandler = () => {
     if (
       !Number(tokenAAmount) ||
       !tokenA ||
-      !tokenPrices[checkGnotPath(tokenA.priceID)]
+      !tokenPrices[checkGnotPath(tokenA.priceID)].usd
     ) {
       return null;
     }
@@ -238,7 +238,7 @@ export const useSwapHandler = () => {
     if (
       !Number(tokenBAmount) ||
       !tokenB ||
-      !tokenPrices[checkGnotPath(tokenB.priceID)]
+      !tokenPrices[checkGnotPath(tokenB.priceID)].usd
     ) {
       return null;
     }
@@ -401,6 +401,11 @@ export const useSwapHandler = () => {
   }, [swapButtonState]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
+    console.log(
+      "🚀 ~ constswapTokenInfo:SwapTokenInfo=useMemo ~ tokenBUSD:",
+      tokenBUSD,
+    );
+
     return {
       tokenA,
       tokenAAmount,
