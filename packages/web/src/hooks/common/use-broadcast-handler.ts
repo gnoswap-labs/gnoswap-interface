@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js";
-import { SCANNER_URL } from "@common/values";
 import { INoticeContent } from "@components/common/notice/NoticeToast";
 import { CommonState } from "@states/index";
 import { makeRandomId } from "@utils/common";
@@ -37,6 +36,12 @@ import {
   SUCCESS_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE,
   SUCCESS_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE,
   mapMessageByTemplate,
+  PEDING_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
 } from "@utils/template";
 
 /**
@@ -71,16 +76,12 @@ import {
  * - Withdraw: Failed to Send n GNOT
  */
 
-function makeScannerURL(hash: string) {
-  return `${SCANNER_URL}/transactions/details?txhash=${hash}`;
-}
-
 export function makeBroadcastClaimMessage(
   type: TNoticeType,
   data: {
     amount: string;
   },
-  hash?: string,
+  txHash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
@@ -104,7 +105,7 @@ export function makeBroadcastClaimMessage(
   return {
     title: "Claim",
     description: description(),
-    scannerUrl: hash ? makeScannerURL(hash) : "",
+    txHash: txHash || "",
   };
 }
 
@@ -116,7 +117,7 @@ export function makeBroadcastSwapMessage(
     tokenAAmount: string;
     tokenBAmount: string;
   },
-  hash?: string,
+  txHash?: string,
 ): INoticeContent {
   function description() {
     const tokenA = BigNumber(data.tokenAAmount).toFormat();
@@ -148,7 +149,7 @@ export function makeBroadcastSwapMessage(
   return {
     title: "Swap",
     description: description(),
-    scannerUrl: hash ? makeScannerURL(hash) : "",
+    txHash: txHash || "",
   };
 }
 
@@ -160,7 +161,7 @@ export function makeBroadcastStakingMessage(
     tokenAAmount: string;
     tokenBAmount: string;
   },
-  hash?: string,
+  txHash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
@@ -184,7 +185,7 @@ export function makeBroadcastStakingMessage(
   return {
     title: "Stake",
     description: description(),
-    scannerUrl: hash ? makeScannerURL(hash) : "",
+    txHash: txHash || "",
   };
 }
 
@@ -196,7 +197,7 @@ export function makeBroadcastUnStakingMessage(
     tokenAAmount: string;
     tokenBAmount: string;
   },
-  hash?: string,
+  txHash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
@@ -220,7 +221,7 @@ export function makeBroadcastUnStakingMessage(
   return {
     title: "Unstake",
     description: description(),
-    scannerUrl: hash ? makeScannerURL(hash) : "",
+    txHash: txHash || "",
   };
 }
 
@@ -232,7 +233,7 @@ export function makeBroadcastRemoveMessage(
     tokenAAmount: string;
     tokenBAmount: string;
   },
-  hash?: string,
+  txHash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
@@ -256,7 +257,7 @@ export function makeBroadcastRemoveMessage(
   return {
     title: "Remove",
     description: description(),
-    scannerUrl: hash ? makeScannerURL(hash) : "",
+    txHash: txHash || "",
   };
 }
 
@@ -265,8 +266,8 @@ export function makeBroadcastIncentivizeMessage(
   data: {
     tokenAmount?: string;
     tokenSymbol?: string;
-    hash?: any;
   },
+  txHash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
@@ -290,7 +291,7 @@ export function makeBroadcastIncentivizeMessage(
   return {
     title: "Incentivize",
     description: description(),
-    scannerUrl: data?.hash ? makeScannerURL(data?.hash) : "",
+    txHash: txHash || "",
   };
 }
 
@@ -300,7 +301,7 @@ export function makeBroadcastWithdrawMessage(
     tokenSymbol: string;
     tokenAmount: string;
   },
-  hash?: string,
+  txHash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
@@ -324,7 +325,7 @@ export function makeBroadcastWithdrawMessage(
   return {
     title: "Withdraw",
     description: description(),
-    scannerUrl: hash ? makeScannerURL(hash) : "",
+    txHash: txHash || "",
   };
 }
 
@@ -336,7 +337,7 @@ export function makeBroadcastAddLiquidityMessage(
     tokenAAmount: string;
     tokenBAmount: string;
   },
-  hash?: string,
+  txHash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
@@ -360,7 +361,80 @@ export function makeBroadcastAddLiquidityMessage(
   return {
     title: "Add Liquidity",
     description: description(),
-    scannerUrl: hash ? makeScannerURL(hash) : "",
+    txHash: txHash || "",
+  };
+}
+
+export function makeBroadcastWrapTokenMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  txHash?: string,
+): INoticeContent {
+
+  function description() {
+    switch (type) {
+      case "pending":
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+      case "success":
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+      case "error":
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+    }
+  }
+  return {
+    title: "Wrap",
+    description: description(),
+    txHash: txHash || "",
+  };
+}
+
+export function makeBroadcastUnwrapTokenMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  txHash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+      case "success":
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+      case "error":
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE,
+          data,
+        );
+    }
+  }
+  return {
+    title: "Unwrap",
+    description: description(),
+    txHash: txHash || "",
   };
 }
 
@@ -384,7 +458,7 @@ export const useBroadcastHandler = () => {
       setTransactionModalData({
         status: "loading",
         description: content?.description || null,
-        scannerURL: content?.scannerUrl || null,
+        txHash: content?.txHash || null,
       });
       openModal();
     },
@@ -396,7 +470,7 @@ export const useBroadcastHandler = () => {
       setTransactionModalData({
         status: "success",
         description: content?.description || null,
-        scannerURL: content?.scannerUrl || null,
+        txHash: content?.txHash || null,
         callback,
       });
       setNotice(content, makeNoticeConfig("success"));
@@ -416,7 +490,7 @@ export const useBroadcastHandler = () => {
       setTransactionModalData({
         status: "error",
         description: content?.description || null,
-        scannerURL: content?.scannerUrl || null,
+        txHash: content?.txHash || null,
         callback,
       });
       setNotice(content, makeNoticeConfig("error"));
@@ -433,7 +507,7 @@ export const useBroadcastHandler = () => {
       setTransactionModalData({
         status: "rejected",
         description: content?.description || null,
-        scannerURL: content?.scannerUrl || null,
+        txHash: content?.txHash || null,
         callback,
       });
       !isHiddenReject && setNotice(content, makeNoticeConfig("error"));

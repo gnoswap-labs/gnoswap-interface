@@ -7,8 +7,7 @@ import IconNewTab from "../icons/IconNewTab";
 import IconCopy from "../icons/IconCopy";
 import IconCheck from "../icons/IconCheck";
 import { TokenModel } from "@models/token/token-model";
-import { makeId } from "@utils/common";
-
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 interface Props {
   close: () => void;
@@ -19,6 +18,7 @@ interface Props {
 }
 
 const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm, checked, handleChecked, token }) => {
+  const { getTokenUrl } = useGnoscanUrl();
 
   const onClickClose = useCallback(() => {
     close();
@@ -41,8 +41,8 @@ const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm, checked, ha
             </div>
           </div>
           <div className="link">
-            <a className="url-wrapper" href="/" target="_blank">
-              <div>https://gnoscan.io/tokens/{makeId(token.path)}</div>
+            <a className="url-wrapper" href={getTokenUrl(token.path)} target="_blank">
+              <div>{getTokenUrl(token.path)}</div>
               <IconNewTab className="new-tab"/>
             </a>
             <div className="icon-wrapper" onClick={handleChecked}>{checked ? <IconCheck className="icon-copy"/> : <IconCopy className="icon-copy"/>}</div>

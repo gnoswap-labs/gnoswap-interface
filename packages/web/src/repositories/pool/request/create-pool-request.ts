@@ -10,7 +10,7 @@ export interface CreatePoolRequest {
   startPrice: string;
   minTick: number;
   maxTick: number;
-  slippage: string;
+  slippage: number;
   caller: string;
   withStaking?: boolean;
   createPoolFee: number; // fee is Raw Amount

@@ -73,6 +73,8 @@ interface TooltipProps {
   FloatingContent: React.ReactNode;
   width?: CSSProperties["width"];
   floatClassName?: string;
+  className?: string;
+  isShouldShowed?: boolean;
 }
 
 const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
@@ -81,6 +83,8 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   FloatingContent,
   width,
   floatClassName,
+  isShouldShowed = true,
+  className,
 }) => {
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
@@ -94,17 +98,17 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
     <>
       <BaseTooltipWrapper
         ref={childrenRef}
-        data-state={open ? "open" : "closed"}
+        data-state={open && isShouldShowed ? "open" : "closed"}
         style={{
           display: "flex",
           width: width && width,
         }}
-        className="base-tooltip-wrapper"
+        className={`base-tooltip-wrapper ${className}`}
       >
         {children}
       </BaseTooltipWrapper>
       <FloatingPortal>
-        {open && (
+        {open && isShouldShowed && (
           <div
             ref={floatingRef}
             style={{
@@ -116,15 +120,19 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
             }}
             className={floatClassName}
           >
-            {FloatingContent && <FloatingArrow
-              ref={arrowRef}
-              context={context}
-              fill={theme.color.background02}
-              width={20}
-              height={14}
-              tipRadius={4}
-            />}
-            {FloatingContent && <Content themeKey={themeKey}>{FloatingContent}</Content>}
+            {FloatingContent && (
+              <FloatingArrow
+                ref={arrowRef}
+                context={context}
+                fill={theme.color.background02}
+                width={20}
+                height={14}
+                tipRadius={4}
+              />
+            )}
+            {FloatingContent && (
+              <Content themeKey={themeKey}>{FloatingContent}</Content>
+            )}
           </div>
         )}
       </FloatingPortal>

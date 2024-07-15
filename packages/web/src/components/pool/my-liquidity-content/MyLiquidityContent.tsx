@@ -1,7 +1,11 @@
 import React, { useMemo } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { MyLiquidityContentWrapper } from "./MyLiquidityContent.styles";
+import {
+  AmountDisplayWrapper,
+  MyLiquidityContentWrapper,
+  TokenAmountTooltipContentWrapper,
+} from "./MyLiquidityContent.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -9,7 +13,7 @@ import { RewardType } from "@constants/option.constant";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -17,7 +21,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
 import { numberToFormat } from "@utils/string-utils";
-import { toPriceFormat, toUnitFormat } from "@utils/number-utils";
+import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { TokenModel } from "@models/token/token-model";
@@ -89,7 +93,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           makeDisplayTokenAmount(
             reward.rewardToken,
             Number(reward.totalAmount) *
-            Number(tokenPrices[reward.rewardToken.priceID]?.usd),
+              Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
         claimableAmount: Number(reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsd),
@@ -115,7 +119,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             accumulatedRewardOf1dUsd:
               existReward.accumulatedRewardOf1dUsd +
               rewardInfo.accumulatedRewardOf1d *
-              Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
+                Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
@@ -210,17 +214,19 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     const claimableUsdValue = claimableRewardInfo
       ? Object.values(claimableRewardInfo)
-        .flatMap(item => item)
-        .reduce((accum, current) => {
-          return accum + Number(current.accumulatedRewardOf1dUsd);
-        }, 0)
+          .flatMap(item => item)
+          .reduce((accum, current) => {
+            return accum + Number(current.accumulatedRewardOf1dUsd);
+          }, 0)
       : 0;
 
-    return toPriceFormat(claimableUsdValue, {
+    return `${toPriceFormatNotRounding(claimableUsdValue, {
       usd: true,
       minLimit: 0.01,
-      fixedLessThan1Decimal: 2,
-    });
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+    })}`;
   }, [positions, isDisplay, claimableRewardInfo]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
@@ -239,7 +245,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           makeDisplayTokenAmount(
             reward.rewardToken,
             Number(reward.totalAmount) *
-            Number(tokenPrices[reward.rewardToken.priceID]?.usd || 0),
+              Number(tokenPrices[reward.rewardToken.priceID]?.usd || 0),
           ) || 0,
         claimableAmount:
           makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) ||
@@ -269,7 +275,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               accumulatedRewardOf1dUsd:
                 existReward.accumulatedRewardOf1dUsd +
                 rewardInfo.accumulatedRewardOf1d *
-                Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
+                  Number(tokenPrices[rewardInfo.token.priceID]?.usd ?? 0),
             };
           } else {
             infoMap[rewardInfo.token.priceID] = {
@@ -319,11 +325,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       },
       0,
     );
-    return toPriceFormat(claimableUsdValue, {
+
+    return toPriceFormatNotRounding(claimableUsdValue, {
       usd: true,
-      forcedDecimals: true,
-      lestThan1Decimals: 2,
       isKMBFormat: false,
+      fixedLessThan1: true,
+      lestThan1Decimals: 2,
+      fixedGreaterThan1: true,
       minLimit: 0.01,
     });
   }, [isDisplay, positions]);
@@ -387,49 +395,67 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [positionData?.tokenB?.symbol, positionData?.tokenA?.symbol]);
 
   const feeDaily = useMemo(() => {
-    if (!isDisplay) return "-";
-
     const swapFee = aprRewardInfo?.SWAP_FEE;
     const sumUSD =
-      swapFee?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) ||
-      0;
+      swapFee?.reduce(
+        (accum, current) => accum + current.accuReward1DPrice,
+        0,
+      ) || 0;
     if (sumUSD > 0 && sumUSD <= 0.01) return "<$0.01";
 
-    return toPriceFormat(`${sumUSD}`, {
-      minLimit: 0.01,
-      isRounding: false,
-      lestThan1Decimals: 2,
-      greaterThan1Decimals: 2,
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
+
+    return toPriceFormatNotRounding(sumUSD, {
       usd: true,
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+      minLimit: 0.01,
     });
   }, [aprRewardInfo?.SWAP_FEE, isDisplay]);
 
   const feeClaim = useMemo(() => {
-    if (!isDisplay) return "-";
-
     const swapFeeReward = claimableRewardInfo?.SWAP_FEE;
+
     const sumUSD =
-      swapFeeReward?.reduce((accum, current) => accum + current.claimableUsdValue, 0) ||
-      0;
-    return toUnitFormat(`${sumUSD}`, true, true);
+      swapFeeReward?.reduce(
+        (accum, current) => accum + current.claimableUsdValue,
+        0,
+      ) || 0;
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
+
+    return toPriceFormatNotRounding(sumUSD, {
+      usd: true,
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+      minLimit: 0.01,
+    });
   }, [claimableRewardInfo?.SWAP_FEE, isDisplay]);
 
   const logoDaily = useMemo(() => {
     const swapFee = claimableRewardInfo?.SWAP_FEE;
-    return swapFee?.flatMap(item => item.token).reduce<TokenModel[]>(
-      (acc: TokenModel[], current) => {
-        const token = acc.find(item => item.path === current.path);
-        if (token) {
-          acc.push({ ...token, ...getGnotPath(token) });
-        }
-        return acc;
-      },
-      [],
-    ) ?? [];
+    return (
+      swapFee
+        ?.flatMap(item => item.token)
+        .reduce<TokenModel[]>((acc: TokenModel[], current) => {
+          const token = acc.find(item => item.path === current.path);
+          if (token) {
+            acc.push({ ...token, ...getGnotPath(token) });
+          }
+          return acc;
+        }, []) ?? []
+    );
   }, [claimableRewardInfo?.SWAP_FEE, getGnotPath]);
 
   const logoReward = useMemo(() => {
-    const internalRewardToken = claimableRewardInfo?.INTERNAL.map(item => item.token) ?? [];
+    const internalRewardToken =
+      claimableRewardInfo?.INTERNAL.map(item => item.token) ?? [];
     const rewardTokens = positionData?.rewardTokens || [];
     const tokenList = [...internalRewardToken, ...rewardTokens];
     const currentRewardTokens = tokenList.reduce<TokenModel[]>(
@@ -450,29 +476,53 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo?.INTERNAL, getGnotPath, positionData?.rewardTokens]);
 
   const rewardDaily = useMemo(() => {
-    if (!isDisplay) return "-";
-
     const rewards = [
       ...(aprRewardInfo?.INTERNAL ?? []),
       ...(aprRewardInfo?.EXTERNAL ?? []),
     ];
+
     const sumUSD =
-      rewards?.reduce((accum, current) => accum + current.accuReward1DPrice, 0) ||
-      0;
-    return toUnitFormat(`${sumUSD}`, true, true);
-  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL]);
+      rewards?.reduce(
+        (accum, current) => accum + current.accuReward1DPrice,
+        0,
+      ) || 0;
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
+
+    return toPriceFormatNotRounding(sumUSD, {
+      usd: true,
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+      minLimit: 0.01,
+    });
+  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL, isDisplay]);
 
   const rewardClaim = useMemo(() => {
-    if (!isDisplay) return "-";
-
     const rewards = [
       ...(claimableRewardInfo?.EXTERNAL ?? []),
       ...(claimableRewardInfo?.INTERNAL ?? []),
     ];
+
     const sumUSD =
-      rewards?.reduce((accum, current) => accum + current.claimableUsdValue, 0) ||
-      0;
-    return toUnitFormat(`${sumUSD}`, true, true);
+      rewards?.reduce(
+        (accum, current) => accum + current.claimableUsdValue,
+        0,
+      ) || 0;
+
+    const isEmpty = sumUSD === 0;
+
+    if (!isDisplay || isEmpty) return "-";
+
+    return toPriceFormatNotRounding(sumUSD, {
+      usd: true,
+      lestThan1Decimals: 2,
+      fixedLessThan1: true,
+      fixedGreaterThan1: true,
+      minLimit: 0.01,
+    });
   }, [claimableRewardInfo?.EXTERNAL, claimableRewardInfo?.INTERNAL, isDisplay]);
 
   return (
@@ -496,41 +546,89 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         )}
         {!loading && positions.length > 0 && (
           <div className="sub-content">
-            <div className="sub-content-detail">
+            <Tooltip
+              placement="top"
+              isShouldShowed={tokenABalance >= 1e3}
+              className="sub-content-detail"
+              FloatingContent={
+                <TokenAmountTooltipContentWrapper>
+                  <MissingLogo
+                    symbol={positionData?.tokenA?.symbol}
+                    url={positionData?.tokenA?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  {formatTokenExchangeRate(tokenABalance, {
+                    minLimit: 1 / Math.pow(10, positionData.tokenA?.decimals),
+                    maxSignificantDigits: positionData?.tokenA?.decimals,
+                    isIgnoreKMBFormat: true,
+                  })}{" "}
+                  <span>{positionData?.tokenA?.symbol}</span>{" "}
+                </TokenAmountTooltipContentWrapper>
+              }
+            >
               <MissingLogo
                 symbol={positionData?.tokenA?.symbol}
                 url={positionData?.tokenA?.logoURI}
                 width={20}
                 className="image-logo"
               />
-              <span>
-                {convertToKMB(`${tokenABalance}`)}{" "}
+              <AmountDisplayWrapper $canHover={tokenABalance >= 1e3}>
+                {formatTokenExchangeRate(`${tokenABalance}`, {
+                  minLimit: 1 / Math.pow(10, positionData.tokenA?.decimals),
+                  maxSignificantDigits: positionData?.tokenA?.decimals,
+                  fixedDecimalDigits: positionData?.tokenA?.decimals,
+                })}{" "}
                 <span
                   className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}
                 >
                   {positionData?.tokenA?.symbol}
                 </span>{" "}
                 <span className="token-percent">{depositRatioStrOfTokenA}</span>
-              </span>
-            </div>
+              </AmountDisplayWrapper>
+            </Tooltip>
             <div className="divider"></div>
-            <div className="sub-content-detail">
+            <Tooltip
+              placement="top"
+              isShouldShowed={tokenBBalance >= 1e3}
+              className="sub-content-detail"
+              FloatingContent={
+                <TokenAmountTooltipContentWrapper>
+                  <MissingLogo
+                    symbol={positionData?.tokenB?.symbol}
+                    url={positionData?.tokenB?.logoURI}
+                    width={20}
+                    className="image-logo"
+                  />
+                  {formatTokenExchangeRate(tokenBBalance, {
+                    minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
+                    maxSignificantDigits: positionData?.tokenB?.decimals,
+                    isIgnoreKMBFormat: true,
+                  })}{" "}
+                  <span>{positionData?.tokenB?.symbol}</span>{" "}
+                </TokenAmountTooltipContentWrapper>
+              }
+            >
               <MissingLogo
                 symbol={positionData?.tokenB?.symbol}
                 url={positionData?.tokenB?.logoURI}
                 width={20}
                 className="image-logo"
               />
-              <span>
-                {convertToKMB(`${tokenBBalance}`)}{" "}
+              <AmountDisplayWrapper $canHover={tokenBBalance >= 1e3}>
+                {formatTokenExchangeRate(`${tokenBBalance}`, {
+                  minLimit: 1 / Math.pow(10, positionData.tokenB?.decimals),
+                  maxSignificantDigits: positionData?.tokenB?.decimals,
+                  fixedDecimalDigits: positionData?.tokenB?.decimals,
+                })}{" "}
                 <span
                   className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}
                 >
                   {positionData?.tokenB?.symbol}
                 </span>{" "}
                 <span className="token-percent">{depositRatioStrOfTokenB}</span>
-              </span>
-            </div>
+              </AmountDisplayWrapper>
+            </Tooltip>
           </div>
         )}
       </section>
@@ -651,7 +749,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <h4>Total Claimable Rewards</h4>
             <div className="claim-wrap">
               {!loading &&
-                (isShowClaimableRewardInfo || isShowUnclaimableRewardInfo) ? (
+              (isShowClaimableRewardInfo || isShowUnclaimableRewardInfo) ? (
                 <Tooltip
                   placement="top"
                   FloatingContent={

@@ -23,7 +23,7 @@ export interface IncentivizedPoolCardListProps {
   showPagination: boolean;
   width: number;
   isLoading: boolean;
-  checkStakedPool: (poolPath: string | null) => boolean
+  checkStakedPool: (poolPath: string | null) => boolean;
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
@@ -59,56 +59,63 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   const renderPoolList = () => {
     const hasData = !isLoading && incentivizedPools.length > 0;
     const showLoading = !isPoolFetched || isLoading;
-    const showBlank = isPoolFetched &&
+    const showBlank =
+      isPoolFetched &&
       !isLoading &&
       incentivizedPools.length > 0 &&
       incentivizedPools.length < 4;
 
-    return <PoolListWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
-      {hasData &&
-        data.map((info, index) => (
-          <IncentivizedPoolCard
-            pool={info}
-            key={index}
-            routeItem={routeItem}
-            themeKey={themeKey}
-            checkStakedPool={checkStakedPool}
-          />
-        ))}
-      {showBlank &&
-        Array((width <= 1180 && width >= 920 ? 3 : 4) - incentivizedPools.length)
-          .fill(1)
-          .map((_, index) => <BlankIncentivizedCard key={index} />)}
-      {showLoading &&
-        Array.from({ length: 8 }).map((_, index) => (
-          <span
-            key={index}
-            className="card-skeleton"
-            css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
-          />
-        ))}
-    </PoolListWrapper>;
+    return (
+      <PoolListWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
+        {hasData &&
+          data.map((info, index) => (
+            <IncentivizedPoolCard
+              pool={info}
+              key={index}
+              routeItem={routeItem}
+              themeKey={themeKey}
+              checkStakedPool={checkStakedPool}
+            />
+          ))}
+        {showBlank &&
+          Array(
+            (width <= 1180 && width >= 920 ? 3 : 4) - incentivizedPools.length,
+          )
+            .fill(1)
+            .map((_, index) => <BlankIncentivizedCard key={index} />)}
+        {showLoading &&
+          Array.from({ length: 8 }).map((_, index) => (
+            <span
+              key={index}
+              className="card-skeleton"
+              css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
+            />
+          ))}
+      </PoolListWrapper>
+    );
   };
 
   const renderLoadMore = () => {
-    return <>
-      {!mobile &&
-        !isLoading &&
-        incentivizedPools.length > 8 &&
-        onClickLoadMore && (
-          <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
-        )}
-      {showPagination &&
-        isPoolFetched &&
-        incentivizedPools.length > 0 &&
-        !isLoading && (
-          <div className="box-indicator">
-            <span className="current-page">{currentIndex}</span>
-            <span>/</span>
-            <span>{incentivizedPools.length}</span>
-          </div>
-        )}
-    </>;
+    return (
+      <>
+        {!mobile &&
+          !isLoading &&
+          incentivizedPools.length > 8 &&
+          onClickLoadMore && (
+            <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
+          )}
+        {showPagination &&
+          isPoolFetched &&
+          incentivizedPools.length > 0 &&
+          !isLoading && (
+            <div className="box-indicator">
+              <span className="current-page">{currentIndex}</span>
+              <span>/</span>
+              <span>{incentivizedPools.length}</span>
+            </div>
+          )}
+      </>
+    );
   };
 
   return (

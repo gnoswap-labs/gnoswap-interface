@@ -8,12 +8,13 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { TransactionConfirmStatus } from "@states/common";
 import IconClose from "../icons/IconCancel";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 
 interface TransactionConfirmModalProps {
   status: TransactionConfirmStatus;
   description: string | null;
-  scannerURL: string | null;
+  txHash: string | null;
   confirm: () => void;
   close: () => void;
 }
@@ -21,7 +22,7 @@ interface TransactionConfirmModalProps {
 const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
   status,
   description,
-  scannerURL,
+  txHash,
   confirm,
   close,
 }) => {
@@ -36,7 +37,7 @@ const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
           </div>
         </div>
         {status === "loading" && <TransactionConfirmLoading description={description} />}
-        {status === "success" && <TransactionConfirmSubmitted confirm={confirm} scannerURL={scannerURL} close={close} />}
+        {status === "success" && <TransactionConfirmSubmitted confirm={confirm} txHash={txHash} close={close} />}
         {status === "error" && <TransactionConfirmFailed close={close} />}
         {status === "rejected" && <TransactionConfirmRejected close={close} />}
       </div>
@@ -68,22 +69,24 @@ const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({
 };
 
 interface TransactionConfirmSubmittedProps {
-  scannerURL: string | null;
+  txHash: string | null;
   confirm: () => void;
   close: () => void;
 }
 const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = ({
-  scannerURL,
+  txHash,
   confirm,
   close,
 }) => {
+  const {getTxUrl} = useGnoscanUrl();
+
   const moveScanner = useCallback(() => {
-    if (!scannerURL) {
+    if (!txHash) {
       close();
       return;
     }
-    window.open(scannerURL, "_blank");
-  }, [close, scannerURL]);
+    window.open(getTxUrl(txHash), "_blank");
+  }, [close,getTxUrl, txHash]);
 
   return (
     <React.Fragment>

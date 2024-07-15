@@ -10,11 +10,11 @@ import {
 } from "./SettingMenuModal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { isAmount } from "@common/utils/data-check-util";
-import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
+import { DEFAULT_SLIPPAGE, MAX_SLIPPAGE, MIN_SLIPPAGE } from "@constants/option.constant";
 
 interface SettingMenuModalProps {
-  slippage: string;
-  changeSlippage: (value: string) => void;
+  slippage: number;
+  changeSlippage: (value: number) => void;
   close: () => void;
   className?: string;
 }
@@ -25,30 +25,29 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   close,
   className,
 }) => {
-  const [previos, setPrevios] = useState(slippage);
+  const [tmpSlippage, setTmpSlippage] = useState<string>(slippage.toString());
   const settingMenuRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const resetButtonRef = useRef<HTMLButtonElement | null>(null);
   const wrapperInputRef = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLDivElement | null>(null);
   
-  const handleClose = useCallback(() => {
-    changeSlippage(previos);
+  const closeWithoutUpdate = useCallback(() => {
+    changeSlippage(slippage);
     close();
-  }, [close, changeSlippage, previos]);
-  useEscCloseModal(handleClose);
+  }, [close, changeSlippage, slippage]);
+  useEscCloseModal(closeWithoutUpdate);
 
-  const handleCloseExit = useCallback(() => {
+  const closeWithUpdate = useCallback(() => {
     if (inputRef && inputRef.current) {
-      if (Number(inputRef.current.value) > 30) {
-        changeSlippage("30");
+      if (Number(inputRef.current.value) > MAX_SLIPPAGE) {
+        changeSlippage(MAX_SLIPPAGE);
       } else {
-        changeSlippage(inputRef.current.value);
+        changeSlippage(Number(inputRef.current.value));
       }
     }
     close();
-  }, [close, changeSlippage, previos]);
-  useEscCloseModal(handleClose);
+  }, [close, changeSlippage]);
   
   const TooltipFloatingContent = (
     <ModalTooltipWrap>
@@ -66,61 +65,36 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
     const value = event.target.value;
     if (value !== "" && !isAmount(value)) return;
     if (/^\d{0,10}(\.\d{0,2})?$/.test(value)) {
-      changeSlippage(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
+      setTmpSlippage(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     }
-  }, [changeSlippage]);
+  }, [setTmpSlippage]);
 
   const onClickReset = useCallback(() => {
-    changeSlippage(DEFAULT_SLIPPAGE);
-  }, [changeSlippage]);
-  
-  const handleClickWrapper = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    if (buttonRef && buttonRef.current && buttonRef.current.contains(event.target as Node)) {
-        setPrevios(DEFAULT_SLIPPAGE);
-        changeSlippage(DEFAULT_SLIPPAGE);
-      return;
-    }
-    if (closeRef && closeRef.current && closeRef.current.contains(event.target as Node)) {
-      changeSlippage(previos);
-      return;
-    }
-    if (inputRef && inputRef.current && !inputRef.current.contains(event.target as Node)) {
-      const value = inputRef.current.value;
-      if (value === "") {
-        changeSlippage("0");
-        setPrevios("0");
-      } else if (Number(value) > 30) {
-        changeSlippage("30");
-        setPrevios("30");
-      } else {
-        setPrevios(Number(value).toString());
-        changeSlippage(Number(value).toString());
-      }
-    }
-  }, [changeSlippage, setPrevios, previos]);
+    setTmpSlippage(DEFAULT_SLIPPAGE.toString());
+  }, [setTmpSlippage]);
 
-  const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.keyCode === 13) {
+  const handleEnterKey = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
       const value = event.currentTarget.value;
       if (inputRef && inputRef.current) {
         inputRef.current.blur();
       }
       if (value === "") {
-        changeSlippage("0");
-        setPrevios("0");
-      } else if (Number(value) > 30) {
-        changeSlippage("30");
-        setPrevios("30");
+        changeSlippage(MIN_SLIPPAGE);
+        setTmpSlippage(MIN_SLIPPAGE.toString());
+      } else if (Number(value) > MAX_SLIPPAGE) {
+        changeSlippage(MAX_SLIPPAGE);
+        setTmpSlippage(MAX_SLIPPAGE.toString());
       } else {
-        setPrevios(Number(value).toString());
-        changeSlippage(Number(value).toString());
+        changeSlippage(Number(value));
       }
+      close();
     }
-  }, [changeSlippage, setPrevios]);
+  }, [changeSlippage, setTmpSlippage, close]);
   
   return (
     <>
-      <SettingMenuModalWrapper ref={settingMenuRef} className={className} onClick={handleClickWrapper}>
+      <SettingMenuModalWrapper ref={settingMenuRef} className={className} >
         <div className="modal-body">
           <div className="modal-header">
             <span>Settings</span>
@@ -146,16 +120,16 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
                 textColor: "text20",
                 hierarchy: ButtonHierarchy.Primary,
               }}
-              buttonRef={buttonRef}
+              buttonRef={resetButtonRef}
               onClick={onClickReset}
             />
             <div className="input-button" ref={wrapperInputRef}>
               <input
                 className="amount-text"
-                value={slippage}
+                value={tmpSlippage}
                 onChange={onChangeSlippage}
                 placeholder="0"
-                onKeyDown={handleKeyDown}
+                onKeyDown={handleEnterKey}
                 ref={inputRef}
               />
               <span>%</span>
@@ -163,7 +137,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
           </div>
         </div>
       </SettingMenuModalWrapper>
-      <Overlay onClick={handleCloseExit}/>
+      <Overlay onClick={closeWithUpdate}/>
     </>
   );
 };

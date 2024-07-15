@@ -13,8 +13,12 @@ import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapS
 import BackgroundContainer from "@containers/background-container/BackgroundContainer";
 import Notice from "@components/common/notice/NoticeToast";
 import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWrapper";
+import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
+import Custom500 from "./500";
+import { appWithTranslation, UserConfig } from "next-i18next";
+import nextI18NextConfig from "../../next-i18next.config.js";
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -38,7 +42,9 @@ export default function App({ Component, pageProps }: AppProps) {
               <BackgroundContainer>
                 <Notice>
                   <ScrollTopWrapper>
-                    <Component {...pageProps} />
+                    <ErrorBoundary fallback={<Custom500 />}>
+                      <Component {...pageProps} />
+                    </ErrorBoundary>
                   </ScrollTopWrapper>
                   <GnoswapModalProvider selector={"portal-root"}>
                     <ModalContainer />
@@ -52,3 +58,7 @@ export default function App({ Component, pageProps }: AppProps) {
     </QueryClientProvider>
   );
 }
+
+/// Cast to fix type error from next-i18next.
+/// Reference: https://github.com/i18next/next-i18next/issues/2049
+export default appWithTranslation(App, nextI18NextConfig as UserConfig);

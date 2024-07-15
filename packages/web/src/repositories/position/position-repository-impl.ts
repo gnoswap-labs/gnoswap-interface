@@ -45,6 +45,7 @@ import {
   PACKAGE_POOL_ADDRESS,
   PACKAGE_POSITION_ADDRESS,
   PACKAGE_STAKER_ADDRESS,
+  PACKAGE_STAKER_PATH,
   WRAPPED_GNOT_PATH,
 } from "@constants/environment.constant";
 import { MAX_INT64, MAX_UINT64 } from "@utils/math.utils";
@@ -58,6 +59,7 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 import { makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
 import { PositionBinModel } from "@models/position/position-bin-model";
 import { PositionBinMapper } from "@models/position/mapper/position-bin-mapper";
+import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient | null;
@@ -350,8 +352,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       lpTokenId,
       tokenAAmountRaw,
       tokenBAmountRaw,
-      "0",
-      "0",
+      request.slippage,
       caller,
       sendAmount,
     );
@@ -400,10 +401,23 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenId, tokenA, tokenB, decreaseRatio, caller } = request;
+    const {
+      lpTokenId,
+      tokenA,
+      tokenB,
+      tokenAAmount,
+      tokenBAmount,
+      slippage,
+      decreaseRatio,
+      caller,
+      existWrappedToken,
+    } = request;
 
     const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
     const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
+
+    const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
+    const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
     // Make Approve messages that can be managed by a Pool package of tokens.
     const approveMessages = [
@@ -433,7 +447,10 @@ export class PositionRepositoryImpl implements PositionRepository {
     const decreaseLiquidityMessage = makePositionDecreaseLiquidityMessage(
       lpTokenId,
       decreaseRatio,
-      true,
+      tokenAAmountRaw,
+      tokenBAmountRaw,
+      slippage,
+      existWrappedToken,
       caller,
     );
 
@@ -576,7 +593,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenIds, tokenPaths, caller } = request;
+    const { lpTokenIds, tokenPaths, caller, existWrappedToken } = request;
     const decreaseLiquidityRatio = 100;
 
     // Make Approve messages that can be managed by a Pool package of tokens.
@@ -604,7 +621,10 @@ export class PositionRepositoryImpl implements PositionRepository {
       makePositionDecreaseLiquidityMessage(
         lpTokenId,
         decreaseLiquidityRatio,
-        true,
+        "0",
+        "0",
+        0,
+        existWrappedToken,
         caller,
       ),
     );
@@ -617,5 +637,24 @@ export class PositionRepositoryImpl implements PositionRepository {
       gasWanted: DEFAULT_GAS_WANTED,
     });
     return result as WalletResponse<SendTransactionResponse<string[] | null>>;
+  };
+
+  getUnstakingFee = async (): Promise<number> => {
+    try {
+      if (!PACKAGE_STAKER_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetUnstakingFee", []);
+      const response = await this.rpcProvider.evaluateExpression(
+        PACKAGE_STAKER_PATH,
+        param,
+      );
+
+      return evaluateExpressionToNumber(response);
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
   };
 }

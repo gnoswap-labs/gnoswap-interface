@@ -29,7 +29,7 @@ export const CardListWrapper = styled.div<Props>`
   }
 
   .load-more-skeleton {
-    width: 100%; 
+    width: 100%;
     height: 18px;
   }
 `;
@@ -54,6 +54,7 @@ export const GridWrapper = styled.div<Props>`
   }
 
   .card-skeleton {
+    min-width: 322px;
     height: 198px;
     border-radius: 10px;
     box-shadow: ${({ theme }) => theme.color.shadow02};

@@ -9,6 +9,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { cx } from "@emotion/css";
+import { useTranslation } from "next-i18next";
 
 interface HighestAprsCardListProps {
   list: Array<CardListPoolInfo>;
@@ -23,11 +24,15 @@ const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
   onClickItem,
   loading,
 }) => {
+  const { t } = useTranslation();
+
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
   return visible ? (
-    <HighestAprsCardListWrapper className={cx("loading", { "empty-status": loading })}>
+    <HighestAprsCardListWrapper
+      className={cx("loading", { "empty-status": loading })}
+    >
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />
@@ -35,7 +40,7 @@ const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
       ) : (
         <div>
           <h2>
-            <IconDiamond className="icon-diamond" /> Highest APRs
+            <IconDiamond className="icon-diamond" /> {t("Main:highest")}
           </h2>
         </div>
       )}

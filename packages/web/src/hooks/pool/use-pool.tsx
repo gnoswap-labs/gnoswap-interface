@@ -62,6 +62,7 @@ export const usePool = ({
         return null;
       }
       const feetierOfLiquidityMap: { [key in string]: number } = {};
+
       const totalLiquidities = rpcPools
         .map(info => info.liquidity)
         .reduce((total, cur) => total + cur, 0n);
@@ -146,7 +147,7 @@ export const usePool = ({
       startPrice: string;
       minTick: number;
       maxTick: number;
-      slippage: string;
+      slippage: number;
       withStaking?: boolean;
     }) => {
       if (!tokenA || !tokenB || !account || createPoolFee === undefined) {
@@ -197,7 +198,7 @@ export const usePool = ({
       swapFeeTier: SwapFeeTierType;
       minTick: number;
       maxTick: number;
-      slippage: string;
+      slippage: number;
       withStaking?: boolean;
     }) => {
       if (!tokenA || !tokenB || !account) {

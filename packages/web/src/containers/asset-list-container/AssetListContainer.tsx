@@ -1,5 +1,12 @@
 // TODO : remove eslint-disable after work
-import { GNOT_SYMBOL, GNOT_TOKEN_DEFAULT, GNS_SYMBOL, GNS_TOKEN, WUGNOT_SYMBOL, WUGNOT_TOKEN } from "@common/values/token-constant";
+import {
+  GNOT_SYMBOL,
+  GNOT_TOKEN_DEFAULT,
+  GNS_SYMBOL,
+  GNS_TOKEN,
+  WUGNOT_SYMBOL,
+  WUGNOT_TOKEN,
+} from "@common/values/token-constant";
 import AssetList from "@components/wallet/asset-list/AssetList";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
@@ -17,7 +24,7 @@ import { isEmptyObject } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
-import { toPriceFormat } from "@utils/number-utils";
+import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface AssetSortOption {
@@ -69,8 +76,7 @@ function filterKeyword(asset: Asset, keyword: string) {
   if (searchKeyword === "") return true;
   return (
     asset.name.toLowerCase().includes(searchKeyword) ||
-    asset.symbol.toLowerCase().includes(searchKeyword) ||
-    asset.path.toLowerCase().includes(searchKeyword)
+    asset.symbol.toLowerCase().includes(searchKeyword)
   );
 }
 
@@ -118,13 +124,14 @@ const AssetListContainer: React.FC = () => {
   const { data: { tokens = [] } = {} } = useGetTokensList({
     refetchInterval: 60 * 1000,
   });
-  const {
-    loading: loadingPositions,
-  } = usePositionData({
+  const { loading: loadingPositions } = usePositionData({
     isClosed: false,
   });
 
-  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
+  const isLoadingPosition = useMemo(
+    () => connected && loadingPositions,
+    [connected, loadingPositions],
+  );
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
@@ -200,47 +207,7 @@ const AssetListContainer: React.FC = () => {
       }
     }
 
-    return [gnot, wugnot, gns].map(item => {
-      const tokenPrice = balances[item.priceID];
-      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
-        return {
-          price: "-",
-          balance: "0",
-          ...item,
-          tokenPrice: tokenPrice || 0,
-          sortPrice: "0",
-        };
-      }
-      const price = BigNumber(tokenPrice)
-        .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
-        .dividedBy(10 ** 6);
-      const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
-      return {
-        ...item,
-        price: isSwitchNetwork
-          ? "-"
-          : checkPrice
-            ? "<$0.01"
-            : toPriceFormat(price, { isKMBFormat: false, isRounding: false }),
-        balance: isSwitchNetwork
-          ? "0"
-          : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
-        tokenPrice: tokenPrice || 0,
-        sortPrice: price.toString(),
-      };
-    }).filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset))
-      .filter((asset) => filterKeyword(asset, keyword))
-      .filter((asset) => filterType(asset, assetType));
-  }, [balances, displayBalanceMap, invisibleZeroBalance, isSwitchNetwork, tokenPrices, tokens, keyword, assetType]);
-
-  const filteredTokens = useMemo(() => {
-    const COLLAPSED_LENGTH = 15;
-    let mappedTokens: SortedProps[] = tokens
-      .filter(item =>
-        item.symbol !== GNOT_SYMBOL
-        && item.symbol !== GNS_SYMBOL
-        && item.symbol !== WUGNOT_SYMBOL
-      )
+    return [gnot, wugnot, gns]
       .map(item => {
         const tokenPrice = balances[item.priceID];
         if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
@@ -255,14 +222,74 @@ const AssetListContainer: React.FC = () => {
         const price = BigNumber(tokenPrice)
           .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
           .dividedBy(10 ** 6);
-        const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
         return {
           ...item,
           price: isSwitchNetwork
             ? "-"
-            : checkPrice
-              ? "<$0.01"
-              : toPriceFormat(price, { isKMBFormat: false, isRounding: false }),
+            : toPriceFormatNotRounding(price, {
+                isKMBFormat: false,
+                fixedGreaterThan1: true,
+                fixedLessThan1: true,
+                minLimit: 0.01,
+                usd: true,
+              }),
+          balance: isSwitchNetwork
+            ? "0"
+            : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+          tokenPrice: tokenPrice || 0,
+          sortPrice: price.toString(),
+        };
+      })
+      .filter(
+        asset => invisibleZeroBalance === false || filterZeroBalance(asset),
+      )
+      .filter(asset => filterKeyword(asset, keyword))
+      .filter(asset => filterType(asset, assetType));
+  }, [
+    balances,
+    displayBalanceMap,
+    invisibleZeroBalance,
+    isSwitchNetwork,
+    tokenPrices,
+    tokens,
+    keyword,
+    assetType,
+  ]);
+
+  const filteredTokens = useMemo(() => {
+    const COLLAPSED_LENGTH = 15;
+    let mappedTokens: SortedProps[] = tokens
+      .filter(
+        item =>
+          item.symbol !== GNOT_SYMBOL &&
+          item.symbol !== GNS_SYMBOL &&
+          item.symbol !== WUGNOT_SYMBOL,
+      )
+      .map(item => {
+        const tokenPrice = balances[item.priceID];
+        if (!tokenPrice || Number.isNaN(tokenPrice)) {
+          return {
+            price: "-",
+            balance: "0",
+            ...item,
+            tokenPrice: tokenPrice || 0,
+            sortPrice: "0",
+          };
+        }
+        const price = BigNumber(tokenPrice)
+          .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
+          .dividedBy(10 ** 6);
+        return {
+          ...item,
+          price: isSwitchNetwork
+            ? "-"
+            : toPriceFormatNotRounding(price, {
+                isKMBFormat: false,
+                fixedGreaterThan1: true,
+                fixedLessThan1: true,
+                minLimit: 0.01,
+                usd: true,
+              }),
           balance: isSwitchNetwork
             ? "0"
             : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
@@ -314,8 +341,8 @@ const AssetListContainer: React.FC = () => {
     }
 
     mappedTokens = mappedTokens
-      .filter((asset) => filterType(asset, assetType))
-      .filter((asset) => filterKeyword(asset, keyword));
+      .filter(asset => filterType(asset, assetType))
+      .filter(asset => filterKeyword(asset, keyword));
 
     const resultFilteredAssets = extended
       ? mappedTokens
@@ -387,8 +414,8 @@ const AssetListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setTokenSortOption({
         key,
@@ -444,10 +471,7 @@ const AssetListContainer: React.FC = () => {
   return (
     <>
       <AssetList
-        assets={[
-          ...fixedTokens,
-          ...filteredTokens
-        ]}
+        assets={[...fixedTokens, ...filteredTokens]}
         isFetched={
           isFetched &&
           !isLoadingTokens &&

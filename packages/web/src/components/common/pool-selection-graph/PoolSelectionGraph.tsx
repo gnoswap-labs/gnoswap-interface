@@ -124,25 +124,25 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const adjustBins = useMemo(() => {
     return flip
       ? bins
-        .map(bin => ({
-          ...bin,
-          maxTick: -1 * bin.minTick,
-          minTick: -1 * bin.maxTick,
-          reserveTokenA: bin.reserveTokenB,
-          reserveTokenB: bin.reserveTokenA,
-          height: BigNumber(bin.reserveTokenB)
-            .multipliedBy(price)
-            .plus(bin.reserveTokenA)
-            .toNumber(),
-        }))
-        .reverse()
+          .map(bin => ({
+            ...bin,
+            maxTick: -1 * bin.minTick,
+            minTick: -1 * bin.maxTick,
+            reserveTokenA: bin.reserveTokenB,
+            reserveTokenB: bin.reserveTokenA,
+            height: BigNumber(bin.reserveTokenB)
+              .multipliedBy(price)
+              .plus(bin.reserveTokenA)
+              .toNumber(),
+          }))
+          .reverse()
       : bins.map(bin => ({
-        ...bin,
-        height: BigNumber(bin.reserveTokenA)
-          .multipliedBy(price)
-          .plus(bin.reserveTokenB)
-          .toNumber(),
-      }));
+          ...bin,
+          height: BigNumber(bin.reserveTokenA)
+            .multipliedBy(price)
+            .plus(bin.reserveTokenB)
+            .toNumber(),
+        }));
   }, [bins, price, flip]);
 
   // Display bins is bins slice data.
@@ -592,18 +592,18 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
           })
           .reduce<{ [key in number]: string }>((acc, current) => {
             if (!acc[current]) {
-              acc[current] = tickToPriceStr(current, { decimals: 40 }).toString();
+              acc[current] = tickToPriceStr(current, {
+                decimals: 40,
+              }).toString();
             }
             return acc;
           }, {});
-        priceOfTick[currentTick] = tickToPriceStr(
-          Math.round(currentTick),
-          { decimals: 40 },
-        ).toString();
-        priceOfTick[-currentTick] = tickToPriceStr(
-          -Math.round(currentTick),
-          { decimals: 40 },
-        ).toString();
+        priceOfTick[currentTick] = tickToPriceStr(Math.round(currentTick), {
+          decimals: 40,
+        }).toString();
+        priceOfTick[-currentTick] = tickToPriceStr(-Math.round(currentTick), {
+          decimals: 40,
+        }).toString();
         resolve(priceOfTick);
       }).then(setPriceOfTick);
     }
@@ -967,8 +967,8 @@ function changeLine(
   const labelText = !selectedFullRange
     ? rateStr
     : type === "start"
-      ? "-100%"
-      : "∞";
+    ? "-100%"
+    : "∞";
 
   labelWrapper
     .select("rect")

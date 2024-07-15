@@ -119,35 +119,14 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 
   const moveEarnStake = useCallback(() => {
     router.push(
-      "/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/#staking",
+      "/earn/pool/gno.land_r_gnoswap_gns:gno.land_r_demo_wugnot:3000/#staking",
     );
   }, [router]);
 
-  const handleScroll = () => {
-    if (divRef.current) {
-      const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(
-        Math.min(Math.floor(currentScrollX / 332) + 1, positions.length),
-      );
-    }
-  };
-
-  const showPagination = useMemo(() => {
-    if (width >= 920) {
-      return false;
-    } else {
-      return true;
-    }
-  }, [positions, width]);
-
-  const handleClickLoadMore = useCallback(() => {
-    setIsViewMorePositions(!isViewMorePositions);
-  }, [isViewMorePositions]);
-
   const openPosition = useMemo(() => {
-    return positions.filter(item => !item.closed).sort(
-      (x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue),
-    );
+    return positions
+      .filter(item => !item.closed)
+      .sort((x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
   }, [positions]);
 
   const closedPosition = useMemo(() => {
@@ -155,10 +134,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, [positions]);
 
   const showedPosition = useMemo(() => {
-    return [
-      ...openPosition,
-      ...(isClosed ? closedPosition : [])
-    ];
+    return [...openPosition, ...(isClosed ? closedPosition : [])];
   }, [closedPosition, isClosed, openPosition]);
 
   const dataMapping = useMemo(() => {
@@ -172,6 +148,118 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }
     return showedPosition;
   }, [isViewMorePositions, width, showedPosition]);
+
+  const handleScroll = useCallback(() => {
+    if (divRef.current) {
+      const itemGap = 12;
+      const parentWidth = divRef.current.clientWidth;
+      const children = divRef.current.children;
+      const listChildWidth = divRef.current.children[0].clientWidth;
+      const childrenLength = showedPosition.length;
+
+      const totalItemWidth = childrenLength * listChildWidth;
+      const totalGapWidth = itemGap * (childrenLength - 1);
+
+      const maxScrollWidth = totalItemWidth + totalGapWidth - parentWidth;
+      const currentScrollX = divRef.current.scrollLeft;
+
+      const maybeNextDisplayIndex =
+        Math.floor(currentScrollX / (listChildWidth + itemGap)) + 2;
+
+      const centerScreenX = document.body.clientWidth / 2;
+
+      if (currentScrollX === 0) {
+        setCurrentIndex(1);
+        return;
+      }
+
+      if (maxScrollWidth <= currentScrollX) {
+        setCurrentIndex(childrenLength);
+        return;
+      }
+
+      const getLengthFromElementCenterToScreenCenter = (
+        element: Element | null,
+      ) => {
+        if (element)
+          return Math.abs(
+            element?.getBoundingClientRect().x +
+              listChildWidth / 2 -
+              centerScreenX,
+          );
+
+        return -1;
+      };
+
+      const checkValidElement = (index: number) => {
+        if (index < childrenLength) {
+          return children[index];
+        }
+        return null;
+      };
+
+      if (childrenLength >= 3) {
+        const maybeNextIndex = maybeNextDisplayIndex - 1;
+
+        const previous1Element = checkValidElement(maybeNextIndex - 1);
+        const currentElement = checkValidElement(maybeNextIndex);
+        const next1Element = checkValidElement(maybeNextIndex + 1);
+
+        const previousElementCenterXToScreenCenterX =
+          getLengthFromElementCenterToScreenCenter(previous1Element);
+        const currentElementCenterXToScreenCenterX =
+          getLengthFromElementCenterToScreenCenter(currentElement);
+        const nextElementCenterXToScreenCenterX =
+          getLengthFromElementCenterToScreenCenter(next1Element);
+
+        const minLength = Math.min(
+          ...[
+            previousElementCenterXToScreenCenterX,
+            currentElementCenterXToScreenCenterX,
+            nextElementCenterXToScreenCenterX,
+          ],
+        );
+
+        let nextIndex = maybeNextDisplayIndex;
+
+        switch (minLength) {
+          case previousElementCenterXToScreenCenterX:
+            nextIndex = maybeNextDisplayIndex - 1;
+            break;
+          case nextElementCenterXToScreenCenterX:
+            nextIndex = maybeNextDisplayIndex + 1;
+            break;
+          case currentElementCenterXToScreenCenterX:
+            nextIndex = maybeNextDisplayIndex;
+            break;
+        }
+
+        if (nextIndex > childrenLength) {
+          setCurrentIndex(childrenLength);
+          return;
+        }
+
+        if (nextIndex < 1) {
+          setCurrentIndex(1);
+          return;
+        }
+
+        setCurrentIndex(nextIndex);
+      }
+    }
+  }, [showedPosition.length]);
+
+  const showPagination = useMemo(() => {
+    if (width >= 920) {
+      return false;
+    } else {
+      return true;
+    }
+  }, [width]);
+
+  const handleClickLoadMore = useCallback(() => {
+    setIsViewMorePositions(!isViewMorePositions);
+  }, [isViewMorePositions]);
 
   const handleChangeClosed = () => {
     setIsClosed(!isClosed);
@@ -221,7 +309,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       divRef={divRef}
       currentIndex={currentIndex}
       showPagination={showPagination}
-      showLoadMore={positions.length > 4}
+      showLoadMore={showedPosition.length > 4}
       width={width}
       loadMore={!isViewMorePositions}
       onClickLoadMore={handleClickLoadMore}

@@ -13,14 +13,16 @@ export const PATH_60SECOND = [
   "/earn/pool/[pool-path]",
 ];
 
-export const HTTP_5XX_ERROR = [500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511];
+export const HTTP_5XX_ERROR = [
+  500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511,
+];
 
 export const CAN_SCROLL_UP_ID = "CAN_SCROLL_UP_ID";
 
 export const getCanScrollUpId = (id: string) => `${CAN_SCROLL_UP_ID}_${id}`;
 
 export type PageKey =
-  "/"
+  | "/"
   | "/earn"
   | "/earn?address"
   | "/earn/add"
@@ -44,27 +46,33 @@ export type PageKey =
   | "/swap"
   | "/wallet";
 
-export type StringParamsArr = string[];
+export type StringParamsArr = (string | undefined)[];
 
 export type StringWithParamsArr = (params?: StringParamsArr) => string;
 
 export const DefaultTitle = "The One-stop Gnoland DeFi Platform | Gnoswap";
 
-export const SEOInfo: Record<PageKey, {
-  title: StringWithParamsArr;
-  desc: StringWithParamsArr;
-  ogTitle?: StringWithParamsArr;
-  ogDesc?: StringWithParamsArr;
-}> = {
+export const SEOInfo: Record<
+  PageKey,
+  {
+    title: StringWithParamsArr;
+    desc: StringWithParamsArr;
+    ogTitle?: StringWithParamsArr;
+    ogDesc?: StringWithParamsArr;
+  }
+> = {
   "/": {
     title: () => DefaultTitle,
-    desc: () => "The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders.",
+    desc: () =>
+      "The first Concentrated Liquidity AMM DEX built using Gnolang to offer the most simplified and user-friendly DeFi experience for traders.",
     ogTitle: () => DefaultTitle,
-    ogDesc: () => "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+    ogDesc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/earn": {
     title: () => "Earn | Gnoswap",
-    desc: () => "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+    desc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/earn?address": {
     title: (params = []) => {
@@ -74,7 +82,8 @@ export const SEOInfo: Record<PageKey, {
       }
       return "Earn | Gnoswap";
     },
-    desc: () => "Create your own positions and provide liquidity to earn trading fees.",
+    desc: () =>
+      "Create your own positions and provide liquidity to earn trading fees.",
   },
   "/earn/add": {
     title: (params = []) => {
@@ -84,7 +93,8 @@ export const SEOInfo: Record<PageKey, {
       }
       return "Add Position to Gnoswap Pools";
     },
-    desc: () => "Create your own positions and provide liquidity to earn trading fees.",
+    desc: () =>
+      "Create your own positions and provide liquidity to earn trading fees.",
   },
   "/earn/incentivize": {
     title: (params = []) => {
@@ -94,7 +104,8 @@ export const SEOInfo: Record<PageKey, {
       }
       return "Incentivize Gnoswap Pools";
     },
-    desc: () => "Add incentives to pools for liquidity providers to bootstrap liquidity.",
+    desc: () =>
+      "Add incentives to pools for liquidity providers to bootstrap liquidity.",
   },
   "/earn/pool/[pool-path]": {
     title: (params = []) => {
@@ -104,7 +115,8 @@ export const SEOInfo: Record<PageKey, {
       }
       return DefaultTitle;
     },
-    desc: () => "Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency.",
+    desc: () =>
+      "Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency.",
   },
   "/earn/pool/[pool-path]?address": {
     title: (params = []) => {
@@ -114,7 +126,8 @@ export const SEOInfo: Record<PageKey, {
       }
       return DefaultTitle;
     },
-    desc: () => "Create your own positions and provide liquidity to earn trading fees.",
+    desc: () =>
+      "Create your own positions and provide liquidity to earn trading fees.",
   },
   "/earn/pool/[pool-path]/add": {
     title: (params = []) => {
@@ -156,7 +169,8 @@ export const SEOInfo: Record<PageKey, {
       }
       return "Stake Position to Gnoswap Pools";
     },
-    desc: () => "Create your own positions and provide liquidity to earn staking rewards.",
+    desc: () =>
+      "Create your own positions and provide liquidity to earn staking rewards.",
   },
   "/earn/pool/[pool-path]/unstake": {
     title: (params = []) => {
@@ -172,7 +186,7 @@ export const SEOInfo: Record<PageKey, {
     title: (params = []) => {
       if (params.length === 1) {
         const [positionId] = params;
-        return `Reposition in ${positionId}`;
+        return `Reposition in #${positionId}`;
       }
       return "Reposition";
     },
@@ -184,7 +198,7 @@ export const SEOInfo: Record<PageKey, {
     title: (params = []) => {
       if (params.length === 1) {
         const [positionId] = params;
-        return `Increase liquidity in ${positionId}`;
+        return `Increase liquidity in #${positionId}`;
       }
       return "Increase liquidity";
     },
@@ -194,7 +208,7 @@ export const SEOInfo: Record<PageKey, {
     title: (params = []) => {
       if (params.length === 1) {
         const [positionId] = params;
-        return `Decrease liquidity in ${positionId}`;
+        return `Decrease liquidity in #${positionId}`;
       }
       return "Decrease liquidity";
     },
@@ -202,10 +216,15 @@ export const SEOInfo: Record<PageKey, {
   },
   "token/[token-path]": {
     title: (params = []) => {
-      if (params.length === 3) {
-        const [tokenPrice, tokenName, tokenSymbol] = params;
-        return `${tokenPrice} | ${tokenName}(${tokenSymbol})`;
-      }
+      const [tokenPrice, tokenName, tokenSymbol] = params;
+      const tokenSymbolDisplay = tokenSymbol ? `(${tokenSymbol})` : "";
+      const tokenNameDisplay = `${tokenName}${tokenSymbolDisplay}`;
+      const titleDisplay = [tokenPrice, tokenNameDisplay]
+        .filter(item => item)
+        .join(" | ");
+
+      if (tokenName && tokenSymbol && tokenPrice) return titleDisplay;
+
       return DefaultTitle;
     },
     desc: (params = []) => {
@@ -217,12 +236,12 @@ export const SEOInfo: Record<PageKey, {
       return "Buy or Sell Token on Gnoswap.";
     },
     ogTitle: (params = []) => {
-      if (params.length === 1) {
+      if (params.length === 2) {
         const [tokenName, tokenSymbol] = params;
         return `${tokenName}(${tokenSymbol}) | Gnoswap`;
       }
       return DefaultTitle;
-    }
+    },
   },
   "/404": {
     title: () => "404: Page not found!",
@@ -234,15 +253,18 @@ export const SEOInfo: Record<PageKey, {
   },
   "/dashboard": {
     title: () => "Dashboard | Gnoswap",
-    desc: () => "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+    desc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/governance": {
     title: () => "Governance | Gnoswap",
-    desc: () => "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+    desc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/leaderboard": {
     title: () => "Leaderboard | Gnoswap",
-    desc: () => "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+    desc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/swap": {
     title: (params = []) => {
@@ -252,11 +274,24 @@ export const SEOInfo: Record<PageKey, {
       }
       return "Swap | Gnoswap";
     },
-    desc: () => "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+    desc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/wallet": {
     title: () => "Wallet | Gnoswap",
-    desc: () => "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+    desc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
-
 };
+
+export const LANGUAGES = [
+  { code: "en", name: "English" },
+  { code: "de", name: "Deutsch" },
+  { code: "es", name: "Español" },
+  { code: "fr", name: "Français" },
+  { code: "ja", name: "日本語" },
+  { code: "ko", name: "한국어" },
+  { code: "ru", name: "Русский" },
+  { code: "zh", name: "中文" },
+  { code: "hi", name: "हिन्दी" },
+];

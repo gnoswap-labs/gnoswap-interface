@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
@@ -28,9 +29,7 @@ export const FeeWrapper = styled.div`
   .white-text {
     color: ${({ theme }) => theme.color.text10};
   }
-  .received,
-  .gas-fee,
-  .price-impact {
+  .swap-fee-row {
     ${mixins.flexbox("row", "flex-start", "space-between")};
     width: 100%;
     align-self: stretch;
@@ -59,7 +58,7 @@ export const FeeWrapper = styled.div`
         fill: ${({ theme }) => theme.color.point};
       }
       h1 {
-        background: linear-gradient(90deg, #233DBD -27.22%, #8C8DFC 137.97%);
+        background: linear-gradient(90deg, #233dbd -27.22%, #8c8dfc 137.97%);
         -webkit-background-clip: text;
         color: transparent;
       }
@@ -87,4 +86,40 @@ export const ToolTipContentWrapper = styled.div`
   width: 268px;
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
+`;
+
+export const PriceImpactStatusWrapper = styled.span<{
+  priceImpact: PriceImpactStatus;
+}>`
+   ${({ priceImpact, theme }) => {
+    switch (priceImpact) {
+      case "HIGH":
+        return `color: ${theme.color.red01};`;
+      case "LOW":
+        return `color: ${theme.color.text10};`;
+      default:
+        return `color: ${theme.color.text04};`;
+      case "POSITIVE":
+        return `color: ${theme.color.green01};`;
+      case "MEDIUM":
+        return `color: ${theme.color.goldenrod};`;
+    }
+  }}
+`;
+export const PriceImpactStrWrapper = styled.span<{
+  priceImpact: PriceImpactStatus;
+}>`
+  ${({ priceImpact, theme }) => {
+    switch (priceImpact) {
+      case "HIGH":
+        return `color: ${theme.color.red01};`;
+      case "LOW":
+      default:
+        return `color: ${theme.color.text04};`;
+      case "POSITIVE":
+        return `color: ${theme.color.green01};`;
+      case "MEDIUM":
+        return `color: ${theme.color.goldenrod};`;
+    }
+  }}
 `;

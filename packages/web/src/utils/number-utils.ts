@@ -110,10 +110,13 @@ export const toUnitFormat = (
     );
   if (isKMB) {
     if (wholeNumberLength >= 4 && isFormat) {
-      return (usd ? "$" : "") + convertToKMB(bigNumber.toNumber().toString(), {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      });
+      return (
+        (usd ? "$" : "") +
+        convertToKMB(bigNumber.toNumber().toString(), {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+        })
+      );
     }
   }
 
@@ -124,7 +127,153 @@ export const toUnitFormat = (
   if (Number(bigNumber) === 0) {
     return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed();
   }
-  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });
+  return (
+    (usd ? "$" : "") +
+    bigNumber
+      .decimalPlaces(2)
+      .toNumber()
+      .toLocaleString("en", { minimumFractionDigits: 2 })
+  );
+};
+
+export const toKMBFormat = (
+  value: BigNumber | string | number,
+  {
+    usd = false,
+  }: {
+    usd?: boolean;
+  } = {},
+) => {
+  const valueWithoutComma = value.toString().replace(/,/g, "");
+
+  if (!isNumber(valueWithoutComma)) {
+    return usd ? "$0" : "0";
+  }
+
+  const bigNumber = BigNumber(valueWithoutComma).abs();
+  const prefix = usd ? "$" : "";
+  const negativeSign = BigNumber(value).isLessThan(0) ? "-" : "";
+
+  if (bigNumber.isGreaterThanOrEqualTo(1e9)) {
+    return (
+      negativeSign +
+      prefix +
+      bigNumber.dividedBy(Math.pow(10, 9)).toFixed(2) +
+      unitsUpperCase.billion
+    );
+  }
+
+  if (bigNumber.isGreaterThanOrEqualTo(1e6)) {
+    return (
+      negativeSign +
+      prefix +
+      bigNumber.dividedBy(Math.pow(10, 6)).toFixed(2) +
+      unitsUpperCase.million
+    );
+  }
+
+  if (bigNumber.isGreaterThanOrEqualTo(1e3)) {
+    return (
+      negativeSign +
+      prefix +
+      bigNumber.dividedBy(Math.pow(10, 3)).toFixed(2) +
+      unitsUpperCase.thousand
+    );
+  }
+};
+
+export const toPriceFormatNotRounding = (
+  value: BigNumber | string | number,
+  {
+    usd = false,
+    isKMBFormat = true,
+    lestThan1Decimals = 3,
+    lessThan1Significant,
+    fixedLessThan1 = false,
+    greaterThan1Decimals = 2,
+    fixedGreaterThan1 = false,
+    minLimit,
+  }: {
+    usd?: boolean;
+    isKMBFormat?: boolean;
+    lestThan1Decimals?: number;
+    lessThan1Significant?: number;
+    fixedLessThan1?: boolean;
+    greaterThan1Decimals?: number;
+    fixedGreaterThan1?: boolean;
+    minLimit?: number;
+  } = {},
+): string => {
+  const valueWithoutComma = value.toString().replace(/,/g, "");
+
+  if (!isNumber(valueWithoutComma)) {
+    return usd ? "$0" : "0";
+  }
+  const bigNumber = BigNumber(valueWithoutComma).abs();
+  const prefix = usd ? "$" : "";
+  const negativeSign = BigNumber(valueWithoutComma).isLessThan(0) ? "-" : "";
+
+  if (minLimit && bigNumber.isLessThan(minLimit) && !bigNumber.isEqualTo(0)) {
+    return (usd ? "<$" : "<") + minLimit.toString();
+  }
+
+  if (bigNumber.isEqualTo(0)) {
+    return prefix + "0";
+  }
+
+  if (isKMBFormat) {
+    const kmbNumber = toKMBFormat(valueWithoutComma, { usd });
+    if (kmbNumber) return kmbNumber;
+  }
+
+  const negativeSignLength = bigNumber.isLessThan(0) ? 1 : 0;
+
+  if (Number(bigNumber) < 1) {
+    const tempNum = bigNumber
+      .toNumber()
+      .toLocaleString("en-US", {
+        maximumFractionDigits: lestThan1Decimals + 1,
+        minimumFractionDigits: lestThan1Decimals + 1,
+        minimumSignificantDigits: lessThan1Significant
+          ? lessThan1Significant + 1
+          : undefined,
+        maximumSignificantDigits: lessThan1Significant
+          ? lessThan1Significant + 1
+          : undefined,
+      })
+      .replace(/,/g, "");
+
+    const cutNumber = tempNum.substring(0, tempNum.length - 1);
+
+    if (fixedLessThan1) {
+      return negativeSign + prefix + cutNumber;
+    }
+
+    // Wrapped in BigNumber(cutNumber).toFormat() to remove trailingZeros
+    return negativeSign + prefix + BigNumber(cutNumber).toFormat();
+  }
+
+  const finalGreaterThan1Decimals = greaterThan1Decimals + negativeSignLength;
+
+  const tempNum = bigNumber
+    .toNumber()
+    .toLocaleString("en-US", {
+      minimumFractionDigits: finalGreaterThan1Decimals + 1,
+      maximumFractionDigits: finalGreaterThan1Decimals + 1,
+    })
+    .replace(/,/g, "");
+
+  const cutNumber = tempNum.substring(0, tempNum.length - 1);
+
+  if (fixedGreaterThan1) {
+    return (
+      negativeSign +
+      prefix +
+      BigNumber(cutNumber).toFormat(greaterThan1Decimals)
+    );
+  }
+
+  return negativeSign + prefix + BigNumber(cutNumber).toFormat();
 };
 
 /**
@@ -143,9 +292,9 @@ export const toPriceFormat = (
     fixedLessThan1Decimal,
     fixedLessThan1Significant,
   }: {
-    usd?: boolean,
-    isKMBFormat?: boolean,
-    isRounding?: boolean,
+    usd?: boolean;
+    isKMBFormat?: boolean;
+    isRounding?: boolean;
     lestThan1Decimals?: number;
     greaterThan1Decimals?: number;
     forcedDecimals?: boolean;
@@ -153,43 +302,29 @@ export const toPriceFormat = (
     forcedGreaterThan1Decimals?: boolean;
     fixedLessThan1Decimal?: number;
     fixedLessThan1Significant?: number;
-  } = {}
+  } = {},
 ): string => {
-  if (!isNumber(value)) {
+  const valueWithoutComma = value.toString().replace(/,/g, "");
+
+  if (!isNumber(valueWithoutComma)) {
     return usd ? "$0" : "0";
   }
-  const bigNumber = BigNumber(value).abs();
-  const prefix = (usd ? "$" : "");
-  const negativeSign = BigNumber(value).isLessThan(0) ? "-" : "";
+  const bigNumber = BigNumber(valueWithoutComma).abs();
+  const prefix = usd ? "$" : "";
+  const negativeSign = BigNumber(valueWithoutComma).isLessThan(0) ? "-" : "";
 
   if (isKMBFormat) {
-    if (bigNumber.isGreaterThan(1e9)) {
-      return (
-        negativeSign + prefix +
-        bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
-        unitsUpperCase.billion
-      );
-    }
-
-    if (bigNumber.isGreaterThan(1e6)) {
-      return (
-        negativeSign + prefix +
-        bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
-        unitsUpperCase.million
-      );
-    }
-
-    if (bigNumber.isGreaterThan(1e3)) {
-
-      return (
-        negativeSign + prefix +
-        bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
-        unitsUpperCase.thousand
-      );
+    const kmbNumber = toKMBFormat(value, { usd });
+    if (kmbNumber) {
+      return kmbNumber;
     }
   }
 
-  if (minLimit && bigNumber.isLessThan(minLimit) && bigNumber.isGreaterThan(0)) {
+  if (
+    minLimit &&
+    bigNumber.isLessThan(minLimit) &&
+    bigNumber.isGreaterThan(0)
+  ) {
     return (usd ? "<$" : "<") + minLimit.toString();
   }
 
@@ -203,37 +338,70 @@ export const toPriceFormat = (
 
     if (!isRounding) {
       const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
-        maximumFractionDigits: fixedLessThan1Decimal ? (fixedLessThan1Decimal + 1) : undefined,
-        minimumFractionDigits: fixedLessThan1Decimal ? (fixedLessThan1Decimal + 1) : undefined,
-        minimumSignificantDigits: (!fixedLessThan1Decimal && fixedLessThan1Significant) ? finalLestThan1Decimals + 1 : undefined,
-        maximumSignificantDigits: !fixedLessThan1Decimal ? finalLestThan1Decimals + 1 : undefined
+        maximumFractionDigits: fixedLessThan1Decimal
+          ? fixedLessThan1Decimal + 1
+          : undefined,
+        minimumFractionDigits: fixedLessThan1Decimal
+          ? fixedLessThan1Decimal + 1
+          : undefined,
+        minimumSignificantDigits:
+          !fixedLessThan1Decimal && fixedLessThan1Significant
+            ? finalLestThan1Decimals + 1
+            : undefined,
+        maximumSignificantDigits: !fixedLessThan1Decimal
+          ? finalLestThan1Decimals + 1
+          : undefined,
       });
       const [, decimalPart] = tempNum.split(".");
       const significantNumberLength = Number(decimalPart).toString().length;
 
-      if (decimalPart?.length > finalLestThan1Decimals && significantNumberLength > finalLestThan1Decimals) {
+      if (
+        decimalPart?.length > finalLestThan1Decimals &&
+        significantNumberLength > finalLestThan1Decimals
+      ) {
         return negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
       }
     }
 
-    return negativeSign + prefix + bigNumber.toNumber().toLocaleString("en-US", {
-      maximumFractionDigits: fixedLessThan1Decimal ? (fixedLessThan1Decimal) : undefined,
-      minimumFractionDigits: fixedLessThan1Decimal ? (fixedLessThan1Decimal) : undefined,
-      minimumSignificantDigits: (!fixedLessThan1Decimal && fixedLessThan1Significant) ? finalLestThan1Decimals : undefined,
-      maximumSignificantDigits: !fixedLessThan1Decimal ? finalLestThan1Decimals : undefined
-    });
+    return (
+      negativeSign +
+      prefix +
+      bigNumber.toNumber().toLocaleString("en-US", {
+        maximumFractionDigits: fixedLessThan1Decimal
+          ? fixedLessThan1Decimal
+          : undefined,
+        minimumFractionDigits: fixedLessThan1Decimal
+          ? fixedLessThan1Decimal
+          : undefined,
+        minimumSignificantDigits:
+          !fixedLessThan1Decimal && fixedLessThan1Significant
+            ? finalLestThan1Decimals
+            : undefined,
+        maximumSignificantDigits: !fixedLessThan1Decimal
+          ? finalLestThan1Decimals
+          : undefined,
+      })
+    );
   }
 
-  const finalGreaterThan1Decimals = (greaterThan1Decimals ?? 2) + negativeSignLength;
+  const finalGreaterThan1Decimals =
+    (greaterThan1Decimals ?? 2) + negativeSignLength;
 
   const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
-    minimumFractionDigits: forcedGreaterThan1Decimals ? finalGreaterThan1Decimals + 1 : 0,
+    minimumFractionDigits: forcedGreaterThan1Decimals
+      ? finalGreaterThan1Decimals + 1
+      : 0,
     maximumFractionDigits: finalGreaterThan1Decimals + 1,
   });
   const [, decimalPart] = tempNum.split(".");
 
-  if (!isRounding && !bigNumber.isInteger() && decimalPart?.length > finalGreaterThan1Decimals) {
-    const result = negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
+  if (
+    !isRounding &&
+    !bigNumber.isInteger() &&
+    decimalPart?.length > finalGreaterThan1Decimals
+  ) {
+    const result =
+      negativeSign + prefix + tempNum.substring(0, tempNum.length - 1);
 
     const [notRoundingIntPart, notRoundingDecimalPart] = result.split(".");
 
@@ -242,12 +410,103 @@ export const toPriceFormat = (
     return result;
   }
 
-  return negativeSign + prefix + bigNumber.decimalPlaces(finalGreaterThan1Decimals)
+  return (
+    negativeSign +
+    prefix +
+    bigNumber
+      .decimalPlaces(finalGreaterThan1Decimals)
+      .toNumber()
+      .toLocaleString("en", {
+        maximumFractionDigits: finalGreaterThan1Decimals,
+        minimumFractionDigits: forcedGreaterThan1Decimals
+          ? finalGreaterThan1Decimals
+          : undefined,
+      })
+  );
+};
+
+//
+export const toPriceFormatRounding = (
+  value: BigNumber | string | number,
+  {
+    usd = false,
+    isKMBFormat = true,
+    lestThan1Decimals = 3,
+    lessThan1Significant,
+    fixedLessThan1 = false,
+    greaterThan1Decimals = 2,
+    fixedGreaterThan1 = false,
+    minLimit,
+  }: {
+    usd?: boolean;
+    isKMBFormat?: boolean;
+    lestThan1Decimals?: number;
+    lessThan1Significant?: number;
+    fixedLessThan1?: boolean;
+    greaterThan1Decimals?: number;
+    fixedGreaterThan1?: boolean;
+    minLimit?: number;
+  } = {},
+): string => {
+  const valueWithoutComma = value.toString().replace(/,/g, "");
+
+  if (!isNumber(valueWithoutComma)) {
+    return usd ? "$0" : "0";
+  }
+  const bigNumber = BigNumber(valueWithoutComma).abs();
+  const prefix = usd ? "$" : "";
+  const negativeSign = BigNumber(valueWithoutComma).isLessThan(0) ? "-" : "";
+
+  if (minLimit && bigNumber.isLessThan(minLimit)) {
+    return (usd ? "<$" : "<") + minLimit.toString();
+  }
+
+  if (bigNumber.isEqualTo(0)) {
+    return prefix + "0";
+  }
+
+  if (isKMBFormat) {
+    const kmbNumber = toKMBFormat(valueWithoutComma, { usd });
+    if (kmbNumber) return kmbNumber;
+  }
+
+  const negativeSignLength = bigNumber.isLessThan(0) ? 1 : 0;
+
+  if (Number(bigNumber) < 1) {
+    const tempNum = bigNumber
+      .toNumber()
+      .toLocaleString("en-US", {
+        maximumFractionDigits: lestThan1Decimals,
+        minimumFractionDigits: fixedLessThan1 ? lestThan1Decimals : undefined,
+        minimumSignificantDigits: fixedLessThan1
+          ? lessThan1Significant
+          : undefined,
+        maximumSignificantDigits: lessThan1Significant,
+      })
+      .replace(/,/g, "");
+
+    return negativeSign + prefix + tempNum;
+  }
+
+  const finalGreaterThan1Decimals = greaterThan1Decimals + negativeSignLength;
+
+  const tempNum = bigNumber
     .toNumber()
-    .toLocaleString("en", {
+    .toLocaleString("en-US", {
+      minimumFractionDigits: fixedGreaterThan1
+        ? finalGreaterThan1Decimals
+        : undefined,
       maximumFractionDigits: finalGreaterThan1Decimals,
-      minimumFractionDigits: forcedGreaterThan1Decimals ? finalGreaterThan1Decimals : undefined
-    });
+    })
+    .replace(/,/g, "");
+
+  return (
+    negativeSign +
+    prefix +
+    BigNumber(tempNum).toFormat(
+      fixedGreaterThan1 ? greaterThan1Decimals : undefined,
+    )
+  );
 };
 
 /**
@@ -319,8 +578,13 @@ export function toDecimalNumber(
   return Math.round(num * powers) / powers;
 }
 
-export function numberToUSD(value: number, options?: { decimalDigit?: number }) {
-  return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat(options?.decimalDigit || 2)}`;
+export function numberToUSD(
+  value: number,
+  options?: { decimalDigit?: number },
+) {
+  return Number.isNaN(value)
+    ? "-"
+    : `$${BigNumber(value).toFormat(options?.decimalDigit || 2)}`;
 }
 
 export function numberToUSDV2(value: number) {
@@ -334,14 +598,22 @@ export function matchInputNumber(value: string) {
 }
 
 export function prettyNumber(val: string | number) {
-  return BigNumber(val).decimalPlaces(2).toFormat(Number(val) === 0 ? 0 : 2);
+  return BigNumber(val)
+    .decimalPlaces(2)
+    .toFormat(Number(val) === 0 ? 0 : 2);
 }
 
-export function prettyNumberFloatInteger(val: string | number, isKMB?: boolean) {
+export function prettyNumberFloatInteger(
+  val: string | number,
+  isKMB?: boolean,
+) {
   if (Number.isInteger(Number(val))) {
     return convertToKMB(val.toString(), { isIgnoreKFormat: !isKMB });
   } else {
-    return convertToKMB(val.toString(), { isIgnoreKFormat: !isKMB, maximumFractionDigits: 6 });
+    return convertToKMB(val.toString(), {
+      isIgnoreKFormat: !isKMB,
+      maximumFractionDigits: 6,
+    });
   }
 }
 
@@ -357,7 +629,7 @@ export function formatUsdNumber3Digits(val: string | number) {
   }
   const stringVal = val.toString();
   for (let index = 0; index < stringVal.length; index++) {
-    if ((stringVal[index] !== "0" && stringVal[index] !== ".")) {
+    if (stringVal[index] !== "0" && stringVal[index] !== ".") {
       return stringVal.slice(0, index + 3);
     }
   }
@@ -381,7 +653,6 @@ export function convertLargePrice(val: string) {
   }
   return `${toUnitFormat(val || "0.00", true, false)}`;
 }
-
 
 export const formatUSDWallet = (
   value: BigNumber | string | number,
@@ -422,7 +693,9 @@ const getSubcriptChars = (number: string) => {
 
   for (let index = 0; index < numberOfZeroString.length; index++) {
     const currentChar = Number(numberOfZeroString[index]);
-    const singleSubscriptNumber = String.fromCharCode(subscriptZeroCharCode + Number(currentChar));
+    const singleSubscriptNumber = String.fromCharCode(
+      subscriptZeroCharCode + Number(currentChar),
+    );
     temp += singleSubscriptNumber;
   }
 
@@ -432,24 +705,29 @@ const getSubcriptChars = (number: string) => {
 export function subscriptFormat(
   number: string | number,
   options?: {
-    significantDigits?: number,
-    subscriptOffset?: number
-  }
+    significantDigits?: number;
+    subscriptOffset?: number;
+  },
 ) {
   const numberStr = BigNumber(number).toFixed();
   const numberOfZero = countZeros(numberStr);
   const significantDigits = options?.significantDigits || 5;
-  const zeroCountOffset = options?.subscriptOffset ? (options?.subscriptOffset + 1) : 5;
-
+  const zeroCountOffset = options?.subscriptOffset
+    ? options?.subscriptOffset + 1
+    : 5;
 
   if (numberOfZero <= zeroCountOffset) {
-    return removeTrailingZeros(Number(numberStr).toLocaleString("en-US", {
-      maximumSignificantDigits: significantDigits
-    }));
+    return removeTrailingZeros(
+      Number(numberStr).toLocaleString("en-US", {
+        maximumSignificantDigits: significantDigits,
+      }),
+    );
   }
 
   const subscriptChars = getSubcriptChars(numberStr);
 
-  const result = `0.0${subscriptChars}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
+  const result = `0.0${subscriptChars}${removeTrailingZeros(
+    numberStr.slice(numberOfZero + 1, numberOfZero + 6),
+  )}`;
   return result;
 }

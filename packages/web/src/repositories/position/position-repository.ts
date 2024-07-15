@@ -60,4 +60,6 @@ export interface PositionRepository {
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
   getPositionHistory: (lpTokenId: string) => Promise<IPositionHistoryModel[]>;
+
+  getUnstakingFee: () => Promise<number>;
 }

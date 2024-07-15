@@ -94,6 +94,7 @@ const RepositionModal: React.FC<Props> = ({
             tokenB={amountInfo?.tokenB?.info}
             currentAmounts={currentAmounts}
             repositionAmounts={repositionAmounts}
+            isLoadingPosition={false}
           />
 
           {confirm ? (
@@ -104,6 +105,8 @@ const RepositionModal: React.FC<Props> = ({
                 swapRemainToken={swapRemainToken}
                 reposition={reposition}
                 closeModal={close}
+                tokenA={amountInfo.tokenA.info}
+                tokenB={amountInfo.tokenB.info}
               />
             </React.Fragment>
           ) : (

@@ -2,6 +2,7 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import RemovePositionModal from "@components/remove/remove-position-modal/RemovePositionModal";
 import {
   makeBroadcastRemoveMessage,
+  // makeBroadcastUnwrapTokenMessage,
   useBroadcastHandler,
 } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
@@ -11,20 +12,25 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { checkGnotPath } from "@utils/common";
 import useRouter from "@hooks/common/use-custom-router";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
+import { TokenModel } from "@models/token/token-model";
 
 interface RemovePositionModalContainerProps {
   selectedPosition: PoolPositionModel[];
   allPosition: PoolPositionModel[];
+  isWrap: boolean;
 }
 
 const RemovePositionModalContainer = ({
   selectedPosition,
   allPosition,
+  isWrap,
 }: RemovePositionModalContainerProps) => {
   const { account } = useWallet();
   const { positionRepository } = useGnoswapContext();
+
   const router = useRouter();
   const clearModal = useClearModal();
   const {
@@ -34,16 +40,60 @@ const RemovePositionModalContainer = ({
     broadcastError,
     broadcastPending,
   } = useBroadcastHandler();
-  const { pooledTokenInfos } = useRemoveData({ selectedPosition });
+  const { pooledTokenInfos, unclaimedRewards } = useRemoveData({
+    selectedPosition,
+  });
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
     router.push(router.asPath.replace("/remove", ""));
   }, [clearModal, router]);
 
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
-    closeCallback: onCloseConfirmTransactionModal,
-  });
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
+    {
+      closeCallback: onCloseConfirmTransactionModal,
+    },
+  );
+
+  const gnotToken = useMemo(
+    () =>
+      selectedPosition.find(item => item.pool.tokenA.path === GNOT_TOKEN.path)
+        ?.pool.tokenA ||
+      selectedPosition.find(item => item.pool.tokenB.path === GNOT_TOKEN.path)
+        ?.pool.tokenB,
+    [selectedPosition],
+  );
+
+  const gnotAmount = useMemo(() => {
+    const pooledGnotTokenAmount = pooledTokenInfos.find(
+      item => item.token.path === gnotToken?.path,
+    )?.amount;
+    const unclaimedGnotTokenAmount = unclaimedRewards.find(
+      item => item.token.path === gnotToken?.path,
+    )?.amount;
+
+    return (
+      Number(pooledGnotTokenAmount || 0) + Number(unclaimedGnotTokenAmount || 0)
+    );
+  }, [gnotToken?.path, pooledTokenInfos, unclaimedRewards]);
+
+  const willWrap = useMemo(
+    () => isWrap && !!gnotToken && !!gnotAmount,
+    [gnotAmount, gnotToken, isWrap],
+  );
+
+  const tokenTransform = useCallback(
+    (token: TokenModel) => {
+      if (token.path === GNOT_TOKEN.path) {
+        if (willWrap) {
+          return WUGNOT_TOKEN;
+        }
+      }
+
+      return token;
+    },
+    [willWrap],
+  );
 
   const onSubmit = useCallback(async () => {
     const address = account?.address;
@@ -55,53 +105,47 @@ const RemovePositionModalContainer = ({
       ...new Set(
         selectedPosition.flatMap(position => [
           position.pool.tokenA.wrappedPath ||
-          checkGnotPath(position.pool.tokenA.path),
+            checkGnotPath(position.pool.tokenA.path),
           position.pool.tokenB.wrappedPath ||
-          checkGnotPath(position.pool.tokenB.path),
+            checkGnotPath(position.pool.tokenB.path),
         ]),
       ),
     ];
 
-    broadcastLoading(
-      makeBroadcastRemoveMessage("pending", {
-        tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-        tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-        tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", {
-          maximumFractionDigits: 6,
-        }),
-        tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", {
-          maximumFractionDigits: 6,
-        }),
+    const messageData = {
+      tokenASymbol: tokenTransform(pooledTokenInfos?.[0].token).symbol,
+      tokenBSymbol: tokenTransform(pooledTokenInfos?.[1]?.token).symbol,
+      tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", {
+        maximumFractionDigits: pooledTokenInfos?.[0].token.decimals,
       }),
-    );
+      tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", {
+        maximumFractionDigits: pooledTokenInfos?.[1].token.decimals,
+      }),
+    };
+
+    broadcastLoading(makeBroadcastRemoveMessage("pending", messageData));
 
     const result = await positionRepository
       .removeLiquidity({
         lpTokenIds,
         tokenPaths: approveTokenPaths,
         caller: address,
+        // existWrappedToken: “true” when received as GNOT or “false” when received as Wrapped GNOT.
+        existWrappedToken: !willWrap,
       })
       .catch(() => null);
+
     if (result) {
       if (result.code === 0) {
         broadcastPending();
-        setTimeout(() => {
+        await setTimeout(async () => {
           broadcastSuccess(
             makeBroadcastRemoveMessage("success", {
-              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
-              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
+              ...messageData,
             }),
           );
           openTransactionConfirmModal();
-        }, 1000);
+        });
       } else if (
         result.code === 4000 &&
         result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
@@ -110,16 +154,7 @@ const RemovePositionModalContainer = ({
         setTimeout(() => {
           broadcastError(
             makeBroadcastRemoveMessage("error", {
-              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
-              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-                "en-US",
-                { maximumFractionDigits: 6 },
-              ),
+              ...messageData,
             }),
           );
           clearModal();
@@ -127,21 +162,22 @@ const RemovePositionModalContainer = ({
       } else {
         broadcastRejected(
           makeBroadcastRemoveMessage("error", {
-            tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-            tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
-              "en-US",
-              { maximumFractionDigits: 6 },
-            ),
-            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
-              "en-US",
-              { maximumFractionDigits: 6 },
-            ),
+            ...messageData,
           }),
         );
       }
     }
-  }, [account?.address, clearModal, positionRepository, selectedPosition, router]);
+  }, [
+    account?.address,
+    clearModal,
+    positionRepository,
+    selectedPosition,
+    router,
+    pooledTokenInfos,
+    gnotToken,
+    willWrap,
+    tokenTransform,
+  ]);
 
   return (
     <RemovePositionModal

@@ -1,9 +1,12 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { useCallback, useMemo } from "react";
-import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
+import {
+  HeaderTextWrapper,
+  PositionsWrapper,
+} from "./EarnMyPositionsHeader.styles";
 import Switch from "@components/common/switch/Switch";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { SCANNER_URL } from "@common/values";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 export interface EarnMyPositionsHeaderProps {
   address?: string | null;
@@ -35,55 +38,58 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   isClosed,
   handleChangeClosed,
 }) => {
+  const { getAccountUrl } = useGnoscanUrl();
 
   const disabledStake = useMemo(() => {
     return !connected || isSwitchNetwork || !availableStake;
   }, [availableStake, connected, isSwitchNetwork]);
 
   const onClickAddressPosition = useCallback(() => {
-    const scannerUrl = `${SCANNER_URL}/accounts/${address}`;
-    window.open(scannerUrl, "_blank");
-  }, [address]);
+    if (address) window.open(getAccountUrl(address), "_blank");
+  }, [address, getAccountUrl]);
 
   const onClickNewPosition = useCallback(() => {
     moveEarnAdd();
   }, [moveEarnAdd]);
 
   const renderMyPositionTitle = () => {
-    if (isOtherPosition) return <h2>
-      <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
-      <span>{`’s Positions (${positionLength})`}</span>
-    </h2>;
+    if (isOtherPosition)
+      return (
+        <>
+          <span className="name" onClick={onClickAddressPosition}>
+            {addressName}
+          </span>
+          <span>{`’s Positions (${positionLength})`}</span>
+        </>
+      );
 
-    if (connected) return (
-      <h2>
-        <span>{`My Positions (${positionLength})`}</span>
-      </h2>
-    );
+    if (connected) return <span>{`My Positions (${positionLength})`}</span>;
 
-    return <h2>
-      <span>{"My Positions"}</span>
-    </h2>;
+    return <span>{"My Positions"}</span>;
   };
 
   return (
     <PositionsWrapper>
       <div className="header-content">
-        {renderMyPositionTitle()}
-        {visiblePositions && <Switch
-          checked={isClosed}
-          onChange={handleChangeClosed}
-          hasLabel={true}
-          labelText="Show closed"
-        />}
+        <HeaderTextWrapper>{renderMyPositionTitle()}</HeaderTextWrapper>
+        {visiblePositions && (
+          <Switch
+            checked={isClosed}
+            onChange={handleChangeClosed}
+            hasLabel={true}
+            labelText="Show closed"
+          />
+        )}
       </div>
       <div className="button-wrapper">
-        {visiblePositions && <Switch
-          checked={isClosed}
-          onChange={handleChangeClosed}
-          hasLabel={true}
-          labelText="Show closed positions"
-        />}
+        {visiblePositions && (
+          <Switch
+            checked={isClosed}
+            onChange={handleChangeClosed}
+            hasLabel={true}
+            labelText="Show closed positions"
+          />
+        )}
         <Button
           text="Stake Position"
           style={{

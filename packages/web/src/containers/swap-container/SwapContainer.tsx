@@ -40,6 +40,8 @@ const SwapContainer: React.FC = () => {
     isLoading,
     setSwapValue,
     setSwapRateAction,
+    priceImpactStatus,
+    isSameToken,
   } = useSwapHandler();
 
   useEffect(() => {
@@ -113,6 +115,8 @@ const SwapContainer: React.FC = () => {
       switchNetwork={switchNetwork}
       isLoading={isLoading}
       setSwapRateAction={setSwapRateAction}
+      priceImpactStatus={priceImpactStatus}
+      isSameToken={isSameToken}
     />
   );
 };

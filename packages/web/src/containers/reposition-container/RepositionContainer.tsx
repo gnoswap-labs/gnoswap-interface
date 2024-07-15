@@ -1,4 +1,5 @@
 import RepositionContent from "@components/reposition/reposition-content/RepositionContent";
+import { SwapFeeTierType } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useRepositionHandle } from "@hooks/reposition/use-reposition-handle";
 import { useRepositionModalContainer } from "@hooks/reposition/use-reposition-position-modal";
@@ -36,6 +37,8 @@ const RepositionContainer: React.FC = () => {
     removePosition,
     swapRemainToken,
     reposition,
+    selectedPosition,
+    isLoadingPosition,
   } = useRepositionHandle();
 
   const { openModal } = useRepositionModalContainer({
@@ -43,7 +46,7 @@ const RepositionContainer: React.FC = () => {
     tokenB,
     tokenAAmountInput,
     tokenBAmountInput,
-    swapFeeTier: `FEE_${fee}` as any,
+    swapFeeTier: `FEE_${fee}` as SwapFeeTierType,
     minPriceStr,
     maxPriceStr,
     rangeStatus,
@@ -59,8 +62,6 @@ const RepositionContainer: React.FC = () => {
   const onSubmit = () => {
     openModal();
   };
-
-  if (!tokenA || !tokenB) return <></>;
 
   return (
     <RepositionContent
@@ -87,6 +88,8 @@ const RepositionContainer: React.FC = () => {
       priceRange={priceRange}
       currentAmounts={currentAmounts}
       repositionAmounts={repositionAmounts}
+      selectedPosition={selectedPosition}
+      isLoadingPosition={isLoadingPosition}
     />
   );
 };

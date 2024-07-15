@@ -5,8 +5,7 @@ import IconTwitter from "@components/common/icons/social/IconTwitter";
 import IconDiscord from "@components/common/icons/social/IconDiscord";
 
 export const FOOTER_LEFT_NAV = {
-  content:
-    "Join Gnoswap - the fastest growing ecosystem aspiring to build the deepest source of liquidity on Gnoland.",
+  content: "HeaderFooter:introduction",
   menu: [
     {
       title: "github",
@@ -38,35 +37,35 @@ export const FOOTER_LEFT_NAV = {
 
 export const FOOTER_RIGHT_NAV = [
   {
-    content: "Features",
+    content: "HeaderFooter:featuresSection.title",
     menu: [
       {
-        title: "Swap",
+        title: "HeaderFooter:featuresSection.item.swap",
         path: "/swap",
         newTab: false,
       },
       {
-        title: "Add Position",
+        title: "HeaderFooter:featuresSection.item.addPosition",
         path: "/earn/add",
         newTab: false,
       },
       {
-        title: "Stake Position",
-        path: "/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000#staking",
+        title: "HeaderFooter:featuresSection.item.stakePosition",
+        path: "/earn/pool/gno.land_r_demo_wugnot:gno.land_r_gnoswap_gns:3000#staking",
         newTab: false,
       },
       {
-        title: "Incentivize Pool",
+        title: "HeaderFooter:featuresSection.item.incentivizePool",
         path: "/earn/incentivize",
         newTab: false,
       },
     ],
   },
   {
-    content: "Help",
+    content: "HeaderFooter:helpSection.title",
     menu: [
       {
-        title: "About Us",
+        title: "HeaderFooter:helpSection.item.aboutUs",
         path: "https://docs.gnoswap.io/welcome",
         newTab: true,
       },
@@ -76,72 +75,72 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "Twitter (X)",
+        title: "HeaderFooter:helpSection.item.twitter",
         path: "https://twitter.com/gnoswaplabs",
         newTab: true,
       },
       {
-        title: "Project Onboarding",
+        title: "HeaderFooter:helpSection.item.projectOnboarding",
         path: "/",
         newTab: true,
       },
     ],
   },
   {
-    content: "Developers",
+    content: "HeaderFooter:developersSection.title",
     menu: [
       {
-        title: "Github",
+        title: "HeaderFooter:developersSection.item.github",
         path: "https://github.com/gnoswap-labs/gnoswap",
         newTab: true,
       },
       {
-        title: "Docs",
+        title: "HeaderFooter:developersSection.item.docs",
         path: "https://docs.gnoswap.io/contracts/",
         newTab: true,
       },
       {
-        title: "Audit",
+        title: "HeaderFooter:developersSection.item.audit",
         path: "/",
         newTab: true,
       },
       {
-        title: "Bug Bounty",
-        path: "/",
-        newTab: true,
-      },
-    ],
-  },
-  {
-    content: "Governance",
-    menu: [
-      {
-        title: "Forum",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "Proposals",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "Vote",
+        title: "HeaderFooter:developersSection.item.bugBounty",
         path: "/",
         newTab: true,
       },
     ],
   },
   {
-    content: "Policy",
+    content: "HeaderFooter:governanceSection.title",
     menu: [
       {
-        title: "Terms of Use",
+        title: "HeaderFooter:governanceSection.item.forum",
         path: "/",
         newTab: true,
       },
       {
-        title: "Privacy Policy",
+        title: "HeaderFooter:governanceSection.item.proposals",
+        path: "/",
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:governanceSection.item.vote",
+        path: "/",
+        newTab: true,
+      },
+    ],
+  },
+  {
+    content: "HeaderFooter:policySection.title",
+    menu: [
+      {
+        title: "HeaderFooter:policySection.item.terms",
+        path: "/",
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:policySection.item.privacyPolicy",
         path: "/",
         newTab: true,
       },

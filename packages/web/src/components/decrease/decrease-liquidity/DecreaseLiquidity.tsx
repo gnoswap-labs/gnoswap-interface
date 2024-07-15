@@ -20,6 +20,8 @@ interface DecreaseLiquidityProps {
   percent: number;
   handlePercent: (value: number) => void;
   pooledTokenInfos: any;
+  isWrap: boolean;
+  setIsWrap: () => void;
 }
 
 const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
@@ -35,6 +37,8 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
   handlePercent,
   percent,
   pooledTokenInfos,
+  isWrap,
+  setIsWrap,
 }) => {
   return (
     <DecreaseLiquidityWrapper>
@@ -58,6 +62,8 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
           handlePercent={handlePercent}
           percent={percent}
           pooledTokenInfos={pooledTokenInfos}
+          isWrap={isWrap}
+          setIsWrap={setIsWrap}
         />
       </article>
       <Button

@@ -12,6 +12,23 @@ import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { GetStaticPaths } from "next";
+
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: "blocking", //indicates the type of fallback
+  };
+};
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter"])),
+    },
+  };
+}
 
 export default function DecreaseLiquidity() {
   const { width } = useWindowSize();
@@ -30,8 +47,9 @@ export default function DecreaseLiquidity() {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol
-            } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${
+                getGnotPath(data?.tokenB).symbol
+              } (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },
@@ -39,7 +57,10 @@ export default function DecreaseLiquidity() {
     ];
   }, [data, width]);
 
-  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/[position-id]/decrease-liquidity"], []);
+  const seoInfo = useMemo(
+    () => SEOInfo["/earn/pool/[pool-path]/[position-id]/decrease-liquidity"],
+    [],
+  );
 
   return (
     <>

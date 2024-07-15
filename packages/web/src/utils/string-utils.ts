@@ -49,15 +49,15 @@ export function numberToFormat(
     decimals,
   }: {
     decimals?: number;
-    forceDecimals?: boolean
+    forceDecimals?: boolean;
     isRounding?: boolean;
   } = {},
 ) {
   const decimal = forceDecimals
     ? decimals
     : Number.isInteger(Number(num))
-      ? 0
-      : decimals;
+    ? 0
+    : decimals;
 
   if (!isNumber(Number(num))) {
     return "0";
@@ -68,7 +68,9 @@ export function numberToFormat(
     const [intPart, decimalPart] = temp.split(".");
 
     if (!forceDecimals) {
-      return removeTrailingZeros(intPart + "." + decimalPart.substring(0, decimal));
+      return removeTrailingZeros(
+        intPart + "." + decimalPart.substring(0, decimal),
+      );
     }
 
     return intPart + "." + decimalPart.substring(0, decimal);
@@ -79,15 +81,19 @@ export function numberToFormat(
 
 export function numberToRate(
   num: string | number | null | undefined,
-  options?: { decimals?: number; minLimit?: number; errorText?: string, isRounding?: boolean },
+  options?: {
+    decimals?: number;
+    minLimit?: number;
+    errorText?: string;
+    isRounding?: boolean;
+    haveMinLimit?: boolean;
+  },
 ) {
-  const { decimal, minLimit, errorText, isRounding } = {
-    decimal: 1,
-    minLimit: 0.1,
-    errorText: "-",
-    isRounding: true,
-    ...(options || {}),
-  };
+  const decimals = options?.decimals ||  1;
+  const minLimit = options?.minLimit || 0.1;
+  const errorText = options?.errorText || "-";
+  const isRounding = options?.isRounding || true;
+  const haveMinLimit = options?.haveMinLimit || true;
 
   if (
     num === null ||
@@ -104,17 +110,36 @@ export function numberToRate(
     return "0%";
   }
 
-  if (numBN.isLessThan(minLimit)) {
+  if (haveMinLimit && numBN.isLessThan(minLimit)) {
     return `<${BigNumber(minLimit).toFormat()}%`;
   }
 
   if (!isRounding) {
-    const temp = numBN.toFormat(decimal + 1);
+    const temp = numBN.toFormat(decimals + 1);
 
     return `${temp.substring(0, temp.length - 1)}%`;
   }
 
-  return `${numBN.toFormat(decimal)}%`;
+  return `${numBN.toFormat(decimals)}%`;
+}
+
+export function formatApr(
+  num: string | number | null | undefined,
+  options: {
+    decimals?: number;
+    minLimit?: number;
+    errorText?: string;
+    isRounding?: boolean;
+    haveMinLimit?: boolean;
+  } = {
+    decimals: 2,
+    minLimit: 0.01,
+    errorText: "-",
+    isRounding: true,
+    haveMinLimit: true,
+  },
+) {
+  return numberToRate(num, options);
 }
 
 export function numberToString(num: string | number, decimals?: number) {
@@ -140,3 +165,6 @@ export function displayTickNumber(range: number[], tick: number) {
     Array.from(rangeGapSplit[1], v => v).findIndex(v => v !== "0") + 1;
   return tickToPriceStr(tick, { decimals: fixedPosition + 1 });
 }
+
+export const capitalize = (s: string) =>
+  (s && s[0].toUpperCase() + s.slice(1)) || "";

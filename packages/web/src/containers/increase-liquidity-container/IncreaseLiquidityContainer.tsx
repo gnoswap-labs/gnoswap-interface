@@ -34,6 +34,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
     tokenB,
     tokenAAmountInput,
     tokenBAmountInput,
+    slippage,
     swapFeeTier: `FEE_${fee}` as any,
     minPriceStr,
     maxPriceStr,

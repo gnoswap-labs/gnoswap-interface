@@ -52,7 +52,7 @@ export const UnstakePositionModalWrapper = styled.div`
         width: 100%;
         ${mixins.flexbox("column", "flex-start", "flex-start")};
         gap: 8px;
-        
+
         h4 {
           ${fonts.body12}
           color: ${({ theme }) => theme.color.text10};
@@ -82,14 +82,6 @@ export const UnstakePositionModalWrapper = styled.div`
           .label-logo {
             gap: 5px;
             ${mixins.flexbox("row", "center", "center")};
-            > div {
-              color: ${({ theme }) => theme.color.text03};
-              ${fonts.body12}
-            }
-            .image-logo {
-              width: 24px;
-              height: 24px;
-            }
           }
           svg {
             width: 16px;
@@ -158,7 +150,7 @@ export const UnstakePositionModalWrapper = styled.div`
               }
               span {
                 ${fonts.body12}
-               }
+              }
               svg {
                 width: 16px;
                 height: 16px;
@@ -208,7 +200,6 @@ export const UnstakePositionModalWrapper = styled.div`
   }
 `;
 
-
 export const Divider = styled.div`
   width: 100%;
   border-top: 1px solid ${({ theme }) => theme.color.border02};
@@ -219,7 +210,7 @@ interface Props {
 }
 
 export const ToolTipContentWrapper = styled.div<Props>`
-  width: ${({ width }) => width ? width : "268px"};
+  width: ${({ width }) => (width ? width : "268px")};
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
 `;
@@ -228,4 +219,9 @@ export const UnstakeWarningContentWrapper = styled.div`
   .unstake-percent {
     font-weight: 600;
   }
+`;
+
+export const RewardLogoSymbolWrapper = styled.div`
+  color: ${({ theme }) => theme.color.text03};
+  ${fonts.body12}
 `;

@@ -12,8 +12,8 @@ import DepositRatio from "../deposit-ratio/DepositRatio";
 import { RepositionSelectRangeWrapper } from "./RepositionSelectRange.styles";
 
 export interface RepositionSelectRangeProps {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
   fee: string;
   maxPriceStr: string;
   minPriceStr: string;
@@ -24,6 +24,7 @@ export interface RepositionSelectRangeProps {
   priceRanges: AddLiquidityPriceRage[];
   priceRange: AddLiquidityPriceRage;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  isLoadingPosition: boolean;
 }
 
 const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
@@ -39,6 +40,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
   priceRange,
   priceRanges,
   changePriceRange,
+  isLoadingPosition,
 }) => {
   const [openedPriceRange, setOpenedPriceRange] = useState(true);
 
@@ -53,7 +55,11 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
           <h5>2. Select New Range</h5>
           {!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />}
         </div>
-        <Badge text={priceRange.type} type={BADGE_TYPE.LINE} className="fee-tier-bad" />
+        <Badge
+          text={priceRange.type}
+          type={BADGE_TYPE.LINE}
+          className="fee-tier-bad"
+        />
       </div>
       <SelectPriceRangeReposition
         opened={openedPriceRange}
@@ -79,6 +85,8 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
         maxPriceStr={maxPriceStr}
         rangeStatus={rangeStatus}
         priceRangeSummary={priceRangeSummary}
+        isLoadingPosition={isLoadingPosition}
+        selectPool={selectPool}
       />
     </RepositionSelectRangeWrapper>
   );

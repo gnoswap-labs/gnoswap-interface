@@ -37,7 +37,6 @@ export const initialPool: PoolModel = {
   tvl: "0",
   tvlChange: 0,
   volume24h: 0,
-  volumeChange: 0,
   id: "",
   apr: "0",
   fee: "",
@@ -59,8 +58,8 @@ export const initialPool: PoolModel = {
   priceRatio: {
     "7d": [],
     "30d": [],
-    "all": [],
-  }
+    all: [],
+  },
 };
 
 export interface LineGraphData {
@@ -71,77 +70,85 @@ export interface LineGraphData {
 const ExchangeRateGraphContainer: React.FC = () => {
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [compareToken] = useAtom(EarnState.currentCompareToken);
-  const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
+  const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(
+    EarnState.poolInfoQuery,
+  );
 
   const tokenPair = currentPoolPath?.split(":");
   const { getGnotPath } = useGnotToGnot();
 
   const poolPath = currentPoolPath;
   const { data: poolData = initialPool, isLoading } = useGetPoolDetailByPath(
-    poolPath as string, {
-    enabled: !!poolPath,
-  }
+    poolPath as string,
+    {
+      enabled: !!poolPath,
+    },
   );
-  const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(CHART_DAY_SCOPE_TYPE["7D"]);
+  const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(
+    CHART_DAY_SCOPE_TYPE["7D"],
+  );
 
   const isReversed = useMemo(() => {
-    return tokenPair?.findIndex(path => {
-      if (compareToken) {
-        return isNativeToken(compareToken) || compareToken.path === "gnot"
-          ? compareToken.wrappedPath === path
-          : compareToken.path === path;
-      }
-      return false;
-    }) === 1;
+    return (
+      tokenPair?.findIndex(path => {
+        if (compareToken) {
+          return isNativeToken(compareToken) || compareToken.path === "gnot"
+            ? compareToken.wrappedPath === path
+            : compareToken.path === path;
+        }
+        return false;
+      }) === 1
+    );
   }, [compareToken, tokenPair]);
-
 
   const changedPoolInfo = useMemo(() => {
     return isReversed === false
       ? {
-        ...poolData,
-        tokenA: {
-          ...poolData.tokenA,
-          logoURI: getGnotPath(poolData.tokenA).logoURI,
-          path: getGnotPath(poolData.tokenA).path,
-          name: getGnotPath(poolData.tokenA).name,
-          symbol: getGnotPath(poolData.tokenA).symbol,
-        },
-        tokenB: {
-          ...poolData.tokenB,
-          logoURI: getGnotPath(poolData.tokenB).logoURI,
-          path: getGnotPath(poolData.tokenB).path,
-          name: getGnotPath(poolData.tokenB).name,
-          symbol: getGnotPath(poolData.tokenB).symbol,
-        },
-      }
+          ...poolData,
+          tokenA: {
+            ...poolData.tokenA,
+            logoURI: getGnotPath(poolData.tokenA).logoURI,
+            path: getGnotPath(poolData.tokenA).path,
+            name: getGnotPath(poolData.tokenA).name,
+            symbol: getGnotPath(poolData.tokenA).symbol,
+          },
+          tokenB: {
+            ...poolData.tokenB,
+            logoURI: getGnotPath(poolData.tokenB).logoURI,
+            path: getGnotPath(poolData.tokenB).path,
+            name: getGnotPath(poolData.tokenB).name,
+            symbol: getGnotPath(poolData.tokenB).symbol,
+          },
+        }
       : {
-        ...poolData,
-        tokenA: {
-          ...poolData.tokenA,
-          logoURI: getGnotPath(poolData.tokenA).logoURI,
-          path: getGnotPath(poolData.tokenA).path,
-          name: getGnotPath(poolData.tokenA).name,
-          symbol: getGnotPath(poolData.tokenA).symbol,
-        },
-        tokenB: {
-          ...poolData.tokenB,
-          logoURI: getGnotPath(poolData.tokenB).logoURI,
-          path: getGnotPath(poolData.tokenB).path,
-          name: getGnotPath(poolData.tokenB).name,
-          symbol: getGnotPath(poolData.tokenB).symbol,
-        },
-        price: 1 / poolData.price,
-      };
+          ...poolData,
+          tokenA: {
+            ...poolData.tokenA,
+            logoURI: getGnotPath(poolData.tokenA).logoURI,
+            path: getGnotPath(poolData.tokenA).path,
+            name: getGnotPath(poolData.tokenA).name,
+            symbol: getGnotPath(poolData.tokenA).symbol,
+          },
+          tokenB: {
+            ...poolData.tokenB,
+            logoURI: getGnotPath(poolData.tokenB).logoURI,
+            path: getGnotPath(poolData.tokenB).path,
+            name: getGnotPath(poolData.tokenB).name,
+            symbol: getGnotPath(poolData.tokenB).symbol,
+          },
+          price: 1 / poolData.price,
+        };
   }, [getGnotPath, poolData, isReversed]);
 
-  return (<ExchangeRateGraph
-    poolData={changedPoolInfo}
-    isLoading={isLoading || isLoadingRPCPoolInfo}
-    isReversed={isReversed}
-    selectedScope={selectedScope}
-    setSelectedScope={setSelectedScope}
-  />);
+  return (
+    <ExchangeRateGraph
+      poolData={changedPoolInfo}
+      isLoading={isLoading || isLoadingRPCPoolInfo}
+      isReversed={isReversed}
+      selectedScope={selectedScope}
+      setSelectedScope={setSelectedScope}
+    />
+  );
 };
 
 export default ExchangeRateGraphContainer;

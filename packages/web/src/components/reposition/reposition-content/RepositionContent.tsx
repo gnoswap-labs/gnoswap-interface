@@ -9,6 +9,7 @@ import {
 } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import React from "react";
 import BalanceChange from "../balance-change/BalanceChange";
@@ -18,8 +19,8 @@ import { ToolTipContentWrapper } from "../reposition-select-range/RepositionSele
 import { RepositionContentWrapper } from "./RepositionContent.styles";
 
 interface RepositionContentProps {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
   fee: string;
   maxPriceStr: string;
   minPriceStr: string;
@@ -31,8 +32,8 @@ interface RepositionContentProps {
   tokenBAmountInput: TokenAmountInputModel;
   changeTokenAAmount: (amount: string) => void;
   changeTokenBAmount: (amount: string) => void;
-  slippage: string;
-  changeSlippage: (value: string) => void;
+  slippage: number;
+  changeSlippage: (value: number) => void;
   buttonType: INCREASE_BUTTON_TYPE;
   onSubmit: () => void;
   selectPool: SelectPool;
@@ -41,6 +42,8 @@ interface RepositionContentProps {
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
   currentAmounts: { amountA: number; amountB: number } | null;
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
+  selectedPosition: PoolPositionModel | null;
+  isLoadingPosition: boolean;
 }
 
 const RepositionContent: React.FC<RepositionContentProps> = ({
@@ -59,6 +62,8 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   changePriceRange,
   currentAmounts,
   repositionAmounts,
+  selectedPosition,
+  isLoadingPosition,
 }) => {
   return (
     <RepositionContentWrapper>
@@ -87,6 +92,8 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           maxPriceStr={maxPriceStr}
           rangeStatus={rangeStatus}
           priceRangeSummary={priceRangeSummary}
+          selectedPosition={selectedPosition}
+          isLoadingPosition={isLoadingPosition}
         />
       </article>
       <article>
@@ -103,6 +110,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           priceRanges={priceRanges}
           priceRange={priceRange}
           changePriceRange={changePriceRange}
+          isLoadingPosition={isLoadingPosition}
         />
       </article>
 
@@ -113,6 +121,8 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           currentAmounts={currentAmounts}
           repositionAmounts={repositionAmounts}
           isHiddenCurrentBalance={false}
+          isLoadingPosition={isLoadingPosition}
+          selectPool={selectPool}
         />
       </article>
 

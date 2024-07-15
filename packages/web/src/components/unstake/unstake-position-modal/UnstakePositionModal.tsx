@@ -6,13 +6,20 @@ import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import React, { useCallback, useMemo } from "react";
-import { Divider, ToolTipContentWrapper, UnstakePositionModalWrapper, UnstakeWarningContentWrapper } from "./UnstakePositionModal.styles";
+import {
+  Divider,
+  RewardLogoSymbolWrapper,
+  ToolTipContentWrapper,
+  UnstakePositionModalWrapper,
+  UnstakeWarningContentWrapper,
+} from "./UnstakePositionModal.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
-import { numberToRate } from "@utils/string-utils";
+import { formatApr } from "@utils/string-utils";
+import { useGetUnstakingFee } from "@query/pools";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -20,47 +27,65 @@ interface Props {
   onSubmit: () => void;
 }
 
-const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
+const UnstakePositionModal: React.FC<Props> = ({
+  positions,
+  close,
+  onSubmit,
+}) => {
   const { unclaimedRewards, totalLiquidityUSD } = useUnstakeData({ positions });
+  const { data: unstakingFee } = useGetUnstakingFee();
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
 
   const currentPercent = useMemo(() => {
-    const result = positions
-      .flatMap(
-        ({ reward, usdValue }) => reward
-          .map((item) => ({ ...item, usdValue: usdValue }))
-      ).reduce((acc, current) => {
-        return {
-          unstakeUsd: acc.unstakeUsd + (Number(current.apr || 0) * Number(current.usdValue)),
-          allUsd: acc.allUsd + current.usdValue
-        };
-      }, {
-        unstakeUsd: 0,
-        allUsd: 0,
-      }) ?? 0;
+    const result =
+      positions
+        .flatMap(({ reward, usdValue }) =>
+          reward.map(item => ({ ...item, usdValue: usdValue })),
+        )
+        .reduce(
+          (acc, current) => {
+            return {
+              unstakeUsd:
+                acc.unstakeUsd +
+                Number(current.apr || 0) * Number(current.usdValue),
+              allUsd: acc.allUsd + current.usdValue,
+            };
+          },
+          {
+            unstakeUsd: 0,
+            allUsd: 0,
+          },
+        ) ?? 0;
 
-    return numberToRate(result.unstakeUsd / result.allUsd);
+    return formatApr(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
   const swapFeePercent = useMemo(() => {
-    const result = positions
-      .flatMap(
-        ({ reward, usdValue }) => reward
-          .map((item) => ({ ...item, usdValue: usdValue }))
-          .filter(item => item.rewardType === "SWAP_FEE")
-      ).reduce((acc, current) => {
-        return {
-          unstakeUsd: acc.unstakeUsd + (Number(current.apr || 0) * Number(current.usdValue)),
-          allUsd: acc.allUsd + current.usdValue
-        };
-      }, {
-        unstakeUsd: 0,
-        allUsd: 0,
-      }) ?? 0;
+    const result =
+      positions
+        .flatMap(({ reward, usdValue }) =>
+          reward
+            .map(item => ({ ...item, usdValue: usdValue }))
+            .filter(item => item.rewardType === "SWAP_FEE"),
+        )
+        .reduce(
+          (acc, current) => {
+            return {
+              unstakeUsd:
+                acc.unstakeUsd +
+                Number(current.apr || 0) * Number(current.usdValue),
+              allUsd: acc.allUsd + current.usdValue,
+            };
+          },
+          {
+            unstakeUsd: 0,
+            allUsd: 0,
+          },
+        ) ?? 0;
 
-    return numberToRate(result.unstakeUsd / result.allUsd);
+    return formatApr(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
   return (
@@ -87,55 +112,75 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                       rightSymbol={position.pool.tokenB.symbol}
                     />
                     <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
-                    <Badge className="unstake-bar" type={BADGE_TYPE.DARK_DEFAULT} text={`${Number(position.pool.fee) / 10000}%`} />
+                    <Badge
+                      className="unstake-bar"
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                      text={`${Number(position.pool.fee) / 10000}%`}
+                    />
                   </div>
-                  <div className="value">{numberToUSD(Number(position.positionUsdValue))}</div>
+                  <div className="value">
+                    {numberToUSD(Number(position.positionUsdValue))}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-          {unclaimedRewards.length > 0 && <div className="box-item box-item-unclaim">
-            <h4>Unclaimed Rewards</h4>
-            <div className="item-content">
-              {unclaimedRewards.map((rewardInfo, index) => (
-                <div key={index} className="item-detail">
-                  <div className="item-detail-wrapper">
-                    <div className="label-logo">
-                      <MissingLogo
-                        className="image-logo"
-                        symbol={rewardInfo.token.symbol}
-                        url={rewardInfo.token.logoURI}
-                        width={24}
-                        mobileWidth={24}
-                      />
-                      <div>{rewardInfo.token.symbol}</div>
+          {unclaimedRewards.length > 0 && (
+            <div className="box-item box-item-unclaim">
+              <h4>Unclaimed Rewards</h4>
+              <div className="item-content">
+                {unclaimedRewards.map((rewardInfo, index) => (
+                  <div key={index} className="item-detail">
+                    <div className="item-detail-wrapper">
+                      <div className="label-logo">
+                        <MissingLogo
+                          className="image-logo"
+                          symbol={rewardInfo.token.symbol}
+                          url={rewardInfo.token.logoURI}
+                          width={24}
+                          mobileWidth={24}
+                        />
+                        <RewardLogoSymbolWrapper>
+                          {rewardInfo.token.symbol}
+                        </RewardLogoSymbolWrapper>
+                      </div>
+                      <div className="value">
+                        {formatNumberToLocaleString(rewardInfo.amount)}
+                      </div>
                     </div>
-                    <div className="value">{formatNumberToLocaleString(rewardInfo.amount)}</div>
+                    <div className="sub-value">{rewardInfo.amountUSD}</div>
                   </div>
-                  <div className="sub-value">{rewardInfo.amountUSD}</div>
-                </div>
-              ))}
-              <div className="protocal-wrapper">
-                <Divider />
-                <div className="protocol">
-                  <div>
-                    <span className="">Protocol Fee</span>
-                    <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper width="251px">The amount of fees charged on each claim that goes to the protocol.</ToolTipContentWrapper>}>
-                      <IconInfo />
-                    </Tooltip>
+                ))}
+                <div className="protocal-wrapper">
+                  <Divider />
+                  <div className="protocol">
+                    <div>
+                      <span className="">Protocol Fee</span>
+                      <Tooltip
+                        placement="top"
+                        FloatingContent={
+                          <ToolTipContentWrapper width="251px">
+                            The amount of fees charged on each claim that goes
+                            to the protocol.
+                          </ToolTipContentWrapper>
+                        }
+                      >
+                        <IconInfo />
+                      </Tooltip>
+                    </div>
+                    <span className="white-text">
+                      {unstakingFee ? `${(unstakingFee || 0) / 100}%` : "-"}
+                    </span>
                   </div>
-                  <span className="white-text">0%</span>
                 </div>
               </div>
             </div>
-          </div>}
+          )}
           <Divider />
           <div className="box-item">
             <div className="item-content">
               <div>
-                <div className="label-large">
-                  Total Amount
-                </div>
+                <div className="label-large">Total Amount</div>
                 <div className="value-large">{totalLiquidityUSD}</div>
               </div>
             </div>
@@ -143,9 +188,12 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
           <WarningCard
             title={"Important Note"}
             icon={<IconCircleExclamationMark />}
-            content={<UnstakeWarningContentWrapper>
-              Your APR will reduce from  {currentPercent} → <span className="unstake-percent">{swapFeePercent}</span>
-            </UnstakeWarningContentWrapper>}
+            content={
+              <UnstakeWarningContentWrapper>
+                Your APR will reduce from {currentPercent} →{" "}
+                <span className="unstake-percent">{swapFeePercent}</span>
+              </UnstakeWarningContentWrapper>
+            }
           />
           <div>
             <Button

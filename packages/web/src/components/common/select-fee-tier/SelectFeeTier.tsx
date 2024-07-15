@@ -1,6 +1,12 @@
 import React, { useCallback, useMemo } from "react";
-import { SelectFeeTierItemWrapper, SelectFeeTierWrapper } from "./SelectFeeTier.styles";
-import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import {
+  SelectFeeTierItemWrapper,
+  SelectFeeTierWrapper,
+} from "./SelectFeeTier.styles";
+import {
+  SwapFeeTierInfoMap,
+  SwapFeeTierType,
+} from "@constants/option.constant";
 import { PoolModel } from "@models/pool/pool-model";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 
@@ -8,7 +14,7 @@ interface SelectFeeTierProps {
   feetierOfLiquidityMap: { [key in string]: number };
   feeTiers: SwapFeeTierType[];
   feeTier: SwapFeeTierType | null;
-  pools: PoolModel[],
+  pools: PoolModel[];
   selectFeeTier: (feeTier: SwapFeeTierType) => void;
   fetching: boolean;
   openedFeeTier: boolean;
@@ -22,10 +28,12 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
   fetching,
   openedFeeTier,
 }) => {
-
-  const onClickFeeTierItem = useCallback((feeTier: SwapFeeTierType) => {
-    selectFeeTier(feeTier);
-  }, [selectFeeTier]);
+  const onClickFeeTierItem = useCallback(
+    (feeTier: SwapFeeTierType) => {
+      selectFeeTier(feeTier);
+    },
+    [selectFeeTier],
+  );
 
   return (
     <SelectFeeTierWrapper className={openedFeeTier ? "open" : ""}>
@@ -74,15 +82,19 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
   }, [feeTier]);
 
   return (
-    <SelectFeeTierItemWrapper className={selected ? "selected" : ""} onClick={onClick}>
+    <SelectFeeTierItemWrapper
+      className={selected ? "selected" : ""}
+      onClick={onClick}
+    >
       <div>
         <strong className="fee-rate">{feeRateStr}</strong>
         <p className="desc">{description}</p>
       </div>
-      <span className="selected-fee-rate">{fetching ? <LoadingSpinner /> : rangeStr}</span>
+      <span className="selected-fee-rate">
+        {fetching ? <LoadingSpinner /> : rangeStr}
+      </span>
     </SelectFeeTierItemWrapper>
   );
 };
-
 
 export default SelectFeeTier;

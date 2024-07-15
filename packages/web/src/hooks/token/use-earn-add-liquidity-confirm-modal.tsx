@@ -28,6 +28,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { useGetPoolCreationFee } from "@query/pools";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { subscriptFormat } from "@utils/number-utils";
+import { GNS_TOKEN } from "@common/values/token-constant";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -40,7 +41,7 @@ export interface EarnAddLiquidityConfirmModalProps {
 
   selectPool: SelectPool;
 
-  slippage: string;
+  slippage: number;
 
   swapFeeTier: SwapFeeTierType | null;
 
@@ -51,7 +52,7 @@ export interface EarnAddLiquidityConfirmModalProps {
     startPrice: string;
     minTick: number;
     maxTick: number;
-    slippage: string;
+    slippage: number;
     withStaking?: boolean;
   }) => Promise<WalletResponse<CreatePoolResponse> | null>;
 
@@ -61,7 +62,7 @@ export interface EarnAddLiquidityConfirmModalProps {
     swapFeeTier: SwapFeeTierType;
     minTick: number;
     maxTick: number;
-    slippage: string;
+    slippage: number;
     withStaking?: boolean;
   }) => Promise<WalletResponse<AddLiquidityResponse> | null>;
 }
@@ -89,9 +90,9 @@ export const useEarnAddLiquidityConfirmModal = ({
     broadcastError,
   } = useBroadcastHandler();
   const router = useRouter();
-  const { tokens, displayBalanceMap } = useTokenData();
+  const { displayBalanceMap } = useTokenData();
   const { data: creationFee, refetch: refetchGetPoolCreationFee } =
-    useGetPoolCreationFee({});
+    useGetPoolCreationFee();
 
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -143,9 +144,9 @@ export const useEarnAddLiquidityConfirmModal = ({
       return null;
     }
     const tokenAUsdValue =
-      tokenAAmount === "0" ? "$0" : tokenAAmountInput.usdValue;
+      tokenAAmount === "0" ? "-" : tokenAAmountInput.usdValue;
     const tokenBUsdValue =
-      tokenBAmount === "0" ? "$0" : tokenBAmountInput.usdValue;
+      tokenBAmount === "0" ? "-" : tokenBAmountInput.usdValue;
     return {
       tokenA: {
         info: tokenA,
@@ -182,14 +183,13 @@ export const useEarnAddLiquidityConfirmModal = ({
       return subscriptFormat(BigNumber(price).toFixed());
     }
 
-
     if (currentValue / maxPrice > 0.9) {
       return "∞";
     }
 
     return formatTokenExchangeRate(Number(price), {
       maxSignificantDigits: 6,
-      minLimit: 0.000001
+      minLimit: 0.000001,
     });
   };
 
@@ -212,7 +212,7 @@ export const useEarnAddLiquidityConfirmModal = ({
         inRange: true,
         minPrice: "0",
         maxPrice: "∞",
-        priceLabelMin: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,
+        priceLabelMin: `1 ${tokenASymbol} = 0 ${tokenBSymbol}`,
         priceLabelMax: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,
         feeBoost: "x1",
         estimatedAPR: "N/A",
@@ -245,6 +245,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     ) {
       inRange = false;
     }
+
     return {
       currentPrice,
       inRange,
@@ -257,19 +258,20 @@ export const useEarnAddLiquidityConfirmModal = ({
     };
   }, [selectPool, tokenA, tokenB]);
 
-  const gnsToken = tokens.find(item => item.priceID === GNS_TOKEN_PATH);
-
-  const feeInfo = useMemo((): { token?: TokenModel; fee: string; errorMsg?: string } => {
+  const feeInfo = useMemo((): {
+    token?: TokenModel;
+    fee: string;
+    errorMsg?: string;
+  } => {
     return {
-      token: gnsToken,
-      fee: gnsToken
-        ? `${makeDisplayTokenAmount(gnsToken, creationFee || 0)}`
+      token: GNS_TOKEN,
+      fee: GNS_TOKEN
+        ? `${makeDisplayTokenAmount(GNS_TOKEN, creationFee || 0)}`
         : "",
       errorMsg: (() => {
-        if (!gnsToken) return;
-
-        let totalGnsAmount = makeDisplayTokenAmount(gnsToken, creationFee || 0) || 0;
-        const gnsBalance = displayBalanceMap[gnsToken?.priceID ?? ""] || 0;
+        let totalGnsAmount =
+          makeDisplayTokenAmount(GNS_TOKEN, creationFee || 0) || 0;
+        const gnsBalance = displayBalanceMap[GNS_TOKEN?.priceID ?? ""] || 0;
 
         if (tokenA?.priceID === GNS_TOKEN_PATH) {
           totalGnsAmount += Number(tokenAAmount);
@@ -282,9 +284,16 @@ export const useEarnAddLiquidityConfirmModal = ({
         if (totalGnsAmount > gnsBalance) {
           return "Insufficient balance";
         }
-      })()
+      })(),
     };
-  }, [creationFee, displayBalanceMap, gnsToken, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+  }, [
+    creationFee,
+    displayBalanceMap,
+    tokenA,
+    tokenAAmount,
+    tokenB,
+    tokenBAmount,
+  ]);
 
   const close = useCallback(() => {
     setOpenedModal(false);
@@ -340,24 +349,24 @@ export const useEarnAddLiquidityConfirmModal = ({
 
       const transaction = selectPool.isCreate
         ? createPool({
-          tokenAAmount,
-          tokenBAmount,
-          minTick,
-          maxTick,
-          slippage,
-          startPrice: `${selectPool.startPrice || 1}`,
-          swapFeeTier,
-          withStaking: options?.withStaking,
-        })
+            tokenAAmount,
+            tokenBAmount,
+            minTick,
+            maxTick,
+            slippage,
+            startPrice: `${selectPool.startPrice || 1}`,
+            swapFeeTier,
+            withStaking: options?.withStaking,
+          })
         : addLiquidity({
-          tokenAAmount,
-          tokenBAmount,
-          minTick,
-          maxTick,
-          slippage,
-          swapFeeTier,
-          withStaking: options?.withStaking,
-        });
+            tokenAAmount,
+            tokenBAmount,
+            minTick,
+            maxTick,
+            slippage,
+            swapFeeTier,
+            withStaking: options?.withStaking,
+          });
       transaction
         .then(result => {
           if (result) {

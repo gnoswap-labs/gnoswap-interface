@@ -52,11 +52,11 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 {BigNumber(pooledTokenInfo.amount).isZero()
                   ? "0"
                   : pooledTokenInfo.amount.toLocaleString("en", {
-                    minimumFractionDigits: 6,
-                  })}
+                      minimumFractionDigits: pooledTokenInfo.token.decimals,
+                    })}
               </strong>
             </div>
-            <span className="dallor">{pooledTokenInfo.amountUSD}</span>
+            <span className="dollar-value">{pooledTokenInfo.amountUSD}</span>
           </li>
         ))}
       </ul>

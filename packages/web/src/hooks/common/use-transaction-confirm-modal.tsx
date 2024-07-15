@@ -12,7 +12,7 @@ export interface TransactionConfirmModalResponse {
   update: (
     status: CommonState.TransactionConfirmStatus,
     description: string | null,
-    scannerURL: string | null,
+    txHash: string | null,
     callback?: (() => void) | undefined,
   ) => void;
 }
@@ -22,7 +22,9 @@ export interface UseTransactionConfirmModalProps {
   closeCallback?: () => void;
 }
 
-export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalProps): TransactionConfirmModalResponse => {
+export const useTransactionConfirmModal = (
+  props?: UseTransactionConfirmModalProps,
+): TransactionConfirmModalResponse => {
   const [, setOpenedModal] = useAtom(CommonState.openedTransactionModal);
   const [, setModalContent] = useAtom(CommonState.transactionModalContent);
   const [transactionModalData, setTransactionModalData] = useAtom(
@@ -31,12 +33,21 @@ export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalPro
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
 
-  const closeModal = useCallback((isClear = false) => {
-    setOpenedModal(false);
-    setModalContent(null);
-    setTransactionModalData(null);
-    !isClear && props?.closeCallback?.();
-  }, [setModalContent, setOpenedModal, setTransactionModalData, transactionModalData, props]);
+  const closeModal = useCallback(
+    (isClear = false) => {
+      setOpenedModal(false);
+      setModalContent(null);
+      setTransactionModalData(null);
+      !isClear && props?.closeCallback?.();
+    },
+    [
+      setModalContent,
+      setOpenedModal,
+      setTransactionModalData,
+      transactionModalData,
+      props,
+    ],
+  );
 
   const confirm = useCallback(() => {
     closeModal();
@@ -51,13 +62,13 @@ export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalPro
     (
       status: CommonState.TransactionConfirmStatus,
       description: string | null,
-      scannerURL: string | null,
+      txHash: string | null,
       callback?: (() => void) | undefined,
     ) => {
       setTransactionModalData({
         status,
         description,
-        scannerURL,
+        txHash,
         callback,
       });
     },
@@ -74,7 +85,7 @@ export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalPro
         <TransactionConfirmModal
           status={transactionModalData.status}
           description={transactionModalData.description}
-          scannerURL={transactionModalData.scannerURL}
+          txHash={transactionModalData.txHash}
           confirm={confirm}
           close={confirm}
         />,

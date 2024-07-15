@@ -13,7 +13,6 @@ import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
 import { IncreaseState } from "@states/index";
@@ -46,18 +45,24 @@ export const useRepositionHandle = () => {
   const poolPath = router.query["pool-path"] as string;
   const positionId = router.query["position-id"] as string;
 
-  const [selectedPosition, setSelectedPosition] = useAtom(
-    IncreaseState.selectedPosition,
-  );
+  const [defaultPosition] = useAtom(IncreaseState.selectedPosition);
 
   const { address } = useAddress();
   const { swapRouterRepository, positionRepository } = useGnoswapContext();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account } = useWallet();
-  const { positions } = usePositionData({
+  const { positions, loading: isLoadingPosition } = usePositionData({
     poolPath: encryptId(poolPath),
   });
+
+  const selectedPosition = useMemo(
+    () =>
+      positions.find(item => item.id.toString() === positionId) ||
+      defaultPosition,
+    [defaultPosition, positionId, positions],
+  );
+
   const { openModal: openConfirmModal, update: updateConfirmModalData } =
     useTransactionConfirmModal();
 
@@ -74,7 +79,7 @@ export const useRepositionHandle = () => {
       symbol: getGnotPath(selectedPosition?.pool.tokenA).symbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenA).logoURI,
     };
-  }, [selectedPosition?.pool]);
+  }, [selectedPosition?.pool, selectedPosition]);
 
   const tokenB: TokenModel | null = useMemo(() => {
     if (!selectedPosition) return null;
@@ -84,7 +89,7 @@ export const useRepositionHandle = () => {
       symbol: getGnotPath(selectedPosition?.pool.tokenB).symbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenB).logoURI,
     };
-  }, [selectedPosition?.pool]);
+  }, [selectedPosition?.pool, selectedPosition]);
 
   const inRange = useMemo(() => {
     if (!selectedPosition) return false;
@@ -120,11 +125,17 @@ export const useRepositionHandle = () => {
 
   const minPriceStr = useMemo(() => {
     if (!selectPool.minPrice) return "-";
+
+    if (selectPool.selectedFullRange) return "0";
+
     return convertToKMB(selectPool.minPrice.toString());
   }, [selectPool]);
 
   const maxPriceStr = useMemo(() => {
     if (!selectPool.maxPrice) return "-";
+
+    if (selectPool.selectedFullRange) return "∞";
+
     return convertToKMB(selectPool.maxPrice.toString());
   }, [selectPool]);
 
@@ -272,35 +283,49 @@ export const useRepositionHandle = () => {
     tokenB,
   ]);
 
-  const estimateSwapRequestByAmounts = useMemo(() => {
-    if (!currentAmounts || !repositionAmounts || !selectedPosition) {
+  const swapAmount = useMemo(() => {
+    if (!currentAmounts || !repositionAmounts) {
       return null;
     }
-
     const { amountA, amountB } = currentAmounts;
     const { amountA: repositionAmountA, amountB: repositionAmountB } =
       repositionAmounts;
 
     const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
     if (isSwapTokenA) {
+      return amountA - repositionAmountA;
+    }
+    return amountB - repositionAmountB;
+  }, [currentAmounts, repositionAmounts]);
+
+  const estimateSwapRequestByAmounts = useMemo(() => {
+    if (!currentAmounts || !repositionAmounts || !selectedPosition) {
+      return null;
+    }
+
+    const { amountA } = currentAmounts;
+    const { amountA: repositionAmountA } = repositionAmounts;
+
+    const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
+    if (isSwapTokenA) {
       return {
         inputToken: selectedPosition.pool.tokenA,
         outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: amountA - repositionAmountA,
+        tokenAmount: swapAmount || 0,
         exactType: "EXACT_IN" as const,
       };
     }
     return {
       inputToken: selectedPosition.pool.tokenB,
       outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: amountB - repositionAmountB,
+      tokenAmount: swapAmount || 0,
       exactType: "EXACT_IN" as const,
     };
-  }, [currentAmounts, repositionAmounts, selectedPosition]);
+  }, [currentAmounts, repositionAmounts, selectedPosition, swapAmount]);
 
   const { data: estimatedRemainSwap, isLoading: isEstimatedRemainSwapLoading } =
     useEstimateSwap(estimateSwapRequestByAmounts, {
-      enabled: !!estimateSwapRequestByAmounts,
+      enabled: !!estimateSwapRequestByAmounts && !!swapAmount,
     });
 
   const estimatedRepositionAmounts = useMemo(() => {
@@ -345,6 +370,7 @@ export const useRepositionHandle = () => {
     estimatedRemainSwap,
     isEstimatedRemainSwapLoading,
     repositionAmounts,
+    selectedPosition,
   ]);
 
   const changeTokenAAmount = useCallback(
@@ -385,6 +411,7 @@ export const useRepositionHandle = () => {
             selectedPosition.pool.tokenA.path,
             selectedPosition.pool.tokenB.path,
           ],
+          existWrappedToken: true,
         })
         .catch(() => null);
     }, [selectedPosition, positionRepository, address]);
@@ -483,19 +510,6 @@ export const useRepositionHandle = () => {
   );
 
   useEffect(() => {
-    if (!selectedPosition && positions.length > 0 && positionId) {
-      const position = positions.filter(
-        (_: PoolPositionModel) => _.id === positionId,
-      )?.[0];
-      if (position) {
-        setSelectedPosition(position);
-      } else {
-        router.push(`/earn/pool/${poolPath}`);
-      }
-    }
-  }, [selectedPosition, positions, positionId, poolPath]);
-
-  useEffect(() => {
     if (!account && poolPath) {
       router.push(`/earn/pool/${poolPath}`);
     }
@@ -532,5 +546,7 @@ export const useRepositionHandle = () => {
     removePosition,
     swapRemainToken,
     reposition,
+    selectedPosition,
+    isLoadingPosition,
   };
 };

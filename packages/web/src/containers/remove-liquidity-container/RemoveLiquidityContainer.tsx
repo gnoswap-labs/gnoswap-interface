@@ -10,17 +10,19 @@ const RemoveLiquidityContainer: React.FC = () => {
   const router = useRouter();
   const { connected } = useWallet();
   const [checkedList, setCheckedList] = useState<string[]>([]);
+  const [isWrap, setIsWrap] = useState(false);
   const poolPath = router.query["pool-path"] as string;
   const { positions, loading: isLoadingPositions } = usePositionData({
     isClosed: false,
     poolPath: encryptId(poolPath),
     queryOption: {
-      enabled: !!poolPath
-    }
+      enabled: !!poolPath,
+    },
   });
   const { openModal } = useRemovePositionModal({
     positions: positions,
     selectedIds: checkedList,
+    isWrap,
   });
 
   const stakedPositions = useMemo(() => {
@@ -75,6 +77,8 @@ const RemoveLiquidityContainer: React.FC = () => {
       checkedAll={checkedAll}
       removeLiquidity={removeLiquidity}
       isLoading={isLoadingPositions}
+      isWrap={isWrap}
+      setIsWrap={() => setIsWrap(prev => !prev)}
     />
   );
 };

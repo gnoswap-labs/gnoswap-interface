@@ -44,7 +44,11 @@ export const MyLiquidityContentWrapper = styled.div`
     .loading-button {
       width: 20px;
       height: 20px;
-      background: conic-gradient(from 0deg at 50% 50.63%, #FFFFFF 0deg, #233DBD 360deg);
+      background: conic-gradient(
+        from 0deg at 50% 50.63%,
+        #ffffff 0deg,
+        #233dbd 360deg
+      );
       &::before {
         width: 14.8px;
         height: 14.8px;
@@ -72,41 +76,6 @@ export const MyLiquidityContentWrapper = styled.div`
       .image-logo {
         width: 20px;
         height: 20px;
-      }
-      > span {
-        ${fonts.body11}
-        .token-symbol {
-          display: inline;
-          @media (max-width: 1250px) {
-            display: none;
-          }
-          ${media.tablet} {
-            display: none;
-          }
-          ${media.tabletMiddle} {
-            display: none;
-          }
-          ${media.mobile} {
-            display: none;
-          }
-        }
-        .wrap-text {
-          @media (max-width: 1343px) {
-            display: none;
-          }
-        }
-        .token-percent {
-          display: inline;
-          ${media.tablet} {
-            display: none;
-          }
-          ${media.tabletMiddle} {
-            display: none;
-          }
-          ${media.mobile} {
-            display: inline;
-          }
-        }
       }
     }
     .divider {
@@ -238,4 +207,54 @@ export const TooltipDivider = styled.div`
   height: 1px;
   width: 100%;
   background: ${({ theme }) => theme.color.border01};
+`;
+
+export const AmountDisplayWrapper = styled.div<{ $canHover: boolean }>`
+  ${fonts.body11}
+  .token-symbol {
+    display: inline;
+    @media (max-width: 1250px) {
+      display: none;
+    }
+    ${media.tablet} {
+      display: none;
+    }
+    ${media.tabletMiddle} {
+      display: none;
+    }
+    ${media.mobile} {
+      display: none;
+    }
+  }
+  .wrap-text {
+    @media (max-width: 1343px) {
+      display: none;
+    }
+  }
+  .token-percent {
+    display: inline;
+    ${media.tablet} {
+      display: none;
+    }
+    ${media.tabletMiddle} {
+      display: none;
+    }
+    ${media.mobile} {
+      display: inline;
+    }
+  }
+
+  &:hover {
+    ${({ $canHover, theme }) => {
+      if ($canHover) {
+        return `color: ${theme.color.text07}`;
+      }
+    }}
+  }
+`;
+
+export const TokenAmountTooltipContentWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")}
+  gap: 4px;
+  ${fonts.body12}
 `;

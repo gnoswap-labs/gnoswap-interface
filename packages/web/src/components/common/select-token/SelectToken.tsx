@@ -5,22 +5,23 @@ import React, {
   useState,
   useMemo,
 } from "react";
+import { useAtom } from "jotai";
+import IconSearch from "@components/common/icons/IconSearch";
+import IconClose from "@components/common/icons/IconCancel";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { removeDuplicatesByWrappedPath } from "@utils/common";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
+import BigNumber from "bignumber.js";
+import { DEVICE_TYPE } from "@styles/media";
+import { TokenState } from "@states/index";
+import IconNewTab from "../icons/IconNewTab";
+import MissingLogo from "../missing-logo/MissingLogo";
 import {
   Divider,
   SelectTokenWrapper,
   TokenInfoWrapper,
 } from "./SelectToken.styles";
-import IconSearch from "@components/common/icons/IconSearch";
-import IconClose from "@components/common/icons/IconCancel";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
-import BigNumber from "bignumber.js";
-import IconNewTab from "../icons/IconNewTab";
-import { DEVICE_TYPE } from "@styles/media";
-import { useAtom } from "jotai";
-import { TokenState } from "@states/index";
-import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
-import MissingLogo from "../missing-logo/MissingLogo";
-import { removeDuplicatesByWrappedPath } from "@utils/common";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -64,11 +65,17 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   );
   const [positionTop, setPositionTop] = useState(0);
   const [, setRecentsData] = useAtom(TokenState.selectRecents);
+  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
 
   const getTokenPrice = useCallback(
     (token: TokenModel) => {
       const tokenPrice = tokenPrices[token.path];
-      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice) || isSwitchNetwork) {
+      if (
+        !tokenPrice ||
+        tokenPrice === null ||
+        Number.isNaN(tokenPrice) ||
+        isSwitchNetwork
+      ) {
         return "-";
       }
       return BigNumber(tokenPrice).toFormat();
@@ -156,12 +163,12 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
       e.stopPropagation();
       if (path === "gnot") {
-        window.open("https://gnoscan.io/", "_blank");
+        window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open("https://gnoscan.io/tokens/" + encodeURIComponent(path), "_blank");
+        window.open(getTokenUrl(path), "_blank");
       }
     },
-    [],
+    [getGnoscanUrl, getTokenUrl],
   );
 
   const length = useMemo(() => {
@@ -194,8 +201,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         <div className="token-select">
           {getTokensRecent.map((token, index) => (
             <div
-              className={`token-button ${themeKey === "dark" && "border-button-none"
-                }`}
+              className={`token-button ${
+                themeKey === "dark" && "border-button-none"
+              }`}
               key={index}
               onClick={() => onClickToken(token)}
             >
@@ -213,8 +221,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       </div>
       <Divider />
       <div
-        className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
-          }`}
+        className={`token-list-wrapper ${
+          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
+        }`}
       >
         {tokens.length > 0 &&
           tokens.map((token, index) => (
@@ -251,7 +260,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                         e: React.MouseEvent<HTMLDivElement, MouseEvent>,
                       ) => onClickPath(e, token.path)}
                     >
-                      <div>{isNativeToken(token) ? "Native Coin" : token.path}</div>
+                      <div>
+                        {isNativeToken(token) ? "Native Coin" : token.path}
+                      </div>
                       <IconNewTab />
                     </div>
                   </div>

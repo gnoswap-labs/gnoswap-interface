@@ -1,5 +1,6 @@
+import { fonts } from "./../../../constants/font.constant";
 import styled from "@emotion/styled";
-import { fonts } from "@constants/font.constant";
+import mixins from "@styles/mixins";
 
 export const SelectDistributionPeriodInputWrapper = styled.div`
   display: flex;
@@ -7,9 +8,11 @@ export const SelectDistributionPeriodInputWrapper = styled.div`
   width: 100%;
   height: auto;
   & .description {
+    ${mixins.flexbox("row", "center", "flex-start")}
     ${fonts.p4}
     color: ${({ theme }) => theme.color.text04};
     margin-bottom: 4px;
+    gap: 4px;
   }
 
   & .period-wrapper {
@@ -30,7 +33,7 @@ export const SelectDistributionPeriodInputWrapper = styled.div`
       width: 16px;
       height: 16px;
     }
-    
+
     & .period {
       height: 16px;
       ${fonts.body9}
@@ -65,4 +68,9 @@ export const PoolIncentivizeSelectPeriodBoxItem = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.color.hover02};
   }
+`;
+
+export const DistributionPeriodTooltipContentWrapper = styled.div`
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text11};
 `;

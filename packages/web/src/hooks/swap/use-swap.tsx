@@ -1,6 +1,5 @@
 import { SwapDirectionType } from "@common/values";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useSlippage } from "@hooks/common/use-slippage";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
@@ -13,14 +12,13 @@ interface UseSwapProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   direction: SwapDirectionType;
-  slippage: string;
+  slippage: number;
 }
 
-export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
+export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) => {
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
   const [swapAmount, setSwapAmount] = useState<string | null>(null);
-  const { slippage } = useSlippage();
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
@@ -109,14 +107,11 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
   }, [currentSwapAmount, error, swapState, estimatedSwapResult]);
 
   const tokenAmountLimit = useMemo(() => {
-    if (estimatedAmount && !Number.isNaN(Number(slippage))) {
-      const slippageAmountNumber = BigNumber(estimatedAmount).multipliedBy(
-        Number(slippage) * 0.01,
-      );
+    if (estimatedAmount && !Number.isNaN(slippage)) {
       const tokenAmountLimit =
         direction === "EXACT_IN"
-          ? BigNumber(estimatedAmount).minus(slippageAmountNumber).toNumber()
-          : BigNumber(estimatedAmount).plus(slippageAmountNumber).toNumber();
+        ? BigNumber(estimatedAmount).multipliedBy((100 - slippage)/100).toNumber()
+        : BigNumber(estimatedAmount).multipliedBy((100 + slippage)/100).toNumber();
 
       if (tokenAmountLimit <= 0) {
         return 0;
@@ -130,6 +125,38 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
   const estimateSwapRoute = useCallback((amount: string) => {
     setSwapAmount(amount || "0");
   }, []);
+
+  const wrap = useCallback(
+    async (tokenAmount: string) => {
+      if (!account) {
+        return null;
+      }
+      if (!selectedTokenPair) {
+        return null;
+      }
+      return swapRouterRepository.wrapToken({
+        token: tokenA,
+        tokenAmount,
+      });
+    },
+    [account, selectedTokenPair, swapRouterRepository, tokenA],
+  );
+
+  const unwrap = useCallback(
+    async (tokenAmount: string) => {
+      if (!account) {
+        return null;
+      }
+      if (!selectedTokenPair) {
+        return null;
+      }
+      return swapRouterRepository.unwrapToken({
+        token: tokenA,
+        tokenAmount,
+      });
+    },
+    [account, selectedTokenPair, swapRouterRepository, tokenA],
+  );
 
   const swap = useCallback(
     async (estimatedRoutes: EstimatedRoute[], tokenAmount: string) => {
@@ -168,5 +195,8 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
     swapState,
     swap,
     estimateSwapRoute,
+    wrap,
+    unwrap,
+    resetSwapAmount: () => setSwapAmount(""),
   };
 };

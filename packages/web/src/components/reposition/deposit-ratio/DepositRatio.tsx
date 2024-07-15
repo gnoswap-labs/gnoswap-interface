@@ -2,26 +2,30 @@ import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
+import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { numberToRate } from "@utils/string-utils";
-import React from "react";
+import { formatApr } from "@utils/string-utils";
+import React, { useMemo } from "react";
 import {
   DepositRatioWrapper,
   ToolTipContentWrapper,
 } from "./DepositRatio.styles";
 
 export interface DepositRatioProps {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
   fee: string;
   maxPriceStr: string;
   minPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   aprFee: number;
   priceRangeSummary: IPriceRange;
+  isLoadingPosition: boolean;
+  selectPool: SelectPool;
 }
 
 const DepositRatio: React.FC<DepositRatioProps> = ({
@@ -29,9 +33,71 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
   tokenB,
   aprFee,
   priceRangeSummary,
+  isLoadingPosition,
+  selectPool,
 }) => {
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
+
+  const isLoading = useMemo(
+    () => isLoadingPosition || selectPool.isLoading,
+    [isLoadingPosition, selectPool.isLoading],
+  );
+
+  const loadingComp = useMemo(
+    () => (
+      <div
+        css={pulseSkeletonStyle({
+          w: 100,
+        })}
+      />
+    ),
+    [],
+  );
+
+  const depositRatioDisplay = useMemo(() => {
+    if (isLoading) return loadingComp;
+
+    return (
+      <>
+        {priceRangeSummary.tokenARatioStr}
+        {"% "}
+        {isMobile ? (
+          <MissingLogo
+            symbol={tokenA?.symbol || ""}
+            url={tokenA?.logoURI}
+            className="token-logo"
+            width={18}
+          />
+        ) : (
+          `${tokenA?.symbol}`
+        )}{" "}
+        / {priceRangeSummary.tokenBRatioStr}
+        {"% "}
+        {isMobile ? (
+          <MissingLogo
+            symbol={tokenB?.symbol || ""}
+            url={tokenB?.logoURI}
+            className="token-logo"
+            width={18}
+          />
+        ) : (
+          `${tokenB?.symbol}`
+        )}
+      </>
+    );
+  }, [
+    isMobile,
+    loadingComp,
+    priceRangeSummary.tokenARatioStr,
+    priceRangeSummary.tokenBRatioStr,
+    tokenA?.logoURI,
+    tokenA?.symbol,
+    tokenB?.logoURI,
+    tokenB?.symbol,
+    isLoading,
+  ]);
+
   return (
     <DepositRatioWrapper>
       <div className="deposit-ratio common-bg">
@@ -50,32 +116,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">
-            {priceRangeSummary.tokenARatioStr}
-            {"% "}
-            {isMobile ? (
-              <MissingLogo
-                symbol={tokenA?.symbol}
-                url={tokenA?.logoURI}
-                className="token-logo"
-                width={18}
-              />
-            ) : (
-              `${tokenA?.symbol}`
-            )}{" "}
-            / {priceRangeSummary.tokenBRatioStr}
-            {"% "}
-            {isMobile ? (
-              <MissingLogo
-                symbol={tokenB?.symbol}
-                url={tokenB?.logoURI}
-                className="token-logo"
-                width={18}
-              />
-            ) : (
-              `${tokenB?.symbol}`
-            )}
-          </p>
+          <p className="value">{depositRatioDisplay}</p>
         </div>
         <div>
           <div>
@@ -93,7 +134,9 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">{priceRangeSummary.feeBoost}</p>
+          <p className="value">
+            {isLoading ? loadingComp : priceRangeSummary.feeBoost}
+          </p>
         </div>
         <div>
           <div>
@@ -110,7 +153,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">{numberToRate(aprFee)}</p>
+          <p className="value">{isLoading ? loadingComp : formatApr(aprFee)}</p>
         </div>
       </div>
     </DepositRatioWrapper>

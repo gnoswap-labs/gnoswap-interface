@@ -17,8 +17,8 @@ export interface IncreaseSelectPositionProps {
   tokenBAmountInput: TokenAmountInputModel;
   changeTokenAAmount: (amount: string) => void;
   changeTokenBAmount: (amount: string) => void;
-  slippage: string;
-  changeSlippage: (value: string) => void;
+  slippage: number;
+  changeSlippage: (value: number) => void;
 }
 
 const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({

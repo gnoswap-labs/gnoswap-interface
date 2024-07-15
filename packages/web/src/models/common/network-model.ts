@@ -3,4 +3,7 @@ export interface NetworkModel {
   chainId: string;
   rpcUrl: string;
   wsUrl: string;
+  apiUrl: string;
+  routerUrl: string;
+  scannerUrl: string;
 }

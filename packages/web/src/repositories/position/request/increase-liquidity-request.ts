@@ -13,5 +13,7 @@ export interface IncreaseLiquidityRequest {
 
   caller: string;
 
+  slippage: number;
+
   deadline?: string;
 }

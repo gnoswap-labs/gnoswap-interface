@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
-import { subscriptFormat, toPriceFormat } from "@utils/number-utils";
+import { subscriptFormat, toPriceFormatNotRounding } from "@utils/number-utils";
 import { getLocalizeTime } from "@utils/chart";
 import { convertToKMB } from "@utils/stake-position-utils";
 
@@ -84,7 +84,7 @@ export interface LineGraphProps {
   graphBorder?: [boolean, boolean, boolean, boolean];
   baseLineLabelsStyle?: React.CSSProperties;
   displayLastDayAsNow?: boolean;
-  popupYValueFormatter?: (value: string) => string
+  popupYValueFormatter?: (value: string) => string;
 }
 
 export interface LineGraphRef {
@@ -231,15 +231,16 @@ const LineGraph: React.FC<LineGraphProps> = ({
           const next1Item = index !== length - 1 ? newDatas[index + 1] : null;
           const next2Item = index !== length - 2 ? newDatas[index + 2] : null;
           if (previous1Item && next1Item && next2Item) {
-            if (Math.abs(next1Item.value - next2Item.value) < 0.001
-              && Math.abs(currentItem.value - next1Item.value) < 0.001
-              && Math.abs(currentItem.value - previous1Item.value) >= 0.001
+            if (
+              Math.abs(next1Item.value - next2Item.value) < 0.001 &&
+              Math.abs(currentItem.value - next1Item.value) < 0.001 &&
+              Math.abs(currentItem.value - previous1Item.value) >= 0.001
             ) {
               const fakeItemValue = new BigNumber(currentItem.value)
                 .minus(
                   BigNumber(currentItem.value)
                     .minus(BigNumber(previous1Item.value))
-                    .dividedBy(15)
+                    .dividedBy(15),
                 )
                 .toNumber();
 
@@ -248,18 +249,18 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 time: new Date(item.time).getTime(),
               };
             }
-
           }
           if (previous2Item && previous1Item && next1Item)
-            if (Math.abs(previous2Item.value - previous1Item.value) < 0.001
-              && Math.abs(previous1Item.value - currentItem.value) < 0.001
+            if (
+              Math.abs(previous2Item.value - previous1Item.value) < 0.001 &&
+              Math.abs(previous1Item.value - currentItem.value) < 0.001
             ) {
               if (currentItem.value - next1Item.value >= 0.01) {
                 const fakeItemValue = new BigNumber(currentItem.value)
                   .plus(
                     BigNumber(next1Item.value)
                       .minus(BigNumber(currentItem.value))
-                      .dividedBy(15)
+                      .dividedBy(15),
                   )
                   .toNumber();
 
@@ -274,7 +275,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   .plus(
                     BigNumber(next1Item.value)
                       .minus(BigNumber(currentItem.value))
-                      .dividedBy(15)
+                      .dividedBy(15),
                   )
                   .toNumber();
 
@@ -320,16 +321,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
       .map((value, index) => {
         // Gap from lowest value or highest value  to baseline
         const additionalGap = (() => {
-          if (everyPointEqual)
-            return minMaxGap.dividedBy(2);
+          if (everyPointEqual) return minMaxGap.dividedBy(2);
 
           return minMaxGap.multipliedBy(gapRatio / 2);
         })();
 
         // Gap between bottom and top base line
         const baseLineGap = (() => {
-          if (everyPointEqual)
-            return minMaxGap;
+          if (everyPointEqual) return minMaxGap;
 
           if (minValueBigNumber.isLessThanOrEqualTo(0))
             return maxValueBigNumber;
@@ -435,9 +434,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
       const result = (() => {
         if (everyPointZero) {
-          return (
-            topFrontierHeight - graphHeight / 2
-          );
+          return topFrontierHeight - graphHeight / 2;
         }
 
         if (minMaxGap.isZero()) {
@@ -644,6 +641,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   const hasOnlyOnePoint = useMemo(() => datas.length === 1, [datas.length]);
 
+  const dateDisplay = useMemo(() => {
+    if (displayLastDayAsNow && datas.length - 1 === currentPointIndex) {
+      return parseTimeTVL(getLocalizeTime(new Date().toString()));
+    }
+
+    return parseTimeTVL(datas[currentPointIndex]?.time);
+  }, [currentPointIndex, datas, displayLastDayAsNow]);
+
   return (
     <LineGraphWrapper
       className={className}
@@ -663,26 +668,22 @@ const LineGraph: React.FC<LineGraphProps> = ({
           hasTooltipContent && isShowTooltip && currentPointIndex > -1 ? (
             <LineGraphTooltipWrapper>
               <div className="tooltip-body">
-                <span className="date">
-                  {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
-                </span>
-                {(
-                  <span className="time">
-                    {(currentPointIndex === datas.length - 1 && displayLastDayAsNow)
-                      ? parseTimeTVL(getLocalizeTime(new Date().toString()))
-                        .time
-                      : parseTimeTVL(datas[currentPointIndex]?.time)?.time ||
-                      "0"}
-                  </span>
-                )}
+                <span className="date">{dateDisplay.date}</span>
+                <span className="time">{dateDisplay.time}</span>
               </div>
               <div className="tooltip-header">
-                <span className="value">{popupYValueFormatter
-                  ? popupYValueFormatter(datas[currentPointIndex]?.value)
-                  : toPriceFormat(
-                    BigNumber(datas[currentPointIndex]?.value).toString(),
-                    { usd: true, isRounding: false }
-                  )}</span>
+                <span className="value">
+                  {popupYValueFormatter
+                    ? popupYValueFormatter(datas[currentPointIndex]?.value)
+                    : toPriceFormatNotRounding(
+                        datas[currentPointIndex]?.value,
+                        {
+                          usd: true,
+                          lessThan1Significant: 3,
+                          fixedGreaterThan1: true,
+                        },
+                      )}
+                </span>
               </div>
             </LineGraphTooltipWrapper>
           ) : null
@@ -721,21 +722,21 @@ const LineGraph: React.FC<LineGraphProps> = ({
                         <line
                           x1={
                             showBaseLineLabels &&
-                              baseLineLabelsPosition === "left"
+                            baseLineLabelsPosition === "left"
                               ? baseLineNumberWidth
                               : 0
                           }
                           x2={
                             width -
                             (showBaseLineLabels &&
-                              baseLineLabelsPosition === "left"
+                            baseLineLabelsPosition === "left"
                               ? 0
                               : baseLineNumberWidth)
                           }
                           y1={currentHeight}
                           y2={currentHeight}
                           stroke="grey"
-                          stroke-width="1"
+                          strokeWidth="1"
                           strokeDasharray={3}
                           opacity={0.2}
                         />
@@ -746,7 +747,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                           className="y-axis-number"
                           x={
                             showBaseLineLabels &&
-                              baseLineLabelsPosition === "left"
+                            baseLineLabelsPosition === "left"
                               ? 0
                               : baseWidth + 5
                           }

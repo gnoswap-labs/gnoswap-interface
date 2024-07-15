@@ -1,9 +1,11 @@
-import { Component, ErrorInfo, ReactNode } from "react";
+import { Component, ReactNode } from "react";
 import { NextRouter, withRouter } from "next/router";
 
-interface ErrorBoundaryProps {
+interface WithRouterProps {
   router: NextRouter;
+}
 
+interface ErrorBoundaryProps extends WithRouterProps {
   children: ReactNode;
   fallback?: ReactNode;
 }
@@ -15,25 +17,25 @@ interface ErrorBoundaryState {
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
+    this.props.router.events.on("beforeHistoryChange", () => {
+      this.setState({ hasError: false });
+    });
     this.state = { hasError: false };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch() {
     this.setState({ hasError: true });
-
-    console.error("Error caught by ErrorBoundary:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) return this.props.fallback;
-
-      this.props.router.push("/500");
-      return;
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
     }
 
     return this.props.children;
   }
 }
 
-export default withRouter(ErrorBoundary);
+export default withRouter<ErrorBoundaryProps>(ErrorBoundary);

@@ -22,6 +22,10 @@ export interface PoolRepository {
 
   getCreationFee: () => Promise<number>;
 
+  getWithdrawalFee: () => Promise<number>;
+
+  getUnstakingFee: () => Promise<number>;
+
   getPoolDetailRPCByPoolPath: (
     poolPath: string,
   ) => Promise<PoolDetailRPCModel | null>;
