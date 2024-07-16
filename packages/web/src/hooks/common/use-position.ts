@@ -1,5 +1,6 @@
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PositionModel } from "@models/position/position-model";
+import BigNumber from "bignumber.js";
 import { useCallback } from "react";
 import { useGnoswapContext } from "./use-gnoswap-context";
 
@@ -16,7 +17,8 @@ export const usePosition = (positions: PositionModel[]) => {
     const claimablePositions = positions.filter(
       position =>
         position.reward.reduce(
-          (accum, current) => accum + Number(current.claimableAmount),
+          (accum, currReward) =>
+            BigNumber(accum).plus(Number(currReward.claimableAmount ?? "0")).toNumber(),
           0,
         ) > 0,
     );

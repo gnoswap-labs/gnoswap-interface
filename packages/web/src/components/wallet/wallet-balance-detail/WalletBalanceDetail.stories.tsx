@@ -18,7 +18,7 @@ Default.args = {
   balanceDetailInfo: {
     availableBalance: "$1.10",
     stakedLP: "$1.20",
-    unstakingLP: "$1.30",
+    unstakedLP: "$1.30",
     claimableRewards: "$1.40",
     loadingBalance: false,
     loadingPositions: false,
