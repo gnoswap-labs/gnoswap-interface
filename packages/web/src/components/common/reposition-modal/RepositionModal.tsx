@@ -46,8 +46,8 @@ interface Props {
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null>;
   reposition: (
-    swapToken: TokenModel,
-    swapAmount: string,
+    swapToken: TokenModel | null,
+    swapAmount: string | null,
   ) => Promise<WalletResponse<
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
@@ -117,6 +117,7 @@ const RepositionModal: React.FC<Props> = ({
                 swapRemainToken={swapRemainToken}
                 reposition={reposition}
                 closeModal={close}
+                currentAmounts={currentAmounts}
                 tokenA={amountInfo.tokenA.info}
                 tokenB={amountInfo.tokenB.info}
                 isSkipSwap={isSkipSwap}

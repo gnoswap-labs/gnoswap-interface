@@ -632,15 +632,16 @@ export const useRepositionHandle = () => {
               BigNumber(estimatedRepositionAmounts?.amountB || 0),
             )
         ).toNumber(),
-        tokenAmountLimit: (estimateSwapRequestByAmounts.inputToken ===
-        selectedPosition?.pool.tokenA
-          ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(
-              BigNumber(currentAmounts?.amountB || 0),
-            )
-          : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(
-              BigNumber(currentAmounts?.amountA || 0),
-            )
-        ).toNumber() * 0.995,
+        tokenAmountLimit:
+          (estimateSwapRequestByAmounts.inputToken ===
+          selectedPosition?.pool.tokenA
+            ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(
+                BigNumber(currentAmounts?.amountB || 0),
+              )
+            : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(
+                BigNumber(currentAmounts?.amountA || 0),
+              )
+          ).toNumber() * 0.995,
       })
       .catch(() => null);
   }, [
@@ -652,8 +653,8 @@ export const useRepositionHandle = () => {
 
   const reposition = useCallback(
     async (
-      swapToken: TokenModel,
-      swapAmount: string,
+      swapToken: TokenModel | null,
+      swapAmount: string | null,
     ): Promise<WalletResponse<
       RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
     > | null> => {
@@ -675,13 +676,17 @@ export const useRepositionHandle = () => {
 
       const isSwappedTokenA =
         checkGnotPath(selectedPosition.pool.tokenA.path) ===
-        checkGnotPath(swapToken.path);
+        checkGnotPath(swapToken?.path || tokenA.path);
       const tokenAAmount = isSwappedTokenA
-        ? BigNumber(currentAmounts.amountA).plus(swapAmount).toString()
+        ? BigNumber(currentAmounts.amountA)
+            .plus(swapAmount || 0)
+            .toString()
         : repositionAmounts.amountA.toString();
       const tokenBAmount = isSwappedTokenA
         ? repositionAmounts.amountB.toString()
-        : BigNumber(currentAmounts.amountB).plus(swapAmount).toString();
+        : BigNumber(currentAmounts.amountB)
+            .plus(swapAmount || 0)
+            .toString();
 
       return positionRepository
         .repositionLiquidity({

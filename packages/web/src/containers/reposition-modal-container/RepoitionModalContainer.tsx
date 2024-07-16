@@ -40,8 +40,8 @@ interface Props {
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null>;
   reposition: (
-    swapToken: TokenModel,
-    swapAmount: string,
+    swapToken: TokenModel | null,
+    swapAmount: string | null,
   ) => Promise<WalletResponse<
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;

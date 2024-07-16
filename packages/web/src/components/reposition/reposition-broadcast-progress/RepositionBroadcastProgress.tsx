@@ -21,13 +21,14 @@ import {
 export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
+  currentAmounts: { amountA: string; amountB: string } | null;
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null>;
   reposition: (
-    swapToken: TokenModel,
-    swapAmount: string,
+    swapToken: TokenModel | null,
+    swapAmount: string | null,
   ) => Promise<WalletResponse<
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
@@ -58,10 +59,6 @@ const RepositionBroadcastProgress: React.FC<
   const isActive = useCallback((state: ProgressStateType) => {
     return !["NONE", "INIT"].includes(state);
   }, []);
-
-  useEffect(() => {
-    console.log("isSkipSwap", isSkipSwap);
-  }, [isSkipSwap]);
 
   const makeActiveClassName = useCallback(
     (className: string, active: boolean) => {
@@ -144,44 +141,44 @@ const RepositionBroadcastProgress: React.FC<
 
     setAddPositionState("WAIT");
 
-    if (!swapResult) {
+    if (!isSkipSwap && !swapResult) {
       wait(async () => true, 500).then(() => {
         setAddPositionState("INIT");
       });
       return;
     }
 
-    reposition(swapResult.resultToken, swapResult.resultAmount).then(
-      response => {
-        if (!response) {
-          setAddPositionState("FAIL");
-          return;
-        }
+    reposition(
+      swapResult?.resultToken || null,
+      swapResult?.resultAmount || null,
+    ).then(response => {
+      if (!response) {
+        setAddPositionState("FAIL");
+        return;
+      }
 
-        if (response.code === 4000) {
-          setAddPositionState("REJECTED");
-          return;
-        }
+      if (response.code === 4000) {
+        setAddPositionState("REJECTED");
+        return;
+      }
 
-        if (response.code !== 0 || response.data === null) {
-          setAddPositionState("FAIL");
-          return;
-        }
+      if (response.code !== 0 || response.data === null) {
+        setAddPositionState("FAIL");
+        return;
+      }
 
-        setAddPositionState("BROADCAST");
-        wait(async () => true, 1000).then(() => {
-          setAddPositionState("SUCCESS");
-          callback();
-        });
-      },
-    );
+      setAddPositionState("BROADCAST");
+      wait(async () => true, 1000).then(() => {
+        setAddPositionState("SUCCESS");
+        callback();
+      });
+    });
   };
 
   useEffect(() => {
     if (removePositionState === "INIT") {
       processRemovePosition(() => {
         if (isSkipSwap) {
-          setSwapState("SUCCESS");
           setAddPositionState("INIT");
         } else {
           setSwapState("INIT");
