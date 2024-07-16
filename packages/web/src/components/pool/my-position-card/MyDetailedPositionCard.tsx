@@ -30,7 +30,6 @@ import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
-import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -43,7 +42,11 @@ import Button from "@components/common/button/Button";
 import { useGetPositionBins } from "@query/positions";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+  formatRate,
+} from "@utils/new-number-utils";
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import { isGNOTPath } from "@utils/common";
 
@@ -454,15 +457,17 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       decimals: 40,
       isFormat: false,
     });
+
+    if (priceStr === "∞") {
+      return "∞";
+    }
+
     if (isSwap) {
       return (
         <>
           1 {tokenB?.symbol} ={" "}
-          {formatTokenExchangeRate(1 / price, {
-            isInfinite: priceStr === "∞",
-            maxSignificantDigits: 6,
-            fixedDecimalDigits: 6,
-            minLimit: 0.000001,
+          {formatPoolPairAmount(1 / price, {
+            decimals: 6,
           })}{" "}
           {tokenA?.symbol}
         </>
@@ -471,11 +476,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return (
       <>
         1 {tokenA?.symbol} ={" "}
-        {formatTokenExchangeRate(price, {
-          isInfinite: priceStr === "∞",
-          maxSignificantDigits: 6,
-          fixedDecimalDigits: 6,
-          minLimit: 0.000001,
+        {formatPoolPairAmount(price, {
+          decimals: 6,
         })}{" "}
         {tokenB?.symbol}
       </>
@@ -572,18 +574,15 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     if (isFullRange) return "0 ";
 
     if (!isSwap) {
-      return formatTokenExchangeRate(minPrice, {
-        minLimit: 0.000001,
-        maxSignificantDigits: 6,
-        fixedDecimalDigits: 6,
-        isInfinite: minPrice === "∞",
+      if (minPrice === "∞") return "∞";
+
+      return formatPoolPairAmount(minPrice, {
+        decimals: 6,
       });
     }
 
-    return formatTokenExchangeRate(`${Number(1 / Number(maxPrice))}`, {
-      minLimit: 0.000001,
-      maxSignificantDigits: 6,
-      fixedDecimalDigits: 6,
+    return formatPoolPairAmount(`${Number(1 / Number(maxPrice))}`, {
+      decimals: 6,
     });
   }, [
     position.tickLower,
@@ -628,23 +627,18 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       return "∞";
     }
 
-    if (isFullRange) {
-      return "∞";
-    }
-
     if (!isSwap) {
-      return formatTokenExchangeRate(maxPrice, {
-        minLimit: 0.000001,
-        maxSignificantDigits: 6,
-        fixedDecimalDigits: 6,
-        isInfinite: maxPrice === "∞",
+      if (maxPrice === "∞") {
+        return "∞";
+      }
+
+      return formatPoolPairAmount(maxPrice, {
+        decimals: 6,
       });
     }
 
-    return formatTokenExchangeRate(`${Number(1 / Number(minPrice))}`, {
-      minLimit: 0.000001,
-      maxSignificantDigits: 6,
-      fixedDecimalDigits: 6,
+    return formatPoolPairAmount(`${Number(1 / Number(minPrice))}`, {
+      decimals: 6,
     });
   }, [
     position.tickLower,

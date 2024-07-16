@@ -83,7 +83,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [depositRatio]);
 
   const liquidityValue = useMemo((): string => {
-    return formatOtherPrice(pool.tvl, { isKMB: false });
+    return formatOtherPrice(pool.tvl);
   }, [pool.tvl]);
 
   const volumeValue = useMemo((): string => {

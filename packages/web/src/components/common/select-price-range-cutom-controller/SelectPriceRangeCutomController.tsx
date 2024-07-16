@@ -16,15 +16,9 @@ import React, {
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 import IconAdd from "../icons/IconAdd";
 import IconRemove from "../icons/IconRemove";
-import {
-  convertToKMB,
-  formatTokenExchangeRate,
-} from "@utils/stake-position-utils";
-import {
-  isNumber,
-  removeTrailingZeros,
-  subscriptFormat,
-} from "@utils/number-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
+import { isNumber, subscriptFormat } from "@utils/number-utils";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 export interface SelectPriceRangeCustomControllerProps {
   title: string;
@@ -210,9 +204,8 @@ const SelectPriceRangeCustomController = forwardRef<
         return "∞";
       }
 
-      return formatTokenExchangeRate(Number(current), {
-        maxSignificantDigits: 6,
-        minLimit: 0.000001,
+      return formatPoolPairAmount(current, {
+        decimals: 6,
       });
     }, [current, feeTier]);
 
@@ -223,28 +216,26 @@ const SelectPriceRangeCustomController = forwardRef<
     );
 
     function greaterThan1Transform(numStr: string) {
-      const number = Number(numStr);
+      // const number = Number(numStr);
 
-      const significantNumber = 5;
-      const [intPart] = numStr.split(".");
+      // const significantNumber = 5;
+      // const [intPart] = numStr.split(".");
 
-      if (intPart.length >= significantNumber) {
-        const originalNumber = number;
-        const digitCountRatio = Math.pow(
-          10,
-          intPart.length - significantNumber,
-        );
+      // if (intPart.length >= significantNumber) {
+      //   const originalNumber = number;
+      //   const digitCountRatio = Math.pow(
+      //     10,
+      //     intPart.length - significantNumber,
+      //   );
 
-        const numberWith5SignificantNumber = (
-          Math.round(originalNumber / digitCountRatio) * digitCountRatio
-        ).toString();
+      //   const numberWith5SignificantNumber = (
+      //     Math.round(originalNumber / digitCountRatio) * digitCountRatio
+      //   ).toString();
 
-        return numberWith5SignificantNumber;
-      }
+      //   return numberWith5SignificantNumber;
+      // }
 
-      return removeTrailingZeros(
-        number.toFixed(significantNumber - intPart.length),
-      );
+      return formatPoolPairAmount(numStr);
     }
 
     useEffect(() => {

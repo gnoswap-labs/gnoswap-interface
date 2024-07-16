@@ -2,7 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import StakingContentCard, {
   SummuryApr,
 } from "@components/pool/staking-content-card/StakingContentCard";
-import { StakingContentWrapper } from "./StakingContent.styles";
+import {
+  AprNumberContainer,
+  AprStakingHeader,
+  StakingContentWrapper,
+} from "./StakingContent.styles";
 import Button from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
@@ -87,6 +91,10 @@ const StakingContent: React.FC<StakingContentProps> = ({
     };
   }, []);
 
+  const placeholderWidth =
+    document.getElementsByClassName("apr-text")?.[0]?.clientWidth;
+  console.log("🚀 ~ placeholderWidth:", placeholderWidth);
+
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
       [key in StakingPeriodType]: PoolPositionModel[];
@@ -127,6 +135,24 @@ const StakingContent: React.FC<StakingContentProps> = ({
     return STAKING_PERIOS.slice(0, checkPointIndex + 1);
   }, [stakingPositionMap]);
 
+  useEffect(() => {
+    const fn = () => {
+      const isHovering = document.getElementById("apr-text")?.matches(":hover");
+
+      if (isHovering) {
+        setShowAprTooltip(false);
+      } else {
+        setShowAprTooltip(true);
+      }
+    };
+
+    window.addEventListener("mouseover", fn);
+
+    return () => {
+      window.removeEventListener("mouseover", fn);
+    };
+  });
+
   return (
     <StakingContentWrapper isMobile={mobile}>
       <div className="content-header">
@@ -144,33 +170,41 @@ const StakingContent: React.FC<StakingContentProps> = ({
           </span>
         )}
         {!loading && (
-          <>
-            <div className="header-wrap">
+          <AprNumberContainer
+            placeholderWidth={
+              document.getElementsByClassName("apr-text")?.[0]?.clientWidth
+            }
+          >
+            <Tooltip
+              FloatingContent={<div>View APR</div>}
+              placement="top"
+              forcedOpen={showAprTooltip}
+              isShouldShowed={showAprTooltip}
+              className={"float-view-apr"}
+            >
+              <div className="placeholder"></div>
+            </Tooltip>
+            <AprStakingHeader $isMobile={mobile}>
               <span className="to-mobile">to</span>
               <Tooltip
-                FloatingContent={<div>View APR</div>}
+                FloatingContent={
+                  <IncentivizeTokenDetailTooltipContainer
+                    poolPath={pool?.poolPath}
+                    Comp={IncentivizeTokenDetailTooltipContent}
+                  />
+                }
                 placement="top"
-                forcedOpen={showAprTooltip}
-                className={"float-view-apr"}
+                className="apr-text"
               >
-                <Tooltip
-                  FloatingContent={
-                    <IncentivizeTokenDetailTooltipContainer
-                      poolPath={pool?.poolPath}
-                      Comp={IncentivizeTokenDetailTooltipContent}
-                    />
-                  }
-                  placement="top"
-                  className="apr"
-                >
+                <span id={"apr-text"}>
                   {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
-                </Tooltip>
+                </span>
               </Tooltip>
               <div className="coin-info">
                 <OverlapTokenLogo tokens={rewardTokenLogos} />
               </div>
-            </div>
-          </>
+            </AprStakingHeader>
+          </AprNumberContainer>
         )}
       </div>
       <div className="staking-wrap">
