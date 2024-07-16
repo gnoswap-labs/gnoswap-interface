@@ -82,7 +82,6 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
     return pools
       .map(PoolMapper.toPoolSelectItemInfo)
       .map((item: PoolSelectItemInfo) => {
-        console.log("🚀 ~ returnpools.map ~ item:", item);
         return {
           ...item,
           tokenA: {

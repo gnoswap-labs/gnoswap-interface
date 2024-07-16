@@ -220,7 +220,6 @@ const TokenListContainer: React.FC = () => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
 
     let temp = tokens
-      // let temp = (tokens?.[0] ? [tokens?.[0]] : [])
       .filter((token: TokenModel) => token.path !== wugnotPath)
       .map((item: TokenModel) => {
         const isGnot = item.path === "gnot";

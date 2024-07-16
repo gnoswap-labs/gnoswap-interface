@@ -8,7 +8,6 @@ export interface RemoveDataProps {
 }
 
 export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
-  console.log("🚀 ~ useRemoveData ~ selectedPosition:", selectedPosition);
   const { tokenPrices } = useTokenData();
 
   const pooledTokenInfos = useMemo(() => {

@@ -91,10 +91,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
     };
   }, []);
 
-  const placeholderWidth =
-    document.getElementsByClassName("apr-text")?.[0]?.clientWidth;
-  console.log("🚀 ~ placeholderWidth:", placeholderWidth);
-
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
       [key in StakingPeriodType]: PoolPositionModel[];

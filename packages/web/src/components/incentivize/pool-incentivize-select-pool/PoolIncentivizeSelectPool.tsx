@@ -25,7 +25,6 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
   select,
   isDisabled,
 }) => {
-  console.log("🚀 ~ pools:", pools);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [openedSelector, setOpenedSelector] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -61,7 +60,6 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
       return false;
     });
   }, [searchKeyword, pools]);
-  console.log("🚀 ~ filteredPools ~ filteredPools:", filteredPools);
 
   const toggleSelector = useCallback(() => {
     if (!openedSelector) {

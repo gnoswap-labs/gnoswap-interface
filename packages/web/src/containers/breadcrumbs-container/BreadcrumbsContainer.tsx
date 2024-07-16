@@ -16,16 +16,6 @@ export interface Steps {
   };
 }
 
-// const stepsDummy: Steps[] = [
-//   {
-//     title: "Earn",
-//     path: "/earn",
-//   },
-//   {
-//     title: "Add Liquidity",
-//   },
-// ];
-
 const getMapping: any = (symbol: any) => {
   return {
     "/earn/add": "Add Liquidity",

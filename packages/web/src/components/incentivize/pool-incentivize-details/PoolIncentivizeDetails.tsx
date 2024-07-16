@@ -63,8 +63,6 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   token,
 }) => {
   const { data: blockHeight } = useGetLastedBlockHeight();
-  console.log("🚀 ~ period:", period);
-  console.log("🚀 ~ details:", details);
   const { getGnotPath } = useGnotToGnot();
 
   return (
