@@ -8,6 +8,7 @@ import { makeBroadcastWithdrawMessage, useBroadcastHandler } from "@hooks/common
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
+import { ERROR_VALUE } from "@common/errors/adena";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -17,7 +18,13 @@ export type WithdrawResponse = {
 } | null;
 
 const useWithdrawTokens = () => {
-  const { broadcastLoading, broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
+  const {
+    broadcastLoading,
+    broadcastSuccess,
+    broadcastPending,
+    broadcastError,
+    broadcastRejected,
+  } = useBroadcastHandler();
   const { walletRepository } = useGnoswapContext();
 
   const [loading, setLoading] = useState(false);
@@ -43,31 +50,53 @@ const useWithdrawTokens = () => {
 
     callAction
       .then(response => {
-        if (response) {
-          broadcastPending(makeBroadcastWithdrawMessage("pending", {
-            tokenSymbol,
-            tokenAmount
-          }));
+        if (response.code === 0) {
+          broadcastPending(
+            makeBroadcastWithdrawMessage(
+              "pending",
+              {
+                tokenSymbol,
+                tokenAmount,
+              },
+              response.data?.hash,
+            ),
+          );
           setTimeout(() => {
-            broadcastSuccess(makeBroadcastWithdrawMessage("success", {
-              tokenSymbol,
-              tokenAmount
-            }));
+            broadcastSuccess(
+              makeBroadcastWithdrawMessage(
+                "success",
+                {
+                  tokenSymbol,
+                  tokenAmount,
+                },
+                response.data?.hash,
+              ),
+            );
           }, 1000);
-
           return true;
+        } else if (
+          response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+        ) {
+          broadcastRejected(
+            makeBroadcastWithdrawMessage("error", {
+              tokenSymbol,
+              tokenAmount,
+            }),
+          );
+          return false;
+        } else {
+          broadcastError(
+            makeBroadcastWithdrawMessage(
+              "error",
+              {
+                tokenSymbol,
+                tokenAmount,
+              },
+              response.data?.hash,
+            ),
+          );
+          return false;
         }
-        broadcastError(makeBroadcastWithdrawMessage("error", {
-          tokenSymbol,
-          tokenAmount
-        }));
-        return false;
-      })
-      .catch(() => {
-        broadcastError(makeBroadcastWithdrawMessage("error", {
-          tokenSymbol,
-          tokenAmount
-        }));
       })
       .finally(() => {
         setLoading(false);

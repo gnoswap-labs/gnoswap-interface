@@ -32,7 +32,7 @@ export function parseTransactionResponse(
     return {
       ...walletResponse,
       data: {
-        hash: "",
+        hash: walletResponse.data?.hash || "",
         height: "",
         data: null,
       },

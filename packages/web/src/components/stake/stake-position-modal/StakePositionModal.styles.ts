@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const SubmitPositionModalWrapper = styled.div`
+export const StakePositionModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 460px;
   padding: 24px;

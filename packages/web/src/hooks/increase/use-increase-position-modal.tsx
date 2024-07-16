@@ -2,24 +2,25 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
-  SwapFeeTierType,
+  SwapFeeTierType
 } from "@constants/option.constant";
 import IncreasePositionModalContainer from "@containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
 import {
   makeBroadcastAddLiquidityMessage,
-  useBroadcastHandler,
+  useBroadcastHandler
 } from "@hooks/common/use-broadcast-handler";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { IncreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useAtom } from "jotai";
-import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo } from "react";
-import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 
 export interface Props {
   openModal: () => void;
@@ -99,15 +100,18 @@ export const useIncreasePositionModal = ({
       return false;
     }
 
+    const tokenA = selectedPosition.pool.tokenA;
+    const tokenB = selectedPosition.pool.tokenB;
+
     broadcastLoading(
       makeBroadcastAddLiquidityMessage("pending", {
-        tokenASymbol: selectedPosition.pool.tokenA.symbol,
-        tokenBSymbol: selectedPosition.pool.tokenB.symbol,
+        tokenASymbol: tokenA.symbol,
+        tokenBSymbol: tokenB.symbol,
         tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString("en-US", {
-          maximumFractionDigits: 6,
+          maximumFractionDigits: tokenA.decimals,
         }),
         tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString("en-US", {
-          maximumFractionDigits: 6,
+          maximumFractionDigits: tokenB.decimals,
         }),
       }),
     );
@@ -115,8 +119,8 @@ export const useIncreasePositionModal = ({
     const result = await positionRepository
       .increaseLiquidity({
         lpTokenId: selectedPosition.id,
-        tokenA: selectedPosition.pool.tokenA,
-        tokenB: selectedPosition.pool.tokenB,
+        tokenA: tokenA,
+        tokenB: tokenB,
         tokenAAmount: Number(tokenAAmountInput.amount),
         tokenBAmount: Number(tokenBAmountInput.amount),
         slippage: slippage,
@@ -125,79 +129,68 @@ export const useIncreasePositionModal = ({
       .catch(() => null);
 
     if (result) {
-      const resultData = result?.data;
-      if (result.code === 0 && resultData) {
-        broadcastPending();
+      if (result.code === 0 && result?.data) {
+        const resultData = result?.data as IncreaseLiquiditySuccessResponse;
+        broadcastPending({ txHash: resultData.hash });
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (
-            makeDisplayTokenAmount(
-              selectedPosition.pool.tokenA,
-              resultData.tokenAAmount,
-            ) || 0
-          ).toLocaleString("en-US", {
-            maximumFractionDigits: 6,
-          });
+            makeDisplayTokenAmount(tokenA, resultData.tokenAAmount) || 0
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
           const tokenBAmount = (
-            makeDisplayTokenAmount(
-              selectedPosition.pool.tokenB,
-              resultData.tokenBAmount,
-            ) || 0
-          ).toLocaleString("en-US", {
-            maximumFractionDigits: 6,
-          });
+            makeDisplayTokenAmount(tokenB, resultData.tokenBAmount) || 0
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
 
           broadcastSuccess(
-            makeBroadcastAddLiquidityMessage("success", {
-              tokenASymbol: selectedPosition.pool.tokenA.symbol,
-              tokenBSymbol: selectedPosition.pool.tokenB.symbol,
-              tokenAAmount,
-              tokenBAmount,
-            }),
+            makeBroadcastAddLiquidityMessage(
+              "success",
+              {
+                tokenASymbol: tokenA.symbol,
+                tokenBSymbol: tokenB.symbol,
+                tokenAAmount,
+                tokenBAmount,
+              },
+              resultData.hash,
+            ),
           );
         }, 1000);
 
         openTransactionConfirmModal();
       } else if (
-        result.code === 4000 &&
-        result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
-        broadcastError(
+        broadcastRejected(
           makeBroadcastAddLiquidityMessage("error", {
-            tokenASymbol: selectedPosition.pool.tokenA.symbol,
-            tokenBSymbol: selectedPosition.pool.tokenB.symbol,
+            tokenASymbol: tokenA.symbol,
+            tokenBSymbol: tokenB.symbol,
             tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
               "en-US",
-              {
-                maximumFractionDigits: 6,
-              },
+              { maximumFractionDigits: tokenA.decimals },
             ),
             tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
               "en-US",
-              {
-                maximumFractionDigits: 6,
-              },
+              { maximumFractionDigits: tokenB.decimals },
             ),
           }),
         );
       } else {
-        broadcastRejected(
-          makeBroadcastAddLiquidityMessage("error", {
-            tokenASymbol: selectedPosition.pool.tokenA.symbol,
-            tokenBSymbol: selectedPosition.pool.tokenB.symbol,
-            tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
-              "en-US",
-              {
-                maximumFractionDigits: 6,
-              },
-            ),
-            tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
-              "en-US",
-              {
-                maximumFractionDigits: 6,
-              },
-            ),
-          }),
+        broadcastError(
+          makeBroadcastAddLiquidityMessage(
+            "error",
+            {
+              tokenASymbol: tokenA.symbol,
+              tokenBSymbol: tokenB.symbol,
+              tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
+                "en-US",
+                { maximumFractionDigits: tokenA.decimals },
+              ),
+              tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
+                "en-US",
+                { maximumFractionDigits: tokenB.decimals },
+              ),
+            },
+            result?.data?.hash,
+          ),
         );
       }
     }

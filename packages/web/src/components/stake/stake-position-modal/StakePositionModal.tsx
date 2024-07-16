@@ -11,9 +11,9 @@ import { formatApr } from "@utils/string-utils";
 import React, { useCallback, useMemo } from "react";
 import {
   Divider,
-  SubmitPositionModalWrapper,
+  StakePositionModalWrapper,
   ToolTipContentWrapper,
-} from "./SubmitPositionModal.styles";
+} from "./StakePositionModal.styles";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -22,7 +22,7 @@ interface Props {
   pool?: PoolModel;
 }
 
-const SubmitPositionModal: React.FC<Props> = ({
+const StakePositionModal: React.FC<Props> = ({
   positions,
   close,
   onSubmit,
@@ -51,7 +51,7 @@ const SubmitPositionModal: React.FC<Props> = ({
   }, [pool?.stakingApr]);
 
   return (
-    <SubmitPositionModalWrapper>
+    <StakePositionModalWrapper>
       <div className="modal-body">
         <div className="header">
           <h6>Confirm Stake Position</h6>
@@ -132,8 +132,8 @@ const SubmitPositionModal: React.FC<Props> = ({
           </div>
         </div>
       </div>
-    </SubmitPositionModalWrapper>
+    </StakePositionModalWrapper>
   );
 };
 
-export default SubmitPositionModal;
+export default StakePositionModal;

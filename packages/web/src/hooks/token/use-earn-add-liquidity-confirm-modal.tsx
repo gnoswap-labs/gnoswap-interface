@@ -20,8 +20,8 @@ import {
   makeBroadcastAddLiquidityMessage,
   useBroadcastHandler,
 } from "@hooks/common/use-broadcast-handler";
-import { CreatePoolResponse } from "@repositories/pool/response/create-pool-response";
-import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
+import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "@repositories/pool/response/create-pool-response";
+import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "@repositories/pool/response/add-liquidity-response";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
@@ -29,6 +29,7 @@ import { useGetPoolCreationFee } from "@query/pools";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { subscriptFormat } from "@utils/number-utils";
 import { GNS_TOKEN } from "@common/values/token-constant";
+import { ERROR_VALUE } from "@common/errors/adena";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -54,7 +55,9 @@ export interface EarnAddLiquidityConfirmModalProps {
     maxTick: number;
     slippage: number;
     withStaking?: boolean;
-  }) => Promise<WalletResponse<CreatePoolResponse> | null>;
+  }) => Promise<WalletResponse<
+    CreatePoolSuccessResponse | CreatePoolFailedResponse
+  > | null>;
 
   addLiquidity: (params: {
     tokenAAmount: string;
@@ -64,7 +67,9 @@ export interface EarnAddLiquidityConfirmModalProps {
     maxTick: number;
     slippage: number;
     withStaking?: boolean;
-  }) => Promise<WalletResponse<AddLiquidityResponse> | null>;
+  }) => Promise<WalletResponse<
+    AddLiquiditySuccessResponse | AddLiquidityFailedResponse
+  > | null>;
 }
 export interface SelectTokenModalModel {
   openAddPositionModal: () => void;
@@ -339,10 +344,10 @@ export const useEarnAddLiquidityConfirmModal = ({
           tokenASymbol: tokenA.symbol,
           tokenBSymbol: tokenB.symbol,
           tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-            maximumFractionDigits: 6,
+            maximumFractionDigits: tokenA.decimals,
           }),
           tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-            maximumFractionDigits: 6,
+            maximumFractionDigits: tokenB.decimals,
           }),
         }),
       );
@@ -371,58 +376,63 @@ export const useEarnAddLiquidityConfirmModal = ({
         .then(result => {
           if (result) {
             if (result.code === 0) {
-              broadcastPending();
+              const resultData = result?.data as CreatePoolSuccessResponse;
+              broadcastPending({ txHash: resultData.hash });
               setTimeout(() => {
                 broadcastSuccess(
-                  makeBroadcastAddLiquidityMessage("success", {
-                    tokenASymbol: result.data?.tokenA.symbol || "",
-                    tokenBSymbol: result.data?.tokenB.symbol || "",
-                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: 6,
-                    }),
-                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: 6,
-                    }),
-                  }),
+                  makeBroadcastAddLiquidityMessage(
+                    "success",
+                    {
+                      tokenASymbol: resultData.tokenA.symbol || "",
+                      tokenBSymbol: resultData.tokenB.symbol || "",
+                      tokenAAmount: Number(tokenAAmount).toLocaleString(
+                        "en-US",
+                        { maximumFractionDigits: tokenA.decimals },
+                      ),
+                      tokenBAmount: Number(tokenBAmount).toLocaleString(
+                        "en-US",
+                        { maximumFractionDigits: tokenB.decimals },
+                      ),
+                    },
+                    resultData.hash,
+                  ),
                   moveToBack,
                 );
               }, 1000);
-              return true;
-            } else if (result.code === 4000) {
+            } else if (
+              result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+            ) {
               broadcastRejected(
                 makeBroadcastAddLiquidityMessage("error", {
                   tokenASymbol: tokenA.symbol,
                   tokenBSymbol: tokenB.symbol,
                   tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
+                    maximumFractionDigits: tokenA.decimals,
                   }),
                   tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
+                    maximumFractionDigits: tokenB.decimals,
                   }),
                 }),
               );
-              return true;
+            } else {
+              broadcastError(
+                makeBroadcastAddLiquidityMessage(
+                  "error",
+                  {
+                    tokenASymbol: tokenA.symbol,
+                    tokenBSymbol: tokenB.symbol,
+                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: tokenA.decimals,
+                    }),
+                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: tokenB.decimals,
+                    }),
+                  },
+                  result?.data?.hash,
+                ),
+              );
             }
           }
-          return false;
-        })
-        .catch(() => false)
-        .then(broadcasted => {
-          if (broadcasted) {
-            return;
-          }
-          broadcastError(
-            makeBroadcastAddLiquidityMessage("error", {
-              tokenASymbol: tokenA.symbol,
-              tokenBSymbol: tokenB.symbol,
-              tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                maximumFractionDigits: 6,
-              }),
-              tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                maximumFractionDigits: 6,
-              }),
-            }),
-          );
         });
     },
     [

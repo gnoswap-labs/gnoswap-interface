@@ -7,12 +7,18 @@ import {
 import RepositionModalContainer from "@containers/reposition-modal-container/RepoitionModalContainer";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
-import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap/response/swap-route-response";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { IPriceRange } from "./use-reposition-handle";
-import { RepositionLiquidityResponse } from "@repositories/position/response";
+import {
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
+} from "@repositories/position/response";
 
 export interface Props {
   openModal: () => void;
@@ -32,11 +38,15 @@ export interface RepositionModalProps {
   currentAmounts: { amountA: number; amountB: number } | null;
   repositionAmounts: { amountA: number | null; amountB: number | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
-  swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
+  swapRemainToken: () => Promise<WalletResponse<
+    SwapRouteSuccessResponse | SwapRouteFailedResponse
+  > | null>;
   reposition: (
     swapToken: TokenModel,
     swapAmount: string,
-  ) => Promise<WalletResponse<RepositionLiquidityResponse | null> | null>;
+  ) => Promise<WalletResponse<
+    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
+  > | null>;
 }
 
 export const useRepositionModalContainer = ({

@@ -137,33 +137,37 @@ const RemovePositionModalContainer = ({
 
     if (result) {
       if (result.code === 0) {
-        broadcastPending();
-        await setTimeout(async () => {
+        broadcastPending({ txHash: result.data?.hash });
+        setTimeout(async () => {
           broadcastSuccess(
-            makeBroadcastRemoveMessage("success", {
-              ...messageData,
-            }),
+            makeBroadcastRemoveMessage(
+              "success",
+              {
+                ...messageData,
+              },
+              result.data?.hash,
+            ),
           );
           openTransactionConfirmModal();
-        });
-      } else if (
-        result.code === 4000 &&
-        result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
-      ) {
-        broadcastPending();
-        setTimeout(() => {
-          broadcastError(
-            makeBroadcastRemoveMessage("error", {
-              ...messageData,
-            }),
-          );
-          clearModal();
         }, 1000);
-      } else {
-        broadcastRejected(
+      } else if (
+        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+      ) {
+        broadcastError(
           makeBroadcastRemoveMessage("error", {
             ...messageData,
           }),
+        );
+        clearModal();
+      } else {
+        broadcastRejected(
+          makeBroadcastRemoveMessage(
+            "error",
+            {
+              ...messageData,
+            },
+            result?.data?.hash,
+          ),
         );
       }
     }

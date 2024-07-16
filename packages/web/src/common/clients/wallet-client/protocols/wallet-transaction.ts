@@ -48,6 +48,7 @@ export interface SendTransactionSuccessResponse<T = unknown> {
 }
 
 export interface SendTransactionErrorResponse {
+  hash: string;
   type: string;
   message: string;
 }

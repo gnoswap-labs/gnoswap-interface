@@ -10,7 +10,7 @@ import {
   makeTransferGRC20TokenMessage,
   makeTransferNativeTokenMessage,
 } from "@common/clients/wallet-client/transaction-messages/token";
-import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
+import { SendTransactionSuccessResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 
 export class WalletRepositoryImpl implements WalletRepository {
@@ -22,7 +22,7 @@ export class WalletRepositoryImpl implements WalletRepository {
 
   public async transferGNOTToken(
     request: TransferNativeTokenRequest,
-  ): Promise<TransferNativeTokenResponse> {
+  ): Promise<WalletResponse<TransferNativeTokenResponse>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }
@@ -50,12 +50,12 @@ export class WalletRepositoryImpl implements WalletRepository {
     if (!response.hash) {
       throw new Error(JSON.stringify(result));
     }
-    return { ...response };
+    return { ...result, data: { hash: response.hash } };
   }
 
   public async transferGRC20Token(
     request: TransferGRC20TokenRequest,
-  ): Promise<TransferGRC20TokenResponse> {
+  ): Promise<WalletResponse<TransferGRC20TokenResponse>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }
@@ -80,8 +80,11 @@ export class WalletRepositoryImpl implements WalletRepository {
     });
     const response = result.data as SendTransactionSuccessResponse;
     if (!response.hash) {
-      throw new Error(JSON.stringify(result));
+      return {
+        ...result,
+        data: null,
+      };
     }
-    return { ...response };
+    return { ...result, data: { hash: response.hash } };
   }
 }

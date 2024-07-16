@@ -85,36 +85,40 @@ const IncentivizePoolModalContainer = () => {
       .then(response => {
         if (response) {
           if (response.code === 0) {
-            broadcastPending();
+            broadcastPending({ txHash: response.data?.hash });
             setTimeout(() => {
               broadcastSuccess(
-                makeBroadcastIncentivizeMessage("success", {
-                  tokenAmount: displayAmount,
-                  tokenSymbol: dataModal?.token?.symbol,
-                }),
+                makeBroadcastIncentivizeMessage(
+                  "success",
+                  {
+                    tokenAmount: displayAmount,
+                    tokenSymbol: dataModal?.token?.symbol,
+                  },
+                  response.data?.hash,
+                ),
               );
               openTransactionConfirmModal();
             }, 1000);
           } else if (
-            response.code === 4000 &&
-            response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+            response.code === ERROR_VALUE.TRANSACTION_REJECTED.status /// 4000
           ) {
-            broadcastPending();
-            setTimeout(() => {
-              broadcastError(
-                makeBroadcastIncentivizeMessage("error", {
-                  tokenAmount: displayAmount,
-                  tokenSymbol: dataModal?.token?.symbol,
-                }),
-              );
-              openTransactionConfirmModal();
-            }, 1000);
-          } else {
             broadcastRejected(
               makeBroadcastIncentivizeMessage("error", {
                 tokenAmount: displayAmount,
                 tokenSymbol: dataModal?.token?.symbol,
               }),
+            );
+            openTransactionConfirmModal();
+          } else {
+            broadcastError(
+              makeBroadcastIncentivizeMessage(
+                "error",
+                {
+                  tokenAmount: displayAmount,
+                  tokenSymbol: dataModal?.token?.symbol,
+                },
+                response.data?.hash,
+              ),
             );
             openTransactionConfirmModal();
           }

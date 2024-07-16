@@ -9,6 +9,7 @@ import {
   SwapFeeTierType,
 } from "@constants/option.constant";
 import {
+  SendTransactionErrorResponse,
   SendTransactionResponse,
   SendTransactionSuccessResponse,
   WalletResponse,
@@ -45,8 +46,8 @@ import {
   makePositionMintMessage,
   makePositionMintWithStakeMessage,
 } from "@common/clients/wallet-client/transaction-messages/position";
-import { AddLiquidityResponse } from "./response/add-liquidity-response";
-import { CreatePoolResponse } from "./response/create-pool-response";
+import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./response/add-liquidity-response";
+import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
 import {
   makeApproveMessage,
   TransactionMessage,
@@ -228,7 +229,9 @@ export class PoolRepositoryImpl implements PoolRepository {
 
   createPool = async (
     request: CreatePoolRequest,
-  ): Promise<WalletResponse<CreatePoolResponse>> => {
+  ): Promise<
+    WalletResponse<CreatePoolSuccessResponse | CreatePoolFailedResponse>
+  > => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -260,8 +263,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-        ? tokenBAmountRaw
-        : null;
+      ? tokenBAmountRaw
+      : null;
 
     const createPoolMessages = [];
 
@@ -350,19 +353,20 @@ export class PoolRepositoryImpl implements PoolRepository {
       gasFee,
     });
     if (result.code !== 0) {
-      throw new Error(`${result}`);
+      const { hash } = result.data as SendTransactionErrorResponse;
+      return {
+        ...result,
+        data: { hash },
+      };
     }
-    const data = result.data as SendTransactionSuccessResponse<string[]>;
-    if (
-      data.data === null ||
-      !Array.isArray(data.data) ||
-      data.data.length < 4
-    ) {
+    const { data, hash } = result.data as SendTransactionSuccessResponse<
+      string[]
+    >;
+    if (data === null || !Array.isArray(data) || data.length < 4) {
       return {
         ...result,
         data: {
-          code: result.code,
-          hash: data.hash,
+          hash: hash,
           tokenA,
           tokenB,
           tokenAAmount: "0",
@@ -370,15 +374,12 @@ export class PoolRepositoryImpl implements PoolRepository {
         },
       };
     }
-    const resultTokenAAmount =
-      makeDisplayTokenAmount(tokenA, data.data[2]) || 0;
-    const resultTokenBAmount =
-      makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
+    const resultTokenAAmount = makeDisplayTokenAmount(tokenA, data[2]) || 0;
+    const resultTokenBAmount = makeDisplayTokenAmount(tokenA, data[3]) || 0;
     return {
       ...result,
       data: {
-        code: result.code,
-        hash: data.hash,
+        hash: hash,
         tokenA,
         tokenB,
         tokenAAmount: resultTokenAAmount.toString(),
@@ -389,7 +390,9 @@ export class PoolRepositoryImpl implements PoolRepository {
 
   addLiquidity = async (
     request: AddLiquidityRequest,
-  ): Promise<WalletResponse<AddLiquidityResponse>> => {
+  ): Promise<
+    WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>
+  > => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -419,8 +422,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
       : isWrapped(tokenBWrappedPath)
-        ? tokenBAmountRaw
-        : null;
+      ? tokenBAmountRaw
+      : null;
 
     const approveMessages: TransactionMessage[] = [];
 
@@ -478,17 +481,27 @@ export class PoolRepositoryImpl implements PoolRepository {
       messages,
       gasFee,
     });
-    const data = result.data as SendTransactionSuccessResponse<string[]>;
+
+    if (result.code !== 0) {
+      const { hash } = result.data as SendTransactionErrorResponse;
+      return {
+        ...result,
+        data: { hash },
+      };
+    }
+
+    const { data, hash } = result.data as SendTransactionSuccessResponse<
+      string[]
+    >;
     if (
-      data.data === null ||
-      !Array.isArray(data.data) ||
-      data.data.length < 4
+      data === null ||
+      !Array.isArray(data) ||
+      data.length < 4
     ) {
       return {
         ...result,
         data: {
-          code: result.code,
-          hash: data.hash,
+          hash: hash,
           tokenA,
           tokenB,
           tokenAAmount: "0",
@@ -497,14 +510,13 @@ export class PoolRepositoryImpl implements PoolRepository {
       };
     }
     const resultTokenAAmount =
-      makeDisplayTokenAmount(tokenA, data.data[2]) || 0;
+      makeDisplayTokenAmount(tokenA, data[2]) || 0;
     const resultTokenBAmount =
-      makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
+      makeDisplayTokenAmount(tokenA, data[3]) || 0;
     return {
       ...result,
       data: {
-        code: result.code,
-        hash: data.hash,
+        hash: hash,
         tokenA,
         tokenB,
         tokenAAmount: resultTokenAAmount.toString(),

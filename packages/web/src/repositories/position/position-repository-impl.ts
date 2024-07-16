@@ -1,6 +1,7 @@
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import {
+  SendTransactionErrorResponse,
   SendTransactionResponse,
   SendTransactionSuccessResponse,
   WalletResponse,
@@ -16,8 +17,10 @@ import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
 import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import {
-  DecreaseLiquidityResponse,
-  IncreaseLiquidityResponse,
+  DecreaseLiquidityFailedResponse,
+  DecreaseLiquiditySuccessResponse,
+  IncreaseLiquidityFailedResponse,
+  IncreaseLiquiditySuccessResponse,
   PositionBinResponse,
   PositionListResponse,
   RepositionLiquidityResponse,
@@ -314,7 +317,11 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   increaseLiquidity = async (
     request: IncreaseLiquidityRequest,
-  ): Promise<WalletResponse<IncreaseLiquidityResponse | null>> => {
+  ): Promise<
+    WalletResponse<
+      IncreaseLiquiditySuccessResponse | IncreaseLiquidityFailedResponse | null
+    >
+  > => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -366,16 +373,18 @@ export class PositionRepositoryImpl implements PositionRepository {
     });
 
     const result = response as WalletResponse;
+
     if (result.code !== 0 || !result.data) {
+      const { hash } = result.data as SendTransactionErrorResponse;
       return {
         ...result,
-        data: null,
+        data: { hash },
       };
     }
 
-    const data = (
-      result.data as SendTransactionSuccessResponse<string[] | null>
-    ).data;
+    const { data, hash } = result.data as SendTransactionSuccessResponse<
+      string[] | null
+    >;
     if (!data || data.length < 5) {
       return {
         ...result,
@@ -386,6 +395,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     return {
       ...result,
       data: {
+        hash: hash,
         tokenID: data[0],
         liquidity: data[1],
         tokenAAmount: data[2],
@@ -397,7 +407,11 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   decreaseLiquidity = async (
     request: DecreaseLiquidityRequest,
-  ): Promise<WalletResponse<DecreaseLiquidityResponse | null>> => {
+  ): Promise<
+    WalletResponse<
+      DecreaseLiquiditySuccessResponse | DecreaseLiquidityFailedResponse | null
+    >
+  > => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -463,16 +477,18 @@ export class PositionRepositoryImpl implements PositionRepository {
     });
 
     const result = response as WalletResponse;
+
     if (result.code !== 0 || !result.data) {
+      const { hash } = result.data as SendTransactionErrorResponse;
       return {
         ...result,
-        data: null,
+        data: { hash },
       };
     }
 
-    const data = (
-      result.data as SendTransactionSuccessResponse<string[] | null>
-    ).data;
+    const { data, hash } = result.data as SendTransactionSuccessResponse<
+      string[] | null
+    >;
     if (!data || data.length < 7) {
       return {
         ...result,
@@ -483,6 +499,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     return {
       ...result,
       data: {
+        hash,
         tokenID: data[0],
         removedLiquidity: data[1],
         collectedTokenAFee: data[2],

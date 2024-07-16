@@ -8,19 +8,29 @@ import IconRemovePositionCircle from "@components/common/icons/IconRemovePositio
 import IconSwapCircle from "@components/common/icons/IconSwapCircle";
 import IconAddPositionCircle from "@components/common/icons/IconAddPositionCircle";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap/response/swap-route-response";
 import { TokenModel } from "@models/token/token-model";
-import { RepositionLiquidityResponse } from "@repositories/position/response";
+import {
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
+} from "@repositories/position/response";
 
 export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   removePosition: () => Promise<WalletResponse | null>;
-  swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
+  swapRemainToken: () => Promise<WalletResponse<
+    SwapRouteSuccessResponse | SwapRouteFailedResponse
+  > | null>;
   reposition: (
     swapToken: TokenModel,
     swapAmount: string,
-  ) => Promise<WalletResponse<RepositionLiquidityResponse | null> | null>;
+  ) => Promise<WalletResponse<
+    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
+  > | null>;
   closeModal: () => void;
 }
 
@@ -37,7 +47,9 @@ const RepositionBroadcastProgress: React.FC<
   const [removePositionState, setRemovePositionState] =
     useState<ProgressStateType>("NONE");
   const [swapState, setSwapState] = useState<ProgressStateType>("NONE");
-  const [swapResult, setSwapResult] = useState<SwapRouteResponse | null>(null);
+  const [swapResult, setSwapResult] = useState<SwapRouteSuccessResponse | null>(
+    null,
+  );
   const [addPositionState, setAddPositionState] =
     useState<ProgressStateType>("NONE");
 
@@ -113,7 +125,7 @@ const RepositionBroadcastProgress: React.FC<
 
       wait(async () => true, 1000).then(() => {
         setSwapState("SUCCESS");
-        setSwapResult(result.data);
+        setSwapResult(result.data as SwapRouteSuccessResponse);
         callback();
       });
     });

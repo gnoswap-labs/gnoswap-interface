@@ -14,7 +14,10 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
-import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap/response/swap-route-response";
 import { IncreaseState } from "@states/index";
 import { MAX_UINT64 } from "@utils/math.utils";
 import {
@@ -30,7 +33,10 @@ import { convertToKMB } from "@utils/stake-position-utils";
 import { checkGnotPath, encryptId } from "@utils/common";
 import { useEstimateSwap } from "@query/router";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { RepositionLiquidityResponse } from "@repositories/position/response";
+import {
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
+} from "@repositories/position/response";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -422,31 +428,34 @@ export const useRepositionHandle = () => {
         .catch(() => null);
     }, [selectedPosition, positionRepository, address]);
 
-  const swapRemainToken =
-    useCallback(async (): Promise<WalletResponse<SwapRouteResponse> | null> => {
-      if (!address || !estimatedRemainSwap || !estimateSwapRequestByAmounts) {
-        return null;
-      }
+  const swapRemainToken = useCallback(async (): Promise<WalletResponse<
+    SwapRouteSuccessResponse | SwapRouteFailedResponse
+  > | null> => {
+    if (!address || !estimatedRemainSwap || !estimateSwapRequestByAmounts) {
+      return null;
+    }
 
-      return swapRouterRepository
-        .swapRoute({
-          ...estimateSwapRequestByAmounts,
-          estimatedRoutes: estimatedRemainSwap.estimatedRoutes,
-          tokenAmountLimit: Number(estimateSwapRequestByAmounts.tokenAmount),
-        })
-        .catch(() => null);
-    }, [
-      address,
-      estimateSwapRequestByAmounts,
-      estimatedRemainSwap,
-      swapRouterRepository,
-    ]);
+    return swapRouterRepository
+      .swapRoute({
+        ...estimateSwapRequestByAmounts,
+        estimatedRoutes: estimatedRemainSwap.estimatedRoutes,
+        tokenAmountLimit: Number(estimateSwapRequestByAmounts.tokenAmount),
+      })
+      .catch(() => null);
+  }, [
+    address,
+    estimateSwapRequestByAmounts,
+    estimatedRemainSwap,
+    swapRouterRepository,
+  ]);
 
   const reposition = useCallback(
     async (
       swapToken: TokenModel,
       swapAmount: string,
-    ): Promise<WalletResponse<RepositionLiquidityResponse | null> | null> => {
+    ): Promise<WalletResponse<
+      RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
+    > | null> => {
       if (
         !address ||
         !selectedPosition ||
