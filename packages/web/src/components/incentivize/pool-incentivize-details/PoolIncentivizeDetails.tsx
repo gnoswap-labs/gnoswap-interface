@@ -62,7 +62,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   amount,
   token,
 }) => {
-  const { data: blockHeight } = useGetLastedBlockHeight();
+  // const { data: blockHeight } = useGetLastedBlockHeight();
   const { getGnotPath } = useGnotToGnot();
 
   return (
