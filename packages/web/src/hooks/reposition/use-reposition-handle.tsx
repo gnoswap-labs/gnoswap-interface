@@ -150,11 +150,10 @@ export const useRepositionHandle = () => {
     tokenA,
     tokenB,
     feeTier: `FEE_${fee}` as any,
-    defaultPriceRange: [defaultPositionMinPrice, defaultPositionMaxPrice],
   });
 
   useEffect(() => {
-    if (initialized || selectPool.isLoading) {
+    if (initialized || selectPool.isLoading || !selectPool.poolPath) {
       return;
     }
     if (!defaultPositionMinPrice || !defaultPositionMaxPrice) {
@@ -163,7 +162,7 @@ export const useRepositionHandle = () => {
     setInitialized(true);
     selectPool.setMinPosition(defaultPositionMinPrice);
     selectPool.setMaxPosition(defaultPositionMaxPrice);
-  }, [defaultPositionMinPrice, defaultPositionMaxPrice, selectPool.isLoading]);
+  }, [defaultPositionMinPrice, defaultPositionMaxPrice, selectPool.poolPath]);
 
   const minPriceStr = useMemo(() => {
     if (!selectPool.minPrice) return "-";
