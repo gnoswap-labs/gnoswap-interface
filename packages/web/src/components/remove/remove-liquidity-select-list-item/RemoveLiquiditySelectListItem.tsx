@@ -90,8 +90,10 @@ const RemoveLiquiditySelectListItem: React.FC<
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    return formatOtherPrice(position.positionUsdValue);
-  }, [position.positionUsdValue]);
+    return formatOtherPrice(position.positionUsdValue, {
+      isKMB: width < 400,
+    });
+  }, [position.positionUsdValue, width]);
 
   const feeStr = useMemo(() => {
     return SwapFeeTierInfoMap[makeSwapFeeTier(position.pool.fee)].rateStr;

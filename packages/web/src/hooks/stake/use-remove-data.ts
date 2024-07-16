@@ -18,42 +18,60 @@ export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
     const tokenA = selectedPosition[0].pool.tokenA;
     const tokenB = selectedPosition[0].pool.tokenB;
     const pooledTokenAAmount = selectedPosition.reduce(
-      (accum, position) => accum + Number(position.tokenABalance),
-      0,
+      (accum: number | null, position) => {
+        if (accum === null && !position.tokenABalance) return null;
+
+        if (accum === null) return Number(position.tokenABalance);
+
+        if (!position.tokenABalance) return accum;
+
+        return accum + Number(position.tokenABalance);
+      },
+      null,
     );
     const pooledTokenBAmount = selectedPosition.reduce(
-      (accum, position) => accum + Number(position.tokenBBalance),
-      0,
-    );
-    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
-    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
-    const tokenAAmount = Number(pooledTokenAAmount) || 0;
-    const tokenBAmount = Number(pooledTokenBAmount) || 0;
+      (accum: number | null, position) => {
+        if (accum === null && !position.tokenBBalance) return null;
 
-    const priceAEmpty =
-      !tokenPrices[tokenA.priceID]?.usd ||
-      selectedPosition.every(item => !item.tokenABalance);
-    const priceBEmpty =
-      !tokenPrices[tokenB.priceID]?.usd ||
-      selectedPosition.every(item => !item.tokenBBalance);
+        if (accum === null) return Number(position.tokenBBalance);
+
+        if (!position.tokenBBalance) return accum;
+
+        return accum + Number(position.tokenBBalance);
+      },
+      null,
+    );
+    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd
+      ? Number(tokenPrices[tokenA.priceID]?.usd)
+      : null;
+    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd
+      ? Number(tokenPrices[tokenB.priceID]?.usd)
+      : null;
+
+    const tokenAUSD =
+      pooledTokenAAmount !== null && tokenAPrice !== null
+        ? pooledTokenAAmount * tokenAPrice
+        : null;
+
+    const tokenBUSD =
+      pooledTokenBAmount !== null && tokenBPrice !== null
+        ? pooledTokenBAmount * tokenBPrice
+        : null;
+
     return [
       {
         token: tokenA,
-        amount: tokenAAmount,
-        amountUSD: priceAEmpty
-          ? formatOtherPrice(tokenAAmount * Number(tokenAPrice), {
-              isKMB: false,
-            })
-          : "-",
+        amount: pooledTokenAAmount,
+        amountUSD: formatOtherPrice(tokenAUSD, {
+          isKMB: false,
+        }),
       },
       {
         token: tokenB,
-        amount: tokenBAmount,
-        amountUSD: priceBEmpty
-          ? formatOtherPrice(tokenBAmount * Number(tokenBPrice), {
-              isKMB: false,
-            })
-          : "-",
+        amount: pooledTokenBAmount,
+        amountUSD: formatOtherPrice(tokenBUSD, {
+          isKMB: false,
+        }),
       },
     ];
   }, [selectedPosition, tokenPrices]);
@@ -64,44 +82,61 @@ export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
     }
     const tokenA = selectedPosition[0].pool.tokenA;
     const tokenB = selectedPosition[0].pool.tokenB;
-    const pooledTokenAAmount = selectedPosition.reduce(
-      (accum, position) => accum + Number(position.unclaimedFeeAAmount),
-      0,
-    );
-    const pooledTokenBAmount = selectedPosition.reduce(
-      (accum, position) => accum + Number(position.unclaimedFeeBAmount),
-      0,
-    );
-    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
-    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
-    const tokenAAmount = Number(pooledTokenAAmount) || 0;
-    const tokenBAmount = Number(pooledTokenBAmount) || 0;
+    const unclaimedTokenAAmount = selectedPosition.reduce(
+      (accum: number | null, position) => {
+        if (accum === null && !position.unclaimedFeeAAmount) return null;
 
-    const priceAEmpty =
-      !tokenPrices[tokenA.priceID]?.usd ||
-      selectedPosition.every(item => !item.unclaimedFeeAAmount);
-    const priceBEmpty =
-      !tokenPrices[tokenB.priceID]?.usd ||
-      selectedPosition.every(item => !item.unclaimedFeeBAmount);
+        if (accum === null) return Number(position.unclaimedFeeAAmount);
+
+        if (!position.unclaimedFeeAAmount) return accum;
+
+        return accum + Number(position.unclaimedFeeAAmount);
+      },
+      null,
+    );
+    const unclaimedTokenBAmount = selectedPosition.reduce(
+      (accum: number | null, position) => {
+        if (accum === null && !position.unclaimedFeeBAmount) return null;
+
+        if (accum === null) return Number(position.unclaimedFeeBAmount);
+
+        if (!position.unclaimedFeeBAmount) return accum;
+
+        return accum + Number(position.unclaimedFeeBAmount);
+      },
+      null,
+    );
+    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd
+      ? Number(tokenPrices[tokenA.priceID]?.usd)
+      : null;
+    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd
+      ? Number(tokenPrices[tokenB.priceID]?.usd)
+      : null;
+
+    const tokenAUSD =
+      unclaimedTokenAAmount !== null && tokenAPrice !== null
+        ? unclaimedTokenAAmount * tokenAPrice
+        : null;
+
+    const tokenBUSD =
+      unclaimedTokenBAmount !== null && tokenBPrice !== null
+        ? unclaimedTokenBAmount * tokenBPrice
+        : null;
 
     return [
       {
         token: tokenA,
-        amount: tokenAAmount,
-        amountUSD: priceAEmpty
-          ? formatOtherPrice(tokenAAmount * Number(tokenAPrice), {
-              isKMB: false,
-            })
-          : "-",
+        amount: unclaimedTokenAAmount,
+        amountUSD: formatOtherPrice(tokenAUSD, {
+          isKMB: false,
+        }),
       },
       {
         token: tokenB,
-        amount: tokenBAmount,
-        amountUSD: priceBEmpty
-          ? formatOtherPrice(tokenBAmount * Number(tokenBPrice), {
-              isKMB: false,
-            })
-          : "-",
+        amount: unclaimedTokenBAmount,
+        amountUSD: formatOtherPrice(tokenBUSD, {
+          isKMB: false,
+        }),
       },
     ];
   }, [selectedPosition, tokenPrices]);
@@ -111,8 +146,16 @@ export const useRemoveData = ({ selectedPosition }: RemoveDataProps) => {
       return "-";
     }
     const totalUSDValue = selectedPosition.reduce(
-      (accum, position) => accum + Number(position.positionUsdValue),
-      0,
+      (accum: number | null, position) => {
+        if (accum === null && !position.positionUsdValue) return null;
+
+        if (accum === null) return Number(position.positionUsdValue);
+
+        if (!position.positionUsdValue) return accum;
+
+        return accum + Number(position.positionUsdValue);
+      },
+      null,
     );
     return formatOtherPrice(totalUSDValue, {
       isKMB: false,

@@ -220,3 +220,8 @@ export const AprStakingHeader = styled.div<{
     }};
   }
 `;
+
+export const NoticeAprToolTip = styled.div`
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text01}
+`;

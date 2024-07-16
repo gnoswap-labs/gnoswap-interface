@@ -10,14 +10,11 @@ import {
   wrapper,
 } from "./SelectLiquidityListItem.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import {
-  convertLiquidityUsdToKMB,
-  convertLiquidityUsdValue,
-} from "@utils/stake-position-utils";
 import BigNumber from "bignumber.js";
 import { TokenModel } from "@models/token/token-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 interface SelectLiquidityListItemProps {
   disabled?: boolean;
@@ -89,12 +86,9 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    if (width < 400)
-      return convertLiquidityUsdToKMB(position.positionUsdValue, {
-        prefix: "$",
-      });
-
-    return convertLiquidityUsdValue(Number(position.positionUsdValue));
+    return formatOtherPrice(position.positionUsdValue, {
+      isKMB: width < 400,
+    });
   }, [position.positionUsdValue, width]);
 
   return (
