@@ -6,6 +6,7 @@ import {
 import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
 import BigNumber from "bignumber.js";
 import {
+  PACKAGE_NFT_PATH,
   PACKAGE_POSITION_PATH,
   PACKAGE_STAKER_PATH,
 } from "@constants/environment.constant";
@@ -23,7 +24,7 @@ export function makePositionMintMessage(
   sendAmount: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-  const slippageRatio = (100 - slippage)/100;
+  const slippageRatio = (100 - slippage) / 100;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
   const send = makeGNOTSendAmount(sendAmount);
 
@@ -61,7 +62,7 @@ export function makePositionMintWithStakeMessage(
   sendAmount: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-  const slippageRatio = (100 - slippage)/100;
+  const slippageRatio = (100 - slippage) / 100;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
   const send = makeGNOTSendAmount(sendAmount);
 
@@ -93,7 +94,7 @@ export function makePositionIncreaseLiquidityMessage(
   caller: string,
   sendAmount: string | null,
 ) {
-  const slippageRatio = (100 - slippage)/100;
+  const slippageRatio = (100 - slippage) / 100;
   const send = makeGNOTSendAmount(sendAmount);
 
   return makeTransactionMessage({
@@ -175,5 +176,15 @@ export function makePositionCollectFeeMessage(
     packagePath: PACKAGE_POSITION_PATH,
     args: [lpTokenId],
     caller,
+  });
+}
+
+export function makeNFTSetTokenUri(caller: string) {
+  return makeTransactionMessage({
+    caller,
+    send: "",
+    packagePath: PACKAGE_NFT_PATH,
+    func: "SetTokenURILast",
+    args: null,
   });
 }
