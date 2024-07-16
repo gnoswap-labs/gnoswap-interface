@@ -44,8 +44,7 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd
       ? Number(tokenPrices[tokenA.priceID]?.usd)
       : null;
-    console.log("🚀 ~ pooledTokenInfos ~ tokenAPrice:", tokenAPrice);
-
+      
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd
       ? Number(tokenPrices[tokenB.priceID]?.usd)
       : null;
