@@ -11,7 +11,7 @@ const IconDownload = ({ className }: { className?: string }) => (
       fillRule="evenodd"
       clipRule="evenodd"
       d="M15 9H19L12 16L5 9H9V3H15V9ZM5 20V18H19V20H5Z"
-      fill="white"
+      fill="currentColor"
     />
   </svg>
 );

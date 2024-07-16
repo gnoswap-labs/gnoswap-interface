@@ -56,40 +56,46 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   &.selected,
   &:hover {
     background-color: ${({ hierarchy, theme, hoverColor }) => {
-    if (hoverColor) {
-      return hoverColor;
-    }
-    if (hierarchy === ButtonHierarchy.Primary)
-      return theme.color.background04Hover;
-    if (hierarchy === ButtonHierarchy.Dark)
-      return theme.color.background05Hover;
-    return;
-  }};
+      if (hoverColor) {
+        return hoverColor;
+      }
+      if (hierarchy === ButtonHierarchy.Primary)
+        return theme.color.background04Hover;
+      if (hierarchy === ButtonHierarchy.Dark)
+        return theme.color.background05Hover;
+      return;
+    }};
     & .arrow-icon path {
       fill: ${({ theme, arrowColor, hierarchy }) => {
-    if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
-    return theme.color[arrowColor ?? "text10"];
-  }};
+        if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
+        return theme.color[arrowColor ?? "text10"];
+      }};
     }
   }
   &:disabled {
     cursor: default;
     background-color: ${({ hierarchy, theme, disabledColor }) => {
-    if (disabledColor) {
-      return disabledColor;
-    }
-    if (hierarchy === ButtonHierarchy.Primary)
-      return theme.color.background17;
-    return;
-  }};
+      if (disabledColor) {
+        return disabledColor;
+      }
+      if (hierarchy === ButtonHierarchy.Primary)
+        return theme.color.background17;
+      return;
+    }};
   }
 
   & .arrow-icon path {
     fill: ${({ theme, arrowColor, hierarchy }) => {
-    if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
-    return theme.color[arrowColor ?? "text18"];
-  }};
+      if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
+      return theme.color[arrowColor ?? "text18"];
+    }};
   }
+
+  color: ${({ theme, textColor, hierarchy }) => {
+    if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
+    if (hierarchy === ButtonHierarchy.Gray) return theme.color.text20;
+    return theme.color[textColor ?? "text03"];
+  }};
 `;
 
 export const StyledText = styled.span<ButtonStyleProps>`

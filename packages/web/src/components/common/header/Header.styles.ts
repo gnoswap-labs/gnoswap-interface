@@ -179,13 +179,11 @@ export const SearchButton = styled.button`
   }
 `;
 
-export const DepositIcon = styled.div`
+export const DepositIconWrapper = styled.div`
+  color: inherit;
   ${mixins.flexbox("row", "center", "center")};
   svg {
     width: 15px;
     height: 15px;
-    * {
-      fill: ${({ theme }) => theme.color.icon19} !important;
-    }
   }
 `;

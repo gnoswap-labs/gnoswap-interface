@@ -17,7 +17,7 @@ import {
   BottomNavContainer,
   BottomNavItem,
   BottomNavWrapper,
-  DepositIcon,
+  DepositIconWrapper,
   HeaderContainer,
   HeaderWrapper,
   LeftSection,
@@ -169,9 +169,9 @@ const Header: React.FC<HeaderProps> = ({
               {connected && width > DeviceSize[DEVICE_TYPE.TABLET_S] && (
                 <Button
                   leftIcon={
-                    <DepositIcon>
+                    <DepositIconWrapper>
                       <IconDownload />
-                    </DepositIcon>
+                    </DepositIconWrapper>
                   }
                   text={t("HeaderFooter:deposit")}
                   onClick={() => changeTokenDeposit()}
