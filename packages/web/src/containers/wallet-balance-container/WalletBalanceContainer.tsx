@@ -95,7 +95,7 @@ const WalletBalanceContainer: React.FC = () => {
   const claimAllReward = useCallback(() => {
     const amount = positions
       .flatMap(item => item.reward)
-      .reduce((acc, item) => acc + Number(item.claimableAmount), 0);
+      .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
     const data = {
       amount: toUnitFormat(amount, true, true),
     };
