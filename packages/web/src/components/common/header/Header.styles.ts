@@ -179,23 +179,13 @@ export const SearchButton = styled.button`
   }
 `;
 
-export const DepositButton = styled.button`
+export const DepositIcon = styled.div`
   ${mixins.flexbox("row", "center", "center")};
-  color: ${({ theme }) => theme.color.text27};
-  gap: 8px;
-  ${fonts.p1}
-  padding: 10px 16px 10px 14px;
-  background-color: ${({ theme }) => theme.color.background04};
-  border-radius: 8px;
-  width: 101px;
   svg {
     width: 15px;
     height: 15px;
     * {
       fill: ${({ theme }) => theme.color.icon19} !important;
     }
-  }
-  &:hover {
-    background-color: ${({ theme }) => theme.color.background04Hover};
   }
 `;
