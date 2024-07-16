@@ -333,6 +333,7 @@ export const useSwapHandler = () => {
       return "INSUFFICIENT_LIQUIDITY";
     }
     if (
+      !isSameToken &&
       Number(tokenAAmount) > 0 &&
       tokenBAmount === "0" &&
       !isLoading &&
@@ -342,11 +343,12 @@ export const useSwapHandler = () => {
     }
 
     if (
-      (Number(tokenBAmount) > 0 &&
+      ((Number(tokenBAmount) > 0 &&
         tokenAAmount === "0" &&
         !isLoading &&
         type === "EXACT_OUT") ||
-      estimatedRoutes.length === 0
+        estimatedRoutes.length === 0) &&
+      !isSameToken
     ) {
       return "INSUFFICIENT_LIQUIDITY";
     }
@@ -706,10 +708,10 @@ export const useSwapHandler = () => {
 
   const changeTokenA = useCallback(
     (token: TokenModel) => {
-      let changedSwapDirection = type;
+      const changedSwapDirection = type;
       if (isSameTokenFn(tokenB, token)) {
-        changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
-        setTokenAAmount(tokenBAmount);
+        // changedSwapDirection = type;
+        setTokenAAmount(tokenAAmount);
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue(prev => ({
@@ -722,15 +724,23 @@ export const useSwapHandler = () => {
         setIsLoading(true);
       }
     },
-    [tokenA, tokenB, type, tokenBAmount, tokenAAmount, isSameToken],
+    [
+      tokenA,
+      tokenB,
+      type,
+      tokenBAmount,
+      tokenAAmount,
+      isSameToken,
+      isSameTokenFn,
+    ],
   );
 
   const changeTokenB = useCallback(
     (token: TokenModel) => {
-      let changedSwapDirection = type;
+      const changedSwapDirection = type;
       if (isSameTokenFn(tokenA, token)) {
-        changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
-        setTokenAAmount(tokenBAmount);
+        // changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+        setTokenAAmount(tokenAAmount);
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue(prev => ({
@@ -743,7 +753,15 @@ export const useSwapHandler = () => {
         setIsLoading(true);
       }
     },
-    [tokenA, type, tokenBAmount, tokenAAmount, swapValue, isSameToken],
+    [
+      tokenA,
+      type,
+      tokenBAmount,
+      tokenAAmount,
+      swapValue,
+      isSameToken,
+      isSameTokenFn,
+    ],
   );
 
   const switchSwapDirection = useCallback(() => {
