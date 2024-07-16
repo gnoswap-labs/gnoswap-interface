@@ -130,9 +130,7 @@ export const checkPositivePrice = (
       return statusSign + "0.00%";
     }
 
-    return formatRate(percentValue, {
-      showSign: displayStatusSign,
-    });
+    return statusSign + formatRate(percentValue);
   })();
   const price = (() => {
     if (status === MATH_NEGATIVE_TYPE.NONE) {

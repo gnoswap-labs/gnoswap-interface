@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import StakingContentCard, {
   SummuryApr,
 } from "@components/pool/staking-content-card/StakingContentCard";
@@ -71,16 +71,32 @@ const StakingContent: React.FC<StakingContentProps> = ({
     }, []) as TokenModel[];
   }, [pool?.rewardTokens, getGnotPath]);
 
+  const debounce = useCallback(<T extends Function>(cb: T, wait = 20) => {
+    let h: NodeJS.Timeout;
+    const callable = (...args: any) => {
+      clearTimeout(h);
+      h = setTimeout(() => cb(...args), wait);
+    };
+    return callable;
+  }, []);
+
+  const showTooltip = useCallback(
+    debounce(() => {
+      setShowAprTooltip(true);
+    }, 300),
+    [debounce],
+  );
+
   useEffect(() => {
     const fn = () => {
+      setShowAprTooltip(false);
+
       const top = document
         .getElementById("staking-container")
         ?.getBoundingClientRect().top;
 
-      if (top && top <= 500) {
-        setShowAprTooltip(true);
-      } else {
-        setShowAprTooltip(false);
+      if (top && top <= 300) {
+        showTooltip();
       }
     };
 
@@ -89,7 +105,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
     return () => {
       window.removeEventListener("scroll", fn);
     };
-  }, []);
+  }, [showTooltip]);
 
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
@@ -132,13 +148,18 @@ const StakingContent: React.FC<StakingContentProps> = ({
   }, [stakingPositionMap]);
 
   useEffect(() => {
-    const fn = () => {
-      const isHovering = document.getElementById("apr-text")?.matches(":hover");
+    const moutOutAprText = (e: MouseEvent) => {
+      console.log("🚀 ~ moutOutAprText ~ e:", e);
+      showTooltip();
+    };
 
-      if (isHovering) {
+    document
+      .getElementById("apr-text")
+      ?.addEventListener("mouseleave", moutOutAprText);
+
+    const fn = (e: MouseEvent) => {
+      if ((e.target as any).id === "apr-text") {
         setShowAprTooltip(false);
-      } else {
-        setShowAprTooltip(true);
       }
     };
 
@@ -146,8 +167,11 @@ const StakingContent: React.FC<StakingContentProps> = ({
 
     return () => {
       window.removeEventListener("mouseover", fn);
+      document
+        .getElementById("apr-text")
+        ?.removeEventListener("mouseleave", moutOutAprText);
     };
-  });
+  }, [showTooltip]);
 
   return (
     <StakingContentWrapper isMobile={mobile}>

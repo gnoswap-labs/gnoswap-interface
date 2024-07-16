@@ -22,7 +22,7 @@ function IncentivizeTokenDetailTooltipContent({ poolStakings }: Props) {
 
         return (
           <>
-            <S.TokenItem key={index}>
+            <S.TokenItem key={item.startTimestamp + item.incentivizedAmount}>
               <S.ItemHeader>
                 <MissingLogo
                   symbol={tokenData.symbol}
