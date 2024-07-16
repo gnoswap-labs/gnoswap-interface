@@ -20,7 +20,6 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IncentivizeTokenDetailTooltipContainer from "@containers/incentivize-token-detail-container/IncentivizeTokenDetailTooltipContainer";
-import IncentivizeTokenDetailTooltipContent from "../incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
 
 interface StakingContentProps {
   totalApr: string;
@@ -193,7 +192,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 FloatingContent={
                   <IncentivizeTokenDetailTooltipContainer
                     poolPath={pool?.poolPath}
-                    Comp={IncentivizeTokenDetailTooltipContent}
                   />
                 }
                 placement="top"
@@ -204,7 +202,10 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 </span>
               </Tooltip>
               <div className="coin-info">
-                <OverlapTokenLogo tokens={rewardTokenLogos} />
+                <OverlapTokenLogo
+                  tokens={rewardTokenLogos}
+                  size={mobile ? 20 : 36}
+                />
               </div>
             </AprStakingHeader>
           </AprNumberContainer>
