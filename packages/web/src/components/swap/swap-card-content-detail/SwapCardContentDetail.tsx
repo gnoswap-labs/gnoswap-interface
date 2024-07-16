@@ -4,7 +4,6 @@ import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import SwapCardFeeInfo from "../swap-card-fee-info/SwapCardFeeInfo";
 import SwapCardAutoRouter from "../swap-card-auto-router/SwapCardAutoRouter";
-import SwapButtonTooltip from "../swap-button-tooltip/SwapButtonTooltip";
 import { DEVICE_TYPE } from "@styles/media";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
@@ -97,7 +96,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
           <div className="exchange-container">
             {!isLoading && (
               <div className="ocin-info">
-                <SwapButtonTooltip swapSummaryInfo={swapSummaryInfo} />
+                {/* <SwapButtonTooltip swapSummaryInfo={swapSummaryInfo} /> */}
                 <span className="swap-rate" onClick={handleSwapRate}>
                   {swapRateDescription}
                 </span>

@@ -41,6 +41,7 @@ export const useGetTokenPrices = (
       );
       return priceMap;
     },
+    refetchInterval: 10_000,
     ...options,
   });
 };
@@ -80,6 +81,7 @@ export const useGetChainList = (
   return useQuery<IChainResponse, Error>({
     queryKey: [QUERY_KEY.chain],
     queryFn: () => tokenRepository.getChain(),
+    refetchInterval: 10_000,
     ...option,
   });
 };

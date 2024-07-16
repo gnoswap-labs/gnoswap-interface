@@ -6,17 +6,15 @@ type Props = {
   period: number;
 };
 
+const SECONDS_ONE_DAY = 60 * 60 * 24;
+
+const SECOND_PER_BLOCK = 2;
+
+const MILLISEC_PER_SEC = 1000;
+
 function IncentivizeBlockTooltipContent({ latestBlockHeight, period }: Props) {
-  const tier = useMemo(() => {
-    switch (period) {
-      case 180:
-        return 15552000;
-      case 365:
-        return 31536000;
-      case 90:
-      default:
-        return 7776000;
-    }
+  const periodBlockGap = useMemo(() => {
+    return (period * SECONDS_ONE_DAY) / SECOND_PER_BLOCK;
   }, [period]);
 
   const getStartBlockHeight = () => {
@@ -28,13 +26,16 @@ function IncentivizeBlockTooltipContent({ latestBlockHeight, period }: Props) {
     tmrDate.setSeconds(0);
     tmrDate.setMilliseconds(0);
 
-    const secondUntilTmr = tmrDate.getTime() - now.getTime() / 1000;
+    const secondUntilTmr =
+      (tmrDate.getTime() - now.getTime()) / MILLISEC_PER_SEC;
 
-    const start = Math.floor(Number(latestBlockHeight) + secondUntilTmr / 2);
+    const start = Math.floor(
+      Number(latestBlockHeight) + secondUntilTmr / SECOND_PER_BLOCK,
+    );
 
     return {
-      start: Math.floor(Number(latestBlockHeight) + secondUntilTmr / 2),
-      end: start + (tier as number),
+      start: start,
+      end: start + periodBlockGap,
     };
   };
 
