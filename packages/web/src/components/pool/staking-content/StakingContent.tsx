@@ -148,8 +148,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   }, [stakingPositionMap]);
 
   useEffect(() => {
-    const moutOutAprText = (e: MouseEvent) => {
-      console.log("🚀 ~ moutOutAprText ~ e:", e);
+    const moutOutAprText = () => {
       showTooltip();
     };
 
