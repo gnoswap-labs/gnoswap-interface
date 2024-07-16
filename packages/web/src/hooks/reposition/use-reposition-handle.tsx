@@ -623,7 +623,24 @@ export const useRepositionHandle = () => {
       .swapRoute({
         ...estimateSwapRequestByAmounts,
         estimatedRoutes: estimatedRemainSwap.estimatedRoutes,
-        tokenAmountLimit: Number(estimateSwapRequestByAmounts.tokenAmount),
+        tokenAmount: (estimateSwapRequestByAmounts.inputToken ===
+        selectedPosition?.pool.tokenA
+          ? BigNumber(currentAmounts?.amountA || 0).minus(
+              BigNumber(estimatedRepositionAmounts?.amountA || 0),
+            )
+          : BigNumber(currentAmounts?.amountB || 0).minus(
+              BigNumber(estimatedRepositionAmounts?.amountB || 0),
+            )
+        ).toNumber(),
+        tokenAmountLimit: (estimateSwapRequestByAmounts.inputToken ===
+        selectedPosition?.pool.tokenA
+          ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(
+              BigNumber(currentAmounts?.amountB || 0),
+            )
+          : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(
+              BigNumber(currentAmounts?.amountA || 0),
+            )
+        ).toNumber() * 0.95,
       })
       .catch(() => null);
   }, [
