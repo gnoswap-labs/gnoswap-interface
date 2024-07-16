@@ -12,7 +12,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 // import Tooltip from "@components/common/tooltip/Tooltip";
 // import IncentivizeBlockTooltipContent from "../incentivize-block-tooltip-content/IncentivizeBlockTooptipContent";
-import { useGetLastedBlockHeight } from "@query/pools";
+// import { useGetLastedBlockHeight } from "@query/pools";
 
 interface PoolIncentivizeDetailsProps {
   details: PoolSelectItemInfo | null;
