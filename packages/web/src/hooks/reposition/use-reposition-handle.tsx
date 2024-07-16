@@ -66,6 +66,7 @@ export const useRepositionHandle = () => {
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account } = useWallet();
+  const [initialized, setInitialized] = useState(false);
   const { positions, loading: isLoadingPosition } = usePositionData({
     poolPath: encryptId(poolPath),
   });
@@ -76,6 +77,20 @@ export const useRepositionHandle = () => {
       defaultPosition,
     [defaultPosition, positionId, positions],
   );
+
+  const defaultPositionMinPrice = useMemo(() => {
+    if (!selectedPosition) {
+      return null;
+    }
+    return tickToPrice(selectedPosition.tickLower);
+  }, [selectedPosition?.tickLower]);
+
+  const defaultPositionMaxPrice = useMemo(() => {
+    if (!selectedPosition) {
+      return null;
+    }
+    return tickToPrice(selectedPosition.tickUpper);
+  }, [selectedPosition?.tickUpper]);
 
   const { openModal: openConfirmModal, update: updateConfirmModalData } =
     useTransactionConfirmModal();
@@ -135,7 +150,20 @@ export const useRepositionHandle = () => {
     tokenA,
     tokenB,
     feeTier: `FEE_${fee}` as any,
+    defaultPriceRange: [defaultPositionMinPrice, defaultPositionMaxPrice],
   });
+
+  useEffect(() => {
+    if (initialized || selectPool.isLoading) {
+      return;
+    }
+    if (!defaultPositionMinPrice || !defaultPositionMaxPrice) {
+      return;
+    }
+    setInitialized(true);
+    selectPool.setMinPosition(defaultPositionMinPrice);
+    selectPool.setMaxPosition(defaultPositionMaxPrice);
+  }, [defaultPositionMinPrice, defaultPositionMaxPrice, selectPool.isLoading]);
 
   const minPriceStr = useMemo(() => {
     if (!selectPool.minPrice) return "-";
@@ -311,6 +339,8 @@ export const useRepositionHandle = () => {
     const { amountA } = currentAmounts;
     const { amountA: repositionAmountA } = repositionAmounts;
 
+    console.log(repositionAmounts);
+
     const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
     if (isSwapTokenA) {
       return {
@@ -369,6 +399,8 @@ export const useRepositionHandle = () => {
     const tokenA = selectedPosition.pool.tokenA;
     const tokenB = selectedPosition.pool.tokenB;
 
+    // console.log(isSwapTokenA, currentAmounts, repositionAmounts);
+
     if (isEstimatedRemainSwapLoading) {
       return null;
     }
@@ -377,17 +409,28 @@ export const useRepositionHandle = () => {
       return null;
     }
 
+    // console.log(repositionAmountA, repositionAmountB);
+
     const estimatedResult =
       makeDisplayTokenAmount(
         isSwapTokenA ? tokenB : tokenA,
         estimatedRemainSwap?.amount || 0,
       ) || 0;
 
+    console.log("estimatedResult", estimatedResult, isSwapTokenA);
+
     if (isSwapTokenA) {
       const estimatedAmountA = repositionAmountA;
       const estimatedAmountB = isEstimated
         ? estimatedResult + Number(amountB)
         : null;
+
+      if (estimatedAmountA === 0) {
+        return {
+          amountA: Number(estimatedAmountA).toString(),
+          amountB: Number(estimatedAmountB).toString(),
+        };
+      }
 
       const isInsufficientQuantity =
         repositionAmountB > Number(estimatedResult + Number(amountB) || 0);
@@ -434,8 +477,15 @@ export const useRepositionHandle = () => {
       : null;
     const estimatedAmountB = repositionAmountB;
 
+    if (estimatedAmountB === 0) {
+      return {
+        amountA: Number(estimatedAmountA).toString(),
+        amountB: Number(estimatedAmountB).toString(),
+      };
+    }
+
     const isInsufficientQuantity =
-      repositionAmountA > Number(estimatedResult + Number(amountA));
+      repositionAmountA > estimatedResult + Number(amountA);
 
     if (isInsufficientQuantity) {
       const depositAmounts = getDepositAmountsByAmountA(
@@ -462,6 +512,7 @@ export const useRepositionHandle = () => {
       selectPool.maxPrice || 1,
       toShiftBitInt(estimatedAmountB || 0, tokenB.decimals),
     );
+
     return {
       amountA: makeShiftAmount(
         depositAmounts.amountA,
