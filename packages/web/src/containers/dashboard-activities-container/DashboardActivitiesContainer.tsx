@@ -190,7 +190,7 @@ const DashboardActivitiesContainer: React.FC = () => {
 
     return {
       action: actionText,
-      totalValue: formatOtherPrice("0.12999", {
+      totalValue: formatOtherPrice(res.totalUsd, {
         isKMB: false,
       }),
       tokenAmountOne: tokenAAmount,
