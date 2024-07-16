@@ -4,11 +4,14 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useMemo } from "react";
 import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { formatNumberToLocaleString } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PoolModel } from "@models/pool/pool-model";
-import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+  formatRate,
+} from "@utils/new-number-utils";
+import { useStakeData } from "@hooks/stake/use-stake-data";
 
 interface SelectStakeResultProps {
   positions: PoolPositionModel[];
@@ -24,53 +27,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   isHiddenBadge = false,
   pool,
 }) => {
-  const { tokenPrices } = useTokenData();
-
-  const pooledTokenInfos = useMemo(() => {
-    if (positions.length === 0) {
-      return [];
-    }
-    const tokenA = positions[0].pool.tokenA;
-    const tokenB = positions[0].pool.tokenB;
-    const pooledTokenAAmount = positions.reduce(
-      (accum, position) => accum + Number(position.tokenABalance),
-      0,
-    );
-    const pooledTokenBAmount = positions.reduce(
-      (accum, position) => accum + Number(position.tokenBBalance),
-      0,
-    );
-    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
-    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
-    const tokenAAmount = Number(pooledTokenAAmount) || 0;
-    const tokenBAmount = Number(pooledTokenBAmount) || 0;
-
-    const priceAEmpty =
-      !tokenAPrice || positions.every(item => !item.tokenABalance);
-    const priceBEmpty =
-      !tokenBAmount || positions.every(item => !item.tokenBBalance);
-
-    return [
-      {
-        token: tokenA,
-        amount: tokenAAmount,
-        amountUSD: priceAEmpty
-          ? formatOtherPrice(tokenAAmount * Number(tokenAPrice), {
-              isKMB: false,
-            })
-          : "-",
-      },
-      {
-        token: tokenB,
-        amount: tokenBAmount,
-        amountUSD: priceBEmpty
-          ? formatOtherPrice(tokenBAmount * Number(tokenBPrice), {
-              isKMB: false,
-            })
-          : "-",
-      },
-    ];
-  }, [positions, tokenPrices]);
+  const { pooledTokenInfos } = useStakeData({ positions });
 
   const totalLiquidityUSD = useMemo(() => {
     if (
@@ -113,7 +70,9 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
               />
               <p>Pooled {pooledTokenInfo.token.symbol}</p>
               <strong>
-                {formatNumberToLocaleString(pooledTokenInfo.amount)}
+                {formatPoolPairAmount(pooledTokenInfo.amount, {
+                  decimals: pooledTokenInfo.token.decimals,
+                })}
               </strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>

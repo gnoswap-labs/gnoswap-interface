@@ -79,8 +79,10 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    return formatOtherPrice(Number(position.positionUsdValue));
-  }, [position.positionUsdValue]);
+    return formatOtherPrice(position.positionUsdValue, {
+      isKMB: width < 400,
+    });
+  }, [position.positionUsdValue, width]);
 
   return (
     <li css={wrapper(checked)}>

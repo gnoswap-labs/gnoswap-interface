@@ -5,6 +5,7 @@ import StakingContentCard, {
 import {
   AprNumberContainer,
   AprStakingHeader,
+  NoticeAprToolTip,
   StakingContentWrapper,
 } from "./StakingContent.styles";
 import Button from "@components/common/button/Button";
@@ -176,7 +177,9 @@ const StakingContent: React.FC<StakingContentProps> = ({
             }
           >
             <Tooltip
-              FloatingContent={<div>View APR</div>}
+              FloatingContent={
+                <NoticeAprToolTip>Hover to view details</NoticeAprToolTip>
+              }
               placement="top"
               forcedOpen={showAprTooltip}
               isShouldShowed={showAprTooltip}
