@@ -47,6 +47,7 @@ export interface IPriceRange {
 export type REPOSITION_BUTTON_TYPE =
   | "REPOSITION"
   | "LOADING"
+  | "NON_SELECTED_RANGE"
   | "INSUFFICIENT_LIQUIDITY";
 
 export const useRepositionHandle = () => {
@@ -331,7 +332,10 @@ export const useRepositionHandle = () => {
   });
 
   const buttonType: REPOSITION_BUTTON_TYPE = useMemo(() => {
-    if (!repositionAmounts || isErrorLiquidity) {
+    if (!repositionAmounts) {
+      return "NON_SELECTED_RANGE";
+    }
+    if (isErrorLiquidity) {
       return "INSUFFICIENT_LIQUIDITY";
     }
     if (isEstimatedRemainSwapLoading) {

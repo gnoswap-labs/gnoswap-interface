@@ -68,6 +68,9 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
     if (buttonType === "INSUFFICIENT_LIQUIDITY") {
       return "Insufficient Liquidity";
     }
+    if (buttonType === "NON_SELECTED_RANGE") {
+      return "Select Range";
+    }
     return "Reposition";
   }, [buttonType]);
 
