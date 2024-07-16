@@ -403,11 +403,11 @@ export const useRepositionHandle = () => {
           amountA: makeShiftAmount(
             depositAmounts.amountA,
             tokenA.decimals * -1,
-          ),
+          ).toString(),
           amountB: makeShiftAmount(
             depositAmounts.amountB,
             tokenB.decimals * -1,
-          ),
+          ).toString(),
         };
       }
 
@@ -418,8 +418,14 @@ export const useRepositionHandle = () => {
         toShiftBitInt(estimatedAmountA, tokenA.decimals),
       );
       return {
-        amountA: makeShiftAmount(depositAmounts.amountA, tokenA.decimals * -1),
-        amountB: makeShiftAmount(depositAmounts.amountB, tokenB.decimals * -1),
+        amountA: makeShiftAmount(
+          depositAmounts.amountA,
+          tokenA.decimals * -1,
+        ).toString(),
+        amountB: makeShiftAmount(
+          depositAmounts.amountB,
+          tokenB.decimals * -1,
+        ).toString(),
       };
     }
 
@@ -439,8 +445,14 @@ export const useRepositionHandle = () => {
         toShiftBitInt(estimatedAmountA || 0, tokenA.decimals),
       );
       return {
-        amountA: makeShiftAmount(depositAmounts.amountA, tokenA.decimals * -1),
-        amountB: makeShiftAmount(depositAmounts.amountB, tokenB.decimals * -1),
+        amountA: makeShiftAmount(
+          depositAmounts.amountA,
+          tokenA.decimals * -1,
+        ).toString(),
+        amountB: makeShiftAmount(
+          depositAmounts.amountB,
+          tokenB.decimals * -1,
+        ).toString(),
       };
     }
 
@@ -451,8 +463,14 @@ export const useRepositionHandle = () => {
       toShiftBitInt(estimatedAmountB || 0, tokenB.decimals),
     );
     return {
-      amountA: makeShiftAmount(depositAmounts.amountA, tokenA.decimals * -1),
-      amountB: makeShiftAmount(depositAmounts.amountB, tokenB.decimals * -1),
+      amountA: makeShiftAmount(
+        depositAmounts.amountA,
+        tokenA.decimals * -1,
+      ).toString(),
+      amountB: makeShiftAmount(
+        depositAmounts.amountB,
+        tokenB.decimals * -1,
+      ).toString(),
     };
   }, [
     currentAmounts,
