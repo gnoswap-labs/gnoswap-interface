@@ -343,7 +343,8 @@ export const useSwapHandler = () => {
     }
 
     if (
-      (Number(tokenBAmount) > 0 &&
+      (!isSameToken &&
+        Number(tokenBAmount) > 0 &&
         tokenAAmount === "0" &&
         !isLoading &&
         type === "EXACT_OUT") ||
