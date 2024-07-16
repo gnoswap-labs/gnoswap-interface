@@ -343,12 +343,12 @@ export const useSwapHandler = () => {
     }
 
     if (
-      (!isSameToken &&
-        Number(tokenBAmount) > 0 &&
+      ((Number(tokenBAmount) > 0 &&
         tokenAAmount === "0" &&
         !isLoading &&
         type === "EXACT_OUT") ||
-      estimatedRoutes.length === 0
+        estimatedRoutes.length === 0) &&
+      !isSameToken
     ) {
       return "INSUFFICIENT_LIQUIDITY";
     }
