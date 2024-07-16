@@ -216,25 +216,6 @@ const SelectPriceRangeCustomController = forwardRef<
     );
 
     function greaterThan1Transform(numStr: string) {
-      // const number = Number(numStr);
-
-      // const significantNumber = 5;
-      // const [intPart] = numStr.split(".");
-
-      // if (intPart.length >= significantNumber) {
-      //   const originalNumber = number;
-      //   const digitCountRatio = Math.pow(
-      //     10,
-      //     intPart.length - significantNumber,
-      //   );
-
-      //   const numberWith5SignificantNumber = (
-      //     Math.round(originalNumber / digitCountRatio) * digitCountRatio
-      //   ).toString();
-
-      //   return numberWith5SignificantNumber;
-      // }
-
       return formatPoolPairAmount(numStr);
     }
 

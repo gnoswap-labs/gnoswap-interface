@@ -234,7 +234,7 @@ export const useGetPoolStakingListByPoolPath = (
   const { poolRepository } = useGnoswapContext();
 
   return useQuery<PoolStakingModel[], Error>({
-    queryKey: [QUERY_KEY.poolStakingList],
+    queryKey: [QUERY_KEY.poolStakingList, poolPath],
     queryFn: async () => {
       const data = await poolRepository.getPoolStakingList(
         encodeURIComponent(encryptId(poolPath)),

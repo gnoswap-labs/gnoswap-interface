@@ -513,21 +513,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           }, null as number | null)
       : null;
 
-    // const claimableUsdValue = positions.reduce(
-    //   (positionAcc, positionCurrent) => {
-    //     const currentPositionDailyReward = positionCurrent.reward.reduce(
-    //       (rewardAcc, rewardCurrent) => {
-
-    //         return rewardAcc + Number(rewardCurrent.claimableUsd);
-    //       },
-    //       null,
-    //     );
-
-    //     return positionAcc + currentPositionDailyReward;
-    //   },
-    //   0,
-    // );
-
     return formatOtherPrice(claimableUsdValue, { isKMB: false });
   }, [claimableRewardInfo, isDisplay, positions]);
 
@@ -1034,34 +1019,3 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 };
 
 export default MyLiquidityContent;
-
-// function makeUniqueClaimableRewards(positions: PoolPositionModel[], tokenPrices: { [key in string]: TokenPriceModel | null }): PositionClaimInfo[] {
-//   const infoMap: { [key in string]: PositionClaimInfo } = {};
-//   positions.flatMap(position => {
-//     const tokenA = position.pool.tokenA;
-//     const tokenB = position.pool.tokenB;
-//     const tokenAUnclaimedBalance = makeDisplayTokenAmount(tokenA, position.unclaimedFeeAAmount) || 0;
-//     const tokenBUnclaimedBalance = makeDisplayTokenAmount(tokenB, position.unclaimedFeeBAmount) || 0;
-//     return [{
-//       balance: tokenAUnclaimedBalance,
-//       balanceUSD: tokenAUnclaimedBalance * Number(tokenPrices[tokenA.priceID]?.usd || 0),
-//       token: tokenA
-//     }, {
-//       balance: tokenBUnclaimedBalance,
-//       balanceUSD: tokenBUnclaimedBalance * Number(tokenPrices[tokenB.priceID]?.usd || 0),
-//       token: tokenB
-//     }];
-//   }).forEach(claimInfo => {
-//     const currentInfo = infoMap[claimInfo.token.priceID];
-//     if (currentInfo) {
-//       infoMap[claimInfo.token.priceID] = {
-//         ...claimInfo,
-//         balance: currentInfo.balance + claimInfo.balance,
-//         balanceUSD: currentInfo.balanceUSD + claimInfo.balanceUSD,
-//       };
-//     } else {
-//       infoMap[claimInfo.token.priceID] = claimInfo;
-//     }
-//   });
-//   return Object.values(infoMap);
-// }

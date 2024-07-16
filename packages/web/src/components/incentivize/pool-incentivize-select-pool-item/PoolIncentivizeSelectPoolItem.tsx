@@ -41,7 +41,6 @@ const PoolIncentivizeSelectPoolItem: React.FC<
     return `${poolSelectItem.tokenA.symbol}/${poolSelectItem.tokenB.symbol}`;
   }, [poolSelectItem]);
 
-  console.log("🚀 ~ liquidity ~ poolSelectItem:", poolSelectItem);
   const liquidity = useMemo(() => {
     if (!poolSelectItem || !poolSelectItem.liquidityAmount) {
       return "-";

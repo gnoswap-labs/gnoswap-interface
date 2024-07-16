@@ -125,10 +125,6 @@ const UnstakePositionModalContainer = ({
         openModal();
       }
     }
-    // if (result) {
-    //   clearModal();
-    //   router.push(router.asPath.replace("/unstake", ""));
-    // }
     return result;
   }, [account?.address, positionRepository, positions, router]);
 

@@ -1,4 +1,4 @@
-import { PoolStakingModel } from "@models/pool/pool-staking";
+import IncentivizeTokenDetailTooltipContent from "@components/pool/incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
 import {
   useGetLastedBlockHeight,
   useGetPoolStakingListByPoolPath,
@@ -10,13 +10,8 @@ export const TIER_MAP: Record<string, number> = {
   "3": 31536000,
 };
 function IncentivizeTokenDetailTooltipContainer({
-  Comp,
   poolPath,
 }: {
-  Comp: React.ComponentType<{
-    poolStakings: PoolStakingModel[];
-    latestBlockHeight: string;
-  }>;
   poolPath?: string;
 }) {
   const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(
@@ -29,7 +24,10 @@ function IncentivizeTokenDetailTooltipContainer({
 
   return (
     <>
-      <Comp latestBlockHeight={blockHeight} poolStakings={poolStakings} />
+      <IncentivizeTokenDetailTooltipContent
+        latestBlockHeight={blockHeight}
+        poolStakings={poolStakings}
+      />
     </>
   );
 }

@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js";
 import { PoolListInfo } from "../info/pool-list-info";
 import { IncentivizePoolModel, PoolModel } from "../pool-model";
 import { INCENTIVE_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
@@ -40,9 +39,6 @@ export class PoolMapper {
       liquidity: liquidity,
       volume24h: volume24h.toString(),
       fees24h: feeUsd24h.toString(),
-      // liquidity: formatOtherPrice(liquidity, { isKMB: false, decimals: 0 }),
-      // volume24h: formatOtherPrice(volume24h, { isKMB: false, decimals: 0 }),
-      // fees24h: formatOtherPrice(feeUsd24h, { isKMB: false, decimals: 0 }),
       rewardTokens,
       currentTick,
       price,
@@ -51,11 +47,6 @@ export class PoolMapper {
   }
 
   public static toPoolSelectItemInfo(pool: PoolModel): PoolSelectItemInfo {
-    console.log("🚀 ~ PoolMapper ~ toPoolSelectItemInfo ~ pool:", pool.tvl);
-    console.log(
-      "🚀 ~ PoolMapper ~ toPoolSelectItemInfo ~ pool:",
-      BigNumber(pool.tvl).toFixed(),
-    );
     const feeRate =
       Object.values(SwapFeeTierInfoMap).find(
         info => info.fee.toString() === pool.fee,
