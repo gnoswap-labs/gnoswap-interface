@@ -108,7 +108,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
       <section className="period-section">
         <h5 className="section-title">Period</h5>
         <div className="section-info">
-          <Tooltip
+          {/* <Tooltip
             placement="top"
             FloatingContent={
               <IncentivizeBlockTooltipContent
@@ -116,12 +116,12 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
                 period={period}
               />
             }
-          >
-            <span className="select-date">
-              {formatDate(startDate)}
-              <br />- {formatDate(startDate, period)}
-            </span>
-          </Tooltip>
+          > */}
+          <span className="select-date">
+            {formatDate(startDate)}
+            <br />- {formatDate(startDate, period)}
+          </span>
+          {/* </Tooltip> */}
           <span className="period-desc">
             {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()}{" "}
             {token?.symbol} will be distributed daily
