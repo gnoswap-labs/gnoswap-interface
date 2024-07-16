@@ -728,3 +728,8 @@ export function subscriptFormat(
   )}`;
   return result;
 }
+
+export function toShiftBitInt(value: string | number, shifted: number): bigint {
+  const shiftedValue = BigNumber(value).shiftedBy(shifted).toNumber();
+  return BigInt(Math.round(shiftedValue));
+}
