@@ -1,3 +1,6 @@
+import { makeId } from "@utils/common";
+import { GNS_TOKEN_PATH, WRAPPED_GNOT_PATH } from "./environment.constant";
+
 export const DEFAULT_NETWORK_ID = "portal-loop";
 
 export const PATH = ["/earn"];
@@ -295,3 +298,9 @@ export const LANGUAGES = [
   { code: "zh", name: "中文" },
   { code: "hi", name: "हिन्दी" },
 ];
+
+export const DEFAULT_TOKEN_PAIR = [WRAPPED_GNOT_PATH, GNS_TOKEN_PATH];
+
+export const DEFAULT_POOL_ID = makeId(
+  [...DEFAULT_TOKEN_PAIR.sort(), "3000"].join(":"),
+);
