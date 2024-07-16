@@ -8,7 +8,6 @@ export const useRouterBack = () => {
     initLocation.lastIndexOf("/"),
   );
 
-  let enabled = false;
   const router = useRouter();
 
   const back = (): void => {
@@ -16,12 +15,9 @@ export const useRouterBack = () => {
       window.history.pushState("", "", null);
       return;
     }
-    if (!enabled) {
-      if (targetLocation !== window.location.href) {
-        router.back();
-      } else {
-        enabled = true;
-      }
+
+    if (targetLocation !== window.location.href) {
+      router.back();
     }
   };
 

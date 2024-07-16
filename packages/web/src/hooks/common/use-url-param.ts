@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import useCustomRouter from "./use-custom-router";
 
 type DefaultObject = Record<string, string | number | null | undefined>;
 
@@ -7,7 +8,6 @@ export function makeQueryString(data: DefaultObject): string {
   Object.keys(data).forEach(key => {
     const value = data[key];
     if (value === null || value === undefined || value === "") {
-
     } else {
       let value = data[key];
       if (typeof data[key] === "string") {
@@ -16,7 +16,6 @@ export function makeQueryString(data: DefaultObject): string {
       const param = `${key}=${value}`;
       params.push(param);
     }
-
   });
   return params.join("&");
 }
@@ -44,6 +43,7 @@ export function useUrlParam<T extends DefaultObject = DefaultObject>(
   hash: string | null;
   updateParams: () => void;
 } {
+  const { push } = useCustomRouter();
   const [currentData, setCurrentData] = useState<T>(request);
   const [hash, setHash] = useState<string | null>(null);
   const [initializedData, setInitializedData] = useState<T | null>(null);
@@ -54,7 +54,7 @@ export function useUrlParam<T extends DefaultObject = DefaultObject>(
     const queryString = makeQueryString(request);
     const currentPath = queryString === "" ? path : `${path}?${queryString}`;
     if (locationPath !== currentPath) {
-      history.pushState(history.state, "", currentPath);
+      push(currentPath, undefined, { shallow: true });
       setCurrentData(request);
     }
   }, [request]);
