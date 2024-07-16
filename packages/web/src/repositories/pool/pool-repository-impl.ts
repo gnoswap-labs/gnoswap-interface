@@ -43,11 +43,18 @@ import {
   makeStakerApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages/pool";
 import {
+  makeNFTSetTokenUri,
   makePositionMintMessage,
   makePositionMintWithStakeMessage,
 } from "@common/clients/wallet-client/transaction-messages/position";
-import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./response/add-liquidity-response";
-import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
+import {
+  AddLiquidityFailedResponse,
+  AddLiquiditySuccessResponse,
+} from "./response/add-liquidity-response";
+import {
+  CreatePoolFailedResponse,
+  CreatePoolSuccessResponse,
+} from "./response/create-pool-response";
 import {
   makeApproveMessage,
   TransactionMessage,
@@ -399,10 +406,13 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const mintMessages = [mintMessage];
 
+    const nftSetUriMessage = makeNFTSetTokenUri(caller);
+
     const messages = [
       ...createPoolMessages,
       ...approveMessages,
       ...mintMessages,
+      nftSetUriMessage,
     ];
     const result = await this.walletClient.sendTransaction({
       messages,
@@ -531,7 +541,9 @@ export class PoolRepositoryImpl implements PoolRepository {
     );
     const mintMessages = [mintMessage];
 
-    const messages = [...approveMessages, ...mintMessages];
+    const nftSetUriMessage = makeNFTSetTokenUri(caller);
+
+    const messages = [...approveMessages, ...mintMessages, nftSetUriMessage];
 
     const result = await this.walletClient.sendTransaction({
       messages,
@@ -549,11 +561,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     const { data, hash } = result.data as SendTransactionSuccessResponse<
       string[]
     >;
-    if (
-      data === null ||
-      !Array.isArray(data) ||
-      data.length < 4
-    ) {
+    if (data === null || !Array.isArray(data) || data.length < 4) {
       return {
         ...result,
         data: {
@@ -565,10 +573,8 @@ export class PoolRepositoryImpl implements PoolRepository {
         },
       };
     }
-    const resultTokenAAmount =
-      makeDisplayTokenAmount(tokenA, data[2]) || 0;
-    const resultTokenBAmount =
-      makeDisplayTokenAmount(tokenA, data[3]) || 0;
+    const resultTokenAAmount = makeDisplayTokenAmount(tokenA, data[2]) || 0;
+    const resultTokenBAmount = makeDisplayTokenAmount(tokenA, data[3]) || 0;
     return {
       ...result,
       data: {
