@@ -89,7 +89,9 @@ const TrendingCardListContainer: React.FC = () => {
           },
           price: formatPrice(item.tokenPrice),
           upDown: status as UpDownType,
-          content: formatRate(priceChange, { allowZeroDecimals: true }),
+          content: formatRate(Math.abs(Number(priceChange)), {
+            allowZeroDecimals: true,
+          }),
         };
       })
       .slice(0, 3);
