@@ -17,6 +17,7 @@ import { ValuesType } from "utility-types";
 import { useAtom, useAtomValue } from "jotai";
 import { EarnState, ThemeState } from "@states/index";
 import { useGetUsernameByAddress } from "@query/address/queries";
+import { DEFAULT_POOL_ID } from "@constants/common.constant";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -118,9 +119,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   );
 
   const moveEarnStake = useCallback(() => {
-    router.push(
-      "/earn/pool/gno.land_r_gnoswap_gns:gno.land_r_demo_wugnot:3000/#staking",
-    );
+    const stakingUri = `/earn/pool/${DEFAULT_POOL_ID}#staking`;
+    router.push(stakingUri);
   }, [router]);
 
   const openPosition = useMemo(() => {

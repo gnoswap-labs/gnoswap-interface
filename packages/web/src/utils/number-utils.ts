@@ -1,9 +1,8 @@
-import { MathSymbolType } from "@common/values/data-constant";
-import {
-  unitsLowerCase,
-  unitsUpperCase,
-} from "@common/values/global-initial-value";
 import BigNumber from "bignumber.js";
+
+import { MathSymbolType } from "@common/values/data-constant";
+import { unitsUpperCase } from "@common/values/global-initial-value";
+
 import { formatPoolPairAmount } from "./new-number-utils";
 import { convertToKMB } from "./stake-position-utils";
 
@@ -26,29 +25,6 @@ export const toNumberFormat = (
     return bigNumber.decimalPlaces(decimalPlaces).toFormat();
   }
   return bigNumber.toFormat();
-};
-
-export function toNumberString(value: string) {
-  return BigNumber(value).toString();
-}
-
-export const toGnot = (value: number, denom: string) => {
-  return {
-    value: valueConvert(value, denom),
-    denom: denomConvert(denom),
-  };
-};
-
-export const denomConvert = (denom: string) => {
-  return isUgnot(denom) ? "GNOT" : `${denom}`.toUpperCase().trim();
-};
-
-export const valueConvert = (value: number, denom: string) => {
-  return isUgnot(denom) ? value / 1000000 : value;
-};
-
-const isUgnot = (denom: string) => {
-  return ["ugnot", "UGNOT"].includes(denom);
 };
 
 export const mathSybmolAbsFormat = (
@@ -181,100 +157,6 @@ export const toKMBFormat = (
       unitsUpperCase.thousand
     );
   }
-};
-
-export const toPriceFormatNotRounding = (
-  value: BigNumber | string | number,
-  {
-    usd = false,
-    isKMBFormat = true,
-    lestThan1Decimals = 3,
-    lessThan1Significant,
-    fixedLessThan1 = false,
-    greaterThan1Decimals = 2,
-    fixedGreaterThan1 = false,
-    minLimit,
-  }: {
-    usd?: boolean;
-    isKMBFormat?: boolean;
-    lestThan1Decimals?: number;
-    lessThan1Significant?: number;
-    fixedLessThan1?: boolean;
-    greaterThan1Decimals?: number;
-    fixedGreaterThan1?: boolean;
-    minLimit?: number;
-  } = {},
-): string => {
-  const valueWithoutComma = value.toString().replace(/,/g, "");
-
-  if (!isNumber(valueWithoutComma)) {
-    return usd ? "$0" : "0";
-  }
-  const bigNumber = BigNumber(valueWithoutComma).abs();
-  const prefix = usd ? "$" : "";
-  const negativeSign = BigNumber(valueWithoutComma).isLessThan(0) ? "-" : "";
-
-  if (minLimit && bigNumber.isLessThan(minLimit) && !bigNumber.isEqualTo(0)) {
-    return (usd ? "<$" : "<") + minLimit.toString();
-  }
-
-  if (bigNumber.isEqualTo(0)) {
-    return prefix + "0";
-  }
-
-  if (isKMBFormat) {
-    const kmbNumber = toKMBFormat(valueWithoutComma, { usd });
-    if (kmbNumber) return kmbNumber;
-  }
-
-  const negativeSignLength = bigNumber.isLessThan(0) ? 1 : 0;
-
-  if (Number(bigNumber) < 1) {
-    const tempNum = bigNumber
-      .toNumber()
-      .toLocaleString("en-US", {
-        maximumFractionDigits: lestThan1Decimals + 1,
-        minimumFractionDigits: lestThan1Decimals + 1,
-        minimumSignificantDigits: lessThan1Significant
-          ? lessThan1Significant + 1
-          : undefined,
-        maximumSignificantDigits: lessThan1Significant
-          ? lessThan1Significant + 1
-          : undefined,
-      })
-      .replace(/,/g, "");
-
-    const cutNumber = tempNum.substring(0, tempNum.length - 1);
-
-    if (fixedLessThan1) {
-      return negativeSign + prefix + cutNumber;
-    }
-
-    // Wrapped in BigNumber(cutNumber).toFormat() to remove trailingZeros
-    return negativeSign + prefix + BigNumber(cutNumber).toFormat();
-  }
-
-  const finalGreaterThan1Decimals = greaterThan1Decimals + negativeSignLength;
-
-  const tempNum = bigNumber
-    .toNumber()
-    .toLocaleString("en-US", {
-      minimumFractionDigits: finalGreaterThan1Decimals + 1,
-      maximumFractionDigits: finalGreaterThan1Decimals + 1,
-    })
-    .replace(/,/g, "");
-
-  const cutNumber = tempNum.substring(0, tempNum.length - 1);
-
-  if (fixedGreaterThan1) {
-    return (
-      negativeSign +
-      prefix +
-      BigNumber(cutNumber).toFormat(greaterThan1Decimals)
-    );
-  }
-
-  return negativeSign + prefix + BigNumber(cutNumber).toFormat();
 };
 
 /**
@@ -426,138 +308,6 @@ export const toPriceFormat = (
   );
 };
 
-//
-export const toPriceFormatRounding = (
-  value: BigNumber | string | number,
-  {
-    usd = false,
-    isKMBFormat = true,
-    lestThan1Decimals = 3,
-    lessThan1Significant,
-    fixedLessThan1 = false,
-    greaterThan1Decimals = 2,
-    fixedGreaterThan1 = false,
-    minLimit,
-  }: {
-    usd?: boolean;
-    isKMBFormat?: boolean;
-    lestThan1Decimals?: number;
-    lessThan1Significant?: number;
-    fixedLessThan1?: boolean;
-    greaterThan1Decimals?: number;
-    fixedGreaterThan1?: boolean;
-    minLimit?: number;
-  } = {},
-): string => {
-  const valueWithoutComma = value.toString().replace(/,/g, "");
-
-  if (!isNumber(valueWithoutComma)) {
-    return usd ? "$0" : "0";
-  }
-  const bigNumber = BigNumber(valueWithoutComma).abs();
-  const prefix = usd ? "$" : "";
-  const negativeSign = BigNumber(valueWithoutComma).isLessThan(0) ? "-" : "";
-
-  if (minLimit && bigNumber.isLessThan(minLimit)) {
-    return (usd ? "<$" : "<") + minLimit.toString();
-  }
-
-  if (bigNumber.isEqualTo(0)) {
-    return prefix + "0";
-  }
-
-  if (isKMBFormat) {
-    const kmbNumber = toKMBFormat(valueWithoutComma, { usd });
-    if (kmbNumber) return kmbNumber;
-  }
-
-  const negativeSignLength = bigNumber.isLessThan(0) ? 1 : 0;
-
-  if (Number(bigNumber) < 1) {
-    const tempNum = bigNumber
-      .toNumber()
-      .toLocaleString("en-US", {
-        maximumFractionDigits: lestThan1Decimals,
-        minimumFractionDigits: fixedLessThan1 ? lestThan1Decimals : undefined,
-        minimumSignificantDigits: fixedLessThan1
-          ? lessThan1Significant
-          : undefined,
-        maximumSignificantDigits: lessThan1Significant,
-      })
-      .replace(/,/g, "");
-
-    return negativeSign + prefix + tempNum;
-  }
-
-  const finalGreaterThan1Decimals = greaterThan1Decimals + negativeSignLength;
-
-  const tempNum = bigNumber
-    .toNumber()
-    .toLocaleString("en-US", {
-      minimumFractionDigits: fixedGreaterThan1
-        ? finalGreaterThan1Decimals
-        : undefined,
-      maximumFractionDigits: finalGreaterThan1Decimals,
-    })
-    .replace(/,/g, "");
-
-  return (
-    negativeSign +
-    prefix +
-    BigNumber(tempNum).toFormat(
-      fixedGreaterThan1 ? greaterThan1Decimals : undefined,
-    )
-  );
-};
-
-/**
- *
- * @param value
- * @param usd
- * @returns
- */
-export const toLowerUnitFormat = (
-  value: BigNumber | string | number,
-  usd = false,
-): string => {
-  if (!isNumber(value)) {
-    // TODO : Error Check
-    return usd ? "$0.00" : "0";
-  }
-
-  const bigNumber = BigNumber(value);
-  const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
-
-  const prefixe = usd ? "$" : "";
-  if (wholeNumberLength >= 13)
-    return (
-      prefixe +
-      bigNumber.dividedBy(Math.pow(10, 12)).decimalPlaces(2) +
-      unitsLowerCase.trillion
-    );
-  if (wholeNumberLength >= 10)
-    return (
-      prefixe +
-      bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
-      unitsLowerCase.billion
-    );
-  if (wholeNumberLength >= 7)
-    return (
-      prefixe +
-      bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
-      unitsLowerCase.million
-    );
-  if (wholeNumberLength >= 4)
-    return (
-      prefixe +
-      bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
-      unitsLowerCase.thousand
-    );
-
-  // TODO : Else Return Type
-  return prefixe + bigNumber.decimalPlaces(2).toString();
-};
-
 export function toMillionFormat(value: number | string) {
   const num = BigNumber(value);
   if (num.isNaN()) {
@@ -570,38 +320,10 @@ export function toMillionFormat(value: number | string) {
   return `${BigNumber(num).dividedBy(MILLION).toFormat(2)}m`;
 }
 
-export function toDecimalNumber(
-  value: BigNumber | string | number,
-  decimals?: number,
-) {
-  const powers = 10 ** (decimals || 0);
-  const num = BigNumber(value).toNumber();
-  return Math.round(num * powers) / powers;
-}
-
-export function numberToUSD(
-  value: number,
-  options?: { decimalDigit?: number },
-) {
-  return Number.isNaN(value)
-    ? "-"
-    : `$${BigNumber(value).toFormat(options?.decimalDigit || 2)}`;
-}
-
-export function numberToUSDV2(value: number) {
-  return Number.isNaN(value) ? "-" : `$${value}`;
-}
-
 export function matchInputNumber(value: string) {
   const regexpOfNum = /^(\d*)[\.]?(\d*)?$/g;
   const regexpOfStartWithZeroes = /^(?!00)/;
   return regexpOfNum.test(value) && regexpOfStartWithZeroes.test(value);
-}
-
-export function prettyNumber(val: string | number) {
-  return BigNumber(val)
-    .decimalPlaces(2)
-    .toFormat(Number(val) === 0 ? 0 : 2);
 }
 
 export function prettyNumberFloatInteger(
@@ -635,24 +357,6 @@ export function formatUsdNumber3Digits(val: string | number) {
     }
   }
   return stringVal;
-}
-
-export function formatNumberToLocaleString(inputNumber: Number | string) {
-  if (Number.isInteger(Number(inputNumber))) {
-    // If the number is an integer, return it as is
-    return inputNumber.toLocaleString(undefined, { maximumFractionDigits: 0 });
-  } else {
-    // If the number is not an integer, format it with toLocaleString
-    // and set minimumFractionDigits to 6
-    return inputNumber.toLocaleString(undefined, { maximumFractionDigits: 6 });
-  }
-}
-
-export function convertLargePrice(val: string) {
-  if (Number(val) >= 1000000000) {
-    return ">$999,999,999.99";
-  }
-  return `${toUnitFormat(val || "0.00", true, false)}`;
 }
 
 export const formatUSDWallet = (

@@ -17,7 +17,7 @@ import {
   BottomNavContainer,
   BottomNavItem,
   BottomNavWrapper,
-  DepositButton,
+  DepositIconWrapper,
   HeaderContainer,
   HeaderWrapper,
   LeftSection,
@@ -32,6 +32,7 @@ import { ITokenResponse } from "@repositories/token";
 import { BLOCKED_PAGES } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useTranslation } from "next-i18next";
+import Button, { ButtonHierarchy } from "../button/Button";
 
 interface HeaderProps {
   pathname?: string;
@@ -166,10 +167,21 @@ const Header: React.FC<HeaderProps> = ({
                 <IconSearch className="search-icon" />
               </SearchButton>
               {connected && width > DeviceSize[DEVICE_TYPE.TABLET_S] && (
-                <DepositButton onClick={() => changeTokenDeposit()}>
-                  <IconDownload />
-                  <span>{t("HeaderFooter:deposit")}</span>
-                </DepositButton>
+                <Button
+                  leftIcon={
+                    <DepositIconWrapper>
+                      <IconDownload />
+                    </DepositIconWrapper>
+                  }
+                  text={t("HeaderFooter:deposit")}
+                  onClick={() => changeTokenDeposit()}
+                  style={{
+                    hierarchy: ButtonHierarchy.Primary,
+                    fontType: "p1",
+                    padding: "10px 16px 10px 14px",
+                    gap: "8px",
+                  }}
+                />
               )}
               <WalletConnectorButton
                 account={account}

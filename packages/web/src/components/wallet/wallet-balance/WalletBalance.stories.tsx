@@ -24,7 +24,7 @@ ConnectionSucceeded.args = {
   balanceDetailInfo: {
     availableBalance: "$1.10",
     stakedLP: "$1.20",
-    unstakingLP: "$1.30",
+    unstakedLP: "$1.30",
     claimableRewards: "$1.40",
     loadingBalance: false,
     loadingPositions: false,
@@ -47,7 +47,7 @@ ConnectionFailed.args = {
   balanceDetailInfo: {
     availableBalance: "$0.00",
     stakedLP: "$0.00",
-    unstakingLP: "$0.00",
+    unstakedLP: "$0.00",
     claimableRewards: "$0.00",
     loadingBalance: false,
     loadingPositions: false,
@@ -68,7 +68,7 @@ LoadingData.args = {
   balanceDetailInfo: {
     availableBalance: "$0.00",
     stakedLP: "$0.00",
-    unstakingLP: "$0.00",
+    unstakedLP: "$0.00",
     claimableRewards: "$0.00",
     loadingBalance: false,
     loadingPositions: false,
