@@ -640,7 +640,7 @@ export const useRepositionHandle = () => {
           : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(
               BigNumber(currentAmounts?.amountA || 0),
             )
-        ).toNumber() * 0.95,
+        ).toNumber() * 0.995,
       })
       .catch(() => null);
   }, [
