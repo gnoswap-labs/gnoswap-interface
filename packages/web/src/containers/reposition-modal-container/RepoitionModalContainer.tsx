@@ -45,6 +45,7 @@ interface Props {
   ) => Promise<WalletResponse<
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
+  isSkipSwap: boolean;
 }
 
 const RepositionModalContainer: React.FC<Props> = ({
@@ -59,6 +60,7 @@ const RepositionModalContainer: React.FC<Props> = ({
   removePosition,
   swapRemainToken,
   reposition,
+  isSkipSwap,
 }) => {
   const clearModal = useClearModal();
 
@@ -80,6 +82,7 @@ const RepositionModalContainer: React.FC<Props> = ({
       removePosition={removePosition}
       swapRemainToken={swapRemainToken}
       reposition={reposition}
+      isSkipSwap={isSkipSwap}
     />
   );
 };

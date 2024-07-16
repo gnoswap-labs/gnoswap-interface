@@ -42,6 +42,7 @@ interface RepositionContentProps {
   repositionAmounts: { amountA: string | null; amountB: string | null } | null;
   selectedPosition: PoolPositionModel | null;
   isLoadingPosition: boolean;
+  isSkipSwap: boolean;
 }
 
 const RepositionContent: React.FC<RepositionContentProps> = ({
@@ -63,6 +64,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   selectedPosition,
   isLoadingPosition,
   buttonType,
+  isSkipSwap,
 }) => {
   const submitButtonText = useMemo(() => {
     if (buttonType === "INSUFFICIENT_LIQUIDITY") {
@@ -75,8 +77,11 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   }, [buttonType]);
 
   const isSubmit = useMemo(() => {
+    if (buttonType === "LOADING" && isSkipSwap) {
+      return true;
+    }
     return buttonType === "REPOSITION";
-  }, [buttonType]);
+  }, [buttonType, isSkipSwap]);
 
   return (
     <RepositionContentWrapper>

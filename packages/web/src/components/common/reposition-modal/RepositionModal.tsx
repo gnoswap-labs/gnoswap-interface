@@ -51,6 +51,7 @@ interface Props {
   ) => Promise<WalletResponse<
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
+  isSkipSwap: boolean;
 }
 
 const RepositionModal: React.FC<Props> = ({
@@ -66,6 +67,7 @@ const RepositionModal: React.FC<Props> = ({
   removePosition,
   swapRemainToken,
   reposition,
+  isSkipSwap,
 }) => {
   const [confirm, setConfirm] = useState(false);
 
@@ -117,6 +119,7 @@ const RepositionModal: React.FC<Props> = ({
                 closeModal={close}
                 tokenA={amountInfo.tokenA.info}
                 tokenB={amountInfo.tokenB.info}
+                isSkipSwap={isSkipSwap}
               />
             </React.Fragment>
           ) : (

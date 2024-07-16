@@ -47,6 +47,7 @@ export interface RepositionModalProps {
   ) => Promise<WalletResponse<
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
+  isSkipSwap: boolean;
 }
 
 export const useRepositionModalContainer = ({
@@ -65,6 +66,7 @@ export const useRepositionModalContainer = ({
   removePosition,
   swapRemainToken,
   reposition,
+  isSkipSwap,
 }: RepositionModalProps): Props => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -106,6 +108,7 @@ export const useRepositionModalContainer = ({
         removePosition={removePosition}
         swapRemainToken={swapRemainToken}
         reposition={reposition}
+        isSkipSwap={isSkipSwap}
       />,
     );
   }, [
@@ -122,6 +125,7 @@ export const useRepositionModalContainer = ({
     removePosition,
     swapRemainToken,
     reposition,
+    isSkipSwap,
   ]);
 
   return {

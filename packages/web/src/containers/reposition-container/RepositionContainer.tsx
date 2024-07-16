@@ -40,6 +40,7 @@ const RepositionContainer: React.FC = () => {
     reposition,
     selectedPosition,
     isLoadingPosition,
+    isSkipSwap,
   } = useRepositionHandle();
 
   const { openModal } = useRepositionModalContainer({
@@ -58,13 +59,16 @@ const RepositionContainer: React.FC = () => {
     removePosition,
     swapRemainToken,
     reposition,
+    isSkipSwap,
   });
 
   const onSubmit = () => {
-    if (buttonType !== "REPOSITION") {
-      return;
+    if (
+      buttonType === "REPOSITION" ||
+      (buttonType === "LOADING" && isSkipSwap)
+    ) {
+      openModal();
     }
-    openModal();
   };
 
   return (
@@ -94,6 +98,7 @@ const RepositionContainer: React.FC = () => {
       repositionAmounts={repositionAmounts}
       selectedPosition={selectedPosition}
       isLoadingPosition={isLoadingPosition}
+      isSkipSwap={isSkipSwap}
     />
   );
 };

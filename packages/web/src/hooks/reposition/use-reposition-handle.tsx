@@ -120,24 +120,6 @@ export const useRepositionHandle = () => {
     };
   }, [selectedPosition?.pool, selectedPosition]);
 
-  const inRange = useMemo(() => {
-    if (!selectedPosition) return false;
-    const { tickLower, tickUpper, pool } = selectedPosition;
-    const currentTick = pool.currentTick;
-    if (currentTick < tickLower || currentTick > tickUpper) {
-      return false;
-    }
-    return true;
-  }, [selectedPosition]);
-
-  const rangeStatus = useMemo(() => {
-    return selectedPosition?.closed
-      ? RANGE_STATUS_OPTION.NONE
-      : inRange
-      ? RANGE_STATUS_OPTION.IN
-      : RANGE_STATUS_OPTION.OUT;
-  }, [selectedPosition, inRange]);
-
   const aprFee = useMemo(() => {
     if (!selectedPosition) return 0;
     return selectedPosition?.reward.reduce(
@@ -151,6 +133,27 @@ export const useRepositionHandle = () => {
     tokenB,
     feeTier: `FEE_${fee}` as any,
   });
+
+  const inRange = useMemo(() => {
+    if (!selectedPosition) return false;
+    const { pool } = selectedPosition;
+    const currentPrice = tickToPrice(pool.currentTick);
+    if (
+      currentPrice < (selectPool.minPrice || 0) ||
+      currentPrice > (selectPool.maxPrice || 0)
+    ) {
+      return false;
+    }
+    return true;
+  }, [selectedPosition]);
+
+  const rangeStatus = useMemo(() => {
+    return selectedPosition?.closed
+      ? RANGE_STATUS_OPTION.NONE
+      : inRange
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
+  }, [selectedPosition, inRange]);
 
   useEffect(() => {
     if (initialized || selectPool.isLoading || !selectPool.poolPath) {
@@ -338,8 +341,6 @@ export const useRepositionHandle = () => {
     const { amountA } = currentAmounts;
     const { amountA: repositionAmountA } = repositionAmounts;
 
-    console.log(repositionAmounts);
-
     const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
     if (isSwapTokenA) {
       return {
@@ -389,6 +390,13 @@ export const useRepositionHandle = () => {
       return null;
     }
 
+    if (estimateSwapRequestByAmounts?.tokenAmount === 0) {
+      return {
+        amountA: currentAmounts.amountA.toString(),
+        amountB: currentAmounts.amountB.toString(),
+      };
+    }
+
     const { amountA, amountB } = currentAmounts;
     const { amountA: repositionAmountA, amountB: repositionAmountB } =
       repositionAmounts;
@@ -398,8 +406,6 @@ export const useRepositionHandle = () => {
     const tokenA = selectedPosition.pool.tokenA;
     const tokenB = selectedPosition.pool.tokenB;
 
-    // console.log(isSwapTokenA, currentAmounts, repositionAmounts);
-
     if (isEstimatedRemainSwapLoading) {
       return null;
     }
@@ -408,15 +414,11 @@ export const useRepositionHandle = () => {
       return null;
     }
 
-    // console.log(repositionAmountA, repositionAmountB);
-
     const estimatedResult =
       makeDisplayTokenAmount(
         isSwapTokenA ? tokenB : tokenA,
         estimatedRemainSwap?.amount || 0,
       ) || 0;
-
-    console.log("estimatedResult", estimatedResult, isSwapTokenA);
 
     if (isSwapTokenA) {
       const estimatedAmountA = repositionAmountA;
@@ -528,6 +530,43 @@ export const useRepositionHandle = () => {
     isEstimatedRemainSwapLoading,
     repositionAmounts,
     selectedPosition,
+  ]);
+
+  const isSkipSwap = useMemo(() => {
+    if (estimateSwapRequestByAmounts?.tokenAmount === 0) {
+      return true;
+    }
+    if (
+      Number(currentAmounts?.amountA) ===
+        Number(estimatedRepositionAmounts?.amountA) &&
+      Number(estimatedRepositionAmounts?.amountA) === 0
+    ) {
+      return true;
+    }
+    if (
+      Number(currentAmounts?.amountB) ===
+        Number(estimatedRepositionAmounts?.amountB) &&
+      Number(estimatedRepositionAmounts?.amountB) === 0
+    ) {
+      return true;
+    }
+    if (
+      Number(currentAmounts?.amountA) === 0 &&
+      estimatedRepositionAmounts?.amountA === null
+    ) {
+      return true;
+    }
+    if (
+      Number(currentAmounts?.amountB) === 0 &&
+      estimatedRepositionAmounts?.amountB === null
+    ) {
+      return true;
+    }
+    return false;
+  }, [
+    estimateSwapRequestByAmounts,
+    currentAmounts,
+    estimatedRepositionAmounts,
   ]);
 
   const changeTokenAAmount = useCallback(
@@ -693,6 +732,7 @@ export const useRepositionHandle = () => {
     connected,
     tokenAAmountInput,
     tokenBAmountInput,
+    isSkipSwap,
     changeTokenAAmount,
     changeTokenBAmount,
     slippage,

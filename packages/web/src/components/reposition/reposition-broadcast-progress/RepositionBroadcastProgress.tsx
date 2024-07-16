@@ -32,6 +32,7 @@ export interface RepositionBroadcastProgressProps {
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
   closeModal: () => void;
+  isSkipSwap: boolean;
 }
 
 const RepositionBroadcastProgress: React.FC<
@@ -43,6 +44,7 @@ const RepositionBroadcastProgress: React.FC<
   closeModal,
   tokenA,
   tokenB,
+  isSkipSwap,
 }) => {
   const [removePositionState, setRemovePositionState] =
     useState<ProgressStateType>("NONE");
@@ -56,6 +58,10 @@ const RepositionBroadcastProgress: React.FC<
   const isActive = useCallback((state: ProgressStateType) => {
     return !["NONE", "INIT"].includes(state);
   }, []);
+
+  useEffect(() => {
+    console.log("isSkipSwap", isSkipSwap);
+  }, [isSkipSwap]);
 
   const makeActiveClassName = useCallback(
     (className: string, active: boolean) => {
@@ -174,10 +180,15 @@ const RepositionBroadcastProgress: React.FC<
   useEffect(() => {
     if (removePositionState === "INIT") {
       processRemovePosition(() => {
-        setSwapState("INIT");
+        if (isSkipSwap) {
+          setSwapState("SUCCESS");
+          setAddPositionState("INIT");
+        } else {
+          setSwapState("INIT");
+        }
       });
     }
-  }, [removePositionState]);
+  }, [removePositionState, isSkipSwap]);
 
   useEffect(() => {
     if (swapState === "INIT") {
@@ -220,26 +231,29 @@ const RepositionBroadcastProgress: React.FC<
 
       <div className="divider" />
 
-      <div className="row">
-        <div className="progress-info">
-          <IconSwapCircle active={isActive(swapState)} />
-          <span
-            className={makeActiveClassName(
-              "progress-title",
-              isActive(swapState),
-            )}
-          >
-            Swap {tokenA.symbol} for {tokenB.symbol}
-          </span>
-        </div>
-        <RepositionBroadcastProgressState
-          state={swapState}
-          retry={() => setSwapState("INIT")}
-          exit={closeModal}
-        />
-      </div>
-
-      <div className="divider" />
+      {!isSkipSwap && (
+        <React.Fragment>
+          <div className="row">
+            <div className="progress-info">
+              <IconSwapCircle active={isActive(swapState)} />
+              <span
+                className={makeActiveClassName(
+                  "progress-title",
+                  isActive(swapState),
+                )}
+              >
+                Swap {tokenA.symbol} for {tokenB.symbol}
+              </span>
+            </div>
+            <RepositionBroadcastProgressState
+              state={swapState}
+              retry={() => setSwapState("INIT")}
+              exit={closeModal}
+            />
+          </div>
+          <div className="divider" />
+        </React.Fragment>
+      )}
 
       <div className="row">
         <div className="progress-info">
