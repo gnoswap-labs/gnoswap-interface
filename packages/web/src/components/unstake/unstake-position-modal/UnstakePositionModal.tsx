@@ -4,7 +4,6 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import React, { useCallback, useMemo } from "react";
 import {
   Divider,
@@ -18,8 +17,12 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
-import { formatApr } from "@utils/string-utils";
 import { useGetUnstakingFee } from "@query/pools";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+  formatRate,
+} from "@utils/new-number-utils";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -59,7 +62,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           },
         ) ?? 0;
 
-    return formatApr(result.unstakeUsd / result.allUsd);
+    return formatRate(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
   const swapFeePercent = useMemo(() => {
@@ -85,7 +88,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           },
         ) ?? 0;
 
-    return formatApr(result.unstakeUsd / result.allUsd);
+    return formatRate(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
   return (
@@ -119,7 +122,9 @@ const UnstakePositionModal: React.FC<Props> = ({
                     />
                   </div>
                   <div className="value">
-                    {numberToUSD(Number(position.positionUsdValue))}
+                    {formatOtherPrice(position.positionUsdValue, {
+                      isKMB: false,
+                    })}
                   </div>
                 </div>
               ))}
@@ -145,7 +150,10 @@ const UnstakePositionModal: React.FC<Props> = ({
                         </RewardLogoSymbolWrapper>
                       </div>
                       <div className="value">
-                        {formatNumberToLocaleString(rewardInfo.amount)}
+                        {formatPoolPairAmount(rewardInfo.amount, {
+                          decimals: rewardInfo.token.decimals,
+                          isKMB: false,
+                        })}
                       </div>
                     </div>
                     <div className="sub-value">{rewardInfo.amountUSD}</div>

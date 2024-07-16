@@ -4,6 +4,7 @@ import {
   unitsUpperCase,
 } from "@common/values/global-initial-value";
 import BigNumber from "bignumber.js";
+import { formatPoolPairAmount } from "./new-number-utils";
 import { convertToKMB } from "./stake-position-utils";
 
 export const isNumber = (value: BigNumber | string | number): boolean => {
@@ -158,7 +159,7 @@ export const toKMBFormat = (
     return (
       negativeSign +
       prefix +
-      bigNumber.dividedBy(Math.pow(10, 9)).toFixed(2) +
+      bigNumber.dividedBy(Math.pow(10, 9)).toFixed(2, BigNumber.ROUND_DOWN) +
       unitsUpperCase.billion
     );
   }
@@ -167,7 +168,7 @@ export const toKMBFormat = (
     return (
       negativeSign +
       prefix +
-      bigNumber.dividedBy(Math.pow(10, 6)).toFixed(2) +
+      bigNumber.dividedBy(Math.pow(10, 6)).toFixed(2, BigNumber.ROUND_DOWN) +
       unitsUpperCase.million
     );
   }
@@ -176,7 +177,7 @@ export const toKMBFormat = (
     return (
       negativeSign +
       prefix +
-      bigNumber.dividedBy(Math.pow(10, 3)).toFixed(2) +
+      bigNumber.dividedBy(Math.pow(10, 3)).toFixed(2, BigNumber.ROUND_DOWN) +
       unitsUpperCase.thousand
     );
   }
@@ -711,17 +712,13 @@ export function subscriptFormat(
 ) {
   const numberStr = BigNumber(number).toFixed();
   const numberOfZero = countZeros(numberStr);
-  const significantDigits = options?.significantDigits || 5;
+  // const significantDigits = options?.significantDigits || 5;
   const zeroCountOffset = options?.subscriptOffset
     ? options?.subscriptOffset + 1
     : 5;
 
   if (numberOfZero <= zeroCountOffset) {
-    return removeTrailingZeros(
-      Number(numberStr).toLocaleString("en-US", {
-        maximumSignificantDigits: significantDigits,
-      }),
-    );
+    return formatPoolPairAmount(number, { decimals: 6 });
   }
 
   const subscriptChars = getSubcriptChars(numberStr);

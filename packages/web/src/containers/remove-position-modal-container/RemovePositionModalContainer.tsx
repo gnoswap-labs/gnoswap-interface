@@ -16,6 +16,7 @@ import React, { useCallback, useMemo } from "react";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 interface RemovePositionModalContainerProps {
   selectedPosition: PoolPositionModel[];
@@ -115,11 +116,14 @@ const RemovePositionModalContainer = ({
     const messageData = {
       tokenASymbol: tokenTransform(pooledTokenInfos?.[0].token).symbol,
       tokenBSymbol: tokenTransform(pooledTokenInfos?.[1]?.token).symbol,
-      tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", {
-        maximumFractionDigits: pooledTokenInfos?.[0].token.decimals,
+      tokenAAmount: formatPoolPairAmount(pooledTokenInfos?.[0]?.amount, {
+        decimals: pooledTokenInfos?.[0].token.decimals,
+        isKMB: false,
       }),
-      tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", {
-        maximumFractionDigits: pooledTokenInfos?.[1].token.decimals,
+
+      tokenBAmount: formatPoolPairAmount(pooledTokenInfos?.[1]?.amount, {
+        decimals: pooledTokenInfos?.[1].token.decimals,
+        isKMB: false,
       }),
     };
 

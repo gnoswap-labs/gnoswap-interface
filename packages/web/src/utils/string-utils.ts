@@ -89,7 +89,7 @@ export function numberToRate(
     haveMinLimit?: boolean;
   },
 ) {
-  const decimals = options?.decimals ||  1;
+  const decimals = options?.decimals || 1;
   const minLimit = options?.minLimit || 0.1;
   const errorText = options?.errorText || "-";
   const isRounding = options?.isRounding || true;
@@ -166,5 +166,8 @@ export function displayTickNumber(range: number[], tick: number) {
   return tickToPriceStr(tick, { decimals: fixedPosition + 1 });
 }
 
-export const capitalize = (s: string) =>
-  (s && s[0].toUpperCase() + s.slice(1)) || "";
+export const capitalize = (string: string) => {
+  return (
+    (string && string[0].toUpperCase() + string.toLowerCase().slice(1)) || ""
+  );
+};

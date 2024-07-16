@@ -9,8 +9,8 @@ import {
 import Link from "next/link";
 import { TokenModel } from "@models/token/token-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { formatApr } from "@utils/string-utils";
 import IconStar from "@components/common/icons/IconStar";
+import { formatRate } from "@utils/new-number-utils";
 
 interface SwapLiquidityProps {
   liquiditys: LiquidityInfo[];
@@ -123,7 +123,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
                   <span className="liquidity">{liquidity.liquidity}</span>
                   <span className="apr">
                     {showStar && <IconStar size={20} />}
-                    {formatApr(liquidity.apr)}
+                    {formatRate(liquidity.apr)}
                   </span>
                 </div>
               </Link>

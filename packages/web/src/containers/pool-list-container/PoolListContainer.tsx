@@ -13,6 +13,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
 import useRouter from "@hooks/common/use-custom-router";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface Pool {
   poolId: string;
@@ -74,6 +75,7 @@ const PoolListContainer: React.FC = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useRouter();
+  // const poolListInfos = [];
   const { poolListInfos, updatePools } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { isLoadingPools } = useLoading();
@@ -92,43 +94,10 @@ const PoolListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  // 10K -> 10000, 20M -> 2000000 ...
-  const convertKMBtoNumber = (kmbValue: string) => {
-    const sizesMap: { [key: string]: number } = {
-      K: 1_000,
-      M: 1_000_000,
-      B: 1_000_000_000,
-    };
-
-    const lastChar = kmbValue.charAt(kmbValue.length - 1);
-    let currentValue = Number(kmbValue.slice(0, kmbValue.length - 1));
-
-    for (const sizeKey in sizesMap) {
-      if (sizeKey === lastChar) {
-        currentValue = sizesMap[sizeKey] * currentValue;
-      }
-    }
-
-    return currentValue;
-  };
-
   const sortValueTransform = (value: string) => {
-    const formattedNumber = value.replace(/,/g, "").slice(1);
-    const lastChar = formattedNumber.charAt(formattedNumber.length - 1);
+    if (!value) return -1;
 
-    if (value === "<$0.01") {
-      return 0.009;
-    }
-
-    if (["K", "M", "B"].some(item => item === lastChar)) {
-      return convertKMBtoNumber(formattedNumber);
-    }
-
-    if (isNaN(Number(formattedNumber))) {
-      return -1;
-    }
-
-    return Number(value.replace(/,/g, "").slice(1));
+    return Number(value);
   };
 
   const filteredPoolType = useCallback(
@@ -225,8 +194,28 @@ const PoolListContainer: React.FC = () => {
           -sortValueTransform(a.tvl) + sortValueTransform(b.tvl),
       );
     }
-    return temp.filter(info => filteredPoolType(poolType, info.incentiveType));
-  }, [keyword, poolListInfos, poolType, sortOption]);
+    return temp
+      .filter(info => filteredPoolType(poolType, info.incentiveType))
+      .map(item => ({
+        ...item,
+        liquidity: formatOtherPrice(item.liquidity, {
+          isKMB: false,
+          decimals: 0,
+        }),
+        volume24h: formatOtherPrice(item.volume24h || 0, {
+          isKMB: false,
+          decimals: 0,
+        }),
+        fees24h: formatOtherPrice(item.fees24h || 0, {
+          isKMB: false,
+          decimals: 0,
+        }),
+        tvl: formatOtherPrice(item.tvl || 0, {
+          isKMB: false,
+          decimals: 0,
+        }),
+      }));
+  }, [keyword, poolListInfos, poolType, sortOption, filteredPoolType]);
 
   const totalPage = useMemo(() => {
     return Math.ceil(sortedPoolListInfos.length / EARN_POOL_LIST_SIZE);

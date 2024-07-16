@@ -51,7 +51,7 @@
     "volumeChange24h": 0,
     "feeApr": "0",
     "stakingApr": "0",
-    "allTimeVolumeUsd": 0,
+    "allTimeVolumeUsd": "",
     "priceRatio": {
       "7d": [],
       "30d": [],

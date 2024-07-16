@@ -1,8 +1,13 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import StakingContentCard, {
   SummuryApr,
 } from "@components/pool/staking-content-card/StakingContentCard";
-import { StakingContentWrapper } from "./StakingContent.styles";
+import {
+  AprNumberContainer,
+  AprStakingHeader,
+  NoticeAprToolTip,
+  StakingContentWrapper,
+} from "./StakingContent.styles";
 import Button from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
@@ -13,6 +18,8 @@ import { STAKING_PERIOS, StakingPeriodType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import IncentivizeTokenDetailTooltipContainer from "@containers/incentivize-token-detail-container/IncentivizeTokenDetailTooltipContainer";
 
 interface StakingContentProps {
   totalApr: string;
@@ -43,6 +50,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   pool,
 }) => {
   const { getGnotPath } = useGnotToGnot();
+  const [showAprTooltip, setShowAprTooltip] = useState(false);
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
     const rewardLogo =
@@ -62,6 +70,26 @@ const StakingContent: React.FC<StakingContentProps> = ({
       return acc;
     }, []) as TokenModel[];
   }, [pool?.rewardTokens, getGnotPath]);
+
+  useEffect(() => {
+    const fn = () => {
+      const top = document
+        .getElementById("staking-container")
+        ?.getBoundingClientRect().top;
+
+      if (top && top <= 500) {
+        setShowAprTooltip(true);
+      } else {
+        setShowAprTooltip(false);
+      }
+    };
+
+    window.addEventListener("scroll", fn);
+
+    return () => {
+      window.removeEventListener("scroll", fn);
+    };
+  }, []);
 
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
@@ -103,6 +131,24 @@ const StakingContent: React.FC<StakingContentProps> = ({
     return STAKING_PERIOS.slice(0, checkPointIndex + 1);
   }, [stakingPositionMap]);
 
+  useEffect(() => {
+    const fn = () => {
+      const isHovering = document.getElementById("apr-text")?.matches(":hover");
+
+      if (isHovering) {
+        setShowAprTooltip(false);
+      } else {
+        setShowAprTooltip(true);
+      }
+    };
+
+    window.addEventListener("mouseover", fn);
+
+    return () => {
+      window.removeEventListener("mouseover", fn);
+    };
+  });
+
   return (
     <StakingContentWrapper isMobile={mobile}>
       <div className="content-header">
@@ -120,13 +166,45 @@ const StakingContent: React.FC<StakingContentProps> = ({
           </span>
         )}
         {!loading && (
-          <div className="header-wrap">
-            <span className="to-mobile">to</span>
-            <span className="apr">{totalApr} APR </span>
-            <div className="coin-info">
-              <OverlapTokenLogo tokens={rewardTokenLogos} />
-            </div>
-          </div>
+          <AprNumberContainer
+            placeholderWidth={
+              document.getElementsByClassName("apr-text")?.[0]?.clientWidth
+            }
+          >
+            <Tooltip
+              FloatingContent={
+                <NoticeAprToolTip>Hover to view details</NoticeAprToolTip>
+              }
+              placement="top"
+              forcedOpen={showAprTooltip}
+              isShouldShowed={showAprTooltip}
+              className={"float-view-apr"}
+            >
+              <div className="placeholder"></div>
+            </Tooltip>
+            <AprStakingHeader $isMobile={mobile}>
+              <span className="to-mobile">to</span>
+              <Tooltip
+                FloatingContent={
+                  <IncentivizeTokenDetailTooltipContainer
+                    poolPath={pool?.poolPath}
+                  />
+                }
+                placement="top"
+                className="apr-text"
+              >
+                <span id={"apr-text"}>
+                  {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
+                </span>
+              </Tooltip>
+              <div className="coin-info">
+                <OverlapTokenLogo
+                  tokens={rewardTokenLogos}
+                  size={mobile ? 20 : 36}
+                />
+              </div>
+            </AprStakingHeader>
+          </AprNumberContainer>
         )}
       </div>
       <div className="staking-wrap">
@@ -137,7 +215,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               <SummuryApr
                 loading={loading}
                 key={index}
-                stakingApr={pool?.stakingApr || "0"}
+                stakingApr={pool?.stakingApr}
                 period={period}
                 positions={stakingPositionMap[period]}
                 checkPoints={checkPoints}
@@ -146,7 +224,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             ) : (
               <StakingContentCard
                 key={index}
-                stakingApr={pool?.stakingApr || "0"}
+                stakingApr={pool?.stakingApr}
                 period={period}
                 positions={stakingPositionMap[period]}
                 breakpoint={breakpoint}

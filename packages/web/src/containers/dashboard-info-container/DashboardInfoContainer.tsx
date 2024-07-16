@@ -4,23 +4,14 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { DashboardTokenResponse } from "@repositories/dashboard/response/token-response";
 import { useQuery } from "@tanstack/react-query";
-import {
-  formatUsdNumber3Digits,
-  prettyNumber,
-  toPriceFormat,
-} from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import BigNumber from "bignumber.js";
+import { formatPrice } from "@utils/new-number-utils";
 
 export interface DashboardTokenInfo {
   gnosAmount: string;
   gnotAmount: string;
 }
-
-// const initialDashboardTokenInfo: DashboardTokenInfo = {
-//   gnosAmount: "$0.7425",
-//   gnotAmount: "$1.8852",
-// };
 
 export interface SupplyOverviewInfo {
   totalSupply: string;
@@ -31,28 +22,10 @@ export interface SupplyOverviewInfo {
   stakingRatio: string;
 }
 
-// const initialSupplyOverviewInfo: SupplyOverviewInfo = {
-//   totalSupply: "1,000,000,000 GNS",
-//   circulatingSupply: "218,184,885 GNS",
-//   progressBar: "580 GNS",
-//   dailyBlockEmissions: "580 GNS",
-//   totalStaked: "152,412,148 GNS",
-//   stakingRatio: "55.15%",
-// };
+const formatDashboardPrice = (price?: string, unit?: string) => {
+  if (!price || BigNumber(price).isNaN()) return "-";
 
-const formatPrice = (price?: string, unit?: string) => {
-  if (unit) {
-    return price ? `${Number(price).toLocaleString()} ${unit}` : "-";
-  }
-  if (price && Number(price) < 1) {
-    return formatUsdNumber3Digits(price);
-  }
-  return price
-    ? `$${Number(formatUsdNumber3Digits(price)).toLocaleString("en", {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      })}`
-    : "-";
+  return `${BigNumber(price).toFormat(0)} ${unit ? " " + unit : ""}`;
 };
 
 export interface GovernenceOverviewInfo {
@@ -99,42 +72,32 @@ const DashboardInfoContainer: React.FC = () => {
     const totalStaked = Number(tokenData?.gnsTotalStaked);
 
     if (totalStaked === 0 || circSupply === 0) return "0%";
-    if ((totalStaked * 100) / circSupply < 0.1) return "<0.1%";
-    const ratio = ((totalStaked / circSupply) * 100).toFixed(2);
-    return `${prettyNumber(ratio)}%`;
+    if ((totalStaked * 100) / circSupply < 0.01) return "<0.01%";
+    const ratio = ((totalStaked / circSupply) * 100).toFixed(3);
+    return `${ratio}%`;
   }, [tokenData]);
 
   return (
     <DashboardInfo
       dashboardTokenInfo={{
-        gnosAmount: toPriceFormat(tokenData?.gnsPrice ?? "0", {
-          usd: true,
-          isKMBFormat: false,
+        gnosAmount: formatPrice(tokenData?.gnsPrice, {
+          isKMB: false,
         }),
-        gnotAmount: toPriceFormat(tokenData?.gnotPrice ?? "0", {
-          usd: true,
-          isKMBFormat: false,
+        gnotAmount: formatPrice(tokenData?.gnotPrice ?? "0", {
+          isKMB: false,
         }),
       }}
       supplyOverviewInfo={{
-        circulatingSupply: BigNumber(
+        circulatingSupply: formatDashboardPrice(
           tokenData?.gnsCirculatingSupply || "-",
-        ).toFormat(0),
-        dailyBlockEmissions: formatPrice(
+          "GNS",
+        ),
+        dailyBlockEmissions: formatDashboardPrice(
           tokenData?.gnsDailyBlockEmissions,
           "GNS",
         ),
-        totalSupply: formatPrice(tokenData?.gnsTotalSupply, "GNS"),
-        totalStaked: (() => {
-          if (isNaN(Number(tokenData?.gnsTotalStaked ?? 0))) return "-";
-
-          return (
-            toPriceFormat(tokenData?.gnsTotalStaked ?? 0, {
-              isKMBFormat: false,
-              isRounding: false,
-            }) + " GNS"
-          );
-        })(),
+        totalSupply: formatDashboardPrice(tokenData?.gnsTotalSupply, "GNS"),
+        totalStaked: formatDashboardPrice(tokenData?.gnsTotalStaked, "GNS"),
         progressBar: progressBar,
         stakingRatio: stakingRatio,
       }}

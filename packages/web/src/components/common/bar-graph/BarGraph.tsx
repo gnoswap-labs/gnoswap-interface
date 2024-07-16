@@ -8,7 +8,7 @@ import {
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { Global, css } from "@emotion/react";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
-import { toPriceFormatNotRounding } from "@utils/number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface BarGraphProps {
   className?: string;
@@ -301,22 +301,18 @@ const BarGraph: React.FC<BarGraphProps> = ({
               <div className="tooltip-header">
                 <span className="label">Trading Volume</span>
                 <span className="value">
-                  {toPriceFormatNotRounding(datas[currentPointIndex], {
-                    usd: true,
-                    isKMBFormat: false,
-                    greaterThan1Decimals: 1,
-                    lessThan1Significant: 1,
+                  {formatOtherPrice(datas[currentPointIndex], {
+                    isKMB: false,
+                    decimals: 1,
                   })}
                 </span>
               </div>
               <div className="tooltip-header">
                 <span className="label">Fees</span>
                 <span className="value">
-                  {toPriceFormatNotRounding(fees[currentPointIndex], {
-                    usd: true,
-                    isKMBFormat: false,
-                    greaterThan1Decimals: 1,
-                    lessThan1Significant: 1,
+                  {formatOtherPrice(fees[currentPointIndex], {
+                    isKMB: false,
+                    decimals: 1,
                     minLimit: 0.01,
                   })}
                 </span>

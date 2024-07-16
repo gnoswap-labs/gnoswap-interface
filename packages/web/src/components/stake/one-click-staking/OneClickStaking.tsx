@@ -10,9 +10,9 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { TokenModel } from "@models/token/token-model";
 import { toUnitFormat } from "@utils/number-utils";
-import { formatApr } from "@utils/string-utils";
 import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { formatRate } from "@utils/new-number-utils";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -136,7 +136,7 @@ const OneClickStaking: React.FC<Props> = ({
     return (
       <>
         {Number(pool.feeApr) > 100 && <IconStar size={20} />}
-        {formatApr(pool.feeApr)}
+        {formatRate(pool.feeApr)}
       </>
     );
   }, [isLoadingPool, pool.feeApr]);
@@ -147,7 +147,7 @@ const OneClickStaking: React.FC<Props> = ({
     return (
       <>
         {Number(pool.stakingApr) > 100 && <IconStar size={20} />}{" "}
-        {formatApr(pool.stakingApr)}
+        {formatRate(pool.stakingApr)}
       </>
     );
   }, [isLoadingPool, pool.stakingApr]);

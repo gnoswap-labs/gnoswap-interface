@@ -8,13 +8,13 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
-import { numberToUSD } from "@utils/number-utils";
 import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { encryptId } from "@utils/common";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -31,10 +31,10 @@ export interface IPooledTokenInfo {
   unClaimTokenBAmount: string;
   unClaimTokenAAmountUSD: string;
   unClaimTokenBAmountUSD: string;
-  tokenABalance: string,
-  tokenBBalance: string,
-  tokenARemainingAmount: string,
-  tokenBRemainingAmount: string,
+  tokenABalance: string;
+  tokenBBalance: string;
+  tokenARemainingAmount: string;
+  tokenBRemainingAmount: string;
 }
 
 export type DeCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
@@ -54,7 +54,7 @@ export const useDecreaseHandle = () => {
   const { tokenPrices } = useTokenData();
 
   const { positions } = usePositionData({
-    poolPath: encryptId(poolPath)
+    poolPath: encryptId(poolPath),
   });
 
   const loading = useMemo(() => {
@@ -83,10 +83,9 @@ export const useDecreaseHandle = () => {
       selectedPosition?.tickLower,
       selectedPosition?.pool.fee,
     );
-    const minPrice = tickToPriceStr(
-      selectedPosition?.tickLower, {
+    const minPrice = tickToPriceStr(selectedPosition?.tickLower, {
       decimals: 40,
-      isEnd: isEndTick
+      isEnd: isEndTick,
     });
     return `${minPrice}`;
   }, [selectedPosition?.tickUpper, selectedPosition?.tickLower]);
@@ -98,10 +97,9 @@ export const useDecreaseHandle = () => {
       selectedPosition?.pool.fee,
     );
 
-    const maxPrice = tickToPriceStr(
-      selectedPosition?.tickUpper, {
+    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, {
       decimals: 40,
-      isEnd: isEndTick
+      isEnd: isEndTick,
     });
 
     return maxPrice;
@@ -142,8 +140,8 @@ export const useDecreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -238,8 +236,11 @@ export const useDecreaseHandle = () => {
         .dividedBy(100)
         .toNumber()
         .toString(),
-      poolAmountUSDA: numberToUSD(
+      poolAmountUSDA: formatOtherPrice(
         (tokenAAmount * Number(tokenAPrice) * percent) / 100,
+        {
+          isKMB: false,
+        },
       ),
       tokenABalance: tokenAAmount.toString(),
       tokenBBalance: tokenBAmount.toString(),
@@ -258,16 +259,25 @@ export const useDecreaseHandle = () => {
         .dividedBy(100)
         .toNumber()
         .toString(),
-      poolAmountUSDB: numberToUSD(
+      poolAmountUSDB: formatOtherPrice(
         (tokenBAmount * Number(tokenBPrice) * percent) / 100,
+        {
+          isKMB: false,
+        },
       ),
       unClaimTokenAAmount: BigNumber(unClaimTokenAAmount).toFormat(),
       unClaimTokenBAmount: BigNumber(unClaimTokenBAmount).toFormat(),
-      unClaimTokenAAmountUSD: numberToUSD(
+      unClaimTokenAAmountUSD: formatOtherPrice(
         unClaimTokenAAmount * Number(tokenAPrice),
+        {
+          isKMB: false,
+        },
       ),
-      unClaimTokenBAmountUSD: numberToUSD(
+      unClaimTokenBAmountUSD: formatOtherPrice(
         unClaimTokenBAmount * Number(tokenBPrice),
+        {
+          isKMB: false,
+        },
       ),
     };
   }, [selectedPosition, tokenPrices, percent]);

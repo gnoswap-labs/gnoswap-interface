@@ -9,7 +9,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { numberToRate } from "@utils/string-utils";
+import { formatRate } from "@utils/new-number-utils";
 import React from "react";
 import {
   IncreaseSelectPositionWrapper,
@@ -142,7 +142,9 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.
+                  The multiplier calculated based on the concentration of your
+                  range. This indicates how much more rewards you can earn
+                  compared to a full range position with the same capital.
                 </ToolTipContentWrapper>
               }
             >
@@ -158,14 +160,15 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The estimated APR from swap fees is calculated based on the selected price range of the position.
+                  The estimated APR from swap fees is calculated based on the
+                  selected price range of the position.
                 </ToolTipContentWrapper>
               }
             >
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">{numberToRate(aprFee)}</p>
+          <p className="value">{formatRate(aprFee)}</p>
         </div>
       </div>
     </IncreaseSelectPositionWrapper>

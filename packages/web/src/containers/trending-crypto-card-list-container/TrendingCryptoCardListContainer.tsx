@@ -11,8 +11,8 @@ import { TokenModel } from "@models/token/token-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolList } from "@query/pools";
-import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import { formatPrice } from "@utils/new-number-utils";
 
 const trendingCryptoInit = [
   {
@@ -77,12 +77,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
             item.tokenPath === wugnotPath ? gnot?.symbol || "" : temp.symbol,
           logoURI:
             item.tokenPath === wugnotPath ? gnot?.logoURI || "" : temp.logoURI,
-          price: toPriceFormat(
-            item.tokenPrice, {
-            usd: true,
-            isRounding: false,
-            fixedLessThan1Significant: 3,
-          }),
+          price: formatPrice(item.tokenPrice),
           change: {
             status:
               Number(priceChange) >= 0

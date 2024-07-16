@@ -24,8 +24,8 @@ import { isEmptyObject } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
-import { toPriceFormatNotRounding } from "@utils/number-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -213,29 +213,43 @@ const AssetListContainer: React.FC = () => {
         if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
           return {
             price: "-",
-            balance: "0",
+            balance: "-",
             ...item,
             tokenPrice: tokenPrice || 0,
-            sortPrice: "0",
+            sortPrice: "-",
           };
         }
-        const price = BigNumber(tokenPrice)
-          .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
-          .dividedBy(10 ** 6);
+
+        const price = (() => {
+          if (
+            isSwitchNetwork ||
+            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
+            !balances[item.priceID]
+          )
+            return "-";
+
+          return formatPrice(
+            BigNumber(tokenPrice)
+              .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
+              .dividedBy(10 ** (item.decimals || 0)),
+            {
+              isKMB: false,
+            },
+          );
+        })();
+
+        const balance = (() => {
+          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+
+          return formatPoolPairAmount(displayBalanceMap[item.path], {
+            isKMB: false,
+          });
+        })();
+
         return {
           ...item,
-          price: isSwitchNetwork
-            ? "-"
-            : toPriceFormatNotRounding(price, {
-                isKMBFormat: false,
-                fixedGreaterThan1: true,
-                fixedLessThan1: true,
-                minLimit: 0.01,
-                usd: true,
-              }),
-          balance: isSwitchNetwork
-            ? "0"
-            : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+          price,
+          balance,
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),
         };
@@ -270,29 +284,42 @@ const AssetListContainer: React.FC = () => {
         if (!tokenPrice || Number.isNaN(tokenPrice)) {
           return {
             price: "-",
-            balance: "0",
+            balance: "-",
             ...item,
             tokenPrice: tokenPrice || 0,
-            sortPrice: "0",
+            sortPrice: "-",
           };
         }
-        const price = BigNumber(tokenPrice)
-          .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
-          .dividedBy(10 ** 6);
+
+        const price = (() => {
+          if (
+            isSwitchNetwork ||
+            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
+            !balances[item.priceID]
+          )
+            return "-";
+
+          return formatPrice(
+            BigNumber(tokenPrice)
+              .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
+              .dividedBy(10 ** (item.decimals || 0)),
+            {
+              isKMB: false,
+            },
+          );
+        })();
+
+        const balance = (() => {
+          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+
+          return formatPoolPairAmount(displayBalanceMap[item.path], {
+            isKMB: false,
+          });
+        })();
         return {
           ...item,
-          price: isSwitchNetwork
-            ? "-"
-            : toPriceFormatNotRounding(price, {
-                isKMBFormat: false,
-                fixedGreaterThan1: true,
-                fixedLessThan1: true,
-                minLimit: 0.01,
-                usd: true,
-              }),
-          balance: isSwitchNetwork
-            ? "0"
-            : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+          price: price,
+          balance: balance,
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),
         };

@@ -36,10 +36,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
     <SwapCardHeaderWrapper>
       <h2>Swap</h2>
       <div className="button-wrap">
-        <div
-          className="setting-wrap"
-          onClick={copyURL}
-        >
+        <div className="setting-wrap" onClick={copyURL}>
           <>
             <IconLink className="setting-icon" />
             {copied && (

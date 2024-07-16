@@ -70,33 +70,37 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   isDisabledSelect,
 }) => {
   const { getGnotPath } = useGnotToGnot();
-  
+
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
-    const temp = selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
+    const temp = selectedPool
+      ? PoolMapper.toPoolSelectItemInfo(selectedPool)
+      : null;
     return temp;
   }, [selectedPool]);
-  
+
   const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
-    
-    return pools.map(PoolMapper.toPoolSelectItemInfo).map((item: PoolSelectItemInfo) => {
-      return {
-        ...item,
-        tokenA: {
-          ...item.tokenA,
-          symbol: getGnotPath(item.tokenA).symbol,
-          logoURI: getGnotPath(item.tokenA).logoURI,
-          path: getGnotPath(item.tokenA).path,
-        },
-        tokenB: {
-          ...item.tokenB,
-          symbol: getGnotPath(item.tokenB).symbol,
-          logoURI: getGnotPath(item.tokenB).logoURI,
-          path: getGnotPath(item.tokenB).path,
-        },
-      };
-    }).sort(customSort);
+    return pools
+      .map(PoolMapper.toPoolSelectItemInfo)
+      .map((item: PoolSelectItemInfo) => {
+        return {
+          ...item,
+          tokenA: {
+            ...item.tokenA,
+            symbol: getGnotPath(item.tokenA).symbol,
+            logoURI: getGnotPath(item.tokenA).logoURI,
+            path: getGnotPath(item.tokenA).path,
+          },
+          tokenB: {
+            ...item.tokenB,
+            symbol: getGnotPath(item.tokenB).symbol,
+            logoURI: getGnotPath(item.tokenB).logoURI,
+            path: getGnotPath(item.tokenB).path,
+          },
+        };
+      })
+      .sort(customSort);
   }, [pools]);
-  
+
   return (
     <PoolIncentivizeWrapper>
       <h3 className="title">Incentivize Pool</h3>
@@ -121,7 +125,12 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
 
       <article className="token-amount-input">
         <h5 className="section-title">3. Set Reward Amount</h5>
-        <TokenAmountInput changeToken={changeToken} connected={connected} {...tokenAmountInput} changable={true} />
+        <TokenAmountInput
+          changeToken={changeToken}
+          connected={connected}
+          {...tokenAmountInput}
+          changable={true}
+        />
       </article>
       <PoolIncentivizeDetails
         amount={tokenAmountInput.amount}

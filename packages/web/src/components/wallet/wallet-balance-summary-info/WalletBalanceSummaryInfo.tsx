@@ -9,24 +9,20 @@ interface WalletBalanceSummaryInfoProps {
 const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
   balanceSummaryInfo,
 }) => {
-  // const changeRate = Number(balanceSummaryInfo.changeRate.slice(0, -1)) || 0;
-
   return (
     <WalletBalanceSummaryInfoWrapper>
-      {balanceSummaryInfo.loading && <div className="loading-wrapper"><div css={pulseSkeletonStyle({ w: "200px", h: 20 })} className="amount"/></div>}
+      {balanceSummaryInfo.loading && (
+        <div className="loading-wrapper">
+          <div
+            css={pulseSkeletonStyle({ w: "200px", h: 20 })}
+            className="amount"
+          />
+        </div>
+      )}
 
-      {!balanceSummaryInfo.loading && <span className="amount">{balanceSummaryInfo.amount}</span>}
-      {/* <span
-        className={`${
-          changeRate === 0
-            ? "change-rate"
-            : changeRate > 0
-            ? "positive"
-            : "negative"
-        }`}
-      >
-        {balanceSummaryInfo.changeRate}
-      </span> */}
+      {!balanceSummaryInfo.loading && (
+        <span className="amount">{balanceSummaryInfo.amount}</span>
+      )}
     </WalletBalanceSummaryInfoWrapper>
   );
 };

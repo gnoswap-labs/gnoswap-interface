@@ -2,11 +2,13 @@ import LineGraph from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
 import React, { useCallback, useMemo } from "react";
-import { TokenChartGraphXLabel, TvlChartGraphWrapper } from "./TvlChartGraph.styles";
+import {
+  TokenChartGraphXLabel,
+  TvlChartGraphWrapper,
+} from "./TvlChartGraph.styles";
 import dayjs from "dayjs";
 import { CHART_TYPE } from "@constants/option.constant";
-import { toPriceFormat } from "@utils/number-utils";
-import BigNumber from "bignumber.js";
+import { formatOtherPrice } from "@utils/new-number-utils";
 export interface TvlChartGraphProps {
   datas: {
     amount: {
@@ -31,7 +33,6 @@ const DATE_HOUR_VALUE = 60 * DATE_MINUTE_VALUE;
 const FORMAT_DATE = "MMM D, YYYY";
 const FORMAT_DATE_LENGTH = 95;
 
-
 function makeTimePeriodFormatInfo() {
   const offset = new Date().getTimezoneOffset();
   return {
@@ -42,9 +43,7 @@ function makeTimePeriodFormatInfo() {
   };
 }
 
-const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
-  datas,
-}) => {
+const TvlChartGraph: React.FC<TvlChartGraphProps> = ({ datas }) => {
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
 
@@ -58,7 +57,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
       maxX,
     };
   }, [datas]);
-
 
   const scaleX = useCallback(
     (value: number) => {
@@ -119,8 +117,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     });
   }, [xAxisRange, size.width, scaleX, revertX]);
 
-
-
   const mappedData = useMemo(() => {
     return datas.map(data => ({
       value: data.amount.value,
@@ -132,24 +128,28 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
     const formatInfo = makeTimePeriodFormatInfo();
     const minimumXAxis = formatInfo.textLength / 2; // text size and padding
 
-
     const result = xAxisLabels.filter(
       label =>
         label.position > minimumXAxis &&
         label.position < size.width - minimumXAxis,
     );
     if (result.length === 1) {
-      return [{
-        position: size.width / 2,
-        value: new Date(datas[0].time).getTime(),
-        text: dayjs(datas[0].time).format(formatInfo.format),
-      }];
+      return [
+        {
+          position: size.width / 2,
+          value: new Date(datas[0].time).getTime(),
+          text: dayjs(datas[0].time).format(formatInfo.format),
+        },
+      ];
     }
 
     return result;
   }, [datas, size.width, xAxisLabels]);
 
-  const hasOnlyOneLabel = useMemo(() => displayXAxisLabels.length === 1, [displayXAxisLabels.length]);
+  const hasOnlyOneLabel = useMemo(
+    () => displayXAxisLabels.length === 1,
+    [displayXAxisLabels.length],
+  );
 
   return (
     <TvlChartGraphWrapper>
@@ -168,20 +168,19 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
               height: 36,
               locationTooltip: 170,
             }}
-            popupYValueFormatter={(value) => toPriceFormat(
-              BigNumber(value).toFixed(), {
-              isRounding: false,
-              usd: true,
-              greaterThan1Decimals: 1,
-              forcedGreaterThan1Decimals: false,
-              lestThan1Decimals: 1,
-              isKMBFormat: false,
-            })}
+            popupYValueFormatter={value =>
+              formatOtherPrice(value, {
+                decimals: 1,
+                isKMB: false,
+              })
+            }
           />
         </div>
         <div className={`xaxis-wrapper ${hasOnlyOneLabel ? "center" : ""}`}>
           {displayXAxisLabels.map((value, index) => (
-            <TokenChartGraphXLabel x={value.position} key={index}>{value?.text}</TokenChartGraphXLabel>
+            <TokenChartGraphXLabel x={value.position} key={index}>
+              {value?.text}
+            </TokenChartGraphXLabel>
           ))}
         </div>
       </div>

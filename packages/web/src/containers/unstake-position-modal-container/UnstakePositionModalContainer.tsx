@@ -12,6 +12,7 @@ import {
 import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -53,11 +54,11 @@ const UnstakePositionModalContainer = ({
       makeBroadcastUnStakingMessage("pending", {
         tokenASymbol: tokenA?.token?.symbol,
         tokenBSymbol: tokenB?.token?.symbol,
-        tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
-          maximumFractionDigits: tokenA?.token?.decimals,
+        tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+          decimals: tokenA?.token?.decimals,
         }),
-        tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
-          maximumFractionDigits: tokenB?.token?.decimals,
+        tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
+          decimals: tokenA?.token?.decimals,
         }),
       }),
     );
@@ -77,11 +78,11 @@ const UnstakePositionModalContainer = ({
               {
                 tokenASymbol: tokenA?.token?.symbol,
                 tokenBSymbol: tokenB?.token?.symbol,
-                tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
-                  maximumFractionDigits: tokenA?.token?.decimals,
+                tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+                  decimals: tokenA?.token?.decimals,
                 }),
-                tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
-                  maximumFractionDigits: tokenB?.token?.decimals,
+                tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
+                  decimals: tokenA?.token?.decimals,
                 }),
               },
               result.data?.hash,
@@ -90,21 +91,17 @@ const UnstakePositionModalContainer = ({
           openModal();
           // router.push(router.asPath.replace("/unstake", ""));
         }, 1000);
-      } else if (
-        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status
-      ) {
+      } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
         broadcastRejected(
           makeBroadcastUnStakingMessage("error", {
             tokenASymbol: tokenA?.token?.symbol,
             tokenBSymbol: tokenB?.token?.symbol,
-            tokenAAmount: tokenA?.amount.toLocaleString(
-              "en-US",
-              { maximumFractionDigits: tokenA?.token?.decimals },
-            ),
-            tokenBAmount: tokenB?.amount.toLocaleString(
-              "en-US",
-              { maximumFractionDigits: tokenB?.token?.decimals },
-            ),
+            tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+              decimals: tokenA?.token?.decimals,
+            }),
+            tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
+              decimals: tokenA?.token?.decimals,
+            }),
           }),
         );
         openModal();
@@ -115,11 +112,11 @@ const UnstakePositionModalContainer = ({
             {
               tokenASymbol: tokenA?.token?.symbol,
               tokenBSymbol: tokenB?.token?.symbol,
-              tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
-                maximumFractionDigits: tokenA?.token?.decimals,
+              tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+                decimals: tokenA?.token?.decimals,
               }),
-              tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
-                maximumFractionDigits: tokenB?.token?.decimals,
+              tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
+                decimals: tokenA?.token?.decimals,
               }),
             },
             result.data?.hash,
@@ -128,10 +125,6 @@ const UnstakePositionModalContainer = ({
         openModal();
       }
     }
-    // if (result) {
-    //   clearModal();
-    //   router.push(router.asPath.replace("/unstake", ""));
-    // }
     return result;
   }, [account?.address, positionRepository, positions, router]);
 

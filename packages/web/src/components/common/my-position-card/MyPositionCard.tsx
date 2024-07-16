@@ -22,16 +22,12 @@ import {
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
-import {
-  toPriceFormatNotRounding,
-  toPriceFormatRounding,
-} from "@utils/number-utils";
 import { useGetLazyPositionBins } from "@query/positions";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconStar from "../icons/IconStar";
-import { formatApr } from "@utils/string-utils";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -125,9 +121,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (!position.positionUsdValue || position.positionUsdValue === "0")
       return "-";
 
-    return toPriceFormatRounding(Number(position.positionUsdValue), {
-      usd: true,
-    });
+    return formatOtherPrice(position.positionUsdValue);
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
@@ -136,7 +130,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return (
       <>
         {Number(position.apr) > 100 && <IconStar size={20} />}
-        {formatApr(position.apr)}
+        {formatRate(position.apr)}
       </>
     );
   }, [position.apr]);
@@ -328,9 +322,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     );
     if (claimableUSD_ === 0) return "-";
 
-    return toPriceFormatRounding(claimableUSD_, {
-      usd: true,
-    });
+    return formatOtherPrice(claimableUSD_);
   }, [position.reward]);
 
   const dailyEarning = useMemo(() => {
@@ -344,12 +336,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
     if (dailyEarning_ === 0) return "-";
 
-    return toPriceFormatNotRounding(dailyEarning_, {
-      usd: true,
-      lestThan1Decimals: 2,
-      minLimit: 0.01,
-      fixedLessThan1: true,
-    });
+    return formatOtherPrice(dailyEarning_);
   }, [position.reward, tokenPrices]);
 
   const boxHeaderId = useMemo(() => position.id + "-box-header", [position.id]);

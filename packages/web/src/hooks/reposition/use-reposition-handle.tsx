@@ -292,9 +292,9 @@ export const useRepositionHandle = () => {
 
     const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
     if (isSwapTokenA) {
-      return amountA - repositionAmountA;
+      return Number(amountA) - repositionAmountA;
     }
-    return amountB - repositionAmountB;
+    return Number(amountB) - repositionAmountB;
   }, [currentAmounts, repositionAmounts]);
 
   const estimateSwapRequestByAmounts = useMemo(() => {
@@ -365,7 +365,7 @@ export const useRepositionHandle = () => {
       const estimatedAmountB = isEstimated ? estimatedResult + amountB : null;
 
       return {
-        amountA: estimatedAmountA,
+        amountA: estimatedAmountA.toString(),
         amountB: estimatedAmountB,
       };
     }
@@ -375,7 +375,7 @@ export const useRepositionHandle = () => {
 
     return {
       amountA: estimatedAmountA,
-      amountB: estimatedAmountB,
+      amountB: estimatedAmountB.toString(),
     };
   }, [
     currentAmounts,

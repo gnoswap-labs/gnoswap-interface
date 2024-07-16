@@ -7,10 +7,12 @@ import { DistributionPeriodDate } from "../pool-incentivize/PoolIncentivize";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { getDateUtcToLocal } from "@common/utils/date-util";
-import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 import dayjs from "dayjs";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+// import Tooltip from "@components/common/tooltip/Tooltip";
+// import IncentivizeBlockTooltipContent from "../incentivize-block-tooltip-content/IncentivizeBlockTooptipContent";
+// import { useGetLastedBlockHeight } from "@query/pools";
 
 interface PoolIncentivizeDetailsProps {
   details: PoolSelectItemInfo | null;
@@ -60,6 +62,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   amount,
   token,
 }) => {
+  // const { data: blockHeight } = useGetLastedBlockHeight();
   const { getGnotPath } = useGnotToGnot();
 
   return (
@@ -105,12 +108,20 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
       <section className="period-section">
         <h5 className="section-title">Period</h5>
         <div className="section-info">
-          <DateTimeTooltip>
-            <span className="select-date">
-              {formatDate(startDate)}
-              <br />- {formatDate(startDate, period)}
-            </span>
-          </DateTimeTooltip>
+          {/* <Tooltip
+            placement="top"
+            FloatingContent={
+              <IncentivizeBlockTooltipContent
+                latestBlockHeight={blockHeight}
+                period={period}
+              />
+            }
+          > */}
+          <span className="select-date">
+            {formatDate(startDate)}
+            <br />- {formatDate(startDate, period)}
+          </span>
+          {/* </Tooltip> */}
           <span className="period-desc">
             {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()}{" "}
             {token?.symbol} will be distributed daily
