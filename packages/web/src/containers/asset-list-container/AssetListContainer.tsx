@@ -64,7 +64,7 @@ export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 function filterZeroBalance(asset: Asset) {
   if (asset?.balance === "-") return false;
 
-  const balance = BigNumber(asset?.balance ?? 0);
+  const balance = BigNumber(asset?.balance?.toString().replace(/,/g, "") ?? 0);
   return balance.isGreaterThan(0);
 }
 
@@ -245,6 +245,7 @@ const AssetListContainer: React.FC = () => {
 
           return formatPoolPairAmount(displayBalanceMap[item.path], {
             isKMB: false,
+            decimals: item.decimals,
           });
         })();
 
@@ -316,6 +317,7 @@ const AssetListContainer: React.FC = () => {
 
           return formatPoolPairAmount(displayBalanceMap[item.path], {
             isKMB: false,
+            decimals: item.decimals,
           });
         })();
         return {
@@ -347,9 +349,14 @@ const AssetListContainer: React.FC = () => {
 
     if (sortOption?.key === "Amount") {
       mappedTokens = mappedTokens.sort((x, y) => {
+        const xBalance = x.balance === "-" ? "-1" : x.balance;
+        const yBalance = y.balance === "-" ? "-1" : y.balance;
+
         return sortOption?.direction === "desc"
-          ? Number(y.balance) - Number(x.balance)
-          : Number(x.balance) - Number(y.balance);
+          ? Number(yBalance.replace(/,/g, "")) -
+              Number(xBalance.replace(/,/g, ""))
+          : Number(xBalance.replace(/,/g, "")) -
+              Number(yBalance.replace(/,/g, ""));
       });
     }
 
@@ -360,12 +367,22 @@ const AssetListContainer: React.FC = () => {
           y.sortPrice === undefined ||
           x.sortPrice === null ||
           y.sortPrice === null
-        )
+        ) {
           return 0;
+        }
+
+        const xPrice =
+          x.sortPrice === "-"
+            ? "-1"
+            : x.sortPrice.replace("$", "").replace(/,/g, "");
+        const yPrice =
+          y.sortPrice === "-"
+            ? "-1"
+            : y.sortPrice.replace("$", "").replace(/,/g, "");
 
         return sortOption?.direction === "desc"
-          ? Number(y.sortPrice) - Number(x.sortPrice)
-          : Number(x.sortPrice) - Number(y.sortPrice);
+          ? Number(yPrice) - Number(xPrice)
+          : Number(xPrice) - Number(yPrice);
       });
     }
 
