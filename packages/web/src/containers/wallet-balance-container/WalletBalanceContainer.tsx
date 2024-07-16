@@ -34,7 +34,7 @@ export interface BalanceSummaryInfo {
 export interface BalanceDetailInfo {
   availableBalance: string;
   stakedLP: string;
-  unstakingLP: string;
+  unstakedLP: string;
   claimableRewards: string;
   loadingBalance: boolean;
   loadingPositions: boolean;
@@ -70,10 +70,12 @@ const WalletBalanceContainer: React.FC = () => {
   const { openModal } = useTransactionConfirmModal();
   const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } =
     useGetTokenPrices();
+
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
     setIsShowDepositModal(true);
   }, []);
+
   const changeTokenWithdraw = useCallback((token: TokenModel) => {
     setWithDrawInfo(token);
   }, []);
@@ -83,15 +85,17 @@ const WalletBalanceContainer: React.FC = () => {
     changeTokenDeposit(undefined);
     if (!address) return;
   }, [connected, address, changeTokenDeposit]);
+
   const withdraw = useCallback(() => {
     if (!connected) return;
     setIsShowWithDrawModal(true);
     if (!address) return;
   }, [connected, address]);
+
   const claimAllReward = useCallback(() => {
     const amount = positions
       .flatMap(item => item.reward)
-      .reduce((acc, item) => acc + Number(item.claimableAmount), 0);
+      .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
     const data = {
       amount: toUnitFormat(amount, true, true),
     };
@@ -99,7 +103,7 @@ const WalletBalanceContainer: React.FC = () => {
     claimAll().then(response => {
       if (response) {
         if (response.code === 0) {
-          broadcastPending({txHash: response.data?.hash});
+          broadcastPending({ txHash: response.data?.hash });
           setTimeout(() => {
             broadcastSuccess(
               makeBroadcastClaimMessage("success", data, response.data?.hash),
@@ -127,6 +131,7 @@ const WalletBalanceContainer: React.FC = () => {
       }
     });
   }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
+
   const loadingTotalBalance = useMemo(() => {
     return (
       isLoadingPosition ||
@@ -166,24 +171,24 @@ const WalletBalanceContainer: React.FC = () => {
     claimableRewards,
     totalClaimedRewards,
   } = positions.reduce(
-    (acc, cur) => {
+    (acc, curPosition) => {
       acc.totalClaimedRewards = BigNumber(acc.totalClaimedRewards)
-        .plus(Number(cur.totalClaimedUsd ?? "0"))
+        .plus(Number(curPosition.totalClaimedUsd ?? "0"))
         .toNumber();
 
-      if (cur.staked) {
+      if (curPosition.staked) {
         acc.stakedBalance = BigNumber(acc.stakedBalance)
-          .plus(Number(cur.stakedUsdValue ?? "0"))
+          .plus(Number(curPosition.stakedUsdValue ?? "0"))
           .toNumber();
       } else {
         acc.unStakedBalance = BigNumber(acc.unStakedBalance)
-          .plus(Number(cur.totalClaimedUsd ?? "0"))
+          .plus(Number(curPosition.usdValue ?? "0"))
           .toNumber();
       }
 
-      cur.reward.forEach(x => {
+      curPosition.reward.forEach(rewardInfo => {
         acc.claimableRewards = BigNumber(acc.claimableRewards)
-          .plus(Number(x.claimableUsd ?? "0"))
+          .plus(Number(rewardInfo.claimableUsd ?? "0"))
           .toNumber();
       });
       return acc;
@@ -258,7 +263,7 @@ const WalletBalanceContainer: React.FC = () => {
           availableBalance: isSwitchNetwork ? "-" : `${availableBalanceStr}`,
           claimableRewards: isSwitchNetwork ? "-" : `${claimableRewards}`,
           stakedLP: isSwitchNetwork ? "-" : `${stakedBalance}`,
-          unstakingLP: unStakedBalance.toString(),
+          unstakedLP: unStakedBalance.toString(),
           loadingBalance: loadingTotalBalance,
           loadingPositions: loadingTotalBalance,
           totalClaimedRewards: totalClaimedRewards.toString(),

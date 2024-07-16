@@ -166,8 +166,6 @@ export function displayTickNumber(range: number[], tick: number) {
   return tickToPriceStr(tick, { decimals: fixedPosition + 1 });
 }
 
-export const capitalize = (string: string) => {
-  return (
-    (string && string[0].toUpperCase() + string.toLowerCase().slice(1)) || ""
-  );
+export const capitalize = (value: string) => {
+  return (value && value[0].toUpperCase() + value.toLowerCase().slice(1)) || "";
 };

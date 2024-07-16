@@ -762,10 +762,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tickLower: nextTickLower,
         tickUpper: nextTickUpper,
       });
-      router.push(
+      window.history.pushState(
+        "",
+        "",
         `/earn/add${queryString ? "?" + queryString : ""}`,
-        undefined,
-        { shallow: true },
       );
     }
   }, [

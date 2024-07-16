@@ -9,7 +9,7 @@ import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { formatUsdNumber3Digits, toNumberFormat } from "@utils/number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
@@ -72,11 +72,9 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   const gasFeeUSDStr = useMemo(() => {
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
 
-    if (Number(gasFeeUSD)) {
-      return "<$0.01";
-    }
+    if (Number(gasFeeUSD) < 0.01) return "<$0.01";
 
-    return `$${gasFeeUSD}`;
+    return `$${toNumberFormat(gasFeeUSD)}`;
   }, [swapSummaryInfo.gasFeeUSD]);
 
   const toggleDetailInfo = useCallback(() => {

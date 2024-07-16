@@ -216,7 +216,9 @@ const SelectPriceRangeCustomController = forwardRef<
     );
 
     function greaterThan1Transform(numStr: string) {
-      return formatPoolPairAmount(numStr);
+      return formatPoolPairAmount(numStr, {
+        decimals: 6,
+      });
     }
 
     useEffect(() => {

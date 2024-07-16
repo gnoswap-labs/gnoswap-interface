@@ -56,7 +56,7 @@ export const useBackground = () => {
 
   const onPopPage = (): void => {
     if (
-      ["/earn/pool/[pool-path]", "/tokens/[token-path]"].includes(
+      ["/earn/add", "/earn/pool/[pool-path]", "/tokens/[token-path]"].includes(
         router.pathname,
       )
     ) {

@@ -22,7 +22,7 @@ function IncentivizeTokenDetailTooltipContent({ poolStakings }: Props) {
 
         return (
           <>
-            <S.TokenItem>
+            <S.TokenItem key={index}>
               <S.ItemHeader>
                 <MissingLogo
                   symbol={tokenData.symbol}
@@ -67,7 +67,9 @@ function IncentivizeTokenDetailTooltipContent({ poolStakings }: Props) {
                 </S.DataGridItem>
               </S.DataGrid>
             </S.TokenItem>
-            {index !== poolStakings.length - 1 && <Divider />}
+            {index !== poolStakings.length - 1 && (
+              <Divider key={`div-${index}`} />
+            )}
           </>
         );
       })}
