@@ -4,7 +4,6 @@ import IconUpload from "@components/common/icons/IconUpload";
 import { Asset } from "@containers/asset-list-container/AssetListContainer";
 import { AssetInfoWrapper, LoadButton, TableColumn } from "./AssetInfo.styles";
 import { DEVICE_TYPE } from "@styles/media";
-import BigNumber from "bignumber.js";
 import { makeId } from "@utils/common";
 import { isNativeToken } from "@models/token/token-model";
 import {
@@ -19,9 +18,6 @@ interface AssetInfoProps {
   deposit: (asset: Asset) => void;
   withdraw: (asset: Asset) => void;
   breakpoint: DEVICE_TYPE;
-}
-function removeTrailingZeros(value: string) {
-  return value.replace(/(\.\d*?[1-9])0+$/, "$1").replace(/\.$/, "");
 }
 
 const AssetInfo: React.FC<AssetInfoProps> = ({
@@ -43,16 +39,6 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   const onClickWithdraw = useCallback(() => {
     withdraw(asset);
   }, [withdraw, asset]);
-
-  const convertBalance = useMemo(() => {
-    const bigNumberBalance = BigNumber((balance ?? "").toString());
-
-    return (
-      removeTrailingZeros(
-        bigNumberBalance.toFormat(bigNumberBalance.isInteger() ? 0 : 6),
-      ) || 0
-    );
-  }, [balance]);
 
   const tokenInfoCell = useMemo(
     () => (
@@ -81,7 +67,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         </span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO.list?.[2].width}>
-        <span className="balance">{convertBalance}</span>
+        <span className="balance">{balance}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO.list?.[3].width}>
         <span className="balance">{price}</span>
@@ -108,7 +94,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         </span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[2].width}>
-        <span className="balance">{convertBalance}</span>
+        <span className="balance">{balance}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[3].width}>
         <span className="balance">{price}</span>
@@ -135,7 +121,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         </span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[2].width}>
-        <span className="balance">{convertBalance}</span>
+        <span className="balance">{balance}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[3].width}>
         <span className="balance">{price}</span>

@@ -1,12 +1,13 @@
 import React from "react";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { type BestPool } from "@containers/best-pools-container/BestPoolsContainer";
-import { formatApr, tokenPairSymbolToOneCharacter } from "@utils/string-utils";
+import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import { loadingWrapper, wrapper } from "./BestPoolCardList.styles";
 import Link from "next/link";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import IconStar from "@components/common/icons/IconStar";
+import { formatRate } from "@utils/new-number-utils";
 
 interface BestPoolCardListProps {
   list: BestPool[];
@@ -61,7 +62,7 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({
                 <span className="tvl">{info.tvl}</span>
                 <span className="apr">
                   {Number(info.apr) > 100 && <IconStar size={20} />}
-                  {formatApr(info.apr)}
+                  {formatRate(info.apr)}
                 </span>
               </li>
             </Link>

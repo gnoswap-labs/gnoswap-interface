@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js";
 import { PoolListInfo } from "../info/pool-list-info";
 import { IncentivizePoolModel, PoolModel } from "../pool-model";
 import { INCENTIVE_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
@@ -7,7 +6,7 @@ import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
 import { makeId } from "@utils/common";
 import { PoolDetailModel } from "../pool-detail-model";
-import { toPriceFormatRounding } from "@utils/number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -37,25 +36,13 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: apr,
-      liquidity: liquidity ? `$${BigNumber(liquidity).toFormat(0)}` : "-",
-      volume24h: volume24h
-        ? toPriceFormatRounding(volume24h || "0", {
-            usd: true,
-          })
-        : "-",
-      fees24h: feeUsd24h
-        ? toPriceFormatRounding(feeUsd24h || "0", {
-            usd: true,
-          })
-        : "-",
+      liquidity: liquidity,
+      volume24h: volume24h.toString(),
+      fees24h: feeUsd24h.toString(),
       rewardTokens,
       currentTick,
       price,
-      tvl: tvl
-        ? toPriceFormatRounding(tvl || "0", {
-            usd: true,
-          })
-        : "-",
+      tvl: tvl,
     };
   }
 
@@ -67,7 +54,7 @@ export class PoolMapper {
 
     return {
       poolId: pool.id,
-      liquidityAmount: BigNumber(pool.tvl).toFixed(),
+      liquidityAmount: pool.tvl,
       feeRate,
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,
@@ -105,17 +92,9 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: apr,
-      liquidity: tvl ? `$${BigNumber(tvl).toFormat(0)}` : "-",
-      volume24h: volume24h
-        ? toPriceFormatRounding(volume24h || "0", {
-            usd: true,
-          })
-        : "-",
-      fees24h: feeUsd24h
-        ? toPriceFormatRounding(feeUsd24h || "0", {
-            usd: true,
-          })
-        : "-",
+      liquidity: formatOtherPrice(tvl),
+      volume24h: formatOtherPrice(volume24h),
+      fees24h: formatOtherPrice(feeUsd24h),
       rewardTokens,
       currentTick,
       price,
@@ -163,7 +142,7 @@ export class PoolMapper {
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr ?? "",
       totalApr: pool.totalApr,
-      allTimeVolumeUsd: Number(pool.allTimeVolumeUsd),
+      allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
     };
   }

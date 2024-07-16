@@ -39,18 +39,25 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
         <span>Liquidity</span>
       </div>
       <ul>
-        {isLoading && <div css={loadingWrapper}>
-          <LoadingSpinner />
-        </div>}
-        {!isLoading && unstakedPositions.filter(item => item.closed === false).map((position, index) => (
-          <SelectLiquidityListItem
-            position={position}
-            checkedList={checkedList}
-            onCheckedItem={onCheckedItem}
-            key={index}
-          />
-        ))}
-        {!isLoading && isEmpty && <div className="no-position">No Position</div>}
+        {isLoading && (
+          <div css={loadingWrapper}>
+            <LoadingSpinner />
+          </div>
+        )}
+        {!isLoading &&
+          unstakedPositions
+            .filter(item => item.closed === false)
+            .map((position, index) => (
+              <SelectLiquidityListItem
+                position={position}
+                checkedList={checkedList}
+                onCheckedItem={onCheckedItem}
+                key={index}
+              />
+            ))}
+        {!isLoading && isEmpty && (
+          <div className="no-position">No Position</div>
+        )}
       </ul>
     </div>
   );

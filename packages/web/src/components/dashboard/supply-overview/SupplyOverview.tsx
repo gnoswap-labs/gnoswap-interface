@@ -93,7 +93,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           </div>
           {!loading ? (
             <div className="supply-value">
-              {supplyOverviewInfo.circulatingSupply} GNS
+              {supplyOverviewInfo.circulatingSupply}
             </div>
           ) : (
             <LoadingText />

@@ -5,8 +5,8 @@ import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import dayjs from "dayjs";
 import { useLoading } from "@hooks/common/use-loading";
-import { toPriceFormat } from "@utils/number-utils";
 import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface VolumePriceInfo {
   amount: string;
@@ -25,118 +25,6 @@ const parseDate = (dateString: string) => {
   return date.format("MMM D, YYYY");
 };
 
-// const generateData = (chartType: CHART_TYPE) => {
-//   const mappingLength: Record<CHART_TYPE, number> = {
-//     [CHART_TYPE["7D"]]: 7,
-//     [CHART_TYPE["1M"]]: 30,
-//     [CHART_TYPE["1Y"]]: 90,
-//     [CHART_TYPE["ALL"]]: 90,
-//   };
-
-//   return Array.from({ length: mappingLength[chartType] }, (_, index) => {
-//     const date = new Date(Date.now());
-//     date.setDate(date.getDate() - 1 * index);
-//     return {
-//       date: date.toISOString(),
-//       price: `${Math.round(Math.random() * 5000000) + 100000000}`,
-//     };
-//   }).reverse();
-// };
-
-// const initialVolumePriceInfo: VolumePriceInfo = {
-//   amount: "$994,120,000",
-//   fee: "$12,231",
-// };
-// const months = [
-//   "Jan",
-//   "Feb",
-//   "Mar",
-//   "Apr",
-//   "May",
-//   "Jun",
-//   "Jul",
-//   "Aug",
-//   "Sep",
-//   "Oct",
-//   "Nov",
-//   "Dec",
-// ];
-// function createXAxisDummyDatas(currentTab: CHART_TYPE) {
-//   const now = Date.now();
-//   switch (currentTab) {
-//     case "7D":
-//       return Array.from({ length: 8 }, (_, index) => {
-//         const date = new Date(now);
-//         date.setDate(date.getDate() - 1 * index);
-//         const monthStr = months[date.getMonth()];
-//         const dayStr = `${date.getDate()}`.padStart(2, "0");
-//         const yearStr = date.getFullYear();
-//         return `${monthStr} ${dayStr}, ${yearStr}`;
-//       }).reverse();
-//     case "1M":
-//       return Array.from({ length: 8 }, (_, index) => {
-//         const date = new Date(now);
-//         date.setMonth(date.getMonth() - 1 * index);
-//         const monthStr = months[date.getMonth()];
-//         const dayStr = `${date.getDate()}`.padStart(2, "0");
-//         const yearStr = date.getFullYear();
-
-//         return `${monthStr} ${dayStr}, ${yearStr}`;
-//       }).reverse();
-//     case "1Y":
-//       return Array.from({ length: 8 }, (_, index) => {
-//         const date = new Date(now);
-//         date.setFullYear(date.getFullYear() - 1 * index);
-//         const monthStr = months[date.getMonth()];
-//         const dayStr = `${date.getDate()}`.padStart(2, "0");
-//         const yearStr = date.getFullYear();
-
-//         return `${monthStr} ${dayStr}, ${yearStr}`;
-//       }).reverse();
-//     case "ALL":
-//     default:
-//       return Array.from({ length: 10 }, (_, index) => {
-//         const date = new Date(now);
-//         date.setMonth(date.getMonth() - 1 * index);
-//         const monthStr = months[date.getMonth()];
-//         const dayStr = `${date.getDate()}`.padStart(2, "0");
-//         const yearStr = date.getFullYear();
-
-//         return `${monthStr} ${dayStr}, ${yearStr}`;
-//       }).reverse();
-//   }
-// }
-
-// function createDummyAmountDatas(volumeChartType: CHART_TYPE) {
-//   let length = 8;
-//   if (CHART_TYPE["7D"] === volumeChartType) {
-//     length = 8;
-//   }
-//   if (CHART_TYPE["1M"] === volumeChartType) {
-//     length = 31;
-//   }
-//   if (CHART_TYPE["1Y"] === volumeChartType) {
-//     length = 91;
-//   }
-//   if (CHART_TYPE["ALL"] === volumeChartType) {
-//     length = 91;
-//   }
-//   return Array.from({ length }, (_, index) => {
-//     const date = new Date();
-//     date.setHours(date.getHours() - index);
-//     return {
-//       amount: `${Math.round(Math.random() * 10000000) + 10000000}`,
-//       time: date.toString(),
-//     };
-//   });
-// }
-
-// async function fetchVolumePriceInfo(): Promise<VolumePriceInfo> {
-//   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-//     Promise.resolve({ amount: "$100,450,000", fee: "$12,232" }),
-//   );
-// }
-
 const VolumeChartContainer: React.FC = () => {
   const { dashboardRepository } = useGnoswapContext();
   const { isLoading: isLoadingCommon } = useLoading();
@@ -151,7 +39,12 @@ const VolumeChartContainer: React.FC = () => {
     refetchInterval: 60 * 1000,
   });
 
-  const { volume: volumeData, allTimeVolumeUsd, allTimeFeeUsd, fee } = volumeEntity || {};
+  const {
+    volume: volumeData,
+    allTimeVolumeUsd,
+    allTimeFeeUsd,
+    fee,
+  } = volumeEntity || {};
   const changeVolumeChartType = useCallback((newType: string) => {
     const volumeChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
@@ -189,25 +82,26 @@ const VolumeChartContainer: React.FC = () => {
         break;
     }
 
-    const fees = (feeData || [])?.sort((a, b) => (new Date(a.date)).getTime() - (new Date(b.date)).getTime()).reduce(
-      (pre, next) => {
+    const fees = (feeData || [])
+      ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .reduce((pre, next) => {
         return [...pre, next.feeUsd];
-      },
-      [] as string[]
-    );
+      }, [] as string[]);
 
-    return chartData?.sort((a, b) => (new Date(a.date)).getTime() - (new Date(b.date)).getTime()).reduce(
-      (pre, next) => {
-        const time = parseDate(next.date);
-        return {
-          xAxisLabels: [...pre.xAxisLabels, time],
-          datas: [...pre.datas, next.volumeUsd],
-          times: [...pre.times, next.date],
-          fees: fees,
-        };
-      },
-      { xAxisLabels: [], datas: [], times: [], fees: [] } as VolumeChartInfo
-    );
+    return chartData
+      ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .reduce(
+        (pre, next) => {
+          const time = parseDate(next.date);
+          return {
+            xAxisLabels: [...pre.xAxisLabels, time],
+            datas: [...pre.datas, next.volumeUsd],
+            times: [...pre.times, next.date],
+            fees: fees,
+          };
+        },
+        { xAxisLabels: [], datas: [], times: [], fees: [] } as VolumeChartInfo,
+      );
   }, [fee, volumeChartType, volumeData]);
 
   return (
@@ -215,28 +109,14 @@ const VolumeChartContainer: React.FC = () => {
       volumeChartType={volumeChartType}
       changeVolumeChartType={changeVolumeChartType}
       volumePriceInfo={{
-        amount: allTimeVolumeUsd
-          ? toPriceFormat(
-            allTimeVolumeUsd, {
-            usd: true,
-            isRounding: false,
-            isKMBFormat: false,
-            greaterThan1Decimals: 1,
-            lestThan1Decimals: 1,
-            forcedGreaterThan1Decimals: false,
-          })
-          : "-",
-        fee: allTimeFeeUsd
-          ? toPriceFormat(
-            allTimeFeeUsd, {
-            usd: true,
-            isRounding: false,
-            isKMBFormat: false,
-            greaterThan1Decimals: 1,
-            lestThan1Decimals: 1,
-            forcedGreaterThan1Decimals: false,
-          })
-          : "-",
+        amount: formatOtherPrice(allTimeVolumeUsd, {
+          isKMB: false,
+          decimals: 1,
+        }),
+        fee: formatOtherPrice(allTimeFeeUsd, {
+          decimals: 1,
+          isKMB: false,
+        }),
       }}
       volumeChartInfo={chartData}
       loading={isLoading || isLoadingCommon}

@@ -34,20 +34,6 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       align-items: flex-start;
       flex-wrap: wrap;
     }
-    .header-wrap {
-      ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 10px;
-      ${media.mobile} {
-        gap: 5px;
-      }
-      @media (max-width: 376px) {
-        position: absolute;
-        left: 0;
-        bottom: ${({ isMobile }) => {
-          return isMobile ? "-21px" : "calc(-100% - 5px)";
-        }};
-      }
-    }
     .to-mobile {
       display: none;
     }
@@ -91,7 +77,12 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
         }
       }
     }
-    .apr {
+    .apr-text {
+      &:hover {
+        .float-view-apr {
+          visibility: hidden;
+        }
+      }
       ${fonts.h5}
       ${media.tablet} {
         ${fonts.body7}
@@ -197,4 +188,40 @@ export const CustomButtonStaking = styled.div`
   ${media.mobile} {
     display: none;
   }
+`;
+
+export const AprViewRewardTooltipWrapper = styled.div`
+  ${fonts.body12}
+`;
+
+export const AprNumberContainer = styled.div<{ placeholderWidth: number }>`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  .placeholder {
+    width: ${({ placeholderWidth }) => `${placeholderWidth}px`};
+    top: 0px;
+  }
+`;
+
+export const AprStakingHeader = styled.div<{
+  $isMobile: boolean;
+}>`
+  position: relative;
+  ${mixins.flexbox("row", "center", "flex-start")};
+  gap: 10px;
+
+  ${media.mobile} {
+    gap: 5px;
+  }
+  @media (max-width: 376px) {
+    position: absolute;
+    left: 0;
+    bottom: ${({ $isMobile }) => {
+      return $isMobile ? "-21px" : "calc(-100% - 5px)";
+    }};
+  }
+`;
+
+export const NoticeAprToolTip = styled.div`
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text01}
 `;

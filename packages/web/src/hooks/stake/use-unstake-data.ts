@@ -2,7 +2,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
-import { numberToUSD } from "@utils/number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 import { useMemo } from "react";
 
 export interface UnstakeDataProps {
@@ -20,29 +20,74 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
     const pooledTokenAAmount = positions.reduce(
-      (accum, position) => accum + position.tokenABalance,
-      0,
+      (accum: number | null, position) => {
+        if (accum === null && !position.tokenABalance) return null;
+
+        if (accum === null) {
+          return Number(position.tokenABalance);
+        }
+
+        if (!position.tokenABalance) {
+          return accum;
+        }
+
+        return accum + Number(position.tokenABalance);
+      },
+      null,
     );
     const pooledTokenBAmount = positions.reduce(
-      (accum, position) => accum + position.tokenBBalance,
-      0,
+      (accum: number | null, position) => {
+        if (accum === null && !position.tokenBBalance) return null;
+
+        if (accum === null) {
+          return Number(position.tokenBBalance);
+        }
+
+        if (!position.tokenBBalance) {
+          return accum;
+        }
+
+        return accum + Number(position.tokenBBalance);
+      },
+      null,
     );
-    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
-    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
-    const tokenAAmount = Number(pooledTokenAAmount) || 0;
-    const tokenBAmount = Number(pooledTokenBAmount) || 0;
+    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd
+      ? Number(tokenPrices[tokenA.priceID]?.usd)
+      : null;
+    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd
+      ? Number(tokenPrices[tokenB.priceID]?.usd)
+      : null;
+    // const tokenAAmount = pooledTokenAAmount;
+    // const tokenBAmount = Number(pooledTokenBAmount) || 0;
+
     return [
       {
         token: tokenA,
-        amount: tokenAAmount,
-        amountUSD: numberToUSD(tokenAAmount * Number(tokenAPrice)),
-        rawAmountUsd: tokenAAmount * Number(tokenAPrice),
+        amount: pooledTokenAAmount,
+        amountUSD:
+          pooledTokenAAmount !== null && tokenAPrice !== null
+            ? formatOtherPrice(pooledTokenAAmount * tokenAPrice, {
+                isKMB: false,
+              })
+            : "-",
+        rawAmountUsd:
+          pooledTokenAAmount !== null && tokenAPrice != null
+            ? pooledTokenAAmount * tokenAPrice
+            : null,
       },
       {
         token: tokenB,
-        amount: tokenBAmount,
-        amountUSD: numberToUSD(tokenBAmount * Number(tokenBPrice)),
-        rawAmountUsd: tokenBAmount * Number(tokenBPrice),
+        amount: pooledTokenBAmount,
+        amountUSD:
+          pooledTokenBAmount !== null && tokenBPrice !== null
+            ? formatOtherPrice(pooledTokenBAmount * tokenBPrice, {
+                isKMB: false,
+              })
+            : "-",
+        rawAmountUsd:
+          pooledTokenBAmount !== null && tokenBPrice != null
+            ? pooledTokenBAmount * tokenBPrice
+            : null,
       },
     ];
   }, [positions, tokenPrices]);
@@ -54,51 +99,152 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
 
     return positions
       .flatMap(item => item.reward)
-      .filter(item => item.rewardType === "EXTERNAL" || item.rewardType === "INTERNAL")
-      .reduce((acc, current) => {
-        const currentToken = current.rewardToken;
-        const checkGnotToken = getGnotPath(currentToken);
+      .filter(
+        item =>
+          item.rewardType === "EXTERNAL" || item.rewardType === "INTERNAL",
+      )
+      .reduce(
+        (acc, current) => {
+          const currentToken = current.rewardToken;
+          const checkGnotToken = getGnotPath(currentToken);
 
-        const existedData = acc.findIndex(item => item.token.priceID === currentToken.priceID);
+          const existedData = acc.findIndex(
+            item => item.token.priceID === currentToken.priceID,
+          );
 
-        if (existedData === -1) {
-          return [
-            ...acc,
-            {
-              token: {
-                ...currentToken,
-                ...checkGnotToken,
+          if (existedData === -1) {
+            return [
+              ...acc,
+              {
+                token: {
+                  ...currentToken,
+                  ...checkGnotToken,
+                },
+                amount: current.claimableAmount
+                  ? Number(current.claimableAmount)
+                  : null,
+                rawAmountUsd: current.claimableUsd
+                  ? Number(current.claimableUsd)
+                  : null,
+                amountUSD: formatOtherPrice(current.claimableUsd, {
+                  isKMB: false,
+                }),
               },
-              amount: Number(current.claimableAmount),
-              rawAmountUsd: Number(current.claimableUsd),
-              amountUSD: numberToUSD(Number(current.claimableUsd) ?? 0)
+            ];
+          }
+
+          const amount = (() => {
+            if (acc[existedData].amount === null || !current.claimableAmount) {
+              return null;
             }
-          ];
-        }
 
-        acc[existedData] = {
-          ...acc[existedData],
-          amount: acc[existedData].amount + Number(current.claimableAmount),
-          rawAmountUsd: acc[existedData].rawAmountUsd + Number(current.claimableUsd),
-          amountUSD: numberToUSD(Number(acc[existedData].rawAmountUsd + Number(current.claimableUsd)) ?? 0)
-        };
+            if (acc[existedData].amount === null) {
+              return Number(current.claimableAmount);
+            }
 
-        return acc;
-      }, [] as {
-        token: TokenModel,
-        amount: number,
-        rawAmountUsd: number,
-        amountUSD: string,
-      }[]);
+            if (!current.claimableAmount) {
+              return acc[existedData].amount;
+            }
+
+            return (
+              acc[existedData].amount || 0 + Number(current.claimableAmount)
+            );
+          })();
+
+          const rawAmountUsd = (() => {
+            if (
+              acc[existedData].rawAmountUsd === null ||
+              !current.claimableUsd
+            ) {
+              return null;
+            }
+
+            if (acc[existedData].rawAmountUsd === null) {
+              return Number(current.claimableUsd);
+            }
+
+            if (!current.claimableAmount) {
+              return acc[existedData].rawAmountUsd;
+            }
+
+            return (
+              acc[existedData].rawAmountUsd || 0 + Number(current.claimableUsd)
+            );
+          })();
+
+          const amountUSD = formatOtherPrice(rawAmountUsd, { isKMB: false });
+
+          acc[existedData] = {
+            ...acc[existedData],
+            amount,
+            rawAmountUsd,
+            amountUSD,
+          };
+
+          return acc;
+        },
+        [] as {
+          token: TokenModel;
+          amount: number | null;
+          rawAmountUsd: number | null;
+          amountUSD: string;
+        }[],
+      );
   }, [getGnotPath, positions]);
 
   const totalLiquidityUSD = useMemo(() => {
     if (positions.length === 0) {
       return "-";
     }
-    const totalUSDValue = pooledTokenInfos.reduce((acc, current) => acc + current.rawAmountUsd, 0)
-      + unclaimedRewards.reduce((acc, current) => acc + current.rawAmountUsd, 0);
-    return numberToUSD(totalUSDValue);
+    const poolUsd = pooledTokenInfos.reduce((acc: null | number, current) => {
+      if (acc === null && current.rawAmountUsd === null) {
+        return null;
+      }
+
+      if (acc === null) {
+        return current.rawAmountUsd;
+      }
+
+      if (current.rawAmountUsd === null) {
+        return acc;
+      }
+
+      return acc + current.rawAmountUsd;
+    }, null);
+
+    const claimUsd = unclaimedRewards.reduce((acc: null | number, current) => {
+      if (acc === null && current.rawAmountUsd === null) {
+        return null;
+      }
+
+      if (acc === null) {
+        return current.rawAmountUsd;
+      }
+
+      if (current.rawAmountUsd === null) {
+        return acc;
+      }
+
+      return acc + current.rawAmountUsd;
+    }, null);
+
+    const total = (() => {
+      if (poolUsd === null && claimUsd === null) {
+        return null;
+      }
+
+      if (poolUsd === null) {
+        return claimUsd;
+      }
+
+      if (claimUsd === null) {
+        return poolUsd;
+      }
+
+      return poolUsd + claimUsd;
+    })();
+
+    return formatOtherPrice(total);
   }, [pooledTokenInfos, positions.length, unclaimedRewards]);
 
   return {

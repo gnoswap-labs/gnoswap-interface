@@ -1,5 +1,8 @@
 import React, { useCallback, useMemo, useState, useRef } from "react";
-import { PoolIncentivizeSelectPoolBox, PoolIncentivizeSelectPoolWrapper } from "./PoolIncentivizeSelectPool.styles";
+import {
+  PoolIncentivizeSelectPoolBox,
+  PoolIncentivizeSelectPoolWrapper,
+} from "./PoolIncentivizeSelectPool.styles";
 import PoolIncentivizeSelectPoolItem from "../pool-incentivize-select-pool-item/PoolIncentivizeSelectPoolItem";
 import SearchInput from "@components/common/search-input/SearchInput";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
@@ -44,12 +47,14 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
       const tokenB = pool.tokenB;
       if (
         tokenA.name.toUpperCase().includes(upperSearchKeyword) ||
-        tokenA.symbol.toUpperCase().includes(upperSearchKeyword)) {
+        tokenA.symbol.toUpperCase().includes(upperSearchKeyword)
+      ) {
         return true;
       }
       if (
         tokenB.name.toUpperCase().includes(upperSearchKeyword) ||
-        tokenB.symbol.toUpperCase().includes(upperSearchKeyword)) {
+        tokenB.symbol.toUpperCase().includes(upperSearchKeyword)
+      ) {
         return true;
       }
       return false;
@@ -58,20 +63,26 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
 
   const toggleSelector = useCallback(() => {
     if (!openedSelector) {
-      forceRefect({queryKey: [QUERY_KEY.pools]});
+      forceRefect({ queryKey: [QUERY_KEY.pools] });
     }
     setOpenedSelector(!openedSelector);
   }, [openedSelector]);
 
-  const selectPoolItem = useCallback((poolId: string) => {
-    select(poolId);
-    setOpenedSelector(false);
-  }, [select]);
+  const selectPoolItem = useCallback(
+    (poolId: string) => {
+      select(poolId);
+      setOpenedSelector(false);
+    },
+    [select],
+  );
 
-  const onChangeKeyword = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(event.target.value);
-  }, []);
-  
+  const onChangeKeyword = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchKeyword(event.target.value);
+    },
+    [],
+  );
+
   return (
     <PoolIncentivizeSelectPoolWrapper isDisabled={isDisabled}>
       <h5>1. Select Pool</h5>
@@ -81,13 +92,21 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
           visibleLiquidity={false}
           select={toggleSelector}
         />
-        {!isDisabled && <div className="icon-wrapper">
-          {openedSelector ?
-            <IconArrowUp className="icon-arrow" /> :
-            <IconArrowDown className="icon-arrow" />}
-        </div>}
+        {!isDisabled && (
+          <div className="icon-wrapper">
+            {openedSelector ? (
+              <IconArrowUp className="icon-arrow" />
+            ) : (
+              <IconArrowDown className="icon-arrow" />
+            )}
+          </div>
+        )}
 
-        <PoolIncentivizeSelectPoolBox ref={modalRef} className={openedSelector ? "open" : ""} onClick={e => e.stopPropagation()}>
+        <PoolIncentivizeSelectPoolBox
+          ref={modalRef}
+          className={openedSelector ? "open" : ""}
+          onClick={e => e.stopPropagation()}
+        >
           <div className="search-wrapper" onClick={e => e.stopPropagation()}>
             <SearchInput
               onChange={onChangeKeyword}

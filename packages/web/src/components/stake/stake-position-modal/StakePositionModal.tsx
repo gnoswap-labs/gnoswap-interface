@@ -6,8 +6,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { numberToUSD } from "@utils/number-utils";
-import { formatApr } from "@utils/string-utils";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import React, { useCallback, useMemo } from "react";
 import {
   Divider,
@@ -33,7 +32,7 @@ const StakePositionModal: React.FC<Props> = ({
       (accum, position) => accum + Number(position.positionUsdValue),
       0,
     );
-    return numberToUSD(totalLiquidity);
+    return formatOtherPrice(totalLiquidity);
   }, [positions]);
 
   const onClickClose = useCallback(() => {
@@ -45,7 +44,7 @@ const StakePositionModal: React.FC<Props> = ({
 
     if (Number(pool.stakingApr) === 0) return "0%";
 
-    return `${formatApr(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatApr(
+    return `${formatRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatRate(
       pool?.stakingApr,
     )}`;
   }, [pool?.stakingApr]);
@@ -104,7 +103,9 @@ const StakePositionModal: React.FC<Props> = ({
                     />
                   </div>
                   <div className="value">
-                    {numberToUSD(Number(position.positionUsdValue))}
+                    {formatOtherPrice(position.positionUsdValue, {
+                      isKMB: false,
+                    })}
                   </div>
                 </div>
               ))}

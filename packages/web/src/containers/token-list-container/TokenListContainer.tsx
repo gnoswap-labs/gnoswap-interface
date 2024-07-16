@@ -15,9 +15,9 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
+import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -220,7 +220,6 @@ const TokenListContainer: React.FC = () => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
 
     let temp = tokens
-      // let temp = (tokens?.[0] ? [tokens?.[0]] : [])
       .filter((token: TokenModel) => token.path !== wugnotPath)
       .map((item: TokenModel) => {
         const isGnot = item.path === "gnot";
@@ -311,22 +310,16 @@ const TokenListContainer: React.FC = () => {
                 ),
               ).toLocaleString()}`
             : "-",
-          liquidity: transferData.lockedTokensUsd
-            ? `$${Math.floor(
-                Number(transferData.lockedTokensUsd || 0),
-              ).toLocaleString()}`
-            : "-",
-          volume24h: transferData.volumeUsd24h
-            ? `$${Math.floor(
-                Number(transferData.volumeUsd24h || 0),
-              ).toLocaleString()}`
-            : "-",
+          liquidity: formatOtherPrice(transferData.lockedTokensUsd, {
+            decimals: 0,
+            isKMB: false,
+          }),
+          volume24h: formatOtherPrice(transferData.volumeUsd24h, {
+            decimals: 0,
+            isKMB: false,
+          }),
           price: transferData.usd
-            ? toPriceFormat(transferData.usd, {
-                usd: true,
-                isRounding: false,
-                fixedLessThan1Significant: 3,
-              })
+            ? formatPrice(transferData.usd, { isKMB: false })
             : "--",
           priceOf1d: {
             status: dataToday.status,

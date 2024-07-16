@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
 import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
-import { formatApr, numberToFormat } from "@utils/string-utils";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 
 export interface MyPositionAprContentProps {
   rewardInfo: { [key in RewardType]: PositionAPRInfo[] };
@@ -54,10 +54,13 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
+                  {formatOtherPrice(reward.accuReward1D, {
+                    usd: false,
+                  })}{" "}
+                  / day
                 </span>
               </div>
-              <span className="position">{formatApr(reward.apr)}</span>
+              <span className="position">{formatRate(reward.apr)}</span>
             </div>
           ))}
         </React.Fragment>
@@ -80,10 +83,10 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
+                  {formatOtherPrice(reward.accuReward1D, { usd: false })} / day
                 </span>
               </div>
-              <span className="position">{formatApr(reward.apr)}</span>
+              <span className="position">{formatRate(reward.apr)}</span>
             </div>
           ))}
         </React.Fragment>
@@ -106,10 +109,10 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
+                  {formatOtherPrice(reward.accuReward1D, { usd: false })} / day
                 </span>
               </div>
-              <span className="position">{formatApr(reward.apr)}</span>
+              <span className="position">{formatRate(reward.apr)}</span>
             </div>
           ))}
         </React.Fragment>

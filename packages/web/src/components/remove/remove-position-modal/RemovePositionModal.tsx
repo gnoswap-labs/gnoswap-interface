@@ -4,7 +4,6 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import { useRemoveData } from "@hooks/stake/use-remove-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import React, { useCallback, useMemo } from "react";
 import {
   Divider,
@@ -17,8 +16,12 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
-import { numberToRate } from "@utils/string-utils";
 import { useGetWithdrawalFee } from "@query/pools";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+  formatRate,
+} from "@utils/new-number-utils";
 
 interface Props {
   selectedPosition: PoolPositionModel[];
@@ -51,7 +54,7 @@ const RemovePositionModal: React.FC<Props> = ({
 
     if (selectRemoveUsd === 0) return "0%";
     if (allUsd === 0) return "-";
-    return numberToRate(selectRemoveUsd / allUsd);
+    return formatRate(selectRemoveUsd / allUsd);
   }, [allPositions, selectedPosition]);
 
   return (
@@ -85,7 +88,9 @@ const RemovePositionModal: React.FC<Props> = ({
                     />
                   </div>
                   <div className="value">
-                    {numberToUSD(Number(position.positionUsdValue))}
+                    {formatOtherPrice(position.positionUsdValue, {
+                      isKMB: false,
+                    })}
                   </div>
                 </div>
               ))}
@@ -107,7 +112,9 @@ const RemovePositionModal: React.FC<Props> = ({
                         <div>{rewardInfo.token.symbol}</div>
                       </div>
                       <div className="value">
-                        {formatNumberToLocaleString(rewardInfo.amount)}
+                        {formatPoolPairAmount(rewardInfo.amount, {
+                          decimals: rewardInfo.token.decimals,
+                        })}
                       </div>
                     </div>
                     <div className="sub-value">{rewardInfo.amountUSD}</div>

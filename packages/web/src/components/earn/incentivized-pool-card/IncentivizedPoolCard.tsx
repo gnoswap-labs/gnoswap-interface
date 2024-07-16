@@ -13,8 +13,10 @@ import {
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { formatApr, numberToFormat } from "@utils/string-utils";
+import { numberToFormat } from "@utils/string-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { formatRate } from "@utils/new-number-utils";
+import IconStar from "@components/common/icons/IconStar";
 
 export interface IncentivizedPoolCardProps {
   pool: IncentivizePoolCardInfo;
@@ -82,6 +84,17 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
     return isAllReserveZeroBin40;
   }, [pool]);
 
+  const aprStr = useMemo(() => {
+    if (!pool.apr) return "-";
+
+    return (
+      <>
+        {Number(pool.apr) > 100 && <IconStar size={20} />}
+        {formatRate(pool.apr)}
+      </>
+    );
+  }, [pool.apr]);
+
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
@@ -120,9 +133,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               </div>
               <div className="list-content">
                 <span className="value-text">{pool.liquidity}</span>
-                <span className="value-text">
-                  {pool.apr ? formatApr(pool.apr) : "-"}
-                </span>
+                <span className="value-text apr-value">{aprStr}</span>
               </div>
             </div>
           </div>

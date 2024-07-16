@@ -5,7 +5,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { formatApr } from "@utils/string-utils";
+import { formatRate } from "@utils/new-number-utils";
 import React from "react";
 import {
   RepositionInfoWrapper,
@@ -105,7 +105,7 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">{formatApr(aprFee)}</p>
+          <p className="value">{formatRate(aprFee)}</p>
         </div>
       </div>
     </RepositionInfoWrapper>
