@@ -1,4 +1,4 @@
-export interface RepositionLiquidityResponse {
+export interface RepositionLiquiditySuccessResponse {
   tokenID: string;
 
   liquidity: string;
@@ -10,4 +10,8 @@ export interface RepositionLiquidityResponse {
   tokenAAmount: string;
 
   tokenBAmount: string;
+}
+
+export interface RepositionLiquidityFailedResponse {
+  hash: string;
 }

@@ -23,7 +23,8 @@ import {
   IncreaseLiquiditySuccessResponse,
   PositionBinResponse,
   PositionListResponse,
-  RepositionLiquidityResponse,
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
 } from "./response";
 import {
   makeApporveStakeTokenMessage,
@@ -513,7 +514,11 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   repositionLiquidity = async (
     request: RepositionLiquidityRequest,
-  ): Promise<WalletResponse<RepositionLiquidityResponse | null>> => {
+  ): Promise<
+    WalletResponse<
+      RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
+    >
+  > => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }

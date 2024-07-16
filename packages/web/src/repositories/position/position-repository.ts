@@ -66,9 +66,7 @@ export interface PositionRepository {
     request: RepositionLiquidityRequest,
   ) => Promise<
     WalletResponse<
-      | RepositionLiquiditySuccessResponse
-      | RepositionLiquidityFailedResponse
-      | null
+      RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
     >
   >;
 

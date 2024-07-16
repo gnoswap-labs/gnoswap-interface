@@ -7,10 +7,6 @@ import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import {
-  AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse,
-} from "@repositories/pool/response/add-liquidity-response";
-import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
 } from "@repositories/swap/response/swap-route-response";
@@ -18,6 +14,10 @@ import React, { useCallback, useState } from "react";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconClose from "../icons/IconCancel";
 import { RepositionModalWrapper } from "./RepositionModal.styles";
+import {
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
+} from "@repositories/position/response";
 
 interface Props {
   close: () => void;
@@ -49,7 +49,7 @@ interface Props {
     swapToken: TokenModel,
     swapAmount: string,
   ) => Promise<WalletResponse<
-    AddLiquiditySuccessResponse | AddLiquidityFailedResponse
+    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
 }
 
