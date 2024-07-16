@@ -36,7 +36,7 @@ export const ItemHeaderTag = styled.div`
 export const DataGrid = styled.div`
   width: 100%;
   ${mixins.flexbox("column", "flex-start", "center")}
-  gap: 8px;
+  gap: 16px;
 `;
 
 export const DataGridItem = styled.div`

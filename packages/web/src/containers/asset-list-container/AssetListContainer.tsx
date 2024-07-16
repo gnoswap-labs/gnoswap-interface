@@ -62,6 +62,8 @@ export const ASSET_FILTER_TYPE = {
 export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 
 function filterZeroBalance(asset: Asset) {
+  if (asset?.balance === "-") return false;
+
   const balance = BigNumber(asset?.balance ?? 0);
   return balance.isGreaterThan(0);
 }

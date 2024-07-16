@@ -86,7 +86,9 @@ export const formatRate = (
   }
 
   return (
-    sign + BigNumber(amount).toFormat(decimals, BigNumber.ROUND_DOWN) + "%"
+    sign +
+    BigNumber(amount).abs().toFormat(decimals, BigNumber.ROUND_DOWN) +
+    "%"
   );
 };
 
