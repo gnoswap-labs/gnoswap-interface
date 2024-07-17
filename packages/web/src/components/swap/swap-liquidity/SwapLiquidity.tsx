@@ -76,7 +76,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
         <div className="list-wrap">
           <p dangerouslySetInnerHTML={{ __html: t("Swap:poolInfo.noPool") }} />
           <Button
-            text="Add Position"
+            text={t("Swap:poolInfo.addPosBtn")}
             leftIcon={<IconAdd />}
             style={{
               fullWidth: true,

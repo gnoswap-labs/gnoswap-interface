@@ -39,7 +39,7 @@ const RangeBadge: React.FC<RangeBadgeProps> = ({
 
     switch (status) {
       case RANGE_STATUS_OPTION.IN:
-        return t("business:rangeStatus.inRange");
+        return t("business:rangeStatus.inRange", { context: "short" });
       case RANGE_STATUS_OPTION.OUT:
         return t("business:rangeStatus.outRange");
       case RANGE_STATUS_OPTION.NONE:
