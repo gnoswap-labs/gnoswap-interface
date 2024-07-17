@@ -149,6 +149,7 @@ export default function Pool() {
       poolPath &&
       !jumpFlagRef.current
     ) {
+      console.log("🚀 ~ useEffect ~ hash:", hash);
       const position = positions.find(item => item.id === hash);
       const isClosedPosition = !position || position?.closed;
 

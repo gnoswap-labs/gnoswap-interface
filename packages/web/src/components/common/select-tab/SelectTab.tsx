@@ -1,5 +1,6 @@
 import { SelectButton, SelectTabWrapper } from "./SelectTab.styles";
 import { cx } from "@emotion/css";
+import { useTranslation } from "react-i18next";
 interface SelectTabProps {
   selectType: string;
   list: string[];
@@ -13,6 +14,8 @@ const SelectTab: React.FC<SelectTabProps> = ({
   onClick,
   buttonClassName,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <SelectTabWrapper className="select-tab-wrapper">
       {list.map((type, idx) => (
@@ -25,7 +28,7 @@ const SelectTab: React.FC<SelectTabProps> = ({
           onClick={() => onClick(type)}
           disabled={type === selectType}
         >
-          {type}
+          {t(type)}
         </SelectButton>
       ))}
     </SelectTabWrapper>

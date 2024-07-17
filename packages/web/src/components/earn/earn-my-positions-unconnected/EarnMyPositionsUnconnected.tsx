@@ -1,6 +1,7 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconLinkOff from "@components/common/icons/IconLinkOff";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { UnconnectedWrapper } from "./EarnMyPositionsUnconnected.styles";
 
 export interface EarnMyPositionsUnconnectedProps {
@@ -12,6 +13,8 @@ const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({
   connect,
   connected,
 }) => {
+  const { t } = useTranslation();
+
   const onClickConnect = useCallback(() => {
     connect();
   }, [connect]);
@@ -20,13 +23,13 @@ const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({
     <UnconnectedWrapper>
       <IconLinkOff className="unconnected-icon" />
       {!connected ? (
-        <p>
-          Please connect your wallet to view&nbsp;
-          <br />
-          your liquidity positions.
-        </p>
+        <p
+          dangerouslySetInnerHTML={{
+            __html: t("Earn:positions.unconnect.connect"),
+          }}
+        />
       ) : (
-        <p>Unsupported network. Switch your network to Gnoland.</p>
+        <p>{t("Earn:positions.unconnect.switchNetwork")}</p>
       )}
       <Button
         text={connected ? "Switch to Gnoland" : "Wallet Login"}

@@ -33,9 +33,9 @@ export function swapDirectionToGuaranteedType(
   swapDirection: SwapDirectionType,
 ) {
   if (swapDirection === "EXACT_IN") {
-    return "Min. Received";
+    return "Swap:swapInfo.minReceived";
   }
-  return "Max. Sent";
+  return "Swap:swapInfo.maxSent";
 }
 
 export function getMinReceivedBy(swapSummaryInfo: SwapSummaryInfo) {

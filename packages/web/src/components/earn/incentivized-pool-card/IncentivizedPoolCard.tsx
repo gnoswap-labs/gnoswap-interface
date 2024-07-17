@@ -1,5 +1,4 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { POOL_CONTENT_TITLE } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import {
   PoolCardWrapper,
   PoolCardWrapperWrapperBorder,
@@ -17,6 +16,7 @@ import { numberToFormat } from "@utils/string-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatRate } from "@utils/new-number-utils";
 import IconStar from "@components/common/icons/IconStar";
+import { useTranslation } from "react-i18next";
 
 export interface IncentivizedPoolCardProps {
   pool: IncentivizePoolCardInfo;
@@ -31,6 +31,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   themeKey,
   checkStakedPool,
 }) => {
+  const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const staked = useMemo(() => {
     return checkStakedPool(pool.poolPath || null);
@@ -128,8 +129,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
             </div>
             <div className="list-wrapper">
               <div className="list-header">
-                <span className="label-text">{POOL_CONTENT_TITLE.TVL}</span>
-                <span className="label-text">{POOL_CONTENT_TITLE.APR}</span>
+                <span className="label-text">TVL</span>
+                <span className="label-text">APR</span>
               </div>
               <div className="list-content">
                 <span className="value-text">{pool.liquidity}</span>
@@ -140,8 +141,12 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
           <div className="volume-container">
             <div className="volume-header">
               <div className="volume-title">
-                <span className="label-text">{POOL_CONTENT_TITLE.VOLUME}</span>
-                <span className="label-text">{POOL_CONTENT_TITLE.FEE}</span>
+                <span className="label-text">
+                  {t("Earn:incentiPools.card.col.volume")}
+                </span>
+                <span className="label-text">
+                  {t("Earn:incentiPools.card.col.fees")}
+                </span>
               </div>
               <div className="volume-content">
                 <span className="value-text">{pool.volume24h}</span>

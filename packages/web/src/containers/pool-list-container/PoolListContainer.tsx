@@ -37,29 +37,29 @@ export interface PoolSortOption {
 }
 
 export const TABLE_HEAD = {
-  POOL_NAME: "Pool Name",
+  POOL_NAME: "Earn:poolList.col.poolName",
   TVL: "TVL",
-  VOLUME: "Volume (24h)",
-  FEES: "Fees (24h)",
+  VOLUME: "Earn:poolList.col.volume",
+  FEES: "Earn:poolList.col.fee",
   APR: "APR",
-  REWARDS: "Incentive",
-  LIQUIDITY_PLOT: "Liquidity Plot",
+  REWARDS: "Earn:poolList.col.incentive",
+  LIQUIDITY_PLOT: "Earn:poolList.col.liquidityPlot",
 } as const;
 
 export const SORT_SUPPORT_HEAD = [
-  "Pool Name",
+  "Earn:poolList.col.poolName",
   "TVL",
-  "Volume (24h)",
-  "Fees (24h)",
+  "Earn:poolList.col.volume",
+  "Earn:poolList.col.fee",
   "APR",
 ];
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
 export const POOL_TYPE = {
-  ALL: "All",
-  INCENTIVIZED: "Incentivized",
-  NONE_INCENTIVIZED: "Non-Incentivized",
+  ALL: "Earn:poolList.switch.all",
+  INCENTIVIZED: "Earn:poolList.switch.incenti",
+  NONE_INCENTIVIZED: "Earn:poolList.switch.nonIncenti",
 } as const;
 
 export type POOL_TYPE = ValuesType<typeof POOL_TYPE>;
@@ -103,9 +103,9 @@ const PoolListContainer: React.FC = () => {
   const filteredPoolType = useCallback(
     (poolType: POOL_TYPE, incentivizedType: INCENTIVE_TYPE) => {
       switch (poolType) {
-        case "Incentivized":
+        case "Earn:poolList.switch.incenti":
           return incentivizedType !== "NONE_INCENTIVIZED";
-        case "Non-Incentivized":
+        case "Earn:poolList.switch.nonIncenti":
           return incentivizedType === "NONE_INCENTIVIZED";
         default:
           break;
@@ -274,7 +274,10 @@ const PoolListContainer: React.FC = () => {
   );
 
   const isSortOption = useCallback((head: TABLE_HEAD) => {
-    const disableItems = ["Rewards", "Liquidity Plot"];
+    const disableItems = [
+      "Earn:poolList.col.incentive",
+      "Earn:poolList.col.liquidityPlot",
+    ];
     return !disableItems.includes(head);
   }, []);
 

@@ -4,6 +4,7 @@ import { wrapper } from "./SelectPairButton.styles";
 import { useSelectTokenModal } from "@hooks/token/use-select-token-modal";
 import { TokenModel } from "@models/token/token-model";
 import MissingLogo from "../missing-logo/MissingLogo";
+import { useTranslation } from "react-i18next";
 
 interface SelectPairButtonProps {
   token: TokenModel | null;
@@ -24,6 +25,7 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
   isHiddenArrow,
   className,
 }) => {
+  const { t } = useTranslation();
   const { openModal } = useSelectTokenModal({ changeToken, callback });
 
   const onClickButton = useCallback(() => {
@@ -54,7 +56,7 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
           <span className="token-symbol">{token.symbol}</span>
         </div>
       ) : (
-        <span>Select</span>
+        <span>{t("common:selectPairBtn.select")}</span>
       )}
       {!isHiddenArrow && <IconStrokeArrowDown className="arrow-icon" />}
     </div>

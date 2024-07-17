@@ -5,7 +5,10 @@ import { SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
-import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "./response/swap-route-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "./response/swap-route-response";
 
 export interface SwapRouterRepository {
   updatePools: (pools: PoolRPCModel[]) => void;

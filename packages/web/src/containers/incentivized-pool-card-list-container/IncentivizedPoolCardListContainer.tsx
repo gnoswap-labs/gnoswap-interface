@@ -6,7 +6,6 @@ import React, {
   useRef,
 } from "react";
 import IncentivizedPoolCardList from "@components/earn/incentivized-pool-card-list/IncentivizedPoolCardList";
-import { ValuesType } from "utility-types";
 import useRouter from "@hooks/common/use-custom-router";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
@@ -24,16 +23,6 @@ export interface PoolListProps {
   fees24h: string;
   currentTick: string;
 }
-
-export const POOL_CONTENT_TITLE = {
-  TVL: "TVL",
-  LIQUIDITY: "Liquidity",
-  APR: "APR",
-  VOLUME: "Trading Volume (24h)",
-  FEE: "Fees (24h)",
-} as const;
-
-export type POOL_CONTENT_TITLE = ValuesType<typeof POOL_CONTENT_TITLE>;
 
 const IncentivizedPoolCardListContainer: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(1);

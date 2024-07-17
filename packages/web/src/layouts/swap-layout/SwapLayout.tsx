@@ -2,6 +2,7 @@ import React from "react";
 import { SwapLayoutWrapper } from "./SwapLayout.styles";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
+import { useTranslation } from "react-i18next";
 
 interface SwapLayoutProps {
   header: React.ReactNode;
@@ -16,6 +17,7 @@ const SwapLayout: React.FC<SwapLayoutProps> = ({
   liquidity,
   footer,
 }) => {
+  const { t } = useTranslation();
   const [swapValue] = useAtom(SwapState.swap);
 
   return (
@@ -23,7 +25,7 @@ const SwapLayout: React.FC<SwapLayoutProps> = ({
       {header}
       <div className="swap-section">
         <div className="swap-container">
-          <div className="page-name">Swap</div>
+          <div className="page-name">{t("Swap:header")}</div>
           <div className="right-container">
             <div className="swap">{swap}</div>
             <div className="liquidity">

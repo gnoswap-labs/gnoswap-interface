@@ -1,1 +1,1 @@
-{"action":{"balance":"Saldo","earn":"Gane","swap":"Intercambiar"}}
+{"action":{"balance":"Saldo","earn":"Gane","swap":"Intercambiar"},"closed":"Cerrado","poolGraph":{"tooltip":{"positionAmt":"Importe del puesto","priceRange":"Precios","quote":"Cita","totalAmt":"Importe total"}},"price":"Precio","search":"Buscar en","selectPairBtn":{"modal":{"noData":"No se han encontrado datos","searchInputPlaceholder":"Búsqueda por nombre, símbolo o ruta","title":"Seleccione una ficha"},"select":"Seleccione"}}

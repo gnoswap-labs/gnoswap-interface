@@ -21,9 +21,9 @@ export interface LiquidityInfo {
 }
 
 export const LIQUIDITY_HEAD = {
-  FEETIER: "Fee Tier",
-  VOLUME: "Volume (24h)",
-  LIQUIDITY: "Liquidity",
+  FEETIER: "Swap:poolInfo.col.feeTier",
+  VOLUME: "Swap:poolInfo.col.vol",
+  LIQUIDITY: "Swap:poolInfo.col.liquidity",
   APR: "APR",
 } as const;
 export type LIQUIDITY_HEAD = ValuesType<typeof LIQUIDITY_HEAD>;

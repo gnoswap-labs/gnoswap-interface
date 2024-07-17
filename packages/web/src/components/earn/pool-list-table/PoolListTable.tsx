@@ -18,6 +18,7 @@ import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { DEVICE_TYPE } from "@styles/media";
+import { useTranslation } from "react-i18next";
 
 interface PoolListTableProps {
   pools: PoolListInfo[];
@@ -40,6 +41,8 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
   themeKey,
   breakpoint,
 }) => {
+  const { t } = useTranslation();
+
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
       return sortOption?.key === head && sortOption.direction === "asc";
@@ -103,7 +106,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
                     )}
                   </>
                 )}
-                {head}
+                {t(head)}
               </span>
             </TableColumn>
           );
@@ -111,7 +114,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
       </div>
       <div className="pool-list-body">
         {isFetched && pools.length === 0 && (
-          <div css={noDataText}>No pools found</div>
+          <div css={noDataText}>{t("Earn:poolList.noPool")}</div>
         )}
         {isFetched &&
           pools.length > 0 &&

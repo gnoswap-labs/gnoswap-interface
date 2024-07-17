@@ -25,6 +25,7 @@ import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { useTheme } from "@emotion/react";
 import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -51,6 +52,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   priceImpactStatus,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
@@ -82,8 +84,8 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
   const guaranteedTypeStr = useMemo(() => {
     const swapDirection = swapSummaryInfo.swapDirection;
-    return swapDirectionToGuaranteedType(swapDirection);
-  }, [swapSummaryInfo.swapDirection]);
+    return t(swapDirectionToGuaranteedType(swapDirection));
+  }, [swapSummaryInfo.swapDirection, t]);
 
   const guaranteedStr = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
@@ -111,18 +113,18 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const priceImpactStatusDisplay = useMemo(() => {
     switch (priceImpactStatus) {
       case "LOW":
-        return "Low";
+        return t("Swap:priceImpactStatus.low");
       case "MEDIUM":
-        return "Medium";
+        return t("Swap:priceImpactStatus.medium");
       case "HIGH":
-        return "High";
+        return t("Swap:priceImpactStatus.high");
       case "POSITIVE":
-        return "Positive";
+        return t("Swap:priceImpactStatus.positive");
       case "NONE":
       default:
         return "";
     }
-  }, [priceImpactStatus]);
+  }, [priceImpactStatus, t]);
 
   return (
     <ConfirmModal>
@@ -207,7 +209,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
             {!isWrapOrUnwrap && (
               <>
                 <div className="price-impact">
-                  <span className="gray-text">Price Impact</span>
+                  <span className="gray-text">
+                    {t("Swap:confirmSwapModal.info.priceImpact")}
+                  </span>
                   <span className="white-text">
                     <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
                       {priceImpactStatusDisplay}
@@ -221,7 +225,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </span>
                 </div>
                 <div className="slippage">
-                  <span className="gray-text">Slippage Set</span>
+                  <span className="gray-text">
+                    {t("Swap:confirmSwapModal.info.slippageSet")}
+                  </span>
                   <span className="white-text">{slippageStr}</span>
                 </div>
                 <div className="received">
@@ -231,13 +237,12 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                 <div className="received">
                   <div className="protocol">
                     <div>
-                      <span className="">Protocol Fee</span>
+                      <span className="">{t("business:protocolFee.txt")}</span>
                       <Tooltip
                         placement="top"
                         FloatingContent={
                           <ToolTipContentWrapper>
-                            The amount of fees charged on each trade that goes
-                            to the protocol.
+                            {t("business:protocolFee.desc")}
                           </ToolTipContentWrapper>
                         }
                       >
@@ -253,7 +258,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
             )}
 
             <div className="gas-fee">
-              <span className="gray-text">Network Gas Fee</span>
+              <span className="gray-text">
+                {t("Swap:confirmSwapModal.info.gasFee")}
+              </span>
               <span className="white-text">
                 {gasFeeStr}
                 <span className="gray-text">({gasFeeUSDStr})</span>

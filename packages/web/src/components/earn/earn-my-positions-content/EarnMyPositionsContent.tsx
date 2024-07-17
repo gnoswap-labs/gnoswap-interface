@@ -64,7 +64,9 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   }
 
   if (connected && positions.length === 0 && !loading) {
-    return <EarnMyPositionNoLiquidity highestApr={highestApr} account={account} />;
+    return (
+      <EarnMyPositionNoLiquidity highestApr={highestApr} account={account} />
+    );
   }
 
   return (
@@ -86,7 +88,6 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       tokenPrices={tokenPrices}
     />
   );
-
 };
 
 export default EarnMyPositionsContent;

@@ -1,20 +1,23 @@
 import React from "react";
 import { EarnDescriptionWrapper } from "./EarnDescription.styles";
 import IconArrowRight from "@components/common/icons/IconArrowRight";
+import { useTranslation } from "react-i18next";
 
 const EarnDescription: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <EarnDescriptionWrapper>
       <div className="card">
         <div className="title-wrapper">
-          About Positions
+          {t("Earn:earnInstruction.about.title")}
         </div>
         <div className="content-wrapper">
           <div className="description-wrapper">
-            Learn about positions and how to create one.
+            {t("Earn:earnInstruction.about.subtitle")}
           </div>
           <div className="link-wrapper">
-            <span>Go to User Guide</span>
+            <span>{t("Earn:earnInstruction.about.goto")}</span>
             <IconArrowRight />
           </div>
         </div>
@@ -22,22 +25,23 @@ const EarnDescription: React.FC = () => {
 
       <div className="card">
         <div className="title-wrapper">
-          Stake Position
+          {t("Earn:earnInstruction.stake.title")}
         </div>
         <div className="content-wrapper">
           <div className="description-wrapper">
-            <span className="text">
-              Stake your position and earn up to&nbsp;
-              <span className="highlight">
-              89% APR.
-            </span>
-            </span>
-            <span className="highlight">
-              89% APR.
-            </span>
+            <span
+              className="text"
+              dangerouslySetInnerHTML={{
+                __html: t("Earn:earnInstruction.stake.subtitle", {
+                  apr: "89%",
+                }),
+              }}
+            />
+            &nbsp;
+            <span className="highlight">89% APR.</span>
           </div>
           <div className="link-wrapper">
-            Go to Stake
+            {t("Earn:earnInstruction.stake.goto")}
             <IconArrowRight />
           </div>
         </div>
@@ -45,14 +49,14 @@ const EarnDescription: React.FC = () => {
 
       <div className="card">
         <div className="title-wrapper">
-          Join Community
+          {t("Earn:earnInstruction.community.title")}
         </div>
         <div className="content-wrapper">
           <div className="description-wrapper">
-            Discuss how to optimize your LP strategy.
+            {t("Earn:earnInstruction.community.subtitle")}
           </div>
           <div className="link-wrapper">
-            Go to Discord
+            {t("Earn:earnInstruction.community.goto")}
             <IconArrowRight />
           </div>
         </div>

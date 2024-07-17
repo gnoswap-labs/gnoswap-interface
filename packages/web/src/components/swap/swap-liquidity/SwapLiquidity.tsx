@@ -9,8 +9,9 @@ import {
 import Link from "next/link";
 import { TokenModel } from "@models/token/token-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import IconStar from "@components/common/icons/IconStar";
 import { formatRate } from "@utils/new-number-utils";
+import IconStar from "@components/common/icons/IconStar";
+import { useTranslation } from "react-i18next";
 
 interface SwapLiquidityProps {
   liquiditys: LiquidityInfo[];
@@ -42,6 +43,8 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
   tokenB,
   createPool,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <SwapLiquidityWrapper>
       <div className="box-header">
@@ -71,10 +74,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
       </div>
       {liquiditys.length === 0 ? (
         <div className="list-wrap">
-          <p>
-            No pools available for this pair. You will be the first to <br />
-            add liquidity to this pair.
-          </p>
+          <p dangerouslySetInnerHTML={{ __html: t("Swap:poolInfo.noPool") }} />
           <Button
             text="Add Position"
             leftIcon={<IconAdd />}
@@ -96,7 +96,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
                 key={idx}
                 className={Object.keys(LIQUIDITY_HEAD)[idx].toLowerCase()}
               >
-                {head}
+                {t(head)}
               </span>
             ))}
           </div>

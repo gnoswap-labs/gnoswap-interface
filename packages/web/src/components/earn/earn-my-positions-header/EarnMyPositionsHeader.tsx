@@ -7,6 +7,7 @@ import {
 import Switch from "@components/common/switch/Switch";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { useTranslation } from "react-i18next";
 
 export interface EarnMyPositionsHeaderProps {
   address?: string | null;
@@ -39,6 +40,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   handleChangeClosed,
 }) => {
   const { getAccountUrl } = useGnoscanUrl();
+  const { t } = useTranslation();
 
   const disabledStake = useMemo(() => {
     return !connected || isSwitchNetwork || !availableStake;
@@ -59,13 +61,16 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
           <span className="name" onClick={onClickAddressPosition}>
             {addressName}
           </span>
-          <span>{`’s Positions (${positionLength})`}</span>
+          <span>{`${t("Earn:positions.title", {
+            context: "other",
+          })} (${positionLength})`}</span>
         </>
       );
 
-    if (connected) return <span>{`My Positions (${positionLength})`}</span>;
+    if (connected)
+      return <span>{`${t("Earn:positions.title")} (${positionLength})`}</span>;
 
-    return <span>{"My Positions"}</span>;
+    return <span>{t("Earn:positions.title")}</span>;
   };
 
   return (
@@ -77,7 +82,9 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
             checked={isClosed}
             onChange={handleChangeClosed}
             hasLabel={true}
-            labelText="Show closed"
+            labelText={t("Earn:positions.showClosedSwitch", {
+              context: "short",
+            })}
           />
         )}
       </div>
@@ -87,11 +94,11 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
             checked={isClosed}
             onChange={handleChangeClosed}
             hasLabel={true}
-            labelText="Show closed positions"
+            labelText={t("Earn:positions.showClosedSwitch")}
           />
         )}
         <Button
-          text="Stake Position"
+          text={t("Earn:positions.stakeBtn")}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
@@ -102,7 +109,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
           onClick={moveEarnStake}
         />
         <Button
-          text="New Position"
+          text={t("Earn:positions.addPositionBtn")}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
