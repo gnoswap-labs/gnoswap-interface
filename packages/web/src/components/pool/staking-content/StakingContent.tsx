@@ -158,7 +158,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
 
     const fn: EventListener = e => {
       if (e.target instanceof Element) {
-        const isLogoHover = e?.target?.className?.includes("coin-item-logo");
+        const isLogoHover = e?.target?.className?.includes?.("coin-item-logo");
         const isHoverAprText = ["apr-text"].includes(e.target.id);
 
         if (isLogoHover) {
