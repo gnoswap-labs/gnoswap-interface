@@ -326,25 +326,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       return 0;
     }
   };
-
-  getSwapFee = async (): Promise<number> => {
-    try {
-      if (!PACKAGE_ROUTER_PATH || !this.rpcProvider) {
-        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
-      }
-
-      const param = makeABCIParams("GetSwapFee", []);
-      const response = await this.rpcProvider.evaluateExpression(
-        PACKAGE_ROUTER_PATH,
-        param,
-      );
-
-      return evaluateExpressionToNumber(response);
-    } catch (error) {
-      console.error(error);
-      return 0;
-    }
-  };
 }
 
 function makeEstimatedRouteWithRouteKey(
