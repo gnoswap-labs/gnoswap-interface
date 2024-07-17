@@ -1,1 +1,2 @@
 {"balance":"Équilibre","currentPrice":"Prix actuel","liquidity":"Liquidité","protocolFee":{"desc":"Le montant des frais prélevés sur chaque transaction qui passe par le protocole.","txt":"Frais de protocole"},"rangeStatus":{"inRange":"En cours de validité","inRange_short":"En","outRange":"Hors plage","outRange_short":"Sortie"},"swap":"Échange","switchGnoland":"Passer à Gnoland","token":"Jeton","walletLogin":"Connexion au portefeuille"}
+

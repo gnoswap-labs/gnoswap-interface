@@ -16,7 +16,7 @@ function IncentivizeTokenDetailTooltipContent({ poolStakings }: Props) {
   const { getGnotPath } = useGnotToGnot();
 
   return (
-    <S.IncentivizeTokenDetailTooltipContent>
+    <S.IncentivizeTokenDetailTooltipContent key={JSON.stringify(poolStakings)}>
       {poolStakings.map((item, index) => {
         const tokenData = getGnotPath(item.rewardToken);
 
