@@ -71,20 +71,22 @@ const StakingContent: React.FC<StakingContentProps> = ({
     }, []) as TokenModel[];
   }, [pool?.rewardTokens, getGnotPath]);
 
-  const debounce = useCallback(<T extends Function>(cb: T, wait = 20) => {
-    let h: NodeJS.Timeout;
-    const callable = (...args: any) => {
-      clearTimeout(h);
-      h = setTimeout(() => cb(...args), wait);
+  function debounce<Params extends any[]>(
+    func: (...args: Params) => any,
+    timeout: number,
+  ): (...args: Params) => void {
+    let timer: NodeJS.Timeout;
+    return (...args: Params) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func(...args);
+      }, timeout);
     };
-    return callable;
-  }, []);
+  }
 
-  const showTooltip = useCallback(
-    debounce(() => {
-      setShowAprTooltip(true);
-    }, 300),
-    [debounce],
+  const toggleTooltip = useCallback(
+    debounce((state: boolean) => setShowAprTooltip(state), 500),
+    [],
   );
 
   useEffect(() => {
@@ -96,7 +98,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
         ?.getBoundingClientRect().top;
 
       if (top && top <= 300) {
-        showTooltip();
+        toggleTooltip(true);
       }
     };
 
@@ -105,7 +107,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
     return () => {
       window.removeEventListener("scroll", fn);
     };
-  }, [showTooltip]);
+  }, [showAprTooltip, toggleTooltip]);
 
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
@@ -148,19 +150,31 @@ const StakingContent: React.FC<StakingContentProps> = ({
   }, [stakingPositionMap]);
 
   useEffect(() => {
+    let element: EventTarget | null;
+
     const moutOutAprText = () => {
-      showTooltip();
+      toggleTooltip(true);
+    };
+
+    const fn: EventListener = e => {
+      if (e.target instanceof Element) {
+        const isLogoHover = e?.target?.className?.includes("coin-item-logo");
+        const isHoverAprText = ["apr-text"].includes(e.target.id);
+
+        if (isLogoHover) {
+          element?.addEventListener("mouseleave", moutOutAprText);
+        }
+
+        if (isHoverAprText || isLogoHover) {
+          toggleTooltip(false);
+          return;
+        }
+      }
     };
 
     document
       .getElementById("apr-text")
       ?.addEventListener("mouseleave", moutOutAprText);
-
-    const fn = (e: MouseEvent) => {
-      if ((e.target as any).id === "apr-text") {
-        setShowAprTooltip(false);
-      }
-    };
 
     window.addEventListener("mouseover", fn);
 
@@ -169,8 +183,9 @@ const StakingContent: React.FC<StakingContentProps> = ({
       document
         .getElementById("apr-text")
         ?.removeEventListener("mouseleave", moutOutAprText);
+      element?.removeEventListener("mouseleave", moutOutAprText);
     };
-  }, [showTooltip]);
+  }, [showAprTooltip, toggleTooltip]);
 
   return (
     <StakingContentWrapper isMobile={mobile}>
@@ -224,6 +239,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 <OverlapTokenLogo
                   tokens={rewardTokenLogos}
                   size={mobile ? 20 : 36}
+                  tokenTooltipClassName={"coin-item-logo"}
                 />
               </div>
             </AprStakingHeader>
