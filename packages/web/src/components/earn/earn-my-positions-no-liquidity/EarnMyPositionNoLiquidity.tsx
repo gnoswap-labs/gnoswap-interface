@@ -49,14 +49,6 @@ const EarnMyPositionNoLiquidity: React.FC<EarnMyPositionNoLiquidityProps> = ({
           }),
         }}
       />
-      {/* <p>
-        You have<span className="emphasis-text">&nbsp;{converted}&nbsp;</span>in
-        your wallet available to earn rewards up to
-        <span className="emphasis-text">
-          &nbsp;{BigNumber(highestApr).toFormat(0)}%&nbsp;
-        </span>
-        APR.
-      </p> */}
       <span className="description">{t("Earn:positions.noliqui.lineTwo")}</span>
     </NoLiquidityWrapper>
   );
