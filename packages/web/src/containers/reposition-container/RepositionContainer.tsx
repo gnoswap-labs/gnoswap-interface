@@ -37,9 +37,11 @@ const RepositionContainer: React.FC = () => {
     repositionAmounts,
     removePosition,
     swapRemainToken,
-    addPosition,
+    reposition,
+    resetRange,
     selectedPosition,
     isLoadingPosition,
+    isSkipSwap,
   } = useRepositionHandle();
 
   const { openModal } = useRepositionModalContainer({
@@ -57,11 +59,17 @@ const RepositionContainer: React.FC = () => {
     repositionAmounts,
     removePosition,
     swapRemainToken,
-    addPosition,
+    reposition,
+    isSkipSwap,
   });
 
   const onSubmit = () => {
-    openModal();
+    if (
+      buttonType === "REPOSITION" ||
+      (buttonType === "LOADING" && isSkipSwap)
+    ) {
+      openModal();
+    }
   };
 
   return (
@@ -86,11 +94,13 @@ const RepositionContainer: React.FC = () => {
       selectPool={selectPool}
       priceRanges={PRICE_RANGES}
       changePriceRange={changePriceRange}
+      resetRange={resetRange}
       priceRange={priceRange}
       currentAmounts={currentAmounts}
       repositionAmounts={repositionAmounts}
       selectedPosition={selectedPosition}
       isLoadingPosition={isLoadingPosition}
+      isSkipSwap={isSkipSwap}
     />
   );
 };

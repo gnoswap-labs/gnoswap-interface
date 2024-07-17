@@ -13,7 +13,7 @@ export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
 export function makeDisplayTokenAmount(
   token: TokenModel,
   amount: bigint | string | number,
-  options?: { decimalsWithoutRounding?: number }
+  options?: { decimalsWithoutRounding?: number },
 ) {
   const number = BigNumber(Number(amount));
   if (number.isNaN()) {
@@ -21,8 +21,35 @@ export function makeDisplayTokenAmount(
   }
 
   if (options?.decimalsWithoutRounding) {
-    return Number(number.shiftedBy(-token.decimals).toString().match(roundDownDecimalNumber(options?.decimalsWithoutRounding)));
+    return Number(
+      number
+        .shiftedBy(-token.decimals)
+        .toString()
+        .match(roundDownDecimalNumber(options?.decimalsWithoutRounding)),
+    );
   }
 
   return number.shiftedBy(-token.decimals).toNumber();
+}
+
+export function makeShiftAmount(
+  amount: bigint | string | number,
+  shift: number,
+  options?: { decimalsWithoutRounding?: number },
+) {
+  const number = BigNumber(Number(amount));
+  if (number.isNaN()) {
+    return 0;
+  }
+
+  if (options?.decimalsWithoutRounding) {
+    return Number(
+      number
+        .shiftedBy(shift)
+        .toString()
+        .match(roundDownDecimalNumber(options?.decimalsWithoutRounding)),
+    );
+  }
+
+  return number.shiftedBy(shift).toNumber();
 }

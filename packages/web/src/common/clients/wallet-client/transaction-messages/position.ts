@@ -113,6 +113,32 @@ export function makePositionIncreaseLiquidityMessage(
   });
 }
 
+export function makePositionRepositionLiquidityMessage(
+  lpTokenId: string,
+  minTick: number,
+  maxTick: number,
+  tokenAAmount: string,
+  tokenBAmount: string,
+  caller: string,
+  sendAmount: string | null,
+) {
+  const send = makeGNOTSendAmount(sendAmount);
+
+  return makeTransactionMessage({
+    send,
+    func: "Reposition",
+    packagePath: PACKAGE_POSITION_PATH,
+    args: [
+      lpTokenId, // LP Token ID
+      `${minTick}`, // position's minimal tick
+      `${maxTick}`, // position's maximal tick
+      `${tokenAAmount}`, // Maximum amount of tokenB to offer
+      `${tokenBAmount}`, // Maximum amount of tokenA to offer
+    ],
+    caller,
+  });
+}
+
 export function makePositionDecreaseLiquidityMessage(
   lpTokenId: string,
   liquidityRatio: number,

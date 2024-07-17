@@ -8,10 +8,6 @@ import RepositionModalContainer from "@containers/reposition-modal-container/Rep
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import {
-  AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse,
-} from "@repositories/pool/response/add-liquidity-response";
-import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
 } from "@repositories/swap/response/swap-route-response";
@@ -19,6 +15,10 @@ import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { IPriceRange } from "./use-reposition-handle";
+import {
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
+} from "@repositories/position/response";
 
 export interface Props {
   openModal: () => void;
@@ -41,12 +41,13 @@ export interface RepositionModalProps {
   swapRemainToken: () => Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null>;
-  addPosition: (
-    swapToken: TokenModel,
-    swapAmount: string,
+  reposition: (
+    swapToken: TokenModel | null,
+    swapAmount: string | null,
   ) => Promise<WalletResponse<
-    AddLiquiditySuccessResponse | AddLiquidityFailedResponse
+    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
+  isSkipSwap: boolean;
 }
 
 export const useRepositionModalContainer = ({
@@ -64,7 +65,8 @@ export const useRepositionModalContainer = ({
   repositionAmounts,
   removePosition,
   swapRemainToken,
-  addPosition,
+  reposition,
+  isSkipSwap,
 }: RepositionModalProps): Props => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -105,7 +107,8 @@ export const useRepositionModalContainer = ({
         repositionAmounts={repositionAmounts}
         removePosition={removePosition}
         swapRemainToken={swapRemainToken}
-        addPosition={addPosition}
+        reposition={reposition}
+        isSkipSwap={isSkipSwap}
       />,
     );
   }, [
@@ -121,7 +124,8 @@ export const useRepositionModalContainer = ({
     repositionAmounts,
     removePosition,
     swapRemainToken,
-    addPosition,
+    reposition,
+    isSkipSwap,
   ]);
 
   return {

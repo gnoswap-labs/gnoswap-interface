@@ -404,11 +404,6 @@ export const useSwapHandler = () => {
   }, [swapButtonState]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
-    console.log(
-      "🚀 ~ constswapTokenInfo:SwapTokenInfo=useMemo ~ tokenBUSD:",
-      tokenBUSD,
-    );
-
     return {
       tokenA,
       tokenAAmount,

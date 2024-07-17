@@ -7,10 +7,6 @@ import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import {
-  AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse,
-} from "@repositories/pool/response/add-liquidity-response";
-import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
 } from "@repositories/swap/response/swap-route-response";
@@ -18,6 +14,10 @@ import React, { useCallback, useState } from "react";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconClose from "../icons/IconCancel";
 import { RepositionModalWrapper } from "./RepositionModal.styles";
+import {
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
+} from "@repositories/position/response";
 
 interface Props {
   close: () => void;
@@ -45,12 +45,13 @@ interface Props {
   swapRemainToken: () => Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null>;
-  addPosition: (
-    swapToken: TokenModel,
-    swapAmount: string,
+  reposition: (
+    swapToken: TokenModel | null,
+    swapAmount: string | null,
   ) => Promise<WalletResponse<
-    AddLiquiditySuccessResponse | AddLiquidityFailedResponse
+    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
+  isSkipSwap: boolean;
 }
 
 const RepositionModal: React.FC<Props> = ({
@@ -65,7 +66,8 @@ const RepositionModal: React.FC<Props> = ({
   repositionAmounts,
   removePosition,
   swapRemainToken,
-  addPosition,
+  reposition,
+  isSkipSwap,
 }) => {
   const [confirm, setConfirm] = useState(false);
 
@@ -113,10 +115,12 @@ const RepositionModal: React.FC<Props> = ({
               <RepositionBroadcastProgress
                 removePosition={removePosition}
                 swapRemainToken={swapRemainToken}
-                addPosition={addPosition}
+                reposition={reposition}
                 closeModal={close}
+                currentAmounts={currentAmounts}
                 tokenA={amountInfo.tokenA.info}
                 tokenB={amountInfo.tokenB.info}
+                isSkipSwap={isSkipSwap}
               />
             </React.Fragment>
           ) : (

@@ -33,6 +33,7 @@ export interface SelectPriceRangeCustomProps {
   showDim: boolean;
   defaultPrice: number | null;
   handleSwapValue: () => void;
+  resetRange?: () => void;
   isEmptyLiquidity: boolean;
   isKeepToken: boolean;
 }
@@ -43,6 +44,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   priceRangeType,
   selectPool,
   showDim,
+  resetRange,
   handleSwapValue,
   isKeepToken,
 }) => {
@@ -234,7 +236,11 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     }
   }
 
-  function resetRange(priceRangeType?: PriceRangeType | null) {
+  function onResetRange(priceRangeType?: PriceRangeType | null) {
+    if (resetRange) {
+      resetRange();
+      return;
+    }
     selectPool.resetRange();
     setShiftPosition(0);
     initPriceRange(priceRangeType);
@@ -259,7 +265,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [tokenA]);
 
   useEffect(() => {
-    resetRange(priceRangeType);
+    onResetRange(priceRangeType);
   }, [
     selectPool.poolPath,
     selectPool.feeTier,
@@ -430,7 +436,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   <div className="extra-wrapper">
                     <div
                       className="icon-button reset"
-                      onClick={() => resetRange()}
+                      onClick={() => onResetRange()}
                     >
                       <IconRefresh />
                       <span>Reset Range</span>
