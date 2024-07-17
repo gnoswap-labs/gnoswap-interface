@@ -71,10 +71,10 @@ const StakingContent: React.FC<StakingContentProps> = ({
     }, []) as TokenModel[];
   }, [pool?.rewardTokens, getGnotPath]);
 
-  function debounce<Params extends any[]>(
+  const debounce = <Params extends any[]>(
     func: (...args: Params) => any,
     timeout: number,
-  ): (...args: Params) => void {
+  ): ((...args: Params) => void) => {
     let timer: NodeJS.Timeout;
     return (...args: Params) => {
       clearTimeout(timer);
@@ -82,16 +82,16 @@ const StakingContent: React.FC<StakingContentProps> = ({
         func(...args);
       }, timeout);
     };
-  }
+  };
 
   const toggleTooltip = useCallback(
-    debounce((state: boolean) => setShowAprTooltip(state), 500),
+    debounce((state: boolean) => setShowAprTooltip(state), 300),
     [],
   );
 
   useEffect(() => {
     const fn = () => {
-      setShowAprTooltip(false);
+      toggleTooltip(false);
 
       const top = document
         .getElementById("staking-container")
@@ -152,9 +152,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   useEffect(() => {
     let element: EventTarget | null;
 
-    const moutOutAprText = () => {
-      toggleTooltip(true);
-    };
+    const moutOutAprText = () => toggleTooltip(true);
 
     const fn: EventListener = e => {
       if (e.target instanceof Element) {
@@ -167,7 +165,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
 
         if (isHoverAprText || isLogoHover) {
           toggleTooltip(false);
-          return;
         }
       }
     };
