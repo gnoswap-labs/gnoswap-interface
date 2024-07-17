@@ -85,7 +85,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   };
 
   const toggleTooltip = useCallback(
-    debounce((state: boolean) => setShowAprTooltip(state), 300),
+    debounce((state: boolean) => setShowAprTooltip(state), 0),
     [],
   );
 
