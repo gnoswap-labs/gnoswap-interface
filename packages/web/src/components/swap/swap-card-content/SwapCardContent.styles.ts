@@ -21,7 +21,7 @@ export const ContentWrapper = styled.div`
     border: 1px solid ${({ theme }) => theme.color.border02};
     background: ${({ theme }) => theme.color.background20};
     &:focus-within {
-      border: 1px solid  ${({ theme }) => theme.color.border15};
+      border: 1px solid ${({ theme }) => theme.color.border15};
     }
     ${media.mobile} {
       padding: 11px;
@@ -56,7 +56,10 @@ export const ContentWrapper = styled.div`
       padding: 5px 10px 5px 6px;
     }
     .not-selected-token {
-      padding: 5px 10px 5px 12px
+      padding: 5px 10px 5px 12px;
+      & > span {
+        white-space: nowrap;
+      }
     }
     .token-symbol {
       height: 21px;
@@ -89,7 +92,7 @@ export const ContentWrapper = styled.div`
     background: ${({ theme }) => theme.color.background20};
     border: 1px solid ${({ theme }) => theme.color.border02};
     &:focus-within {
-      border: 1px solid  ${({ theme }) => theme.color.border15};
+      border: 1px solid ${({ theme }) => theme.color.border15};
     }
     ${media.mobile} {
       padding: 11px;
@@ -165,7 +168,9 @@ export const PriceInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")}
 `;
 
-export const PriceImpactWrapper = styled.div<{ priceImpact?: PriceImpactStatus }>`
+export const PriceImpactWrapper = styled.div<{
+  priceImpact?: PriceImpactStatus;
+}>`
   ${mixins.flexbox("row", "center", "flex-start")}
   gap: 4px;
   ${fonts.body12};
@@ -191,4 +196,3 @@ export const PriceImpactWrapper = styled.div<{ priceImpact?: PriceImpactStatus }
 export const SwapDetailSectionWrapper = styled.div`
   width: 100%;
 `;
-

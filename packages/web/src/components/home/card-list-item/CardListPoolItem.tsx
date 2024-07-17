@@ -53,7 +53,7 @@ const CardListPoolItem: React.FC<CardListPoolItemProps> = ({
 
   const onClick = useCallback(() => {
     onClickItem(`${item.pool.id}`);
-  }, [onClickItem, `${item.pool.id}`]);
+  }, [onClickItem, item.pool.id]);
 
   return (
     <ListItem onClick={onClick} upDown={item.upDown}>

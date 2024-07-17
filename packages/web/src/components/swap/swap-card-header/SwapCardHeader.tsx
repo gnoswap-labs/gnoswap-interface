@@ -2,6 +2,7 @@ import IconLink from "@components/common/icons/IconLink";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconSettings from "@components/common/icons/IconSettings";
 import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import SettingMenuModal from "../setting-menu-modal/SettingMenuModal";
 import {
   CopyTooltip,
@@ -22,6 +23,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
   changeSlippage,
   themeKey,
 }) => {
+  const { t } = useTranslation();
   const [openedSetting, setOpenedSetting] = useState(false);
 
   const openSetting = useCallback(() => {
@@ -34,7 +36,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
 
   return (
     <SwapCardHeaderWrapper>
-      <h2>Swap</h2>
+      <h2>{t("Swap:cardTitle")}</h2>
       <div className="button-wrap">
         <div className="setting-wrap" onClick={copyURL}>
           <>
@@ -42,7 +44,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
             {copied && (
               <CopyTooltip>
                 <div className={`box ${themeKey}-shadow`}>
-                  <span>Swap URL Copied!</span>
+                  <span>{t("Swap:swapURLCopied")}</span>
                 </div>
                 <IconPolygon className="polygon-icon" />
               </CopyTooltip>

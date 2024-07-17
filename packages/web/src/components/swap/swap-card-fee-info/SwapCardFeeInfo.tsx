@@ -17,6 +17,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { useTranslation } from "react-i18next";
 
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -31,6 +32,8 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
   priceImpactStatus,
   swapTokenInfo,
 }) => {
+  const { t } = useTranslation();
+
   const priceImpactStr = useMemo(() => {
     const priceImpact = swapSummaryInfo.priceImpact;
 
@@ -39,8 +42,8 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
 
   const guaranteedTypeStr = useMemo(() => {
     const swapDirection = swapSummaryInfo.swapDirection;
-    return swapDirectionToGuaranteedType(swapDirection);
-  }, [swapSummaryInfo.swapDirection]);
+    return t(swapDirectionToGuaranteedType(swapDirection));
+  }, [swapSummaryInfo.swapDirection, t]);
 
   const guaranteedStr = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
@@ -68,23 +71,23 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
   const priceImpactStatusDisplay = useMemo(() => {
     switch (priceImpactStatus) {
       case "LOW":
-        return "Low";
+        return t("Swap:priceImpactStatus.low");
       case "MEDIUM":
-        return "Medium";
+        return t("Swap:priceImpactStatus.medium");
       case "HIGH":
-        return "High";
+        return t("Swap:priceImpactStatus.high");
       case "POSITIVE":
-        return "Positive";
+        return t("Swap:priceImpactStatus.positive");
       case "NONE":
       default:
         return "";
     }
-  }, [priceImpactStatus]);
+  }, [priceImpactStatus, t]);
 
   return (
     <FeeWrapper>
       <div className="swap-fee-row price-impact">
-        <span className="gray-text">Price Impact</span>
+        <span className="gray-text">{t("Swap:swapInfo.priceImpact")}</span>
         {!isLoading ? (
           <span className="white-text">
             <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
@@ -102,7 +105,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
         )}
       </div>
       <div className="swap-fee-row ">
-        <span className=" gray-text">Slippage Set</span>
+        <span className=" gray-text">{t("Swap:swapInfo.slippageSet")}</span>
         {!isLoading ? (
           <span className="white-text">{slippageStr}</span>
         ) : (
@@ -119,13 +122,12 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
       </div>
       <div className="swap-fee-row received">
         <div className="protocol">
-          <span className="">Protocol Fee</span>
+          <span className="">{t("business:protocolFee.txt")}</span>
           <Tooltip
             placement="top"
             FloatingContent={
               <ToolTipContentWrapper>
-                The amount of fees charged on each trade that goes to the
-                protocol.
+                {t("business:protocolFee.desc")}
               </ToolTipContentWrapper>
             }
           >
@@ -139,7 +141,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
         )}
       </div>
       <div className="swap-fee-row  gas-fee">
-        <span className="gray-text">Network Gas Fee</span>
+        <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
 
         {isLoading ? (
           <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
@@ -154,7 +156,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
       <div className="auto-router">
         <div className="auto-wrapper">
           <IconRouter />
-          <h1 className="gradient">Auto Router</h1>
+          <h1 className="gradient">{t("Swap:autoRouter")}</h1>
         </div>
       </div>
     </FeeWrapper>

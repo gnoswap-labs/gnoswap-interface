@@ -12,13 +12,13 @@ export const EarnDescriptionWrapper = styled.div`
 
   .card {
     display: flex;
-    width: 100%;  
+    width: calc(100% / 3);
     padding: 16px 24px;
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
     border-radius: 8px;
-    border: 1px solid  ${({ theme }) => theme.color.border02};
+    border: 1px solid ${({ theme }) => theme.color.border02};
     background: ${({ theme }) => theme.color.backgroundOpacity2};
 
     .title-wrapper {
@@ -102,7 +102,6 @@ export const EarnDescriptionWrapper = styled.div`
       }
       .link-wrapper {
         ${fonts.p3}
-
       }
     }
     ${media.mobile} {

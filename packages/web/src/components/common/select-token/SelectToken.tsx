@@ -22,6 +22,7 @@ import {
   SelectTokenWrapper,
   TokenInfoWrapper,
 } from "./SelectToken.styles";
+import { useTranslation } from "react-i18next";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -52,6 +53,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   recents = [],
   isSwitchNetwork,
 }) => {
+  const { t } = useTranslation();
+
   const myElementRef = useRef<HTMLDivElement | null>(null);
   const priceRefs = useRef(
     tokens.map(() => React.createRef<HTMLSpanElement>()),
@@ -185,7 +188,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     <SelectTokenWrapper ref={myElementRef}>
       <div className="content">
         <div className="header">
-          <span>Select a token</span>
+          <span>{t("common:selectPairBtn.modal.title")}</span>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
@@ -193,7 +196,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         <div className="search-wrap">
           <input
             className="search-input"
-            placeholder="Search by Name, Symbol, or Path"
+            placeholder={t("common:selectPairBtn.modal.searchInputPlaceholder")}
             value={keyword}
             onChange={onChangeSearchKeyword}
           />
@@ -276,7 +279,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
             </div>
           ))}
         {tokens.length === 0 && (
-          <div className="no-data-found">No data found</div>
+          <div className="no-data-found">
+            {t("common:selectPairBtn.modal.noData")}
+          </div>
         )}
       </div>
     </SelectTokenWrapper>

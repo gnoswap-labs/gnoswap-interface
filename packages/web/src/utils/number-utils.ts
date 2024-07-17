@@ -159,6 +159,100 @@ export const toKMBFormat = (
   }
 };
 
+export const toPriceFormatNotRounding = (
+  value: BigNumber | string | number,
+  {
+    usd = false,
+    isKMBFormat = true,
+    lestThan1Decimals = 3,
+    lessThan1Significant,
+    fixedLessThan1 = false,
+    greaterThan1Decimals = 2,
+    fixedGreaterThan1 = false,
+    minLimit,
+  }: {
+    usd?: boolean;
+    isKMBFormat?: boolean;
+    lestThan1Decimals?: number;
+    lessThan1Significant?: number;
+    fixedLessThan1?: boolean;
+    greaterThan1Decimals?: number;
+    fixedGreaterThan1?: boolean;
+    minLimit?: number;
+  } = {},
+): string => {
+  const valueWithoutComma = value.toString().replace(/,/g, "");
+
+  if (!isNumber(valueWithoutComma)) {
+    return usd ? "$0" : "0";
+  }
+  const bigNumber = BigNumber(valueWithoutComma).abs();
+  const prefix = usd ? "$" : "";
+  const negativeSign = BigNumber(valueWithoutComma).isLessThan(0) ? "-" : "";
+
+  if (minLimit && bigNumber.isLessThan(minLimit) && !bigNumber.isEqualTo(0)) {
+    return (usd ? "<$" : "<") + minLimit.toString();
+  }
+
+  if (bigNumber.isEqualTo(0)) {
+    return prefix + "0";
+  }
+
+  if (isKMBFormat) {
+    const kmbNumber = toKMBFormat(valueWithoutComma, { usd });
+    if (kmbNumber) return kmbNumber;
+  }
+
+  const negativeSignLength = bigNumber.isLessThan(0) ? 1 : 0;
+
+  if (Number(bigNumber) < 1) {
+    const tempNum = bigNumber
+      .toNumber()
+      .toLocaleString("en-US", {
+        maximumFractionDigits: lestThan1Decimals + 1,
+        minimumFractionDigits: lestThan1Decimals + 1,
+        minimumSignificantDigits: lessThan1Significant
+          ? lessThan1Significant + 1
+          : undefined,
+        maximumSignificantDigits: lessThan1Significant
+          ? lessThan1Significant + 1
+          : undefined,
+      })
+      .replace(/,/g, "");
+
+    const cutNumber = tempNum.substring(0, tempNum.length - 1);
+
+    if (fixedLessThan1) {
+      return negativeSign + prefix + cutNumber;
+    }
+
+    // Wrapped in BigNumber(cutNumber).toFormat() to remove trailingZeros
+    return negativeSign + prefix + BigNumber(cutNumber).toFormat();
+  }
+
+  const finalGreaterThan1Decimals = greaterThan1Decimals + negativeSignLength;
+
+  const tempNum = bigNumber
+    .toNumber()
+    .toLocaleString("en-US", {
+      minimumFractionDigits: finalGreaterThan1Decimals + 1,
+      maximumFractionDigits: finalGreaterThan1Decimals + 1,
+    })
+    .replace(/,/g, "");
+
+  const cutNumber = tempNum.substring(0, tempNum.length - 1);
+
+  if (fixedGreaterThan1) {
+    return (
+      negativeSign +
+      prefix +
+      BigNumber(cutNumber).toFormat(greaterThan1Decimals)
+    );
+  }
+
+  return negativeSign + prefix + BigNumber(cutNumber).toFormat();
+};
+
 /**
  * version 2 of @toUnitFormat
  */

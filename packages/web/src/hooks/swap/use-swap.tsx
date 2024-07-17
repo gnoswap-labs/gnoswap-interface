@@ -15,7 +15,12 @@ interface UseSwapProps {
   slippage: number;
 }
 
-export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) => {
+export const useSwap = ({
+  tokenA,
+  tokenB,
+  direction,
+  slippage,
+}: UseSwapProps) => {
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
   const [swapAmount, setSwapAmount] = useState<string | null>(null);
@@ -110,8 +115,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     if (estimatedAmount && !Number.isNaN(slippage)) {
       const tokenAmountLimit =
         direction === "EXACT_IN"
-        ? BigNumber(estimatedAmount).multipliedBy((100 - slippage)/100).toNumber()
-        : BigNumber(estimatedAmount).multipliedBy((100 + slippage)/100).toNumber();
+          ? BigNumber(estimatedAmount)
+              .multipliedBy((100 - slippage) / 100)
+              .toNumber()
+          : BigNumber(estimatedAmount)
+              .multipliedBy((100 + slippage) / 100)
+              .toNumber();
 
       if (tokenAmountLimit <= 0) {
         return 0;
