@@ -103,7 +103,7 @@ const PoolListContainer: React.FC = () => {
   const filteredPoolType = useCallback(
     (poolType: POOL_TYPE, incentivizedType: INCENTIVE_TYPE) => {
       switch (poolType) {
-        case POOL_TYPE.NONE_INCENTIVIZED:
+        case POOL_TYPE.INCENTIVIZED:
           return incentivizedType !== "NONE_INCENTIVIZED";
         case POOL_TYPE.NONE_INCENTIVIZED:
           return incentivizedType === "NONE_INCENTIVIZED";
