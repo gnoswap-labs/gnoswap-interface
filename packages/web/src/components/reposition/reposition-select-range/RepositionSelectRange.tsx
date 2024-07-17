@@ -24,6 +24,7 @@ export interface RepositionSelectRangeProps {
   priceRanges: AddLiquidityPriceRage[];
   priceRange: AddLiquidityPriceRage;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  resetRange: () => void;
   isLoadingPosition: boolean;
 }
 
@@ -40,6 +41,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
   priceRange,
   priceRanges,
   changePriceRange,
+  resetRange,
   isLoadingPosition,
 }) => {
   const [openedPriceRange, setOpenedPriceRange] = useState(true);
@@ -71,6 +73,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
         changePriceRange={changePriceRange}
         changeStartingPrice={() => {}}
         selectPool={selectPool}
+        resetRange={resetRange}
         showDim={false}
         handleSwapValue={() => {}}
         isEmptyLiquidity={true}

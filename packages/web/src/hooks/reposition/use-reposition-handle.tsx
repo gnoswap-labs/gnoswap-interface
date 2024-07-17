@@ -155,6 +155,12 @@ export const useRepositionHandle = () => {
       : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
+  const resetRange = useCallback(() => {
+    selectPool.resetRange();
+    selectPool.setMinPosition(defaultPositionMinPrice);
+    selectPool.setMaxPosition(defaultPositionMaxPrice);
+  }, [selectPool]);
+
   useEffect(() => {
     if (initialized || selectPool.isLoading || !selectPool.poolPath) {
       return;
@@ -768,6 +774,7 @@ export const useRepositionHandle = () => {
     removePosition,
     swapRemainToken,
     reposition,
+    resetRange,
     selectedPosition,
     isLoadingPosition,
     isErrorLiquidity,

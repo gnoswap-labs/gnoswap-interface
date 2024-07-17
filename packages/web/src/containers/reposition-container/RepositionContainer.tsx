@@ -38,6 +38,7 @@ const RepositionContainer: React.FC = () => {
     removePosition,
     swapRemainToken,
     reposition,
+    resetRange,
     selectedPosition,
     isLoadingPosition,
     isSkipSwap,
@@ -93,6 +94,7 @@ const RepositionContainer: React.FC = () => {
       selectPool={selectPool}
       priceRanges={PRICE_RANGES}
       changePriceRange={changePriceRange}
+      resetRange={resetRange}
       priceRange={priceRange}
       currentAmounts={currentAmounts}
       repositionAmounts={repositionAmounts}

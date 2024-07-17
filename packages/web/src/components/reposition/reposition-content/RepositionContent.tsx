@@ -38,6 +38,7 @@ interface RepositionContentProps {
   priceRanges: AddLiquidityPriceRage[];
   priceRange: AddLiquidityPriceRage;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  resetRange: () => void;
   currentAmounts: { amountA: string; amountB: string } | null;
   repositionAmounts: { amountA: string | null; amountB: string | null } | null;
   selectedPosition: PoolPositionModel | null;
@@ -59,6 +60,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   priceRange,
   priceRanges,
   changePriceRange,
+  resetRange,
   currentAmounts,
   repositionAmounts,
   selectedPosition,
@@ -128,6 +130,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           priceRanges={priceRanges}
           priceRange={priceRange}
           changePriceRange={changePriceRange}
+          resetRange={resetRange}
           isLoadingPosition={isLoadingPosition}
         />
       </article>
