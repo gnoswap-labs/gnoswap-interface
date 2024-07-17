@@ -11,7 +11,7 @@ export const IncentivizeTokenDetailTooltipContent = styled.div`
 export const TokenItem = styled.div`
   width: 100%;
   ${mixins.flexbox("column", "flex-start", "center")}
-  gap: 8px;
+  gap: 16px;
 `;
 
 export const ItemHeader = styled.div`

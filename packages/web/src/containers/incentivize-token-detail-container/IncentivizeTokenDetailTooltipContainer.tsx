@@ -23,12 +23,10 @@ function IncentivizeTokenDetailTooltipContainer({
   const { data: blockHeight = "0" } = useGetLastedBlockHeight();
 
   return (
-    <>
-      <IncentivizeTokenDetailTooltipContent
-        latestBlockHeight={blockHeight}
-        poolStakings={poolStakings}
-      />
-    </>
+    <IncentivizeTokenDetailTooltipContent
+      latestBlockHeight={blockHeight}
+      poolStakings={poolStakings}
+    />
   );
 }
 

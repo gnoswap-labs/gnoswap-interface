@@ -11,6 +11,7 @@ import {
 interface OverlapTokenLogoProps extends OverlapTokenLogoStyleProps {
   tokens: TokenModel[];
   placeholderFontSize?: number;
+  tokenTooltipClassName?: string;
 }
 
 const OverlapTokenLogo = ({
@@ -18,6 +19,7 @@ const OverlapTokenLogo = ({
   size = 36,
   placeholderFontSize,
   mobileSize,
+  tokenTooltipClassName,
 }: OverlapTokenLogoProps) => {
   return (
     <OverlapTokenLogoWrapper size={size}>
@@ -25,6 +27,7 @@ const OverlapTokenLogo = ({
         <Tooltip
           key={`${index}${token.logoURI}`}
           placement="top"
+          className={tokenTooltipClassName}
           FloatingContent={
             <TokenSymbolWrapper>{token.symbol}</TokenSymbolWrapper>
           }
@@ -35,6 +38,7 @@ const OverlapTokenLogo = ({
             size={size}
           >
             <MissingLogo
+              className={tokenTooltipClassName}
               width={size}
               url={token.logoURI}
               mobileWidth={mobileSize}

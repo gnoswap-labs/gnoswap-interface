@@ -1,0 +1,1 @@
+{"balance":"Balance","currentPrice":"Current Price","liquidity":"Liquidity","protocolFee":{"desc":"The amount of fees charged on each trade that goes\n                            to the protocol.","txt":"Protocol Fee"},"rangeStatus":{"inRange":"In-range","inRange_short":"In","outRange":"Out-range","outRange_short":"Out"},"swap":"Swap","token":"Token","walletLogin":"Wallet Login"}
