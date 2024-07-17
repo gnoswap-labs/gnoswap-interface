@@ -59,7 +59,6 @@ export const useEstimateSwap = (
             }),
         300,
       );
-      console.log("🚀 ~ queryFn: ~ result:", result);
 
       if (!result) {
         throw new SwapError("NOT_FOUND_SWAP_POOL");

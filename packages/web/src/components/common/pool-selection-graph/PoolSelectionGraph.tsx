@@ -91,7 +91,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   setMaxPrice,
   onFinishMove,
 }) => {
-  console.log("🚀 ~ price:", price);
   const { themeKey } = useTheme();
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);

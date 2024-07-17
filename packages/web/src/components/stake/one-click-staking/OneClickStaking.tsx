@@ -28,7 +28,6 @@ const OneClickStaking: React.FC<Props> = ({
   pool,
   isLoadingPool,
 }) => {
-  console.log("🚀 ~ pool:", pool);
   const [swapValue] = useAtom(SwapState.swap);
   const { getGnotPath } = useGnotToGnot();
   const { tokenA: tokenAInfo = null, tokenB: tokenBInfo = null } = swapValue;
