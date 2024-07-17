@@ -5,9 +5,9 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import { IPriceRange } from "@hooks/reposition/use-reposition-handle";
 import { TokenModel } from "@models/token/token-model";
 import {
-  AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse,
-} from "@repositories/pool/response/add-liquidity-response";
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
+} from "@repositories/position/response";
 import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
@@ -39,12 +39,13 @@ interface Props {
   swapRemainToken: () => Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null>;
-  addPosition: (
-    swapToken: TokenModel,
-    swapAmount: string,
+  reposition: (
+    swapToken: TokenModel | null,
+    swapAmount: string | null,
   ) => Promise<WalletResponse<
-    AddLiquiditySuccessResponse | AddLiquidityFailedResponse
+    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
+  isSkipSwap: boolean;
 }
 
 const RepositionModalContainer: React.FC<Props> = ({
@@ -58,7 +59,8 @@ const RepositionModalContainer: React.FC<Props> = ({
   repositionAmounts,
   removePosition,
   swapRemainToken,
-  addPosition,
+  reposition,
+  isSkipSwap,
 }) => {
   const clearModal = useClearModal();
 
@@ -79,7 +81,8 @@ const RepositionModalContainer: React.FC<Props> = ({
       repositionAmounts={repositionAmounts}
       removePosition={removePosition}
       swapRemainToken={swapRemainToken}
-      addPosition={addPosition}
+      reposition={reposition}
+      isSkipSwap={isSkipSwap}
     />
   );
 };

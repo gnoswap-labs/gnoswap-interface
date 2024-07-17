@@ -12,42 +12,47 @@ import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
 } from "@repositories/swap/response/swap-route-response";
-import {
-  AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse,
-} from "@repositories/pool/response/add-liquidity-response";
 import { TokenModel } from "@models/token/token-model";
+import {
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
+} from "@repositories/position/response";
 
 export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
+  currentAmounts: { amountA: string; amountB: string } | null;
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null>;
-  addPosition: (
-    swapToken: TokenModel,
-    swapAmount: string,
+  reposition: (
+    swapToken: TokenModel | null,
+    swapAmount: string | null,
   ) => Promise<WalletResponse<
-    AddLiquiditySuccessResponse | AddLiquidityFailedResponse
+    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
   closeModal: () => void;
+  isSkipSwap: boolean;
 }
 
 const RepositionBroadcastProgress: React.FC<
   RepositionBroadcastProgressProps
 > = ({
   removePosition,
-  addPosition,
+  reposition,
   swapRemainToken,
   closeModal,
   tokenA,
   tokenB,
+  isSkipSwap,
 }) => {
   const [removePositionState, setRemovePositionState] =
     useState<ProgressStateType>("NONE");
   const [swapState, setSwapState] = useState<ProgressStateType>("NONE");
-  const [swapResult, setSwapResult] = useState<SwapRouteSuccessResponse | null>(null);
+  const [swapResult, setSwapResult] = useState<SwapRouteSuccessResponse | null>(
+    null,
+  );
   const [addPositionState, setAddPositionState] =
     useState<ProgressStateType>("NONE");
 
@@ -136,46 +141,51 @@ const RepositionBroadcastProgress: React.FC<
 
     setAddPositionState("WAIT");
 
-    if (!swapResult) {
+    if (!isSkipSwap && !swapResult) {
       wait(async () => true, 500).then(() => {
         setAddPositionState("INIT");
       });
       return;
     }
 
-    addPosition(swapResult.resultToken, swapResult.resultAmount).then(
-      response => {
-        if (!response) {
-          setAddPositionState("FAIL");
-          return;
-        }
+    reposition(
+      swapResult?.resultToken || null,
+      swapResult?.resultAmount || null,
+    ).then(response => {
+      if (!response) {
+        setAddPositionState("FAIL");
+        return;
+      }
 
-        if (response.code === 4000) {
-          setAddPositionState("REJECTED");
-          return;
-        }
+      if (response.code === 4000) {
+        setAddPositionState("REJECTED");
+        return;
+      }
 
-        if (response.code !== 0 || response.data === null) {
-          setAddPositionState("FAIL");
-          return;
-        }
+      if (response.code !== 0 || response.data === null) {
+        setAddPositionState("FAIL");
+        return;
+      }
 
-        setAddPositionState("BROADCAST");
-        wait(async () => true, 1000).then(() => {
-          setAddPositionState("SUCCESS");
-          callback();
-        });
-      },
-    );
+      setAddPositionState("BROADCAST");
+      wait(async () => true, 1000).then(() => {
+        setAddPositionState("SUCCESS");
+        callback();
+      });
+    });
   };
 
   useEffect(() => {
     if (removePositionState === "INIT") {
       processRemovePosition(() => {
-        setSwapState("INIT");
+        if (isSkipSwap) {
+          setAddPositionState("INIT");
+        } else {
+          setSwapState("INIT");
+        }
       });
     }
-  }, [removePositionState]);
+  }, [removePositionState, isSkipSwap]);
 
   useEffect(() => {
     if (swapState === "INIT") {
@@ -218,26 +228,29 @@ const RepositionBroadcastProgress: React.FC<
 
       <div className="divider" />
 
-      <div className="row">
-        <div className="progress-info">
-          <IconSwapCircle active={isActive(swapState)} />
-          <span
-            className={makeActiveClassName(
-              "progress-title",
-              isActive(swapState),
-            )}
-          >
-            Swap {tokenA.symbol} for {tokenB.symbol}
-          </span>
-        </div>
-        <RepositionBroadcastProgressState
-          state={swapState}
-          retry={() => setSwapState("INIT")}
-          exit={closeModal}
-        />
-      </div>
-
-      <div className="divider" />
+      {!isSkipSwap && (
+        <React.Fragment>
+          <div className="row">
+            <div className="progress-info">
+              <IconSwapCircle active={isActive(swapState)} />
+              <span
+                className={makeActiveClassName(
+                  "progress-title",
+                  isActive(swapState),
+                )}
+              >
+                Swap {tokenA.symbol} for {tokenB.symbol}
+              </span>
+            </div>
+            <RepositionBroadcastProgressState
+              state={swapState}
+              retry={() => setSwapState("INIT")}
+              exit={closeModal}
+            />
+          </div>
+          <div className="divider" />
+        </React.Fragment>
+      )}
 
       <div className="row">
         <div className="progress-info">
