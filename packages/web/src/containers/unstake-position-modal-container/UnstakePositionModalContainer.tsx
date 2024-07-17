@@ -89,7 +89,6 @@ const UnstakePositionModalContainer = ({
             ),
           );
           openModal();
-          // router.push(router.asPath.replace("/unstake", ""));
         }, 1000);
       } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
         broadcastRejected(

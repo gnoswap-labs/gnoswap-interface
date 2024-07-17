@@ -302,8 +302,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       },
       {
         SWAP_FEE: [],
-        // Not use any more
-        STAKING: [],
         EXTERNAL: [],
         INTERNAL: [],
       },
@@ -442,8 +440,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         },
         {
           SWAP_FEE: [],
-          // NOt use anymore
-          STAKING: [],
           EXTERNAL: [],
           INTERNAL: [],
         },

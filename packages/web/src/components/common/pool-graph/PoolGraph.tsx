@@ -431,14 +431,12 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         ? formatTokenExchangeRate(tokenAAmountStr.toString(), {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
-            fixedDecimalDigits: 6,
           })
         : "-",
       tokenBAmount: tokenBAmountStr
         ? formatTokenExchangeRate(tokenBAmountStr.toString(), {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
-            fixedDecimalDigits: 6,
           })
         : "-",
       myTokenAAmount:
@@ -449,7 +447,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           : formatTokenExchangeRate(myTokenAAmountStr.toString(), {
               maxSignificantDigits: 6,
               minLimit: 0.000001,
-              fixedDecimalDigits: 6,
             }) || "-",
       myTokenBAmount:
         index > 19
@@ -459,7 +456,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           : formatTokenExchangeRate(myTokenBAmountStr.toString(), {
               maxSignificantDigits: 6,
               minLimit: 0.000001,
-              fixedDecimalDigits: 6,
             }) || "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
@@ -512,7 +508,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
                 maxSignificantDigits: 6,
                 minLimit: 0.000001,
                 isInfinite: priceStr === "∞",
-                fixedDecimalDigits: 6,
               });
             }
             return acc;

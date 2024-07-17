@@ -7,7 +7,13 @@ export const formatPoolPairAmount = (
     decimals,
     minLimit,
     isKMB = true,
-  }: { decimals?: number; minLimit?: number | null; isKMB?: boolean } = {},
+    hasMinLimit = true,
+  }: {
+    decimals?: number;
+    minLimit?: number | null;
+    isKMB?: boolean;
+    hasMinLimit?: boolean;
+  } = {},
 ) => {
   if (amount === null || amount === undefined || BigNumber(amount).isNaN()) {
     return "-";
@@ -21,7 +27,11 @@ export const formatPoolPairAmount = (
   const internalMinLimit =
     minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
 
-  if (internalMinLimit && bigNumberValue.isLessThan(internalMinLimit)) {
+  if (
+    hasMinLimit &&
+    internalMinLimit &&
+    bigNumberValue.isLessThan(internalMinLimit)
+  ) {
     return `<${internalMinLimit}`;
   }
 
@@ -167,19 +177,6 @@ export const formatPrice = (
   if (absValue.isNaN()) return value.toString();
 
   if (absValue.isEqualTo(0)) return prefix + "0";
-
-  // const internalMinLimit = greaterThan1Decimals
-  //   ? 1 / Math.pow(10, greaterThan1Decimals)
-  //   : null;
-
-  // if (
-  //   hasMinLimit &&
-  //   internalMinLimit &&
-  //   valueAsBigNum.isLessThan(internalMinLimit) &&
-  //   valueAsBigNum.isGreaterThan(0)
-  // ) {
-  //   return `<${prefix}${internalMinLimit}`;
-  // }
 
   if (isKMB) {
     const kmbNumber = toKMBFormat(valueWithoutComma, { usd });

@@ -20,8 +20,6 @@ interface RepositionContentProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   fee: string;
-  maxPriceStr: string;
-  minPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   aprFee: number;
   priceRangeSummary: IPriceRange;
@@ -50,8 +48,6 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   tokenA,
   tokenB,
   fee,
-  minPriceStr,
-  maxPriceStr,
   rangeStatus,
   aprFee,
   priceRangeSummary,
@@ -108,8 +104,6 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           tokenA={tokenA}
           tokenB={tokenB}
           fee={fee}
-          minPriceStr={minPriceStr}
-          maxPriceStr={maxPriceStr}
           rangeStatus={rangeStatus}
           priceRangeSummary={priceRangeSummary}
           selectedPosition={selectedPosition}
@@ -122,8 +116,6 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           tokenA={tokenA}
           tokenB={tokenB}
           fee={fee}
-          minPriceStr={minPriceStr}
-          maxPriceStr={maxPriceStr}
           rangeStatus={rangeStatus}
           priceRangeSummary={priceRangeSummary}
           selectPool={selectPool}

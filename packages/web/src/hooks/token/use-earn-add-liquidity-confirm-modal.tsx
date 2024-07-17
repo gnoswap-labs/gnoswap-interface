@@ -20,8 +20,14 @@ import {
   makeBroadcastAddLiquidityMessage,
   useBroadcastHandler,
 } from "@hooks/common/use-broadcast-handler";
-import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "@repositories/pool/response/create-pool-response";
-import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "@repositories/pool/response/add-liquidity-response";
+import {
+  CreatePoolFailedResponse,
+  CreatePoolSuccessResponse,
+} from "@repositories/pool/response/create-pool-response";
+import {
+  AddLiquidityFailedResponse,
+  AddLiquiditySuccessResponse,
+} from "@repositories/pool/response/add-liquidity-response";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
@@ -192,7 +198,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       return "∞";
     }
 
-    return formatTokenExchangeRate(Number(price), {
+    return formatTokenExchangeRate(price, {
       maxSignificantDigits: 6,
       minLimit: 0.000001,
     });
@@ -372,38 +378,50 @@ export const useEarnAddLiquidityConfirmModal = ({
             swapFeeTier,
             withStaking: options?.withStaking,
           });
-      transaction
-        .then(result => {
-          if (result) {
-            if (result.code === 0) {
-              const resultData = result?.data as CreatePoolSuccessResponse;
-              broadcastPending({ txHash: resultData.hash });
-              setTimeout(() => {
-                broadcastSuccess(
-                  makeBroadcastAddLiquidityMessage(
-                    "success",
-                    {
-                      tokenASymbol: resultData.tokenA.symbol || "",
-                      tokenBSymbol: resultData.tokenB.symbol || "",
-                      tokenAAmount: Number(tokenAAmount).toLocaleString(
-                        "en-US",
-                        { maximumFractionDigits: tokenA.decimals },
-                      ),
-                      tokenBAmount: Number(tokenBAmount).toLocaleString(
-                        "en-US",
-                        { maximumFractionDigits: tokenB.decimals },
-                      ),
-                    },
-                    resultData.hash,
-                  ),
-                  moveToBack,
-                );
-              }, 1000);
-            } else if (
-              result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
-            ) {
-              broadcastRejected(
-                makeBroadcastAddLiquidityMessage("error", {
+      transaction.then(result => {
+        if (result) {
+          if (result.code === 0) {
+            const resultData = result?.data as CreatePoolSuccessResponse;
+            broadcastPending({ txHash: resultData.hash });
+            setTimeout(() => {
+              broadcastSuccess(
+                makeBroadcastAddLiquidityMessage(
+                  "success",
+                  {
+                    tokenASymbol: resultData.tokenA.symbol || "",
+                    tokenBSymbol: resultData.tokenB.symbol || "",
+                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: tokenA.decimals,
+                    }),
+                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: tokenB.decimals,
+                    }),
+                  },
+                  resultData.hash,
+                ),
+                moveToBack,
+              );
+            }, 1000);
+          } else if (
+            result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+          ) {
+            broadcastRejected(
+              makeBroadcastAddLiquidityMessage("error", {
+                tokenASymbol: tokenA.symbol,
+                tokenBSymbol: tokenB.symbol,
+                tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                  maximumFractionDigits: tokenA.decimals,
+                }),
+                tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                  maximumFractionDigits: tokenB.decimals,
+                }),
+              }),
+            );
+          } else {
+            broadcastError(
+              makeBroadcastAddLiquidityMessage(
+                "error",
+                {
                   tokenASymbol: tokenA.symbol,
                   tokenBSymbol: tokenB.symbol,
                   tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
@@ -412,28 +430,13 @@ export const useEarnAddLiquidityConfirmModal = ({
                   tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
                     maximumFractionDigits: tokenB.decimals,
                   }),
-                }),
-              );
-            } else {
-              broadcastError(
-                makeBroadcastAddLiquidityMessage(
-                  "error",
-                  {
-                    tokenASymbol: tokenA.symbol,
-                    tokenBSymbol: tokenB.symbol,
-                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: tokenA.decimals,
-                    }),
-                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: tokenB.decimals,
-                    }),
-                  },
-                  result?.data?.hash,
-                ),
-              );
-            }
+                },
+                result?.data?.hash,
+              ),
+            );
           }
-        });
+        }
+      });
     },
     [
       tokenA,

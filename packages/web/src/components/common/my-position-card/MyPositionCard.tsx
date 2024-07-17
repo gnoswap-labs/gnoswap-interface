@@ -247,7 +247,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return formatTokenExchangeRate(minPrice, {
       minLimit: 0.000001,
       maxSignificantDigits: 6,
-      fixedDecimalDigits: 6,
       isInfinite: minPrice === "∞",
     });
   }, [position.tickLower, position.pool.fee, isFullRange]);

@@ -16,9 +16,11 @@ import React, {
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 import IconAdd from "../icons/IconAdd";
 import IconRemove from "../icons/IconRemove";
-import { convertToKMB } from "@utils/stake-position-utils";
+import {
+  convertToKMB,
+  formatTokenExchangeRate,
+} from "@utils/stake-position-utils";
 import { isNumber, subscriptFormat } from "@utils/number-utils";
-import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 export interface SelectPriceRangeCustomControllerProps {
   title: string;
@@ -204,8 +206,9 @@ const SelectPriceRangeCustomController = forwardRef<
         return "∞";
       }
 
-      return formatPoolPairAmount(current, {
-        decimals: 6,
+      return formatTokenExchangeRate(current, {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001,
       });
     }, [current, feeTier]);
 
@@ -216,8 +219,9 @@ const SelectPriceRangeCustomController = forwardRef<
     );
 
     function greaterThan1Transform(numStr: string) {
-      return formatPoolPairAmount(numStr, {
-        decimals: 6,
+      return formatTokenExchangeRate(numStr, {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001,
       });
     }
 

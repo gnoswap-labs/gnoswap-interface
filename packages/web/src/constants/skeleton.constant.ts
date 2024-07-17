@@ -326,7 +326,6 @@ export const emptyArrayInit = (total: number) => {
 export const POOL_INFO = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  // tdWidth: POOL_TD_WIDTH,
   list: [
     {
       width: 240,
@@ -376,7 +375,6 @@ export const POOL_INFO = {
 export const POOL_INFO_SMALL_TABLET = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  // tdWidth: POOL_TD_WIDTH_SMALL_TABLET,
   list: [
     {
       width: 185,
@@ -421,7 +419,6 @@ export const POOL_INFO_SMALL_TABLET = {
 export const POOL_INFO_TABLET = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  // tdWidth: POOL_TD_WIDTH_TABLET,
   list: [
     {
       width: 199,
@@ -466,7 +463,6 @@ export const POOL_INFO_TABLET = {
 export const POOL_INFO_MOBILE = {
   title: TABLE_TITLE.POOL_TABLE,
   total: 15,
-  // tdWidth: POOL_TD_WIDTH_MOBILE,
   list: [
     {
       width: 210,
@@ -507,10 +503,6 @@ export const POOL_INFO_MOBILE = {
     },
   ],
 };
-
-// export const ASSET_TD_WIDTH = [300, 300, 250, 250, 120, 138];
-// export const TABLET_ASSET_TD_WIDTH = [220, 240, 190, 190, 120, 138];
-// export const MOBILE_ASSET_TD_WIDTH = [230, 230, 195, 195, 90, 120];
 
 export const ASSET_INFO: TableInfoType = {
   title: TABLE_TITLE.ASSET_TABLE,
@@ -1100,8 +1092,6 @@ export const MOBILE_POSITION_HISTORY_INFO: TableInfoType = {
     },
   ],
 };
-
-// export const MOBILE_ACTIVITY_TD_WIDTH = [210, 110, 140, 140, 160, 200];
 
 export const MOBILE_ACTIVITY_INFO = {
   title: TABLE_TITLE.ACTIVITY_TABLE,

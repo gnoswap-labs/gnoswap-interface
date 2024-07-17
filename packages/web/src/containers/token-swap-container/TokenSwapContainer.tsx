@@ -18,7 +18,6 @@ const TokenSwapContainer: React.FC = () => {
   const { getGnotPath } = useGnotToGnot();
   const path = router.query["token-path"] as string;
   const tokenAPath = router.query["tokenA"] as string;
-  // Prefetched by server side
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
   });

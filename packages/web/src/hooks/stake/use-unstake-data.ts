@@ -57,8 +57,6 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd
       ? Number(tokenPrices[tokenB.priceID]?.usd)
       : null;
-    // const tokenAAmount = pooledTokenAAmount;
-    // const tokenBAmount = Number(pooledTokenBAmount) || 0;
 
     return [
       {

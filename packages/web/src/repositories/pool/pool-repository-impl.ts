@@ -25,11 +25,7 @@ import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolRPCResponse } from "./response/pool-rpc-response";
-import {
-  IncentivizePoolModel,
-  IPoolDetailResponse,
-  PoolModel,
-} from "@models/pool/pool-model";
+import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
@@ -585,18 +581,6 @@ export class PoolRepositoryImpl implements PoolRepository {
         tokenBAmount: resultTokenBAmount.toString(),
       },
     };
-  };
-
-  getPoolDetailByPath = async (
-    poolPath: string,
-  ): Promise<IPoolDetailResponse> => {
-    if (!this.networkClient) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-    const response = await this.networkClient.get<IPoolDetailResponse>({
-      url: "/pools/" + poolPath,
-    });
-    return response.data;
   };
 
   createExternalIncentive = async (

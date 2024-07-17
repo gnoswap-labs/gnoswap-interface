@@ -75,7 +75,6 @@ const PoolListContainer: React.FC = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useRouter();
-  // const poolListInfos = [];
   const { poolListInfos, updatePools } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { isLoadingPools } = useLoading();
