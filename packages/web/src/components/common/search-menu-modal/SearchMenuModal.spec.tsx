@@ -2,10 +2,6 @@ import SearchMenuModal from "./SearchMenuModal";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import {
-  RecentdummyToken,
-  PopulardummyToken,
-} from "@containers/header-container/HeaderContainer";
 import { DEVICE_TYPE } from "@styles/media";
 
 describe("SearchMenuModal Component", () => {
@@ -14,7 +10,8 @@ describe("SearchMenuModal Component", () => {
       onSideMenuToggle: () => null,
       onSearchMenuToggle: () => null,
       search: () => null,
-      movePage: () => null,
+      moveTokenPage: () => null,
+      movePoolPage: () => null,
       keyword: "",
       isFetched: true,
       placeholder: "Search",

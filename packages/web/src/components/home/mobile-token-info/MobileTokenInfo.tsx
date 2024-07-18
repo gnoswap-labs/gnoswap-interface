@@ -11,9 +11,8 @@ import {
   TokenInfoWrapper,
 } from "./MobileTokenInfo.styles";
 import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
-import { makeId } from "@utils/common";
-import useRouter from "@hooks/common/use-custom-router";
 import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 interface TokenInfoProps {
   item: Token;
@@ -33,10 +32,10 @@ const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
 
 const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
   const { token, price, priceOf1d } = item;
-  const router = useRouter();
+  const router = useCustomRouter();
 
   const onClickItem = (path: string) => {
-    router.push("/tokens/" + makeId(path));
+    router.movePageWithTokenPath("TOKEN", path);
   };
 
   return (

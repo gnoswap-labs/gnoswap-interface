@@ -21,8 +21,13 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
   isStaking,
 }) => {
   const router = useRouter();
+  const poolPath = router.getPoolPath();
+
   const onClickIncentivize = () => {
-    router.push(`/earn/pool/${router.query["pool-path"]}/incentivize`);
+    if (!poolPath) {
+      return;
+    }
+    router.movePageWithPoolPath("POOL_INCENTIVIZE", poolPath);
   };
   return (
     <PoolLayoutWrapper>

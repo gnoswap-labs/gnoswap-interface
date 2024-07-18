@@ -32,8 +32,10 @@ const WalletPositionCardListContainer: React.FC = () => {
   } = usePositionData({
     isClosed: false,
   });
-  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
-
+  const isLoadingPosition = useMemo(
+    () => connected && loadingPositions,
+    [connected, loadingPositions],
+  );
 
   const { pools, loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -56,7 +58,7 @@ const WalletPositionCardListContainer: React.FC = () => {
 
   const movePoolDetail = useCallback(
     (id: string) => {
-      router.push(`/earn/pool/${id}`);
+      router.movePageWithPoolPath("POOL", router.getPoolPath() || id);
     },
     [router],
   );
@@ -106,7 +108,6 @@ const WalletPositionCardListContainer: React.FC = () => {
     (x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue),
   );
   if (!isFetchedPosition || isSwitchNetwork) return null;
-
 
   return (
     <MyPositionCardList

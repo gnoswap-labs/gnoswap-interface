@@ -20,7 +20,7 @@ const getMapping: any = (symbol: any) => {
   return {
     "/earn/add": "Add Liquidity",
     "/earn/stake": "Stake Position",
-    "/tokens/[token-path]": `${symbol || "Loading..."}`,
+    "/token": `${symbol || "Loading..."}`,
   };
 };
 
@@ -37,7 +37,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
-  const path = router.query["token-path"] as string;
+  const path = router.getTokenPath();
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,

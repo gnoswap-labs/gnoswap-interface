@@ -27,6 +27,7 @@ interface AssetListProps {
   sortOption: AssetSortOption | undefined;
   sort: (item: ASSET_HEAD) => void;
   isSortOption: (item: ASSET_HEAD) => boolean;
+  moveTokenPage: (tokenPath: string) => void;
   breakpoint: DEVICE_TYPE;
   searchIcon: boolean;
   onTogleSearch: () => void;
@@ -48,6 +49,7 @@ const AssetList: React.FC<AssetListProps> = ({
   deposit,
   withdraw,
   sort,
+  moveTokenPage,
   sortOption,
   isSortOption,
   breakpoint,
@@ -76,6 +78,7 @@ const AssetList: React.FC<AssetListProps> = ({
       sort={sort}
       sortOption={sortOption}
       isSortOption={isSortOption}
+      moveTokenPage={moveTokenPage}
       breakpoint={breakpoint}
     />
     {hasLoader && <LoadMoreButton show={!extended} onClick={toggleExtended} />}

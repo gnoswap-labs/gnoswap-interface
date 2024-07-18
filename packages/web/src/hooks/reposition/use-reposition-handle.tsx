@@ -31,7 +31,7 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { checkGnotPath, encryptId } from "@utils/common";
+import { checkGnotPath } from "@utils/common";
 import { useEstimateSwap } from "@query/router";
 import { makeShiftAmount } from "@utils/token-utils";
 import {
@@ -59,8 +59,8 @@ const compareDepositAmount = 100_000_000n;
 
 export const useRepositionHandle = () => {
   const router = useRouter();
-  const poolPath = router.query["pool-path"] as string;
-  const positionId = router.query["position-id"] as string;
+  const poolPath = router.getPoolPath();
+  const positionId = router.getPositionId();
 
   const [defaultPosition] = useAtom(IncreaseState.selectedPosition);
 
@@ -71,7 +71,7 @@ export const useRepositionHandle = () => {
   const { connected, account } = useWallet();
   const [initialized, setInitialized] = useState(false);
   const { positions, loading: isLoadingPosition } = usePositionData({
-    poolPath: encryptId(poolPath),
+    poolPath,
   });
 
   const selectedPosition = useMemo(

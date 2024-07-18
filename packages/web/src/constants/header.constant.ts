@@ -3,7 +3,7 @@ export const HEADER_NAV = [
     title: "HeaderFooter:swap",
     path: "/swap",
     iconType: null,
-    subPath: ["/tokens/"],
+    subPath: ["/token"],
   },
   {
     title: "HeaderFooter:earn",

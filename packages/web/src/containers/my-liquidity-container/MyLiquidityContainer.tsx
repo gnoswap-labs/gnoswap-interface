@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -19,12 +14,10 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useGetUsernameByAddress } from "@query/address/queries";
 import { toUnitFormat } from "@utils/number-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { encryptId } from "@utils/common";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
 }
-
 
 const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   address,
@@ -34,13 +27,13 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
-  const poolPath = (router.query["pool-path"] ?? "") as string;
+  const poolPath = router.getPoolPath();
   const { positions: positions, loading: isLoadingPosition } = usePositionData({
     address,
-    poolPath: encryptId(poolPath),
+    poolPath,
     queryOption: {
-      enabled: !!poolPath
-    }
+      enabled: !!poolPath,
+    },
   });
 
   const { claimAll } = usePosition(positions);
@@ -72,12 +65,18 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   });
 
   const handleClickAddPosition = useCallback(() => {
-    router.push(`/earn/pool/${router.query["pool-path"]}/add`);
-  }, [router]);
+    if (!poolPath) {
+      return;
+    }
+    router.movePageWithPoolPath("POOL_ADD", poolPath);
+  }, [poolPath]);
 
   const handleClickRemovePosition = useCallback(() => {
-    router.push(`/earn/pool/${router.query["pool-path"]}/remove`);
-  }, [router]);
+    if (!poolPath) {
+      return;
+    }
+    router.movePageWithPoolPath("POOL_REMOVE", poolPath);
+  }, [poolPath]);
 
   const handleScroll = () => {
     if (divRef.current) {
@@ -108,9 +107,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
             setLoadingTransactionClaim(false);
           }, 1000);
           openModal();
-        } else if (
-          response.code === ERROR_VALUE.TRANSACTION_REJECTED.status
-        ) {
+        } else if (response.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
             () => {},
@@ -134,17 +131,24 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   };
 
   const openedPosition = useMemo(() => {
-    return positions.filter(item => !item.closed)
-      .filter(item => !item.closed)
-      .sort((a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue)) ?? [];
+    return (
+      positions
+        .filter(item => !item.closed)
+        .filter(item => !item.closed)
+        .sort(
+          (a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue),
+        ) ?? []
+    );
   }, [positions]);
 
   const closedPosition = useMemo(() => {
-    return positions
-      .filter(item => item.closed)
-      .sort((a, b) => {
-        return Number(a.id ?? 0) - Number(b.id ?? 0);
-      }) ?? [];
+    return (
+      positions
+        .filter(item => item.closed)
+        .sort((a, b) => {
+          return Number(a.id ?? 0) - Number(b.id ?? 0);
+        }) ?? []
+    );
   }, [positions]);
 
   const haveClosedPosition = useMemo(

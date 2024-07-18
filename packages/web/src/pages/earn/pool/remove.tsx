@@ -1,22 +1,18 @@
-import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
-import PoolAddLayout from "@layouts/pool-add-layout/PoolAddLayout";
-import PoolAddLiquidityContainer from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import RemoveLiquidityContainer from "@containers/remove-liquidity-container/RemoveLiquidityContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
+import PoolRemoveLayout from "@layouts/pool-remove-layout/PoolRemoveLayout";
 import React, { useMemo } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
-import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
-import SEOHeader from "@components/common/seo-header/seo-header";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
-import { checkGnotPath } from "@utils/common";
-import { useTokenData } from "@hooks/token/use-token-data";
+import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
@@ -28,17 +24,14 @@ export async function getServerSideProps({ locale }: { locale: string }) {
   };
 }
 
-export default function EarnAdd() {
+export default function Earn() {
   const { width } = useWindowSize();
   const router = useRouter();
-  const poolPath = (router.query["pool-path"] || "") as string;
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath,
-    refetchInterval: 10_000,
-  });
+  const poolPath = router.getPoolPath();
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string);
+
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
-  const { tokens } = useTokenData();
 
   const listBreadcrumb = useMemo(() => {
     return [
@@ -50,9 +43,9 @@ export default function EarnAdd() {
                 getGnotPath(data?.tokenB).symbol
               } (${Number(data?.fee) / 10000}%)`
             : "...",
-        path: `/earn/pool/${router.query["pool-path"]}`,
+        path: `/earn/pool/${poolPath}`,
       },
-      { title: "Add Position", path: "" },
+      { title: "Remove Position", path: "" },
     ];
   }, [data, width]);
 
@@ -65,34 +58,16 @@ export default function EarnAdd() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [data?.fee]);
 
-  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/add"], []);
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/remove"], []);
 
   const title = useMemo(() => {
-    const tokenAPath = data?.tokenA.path;
-    const tokenBPath = data?.tokenB.path;
-
-    const tokenA = getGnotPath(
-      tokenAPath
-        ? tokens.find(item => item.path === checkGnotPath(tokenAPath))
-        : undefined,
-    );
-    const tokenB = getGnotPath(
-      tokenBPath
-        ? tokens.find(item => item.path === checkGnotPath(tokenBPath))
-        : undefined,
-    );
+    const tokenA = getGnotPath(data?.tokenA);
+    const tokenB = getGnotPath(data?.tokenB);
 
     return seoInfo.title(
       [tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[],
     );
-  }, [
-    data?.tokenA.path,
-    data?.tokenB.path,
-    feeStr,
-    getGnotPath,
-    seoInfo,
-    tokens,
-  ]);
+  }, [data?.tokenA, data?.tokenB, feeStr, getGnotPath, seoInfo]);
 
   return (
     <>
@@ -102,7 +77,7 @@ export default function EarnAdd() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <PoolAddLayout
+      <PoolRemoveLayout
         header={<HeaderContainer />}
         breadcrumbs={
           <BreadcrumbsContainer
@@ -110,9 +85,7 @@ export default function EarnAdd() {
             isLoading={isLoadingCommon || isLoading}
           />
         }
-        addLiquidity={<PoolAddLiquidityContainer />}
-        oneStaking={<OneClickStakingContainer />}
-        exchangeRateGraph={<ExchangeRateGraphContainer />}
+        removeLiquidity={<RemoveLiquidityContainer />}
         footer={<Footer />}
       />
     </>

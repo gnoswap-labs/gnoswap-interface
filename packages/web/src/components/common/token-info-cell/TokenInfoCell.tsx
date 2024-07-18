@@ -18,8 +18,7 @@ export interface TokenInfoCellProps {
 }
 
 function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
-  const { name, symbol, logoURI } = token;
-  const path = "gno.land/r/g146gxysfx24t3nar4z4yzkca2g8u9vl8xlpmtq0/jinwoo";
+  const { name, path, symbol, logoURI } = token;
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const [shortenPath, setShortenPath] = useState(false);
@@ -77,7 +76,6 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
       return;
     }
 
-    console.log("328947298");
     setShortenPath(false);
   }, [elementId, breakpoint]);
 
@@ -95,7 +93,6 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     if (tokenPathArr?.length <= 0) return path;
 
     const replacedPath = path.replace("gno.land", "");
-    console.log("🚀 ~ replacedPath:", replacedPath);
 
     if (replacedPath.length >= length) {
       return (
@@ -113,8 +110,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const onClickPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
-      if (false) {
-        // if (path === "gnot") {
+      if (path === "gnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
         window.open(getTokenUrl(path), "_blank");
