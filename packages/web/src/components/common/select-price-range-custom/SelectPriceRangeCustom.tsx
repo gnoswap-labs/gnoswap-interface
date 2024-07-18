@@ -451,7 +451,6 @@ const SelectPriceRangeCustom = forwardRef<
               onBlur={updateStartingPrice}
               onFocus={() => setTempPrice("")}
               placeholder="Enter price"
-              type={"number"}
             />
           </StartingPriceWrapper>
         )}
