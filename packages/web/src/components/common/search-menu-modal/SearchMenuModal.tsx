@@ -271,7 +271,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               >
                                 <div>
                                   {getTokenPathDisplay(
-                                    "gno.land/r/g146gxysfx24t3nar4z4yzkca2g8u9vl8xlpmtq0/jinwoo",
+                                    item.token.path,
                                     item.isNative,
                                   )}
                                 </div>
@@ -363,7 +363,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             >
                               <div>
                                 {getTokenPathDisplay(
-                                  "gno.land/r/g146gxysfx24t3nar4z4yzkca2g8u9vl8xlpmtq0/jinwoo",
+                                  item.token.path,
                                   item.isNative,
                                 )}
                               </div>

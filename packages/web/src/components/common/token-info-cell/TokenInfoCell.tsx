@@ -76,7 +76,6 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
       return;
     }
 
-    console.log("328947298");
     setShortenPath(false);
   }, [elementId, breakpoint]);
 
