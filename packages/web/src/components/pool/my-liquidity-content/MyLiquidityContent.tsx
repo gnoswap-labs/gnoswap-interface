@@ -753,7 +753,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 {isDisplay ? (
                   <>
                     {formatPoolPairAmount(tokenABalance, {
-                      isKMB: false,
                       decimals: 2,
                     })}{" "}
                     <span className={"token-symbol wrap-text"}>
@@ -798,7 +797,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 {isDisplay ? (
                   <>
                     {formatPoolPairAmount(tokenBBalance, {
-                      isKMB: false,
                       decimals: 2,
                     })}{" "}
                     <span className={"token-symbol  wrap-text"}>
