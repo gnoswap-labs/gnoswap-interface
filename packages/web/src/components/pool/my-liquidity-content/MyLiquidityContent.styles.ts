@@ -209,8 +209,15 @@ export const TooltipDivider = styled.div`
   background: ${({ theme }) => theme.color.border01};
 `;
 
-export const AmountDisplayWrapper = styled.div<{ $canHover: boolean }>`
+export const AmountDisplayWrapper = styled.div`
   ${fonts.body11}
+
+  &:hover {
+    ${({ theme }) => {
+      return `color: ${theme.color.text07};`;
+    }}
+  }
+
   .token-symbol {
     display: inline;
     @media (max-width: 1250px) {
@@ -242,14 +249,6 @@ export const AmountDisplayWrapper = styled.div<{ $canHover: boolean }>`
     ${media.mobile} {
       display: inline;
     }
-  }
-
-  &:hover {
-    ${({ $canHover, theme }) => {
-      if ($canHover) {
-        return `color: ${theme.color.text07}`;
-      }
-    }}
   }
 `;
 

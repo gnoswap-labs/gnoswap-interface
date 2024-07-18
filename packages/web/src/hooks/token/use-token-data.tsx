@@ -18,28 +18,15 @@ import { useGnotToGnot } from "./use-gnot-wugnot";
 import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { toUnitFormat } from "@utils/number-utils";
-import useRouter from "@hooks/common/use-custom-router";
 import { isEmptyObject } from "@utils/validation-utils";
 
-const PATH = ["/tokens/[token-path]", "/swap"];
-const PATH_60SECOND = ["/wallet", "/earn/pool/[pool-path]/stake"];
-
 export const useTokenData = () => {
-  const router = useRouter();
   const {
     data: { tokens = [] } = {},
     isLoading: loading,
     isFetched,
     error,
-  } = useGetTokensList({
-    refetchInterval: PATH.includes(router.pathname)
-      ? 15 * 1000
-      : router.pathname === "/" || router.pathname === "/earn/add"
-        ? 10 * 1000
-        : PATH_60SECOND.includes(router.pathname)
-          ? 60 * 1000
-          : false,
-  });
+  } = useGetTokensList();
   const {
     data: tokenPrices = {},
     isLoading: isLoadingTokenPrice,
@@ -145,29 +132,29 @@ export const useTokenData = () => {
       .map(token =>
         tokenPrices[token.path]
           ? {
-            token: {
-              ...token,
-              symbol: getGnotPath(token).symbol,
-              name: getGnotPath(token).name,
-              logoURI: getGnotPath(token).logoURI,
-            },
-            upDown: "none" as UpDownType,
-            content: `${toUnitFormat(
-              tokenPrices[token.path].usd,
-              true,
-              false,
-            )}`,
-          }
+              token: {
+                ...token,
+                symbol: getGnotPath(token).symbol,
+                name: getGnotPath(token).name,
+                logoURI: getGnotPath(token).logoURI,
+              },
+              upDown: "none" as UpDownType,
+              content: `${toUnitFormat(
+                tokenPrices[token.path].usd,
+                true,
+                false,
+              )}`,
+            }
           : {
-            token: {
-              ...token,
-              symbol: getGnotPath(token).symbol,
-              name: getGnotPath(token).name,
-              logoURI: getGnotPath(token).logoURI,
+              token: {
+                ...token,
+                symbol: getGnotPath(token).symbol,
+                name: getGnotPath(token).name,
+                logoURI: getGnotPath(token).logoURI,
+              },
+              upDown: "none" as UpDownType,
+              content: "-",
             },
-            upDown: "none" as UpDownType,
-            content: "-",
-          },
       )
       .filter((_: CardListTokenInfo) => _.content !== "-")
       .slice(0, 3);
@@ -206,25 +193,28 @@ export const useTokenData = () => {
     forceRefect({ queryKey: [QUERY_KEY.tokenPrices] });
   }
 
-  const fetchTokenBalance = useCallback(async (token: TokenModel) => {
-    if (!rpcProvider || !account) {
+  const fetchTokenBalance = useCallback(
+    async (token: TokenModel) => {
+      if (!rpcProvider || !account) {
+        return null;
+      }
+      if (token.type === "native") {
+        const res = await rpcProvider
+          .getBalance(account.address, token.denom || "ugnot")
+          .catch(() => null);
+        return res;
+      } else if (token.type === "grc20") {
+        const param = `BalanceOf("${account.address}")`;
+        const res = await rpcProvider
+          .evaluateExpression(token.path, param)
+          .then(evaluateExpressionToNumber)
+          .catch(() => null);
+        return res;
+      }
       return null;
-    }
-    if (token.type === "native") {
-      const res = await rpcProvider
-        .getBalance(account.address, token.denom || "ugnot")
-        .catch(() => null);
-      return res;
-    } else if (token.type === "grc20") {
-      const param = `BalanceOf("${account.address}")`;
-      const res = await rpcProvider
-        .evaluateExpression(token.path, param)
-        .then(evaluateExpressionToNumber)
-        .catch(() => null);
-      return res;
-    }
-    return null;
-  }, [account, rpcProvider]);
+    },
+    [account, rpcProvider],
+  );
 
   const updateBalances = useCallback(async () => {
     if (!rpcProvider || !account) {
@@ -258,7 +248,14 @@ export const useTokenData = () => {
       setBalances(balancesData);
     }
     setLoadingBalance(false);
-  }, [account, balances, fetchTokenBalance, loadingBalance, rpcProvider, tokens]);
+  }, [
+    account,
+    balances,
+    fetchTokenBalance,
+    loadingBalance,
+    rpcProvider,
+    tokens,
+  ]);
 
   return {
     gnotToken,

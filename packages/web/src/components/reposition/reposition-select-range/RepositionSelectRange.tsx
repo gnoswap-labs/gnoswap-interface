@@ -15,8 +15,6 @@ export interface RepositionSelectRangeProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   fee: string;
-  maxPriceStr: string;
-  minPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   aprFee: number;
   priceRangeSummary: IPriceRange;
@@ -32,8 +30,6 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
   tokenA,
   tokenB,
   fee,
-  minPriceStr,
-  maxPriceStr,
   rangeStatus,
   aprFee,
   priceRangeSummary,
@@ -84,8 +80,6 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
         tokenA={tokenA}
         tokenB={tokenB}
         fee={fee}
-        minPriceStr={minPriceStr}
-        maxPriceStr={maxPriceStr}
         rangeStatus={rangeStatus}
         priceRangeSummary={priceRangeSummary}
         isLoadingPosition={isLoadingPosition}

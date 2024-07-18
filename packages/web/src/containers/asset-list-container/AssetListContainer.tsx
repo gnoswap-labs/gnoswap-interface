@@ -111,7 +111,6 @@ const AssetListContainer: React.FC = () => {
   );
   const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
   const [keyword, setKeyword] = useState("");
-  // const [hasNext, setHasNext] = useState(false);
   const [extended, setExtened] = useState(true);
   const [hasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();

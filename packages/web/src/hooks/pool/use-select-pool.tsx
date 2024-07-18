@@ -31,6 +31,7 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { PoolModel } from "@models/pool/pool-model";
+import { useRouter } from "next/router";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -98,6 +99,7 @@ export const useSelectPool = ({
   defaultPriceRange = [null, null],
   options,
 }: Props) => {
+  const router = useRouter();
   const priceRangeRef = useRef<[number | null, number | null]>([
     ...defaultPriceRange,
   ]);
@@ -347,6 +349,15 @@ export const useSelectPool = ({
       });
     },
     staleTime: 5_000,
+    refetchInterval: () => {
+      if (
+        ["/earn/pool/[pool-path]/add", "/earn/add"].includes(router.pathname)
+      ) {
+        return 10_000;
+      }
+
+      return false;
+    },
   });
 
   useEffect(() => {

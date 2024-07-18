@@ -22,7 +22,7 @@ import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
-import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -98,6 +98,11 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   const currentPrice = useMemo(() => {
     if (selectPool.startPrice) {
+      if (!selectPool.startPrice) return 0;
+
+      if (flip) {
+        1 / selectPool.startPrice;
+      }
       return selectPool.startPrice;
     }
 
@@ -130,8 +135,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     return (
       <>
         1 {currentTokenA.symbol} =&nbsp;
-        {formatPoolPairAmount(priceWithDecimal, {
-          decimals: 6,
+        {formatTokenExchangeRate(priceWithDecimal, {
+          maxSignificantDigits: 6,
+          minLimit: 0.000001,
         })}
         &nbsp;
         {currentTokenB.symbol}

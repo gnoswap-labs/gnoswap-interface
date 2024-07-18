@@ -117,8 +117,10 @@ export const toKMBFormat = (
   value: BigNumber | string | number,
   {
     usd = false,
+    isIgnoreKFormat = false,
   }: {
     usd?: boolean;
+    isIgnoreKFormat?: boolean;
   } = {},
 ) => {
   const valueWithoutComma = value.toString().replace(/,/g, "");
@@ -149,7 +151,7 @@ export const toKMBFormat = (
     );
   }
 
-  if (bigNumber.isGreaterThanOrEqualTo(1e3)) {
+  if (!isIgnoreKFormat && bigNumber.isGreaterThanOrEqualTo(1e3)) {
     return (
       negativeSign +
       prefix +
