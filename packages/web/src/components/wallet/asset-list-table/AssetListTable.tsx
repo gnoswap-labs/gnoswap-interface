@@ -64,8 +64,8 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
     return breakpoint === DEVICE_TYPE.WEB
       ? ASSET_INFO
       : breakpoint !== DEVICE_TYPE.MOBILE
-        ? ASSET_INFO_TABLET
-        : ASSET_INFO_MOBILE;
+      ? ASSET_INFO_TABLET
+      : ASSET_INFO_MOBILE;
   }, [breakpoint]);
 
   return (
@@ -110,10 +110,19 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               breakpoint={breakpoint}
             />
           ))}
-        {!isFetched && <TableSkeleton
-          className="skeleton"
-          info={breakpoint === DEVICE_TYPE.WEB ? ASSET_INFO : breakpoint !== DEVICE_TYPE.MOBILE ? ASSET_INFO_TABLET : ASSET_INFO_MOBILE}
-          breakpoint={breakpoint} />}
+        {!isFetched && (
+          <TableSkeleton
+            className="skeleton"
+            info={
+              breakpoint === DEVICE_TYPE.WEB
+                ? ASSET_INFO
+                : breakpoint !== DEVICE_TYPE.MOBILE
+                ? ASSET_INFO_TABLET
+                : ASSET_INFO_MOBILE
+            }
+            breakpoint={breakpoint}
+          />
+        )}
       </div>
     </AssetListTableWrapper>
   );
