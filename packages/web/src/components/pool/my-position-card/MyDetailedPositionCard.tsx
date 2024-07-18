@@ -46,6 +46,8 @@ import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import { isGNOTPath } from "@utils/common";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { makeRouteUrl } from "@utils/page.utils";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
@@ -677,30 +679,24 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const handleSelect = (text: string) => {
     if (text == "Decrease Liquidity") {
       setSelectedPosition(position);
-      router.push(
-        "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/decrease-liquidity",
+      router.movePageWithPositionId(
+        "POSITION_DECREASE_LIQUIDITY",
+        position.poolPath,
+        position?.id,
       );
     } else if (text === "Increase Liquidity") {
       setSelectedPosition(position);
-      router.push(
-        "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/increase-liquidity",
+      router.movePageWithPositionId(
+        "POSITION_INCREASE_LIQUIDITY",
+        position.poolPath,
+        position?.id,
       );
     } else {
       setSelectedPosition(position);
-      router.push(
-        "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/reposition",
+      router.movePageWithPositionId(
+        "POSITION_REPOSITION",
+        position.poolPath,
+        position?.id,
       );
     }
   };
@@ -736,6 +732,24 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     );
   }, [totalRewardInfo]);
 
+  const getPoolLink = useCallback(
+    (isDirect: boolean) => {
+      const hash = isDirect ? position.id : undefined;
+      return (
+        window.location.host +
+        makeRouteUrl(
+          PAGE_PATH.POOL,
+          {
+            [QUERY_PARAMETER.POOL_PATH]: position.poolPath,
+            [QUERY_PARAMETER.ADDRESS]: address,
+          },
+          hash,
+        )
+      );
+    },
+    [position, address],
+  );
+
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
@@ -765,19 +779,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                       <div
                         onClick={() => {
                           if (isClosed) {
-                            setCopy(
-                              `${
-                                window.location.host + window.location.pathname
-                              }?addr=${address}`,
-                            );
+                            setCopy(getPoolLink(false));
                             return;
                           }
 
-                          setCopy(
-                            `${
-                              window.location.host + window.location.pathname
-                            }?addr=${address}#${position.id}`,
-                          );
+                          setCopy(getPoolLink(true));
                         }}
                       >
                         <IconLinkPage className="icon-link" />
@@ -825,20 +831,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                         <div
                           onClick={() => {
                             if (isClosed) {
-                              setCopy(
-                                `${
-                                  window.location.host +
-                                  window.location.pathname
-                                }?addr=${address}`,
-                              );
+                              setCopy(getPoolLink(false));
                               return;
                             }
 
-                            setCopy(
-                              `${
-                                window.location.host + window.location.pathname
-                              }?addr=${address}#${position.id}`,
-                            );
+                            setCopy(getPoolLink(true));
                           }}
                         >
                           <IconLinkPage className="icon-link" />

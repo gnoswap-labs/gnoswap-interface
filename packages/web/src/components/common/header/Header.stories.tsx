@@ -4,7 +4,6 @@ import { css, Theme } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
 
 import Header from "./Header";
-import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
 import { DEVICE_TYPE } from "@styles/media";
 import { AccountModel } from "@models/account/account-model";
 
@@ -18,7 +17,6 @@ const defaultAccountInfo: AccountModel = {
   sequence: 1,
   chainId: "test3",
 };
-
 
 export default {
   title: "common/Header",
@@ -42,7 +40,7 @@ Default.args = {
   onSideMenuToggle: action("onSideMenuToggle"),
   searchMenuToggle: true,
   onSearchMenuToggle: action("onSearchMenuToggle"),
-  tokens: RecentdummyToken,
+  tokens: [],
   isFetched: true,
   error: null,
   search: action("search"),

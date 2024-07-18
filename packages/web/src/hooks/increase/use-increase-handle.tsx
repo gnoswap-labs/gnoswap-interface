@@ -24,9 +24,8 @@ import {
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { useMemo, useCallback, useState, useEffect } from "react";
-import { encryptId } from "@utils/common";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -40,12 +39,12 @@ export type INCREASE_BUTTON_TYPE =
   | "INSUFFICIENT_BALANCE";
 
 export const useIncreaseHandle = () => {
-  const router = useRouter();
+  const router = useCustomRouter();
   const [selectedPosition, setSelectedPosition] = useAtom(
     IncreaseState.selectedPosition,
   );
-  const poolPath = router.query["pool-path"] as string;
-  const positionId = router.query["position-id"] as string;
+  const poolPath = router.getPoolPath();
+  const positionId = router.getPositionId();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
@@ -56,7 +55,7 @@ export const useIncreaseHandle = () => {
   }, [selectedPosition]);
 
   const { positions } = usePositionData({
-    poolPath: encryptId(poolPath)
+    poolPath,
   });
 
   useEffect(() => {
@@ -66,7 +65,7 @@ export const useIncreaseHandle = () => {
       );
 
       if (!position) {
-        router.push(`/earn/pool/${poolPath}`);
+        router.movePageWithPoolPath("POOL", poolPath || "");
         return;
       }
 
@@ -81,10 +80,9 @@ export const useIncreaseHandle = () => {
       selectedPosition?.tickLower,
       selectedPosition?.pool.fee,
     );
-    const minPrice = tickToPriceStr(
-      selectedPosition?.tickLower, {
+    const minPrice = tickToPriceStr(selectedPosition?.tickLower, {
       decimals: 40,
-      isEnd: isEndTick
+      isEnd: isEndTick,
     });
 
     return `${minPrice}`;
@@ -97,10 +95,9 @@ export const useIncreaseHandle = () => {
       selectedPosition?.pool.fee,
     );
 
-    const maxPrice = tickToPriceStr(
-      selectedPosition?.tickUpper, {
+    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, {
       decimals: 40,
-      isEnd: isEndTick
+      isEnd: isEndTick,
     });
 
     return maxPrice;
@@ -144,8 +141,8 @@ export const useIncreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -166,14 +163,20 @@ export const useIncreaseHandle = () => {
     isCreate: false,
     options: selectedPosition
       ? {
-        tickLower: selectedPosition.tickLower,
-        tickUpper: selectedPosition.tickUpper,
-      }
+          tickLower: selectedPosition.tickLower,
+          tickUpper: selectedPosition.tickUpper,
+        }
       : null,
   });
 
   useEffect(() => {
-    if (!selectedPosition?.tickLower || !selectedPosition?.tickUpper || !selectedPosition?.pool.fee || !selectPool) return;
+    if (
+      !selectedPosition?.tickLower ||
+      !selectedPosition?.tickUpper ||
+      !selectedPosition?.pool.fee ||
+      !selectPool
+    )
+      return;
 
     const isLowestTick = isEndTickBy(
       selectedPosition?.tickLower,
@@ -193,7 +196,13 @@ export const useIncreaseHandle = () => {
 
     selectPool.setMinPosition(tickToPrice(selectedPosition?.tickLower));
     selectPool.setMaxPosition(tickToPrice(selectedPosition?.tickUpper));
-  }, [selectedPosition?.tickLower, selectedPosition?.tickUpper, selectedPosition?.pool.fee, selectPool, tokenA]);
+  }, [
+    selectedPosition?.tickLower,
+    selectedPosition?.tickUpper,
+    selectedPosition?.pool.fee,
+    selectPool,
+    tokenA,
+  ]);
 
   const currentTick = useMemo(() => {
     return priceToTick(selectPool.currentPrice);
@@ -206,7 +215,6 @@ export const useIncreaseHandle = () => {
 
     return selectedPosition.tickUpper > currentTick;
   }, [selectedPosition?.tickUpper, currentTick]);
-
 
   const isDepositTokenB = useMemo(() => {
     if (!selectedPosition?.tickLower) {
@@ -339,11 +347,11 @@ export const useIncreaseHandle = () => {
       (isDepositTokenA &&
         !!tokenA &&
         Number(tokenAAmountInput.amount) >
-        Number(tokenAAmountInput.balance.replace(/,/g, ""))) ||
+          Number(tokenAAmountInput.balance.replace(/,/g, ""))) ||
       (isDepositTokenB &&
         !!tokenB &&
         Number(tokenBAmountInput.amount) >
-        Number(tokenBAmountInput.balance.replace(/,/g, "")))
+          Number(tokenBAmountInput.balance.replace(/,/g, "")))
     ) {
       return "INSUFFICIENT_BALANCE";
     }

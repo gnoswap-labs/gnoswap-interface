@@ -1,9 +1,9 @@
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import useRouter from "@hooks/common/use-custom-router";
 import React, { useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
 import { useTokenData } from "@hooks/token/use-token-data";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 export const POSITION_CONTENT_LABEL = {
   DAILY: "Daily Earnings",
@@ -26,7 +26,7 @@ interface MyPositionCardListContainerProps {
 const MyPositionCardListContainer: React.FC<
   MyPositionCardListContainerProps
 > = () => {
-  const router = useRouter();
+  const router = useCustomRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width } = useWindowSize();
@@ -47,7 +47,7 @@ const MyPositionCardListContainer: React.FC<
   }, []);
 
   const movePoolDetail = (id: string) => {
-    router.push(`/earn/pool/${id}`);
+    router.movePageWithPoolPath("POOL", id);
   };
 
   const onClickLoadMore = () => {

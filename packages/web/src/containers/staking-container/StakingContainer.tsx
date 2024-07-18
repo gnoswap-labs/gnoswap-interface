@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Staking from "@components/pool/staking/Staking";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePoolData } from "@hooks/pool/use-pool-data";
@@ -11,7 +11,6 @@ import { useGetPoolDetailByPath } from "@query/pools";
 import { StakingPeriodType } from "@constants/option.constant";
 import useUrlParam from "@hooks/common/use-url-param";
 import { addressValidationCheck } from "@utils/validation-utils";
-import { encryptId } from "@utils/common";
 import { formatRate } from "@utils/new-number-utils";
 
 const DAY_TIME = 24 * 60 * 60 * 1000;
@@ -26,8 +25,8 @@ const StakingContainer: React.FC = () => {
   const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });
-  const router = useRouter();
-  const poolPath = (router.query["pool-path"] || "") as string;
+  const router = useCustomRouter();
+  const poolPath = router.getPoolPath();
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
@@ -40,7 +39,7 @@ const StakingContainer: React.FC = () => {
   const { positions: allPositions, loading: isLoadingPosition } =
     usePositionData({
       address,
-      poolPath: encryptId(poolPath),
+      poolPath,
       queryOption: {
         enabled: !!poolPath,
       },
@@ -98,11 +97,11 @@ const StakingContainer: React.FC = () => {
   }, [pool?.stakingApr]);
 
   const handleClickStakeRedirect = useCallback(() => {
-    router.push(`/earn/pool/${router.query["pool-path"]}/stake`);
+    router.movePageWithPoolPath("POOL_STAKE", router.getPoolPath() || "");
   }, [router]);
 
   const handleClickUnStakeRedirect = useCallback(() => {
-    router.push(`/earn/pool/${router.query["pool-path"]}/unstake`);
+    router.movePageWithPoolPath("POOL_UNSTAKE", router.getPoolPath() || "");
   }, [router]);
 
   useEffect(() => {

@@ -12,8 +12,8 @@ import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { useLoading } from "@hooks/common/use-loading";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
-import useRouter from "@hooks/common/use-custom-router";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 export interface Pool {
   poolId: string;
@@ -74,7 +74,7 @@ const PoolListContainer: React.FC = () => {
   });
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
-  const router = useRouter();
+  const router = useCustomRouter();
   const { poolListInfos, updatePools } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { isLoadingPools } = useLoading();
@@ -221,7 +221,7 @@ const PoolListContainer: React.FC = () => {
   }, [sortedPoolListInfos.length]);
 
   const routeItem = (id: string) => {
-    router.push(`/earn/pool/${id}`);
+    router.movePageWithPoolPath("POOL", id);
   };
   const onTogleSearch = () => {
     setSearchIcon(prev => !prev);

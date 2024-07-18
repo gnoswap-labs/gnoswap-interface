@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { makeId } from "@utils/common";
+import { makeTokenRouteUrl } from "@utils/page.utils";
 
 interface LoserCardListProps {
   losers: any[];
@@ -35,7 +35,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({
       )}
       {!loadingLose &&
         losers.map((loser, idx) => (
-          <Link href={`/tokens/${makeId(loser.path)}`} key={idx}>
+          <Link href={makeTokenRouteUrl(loser.path)} key={idx}>
             <div className="card-wrap">
               <NameSectionWrapper>
                 <MissingLogo

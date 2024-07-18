@@ -15,6 +15,8 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { makeRouteUrl } from "@utils/page.utils";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
@@ -27,12 +29,10 @@ export async function getServerSideProps({ locale }: { locale: string }) {
 export default function PoolIncentivize() {
   const { breakpoint } = useWindowSize();
   const router = useRouter();
+  const poolPath = router.getPoolPath();
   const { getGnotPath } = useGnotToGnot();
-  const poolPath = router.query["pool-path"];
 
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
-    enabled: !!poolPath,
-  });
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string);
   const { isLoading: isLoadingCommon } = useLoading();
 
   const listBreadcrumb = useMemo(() => {
@@ -46,7 +46,9 @@ export default function PoolIncentivize() {
                 getGnotPath(data?.tokenB).symbol
               } (${Number(data?.fee) / 10000}%)`
             : "...",
-        path: `/earn/pool/${router.query["pool-path"]}`,
+        path: makeRouteUrl(PAGE_PATH.POOL, {
+          [QUERY_PARAMETER.POOL_PATH]: poolPath,
+        }),
       },
       { title: "Incentivize Pool", path: "" },
     ];
@@ -61,10 +63,7 @@ export default function PoolIncentivize() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [data?.fee]);
 
-  const seoInfo = useMemo(
-    () => SEOInfo["/earn/pool/[pool-path]/incentivize"],
-    [],
-  );
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/incentivize"], []);
 
   const title = useMemo(() => {
     const tokenA = getGnotPath(data?.tokenA);

@@ -4,14 +4,13 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { CardListKeyStats } from "@models/common/card-list-item-info";
 import { useGetDashboardTVL, useGetDashboardVolume } from "@query/dashboard";
 import { useGetChainList } from "@query/token";
-import { makeId } from "@utils/common";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
 import { useTranslation } from "next-i18next";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 const RecentlyAddedCardListContainer: React.FC = () => {
-  const router = useRouter();
+  const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
   const { isLoadingDashboardStats } = useLoading();
   const { data: tvlData } = useGetDashboardTVL();
@@ -38,7 +37,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
 
   const moveTokenDetails = useCallback(
     (path: string) => {
-      router.push("/tokens/" + makeId(path));
+      router.movePageWithTokenPath("TOKEN", path);
     },
     [router],
   );

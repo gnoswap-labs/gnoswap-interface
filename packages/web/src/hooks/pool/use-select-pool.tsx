@@ -350,9 +350,7 @@ export const useSelectPool = ({
     },
     staleTime: 5_000,
     refetchInterval: () => {
-      if (
-        ["/earn/pool/[pool-path]/add", "/earn/add"].includes(router.pathname)
-      ) {
+      if (["/earn/pool/add", "/earn/add"].includes(router.pathname)) {
         return 10_000;
       }
 

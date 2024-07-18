@@ -6,12 +6,12 @@ import React, {
   useRef,
 } from "react";
 import IncentivizedPoolCardList from "@components/earn/incentivized-pool-card-list/IncentivizedPoolCardList";
-import useRouter from "@hooks/common/use-custom-router";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useIncentivizePool } from "@hooks/pool/use-incentivize-pool";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 export interface PoolListProps {
   logo: string[];
@@ -27,7 +27,7 @@ export interface PoolListProps {
 const IncentivizedPoolCardListContainer: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [page, setPage] = useState(1);
-  const router = useRouter();
+  const router = useCustomRouter();
   const [mobile, setMobile] = useState(false);
   const {
     data: incentivizePools = [],
@@ -57,7 +57,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   }, [incentivizePools.length, page]);
 
   const routeItem = (id: string) => {
-    router.push(`/earn/pool/${id}`);
+    router.movePageWithPoolPath("POOL", id);
   };
 
   const handleClickLoadMore = useCallback(() => {
