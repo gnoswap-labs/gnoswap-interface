@@ -18,7 +18,8 @@ export interface TokenInfoCellProps {
 }
 
 function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
-  const { name, symbol, logoURI, path } = token;
+  const { name, symbol, logoURI } = token;
+  const path = "gno.land/r/g146gxysfx24t3nar4z4yzkca2g8u9vl8xlpmtq0/jinwoo";
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const [shortenPath, setShortenPath] = useState(false);
