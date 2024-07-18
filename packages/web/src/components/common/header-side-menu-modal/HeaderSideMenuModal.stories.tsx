@@ -4,7 +4,6 @@ import { css, Theme } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
 
 import HeaderSideMenuModal from "./HeaderSideMenuModal";
-import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
 
 export default {
   title: "common/Header/HeaderSideMenuModal",

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import TokenDescription from "@components/token/token-description/TokenDescription";
-import useRouter from "@hooks/common/use-custom-router";
 import { useGetTokenByPath } from "@query/token";
 import { useLoading } from "@hooks/common/use-loading";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 export interface DescriptionInfo {
   token: {
@@ -42,8 +42,8 @@ const TokenDescriptionContainer: React.FC = () => {
   const [descriptionInfo, setDescriptionInfo] =
     useState<DescriptionInfo>(descriptionInit);
   const [copied, setCopied] = useState(false);
-  const router = useRouter();
-  const path = router.query["token-path"] as string;
+  const router = useCustomRouter();
+  const path = router.getTokenPath();
   const { data: tokenB, isLoading } = useGetTokenByPath(path, {
     enabled: !!path,
   });

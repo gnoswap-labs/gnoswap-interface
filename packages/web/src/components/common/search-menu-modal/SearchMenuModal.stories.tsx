@@ -4,10 +4,6 @@ import { css, Theme } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
 
 import SearchMenuModal from "./SearchMenuModal";
-import {
-  RecentdummyToken,
-  PopulardummyToken,
-} from "@containers/header-container/HeaderContainer";
 
 export default {
   title: "common/Header/SearchMenuModal",
@@ -27,7 +23,7 @@ Default.args = {
   keyword: "",
   isFetched: true,
   placeholder: "Search",
-  tokens: [...RecentdummyToken, ...PopulardummyToken],
+  tokens: [],
 };
 
 const wrapper = (theme: Theme) => css`

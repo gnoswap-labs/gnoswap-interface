@@ -7,8 +7,7 @@ import { UpDownType } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { useGetChainList, useGetTokensList } from "@query/token";
 import { ITrending } from "@repositories/token";
-import { makeId } from "@utils/common";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useMemo } from "react";
 import { formatPrice, formatRate } from "@utils/new-number-utils";
 
@@ -32,7 +31,7 @@ const defaultToken = {
 };
 
 const TrendingCardListContainer: React.FC = () => {
-  const router = useRouter();
+  const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
   const { data: { tokens = [] } = {} } = useGetTokensList();
   const { data: { trending = [] } = {} } = useGetChainList();
@@ -42,7 +41,7 @@ const TrendingCardListContainer: React.FC = () => {
 
   const moveTokenDetails = useCallback(
     (path: string) => {
-      router.push("/tokens/" + makeId(path));
+      router.movePageWithTokenPath("TOKEN", path);
     },
     [router],
   );

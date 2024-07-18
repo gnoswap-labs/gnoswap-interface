@@ -13,7 +13,6 @@ import { useSlippage } from "@hooks/common/use-slippage";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import { useRouter } from "next/router";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { usePool } from "@hooks/pool/use-pool";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -28,8 +27,6 @@ import {
   tickToPrice,
 } from "@utils/swap-utils";
 import { usePoolData } from "@hooks/pool/use-pool-data";
-import { encryptId } from "@utils/common";
-import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
 import { isFetchedPools } from "@states/pool";
 import { useLoading } from "@hooks/common/use-loading";
@@ -37,6 +34,9 @@ import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { useRouterBack } from "@hooks/common/use-router-back";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatRate } from "@utils/new-number-utils";
+import useCustomRouter from "@hooks/common/use-custom-router";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import { makeRouteUrl } from "@utils/page.utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -70,7 +70,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 ];
 
 const EarnAddLiquidityContainer: React.FC = () => {
-  const router = useRouter();
+  const router = useCustomRouter();
   useRouterBack();
   const [initialized, setInitialized] = useState(false);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -248,11 +248,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     updateTokens();
     updateTokenPrices();
-  }, []);
-
-  useEffect(() => {
-    if (router.query["last_query"]) {
-    }
   }, []);
 
   const selectSwapFeeTier = useCallback(
@@ -472,7 +467,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
     if (!initialized) {
       setInitialized(true);
-      const query = router.query;
 
       const { tickLower, tickUpper, price_range_type } = router.query;
       if (price_range_type) {
@@ -488,8 +482,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tickUpper: tickUpper ? tickToPrice(Number(tickUpper)) : undefined,
       });
 
-      const convertPath = encryptId(query["pool-path"] as string);
-      const splitPath: string[] = convertPath.split(":") || [];
+      const poolPath = router.getPoolPath() || "";
+      const splitPath: string[] = poolPath.split(":") || [];
       const currentTokenA =
         tokens.find(token => token.path === splitPath[0]) || null;
       const currentTokenB =
@@ -655,7 +649,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   ]);
 
   useEffect(() => {
-    const queryString = makeQueryString({
+    const query = {
+      [QUERY_PARAMETER.POOL_PATH]: router.getPoolPath(),
       price_range_type: priceRange?.type,
       tickLower: isNumber(selectPool.minPosition || "")
         ? priceToTick(selectPool.minPosition || 0)
@@ -663,13 +658,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tickUpper: isNumber(selectPool.maxPosition || "")
         ? priceToTick(selectPool.maxPosition || 0)
         : null,
-    });
+    };
     if (tokenA?.path && tokenB?.path) {
-      window.history.pushState(
-        "",
-        "",
-        `/earn/pool/${router.query["pool-path"]}/add?${queryString}`,
-      );
+      window.history.pushState("", "", makeRouteUrl(PAGE_PATH.POOL_ADD, query));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);

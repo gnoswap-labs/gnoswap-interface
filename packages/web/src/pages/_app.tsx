@@ -61,4 +61,7 @@ function App({ Component, pageProps }: AppProps) {
 
 /// Cast to fix type error from next-i18next.
 /// Reference: https://github.com/i18next/next-i18next/issues/2049
-export default appWithTranslation(App, nextI18NextConfig as UserConfig);
+export default appWithTranslation(App, {
+  ...nextI18NextConfig,
+  debug: false,
+} as UserConfig);

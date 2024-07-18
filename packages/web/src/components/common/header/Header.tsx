@@ -57,7 +57,8 @@ interface HeaderProps {
   mostLiquidity: Token[];
   popularTokens: Token[];
   recents: Token[];
-  movePage: (path: string) => void;
+  moveTokenPage: (path: string) => void;
+  movePoolPage: (path: string) => void;
   gnotBalance?: number;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
@@ -85,7 +86,8 @@ const Header: React.FC<HeaderProps> = ({
   mostLiquidity,
   popularTokens,
   recents,
-  movePage,
+  moveTokenPage,
+  movePoolPage,
   gnotBalance,
   isLoadingGnotBalance,
   gnotToken,
@@ -236,7 +238,8 @@ const Header: React.FC<HeaderProps> = ({
             popularTokens={popularTokens}
             recents={recents}
             placeholder="Search by Name, Symbol, or Path"
-            movePage={movePage}
+            moveTokenPage={moveTokenPage}
+            movePoolPage={movePoolPage}
           />
         )}
       </HeaderWrapper>

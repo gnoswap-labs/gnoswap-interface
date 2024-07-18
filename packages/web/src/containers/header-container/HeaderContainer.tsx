@@ -43,109 +43,8 @@ export interface Token {
   isNative: boolean;
 }
 
-export const RecentdummyToken: Token[] = [
-  {
-    path: Math.floor(Math.random() * 50 + 1).toString(),
-    searchType: "recent",
-    token: {
-      path: "gno.land/r/gnoswap/gns",
-      name: "GNS",
-      symbol: "APR",
-      logoURI: "/gnos.svg",
-    },
-    price: "$12,090.09",
-    priceOf1d: {
-      status: MATH_NEGATIVE_TYPE.POSITIVE,
-      value: "52.4",
-    },
-    tokenB: {
-      path: "gno.land/r/gnoswap/gns",
-      name: "GNOT",
-      symbol: "GNOT",
-      logoURI:
-        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    },
-    fee: "0.03%",
-    isLiquid: true,
-    liquidity: 0,
-    isNative: false,
-  },
-  {
-    path: Math.floor(Math.random() * 50 + 1).toString(),
-    searchType: "recent",
-    token: {
-      path: "gno.land/r/gnoswap/gns",
-      name: "GNS",
-      symbol: "APR",
-      logoURI: "/gnos.svg",
-    },
-    price: "$12,090.09",
-    priceOf1d: {
-      status: MATH_NEGATIVE_TYPE.POSITIVE,
-      value: "107.4",
-    },
-    tokenB: {
-      path: "gno.land/r/gnoswap/gns",
-      name: "GNOT",
-      symbol: "GNOT",
-      logoURI:
-        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    },
-    liquidity: 0,
-    fee: "0.03%",
-    isNative: false,
-  },
-  {
-    path: Math.floor(Math.random() * 50 + 1).toString(),
-    searchType: "recent",
-    token: {
-      path: "gno.land/r/gnoswap/gns",
-      name: "GNS",
-      symbol: "APR",
-      logoURI: "/gnos.svg",
-    },
-    price: "$12,090.09",
-    priceOf1d: {
-      status: MATH_NEGATIVE_TYPE.POSITIVE,
-      value: "31.4",
-    },
-    tokenB: {
-      path: "gno.land/r/gnoswap/gns",
-      name: "GNOT",
-      symbol: "GNOT",
-      logoURI:
-        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    },
-    fee: "0.03%",
-    liquidity: 0,
-    isNative: false,
-  },
-];
-
-export const PopulardummyToken: Token[] = [
-  {
-    path: Math.floor(Math.random() * 50 + 1).toString(),
-    searchType: "popular",
-    token: {
-      path: "gno.land/r/gnoswap/gns",
-      name: "Gnoland",
-      symbol: "GNOT",
-      logoURI:
-        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    },
-    price: "$12,090.09",
-    priceOf1d: {
-      status: MATH_NEGATIVE_TYPE.POSITIVE,
-      value: "12.08%",
-    },
-    fee: "0.03%",
-    liquidity: 0,
-    isNative: false,
-  },
-];
-
 const HeaderContainer: React.FC = () => {
-  const { pathname, push } = useRouter();
+  const { pathname, movePageWithTokenPath, movePageWithPoolPath } = useRouter();
   const [sideMenuToggle, setSideMenuToggle] = useState(false);
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -354,8 +253,12 @@ const HeaderContainer: React.FC = () => {
     openModal();
   }, [openModal]);
 
-  const movePage = useCallback((path: string) => {
-    push(path);
+  const moveTokenPage = useCallback((path: string) => {
+    movePageWithTokenPath("TOKEN", path);
+  }, []);
+
+  const movePoolPage = useCallback((path: string) => {
+    movePageWithPoolPath("POOL", path);
   }, []);
 
   return (
@@ -382,7 +285,8 @@ const HeaderContainer: React.FC = () => {
       mostLiquidity={mostLiquidity}
       popularTokens={popularTokens}
       recents={recents}
-      movePage={movePage}
+      moveTokenPage={moveTokenPage}
+      movePoolPage={movePoolPage}
       gnotBalance={gnotBalance}
       isLoadingGnotBalance={isLoadingGnotBalance}
       gnotToken={gnot}

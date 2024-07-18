@@ -8,6 +8,8 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import IconStar from "@components/common/icons/IconStar";
 import { formatRate } from "@utils/new-number-utils";
+import { makeRouteUrl } from "@utils/page.utils";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 
 interface BestPoolCardListProps {
   list: BestPool[];
@@ -42,7 +44,12 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({
       {!loading && (
         <ul>
           {list.map((info, idx) => (
-            <Link href={`/earn/pool/${info.id}`} key={idx}>
+            <Link
+              href={makeRouteUrl(PAGE_PATH.POOL, {
+                [QUERY_PARAMETER.POOL_PATH]: info.id,
+              })}
+              key={idx}
+            >
               <li>
                 <div className="pair">
                   <DoubleLogo

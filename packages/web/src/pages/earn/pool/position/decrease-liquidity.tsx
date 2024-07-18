@@ -13,14 +13,8 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { GetStaticPaths } from "next";
-
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
-  return {
-    paths: [], //indicates that no page needs be created at build time
-    fallback: "blocking", //indicates the type of fallback
-  };
-};
+import { makeRouteUrl } from "@utils/page.utils";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -33,11 +27,9 @@ export async function getStaticProps({ locale }: { locale: string }) {
 export default function DecreaseLiquidity() {
   const { width } = useWindowSize();
   const router = useRouter();
-  const poolPath = router.query["pool-path"] || "";
-  const positionId = router.query["position-id"] || "";
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
-    enabled: !!poolPath,
-  });
+  const poolPath = router.getPoolPath();
+  const positionId = router.getPositionId();
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string);
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 
@@ -51,14 +43,17 @@ export default function DecreaseLiquidity() {
                 getGnotPath(data?.tokenB).symbol
               } (${Number(data?.fee) / 10000}%)`
             : "...",
-        path: `/earn/pool/${router.query["pool-path"]}`,
+        poolPath: router.getPoolPath(),
+        path: makeRouteUrl(PAGE_PATH.POOL, {
+          [QUERY_PARAMETER.POOL_PATH]: poolPath,
+        }),
       },
       { title: "Decrease Liquidity", path: "" },
     ];
   }, [data, width]);
 
   const seoInfo = useMemo(
-    () => SEOInfo["/earn/pool/[pool-path]/[position-id]/decrease-liquidity"],
+    () => SEOInfo["/earn/pool/position/decrease-liquidity"],
     [],
   );
 

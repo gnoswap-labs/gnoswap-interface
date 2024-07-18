@@ -26,6 +26,7 @@ interface AssetListTableProps {
   sortOption: AssetSortOption | undefined;
   sort: (head: ASSET_HEAD) => void;
   isSortOption: (head: ASSET_HEAD) => boolean;
+  moveTokenPage: (tokenPath: string) => void;
   breakpoint: DEVICE_TYPE;
 }
 
@@ -37,6 +38,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
   sortOption,
   sort,
   isSortOption,
+  moveTokenPage,
   breakpoint,
 }) => {
   const isAscendingOption = useCallback(
@@ -107,6 +109,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               asset={asset}
               deposit={deposit}
               withdraw={withdraw}
+              moveTokenPage={moveTokenPage}
               breakpoint={breakpoint}
             />
           ))}

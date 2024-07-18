@@ -12,6 +12,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { formatRate } from "@utils/new-number-utils";
 import IconStar from "@components/common/icons/IconStar";
 import { useTranslation } from "react-i18next";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 
 interface SwapLiquidityProps {
   liquiditys: LiquidityInfo[];
@@ -21,19 +22,9 @@ interface SwapLiquidityProps {
 }
 
 const getPathname = (liquidity: LiquidityInfo) => {
-  if (
-    liquidity.liquidity === "-" ||
-    liquidity.volume === "-" ||
-    liquidity.apr === "-"
-  ) {
-    return {
-      pathname: `/earn/pool/${liquidity.id}`,
-      as: `/earn/pool/${liquidity.id}`,
-    };
-  }
   return {
-    pathname: `/earn/pool/${liquidity.id}`,
-    as: `/earn/pool/${liquidity.id}`,
+    pathname: `${PAGE_PATH.POOL}?${QUERY_PARAMETER.POOL_PATH}=${liquidity.id}`,
+    as: `${PAGE_PATH.POOL}?${QUERY_PARAMETER.POOL_PATH}=${liquidity.id}`,
   };
 };
 

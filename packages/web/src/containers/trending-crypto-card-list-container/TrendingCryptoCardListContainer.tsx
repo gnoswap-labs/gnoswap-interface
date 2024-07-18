@@ -9,10 +9,10 @@ import {
 import { ITrending } from "@repositories/token";
 import { TokenModel } from "@models/token/token-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolList } from "@query/pools";
 import { useLoading } from "@hooks/common/use-loading";
 import { formatPrice } from "@utils/new-number-utils";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 const trendingCryptoInit = [
   {
@@ -48,12 +48,12 @@ export const trendingCryptoListInit = [
 ];
 
 const TrendingCryptoCardListContainer: React.FC = () => {
+  const router = useCustomRouter();
+  const path = router.getTokenPath();
   const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } =
     useGetTokensList();
   const { data: { trending = [] } = {}, isLoading } = useGetChainList();
   const { gnot, wugnotPath } = useGnotToGnot();
-  const router = useRouter();
-  const path = router.query["token-path"] as string;
   const { isLoading: isLoadingTokenDetail } = useGetTokenDetailByPath(
     path === "gnot" ? wugnotPath : path,
     { enabled: !!path },

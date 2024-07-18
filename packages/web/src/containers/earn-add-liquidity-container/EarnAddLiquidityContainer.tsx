@@ -32,11 +32,12 @@ import {
 import useRouter from "@hooks/common/use-custom-router";
 import { PoolModel } from "@models/pool/pool-model";
 import { useLoading } from "@hooks/common/use-loading";
-import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { useRouterBack } from "@hooks/common/use-router-back";
 import { formatRate } from "@utils/new-number-utils";
+import { makeRouteUrl } from "@utils/page.utils";
+import { PAGE_PATH } from "@constants/page.constant";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -784,19 +785,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
     })()?.toString();
 
     if (tokenA?.path && tokenB?.path && router.isReady) {
-      const queryString = makeQueryString({
+      const query = {
         tokenA: tokenA?.path,
         tokenB: tokenB?.path,
         fee_tier: computedFeeTier,
         price_range_type: computedPriceRange,
         tickLower: nextTickLower,
         tickUpper: nextTickUpper,
-      });
-      window.history.pushState(
-        "",
-        "",
-        `/earn/add${queryString ? "?" + queryString : ""}`,
-      );
+      };
+      window.history.pushState("", "", makeRouteUrl(PAGE_PATH.EARN_ADD, query));
     }
   }, [
     swapFeeTier,

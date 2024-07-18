@@ -10,9 +10,9 @@ import { TokenModel } from "@models/token/token-model";
 import { IGainer } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolList } from "@query/pools";
-import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { formatPrice, formatRate } from "@utils/new-number-utils";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 export const gainersInit = [
   {
@@ -91,13 +91,13 @@ export const losersInit = [
 ];
 
 const GainerAndLoserContainer: React.FC = () => {
+  const router = useCustomRouter();
+  const path = router.getTokenPath();
   const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } =
     useGetTokensList();
   const { data: { gainers = [], losers = [] } = {}, isLoading } =
     useGetChainList();
   const { gnot, wugnotPath } = useGnotToGnot();
-  const router = useRouter();
-  const path = router.query["token-path"] as string;
   const { isLoading: isLoadingGetPoolList } = useGetPoolList();
   const { isLoading: isLoadingTokenDetail } = useGetTokenDetailByPath(
     path === "gnot" ? wugnotPath : path,
