@@ -113,7 +113,8 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const onClickPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
-      if (path === "gnot") {
+      if (false) {
+        // if (path === "gnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
         window.open(getTokenUrl(path), "_blank");
