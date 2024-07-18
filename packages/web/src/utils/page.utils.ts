@@ -4,7 +4,7 @@ export function makeQueryStringByParams(params: {
   [key in string]: string | number | null | undefined;
 }): string {
   const queryParams = Object.entries(params).reduce<string[]>((acc, entry) => {
-    if (entry?.[1] === undefined || entry?.[1] === null) {
+    if (entry?.[1] === undefined || entry?.[1] === null || entry?.[1] === "") {
       return acc;
     }
     acc.push(`${entry[0]}=${entry[1]}`);
