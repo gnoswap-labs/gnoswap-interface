@@ -1,2 +1,76 @@
-{"earnInstruction":{"about":{"goto":"Go to User Guide","subtitle":"Learn about positions and how to create one.","title":"About Positions"},"community":{"goto":"Go to Discord","subtitle":"Discuss how to optimize your LP strategy.","title":"Join Community"},"stake":{"goto":"Go to Stake","subtitle":"Stake your position and earn up to&nbsp;<span class=\"highlight\">{{apr}} APR.</span>","title":"Stake Position"}},"header":"Earn","incentiPools":{"card":{"col":{"fees":"Fees (24h)","volume":"Trading Volume (24h)"}},"incentiBtn":"Incentivize Pool","title":"Incentivized Pools"},"poolList":{"col":{"fee":"Fees (24h)","incentive":"Incentive","liquidityPlot":"Liquidity Plot","poolName":"Pool Name","volume":"Volume (24h)"},"noPool":"No pools found","switch":{"all":"All","incenti":"Incentivized","nonIncenti":"Non-incentivized"},"title":"Pools"},"positions":{"addPositionBtn":"New Position","card":{"claimRewards":"Claimable Rewards","dailyEarn":"Daily Earnings","hideRange":"Hide my range","value":"Value","viewRange":"View my range"},"noliqui":{"lineOne":"You have <span class=\"emphasis-text\">{{converted}}</span> in your wallet available to earn rewards up to <span class=\"emphasis-text\">{{apr}}%</span> APR","lineTwo":"Create new positions to earn trading fees and stake your positions to earn staking rewards."},"other":{"noLiqui":"This address does not own any positions."},"showClosedSwitch":"Show closed Positions","showClosedSwitch_short":"Show closed","stakeBtn":"Stake Position","title":"My Positions","title_other":"'s Positions","unconnect":{"connect":"Please connect your wallet to view your liquidity positions.","switchgno":"Switch to Gnoland","switchNetwork":"Unsupported network. Switch your network to Gnoland.","walletlog":"Wallet Login"}},"viewless":"View less","viewmore":"View more"}
-
+{
+  "earnInstruction": {
+    "about": {
+      "goto": "Go to User Guide",
+      "subtitle": "Learn about positions and how to create one.",
+      "title": "About Positions"
+    },
+    "community": {
+      "goto": "Go to Discord",
+      "subtitle": "Discuss how to optimize your LP strategy.",
+      "title": "Join Community"
+    },
+    "stake": {
+      "goto": "Go to Stake",
+      "subtitle": "Stake your position and earn up to&nbsp;<span class=\"highlight\">{{apr}} APR.</span>",
+      "title": "Stake Position"
+    }
+  },
+  "header": "Earn",
+  "incentiPools": {
+    "card": {
+      "col": {
+        "fees": "Fees (24h)",
+        "volume": "Trading Volume (24h)"
+      }
+    },
+    "incentiBtn": "Incentivize Pool",
+    "title": "Incentivized Pools"
+  },
+  "poolList": {
+    "col": {
+      "fee": "Fees (24h)",
+      "incentive": "Incentive",
+      "liquidityPlot": "Liquidity Plot",
+      "poolName": "Pool Name",
+      "volume": "Volume (24h)"
+    },
+    "noPool": "No pools found",
+    "switch": {
+      "all": "All",
+      "incenti": "Incentivized",
+      "nonIncenti": "Non-incentivized"
+    },
+    "title": "Pools"
+  },
+  "positions": {
+    "addPositionBtn": "New Position",
+    "card": {
+      "claimRewards": "Claimable Rewards",
+      "dailyEarn": "Daily Earnings",
+      "hideRange": "Hide my range",
+      "value": "Value",
+      "viewRange": "View my range"
+    },
+    "noliqui": {
+      "lineOne": "You have <span class=\"emphasis-text\">{{converted}}</span> in your wallet available to earn rewards up to <span class=\"emphasis-text\">{{apr}}%</span> APR",
+      "lineTwo": "Create new positions to earn trading fees and stake your positions to earn staking rewards."
+    },
+    "other": {
+      "noLiqui": "This address does not own any positions."
+    },
+    "showClosedSwitch": "Show closed Positions",
+    "showClosedSwitch_short": "Show closed",
+    "stakeBtn": "Stake Position",
+    "title": "My Positions",
+    "title_other": "'s Positions",
+    "unconnect": {
+      "connect": "Please connect your wallet to view your liquidity positions.",
+      "switchgno": "Switch to Gnoland",
+      "switchNetwork": "Unsupported network. Switch your network to Gnoland.",
+      "walletlog": "Wallet Login"
+    }
+  },
+  "viewless": "View less",
+  "viewmore": "View more"
+}

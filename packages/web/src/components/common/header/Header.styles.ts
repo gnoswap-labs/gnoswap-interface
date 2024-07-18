@@ -51,7 +51,6 @@ export const BottomNavItem = styled.div`
 export const HeaderContainer = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   max-width: ${ContainerWidth.WEB_CONTAINER};
-  //   min-width: 360px;
   width: 100%;
   padding: 17px 40px;
   ${media.tablet} {

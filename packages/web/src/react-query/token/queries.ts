@@ -19,7 +19,7 @@ export const useGetTokensList = (
   return useQuery<TokenListResponse, Error>({
     queryKey: [QUERY_KEY.tokens],
     queryFn: () => tokenRepository.getTokens(),
-    staleTime: Infinity,
+    staleTime: options?.staleTime || Infinity,
     ...options,
   });
 };
@@ -41,7 +41,7 @@ export const useGetTokenPrices = (
       );
       return priceMap;
     },
-    refetchInterval: 10_000,
+    refetchInterval: options?.refetchInterval || 10_000,
     ...options,
   });
 };

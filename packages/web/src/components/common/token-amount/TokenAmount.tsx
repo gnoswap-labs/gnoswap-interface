@@ -14,17 +14,12 @@ const TokenAmount: React.FC<TokenAmountProps> = ({
   usdPrice,
   amount,
 }) => {
-
   return (
     <TokenAmountWrapper>
       <div className="amount">
         <span className="amount-text">{amount}</span>
         <div className="token">
-          <SelectPairButton
-            token={token}
-            disabled={true}
-            isHiddenArrow
-          />
+          <SelectPairButton token={token} disabled={true} isHiddenArrow />
         </div>
       </div>
       <div className="info">

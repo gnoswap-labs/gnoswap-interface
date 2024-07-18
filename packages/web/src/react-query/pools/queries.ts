@@ -136,7 +136,7 @@ export const useGetPoolDetailByPath = (
     },
     onError: (err: any) => {
       if (err?.["response"]?.["status"] === 404) {
-        router.push("/404");
+        router.push("/earn");
       }
     },
     ...options,

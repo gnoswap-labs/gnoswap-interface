@@ -40,7 +40,9 @@ export const useGetPositionsByAddress = (
       const data = await positionRepository
         .getPositionsByAddress(options?.address || account?.address || "", {
           isClosed: options?.isClosed,
-          poolPath: encodeURIComponent(options?.poolPath ?? ""),
+          poolPath: options?.poolPath
+            ? encodeURIComponent(options?.poolPath ?? "")
+            : undefined,
         })
         .catch(e => {
           console.error(e);

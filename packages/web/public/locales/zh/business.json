@@ -1,1 +1,19 @@
-{"balance":"平衡","currentPrice":"当前价格","liquidity":"流动性","protocolFee":{"desc":"每笔交易的手续费金额。","txt":"协议费"},"rangeStatus":{"inRange":"范围内","inRange_short":"在","outRange":"超出范围","outRange_short":"外出"},"swap":"交换","switchGnoland":"转到糯米地","token":"代币","walletLogin":"钱包登录"}
+{
+  "balance": "平衡",
+  "currentPrice": "当前价格",
+  "liquidity": "流动性",
+  "protocolFee": {
+    "desc": "每笔交易的手续费金额。",
+    "txt": "协议费"
+  },
+  "rangeStatus": {
+    "inRange": "范围内",
+    "inRange_short": "在",
+    "outRange": "超出范围",
+    "outRange_short": "外出"
+  },
+  "swap": "交换",
+  "switchGnoland": "转到糯米地",
+  "token": "代币",
+  "walletLogin": "钱包登录"
+}

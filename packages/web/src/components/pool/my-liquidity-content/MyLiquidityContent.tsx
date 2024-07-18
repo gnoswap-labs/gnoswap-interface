@@ -105,8 +105,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: {},
       INTERNAL: {},
       EXTERNAL: {},
-      // Not use any more
-      STAKING: {},
     };
     positions
       .flatMap(position => position.reward)
@@ -202,8 +200,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
-      // Not use any more
-      STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
 
@@ -219,8 +215,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: {},
       INTERNAL: {},
       EXTERNAL: {},
-      // Not use any more
-      STAKING: {},
     };
     positions
       .flatMap(position => position.reward)
@@ -295,8 +289,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
-      // Not use any more
-      STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
 
@@ -757,7 +749,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 width={20}
                 className="image-logo"
               />
-              <AmountDisplayWrapper $canHover={tokenABalance >= 1e3}>
+              <AmountDisplayWrapper>
                 {isDisplay ? (
                   <>
                     {formatPoolPairAmount(tokenABalance, {
@@ -802,7 +794,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 width={20}
                 className="image-logo"
               />
-              <AmountDisplayWrapper $canHover={tokenBBalance >= 1e3}>
+              <AmountDisplayWrapper>
                 {isDisplay ? (
                   <>
                     {formatPoolPairAmount(tokenBBalance, {

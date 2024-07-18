@@ -74,7 +74,7 @@ export const useDecreaseHandle = () => {
 
       setSelectedPosition(position);
     }
-  }, [selectedPosition, positions, positionId, poolPath]);
+  }, [selectedPosition, positions, positionId, poolPath, selectedPosition]);
 
   const { connected, account, loadingConnect } = useWallet();
   const minPriceStr = useMemo(() => {

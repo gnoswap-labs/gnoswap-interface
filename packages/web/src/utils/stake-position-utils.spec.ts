@@ -1,10 +1,10 @@
 import { formatTokenExchangeRate } from "./stake-position-utils";
 
 describe("tokenExchangeRateFormat, token exchange rate format", () => {
-  test("12347 to 12.35K", () => {
+  test("12347 to 12.34K", () => {
     const num = "12347";
 
-    expect(formatTokenExchangeRate(num)).toBe("12.35K");
+    expect(formatTokenExchangeRate(num)).toBe("12.34K");
   });
 
   test("10000.4823784 to 10.00K", () => {
@@ -19,27 +19,33 @@ describe("tokenExchangeRateFormat, token exchange rate format", () => {
     expect(formatTokenExchangeRate(num)).toBe("999");
   });
 
-  test("0.123124213 to 0.12312", () => {
+  test("0.123124213 to 0.123124", () => {
     const num = "0.123124213";
 
-    expect(formatTokenExchangeRate(num)).toBe("0.12312");
+    expect(formatTokenExchangeRate(num)).toBe("0.123124");
   });
 
-  test("0.0000023423423423123 to 0.0000023423", () => {
+  test("0.0000023423423423123 to 0.00000234234", () => {
     const num = "0.0000023423423423123";
 
-    expect(formatTokenExchangeRate(num)).toBe("0.0000023423");
+    expect(formatTokenExchangeRate(num)).toBe("0.00000234234");
   });
 
-  test("0.00000000023423423423123 to 0.00000000023423", () => {
+  test("0.00000000023423423423123 to 0.000000000234234", () => {
     const num = "0.00000000023423423423123";
 
-    expect(formatTokenExchangeRate(num)).toBe("0.00000000023423");
+    expect(formatTokenExchangeRate(num)).toBe("0.000000000234234");
   });
 
-  test("999.123453 to 999.12", () => {
+  test("999.123453 to 999.123", () => {
     const num = "999.123453";
 
-    expect(formatTokenExchangeRate(num)).toBe("999.12");
+    expect(formatTokenExchangeRate(num)).toBe("999.123");
+  });
+
+  test("1 to 1", () => {
+    const num = "1";
+
+    expect(formatTokenExchangeRate(num)).toBe("1");
   });
 });

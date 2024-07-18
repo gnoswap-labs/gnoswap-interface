@@ -77,8 +77,6 @@ const RepositionContainer: React.FC = () => {
       tokenA={tokenA}
       tokenB={tokenB}
       fee={`${Number(fee) / 10000}%`}
-      minPriceStr={minPriceStr}
-      maxPriceStr={maxPriceStr}
       rangeStatus={rangeStatus}
       aprFee={aprFee}
       priceRangeSummary={priceRangeSummary}

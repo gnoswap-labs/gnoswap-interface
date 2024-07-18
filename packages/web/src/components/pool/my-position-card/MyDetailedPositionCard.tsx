@@ -42,13 +42,10 @@ import Button from "@components/common/button/Button";
 import { useGetPositionBins } from "@query/positions";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-  formatRate,
-} from "@utils/new-number-utils";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import { isGNOTPath } from "@utils/common";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
@@ -302,8 +299,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       },
       {
         SWAP_FEE: [],
-        // Not use any more
-        STAKING: [],
         EXTERNAL: [],
         INTERNAL: [],
       },
@@ -442,8 +437,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         },
         {
           SWAP_FEE: [],
-          // NOt use anymore
-          STAKING: [],
           EXTERNAL: [],
           INTERNAL: [],
         },
@@ -466,8 +459,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       return (
         <>
           1 {tokenB?.symbol} ={" "}
-          {formatPoolPairAmount(1 / price, {
-            decimals: 6,
+          {formatTokenExchangeRate(1 / price, {
+            maxSignificantDigits: 6,
+            minLimit: 0.000001,
           })}{" "}
           {tokenA?.symbol}
         </>
@@ -476,8 +470,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return (
       <>
         1 {tokenA?.symbol} ={" "}
-        {formatPoolPairAmount(price, {
-          decimals: 6,
+        {formatTokenExchangeRate(price, {
+          maxSignificantDigits: 6,
+          minLimit: 0.000001,
         })}{" "}
         {tokenB?.symbol}
       </>
@@ -576,13 +571,15 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     if (!isSwap) {
       if (minPrice === "∞") return "∞";
 
-      return formatPoolPairAmount(minPrice, {
-        decimals: 6,
+      return formatTokenExchangeRate(minPrice, {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001,
       });
     }
 
-    return formatPoolPairAmount(`${Number(1 / Number(maxPrice))}`, {
-      decimals: 6,
+    return formatTokenExchangeRate(`${Number(1 / Number(maxPrice))}`, {
+      maxSignificantDigits: 6,
+      minLimit: 0.000001,
     });
   }, [
     position.tickLower,
@@ -632,13 +629,15 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         return "∞";
       }
 
-      return formatPoolPairAmount(maxPrice, {
-        decimals: 6,
+      return formatTokenExchangeRate(maxPrice, {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001,
       });
     }
 
-    return formatPoolPairAmount(`${Number(1 / Number(minPrice))}`, {
-      decimals: 6,
+    return formatTokenExchangeRate(`${Number(1 / Number(minPrice))}`, {
+      maxSignificantDigits: 6,
+      minLimit: 0.000001,
     });
   }, [
     position.tickLower,
