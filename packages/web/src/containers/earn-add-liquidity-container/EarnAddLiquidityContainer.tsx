@@ -697,43 +697,23 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const lastPoolPathRef = useRef<string>();
 
-  const poolPath = useMemo(() => {
-    const path = [tokenA?.path, tokenB?.path].filter(item => item).join(":");
-    lastPoolPathRef.current = path;
-
-    return [tokenA?.path, tokenB?.path].filter(item => item).join(":");
-  }, [tokenA?.path, tokenB?.path]);
-
   useEffect(() => {
-    console.log(
-      "🚀 ~ useEffect ~ lastPoolPathRef.current:",
-      lastPoolPathRef.current,
-    );
-    console.log("🚀 ~ useEffect ~ poolPath:", poolPath);
+    const pair = [tokenA?.path, tokenB?.path]
+      .filter(item => item !== undefined)
+      .sort()
+      .join(":");
 
-    if (
-      lastPoolPathRef.current !== poolPath &&
-      !!tokenA &&
-      !!tokenB &&
-      isFetchedPools
-    ) {
-      if (router.query?.fee_tier) {
-        selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
-      } else {
-        selectSwapFeeTier("FEE_3000");
-      }
-    }
-  }, [
-    isFetchedPools,
-    poolPath,
-    router.query?.fee_tier,
-    selectSwapFeeTier,
-    tokenA,
-    tokenB,
-  ]);
+    const isDifferentPair = pair !== lastPoolPathRef.current;
 
-  useEffect(() => {
     if (!!tokenA && !!tokenB && isFetchedPools) {
+      if (isDifferentPair) {
+        if (router.query?.fee_tier) {
+          selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
+        } else {
+          selectSwapFeeTier("FEE_3000");
+        }
+        lastPoolPathRef.current = pair;
+      }
       setSwapValue(prev => ({
         ...prev,
         tokenA,
@@ -741,7 +721,14 @@ const EarnAddLiquidityContainer: React.FC = () => {
         type: "EXACT_IN",
       }));
     }
-  }, [tokenA, tokenB, isFetchedPools, router.query.fee_tier, setSwapValue]);
+  }, [
+    tokenA,
+    tokenB,
+    isFetchedPools,
+    router.query?.fee_tier,
+    setSwapValue,
+    selectSwapFeeTier,
+  ]);
 
   useEffect(() => {
     if (!initializedFeeTier.current) {
