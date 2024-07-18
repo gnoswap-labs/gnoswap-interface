@@ -437,7 +437,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
-      tokenA?.symbol,
+      tokenA,
+      tokenB,
     ],
   );
 
@@ -473,10 +474,11 @@ const EarnAddLiquidityContainer: React.FC = () => {
     },
     [
       selectPool.currentPrice,
-      selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
-      tokenB?.symbol,
+      tokenA,
+      tokenB,
+      tokenAAmountInput,
     ],
   );
 
@@ -558,7 +560,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
     } else {
       updateTokenAAmountByTokenB(tokenBAmountInput.amount);
     }
-  }, [selectPool.currentPrice, selectPool.minPrice, selectPool.maxPosition]);
+  }, [
+    selectPool.currentPrice,
+    selectPool.minPrice,
+    selectPool.maxPosition,
+    exactType,
+    updateTokenBAmountByTokenA,
+    tokenAAmountInput.amount,
+    updateTokenAAmountByTokenB,
+    tokenBAmountInput.amount,
+  ]);
 
   useEffect(() => {
     updateTokenPrices();
@@ -684,13 +695,45 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [pools, selectPool.compareToken, tokenA, tokenB]);
 
+  const lastPoolPathRef = useRef<string>();
+
+  const poolPath = useMemo(() => {
+    const path = [tokenA?.path, tokenB?.path].filter(item => item).join(":");
+    lastPoolPathRef.current = path;
+
+    return [tokenA?.path, tokenB?.path].filter(item => item).join(":");
+  }, [tokenA?.path, tokenB?.path]);
+
   useEffect(() => {
-    if (!!tokenA && !!tokenB && isFetchedPools) {
+    console.log(
+      "🚀 ~ useEffect ~ lastPoolPathRef.current:",
+      lastPoolPathRef.current,
+    );
+    console.log("🚀 ~ useEffect ~ poolPath:", poolPath);
+
+    if (
+      lastPoolPathRef.current !== poolPath &&
+      !!tokenA &&
+      !!tokenB &&
+      isFetchedPools
+    ) {
       if (router.query?.fee_tier) {
         selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
       } else {
         selectSwapFeeTier("FEE_3000");
       }
+    }
+  }, [
+    isFetchedPools,
+    poolPath,
+    router.query?.fee_tier,
+    selectSwapFeeTier,
+    tokenA,
+    tokenB,
+  ]);
+
+  useEffect(() => {
+    if (!!tokenA && !!tokenB && isFetchedPools) {
       setSwapValue(prev => ({
         ...prev,
         tokenA,
@@ -698,7 +741,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         type: "EXACT_IN",
       }));
     }
-  }, [tokenA, tokenB, isFetchedPools, router.query?.fee_tier]);
+  }, [tokenA, tokenB, isFetchedPools, router.query.fee_tier, setSwapValue]);
 
   useEffect(() => {
     if (!initializedFeeTier.current) {

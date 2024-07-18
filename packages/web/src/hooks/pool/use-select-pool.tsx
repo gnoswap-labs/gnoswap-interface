@@ -105,7 +105,9 @@ export const useSelectPool = ({
   ]);
 
   // Global state
-  const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
+  const [currentPoolPath, setCurrentPoolPath] = useAtom(
+    EarnState.currentPoolPath,
+  );
   const [, setPoolInfoQuery] = useAtom(EarnState.poolInfoQuery);
 
   const [fullRange, setFullRange] = useState(false);
@@ -711,5 +713,6 @@ export const useSelectPool = ({
     isChangeMinMax,
     setIsChangeMinMax,
     isLoading: isLoading || isLoadingPoolInfo,
+    currentPoolPath,
   };
 };
