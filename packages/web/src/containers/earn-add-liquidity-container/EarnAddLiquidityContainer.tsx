@@ -438,7 +438,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
-      tokenA?.symbol,
+      tokenA,
+      tokenB,
     ],
   );
 
@@ -474,10 +475,11 @@ const EarnAddLiquidityContainer: React.FC = () => {
     },
     [
       selectPool.currentPrice,
-      selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
-      tokenB?.symbol,
+      tokenA,
+      tokenB,
+      tokenAAmountInput,
     ],
   );
 
@@ -559,7 +561,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
     } else {
       updateTokenAAmountByTokenB(tokenBAmountInput.amount);
     }
-  }, [selectPool.currentPrice, selectPool.minPrice, selectPool.maxPosition]);
+  }, [
+    selectPool.currentPrice,
+    selectPool.minPrice,
+    selectPool.maxPosition,
+    exactType,
+    updateTokenBAmountByTokenA,
+    tokenAAmountInput.amount,
+    updateTokenAAmountByTokenB,
+    tokenBAmountInput.amount,
+  ]);
 
   useEffect(() => {
     updateTokenPrices();
@@ -685,12 +696,24 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [pools, selectPool.compareToken, tokenA, tokenB]);
 
+  const lastPoolPathRef = useRef<string>();
+
   useEffect(() => {
+    const pair = [tokenA?.path, tokenB?.path]
+      .filter(item => item !== undefined)
+      .sort()
+      .join(":");
+
+    const isDifferentPair = pair !== lastPoolPathRef.current;
+
     if (!!tokenA && !!tokenB && isFetchedPools) {
-      if (router.query?.fee_tier) {
-        selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
-      } else {
-        selectSwapFeeTier("FEE_3000");
+      if (isDifferentPair) {
+        if (router.query?.fee_tier) {
+          selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
+        } else {
+          selectSwapFeeTier("FEE_3000");
+        }
+        lastPoolPathRef.current = pair;
       }
       setSwapValue(prev => ({
         ...prev,
@@ -699,7 +722,14 @@ const EarnAddLiquidityContainer: React.FC = () => {
         type: "EXACT_IN",
       }));
     }
-  }, [tokenA, tokenB, isFetchedPools, router.query?.fee_tier]);
+  }, [
+    tokenA,
+    tokenB,
+    isFetchedPools,
+    router.query?.fee_tier,
+    setSwapValue,
+    selectSwapFeeTier,
+  ]);
 
   useEffect(() => {
     if (!initializedFeeTier.current) {

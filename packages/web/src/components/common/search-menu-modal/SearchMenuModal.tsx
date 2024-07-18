@@ -181,7 +181,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   }, [tokenNamePopularRef, keyword, popularTokenKey]);
 
   const length = useMemo(() => {
-    return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
+    return breakpoint === DEVICE_TYPE.MOBILE ? 15 : 25;
   }, [breakpoint]);
 
   const getTokenPathDisplay = useCallback(
@@ -194,12 +194,15 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
       if (tokenPathArr?.length <= 0) return path_;
 
-      const lastPath = tokenPathArr[tokenPathArr?.length - 1];
+      const replacedPath = path_.replace("gno.land", "");
 
-      if (lastPath.length >= 12) {
+      if (replacedPath.length >= length) {
         return (
           "..." +
-          tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1)
+          replacedPath.slice(
+            replacedPath.length - length,
+            replacedPath.length - 1,
+          )
         );
       }
 

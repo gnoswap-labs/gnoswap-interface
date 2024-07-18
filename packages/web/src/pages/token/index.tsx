@@ -28,7 +28,12 @@ import { TokenError } from "@common/errors/token";
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+      ...(await serverSideTranslations(locale, [
+        "HeaderFooter",
+        "common",
+        "business",
+        "Swap",
+      ])),
     },
   };
 }

@@ -1,7 +1,7 @@
 import { useTheme } from "@emotion/react";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
-import { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import IconOpenLink from "../icons/IconOpenLink";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
@@ -27,50 +27,85 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     [token.path],
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const element = document.getElementById(elementId);
+
     if (
-      (element?.clientWidth || 0) > 165 &&
-      (breakpoint === DEVICE_TYPE.TABLET ||
-        breakpoint === DEVICE_TYPE.TABLET_M ||
-        breakpoint === DEVICE_TYPE.TABLET_S ||
-        breakpoint === DEVICE_TYPE.MEDIUM_TABLET ||
-        breakpoint === DEVICE_TYPE.MOBILE)
+      (element?.clientWidth || 0) > 130 &&
+      breakpoint === DEVICE_TYPE.MOBILE
     ) {
       setShortenPath(true);
       return;
     }
 
     if (
-      breakpoint === DEVICE_TYPE.WEB ||
-      breakpoint === DEVICE_TYPE.MEDIUM_WEB
+      (element?.clientWidth || 0) > 130 &&
+      breakpoint === DEVICE_TYPE.TABLET_S
     ) {
-      setShortenPath(false);
+      setShortenPath(true);
+      return;
     }
+
+    if (
+      (element?.clientWidth || 0) > 130 &&
+      breakpoint === DEVICE_TYPE.TABLET_M
+    ) {
+      setShortenPath(true);
+      return;
+    }
+
+    if (
+      ((element?.clientWidth || 0) > 130 &&
+        breakpoint === DEVICE_TYPE.MEDIUM_TABLET) ||
+      breakpoint === DEVICE_TYPE.TABLET
+    ) {
+      setShortenPath(true);
+      return;
+    }
+
+    if (
+      (element?.clientWidth || 0) > 260 &&
+      (breakpoint === DEVICE_TYPE.WEB || breakpoint === DEVICE_TYPE.MEDIUM_WEB)
+    ) {
+      setShortenPath(true);
+      return;
+    }
+
+    if ((element?.clientWidth || 0) > 165) {
+      setShortenPath(true);
+      return;
+    }
+
+    setShortenPath(false);
   }, [elementId, breakpoint]);
+
+  const length = useMemo(() => {
+    return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
+  }, [breakpoint]);
 
   const tokenPathDisplay = useMemo(() => {
     if (isNative) return "Native coin";
+
+    if (shortenPath) return "";
 
     const tokenPathArr = path?.split("/") ?? [];
 
     if (tokenPathArr?.length <= 0) return path;
 
-    const lastPath = tokenPathArr[tokenPathArr?.length - 1];
+    const replacedPath = path.replace("gno.land", "");
 
-    if (shortenPath) {
-      return "";
-    }
-
-    if (lastPath.length >= 12) {
+    if (replacedPath.length >= length) {
       return (
         "..." +
-        tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1)
+        replacedPath.slice(
+          replacedPath.length - length,
+          replacedPath.length - 1,
+        )
       );
     }
 
-    return path?.replace("gno.land", "...");
-  }, [isNative, path, shortenPath]);
+    return path.replace("gno.land", "...");
+  }, [isNative, length, path, shortenPath]);
 
   const onClickPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
