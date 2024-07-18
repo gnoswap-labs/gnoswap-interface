@@ -32,9 +32,7 @@ export default function PoolIncentivize() {
   const poolPath = router.getPoolPath();
   const { getGnotPath } = useGnotToGnot();
 
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
-    enabled: !!poolPath,
-  });
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string);
   const { isLoading: isLoadingCommon } = useLoading();
 
   const listBreadcrumb = useMemo(() => {

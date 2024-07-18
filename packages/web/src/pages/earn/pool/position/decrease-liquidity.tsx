@@ -29,9 +29,7 @@ export default function DecreaseLiquidity() {
   const router = useRouter();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
-    enabled: !!poolPath,
-  });
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string);
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 

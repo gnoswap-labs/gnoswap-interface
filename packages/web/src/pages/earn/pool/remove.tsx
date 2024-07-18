@@ -28,9 +28,7 @@ export default function Earn() {
   const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.getPoolPath();
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
-    enabled: !!poolPath,
-  });
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string);
 
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();

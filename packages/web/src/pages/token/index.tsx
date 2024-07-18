@@ -23,6 +23,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { formatPrice } from "@utils/new-number-utils";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { TokenError } from "@common/errors/token";
 
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
@@ -46,10 +47,12 @@ export default function Token() {
   }, []);
 
   const { data: token } = useGetTokenByPath(path, {
-    enabled: !!path,
     refetchInterval: 1000 * 10,
     onError: (err: any) => {
       if (err?.["response"]?.["status"] === 404) {
+        router.push("/");
+      }
+      if (err instanceof TokenError) {
         router.push("/");
       }
     },

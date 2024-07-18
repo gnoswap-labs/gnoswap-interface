@@ -33,14 +33,7 @@ export default function Pool() {
   const poolPath = router.getPoolPath();
   const { getGnotPath } = useGnotToGnot();
   const jumpFlagRef = useRef(false);
-  const { data } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath,
-    onError: (err: any) => {
-      if (err?.["response"]?.["status"] === 404) {
-        router.movePage("404");
-      }
-    },
-  });
+  const { data } = useGetPoolDetailByPath(poolPath);
 
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
