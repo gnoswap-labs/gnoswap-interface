@@ -17,6 +17,10 @@ export interface TokenInfoCellProps {
   breakpoint?: DEVICE_TYPE;
 }
 
+const DETERMIN_SHORT_SIZE_WEB = 260 as const;
+const DETERMIN_SHORT_SIZE_TABLET = 165 as const;
+const DETERMIN_SHORT_SIZE_MOBILE = 130 as const;
+
 function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const { name, path, symbol, logoURI } = token;
   const theme = useTheme();
@@ -31,7 +35,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     const element = document.getElementById(elementId);
 
     if (
-      (element?.clientWidth || 0) > 130 &&
+      (element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_MOBILE &&
       breakpoint === DEVICE_TYPE.MOBILE
     ) {
       setShortenPath(true);
@@ -39,7 +43,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     }
 
     if (
-      (element?.clientWidth || 0) > 130 &&
+      (element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_TABLET &&
       breakpoint === DEVICE_TYPE.TABLET_S
     ) {
       setShortenPath(true);
@@ -47,7 +51,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     }
 
     if (
-      (element?.clientWidth || 0) > 130 &&
+      (element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_TABLET &&
       breakpoint === DEVICE_TYPE.TABLET_M
     ) {
       setShortenPath(true);
@@ -55,7 +59,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     }
 
     if (
-      ((element?.clientWidth || 0) > 130 &&
+      ((element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_WEB &&
         breakpoint === DEVICE_TYPE.MEDIUM_TABLET) ||
       breakpoint === DEVICE_TYPE.TABLET
     ) {
@@ -64,14 +68,14 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     }
 
     if (
-      (element?.clientWidth || 0) > 260 &&
+      (element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_WEB &&
       (breakpoint === DEVICE_TYPE.WEB || breakpoint === DEVICE_TYPE.MEDIUM_WEB)
     ) {
       setShortenPath(true);
       return;
     }
 
-    if ((element?.clientWidth || 0) > 165) {
+    if ((element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_WEB) {
       setShortenPath(true);
       return;
     }
