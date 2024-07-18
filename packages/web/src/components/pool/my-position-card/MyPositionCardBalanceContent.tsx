@@ -30,7 +30,10 @@ export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({
             <span className="position">{balance.token.symbol}</span>
           </div>
           <span className="position">
-            {formatPoolPairAmount(balance.balance)} ({balance.percent})
+            {formatPoolPairAmount(balance.balance, {
+              isKMB: false,
+            })}{" "}
+            ({balance.percent})
           </span>
         </div>
       ))}
