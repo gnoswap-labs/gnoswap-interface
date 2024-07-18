@@ -219,7 +219,11 @@ export const INCENTIVE_TYPE_MAPPER = {
   NONE_INCENTIVIZED: "Non-Incentivized",
   EXTERNAL: "External-Incentivized",
 } as const;
-export type INCENTIVE_TYPE = "INCENTIVIZED" | "NONE_INCENTIVIZED" | "EXTERNAL";
+export type INCENTIVE_TYPE =
+  | "INCENTIVIZED"
+  | "NONE_INCENTIVIZED"
+  | "EXTERNAL"
+  | "INTERNAL";
 
 export const CHART_TYPE = {
   "7D": "7D",
