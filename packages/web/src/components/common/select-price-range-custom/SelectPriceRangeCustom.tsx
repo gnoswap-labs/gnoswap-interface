@@ -116,7 +116,7 @@ const SelectPriceRangeCustom = forwardRef<
       const compareTokenPaths = [
         checkGnotPath(tokenA.path),
         checkGnotPath(tokenB.path),
-      ];
+      ].sort();
       return (
         compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path)
       );
@@ -126,6 +126,7 @@ const SelectPriceRangeCustom = forwardRef<
       tokenA.path,
       tokenB.path,
     ]);
+    console.log("🚀 ~ flip ~ flip:", flip);
 
     const currentTokenA = useMemo(() => {
       return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
