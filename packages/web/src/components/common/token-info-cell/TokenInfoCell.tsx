@@ -94,7 +94,6 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
     if (tokenPathArr?.length <= 0) return path;
 
     const replacedPath = path.replace("gno.land", "");
-    console.log("🚀 ~ replacedPath:", replacedPath);
 
     if (replacedPath.length >= length) {
       return (
