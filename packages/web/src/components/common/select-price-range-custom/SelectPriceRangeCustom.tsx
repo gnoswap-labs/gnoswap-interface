@@ -126,7 +126,6 @@ const SelectPriceRangeCustom = forwardRef<
       tokenA.path,
       tokenB.path,
     ]);
-    console.log("🚀 ~ flip ~ flip:", flip);
 
     const currentTokenA = useMemo(() => {
       return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
