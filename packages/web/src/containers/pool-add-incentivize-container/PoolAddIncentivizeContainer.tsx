@@ -11,7 +11,7 @@ import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetPoolDetailByPath, useGetPoolList } from "@query/pools";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export const dummyDisclaimer =
@@ -24,8 +24,8 @@ const PoolAddIncentivizeContainer: React.FC = () => {
   const [period, setPeriod] = useAtom(EarnState.period);
   const [startDate, setStartDate] = useAtom(EarnState.date);
   const [, setDataModal] = useAtom(EarnState.dataModal);
-  const router = useRouter();
-  const poolPath = router.query["pool-path"] as string;
+  const router = useCustomRouter();
+  const poolPath = router.getPoolPath();
   const { getGnotPath } = useGnotToGnot();
 
   const { connected, connectAdenaClient, isSwitchNetwork } = useWallet();

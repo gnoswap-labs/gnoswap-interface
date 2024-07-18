@@ -26,6 +26,7 @@ interface AssetListTableProps {
   sortOption: AssetSortOption | undefined;
   sort: (head: ASSET_HEAD) => void;
   isSortOption: (head: ASSET_HEAD) => boolean;
+  moveTokenPage: (tokenPath: string) => void;
   breakpoint: DEVICE_TYPE;
 }
 
@@ -37,6 +38,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
   sortOption,
   sort,
   isSortOption,
+  moveTokenPage,
   breakpoint,
 }) => {
   const isAscendingOption = useCallback(
@@ -64,8 +66,8 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
     return breakpoint === DEVICE_TYPE.WEB
       ? ASSET_INFO
       : breakpoint !== DEVICE_TYPE.MOBILE
-        ? ASSET_INFO_TABLET
-        : ASSET_INFO_MOBILE;
+      ? ASSET_INFO_TABLET
+      : ASSET_INFO_MOBILE;
   }, [breakpoint]);
 
   return (
@@ -107,13 +109,23 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               asset={asset}
               deposit={deposit}
               withdraw={withdraw}
+              moveTokenPage={moveTokenPage}
               breakpoint={breakpoint}
             />
           ))}
-        {!isFetched && <TableSkeleton
-          className="skeleton"
-          info={breakpoint === DEVICE_TYPE.WEB ? ASSET_INFO : breakpoint !== DEVICE_TYPE.MOBILE ? ASSET_INFO_TABLET : ASSET_INFO_MOBILE}
-          breakpoint={breakpoint} />}
+        {!isFetched && (
+          <TableSkeleton
+            className="skeleton"
+            info={
+              breakpoint === DEVICE_TYPE.WEB
+                ? ASSET_INFO
+                : breakpoint !== DEVICE_TYPE.MOBILE
+                ? ASSET_INFO_TABLET
+                : ASSET_INFO_MOBILE
+            }
+            breakpoint={breakpoint}
+          />
+        )}
       </div>
     </AssetListTableWrapper>
   );

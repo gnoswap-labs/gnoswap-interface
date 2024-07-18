@@ -7,7 +7,7 @@ import EarnLayout from "@layouts/earn-layout/EarnLayout";
 import EarnIncentivizedPools from "@components/earn/earn-incentivized-pools/EarnIncentivizedPools";
 import EarnMyPositionContainer from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { formatAddress } from "@utils/string-utils";
 import { SEOInfo } from "@constants/common.constant";
@@ -28,8 +28,8 @@ export async function getServerSideProps({ locale }: { locale: string }) {
 
 export default function Earn() {
   const { account } = useWallet();
-  const router = useRouter();
-  const addr = router?.query?.addr as string;
+  const router = useCustomRouter();
+  const addr = router.getAddress();
   const isOtherPosition = !!(addr && addr !== account?.address);
 
   const seoInfo = useMemo(

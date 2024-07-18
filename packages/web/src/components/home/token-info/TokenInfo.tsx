@@ -18,8 +18,7 @@ import {
 import { TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
 import { Global, css } from "@emotion/react";
-import { makeId } from "@utils/common";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
 
 interface TokenInfoProps {
@@ -63,10 +62,10 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     graphStatus,
     isNative,
   } = item;
-  const router = useRouter();
+  const router = useCustomRouter();
 
   const onClickItem = (path: string) => {
-    router.push("/tokens/" + makeId(path));
+    router.movePageWithTokenPath("TOKEN", path);
   };
 
   const onClickPoolItem = (item?: MostLiquidPool) => {
@@ -76,7 +75,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
       item.tokenPair.tokenB.path
     }:${Number(item.feeRate.slice(0, item.feeRate.length - 1)) * 10000}`;
     if (!!item.tokenPair.tokenA.path || !!item.tokenPair.tokenB.path) {
-      location.href = `/earn/pool/${makeId(poolPath)}`;
+      router.movePageWithPoolPath("POOL", poolPath);
     }
   };
 

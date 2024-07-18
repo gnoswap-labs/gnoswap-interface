@@ -5,13 +5,12 @@ import PoolLayout from "@layouts/pool-layout/PoolLayout";
 import StakingContainer from "@containers/staking-container/StakingContainer";
 import PoolPairInformationContainer from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import MyLiquidityContainer from "@containers/my-liquidity-container/MyLiquidityContainer";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "@query/pools";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { encryptId } from "@utils/common";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
@@ -29,16 +28,16 @@ export async function getServerSideProps({ locale }: { locale: string }) {
 }
 
 export default function Pool() {
-  const router = useRouter();
+  const router = useCustomRouter();
   const { account } = useWallet();
-  const poolPath = (router.query["pool-path"] || "") as string;
+  const poolPath = router.getPoolPath();
   const { getGnotPath } = useGnotToGnot();
   const jumpFlagRef = useRef(false);
   const { data } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
     onError: (err: any) => {
       if (err?.["response"]?.["status"] === 404) {
-        router.push("/404");
+        router.movePage("404");
       }
     },
   });
@@ -57,7 +56,7 @@ export default function Pool() {
 
   const { isFetchedPosition, loading, positions } = usePositionData({
     address,
-    poolPath: encryptId(poolPath),
+    poolPath,
     queryOption: {
       enabled: !!poolPath,
     },
@@ -196,10 +195,7 @@ export default function Pool() {
   }, [data?.fee]);
 
   const seoInfo = useMemo(
-    () =>
-      SEOInfo[
-        address ? "/earn/pool/[pool-path]?address" : "/earn/pool/[pool-path]"
-      ],
+    () => SEOInfo[address ? "/earn/pool?address" : "/earn/pool"],
     [address],
   );
 

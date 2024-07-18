@@ -1,11 +1,11 @@
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import RepositionContainer from "@containers/reposition-container/RepositionContainer";
+import IncreaseLiquidityContainer from "@containers/increase-liquidity-container/IncreaseLiquidityContainer";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import RepositionLayout from "@layouts/reposition/RepositionLayout";
+import IncreaseLiquidityLayout from "@layouts/increase-liquidity-layout/IncreaseLiquidityLayout";
 import { DeviceSize } from "@styles/media";
 import useRouter from "@hooks/common/use-custom-router";
 import { useMemo } from "react";
@@ -13,14 +13,8 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { GetStaticPaths } from "next";
-
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
-  return {
-    paths: [], //indicates that no page needs be created at build time
-    fallback: "blocking", //indicates the type of fallback
-  };
-};
+import { makeRouteUrl } from "@utils/page.utils";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -30,11 +24,11 @@ export async function getStaticProps({ locale }: { locale: string }) {
   };
 }
 
-export default function EarnAdd() {
+export default function IncreaseLiquidity() {
   const { width } = useWindowSize();
   const router = useRouter();
-  const poolPath = router.query["pool-path"] || "";
-  const positionId = router.query["position-id"] || "";
+  const poolPath = router.getPoolPath();
+  const positionId = router.getPositionId();
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
@@ -51,14 +45,16 @@ export default function EarnAdd() {
                 getGnotPath(data?.tokenB).symbol
               } (${Number(data?.fee) / 10000}%)`
             : "...",
-        path: `/earn/pool/${router.query["pool-path"]}`,
+        path: makeRouteUrl(PAGE_PATH.POOL, {
+          [QUERY_PARAMETER.POOL_PATH]: poolPath,
+        }),
       },
-      { title: "Reposition", path: "" },
+      { title: "Increase Liquidity", path: "" },
     ];
   }, [data, width]);
 
   const seoInfo = useMemo(
-    () => SEOInfo["/earn/pool/[pool-path]/[position-id]/reposition"],
+    () => SEOInfo["/earn/pool/position/increase-liquidity"],
     [],
   );
 
@@ -70,7 +66,7 @@ export default function EarnAdd() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <RepositionLayout
+      <IncreaseLiquidityLayout
         header={<HeaderContainer />}
         breadcrumbs={
           <BreadcrumbsContainer
@@ -78,7 +74,7 @@ export default function EarnAdd() {
             isLoading={isLoadingCommon || isLoading}
           />
         }
-        reposition={<RepositionContainer />}
+        increaseLiquidity={<IncreaseLiquidityContainer />}
         footer={<Footer />}
       />
     </>

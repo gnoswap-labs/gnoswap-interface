@@ -14,7 +14,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 interface UseGetPositionsByAddressOptions {
   address?: string;
   isClosed?: boolean;
-  poolPath?: string;
+  poolPath?: string | null;
   queryOptions?: UseQueryOptions<PositionModel[], Error>;
 }
 
@@ -109,10 +109,6 @@ export const useGetLazyPositionBins = (
   });
 };
 
-function makeId(data: PoolModel[] | PositionModel[]) {
-  return data.map(item => item.id).join("_");
-}
-
 export const useMakePoolPositions = (
   positions: PositionModel[] | undefined,
   pools: PoolModel[],
@@ -120,7 +116,7 @@ export const useMakePoolPositions = (
   options?: UseQueryOptions<PoolPositionModel[], Error>,
 ) => {
   return useQuery<PoolPositionModel[], Error>({
-    queryKey: [QUERY_KEY.poolPositions, makeId(positions || [])],
+    queryKey: [QUERY_KEY.poolPositions, positions?.map(p => p.id).join(",")],
     queryFn: async () => {
       return new Promise(resolve => {
         const poolPositions: PoolPositionModel[] = [];

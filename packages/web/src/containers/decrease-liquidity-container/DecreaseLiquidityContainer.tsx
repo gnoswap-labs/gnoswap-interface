@@ -8,11 +8,8 @@ import React, { useState } from "react";
 
 const DecreaseLiquidityContainer: React.FC = () => {
   const router = useRouter();
-  const {slippage} = useSlippage();
-  const positionId =
-    (Array.isArray(router.query["position-id"])
-      ? router.query["position-id"][0]
-      : router.query["position-id"]) || "";
+  const { slippage } = useSlippage();
+  const positionId = router.getPositionId() || "";
   const [isWrap, setIsWrap] = useState(false);
 
   const {

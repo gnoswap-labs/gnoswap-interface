@@ -1,9 +1,9 @@
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import UnstakeLiquidityContainer from "@containers/unstake-position-container/UnstakePositionContainer";
+import RemoveLiquidityContainer from "@containers/remove-liquidity-container/RemoveLiquidityContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import UnstakeLiquidityLayout from "@layouts/unstake-liquidity-layout/UnstakeLiquidityLayout";
+import PoolRemoveLayout from "@layouts/pool-remove-layout/PoolRemoveLayout";
 import React, { useMemo } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
@@ -27,10 +27,11 @@ export async function getServerSideProps({ locale }: { locale: string }) {
 export default function Earn() {
   const { width } = useWindowSize();
   const router = useRouter();
-  const poolPath = router.query["pool-path"];
+  const poolPath = router.getPoolPath();
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
+
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 
@@ -46,7 +47,7 @@ export default function Earn() {
             : "...",
         path: `/earn/pool/${poolPath}`,
       },
-      { title: "Unstake Position", path: "" },
+      { title: "Remove Position", path: "" },
     ];
   }, [data, width]);
 
@@ -59,7 +60,7 @@ export default function Earn() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [data?.fee]);
 
-  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/unstake"], []);
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/remove"], []);
 
   const title = useMemo(() => {
     const tokenA = getGnotPath(data?.tokenA);
@@ -78,7 +79,7 @@ export default function Earn() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <UnstakeLiquidityLayout
+      <PoolRemoveLayout
         header={<HeaderContainer />}
         breadcrumbs={
           <BreadcrumbsContainer
@@ -86,7 +87,7 @@ export default function Earn() {
             isLoading={isLoadingCommon || isLoading}
           />
         }
-        unstakeLiquidity={<UnstakeLiquidityContainer />}
+        removeLiquidity={<RemoveLiquidityContainer />}
         footer={<Footer />}
       />
     </>

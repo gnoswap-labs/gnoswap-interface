@@ -55,11 +55,7 @@ export const useBackground = () => {
   }, [router.pathname]);
 
   const onPopPage = (): void => {
-    if (
-      ["/earn/add", "/earn/pool/[pool-path]", "/tokens/[token-path]"].includes(
-        router.pathname,
-      )
-    ) {
+    if (["/earn/add", "/earn/pool", "/token"].includes(router.pathname)) {
       setMemorizedPath(router.pathname);
     } else {
       setMemorizedPath(null);

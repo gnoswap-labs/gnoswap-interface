@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import TokenChart from "@components/token/token-chart/TokenChart";
-import useRouter from "@hooks/common/use-custom-router";
 import { IPriceResponse, IPrices1d } from "@repositories/token";
 import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
@@ -27,6 +26,7 @@ import {
 } from "@utils/chart";
 import BigNumber from "bignumber.js";
 import { formatPrice } from "@utils/new-number-utils";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -153,7 +153,7 @@ const priceChangeDetailInit = {
 const TokenChartContainer: React.FC = () => {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
   const [currentTab, setCurrentTab] = useState<TokenChartGraphPeriodType>("1D");
-  const router = useRouter();
+  const router = useCustomRouter();
   const [fromSelectToken, setFromSelectToken] = useAtom(
     TokenState.fromSelectToken,
   );
@@ -171,7 +171,7 @@ const TokenChartContainer: React.FC = () => {
       router.push("/");
     },
   });
-  const path = router.query["token-path"] as string;
+  const path = router.getTokenPath();
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,

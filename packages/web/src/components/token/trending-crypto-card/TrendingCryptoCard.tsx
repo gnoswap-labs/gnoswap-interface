@@ -4,14 +4,14 @@ import React from "react";
 import { NameSectionWrapper, wrapper } from "./TrendingCryptoCard.styles";
 import Link from "next/link";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { makeId } from "@utils/common";
+import { makeTokenRouteUrl } from "@utils/page.utils";
 interface TrendingCryptoCardProps {
   item: any;
 }
 
 const TrendingCryptoCard: React.FC<TrendingCryptoCardProps> = ({ item }) => {
   return (
-    <Link href={`/tokens/${makeId(item.path)}`}>
+    <Link href={makeTokenRouteUrl(item.path)}>
       <div css={wrapper}>
         <NameSectionWrapper>
           <MissingLogo

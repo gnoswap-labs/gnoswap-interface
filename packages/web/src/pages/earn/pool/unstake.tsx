@@ -1,18 +1,18 @@
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import PoolAddIncentivizeContainer from "@containers/pool-add-incentivize-container/PoolAddIncentivizeContainer";
+import UnstakeLiquidityContainer from "@containers/unstake-position-container/UnstakePositionContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import PoolIncentivizeLayout from "@layouts/pool-incentivize-layout/PoolIncentivizeLayout";
-import { DEVICE_TYPE } from "@styles/media";
+import UnstakeLiquidityLayout from "@layouts/unstake-liquidity-layout/UnstakeLiquidityLayout";
 import React, { useMemo } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
-import { useLoading } from "@hooks/common/use-loading";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import SEOHeader from "@components/common/seo-header/seo-header";
-import { makeSwapFeeTier } from "@utils/swap-utils";
+import { useLoading } from "@hooks/common/use-loading";
+import { DeviceSize } from "@styles/media";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
@@ -24,15 +24,14 @@ export async function getServerSideProps({ locale }: { locale: string }) {
   };
 }
 
-export default function PoolIncentivize() {
-  const { breakpoint } = useWindowSize();
+export default function Earn() {
+  const { width } = useWindowSize();
   const router = useRouter();
-  const { getGnotPath } = useGnotToGnot();
-  const poolPath = router.query["pool-path"];
-
+  const poolPath = router.getPoolPath();
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
+  const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 
   const listBreadcrumb = useMemo(() => {
@@ -40,17 +39,16 @@ export default function PoolIncentivize() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          breakpoint === DEVICE_TYPE.WEB ||
-          breakpoint === DEVICE_TYPE.MEDIUM_WEB
+          width > DeviceSize.mediumWeb
             ? `${getGnotPath(data?.tokenA).symbol}/${
                 getGnotPath(data?.tokenB).symbol
               } (${Number(data?.fee) / 10000}%)`
             : "...",
-        path: `/earn/pool/${router.query["pool-path"]}`,
+        path: `/earn/pool/${poolPath}`,
       },
-      { title: "Incentivize Pool", path: "" },
+      { title: "Unstake Position", path: "" },
     ];
-  }, [data, breakpoint]);
+  }, [data, width]);
 
   const feeStr = useMemo(() => {
     const feeTier = data?.fee;
@@ -61,10 +59,7 @@ export default function PoolIncentivize() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [data?.fee]);
 
-  const seoInfo = useMemo(
-    () => SEOInfo["/earn/pool/[pool-path]/incentivize"],
-    [],
-  );
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/unstake"], []);
 
   const title = useMemo(() => {
     const tokenA = getGnotPath(data?.tokenA);
@@ -83,7 +78,7 @@ export default function PoolIncentivize() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <PoolIncentivizeLayout
+      <UnstakeLiquidityLayout
         header={<HeaderContainer />}
         breadcrumbs={
           <BreadcrumbsContainer
@@ -91,7 +86,7 @@ export default function PoolIncentivize() {
             isLoading={isLoadingCommon || isLoading}
           />
         }
-        poolIncentivize={<PoolAddIncentivizeContainer />}
+        unstakeLiquidity={<UnstakeLiquidityContainer />}
         footer={<Footer />}
       />
     </>

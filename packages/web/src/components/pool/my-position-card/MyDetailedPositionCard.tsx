@@ -677,30 +677,24 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const handleSelect = (text: string) => {
     if (text == "Decrease Liquidity") {
       setSelectedPosition(position);
-      router.push(
-        "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/decrease-liquidity",
+      router.movePageWithPositionId(
+        "POSITION_DECREASE_LIQUIDITY",
+        position.poolPath,
+        position?.id,
       );
     } else if (text === "Increase Liquidity") {
       setSelectedPosition(position);
-      router.push(
-        "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/increase-liquidity",
+      router.movePageWithPositionId(
+        "POSITION_INCREASE_LIQUIDITY",
+        position.poolPath,
+        position?.id,
       );
     } else {
       setSelectedPosition(position);
-      router.push(
-        "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/reposition",
+      router.movePageWithPositionId(
+        "POSITION_REPOSITION",
+        position.poolPath,
+        position?.id,
       );
     }
   };

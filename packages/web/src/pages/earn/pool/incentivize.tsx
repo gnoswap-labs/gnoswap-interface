@@ -1,20 +1,22 @@
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import StakePositionContainer from "@containers/stake-position-container/StakePositionContainer";
+import PoolAddIncentivizeContainer from "@containers/pool-add-incentivize-container/PoolAddIncentivizeContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import StakePositionLayout from "@layouts/stake-position-layout/StakePositionLayout";
+import PoolIncentivizeLayout from "@layouts/pool-incentivize-layout/PoolIncentivizeLayout";
+import { DEVICE_TYPE } from "@styles/media";
 import React, { useMemo } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
-import { DeviceSize } from "@styles/media";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import SEOHeader from "@components/common/seo-header/seo-header";
-import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { makeRouteUrl } from "@utils/page.utils";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
@@ -24,14 +26,15 @@ export async function getServerSideProps({ locale }: { locale: string }) {
   };
 }
 
-export default function Earn() {
-  const { width } = useWindowSize();
+export default function PoolIncentivize() {
+  const { breakpoint } = useWindowSize();
   const router = useRouter();
-  const poolPath = router.query["pool-path"];
+  const poolPath = router.getPoolPath();
+  const { getGnotPath } = useGnotToGnot();
+
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
-  const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 
   const listBreadcrumb = useMemo(() => {
@@ -39,16 +42,19 @@ export default function Earn() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          width >= DeviceSize.mediumWeb
+          breakpoint === DEVICE_TYPE.WEB ||
+          breakpoint === DEVICE_TYPE.MEDIUM_WEB
             ? `${getGnotPath(data?.tokenA).symbol}/${
                 getGnotPath(data?.tokenB).symbol
               } (${Number(data?.fee) / 10000}%)`
             : "...",
-        path: `/earn/pool/${poolPath}`,
+        path: makeRouteUrl(PAGE_PATH.POOL, {
+          [QUERY_PARAMETER.POOL_PATH]: poolPath,
+        }),
       },
-      { title: "Stake Position", path: "" },
+      { title: "Incentivize Pool", path: "" },
     ];
-  }, [data, width]);
+  }, [data, breakpoint]);
 
   const feeStr = useMemo(() => {
     const feeTier = data?.fee;
@@ -59,7 +65,7 @@ export default function Earn() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [data?.fee]);
 
-  const seoInfo = useMemo(() => SEOInfo["/earn/pool/[pool-path]/stake"], []);
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/incentivize"], []);
 
   const title = useMemo(() => {
     const tokenA = getGnotPath(data?.tokenA);
@@ -78,7 +84,7 @@ export default function Earn() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <StakePositionLayout
+      <PoolIncentivizeLayout
         header={<HeaderContainer />}
         breadcrumbs={
           <BreadcrumbsContainer
@@ -86,7 +92,7 @@ export default function Earn() {
             isLoading={isLoadingCommon || isLoading}
           />
         }
-        stakeLiquidity={<StakePositionContainer />}
+        poolIncentivize={<PoolAddIncentivizeContainer />}
         footer={<Footer />}
       />
     </>

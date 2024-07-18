@@ -2,7 +2,6 @@ import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { QUERY_KEY } from "./types";
-import { encryptId } from "@utils/common";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { priceToTick } from "@utils/swap-utils";
@@ -10,6 +9,7 @@ import { SwapFeeTierType } from "@constants/option.constant";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { useRouter } from "next/navigation";
 import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolError } from "@common/errors/pool";
 
 export const useGetPoolCreationFee = (
   options?: UseQueryOptions<number, Error>,
@@ -121,17 +121,19 @@ export const useGetIncentivizePoolList = (
 };
 
 export const useGetPoolDetailByPath = (
-  path: string,
+  path: string | null,
   options?: UseQueryOptions<PoolDetailModel, Error>,
 ) => {
   const { poolRepository } = useGnoswapContext();
-  const convertPath = encryptId(path);
   const router = useRouter();
 
   return useQuery<PoolDetailModel, Error>({
-    queryKey: [QUERY_KEY.poolDetail, convertPath],
+    queryKey: [QUERY_KEY.poolDetail, path],
     queryFn: async () => {
-      const data = await poolRepository.getPoolDetailByPoolPath(convertPath);
+      if (!path) {
+        throw new PoolError("NOT_FOUND_POOL");
+      }
+      const data = await poolRepository.getPoolDetailByPoolPath(path);
       return data;
     },
     onError: (err: any) => {
@@ -140,6 +142,7 @@ export const useGetPoolDetailByPath = (
       }
     },
     ...options,
+    enabled: poolRepository && options?.enabled !== false,
   });
 };
 
@@ -149,12 +152,11 @@ export const useGetSimpleBinsByPath = (
   options?: UseQueryOptions<PoolBinModel[], Error>,
 ) => {
   const { poolRepository } = useGnoswapContext();
-  const convertPath = encryptId(path);
   const count = 20;
   return useQuery<PoolBinModel[], Error>({
-    queryKey: [QUERY_KEY.lazyBins, convertPath],
+    queryKey: [QUERY_KEY.lazyBins, path],
     queryFn: async () => {
-      return poolRepository.getBinsOfPoolByPath(convertPath, count);
+      return poolRepository.getBinsOfPoolByPath(path, count);
     },
     ...options,
     enabled: enabled && !!path,
@@ -167,11 +169,10 @@ export const useGetBinsByPath = (
   options?: UseQueryOptions<PoolBinModel[], Error>,
 ) => {
   const { poolRepository } = useGnoswapContext();
-  const convertPath = encryptId(path);
   return useQuery<PoolBinModel[], Error>({
-    queryKey: [QUERY_KEY.bins, convertPath],
+    queryKey: [QUERY_KEY.bins, path],
     queryFn: async () => {
-      return poolRepository.getBinsOfPoolByPath(convertPath, count);
+      return poolRepository.getBinsOfPoolByPath(path, count);
     },
     ...options,
   });
@@ -237,7 +238,7 @@ export const useGetPoolStakingListByPoolPath = (
     queryKey: [QUERY_KEY.poolStakingList, poolPath],
     queryFn: async () => {
       const data = await poolRepository.getPoolStakingList(
-        encodeURIComponent(encryptId(poolPath)),
+        encodeURIComponent(poolPath),
       );
 
       return data;
