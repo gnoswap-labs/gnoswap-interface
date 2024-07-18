@@ -44,7 +44,6 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd
       ? Number(tokenPrices[tokenA.priceID]?.usd)
       : null;
-      
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd
       ? Number(tokenPrices[tokenB.priceID]?.usd)
       : null;
@@ -62,18 +61,14 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
     return [
       {
         token: tokenA,
-        amount: pooledTokenAAmount
-          ? makeDisplayTokenAmount(tokenA, pooledTokenAAmount)
-          : null,
+        amount: pooledTokenAAmount,
         amountUSD: formatOtherPrice(tokenAUSD, {
           isKMB: false,
         }),
       },
       {
         token: tokenB,
-        amount: pooledTokenBAmount
-          ? makeDisplayTokenAmount(tokenA, pooledTokenBAmount)
-          : null,
+        amount: pooledTokenBAmount,
         amountUSD: formatOtherPrice(tokenBUSD, {
           isKMB: false,
         }),
