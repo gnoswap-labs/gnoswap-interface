@@ -106,22 +106,22 @@ export const formatTokenExchangeRate = (
 
   if (
     inputAsNumber.isLessThan(1) &&
+    decimalPart.length > maxSignificantDigits &&
     significantNumberLength > maxSignificantDigits
   ) {
     if (
       decimalPart?.length > maxSignificantDigits &&
       significantNumberLength > maxSignificantDigits
     ) {
-      return numberWithSignificantPlus.substring(
-        0,
-        numberWithSignificantPlus.length - 1,
-      );
+      return BigNumber(
+        numberWithSignificantPlus.substring(
+          0,
+          numberWithSignificantPlus.length - 1,
+        ),
+      ).toFormat();
     }
 
-    return BigNumber(inputAsNumber).toFormat(
-      maxSignificantDigits,
-      BigNumber.ROUND_DOWN,
-    );
+    return BigNumber(inputAsNumber).toFormat();
   }
 
   const numberWithSignificant = inputAsNumber
@@ -131,10 +131,7 @@ export const formatTokenExchangeRate = (
       maximumSignificantDigits: maxSignificantDigits,
     });
 
-  return BigNumber(numberWithSignificant.replace(/,/g, "")).toFormat(
-    significantNumberLength - 1,
-    BigNumber.ROUND_DOWN,
-  );
+  return BigNumber(numberWithSignificant.replace(/,/g, "")).toFormat();
 };
 
 export const convertToKMB = (
