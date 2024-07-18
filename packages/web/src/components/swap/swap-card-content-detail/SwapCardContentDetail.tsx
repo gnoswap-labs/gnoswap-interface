@@ -15,6 +15,7 @@ import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { IconGasFilled } from "@components/common/icons/IconsGasFilled";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { useTranslation } from "react-i18next";
 
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -38,6 +39,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   priceImpactStatus,
   swapTokenInfo,
 }) => {
+  const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const [openedDetailInfo, setOpenedDetailInfo] = useState(false);
 
@@ -105,7 +107,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
             )}
             {isLoading && (
               <div className="loading-change">
-                <LoadingSpinner /> Fetching Best Price...
+                <LoadingSpinner /> {t("Swap:fetchingPrice")}
               </div>
             )}
             <div className="price-info">

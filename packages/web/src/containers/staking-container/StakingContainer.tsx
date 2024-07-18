@@ -50,6 +50,11 @@ const StakingContainer: React.FC = () => {
 
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
+    refetchInterval: () => {
+      if (!!poolPath) return 10_000;
+
+      return false;
+    },
   });
   const stakedPositions = useMemo(
     () => allPositions.filter(item => item.staked),

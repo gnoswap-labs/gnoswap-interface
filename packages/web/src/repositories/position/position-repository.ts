@@ -13,8 +13,14 @@ import {
   DecreaseLiquiditySuccessResponse,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
 } from "./response";
-import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
+import {
+  DecreaseLiquidityRequest,
+  IncreaseLiquidityRequest,
+  RepositionLiquidityRequest,
+} from "./request";
 import { PositionBinModel } from "@models/position/position-bin-model";
 
 export interface PositionRepository {
@@ -53,6 +59,14 @@ export interface PositionRepository {
   ) => Promise<
     WalletResponse<
       DecreaseLiquiditySuccessResponse | DecreaseLiquidityFailedResponse | null
+    >
+  >;
+
+  repositionLiquidity: (
+    request: RepositionLiquidityRequest,
+  ) => Promise<
+    WalletResponse<
+      RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
     >
   >;
 

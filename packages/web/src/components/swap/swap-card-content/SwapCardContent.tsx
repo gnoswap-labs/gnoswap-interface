@@ -17,6 +17,7 @@ import BigNumber from "bignumber.js";
 import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
 import { useTheme } from "@emotion/react";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { useTranslation } from "react-i18next";
 
 interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
@@ -50,6 +51,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   priceImpactStatus,
   isSameToken,
 }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
@@ -166,7 +168,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             }`}
             onClick={handleAutoFillTokenA}
           >
-            Balance: {swapTokenInfo.tokenABalance}
+            {t("business:balance")}: {swapTokenInfo.tokenABalance}
           </span>
         </div>
         <div className="arrow">
@@ -217,7 +219,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             }`}
             onClick={handleAutoFillTokenB}
           >
-            Balance: {swapTokenInfo.tokenBBalance}
+            {t("business:balance")}: {swapTokenInfo.tokenBBalance}
           </span>
         </div>
       </div>

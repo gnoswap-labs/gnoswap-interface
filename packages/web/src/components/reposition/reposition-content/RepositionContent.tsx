@@ -3,27 +3,23 @@ import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import {
-  INCREASE_BUTTON_TYPE,
-  IPriceRange,
-} from "@hooks/increase/use-increase-handle";
+import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
-import React from "react";
+import React, { useMemo } from "react";
 import BalanceChange from "../balance-change/BalanceChange";
 import RepositionSelectPosition from "../reposition-select-position/RepositionSelectPosition";
 import RepositionSelectRange from "../reposition-select-range/RepositionSelectRange";
 import { ToolTipContentWrapper } from "../reposition-select-range/RepositionSelectRange.styles";
 import { RepositionContentWrapper } from "./RepositionContent.styles";
+import { REPOSITION_BUTTON_TYPE } from "@hooks/reposition/use-reposition-handle";
 
 interface RepositionContentProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   fee: string;
-  maxPriceStr: string;
-  minPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   aprFee: number;
   priceRangeSummary: IPriceRange;
@@ -34,24 +30,24 @@ interface RepositionContentProps {
   changeTokenBAmount: (amount: string) => void;
   slippage: number;
   changeSlippage: (value: number) => void;
-  buttonType: INCREASE_BUTTON_TYPE;
+  buttonType: REPOSITION_BUTTON_TYPE;
   onSubmit: () => void;
   selectPool: SelectPool;
   priceRanges: AddLiquidityPriceRage[];
   priceRange: AddLiquidityPriceRage;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  resetRange: () => void;
   currentAmounts: { amountA: string; amountB: string } | null;
   repositionAmounts: { amountA: string | null; amountB: string | null } | null;
   selectedPosition: PoolPositionModel | null;
   isLoadingPosition: boolean;
+  isSkipSwap: boolean;
 }
 
 const RepositionContent: React.FC<RepositionContentProps> = ({
   tokenA,
   tokenB,
   fee,
-  minPriceStr,
-  maxPriceStr,
   rangeStatus,
   aprFee,
   priceRangeSummary,
@@ -60,11 +56,31 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   priceRange,
   priceRanges,
   changePriceRange,
+  resetRange,
   currentAmounts,
   repositionAmounts,
   selectedPosition,
   isLoadingPosition,
+  buttonType,
+  isSkipSwap,
 }) => {
+  const submitButtonText = useMemo(() => {
+    if (buttonType === "INSUFFICIENT_LIQUIDITY") {
+      return "Insufficient Liquidity";
+    }
+    if (buttonType === "NON_SELECTED_RANGE") {
+      return "Select Range";
+    }
+    return "Reposition";
+  }, [buttonType]);
+
+  const isSubmit = useMemo(() => {
+    if (buttonType === "LOADING" && isSkipSwap) {
+      return true;
+    }
+    return buttonType === "REPOSITION";
+  }, [buttonType, isSkipSwap]);
+
   return (
     <RepositionContentWrapper>
       <div className="resposition-content-header">
@@ -88,8 +104,6 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           tokenA={tokenA}
           tokenB={tokenB}
           fee={fee}
-          minPriceStr={minPriceStr}
-          maxPriceStr={maxPriceStr}
           rangeStatus={rangeStatus}
           priceRangeSummary={priceRangeSummary}
           selectedPosition={selectedPosition}
@@ -102,14 +116,13 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           tokenA={tokenA}
           tokenB={tokenB}
           fee={fee}
-          minPriceStr={minPriceStr}
-          maxPriceStr={maxPriceStr}
           rangeStatus={rangeStatus}
           priceRangeSummary={priceRangeSummary}
           selectPool={selectPool}
           priceRanges={priceRanges}
           priceRange={priceRange}
           changePriceRange={changePriceRange}
+          resetRange={resetRange}
           isLoadingPosition={isLoadingPosition}
         />
       </article>
@@ -128,11 +141,12 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
 
       <Button
         onClick={onSubmit}
-        text="Reposition"
+        text={submitButtonText}
         style={{
-          hierarchy: ButtonHierarchy.Primary,
+          hierarchy: isSubmit ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
           fullWidth: true,
         }}
+        disabled={!isSubmit}
         className="button-confirm"
       />
     </RepositionContentWrapper>

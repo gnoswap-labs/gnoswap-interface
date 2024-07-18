@@ -56,6 +56,8 @@ export const SwapLayoutWrapper = styled.div`
   }
 
   .page-name {
+    white-space: nowrap;
+
     ${fonts.h3};
     ${media.tablet} {
       ${fonts.h4};

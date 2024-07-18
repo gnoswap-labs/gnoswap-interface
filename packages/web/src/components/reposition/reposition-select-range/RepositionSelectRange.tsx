@@ -15,8 +15,6 @@ export interface RepositionSelectRangeProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   fee: string;
-  maxPriceStr: string;
-  minPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   aprFee: number;
   priceRangeSummary: IPriceRange;
@@ -24,6 +22,7 @@ export interface RepositionSelectRangeProps {
   priceRanges: AddLiquidityPriceRage[];
   priceRange: AddLiquidityPriceRage;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  resetRange: () => void;
   isLoadingPosition: boolean;
 }
 
@@ -31,8 +30,6 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
   tokenA,
   tokenB,
   fee,
-  minPriceStr,
-  maxPriceStr,
   rangeStatus,
   aprFee,
   priceRangeSummary,
@@ -40,6 +37,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
   priceRange,
   priceRanges,
   changePriceRange,
+  resetRange,
   isLoadingPosition,
 }) => {
   const [openedPriceRange, setOpenedPriceRange] = useState(true);
@@ -71,6 +69,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
         changePriceRange={changePriceRange}
         changeStartingPrice={() => {}}
         selectPool={selectPool}
+        resetRange={resetRange}
         showDim={false}
         handleSwapValue={() => {}}
         isEmptyLiquidity={true}
@@ -81,8 +80,6 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
         tokenA={tokenA}
         tokenB={tokenB}
         fee={fee}
-        minPriceStr={minPriceStr}
-        maxPriceStr={maxPriceStr}
         rangeStatus={rangeStatus}
         priceRangeSummary={priceRangeSummary}
         isLoadingPosition={isLoadingPosition}

@@ -5,6 +5,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { capitalize } from "@utils/string-utils";
+import { useCallback } from "react";
 import * as S from "./IncentivizeTokenDetailTooltipContent.styles";
 
 type Props = {
@@ -15,8 +16,12 @@ type Props = {
 function IncentivizeTokenDetailTooltipContent({ poolStakings }: Props) {
   const { getGnotPath } = useGnotToGnot();
 
+  const displayRemainingAmount = useCallback((staking: PoolStakingModel) => {
+    return staking.incentiveType !== "INTERNAL";
+  }, []);
+
   return (
-    <S.IncentivizeTokenDetailTooltipContent>
+    <S.IncentivizeTokenDetailTooltipContent key={JSON.stringify(poolStakings)}>
       {poolStakings.map((item, index) => {
         const tokenData = getGnotPath(item.rewardToken);
 
@@ -56,15 +61,17 @@ function IncentivizeTokenDetailTooltipContent({ poolStakings }: Props) {
                     })}
                   </S.ItemDataGridValue>
                 </S.DataGridItem>
-                <S.DataGridItem>
-                  <S.ItemDataGridLabel>Remaining Amount</S.ItemDataGridLabel>
-                  <S.ItemDataGridValue>
-                    {formatPoolPairAmount(item.remainingAmount, {
-                      isKMB: false,
-                      decimals: item.rewardToken.decimals,
-                    })}
-                  </S.ItemDataGridValue>
-                </S.DataGridItem>
+                {displayRemainingAmount(item) && (
+                  <S.DataGridItem>
+                    <S.ItemDataGridLabel>Remaining Amount</S.ItemDataGridLabel>
+                    <S.ItemDataGridValue>
+                      {formatPoolPairAmount(item.remainingAmount, {
+                        isKMB: false,
+                        decimals: item.rewardToken.decimals,
+                      })}
+                    </S.ItemDataGridValue>
+                  </S.DataGridItem>
+                )}
               </S.DataGrid>
             </S.TokenItem>
             {index !== poolStakings.length - 1 && (

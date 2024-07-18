@@ -141,7 +141,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
                 })}
             <IconButton
               onClick={() => {
-                alert("open Link");
+                window.open(item.explorerUrl, "_blank");
               }}
             >
               <IconOpenLink className="action-icon" />

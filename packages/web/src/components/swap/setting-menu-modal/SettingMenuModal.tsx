@@ -10,7 +10,12 @@ import {
 } from "./SettingMenuModal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { isAmount } from "@common/utils/data-check-util";
-import { DEFAULT_SLIPPAGE, MAX_SLIPPAGE, MIN_SLIPPAGE } from "@constants/option.constant";
+import {
+  DEFAULT_SLIPPAGE,
+  MAX_SLIPPAGE,
+  MIN_SLIPPAGE,
+} from "@constants/option.constant";
+import { useTranslation } from "react-i18next";
 
 interface SettingMenuModalProps {
   slippage: number;
@@ -31,7 +36,8 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   const resetButtonRef = useRef<HTMLButtonElement | null>(null);
   const wrapperInputRef = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLDivElement | null>(null);
-  
+  const { t } = useTranslation();
+
   const closeWithoutUpdate = useCallback(() => {
     changeSlippage(slippage);
     close();
@@ -48,62 +54,68 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
     }
     close();
   }, [close, changeSlippage]);
-  
+
   const TooltipFloatingContent = (
     <ModalTooltipWrap>
       <div className="tooltip-wrap">
-        <p>
-          Your transactions will revert if the price <br />
-          changes unfavorably by more than this <br />
-          percentage.
-        </p>
+        <p
+          dangerouslySetInnerHTML={{
+            __html: t("Swap:settingModal.slipTolTooltip"),
+          }}
+        ></p>
       </div>
     </ModalTooltipWrap>
   );
 
-  const onChangeSlippage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (value !== "" && !isAmount(value)) return;
-    if (/^\d{0,10}(\.\d{0,2})?$/.test(value)) {
-      setTmpSlippage(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
-    }
-  }, [setTmpSlippage]);
+  const onChangeSlippage = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      if (value !== "" && !isAmount(value)) return;
+      if (/^\d{0,10}(\.\d{0,2})?$/.test(value)) {
+        setTmpSlippage(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
+      }
+    },
+    [setTmpSlippage],
+  );
 
   const onClickReset = useCallback(() => {
     setTmpSlippage(DEFAULT_SLIPPAGE.toString());
   }, [setTmpSlippage]);
 
-  const handleEnterKey = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      const value = event.currentTarget.value;
-      if (inputRef && inputRef.current) {
-        inputRef.current.blur();
+  const handleEnterKey = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") {
+        const value = event.currentTarget.value;
+        if (inputRef && inputRef.current) {
+          inputRef.current.blur();
+        }
+        if (value === "") {
+          changeSlippage(MIN_SLIPPAGE);
+          setTmpSlippage(MIN_SLIPPAGE.toString());
+        } else if (Number(value) > MAX_SLIPPAGE) {
+          changeSlippage(MAX_SLIPPAGE);
+          setTmpSlippage(MAX_SLIPPAGE.toString());
+        } else {
+          changeSlippage(Number(value));
+        }
+        close();
       }
-      if (value === "") {
-        changeSlippage(MIN_SLIPPAGE);
-        setTmpSlippage(MIN_SLIPPAGE.toString());
-      } else if (Number(value) > MAX_SLIPPAGE) {
-        changeSlippage(MAX_SLIPPAGE);
-        setTmpSlippage(MAX_SLIPPAGE.toString());
-      } else {
-        changeSlippage(Number(value));
-      }
-      close();
-    }
-  }, [changeSlippage, setTmpSlippage, close]);
-  
+    },
+    [changeSlippage, setTmpSlippage, close],
+  );
+
   return (
     <>
-      <SettingMenuModalWrapper ref={settingMenuRef} className={className} >
+      <SettingMenuModalWrapper ref={settingMenuRef} className={className}>
         <div className="modal-body">
           <div className="modal-header">
-            <span>Settings</span>
+            <span>{t("Swap:settingModal.title")}</span>
             <div className="close-wrap" onClick={close} ref={closeRef}>
               <IconClose className="close-icon" />
             </div>
           </div>
           <div className="title">
-            <span>Slippage tolerance</span>
+            <span>{t("Swap:settingModal.slipTol")}</span>
             <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
               <div className="info-wrap">
                 <IconInfo className="info-icon" />
@@ -112,7 +124,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
           </div>
           <div className="setting-input">
             <Button
-              text="Auto"
+              text={t("Swap:settingModal.autoButton")}
               style={{
                 width: 62,
                 height: 36,
@@ -137,7 +149,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
           </div>
         </div>
       </SettingMenuModalWrapper>
-      <Overlay onClick={closeWithUpdate}/>
+      <Overlay onClick={closeWithUpdate} />
     </>
   );
 };

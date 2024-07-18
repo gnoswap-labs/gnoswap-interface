@@ -3,7 +3,6 @@ import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
 } from "@constants/option.constant";
-import { POSITION_CONTENT_LABEL } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
@@ -28,6 +27,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconStar from "../icons/IconStar";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -51,6 +51,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   themeKey,
   tokenPrices,
 }) => {
+  const { t } = useTranslation();
+
   const GRAPH_WIDTH = 290;
   const GRAPH_HEIGHT = 80;
   const { pool } = position;
@@ -247,7 +249,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return formatTokenExchangeRate(minPrice, {
       minLimit: 0.000001,
       maxSignificantDigits: 6,
-      fixedDecimalDigits: 6,
       isInfinite: minPrice === "∞",
     });
   }, [position.tickLower, position.pool.fee, isFullRange]);
@@ -387,17 +388,21 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           <div className="list-wrapper">
             <div className="list-header">
-              <span className="label-text">{POSITION_CONTENT_LABEL.VALUE}</span>
-              <span className="label-text">{POSITION_CONTENT_LABEL.APR}</span>
+              <span className="label-text">
+                {t("Earn:positions.card.value")}
+              </span>
+              <span className="label-text">APR</span>
             </div>
             <div className="list-content">
               <span>{positionUsdValueStr}</span>
               <span className="apr-value">{aprStr}</span>
             </div>
             <div className="list-header mt-4">
-              <span className="label-text">{POSITION_CONTENT_LABEL.DAILY}</span>
               <span className="label-text">
-                {POSITION_CONTENT_LABEL.CLAIMABLE}
+                {t("Earn:positions.card.dailyEarn")}
+              </span>
+              <span className="label-text">
+                {t("Earn:positions.card.claimRewards")}
               </span>
             </div>
             <div className="list-content">
@@ -411,7 +416,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             onMouseOut={onMouseoutViewMyRange}
           >
             <span onClick={onClickViewRange}>
-              View my range <IconStrokeArrowUp />
+              {t("Earn:positions.card.viewRange")} <IconStrokeArrowUp />
             </span>
           </div>
           <div
@@ -422,7 +427,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           >
             <div className="view-my-range">
               <span onClick={onClickViewRange}>
-                Hide my range <IconStrokeArrowDown />
+                {t("Earn:positions.card.hideRange")} <IconStrokeArrowDown />
               </span>
             </div>
             {isFetchedBins ? (

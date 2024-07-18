@@ -188,7 +188,6 @@ const TokenChartContainer: React.FC = () => {
     data: { usd: currentPrice, pricesBefore = priceChangeDetailInit } = {},
   } = useGetTokenPricesByPath(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
-    refetchInterval: 1000 * 10,
   });
 
   const [componentRef, size] = useComponentSize(

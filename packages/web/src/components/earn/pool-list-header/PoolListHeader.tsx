@@ -5,6 +5,7 @@ import { POOL_TYPE } from "@containers/pool-list-container/PoolListContainer";
 import { PoolHeaderWrapper } from "./PoolListHeader.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import IconSearch from "@components/common/icons/IconSearch";
+import { useTranslation } from "react-i18next";
 
 interface PoolListHeaderProps {
   poolType: POOL_TYPE;
@@ -27,6 +28,8 @@ const PoolListHeader: React.FC<PoolListHeaderProps> = ({
   onTogleSearch,
   searchRef,
 }) => {
+  const { t } = useTranslation();
+
   const searchInputWidth = useMemo(() => {
     if (breakpoint === DEVICE_TYPE.WEB) return 300;
     if (breakpoint === DEVICE_TYPE.TABLET_M) return 180;
@@ -37,7 +40,7 @@ const PoolListHeader: React.FC<PoolListHeaderProps> = ({
   return (
     <PoolHeaderWrapper>
       <div className="title-container">
-        <h2>Pools</h2>
+        <h2>{t("Earn:poolList.title")}</h2>
         {breakpoint !== DEVICE_TYPE.MOBILE ? (
           <SelectTab
             selectType={poolType}

@@ -1,5 +1,6 @@
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   RangeDot,
   RangeBadgeText,
@@ -13,16 +14,23 @@ export interface RangeBadgeProps {
   isClosed?: boolean;
 }
 
-const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isShorten, isClosed }) => {
+const RangeBadge: React.FC<RangeBadgeProps> = ({
+  status,
+  className,
+  isShorten,
+  isClosed,
+}) => {
+  const { t } = useTranslation();
+
   const statusText = useMemo(() => {
-    if (isClosed) return "Closed";
+    if (isClosed) return t("common:closed");
 
     if (isShorten) {
       switch (status) {
         case RANGE_STATUS_OPTION.IN:
-          return "In";
+          return t("business:rangeStatus.inRange", { context: "short" });
         case RANGE_STATUS_OPTION.OUT:
-          return "Out";
+          return t("business:rangeStatus.outRange", { context: "short" });
         case RANGE_STATUS_OPTION.NONE:
         default:
           return "";
@@ -31,21 +39,21 @@ const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isShorten, i
 
     switch (status) {
       case RANGE_STATUS_OPTION.IN:
-        return "In-range";
+        return t("business:rangeStatus.inRange", { context: "short" });
       case RANGE_STATUS_OPTION.OUT:
-        return "Out-range";
+        return t("business:rangeStatus.outRange");
       case RANGE_STATUS_OPTION.NONE:
       default:
-        return "Closed";
+        return t("common:closed");
     }
-  }, [isClosed, isShorten, status]);
+  }, [isClosed, isShorten, status, t]);
 
-  return <RangeBadgeWrapper className={className} >
-    <RangeDot status={status} />
-    <RangeBadgeText status={status}>
-      {statusText}
-    </RangeBadgeText>
-  </RangeBadgeWrapper >;
+  return (
+    <RangeBadgeWrapper className={className}>
+      <RangeDot status={status} />
+      <RangeBadgeText status={status}>{statusText}</RangeBadgeText>
+    </RangeBadgeWrapper>
+  );
 };
 
 export default RangeBadge;

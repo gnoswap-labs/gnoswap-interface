@@ -5,8 +5,8 @@ interface ContentToolTipProps {
   themeKey: "dark" | "light";
 }
 export const BaseTooltipWrapper = styled.div`
+  cursor: default;
 `;
-
 
 export const Content = styled.div<ContentToolTipProps>`
   color: ${({ theme }) => theme.color.text02};
@@ -17,7 +17,9 @@ export const Content = styled.div<ContentToolTipProps>`
   width: max-content;
   max-width: calc(100vw - 10px);
   box-shadow: ${({ themeKey }) => {
-    return themeKey === "dark" ? "10px 14px 60px 0px rgba(0, 0, 0, 0.4)" : "10px 14px 48px 0px rgba(0, 0, 0, 0.12)";
+    return themeKey === "dark"
+      ? "10px 14px 60px 0px rgba(0, 0, 0, 0.4)"
+      : "10px 14px 48px 0px rgba(0, 0, 0, 0.12)";
   }};
   ${media.mobile} {
     padding: 12px;

@@ -15,6 +15,7 @@ import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { useTranslation } from "react-i18next";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -431,14 +432,12 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         ? formatTokenExchangeRate(tokenAAmountStr.toString(), {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
-            fixedDecimalDigits: 6,
           })
         : "-",
       tokenBAmount: tokenBAmountStr
         ? formatTokenExchangeRate(tokenBAmountStr.toString(), {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
-            fixedDecimalDigits: 6,
           })
         : "-",
       myTokenAAmount:
@@ -449,7 +448,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           : formatTokenExchangeRate(myTokenAAmountStr.toString(), {
               maxSignificantDigits: 6,
               minLimit: 0.000001,
-              fixedDecimalDigits: 6,
             }) || "-",
       myTokenBAmount:
         index > 19
@@ -459,7 +457,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           : formatTokenExchangeRate(myTokenBAmountStr.toString(), {
               maxSignificantDigits: 6,
               minLimit: 0.000001,
-              fixedDecimalDigits: 6,
             }) || "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
@@ -512,7 +509,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
                 maxSignificantDigits: 6,
                 minLimit: 0.000001,
                 isInfinite: priceStr === "∞",
-                fixedDecimalDigits: 6,
               });
             }
             return acc;
@@ -627,6 +623,8 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
   tooltipInfo,
   isPosition,
 }) => {
+  const { t } = useTranslation();
+
   const tokenAPriceString = useMemo(() => {
     if (tooltipInfo === null) {
       return "-";
@@ -675,8 +673,8 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
     <div className="tooltip-wrapper">
       <div className="header">
         <div className="row">
-          <span className="token">Quote</span>
-          <span className="price-range">Current Price</span>
+          <span className="token">{t("common:poolGraph.tooltip.quote")}</span>
+          <span className="price-range">{t("business:currentPrice")}</span>
         </div>
       </div>
       <div className="content">
@@ -689,7 +687,9 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
               width={20}
               mobileWidth={20}
             />
-            <span>{tooltipInfo.tokenA.symbol} Price</span>
+            <span>
+              {tooltipInfo.tokenA.symbol} {t("common:price")}
+            </span>
           </span>
           <span className="price-range">{tokenAPriceString}</span>
         </div>
@@ -702,21 +702,29 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
               width={20}
               mobileWidth={20}
             />
-            <span>{tooltipInfo.tokenB.symbol} Price</span>
+            <span>
+              {tooltipInfo.tokenB.symbol} {t("common:price")}
+            </span>
           </span>
           <span className="price-range">{tokenBPriceString}</span>
         </div>
       </div>
       <div className="header mt-8">
         <div className="row">
-          <span className="token token-title">Token</span>
-          <span className="amount total-amount">Total Amt.</span>
+          <span className="token token-title">{t("business:token")}</span>
+          <span className="amount total-amount">
+            {t("common:poolGraph.tooltip.totalAmt")}
+          </span>
           {isPosition && !tooltipInfo.isBlackBar ? (
-            <span className="amount w-100">Position{"'"}s Amt.</span>
+            <span className="amount w-100">
+              {t("common:poolGraph.tooltip.positionAmt")}
+            </span>
           ) : (
             ""
           )}
-          <span className="price-range">Price Range</span>
+          <span className="price-range">
+            {t("common:poolGraph.tooltip.priceRange")}
+          </span>
         </div>
       </div>
       <div className="content">

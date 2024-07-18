@@ -1,1 +1,1 @@
-{"action":{"balance":"संतुलन","earn":"कमाना","swap":"बदलना"}}
+{"action":{"balance":"संतुलन","earn":"कमाना","swap":"बदलना"},"closed":"बंद किया हुआ","poolGraph":{"tooltip":{"positionAmt":"पद की राशि","priceRange":"मूल्य सीमा","quote":"उद्धरण","totalAmt":"कुल राशि"}},"price":"कीमत","search":"खोज","selectPairBtn":{"modal":{"noData":"डाटा प्राप्त नहीं हुआ","searchInputPlaceholder":"नाम, प्रतीक या पथ द्वारा खोजें","title":"एक टोकन चुनें"},"select":"चुनना"}}

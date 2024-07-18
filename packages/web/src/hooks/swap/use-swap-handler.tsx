@@ -32,6 +32,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY, useGetSwapFee } from "@query/router";
 import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 import { formatPrice } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -94,6 +95,7 @@ export const useSwapHandler = () => {
     tokenAAmount: defaultTokenAAmount,
     tokenBAmount: defaultTokenBAmount,
   } = swapValue;
+  const { t } = useTranslation();
 
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount = "", setTokenAAmount] = useState(
@@ -378,37 +380,32 @@ export const useSwapHandler = () => {
   const swapButtonText = useMemo(() => {
     switch (swapButtonState) {
       case "WALLET_LOGIN":
-        return "Wallet Login";
+        return t("Swap:swapButton.walletLogin");
       case "SWITCH_NETWORK":
-        return "Switch to Gnoland";
+        return t("Swap:swapButton.switchNetwork");
       case "SELECT_TOKEN":
-        return "Select a Token";
+        return t("Swap:swapButton.selectToken");
       case "ENTER_AMOUNT":
-        return "Enter Amount";
+        return t("Swap:swapButton.enterAmount");
       case "AMOUNT_TOO_LOW":
-        return "Amount Too Low";
+        return t("Swap:swapButton.amtLow");
       case "INSUFFICIENT_BALANCE":
-        return "Insufficient Balance";
+        return t("Swap:swapButton.insuffiBalance");
       case "INSUFFICIENT_LIQUIDITY":
-        return "Insufficient Liquidity";
+        return t("Swap:swapButton.insuffiLiq");
       case "WRAP":
-        return "Wrap";
+        return t("Swap:swapButton.wrap");
       case "UNWRAP":
-        return "Unwrap";
+        return t("Swap:swapButton.unwrap");
       case "HIGHT_PRICE_IMPACT":
-        return "Swap Anyway";
+        return t("Swap:swapButton.swapAnyway");
       case "SWAP":
       default:
-        return "Swap";
+        return t("Swap:swapButton.swap");
     }
-  }, [swapButtonState]);
+  }, [swapButtonState, t]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
-    console.log(
-      "🚀 ~ constswapTokenInfo:SwapTokenInfo=useMemo ~ tokenBUSD:",
-      tokenBUSD,
-    );
-
     return {
       tokenA,
       tokenAAmount,
@@ -554,13 +551,13 @@ export const useSwapHandler = () => {
         title={(() => {
           switch (swapButtonState) {
             case "SWAP":
-              return "Confirm Swap";
+              return t("Swap:confirmSwapModal.confirmBtn.swap");
             case "WRAP":
-              return "Confirm Wrap";
+              return t("Swap:confirmSwapModal.confirmBtn.wrap");
             case "UNWRAP":
-              return "Confirm Unwrap";
+              return t("Swap:confirmSwapModal.confirmBtn.unwrap");
             case "HIGHT_PRICE_IMPACT":
-              return "Swap Anyway";
+              return t("Swap:confirmSwapModal.confirmBtn.swapAnyway");
             default:
               return "";
           }

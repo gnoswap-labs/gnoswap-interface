@@ -16,6 +16,7 @@ import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriang
 import { useTheme } from "@emotion/react";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { useTranslation } from "react-i18next";
 
 interface SwapCardProps {
   connectedWallet: boolean;
@@ -76,6 +77,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   isSameToken,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const shouldShowPriceImpactWarning = useMemo(
     () =>
@@ -124,10 +126,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
                     width={"20"}
                     height={"20"}
                   />
-                  <p>
-                    High price impact! Your trade may result in a sharp change
-                    in price.
-                  </p>
+                  <p>{t("Swap:priceImpactWarn")}</p>
                 </HighPriceWarningContentWrapper>
               }
               icon={<IconTriangleWarningOutlined stroke={theme.color.red01} />}

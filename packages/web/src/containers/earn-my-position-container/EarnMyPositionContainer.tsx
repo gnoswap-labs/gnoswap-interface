@@ -13,22 +13,10 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import { ValuesType } from "utility-types";
 import { useAtom, useAtomValue } from "jotai";
 import { EarnState, ThemeState } from "@states/index";
 import { useGetUsernameByAddress } from "@query/address/queries";
 import { DEFAULT_POOL_ID } from "@constants/common.constant";
-
-export const POSITION_CONTENT_LABEL = {
-  VALUE: "Value",
-  APR: "APR",
-  CURRENT_PRICE: "Current Price",
-  MIN_PRICE: "Min Price",
-  MAX_PRICE: "Max Price",
-  STAR_TAG: "✨",
-} as const;
-
-export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
 
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;

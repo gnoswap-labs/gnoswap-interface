@@ -1,6 +1,7 @@
 import IconInbox from "@components/common/icons/IconInbox";
 import { AccountModel } from "@models/account/account-model";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { NoLiquidityWrapper } from "./OtherPositionNoLiquidity.styles";
 
 interface OtherPositionNoLiquidityProps {
@@ -9,14 +10,13 @@ interface OtherPositionNoLiquidityProps {
 
 const OtherPositionNoLiquidity: React.FC<
   OtherPositionNoLiquidityProps
-> = ({ }) => {
-  
+> = () => {
+  const { t } = useTranslation();
+
   return (
     <NoLiquidityWrapper>
-      <IconInbox className="icon-no-position"/>
-      <span className="description">
-      This address does not own any positions.
-      </span>
+      <IconInbox className="icon-no-position" />
+      <span className="description">{t("Earn:positions.other.noLiqui")}</span>
     </NoLiquidityWrapper>
   );
 };

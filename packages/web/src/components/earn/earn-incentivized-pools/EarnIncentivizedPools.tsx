@@ -2,6 +2,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { PoolsWrapper } from "./EarnIncentivizedPools.styles";
 import useRouter from "@hooks/common/use-custom-router";
 import EarnDescription from "../earn-description/EarnDescription";
+import { useTranslation } from "react-i18next";
 
 interface EarnIncentivizedPoolsProps {
   cardList: React.ReactNode;
@@ -12,6 +13,7 @@ const EarnIncentivizedPools: React.FC<EarnIncentivizedPoolsProps> = ({
   cardList,
   isOtherPosition,
 }) => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   if (isOtherPosition) {
@@ -21,9 +23,9 @@ const EarnIncentivizedPools: React.FC<EarnIncentivizedPoolsProps> = ({
   return (
     <PoolsWrapper>
       <div className="pool-header">
-        <h2>Incentivized Pools</h2>
+        <h2>{t("Earn:incentiPools.title")}</h2>
         <Button
-          text="Incentivize Pool"
+          text={t("Earn:incentiPools.incentiBtn")}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",

@@ -22,7 +22,7 @@ import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
-import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -33,6 +33,7 @@ export interface SelectPriceRangeCustomProps {
   showDim: boolean;
   defaultPrice: number | null;
   handleSwapValue: () => void;
+  resetRange?: () => void;
   isEmptyLiquidity: boolean;
   isKeepToken: boolean;
 }
@@ -43,6 +44,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   priceRangeType,
   selectPool,
   showDim,
+  resetRange,
   handleSwapValue,
   isKeepToken,
 }) => {
@@ -96,6 +98,11 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   const currentPrice = useMemo(() => {
     if (selectPool.startPrice) {
+      if (!selectPool.startPrice) return 0;
+
+      if (flip) {
+        1 / selectPool.startPrice;
+      }
       return selectPool.startPrice;
     }
 
@@ -128,8 +135,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     return (
       <>
         1 {currentTokenA.symbol} =&nbsp;
-        {formatPoolPairAmount(priceWithDecimal, {
-          decimals: 6,
+        {formatTokenExchangeRate(priceWithDecimal, {
+          maxSignificantDigits: 6,
+          minLimit: 0.000001,
         })}
         &nbsp;
         {currentTokenB.symbol}
@@ -234,7 +242,11 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     }
   }
 
-  function resetRange(priceRangeType?: PriceRangeType | null) {
+  function onResetRange(priceRangeType?: PriceRangeType | null) {
+    if (resetRange) {
+      resetRange();
+      return;
+    }
     selectPool.resetRange();
     setShiftPosition(0);
     initPriceRange(priceRangeType);
@@ -259,7 +271,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [tokenA]);
 
   useEffect(() => {
-    resetRange(priceRangeType);
+    onResetRange(priceRangeType);
   }, [
     selectPool.poolPath,
     selectPool.feeTier,
@@ -430,7 +442,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   <div className="extra-wrapper">
                     <div
                       className="icon-button reset"
-                      onClick={() => resetRange()}
+                      onClick={() => onResetRange()}
                     >
                       <IconRefresh />
                       <span>Reset Range</span>

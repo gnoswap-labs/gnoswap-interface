@@ -22,7 +22,7 @@ export const useGnoscanUrl = () => {
     const chainId = network.chainId || "";
     const baseUrl = network.scannerUrl || "";
     let chainParams = "";
-    if (["portal-loop", "test3"].includes(chainId)) {
+    if (["portal-loop", "test4"].includes(chainId)) {
       chainParams = `chainId=${chainId}`;
     } else {
       chainParams = "type=custom";

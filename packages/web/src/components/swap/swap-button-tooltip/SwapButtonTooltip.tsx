@@ -2,8 +2,12 @@ import React, { useMemo } from "react";
 import { IconWrap, SwapButtonTooltipWrap } from "./SwapButtonTooltip.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
-import { SwapSummaryInfo, swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
+import {
+  SwapSummaryInfo,
+  swapDirectionToGuaranteedType,
+} from "@models/swap/swap-summary-info";
 import { toNumberFormat } from "@utils/number-utils";
+import { useTranslation } from "react-i18next";
 
 interface WalletBalanceDetailInfoProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -12,6 +16,8 @@ interface WalletBalanceDetailInfoProps {
 const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
   swapSummaryInfo,
 }) => {
+  const { t } = useTranslation();
+
   const priceImpactStr = useMemo(() => {
     const priceImpact = swapSummaryInfo.priceImpact;
     return `${priceImpact}%`;
@@ -19,8 +25,8 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
 
   const guaranteedTypeStr = useMemo(() => {
     const swapDirection = swapSummaryInfo.swapDirection;
-    return swapDirectionToGuaranteedType(swapDirection);
-  }, [swapSummaryInfo.swapDirection]);
+    return t(swapDirectionToGuaranteedType(swapDirection));
+  }, [swapSummaryInfo.swapDirection, t]);
 
   const guaranteedStr = useMemo(() => {
     const { tokenA, tokenB, swapDirection } = swapSummaryInfo;
@@ -41,7 +47,7 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
     return (
       <SwapButtonTooltipWrap>
         <div className="tooltip-list">
-          <span>Price Impact</span>
+          <span>{t("Swap:swapInfo.tooltip.priceImpact")}</span>
           <span>{priceImpactStr}</span>
         </div>
         <div className="tooltip-list">
@@ -49,12 +55,12 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
           <span>{guaranteedStr}</span>
         </div>
         <div className="tooltip-list">
-          <span>Network Gas Fee</span>
+          <span>{t("Swap:swapInfo.tooltip.gasFee")}</span>
           <span>{gasFeeStr}</span>
         </div>
       </SwapButtonTooltipWrap>
     );
-  }, [gasFeeStr, guaranteedStr, guaranteedTypeStr, priceImpactStr]);
+  }, [gasFeeStr, guaranteedStr, guaranteedTypeStr, priceImpactStr, t]);
 
   return (
     <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
