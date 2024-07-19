@@ -200,7 +200,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const currentPriceRatio = useMemo(() => {
     return formatTokenExchangeRate(currentPriceRatioNumber, {
       maxSignificantDigits: 6,
-      fixedDecimalDigits: 6,
       minLimit: 0.000001,
     });
   }, [currentPriceRatioNumber]);
@@ -210,7 +209,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 
     return formatTokenExchangeRate(1 / currentPriceRatioNumber, {
       maxSignificantDigits: 6,
-      fixedDecimalDigits: 6,
       minLimit: 0.000001,
     });
   }, [currentPriceRatioNumber]);

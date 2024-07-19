@@ -33,6 +33,7 @@ import { QUERY_KEY, useGetSwapFee } from "@query/router";
 import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 import { formatPrice } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
+import { PAGE_PATH } from "@constants/page.constant";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -798,9 +799,12 @@ export const useSwapHandler = () => {
 
   const copyURL = async () => {
     try {
-      if (router.pathname === "/tokens/[token-path]") {
+      if (router.pathname === PAGE_PATH.TOKEN) {
         let url =
-          window?.location?.host + "/tokens/" + router.query?.["token-path"];
+          window?.location?.host +
+          PAGE_PATH.TOKEN +
+          "?" +
+          router.getTokenPath();
         const query = {
           to: tokenB?.path,
           from: tokenA?.path,

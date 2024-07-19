@@ -3,6 +3,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
+  SwapFeeTierMaxPriceRangeMap,
 } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useAddress } from "@hooks/address/use-address";
@@ -30,15 +31,17 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import useRouter from "@hooks/common/use-custom-router";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { convertToKMB } from "@utils/stake-position-utils";
-import { checkGnotPath, encryptId } from "@utils/common";
+import { checkGnotPath } from "@utils/common";
 import { useEstimateSwap } from "@query/router";
-import { makeDisplayTokenAmount, makeShiftAmount } from "@utils/token-utils";
+import { makeShiftAmount } from "@utils/token-utils";
 import {
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "@repositories/position/response";
 import { toShiftBitInt } from "@utils/number-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { subscriptFormat } from "@utils/number-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -56,8 +59,8 @@ const compareDepositAmount = 100_000_000n;
 
 export const useRepositionHandle = () => {
   const router = useRouter();
-  const poolPath = router.query["pool-path"] as string;
-  const positionId = router.query["position-id"] as string;
+  const poolPath = router.getPoolPath();
+  const positionId = router.getPositionId();
 
   const [defaultPosition] = useAtom(IncreaseState.selectedPosition);
 
@@ -68,7 +71,7 @@ export const useRepositionHandle = () => {
   const { connected, account } = useWallet();
   const [initialized, setInitialized] = useState(false);
   const { positions, loading: isLoadingPosition } = usePositionData({
-    poolPath: encryptId(poolPath),
+    poolPath,
   });
 
   const selectedPosition = useMemo(
@@ -172,22 +175,44 @@ export const useRepositionHandle = () => {
     selectPool.setMinPosition(defaultPositionMinPrice);
     selectPool.setMaxPosition(defaultPositionMaxPrice);
   }, [defaultPositionMinPrice, defaultPositionMaxPrice, selectPool.poolPath]);
+  const formatPriceDisplay = useCallback(
+    (price: number | string | BigNumber | null) => {
+      if (
+        price === null ||
+        BigNumber(Number(price)).isNaN() ||
+        !selectPool.feeTier
+      ) {
+        return "-";
+      }
+
+      const { maxPrice } =
+        SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
+
+      const currentValue = BigNumber(price).toNumber();
+
+      if (currentValue < 1 && currentValue !== 0) {
+        return subscriptFormat(BigNumber(price).toFixed());
+      }
+
+      if (currentValue / maxPrice > 0.9) {
+        return "∞";
+      }
+
+      return formatTokenExchangeRate(Number(price), {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001,
+      });
+    },
+    [selectPool.feeTier],
+  );
 
   const minPriceStr = useMemo(() => {
-    if (!selectPool.minPrice) return "-";
-
-    if (selectPool.selectedFullRange) return "0";
-
-    return convertToKMB(selectPool.minPrice.toString());
-  }, [selectPool]);
+    return formatPriceDisplay(selectPool.minPrice);
+  }, [formatPriceDisplay, selectPool.minPrice]);
 
   const maxPriceStr = useMemo(() => {
-    if (!selectPool.maxPrice) return "-";
-
-    if (selectPool.selectedFullRange) return "∞";
-
-    return convertToKMB(selectPool.maxPrice.toString());
-  }, [selectPool]);
+    return formatPriceDisplay(selectPool.maxPrice);
+  }, [formatPriceDisplay, selectPool.maxPrice]);
 
   const priceRangeSummary: IPriceRange = useMemo(() => {
     let tokenARatioStr = "-";

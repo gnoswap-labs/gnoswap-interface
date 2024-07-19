@@ -3,8 +3,7 @@ import BigNumber from "bignumber.js";
 import { MathSymbolType } from "@common/values/data-constant";
 import { unitsUpperCase } from "@common/values/global-initial-value";
 
-import { formatPoolPairAmount } from "./new-number-utils";
-import { convertToKMB } from "./stake-position-utils";
+import { convertToKMB, formatTokenExchangeRate } from "./stake-position-utils";
 
 export const isNumber = (value: BigNumber | string | number): boolean => {
   const reg = /^-?\d+\.?\d*$/;
@@ -117,8 +116,10 @@ export const toKMBFormat = (
   value: BigNumber | string | number,
   {
     usd = false,
+    isIgnoreKFormat = false,
   }: {
     usd?: boolean;
+    isIgnoreKFormat?: boolean;
   } = {},
 ) => {
   const valueWithoutComma = value.toString().replace(/,/g, "");
@@ -149,7 +150,7 @@ export const toKMBFormat = (
     );
   }
 
-  if (bigNumber.isGreaterThanOrEqualTo(1e3)) {
+  if (!isIgnoreKFormat && bigNumber.isGreaterThanOrEqualTo(1e3)) {
     return (
       negativeSign +
       prefix +
@@ -510,13 +511,12 @@ export function subscriptFormat(
 ) {
   const numberStr = BigNumber(number).toFixed();
   const numberOfZero = countZeros(numberStr);
-  // const significantDigits = options?.significantDigits || 5;
   const zeroCountOffset = options?.subscriptOffset
     ? options?.subscriptOffset + 1
     : 5;
 
   if (numberOfZero <= zeroCountOffset) {
-    return formatPoolPairAmount(number, { decimals: 6 });
+    return formatTokenExchangeRate(number, { maxSignificantDigits: 6 });
   }
 
   const subscriptChars = getSubcriptChars(numberStr);

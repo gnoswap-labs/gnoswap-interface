@@ -4,21 +4,19 @@ import React, { useState, useEffect } from "react";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
-import useRouter from "@hooks/common/use-custom-router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
 import { useGetTokenByPath } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { encryptId, makeId } from "@utils/common";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const router = useRouter();
+  const router = useCustomRouter();
   const [openedSlippage, setOpenedSlippage] = useState(false);
   const { getGnotPath } = useGnotToGnot();
-  const path = router.query["token-path"] as string;
-  const tokenAPath = router.query["tokenA"] as string;
-  // Prefetched by server side
+  const path = router.getTokenPath();
+  const tokenAPath = router.getParameter("tokenA");
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
   });
@@ -115,22 +113,20 @@ const TokenSwapContainer: React.FC = () => {
 
   const handleChangeTokenB = (token: TokenModel) => {
     if (
-      swapValue?.tokenB?.path ===
-        encryptId(router?.query?.["token-path"] as string) &&
+      swapValue?.tokenB?.path === router.getTokenPath() &&
       swapValue?.tokenA?.symbol !== token?.symbol
     ) {
-      router.push(`/tokens/${makeId(token.path)}`);
+      router.movePageWithTokenPath("TOKEN", token.path);
     }
     changeTokenB(token);
   };
 
   const handleChangeTokenA = (token: TokenModel) => {
     if (
-      swapValue?.tokenA?.path ===
-        encryptId(router?.query?.["token-path"] as string) &&
+      swapValue?.tokenA?.path === router.getTokenPath() &&
       swapValue?.tokenB?.symbol !== token?.symbol
     ) {
-      router.push(`/tokens/${makeId(token.path)}`);
+      router.movePageWithTokenPath("TOKEN", token.path);
     }
     changeTokenA(token);
   };

@@ -60,6 +60,12 @@ export const useSwap = ({
     },
     {
       enabled: currentSwapAmount > 0 && !!tokenA && !!tokenB,
+      refetchInterval: () => {
+        if (!!tokenA && !!tokenB && direction && currentSwapAmount)
+          return 10_000;
+
+        return false;
+      },
     },
   );
 

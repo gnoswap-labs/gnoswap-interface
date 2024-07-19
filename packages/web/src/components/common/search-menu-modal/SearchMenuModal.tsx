@@ -26,12 +26,12 @@ import { DEVICE_TYPE } from "@styles/media";
 import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import MissingLogo from "../missing-logo/MissingLogo";
-import { makeId } from "@utils/common";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  movePage: (path: string) => void;
+  moveTokenPage: (path: string) => void;
+  movePoolPage: (path: string) => void;
   keyword: string;
   tokens: Token[];
   isFetched: boolean;
@@ -45,7 +45,8 @@ interface SearchMenuModalProps {
 const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   onSearchMenuToggle,
   search,
-  movePage,
+  moveTokenPage,
+  movePoolPage,
   keyword,
   isFetched,
   placeholder = "Search",
@@ -116,10 +117,10 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       const poolPath = `${item.token.path}:${item?.tokenB?.path}:${
         Number(item.fee.slice(0, item.fee.length - 1)) * 10000
       }`;
-      movePage(`/earn/pool/${makeId(poolPath)}`);
+      movePoolPage(poolPath);
     } else {
-      const routePath = "/tokens/" + makeId(item.token.path);
-      movePage(routePath);
+      const tokenPath = item.token.path;
+      moveTokenPage(tokenPath);
     }
   };
 
@@ -180,7 +181,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   }, [tokenNamePopularRef, keyword, popularTokenKey]);
 
   const length = useMemo(() => {
-    return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
+    return breakpoint === DEVICE_TYPE.MOBILE ? 15 : 25;
   }, [breakpoint]);
 
   const getTokenPathDisplay = useCallback(
@@ -193,12 +194,15 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
       if (tokenPathArr?.length <= 0) return path_;
 
-      const lastPath = tokenPathArr[tokenPathArr?.length - 1];
+      const replacedPath = path_.replace("gno.land", "");
 
-      if (lastPath.length >= 12) {
+      if (replacedPath.length >= length) {
         return (
           "..." +
-          tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1)
+          replacedPath.slice(
+            replacedPath.length - length,
+            replacedPath.length - 1,
+          )
         );
       }
 

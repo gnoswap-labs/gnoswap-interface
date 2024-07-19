@@ -42,13 +42,12 @@ import Button from "@components/common/button/Button";
 import { useGetPositionBins } from "@query/positions";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-  formatRate,
-} from "@utils/new-number-utils";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import { isGNOTPath } from "@utils/common";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { makeRouteUrl } from "@utils/page.utils";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
@@ -302,8 +301,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       },
       {
         SWAP_FEE: [],
-        // Not use any more
-        STAKING: [],
         EXTERNAL: [],
         INTERNAL: [],
       },
@@ -442,8 +439,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         },
         {
           SWAP_FEE: [],
-          // NOt use anymore
-          STAKING: [],
           EXTERNAL: [],
           INTERNAL: [],
         },
@@ -466,8 +461,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       return (
         <>
           1 {tokenB?.symbol} ={" "}
-          {formatPoolPairAmount(1 / price, {
-            decimals: 6,
+          {formatTokenExchangeRate(1 / price, {
+            maxSignificantDigits: 6,
+            minLimit: 0.000001,
           })}{" "}
           {tokenA?.symbol}
         </>
@@ -476,8 +472,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return (
       <>
         1 {tokenA?.symbol} ={" "}
-        {formatPoolPairAmount(price, {
-          decimals: 6,
+        {formatTokenExchangeRate(price, {
+          maxSignificantDigits: 6,
+          minLimit: 0.000001,
         })}{" "}
         {tokenB?.symbol}
       </>
@@ -576,13 +573,15 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     if (!isSwap) {
       if (minPrice === "∞") return "∞";
 
-      return formatPoolPairAmount(minPrice, {
-        decimals: 6,
+      return formatTokenExchangeRate(minPrice, {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001,
       });
     }
 
-    return formatPoolPairAmount(`${Number(1 / Number(maxPrice))}`, {
-      decimals: 6,
+    return formatTokenExchangeRate(`${Number(1 / Number(maxPrice))}`, {
+      maxSignificantDigits: 6,
+      minLimit: 0.000001,
     });
   }, [
     position.tickLower,
@@ -632,13 +631,15 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         return "∞";
       }
 
-      return formatPoolPairAmount(maxPrice, {
-        decimals: 6,
+      return formatTokenExchangeRate(maxPrice, {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001,
       });
     }
 
-    return formatPoolPairAmount(`${Number(1 / Number(minPrice))}`, {
-      decimals: 6,
+    return formatTokenExchangeRate(`${Number(1 / Number(minPrice))}`, {
+      maxSignificantDigits: 6,
+      minLimit: 0.000001,
     });
   }, [
     position.tickLower,
@@ -678,30 +679,24 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const handleSelect = (text: string) => {
     if (text == "Decrease Liquidity") {
       setSelectedPosition(position);
-      router.push(
-        "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/decrease-liquidity",
+      router.movePageWithPositionId(
+        "POSITION_DECREASE_LIQUIDITY",
+        position.poolPath,
+        position?.id,
       );
     } else if (text === "Increase Liquidity") {
       setSelectedPosition(position);
-      router.push(
-        "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/increase-liquidity",
+      router.movePageWithPositionId(
+        "POSITION_INCREASE_LIQUIDITY",
+        position.poolPath,
+        position?.id,
       );
     } else {
       setSelectedPosition(position);
-      router.push(
-        "/earn/pool/" +
-          router.query["pool-path"] +
-          "/" +
-          position?.id +
-          "/reposition",
+      router.movePageWithPositionId(
+        "POSITION_REPOSITION",
+        position.poolPath,
+        position?.id,
       );
     }
   };
@@ -737,6 +732,24 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     );
   }, [totalRewardInfo]);
 
+  const getPoolLink = useCallback(
+    (isDirect: boolean) => {
+      const hash = isDirect ? position.id : undefined;
+      return (
+        window.location.host +
+        makeRouteUrl(
+          PAGE_PATH.POOL,
+          {
+            [QUERY_PARAMETER.POOL_PATH]: position.poolPath,
+            [QUERY_PARAMETER.ADDRESS]: address,
+          },
+          hash,
+        )
+      );
+    },
+    [position, address],
+  );
+
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
@@ -766,19 +779,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                       <div
                         onClick={() => {
                           if (isClosed) {
-                            setCopy(
-                              `${
-                                window.location.host + window.location.pathname
-                              }?addr=${address}`,
-                            );
+                            setCopy(getPoolLink(false));
                             return;
                           }
 
-                          setCopy(
-                            `${
-                              window.location.host + window.location.pathname
-                            }?addr=${address}#${position.id}`,
-                          );
+                          setCopy(getPoolLink(true));
                         }}
                       >
                         <IconLinkPage className="icon-link" />
@@ -826,20 +831,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                         <div
                           onClick={() => {
                             if (isClosed) {
-                              setCopy(
-                                `${
-                                  window.location.host +
-                                  window.location.pathname
-                                }?addr=${address}`,
-                              );
+                              setCopy(getPoolLink(false));
                               return;
                             }
 
-                            setCopy(
-                              `${
-                                window.location.host + window.location.pathname
-                              }?addr=${address}#${position.id}`,
-                            );
+                            setCopy(getPoolLink(true));
                           }}
                         >
                           <IconLinkPage className="icon-link" />

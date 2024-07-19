@@ -2,21 +2,25 @@ import RemoveLiquidity from "@components/remove/remove-liquidity/RemoveLiquidity
 import React, { useCallback, useMemo, useState } from "react";
 import { useRemovePositionModal } from "@hooks/earn/use-remove-position-modal";
 import { usePositionData } from "@hooks/common/use-position-data";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { encryptId } from "@utils/common";
 
 const RemoveLiquidityContainer: React.FC = () => {
-  const router = useRouter();
+  const router = useCustomRouter();
   const { connected } = useWallet();
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const [isWrap, setIsWrap] = useState(false);
-  const poolPath = router.query["pool-path"] as string;
+  const poolPath = router.getPoolPath();
   const { positions, loading: isLoadingPositions } = usePositionData({
     isClosed: false,
-    poolPath: encryptId(poolPath),
+    poolPath,
     queryOption: {
       enabled: !!poolPath,
+      refetchInterval: () => {
+        if (!!poolPath) return 60_000;
+
+        return false;
+      },
     },
   });
   const { openModal } = useRemovePositionModal({

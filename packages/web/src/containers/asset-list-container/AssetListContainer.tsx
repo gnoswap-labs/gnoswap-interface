@@ -26,6 +26,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -103,6 +104,7 @@ interface SortedProps extends TokenModel {
 }
 
 const AssetListContainer: React.FC = () => {
+  const router = useCustomRouter();
   const { connected, account, isSwitchNetwork } = useWallet();
 
   const [address] = useState("");
@@ -111,7 +113,6 @@ const AssetListContainer: React.FC = () => {
   );
   const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
   const [keyword, setKeyword] = useState("");
-  // const [hasNext, setHasNext] = useState(false);
   const [extended, setExtened] = useState(true);
   const [hasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
@@ -500,6 +501,10 @@ const AssetListContainer: React.FC = () => {
     onSubmit: handleSubmit,
   } = useWithdrawTokens();
 
+  const moveTokenPage = useCallback((tokenPath: string) => {
+    router.movePageWithTokenPath("TOKEN", tokenPath);
+  }, []);
+
   const onSubmit = (amount: any, address: string) => {
     if (!withdrawInfo || !account?.address) return;
     handleSubmit(
@@ -537,6 +542,7 @@ const AssetListContainer: React.FC = () => {
         withdraw={withdraw}
         sortOption={sortOption}
         sort={sort}
+        moveTokenPage={moveTokenPage}
         isSortOption={isSortOption}
         breakpoint={breakpoint}
         searchIcon={searchIcon}

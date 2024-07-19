@@ -4,7 +4,6 @@ import IconUpload from "@components/common/icons/IconUpload";
 import { Asset } from "@containers/asset-list-container/AssetListContainer";
 import { AssetInfoWrapper, LoadButton, TableColumn } from "./AssetInfo.styles";
 import { DEVICE_TYPE } from "@styles/media";
-import { makeId } from "@utils/common";
 import { isNativeToken } from "@models/token/token-model";
 import {
   ASSET_INFO,
@@ -17,6 +16,7 @@ interface AssetInfoProps {
   asset: Asset;
   deposit: (asset: Asset) => void;
   withdraw: (asset: Asset) => void;
+  moveTokenPage: (tokenPath: string) => void;
   breakpoint: DEVICE_TYPE;
 }
 
@@ -24,12 +24,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   asset,
   deposit,
   withdraw,
+  moveTokenPage,
   breakpoint,
 }) => {
   const { balance, type, path, price } = asset;
 
   const onClickItem = useCallback((path: string) => {
-    location.href = `/tokens/${makeId(path)}`;
+    moveTokenPage(path);
   }, []);
 
   const onClickDeposit = useCallback(() => {

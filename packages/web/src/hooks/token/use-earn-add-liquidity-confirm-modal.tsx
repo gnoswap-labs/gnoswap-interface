@@ -198,7 +198,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       return "∞";
     }
 
-    return formatTokenExchangeRate(Number(price), {
+    return formatTokenExchangeRate(price, {
       maxSignificantDigits: 6,
       minLimit: 0.000001,
     });

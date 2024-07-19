@@ -2,14 +2,13 @@ import StakePosition from "@components/stake/stake-position/StakePosition";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useStakePositionModal } from "@hooks/earn/use-stake-position-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useState, useMemo } from "react";
-import { encryptId } from "@utils/common";
 import { useGetPoolDetailByPath } from "@query/pools";
 
 const StakePositionContainer: React.FC = () => {
-  const router = useRouter();
-  const poolPath = (router.query["pool-path"] ?? "") as string;
+  const router = useCustomRouter();
+  const poolPath = router.getPoolPath();
   const { connected, connectAccount } = useWallet();
   const {
     positions: allPositionData,
@@ -17,17 +16,20 @@ const StakePositionContainer: React.FC = () => {
     loading: isLoadingAllPositions,
   } = usePositionData({
     isClosed: false,
-    poolPath: encryptId(poolPath),
+    poolPath,
     queryOption: {
-      enabled: !!poolPath
-    }
+      enabled: !!poolPath,
+    },
   });
   const { data: poolDetail } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath
+    enabled: !!poolPath,
   });
   const [checkedList, setCheckedList] = useState<string[]>([]);
   // For this domain only show `closed = false` && `staked = false` position
-  const unstakedPositions = useMemo(() => allPositionData.filter(item => !item.staked), [allPositionData]);
+  const unstakedPositions = useMemo(
+    () => allPositionData.filter(item => !item.staked),
+    [allPositionData],
+  );
 
   const { openModal } = useStakePositionModal({
     positions: unstakedPositions,
@@ -58,7 +60,9 @@ const StakePositionContainer: React.FC = () => {
       setCheckedList([]);
       return;
     }
-    const checkedList = unstakedPositions.map(unstakedPosition => unstakedPosition.id);
+    const checkedList = unstakedPositions.map(
+      unstakedPosition => unstakedPosition.id,
+    );
     setCheckedList(checkedList);
   }, [checkedAll, unstakedPositions]);
 

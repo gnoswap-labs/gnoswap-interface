@@ -4,7 +4,7 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import {
   makeBroadcastStakingMessage,
   useBroadcastHandler,
@@ -30,10 +30,10 @@ const StakePositionModalContainer = ({
     broadcastPending,
   } = useBroadcastHandler();
   const { positionRepository } = useGnoswapContext();
-  const router = useRouter();
+  const router = useCustomRouter();
   const clearModal = useClearModal();
   const { tokenPrices } = useTokenData();
-  const poolPath = router.query["pool-path"] as string;
+  const poolPath = router.getPoolPath();
   const { data: pool } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
   });
@@ -131,9 +131,7 @@ const StakePositionModalContainer = ({
           );
         }, 1000);
         openTransactionConfirmModal();
-      } else if (
-        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status
-      ) {
+      } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
         broadcastRejected(
           makeBroadcastStakingMessage("error", {
             tokenASymbol: tokenA?.token?.symbol,

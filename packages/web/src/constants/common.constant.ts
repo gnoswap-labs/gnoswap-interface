@@ -1,19 +1,15 @@
-import { makeId } from "@utils/common";
 import { GNS_TOKEN_PATH, WRAPPED_GNOT_PATH } from "./environment.constant";
 
 export const DEFAULT_NETWORK_ID = "portal-loop";
 
 export const PATH = ["/earn"];
 // 10SECOND/60SECOND is the specific time for data refetching cycles. `useGetPositionsByAddress` will refetch after these specific time
-export const PATH_10SECOND = [
-  "/earn/pool/[pool-path]/remove",
-  "/tokens/[token-path]",
-];
+export const PATH_10SECOND = ["/earn/pool/remove", "/token"];
 export const PATH_60SECOND = [
   "/wallet",
-  "/earn/pool/[pool-path]/stake",
-  "/earn/pool/[pool-path]/unstake",
-  "/earn/pool/[pool-path]",
+  "/earn/pool/stake",
+  "/earn/pool/unstake",
+  "/earn/pool",
 ];
 
 export const HTTP_5XX_ERROR = [
@@ -30,17 +26,17 @@ export type PageKey =
   | "/earn?address"
   | "/earn/add"
   | "/earn/incentivize"
-  | "/earn/pool/[pool-path]"
-  | "/earn/pool/[pool-path]?address"
-  | "/earn/pool/[pool-path]/add"
-  | "/earn/pool/[pool-path]/incentivize"
-  | "/earn/pool/[pool-path]/remove"
-  | "/earn/pool/[pool-path]/stake"
-  | "/earn/pool/[pool-path]/unstake"
-  | "/earn/pool/[pool-path]/[position-id]/reposition"
-  | "/earn/pool/[pool-path]/[position-id]/increase-liquidity"
-  | "/earn/pool/[pool-path]/[position-id]/decrease-liquidity"
-  | "token/[token-path]"
+  | "/earn/pool"
+  | "/earn/pool?address"
+  | "/earn/pool/add"
+  | "/earn/pool/incentivize"
+  | "/earn/pool/remove"
+  | "/earn/pool/stake"
+  | "/earn/pool/unstake"
+  | "/earn/pool/position/reposition"
+  | "/earn/pool/position/increase-liquidity"
+  | "/earn/pool/position/decrease-liquidity"
+  | "/token"
   | "/404"
   | "/500"
   | "/dashboard"
@@ -110,7 +106,7 @@ export const SEOInfo: Record<
     desc: () =>
       "Add incentives to pools for liquidity providers to bootstrap liquidity.",
   },
-  "/earn/pool/[pool-path]": {
+  "/earn/pool": {
     title: (params = []) => {
       if (params.length === 3) {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
@@ -121,7 +117,7 @@ export const SEOInfo: Record<
     desc: () =>
       "Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency.",
   },
-  "/earn/pool/[pool-path]?address": {
+  "/earn/pool?address": {
     title: (params = []) => {
       if (params.length === 4) {
         const [address, tokenASymbol, tokenBSymbol, feeTier] = params;
@@ -132,7 +128,7 @@ export const SEOInfo: Record<
     desc: () =>
       "Create your own positions and provide liquidity to earn trading fees.",
   },
-  "/earn/pool/[pool-path]/add": {
+  "/earn/pool/add": {
     title: (params = []) => {
       if (params.length === 3) {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
@@ -144,7 +140,7 @@ export const SEOInfo: Record<
     ogTitle: () => "",
     ogDesc: () => "",
   },
-  "/earn/pool/[pool-path]/incentivize": {
+  "/earn/pool/incentivize": {
     title: (params = []) => {
       if (params.length === 3) {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
@@ -154,7 +150,7 @@ export const SEOInfo: Record<
     },
     desc: () => "Manage your positions to earn trading fees.",
   },
-  "/earn/pool/[pool-path]/remove": {
+  "/earn/pool/remove": {
     title: (params = []) => {
       if (params.length === 3) {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
@@ -164,7 +160,7 @@ export const SEOInfo: Record<
     },
     desc: () => "Manage your positions to earn trading fees.",
   },
-  "/earn/pool/[pool-path]/stake": {
+  "/earn/pool/stake": {
     title: (params = []) => {
       if (params.length === 3) {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
@@ -175,7 +171,7 @@ export const SEOInfo: Record<
     desc: () =>
       "Create your own positions and provide liquidity to earn staking rewards.",
   },
-  "/earn/pool/[pool-path]/unstake": {
+  "/earn/pool/unstake": {
     title: (params = []) => {
       if (params.length === 3) {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
@@ -185,7 +181,7 @@ export const SEOInfo: Record<
     },
     desc: () => "Manage your positions to earn trading fees.",
   },
-  "/earn/pool/[pool-path]/[position-id]/reposition": {
+  "/earn/pool/position/reposition": {
     title: (params = []) => {
       if (params.length === 1) {
         const [positionId] = params;
@@ -197,7 +193,7 @@ export const SEOInfo: Record<
     ogTitle: () => "",
     ogDesc: () => "",
   },
-  "/earn/pool/[pool-path]/[position-id]/increase-liquidity": {
+  "/earn/pool/position/increase-liquidity": {
     title: (params = []) => {
       if (params.length === 1) {
         const [positionId] = params;
@@ -207,7 +203,7 @@ export const SEOInfo: Record<
     },
     desc: () => "Manage your positions to earn trading fees.",
   },
-  "/earn/pool/[pool-path]/[position-id]/decrease-liquidity": {
+  "/earn/pool/position/decrease-liquidity": {
     title: (params = []) => {
       if (params.length === 1) {
         const [positionId] = params;
@@ -217,7 +213,7 @@ export const SEOInfo: Record<
     },
     desc: () => "Manage your positions to earn trading fees.",
   },
-  "token/[token-path]": {
+  "/token": {
     title: (params = []) => {
       const [tokenPrice, tokenName, tokenSymbol] = params;
       const tokenSymbolDisplay = tokenSymbol ? `(${tokenSymbol})` : "";
@@ -301,6 +297,6 @@ export const LANGUAGES = [
 
 export const DEFAULT_TOKEN_PAIR = [WRAPPED_GNOT_PATH, GNS_TOKEN_PATH];
 
-export const DEFAULT_POOL_ID = makeId(
-  [...DEFAULT_TOKEN_PAIR.sort(), "3000"].join(":"),
+export const DEFAULT_POOL_PATH = [...DEFAULT_TOKEN_PAIR.sort(), "3000"].join(
+  ":",
 );

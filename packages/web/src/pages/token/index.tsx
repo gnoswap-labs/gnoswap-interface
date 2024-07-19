@@ -15,7 +15,6 @@ import GainerAndLoserContainer from "@containers/gainer-and-loser-container/Gain
 import { useLoading } from "@hooks/common/use-loading";
 import { useGetTokenByPath, useGetTokenPricesByPath } from "@query/token";
 import { useEffect, useMemo } from "react";
-import { useRouter } from "next/router";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -23,19 +22,26 @@ import { SEOInfo } from "@constants/common.constant";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { formatPrice } from "@utils/new-number-utils";
+import useCustomRouter from "@hooks/common/use-custom-router";
+import { TokenError } from "@common/errors/token";
 
 export async function getServerSideProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+      ...(await serverSideTranslations(locale, [
+        "HeaderFooter",
+        "common",
+        "business",
+        "Swap",
+      ])),
     },
   };
 }
 
 export default function Token() {
+  const router = useCustomRouter();
+  const path = router.getTokenPath();
   const { isLoading } = useLoading();
-  const router = useRouter();
-  const path = router.query["token-path"] as string;
 
   const { i18n } = useTranslation(["HeaderFooter", "common"], {
     bindI18n: "languageChanged loaded",
@@ -46,11 +52,13 @@ export default function Token() {
   }, []);
 
   const { data: token } = useGetTokenByPath(path, {
-    enabled: !!path,
     refetchInterval: 1000 * 10,
     onError: (err: any) => {
       if (err?.["response"]?.["status"] === 404) {
-        router.push("/404");
+        router.push("/");
+      }
+      if (err instanceof TokenError) {
+        router.push("/");
       }
     },
   });
@@ -87,7 +95,7 @@ export default function Token() {
 
   const wrappedToken = useMemo(() => getGnotPath(token), [getGnotPath, token]);
 
-  const seoInfo = useMemo(() => SEOInfo["token/[token-path]"], []);
+  const seoInfo = useMemo(() => SEOInfo["/token"], []);
 
   const title = useMemo(() => {
     return seoInfo.title([

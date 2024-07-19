@@ -7,13 +7,13 @@ import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
-  SwapFeeTierType
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import DecreasePositionModalContainer from "@containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
 import {
   makeBroadcastRemoveMessage,
-  useBroadcastHandler
+  useBroadcastHandler,
 } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
@@ -218,8 +218,6 @@ export const useDecreasePositionModal = ({
             onSuccessClose,
           );
         }, 1000);
-
-        // openTransactionConfirmModal();
       } else if (
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {

@@ -19,8 +19,6 @@ export interface DepositRatioProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   fee: string;
-  maxPriceStr: string;
-  minPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   aprFee: number;
   priceRangeSummary: IPriceRange;

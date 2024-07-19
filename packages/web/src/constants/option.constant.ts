@@ -219,7 +219,11 @@ export const INCENTIVE_TYPE_MAPPER = {
   NONE_INCENTIVIZED: "Non-Incentivized",
   EXTERNAL: "External-Incentivized",
 } as const;
-export type INCENTIVE_TYPE = "INCENTIVIZED" | "NONE_INCENTIVIZED" | "EXTERNAL";
+export type INCENTIVE_TYPE =
+  | "INCENTIVIZED"
+  | "NONE_INCENTIVIZED"
+  | "EXTERNAL"
+  | "INTERNAL";
 
 export const CHART_TYPE = {
   "7D": "7D",
@@ -317,7 +321,7 @@ export type AddLiquiditySubmitType =
   | "SELECT_TOKEN"
   | "AMOUNT_TOO_LOW";
 
-export type RewardType = "SWAP_FEE" | "STAKING" | "EXTERNAL" | "INTERNAL";
+export type RewardType = "SWAP_FEE" | "EXTERNAL" | "INTERNAL";
 
 export type StakingPeriodType = "5D" | "10D" | "30D" | "MAX";
 

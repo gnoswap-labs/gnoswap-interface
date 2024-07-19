@@ -9,7 +9,7 @@ import { QUERY_KEY } from "./types";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
-import { encryptId } from "@utils/common";
+import { TokenError } from "@common/errors/token";
 
 export const useGetTokensList = (
   options?: UseQueryOptions<TokenListResponse, Error>,
@@ -19,7 +19,7 @@ export const useGetTokensList = (
   return useQuery<TokenListResponse, Error>({
     queryKey: [QUERY_KEY.tokens],
     queryFn: () => tokenRepository.getTokens(),
-    staleTime: Infinity,
+    staleTime: options?.staleTime || Infinity,
     ...options,
   });
 };
@@ -41,35 +41,43 @@ export const useGetTokenPrices = (
       );
       return priceMap;
     },
-    refetchInterval: 10_000,
+    refetchInterval: options?.refetchInterval || 10_000,
     ...options,
   });
 };
 
 export const useGetTokenPricesByPath = (
-  path: string,
+  path: string | null,
   options?: UseQueryOptions<TokenPriceModel, Error>,
 ) => {
   const { tokenRepository } = useGnoswapContext();
-  const currentPath = encryptId(path);
 
   return useQuery<TokenPriceModel, Error>({
-    queryKey: [QUERY_KEY.tokenPrices, currentPath],
-    queryFn: () => tokenRepository.getTokenPricesByPath(currentPath),
+    queryKey: [QUERY_KEY.tokenPrices, path],
+    queryFn: () => {
+      if (!path) {
+        throw new TokenError("NO_MATCH_TOKENID");
+      }
+      return tokenRepository.getTokenPricesByPath(path);
+    },
     ...options,
   });
 };
 
 export const useGetTokenDetailByPath = (
-  path: string,
+  path: string | null,
   option?: UseQueryOptions<ITokenDetailResponse, Error>,
 ) => {
   const { tokenRepository } = useGnoswapContext();
-  const currentPath = encryptId(path);
 
   return useQuery<ITokenDetailResponse, Error>({
-    queryKey: [QUERY_KEY.tokenDetails, currentPath],
-    queryFn: () => tokenRepository.getTokenDetailByPath(currentPath),
+    queryKey: [QUERY_KEY.tokenDetails, path],
+    queryFn: () => {
+      if (!path) {
+        throw new TokenError("NO_MATCH_TOKENID");
+      }
+      return tokenRepository.getTokenDetailByPath(path);
+    },
     ...option,
   });
 };
@@ -87,14 +95,18 @@ export const useGetChainList = (
 };
 
 export const useGetTokenByPath = (
-  path: string,
+  path: string | null,
   option?: UseQueryOptions<ITokenResponse, Error>,
 ) => {
   const { tokenRepository } = useGnoswapContext();
-  const currentPath = encryptId(path);
   return useQuery<ITokenResponse, Error>({
-    queryKey: [QUERY_KEY.tokenByPath, currentPath],
-    queryFn: () => tokenRepository.getTokenByPath(currentPath),
+    queryKey: [QUERY_KEY.tokenByPath, path],
+    queryFn: () => {
+      if (!path) {
+        throw new TokenError("NO_MATCH_TOKENID");
+      }
+      return tokenRepository.getTokenByPath(path);
+    },
     ...option,
   });
 };

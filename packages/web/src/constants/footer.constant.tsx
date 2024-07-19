@@ -3,6 +3,7 @@ import IconGitbook from "@components/common/icons/social/IconGitbook";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconTwitter from "@components/common/icons/social/IconTwitter";
 import IconDiscord from "@components/common/icons/social/IconDiscord";
+import { DEFAULT_POOL_PATH } from "./common.constant";
 
 export const FOOTER_LEFT_NAV = {
   content: "HeaderFooter:introduction",
@@ -51,7 +52,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "HeaderFooter:featuresSection.item.stakePosition",
-        path: "/earn/pool/gno.land_r_demo_wugnot:gno.land_r_gnoswap_gns:3000#staking",
+        path: `/earn/pool?poolPath=${DEFAULT_POOL_PATH}#staking`,
         newTab: false,
       },
       {

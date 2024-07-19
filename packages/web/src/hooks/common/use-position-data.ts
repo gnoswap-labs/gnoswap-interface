@@ -18,8 +18,13 @@ function secToMilliSec(sec: number) {
 export interface UsePositionDataOption {
   address?: string;
   isClosed?: boolean;
-  poolPath?: string;
-  queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
+  poolPath?: string | null;
+  queryOption?: UseQueryOptions<
+    PositionModel[],
+    Error,
+    PositionModel[],
+    QueryKey
+  >;
 }
 
 export const usePositionData = (options?: UsePositionDataOption) => {
@@ -36,7 +41,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     data,
     isError,
     isFetched: isFetchedPosition,
-    isLoading: isLoadingPosition
+    isLoading: isLoadingPosition,
   } = useGetPositionsByAddress({
     address: fetchedAddress as string,
     isClosed: options?.isClosed,
@@ -57,8 +62,11 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
   const { isLoading: isCommonLoading } = useLoading();
 
-  const { data: positions = [], isFetched: isFetchedPoolPositions, isLoading: isLoadingPoolPositions } =
-    useMakePoolPositions(data, pools, isFetchedPosition);
+  const {
+    data: positions = [],
+    isFetched: isFetchedPoolPositions,
+    isLoading: isLoadingPoolPositions,
+  } = useMakePoolPositions(data, pools, isFetchedPosition);
 
   const availableStake = useMemo(() => {
     if (!isFetchedPoolPositions) {
@@ -91,21 +99,22 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     return positions;
   }, [isFetchedPoolPositions, positions]);
 
-
   const loading = useMemo(() => {
-    return (isLoadingPool
-      || isLoadingPosition
-      || isCommonLoading
-      || isLoadingPoolPositions)
-      && walletConnected
-      && !!account;
+    return (
+      (isLoadingPool ||
+        isLoadingPosition ||
+        isCommonLoading ||
+        isLoadingPoolPositions) &&
+      walletConnected &&
+      !!account
+    );
   }, [
     isCommonLoading,
     isLoadingPool,
     isLoadingPoolPositions,
     isLoadingPosition,
     walletConnected,
-    account
+    account,
   ]);
 
   return {

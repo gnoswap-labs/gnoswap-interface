@@ -38,7 +38,6 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
-import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -117,7 +116,7 @@ const SelectPriceRangeCustom = forwardRef<
       const compareTokenPaths = [
         checkGnotPath(tokenA.path),
         checkGnotPath(tokenB.path),
-      ];
+      ].sort();
       return (
         compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path)
       );
@@ -158,8 +157,9 @@ const SelectPriceRangeCustom = forwardRef<
       return (
         <>
           1 {currentTokenA.symbol} =&nbsp;
-          {formatPoolPairAmount(currentPrice, {
-            decimals: 6,
+          {formatTokenExchangeRate(currentPrice, {
+            maxSignificantDigits: 6,
+            minLimit: 0.000001,
           })}
           &nbsp;
           {currentTokenB.symbol}
@@ -451,7 +451,6 @@ const SelectPriceRangeCustom = forwardRef<
               onBlur={updateStartingPrice}
               onFocus={() => setTempPrice("")}
               placeholder="Enter price"
-              type={"number"}
             />
           </StartingPriceWrapper>
         )}

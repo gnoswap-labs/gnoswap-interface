@@ -11,9 +11,8 @@ import { IncreaseState } from "@states/index";
 import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { encryptId } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface IPriceRange {
@@ -40,12 +39,12 @@ export interface IPooledTokenInfo {
 export type DeCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
 
 export const useDecreaseHandle = () => {
-  const router = useRouter();
+  const router = useCustomRouter();
   const [selectedPosition, setSelectedPosition] = useAtom(
     IncreaseState.selectedPosition,
   );
-  const poolPath = router.query["pool-path"] as string;
-  const positionId = router.query["position-id"] as string;
+  const poolPath = router.getPoolPath();
+  const positionId = router.getPositionId();
   const { getGnotPath } = useGnotToGnot();
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
     type: "Custom",
@@ -54,7 +53,7 @@ export const useDecreaseHandle = () => {
   const { tokenPrices } = useTokenData();
 
   const { positions } = usePositionData({
-    poolPath: encryptId(poolPath),
+    poolPath,
   });
 
   const loading = useMemo(() => {
@@ -68,13 +67,13 @@ export const useDecreaseHandle = () => {
       );
 
       if (!position) {
-        router.push(`/earn/pool/${poolPath}`);
+        router.movePageWithPoolPath("POOL", router.getPoolPath() || "");
         return;
       }
 
       setSelectedPosition(position);
     }
-  }, [selectedPosition, positions, positionId, poolPath]);
+  }, [selectedPosition, positions, positionId, poolPath, selectedPosition]);
 
   const { connected, account, loadingConnect } = useWallet();
   const minPriceStr = useMemo(() => {

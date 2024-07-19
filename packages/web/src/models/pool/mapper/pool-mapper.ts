@@ -4,7 +4,6 @@ import { INCENTIVE_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
 import { IncentivizePoolCardInfo } from "../info/pool-card-info";
 import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
-import { makeId } from "@utils/common";
 import { PoolDetailModel } from "../pool-detail-model";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
@@ -105,7 +104,7 @@ export class PoolMapper {
   }
 
   public static fromResponse(pool: PoolResponse): PoolModel {
-    const id = pool.id ?? makeId(pool.poolPath);
+    const id = pool.id ?? pool.poolPath;
     return {
       ...pool,
       id,
@@ -119,7 +118,7 @@ export class PoolMapper {
   }
 
   public static toIncentivePool(pool: PoolResponse): IncentivizePoolModel {
-    const id = pool.id ?? makeId(pool.poolPath);
+    const id = pool.id ?? pool.poolPath;
     return {
       ...pool,
       id,
@@ -134,7 +133,7 @@ export class PoolMapper {
   }
 
   public static detailFromResponse(pool: PoolResponse): PoolDetailModel {
-    const id = pool.id ?? makeId(pool.poolPath);
+    const id = pool.id ?? pool.poolPath;
     return {
       ...pool,
       id,

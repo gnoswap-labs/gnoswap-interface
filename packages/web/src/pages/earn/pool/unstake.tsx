@@ -1,28 +1,22 @@
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import RepositionContainer from "@containers/reposition-container/RepositionContainer";
-import { useLoading } from "@hooks/common/use-loading";
+import UnstakeLiquidityContainer from "@containers/unstake-position-container/UnstakePositionContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import RepositionLayout from "@layouts/reposition/RepositionLayout";
-import { DeviceSize } from "@styles/media";
+import UnstakeLiquidityLayout from "@layouts/unstake-liquidity-layout/UnstakeLiquidityLayout";
+import React, { useMemo } from "react";
 import useRouter from "@hooks/common/use-custom-router";
-import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useLoading } from "@hooks/common/use-loading";
+import { DeviceSize } from "@styles/media";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { makeSwapFeeTier } from "@utils/swap-utils";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { GetStaticPaths } from "next";
 
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
-  return {
-    paths: [], //indicates that no page needs be created at build time
-    fallback: "blocking", //indicates the type of fallback
-  };
-};
-
-export async function getStaticProps({ locale }: { locale: string }) {
+export async function getServerSideProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
@@ -30,14 +24,11 @@ export async function getStaticProps({ locale }: { locale: string }) {
   };
 }
 
-export default function EarnAdd() {
+export default function Earn() {
   const { width } = useWindowSize();
   const router = useRouter();
-  const poolPath = router.query["pool-path"] || "";
-  const positionId = router.query["position-id"] || "";
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
-    enabled: !!poolPath,
-  });
+  const poolPath = router.getPoolPath();
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string);
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 
@@ -51,26 +42,41 @@ export default function EarnAdd() {
                 getGnotPath(data?.tokenB).symbol
               } (${Number(data?.fee) / 10000}%)`
             : "...",
-        path: `/earn/pool/${router.query["pool-path"]}`,
+        path: `/earn/pool/${poolPath}`,
       },
-      { title: "Reposition", path: "" },
+      { title: "Unstake Position", path: "" },
     ];
   }, [data, width]);
 
-  const seoInfo = useMemo(
-    () => SEOInfo["/earn/pool/[pool-path]/[position-id]/reposition"],
-    [],
-  );
+  const feeStr = useMemo(() => {
+    const feeTier = data?.fee;
+
+    if (!feeTier) {
+      return null;
+    }
+    return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
+  }, [data?.fee]);
+
+  const seoInfo = useMemo(() => SEOInfo["/earn/pool/unstake"], []);
+
+  const title = useMemo(() => {
+    const tokenA = getGnotPath(data?.tokenA);
+    const tokenB = getGnotPath(data?.tokenB);
+
+    return seoInfo.title(
+      [tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[],
+    );
+  }, [data?.tokenA, data?.tokenB, feeStr, getGnotPath, seoInfo]);
 
   return (
     <>
       <SEOHeader
-        title={seoInfo.title([positionId as string])}
+        title={title}
         pageDescription={seoInfo.desc()}
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <RepositionLayout
+      <UnstakeLiquidityLayout
         header={<HeaderContainer />}
         breadcrumbs={
           <BreadcrumbsContainer
@@ -78,7 +84,7 @@ export default function EarnAdd() {
             isLoading={isLoadingCommon || isLoading}
           />
         }
-        reposition={<RepositionContainer />}
+        unstakeLiquidity={<UnstakeLiquidityContainer />}
         footer={<Footer />}
       />
     </>

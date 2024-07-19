@@ -73,17 +73,12 @@ const SwapLiquidityContainer: React.FC = () => {
   const { wugnotPath, gnot, getGnotPath } = useGnotToGnot();
   const { tokenA, tokenB } = swapValue;
   const router = useRouter();
+
   const createPool = () => {
-    router.push(
-      {
-        pathname: "/earn/add",
-        query: {
-          tokenA: tokenA?.path as string,
-          tokenB: tokenB?.path as string,
-        },
-      },
-      "/earn/add",
-    );
+    router.movePage("EARN_ADD", {
+      tokenA: tokenA?.path as string,
+      tokenB: tokenB?.path as string,
+    });
   };
 
   const poolDetail: PoolModel[] = useMemo(() => {

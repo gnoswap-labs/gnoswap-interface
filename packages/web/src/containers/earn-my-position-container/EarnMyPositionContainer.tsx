@@ -5,7 +5,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import useRouter from "@hooks/common/use-custom-router";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import React, {
   useCallback,
   useEffect,
@@ -16,7 +16,8 @@ import React, {
 import { useAtom, useAtomValue } from "jotai";
 import { EarnState, ThemeState } from "@states/index";
 import { useGetUsernameByAddress } from "@query/address/queries";
-import { DEFAULT_POOL_ID } from "@constants/common.constant";
+import { DEFAULT_POOL_PATH } from "@constants/common.constant";
+import { QUERY_PARAMETER } from "@constants/page.constant";
 
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
@@ -28,7 +29,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   address,
   isOtherPosition,
 }) => {
-  const router = useRouter();
+  const router = useCustomRouter();
   const {
     connected,
     connectAdenaClient,
@@ -93,22 +94,25 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   ]);
 
   const moveEarnAdd = useCallback(() => {
-    router.push("/earn/add");
+    router.movePage("EARN_ADD");
   }, [router]);
 
   const movePoolDetail = useCallback(
     (poolId: string, positionId: string) => {
-      const query = address && address.length > 0 ? `?addr=${address}` : "";
-      const positionHash = `#${positionId}`;
-
-      router.push(`/earn/pool/${poolId}${query}${positionHash}`);
+      router.movePage(
+        "POOL",
+        {
+          [QUERY_PARAMETER.POOL_PATH]: poolId,
+          [QUERY_PARAMETER.ADDRESS]: address,
+        },
+        positionId,
+      );
     },
     [router, address],
   );
 
   const moveEarnStake = useCallback(() => {
-    const stakingUri = `/earn/pool/${DEFAULT_POOL_ID}#staking`;
-    router.push(stakingUri);
+    router.movePageWithPoolPath("POOL", DEFAULT_POOL_PATH, "staking");
   }, [router]);
 
   const openPosition = useMemo(() => {

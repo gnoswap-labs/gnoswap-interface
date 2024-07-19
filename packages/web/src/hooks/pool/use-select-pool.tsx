@@ -31,6 +31,7 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { PoolModel } from "@models/pool/pool-model";
+import { useRouter } from "next/router";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -98,12 +99,15 @@ export const useSelectPool = ({
   defaultPriceRange = [null, null],
   options,
 }: Props) => {
+  const router = useRouter();
   const priceRangeRef = useRef<[number | null, number | null]>([
     ...defaultPriceRange,
   ]);
 
   // Global state
-  const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
+  const [currentPoolPath, setCurrentPoolPath] = useAtom(
+    EarnState.currentPoolPath,
+  );
   const [, setPoolInfoQuery] = useAtom(EarnState.poolInfoQuery);
 
   const [fullRange, setFullRange] = useState(false);
@@ -347,6 +351,13 @@ export const useSelectPool = ({
       });
     },
     staleTime: 5_000,
+    refetchInterval: () => {
+      if (["/earn/pool/add", "/earn/add"].includes(router.pathname)) {
+        return 10_000;
+      }
+
+      return false;
+    },
   });
 
   useEffect(() => {
@@ -700,5 +711,6 @@ export const useSelectPool = ({
     isChangeMinMax,
     setIsChangeMinMax,
     isLoading: isLoading || isLoadingPoolInfo,
+    currentPoolPath,
   };
 };
