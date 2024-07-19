@@ -102,15 +102,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       .filter(item => !item.closed)
       .flatMap(item => item.reward)
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
-    // console.log(
-    //   "🚀 ~ claimAllReward ~ openedPosition:",
-    //   openedPosition
-    //     .flatMap(item => item.reward)
-    //     .map(item => ({
-    //       claimableUsd: item.claimableUsd,
-    //       claimableAmount: item.claimableAmount,
-    //     })),
-    // );
 
     const data = {
       amount: formatOtherPrice(amount, { isKMB: false }),
