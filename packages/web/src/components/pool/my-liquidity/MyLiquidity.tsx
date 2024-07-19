@@ -15,7 +15,7 @@ interface MyLiquidityProps {
   address: string | null;
   addressName: string;
   isOtherPosition: boolean;
-  positions: PoolPositionModel[];
+  openedPosition: PoolPositionModel[];
   closedPosition: PoolPositionModel[];
   breakpoint: DEVICE_TYPE;
   connected: boolean;
@@ -40,7 +40,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isOtherPosition,
   address,
   addressName,
-  positions,
+  openedPosition,
   breakpoint,
   connected,
   isSwitchNetwork,
@@ -61,8 +61,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   closedPosition,
 }) => {
   const showedPosition = useMemo(
-    () => [...positions, ...(isShowClosePosition ? closedPosition : [])],
-    [closedPosition, isShowClosePosition, positions],
+    () => [...openedPosition, ...(isShowClosePosition ? closedPosition : [])],
+    [closedPosition, isShowClosePosition, openedPosition],
   );
 
   return (
@@ -87,7 +87,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           />
           <MyLiquidityContent
             connected={connected}
-            positions={positions}
+            positions={openedPosition}
             breakpoint={breakpoint}
             isDisabledButton={isSwitchNetwork || !connected}
             claimAll={claimAll}
@@ -97,7 +97,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             tokenPrices={tokenPrices}
           />
         </div>
-        {positions.length > 0 && <PoolDivider />}
+        {openedPosition.length > 0 && <PoolDivider />}
         {breakpoint !== DEVICE_TYPE.MOBILE ? (
           <>
             {showedPosition.map(

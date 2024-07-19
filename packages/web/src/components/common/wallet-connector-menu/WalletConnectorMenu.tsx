@@ -93,8 +93,9 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   onClickChangeLanguage,
   gnotBalance,
   gnotToken,
-  isLoadingGnotBalance,
+  // isLoadingGnotBalance,
 }) => {
+  console.log("🚀 ~ gnotBalance:", gnotBalance);
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
   const network = useAtomValue(CommonState.network);
@@ -118,10 +119,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const balanceText = useMemo(() => {
-    const balance = isLoadingGnotBalance
-      ? account?.balances?.[0].amount
-      : gnotBalance;
-
+    const balance = gnotBalance || account?.balances?.[0].amount || "-";
     const formattedPrice =
       BigNumber(balance ?? 0)
         .shiftedBy((gnotToken?.decimals ?? 0) * -1)
@@ -132,12 +130,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     const price = BigNumber(formattedPrice).toFormat();
 
     return `${price} GNOT` || "0 GNOT";
-  }, [
-    account?.balances,
-    gnotBalance,
-    gnotToken?.decimals,
-    isLoadingGnotBalance,
-  ]);
+  }, [account?.balances, gnotBalance, gnotToken?.decimals]);
 
   const onClickDisconnect = useCallback(() => {
     disconnectWallet();

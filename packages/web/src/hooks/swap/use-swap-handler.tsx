@@ -586,10 +586,12 @@ export const useSwapHandler = () => {
   }, []);
 
   const onFinishSwap = useCallback(() => {
+    console.log("onFinishSwap");
     closeModal();
     setTokenAAmount("0");
     setTokenBAmount("0");
     resetSwapAmount();
+    updateBalances();
     queryClient.removeQueries({
       queryKey: [QUERY_KEY.router],
     });

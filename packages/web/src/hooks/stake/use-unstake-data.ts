@@ -2,6 +2,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { useMemo } from "react";
 
@@ -51,11 +52,15 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
       },
       null,
     );
-    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd
-      ? Number(tokenPrices[tokenA.priceID]?.usd)
+
+    const tokenAPriceId = checkGnotPath(tokenA.priceID);
+    const tokenBPriceId = checkGnotPath(tokenB.priceID);
+
+    const tokenAPrice = tokenPrices[tokenAPriceId]?.usd
+      ? Number(tokenPrices[tokenAPriceId]?.usd)
       : null;
-    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd
-      ? Number(tokenPrices[tokenB.priceID]?.usd)
+    const tokenBPrice = tokenPrices[tokenBPriceId]?.usd
+      ? Number(tokenPrices[tokenBPriceId]?.usd)
       : null;
 
     return [

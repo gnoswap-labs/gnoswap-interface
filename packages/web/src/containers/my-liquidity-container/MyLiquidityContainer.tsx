@@ -87,18 +87,28 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     }
   };
 
+  const openedPosition = useMemo(() => {
+    return (
+      positions
+        .filter(item => !item.closed)
+        .sort(
+          (a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue),
+        ) ?? []
+    );
+  }, [positions]);
+
   const claimAllReward = useCallback(() => {
-    const amount = positions
+    const amount = openedPosition
+      .filter(item => !item.closed)
       .flatMap(item => item.reward)
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
-    console.log("🚀 ~ claimAllReward ~ amount:", amount);
+
     const data = {
       amount: formatOtherPrice(amount, { isKMB: false }),
     };
 
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
-      console.log("🚀 ~ claimAll ~ response:", response);
       if (response) {
         if (response.code === 0) {
           broadcastPending({ txHash: response.data?.hash });
@@ -126,22 +136,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         }
       }
     });
-  }, [claimAll, router, setLoadingTransactionClaim, positions, openModal]);
+  }, [claimAll, router, setLoadingTransactionClaim, openedPosition, openModal]);
 
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
   };
-
-  const openedPosition = useMemo(() => {
-    return (
-      positions
-        .filter(item => !item.closed)
-        .filter(item => !item.closed)
-        .sort(
-          (a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue),
-        ) ?? []
-    );
-  }, [positions]);
 
   const closedPosition = useMemo(() => {
     return (
@@ -181,7 +180,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       address={address || account?.address || null}
       addressName={addressName}
       isOtherPosition={isOtherPosition}
-      positions={visiblePositions ? openedPosition : []}
+      openedPosition={visiblePositions ? openedPosition : []}
       closedPosition={closedPosition}
       breakpoint={breakpoint}
       connected={connectedWallet}

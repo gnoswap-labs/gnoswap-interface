@@ -317,27 +317,44 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getMaxTick, maxTickRate]);
 
   const claimableUSD = useMemo(() => {
-    const claimableUSD_ = position.reward.reduce(
-      (acc, cur) => Number(cur.claimableUsd) + acc,
-      0,
-    );
-    if (claimableUSD_ === 0) return "-";
+    const result = position.reward.reduce((acc: number | null, cur) => {
+      if (acc === null && !cur.claimableUsd) {
+        return null;
+      }
 
-    return formatOtherPrice(claimableUSD_);
+      if (acc === null) return Number(cur.claimableUsd);
+
+      if (!cur.claimableUsd) return acc;
+
+      return Number(cur.claimableUsd || 0) + acc;
+    }, 0);
+
+    return formatOtherPrice(result);
   }, [position.reward]);
 
   const dailyEarning = useMemo(() => {
-    const dailyEarning_ = position.reward.reduce((acc, current) => {
-      const currentTokenPrice = tokenPrices?.[current.rewardToken.priceID]
+    let hasEmptyPrice = false;
+
+    const result = position.reward.reduce((acc: number | null, current) => {
+      const tokenPrice = tokenPrices?.[current.rewardToken.priceID].usd
         ? Number(tokenPrices?.[current.rewardToken.priceID].usd)
-        : 0;
+        : null;
+      hasEmptyPrice = !tokenPrices?.[current.rewardToken.priceID]?.usd;
 
-      return acc + Number(current.accuReward1D ?? 0) * currentTokenPrice;
-    }, 0);
+      if (tokenPrice === null) return null;
 
-    if (dailyEarning_ === 0) return "-";
+      if (acc === null && !current.accuReward1D) {
+        return null;
+      }
 
-    return formatOtherPrice(dailyEarning_);
+      if (acc === null) return Number(current.accuReward1D) * tokenPrice;
+
+      return acc + Number(current.accuReward1D) * tokenPrice;
+    }, null);
+
+    if (hasEmptyPrice) return "-";
+
+    return formatOtherPrice(result);
   }, [position.reward, tokenPrices]);
 
   const boxHeaderId = useMemo(() => position.id + "-box-header", [position.id]);

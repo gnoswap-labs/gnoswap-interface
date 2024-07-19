@@ -87,7 +87,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.tvl]);
 
   const volumeValue = useMemo((): string => {
-    return formatOtherPrice(pool.volume24h, { isKMB: false });
+    return formatOtherPrice(pool.volume24h);
   }, [pool.volume24h]);
 
   const volumeChangedValue = useMemo(() => {
