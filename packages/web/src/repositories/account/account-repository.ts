@@ -30,4 +30,9 @@ export interface AccountRepository extends AccountNotificationRepository {
   switchNetwork: (
     chainId: string,
   ) => Promise<WalletResponse<SwitchNetworkResponse>>;
+
+  getBalanceByKey: (
+    address: string,
+    tokenKey: string,
+  ) => Promise<number | null>;
 }

@@ -70,7 +70,9 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       },
       null,
     );
-    return formatOtherPrice(sumUSD);
+    return formatOtherPrice(sumUSD, {
+      isKMB: false,
+    });
   }, [rewardInfo]);
 
   const internalRewardUSD = useMemo(() => {
@@ -95,7 +97,9 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       },
       null,
     );
-    return formatOtherPrice(sumUSD);
+    return formatOtherPrice(sumUSD, {
+      isKMB: false,
+    });
   }, [rewardInfo]);
 
   const externalRewardUSD = useMemo(() => {
@@ -120,7 +124,9 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       },
       null,
     );
-    return formatOtherPrice(sumUSD);
+    return formatOtherPrice(sumUSD, {
+      isKMB: false,
+    });
   }, [rewardInfo]);
 
   return (
@@ -148,6 +154,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
               <span className="position">
                 {formatPoolPairAmount(reward.claimableAmount, {
                   decimals: reward.token.decimals,
+                  isKMB: false,
                 })}
               </span>
             </div>
@@ -179,6 +186,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
               <span className="position">
                 {formatPoolPairAmount(reward.claimableAmount, {
                   decimals: reward.token.decimals,
+                  isKMB: false,
                 })}
               </span>
             </div>
@@ -210,6 +218,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
               <span className="position">
                 {formatPoolPairAmount(reward.claimableAmount, {
                   decimals: reward.token.decimals,
+                  isKMB: false,
                 })}
               </span>
             </div>

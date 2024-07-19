@@ -33,7 +33,7 @@ export const useTokenData = () => {
     isFetched: isFetchedTokenPrices,
   } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
-  const { account } = useWallet();
+  const { account, refetchGnotBalance } = useWallet();
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loadingBalance, setLoadingBalance] = useAtom(
@@ -244,6 +244,7 @@ export const useTokenData = () => {
       JSON.stringify(balancesData) !== JSON.stringify(balances) &&
       !isEmptyObject(balancesData)
     ) {
+      refetchGnotBalance();
       setIsChangeBalancesToken(true);
       setBalances(balancesData);
     }
