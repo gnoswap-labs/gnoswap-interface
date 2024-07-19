@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useInitLoading } from "@query/common";
-import { useGetDashboardTVL, useGetDashboardVolume } from "@query/dashboard";
+import { useGetDashboardVolume } from "@query/dashboard";
 import { useGetPoolList } from "@query/pools";
 import { useGetChainList } from "@query/token";
 import { useGetPositionsByAddress } from "@query/positions";
@@ -14,21 +14,16 @@ export const useLoading = () => {
     useTokenData();
   const { isFetched: isFetchedChainList } = useGetChainList({ enabled: false });
   const { isFetched: isFetchedPoolData } = useGetPoolList({ enabled: false });
-  const { isFetched: isFetchedDashboardTVL } = useGetDashboardTVL({
-    enabled: false,
-  });
   const { isFetched: isFetchedDashboardVolume } = useGetDashboardVolume({
     enabled: false,
   });
 
-  const { isFetched: isFetchedPosition } = useGetPositionsByAddress(
-    {
-      address: address || "",
-      queryOptions: {
-        enabled: false,
-      },
+  const { isFetched: isFetchedPosition } = useGetPositionsByAddress({
+    address: address || "",
+    queryOptions: {
+      enabled: false,
     },
-  );
+  });
 
   const isLoading = useMemo(() => {
     if (initialized) {
@@ -74,8 +69,8 @@ export const useLoading = () => {
     if (!initialized) {
       return true;
     }
-    return !isFetchedDashboardTVL || !isFetchedDashboardVolume;
-  }, [initialized, isFetchedDashboardTVL, isFetchedDashboardVolume]);
+    return !isFetchedDashboardVolume;
+  }, [initialized, isFetchedDashboardVolume]);
 
   const isLoadingPositions = useMemo(() => {
     if (!initialized) {

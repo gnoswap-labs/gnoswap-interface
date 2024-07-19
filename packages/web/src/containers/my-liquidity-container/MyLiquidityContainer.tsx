@@ -12,8 +12,8 @@ import {
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useGetUsernameByAddress } from "@query/address/queries";
-import { toUnitFormat } from "@utils/number-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -36,7 +36,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     },
   });
 
-  const { claimAll } = usePosition(positions);
+  const { claimAll } = usePosition(positions.filter(item => !item.closed));
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
@@ -87,12 +87,24 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     }
   };
 
+  const openedPosition = useMemo(() => {
+    return (
+      positions
+        .filter(item => !item.closed)
+        .sort(
+          (a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue),
+        ) ?? []
+    );
+  }, [positions]);
+
   const claimAllReward = useCallback(() => {
-    const amount = positions
+    const amount = openedPosition
+      .filter(item => !item.closed)
       .flatMap(item => item.reward)
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
+
     const data = {
-      amount: toUnitFormat(amount, true, true),
+      amount: formatOtherPrice(amount, { isKMB: false }),
     };
 
     setLoadingTransactionClaim(true);
@@ -124,22 +136,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         }
       }
     });
-  }, [claimAll, router, setLoadingTransactionClaim, positions, openModal]);
+  }, [claimAll, router, setLoadingTransactionClaim, openedPosition, openModal]);
 
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
   };
-
-  const openedPosition = useMemo(() => {
-    return (
-      positions
-        .filter(item => !item.closed)
-        .filter(item => !item.closed)
-        .sort(
-          (a, b) => Number(b.positionUsdValue) - Number(a.positionUsdValue),
-        ) ?? []
-    );
-  }, [positions]);
 
   const closedPosition = useMemo(() => {
     return (
@@ -179,7 +180,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       address={address || account?.address || null}
       addressName={addressName}
       isOtherPosition={isOtherPosition}
-      positions={visiblePositions ? openedPosition : []}
+      openedPosition={visiblePositions ? openedPosition : []}
       closedPosition={closedPosition}
       breakpoint={breakpoint}
       connected={connectedWallet}

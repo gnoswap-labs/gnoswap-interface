@@ -15,7 +15,7 @@ interface MyLiquidityProps {
   address: string | null;
   addressName: string;
   isOtherPosition: boolean;
-  positions: PoolPositionModel[];
+  openedPosition: PoolPositionModel[];
   closedPosition: PoolPositionModel[];
   breakpoint: DEVICE_TYPE;
   connected: boolean;
@@ -40,7 +40,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isOtherPosition,
   address,
   addressName,
-  positions,
+  openedPosition,
   breakpoint,
   connected,
   isSwitchNetwork,
@@ -61,8 +61,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   closedPosition,
 }) => {
   const showedPosition = useMemo(
-    () => [...positions, ...(isShowClosePosition ? closedPosition : [])],
-    [closedPosition, isShowClosePosition, positions],
+    () => [...openedPosition, ...(isShowClosePosition ? closedPosition : [])],
+    [closedPosition, isShowClosePosition, openedPosition],
   );
 
   return (
@@ -73,6 +73,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           <MyLiquidityHeader
             isOtherPosition={isOtherPosition}
             connectedWallet={connected}
+            isSwitchNetwork={isSwitchNetwork}
             address={address}
             addressName={addressName}
             positionLength={showedPosition.length}
@@ -87,7 +88,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           />
           <MyLiquidityContent
             connected={connected}
-            positions={positions}
+            positions={openedPosition}
             breakpoint={breakpoint}
             isDisabledButton={isSwitchNetwork || !connected}
             claimAll={claimAll}
@@ -95,59 +96,61 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             isOtherPosition={isHiddenAddPosition}
             isLoadingPositionsById={loading}
             tokenPrices={tokenPrices}
+            isSwitchNetwork={isSwitchNetwork}
           />
         </div>
-        {positions.length > 0 && <PoolDivider />}
-        {breakpoint !== DEVICE_TYPE.MOBILE ? (
-          <>
-            {showedPosition.map(
-              (position: PoolPositionModel, index: number) => (
-                <MyDetailedPositionCard
-                  position={position}
-                  key={index.toString() + position.id}
-                  breakpoint={breakpoint}
-                  loading={loading}
-                  address={address || ""}
-                  isHiddenAddPosition={isHiddenAddPosition}
-                  connected={connected}
-                  tokenPrices={tokenPrices}
-                />
-              ),
-            )}
-          </>
-        ) : (
-          <>
-            <div
-              className="slider-wrap clearfix"
-              ref={divRef}
-              onScroll={onScroll}
-            >
-              <div className={"box-slider full-width"}>
-                {showedPosition.map(
-                  (position: PoolPositionModel, index: number) => (
-                    <MyDetailedPositionCard
-                      position={position}
-                      key={index.toString() + position.id}
-                      breakpoint={breakpoint}
-                      loading={loading}
-                      address={address || ""}
-                      isHiddenAddPosition={isHiddenAddPosition}
-                      connected={connected}
-                      tokenPrices={tokenPrices}
-                    />
-                  ),
-                )}
+        {!isSwitchNetwork && openedPosition.length > 0 && <PoolDivider />}
+        {!isSwitchNetwork &&
+          (breakpoint !== DEVICE_TYPE.MOBILE ? (
+            <>
+              {showedPosition.map(
+                (position: PoolPositionModel, index: number) => (
+                  <MyDetailedPositionCard
+                    position={position}
+                    key={index.toString() + position.id}
+                    breakpoint={breakpoint}
+                    loading={loading}
+                    address={address || ""}
+                    isHiddenAddPosition={isHiddenAddPosition}
+                    connected={connected}
+                    tokenPrices={tokenPrices}
+                  />
+                ),
+              )}
+            </>
+          ) : (
+            <>
+              <div
+                className="slider-wrap clearfix"
+                ref={divRef}
+                onScroll={onScroll}
+              >
+                <div className={"box-slider full-width"}>
+                  {showedPosition.map(
+                    (position: PoolPositionModel, index: number) => (
+                      <MyDetailedPositionCard
+                        position={position}
+                        key={index.toString() + position.id}
+                        breakpoint={breakpoint}
+                        loading={loading}
+                        address={address || ""}
+                        isHiddenAddPosition={isHiddenAddPosition}
+                        connected={connected}
+                        tokenPrices={tokenPrices}
+                      />
+                    ),
+                  )}
+                </div>
               </div>
-            </div>
-            {showedPosition.length > 1 && (
-              <div className="box-indicator">
-                <span className="current-page">{currentIndex}</span>
-                <span>/</span>
-                <span>{showedPosition.length}</span>
-              </div>
-            )}
-          </>
-        )}
+              {showedPosition.length > 1 && (
+                <div className="box-indicator">
+                  <span className="current-page">{currentIndex}</span>
+                  <span>/</span>
+                  <span>{showedPosition.length}</span>
+                </div>
+              )}
+            </>
+          ))}
       </MyLiquidityWrapper>
     </>
   );

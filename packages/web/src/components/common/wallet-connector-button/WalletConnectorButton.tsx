@@ -29,7 +29,7 @@ interface WalletConnectProps {
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
   loadingConnect: string;
-  gnotBalance?: number;
+  gnotBalance?: number | null;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
 }

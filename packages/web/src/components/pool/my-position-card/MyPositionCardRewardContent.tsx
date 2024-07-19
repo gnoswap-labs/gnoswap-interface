@@ -60,7 +60,9 @@ export const MyPositionRewardContent: React.FC<
 
       return accum + current.claimableUSD;
     }, null);
-    return formatOtherPrice(sumUSD);
+    return formatOtherPrice(sumUSD, {
+      isKMB: false,
+    });
   }, [swapFeeRewards]);
 
   const internalRewardUSD = useMemo(() => {
@@ -83,7 +85,9 @@ export const MyPositionRewardContent: React.FC<
 
       return accum + current.claimableUSD;
     }, null);
-    return formatOtherPrice(sumUSD);
+    return formatOtherPrice(sumUSD, {
+      isKMB: false,
+    });
   }, [internalRewards]);
 
   const externalRewardUSD = useMemo(() => {
@@ -106,7 +110,9 @@ export const MyPositionRewardContent: React.FC<
 
       return accum + current.claimableUSD;
     }, null);
-    return formatOtherPrice(sumUSD);
+    return formatOtherPrice(sumUSD, {
+      isKMB: false,
+    });
   }, [externalRewards]);
 
   return (
@@ -134,6 +140,7 @@ export const MyPositionRewardContent: React.FC<
               <span className="position">
                 {formatPoolPairAmount(reward.claimableAmount.toString(), {
                   decimals: reward.token.decimals,
+                  isKMB: false,
                 })}
               </span>
             </div>
@@ -164,6 +171,7 @@ export const MyPositionRewardContent: React.FC<
               <span className="position">
                 {formatPoolPairAmount(reward.claimableAmount.toString(), {
                   decimals: reward.token.decimals,
+                  isKMB: false,
                 })}
               </span>
             </div>
@@ -194,6 +202,7 @@ export const MyPositionRewardContent: React.FC<
               <span className="position">
                 {formatPoolPairAmount(reward.claimableAmount.toString(), {
                   decimals: reward.token.decimals,
+                  isKMB: false,
                 })}
               </span>
             </div>

@@ -590,6 +590,7 @@ export const useSwapHandler = () => {
     setTokenAAmount("0");
     setTokenBAmount("0");
     resetSwapAmount();
+    updateBalances();
     queryClient.removeQueries({
       queryKey: [QUERY_KEY.router],
     });

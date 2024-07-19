@@ -59,7 +59,7 @@ interface HeaderProps {
   recents: Token[];
   moveTokenPage: (path: string) => void;
   movePoolPage: (path: string) => void;
-  gnotBalance?: number;
+  gnotBalance?: number | null;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
 }

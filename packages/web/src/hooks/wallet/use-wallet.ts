@@ -11,8 +11,12 @@ import {
   GNOSWAP_SESSION_ID_KEY,
   GNOWSWAP_CONNECTED_KEY,
 } from "@states/common";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { SUPPORT_CHAIN_IDS, DEFAULT_CHAIN_ID } from "@constants/environment.constant";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  SUPPORT_CHAIN_IDS,
+  DEFAULT_CHAIN_ID,
+} from "@constants/environment.constant";
+import { useGetTokenBalancesFromChain } from "@query/address/queries";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
 
@@ -25,25 +29,18 @@ export const useWallet = () => {
   const [loadingConnect, setLoadingConnect] = useAtom(
     WalletState.loadingConnect,
   );
-  const { rpcProvider } = useGnoswapContext();
   const queryClient = useQueryClient();
 
   const connected = useMemo(() => {
     return walletAccount !== null && walletAccount.address.length > 0;
   }, [walletAccount]);
 
-  const balanceQuery = useQuery({
-    queryKey: [balanceQueryKey, walletAccount?.chainId || ""],
-    queryFn: () =>
-      rpcProvider?.getBalance(walletAccount?.address || "", "ugnot"),
-    refetchInterval: 5_000,
-    enabled: !!walletAccount?.address,
-  });
   const {
     data: balance,
     isLoading: isLoadingBalance,
     isStale: isBalanceStale,
-  } = balanceQuery;
+    refetch,
+  } = useGetTokenBalancesFromChain("ugnot");
 
   const wallet = useMemo(() => {
     if (!connected) {
@@ -96,19 +93,23 @@ export const useWallet = () => {
     }
   }
 
-  const switchNetwork = useCallback(async (network?: string) => {
-    try {
-      setLoadingConnect("loading");
-      const res = await accountRepository.switchNetwork(network || DEFAULT_CHAIN_ID);
-      if (res.code === 0) {
-        const account = await accountRepository.getAccount();
-        setWalletAccount(account);
-        accountRepository.setConnectedWallet(true);
-      }
-      setLoadingConnect("done");
-    } catch (error) {
-    }
-  }, [accountRepository, setWalletAccount]);
+  const switchNetwork = useCallback(
+    async (network?: string) => {
+      try {
+        setLoadingConnect("loading");
+        const res = await accountRepository.switchNetwork(
+          network || DEFAULT_CHAIN_ID,
+        );
+        if (res.code === 0) {
+          const account = await accountRepository.getAccount();
+          setWalletAccount(account);
+          accountRepository.setConnectedWallet(true);
+        }
+        setLoadingConnect("done");
+      } catch (error) {}
+    },
+    [accountRepository, setWalletAccount],
+  );
 
   const connectAdenaClient = useCallback(() => {
     if (loadingConnect !== "initial") {
@@ -121,9 +122,7 @@ export const useWallet = () => {
       window.open("https://adena.app/");
     }
     setWalletClient(adena);
-  },
-    [sessionId, setWalletClient, setLoadingConnect],
-  );
+  }, [sessionId, setWalletClient, setLoadingConnect]);
 
   const connectAccount = async () => {
     try {
@@ -142,7 +141,10 @@ export const useWallet = () => {
 
       if (established.code === 0 || established.code === 4001) {
         const account = await accountRepository.getAccount();
-        sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+        sessionStorage.setItem(
+          ACCOUNT_SESSION_INFO_KEY,
+          JSON.stringify(account),
+        );
         const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
         if (!availNetwork) {
           switchNetwork();
@@ -154,9 +156,7 @@ export const useWallet = () => {
         accountRepository.setConnectedWallet(false);
         setLoadingConnect("error");
       }
-    } catch (error) {
-    }
-
+    } catch (error) {}
   };
 
   function updateWalletEvents(walletClient: WalletClient | null) {
@@ -173,7 +173,7 @@ export const useWallet = () => {
       walletClient.addEventChangedNetwork(() => {
         connectAdenaClient();
       });
-    } catch { }
+    } catch {}
   }
 
   const isSwitchNetwork = useMemo(() => {
@@ -206,5 +206,6 @@ export const useWallet = () => {
     setLoadingConnect,
     gnotBalance: balance,
     isLoadingGnotBalance: isLoadingBalance || isBalanceStale,
+    refetchGnotBalance: refetch,
   };
 };

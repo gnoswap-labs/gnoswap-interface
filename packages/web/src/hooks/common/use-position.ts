@@ -18,10 +18,13 @@ export const usePosition = (positions: PositionModel[]) => {
       position =>
         position.reward.reduce(
           (accum, currReward) =>
-            BigNumber(accum).plus(Number(currReward.claimableAmount ?? "0")).toNumber(),
+            BigNumber(accum)
+              .plus(Number(currReward.claimableAmount ?? "0"))
+              .toNumber(),
           0,
         ) > 0,
     );
+
     return positionRepository
       .claimAll({
         positions: claimablePositions,

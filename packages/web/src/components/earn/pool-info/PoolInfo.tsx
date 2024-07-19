@@ -66,11 +66,11 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
       : POOL_INFO;
 
   const aprDisplay = useMemo(() => {
-    if (tvl === "<$0.01") return "0%";
+    if (tvl === "<$0.01" && apr) return "0%";
     return (
       <>
         {Number(apr) > 100 && <IconStar size={20} />}
-        {formatRate(apr || 0)}
+        {formatRate(apr)}
       </>
     );
   }, [apr, tvl]);

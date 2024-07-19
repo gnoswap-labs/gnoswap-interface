@@ -14,6 +14,9 @@ import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { TokenModel } from "@models/token/token-model";
+import { checkGnotPath } from "@utils/common";
 
 export interface Pool {
   poolId: string;
@@ -78,8 +81,16 @@ const PoolListContainer: React.FC = () => {
   const { poolListInfos, updatePools } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { isLoadingPools } = useLoading();
+  const { tokenPrices } = useTokenData();
 
   const themeKey = useAtomValue(ThemeState.themeKey);
+
+  const anyEmptyPrice = useCallback(
+    (tokenA: TokenModel, tokenB: TokenModel) =>
+      !tokenPrices?.[checkGnotPath(tokenA.priceID)]?.usd ||
+      !tokenPrices?.[checkGnotPath(tokenB.priceID)]?.usd,
+    [tokenPrices],
+  );
 
   useEffect(() => {
     updatePools();
@@ -197,24 +208,40 @@ const PoolListContainer: React.FC = () => {
       .filter(info => filteredPoolType(poolType, info.incentiveType))
       .map(item => ({
         ...item,
-        liquidity: formatOtherPrice(item.liquidity, {
-          isKMB: false,
-          decimals: 0,
-        }),
-        volume24h: formatOtherPrice(item.volume24h || 0, {
-          isKMB: false,
-          decimals: 0,
-        }),
-        fees24h: formatOtherPrice(item.fees24h || 0, {
-          isKMB: false,
-          decimals: 0,
-        }),
-        tvl: formatOtherPrice(item.tvl || 0, {
-          isKMB: false,
-          decimals: 0,
-        }),
+        liquidity: !anyEmptyPrice(item.tokenA, item.tokenB)
+          ? formatOtherPrice(item.liquidity || 0, {
+              isKMB: false,
+              decimals: 0,
+            })
+          : "-",
+        volume24h: !anyEmptyPrice(item.tokenA, item.tokenB)
+          ? formatOtherPrice(item.volume24h || 0, {
+              isKMB: false,
+              decimals: 0,
+            })
+          : "-",
+        fees24h: !anyEmptyPrice(item.tokenA, item.tokenB)
+          ? formatOtherPrice(item.fees24h || 0, {
+              isKMB: false,
+              decimals: 0,
+            })
+          : "-",
+        tvl: !anyEmptyPrice(item.tokenA, item.tokenB)
+          ? formatOtherPrice(item.tvl || 0, {
+              isKMB: false,
+              decimals: 0,
+            })
+          : "-",
+        apr: !anyEmptyPrice(item.tokenA, item.tokenB) ? item.apr : "",
       }));
-  }, [keyword, poolListInfos, poolType, sortOption, filteredPoolType]);
+  }, [
+    poolListInfos,
+    sortOption,
+    keyword,
+    filteredPoolType,
+    poolType,
+    anyEmptyPrice,
+  ]);
 
   const totalPage = useMemo(() => {
     return Math.ceil(sortedPoolListInfos.length / EARN_POOL_LIST_SIZE);

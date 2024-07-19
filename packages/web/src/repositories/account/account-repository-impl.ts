@@ -205,6 +205,14 @@ export class AccountRepositoryImpl implements AccountRepository {
     return history;
   };
 
+  public getBalanceByKey = async (address: string, tokenKey: string) => {
+    if (!this.rpcProvider) {
+      return null;
+    }
+    const res = await this.rpcProvider?.getBalance(address, tokenKey);
+    return res;
+  };
+
   public switchNetwork = async (chainId: string) => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
