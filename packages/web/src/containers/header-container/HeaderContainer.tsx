@@ -60,7 +60,6 @@ const HeaderContainer: React.FC = () => {
     isLoadingGnotBalance,
     gnotBalance,
   } = useWallet();
-  console.log("🚀 ~ gnotBalance:", gnotBalance);
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 

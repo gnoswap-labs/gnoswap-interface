@@ -107,39 +107,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       EXTERNAL: {},
     };
 
-    // console.log(
-    //   "9324890238",
-    //   positions.flatMap(position => position.reward),
-    // );
-    // console.log(
-    //   "9324890238",
-    //   positions
-    //     .flatMap(position => position.reward)
-    //     .map(reward => tokenPrices[reward.rewardToken.priceID]),
-    // );
-    console.log(
-      "9324890238",
-      positions
-        .flatMap(position => position.reward)
-        .map(item => item.claimableUsd),
-    );
-    // console.log(
-    //   "9324890238",
-    //   positions
-    //     .flatMap(position => position.reward)
-    //     .map(item => Number(item.claimableAmount)),
-    // );
-    console.log(
-      "9324890238",
-      positions
-        .flatMap(position => position.reward)
-        .map(
-          item =>
-            Number(item.claimableAmount) *
-            Number(tokenPrices[item.rewardToken.priceID].usd || 0),
-        ),
-    );
-
     positions
       .flatMap(position => position.reward)
       .map(reward => ({
@@ -216,6 +183,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
               return existReward.claimableUSD + rewardInfo.claimableUSD;
             })(),
+            claimableAmount:
+              Number(existReward.claimableAmount || 0) +
+              Number(rewardInfo.claimableAmount),
             accumulatedRewardOf1d: accumulatedRewardOf1d,
             accumulatedRewardOf1dUsd: accumulatedRewardOf1dUsd,
           };
@@ -509,6 +479,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
   const claimableUSD = useMemo(() => {
     const isEmpty = positions
+      .filter(item => !item.closed)
       .flatMap(item => item.reward)
       .every(item => !item.claimableUsd);
 
@@ -538,7 +509,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             return accum + current.claimableUSD;
           }, null as number | null)
       : null;
-    console.log("🚀 ~ claimableUSD ~ claimableUsdValue:", claimableUsdValue);
 
     return formatOtherPrice(claimableUsdValue, { isKMB: false });
   }, [claimableRewardInfo, isDisplay, positions]);

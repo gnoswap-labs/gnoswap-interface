@@ -93,9 +93,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   onClickChangeLanguage,
   gnotBalance,
   gnotToken,
-  // isLoadingGnotBalance,
 }) => {
-  console.log("🚀 ~ gnotBalance:", gnotBalance);
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
   const network = useAtomValue(CommonState.network);

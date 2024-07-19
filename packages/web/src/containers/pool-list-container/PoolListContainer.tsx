@@ -82,7 +82,6 @@ const PoolListContainer: React.FC = () => {
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { isLoadingPools } = useLoading();
   const { tokenPrices } = useTokenData();
-  console.log("🚀 ~ tokenPrices:", tokenPrices);
 
   const themeKey = useAtomValue(ThemeState.themeKey);
 
