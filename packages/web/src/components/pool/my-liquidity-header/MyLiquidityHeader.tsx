@@ -1,5 +1,5 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { HeaderWrapper } from "./MyLiquidityHeader.styles";
 import Switch from "@components/common/switch/Switch";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
@@ -23,6 +23,7 @@ interface MyLiquidityHeaderProps {
   isHiddenAddPosition: boolean;
   showClosePositionButton: boolean;
   isLoadingPositionsById: boolean;
+  isSwitchNetwork: boolean;
 }
 
 const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
@@ -39,13 +40,20 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   isHiddenAddPosition,
   showClosePositionButton,
   isLoadingPositionsById,
+  isSwitchNetwork,
 }) => {
+  console.log("🚀 ~ isSwitchNetwork:", isSwitchNetwork);
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { getAccountUrl } = useGnoscanUrl();
   const onClickAddressPosition = useCallback(() => {
     if (address) window.open(getAccountUrl(address), "_blank");
   }, [address, getAccountUrl]);
+
+  const notConnected = useMemo(
+    () => connectedWallet && !isSwitchNetwork,
+    [connectedWallet, isSwitchNetwork],
+  );
 
   const onClickCopy = async () => {
     try {
@@ -63,46 +71,61 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   const renderPositionHeader = () => {
     const positionTitle = () => {
       if (isOtherPosition) {
-        return <>
-          <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
-          <span>{`’s Positions ${!isLoadingPositionsById ? `(${positionLength})` : ""}`}</span>
-        </>;
+        return (
+          <>
+            <span className="name" onClick={onClickAddressPosition}>
+              {addressName}
+            </span>
+            <span>{`’s Positions ${
+              !isLoadingPositionsById ? `(${positionLength})` : ""
+            }`}</span>
+          </>
+        );
       }
 
-      if (connectedWallet) {
-        return <span>{`My Positions ${!isLoadingPositionsById ? `(${positionLength})` : ""}`}</span>;
+      if (notConnected) {
+        return (
+          <span>{`My Positions ${
+            !isLoadingPositionsById ? `(${positionLength})` : ""
+          }`}</span>
+        );
       }
 
       return <span>{"My Positions"}</span>;
     };
 
-    const canCopy = (isOtherPosition || connectedWallet);
+    const canCopy = isOtherPosition || notConnected;
 
-    return <div className="header">
-      <h2>
-        {positionTitle()}
-        {!isLoadingPositionsById && canCopy && <button onClick={onClickCopy}><IconLinkPage />
-          {copied && (
-            <CopyTooltip>
-              <div className={`box ${themeKey}-shadow`}>
-                <span>URL Copied!</span>
-              </div>
-              <IconPolygon className="polygon-icon" />
-            </CopyTooltip>
+    return (
+      <div className="header">
+        <h2>
+          {positionTitle()}
+          {!isLoadingPositionsById && canCopy && (
+            <button onClick={onClickCopy}>
+              <IconLinkPage />
+              {copied && (
+                <CopyTooltip>
+                  <div className={`box ${themeKey}-shadow`}>
+                    <span>URL Copied!</span>
+                  </div>
+                  <IconPolygon className="polygon-icon" />
+                </CopyTooltip>
+              )}
+            </button>
           )}
-        </button>}
-      </h2>
-      {showClosePositionButton && (
-        <div className="hide-close-position">
-          <Switch
-            checked={isShowClosePosition}
-            onChange={handleSetIsClosePosition}
-            hasLabel={true}
-            labelText="Show closed positions"
-          />
-        </div>
-      )}
-    </div>;
+        </h2>
+        {showClosePositionButton && (
+          <div className="hide-close-position">
+            <Switch
+              checked={isShowClosePosition}
+              onChange={handleSetIsClosePosition}
+              hasLabel={true}
+              labelText="Show closed positions"
+            />
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (

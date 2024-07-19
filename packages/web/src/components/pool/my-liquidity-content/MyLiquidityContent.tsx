@@ -39,6 +39,7 @@ interface MyLiquidityContentProps {
   isOtherPosition: boolean;
   isLoadingPositionsById: boolean;
   tokenPrices: Record<string, TokenPriceModel>;
+  isSwitchNetwork: boolean;
 }
 
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
@@ -50,12 +51,18 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   isOtherPosition,
   isLoadingPositionsById: loading,
   tokenPrices,
+  isSwitchNetwork,
 }) => {
   const { getGnotPath } = useGnotToGnot();
 
   const positionData = positions?.[0]?.pool;
 
-  const isDisplay = useMemo(() => {
+  const isConnected = useMemo(
+    () => !isSwitchNetwork && connected,
+    [connected, isSwitchNetwork],
+  );
+
+  const isDisplayData = useMemo(() => {
     const tokenAPrice = isGNOTPath(positionData?.tokenA.path)
       ? tokenPrices[WUGNOT_TOKEN.priceID]?.usd
       : tokenPrices[positionData?.tokenA.priceID]?.usd;
@@ -64,14 +71,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ? tokenPrices[WUGNOT_TOKEN.priceID]?.usd
       : tokenPrices[positionData?.tokenB.priceID]?.usd;
 
-    return (
-      connected === true &&
-      positions.length > 0 &&
-      !!tokenAPrice &&
-      !!tokenBPrice
-    );
+    return positions.length > 0 && !!tokenAPrice && !!tokenBPrice;
   }, [
-    connected,
     positionData?.tokenA.path,
     positionData?.tokenA.priceID,
     positionData?.tokenB.path,
@@ -83,7 +84,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const totalBalance = useMemo(() => {
     const isEmpty = positions.every(item => !item.usdValue);
 
-    if (!isDisplay || isEmpty) {
+    if (!isConnected || !isDisplayData || isEmpty) {
       return "-";
     }
     const balance = positions.reduce((current, next) => {
@@ -91,12 +92,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     }, 0);
 
     return formatOtherPrice(balance, { isKMB: false });
-  }, [isDisplay, positions]);
+  }, [isConnected, isDisplayData, positions]);
 
   const claimableRewardInfo = useMemo(():
     | { [key in RewardType]: PositionClaimInfo[] }
     | null => {
-    if (!isDisplay) {
+    if (!isConnected || !isDisplayData) {
       return null;
     }
     const infoMap: {
@@ -205,12 +206,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
-  }, [isDisplay, positions, tokenPrices]);
+  }, [isConnected, isDisplayData, positions, tokenPrices]);
 
   const aprRewardInfo = useMemo(():
     | { [key in RewardType]: PositionAPRInfo[] }
     | null => {
-    if (!isDisplay) {
+    if (!isConnected || !isDisplayData) {
       return null;
     }
     const infoMap: {
@@ -294,7 +295,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
-  }, [isDisplay, positions, tokenPrices]);
+  }, [isConnected, isDisplayData, positions, tokenPrices]);
 
   const isShowRewardInfoTooltip = useMemo(() => {
     return (
@@ -306,7 +307,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [aprRewardInfo]);
 
   const dailyEarning = useMemo(() => {
-    if (!isDisplay) {
+    if (!isConnected || !isDisplayData) {
       return "-";
     }
 
@@ -334,10 +335,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       : null;
 
     return formatOtherPrice(claimableUsdValue, { isKMB: false });
-  }, [isDisplay, claimableRewardInfo]);
+  }, [isConnected, isDisplayData, claimableRewardInfo]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
-    if (!isDisplay) {
+    if (!isConnected || !isDisplayData) {
       return null;
     }
     const infoMap: { [key in string]: PositionClaimInfo } = {};
@@ -462,7 +463,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }
       });
     return Object.values(infoMap);
-  }, [isDisplay, positions, tokenPrices]);
+  }, [isConnected, isDisplayData, positions, tokenPrices]);
 
   const isShowClaimableRewardInfo = useMemo(() => {
     return (
@@ -483,7 +484,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .flatMap(item => item.reward)
       .every(item => !item.claimableUsd);
 
-    if (!isDisplay || isEmpty) {
+    if (!isConnected || !isDisplayData || isEmpty) {
       return "-";
     }
 
@@ -511,10 +512,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       : null;
 
     return formatOtherPrice(claimableUsdValue, { isKMB: false });
-  }, [claimableRewardInfo, isDisplay, positions]);
+  }, [claimableRewardInfo, isConnected, isDisplayData, positions]);
 
   const canClaimAll = useMemo(() => {
-    if (!isDisplay || unclaimedRewardInfo === null) {
+    if (!isConnected || !isDisplayData || unclaimedRewardInfo === null) {
       return false;
     }
     return unclaimedRewardInfo.reduce((accum: number | null, current) => {
@@ -531,7 +532,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
       return accum + current.claimableAmount;
     }, null as null);
-  }, [isDisplay, unclaimedRewardInfo]);
+  }, [isConnected, isDisplayData, unclaimedRewardInfo]);
 
   const tokenABalance = useMemo(() => {
     if (!positionData) return 0;
@@ -589,10 +590,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return accum + current.accuReward1DPrice;
     }, null);
 
-    if (!isDisplay) return "-";
+    if (!isConnected || !isDisplayData) return "-";
 
     return formatOtherPrice(sumUsd, { isKMB: false });
-  }, [aprRewardInfo?.SWAP_FEE, isDisplay]);
+  }, [aprRewardInfo?.SWAP_FEE, isConnected, isDisplayData]);
 
   const feeClaim = useMemo(() => {
     const swapFeeReward = claimableRewardInfo?.SWAP_FEE;
@@ -611,10 +612,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return accum + current.claimableUSD;
     }, null);
 
-    if (!isDisplay) return "-";
+    if (!isConnected || !isDisplayData) return "-";
 
     return formatOtherPrice(sumUsd, { isKMB: false });
-  }, [claimableRewardInfo?.SWAP_FEE, isDisplay]);
+  }, [claimableRewardInfo?.SWAP_FEE, isConnected, isDisplayData]);
 
   const logoDaily = useMemo(() => {
     const swapFee = claimableRewardInfo?.SWAP_FEE;
@@ -677,10 +678,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return accum + current.accuReward1DPrice;
     }, null);
 
-    if (!isDisplay) return "-";
+    if (!isConnected || !isDisplayData) return "-";
 
     return formatOtherPrice(sumUSD, { isKMB: false });
-  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL, isDisplay]);
+  }, [
+    aprRewardInfo?.EXTERNAL,
+    aprRewardInfo?.INTERNAL,
+    isConnected,
+    isDisplayData,
+  ]);
 
   const rewardClaim = useMemo(() => {
     const rewards = [
@@ -704,10 +710,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     const isEmpty = sumUSD === 0;
 
-    if (!isDisplay || isEmpty) return "-";
+    if (!isConnected || !isDisplayData || isEmpty) return "-";
 
     return formatOtherPrice(sumUSD, { isKMB: false });
-  }, [claimableRewardInfo?.EXTERNAL, claimableRewardInfo?.INTERNAL, isDisplay]);
+  }, [
+    claimableRewardInfo?.EXTERNAL,
+    claimableRewardInfo?.INTERNAL,
+    isConnected,
+    isDisplayData,
+  ]);
 
   return (
     <MyLiquidityContentWrapper>
@@ -728,7 +739,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             />
           </SkeletonEarnDetailWrapper>
         )}
-        {!loading && positions.length > 0 && (
+        {!loading && positions.length > 0 && isConnected && (
           <div className="sub-content">
             <Tooltip
               placement="top"
@@ -755,7 +766,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <AmountDisplayWrapper>
-                {isDisplay ? (
+                {isConnected && isDisplayData ? (
                   <>
                     {formatPoolPairAmount(tokenABalance, {
                       decimals: 2,
@@ -776,7 +787,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <Tooltip
               placement="top"
               className="sub-content-detail"
-              isShouldShowed={isDisplay}
+              isShouldShowed={isConnected && isDisplayData}
               FloatingContent={
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo
@@ -799,7 +810,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <AmountDisplayWrapper>
-                {isDisplay ? (
+                {isConnected && isDisplayData ? (
                   <>
                     {formatPoolPairAmount(tokenBBalance, {
                       decimals: 2,
@@ -851,7 +862,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             />
           </SkeletonEarnDetailWrapper>
         )}
-        {!loading && positions.length > 0 && (
+        {!loading && positions.length > 0 && isConnected && (
           <div className="total-daily">
             <div className="content-wrap">
               <span>Fees</span>
@@ -987,7 +998,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 />
               )}
             </div>
-            {!loading && positions.length > 0 && (
+            {!loading && positions.length > 0 && isConnected && (
               <div className="total-daily">
                 <div className="content-wrap">
                   <span>Fees</span>

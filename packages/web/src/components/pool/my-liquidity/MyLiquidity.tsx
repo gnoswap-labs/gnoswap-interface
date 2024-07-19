@@ -73,6 +73,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           <MyLiquidityHeader
             isOtherPosition={isOtherPosition}
             connectedWallet={connected}
+            isSwitchNetwork={isSwitchNetwork}
             address={address}
             addressName={addressName}
             positionLength={showedPosition.length}
@@ -95,59 +96,61 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             isOtherPosition={isHiddenAddPosition}
             isLoadingPositionsById={loading}
             tokenPrices={tokenPrices}
+            isSwitchNetwork={isSwitchNetwork}
           />
         </div>
-        {openedPosition.length > 0 && <PoolDivider />}
-        {breakpoint !== DEVICE_TYPE.MOBILE ? (
-          <>
-            {showedPosition.map(
-              (position: PoolPositionModel, index: number) => (
-                <MyDetailedPositionCard
-                  position={position}
-                  key={index.toString() + position.id}
-                  breakpoint={breakpoint}
-                  loading={loading}
-                  address={address || ""}
-                  isHiddenAddPosition={isHiddenAddPosition}
-                  connected={connected}
-                  tokenPrices={tokenPrices}
-                />
-              ),
-            )}
-          </>
-        ) : (
-          <>
-            <div
-              className="slider-wrap clearfix"
-              ref={divRef}
-              onScroll={onScroll}
-            >
-              <div className={"box-slider full-width"}>
-                {showedPosition.map(
-                  (position: PoolPositionModel, index: number) => (
-                    <MyDetailedPositionCard
-                      position={position}
-                      key={index.toString() + position.id}
-                      breakpoint={breakpoint}
-                      loading={loading}
-                      address={address || ""}
-                      isHiddenAddPosition={isHiddenAddPosition}
-                      connected={connected}
-                      tokenPrices={tokenPrices}
-                    />
-                  ),
-                )}
+        {!isSwitchNetwork && openedPosition.length > 0 && <PoolDivider />}
+        {!isSwitchNetwork &&
+          (breakpoint !== DEVICE_TYPE.MOBILE ? (
+            <>
+              {showedPosition.map(
+                (position: PoolPositionModel, index: number) => (
+                  <MyDetailedPositionCard
+                    position={position}
+                    key={index.toString() + position.id}
+                    breakpoint={breakpoint}
+                    loading={loading}
+                    address={address || ""}
+                    isHiddenAddPosition={isHiddenAddPosition}
+                    connected={connected}
+                    tokenPrices={tokenPrices}
+                  />
+                ),
+              )}
+            </>
+          ) : (
+            <>
+              <div
+                className="slider-wrap clearfix"
+                ref={divRef}
+                onScroll={onScroll}
+              >
+                <div className={"box-slider full-width"}>
+                  {showedPosition.map(
+                    (position: PoolPositionModel, index: number) => (
+                      <MyDetailedPositionCard
+                        position={position}
+                        key={index.toString() + position.id}
+                        breakpoint={breakpoint}
+                        loading={loading}
+                        address={address || ""}
+                        isHiddenAddPosition={isHiddenAddPosition}
+                        connected={connected}
+                        tokenPrices={tokenPrices}
+                      />
+                    ),
+                  )}
+                </div>
               </div>
-            </div>
-            {showedPosition.length > 1 && (
-              <div className="box-indicator">
-                <span className="current-page">{currentIndex}</span>
-                <span>/</span>
-                <span>{showedPosition.length}</span>
-              </div>
-            )}
-          </>
-        )}
+              {showedPosition.length > 1 && (
+                <div className="box-indicator">
+                  <span className="current-page">{currentIndex}</span>
+                  <span>/</span>
+                  <span>{showedPosition.length}</span>
+                </div>
+              )}
+            </>
+          ))}
       </MyLiquidityWrapper>
     </>
   );
