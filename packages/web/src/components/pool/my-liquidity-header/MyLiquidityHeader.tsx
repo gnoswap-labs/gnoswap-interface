@@ -42,7 +42,6 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   isLoadingPositionsById,
   isSwitchNetwork,
 }) => {
-  console.log("🚀 ~ isSwitchNetwork:", isSwitchNetwork);
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { getAccountUrl } = useGnoscanUrl();
