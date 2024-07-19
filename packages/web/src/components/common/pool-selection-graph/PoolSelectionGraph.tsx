@@ -438,32 +438,61 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .selectAll("rects")
         .data(resolvedDisplayBins)
         .enter()
-        .append("rect")
+        .append("g")
         .style("fill", bin => fillByBin(bin))
         .style("stroke-width", "0")
         .style("opacity", bin => (bin.index === hoverBarIndex ? "0.4" : "1"))
-        .attr("id", bin => `bar-${bin.index}`)
-        .attr("class", "rects bar")
-        .attr("x", bin => scaleX(bin.positionX))
-        .attr("y", bin => {
-          const scaleYComputation = scaleY(bin.height) ?? 0;
-          return (
-            scaleYComputation -
-            (scaleYComputation > height - 5 && scaleYComputation !== height
-              ? 5
-              : 0)
-          );
-        })
-        .attr("width", tickSpacing - 1)
-        .attr("height", bin => {
-          const scaleYComputation = scaleY(bin.height) ?? 0;
-          return (
-            boundsHeight -
-            scaleYComputation +
-            (scaleYComputation > height - 5 && scaleYComputation !== height
-              ? 5
-              : 0)
-          );
+        .each(function (bin) {
+          d3.select(this)
+            .append("rect")
+            .style("stroke-width", "0")
+            .style("fill", "transparent")
+            .attr("x", () => scaleX(bin.positionX))
+            .attr("y", () => {
+              const scaleYComputation = scaleY(bin.height) ?? 0;
+              return (
+                scaleYComputation -
+                (scaleYComputation > height - 5 && scaleYComputation !== height
+                  ? 5
+                  : 0)
+              );
+            })
+            .attr("width", tickSpacing)
+            .attr("height", () => {
+              const scaleYComputation = scaleY(bin.height) ?? 0;
+              return (
+                boundsHeight -
+                scaleYComputation +
+                (scaleYComputation > height - 5 && scaleYComputation !== height
+                  ? 5
+                  : 0)
+              );
+            });
+          d3.select(this)
+            .append("rect")
+            .style("stroke-width", "0")
+            .style("fill", () => fillByBin(bin))
+            .attr("x", () => scaleX(bin.positionX) + 0.5)
+            .attr("y", () => {
+              const scaleYComputation = scaleY(bin.height) ?? 0;
+              return (
+                scaleYComputation -
+                (scaleYComputation > height - 5 && scaleYComputation !== height
+                  ? 5
+                  : 0)
+              );
+            })
+            .attr("width", tickSpacing - 0.5)
+            .attr("height", () => {
+              const scaleYComputation = scaleY(bin.height) ?? 0;
+              return (
+                boundsHeight -
+                scaleYComputation +
+                (scaleYComputation > height - 5 && scaleYComputation !== height
+                  ? 5
+                  : 0)
+              );
+            });
         });
     }
 
@@ -500,7 +529,11 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       if (bin.height < 0 || !bin.height) {
         return false;
       }
-      return mouseXTick >= bin.minTick && mouseXTick <= bin.maxTick;
+
+      return (
+        (mouseXTick >= bin.minTick && mouseXTick <= bin.maxTick) ||
+        Math.abs(bin.maxTick - mouseXTick) <= 0.5
+      );
     });
 
     if (!bin) {
