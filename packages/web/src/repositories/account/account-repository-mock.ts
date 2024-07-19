@@ -224,4 +224,11 @@ export class AccountRepositoryMock implements AccountRepository {
       data: null,
     };
   };
+
+  public getBalanceByKey: (
+    address: string,
+    tokenKey: string,
+  ) => Promise<number | null> = async () => {
+    return 0;
+  };
 }
