@@ -76,7 +76,7 @@ interface WalletConnectorMenuProps {
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
   onClickChangeLanguage: () => void;
-  gnotBalance?: number;
+  gnotBalance?: number | null;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
 }

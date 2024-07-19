@@ -12,8 +12,8 @@ import {
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useGetUsernameByAddress } from "@query/address/queries";
-import { toUnitFormat } from "@utils/number-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -91,12 +91,14 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     const amount = positions
       .flatMap(item => item.reward)
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
+    console.log("🚀 ~ claimAllReward ~ amount:", amount);
     const data = {
-      amount: toUnitFormat(amount, true, true),
+      amount: formatOtherPrice(amount, { isKMB: false }),
     };
 
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
+      console.log("🚀 ~ claimAll ~ response:", response);
       if (response) {
         if (response.code === 0) {
           broadcastPending({ txHash: response.data?.hash });
