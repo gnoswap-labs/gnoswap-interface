@@ -47,7 +47,6 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isClosed: options?.isClosed,
     poolPath: options?.poolPath,
     queryOptions: {
-      ...options?.queryOption,
       refetchInterval: () => {
         if (PATH.includes(router.pathname)) return secToMilliSec(back ? 3 : 15);
 
@@ -57,6 +56,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
         return false;
       },
+      ...options?.queryOption,
     },
   });
 

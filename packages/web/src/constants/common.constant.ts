@@ -4,12 +4,13 @@ export const DEFAULT_NETWORK_ID = "portal-loop";
 
 export const PATH = ["/earn"];
 // 10SECOND/60SECOND is the specific time for data refetching cycles. `useGetPositionsByAddress` will refetch after these specific time
-export const PATH_10SECOND = ["/earn/pool/remove", "/token"];
+export const PATH_10SECOND = ["/token"];
 export const PATH_60SECOND = [
   "/wallet",
   "/earn/pool/stake",
   "/earn/pool/unstake",
   "/earn/pool",
+  "/earn/pool/remove",
 ];
 
 export const HTTP_5XX_ERROR = [

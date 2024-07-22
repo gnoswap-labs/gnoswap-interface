@@ -80,7 +80,7 @@ interface EarnAddLiquidityProps {
   showDim: boolean;
   isLoadingSelectFeeTier: boolean;
   isLoadingSelectPriceRange: boolean;
-  hasStakingRewardPool: boolean;
+  showOneClickStaking: boolean;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -120,7 +120,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   showDim,
   isLoadingSelectFeeTier,
   isLoadingSelectPriceRange,
-  hasStakingRewardPool,
+  showOneClickStaking,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -451,7 +451,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
       {submitType === "CREATE_POOL" &&
         existTokenPair &&
         selectedFeeRate &&
-        hasStakingRewardPool && (
+        showOneClickStaking && (
           <div className="btn-one-click" onClick={submitOneClickStaking}>
             <IconStaking /> One-Click Staking
           </div>
