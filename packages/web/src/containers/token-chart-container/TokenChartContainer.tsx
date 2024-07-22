@@ -173,7 +173,6 @@ const TokenChartContainer: React.FC = () => {
   const path = router.getTokenPath();
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
-    refetchInterval: 1000 * 10,
   });
   const {
     data: { prices1d = [], prices7d = [], prices1m = [], prices1y = [] } = {},

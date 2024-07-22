@@ -19,7 +19,10 @@ export const useGetTokensList = (
   return useQuery<TokenListResponse, Error>({
     queryKey: [QUERY_KEY.tokens],
     queryFn: () => tokenRepository.getTokens(),
-    staleTime: options?.staleTime || Infinity,
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
     ...options,
   });
 };
@@ -107,6 +110,10 @@ export const useGetTokenByPath = (
       }
       return tokenRepository.getTokenByPath(path);
     },
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
     ...option,
   });
 };

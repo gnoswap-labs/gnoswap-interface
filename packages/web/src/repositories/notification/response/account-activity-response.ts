@@ -9,7 +9,7 @@ type TxType =
   | "DEPOSIT"
   | "DECREASE"
   | "INCREASE"
-  | "REMOVE";
+  | "REPOSITION";
 
 export interface AccountActivity {
   txHash: string;

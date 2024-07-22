@@ -6,6 +6,7 @@ const MIN_TIME = 60 * 1000;
 const SEC_TIME = 1000;
 
 export const getDateUtcToLocal = (d: any) => {
+  console.log("🚀 ~ getDateUtcToLocal ~ d:", d);
   const hasTimezone = `${d}`.includes("Z");
   const timezoneOffset = new Date().getTimezoneOffset();
   let currentDate = dayjs(d);

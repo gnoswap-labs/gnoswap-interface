@@ -15,12 +15,25 @@ interface CalendarProps {
   onClickDate: (date: CalendarItem) => void;
 }
 
-const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const Calendar: React.FC<CalendarProps> = ({
   selectedDate,
   dayOfWeeks = ["S", "M", "T", "W", "T", "F", "S"],
-  onClickDate
+  onClickDate,
 }) => {
   const [currentDate, setCurrentDate] = useState<CalendarItem>({
     year: selectedDate.year,
@@ -34,7 +47,9 @@ const Calendar: React.FC<CalendarProps> = ({
 
   function verifyDate(date: number) {
     const crDate = new Date();
-    const checkDate = new Date(`${currentDate.year}-${currentDate.month}-${date}`);
+    const checkDate = new Date(
+      `${currentDate.year}-${currentDate.month}-${date}`,
+    );
     return crDate <= checkDate;
   }
 
@@ -61,26 +76,32 @@ const Calendar: React.FC<CalendarProps> = ({
 
   const getDates = useCallback(() => {
     const blanks = Array.from({ length: getFirstDate().getDay() }, () => -1);
-    const dates = Array.from({ length: getLastDate().getDate() }, (_, index) => index + 1);
+    const dates = Array.from(
+      { length: getLastDate().getDate() },
+      (_, index) => index + 1,
+    );
     return [...blanks, ...dates];
   }, [getFirstDate, getLastDate]);
 
-  const isSelected = useCallback((date: number) => {
-    const current = getCurrent();
-    if (selectedDate.year !== current.getFullYear()) {
-      return false;
-    }
-    if (selectedDate.month !== current.getMonth() + 1) {
-      return false;
-    }
-    return selectedDate.date === date;
-  }, [selectedDate, getCurrent]);
+  const isSelected = useCallback(
+    (date: number) => {
+      const current = getCurrent();
+      if (selectedDate.year !== current.getFullYear()) {
+        return false;
+      }
+      if (selectedDate.month !== current.getMonth() + 1) {
+        return false;
+      }
+      return selectedDate.date === date;
+    },
+    [selectedDate, getCurrent],
+  );
 
   const onClickCalendarDate = (date: number) => {
     onClickDate({
       year: currentDate.year,
       month: currentDate.month,
-      date: date
+      date: date,
     });
   };
 
@@ -90,7 +111,7 @@ const Calendar: React.FC<CalendarProps> = ({
     setCurrentDate({
       year: previous.getFullYear(),
       month: previous.getMonth() + 1,
-      date: 1
+      date: 1,
     });
   }, [getCurrent]);
 
@@ -100,7 +121,7 @@ const Calendar: React.FC<CalendarProps> = ({
     setCurrentDate({
       year: previous.getFullYear(),
       month: previous.getMonth() + 1,
-      date: 1
+      date: 1,
     });
   }, [getCurrent]);
 
@@ -117,8 +138,9 @@ const Calendar: React.FC<CalendarProps> = ({
       </div>
 
       <div className="date-wrap date-head">
-        {dayOfWeeks.map((dayOfWeek, index) =>
-          <span key={index}>{dayOfWeek}</span>)}
+        {dayOfWeeks.map((dayOfWeek, index) => (
+          <span key={index}>{dayOfWeek}</span>
+        ))}
       </div>
 
       <div className="date-wrap date-body">
@@ -126,14 +148,17 @@ const Calendar: React.FC<CalendarProps> = ({
           isDate(date) ? (
             <span
               key={index}
-              className={`${isSelected(date) ? "date selected" : "date"} ${!verifyDate(date) ? "disable-date" : ""}`}
+              className={`${isSelected(date) ? "date selected" : "date"} ${
+                !verifyDate(date) ? "disable-date" : ""
+              }`}
               onClick={() => onClickCalendarDate(date)}
             >
               {date}
             </span>
           ) : (
             <span key={index} />
-          ))}
+          ),
+        )}
       </div>
     </div>
   );

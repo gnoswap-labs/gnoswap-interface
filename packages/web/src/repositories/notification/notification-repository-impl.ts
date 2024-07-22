@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { prettyNumberFloatInteger } from "@utils/number-utils";
 import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
 import { CommonError } from "@common/errors";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 export class NotificationRepositoryImpl implements NotificationRepository {
   private networkClient: NetworkClient | null;
@@ -85,10 +86,16 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   };
 
   private getNotificationMessage = (tx: AccountActivity) => {
-    const token0Amount = prettyNumberFloatInteger(tx?.tokenAAmount);
+    const token0Amount = formatPoolPairAmount(tx?.tokenAAmount, {
+      decimals: tx.tokenA.decimals,
+      isKMB: false,
+    });
     const token0symbol = this.replaceToken(tx?.tokenA?.symbol);
 
-    const token1Amount = prettyNumberFloatInteger(tx?.tokenBAmount);
+    const token1Amount = formatPoolPairAmount(tx?.tokenBAmount, {
+      decimals: tx.tokenA.decimals,
+      isKMB: false,
+    });
     const token1symbol = this.replaceToken(tx?.tokenB?.symbol);
 
     const token0Display = Number(tx?.tokenAAmount)
@@ -123,7 +130,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       case "INCREASE":
         return `Increased ${token0Display}`;
       case "REPOSITION":
-        return `Repositioned ${token0Display}`;
+        return `Repositioned ${tokenStr}`;
       default:
         return `${this.capitalizeFirstLetter(
           tx.actionType,
