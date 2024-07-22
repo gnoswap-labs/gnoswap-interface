@@ -16,7 +16,6 @@ import {
   useGetTokenPricesByPath,
 } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import dayjs from "dayjs";
 import {
@@ -174,7 +173,6 @@ const TokenChartContainer: React.FC = () => {
   const path = router.getTokenPath();
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
-    refetchInterval: 1000 * 10,
   });
   const {
     data: { prices1d = [], prices7d = [], prices1m = [], prices1y = [] } = {},
@@ -357,23 +355,41 @@ const TokenChartContainer: React.FC = () => {
 
     if (datas.every(item => item === datas[0])) {
       return [
-        toPriceFormat(minValue.multipliedBy(0.95)),
-        toPriceFormat(minValue),
-        toPriceFormat(minValue.multipliedBy(1.05)),
+        formatPrice(minValue.multipliedBy(0.95), {
+          usd: false,
+        }),
+        formatPrice(minValue, {
+          usd: false,
+        }),
+        formatPrice(minValue.multipliedBy(1.05), {
+          usd: false,
+        }),
       ];
     }
 
     const gap = maxPoint.minus(minPoint);
     const space = gap.dividedBy(5);
-    const temp = [toPriceFormat(minPoint)];
+    const temp = [
+      formatPrice(minPoint, {
+        usd: false,
+      }),
+    ];
     for (
       let i = minPoint.plus(space);
       i.isLessThan(maxPoint);
       i = i.plus(space)
     ) {
-      temp.push(`${toPriceFormat(i)}`);
+      temp.push(
+        `${formatPrice(i, {
+          usd: false,
+        })}`,
+      );
     }
-    temp.push(toPriceFormat(maxPoint));
+    temp.push(
+      formatPrice(maxPoint, {
+        usd: false,
+      }),
+    );
 
     const uniqueLabel = [...new Set(temp)];
     if (uniqueLabel.length === 1) uniqueLabel.unshift("0");

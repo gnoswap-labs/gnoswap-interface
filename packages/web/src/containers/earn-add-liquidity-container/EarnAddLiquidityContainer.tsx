@@ -829,6 +829,11 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return isFetchingPools || isLoadingCommon;
   }, [isFetchingPools, isLoadingCommon]);
 
+  const showOneClickStaking = useMemo(
+    () => selectPool.poolInfo?.dbData?.incentiveType === "INCENTIVIZED",
+    [selectPool.poolInfo?.dbData?.incentiveType],
+  );
+
   return (
     <EarnAddLiquidity
       isLoadingTokens={isLoadingTokens}
@@ -876,6 +881,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       showDim={showDim}
       isLoadingSelectFeeTier={isLoadingSelectFeeTier}
       isLoadingSelectPriceRange={isLoadingSelectPriceRange}
+      showOneClickStaking={showOneClickStaking}
     />
   );
 };

@@ -80,6 +80,7 @@ interface EarnAddLiquidityProps {
   showDim: boolean;
   isLoadingSelectFeeTier: boolean;
   isLoadingSelectPriceRange: boolean;
+  showOneClickStaking: boolean;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -119,6 +120,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   showDim,
   isLoadingSelectFeeTier,
   isLoadingSelectPriceRange,
+  showOneClickStaking,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -279,7 +281,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const tokenPair = useMemo(() => {
     return [
       isKeepToken ? tokenA : tokenB,
-      !isKeepToken ? tokenA : tokenB
+      !isKeepToken ? tokenA : tokenB,
     ].filter(item => item !== null) as TokenModel[];
   }, [isKeepToken, tokenA, tokenB]);
 
@@ -289,15 +291,13 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
       <div className="select-content">
         <article className="selector-wrapper">
           <div
-            className={`header-wrapper default-cursor ${!isEarnAdd ? "disable-text" : ""
-              }`}
+            className={`header-wrapper default-cursor ${
+              !isEarnAdd ? "disable-text" : ""
+            }`}
           >
             <h5>1. Select Pair</h5>
             {!isEarnAdd && existTokenPair && (
-              <OverlapTokenLogo
-                tokens={tokenPair}
-                size={32}
-              />
+              <OverlapTokenLogo tokens={tokenPair} size={32} />
             )}
           </div>
           {openedSelectPair && (
@@ -313,8 +313,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
         <article className="selector-wrapper selector-wrapper-fee-tier">
           <div
-            className={`header-wrapper ${!isEarnAdd || !existTokenPair ? "default-cursor" : ""
-              } ${!isEarnAdd && "disable-text"}`}
+            className={`header-wrapper ${
+              !isEarnAdd || !existTokenPair ? "default-cursor" : ""
+            } ${!isEarnAdd && "disable-text"}`}
             onClick={toggleFeeTier}
           >
             <div className="header-wrapper-title">
@@ -344,12 +345,14 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         </article>
 
         <article
-          className={`selector-wrapper ${!openedPriceRange ? "selector-wrapper-price-range" : ""
-            }`}
+          className={`selector-wrapper ${
+            !openedPriceRange ? "selector-wrapper-price-range" : ""
+          }`}
         >
           <div
-            className={`header-wrapper ${!existTokenPair ? "default-cursor" : ""
-              }`}
+            className={`header-wrapper ${
+              !existTokenPair ? "default-cursor" : ""
+            }`}
             onClick={togglePriceRange}
           >
             <div className="header-wrapper-title">
@@ -445,11 +448,14 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         disabled={!activatedSubmit}
         className="button-submit"
       />
-      {submitType === "CREATE_POOL" && existTokenPair && selectedFeeRate && (
-        <div className="btn-one-click" onClick={submitOneClickStaking}>
-          <IconStaking /> One-Click Staking
-        </div>
-      )}
+      {submitType === "CREATE_POOL" &&
+        existTokenPair &&
+        selectedFeeRate &&
+        showOneClickStaking && (
+          <div className="btn-one-click" onClick={submitOneClickStaking}>
+            <IconStaking /> One-Click Staking
+          </div>
+        )}
     </EarnAddLiquidityWrapper>
   );
 };

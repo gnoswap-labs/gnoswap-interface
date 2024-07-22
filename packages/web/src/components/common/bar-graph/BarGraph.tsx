@@ -303,7 +303,6 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 <span className="value">
                   {formatOtherPrice(datas[currentPointIndex], {
                     isKMB: false,
-                    decimals: 1,
                   })}
                 </span>
               </div>
@@ -312,8 +311,6 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 <span className="value">
                   {formatOtherPrice(fees[currentPointIndex], {
                     isKMB: false,
-                    decimals: 1,
-                    minLimit: 0.01,
                   })}
                 </span>
               </div>

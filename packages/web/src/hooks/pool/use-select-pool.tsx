@@ -712,5 +712,6 @@ export const useSelectPool = ({
     setIsChangeMinMax,
     isLoading: isLoading || isLoadingPoolInfo,
     currentPoolPath,
+    poolInfo,
   };
 };

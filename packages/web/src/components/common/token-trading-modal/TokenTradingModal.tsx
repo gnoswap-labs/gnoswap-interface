@@ -14,10 +14,16 @@ interface Props {
   onClickConfirm: () => void;
   handleChecked: () => void;
   checked: boolean;
-  token: {[key in string]: string} | TokenModel;
+  token: { [key in string]: string } | TokenModel;
 }
 
-const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm, checked, handleChecked, token }) => {
+const TokenTradingModal: React.FC<Props> = ({
+  close,
+  onClickConfirm,
+  checked,
+  handleChecked,
+  token,
+}) => {
   const { getTokenUrl } = useGnoscanUrl();
 
   const onClickClose = useCallback(() => {
@@ -37,15 +43,26 @@ const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm, checked, ha
           <div className="detail">
             <h5>Token Trading Warning</h5>
             <div className="des">
-              This token isn’t frequently swapped on Gnoswap.<br /> Always conduct your own research before trading.
+              This token isn’t frequently swapped on GnoSwap.
+              <br /> Always conduct your own research before trading.
             </div>
           </div>
           <div className="link">
-            <a className="url-wrapper" href={getTokenUrl(token.path)} target="_blank">
+            <a
+              className="url-wrapper"
+              href={getTokenUrl(token.path)}
+              target="_blank"
+            >
               <div>{getTokenUrl(token.path)}</div>
-              <IconNewTab className="new-tab"/>
+              <IconNewTab className="new-tab" />
             </a>
-            <div className="icon-wrapper" onClick={handleChecked}>{checked ? <IconCheck className="icon-copy"/> : <IconCopy className="icon-copy"/>}</div>
+            <div className="icon-wrapper" onClick={handleChecked}>
+              {checked ? (
+                <IconCheck className="icon-copy" />
+              ) : (
+                <IconCopy className="icon-copy" />
+              )}
+            </div>
           </div>
           <div>
             <Button

@@ -4,7 +4,7 @@ export const GNS_TOKEN: TokenModel = {
   type: "grc20",
   chainId: "dev.gnoswap",
   createdAt: "2024-01-24T15:12:21Z",
-  name: "Gnoswap",
+  name: "GnoSwap",
   path: "gno.land/r/gnoswap/gns",
   decimals: 6,
   symbol: "GNS",

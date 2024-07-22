@@ -395,6 +395,8 @@ export const useRepositionHandle = () => {
     isError: isErrorLiquidity,
   } = useEstimateSwap(estimateSwapRequestByAmounts, {
     enabled: !!estimateSwapRequestByAmounts && !!swapAmount,
+    refetchInterval: 10_000,
+    staleTime: 10_000,
   });
 
   const buttonType: REPOSITION_BUTTON_TYPE = useMemo(() => {

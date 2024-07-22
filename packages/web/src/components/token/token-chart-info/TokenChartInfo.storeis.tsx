@@ -10,9 +10,10 @@ export default {
 export const Default: StoryObj<TokenChartInfoProps> = {
   args: {
     token: {
-      name: "Gnoswap",
+      name: "GnoSwap",
       symbol: "GNS",
-      image: "https://miro.medium.com/v2/resize:fill:44:44/1*61CWWk33Fx8vLVvto5nJHQ.png",
+      image:
+        "https://miro.medium.com/v2/resize:fill:44:44/1*61CWWk33Fx8vLVvto5nJHQ.png",
     },
     priceInfo: {
       amount: {

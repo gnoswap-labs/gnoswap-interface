@@ -40,7 +40,6 @@ const BreadcrumbsContainer: React.FC<Props> = ({
   const path = router.getTokenPath();
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
-    refetchInterval: 1000 * 10,
   });
 
   const removePoolSteps = useMemo(() => {
