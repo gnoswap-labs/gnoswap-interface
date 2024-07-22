@@ -830,10 +830,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [isFetchingPools, isLoadingCommon]);
 
   const showOneClickStaking = useMemo(
-    () =>
-      selectPool.poolPath ===
-      "gno.land/r/demo/wugnot:gno.land/r/gnoswap/gns:3000",
-    [selectPool.poolPath],
+    () => selectPool.poolInfo?.dbData?.incentiveType === "INCENTIVIZED",
+    [selectPool.poolInfo?.dbData?.incentiveType],
   );
 
   return (
