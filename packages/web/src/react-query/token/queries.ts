@@ -20,9 +20,7 @@ export const useGetTokensList = (
     queryKey: [QUERY_KEY.tokens],
     queryFn: () => tokenRepository.getTokens(),
     staleTime: Infinity,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
+    refetchInterval: false,
     ...options,
   });
 };
@@ -111,9 +109,7 @@ export const useGetTokenByPath = (
       return tokenRepository.getTokenByPath(path);
     },
     staleTime: Infinity,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
+    refetchInterval: false,
     ...option,
   });
 };
