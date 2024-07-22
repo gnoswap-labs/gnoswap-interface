@@ -39,7 +39,7 @@ const LEARN_MORE_DATA: LearnMoreProps[] = [
       <>
         Stake liquidity from GNOT-GNS pools to earn xGNOS,
         <br />
-        which represent your voting shares in the Gnoswap Governance.
+        which represent your voting shares in the GnoSwap Governance.
       </>
     ),
     lightImageURL:
@@ -65,7 +65,7 @@ const LEARN_MORE_DATA: LearnMoreProps[] = [
     description: (
       <>
         Enable community ownership by voting with xGNOS, <br />
-        which represent your voting shares in the Gnoswap Governance.
+        which represent your voting shares in the GnoSwap Governance.
       </>
     ),
     lightImageURL:
@@ -164,7 +164,7 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
           />
         </LearnMoreModalWrapper>
       </LearnMoreModalBackground>
-      <Overlay onClick={() => setIsShowLearnMoreModal(false)}/>
+      <Overlay onClick={() => setIsShowLearnMoreModal(false)} />
     </>
   );
 };

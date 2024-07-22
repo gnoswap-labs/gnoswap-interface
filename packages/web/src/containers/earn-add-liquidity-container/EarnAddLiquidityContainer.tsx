@@ -829,6 +829,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return isFetchingPools || isLoadingCommon;
   }, [isFetchingPools, isLoadingCommon]);
 
+  const hasStakingRewardPool = useMemo(
+    () =>
+      selectPool.poolPath ===
+      "gno.land/r/demo/wugnot:gno.land/r/gnoswap/gns:3000",
+    [selectPool.poolPath],
+  );
+
   return (
     <EarnAddLiquidity
       isLoadingTokens={isLoadingTokens}
@@ -876,6 +883,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       showDim={showDim}
       isLoadingSelectFeeTier={isLoadingSelectFeeTier}
       isLoadingSelectPriceRange={isLoadingSelectPriceRange}
+      hasStakingRewardPool={hasStakingRewardPool}
     />
   );
 };

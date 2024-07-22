@@ -91,9 +91,15 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     const token1Amount = prettyNumberFloatInteger(tx?.tokenBAmount);
     const token1symbol = this.replaceToken(tx?.tokenB?.symbol);
 
-    const token0Display = Number(tx?.tokenAAmount) ? `<span>${token0Amount}</span> <span>${token0symbol}</span>` : "";
-    const token1Display = Number(tx?.tokenBAmount) ? `<span>${token1Amount}</span> <span>${token1symbol}</span>` : "";
-    const tokenStr = [token0Display, token1Display].filter(item => item).join(" and ");
+    const token0Display = Number(tx?.tokenAAmount)
+      ? `<span>${token0Amount}</span> <span>${token0symbol}</span>`
+      : "";
+    const token1Display = Number(tx?.tokenBAmount)
+      ? `<span>${token1Amount}</span> <span>${token1symbol}</span>`
+      : "";
+    const tokenStr = [token0Display, token1Display]
+      .filter(item => item)
+      .join(" and ");
 
     switch (tx.actionType) {
       case "SWAP":
@@ -111,7 +117,13 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       case "WITHDRAW":
         return `Sent ${token0Display}`;
       case "DEPOSIT":
-        return `Received ${token0Display}>`;
+        return `Received ${token0Display}`;
+      case "DECREASE":
+        return `Decreased ${token0Display}`;
+      case "INCREASE":
+        return `Increased ${token0Display}`;
+      case "REPOSITION":
+        return `Repositioned ${token0Display}`;
       default:
         return `${this.capitalizeFirstLetter(
           tx.actionType,
@@ -135,7 +147,6 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     const seenTxs = this.getSeenTx();
 
     for (const tx of transactions ?? []) {
-
       /**
        * *If tx is removed then ignore it
        **/

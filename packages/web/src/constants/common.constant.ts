@@ -49,7 +49,7 @@ export type StringParamsArr = (string | undefined)[];
 
 export type StringWithParamsArr = (params?: StringParamsArr) => string;
 
-export const DefaultTitle = "The One-stop Gnoland DeFi Platform | Gnoswap";
+export const DefaultTitle = "The One-stop Gnoland DeFi Platform | GnoSwap";
 
 export const SEOInfo: Record<
   PageKey,
@@ -69,7 +69,7 @@ export const SEOInfo: Record<
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/earn": {
-    title: () => "Earn | Gnoswap",
+    title: () => "Earn | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
@@ -77,9 +77,9 @@ export const SEOInfo: Record<
     title: (params = []) => {
       if (params.length === 1) {
         const [address] = params;
-        return `${address} | Positions | Earn on Gnoswap`;
+        return `${address} | Positions | Earn on GnoSwap`;
       }
-      return "Earn | Gnoswap";
+      return "Earn | GnoSwap";
     },
     desc: () =>
       "Create your own positions and provide liquidity to earn trading fees.",
@@ -90,7 +90,7 @@ export const SEOInfo: Record<
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
         return `Add Position to ${tokenASymbol}/${tokenBSymbol} ${feeTier}`;
       }
-      return "Add Position to Gnoswap Pools";
+      return "Add Position to GnoSwap Pools";
     },
     desc: () =>
       "Create your own positions and provide liquidity to earn trading fees.",
@@ -101,7 +101,7 @@ export const SEOInfo: Record<
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
         return `Incentivize ${tokenASymbol}/${tokenBSymbol} ${feeTier}`;
       }
-      return "Incentivize Gnoswap Pools";
+      return "Incentivize GnoSwap Pools";
     },
     desc: () =>
       "Add incentives to pools for liquidity providers to bootstrap liquidity.",
@@ -110,7 +110,7 @@ export const SEOInfo: Record<
     title: (params = []) => {
       if (params.length === 3) {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
-        return `${tokenASymbol}/${tokenBSymbol} ${feeTier} | Earn on Gnoswap`;
+        return `${tokenASymbol}/${tokenBSymbol} ${feeTier} | Earn on GnoSwap`;
       }
       return DefaultTitle;
     },
@@ -121,7 +121,7 @@ export const SEOInfo: Record<
     title: (params = []) => {
       if (params.length === 4) {
         const [address, tokenASymbol, tokenBSymbol, feeTier] = params;
-        return `${address} | ${tokenASymbol}/${tokenBSymbol} ${feeTier} | Earn on Gnoswap`;
+        return `${address} | ${tokenASymbol}/${tokenBSymbol} ${feeTier} | Earn on GnoSwap`;
       }
       return DefaultTitle;
     },
@@ -134,7 +134,7 @@ export const SEOInfo: Record<
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
         return `Add Position to ${tokenASymbol}/${tokenBSymbol} ${feeTier}`;
       }
-      return "Add Position to Gnoswap Pools";
+      return "Add Position to GnoSwap Pools";
     },
     desc: () => "",
     ogTitle: () => "",
@@ -146,7 +146,7 @@ export const SEOInfo: Record<
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
         return `Incentivize ${tokenASymbol}/${tokenBSymbol} ${feeTier}`;
       }
-      return "Incentivize Gnoswap Pools";
+      return "Incentivize GnoSwap Pools";
     },
     desc: () => "Manage your positions to earn trading fees.",
   },
@@ -156,7 +156,7 @@ export const SEOInfo: Record<
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
         return `Remove Position from ${tokenASymbol}/${tokenBSymbol} ${feeTier}`;
       }
-      return "Remove Position from Gnoswap Pools";
+      return "Remove Position from GnoSwap Pools";
     },
     desc: () => "Manage your positions to earn trading fees.",
   },
@@ -166,7 +166,7 @@ export const SEOInfo: Record<
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
         return `Stake Position to ${tokenASymbol}/${tokenBSymbol} ${feeTier}`;
       }
-      return "Stake Position to Gnoswap Pools";
+      return "Stake Position to GnoSwap Pools";
     },
     desc: () =>
       "Create your own positions and provide liquidity to earn staking rewards.",
@@ -177,7 +177,7 @@ export const SEOInfo: Record<
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
         return `Unstake Position from ${tokenASymbol}/${tokenBSymbol} ${feeTier}`;
       }
-      return "Unstake Position from Gnoswap Pools";
+      return "Unstake Position from GnoSwap Pools";
     },
     desc: () => "Manage your positions to earn trading fees.",
   },
@@ -229,15 +229,15 @@ export const SEOInfo: Record<
     desc: (params = []) => {
       if (params.length === 1) {
         const [tokenSymbol] = params;
-        return `Buy or Sell ${tokenSymbol} on Gnoswap.`;
+        return `Buy or Sell ${tokenSymbol} on GnoSwap.`;
       }
 
-      return "Buy or Sell Token on Gnoswap.";
+      return "Buy or Sell Token on GnoSwap.";
     },
     ogTitle: (params = []) => {
       if (params.length === 2) {
         const [tokenName, tokenSymbol] = params;
-        return `${tokenName}(${tokenSymbol}) | Gnoswap`;
+        return `${tokenName}(${tokenSymbol}) | GnoSwap`;
       }
       return DefaultTitle;
     },
@@ -251,17 +251,17 @@ export const SEOInfo: Record<
     desc: () => "Page Unavailable!",
   },
   "/dashboard": {
-    title: () => "Dashboard | Gnoswap",
+    title: () => "Dashboard | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/governance": {
-    title: () => "Governance | Gnoswap",
+    title: () => "Governance | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/leaderboard": {
-    title: () => "Leaderboard | Gnoswap",
+    title: () => "Leaderboard | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
@@ -269,15 +269,15 @@ export const SEOInfo: Record<
     title: (params = []) => {
       if (params.length === 2) {
         const [tokenASymbol, tokenBSymbol] = params;
-        return `Swap ${tokenASymbol} to ${tokenBSymbol} | Gnoswap`;
+        return `Swap ${tokenASymbol} to ${tokenBSymbol} | GnoSwap`;
       }
-      return "Swap | Gnoswap";
+      return "Swap | GnoSwap";
     },
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/wallet": {
-    title: () => "Wallet | Gnoswap",
+    title: () => "Wallet | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },

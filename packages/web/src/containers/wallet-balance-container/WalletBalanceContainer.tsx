@@ -255,7 +255,7 @@ const WalletBalanceContainer: React.FC = () => {
       <WalletBalance
         connected={connected}
         balanceSummaryInfo={{
-          amount: isSwitchNetwork ? "-" : sumTotalBalance,
+          amount: isSwitchNetwork ? "$0" : sumTotalBalance,
           changeRate: "0.0%",
           loading: loadingTotalBalance,
         }}

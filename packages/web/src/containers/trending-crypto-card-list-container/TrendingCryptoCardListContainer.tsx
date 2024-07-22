@@ -11,7 +11,7 @@ import { TokenModel } from "@models/token/token-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolList } from "@query/pools";
 import { useLoading } from "@hooks/common/use-loading";
-import { formatPrice } from "@utils/new-number-utils";
+import { formatPrice, formatRate } from "@utils/new-number-utils";
 import useCustomRouter from "@hooks/common/use-custom-router";
 
 const trendingCryptoInit = [
@@ -83,9 +83,10 @@ const TrendingCryptoCardListContainer: React.FC = () => {
               Number(priceChange) >= 0
                 ? MATH_NEGATIVE_TYPE.POSITIVE
                 : MATH_NEGATIVE_TYPE.NEGATIVE,
-            value: `${Number(priceChange) >= 0 ? "+" : ""}${Number(
-              priceChange,
-            ).toFixed(2)}%`,
+            value: formatRate(priceChange, {
+              showSign: true,
+              allowZeroDecimals: true,
+            }),
           },
         };
       })

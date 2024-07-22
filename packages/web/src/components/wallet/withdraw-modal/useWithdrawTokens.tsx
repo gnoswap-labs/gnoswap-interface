@@ -4,11 +4,15 @@ import {
   TransferNativeTokenRequest,
 } from "@repositories/wallet/request";
 import { useEffect, useState } from "react";
-import { makeBroadcastWithdrawMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import {
+  makeBroadcastWithdrawMessage,
+  useBroadcastHandler,
+} from "@hooks/common/use-broadcast-handler";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { ERROR_VALUE } from "@common/errors/adena";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -41,12 +45,21 @@ const useWithdrawTokens = () => {
         : walletRepository.transferGRC20Token(request);
 
     const tokenSymbol = request?.token?.symbol || "";
-    const tokenAmount = makeDisplayTokenAmount(request.token, request.tokenAmount)?.toString() || "0";
+    const tokenAmount = formatPoolPairAmount(
+      makeDisplayTokenAmount(request.token, request.tokenAmount)?.toString() ||
+        "0",
+      {
+        decimals: request.token.decimals,
+        isKMB: false,
+      },
+    );
 
-    broadcastLoading(makeBroadcastWithdrawMessage("pending", {
-      tokenSymbol,
-      tokenAmount
-    }));
+    broadcastLoading(
+      makeBroadcastWithdrawMessage("pending", {
+        tokenSymbol,
+        tokenAmount,
+      }),
+    );
 
     callAction
       .then(response => {

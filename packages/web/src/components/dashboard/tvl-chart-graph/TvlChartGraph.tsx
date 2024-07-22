@@ -170,7 +170,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({ datas }) => {
             }}
             popupYValueFormatter={value =>
               formatOtherPrice(value, {
-                decimals: 1,
                 isKMB: false,
               })
             }
