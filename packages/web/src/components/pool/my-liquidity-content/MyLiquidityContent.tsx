@@ -744,6 +744,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <Tooltip
               placement="top"
               className="sub-content-detail"
+              isShouldShowed={isConnected}
               FloatingContent={
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo
@@ -767,7 +768,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <AmountDisplayWrapper>
-                {isConnected && isDisplayData ? (
+                {isConnected ? (
                   <>
                     {formatPoolPairAmount(tokenABalance, {
                       decimals: 2,
@@ -788,7 +789,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <Tooltip
               placement="top"
               className="sub-content-detail"
-              isShouldShowed={isConnected && isDisplayData}
+              isShouldShowed={isConnected}
               FloatingContent={
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo
@@ -812,7 +813,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <AmountDisplayWrapper>
-                {isConnected && isDisplayData ? (
+                {isConnected ? (
                   <>
                     {formatPoolPairAmount(tokenBBalance, {
                       decimals: 2,

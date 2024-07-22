@@ -5,11 +5,11 @@ const HOUR_TIME = 60 * 60 * 1000;
 const MIN_TIME = 60 * 1000;
 const SEC_TIME = 1000;
 
-export const getDateUtcToLocal = (d: any) => {
+export const getDateUtcToLocal = (d: any, removeTimeZone = false) => {
   const hasTimezone = `${d}`.includes("Z");
   const timezoneOffset = new Date().getTimezoneOffset();
   let currentDate = dayjs(d);
-  if (!hasTimezone) {
+  if (!hasTimezone || removeTimeZone) {
     currentDate = currentDate.subtract(timezoneOffset, "minutes");
   }
   return {
