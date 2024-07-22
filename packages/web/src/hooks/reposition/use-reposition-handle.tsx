@@ -363,6 +363,7 @@ export const useRepositionHandle = () => {
     }
     return Number(amountB) - repositionAmountB;
   }, [currentAmounts, repositionAmounts]);
+  console.log("🚀 ~ swapAmount ~ swapAmount:", swapAmount);
 
   const estimateSwapRequestByAmounts = useMemo(() => {
     if (!currentAmounts || !repositionAmounts || !selectedPosition) {
@@ -388,6 +389,10 @@ export const useRepositionHandle = () => {
       exactType: "EXACT_IN" as const,
     };
   }, [currentAmounts, repositionAmounts, selectedPosition, swapAmount]);
+  console.log(
+    "🚀 ~ estimateSwapRequestByAmounts ~ estimateSwapRequestByAmounts:",
+    estimateSwapRequestByAmounts,
+  );
 
   const {
     data: estimatedRemainSwap,
@@ -395,6 +400,8 @@ export const useRepositionHandle = () => {
     isError: isErrorLiquidity,
   } = useEstimateSwap(estimateSwapRequestByAmounts, {
     enabled: !!estimateSwapRequestByAmounts && !!swapAmount,
+    refetchInterval: 10_000,
+    staleTime: 10_000,
   });
 
   const buttonType: REPOSITION_BUTTON_TYPE = useMemo(() => {

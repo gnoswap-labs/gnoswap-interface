@@ -17,7 +17,7 @@ const RemoveLiquidityContainer: React.FC = () => {
     queryOption: {
       enabled: !!poolPath,
       refetchInterval: () => {
-        if (!!poolPath) return 60_000;
+        if (!!poolPath) return 10_000;
 
         return false;
       },
