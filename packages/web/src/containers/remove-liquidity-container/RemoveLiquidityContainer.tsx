@@ -16,13 +16,9 @@ const RemoveLiquidityContainer: React.FC = () => {
     poolPath,
     queryOption: {
       enabled: !!poolPath,
-      refetchInterval: () => {
-        if (!!poolPath) return 10_000;
-
-        return false;
-      },
     },
   });
+
   const { openModal } = useRemovePositionModal({
     positions: positions,
     selectedIds: checkedList,
