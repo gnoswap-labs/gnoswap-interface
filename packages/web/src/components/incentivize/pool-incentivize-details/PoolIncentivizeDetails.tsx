@@ -23,7 +23,6 @@ interface PoolIncentivizeDetailsProps {
 }
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
-  console.log("🚀 ~ formatDate ~ myDate:", myDate);
   // Date Format Issue on Mobile Device
   const month = (() => {
     if (!myDate?.month) {
@@ -54,9 +53,8 @@ function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
     days || 0,
     "day",
   );
-  console.log("🚀 ~ formatDate ~ utcDate:", utcDate.hour());
 
-  const formattedDate = getDateUtcToLocal(utcDate.toDate(), true);
+  const formattedDate = getDateUtcToLocal(utcDate.toDate());
   return formattedDate.value;
 }
 

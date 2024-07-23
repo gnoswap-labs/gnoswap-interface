@@ -64,5 +64,5 @@ export const ItemDataGridValueBlock = styled.span`
 export const Divider = styled.div`
   width: 100%;
   height: 1px;
-  border-top: 1px solid ${({ theme }) => theme.color.border11};
+  border-top: 1px solid ${({ theme }) => theme.color.border01};
 `;

@@ -48,7 +48,7 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
     const tokenAPrice = tokenPrices[tokenAPriceId]?.usd
       ? Number(tokenPrices[tokenBPriceId]?.usd)
       : null;
-    const tokenBPrice = tokenPrices[tokenAPriceId]?.usd
+    const tokenBPrice = tokenPrices[tokenBPriceId]?.usd
       ? Number(tokenPrices[tokenBPriceId]?.usd)
       : null;
 

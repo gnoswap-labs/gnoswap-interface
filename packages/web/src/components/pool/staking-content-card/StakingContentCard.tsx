@@ -145,15 +145,25 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
     if (positions.length === 0) {
       return "-";
     }
+    let anyEmptyValue = false;
+
     const usdValue = positions.reduce((accum, current) => {
+      if (!current.positionUsdValue) {
+        anyEmptyValue = true;
+      }
+
       return Number(current.positionUsdValue) + accum;
     }, 0);
-    return `${toUnitFormat(usdValue, true, true)}`;
+
+    if (anyEmptyValue) return "-";
+
+    return formatOtherPrice(usdValue);
   }, [positions]);
 
   const positionRewards = useMemo(() => {
     return positions.flatMap(position => position.reward);
   }, [positions]);
+
   const totalStakedRewardUSD = useMemo(() => {
     const tempTotalStakedRewardUSD = positionRewards
       .filter(_ => ["EXTERNAL", "INTERNAL"].includes(_.rewardType))
@@ -337,9 +347,17 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
     if (positions.length === 0) {
       return "-";
     }
+
+    let anyEmptyValue = false;
+
     const usdValue = positions.reduce((accum, current) => {
+      if (!current.positionUsdValue) anyEmptyValue = true;
+
       return Number(current.positionUsdValue) + accum;
     }, 0);
+
+    if (anyEmptyValue) return "-";
+
     return `${toUnitFormat(usdValue, true, true)}`;
   }, [positions]);
 

@@ -1,4 +1,7 @@
-import { SwapFeeTierMaxPriceRangeMap } from "@constants/option.constant";
+import {
+  INCENTIVE_TYPE,
+  SwapFeeTierMaxPriceRangeMap,
+} from "@constants/option.constant";
 import { tickToPriceStr } from "./swap-utils";
 
 const maxTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(
@@ -28,4 +31,8 @@ export function toMinPriceStr(tick: number) {
     return "0";
   }
   return tickToPriceStr(tick, { decimals: 6 });
+}
+
+export function checkPoolStakingRewards(type?: INCENTIVE_TYPE) {
+  return ["INCENTIVIZED", "EXTERNAL"].includes(type || "");
 }
