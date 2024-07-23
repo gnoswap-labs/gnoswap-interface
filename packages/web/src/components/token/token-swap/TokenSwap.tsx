@@ -13,6 +13,7 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { useTranslation } from "react-i18next";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -69,6 +70,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   priceImpactStatus,
   swapTokenInfo,
 }) => {
+  const { t } = useTranslation();
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
   const direction = swapSummaryInfo?.swapDirection;
@@ -134,14 +136,14 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   return (
     <div css={wrapper}>
       <div className="header">
-        <span className="title">Swap</span>
+        <span className="title">{t("common:action.swap")}</span>
         <div className="header-button">
           <button className="setting-button link-button" onClick={handleCopied}>
             <IconLink className="setting-icon" />
             {copied && (
               <CopyTooltip>
                 <div className={`box ${themeKey}-shadow`}>
-                  <span>Swap URL Copied!</span>
+                  <span>{t("common:swapUrlCopied")}</span>
                 </div>
                 <IconPolygon className="polygon-icon" />
               </CopyTooltip>
@@ -181,7 +183,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenA}
             >
-              Balance: {dataTokenInfo.tokenABalance}
+              {t("business:balance")}: {dataTokenInfo.tokenABalance}
             </span>
           </div>
         </div>
@@ -213,7 +215,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenB}
             >
-              Balance: {dataTokenInfo.tokenBBalance}
+              {t("business:balance")}: {dataTokenInfo.tokenBBalance}
             </span>
           </div>
         </div>

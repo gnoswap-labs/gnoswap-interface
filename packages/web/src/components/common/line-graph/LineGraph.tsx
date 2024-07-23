@@ -7,6 +7,7 @@ import { subscriptFormat } from "@utils/number-utils";
 import { getLocalizeTime } from "@utils/chart";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { formatPrice } from "@utils/new-number-utils";
+import dayjs from "dayjs";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthX = pointB.x - pointA.x;
@@ -114,28 +115,12 @@ const ChartGlobalTooltip = () => {
     />
   );
 };
+
 function parseTimeTVL(time: string) {
-  const dateObject = new Date(time);
-  const month = dateObject.toLocaleString("en-US", {
-    month: "short",
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  });
-  const day = dateObject.getDate();
-  const year = dateObject.getFullYear();
-  const hours = dateObject.getHours();
-  const minutes = dateObject.getMinutes();
-  const isPM = hours >= 12;
-  const formattedHours = hours % 12 || 12;
-  if (!month || !day || !year)
-    return {
-      date: "",
-      time: "",
-    };
+  const dateObject = dayjs(time);
   return {
-    date: `${month} ${day}, ${year}`,
-    time: `${formattedHours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")} ${isPM ? "PM" : "AM"}`,
+    date: dateObject.format("MMM DD, YYYY"),
+    time: dateObject.format("hh:mm A"),
   };
 }
 

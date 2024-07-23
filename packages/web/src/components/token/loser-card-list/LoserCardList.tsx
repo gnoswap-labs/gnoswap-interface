@@ -10,6 +10,7 @@ import Link from "next/link";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { makeTokenRouteUrl } from "@utils/page.utils";
+import { useTranslation } from "react-i18next";
 
 interface LoserCardListProps {
   losers: any[];
@@ -20,9 +21,11 @@ const LoserCard: React.FC<LoserCardListProps> = ({
   losers = [],
   loadingLose,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <section css={cardStyle}>
-      <h2 className="card-title">Top 3 Losers</h2>
+      <h2 className="card-title">{t("TokenDetails:topGainers.title")}</h2>
       {loadingLose && (
         <div css={loadingWrapper}>
           <LoadingSpinner />
@@ -30,7 +33,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({
       )}
       {!loadingLose && losers.length === 0 && (
         <div css={loadingWrapper}>
-          <span>No data</span>
+          <span>{t("common:noData")}</span>
         </div>
       )}
       {!loadingLose &&

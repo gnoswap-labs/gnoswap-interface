@@ -21,8 +21,8 @@ interface ExchangeRateGraphContentProps {
   poolData: PoolDetailModel;
   selectedScope: CHART_DAY_SCOPE_TYPE;
   isReversed: boolean;
-  onMouseMove?: ((data?: LineGraphData) => void);
-  onMouseOut?: ((active: boolean) => void);
+  onMouseMove?: (data?: LineGraphData) => void;
+  onMouseOut?: (active: boolean) => void;
 }
 
 export function ExchangeRateGraphContent({
@@ -59,14 +59,22 @@ export function ExchangeRateGraphContent({
   }, [poolData.priceRatio, selectedScope]);
 
   const dataMemo = useMemo(() => {
-    const lastTime = sortedRawDataByType.length >= 1 ? new Date(sortedRawDataByType[sortedRawDataByType.length - 1]?.date) : undefined;
-    const last2Time = sortedRawDataByType.length >= 2 ? new Date(sortedRawDataByType[sortedRawDataByType.length - 2]?.date) : undefined;
+    const lastTime =
+      sortedRawDataByType.length >= 1
+        ? new Date(sortedRawDataByType[sortedRawDataByType.length - 1]?.date)
+        : undefined;
+    const last2Time =
+      sortedRawDataByType.length >= 2
+        ? new Date(sortedRawDataByType[sortedRawDataByType.length - 2]?.date)
+        : undefined;
     const latestTimeGap = (() => {
-      if (lastTime && last2Time) return lastTime.getTime() - last2Time.getTime();
+      if (lastTime && last2Time)
+        return lastTime.getTime() - last2Time.getTime();
     })();
 
     const fakeLastTime = (() => {
-      if (lastTime && latestTimeGap) return new Date(lastTime.getTime() + latestTimeGap);
+      if (lastTime && latestTimeGap)
+        return new Date(lastTime.getTime() + latestTimeGap);
 
       return new Date();
     })();
@@ -76,7 +84,7 @@ export function ExchangeRateGraphContent({
       {
         date: fakeLastTime.toString(),
         ratio: poolData.price,
-      }
+      },
     ];
 
     return dataByType?.map((item, index) => {
@@ -85,7 +93,9 @@ export function ExchangeRateGraphContent({
 
         if (index === dataByType.length - 1) return item.ratio.toString();
 
-        return isReversed ? (1 / Number(item.ratio)).toString() : item.ratio.toString();
+        return isReversed
+          ? (1 / Number(item.ratio)).toString()
+          : item.ratio.toString();
       })();
 
       return {
@@ -99,9 +109,7 @@ export function ExchangeRateGraphContent({
     return sortedRawDataByType?.map(item => parseDate(item.date));
   }, [sortedRawDataByType]);
 
-
   const hasSingleData = useMemo(() => dataMemo?.length === 1, [dataMemo]);
-
 
   const countXAxis = useMemo(() => {
     if (hasSingleData) return 1;
@@ -151,7 +159,11 @@ export function ExchangeRateGraphContent({
                       : "100%"
                   }
                 >
-                  <div className={`exchange-rate-graph-xaxis ${hasSingleData ? "single-point" : ""}`}>
+                  <div
+                    className={`exchange-rate-graph-xaxis ${
+                      hasSingleData ? "single-point" : ""
+                    }`}
+                  >
                     {labelIndicesToShow?.map((x, i) => (
                       <span key={i}>{xAxisLabels?.[x]}</span>
                     ))}

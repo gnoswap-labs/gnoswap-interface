@@ -5,6 +5,7 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGetTokenByPath } from "@query/token";
 import { ITokenResponse } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useTranslation } from "react-i18next";
 
 export type BreadcrumbTypes = "TOKEN_SYMBOL" | "OTHERs";
 export interface Steps {
@@ -41,6 +42,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
   });
+  const { t } = useTranslation();
 
   const removePoolSteps = useMemo(() => {
     if (listBreadcrumb) {
@@ -48,7 +50,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
     }
     return [
       {
-        title: "Main",
+        title: t("common:main"),
         path: "/",
       },
       {

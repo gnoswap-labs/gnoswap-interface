@@ -33,6 +33,7 @@ export async function getServerSideProps({ locale }: { locale: string }) {
         "common",
         "business",
         "Swap",
+        "TokenDetails",
       ])),
     },
   };
@@ -43,12 +44,21 @@ export default function Token() {
   const path = router.getTokenPath();
   const { isLoading } = useLoading();
 
-  const { i18n } = useTranslation(["HeaderFooter", "common"], {
-    bindI18n: "languageChanged loaded",
-  });
+  const { i18n, t } = useTranslation(
+    ["HeaderFooter", "common", "business", "Swap", "TokenDetails"],
+    {
+      bindI18n: "languageChanged loaded",
+    },
+  );
 
   useEffect(() => {
-    i18n.reloadResources(i18n.resolvedLanguage, ["HeaderFooter", "common"]);
+    i18n.reloadResources(i18n.resolvedLanguage, [
+      "HeaderFooter",
+      "common",
+      "business",
+      "Swap",
+      "TokenDetails",
+    ]);
   }, []);
 
   const { data: token } = useGetTokenByPath(path, {
@@ -70,7 +80,7 @@ export default function Token() {
   const steps = useMemo(() => {
     return [
       {
-        title: "Main",
+        title: t("common:main"),
         path: "/",
       },
       {

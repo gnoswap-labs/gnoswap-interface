@@ -4,6 +4,7 @@ import LoadMoreButton, {
 } from "@components/common/load-more-button/LoadMoreButton";
 import { cx } from "@emotion/css";
 import { wrapper } from "./TokenDescriptionContent.styles";
+import { useTranslation } from "react-i18next";
 
 interface TokenDescriptionContentProps {
   content: string;
@@ -15,6 +16,7 @@ const TokenDescriptionContent: React.FC<TokenDescriptionContentProps> = ({
   const [isMaxHeightOver, setIsMaxHeightOver] = useState(false);
   const [showMore, setShowMore] = useState(true);
   const contentRef = useRef<HTMLParagraphElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!contentRef.current) return;
@@ -30,7 +32,7 @@ const TokenDescriptionContent: React.FC<TokenDescriptionContentProps> = ({
   return (
     <div css={wrapper}>
       <p ref={contentRef} className={cx({ "auto-height": !showMore })}>
-        {content ? content : "No token information"} 
+        {content ? content : t("TokenDetails:description.empty")}
       </p>
       {isMaxHeightOver && (
         <LoadMoreButton

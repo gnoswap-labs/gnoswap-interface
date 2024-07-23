@@ -7,6 +7,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useTranslation } from "react-i18next";
 
 export const performanceInit = [
   {
@@ -117,6 +118,7 @@ const TokenInfoContentContainer: React.FC = () => {
     { enabled: !!path },
   );
   const { isLoading: isLoadingCommon } = useLoading();
+  const { t } = useTranslation();
 
   const marketInformation = useMemo(() => {
     return {
@@ -172,7 +174,7 @@ const TokenInfoContentContainer: React.FC = () => {
 
     return [
       {
-        createdAt: "Today",
+        createdAt: t("common:day.today"),
         amount: {
           status: dataToday.status,
           value: dataToday.price,
@@ -183,7 +185,9 @@ const TokenInfoContentContainer: React.FC = () => {
         },
       },
       {
-        createdAt: "30 days",
+        createdAt: t("common:day.count", {
+          count: 30,
+        }),
         amount: {
           status: data30day.status,
           value: data30day.price,
@@ -194,7 +198,9 @@ const TokenInfoContentContainer: React.FC = () => {
         },
       },
       {
-        createdAt: "60 days",
+        createdAt: t("common:day.count", {
+          count: 60,
+        }),
         amount: {
           status: data60day.status,
           value: data60day.price,
@@ -205,7 +211,9 @@ const TokenInfoContentContainer: React.FC = () => {
         },
       },
       {
-        createdAt: "90 days",
+        createdAt: t("common:day.count", {
+          count: 90,
+        }),
         amount: {
           status: data90day.status,
           value: data90day.price,

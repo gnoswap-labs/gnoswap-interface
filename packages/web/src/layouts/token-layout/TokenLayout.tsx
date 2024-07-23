@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { wrapper } from "./TokenLayout.styles";
 
 interface TokenLayoutProps {
@@ -32,34 +33,38 @@ const TokenLayout: React.FC<TokenLayoutProps> = ({
   gainersAndLosers,
 
   footer,
-}) => (
-  <div css={wrapper}>
-    {header}
+}) => {
+  const { t } = useTranslation();
 
-    <div className="title-container">
-      <div>
-        <div className="title">Swap</div>
-        <div className="breadcrumbs">{breadcrumbs}</div>
+  return (
+    <div css={wrapper}>
+      {header}
+
+      <div className="title-container">
+        <div>
+          <div className="title">{t("TokenDetails:title")}</div>
+          <div className="breadcrumbs">{breadcrumbs}</div>
+        </div>
       </div>
+
+      <div className="main-container">
+        <div className="main-section">
+          <div className="chart">{chart}</div>
+          <div className="swap-tablet">{swap}</div>
+          <div className="info">{info}</div>
+          <div className="description">{description}</div>
+        </div>
+        <div className="right-section">
+          <div className="swap">{swap}</div>
+          <div className="best-pools">{bestPools}</div>
+          <div className="trending">{trending}</div>
+          <div className="gainers-losers">{gainersAndLosers}</div>
+        </div>
+      </div>
+
+      {footer}
     </div>
-
-    <div className="main-container">
-      <div className="main-section">
-        <div className="chart">{chart}</div>
-        <div className="swap-tablet">{swap}</div>
-        <div className="info">{info}</div>
-        <div className="description">{description}</div>
-      </div>
-      <div className="right-section">
-        <div className="swap">{swap}</div>
-        <div className="best-pools">{bestPools}</div>
-        <div className="trending">{trending}</div>
-        <div className="gainers-losers">{gainersAndLosers}</div>
-      </div>
-    </div>
-
-    {footer}
-  </div>
-);
+  );
+};
 
 export default TokenLayout;

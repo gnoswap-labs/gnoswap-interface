@@ -100,12 +100,12 @@ export const getLabelChart = (data: any[], numberOfAxis: number) => {
 
   for (let i = data.length - 1; i >= 0; i -= tempSpace) {
     if (tempSpace === 1) {
-      label.push(data[i].slice(0,10));
+      label.push(data[i].slice(0, 10));
     } else {
       if (i < tempSpace) {
-        label.push(data[0].slice(0,10));
+        label.push(data[0].slice(0, 10));
       } else {
-        label.push(data[i].slice(0,10));
+        label.push(data[i].slice(0, 10));
       }
     }
   }
@@ -119,12 +119,11 @@ export const getLabelChart = (data: any[], numberOfAxis: number) => {
 export const getLabelChartV2 = (data: any[], space: number) => {
   const length = data.length;
   const temp = [];
-  for(let i = 0; i < length; i+=space) {
-    temp.push(data[i].slice(0,10));
+  for (let i = 0; i < length; i += space) {
+    temp.push(data[i].slice(0, 10));
   }
   return temp;
 };
-
 
 /*
  * length: length of data
