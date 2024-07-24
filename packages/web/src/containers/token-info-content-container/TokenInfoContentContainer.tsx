@@ -122,13 +122,24 @@ const TokenInfoContentContainer: React.FC = () => {
   const { t } = useTranslation();
 
   const marketInformation = useMemo(() => {
+    const isGnot = path === "gnot";
+
     return {
-      marketCap: formatOtherPrice(marketCap),
+      marketCap: formatOtherPrice(
+        isGnot ? 1_000_000_000 * Number(currentPrice) : marketCap,
+      ),
       tvl: formatOtherPrice(market.lockedTokensUsd),
       volume24h: formatOtherPrice(market.volumeUsd24h),
       fees24h: formatOtherPrice(feeUsd24h),
     };
-  }, [market.lockedTokensUsd, market.volumeUsd24h, feeUsd24h, marketCap]);
+  }, [
+    path,
+    currentPrice,
+    marketCap,
+    market.lockedTokensUsd,
+    market.volumeUsd24h,
+    feeUsd24h,
+  ]);
 
   const priceInfomation = useMemo(() => {
     const data1H = checkPositivePrice(currentPrice, pricesBefore.price1h);
