@@ -17,7 +17,9 @@ export interface Steps {
   };
 }
 
-const getMapping: any = (symbol: any) => {
+const getMapping: (symbol: string) => Record<string, string> = (
+  symbol: string,
+) => {
   return {
     "/earn/add": "Add Liquidity",
     "/earn/stake": "Stake Position",
@@ -55,12 +57,12 @@ const BreadcrumbsContainer: React.FC<Props> = ({
       },
       {
         title:
-          getMapping(tokenB?.symbol || "")[router.pathname as any] ||
+          getMapping(tokenB?.symbol || "")[router.pathname] ||
           `${getGnotPath(tokenB)?.symbol || "BTC"}`,
         path: "",
       },
     ];
-  }, [listBreadcrumb, router.pathname, tokenB, getGnotPath]);
+  }, [listBreadcrumb, router.pathname, tokenB, getGnotPath, t]);
 
   const onClickPath = (path: string) => {
     router.push(path);

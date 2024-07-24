@@ -25,7 +25,7 @@ import { formatPrice } from "@utils/new-number-utils";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { TokenError } from "@common/errors/token";
 
-export async function getServerSideProps({ locale }: { locale: string }) {
+export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, [
@@ -76,7 +76,7 @@ export default function Token() {
         },
       },
     ];
-  }, [token]);
+  }, [token, t]);
 
   const price = useMemo(() => {
     if (currentPrice) {

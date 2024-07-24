@@ -14,7 +14,7 @@ const MarketInformationList: React.FC<MarketInformationListProps> = ({
   const { t } = useTranslation();
 
   const TITLE_LIST = [
-    t("TokenDetails:info.market.col.popularity"),
+    t("TokenDetails:info.market.col.marketCap"),
     t("TokenDetails:info.market.col.tvl"),
     t("TokenDetails:info.market.col.volume"),
     t("TokenDetails:info.market.col.fee"),

@@ -22,7 +22,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { makeRouteUrl } from "@utils/page.utils";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 
-export async function getServerSideProps({ locale }: { locale: string }) {
+export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),

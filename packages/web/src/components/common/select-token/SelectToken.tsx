@@ -114,7 +114,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       );
       changeToken(token);
     },
-    [changeToken, close],
+    [changeToken, close, recents],
   );
 
   const onChangeSearchKeyword = useCallback(
@@ -161,7 +161,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       }
     });
     setTokenNameWidthList(temp);
-  }, [tokenNameRef, keyword, tokens.toString()]);
+  }, [tokenNameRef, keyword, tokens]);
 
   const onClickPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
