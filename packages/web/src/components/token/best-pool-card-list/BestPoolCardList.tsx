@@ -10,24 +10,31 @@ import IconStar from "@components/common/icons/IconStar";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import { useTranslation } from "react-i18next";
 
 interface BestPoolCardListProps {
   list: BestPool[];
   loading: boolean;
 }
 
-const LIST_TITLE = ["Pair", "TVL", "APR"];
-
 const BestPoolCardList: React.FC<BestPoolCardListProps> = ({
   list,
   loading,
 }) => {
+  const { t } = useTranslation();
+
+  const LIST_HEADER_INFO = [
+    { title: "TokenDetails:bestPool.col.pair", class: "pair" },
+    { title: "TokenDetails:bestPool.col.tvl", class: "tvl" },
+    { title: "TokenDetails:bestPool.col.apr", class: "apr" },
+  ];
+
   return (
     <div css={wrapper}>
       <div className="title-wrap">
-        {LIST_TITLE.map((item, idx) => (
-          <span key={idx} className={item.toLowerCase()}>
-            {item}
+        {LIST_HEADER_INFO.map((item, idx) => (
+          <span key={idx} className={item.class}>
+            {t(item.title)}
           </span>
         ))}
       </div>

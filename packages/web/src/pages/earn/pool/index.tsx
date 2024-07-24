@@ -19,7 +19,7 @@ import { SEOInfo } from "@constants/common.constant";
 import { formatAddress } from "@utils/string-utils";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-export async function getServerSideProps({ locale }: { locale: string }) {
+export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, [

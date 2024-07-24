@@ -301,3 +301,19 @@ export const DEFAULT_TOKEN_PAIR = [WRAPPED_GNOT_PATH, GNS_TOKEN_PATH];
 export const DEFAULT_POOL_PATH = [...DEFAULT_TOKEN_PAIR.sort(), "3000"].join(
   ":",
 );
+
+export const LANGUAGE_CODE_MAP: Record<string, string> = {
+  en: "en-US",
+  de: "de-DE",
+  es: "es-ES",
+  fr: "fr-FR",
+  ja: "ja-JP",
+  ko: "ko-KR",
+  ru: "ru-RU",
+  zh: "zh-CN",
+  hi: "hi-IN",
+};
+
+export const getLangCode = (code: string) => {
+  return LANGUAGE_CODE_MAP[code];
+};

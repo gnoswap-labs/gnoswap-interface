@@ -5,6 +5,7 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGetTokenByPath } from "@query/token";
 import { ITokenResponse } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useTranslation } from "react-i18next";
 
 export type BreadcrumbTypes = "TOKEN_SYMBOL" | "OTHERs";
 export interface Steps {
@@ -16,7 +17,9 @@ export interface Steps {
   };
 }
 
-const getMapping: any = (symbol: any) => {
+const getMapping: (symbol: string) => Record<string, string> = (
+  symbol: string,
+) => {
   return {
     "/earn/add": "Add Liquidity",
     "/earn/stake": "Stake Position",
@@ -41,6 +44,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
   });
+  const { t } = useTranslation();
 
   const removePoolSteps = useMemo(() => {
     if (listBreadcrumb) {
@@ -48,17 +52,17 @@ const BreadcrumbsContainer: React.FC<Props> = ({
     }
     return [
       {
-        title: "Main",
+        title: t("common:main"),
         path: "/",
       },
       {
         title:
-          getMapping(tokenB?.symbol || "")[router.pathname as any] ||
+          getMapping(tokenB?.symbol || "")[router.pathname] ||
           `${getGnotPath(tokenB)?.symbol || "BTC"}`,
         path: "",
       },
     ];
-  }, [listBreadcrumb, router.pathname, tokenB, getGnotPath]);
+  }, [listBreadcrumb, router.pathname, tokenB, getGnotPath, t]);
 
   const onClickPath = (path: string) => {
     router.push(path);

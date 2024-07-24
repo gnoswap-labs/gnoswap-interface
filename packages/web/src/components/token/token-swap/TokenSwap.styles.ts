@@ -79,7 +79,7 @@ export const wrapper = (theme: Theme) => css`
       border: 1px solid ${theme.color.border02};
       border-radius: 8px;
       &:focus-within {
-        border: 1px solid  ${theme.color.border15};
+        border: 1px solid ${theme.color.border15};
       }
     }
 
@@ -127,7 +127,10 @@ export const wrapper = (theme: Theme) => css`
         padding: 5px 10px 5px 6px;
       }
       .not-selected-token {
-        padding: 5px 10px 5px 12px
+        padding: 5px 10px 5px 12px;
+        & > span {
+          white-space: nowrap;
+        }
       }
       .token-symbol {
         height: 21px;
