@@ -14,7 +14,7 @@ import TrendingCryptos from "@components/token/trending-cryptos/TrendingCryptos"
 import GainerAndLoserContainer from "@containers/gainer-and-loser-container/GainerAndLoserContainer";
 import { useLoading } from "@hooks/common/use-loading";
 import { useGetTokenByPath, useGetTokenPricesByPath } from "@query/token";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -43,23 +43,7 @@ export default function Token() {
   const router = useCustomRouter();
   const path = router.getTokenPath();
   const { isLoading } = useLoading();
-
-  const { i18n, t } = useTranslation(
-    ["HeaderFooter", "common", "business", "Swap", "TokenDetails"],
-    {
-      bindI18n: "languageChanged loaded",
-    },
-  );
-
-  useEffect(() => {
-    i18n.reloadResources(i18n.resolvedLanguage, [
-      "HeaderFooter",
-      "common",
-      "business",
-      "Swap",
-      "TokenDetails",
-    ]);
-  }, []);
+  const { t } = useTranslation();
 
   const { data: token } = useGetTokenByPath(path, {
     onError: (err: any) => {

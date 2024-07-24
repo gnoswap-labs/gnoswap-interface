@@ -26,6 +26,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import MissingLogo from "../missing-logo/MissingLogo";
+import { useTranslation } from "react-i18next";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -55,6 +56,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   popularTokens,
   recents,
 }) => {
+  const { t } = useTranslation();
+
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
 
   const [, setRecentsData] = useAtom(TokenState.recents);
@@ -229,7 +232,9 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
             <ul>
               {popularTokens.length === 0 &&
                 mostLiquidity.length === 0 &&
-                isFetched && <div className="no-data-found">No data found</div>}
+                isFetched && (
+                  <div className="no-data-found">{t("common:noDataFound")}</div>
+                )}
               {!keyword && recents.length > 0 && isFetched && (
                 <>
                   <div className="recent-searches">

@@ -25,7 +25,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({
 
   return (
     <section css={cardStyle}>
-      <h2 className="card-title">{t("TokenDetails:topGainers.title")}</h2>
+      <h2 className="card-title">{t("TokenDetails:topLosers.title")}</h2>
       {loadingLose && (
         <div css={loadingWrapper}>
           <LoadingSpinner />

@@ -230,6 +230,7 @@ const TokenInfoContentContainer: React.FC = () => {
     pricesBefore.price60d,
     pricesBefore.price90d,
     pricesBefore.priceToday,
+    t,
   ]);
 
   return (

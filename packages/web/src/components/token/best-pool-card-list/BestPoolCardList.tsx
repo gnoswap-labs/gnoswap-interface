@@ -17,24 +17,24 @@ interface BestPoolCardListProps {
   loading: boolean;
 }
 
-const LIST_TITLE = [
-  "TokenDetails:bestPool.col.pair",
-  "TokenDetails:bestPool.col.tvl",
-  "TokenDetails:bestPool.col.apr",
-];
-
 const BestPoolCardList: React.FC<BestPoolCardListProps> = ({
   list,
   loading,
 }) => {
   const { t } = useTranslation();
 
+  const LIST_HEADER_INFO = [
+    { title: "TokenDetails:bestPool.col.pair", class: "pair" },
+    { title: "TokenDetails:bestPool.col.tvl", class: "tvl" },
+    { title: "TokenDetails:bestPool.col.apr", class: "apr" },
+  ];
+
   return (
     <div css={wrapper}>
       <div className="title-wrap">
-        {LIST_TITLE.map((item, idx) => (
-          <span key={idx} className={item.toLowerCase()}>
-            {t(item)}
+        {LIST_HEADER_INFO.map((item, idx) => (
+          <span key={idx} className={item.class}>
+            {t(item.title)}
           </span>
         ))}
       </div>
