@@ -29,7 +29,6 @@ import {
   makeSwapFeeTier,
   priceToTick,
 } from "@utils/swap-utils";
-import useRouter from "@hooks/common/use-custom-router";
 import { PoolModel } from "@models/pool/pool-model";
 import { useLoading } from "@hooks/common/use-loading";
 import { isNumber } from "@utils/number-utils";
@@ -39,6 +38,7 @@ import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
 import { PAGE_PATH } from "@constants/page.constant";
 import { checkPoolStakingRewards } from "@utils/pool-utils";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -72,7 +72,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 ];
 
 const EarnAddLiquidityContainer: React.FC = () => {
-  const router = useRouter();
+  const router = useCustomRouter();
   useRouterBack();
 
   const [, setIsEarnAdd] = useAtom(EarnState.isEarnAdd);
@@ -785,7 +785,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return priceRange?.type;
     })()?.toString();
 
-    if (tokenA?.path && tokenB?.path && router.isReady) {
+    if (tokenA?.path && tokenB?.path && swapFeeTier && router.isReady) {
       const query = {
         tokenA: tokenA?.path,
         tokenB: tokenB?.path,
@@ -794,7 +794,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tickLower: nextTickLower,
         tickUpper: nextTickUpper,
       };
-      window.history.pushState("", "", makeRouteUrl(PAGE_PATH.EARN_ADD, query));
+      router.replace(makeRouteUrl(PAGE_PATH.EARN_ADD, query));
+      // window.history.pushState(
+      //   {
+      //     ...window.history.state,
+      //     url: makeRouteUrl(PAGE_PATH.EARN_ADD, query),
+      //   },
+      //   "",
+      //   makeRouteUrl(PAGE_PATH.EARN_ADD, query),
+      // );
     }
   }, [
     swapFeeTier,
@@ -805,6 +813,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     priceRange?.type,
     router.query.fee_tier,
     router.isReady,
+    router.query.price_range_type,
   ]);
 
   const showDim = useMemo(() => {

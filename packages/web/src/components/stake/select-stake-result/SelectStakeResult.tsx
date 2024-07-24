@@ -6,11 +6,7 @@ import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PoolModel } from "@models/pool/pool-model";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-  formatRate,
-} from "@utils/new-number-utils";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { useStakeData } from "@hooks/stake/use-stake-data";
 
 interface SelectStakeResultProps {
@@ -69,11 +65,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
                 mobileWidth={24}
               />
               <p>Pooled {pooledTokenInfo.token.symbol}</p>
-              <strong>
-                {formatPoolPairAmount(pooledTokenInfo.amount, {
-                  decimals: pooledTokenInfo.token.decimals,
-                })}
-              </strong>
+              <strong>{pooledTokenInfo.amountUSD}</strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>
           </li>

@@ -15,6 +15,10 @@ export type QueryParameter = {
 const useCustomRouter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  console.log(
+    "🚀 ~ useCustomRouter ~ searchParams:",
+    searchParams.getAll("tokenA"),
+  );
   const { saveCurrentScrollHeight } = useScrollData();
 
   function toMain() {

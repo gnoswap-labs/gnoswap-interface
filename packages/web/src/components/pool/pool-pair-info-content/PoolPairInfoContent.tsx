@@ -64,6 +64,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     if (sumOfBalances === 0) {
       return 0.5;
     }
+
     return (
       Number(tokenABalance) /
       (Number(tokenABalance) + Number(tokenBBalance) / pool.price)
@@ -71,12 +72,16 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [tokenABalance, tokenBBalance, pool.price]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
+    if (Number.isNaN(depositRatio)) return "(0%)";
+
     const depositStr = formatRate(depositRatio * 100, { decimals: 0 });
 
     return `(${depositStr})`;
   }, [depositRatio]);
 
   const depositRatioStrOfTokenB = useMemo(() => {
+    if (Number.isNaN(depositRatio)) return "(0%)";
+
     const depositStr = formatRate((1 - depositRatio) * 100, { decimals: 0 });
 
     return `(${depositStr})`;

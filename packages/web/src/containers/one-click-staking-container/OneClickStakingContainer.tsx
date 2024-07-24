@@ -10,28 +10,31 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
+import { useSearchParams } from "next/navigation";
 
 const OneClickStakingContainer: React.FC = () => {
   const router = useCustomRouter();
+  const searchParams = useSearchParams();
   const { account, connected } = useWallet();
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(
     EarnState.poolInfoQuery,
   );
   const poolId =
-    router.query?.["pool-path"] === undefined
+    searchParams.get("pool-path") === undefined
       ? null
-      : `${router.query?.["pool-path"]}`;
+      : `${searchParams.get("pool-path")}`;
+
+  const tokenAPath = searchParams.get("tokenA") as string;
+  console.log("🚀 ~ tokenAPath:", tokenAPath);
+  const tokenBPath = searchParams.get("tokenB") as string;
 
   const tokenPair = useMemo(() => {
-    const tokenAPath = router.query?.["tokenA"] as string;
-    const tokenBPath = router.query?.["tokenB"] as string;
-
     if (!tokenAPath || !tokenBPath) {
       return null;
     }
 
     return [checkGnotPath(tokenAPath), checkGnotPath(tokenBPath)].sort();
-  }, [router.query]);
+  }, [tokenAPath, tokenBPath]);
   const { pools } = usePoolData();
 
   const poolPath = useMemo(() => {
@@ -94,4 +97,5 @@ const OneClickStakingContainer: React.FC = () => {
     />
   );
 };
+
 export default OneClickStakingContainer;

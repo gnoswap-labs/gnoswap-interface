@@ -12,6 +12,7 @@ import { EarnState } from "@states/index";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetPoolList } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 
 export const dummyDisclaimer =
   "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. Before you proceed, ensure that you understand the mechanics of external incentives and acknowledge that you cannot withdraw the rewards once you complete this step.<br /><br />The incentives you add will be automatically distributed by the contract and may draw more liquidity providers.";
@@ -25,15 +26,19 @@ const PoolIncentivizeContainer: React.FC = () => {
   const [, setDataModal] = useAtom(EarnState.dataModal);
   const [currentPool, setCurrentPool] = useAtom(EarnState.pool);
 
-  const { connected, connectAdenaClient, isSwitchNetwork } = useWallet();
+  const { connected, isSwitchNetwork } = useWallet();
 
-  const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(null);
+  const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(
+    null,
+  );
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
   const [token, setToken] = useState<TokenModel | null>(null);
   const tokenAmountInput = useTokenAmountInput(token);
   const { updateTokenPrices } = useTokenData();
   const { data: pools = [] } = useGetPoolList({ enabled: false });
   const { getGnotPath } = useGnotToGnot();
+
+  const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
   useEffect(() => {
     setDataModal(tokenAmountInput);
@@ -54,26 +59,29 @@ const PoolIncentivizeContainer: React.FC = () => {
     setPoolDetail(PoolDetailData.pool as PoolDetailModel);
   }, []);
 
-  const selectPool = useCallback((poolId: string) => {
-    const pool = pools.find(pool => pool.id === poolId);
-    if (pool) {
-      setCurrentPool({
-        ...pool,
-        tokenA: {
-          ...pool.tokenA,
-          path: getGnotPath(pool.tokenA).path,
-          symbol: getGnotPath(pool.tokenA).symbol,
-          logoURI: getGnotPath(pool.tokenA).logoURI,
-        },
-        tokenB: {
-          ...pool.tokenB,
-          path: getGnotPath(pool.tokenB).path,
-          symbol: getGnotPath(pool.tokenB).symbol,
-          logoURI: getGnotPath(pool.tokenB).logoURI,
-        },
-      });
-    }
-  }, [pools, setCurrentPool]);
+  const selectPool = useCallback(
+    (poolId: string) => {
+      const pool = pools.find(pool => pool.id === poolId);
+      if (pool) {
+        setCurrentPool({
+          ...pool,
+          tokenA: {
+            ...pool.tokenA,
+            path: getGnotPath(pool.tokenA).path,
+            symbol: getGnotPath(pool.tokenA).symbol,
+            logoURI: getGnotPath(pool.tokenA).logoURI,
+          },
+          tokenB: {
+            ...pool.tokenB,
+            path: getGnotPath(pool.tokenB).path,
+            symbol: getGnotPath(pool.tokenB).symbol,
+            logoURI: getGnotPath(pool.tokenB).logoURI,
+          },
+        });
+      }
+    },
+    [pools, setCurrentPool],
+  );
 
   const selectToken = useCallback((path: string) => {
     const token = tokenBalances.find(token => token.path === path);
@@ -83,12 +91,13 @@ const PoolIncentivizeContainer: React.FC = () => {
   }, []);
 
   const handleConfirmIncentivize = useCallback(() => {
+    console.log("🚀 ~ handleConfirmIncentivize ~ connected:", connected);
     if (!connected) {
-      connectAdenaClient();
+      openConnectWalletModal();
     } else {
       openModal();
     }
-  }, [connected, connectAdenaClient, openModal]);
+  }, [connected, openConnectWalletModal, openModal]);
 
   const disableButton = useMemo(() => {
     if (!connected) {
@@ -106,7 +115,10 @@ const PoolIncentivizeContainer: React.FC = () => {
     if (Number(tokenAmountInput.amount) < 0.000001) {
       return true;
     }
-    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance.replace(/,/g, ""))) {
+    if (
+      Number(tokenAmountInput.amount) >
+      Number(tokenAmountInput.balance.replace(/,/g, ""))
+    ) {
       return true;
     }
     return false;
@@ -128,7 +140,10 @@ const PoolIncentivizeContainer: React.FC = () => {
     if (Number(tokenAmountInput.amount) < 0.000001) {
       return "Amount Too Low";
     }
-    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance.replace(/,/g, ""))) {
+    if (
+      Number(tokenAmountInput.amount) >
+      Number(tokenAmountInput.balance.replace(/,/g, ""))
+    ) {
       return "Insufficient Balance";
     }
     return "Incentivize Pool";

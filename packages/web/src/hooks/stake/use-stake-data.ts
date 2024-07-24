@@ -1,8 +1,8 @@
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useMemo } from "react";
 
 export interface StakeDataProps {
@@ -11,6 +11,7 @@ export interface StakeDataProps {
 
 export const useStakeData = ({ positions }: StakeDataProps) => {
   const { tokenPrices } = useTokenData();
+  const { getGnotPath } = useGnotToGnot();
 
   const pooledTokenInfos = useMemo(() => {
     if (positions.length === 0) {
@@ -133,25 +134,23 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
 
     return [
       {
-        token: tokenA,
-        amount: unclaimedTokenAAmount
-          ? makeDisplayTokenAmount(tokenA, unclaimedTokenAAmount)
-          : "",
+        token: { ...tokenA, ...getGnotPath(tokenA) },
+        amount: unclaimedTokenAAmount,
         amountUSD: formatOtherPrice(tokenAUSD, {
           isKMB: false,
         }),
+        rawAmountUsd: tokenAUSD,
       },
       {
-        token: tokenB,
-        amount: unclaimedTokenBAmount
-          ? makeDisplayTokenAmount(tokenA, unclaimedTokenBAmount)
-          : "",
+        token: { ...tokenB, ...getGnotPath(tokenB) },
+        amount: unclaimedTokenBAmount,
         amountUSD: formatOtherPrice(tokenBUSD, {
           isKMB: false,
         }),
+        rawAmountUsd: tokenBUSD,
       },
     ];
-  }, [positions, tokenPrices]);
+  }, [getGnotPath, positions, tokenPrices]);
 
   const totalLiquidityUSD = useMemo(() => {
     if (positions.length === 0) {

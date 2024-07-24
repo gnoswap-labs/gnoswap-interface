@@ -1,7 +1,6 @@
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { useMemo } from "react";
@@ -99,101 +98,172 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     if (positions.length === 0) {
       return [];
     }
+    const tokenA = positions[0].pool.tokenA;
+    const tokenB = positions[0].pool.tokenB;
+    const unclaimedTokenAAmount = positions.reduce(
+      (accum: number | null, position) => {
+        if (accum === null && !position.unclaimedFeeAAmount) return null;
 
-    return positions
-      .flatMap(item => item.reward)
-      .filter(
-        item =>
-          item.rewardType === "EXTERNAL" || item.rewardType === "INTERNAL",
-      )
-      .reduce(
-        (acc, current) => {
-          const currentToken = current.rewardToken;
-          const checkGnotToken = getGnotPath(currentToken);
+        if (accum === null) return Number(position.unclaimedFeeAAmount);
 
-          const existedData = acc.findIndex(
-            item => item.token.priceID === currentToken.priceID,
-          );
+        if (!position.unclaimedFeeAAmount) return accum;
 
-          if (existedData === -1) {
-            return [
-              ...acc,
-              {
-                token: {
-                  ...currentToken,
-                  ...checkGnotToken,
-                },
-                amount: current.claimableAmount
-                  ? Number(current.claimableAmount)
-                  : null,
-                rawAmountUsd: current.claimableUsd
-                  ? Number(current.claimableUsd)
-                  : null,
-                amountUSD: formatOtherPrice(current.claimableUsd, {
-                  isKMB: false,
-                }),
-              },
-            ];
-          }
+        return accum + Number(position.unclaimedFeeAAmount);
+      },
+      null,
+    );
+    const unclaimedTokenBAmount = positions.reduce(
+      (accum: number | null, position) => {
+        if (accum === null && !position.unclaimedFeeBAmount) return null;
 
-          const amount = (() => {
-            if (acc[existedData].amount === null || !current.claimableAmount) {
-              return null;
-            }
+        if (accum === null) return Number(position.unclaimedFeeBAmount);
 
-            if (acc[existedData].amount === null) {
-              return Number(current.claimableAmount);
-            }
+        if (!position.unclaimedFeeBAmount) return accum;
 
-            if (!current.claimableAmount) {
-              return acc[existedData].amount;
-            }
+        return accum + Number(position.unclaimedFeeBAmount);
+      },
+      null,
+    );
 
-            return (
-              acc[existedData].amount || 0 + Number(current.claimableAmount)
-            );
-          })();
+    const tokenAPriceId = checkGnotPath(tokenA.priceID);
+    const tokenBPriceId = checkGnotPath(tokenB.priceID);
 
-          const rawAmountUsd = (() => {
-            if (
-              acc[existedData].rawAmountUsd === null ||
-              !current.claimableUsd
-            ) {
-              return null;
-            }
+    const tokenAPrice = tokenPrices[tokenAPriceId]?.usd
+      ? Number(tokenPrices[tokenAPriceId]?.usd)
+      : null;
+    const tokenBPrice = tokenPrices[tokenBPriceId]?.usd
+      ? Number(tokenPrices[tokenBPriceId]?.usd)
+      : null;
 
-            if (acc[existedData].rawAmountUsd === null) {
-              return Number(current.claimableUsd);
-            }
+    const tokenAUSD =
+      unclaimedTokenAAmount !== null && tokenAPrice !== null
+        ? unclaimedTokenAAmount * tokenAPrice
+        : null;
 
-            if (!current.claimableAmount) {
-              return acc[existedData].rawAmountUsd;
-            }
+    const tokenBUSD =
+      unclaimedTokenBAmount !== null && tokenBPrice !== null
+        ? unclaimedTokenBAmount * tokenBPrice
+        : null;
 
-            return (
-              acc[existedData].rawAmountUsd || 0 + Number(current.claimableUsd)
-            );
-          })();
+    return [
+      {
+        token: { ...tokenA, ...getGnotPath(tokenA) },
+        amount: unclaimedTokenAAmount,
+        amountUSD: formatOtherPrice(tokenAUSD, {
+          isKMB: false,
+        }),
+        rawAmountUsd: tokenAUSD,
+      },
+      {
+        token: { ...tokenB, ...getGnotPath(tokenB) },
+        amount: unclaimedTokenBAmount,
+        amountUSD: formatOtherPrice(tokenBUSD, {
+          isKMB: false,
+        }),
+        rawAmountUsd: tokenBUSD,
+      },
+    ];
+  }, [getGnotPath, positions, tokenPrices]);
 
-          const amountUSD = formatOtherPrice(rawAmountUsd, { isKMB: false });
+  // const unclaimedRewards = useMemo(() => {
+  //   if (positions.length === 0) {
+  //     return [];
+  //   }
 
-          acc[existedData] = {
-            ...acc[existedData],
-            amount,
-            rawAmountUsd,
-            amountUSD,
-          };
+  //   return positions
+  //     .flatMap(item => item.reward)
+  //     .filter(
+  //       item =>
+  //         item.rewardType === "EXTERNAL" || item.rewardType === "INTERNAL",
+  //     )
+  //     .reduce(
+  //       (acc, current) => {
+  //         const currentToken = current.rewardToken;
+  //         const checkGnotToken = getGnotPath(currentToken);
 
-          return acc;
-        },
-        [] as {
-          token: TokenModel;
-          amount: number | null;
-          rawAmountUsd: number | null;
-          amountUSD: string;
-        }[],
-      );
-  }, [getGnotPath, positions]);
+  //         const existedData = acc.findIndex(
+  //           item => item.token.priceID === currentToken.priceID,
+  //         );
+
+  //         if (existedData === -1) {
+  //           return [
+  //             ...acc,
+  //             {
+  //               token: {
+  //                 ...currentToken,
+  //                 ...checkGnotToken,
+  //               },
+  //               amount: current.claimableAmount
+  //                 ? Number(current.claimableAmount)
+  //                 : null,
+  //               rawAmountUsd: current.claimableUsd
+  //                 ? Number(current.claimableUsd)
+  //                 : null,
+  //               amountUSD: formatOtherPrice(current.claimableUsd, {
+  //                 isKMB: false,
+  //               }),
+  //             },
+  //           ];
+  //         }
+
+  //         const amount = (() => {
+  //           if (acc[existedData].amount === null || !current.claimableAmount) {
+  //             return null;
+  //           }
+
+  //           if (acc[existedData].amount === null) {
+  //             return Number(current.claimableAmount);
+  //           }
+
+  //           if (!current.claimableAmount) {
+  //             return acc[existedData].amount;
+  //           }
+
+  //           return (
+  //             acc[existedData].amount || 0 + Number(current.claimableAmount)
+  //           );
+  //         })();
+
+  //         const rawAmountUsd = (() => {
+  //           if (
+  //             acc[existedData].rawAmountUsd === null ||
+  //             !current.claimableUsd
+  //           ) {
+  //             return null;
+  //           }
+
+  //           if (acc[existedData].rawAmountUsd === null) {
+  //             return Number(current.claimableUsd);
+  //           }
+
+  //           if (!current.claimableAmount) {
+  //             return acc[existedData].rawAmountUsd;
+  //           }
+
+  //           return (
+  //             acc[existedData].rawAmountUsd || 0 + Number(current.claimableUsd)
+  //           );
+  //         })();
+
+  //         const amountUSD = formatOtherPrice(rawAmountUsd, { isKMB: false });
+
+  //         acc[existedData] = {
+  //           ...acc[existedData],
+  //           amount,
+  //           rawAmountUsd,
+  //           amountUSD,
+  //         };
+
+  //         return acc;
+  //       },
+  //       [] as {
+  //         token: TokenModel;
+  //         amount: number | null;
+  //         rawAmountUsd: number | null;
+  //         amountUSD: string;
+  //       }[],
+  //     );
+  // }, [getGnotPath, positions]);
 
   const totalLiquidityUSD = useMemo(() => {
     if (positions.length === 0) {
