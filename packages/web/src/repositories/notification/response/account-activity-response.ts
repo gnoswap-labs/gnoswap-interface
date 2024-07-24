@@ -6,7 +6,10 @@ type TxType =
   | "UNSTAKE"
   | "CLAIM"
   | "WITHDRAW"
-  | "DEPOSIT";
+  | "DEPOSIT"
+  | "DECREASE"
+  | "INCREASE"
+  | "REPOSITION";
 
 export interface AccountActivity {
   txHash: string;

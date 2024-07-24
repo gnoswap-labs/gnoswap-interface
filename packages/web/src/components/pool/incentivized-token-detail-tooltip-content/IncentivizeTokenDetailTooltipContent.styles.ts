@@ -60,3 +60,9 @@ export const ItemDataGridValueBlock = styled.span`
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text10};
 `;
+
+export const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  border-top: 1px solid ${({ theme }) => theme.color.border01};
+`;

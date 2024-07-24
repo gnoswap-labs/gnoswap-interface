@@ -68,7 +68,7 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
         <TitleWrapper>
           <span>Swap</span> and <span>Earn</span>
           <br />
-          on Gnoswap
+          on GnoSwap
         </TitleWrapper>
         <SubTitleWrapper>{t("Main:theOne")}</SubTitleWrapper>
       </HeroTitleContainer>

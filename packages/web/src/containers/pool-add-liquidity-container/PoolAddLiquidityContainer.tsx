@@ -37,6 +37,7 @@ import { formatRate } from "@utils/new-number-utils";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import { makeRouteUrl } from "@utils/page.utils";
+import { checkPoolStakingRewards } from "@utils/pool-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -685,6 +686,11 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return isFetchingPools || isLoadingCommon;
   }, [isFetchingPools, isLoadingCommon]);
 
+  const showOneClickStaking = useMemo(
+    () => checkPoolStakingRewards(selectPool.poolInfo?.dbData?.incentiveType),
+    [selectPool.poolInfo?.dbData?.incentiveType],
+  );
+
   return (
     <EarnAddLiquidity
       mode={"POOL"}
@@ -730,6 +736,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       showDim={showDim}
       isLoadingSelectFeeTier={isLoadingSelectFeeTier}
       isLoadingSelectPriceRange={isLoadingSelectPriceRange}
+      showOneClickStaking={showOneClickStaking}
     />
   );
 };

@@ -84,7 +84,7 @@ export const formatRate = (
     minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
 
   if (!allowZeroDecimals && bigNumberValue.isEqualTo(0)) {
-    return "0%";
+    return sign + "0%";
   }
 
   if (

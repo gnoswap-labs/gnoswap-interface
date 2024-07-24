@@ -5,12 +5,8 @@ import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 const GNOT_PATH = "gnot";
 
 export const useGnotToGnot = () => {
-  const { data: gnot, isFetched } = useGetTokenByPath(GNOT_PATH, {
-    staleTime: Infinity,
-  });
-  const { data: wugnot } = useGetTokenByPath(WRAPPED_GNOT_PATH, {
-    staleTime: Infinity,
-  });
+  const { data: gnot, isFetched } = useGetTokenByPath(GNOT_PATH);
+  const { data: wugnot } = useGetTokenByPath(WRAPPED_GNOT_PATH);
 
   const getGnotPath = useCallback(
     (token: any) => {

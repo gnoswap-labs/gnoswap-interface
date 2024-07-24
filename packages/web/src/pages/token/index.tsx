@@ -52,7 +52,6 @@ export default function Token() {
   }, []);
 
   const { data: token } = useGetTokenByPath(path, {
-    refetchInterval: 1000 * 10,
     onError: (err: any) => {
       if (err?.["response"]?.["status"] === 404) {
         router.push("/");

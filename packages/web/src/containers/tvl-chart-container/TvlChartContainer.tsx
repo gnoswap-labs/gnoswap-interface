@@ -78,7 +78,6 @@ const TvlChartContainer: React.FC = () => {
       tvlPriceInfo={{
         amount: formatOtherPrice(tvlData?.latest, {
           isKMB: false,
-          decimals: 1,
         }),
       }}
       tvlChartDatas={chartData}
