@@ -5,9 +5,17 @@ const HOUR_TIME = 60 * 60 * 1000;
 const MIN_TIME = 60 * 1000;
 const SEC_TIME = 1000;
 
-export const getDateUtcToLocal = (d: any) => {
-  const hasTimezone = `${d}`.includes("Z");
+const isDateWithTimeZone = (date: string | Date) => {
+  if (date.toString().includes("Z")) return true;
+
+  if (date instanceof Date && date.toISOString().includes("Z")) return true;
+
+  return false;
+};
+
+export const getDateUtcToLocal = (d: string | Date) => {
   const timezoneOffset = new Date().getTimezoneOffset();
+  const hasTimezone = isDateWithTimeZone(d);
   let currentDate = dayjs(d);
   if (!hasTimezone) {
     currentDate = currentDate.subtract(timezoneOffset, "minutes");

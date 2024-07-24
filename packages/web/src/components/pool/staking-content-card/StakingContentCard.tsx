@@ -27,6 +27,8 @@ import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import { useGetTokenPrices } from "@query/token";
+import { checkGnotPath } from "@utils/common";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -46,6 +48,19 @@ const PriceTooltipContent = ({
   period: number;
 }) => {
   const { getGnotPath } = useGnotToGnot();
+  const { data: tokenPrices = {} } = useGetTokenPrices();
+
+  const isAnyPriceEmpty = useCallback(
+    (position: PoolPositionModel) => {
+      const tokenAEmpty =
+        !tokenPrices[checkGnotPath(position.pool.tokenA.priceID)].usd;
+      const tokenBEmpty =
+        !tokenPrices[checkGnotPath(position.pool.tokenB.priceID)].usd;
+
+      return tokenAEmpty || tokenBEmpty;
+    },
+    [tokenPrices],
+  );
 
   const getRemainTime = useCallback(
     (position: PositionModel) => {
@@ -82,7 +97,9 @@ const PriceTooltipContent = ({
             <div className="list">
               <span className="label">Total Value</span>
               <span className="content">
-                {formatOtherPrice(position.usdValue, { hasMinLimit: false })}
+                {!isAnyPriceEmpty(position)
+                  ? formatOtherPrice(position.usdValue, { hasMinLimit: false })
+                  : "-"}
               </span>
             </div>
             <div className="list">
@@ -128,15 +145,25 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
     if (positions.length === 0) {
       return "-";
     }
+    let anyEmptyValue = false;
+
     const usdValue = positions.reduce((accum, current) => {
+      if (!current.positionUsdValue) {
+        anyEmptyValue = true;
+      }
+
       return Number(current.positionUsdValue) + accum;
     }, 0);
-    return `${toUnitFormat(usdValue, true, true)}`;
+
+    if (anyEmptyValue) return "-";
+
+    return formatOtherPrice(usdValue);
   }, [positions]);
 
   const positionRewards = useMemo(() => {
     return positions.flatMap(position => position.reward);
   }, [positions]);
+
   const totalStakedRewardUSD = useMemo(() => {
     const tempTotalStakedRewardUSD = positionRewards
       .filter(_ => ["EXTERNAL", "INTERNAL"].includes(_.rewardType))
@@ -320,9 +347,17 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
     if (positions.length === 0) {
       return "-";
     }
+
+    let anyEmptyValue = false;
+
     const usdValue = positions.reduce((accum, current) => {
+      if (!current.positionUsdValue) anyEmptyValue = true;
+
       return Number(current.positionUsdValue) + accum;
     }, 0);
+
+    if (anyEmptyValue) return "-";
+
     return `${toUnitFormat(usdValue, true, true)}`;
   }, [positions]);
 

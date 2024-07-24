@@ -229,14 +229,14 @@ export const SelectTokenWrapper = styled.div`
               width: 10px;
               height: 10px;
               * {
-                fill: ${({ theme }) => theme.color.icon03}; 
+                fill: ${({ theme }) => theme.color.icon03};
               }
             }
             &:hover {
               color: ${({ theme }) => theme.color.text03};
               svg {
                 * {
-                  fill: ${({ theme }) => theme.color.icon07}; 
+                  fill: ${({ theme }) => theme.color.icon07};
                 }
               }
             }
@@ -262,6 +262,7 @@ export const SelectTokenWrapper = styled.div`
 
 export const Divider = styled.div`
   width: 100%;
+  height: 1px;
   border-top: 1px solid ${({ theme }) => theme.color.border02};
 `;
 

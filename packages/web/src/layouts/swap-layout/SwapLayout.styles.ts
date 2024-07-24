@@ -50,19 +50,21 @@ export const SwapLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       gap: 8px;
-      margin-top: 0px;
       align-items: center;
     }
   }
 
   .page-name {
     white-space: nowrap;
+    position: absolute;
 
     ${fonts.h3};
     ${media.tablet} {
       ${fonts.h4};
     }
     ${media.mobile} {
+      position: relative;
+
       ${fonts.h5};
       ${mixins.flexbox("row", "flex-start", "flex-start")};
       max-width: 500px;
