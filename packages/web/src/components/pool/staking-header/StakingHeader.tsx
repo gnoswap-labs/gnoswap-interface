@@ -11,9 +11,9 @@ interface StakingHeaderProps {
   isDisabledButton: boolean;
   handleClickStakeRedirect: () => void;
   handleClickUnStakeRedirect: () => void;
-  isUnstake: boolean;
+  canUnstake: boolean;
   isOtherPosition: boolean;
-  isStaked: boolean;
+  canStake: boolean;
 }
 
 const STAKING_INSTRUCTION_URL =
@@ -23,9 +23,9 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({
   isDisabledButton,
   handleClickStakeRedirect,
   handleClickUnStakeRedirect,
-  isUnstake,
+  canUnstake,
   isOtherPosition,
-  isStaked,
+  canStake,
 }) => {
   const [isShowLearnModal, setIsShowLearnModal] = useState(false);
   return (
@@ -41,9 +41,9 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({
         </div>
       </div>
       <div className="button-wrap">
-        {isUnstake && !isOtherPosition && (
+        {canUnstake && !isOtherPosition && (
           <Button
-            disabled={isDisabledButton || !isUnstake}
+            disabled={isDisabledButton || !canUnstake}
             text="Unstake Position"
             onClick={handleClickUnStakeRedirect}
             style={{
@@ -55,7 +55,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({
             }}
           />
         )}
-        {isStaked && (
+        {canStake && (
           <Button
             text="Stake Position"
             onClick={handleClickStakeRedirect}

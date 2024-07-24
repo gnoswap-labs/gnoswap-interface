@@ -13,10 +13,11 @@ import { toUnitFormat } from "@utils/number-utils";
 import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { formatRate } from "@utils/new-number-utils";
+import { PAGE_PATH_TYPE } from "@constants/page.constant";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
-  handleClickGotoStaking: () => void;
+  handleClickGotoStaking: (type: PAGE_PATH_TYPE) => void;
   pool: PoolDetailModel;
   isLoadingPool: boolean;
 }
@@ -69,9 +70,10 @@ const OneClickStaking: React.FC<Props> = ({
     }
   }, [tokenA?.symbol, tokenB?.symbol, initialized]);
 
-  const isStakedPositions = useMemo(() => {
+  const canUnstake = useMemo(() => {
     return stakedPositions.length > 0;
   }, [stakedPositions]);
+  console.log("🚀 ~ canUnstake ~ canUnstake:", canUnstake);
 
   const tokenARevert = useMemo(() => {
     return initialized?.tokenA;
@@ -81,9 +83,10 @@ const OneClickStaking: React.FC<Props> = ({
     return initialized?.tokenB;
   }, [initialized]);
 
-  const isUnstakedPositions = useMemo(() => {
+  const canStake = useMemo(() => {
     return unstakedPositions.length > 0;
   }, [unstakedPositions]);
+  console.log("🚀 ~ canStake ~ canStake:", canStake);
 
   const liquidityValue = useMemo((): string => {
     if (isLoadingPool || !pool.tvl) return "-";
@@ -204,14 +207,15 @@ const OneClickStaking: React.FC<Props> = ({
         <span className="token-name">{`${tokenARevert?.symbol}/${tokenBRevert?.symbol}`}</span>
       </div>
       {renderPositionInfo()}
-      {(isStakedPositions || isUnstakedPositions) && !isLoadingPool && (
-        <Divider />
-      )}
-      {isUnstakedPositions && !isLoadingPool && (
+      {(canUnstake || canStake) && !isLoadingPool && <Divider />}
+      {canStake && !isLoadingPool && (
         <div className="unstake-info">
           <div className="title">
             <div className="label">My Unstaked Positions</div>
-            <div className="value" onClick={handleClickGotoStaking}>
+            <div
+              className="value"
+              onClick={() => handleClickGotoStaking("POOL_STAKE")}
+            >
               Go to Staking <IconStrokeArrowRight />
             </div>
           </div>
@@ -234,13 +238,16 @@ const OneClickStaking: React.FC<Props> = ({
         </div>
       )}
 
-      {isStakedPositions && !isLoadingPool && (
+      {canUnstake && !isLoadingPool && (
         <div className="stake-info">
           <div className="title">
             <div className="label">My Staked Positions</div>
-            {!isUnstakedPositions && (
-              <div className="value" onClick={handleClickGotoStaking}>
-                Go to Staking <IconStrokeArrowRight />
+            {canUnstake && (
+              <div
+                className="value"
+                onClick={() => handleClickGotoStaking("POOL_UNSTAKE")}
+              >
+                Go to Unstaking <IconStrokeArrowRight />
               </div>
             )}
           </div>
