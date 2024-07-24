@@ -112,6 +112,7 @@ const TokenInfoContentContainer: React.FC = () => {
       usd: currentPrice = "0",
       feeUsd24h,
       pricesBefore = priceChangeDetailInit,
+      marketCap,
     } = {},
   } = useGetTokenPricesByPath(
     path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
@@ -122,17 +123,12 @@ const TokenInfoContentContainer: React.FC = () => {
 
   const marketInformation = useMemo(() => {
     return {
-      popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
+      marketCap: formatOtherPrice(marketCap),
       tvl: formatOtherPrice(market.lockedTokensUsd),
       volume24h: formatOtherPrice(market.volumeUsd24h),
       fees24h: formatOtherPrice(feeUsd24h),
     };
-  }, [
-    market.lockedTokensUsd,
-    market.popularity,
-    market.volumeUsd24h,
-    feeUsd24h,
-  ]);
+  }, [market.lockedTokensUsd, market.volumeUsd24h, feeUsd24h, marketCap]);
 
   const priceInfomation = useMemo(() => {
     const data1H = checkPositivePrice(currentPrice, pricesBefore.price1h);
