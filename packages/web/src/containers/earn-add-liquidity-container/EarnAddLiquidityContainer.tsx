@@ -795,14 +795,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tickUpper: nextTickUpper,
       };
       router.replace(makeRouteUrl(PAGE_PATH.EARN_ADD, query));
-      // window.history.pushState(
-      //   {
-      //     ...window.history.state,
-      //     url: makeRouteUrl(PAGE_PATH.EARN_ADD, query),
-      //   },
-      //   "",
-      //   makeRouteUrl(PAGE_PATH.EARN_ADD, query),
-      // );
     }
   }, [
     swapFeeTier,
