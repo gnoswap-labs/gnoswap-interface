@@ -29,7 +29,7 @@ export function makeDisplayTokenAmount(
     );
   }
 
-  return number.shiftedBy(-token.decimals).toNumber();
+  return number.shiftedBy(-(token.decimals || 0)).toNumber();
 }
 
 export function makeShiftAmount(

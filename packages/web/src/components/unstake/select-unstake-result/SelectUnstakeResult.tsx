@@ -29,11 +29,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 mobileWidth={24}
               />
               <p>Pooled {pooledTokenInfo.token.symbol}</p>
-              <strong>
-                {formatPoolPairAmount(pooledTokenInfo.amount, {
-                  decimals: pooledTokenInfo.token.decimals,
-                })}
-              </strong>
+              <strong>{pooledTokenInfo.amount}</strong>
             </div>
             <span className="dollar-value">{pooledTokenInfo.amountUSD}</span>
           </li>
