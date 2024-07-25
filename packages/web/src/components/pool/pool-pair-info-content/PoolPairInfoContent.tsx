@@ -32,6 +32,7 @@ import {
   formatPoolPairAmount,
   formatRate,
 } from "@utils/new-number-utils";
+import { tickToPrice } from "@utils/swap-utils";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -193,10 +194,10 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     const tokenADecimals = pool.tokenA.decimals || 0;
     const tokenBDecimals = pool.tokenB.decimals || 0;
 
-    return BigNumber(pool.price)
+    return BigNumber(tickToPrice(pool.currentTick))
       .shiftedBy(-tokenADecimals + tokenBDecimals)
       .toNumber();
-  }, [pool.price, pool.tokenA.decimals, pool.tokenB.decimals]);
+  }, [pool.currentTick, pool.tokenA.decimals, pool.tokenB.decimals]);
 
   const currentPriceRatio = useMemo(() => {
     return formatTokenExchangeRate(currentPriceRatioNumber, {
@@ -506,7 +507,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               themeKey={themeKey}
               position="top"
               offset={40}
-              poolPrice={pool?.price || 1}
+              poolPrice={tickToPrice(pool.currentTick) || 1}
               showBar={!isHideBar}
             />
           )}
