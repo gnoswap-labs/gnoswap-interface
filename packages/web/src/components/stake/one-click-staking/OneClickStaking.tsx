@@ -73,7 +73,6 @@ const OneClickStaking: React.FC<Props> = ({
   const canUnstake = useMemo(() => {
     return stakedPositions.length > 0;
   }, [stakedPositions]);
-  console.log("🚀 ~ canUnstake ~ canUnstake:", canUnstake);
 
   const tokenARevert = useMemo(() => {
     return initialized?.tokenA;
@@ -86,7 +85,6 @@ const OneClickStaking: React.FC<Props> = ({
   const canStake = useMemo(() => {
     return unstakedPositions.length > 0;
   }, [unstakedPositions]);
-  console.log("🚀 ~ canStake ~ canStake:", canStake);
 
   const liquidityValue = useMemo((): string => {
     if (isLoadingPool || !pool.tvl) return "-";

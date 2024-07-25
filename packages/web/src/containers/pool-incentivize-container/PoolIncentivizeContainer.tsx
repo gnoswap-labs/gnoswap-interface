@@ -91,7 +91,6 @@ const PoolIncentivizeContainer: React.FC = () => {
   }, []);
 
   const handleConfirmIncentivize = useCallback(() => {
-    console.log("🚀 ~ handleConfirmIncentivize ~ connected:", connected);
     if (!connected) {
       openConnectWalletModal();
     } else {
