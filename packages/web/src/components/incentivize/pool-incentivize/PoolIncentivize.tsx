@@ -15,6 +15,7 @@ import TokenAmountInput from "@components/common/token-amount-input/TokenAmountI
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useTranslation } from "react-i18next";
 
 export interface DistributionPeriodDate {
   year: number;
@@ -35,7 +36,6 @@ interface PoolIncentivizeProps {
   periods: number[];
   setPeriod: (period: number) => void;
   details: PoolDetailModel | null;
-  disclaimer: string;
   handleConfirmIncentivize: () => void;
   tokenAmountInput: TokenAmountInputModel;
   changeToken: (token: TokenModel) => void;
@@ -60,7 +60,6 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   period,
   periods,
   setPeriod,
-  disclaimer,
   handleConfirmIncentivize,
   tokenAmountInput,
   changeToken,
@@ -69,6 +68,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   connected,
   isDisabledSelect,
 }) => {
+  const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
@@ -103,7 +103,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
 
   return (
     <PoolIncentivizeWrapper>
-      <h3 className="title">Incentivize Pool</h3>
+      <h3 className="title">{t("IncentivizePool:incentiPool.form.header")}</h3>
       <article>
         <PoolIncentivizeSelectPool
           pools={poolSelectItems}
@@ -124,7 +124,9 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
       </article>
 
       <article className="token-amount-input">
-        <h5 className="section-title">3. Set Reward Amount</h5>
+        <h5 className="section-title">
+          {t("IncentivizePool:incentiPool.form.rewaAmt.label")}
+        </h5>
         <TokenAmountInput
           changeToken={changeToken}
           connected={connected}
@@ -140,7 +142,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
         token={tokenAmountInput.token}
       />
 
-      <Disclaimer disclaimer={disclaimer} />
+      <Disclaimer />
       <Button
         text={textBtn}
         style={{

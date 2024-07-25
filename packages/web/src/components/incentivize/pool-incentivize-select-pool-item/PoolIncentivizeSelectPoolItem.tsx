@@ -7,6 +7,7 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { convertToKMB } from "@utils/stake-position-utils";
+import { useTranslation } from "react-i18next";
 
 export interface PoolIncentivizeSelectPoolItemProps {
   poolSelectItem: PoolSelectItemInfo | null;
@@ -17,6 +18,8 @@ export interface PoolIncentivizeSelectPoolItemProps {
 const PoolIncentivizeSelectPoolItem: React.FC<
   PoolIncentivizeSelectPoolItemProps
 > = ({ poolSelectItem, visibleLiquidity, select }) => {
+  const { t } = useTranslation();
+
   const selected = poolSelectItem !== null;
 
   const doubleLogos = useMemo(() => {
@@ -58,7 +61,7 @@ const PoolIncentivizeSelectPoolItem: React.FC<
   if (!selected) {
     return (
       <PoolIncentivizeSelectPoolItemDefaultWrapper>
-        Select
+        {t("common:select")}
       </PoolIncentivizeSelectPoolItemDefaultWrapper>
     );
   }
