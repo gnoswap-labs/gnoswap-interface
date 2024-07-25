@@ -179,7 +179,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
       period={period}
       setPeriod={setPeriod}
       details={poolDetail}
-      disclaimer={dummyDisclaimer}
+      dummyDisclaimer={dummyDisclaimer}
       token={currentToken}
       tokens={tokenBalances}
       selectToken={selectToken}

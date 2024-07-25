@@ -43,6 +43,7 @@ interface PoolIncentivizeProps {
   disableButton: boolean;
   connected: boolean;
   isDisabledSelect?: boolean;
+  dummyDisclaimer: string;
 }
 
 const customSort = (a: PoolSelectItemInfo, b: PoolSelectItemInfo) => {
@@ -67,6 +68,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   disableButton,
   connected,
   isDisabledSelect,
+  dummyDisclaimer,
 }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
@@ -142,7 +144,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
         token={tokenAmountInput.token}
       />
 
-      <Disclaimer />
+      <Disclaimer dummyDisclaimer={dummyDisclaimer} />
       <Button
         text={textBtn}
         style={{

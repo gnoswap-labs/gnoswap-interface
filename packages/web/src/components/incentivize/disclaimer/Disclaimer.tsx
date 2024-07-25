@@ -1,9 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { wrapper } from "./Disclaimer.styles";
 
-interface DisclaimerProps {}
+interface DisclaimerProps {
+  dummyDisclaimer: string;
+}
 
-const Disclaimer: React.FC<DisclaimerProps> = () => {
+const Disclaimer: React.FC<DisclaimerProps> = ({ dummyDisclaimer }) => {
   const { t } = useTranslation();
 
   return (
@@ -12,7 +14,7 @@ const Disclaimer: React.FC<DisclaimerProps> = () => {
       <div
         className="desc"
         dangerouslySetInnerHTML={{
-          __html: t("IncentivizePool:disclaimer.desc"),
+          __html: dummyDisclaimer,
         }}
       />
     </div>
