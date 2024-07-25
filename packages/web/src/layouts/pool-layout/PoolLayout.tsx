@@ -45,9 +45,9 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
           {staking}
           <div className="button">
             <span>
-              {t("Pool:gotoIncentivizeGuide", {
-                action: isStaking ? "boost" : "add",
-              })}
+              {isStaking
+                ? t("Pool:gotoIncentivizeGuide.boost")
+                : t("Pool:gotoIncentivizeGuide.add")}
               &nbsp;
             </span>
             <div className="pointer-wrap" onClick={onClickIncentivize}>
