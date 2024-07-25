@@ -49,6 +49,8 @@ const PriceTooltipContent = ({
   period: number;
 }) => {
   const { getGnotPath } = useGnotToGnot();
+  const { t } = useTranslation();
+
   const { data: tokenPrices = {} } = useGetTokenPrices();
 
   const isAnyPriceEmpty = useCallback(
@@ -96,7 +98,9 @@ const PriceTooltipContent = ({
               <span className="title">ID #{position.lpTokenId}</span>
             </div>
             <div className="list">
-              <span className="label">Total Value</span>
+              <span className="label">
+                {t("Pool:staking.period.stakedTooltip.totalValue")}
+              </span>
               <span className="content">
                 {!isAnyPriceEmpty(position)
                   ? formatOtherPrice(position.usdValue, { hasMinLimit: false })
@@ -104,13 +108,17 @@ const PriceTooltipContent = ({
               </span>
             </div>
             <div className="list">
-              <span className="label">Staked Date</span>
+              <span className="label">
+                {t("Pool:staking.period.stakedTooltip.stakedDate")}
+              </span>
               <span className="content">
                 {timeToDateStr(new Date(position.stakedAt).getTime())}
               </span>
             </div>
             <div className="list">
-              <span className="label">Next Tier</span>
+              <span className="label">
+                {t("Pool:staking.period.stakedTooltip.nextTier")}
+              </span>
               <span className="content">
                 {period === -1 ? "-" : `in ${getRemainTime(position)}`}
               </span>

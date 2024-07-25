@@ -1107,10 +1107,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("Pool:position.ratioTooltip")}&nbsp;
-                  {(!isSwap ? tokenA : tokenB)?.symbol}.
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper
+                  dangerouslySetInnerHTML={{
+                    __html: t("Pool:position.ratioTooltip", {
+                      symbol: (!isSwap ? tokenA : tokenB)?.symbol,
+                    }),
+                  }}
+                />
               }
             >
               <IconInfo />
@@ -1128,10 +1131,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("Pool:position.ratioTooltip")}&nbsp;
-                  {(!isSwap ? tokenB : tokenA)?.symbol}.
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper
+                  dangerouslySetInnerHTML={{
+                    __html: t("Pool:position.ratioTooltip", {
+                      symbol: (!isSwap ? tokenB : tokenA)?.symbol,
+                    }),
+                  }}
+                />
               }
             >
               <IconInfo />
