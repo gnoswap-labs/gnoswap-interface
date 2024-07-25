@@ -36,6 +36,7 @@ import IconFailed from "@components/common/icons/IconFailed";
 import { isEmptyObject } from "@utils/validation-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { useTranslation } from "react-i18next";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -122,6 +123,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   isLoadingSelectPriceRange,
   showOneClickStaking,
 }) => {
+  const { t } = useTranslation();
+
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
   const [openedPriceRange, setOpenedPriceRange] = useState(
@@ -188,26 +191,26 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const submitButtonStr = useMemo(() => {
     switch (submitType) {
       case "CREATE_POOL":
-        return "Add Position";
+        return t("AddPosition:btn.addPosi");
       case "ADD_LIQUIDITY":
-        return "Add Liquidity";
+        return t("AddPosition:btn.addLiquidity");
       case "CONNECT_WALLET":
-        return "Wallet Login";
+        return t("AddPosition:btn.walletLogin");
       case "SWITCH_NETWORK":
-        return "Switch to Gnoland";
+        return t("AddPosition:btn.switch");
       case "INVALID_PAIR":
-        return "Select a pair";
+        return t("AddPosition:btn.invalidPair");
       case "INSUFFICIENT_BALANCE":
-        return "Insufficient Balance";
+        return t("AddPosition:btn.insuffiBal");
       case "INVALID_RANGE":
-        return "Invalid Range";
+        return t("AddPosition:btn.invalidRange");
       case "AMOUNT_TOO_LOW":
-        return "Amount Too Low";
+        return t("AddPosition:btn.amtTooLow");
       case "ENTER_AMOUNT":
       default:
-        return "Enter Amount";
+        return t("AddPosition:btn.enterAmt");
     }
-  }, [submitType]);
+  }, [submitType, t]);
 
   const handleChangeTokenB = useCallback(
     (token: TokenModel) => {
