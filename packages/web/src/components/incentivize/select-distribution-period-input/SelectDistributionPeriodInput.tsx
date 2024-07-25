@@ -36,13 +36,11 @@ const SelectDistributionPeriodInput: React.FC<
         <Tooltip
           placement="top"
           FloatingContent={
-            <DistributionPeriodTooltipContentWrapper
-              dangerouslySetInnerHTML={{
-                __html: t(
-                  "IncentivizePool:incentiPool.form.period.field.disPeriod.tootlip",
-                ),
-              }}
-            />
+            <DistributionPeriodTooltipContentWrapper>
+              {t(
+                "IncentivizePool:incentiPool.form.period.field.disPeriod.tootlip",
+              )}
+            </DistributionPeriodTooltipContentWrapper>
           }
         >
           <IconInfo fill={theme.color.icon03} size={16} className="icon-info" />
