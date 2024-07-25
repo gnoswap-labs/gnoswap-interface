@@ -44,7 +44,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
         <div className="page-name">{t("business:pageHeader.earn")}</div>
         {!loading && (
           <div className="location">
-            <span onClick={() => onClickPath(menu.path)}>{menu.title}</span>
+            <span onClick={() => onClickPath(menu.path)}>{t(menu.title)}</span>
             <IconStrokeArrowRight className="step-icon" />
             <span className="token">{tokenInfo}</span>
           </div>
