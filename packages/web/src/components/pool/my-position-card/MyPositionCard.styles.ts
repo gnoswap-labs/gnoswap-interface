@@ -108,7 +108,8 @@ export const MyPositionCardWrapper = styled.div<Props>`
         ${media.mobile} {
           ${fonts.body7};
         }
-        color: ${({ theme, type }) => type !== "closed" ? theme.color.text02 : theme.color.text10};
+        color: ${({ theme, type }) =>
+          type !== "closed" ? theme.color.text02 : theme.color.text10};
       }
       .flex-button {
         ${mixins.flexbox("row", "center", "center")};
@@ -166,7 +167,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
           left: auto;
           right: -1px;
           top: 43px;
-          width: 165px;
+          min-width: 165px;
           background: ${({ theme }) => theme.color.background01};
           box-shadow: ${({ theme }) => theme.color.shadow};
           .item-wrapper {
@@ -332,7 +333,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
           color: ${({ theme }) => theme.color.text07};
         }
         color: ${({ theme, type }) =>
-    type !== "closed" ? theme.color.text02 : theme.color.text10};
+          type !== "closed" ? theme.color.text02 : theme.color.text10};
         &.disabled {
           pointer-events: none;
         }
@@ -509,7 +510,8 @@ export const TooltipDivider = styled.div`
 `;
 
 export const ToolTipContentWrapper = styled.div`
-  width: 251px;
+  min-width: 251px;
+  max-width: 400px;
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
 `;
@@ -536,6 +538,9 @@ export const CopyTooltip = styled.div`
     ${fonts.body12};
     color: ${({ theme }) => theme.color.text02};
     background-color: ${({ theme }) => theme.color.background02};
+    & > span {
+      white-space: nowrap;
+    }
   }
   .dark-shadow {
     box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);

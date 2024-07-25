@@ -28,6 +28,7 @@ import {
 } from "@utils/new-number-utils";
 import { isGNOTPath } from "@utils/common";
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
+import { useTranslation } from "react-i18next";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -54,6 +55,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   isSwitchNetwork,
 }) => {
   const { getGnotPath } = useGnotToGnot();
+  const { t } = useTranslation();
 
   const positionData = positions?.[0]?.pool;
 
@@ -720,10 +722,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     isDisplayData,
   ]);
 
-  return (
-    <MyLiquidityContentWrapper>
+  const renderTotalBalance = () => {
+    return (
       <section>
-        <h4>Total Balance</h4>
+        <h4>
+          {t("Pool:position.card.balance.title", {
+            context: "total",
+          })}
+        </h4>
         {!loading && (
           <span className="content-value disabled">{totalBalance}</span>
         )}
@@ -833,8 +839,17 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           </div>
         )}
       </section>
+    );
+  };
+
+  const renderTotalEarning = () => {
+    return (
       <section>
-        <h4>Total Daily Earnings</h4>
+        <h4>
+          {t("Pool:position.card.dailyEarn.title", {
+            context: "total",
+          })}
+        </h4>
         {!loading && isShowRewardInfoTooltip ? (
           <Tooltip
             placement="top"
@@ -868,7 +883,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         {!loading && positions.length > 0 && isConnected && (
           <div className="total-daily">
             <div className="content-wrap">
-              <span>Fees</span>
+              <span>{t("Pool:position.card.fee")}</span>
               {breakpoint === DEVICE_TYPE.WEB && (
                 <OverlapTokenLogo tokens={logoDaily} size={20} />
               )}
@@ -876,7 +891,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             </div>
             <div className="divider"></div>
             <div className="content-wrap content-reward">
-              <span>Rewards</span>
+              <span>{t("Pool:position.card.reward")}</span>
               {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && (
                 <OverlapTokenLogo tokens={logoReward} size={20} />
               )}
@@ -885,144 +900,149 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           </div>
         )}
       </section>
-      <section>
-        {breakpoint === DEVICE_TYPE.MOBILE ? (
-          <div className="mobile-wrap">
-            <div className="column-wrap">
-              <h4>Total Claimable Rewards</h4>
-              {!loading && (
-                <div className="claim-wrap">
-                  {isShowClaimableRewardInfo || isShowUnclaimableRewardInfo ? (
-                    <Tooltip
-                      placement="top"
-                      FloatingContent={
-                        <MyPositionClaimContent
-                          rewardInfo={claimableRewardInfo}
-                          unclaimedRewardInfo={unclaimedRewardInfo}
-                        />
-                      }
-                    >
-                      <span className="content-value">{claimableUSD}</span>
-                    </Tooltip>
-                  ) : (
-                    <span className="content-value disabled">
-                      {claimableUSD}
-                    </span>
-                  )}
-                </div>
-              )}
-              {loading && (
-                <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-                  <span
-                    css={pulseSkeletonStyle({
-                      h: 22,
-                      w: "200px",
-                      tabletWidth: 160,
-                      smallTableWidth: 140,
-                    })}
-                  />
-                </SkeletonEarnDetailWrapper>
-              )}
-            </div>
-            {canClaimAll && !isOtherPosition && (
-              <Button
-                className="button-claim"
-                disabled={!canClaimAll}
-                text={loadingTransactionClaim ? "" : "Claim All"}
-                style={{
-                  hierarchy: ButtonHierarchy.Primary,
-                  width: 86,
-                  height: 36,
-                  padding: "10px 16px",
-                  fontType: "p1",
-                }}
-                leftIcon={
-                  loadingTransactionClaim ? (
-                    <LoadingSpinner className="loading-button" />
-                  ) : undefined
-                }
-                onClick={claimAll}
-              />
-            )}
+    );
+  };
+
+  const renderTotalClaim = () => {
+    const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
+
+    const title = (
+      <h4>
+        {t("Pool:position.card.claimableReward.title", {
+          context: "total",
+        })}
+      </h4>
+    );
+
+    const loadingComp = (
+      <>
+        {loading && (
+          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <span
+              css={pulseSkeletonStyle({
+                h: 22,
+                w: "200px",
+                tabletWidth: 160,
+                smallTableWidth: 140,
+              })}
+            />
+          </SkeletonEarnDetailWrapper>
+        )}
+      </>
+    );
+
+    const claimableUsdComp =
+      isShowClaimableRewardInfo || isShowUnclaimableRewardInfo ? (
+        <Tooltip
+          placement="top"
+          FloatingContent={
+            <MyPositionClaimContent
+              rewardInfo={claimableRewardInfo}
+              unclaimedRewardInfo={unclaimedRewardInfo}
+            />
+          }
+        >
+          <span className="content-value">{claimableUSD}</span>
+        </Tooltip>
+      ) : (
+        !loading && (
+          <span className="content-value disabled">{claimableUSD}</span>
+        )
+      );
+
+    if (isMobile)
+      return (
+        <div className="mobile-wrap">
+          <div className="column-wrap">
+            {title}
+            {!loading && <div className="claim-wrap">{claimableUsdComp}</div>}
+            {loadingComp}
           </div>
-        ) : (
-          <>
-            <h4>Total Claimable Rewards</h4>
-            <div className="claim-wrap">
-              {!loading &&
-              (isShowClaimableRewardInfo || isShowUnclaimableRewardInfo) ? (
-                <Tooltip
-                  placement="top"
-                  FloatingContent={
-                    <MyPositionClaimContent
-                      rewardInfo={claimableRewardInfo}
-                      unclaimedRewardInfo={unclaimedRewardInfo}
-                    />
-                  }
-                >
-                  <span className="content-value has-tooltip">
-                    {claimableUSD}
-                  </span>
-                </Tooltip>
-              ) : (
-                !loading && (
-                  <span className="content-value disabled">{claimableUSD}</span>
-                )
+          {canClaimAll && !isOtherPosition && (
+            <Button
+              className="button-claim"
+              disabled={!canClaimAll}
+              text={
+                loadingTransactionClaim
+                  ? ""
+                  : t("Pool:position.card.btn.claimAll")
+              }
+              style={{
+                hierarchy: ButtonHierarchy.Primary,
+                width: 86,
+                height: 36,
+                padding: "10px 16px",
+                fontType: "p1",
+              }}
+              leftIcon={
+                loadingTransactionClaim ? (
+                  <LoadingSpinner className="loading-button" />
+                ) : undefined
+              }
+              onClick={claimAll}
+            />
+          )}
+        </div>
+      );
+
+    return (
+      <section>
+        {title}
+        <div className="claim-wrap">
+          {claimableUsdComp}
+          {loadingComp}
+          {canClaimAll && !isOtherPosition && (
+            <Button
+              className="button-claim"
+              disabled={!canClaimAll}
+              text={
+                loadingTransactionClaim
+                  ? ""
+                  : t("Pool:position.card.btn.claimAll")
+              }
+              style={{
+                hierarchy: ButtonHierarchy.Primary,
+                height: 36,
+                padding: "0px 16px",
+                fontType: "p1",
+              }}
+              onClick={claimAll}
+              leftIcon={
+                loadingTransactionClaim ? (
+                  <LoadingSpinner className="loading-button" />
+                ) : undefined
+              }
+            />
+          )}
+        </div>
+        {!loading && positions.length > 0 && isConnected && (
+          <div className="total-daily">
+            <div className="content-wrap">
+              <span>{t("Pool:position.card.fee")}</span>
+              {breakpoint === DEVICE_TYPE.WEB && (
+                <OverlapTokenLogo tokens={logoDaily} size={20} />
               )}
-              {loading && (
-                <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-                  <span
-                    css={pulseSkeletonStyle({
-                      h: 22,
-                      w: "200px",
-                      tabletWidth: 160,
-                      smallTableWidth: 140,
-                    })}
-                  />
-                </SkeletonEarnDetailWrapper>
-              )}
-              {canClaimAll && !isOtherPosition && (
-                <Button
-                  className="button-claim"
-                  disabled={!canClaimAll}
-                  text={loadingTransactionClaim ? "" : "Claim All"}
-                  style={{
-                    hierarchy: ButtonHierarchy.Primary,
-                    height: 36,
-                    padding: "0px 16px",
-                    fontType: "p1",
-                  }}
-                  onClick={claimAll}
-                  leftIcon={
-                    loadingTransactionClaim ? (
-                      <LoadingSpinner className="loading-button" />
-                    ) : undefined
-                  }
-                />
-              )}
+              <span className="apr-value">{feeClaim}</span>
             </div>
-            {!loading && positions.length > 0 && isConnected && (
-              <div className="total-daily">
-                <div className="content-wrap">
-                  <span>Fees</span>
-                  {breakpoint === DEVICE_TYPE.WEB && (
-                    <OverlapTokenLogo tokens={logoDaily} size={20} />
-                  )}
-                  <span className="apr-value">{feeClaim}</span>
-                </div>
-                <div className="divider"></div>
-                <div className="content-wrap content-reward">
-                  <span>Rewards</span>
-                  {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && (
-                    <OverlapTokenLogo tokens={logoReward} size={20} />
-                  )}
-                  <span className="apr-value">{rewardClaim}</span>
-                </div>
-              </div>
-            )}
-          </>
+            <div className="divider"></div>
+            <div className="content-wrap content-reward">
+              <span>{t("Pool:position.card.reward")}</span>
+              {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && (
+                <OverlapTokenLogo tokens={logoReward} size={20} />
+              )}
+              <span className="apr-value">{rewardClaim}</span>
+            </div>
+          </div>
         )}
       </section>
+    );
+  };
+
+  return (
+    <MyLiquidityContentWrapper>
+      {renderTotalBalance()}
+      {renderTotalEarning()}
+      {renderTotalClaim()}
     </MyLiquidityContentWrapper>
   );
 };

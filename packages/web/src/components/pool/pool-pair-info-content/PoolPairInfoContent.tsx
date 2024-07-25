@@ -32,6 +32,7 @@ import {
   formatPoolPairAmount,
   formatRate,
 } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -46,6 +47,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   loadingBins,
   poolBins,
 }) => {
+  const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { width } = useWindowSize();
@@ -264,7 +266,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
         <TvlSectionWrapper>
-          <h4>TVL</h4>
+          <h4>{t("Pool:poolInfo.section.tvl.title")}</h4>
           {tvlDisplay}
           <div className="section-info">
             {!loading && (
@@ -366,7 +368,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           </div>
         </TvlSectionWrapper>
         <VolumeSectionWrapper>
-          <h4>Volume 24h</h4>
+          <h4>{t("Pool:poolInfo.section.volume.title")}</h4>
           {!loading && (
             <div className="wrapper-value">
               <strong>{volumeValue}</strong>
@@ -385,7 +387,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             </SkeletonEarnDetailWrapper>
           )}
           <div className="section-info flex-row">
-            <span>All-Time Volume</span>
+            <span>{t("Pool:poolInfo.section.volume.allTimeVol")}</span>
             {!loading && (
               <div className="section-image">
                 <span>{formatOtherPrice(pool.allTimeVolumeUsd)}</span>
@@ -400,7 +402,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           </div>
         </VolumeSectionWrapper>
         <AprSectionWrapper>
-          <h4>APR</h4>
+          <h4>{t("Pool:poolInfo.section.apr.title")}</h4>
           {!loading && (
             <Tooltip
               placement="top"
@@ -429,7 +431,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           )}
           <div className="apr-info">
             <div className="content-wrap">
-              <span>Fees 24h</span>
+              <span>{t("Pool:poolInfo.section.apr.fee")}</span>
               {!loading && <span className="apr-value">{feeChangedStr}</span>}
               {loading && (
                 <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
@@ -439,7 +441,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             </div>
             <AprDivider />
             <div className="content-wrap content-reward">
-              <span>Rewards 24h</span>
+              <span>{t("Pool:poolInfo.section.apr.reward")}</span>
               {!loading && (
                 <span className="apr-value">{rewardChangedStr}</span>
               )}
@@ -455,7 +457,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       <section className="chart-chart-container">
         <div className="position-wrapper-chart">
           <div className="position-header">
-            <div>Current Price</div>
+            <div>{t("business:currentPrice")}</div>
             <div className="swap-price">
               {!loading && (
                 <div className="left">

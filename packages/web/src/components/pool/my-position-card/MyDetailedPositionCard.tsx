@@ -48,6 +48,8 @@ import { isGNOTPath } from "@utils/common";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { makeRouteUrl } from "@utils/page.utils";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import { useTranslation } from "react-i18next";
+import { ValuesType } from "utility-types";
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
@@ -58,6 +60,14 @@ interface MyDetailedPositionCardProps {
   connected: boolean;
   tokenPrices: Record<string, TokenPriceModel>;
 }
+
+export const POSITION_ACTION = {
+  DECREASE: "Pool:position.card.btn.manage.decrease",
+  INCREASE: "Pool:position.card.btn.manage.increase",
+  REPOSITION: "Pool:position.card.btn.manage.reposition",
+} as const;
+
+export type POSITION_ACTION = ValuesType<typeof POSITION_ACTION>;
 
 const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   position,
@@ -72,6 +82,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const { width } = useWindowSize();
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
+  const { t } = useTranslation();
+
   const GRAPH_WIDTH = useMemo(
     () => Math.min(width - (width > 767 ? 224 : 80), 1216),
     [width],
@@ -676,28 +688,33 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const endClass = useMemo(() => {
     return (!isSwap ? maxTickRate : -minTickRate) > 0 ? "positive" : "negative";
   }, [maxTickRate, isSwap, minTickRate]);
-  const handleSelect = (text: string) => {
-    if (text == "Decrease Liquidity") {
-      setSelectedPosition(position);
-      router.movePageWithPositionId(
-        "POSITION_DECREASE_LIQUIDITY",
-        position.poolPath,
-        position?.id,
-      );
-    } else if (text === "Increase Liquidity") {
-      setSelectedPosition(position);
-      router.movePageWithPositionId(
-        "POSITION_INCREASE_LIQUIDITY",
-        position.poolPath,
-        position?.id,
-      );
-    } else {
-      setSelectedPosition(position);
-      router.movePageWithPositionId(
-        "POSITION_REPOSITION",
-        position.poolPath,
-        position?.id,
-      );
+
+  const handleSelect = (text: POSITION_ACTION) => {
+    switch (text) {
+      case POSITION_ACTION.DECREASE:
+        setSelectedPosition(position);
+        router.movePageWithPositionId(
+          "POSITION_DECREASE_LIQUIDITY",
+          position.poolPath,
+          position?.id,
+        );
+        break;
+      case POSITION_ACTION.INCREASE:
+        setSelectedPosition(position);
+        router.movePageWithPositionId(
+          "POSITION_INCREASE_LIQUIDITY",
+          position.poolPath,
+          position?.id,
+        );
+        break;
+      case POSITION_ACTION.REPOSITION:
+        setSelectedPosition(position);
+        router.movePageWithPositionId(
+          "POSITION_REPOSITION",
+          position.poolPath,
+          position?.id,
+        );
+        break;
     }
   };
 
@@ -750,383 +767,388 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     [position, address],
   );
 
+  const cardHeader = (
+    <div className="box-title">
+      <div className="box-header">
+        <div className="box-left">
+          {breakpoint !== DEVICE_TYPE.MOBILE ? (
+            <>
+              {loading && (
+                <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+                  <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+                </SkeletonEarnDetailWrapper>
+              )}
+              {!loading && (
+                <div className="coin-info">
+                  <OverlapTokenLogo
+                    tokens={[tokenA, tokenB]}
+                    size={36}
+                    mobileSize={24}
+                  />
+                </div>
+              )}
+              {!loading && (
+                <div className="link-page">
+                  <span className="product-id">ID #{position.id}</span>
+                  <div
+                    onClick={() => {
+                      if (isClosed) {
+                        setCopy(getPoolLink(false));
+                        return;
+                      }
+
+                      setCopy(getPoolLink(true));
+                    }}
+                  >
+                    <IconLinkPage className="icon-link" />
+                    {copied && (
+                      <CopyTooltip>
+                        <div className={`box ${themeKey}-shadow`}>
+                          <span>{t("common:urlCopied")}</span>
+                        </div>
+                        <IconPolygon className="polygon-icon" />
+                      </CopyTooltip>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="mobile-container">
+                {loading && (
+                  <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+                    <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+                  </SkeletonEarnDetailWrapper>
+                )}
+                {!loading && (
+                  <div className="coin-info">
+                    <MissingLogo
+                      symbol={tokenA.symbol}
+                      url={tokenA.logoURI}
+                      className="token-logo"
+                      width={36}
+                      mobileWidth={24}
+                    />
+                    <MissingLogo
+                      symbol={tokenB.symbol}
+                      url={tokenB.logoURI}
+                      className="token-logo"
+                      width={36}
+                      mobileWidth={24}
+                    />
+                  </div>
+                )}
+                {!loading && (
+                  <div className="link-page">
+                    <span className="product-id">ID #{position.id}</span>
+                    <div
+                      onClick={() => {
+                        if (isClosed) {
+                          setCopy(getPoolLink(false));
+                          return;
+                        }
+
+                        setCopy(getPoolLink(true));
+                      }}
+                    >
+                      <IconLinkPage className="icon-link" />
+                      {copied && (
+                        <CopyTooltip>
+                          {breakpoint === DEVICE_TYPE.MOBILE && (
+                            <IconPolygon className="polygon-icon rotate-90" />
+                          )}
+                          <div className={`box ${themeKey}-shadow`}>
+                            <span>{t("common:urlCopied")}</span>
+                          </div>
+                          {breakpoint !== DEVICE_TYPE.MOBILE && (
+                            <IconPolygon className="polygon-icon" />
+                          )}
+                        </CopyTooltip>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+          <Badge
+            type={BADGE_TYPE.PRIMARY}
+            leftIcon={<IconStaking />}
+            text={t("business:staked")}
+            className={!position.staked ? "visible-badge" : ""}
+          />
+        </div>
+        <div className="flex-button">
+          {!isClosed && (
+            <Button
+              text={t("Pool:position.card.btn.copyPosition")}
+              className="copy-button"
+              style={{
+                textColor: "text14",
+              }}
+              onClick={() => {
+                const queryParamsArr = [
+                  `tickLower=${position.tickLower}`,
+                  `tickUpper=${position.tickUpper}`,
+                  "price_range_type=Custom",
+                ];
+
+                if (router.asPath.includes("?")) {
+                  const urlWithoutQuery = router.asPath.split("?")[0];
+
+                  router.push(
+                    urlWithoutQuery + `/add?${queryParamsArr.join("&")}`,
+                  );
+                  return;
+                }
+
+                if (router.asPath.includes("#")) {
+                  const urlWithoutHash = router.asPath.split("#")[0];
+
+                  router.push(
+                    urlWithoutHash + `/add?${queryParamsArr.join("&")}`,
+                  );
+                  return;
+                }
+
+                router.push(router.asPath + `/add?${queryParamsArr.join("&")}`);
+              }}
+            />
+          )}
+          {!position.staked && !isHiddenAddPosition && connected && (
+            <SelectBox
+              current={t("Pool:position.card.btn.manage.label")}
+              items={
+                isClosed
+                  ? [POSITION_ACTION.INCREASE]
+                  : [
+                      POSITION_ACTION.REPOSITION,
+                      POSITION_ACTION.INCREASE,
+                      POSITION_ACTION.DECREASE,
+                    ]
+              }
+              select={handleSelect}
+              render={item => <ManageItem>{t(item)}</ManageItem>}
+              className={!inRange && !isClosed ? "out-range" : ""}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  const cardStat = (
+    <div className="info-wrap">
+      <div className="info-box">
+        <span className="symbol-text">{t("business:balance")}</span>
+        {loading && (
+          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+          </SkeletonEarnDetailWrapper>
+        )}
+        {!isClosed && !loading ? (
+          <Tooltip
+            placement="top"
+            isShouldShowed={isDisplay}
+            FloatingContent={
+              <div>
+                <BalanceTooltipContent balances={balances} />
+              </div>
+            }
+          >
+            <span className="content-text">{positionBalanceUSD}</span>
+          </Tooltip>
+        ) : (
+          !loading && (
+            <span className="content-text disabled">{positionBalanceUSD}</span>
+          )
+        )}
+      </div>
+      <div className="info-box">
+        <span className="symbol-text">
+          {t("Pool:position.card.dailyEarn.title")}
+        </span>
+        {!isClosed && isShowRewardInfoTooltip && !loading ? (
+          <Tooltip
+            placement="top"
+            isShouldShowed={isDisplay}
+            FloatingContent={
+              <div>
+                <MyPositionAprContent rewardInfo={aprRewardInfo} />
+              </div>
+            }
+          >
+            <span className="content-text">{totalDailyEarning}</span>
+          </Tooltip>
+        ) : (
+          !loading && (
+            <span className="content-text disabled">{totalDailyEarning}</span>
+          )
+        )}
+        {loading && (
+          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+          </SkeletonEarnDetailWrapper>
+        )}
+      </div>
+      <div className="info-box">
+        <span className="symbol-text">
+          {t("Pool:position.card.claimableReward.title")}
+        </span>
+        {!isClosed && !loading && isShowTotalRewardInfo && isDisplay ? (
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <div>
+                {totalRewardInfo && (
+                  <MyPositionRewardContent rewardInfo={totalRewardInfo} />
+                )}
+              </div>
+            }
+          >
+            <span className="content-text">{totalRewardUSD}</span>
+          </Tooltip>
+        ) : (
+          !loading && (
+            <span className="content-text disabled">{totalRewardUSD}</span>
+          )
+        )}
+        {loading && (
+          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+          </SkeletonEarnDetailWrapper>
+        )}
+      </div>
+    </div>
+  );
+
+  const cardGraph = (
+    <div className="position-wrapper-chart">
+      <div className="position-header">
+        <div>{t("business:currentPrice")}</div>
+        <div className="swap-price">
+          {!loading && (
+            <MissingLogo
+              symbol={!isSwap ? tokenA?.symbol : tokenB?.symbol}
+              url={!isSwap ? tokenA?.logoURI : tokenB?.logoURI}
+              width={20}
+              className="image-logo"
+            />
+          )}
+          {!loading && stringPrice}
+          {!loading && (
+            <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
+              <IconSwap />
+            </div>
+          )}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+              <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+            </SkeletonEarnDetailWrapper>
+          )}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+              <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+            </SkeletonEarnDetailWrapper>
+          )}
+        </div>
+        {!loading && (
+          <div className="range-badge">
+            <RangeBadge
+              status={
+                isClosed
+                  ? RANGE_STATUS_OPTION.NONE
+                  : inRange
+                  ? RANGE_STATUS_OPTION.IN
+                  : RANGE_STATUS_OPTION.OUT
+              }
+            />
+          </div>
+        )}
+      </div>
+      {!loading && (
+        <PoolGraph
+          tokenA={tokenA}
+          tokenB={tokenB}
+          bins={poolBin}
+          currentTick={currentTick}
+          width={GRAPH_WIDTH}
+          height={150}
+          mouseover
+          themeKey={themeKey}
+          position="top"
+          offset={40}
+          poolPrice={price}
+          isPosition
+          minTickPosition={minTickPosition}
+          maxTickPosition={maxTickPosition}
+          binsMyAmount={positionBin}
+          isSwap={isSwap}
+          showBar={!isHideBar}
+        />
+      )}
+      {loading && (
+        <LoadingChart>
+          <LoadingSpinner />
+        </LoadingChart>
+      )}
+      {!loading && (
+        <div className="convert-price">
+          <div>
+            1&nbsp;
+            {(!isSwap ? tokenA : tokenB)?.symbol} =&nbsp;
+            {minPriceStr}&nbsp;
+            {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+            <span className={startClass}>
+              {!isSwap ? minTickLabel : maxTickLabel}
+            </span>
+            )&nbsp;
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <ToolTipContentWrapper>
+                  {t("Pool:position.ratioTooltip")}&nbsp;
+                  {(!isSwap ? tokenA : tokenB)?.symbol}.
+                </ToolTipContentWrapper>
+              }
+            >
+              <IconInfo />
+            </Tooltip>
+            &nbsp;
+          </div>
+          <div>
+            ~&nbsp;
+            {maxPriceStr} &nbsp;
+            {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+            <span className={endClass}>
+              {!isSwap ? maxTickLabel : minTickLabel}
+            </span>
+            )&nbsp;
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <ToolTipContentWrapper>
+                  {t("Pool:position.ratioTooltip")}&nbsp;
+                  {(!isSwap ? tokenB : tokenA)?.symbol}.
+                </ToolTipContentWrapper>
+              }
+            >
+              <IconInfo />
+            </Tooltip>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
       <MyPositionCardWrapper type={isClosed ? "closed" : "none"}>
-        <div className="box-title">
-          <div className="box-header">
-            <div className="box-left">
-              {breakpoint !== DEVICE_TYPE.MOBILE ? (
-                <>
-                  {loading && (
-                    <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-                      <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-                    </SkeletonEarnDetailWrapper>
-                  )}
-                  {!loading && (
-                    <div className="coin-info">
-                      <OverlapTokenLogo
-                        tokens={[tokenA, tokenB]}
-                        size={36}
-                        mobileSize={24}
-                      />
-                    </div>
-                  )}
-                  {!loading && (
-                    <div className="link-page">
-                      <span className="product-id">ID #{position.id}</span>
-                      <div
-                        onClick={() => {
-                          if (isClosed) {
-                            setCopy(getPoolLink(false));
-                            return;
-                          }
-
-                          setCopy(getPoolLink(true));
-                        }}
-                      >
-                        <IconLinkPage className="icon-link" />
-                        {copied && (
-                          <CopyTooltip>
-                            <div className={`box ${themeKey}-shadow`}>
-                              <span>URL Copied!</span>
-                            </div>
-                            <IconPolygon className="polygon-icon" />
-                          </CopyTooltip>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  <div className="mobile-container">
-                    {loading && (
-                      <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-                        <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-                      </SkeletonEarnDetailWrapper>
-                    )}
-                    {!loading && (
-                      <div className="coin-info">
-                        <MissingLogo
-                          symbol={tokenA.symbol}
-                          url={tokenA.logoURI}
-                          className="token-logo"
-                          width={36}
-                          mobileWidth={24}
-                        />
-                        <MissingLogo
-                          symbol={tokenB.symbol}
-                          url={tokenB.logoURI}
-                          className="token-logo"
-                          width={36}
-                          mobileWidth={24}
-                        />
-                      </div>
-                    )}
-                    {!loading && (
-                      <div className="link-page">
-                        <span className="product-id">ID #{position.id}</span>
-                        <div
-                          onClick={() => {
-                            if (isClosed) {
-                              setCopy(getPoolLink(false));
-                              return;
-                            }
-
-                            setCopy(getPoolLink(true));
-                          }}
-                        >
-                          <IconLinkPage className="icon-link" />
-                          {copied && (
-                            <CopyTooltip>
-                              {breakpoint === DEVICE_TYPE.MOBILE && (
-                                <IconPolygon className="polygon-icon rotate-90" />
-                              )}
-                              <div className={`box ${themeKey}-shadow`}>
-                                <span>URL Copied!</span>
-                              </div>
-                              {breakpoint !== DEVICE_TYPE.MOBILE && (
-                                <IconPolygon className="polygon-icon" />
-                              )}
-                            </CopyTooltip>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-              <Badge
-                type={BADGE_TYPE.PRIMARY}
-                leftIcon={<IconStaking />}
-                text={"Staked"}
-                className={!position.staked ? "visible-badge" : ""}
-              />
-            </div>
-            <div className="flex-button">
-              {!isClosed && (
-                <Button
-                  text="Copy Positioning"
-                  className="copy-button"
-                  style={{
-                    textColor: "text14",
-                  }}
-                  onClick={() => {
-                    const queryParamsArr = [
-                      `tickLower=${position.tickLower}`,
-                      `tickUpper=${position.tickUpper}`,
-                      "price_range_type=Custom",
-                    ];
-
-                    if (router.asPath.includes("?")) {
-                      const urlWithoutQuery = router.asPath.split("?")[0];
-
-                      router.push(
-                        urlWithoutQuery + `/add?${queryParamsArr.join("&")}`,
-                      );
-                      return;
-                    }
-
-                    if (router.asPath.includes("#")) {
-                      const urlWithoutHash = router.asPath.split("#")[0];
-
-                      router.push(
-                        urlWithoutHash + `/add?${queryParamsArr.join("&")}`,
-                      );
-                      return;
-                    }
-
-                    router.push(
-                      router.asPath + `/add?${queryParamsArr.join("&")}`,
-                    );
-                  }}
-                />
-              )}
-              {!position.staked && !isHiddenAddPosition && connected && (
-                <SelectBox
-                  current={"Manage"}
-                  items={
-                    isClosed
-                      ? ["Increase Liquidity"]
-                      : [
-                          "Reposition",
-                          "Increase Liquidity",
-                          "Decrease Liquidity",
-                        ]
-                  }
-                  select={handleSelect}
-                  render={period => <ManageItem>{period}</ManageItem>}
-                  className={!inRange && !isClosed ? "out-range" : ""}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="info-wrap">
-          <div className="info-box">
-            <span className="symbol-text">Balance</span>
-            {loading && (
-              <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-                <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-              </SkeletonEarnDetailWrapper>
-            )}
-            {!isClosed && !loading ? (
-              <Tooltip
-                placement="top"
-                isShouldShowed={isDisplay}
-                FloatingContent={
-                  <div>
-                    <BalanceTooltipContent balances={balances} />
-                  </div>
-                }
-              >
-                <span className="content-text">{positionBalanceUSD}</span>
-              </Tooltip>
-            ) : (
-              !loading && (
-                <span className="content-text disabled">
-                  {positionBalanceUSD}
-                </span>
-              )
-            )}
-          </div>
-          <div className="info-box">
-            <span className="symbol-text">Daily Earnings</span>
-            {!isClosed && isShowRewardInfoTooltip && !loading ? (
-              <Tooltip
-                placement="top"
-                isShouldShowed={isDisplay}
-                FloatingContent={
-                  <div>
-                    <MyPositionAprContent rewardInfo={aprRewardInfo} />
-                  </div>
-                }
-              >
-                <span className="content-text">{totalDailyEarning}</span>
-              </Tooltip>
-            ) : (
-              !loading && (
-                <span className="content-text disabled">
-                  {totalDailyEarning}
-                </span>
-              )
-            )}
-            {loading && (
-              <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-                <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-              </SkeletonEarnDetailWrapper>
-            )}
-          </div>
-          <div className="info-box">
-            <span className="symbol-text">Claimable Rewards</span>
-            {!isClosed && !loading && isShowTotalRewardInfo && isDisplay ? (
-              <Tooltip
-                placement="top"
-                FloatingContent={
-                  <div>
-                    {totalRewardInfo && (
-                      <MyPositionRewardContent rewardInfo={totalRewardInfo} />
-                    )}
-                  </div>
-                }
-              >
-                <span className="content-text">{totalRewardUSD}</span>
-              </Tooltip>
-            ) : (
-              !loading && (
-                <span className="content-text disabled">{totalRewardUSD}</span>
-              )
-            )}
-            {loading && (
-              <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-                <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-              </SkeletonEarnDetailWrapper>
-            )}
-          </div>
-        </div>
-        <div className="position-wrapper-chart">
-          <div className="position-header">
-            <div>Current Price</div>
-            <div className="swap-price">
-              {!loading && (
-                <MissingLogo
-                  symbol={!isSwap ? tokenA?.symbol : tokenB?.symbol}
-                  url={!isSwap ? tokenA?.logoURI : tokenB?.logoURI}
-                  width={20}
-                  className="image-logo"
-                />
-              )}
-              {!loading && stringPrice}
-              {!loading && (
-                <div
-                  className="icon-wrapper"
-                  onClick={() => setIsSwap(!isSwap)}
-                >
-                  <IconSwap />
-                </div>
-              )}
-              {loading && (
-                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                  <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-                </SkeletonEarnDetailWrapper>
-              )}
-              {loading && (
-                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                  <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-                </SkeletonEarnDetailWrapper>
-              )}
-            </div>
-            {!loading && (
-              <div className="range-badge">
-                <RangeBadge
-                  status={
-                    isClosed
-                      ? RANGE_STATUS_OPTION.NONE
-                      : inRange
-                      ? RANGE_STATUS_OPTION.IN
-                      : RANGE_STATUS_OPTION.OUT
-                  }
-                />
-              </div>
-            )}
-          </div>
-          {!loading && (
-            <PoolGraph
-              tokenA={tokenA}
-              tokenB={tokenB}
-              bins={poolBin}
-              currentTick={currentTick}
-              width={GRAPH_WIDTH}
-              height={150}
-              mouseover
-              themeKey={themeKey}
-              position="top"
-              offset={40}
-              poolPrice={price}
-              isPosition
-              minTickPosition={minTickPosition}
-              maxTickPosition={maxTickPosition}
-              binsMyAmount={positionBin}
-              isSwap={isSwap}
-              showBar={!isHideBar}
-            />
-          )}
-          {loading && (
-            <LoadingChart>
-              <LoadingSpinner />
-            </LoadingChart>
-          )}
-          {!loading && (
-            <div className="convert-price">
-              <div>
-                1&nbsp;
-                {(!isSwap ? tokenA : tokenB)?.symbol} =&nbsp;
-                {minPriceStr}&nbsp;
-                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-                <span className={startClass}>
-                  {!isSwap ? minTickLabel : maxTickLabel}
-                </span>
-                )&nbsp;
-                <Tooltip
-                  placement="top"
-                  FloatingContent={
-                    <ToolTipContentWrapper>
-                      The price at which the position will be converted entirely
-                      to&nbsp;
-                      {(!isSwap ? tokenA : tokenB)?.symbol}.
-                    </ToolTipContentWrapper>
-                  }
-                >
-                  <IconInfo />
-                </Tooltip>
-                &nbsp;
-              </div>
-              <div>
-                ~&nbsp;
-                {maxPriceStr} &nbsp;
-                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-                <span className={endClass}>
-                  {!isSwap ? maxTickLabel : minTickLabel}
-                </span>
-                )&nbsp;
-                <Tooltip
-                  placement="top"
-                  FloatingContent={
-                    <ToolTipContentWrapper>
-                      The price at which the position will be converted entirely
-                      to&nbsp;
-                      {(!isSwap ? tokenB : tokenA)?.symbol}.
-                    </ToolTipContentWrapper>
-                  }
-                >
-                  <IconInfo />
-                </Tooltip>
-              </div>
-            </div>
-          )}
-        </div>
+        {cardHeader}
+        {cardStat}
+        {cardGraph}
         <PositionHistory
           position={position}
           isClosed={isClosed}

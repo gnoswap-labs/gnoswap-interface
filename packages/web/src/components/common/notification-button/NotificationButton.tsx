@@ -20,7 +20,9 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const { notificationRepository } = useGnoswapContext();
   const { account } = useWallet();
-  const [notificationHash, setNotificationHash] = useAtom(CommonState.notificationHash);
+  const [notificationHash, setNotificationHash] = useAtom(
+    CommonState.notificationHash,
+  );
   const handleESC = () => {
     setToggle(prev => {
       if (prev.notification) {
@@ -32,10 +34,11 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   useEscCloseModal(handleESC);
   usePreventScroll(toggle.notification);
 
-  const { data: txsGroupsInformation, refetch, isFetched } = useQuery<
-    TransactionGroupsType[],
-    Error
-  >({
+  const {
+    data: txsGroupsInformation,
+    refetch,
+    isFetched,
+  } = useQuery<TransactionGroupsType[], Error>({
     queryKey: ["groupedNotification", account?.address],
     queryFn: () =>
       notificationRepository.getGroupedNotification({
@@ -72,10 +75,12 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const showIcon = txs.length > 0 && txs[0] !== notificationHash;
   return (
     <NotificationWrapper>
-      <AlertButton onClick={() => {
-        onListToggle();
-        setNotificationHash(txs?.[0] || "");
-      }}>
+      <AlertButton
+        onClick={() => {
+          onListToggle();
+          setNotificationHash(txs?.[0] || "");
+        }}
+      >
         <IconAlert className="notification-icon" />
         {showIcon && isFetched && txsGroupsInformation?.length !== 0 ? (
           <div className="point-unread" />

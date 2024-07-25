@@ -11,6 +11,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { useTranslation } from "react-i18next";
 
 interface PoolPairInformationProps {
   pool: PoolDetailModel;
@@ -31,6 +32,8 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   loadingBins,
   poolBins,
 }) => {
+  const { t } = useTranslation();
+
   const tokenInfo = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol} (${feeStr || "0"})`;
   }, [feeStr, pool.tokenA.symbol, pool.tokenB.symbol]);
@@ -38,7 +41,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   return (
     <PoolPairInformationWrapper>
       <BreadcrumbsWrapper>
-        <div className="page-name">Earn</div>
+        <div className="page-name">{t("business:pageHeader.earn")}</div>
         {!loading && (
           <div className="location">
             <span onClick={() => onClickPath(menu.path)}>{menu.title}</span>

@@ -8,6 +8,7 @@ import { useAtomValue } from "jotai";
 import { CopyTooltip } from "../my-position-card/MyPositionCard.styles";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { useTranslation } from "react-i18next";
 
 interface MyLiquidityHeaderProps {
   isOtherPosition: boolean;
@@ -45,6 +46,8 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { getAccountUrl } = useGnoscanUrl();
+  const { t } = useTranslation();
+
   const onClickAddressPosition = useCallback(() => {
     if (address) window.open(getAccountUrl(address), "_blank");
   }, [address, getAccountUrl]);
@@ -69,28 +72,24 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
 
   const renderPositionHeader = () => {
     const positionTitle = () => {
-      if (isOtherPosition) {
+      if (isOtherPosition && !isLoadingPositionsById) {
         return (
           <>
             <span className="name" onClick={onClickAddressPosition}>
               {addressName}
             </span>
-            <span>{`’s Positions ${
-              !isLoadingPositionsById ? `(${positionLength})` : ""
-            }`}</span>
+            <span>{`${t("Pool:position.title", {
+              context: "other",
+            })} ${!isLoadingPositionsById ? `(${positionLength})` : ""}`}</span>
           </>
         );
       }
 
-      if (notConnected) {
-        return (
-          <span>{`My Positions ${
-            !isLoadingPositionsById ? `(${positionLength})` : ""
-          }`}</span>
-        );
+      if (notConnected && !isLoadingPositionsById) {
+        return <span>{`${t("Pool:position.title")} (${positionLength})`}</span>;
       }
 
-      return <span>{"My Positions"}</span>;
+      return <span>{t("Pool:position.title")}</span>;
     };
 
     const canCopy = isOtherPosition || notConnected;
@@ -105,7 +104,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
               {copied && (
                 <CopyTooltip>
                   <div className={`box ${themeKey}-shadow`}>
-                    <span>URL Copied!</span>
+                    <span>{t("common:urlCopied")}</span>
                   </div>
                   <IconPolygon className="polygon-icon" />
                 </CopyTooltip>
@@ -119,7 +118,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
               checked={isShowClosePosition}
               onChange={handleSetIsClosePosition}
               hasLabel={true}
-              labelText="Show closed positions"
+              labelText={t("Pool:position.showClosed")}
             />
           </div>
         )}
@@ -137,13 +136,13 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
               checked={isShowClosePosition}
               onChange={handleSetIsClosePosition}
               hasLabel={true}
-              labelText="Show closed positions"
+              labelText={t("Pool:position.showClosed")}
             />
           </div>
         )}
         {isShowRemovePositionButton && !isHiddenAddPosition && (
           <Button
-            text="Remove Position"
+            text={t("Pool:position.btn.removePosition")}
             onClick={handleClickRemovePosition}
             style={{
               hierarchy: ButtonHierarchy.Primary,
@@ -154,7 +153,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
           />
         )}
         <Button
-          text="Add Position"
+          text={t("Pool:position.btn.addPosition")}
           onClick={handleClickAddPosition}
           style={{
             hierarchy: ButtonHierarchy.Primary,

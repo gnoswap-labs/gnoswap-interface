@@ -13,11 +13,11 @@ export interface SortOption {
 }
 
 export const TABLE_HEAD = {
-  TIMESTAMP: "Timestamp",
-  ACTION: "Action",
-  VALUE: "Value",
-  GNS_AMOUNT: "Token Amount",
-  GNOT_AMOUNT: "Token Amount",
+  TIMESTAMP: "Pool:position.card.history.col.time",
+  ACTION: "Pool:position.card.history.col.action",
+  VALUE: "Pool:position.card.history.col.value",
+  TOKEN_A_AMOUNT: "Token Amount",
+  TOKEN_B_AMOUNT: "Token Amount",
 } as const;
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
@@ -39,10 +39,11 @@ const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({
     isFetched,
     isLoading,
   } = useGetPositionHistory(position?.lpTokenId);
+  console.log("🚀 ~ historyList:", historyList);
 
   return (
     <PositionHistoryList
-      list={historyList.filter((item) => (item.amountA || item.amountB))}
+      list={historyList.filter(item => item.amountA || item.amountB)}
       isLoading={isLoading || isLoadingCommon}
       isFetched={isFetched}
       breakpoint={breakpoint}
