@@ -39,6 +39,7 @@ export interface PoolSelectionGraphProps {
   tokenB: TokenModel;
   bins: PoolBinModel[];
   feeTier: SwapFeeTierType;
+  tickSpacing: number;
   mouseover?: boolean;
   zoomLevel: number;
   zoomable?: boolean;
@@ -71,6 +72,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   tokenB,
   bins = [],
   feeTier,
+  tickSpacing,
   width,
   height,
   zoomLevel,
@@ -384,12 +386,14 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       );
 
       function getPriceBy(position: number) {
-        const scaleValue = scaleX.invert(position);
-        if (BigNumber(scaleValue).isNaN()) {
+        const tickWithOffset = scaleX.invert(position);
+        if (BigNumber(tickWithOffset).isNaN()) {
           return 0;
         }
 
-        const tick = Math.round(scaleValue) + graphMinTick;
+        const tick =
+          Math.round((tickWithOffset + graphMinTick) / tickSpacing) *
+          tickSpacing;
         if (tick <= swapFeeTierMaxPriceRange.minTick) {
           return 0;
         }

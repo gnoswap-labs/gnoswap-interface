@@ -400,6 +400,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       tokenB={tokenB}
                       bins={selectPool.bins || []}
                       feeTier={selectPool.feeTier || "NONE"}
+                      tickSpacing={selectPool.tickSpacing || 1}
                       width={GRAPH_WIDTH}
                       height={GRAPH_HEIGHT}
                       position="top"
