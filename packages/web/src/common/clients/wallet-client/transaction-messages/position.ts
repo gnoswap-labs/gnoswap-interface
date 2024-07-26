@@ -1,6 +1,7 @@
 import { makeGNOTSendAmount, makeTransactionMessage } from "./common";
 import {
   DEFAULT_SLIPPAGE,
+  MAX_SLIPPAGE,
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
@@ -152,7 +153,7 @@ export function makePositionDecreaseLiquidityMessage(
   existWrappedToken: boolean,
   caller: string,
 ) {
-  const slippageRatio = 0;
+  const slippageRatio = (100 - MAX_SLIPPAGE)/100;
 
   return makeTransactionMessage({
     send: "",
