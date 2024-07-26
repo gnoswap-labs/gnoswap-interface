@@ -170,14 +170,6 @@ export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
   },
 } as const;
 
-export const FEE_RATE_OPTION = {
-  FEE_01: "0.01",
-  FEE_05: "0.05",
-  FEE_3: "0.3",
-  FEE_1: "1",
-} as const;
-export type FeeRateOption = ValuesType<typeof FEE_RATE_OPTION>;
-
 export const STAKED_OPTION = {
   NONE: "NONE",
   STAKED: "Staked",

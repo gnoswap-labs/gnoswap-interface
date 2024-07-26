@@ -278,10 +278,6 @@ const SelectPriceRangeCustom = forwardRef<
       }
     }
 
-    function adjustRangeManually(adjustFn: () => void) {
-      adjustFn();
-    }
-
     useEffect(() => {
       if (selectPool.selectedFullRange) {
         setPriceRange("Custom");
@@ -598,21 +594,9 @@ const SelectPriceRangeCustom = forwardRef<
                         feeTier={selectPool.feeTier || "NONE"}
                         selectedFullRange={selectPool.selectedFullRange}
                         onSelectCustomRange={onSelectCustomRangeByMin}
-                        changePrice={tick =>
-                          adjustRangeManually(() =>
-                            selectPool.setMinPosition(tick),
-                          )
-                        }
-                        decrease={() =>
-                          adjustRangeManually(() =>
-                            selectPool.decreaseMinTick(),
-                          )
-                        }
-                        increase={() =>
-                          adjustRangeManually(() =>
-                            selectPool.increaseMinTick(),
-                          )
-                        }
+                        changePrice={tick => selectPool.setMinPosition(tick)}
+                        decrease={() => selectPool.decreaseMinTick()}
+                        increase={() => selectPool.increaseMinTick()}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
                         ref={minPriceRangeCustomRef}
                         priceRatio={decimalsRatio}
@@ -626,21 +610,9 @@ const SelectPriceRangeCustom = forwardRef<
                         feeTier={selectPool.feeTier || "NONE"}
                         selectedFullRange={selectPool.selectedFullRange}
                         onSelectCustomRange={onSelectCustomRangeByMax}
-                        changePrice={tick =>
-                          adjustRangeManually(() =>
-                            selectPool.setMaxPosition(tick),
-                          )
-                        }
-                        decrease={() =>
-                          adjustRangeManually(() =>
-                            selectPool.decreaseMaxTick(),
-                          )
-                        }
-                        increase={() =>
-                          adjustRangeManually(() =>
-                            selectPool.increaseMaxTick(),
-                          )
-                        }
+                        changePrice={tick => selectPool.setMaxPosition(tick)}
+                        decrease={() => selectPool.decreaseMaxTick()}
+                        increase={() => selectPool.increaseMaxTick()}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
                         ref={maxPriceRangeCustomRef}
                         priceRatio={decimalsRatio}

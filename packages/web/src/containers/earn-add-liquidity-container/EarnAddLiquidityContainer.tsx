@@ -31,7 +31,6 @@ import {
 } from "@utils/swap-utils";
 import { PoolModel } from "@models/pool/pool-model";
 import { useLoading } from "@hooks/common/use-loading";
-import { isNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { useRouterBack } from "@hooks/common/use-router-back";
 import { formatRate } from "@utils/new-number-utils";
@@ -759,14 +758,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     const nextTickLower =
-      isNumber(selectPool.minPosition || "") ||
-      isFinite(selectPool.minPosition || 0)
-        ? priceToTick(selectPool.minPosition || 0)
+      selectPool.minPosition !== null
+        ? priceToTick(selectPool.minPosition)
         : null;
+
     const nextTickUpper =
-      isNumber(selectPool.maxPosition || "") ||
-      isFinite(selectPool.maxPosition || 0)
-        ? priceToTick(selectPool.maxPosition || 0)
+      selectPool.maxPosition !== null
+        ? priceToTick(selectPool.maxPosition)
         : null;
 
     const computedFeeTier = (() => {
