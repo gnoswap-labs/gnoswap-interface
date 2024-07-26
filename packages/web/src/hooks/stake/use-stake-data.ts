@@ -1,8 +1,8 @@
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useMemo } from "react";
 
 export interface StakeDataProps {
@@ -11,6 +11,7 @@ export interface StakeDataProps {
 
 export const useStakeData = ({ positions }: StakeDataProps) => {
   const { tokenPrices } = useTokenData();
+  const { getGnotPath } = useGnotToGnot();
 
   const pooledTokenInfos = useMemo(() => {
     if (positions.length === 0) {
@@ -69,6 +70,7 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
         amountUSD: formatOtherPrice(tokenAUSD, {
           isKMB: false,
         }),
+        rawAmountUsd: tokenAUSD,
       },
       {
         token: tokenB,
@@ -76,6 +78,7 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
         amountUSD: formatOtherPrice(tokenBUSD, {
           isKMB: false,
         }),
+        rawAmountUsd: tokenBUSD,
       },
     ];
   }, [positions, tokenPrices]);
@@ -133,43 +136,80 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
 
     return [
       {
-        token: tokenA,
-        amount: unclaimedTokenAAmount
-          ? makeDisplayTokenAmount(tokenA, unclaimedTokenAAmount)
-          : "",
+        token: { ...tokenA, ...getGnotPath(tokenA) },
+        amount: unclaimedTokenAAmount,
         amountUSD: formatOtherPrice(tokenAUSD, {
           isKMB: false,
         }),
+        rawAmountUsd: tokenAUSD,
       },
       {
-        token: tokenB,
-        amount: unclaimedTokenBAmount
-          ? makeDisplayTokenAmount(tokenA, unclaimedTokenBAmount)
-          : "",
+        token: { ...tokenB, ...getGnotPath(tokenB) },
+        amount: unclaimedTokenBAmount,
         amountUSD: formatOtherPrice(tokenBUSD, {
           isKMB: false,
         }),
+        rawAmountUsd: tokenBUSD,
       },
     ];
-  }, [positions, tokenPrices]);
+  }, [getGnotPath, positions, tokenPrices]);
 
   const totalLiquidityUSD = useMemo(() => {
     if (positions.length === 0) {
       return "-";
     }
-    const totalUSDValue = positions.reduce((accum: number | null, position) => {
-      if (accum === null && !position.positionUsdValue) return null;
+    const poolUsd = pooledTokenInfos.reduce((acc: null | number, current) => {
+      if (acc === null && current.rawAmountUsd === null) {
+        return null;
+      }
 
-      if (accum === null) return Number(position.positionUsdValue);
+      if (acc === null) {
+        return current.rawAmountUsd;
+      }
 
-      if (!position.positionUsdValue) return accum;
+      if (current.rawAmountUsd === null) {
+        return acc;
+      }
 
-      return accum + Number(position.positionUsdValue);
+      return acc + current.rawAmountUsd;
     }, null);
-    return formatOtherPrice(totalUSDValue, {
+
+    const claimUsd = unclaimedRewards.reduce((acc: null | number, current) => {
+      if (acc === null && current.rawAmountUsd === null) {
+        return null;
+      }
+
+      if (acc === null) {
+        return current.rawAmountUsd;
+      }
+
+      if (current.rawAmountUsd === null) {
+        return acc;
+      }
+
+      return acc + current.rawAmountUsd;
+    }, null);
+
+    const total = (() => {
+      if (poolUsd === null && claimUsd === null) {
+        return null;
+      }
+
+      if (poolUsd === null) {
+        return claimUsd;
+      }
+
+      if (claimUsd === null) {
+        return poolUsd;
+      }
+
+      return poolUsd + claimUsd;
+    })();
+
+    return formatOtherPrice(total, {
       isKMB: false,
     });
-  }, [positions]);
+  }, [pooledTokenInfos, positions.length, unclaimedRewards]);
 
   return {
     pooledTokenInfos,

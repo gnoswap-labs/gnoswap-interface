@@ -1,1 +1,63 @@
-{"amount":"Montant","balance":"Équilibre","currentPrice":"Prix actuel","feeTierDesc":{"100":"Idéal pour les couples très stables","500":"Idéal pour les couples stables","3000":"Idéal pour la plupart des paires","10000":"Le meilleur pour les paires exotiques"},"incentive":"Incitation","liquidity":"Liquidité","pageHeader":{"addPosi":"Ajouter une position","dashboard":"Tableau de bord","earn":"Gagner","incentivzePool":"Incitation à la mise en commun","swap":"Échange","wallet":"Portefeuille"},"positionHistoryAction":{"claim":"Réclamation","create":"Créer","decrease":"Diminution","increase":"Augmentation","remove":"Retirer","reposition":"Repositionnement","stake":"Enjeu","unstake":"Déstockage"},"priceRangeType":{"active":"Actif","custom":"Sur mesure","passive":"Passif"},"protocolFee":{"desc":"Le montant des frais prélevés sur chaque transaction qui passe par le protocole.","txt":"Frais de protocole"},"rangeStatus":{"inRange":"En cours de validité","inRange_short":"En","outRange":"Hors plage","outRange_short":"Sortie"},"rewardType":{"external":"Récompenses externes","internal":"Récompenses internes","swapFee":"Frais de swap"},"selectAToken":"Sélectionner un jeton","staked":"Piquetage","stakingIncentiveType":{"external":"Externe","internal":"Interne"},"swap":"Échange","switchGnoland":"Passer à Gnoland","token":"Jeton","walletLogin":"Connexion au portefeuille"}
+{
+  "amount": "Montant",
+  "balance": "Équilibre",
+  "currentPrice": "Prix actuel",
+  "feeTierDesc": {
+    "100": "Idéal pour les couples très stables",
+    "500": "Idéal pour les couples stables",
+    "3000": "Idéal pour la plupart des paires",
+    "10000": "Le meilleur pour les paires exotiques"
+  },
+  "incentive": "Incitation",
+  "liquidity": "Liquidité",
+  "noPosition": "Pas de position",
+  "pageHeader": {
+    "addPosi": "Ajouter une position",
+    "dashboard": "Tableau de bord",
+    "earn": "Gagner",
+    "incentivzePool": "Incitation à la mise en commun",
+    "removePosi": "Retirer la position",
+    "swap": "Échange",
+    "wallet": "Portefeuille"
+  },
+  "positionHistoryAction": {
+    "claim": "Réclamation",
+    "create": "Créer",
+    "decrease": "Diminution",
+    "increase": "Augmentation",
+    "remove": "Retirer",
+    "reposition": "Repositionnement",
+    "stake": "Enjeu",
+    "unstake": "Déstockage"
+  },
+  "priceRangeType": {
+    "active": "Actif",
+    "custom": "Sur mesure",
+    "passive": "Passif"
+  },
+  "protocolFee": {
+    "desc": "Le montant des frais prélevés sur chaque transaction qui passe par le protocole.",
+    "txt": "Frais de protocole"
+  },
+  "rangeStatus": {
+    "inRange": "En cours de validité",
+    "inRange_short": "En",
+    "outRange": "Hors plage",
+    "outRange_short": "Sortie"
+  },
+  "rewardType": {
+    "external": "Récompenses externes",
+    "internal": "Récompenses internes",
+    "swapFee": "Frais de swap"
+  },
+  "selectAToken": "Sélectionner un jeton",
+  "staked": "Piquetage",
+  "stakingIncentiveType": {
+    "external": "Externe",
+    "internal": "Interne"
+  },
+  "swap": "Échange",
+  "switchGnoland": "Passer à Gnoland",
+  "token": "Jeton",
+  "walletLogin": "Connexion au portefeuille"
+}

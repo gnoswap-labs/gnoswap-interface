@@ -8,12 +8,7 @@ import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
 import { useColorGraph } from "@hooks/common/use-color-graph";
-import {
-  priceToNearTick,
-  priceToTick,
-  tickToPrice,
-  tickToPriceStr,
-} from "@utils/swap-utils";
+import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import { convertToKMB } from "@utils/stake-position-utils";
@@ -24,6 +19,10 @@ import {
 import { useTheme } from "@emotion/react";
 import BigNumber from "bignumber.js";
 import { displayTickNumber } from "@utils/string-utils";
+import {
+  SwapFeeTierMaxPriceRangeMap,
+  SwapFeeTierType,
+} from "@constants/option.constant";
 
 interface ResolveBinModel {
   index: number;
@@ -39,6 +38,7 @@ export interface PoolSelectionGraphProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   bins: PoolBinModel[];
+  feeTier: SwapFeeTierType;
   mouseover?: boolean;
   zoomLevel: number;
   zoomable?: boolean;
@@ -70,6 +70,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   tokenA,
   tokenB,
   bins = [],
+  feeTier,
   width,
   height,
   zoomLevel,
@@ -116,6 +117,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom - labelHeight;
+
+  const swapFeeTierMaxPriceRange = useMemo(() => {
+    return SwapFeeTierMaxPriceRangeMap[feeTier];
+  }, [feeTier]);
 
   const currentPrice = useMemo(() => {
     return price;
@@ -176,6 +181,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     () => Math.max(...displayBins.map(bin => bin.maxTick)),
     [displayBins],
   );
+
   const maxLiquidity = Math.max(...adjustBins.map(bin => bin.height));
 
   // D3 - Scale Definition
@@ -225,8 +231,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (Number.isNaN(currentPrice)) {
       return 0;
     }
-    return priceToNearTick(currentPrice, tickSpacing);
-  }, [currentPrice, tickSpacing]);
+    return priceToTick(currentPrice);
+  }, [currentPrice]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
@@ -244,11 +250,20 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   }, [width, height, positionX, positionY, position]);
   const random = Math.random().toString();
 
+  const minBrushX =
+    scaleX(swapFeeTierMaxPriceRange.minTick - defaultMinX) >= -20
+      ? scaleX(swapFeeTierMaxPriceRange.minTick - defaultMinX)
+      : 0;
+  const maxBrushX =
+    scaleX(swapFeeTierMaxPriceRange.maxTick - defaultMinX) <= boundsWidth
+      ? scaleX(swapFeeTierMaxPriceRange.maxTick - defaultMinX)
+      : boundsWidth;
+
   const brush = d3
     .brushX()
     .extent([
-      [0, 0],
-      [boundsWidth, boundsHeight],
+      [minBrushX, 0],
+      [maxBrushX, boundsHeight],
     ])
     .on("start brush", onBrushMove)
     .on("end", onBrushEnd);
@@ -265,12 +280,24 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const startPosition = selection[0] as number;
     const endPosition = selection[1] as number;
 
-    const currentPricePosition = scaleX(currentTick - defaultMinX);
-    const selectionColor = getSelectionColor(
-      startPosition >= currentPricePosition ? "1" : "-1",
-      endPosition >= currentPricePosition ? "1" : "-1",
+    const startPrice = tickToPrice(
+      Math.round(scaleX.invert(startPosition) + defaultMinX),
     );
-    setSelectionColor(selectionColor);
+    const endPrice = tickToPrice(
+      Math.round(scaleX.invert(endPosition) + defaultMinX),
+    );
+
+    const startRate = currentPrice
+      ? ((Number(startPrice) - currentPrice) / currentPrice) * 100
+      : 0;
+    const endRate = currentPrice
+      ? ((Number(endPrice) - currentPrice) / currentPrice) * 100
+      : 0;
+
+    const selectionColor = getSelectionColor(
+      startRate >= 0 ? "1" : "-1",
+      endRate >= 0 ? "1" : "-1",
+    );
 
     const brushElement = d3.select(brushRef.current);
     if (event.type === "start") {
@@ -302,22 +329,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       .selectAll(".resize")
       .attr("x", data => (data === "w" ? startPosition : endPosition));
 
-    const startPrice = tickToPrice(
-      Math.round(scaleX.invert(startPosition) + defaultMinX),
-    );
-    const endPrice = tickToPrice(
-      Math.round(scaleX.invert(endPosition) + defaultMinX),
-    );
-
-    const startRate = currentPrice
-      ? ((Number(startPrice) - currentPrice) / currentPrice) * 100
-      : 0;
-    const endRate = currentPrice
-      ? ((Number(endPrice) - currentPrice) / currentPrice) * 100
-      : 0;
-
     const isRightStartLine = startPosition - 75 < 0;
     const isRightEndLine = endPosition + 75 < boundsWidth;
+
+    setSelectionColor(selectionColor);
     changeLine(
       brushElement,
       "start",
@@ -363,18 +378,34 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       const endPosition = selection[1] as number;
 
       const currentPricePosition = scaleX(currentTick - defaultMinX);
-
       const selectionColor = getSelectionColor(
         startPosition >= currentPricePosition ? "1" : "-1",
         endPosition >= currentPricePosition ? "1" : "-1",
       );
+
+      function getPriceBy(position: number) {
+        const scaleValue = scaleX.invert(position);
+        if (BigNumber(scaleValue).isNaN()) {
+          return 0;
+        }
+
+        const tick = Math.round(scaleValue) + defaultMinX;
+        if (tick <= swapFeeTierMaxPriceRange.minTick) {
+          return 0;
+        }
+
+        console.log("tick", tick, currentTick);
+        if (tick >= swapFeeTierMaxPriceRange.maxTick) {
+          return swapFeeTierMaxPriceRange.maxPrice;
+        }
+
+        return tickToPrice(tick);
+      }
+
+      const minPrice = getPriceBy(startPosition);
+      const maxPrice = getPriceBy(endPosition);
+
       setSelectionColor(selectionColor);
-      const minPrice = !BigNumber(scaleX.invert(startPosition)).isNaN()
-        ? tickToPrice(Math.round(scaleX.invert(startPosition)) + defaultMinX)
-        : 0;
-      const maxPrice = !BigNumber(scaleX.invert(endPosition)).isNaN()
-        ? tickToPrice(Math.round(scaleX.invert(endPosition)) + defaultMinX)
-        : 0;
       setMinPrice(minPrice);
       setMaxPrice(maxPrice);
     }

@@ -122,7 +122,13 @@ export const useWallet = () => {
       window.open("https://adena.app/");
     }
     setWalletClient(adena);
-  }, [sessionId, setWalletClient, setLoadingConnect]);
+  }, [
+    sessionId,
+    setWalletClient,
+    setLoadingConnect,
+    loadingConnect,
+    sessionId,
+  ]);
 
   const connectAccount = async () => {
     try {

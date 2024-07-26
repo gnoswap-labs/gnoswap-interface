@@ -13,6 +13,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetPoolList } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTranslation } from "react-i18next";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 
 const tokenBalances: TokenBalanceInfo[] = [];
 const periods = [90, 180, 365];
@@ -25,7 +26,7 @@ const PoolIncentivizeContainer: React.FC = () => {
   const [, setDataModal] = useAtom(EarnState.dataModal);
   const [currentPool, setCurrentPool] = useAtom(EarnState.pool);
 
-  const { connected, connectAdenaClient, isSwitchNetwork } = useWallet();
+  const { connected, isSwitchNetwork } = useWallet();
 
   const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(
     null,
@@ -36,6 +37,8 @@ const PoolIncentivizeContainer: React.FC = () => {
   const { updateTokenPrices } = useTokenData();
   const { data: pools = [] } = useGetPoolList({ enabled: false });
   const { getGnotPath } = useGnotToGnot();
+
+  const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
   useEffect(() => {
     setDataModal(tokenAmountInput);
@@ -89,11 +92,11 @@ const PoolIncentivizeContainer: React.FC = () => {
 
   const handleConfirmIncentivize = useCallback(() => {
     if (!connected) {
-      connectAdenaClient();
+      openConnectWalletModal();
     } else {
       openModal();
     }
-  }, [connected, connectAdenaClient, openModal]);
+  }, [connected, openConnectWalletModal, openModal]);
 
   const disableButton = useMemo(() => {
     if (!connected) {

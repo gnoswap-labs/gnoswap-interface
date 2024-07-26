@@ -304,11 +304,15 @@ export const useSelectPool = ({
       }
 
       const price = (() => {
-        if (!poolResFromDb?.price || poolResFromDb?.price === 0) return 0;
+        if (poolResFromDb?.price === undefined || poolResFromDb?.price === null)
+          return 0;
 
-        if (!isReverse) return poolResFromDb.price;
+        const price =
+          poolResFromDb.price || tickToPrice(poolResFromDb.currentTick);
 
-        return 1 / poolResFromDb.price;
+        if (!isReverse) return price;
+
+        return 1 / price;
       })();
 
       const ticks = (() => {
@@ -374,6 +378,10 @@ export const useSelectPool = ({
     return latestPoolPath;
   }, [latestPoolPath]);
 
+  const swapFeeTierMaxPriceRangeMap = useMemo(() => {
+    return SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
+  }, [feeTier]);
+
   const renderState = useCallback(
     (isIgnoreDefaultLoading = false) => {
       if (!tokenA || !tokenB || !feeTier) {
@@ -422,15 +430,18 @@ export const useSelectPool = ({
   }, [poolInfo]);
 
   const minPrice = useMemo(() => {
+    if (fullRange) {
+      return swapFeeTierMaxPriceRangeMap.minPrice;
+    }
     return minPosition;
-  }, [minPosition]);
+  }, [fullRange, minPosition, swapFeeTierMaxPriceRangeMap.minPrice]);
 
   const maxPrice = useMemo(() => {
     if (fullRange) {
-      return tickToPrice(MAX_TICK);
+      return swapFeeTierMaxPriceRangeMap.maxPrice;
     }
     return maxPosition;
-  }, [fullRange, maxPosition]);
+  }, [fullRange, maxPosition, swapFeeTierMaxPriceRangeMap.maxPrice]);
 
   const depositRatio = useMemo(() => {
     if (
@@ -458,8 +469,12 @@ export const useSelectPool = ({
       return 100;
     }
 
-    const currentMinPrice = fullRange ? MIN_PRICE : minPrice;
-    const currentMaxPrice = fullRange ? MAX_PRICE : maxPrice;
+    const currentMinPrice = fullRange
+      ? swapFeeTierMaxPriceRangeMap.minPrice
+      : minPrice;
+    const currentMaxPrice = fullRange
+      ? swapFeeTierMaxPriceRangeMap.maxPrice
+      : maxPrice;
 
     const adjustAmountA = 1_000_000_000n;
 
@@ -484,6 +499,7 @@ export const useSelectPool = ({
     tokenB,
     minPrice,
     maxPrice,
+    swapFeeTierMaxPriceRangeMap,
     isCreate,
     startPrice,
     price,
@@ -495,8 +511,7 @@ export const useSelectPool = ({
       return null;
     }
     if (minPrice <= 0) {
-      const minPriceLimit =
-        SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"].minPrice;
+      const minPriceLimit = swapFeeTierMaxPriceRangeMap.minPrice;
       return feeBoostRateByPrices(minPriceLimit, maxPrice);
     }
     return feeBoostRateByPrices(minPrice, maxPrice);
@@ -521,18 +536,21 @@ export const useSelectPool = ({
     );
   }
 
-  const changeMinPosition = useCallback((num: number | null) => {
-    if (num === null) {
-      setMinPosition(null);
-      return;
-    }
-    if (num === 0) {
-      const { minPrice } = SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
-      setMinPosition(minPrice);
-      return;
-    }
-    setMinPosition(num);
-  }, []);
+  const changeMinPosition = useCallback(
+    (num: number | null) => {
+      if (num === null) {
+        setMinPosition(null);
+        return;
+      }
+      if (num === 0) {
+        const { minPrice } = swapFeeTierMaxPriceRangeMap;
+        setMinPosition(minPrice);
+        return;
+      }
+      setMinPosition(num);
+    },
+    [swapFeeTierMaxPriceRangeMap],
+  );
 
   const changeMaxPosition = useCallback((num: number | null) => {
     if (num === null) {
@@ -622,12 +640,12 @@ export const useSelectPool = ({
   }, [zoomLevel]);
 
   const selectFullRange = useCallback(() => {
-    const maxPriceRange = SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
+    const maxPriceRange = swapFeeTierMaxPriceRangeMap;
     setZoomLevel(0);
     setMinPosition(maxPriceRange.minPrice);
     setMaxPosition(maxPriceRange.maxPrice);
     setFullRange(true);
-  }, [feeTier]);
+  }, [swapFeeTierMaxPriceRangeMap]);
 
   useEffect(() => {
     if (interactionType === "TICK_UPDATE") {

@@ -238,9 +238,9 @@ const TokenListContainer: React.FC = () => {
           (_item: TokenModel) => _item.path === splitMostLiquidity[1],
         );
 
-        const dataToday = checkPositivePrice(
+        const data1day = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.priceToday,
+          transferData.pricesBefore?.price1d,
         );
 
         const data7day = checkPositivePrice(
@@ -322,15 +322,15 @@ const TokenListContainer: React.FC = () => {
             ? formatPrice(transferData.usd, { isKMB: false })
             : "--",
           priceOf1d: {
-            status: dataToday.status,
+            status: data1day.status,
             value:
-              dataToday.percentDisplay !== "-"
-                ? dataToday.percentDisplay.replace(/[+-]/g, "")
-                : dataToday.percentDisplay,
+              data1day.percentDisplay !== "-"
+                ? data1day.percentDisplay.replace(/[+-]/g, "")
+                : data1day.percentDisplay,
             realValue:
-              dataToday.percentDisplay === "-"
+              data1day.percentDisplay === "-"
                 ? -100000000000
-                : Number(dataToday.percentDisplay.replace(/[%]/g, "")),
+                : Number(data1day.percentDisplay.replace(/[%]/g, "")),
           },
           priceOf7d: {
             status: data7day.status,

@@ -1,5 +1,7 @@
 import { makeGNOTSendAmount, makeTransactionMessage } from "./common";
 import {
+  DEFAULT_SLIPPAGE,
+  MAX_SLIPPAGE,
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
@@ -117,12 +119,13 @@ export function makePositionRepositionLiquidityMessage(
   lpTokenId: string,
   minTick: number,
   maxTick: number,
-  tokenAAmount: string,
-  tokenBAmount: string,
+  amount0Desired: string,
+  amount1Desired: string,
   caller: string,
   sendAmount: string | null,
 ) {
   const send = makeGNOTSendAmount(sendAmount);
+  const slippageRatio = (100 - DEFAULT_SLIPPAGE) / 100;
 
   return makeTransactionMessage({
     send,
@@ -132,8 +135,10 @@ export function makePositionRepositionLiquidityMessage(
       lpTokenId, // LP Token ID
       `${minTick}`, // position's minimal tick
       `${maxTick}`, // position's maximal tick
-      `${tokenAAmount}`, // Maximum amount of tokenB to offer
-      `${tokenBAmount}`, // Maximum amount of tokenA to offer
+      `${amount0Desired}`, // Maximum amount of tokenA to offer
+      `${amount1Desired}`, // Maximum amount of tokenB to offer
+      BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenA to provide
+      BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenB to provide
     ],
     caller,
   });
@@ -148,7 +153,7 @@ export function makePositionDecreaseLiquidityMessage(
   existWrappedToken: boolean,
   caller: string,
 ) {
-  const slippageRatio = 0;
+  const slippageRatio = (100 - MAX_SLIPPAGE)/100;
 
   return makeTransactionMessage({
     send: "",

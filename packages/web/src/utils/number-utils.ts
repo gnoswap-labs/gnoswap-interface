@@ -132,6 +132,8 @@ export const toKMBFormat = (
   const prefix = usd ? "$" : "";
   const negativeSign = BigNumber(value).isLessThan(0) ? "-" : "";
 
+  if (bigNumber.isGreaterThan(999.99 * 1e9)) return "999.99B";
+
   if (bigNumber.isGreaterThanOrEqualTo(1e9)) {
     return (
       negativeSign +

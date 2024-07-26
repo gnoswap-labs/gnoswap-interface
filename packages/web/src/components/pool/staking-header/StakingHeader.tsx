@@ -10,9 +10,9 @@ interface StakingHeaderProps {
   isDisabledButton: boolean;
   handleClickStakeRedirect: () => void;
   handleClickUnStakeRedirect: () => void;
-  isUnstake: boolean;
+  canUnstake: boolean;
   isOtherPosition: boolean;
-  isStaked: boolean;
+  canStake: boolean;
 }
 
 const STAKING_INSTRUCTION_URL =
@@ -22,9 +22,9 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({
   isDisabledButton,
   handleClickStakeRedirect,
   handleClickUnStakeRedirect,
-  isUnstake,
+  canUnstake,
   isOtherPosition,
-  isStaked,
+  canStake,
 }) => {
   const { t } = useTranslation();
 
@@ -41,10 +41,10 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({
         </div>
       </div>
       <div className="button-wrap">
-        {isUnstake && !isOtherPosition && (
+        {canUnstake && !isOtherPosition && (
           <Button
-            disabled={isDisabledButton || !isUnstake}
             text={t("Pool:staking.btn.unstake")}
+            disabled={isDisabledButton || !canUnstake}
             onClick={handleClickUnStakeRedirect}
             style={{
               hierarchy: ButtonHierarchy.Primary,
@@ -55,7 +55,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({
             }}
           />
         )}
-        {isStaked && (
+        {canStake && (
           <Button
             text={t("Pool:staking.btn.stake")}
             onClick={handleClickStakeRedirect}

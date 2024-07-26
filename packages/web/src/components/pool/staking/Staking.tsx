@@ -42,9 +42,9 @@ const Staking: React.FC<StakingProps> = ({
           isDisabledButton={isDisabledButton}
           handleClickStakeRedirect={handleClickStakeRedirect}
           handleClickUnStakeRedirect={handleClickUnStakeRedirect}
-          isUnstake={stakedPosition.length > 0}
+          canUnstake={stakedPosition.length > 0}
           isOtherPosition={isOtherPosition}
-          isStaked={(pool?.rewardTokens?.length || 0) > 0}
+          canStake={(pool?.rewardTokens?.length || 0) > 0}
         />
         <StakingContent
           pool={pool}

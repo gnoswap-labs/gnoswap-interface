@@ -21,6 +21,7 @@ import { SelectPool } from "@hooks/pool/use-select-pool";
 import {
   DefaultTick,
   PriceRangeType,
+  SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierPriceRange,
 } from "@constants/option.constant";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
@@ -246,10 +247,12 @@ const SelectPriceRangeCustom = forwardRef<
         ? selectPool.startPrice
         : selectPool.currentPrice;
       const { tickLower, tickUpper } = defaultTicks ?? {};
+      const { minPrice, maxPrice } =
+        SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
 
       if (inputPriceRangeType === "Custom" && tickLower && tickUpper) {
-        selectPool.setMinPosition(tickLower);
-        selectPool.setMaxPosition(tickUpper);
+        selectPool.setMinPosition(tickLower < minPrice ? minPrice : tickLower);
+        selectPool.setMaxPosition(tickUpper > maxPrice ? maxPrice : tickUpper);
         return;
       }
 
@@ -258,8 +261,14 @@ const SelectPriceRangeCustom = forwardRef<
           SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
         const minRateAmount = currentPrice * (priceRange.min / 100);
         const maxRateAmount = currentPrice * (priceRange.max / 100);
-        selectPool.setMinPosition(currentPrice + minRateAmount);
-        selectPool.setMaxPosition(currentPrice + maxRateAmount);
+        const priceLower = currentPrice + minRateAmount;
+        const priceUpper = currentPrice + maxRateAmount;
+        selectPool.setMinPosition(
+          priceLower < minPrice ? minPrice : priceLower,
+        );
+        selectPool.setMaxPosition(
+          priceUpper > maxPrice ? maxPrice : priceUpper,
+        );
         return;
       }
     }
@@ -562,6 +571,7 @@ const SelectPriceRangeCustom = forwardRef<
                         tokenA={tokenA}
                         tokenB={tokenB}
                         bins={selectPool.bins || []}
+                        feeTier={selectPool.feeTier || "NONE"}
                         width={GRAPH_WIDTH}
                         height={GRAPH_HEIGHT}
                         position="top"
