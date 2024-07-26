@@ -41,7 +41,7 @@ export default function EarnAdd() {
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const listBreadcrumb = [
     { title: t("business:pageHeader.earn"), path: "/earn" },
-    { title: t("business:pageHeader.addPosition"), path: "" },
+    { title: t("business:pageHeader.addPosi"), path: "" },
   ];
   const { tokens } = useTokenData();
   const { getGnotPath } = useGnotToGnot();

@@ -159,8 +159,15 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     if (!priceRange) {
       return null;
     }
-    return `${priceRange.type}`;
-  }, [priceRange]);
+    switch (priceRange.type) {
+      case "Active":
+        return t("business:priceRangeType.active");
+      case "Passive":
+        return t("business:priceRangeType.passive");
+      case "Custom":
+        return t("business:priceRangeType.custom");
+    }
+  }, [priceRange, t]);
 
   const visiblePriceRangeLabel = useMemo(() => {
     return selectedFeeRate && existTokenPair && selectPool.isCreate === false;
@@ -290,7 +297,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
   return (
     <EarnAddLiquidityWrapper>
-      <h3>Add Position</h3>
+      <h3>{t("AddPosition:card.title")}</h3>
       <div className="select-content">
         <article className="selector-wrapper">
           <div
@@ -298,7 +305,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               !isEarnAdd ? "disable-text" : ""
             }`}
           >
-            <h5>1. Select Pair</h5>
+            <h5>{t("AddPosition:form.pairSection.label")}</h5>
             {!isEarnAdd && existTokenPair && (
               <OverlapTokenLogo tokens={tokenPair} size={32} />
             )}
@@ -322,7 +329,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             onClick={toggleFeeTier}
           >
             <div className="header-wrapper-title">
-              <h5>2. Select Fee Tier</h5>
+              <h5>{t("AddPosition:form.feeTier.label")}</h5>
               {existTokenPair &&
                 isEarnAdd &&
                 (!openedFeeTier ? <IconArrowDown /> : <IconArrowUp />)}
@@ -359,7 +366,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             onClick={togglePriceRange}
           >
             <div className="header-wrapper-title">
-              <h5>3. Select Price Range</h5>
+              <h5>{t("AddPosition:form.priceRange.label")}</h5>
               {existTokenPair &&
                 (!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />)}
             </div>
@@ -397,19 +404,16 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           {!isLoading && isShowOutRange && (
             <OutOfRangeWrapper>
               <div>
-                <IconFailed /> Your position will not earn any fees
+                <IconFailed /> {t("AddPosition:outR.title")}
               </div>
-              <p>
-                If you add a position with the current range, you will not earn
-                any fees until the token price moves into your range.
-              </p>
+              <p>{t("AddPosition:outR.desc")}</p>
             </OutOfRangeWrapper>
           )}
         </article>
 
         <article className="selector-wrapper amount-input-wrapper">
           <div className="header-wrapper default-cursor">
-            <h5>4. Enter Amounts</h5>
+            <h5>{t("AddPosition:form.amount.label")}</h5>
             <button className="setting-button" onClick={openSetting}>
               <IconSettings className="setting-icon" />
             </button>
@@ -456,7 +460,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         selectedFeeRate &&
         showOneClickStaking && (
           <div className="btn-one-click" onClick={submitOneClickStaking}>
-            <IconStaking /> One-Click Staking
+            <IconStaking /> {t("AddPosition:oneClick")}
           </div>
         )}
     </EarnAddLiquidityWrapper>

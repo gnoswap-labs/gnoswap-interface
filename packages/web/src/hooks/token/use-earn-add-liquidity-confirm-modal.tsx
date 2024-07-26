@@ -36,6 +36,7 @@ import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { subscriptFormat } from "@utils/number-utils";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { ERROR_VALUE } from "@common/errors/adena";
+import { useTranslation } from "react-i18next";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -93,6 +94,8 @@ export const useEarnAddLiquidityConfirmModal = ({
   createPool,
   addLiquidity,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
+  const { t } = useTranslation();
+
   const {
     broadcastLoading,
     broadcastRejected,
@@ -293,7 +296,7 @@ export const useEarnAddLiquidityConfirmModal = ({
         }
 
         if (totalGnsAmount > gnsBalance) {
-          return "Insufficient balance";
+          return t("AddPosition:confirmAddModal.info.feeError.InsufBal");
         }
       })(),
     };
@@ -304,6 +307,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     tokenAAmount,
     tokenB,
     tokenBAmount,
+    t,
   ]);
 
   const close = useCallback(() => {

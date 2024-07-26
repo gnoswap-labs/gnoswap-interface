@@ -1,7 +1,11 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import IconInfo from "../icons/IconInfo";
 import Tooltip from "../tooltip/Tooltip";
-import { SelectPriceRangeSummaryWrapper, ToolTipContentWrapper } from "./SelectPriceRangeSummary.styles";
+import {
+  SelectPriceRangeSummaryWrapper,
+  ToolTipContentWrapper,
+} from "./SelectPriceRangeSummary.styles";
 
 export interface SelectPriceRangeSummaryProps {
   depositRatio: string;
@@ -9,21 +13,28 @@ export interface SelectPriceRangeSummaryProps {
   estimatedApr: string;
 }
 
-const ModalContent = <ToolTipContentWrapper>
-  The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.
-</ToolTipContentWrapper>;
-
 const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
   depositRatio,
   feeBoost,
   estimatedApr,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <SelectPriceRangeSummaryWrapper>
       <div className="row">
         <div className="title-wrapper">
-          <span className="title">Deposit Ratio</span>
-          <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The deposit ratio of the two tokens is determined based on the current price and the set price range.</ToolTipContentWrapper>}>
+          <span className="title">
+            {t("AddPosition:overralInfo.label.depositR")}
+          </span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <ToolTipContentWrapper>
+                {t("AddPosition:overralInfo.tooltip.depositR")}
+              </ToolTipContentWrapper>
+            }
+          >
             <IconInfo />
           </Tooltip>
         </div>
@@ -32,8 +43,17 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
 
       <div className="row">
         <div className="title-wrapper">
-          <span className="title">Capital Efficiency</span>
-          <Tooltip placement="top" FloatingContent={ModalContent}>
+          <span className="title">
+            {t("AddPosition:overralInfo.label.capitalEffi")}
+          </span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <ToolTipContentWrapper>
+                {t("AddPosition:overralInfo.tooltip.capitalEffi")}
+              </ToolTipContentWrapper>
+            }
+          >
             <IconInfo />
           </Tooltip>
         </div>
@@ -42,8 +62,17 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
 
       <div className="row">
         <div className="title-wrapper">
-          <span className="title">Fee APR</span>
-          <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The estimated APR from swap fees is calculated based on the selected price range of the position.</ToolTipContentWrapper>}>
+          <span className="title">
+            {t("AddPosition:overralInfo.label.feeApr")}
+          </span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <ToolTipContentWrapper>
+                {t("AddPosition:overralInfo.tooltip.feeApr")}
+              </ToolTipContentWrapper>
+            }
+          >
             <IconInfo />
           </Tooltip>
         </div>

@@ -138,28 +138,28 @@ export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
     fee: 100,
     tickSpacing: 1,
     rateStr: "0.01%",
-    description: "Best for very stable pairs",
+    description: "business:feeTierDesc.100",
   },
   FEE_500: {
     type: "FEE_500",
     fee: 500,
     tickSpacing: 10,
     rateStr: "0.05%",
-    description: "Best for stable pairs",
+    description: "business:feeTierDesc.500",
   },
   FEE_3000: {
     type: "FEE_3000",
     fee: 3000,
     tickSpacing: 60,
     rateStr: "0.3%",
-    description: "Best for most pairs",
+    description: "business:feeTierDesc.3000",
   },
   FEE_10000: {
     type: "FEE_10000",
     fee: 10000,
     tickSpacing: 200,
     rateStr: "1%",
-    description: "Best for exotic pairs",
+    description: "business:feeTierDesc.10000",
   },
   NONE: {
     type: "NONE",
@@ -249,23 +249,23 @@ export const PriceRangeTooltip: {
   [key in SwapFeeTierType]: { [key in PriceRangeType]: string | undefined };
 } = {
   FEE_10000: {
-    Active: "An aggressive price range for higher risks & returns.",
-    Passive: "A passive price range for moderate risks & returns.",
+    Active: "AddPosition:form.priceRange.item.tooltip.active.10000",
+    Passive: "AddPosition:form.priceRange.item.tooltip.passive.10000",
     Custom: undefined,
   },
   FEE_3000: {
-    Active: "An aggressive price range for higher risks & returns.",
-    Passive: "A passive price range for moderate risks & returns.",
+    Active: "AddPosition:form.priceRange.item.tooltip.active.3000",
+    Passive: "AddPosition:form.priceRange.item.tooltip.passive.3000",
     Custom: undefined,
   },
   FEE_500: {
-    Active: "An aggressive price range for higher risks & returns.",
-    Passive: "A passive price range for moderate risks & returns.",
+    Active: "AddPosition:form.priceRange.item.tooltip.active.500",
+    Passive: "AddPosition:form.priceRange.item.tooltip.passive.500",
     Custom: undefined,
   },
   FEE_100: {
-    Active: "An aggressive price range for higher risks & returns.",
-    Passive: "A passive price range for moderate risks & returns.",
+    Active: "AddPosition:form.priceRange.item.tooltip.active.100",
+    Passive: "AddPosition:form.priceRange.item.tooltip.passive.100",
     Custom: undefined,
   },
   NONE: {
