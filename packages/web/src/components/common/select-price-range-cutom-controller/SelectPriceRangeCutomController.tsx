@@ -120,7 +120,7 @@ const SelectPriceRangeCustomController = forwardRef<
           .shiftedBy(priceRatio || 0)
           .toNumber();
 
-        if (selectedFullRange && currentValue <= minPriceWithRatio) {
+        if (currentValue <= minPriceWithRatio) {
           setDisplayValue("0");
           return;
         }

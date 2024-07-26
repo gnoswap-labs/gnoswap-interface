@@ -6,11 +6,7 @@ import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PoolModel } from "@models/pool/pool-model";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-  formatRate,
-} from "@utils/new-number-utils";
+import { formatRate } from "@utils/new-number-utils";
 import { useStakeData } from "@hooks/stake/use-stake-data";
 
 interface SelectStakeResultProps {
@@ -27,23 +23,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   isHiddenBadge = false,
   pool,
 }) => {
-  const { pooledTokenInfos } = useStakeData({ positions });
-
-  const totalLiquidityUSD = useMemo(() => {
-    if (
-      positions.length === 0 ||
-      positions.every(item => !item.positionUsdValue)
-    ) {
-      return "-";
-    }
-    const totalUSDValue = positions.reduce(
-      (accum, position) => accum + Number(position.positionUsdValue),
-      0,
-    );
-    return formatOtherPrice(totalUSDValue, {
-      isKMB: false,
-    });
-  }, [positions]);
+  const { pooledTokenInfos, totalLiquidityUSD } = useStakeData({ positions });
 
   const stakingAPR = useMemo(() => {
     if (!pool?.stakingApr) return "-";
@@ -69,11 +49,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
                 mobileWidth={24}
               />
               <p>Pooled {pooledTokenInfo.token.symbol}</p>
-              <strong>
-                {formatPoolPairAmount(pooledTokenInfo.amount, {
-                  decimals: pooledTokenInfo.token.decimals,
-                })}
-              </strong>
+              <strong>{pooledTokenInfo.amount}</strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>
           </li>

@@ -10,6 +10,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
+import { PAGE_PATH_TYPE } from "@constants/page.constant";
 
 const OneClickStakingContainer: React.FC = () => {
   const router = useCustomRouter();
@@ -71,16 +72,19 @@ const OneClickStakingContainer: React.FC = () => {
     return positions.filter(position => !position.staked);
   }, [poolPath, account, connected, positions]);
 
-  const handleClickGotoStaking = useCallback(() => {
-    if (poolId) {
-      router.movePageWithPoolPath("POOL_STAKE", poolId);
-      return;
-    }
-    if (poolPath) {
-      router.movePageWithPoolPath("POOL_STAKE", poolPath);
-      return;
-    }
-  }, [poolId, poolPath]);
+  const handleClickGotoStaking = useCallback(
+    (type: PAGE_PATH_TYPE) => {
+      if (poolId) {
+        router.movePageWithPoolPath(type, poolId);
+        return;
+      }
+      if (poolPath) {
+        router.movePageWithPoolPath(type, poolPath);
+        return;
+      }
+    },
+    [poolId, poolPath],
+  );
 
   return (
     <OneClickStaking
