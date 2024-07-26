@@ -573,6 +573,7 @@ export const useSwapHandler = () => {
     swapButtonState,
     priceImpactStatus,
     isLoading,
+    t,
   ]);
 
   const openConnectWallet = useCallback(() => {

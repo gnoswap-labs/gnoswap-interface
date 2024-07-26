@@ -10,6 +10,7 @@ import Link from "next/link";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { makeTokenRouteUrl } from "@utils/page.utils";
+import { useTranslation } from "react-i18next";
 
 interface GainerCardListProps {
   gainers: any[];
@@ -20,9 +21,11 @@ const GainerCardList: React.FC<GainerCardListProps> = ({
   gainers = [],
   loadingGain,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <section css={cardStyle}>
-      <h2 className="card-title">Top 3 Gainers</h2>
+      <h2 className="card-title">{t("TokenDetails:topGainers.title")}</h2>
       {loadingGain && (
         <div css={loadingWrapper}>
           <LoadingSpinner />

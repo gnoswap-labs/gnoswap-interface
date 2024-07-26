@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import {
   Hydrate,
@@ -15,10 +15,22 @@ import Notice from "@components/common/notice/NoticeToast";
 import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWrapper";
 import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
 import Custom500 from "./500";
-import { appWithTranslation, UserConfig } from "next-i18next";
+import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";
 import nextI18NextConfig from "../../next-i18next.config.js";
+import dayjs from "dayjs";
+import "dayjs/locale/en";
+import "dayjs/locale/de";
+import "dayjs/locale/es";
+import "dayjs/locale/fr";
+import "dayjs/locale/ja";
+import "dayjs/locale/ko";
+import "dayjs/locale/ru";
+import "dayjs/locale/zh";
+import "dayjs/locale/hi";
 
 function App({ Component, pageProps }: AppProps) {
+  const { i18n } = useTranslation();
+
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -32,6 +44,14 @@ function App({ Component, pageProps }: AppProps) {
         },
       }),
   );
+
+  useEffect(() => {
+    i18n.on("languageChanged", lang => {
+      dayjs.locale(lang);
+    });
+
+    return () => i18n.off("languageChanged");
+  }, [i18n]);
 
   return (
     <QueryClientProvider client={queryClient}>

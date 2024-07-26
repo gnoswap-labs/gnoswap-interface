@@ -237,7 +237,7 @@ const Header: React.FC<HeaderProps> = ({
             mostLiquidity={mostLiquidity}
             popularTokens={popularTokens}
             recents={recents}
-            placeholder="Search by Name, Symbol, or Path"
+            placeholder={t("common:selectPairBtn.modal.searchInputPlaceholder")}
             moveTokenPage={moveTokenPage}
             movePoolPage={movePoolPage}
           />
