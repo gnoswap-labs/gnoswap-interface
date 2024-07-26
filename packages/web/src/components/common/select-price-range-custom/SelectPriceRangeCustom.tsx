@@ -25,7 +25,7 @@ import {
   SwapFeeTierPriceRange,
 } from "@constants/option.constant";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
-import { tickToPrice } from "@utils/swap-utils";
+import { priceToTick, tickToPrice } from "@utils/swap-utils";
 import { MAX_TICK } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
 import IconRemove from "../icons/IconRemove";
@@ -256,10 +256,18 @@ const SelectPriceRangeCustom = forwardRef<
       if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
         const priceRange =
           SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
-        const minRateAmount = currentPrice * (priceRange.min / 100);
-        const maxRateAmount = currentPrice * (priceRange.max / 100);
-        const priceLower = currentPrice + minRateAmount;
-        const priceUpper = currentPrice + maxRateAmount;
+
+        const getPriceWithTickSpacing = (range :number) => {
+          const rangeDiffAmount = currentPrice * (range / 100);
+          const currentTick = priceToTick(currentPrice + rangeDiffAmount);
+          const nearTick =
+            Math.round(currentTick / selectPool.tickSpacing) *
+            selectPool.tickSpacing;
+          return tickToPrice(nearTick);
+        };
+
+        const priceLower = getPriceWithTickSpacing(priceRange.min);
+        const priceUpper = getPriceWithTickSpacing(priceRange.max);
         selectPool.setMinPosition(
           priceLower < minPrice ? minPrice : priceLower,
         );
