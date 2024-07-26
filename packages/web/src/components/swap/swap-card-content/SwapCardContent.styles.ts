@@ -57,8 +57,8 @@ export const ContentWrapper = styled.div`
     }
     .not-selected-token {
       padding: 5px 10px 5px 12px;
+      white-space: nowrap;
       & > span {
-        white-space: nowrap;
       }
     }
     .token-symbol {

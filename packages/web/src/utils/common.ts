@@ -88,7 +88,7 @@ export const checkPositivePrice = (
     }
 
     return BigNumber(currentAsNumber)
-      .dividedBy(checkAsNumber || 1)
+      .dividedBy(checkAsNumber)
       .minus(1)
       .multipliedBy(100)
       .abs()

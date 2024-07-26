@@ -1,13 +1,21 @@
-import { ChartInfo, TokenChartGraphPeriodType, TokenInfo } from "@containers/token-chart-container/TokenChartContainer";
+import {
+  ChartInfo,
+  TokenChartGraphPeriodType,
+  TokenInfo,
+} from "@containers/token-chart-container/TokenChartContainer";
 import React, { useMemo } from "react";
 import TokenChartInfo from "../token-chart-info/TokenChartInfo";
 import TokenChartGraphTab from "./token-chart-graph-tab/TokenChartGraphTab";
 import TokenChartGraph from "./token-chart-graph/TokenChartGraph";
-import { ChartNotFound, LoadingChart, TokenChartWrapper } from "./TokenChart.styles";
+import {
+  ChartNotFound,
+  LoadingChart,
+  TokenChartWrapper,
+} from "./TokenChart.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { ComponentSize } from "@hooks/common/use-component-size";
 import { DEVICE_TYPE } from "@styles/media";
-
+import { useTranslation } from "react-i18next";
 
 export interface TokenChartProps {
   tokenInfo: TokenInfo;
@@ -30,34 +38,44 @@ const TokenChart: React.FC<TokenChartProps> = ({
   size,
   breakpoint,
 }) => {
+  const { t } = useTranslation();
+
   const isAllZero = useMemo(() => {
-    return (chartInfo?.datas?.length || 0) === 0 || chartInfo?.datas.every(item => {
-      return Number(item.amount.value) === 0;
-    });
+    return (
+      (chartInfo?.datas?.length || 0) === 0 ||
+      chartInfo?.datas.every(item => {
+        return Number(item.amount.value) === 0;
+      })
+    );
   }, [chartInfo?.datas]);
 
   return (
     <TokenChartWrapper>
-      <TokenChartInfo {...tokenInfo} isEmpty={loading || isAllZero || false} loading={loading} />
-      <TokenChartGraphTab
-        currentTab={currentTab}
-        changeTab={changeTab}
+      <TokenChartInfo
+        {...tokenInfo}
+        isEmpty={loading || isAllZero || false}
+        loading={loading}
       />
-      {((chartInfo?.datas.length === 0 || isAllZero) && !loading) && <ChartNotFound>
-        No data
-      </ChartNotFound>}
-      {loading && <LoadingChart>
-        <LoadingSpinner />
-      </LoadingChart>}
-      {(chartInfo?.datas.length !== 0 && !loading && !isAllZero) && <TokenChartGraph
-        xAxisLabels={chartInfo?.xAxisLabels || []}
-        yAxisLabels={chartInfo?.yAxisLabels || []}
-        datas={chartInfo?.datas || []}
-        currentTab={currentTab}
-        componentRef={componentRef}
-        size={size}
-        breakpoint={breakpoint}
-      />}
+      <TokenChartGraphTab currentTab={currentTab} changeTab={changeTab} />
+      {(chartInfo?.datas.length === 0 || isAllZero) && !loading && (
+        <ChartNotFound>{t("common:noData")}</ChartNotFound>
+      )}
+      {loading && (
+        <LoadingChart>
+          <LoadingSpinner />
+        </LoadingChart>
+      )}
+      {chartInfo?.datas.length !== 0 && !loading && !isAllZero && (
+        <TokenChartGraph
+          xAxisLabels={chartInfo?.xAxisLabels || []}
+          yAxisLabels={chartInfo?.yAxisLabels || []}
+          datas={chartInfo?.datas || []}
+          currentTab={currentTab}
+          componentRef={componentRef}
+          size={size}
+          breakpoint={breakpoint}
+        />
+      )}
     </TokenChartWrapper>
   );
 };

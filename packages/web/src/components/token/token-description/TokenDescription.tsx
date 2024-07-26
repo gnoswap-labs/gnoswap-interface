@@ -3,6 +3,7 @@ import TokenDescriptionContent from "@components/token/token-description-content
 import TokenDescriptionLinks from "@components/token/token-description-links/TokenDescriptionLinks";
 import { wrapper } from "./TokenDescription.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useTranslation } from "react-i18next";
 interface TokenDescriptionProps {
   tokenName: string;
   tokenSymbol: string;
@@ -24,26 +25,38 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
   copyClick,
   path,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div css={wrapper}>
-      {!loading && <h2>{`About ${tokenName} (${tokenSymbol})`}</h2>}
-      {loading && <span
+      {!loading && (
+        <h2>
+          {t("TokenDetails:description.title", {
+            name: `${tokenName} (${tokenSymbol})`,
+          })}
+        </h2>
+      )}
+      {loading && (
+        <span
           className="loading-value"
           css={pulseSkeletonStyle({ h: 25, w: 195 })}
-        />}
-      {!loading && <TokenDescriptionContent content={content}/>}
-      {loading && <>
-        <span
-          className="loading-value"
-          css={pulseSkeletonStyle({ h: 22 })}
         />
-        <span
-          className="loading-value"
-          css={pulseSkeletonStyle({ h: 22 })}
-        />
-      </>}
+      )}
+      {!loading && <TokenDescriptionContent content={content} />}
+      {loading && (
+        <>
+          <span className="loading-value" css={pulseSkeletonStyle({ h: 22 })} />
+          <span className="loading-value" css={pulseSkeletonStyle({ h: 22 })} />
+        </>
+      )}
 
-      <TokenDescriptionLinks links={links} copyClick={copyClick} copied={copied} path={path} isLoading={loading} />
+      <TokenDescriptionLinks
+        links={links}
+        copyClick={copyClick}
+        copied={copied}
+        path={path}
+        isLoading={loading}
+      />
     </div>
   );
 };

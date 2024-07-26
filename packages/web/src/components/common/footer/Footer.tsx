@@ -74,7 +74,7 @@ const Footer: React.FC = () => {
           {FOOTER_RIGHT_NAV.map(list => (
             <MenuSection key={list.content}>
               <strong>{t(list.content)}</strong>
-              {list.menu.map((menu: any) => (
+              {list.menu.map(menu => (
                 <Anchor
                   path={menu.path}
                   title={t(menu.title)}
