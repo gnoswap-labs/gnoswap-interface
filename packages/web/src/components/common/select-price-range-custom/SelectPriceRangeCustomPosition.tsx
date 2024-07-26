@@ -7,7 +7,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
-import { tickToPrice } from "@utils/swap-utils";
+import { priceToTick, tickToPrice } from "@utils/swap-utils";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import IconAdd from "../icons/IconAdd";
 import IconKeyboardArrowLeft from "../icons/IconKeyboardArrowLeft";
@@ -234,10 +234,18 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
       const priceRange =
         SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
-      const minRateAmount = currentPrice * (priceRange.min / 100);
-      const maxRateAmount = currentPrice * (priceRange.max / 100);
-      selectPool.setMinPosition(currentPrice + minRateAmount);
-      selectPool.setMaxPosition(currentPrice + maxRateAmount);
+
+      const getPriceWithTickSpacing = (range: number) => {
+        const rangeDiffAmount = currentPrice * (range / 100);
+        const currentTick = priceToTick(currentPrice + rangeDiffAmount);
+        const nearTick =
+          Math.round(currentTick / selectPool.tickSpacing) *
+          selectPool.tickSpacing;
+        return tickToPrice(nearTick);
+      };
+
+      selectPool.setMinPosition(getPriceWithTickSpacing(priceRange.min));
+      selectPool.setMaxPosition(getPriceWithTickSpacing(priceRange.max));
       return;
     }
   }
@@ -392,6 +400,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       tokenB={tokenB}
                       bins={selectPool.bins || []}
                       feeTier={selectPool.feeTier || "NONE"}
+                      tickSpacing={selectPool.tickSpacing || 1}
                       width={GRAPH_WIDTH}
                       height={GRAPH_HEIGHT}
                       position="top"

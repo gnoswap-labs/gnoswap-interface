@@ -39,6 +39,7 @@ export interface PoolSelectionGraphProps {
   tokenB: TokenModel;
   bins: PoolBinModel[];
   feeTier: SwapFeeTierType;
+  tickSpacing: number;
   mouseover?: boolean;
   zoomLevel: number;
   zoomable?: boolean;
@@ -71,6 +72,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   tokenB,
   bins = [],
   feeTier,
+  tickSpacing,
   width,
   height,
   zoomLevel,
@@ -168,7 +170,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     return adjustBins.slice(sliceStartIndex, sliceEndIndex);
   }, [adjustBins, displayBinCount, shiftIndex]);
 
-  const defaultMinX = useMemo(() => {
+  const graphMinTick = useMemo(() => {
     return Math.min(...displayBins.map(bin => bin.minTick));
   }, [displayBins]);
 
@@ -198,8 +200,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     .tickPadding(4)
     .tickFormat(tick =>
       displayTickNumber(
-        [getInvertX(0) + defaultMinX, getInvertX(width) + defaultMinX],
-        Number(tick) + defaultMinX,
+        [getInvertX(0) + graphMinTick, getInvertX(width) + graphMinTick],
+        Number(tick) + graphMinTick,
       ),
     )
     .tickArguments([displayLabels]);
@@ -214,16 +216,16 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       return {
         index,
         height: bin.height,
-        positionX: bin.minTick - defaultMinX,
+        positionX: bin.minTick - graphMinTick,
         minTick: bin.minTick,
         maxTick: bin.maxTick,
         reserveTokenA: bin.reserveTokenA || 0,
         reserveTokenB: bin.reserveTokenB || 0,
       };
     });
-  }, [displayBins, defaultMinX]);
+  }, [displayBins, graphMinTick]);
 
-  const tickSpacing = useMemo(() => {
+  const tickWidth = useMemo(() => {
     return boundsWidth / displayBins.length;
   }, [boundsWidth, displayBins.length]);
 
@@ -251,12 +253,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const random = Math.random().toString();
 
   const minBrushX =
-    scaleX(swapFeeTierMaxPriceRange.minTick - defaultMinX) >= -20
-      ? scaleX(swapFeeTierMaxPriceRange.minTick - defaultMinX)
+    scaleX(swapFeeTierMaxPriceRange.minTick - graphMinTick) >= -20
+      ? scaleX(swapFeeTierMaxPriceRange.minTick - graphMinTick)
       : 0;
   const maxBrushX =
-    scaleX(swapFeeTierMaxPriceRange.maxTick - defaultMinX) <= boundsWidth
-      ? scaleX(swapFeeTierMaxPriceRange.maxTick - defaultMinX)
+    scaleX(swapFeeTierMaxPriceRange.maxTick - graphMinTick) <= boundsWidth
+      ? scaleX(swapFeeTierMaxPriceRange.maxTick - graphMinTick)
       : boundsWidth;
 
   const brush = d3
@@ -281,10 +283,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const endPosition = selection[1] as number;
 
     const startPrice = tickToPrice(
-      Math.round(scaleX.invert(startPosition) + defaultMinX),
+      Math.round(scaleX.invert(startPosition) + graphMinTick),
     );
     const endPrice = tickToPrice(
-      Math.round(scaleX.invert(endPosition) + defaultMinX),
+      Math.round(scaleX.invert(endPosition) + graphMinTick),
     );
 
     const startRate = currentPrice
@@ -377,24 +379,25 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       const startPosition = selection[0] as number;
       const endPosition = selection[1] as number;
 
-      const currentPricePosition = scaleX(currentTick - defaultMinX);
+      const currentPricePosition = scaleX(currentTick - graphMinTick);
       const selectionColor = getSelectionColor(
         startPosition >= currentPricePosition ? "1" : "-1",
         endPosition >= currentPricePosition ? "1" : "-1",
       );
 
       function getPriceBy(position: number) {
-        const scaleValue = scaleX.invert(position);
-        if (BigNumber(scaleValue).isNaN()) {
+        const tickWithOffset = scaleX.invert(position);
+        if (BigNumber(tickWithOffset).isNaN()) {
           return 0;
         }
 
-        const tick = Math.round(scaleValue) + defaultMinX;
+        const tick =
+          Math.round((tickWithOffset + graphMinTick) / tickSpacing) *
+          tickSpacing;
         if (tick <= swapFeeTierMaxPriceRange.minTick) {
           return 0;
         }
 
-        console.log("tick", tick, currentTick);
         if (tick >= swapFeeTierMaxPriceRange.maxTick) {
           return swapFeeTierMaxPriceRange.maxPrice;
         }
@@ -430,7 +433,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   /** Update Chart by data */
   function updateChart() {
-    const currentLinePosition = scaleX(currentTick - defaultMinX) - 0.5;
+    const currentLinePosition = scaleX(currentTick - graphMinTick) - 0.5;
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: ResolveBinModel) {
@@ -488,7 +491,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
                   : 0)
               );
             })
-            .attr("width", tickSpacing)
+            .attr("width", tickWidth)
             .attr("height", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
               return (
@@ -513,7 +516,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
                   : 0)
               );
             })
-            .attr("width", tickSpacing - 0.5)
+            .attr("width", tickWidth - 0.5)
             .attr("height", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
               return (
@@ -540,7 +543,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   function onMouseoverChartBin(event: MouseEvent) {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
-    const mouseXTick = scaleX.invert(event.offsetX) + defaultMinX;
+    const mouseXTick = scaleX.invert(event.offsetX) + graphMinTick;
 
     if (minPrice && maxPrice) {
       if (
@@ -727,8 +730,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       brush.move(brushElement, [0, boundsWidth]);
     } else {
       brush.move(brushElement, [
-        scaleX(priceToTick(minPrice) - defaultMinX),
-        scaleX(priceToTick(maxPrice) - defaultMinX),
+        scaleX(priceToTick(minPrice) - graphMinTick),
+        scaleX(priceToTick(maxPrice) - graphMinTick),
       ]);
     }
   }, [minPrice, maxPrice, zoomLevel, shiftIndex, fullRange, displayBins]);

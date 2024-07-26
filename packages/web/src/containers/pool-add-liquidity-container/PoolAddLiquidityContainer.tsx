@@ -27,7 +27,6 @@ import {
   tickToPrice,
 } from "@utils/swap-utils";
 import { usePoolData } from "@hooks/pool/use-pool-data";
-import { isNumber } from "@utils/number-utils";
 import { isFetchedPools } from "@states/pool";
 import { useLoading } from "@hooks/common/use-loading";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
@@ -653,12 +652,14 @@ const EarnAddLiquidityContainer: React.FC = () => {
     const query = {
       [QUERY_PARAMETER.POOL_PATH]: router.getPoolPath(),
       price_range_type: priceRange?.type,
-      tickLower: isNumber(selectPool.minPosition || "")
-        ? priceToTick(selectPool.minPosition || 0)
-        : null,
-      tickUpper: isNumber(selectPool.maxPosition || "")
-        ? priceToTick(selectPool.maxPosition || 0)
-        : null,
+      tickLower:
+        selectPool.minPosition !== null
+          ? priceToTick(selectPool.minPosition)
+          : null,
+      tickUpper:
+        selectPool.maxPosition !== null
+          ? priceToTick(selectPool.maxPosition)
+          : null,
     };
     if (tokenA?.path && tokenB?.path) {
       window.history.pushState("", "", makeRouteUrl(PAGE_PATH.POOL_ADD, query));
