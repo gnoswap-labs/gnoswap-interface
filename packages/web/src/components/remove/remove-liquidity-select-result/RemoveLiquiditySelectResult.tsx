@@ -10,6 +10,7 @@ import { Divider } from "@components/common/divider/divider";
 import Switch from "@components/common/switch/Switch";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 interface RemoveLiquiditySelectResultProps {
   positions: PoolPositionModel[];
@@ -20,6 +21,8 @@ interface RemoveLiquiditySelectResultProps {
 const RemoveLiquiditySelectResult: React.FC<
   RemoveLiquiditySelectResultProps
 > = ({ positions, isWrap, setIsWrap }) => {
+  const { t } = useTranslation();
+
   const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } =
     useRemoveData({ selectedPosition: positions });
 
@@ -48,7 +51,10 @@ const RemoveLiquiditySelectResult: React.FC<
                 width={24}
                 mobileWidth={24}
               />
-              <p>Pooled {pooledTokenInfo.token.symbol}</p>
+              <p>
+                {t("RemovePosition:overview.pooled")}{" "}
+                {pooledTokenInfo.token.symbol}
+              </p>
               <strong>
                 {formatPoolPairAmount(pooledTokenInfo.amount, {
                   decimals: pooledTokenInfo.token.decimals,
@@ -67,7 +73,10 @@ const RemoveLiquiditySelectResult: React.FC<
                 width={24}
                 mobileWidth={24}
               />
-              <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
+              <p>
+                {t("RemovePosition:overview.unclaimed")}{" "}
+                {pooledTokenInfo.token.symbol}
+              </p>
               <strong>
                 {formatPoolPairAmount(pooledTokenInfo.amount, {
                   decimals: pooledTokenInfo.token.decimals,
@@ -81,14 +90,14 @@ const RemoveLiquiditySelectResult: React.FC<
           <>
             <Divider />
             <GnotCollectSwitchWrapper>
-              <div>Collect as WUGNOT</div>
+              <div>{t("RemovePosition:overview.collectAsSwitch")}</div>
               <Switch checked={isWrap} onChange={setIsWrap} />
             </GnotCollectSwitchWrapper>
           </>
         )}
       </ul>
       <div className="total-section">
-        <h5>Total Amount</h5>
+        <h5>{t("RemovePosition:overview.totalAmt")}</h5>
         <span className="total-value">{totalLiquidityUSD}</span>
       </div>
     </RemoveLiquiditySelectResultWrapper>
