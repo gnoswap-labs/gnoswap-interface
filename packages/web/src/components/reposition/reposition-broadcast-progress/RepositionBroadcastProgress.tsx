@@ -17,6 +17,7 @@ import {
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "@repositories/position/response";
+import { useTranslation } from "react-i18next";
 
 export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;
@@ -47,6 +48,8 @@ const RepositionBroadcastProgress: React.FC<
   tokenB,
   isSkipSwap,
 }) => {
+  const { t } = useTranslation();
+
   const [removePositionState, setRemovePositionState] =
     useState<ProgressStateType>("NONE");
   const [swapState, setSwapState] = useState<ProgressStateType>("NONE");
@@ -216,7 +219,7 @@ const RepositionBroadcastProgress: React.FC<
               isActive(removePositionState),
             )}
           >
-            Remove Position
+            {t("Reposition:repos.step.removePosi")}
           </span>
         </div>
         <RepositionBroadcastProgressState
@@ -239,7 +242,10 @@ const RepositionBroadcastProgress: React.FC<
                   isActive(swapState),
                 )}
               >
-                Swap {tokenA.symbol} for {tokenB.symbol}
+                {t("Reposition:repos.step.swap", {
+                  symbolA: tokenA.symbol,
+                  symbolB: tokenB.symbol,
+                })}
               </span>
             </div>
             <RepositionBroadcastProgressState
@@ -261,7 +267,7 @@ const RepositionBroadcastProgress: React.FC<
               isActive(addPositionState),
             )}
           >
-            Add Position
+            {t("Reposition:repos.step.addPosi")}
           </span>
         </div>
         <RepositionBroadcastProgressState

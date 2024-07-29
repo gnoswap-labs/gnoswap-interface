@@ -9,6 +9,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { RepositionSelectPositionWrapper } from "./RepositionSelectPosition.styles";
 
 export interface RepositionSelectPositionProps {
@@ -29,6 +30,7 @@ const RepositionSelectPosition: React.FC<RepositionSelectPositionProps> = ({
   selectedPosition,
   isLoadingPosition,
 }) => {
+  const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
 
@@ -69,7 +71,7 @@ const RepositionSelectPosition: React.FC<RepositionSelectPositionProps> = ({
 
   return (
     <RepositionSelectPositionWrapper>
-      <h5>1. Select Position</h5>
+      <h5>{t("Reposition:form.selectPosi.title")}</h5>
       <div className="select-position common-bg">
         <div className="pool-select-wrapper">
           <DoubleLogo

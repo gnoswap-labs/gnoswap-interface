@@ -8,6 +8,7 @@ import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import DepositRatio from "../deposit-ratio/DepositRatio";
 import { RepositionSelectRangeWrapper } from "./RepositionSelectRange.styles";
 
@@ -40,6 +41,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
   resetRange,
   isLoadingPosition,
 }) => {
+  const { t } = useTranslation();
   const [openedPriceRange, setOpenedPriceRange] = useState(true);
 
   const togglePriceRange = useCallback(() => {
@@ -50,7 +52,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
     <RepositionSelectRangeWrapper open={openedPriceRange}>
       <div className="header-wrapper" onClick={togglePriceRange}>
         <div className="header-wrapper-title">
-          <h5>2. Select New Range</h5>
+          <h5>{t("Reposition:form.selectRange.title")}</h5>
           {!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />}
         </div>
         <Badge
