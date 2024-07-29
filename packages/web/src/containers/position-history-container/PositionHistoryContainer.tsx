@@ -39,7 +39,6 @@ const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({
     isFetched,
     isLoading,
   } = useGetPositionHistory(position?.lpTokenId);
-  console.log("🚀 ~ historyList:", historyList);
 
   return (
     <PositionHistoryList
