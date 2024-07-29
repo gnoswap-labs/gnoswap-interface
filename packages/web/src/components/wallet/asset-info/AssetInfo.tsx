@@ -11,6 +11,7 @@ import {
   ASSET_INFO_TABLET,
 } from "@constants/skeleton.constant";
 import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
+import { useTranslation } from "react-i18next";
 
 interface AssetInfoProps {
   asset: Asset;
@@ -143,12 +144,16 @@ export const DepositButton = ({
 }: {
   onClick: () => void;
   disabled?: boolean;
-}) => (
-  <LoadButton onClick={onClick} disabled={disabled}>
-    <IconDownload />
-    <span>Deposit</span>
-  </LoadButton>
-);
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <LoadButton onClick={onClick} disabled={disabled}>
+      <IconDownload />
+      <span>{t("Wallet:assets.action.deposit")}</span>
+    </LoadButton>
+  );
+};
 
 export const WithdrawButton = ({
   onClick,
@@ -156,11 +161,15 @@ export const WithdrawButton = ({
 }: {
   onClick: () => void;
   disabled?: boolean;
-}) => (
-  <LoadButton className="withdraw-pd" onClick={onClick} disabled={disabled}>
-    <IconUpload className="upload" />
-    <span>Withdraw</span>
-  </LoadButton>
-);
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <LoadButton className="withdraw-pd" onClick={onClick} disabled={disabled}>
+      <IconUpload className="upload" />
+      <span>{t("Wallet:assets.action.withdraw")}</span>
+    </LoadButton>
+  );
+};
 
 export default AssetInfo;

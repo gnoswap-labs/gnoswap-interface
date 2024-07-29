@@ -20,6 +20,7 @@ import { convertToKMB } from "@utils/stake-position-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useRef, useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   WithDrawModalBackground,
   WithDrawModalWrapper,
@@ -58,6 +59,7 @@ const WithDrawModal: React.FC<Props> = ({
   setIsConfirm,
   isConfirm,
 }) => {
+  const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
   const [amount, setAmount] = useState("");
@@ -148,13 +150,13 @@ const WithDrawModal: React.FC<Props> = ({
   };
   const buttonText = useMemo(() => {
     if (!withdrawInfo) {
-      return "Select a Token";
+      return t("Wallet:withdrawModal.btn.selectToken");
     }
     if (amount === "") {
-      return "Enter Amount";
+      return t("Wallet:withdrawModal.btn.enterAmt");
     }
     if (Number(amount) < 0.000001) {
-      return "Amount Too Low";
+      return t("Wallet:withdrawModal.btn.lowAmt");
     }
     if (
       (currentAvailableBalance &&
@@ -191,7 +193,9 @@ const WithDrawModal: React.FC<Props> = ({
             </div>
 
             <WithdrawContent>
-              <p className="label">Select Token</p>
+              <p className="label">
+                {t("Wallet:withdrawModal.selectToken.label")}
+              </p>
               <div className="withdraw">
                 <div className="amount">
                   <input
@@ -213,7 +217,7 @@ const WithDrawModal: React.FC<Props> = ({
                   <span
                     className="balance-text"
                     onClick={handleEnterAllBalanceAvailable}
-                  >{`Available: ${
+                  >{`${t("common:available")}: ${
                     currentAvailableBalance
                       ? formatPrice(currentAvailableBalance, {
                           isKMB: false,
@@ -227,8 +231,10 @@ const WithDrawModal: React.FC<Props> = ({
 
             <WithdrawContent>
               <div className="title">
-                <label>Withdrawal Network</label>
-                <WithdrawTooltip tooltip="The network of the token to be withdrawn." />
+                <label>{t("Wallet:withdrawModal.withdrawNet.label")}</label>
+                <WithdrawTooltip
+                  tooltip={t("Wallet:withdrawModal.withdrawNet.tooltip")}
+                />
               </div>
 
               <div className="withdraw">
@@ -249,8 +255,10 @@ const WithDrawModal: React.FC<Props> = ({
 
             <WithdrawContent>
               <div className="title">
-                <label>Withdrawal Address</label>
-                <WithdrawTooltip tooltip="The withdrawal address that funds will be sent to." />
+                <label>{t("Wallet:withdrawModal.withdrawAddr.label")}</label>
+                <WithdrawTooltip
+                  tooltip={t("Wallet:withdrawModal.withdrawAddr.tooltip")}
+                />
               </div>
 
               <div className="withdraw">
@@ -259,7 +267,7 @@ const WithDrawModal: React.FC<Props> = ({
                     className="address-input"
                     value={address}
                     onChange={onChangeAddress}
-                    placeholder="Enter Address"
+                    placeholder={t("Wallet:withdrawModal.enterAddr.input")}
                   />
                 </div>
               </div>
@@ -267,20 +275,13 @@ const WithDrawModal: React.FC<Props> = ({
 
             <WarningCard
               icon={<IconCircleExclamationMark />}
-              title={"Important Notes"}
+              title={t("Wallet:withdrawModal.warning.title")}
               content={
                 <WithDrawWarningContentWrapper>
                   <ul>
-                    <li>
-                      Double-check to confirm that your withdrawal address above
-                      is correct and on the Gnoland Mainnet blockchain.
-                    </li>
-                    <li>
-                      DO NOT send tokens to contract addresses. Sending tokens
-                      to a contract address may result in the loss of your
-                      funds.
-                    </li>
-                    <li>The transaction CANNOT be cancelled once sent.</li>
+                    <li>{t("Wallet:withdrawModal.warning.content1")}</li>
+                    <li>{t("Wallet:withdrawModal.warning.content2")}</li>
+                    <li>{t("Wallet:withdrawModal.warning.content3")}</li>
                   </ul>
 
                   <a
@@ -288,7 +289,7 @@ const WithDrawModal: React.FC<Props> = ({
                     target="_blank"
                     className="learn-more-box"
                   >
-                    <p>Learn More</p>
+                    <p>{t("common:learnMore")}</p>
                     <IconNewTab color={theme.color.icon21} />
                   </a>
                 </WithDrawWarningContentWrapper>
@@ -296,7 +297,9 @@ const WithDrawModal: React.FC<Props> = ({
             />
             <WithdrawContent>
               <div className="estimate-box">
-                <p className="estimate-fee">Estimated Network Fee</p>
+                <p className="estimate-fee">
+                  {t("Wallet:withdrawModal.estNetFee")}
+                </p>
                 <p className="tokens-fee">{`${estimateFee} GNOT${estimatedPrice}`}</p>
               </div>
             </WithdrawContent>
