@@ -50,11 +50,11 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
       <SelectUnstakeResult positions={selectedPositions} />
       {selectedPositions.length > 0 && (
         <WarningCard
-          title={t("StakePosition:warning.title")}
+          title={t("UnstakePosition:warning.title")}
           icon={<IconCircleExclamationMark />}
           content={
             <StakeWarningContentWrapper>
-              <p>{t("StakePosition:warning.content")}</p>
+              <p>{t("UnstakePosition:warning.content")}</p>
               <a href="/">
                 {t("common:learnMore")}
                 <IconOpenLink className="icon-link" />
