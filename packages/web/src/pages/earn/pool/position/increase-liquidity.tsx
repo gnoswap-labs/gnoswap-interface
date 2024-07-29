@@ -20,7 +20,10 @@ import { useTranslation } from "react-i18next";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS])),
+      ...(await serverSideTranslations(locale, [
+        ...DEFAULT_I18N_NS,
+        "IncreaseLiquidity",
+      ])),
     },
   };
 }

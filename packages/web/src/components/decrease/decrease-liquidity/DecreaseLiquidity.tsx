@@ -3,6 +3,7 @@ import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import DecreaseAmountPosition from "../decrease-select-position/DecreaseAmount";
 import DecreaseSelectPosition from "../decrease-select-position/DecreaseSelectPosition";
 import { DecreaseLiquidityWrapper } from "./DecreaseLiquidity.styles";
@@ -40,9 +41,11 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
   isWrap,
   setIsWrap,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <DecreaseLiquidityWrapper>
-      <h3 className="title">Decrease Liquidity</h3>
+      <h3 className="title">{t("DecreaseLiquidity:title")}</h3>
       <article>
         <DecreaseSelectPosition
           aprFee={aprFee}
@@ -68,7 +71,7 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
       </article>
       <Button
         onClick={onSubmit}
-        text="Decrease Liquidity"
+        text={t("DecreaseLiquidity:btn.decreaseLiqui")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,

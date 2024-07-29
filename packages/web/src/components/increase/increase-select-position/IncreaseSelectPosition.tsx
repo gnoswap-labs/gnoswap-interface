@@ -11,6 +11,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   IncreaseSelectPositionWrapper,
   ToolTipContentWrapper,
@@ -37,11 +38,13 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
   aprFee,
   priceRangeSummary,
 }) => {
+  const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
+
   return (
     <IncreaseSelectPositionWrapper>
-      <h5>1. Select Position</h5>
+      <h5>{t("IncreaseLiquidity:form.selectPosition.label")}</h5>
       <div className="select-position common-bg">
         <div className="pool-select-wrapper">
           <DoubleLogo
@@ -58,7 +61,7 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
       </div>
       <div className="min-max-wrapper">
         <div className="min common-bg">
-          <p>Min Price</p>
+          <p>{t("business:minPrice")}</p>
           <p className="value">{minPriceStr}</p>
           <p className="convert-value">
             {isMobile ? (
@@ -75,7 +78,7 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
           </p>
         </div>
         <div className="min common-bg">
-          <p>Max Price</p>
+          <p>{t("business:maxPrice")}</p>
           <p className="value">{maxPriceStr}</p>
           <p className="convert-value">
             {isMobile ? (
@@ -95,13 +98,14 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
       <div className="deposit-ratio common-bg">
         <div>
           <div>
-            <p className="label">Deposit Ratio</p>
+            <p className="label">
+              {t("business:positionPriceRangeInfo.depositR.label")}
+            </p>
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The deposit ratio of the two tokens is determined based on the
-                  current price and the set price range.
+                  {t("business:positionPriceRangeInfo.depositR.desc")}
                 </ToolTipContentWrapper>
               }
             >
@@ -137,14 +141,14 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
         </div>
         <div>
           <div>
-            <p className="label">Capital Efficiency</p>
+            <p className="label">
+              {t("business:positionPriceRangeInfo.capEff.label")}
+            </p>
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The multiplier calculated based on the concentration of your
-                  range. This indicates how much more rewards you can earn
-                  compared to a full range position with the same capital.
+                  {t("business:positionPriceRangeInfo.capEff.desc")}
                 </ToolTipContentWrapper>
               }
             >
@@ -155,13 +159,14 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
         </div>
         <div>
           <div>
-            <p className="label">Fee APR</p>
+            <p className="label">
+              {t("business:positionPriceRangeInfo.feeApr.label")}
+            </p>
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The estimated APR from swap fees is calculated based on the
-                  selected price range of the position.
+                  {t("business:positionPriceRangeInfo.feeApr.desc")}
                 </ToolTipContentWrapper>
               }
             >

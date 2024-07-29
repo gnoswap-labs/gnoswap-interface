@@ -6,6 +6,7 @@ import { IncreasePositionModalWrapper } from "./IncreasePositionModal.styles";
 import IncreaseAmountInfo from "@components/increase/increase-amount-info/IncreaseAmountInfo";
 import IncreaseMaxMin from "@components/increase/increase-max-min/IncreaseMaxMin";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   confirm: () => void;
@@ -40,6 +41,8 @@ const IncreasePositionModal: React.FC<Props> = ({
   isDepositTokenA,
   isDepositTokenB,
 }) => {
+  const { t } = useTranslation();
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -48,7 +51,7 @@ const IncreasePositionModal: React.FC<Props> = ({
     <IncreasePositionModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Confirm Increase Liquidity</h6>
+          <h6>{t("IncreaseLiquidity:confirmIncreaseModal.title")}</h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
@@ -59,9 +62,14 @@ const IncreasePositionModal: React.FC<Props> = ({
             maxPriceStr={maxPriceStr}
             {...amountInfo}
             rangeStatus={rangeStatus}
+            title={t(
+              "IncreaseLiquidity:confirmIncreaseModal.section.posiDetail.label",
+            )}
           />
           <div>
-            <p className="label-increase">Increasing Amount</p>
+            <p className="label-increase">
+              {t("IncreaseLiquidity:confirmIncreaseModal.increaseAmt")}
+            </p>
             <IncreaseAmountInfo
               {...amountInfo}
               isDepositTokenA={isDepositTokenA}
@@ -71,7 +79,7 @@ const IncreasePositionModal: React.FC<Props> = ({
           <div>
             <Button
               onClick={confirm}
-              text="Confirm Increase Liquidity"
+              text={t("IncreaseLiquidity:confirmIncreaseModal.btn")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,

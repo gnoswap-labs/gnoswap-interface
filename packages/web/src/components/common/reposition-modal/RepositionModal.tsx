@@ -96,6 +96,7 @@ const RepositionModal: React.FC<Props> = ({
             maxPriceStr={maxPriceStr}
             {...amountInfo}
             rangeStatus={rangeStatus}
+            title={t("Reposition:confModal.section.posiDetail.label")}
           />
           <RepositionInfo
             tokenA={amountInfo?.tokenA?.info}

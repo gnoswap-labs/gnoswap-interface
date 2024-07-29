@@ -27,6 +27,7 @@ export interface IncreaseMaxMinProps {
     amount: string;
     usdPrice: string;
   };
+  title: string;
 }
 
 const IncreaseMaxMin: React.FC<IncreaseMaxMinProps> = ({
@@ -36,13 +37,14 @@ const IncreaseMaxMin: React.FC<IncreaseMaxMinProps> = ({
   tokenB,
   rangeStatus,
   feeRate,
+  title,
 }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   return (
     <IncreaseMaxMinWrapper>
       <div className="range-title">
-        <p>{t("Reposition:confModal.section.posiDetail.label")}</p>
+        <p>{title}</p>
       </div>
       <div className="select-position common-bg">
         <div className="pool-select-wrapper">

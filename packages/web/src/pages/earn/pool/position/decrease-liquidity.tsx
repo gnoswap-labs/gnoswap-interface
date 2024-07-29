@@ -15,16 +15,21 @@ import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { makeRouteUrl } from "@utils/page.utils";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import { useTranslation } from "react-i18next";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS])),
+      ...(await serverSideTranslations(locale, [
+        ...DEFAULT_I18N_NS,
+        "DecreaseLiquidity",
+      ])),
     },
   };
 }
 
 export default function DecreaseLiquidity() {
+  const { t } = useTranslation();
   const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.getPoolPath();
@@ -35,7 +40,7 @@ export default function DecreaseLiquidity() {
 
   const listBreadcrumb = useMemo(() => {
     return [
-      { title: "Earn", path: "/earn" },
+      { title: t("business:pageHeader.earn"), path: "/earn" },
       {
         title:
           width > DeviceSize.mediumWeb
@@ -48,7 +53,7 @@ export default function DecreaseLiquidity() {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,
         }),
       },
-      { title: "Decrease Liquidity", path: "" },
+      { title: t("business:pageHeader.decreaseLiqui"), path: "" },
     ];
   }, [data, width]);
 

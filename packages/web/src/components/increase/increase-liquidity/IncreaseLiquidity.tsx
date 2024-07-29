@@ -10,6 +10,7 @@ import IncreaseAmountPosition from "../increase-select-position/IncreaseAmount";
 import IncreaseSelectPosition from "../increase-select-position/IncreaseSelectPosition";
 import { IncreaseLiquidityWrapper } from "./IncreaseLiquidity.styles";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { useTranslation } from "react-i18next";
 
 interface IncreaseLiquidityProps {
   tokenA: TokenModel;
@@ -54,6 +55,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
   buttonType,
   onSubmit,
 }) => {
+  const { t } = useTranslation();
+
   const activatedSubmit = useMemo(() => {
     switch (buttonType) {
       case "INCREASE_LIQUIDITY":
@@ -65,18 +68,18 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
   const textButton = useMemo(() => {
     switch (buttonType) {
       case "INCREASE_LIQUIDITY":
-        return "Increase Liquidity";
+        return t("IncreaseLiquidity:btn.increaseLiqui");
       case "INSUFFICIENT_BALANCE":
-        return "Insufficient Balance";
+        return t("IncreaseLiquidity:btn.insufficientBalance");
       case "ENTER_AMOUNT":
       default:
-        return "Enter Amount";
+        return t("IncreaseLiquidity:btn.enterAmount");
     }
-  }, [buttonType]);
+  }, [buttonType, t]);
 
   return (
     <IncreaseLiquidityWrapper>
-      <h3>Increase Liquidity</h3>
+      <h3>{t("IncreaseLiquidity:title")}</h3>
       <article>
         <IncreaseSelectPosition
           aprFee={aprFee}

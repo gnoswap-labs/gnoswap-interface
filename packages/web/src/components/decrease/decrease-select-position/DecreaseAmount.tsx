@@ -1,6 +1,7 @@
 import Range from "@components/common/range/Range";
 import { TokenModel } from "@models/token/token-model";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import DecreasePoolInfo from "../decrease-pool-info/DecreasePoolInfo";
 import { DecreaseSelectPositionWrapper } from "./DecreaseSelectPosition.styles";
 
@@ -23,10 +24,12 @@ const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
   isWrap,
   setIsWrap,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <DecreaseSelectPositionWrapper>
       <div className="header-wrapper">
-        <h5>2. Decreasing Amount</h5>
+        <h5>{t("DecreaseLiquidity:form.decreaseAmount.label")}</h5>
       </div>
       <div className="select-position common-bg decrease-bg">
         <div className="decrease-percent">
@@ -42,7 +45,7 @@ const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
               75%
             </div>
             <div className="box-percent" onClick={() => handlePercent(100)}>
-              Max
+              {t("common:max")}
             </div>
           </div>
         </div>
