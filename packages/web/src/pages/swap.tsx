@@ -7,18 +7,13 @@ import SEOHeader from "@components/common/seo-header/seo-header";
 import { useAtom } from "jotai";
 import * as SwapState from "@states/swap";
 import { useMemo } from "react";
-import { SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        "HeaderFooter",
-        "Swap",
-        "common",
-        "business",
-      ])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Swap"])),
     },
   };
 }

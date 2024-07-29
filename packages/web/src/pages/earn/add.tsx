@@ -19,15 +19,14 @@ import EarnAddLayout from "@layouts/earn-add-layout/EarnAddLayout";
 import { EarnState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
+import { DEFAULT_I18N_NS } from "@constants/common.constant";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, [
-        "HeaderFooter",
-        "common",
+        ...DEFAULT_I18N_NS,
         "Swap",
-        "business",
         "AddPosition",
       ])),
     },
@@ -35,9 +34,9 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function EarnAdd() {
-  const { query } = useRouter();
   const { t } = useTranslation();
-
+  const router = useRouter();
+  const query = router.query;
   const [isEarnAdd] = useAtom(EarnState.isEarnAdd);
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const listBreadcrumb = [
