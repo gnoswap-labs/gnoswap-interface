@@ -314,6 +314,8 @@ export const LANGUAGE_CODE_MAP: Record<string, string> = {
   hi: "hi-IN",
 };
 
+export const DEFAULT_I18N_NS = ["HeaderFooter", "common", "business"];
+
 export const getLangCode = (code: string) => {
   return LANGUAGE_CODE_MAP[code];
 };
