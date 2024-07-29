@@ -17,6 +17,7 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "react-i18next";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -25,19 +26,22 @@ export async function getStaticProps({ locale }: { locale: string }) {
         "HeaderFooter",
         "common",
         "Swap",
+        "business",
+        "AddPosition",
       ])),
     },
   };
 }
 
 export default function EarnAdd() {
+  const { t } = useTranslation();
   const router = useRouter();
   const query = router.query;
   const [isEarnAdd] = useAtom(EarnState.isEarnAdd);
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const listBreadcrumb = [
-    { title: "Earn", path: "/earn" },
-    { title: "Add Position", path: "" },
+    { title: t("business:pageHeader.earn"), path: "/earn" },
+    { title: t("business:pageHeader.addPosi"), path: "" },
   ];
   const { tokens } = useTokenData();
   const { getGnotPath } = useGnotToGnot();

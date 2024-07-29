@@ -1,4 +1,5 @@
 import LineGraph from "@components/common/line-graph/LineGraph";
+import { LANGUAGE_CODE_MAP } from "@constants/common.constant";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
@@ -6,7 +7,8 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLocalizeTime, parseDate } from "@utils/chart";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ExchangeRateGraphContentWrapper,
   ExchangeRateGraphXAxisWrapper,
@@ -32,6 +34,7 @@ export function ExchangeRateGraphContent({
   onMouseMove,
   onMouseOut,
 }: ExchangeRateGraphContentProps) {
+  const { i18n } = useTranslation();
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
@@ -106,8 +109,10 @@ export function ExchangeRateGraphContent({
   }, [isReversed, poolData.price, sortedRawDataByType]);
 
   const xAxisLabels = useMemo(() => {
-    return sortedRawDataByType?.map(item => parseDate(item.date));
-  }, [sortedRawDataByType]);
+    return sortedRawDataByType?.map(item =>
+      parseDate(item.date, LANGUAGE_CODE_MAP[i18n.language]),
+    );
+  }, [sortedRawDataByType, i18n.language]);
 
   const hasSingleData = useMemo(() => dataMemo?.length === 1, [dataMemo]);
 
@@ -128,6 +133,31 @@ export function ExchangeRateGraphContent({
       Math.floor(spacing * index),
     );
   }, [countXAxis, hasSingleData, xAxisLabels]);
+
+  const renderXAxis = useCallback(
+    (baseLineNumberWidth: number) => {
+      return (
+        <ExchangeRateGraphXAxisWrapper
+          innerWidth={
+            baseLineNumberWidth !== 0
+              ? `calc(100% - ${baseLineNumberWidth}px)`
+              : "100%"
+          }
+        >
+          <div
+            className={`exchange-rate-graph-xaxis ${
+              hasSingleData ? "single-point" : ""
+            }`}
+          >
+            {labelIndicesToShow?.map((x, i) => (
+              <span key={i}>{xAxisLabels?.[x]}</span>
+            ))}
+          </div>
+        </ExchangeRateGraphXAxisWrapper>
+      );
+    },
+    [hasSingleData, labelIndicesToShow, xAxisLabels],
+  );
 
   return (
     <ExchangeRateGraphContentWrapper>
@@ -150,27 +180,7 @@ export function ExchangeRateGraphContent({
             showBaseLine
             showBaseLineLabels
             isShowTooltip={false}
-            renderBottom={baseLineNumberWidth => {
-              return (
-                <ExchangeRateGraphXAxisWrapper
-                  innerWidth={
-                    baseLineNumberWidth !== 0
-                      ? `calc(100% - ${baseLineNumberWidth}px)`
-                      : "100%"
-                  }
-                >
-                  <div
-                    className={`exchange-rate-graph-xaxis ${
-                      hasSingleData ? "single-point" : ""
-                    }`}
-                  >
-                    {labelIndicesToShow?.map((x, i) => (
-                      <span key={i}>{xAxisLabels?.[x]}</span>
-                    ))}
-                  </div>
-                </ExchangeRateGraphXAxisWrapper>
-              );
-            }}
+            renderBottom={renderXAxis}
             onMouseOut={onMouseOut}
           />
         </div>

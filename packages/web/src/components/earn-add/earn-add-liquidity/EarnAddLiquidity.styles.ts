@@ -81,7 +81,6 @@ export const EarnAddLiquidityWrapper = styled.section`
       h5 {
         ${fonts.body12};
         color: ${({ theme }) => theme.color.text10};
-
       }
       .setting-modal {
         top: calc(100% + 4px);

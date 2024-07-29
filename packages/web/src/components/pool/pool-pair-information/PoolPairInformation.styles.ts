@@ -64,10 +64,6 @@ export const BreadcrumbsWrapper = styled.div`
     }
   }
   .location {
-    position: absolute;
-    left: 98.8px;
-    top: 12px;
-    bottom: 6px;
     ${mixins.flexbox("row", "center", "flex-start")};
     padding: 4px 8px;
     gap: 4px;

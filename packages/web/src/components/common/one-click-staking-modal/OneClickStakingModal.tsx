@@ -6,6 +6,7 @@ import EarnAddConfirmPriceRangeInfo from "@components/earn-add/earn-add-confirm-
 import { TokenModel } from "@models/token/token-model";
 import EarnAddConfirmAmountInfo from "@components/earn-add/earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
 import EarnAddConfirmFeeInfo from "@components/earn-add/earn-add-confirm-fee-info/EarnAddConfirmFeeInfo";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   isPoolCreation?: boolean;
@@ -49,6 +50,8 @@ const OneClickStakingModal: React.FC<Props> = ({
   confirm,
   close,
 }) => {
+  const { t } = useTranslation();
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -63,7 +66,11 @@ const OneClickStakingModal: React.FC<Props> = ({
     <OneClickStakingModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Confirm One-Click Staking</h6>
+          <h6>
+            {t("AddPosition:confirmAddModal.title", {
+              context: "oneClick",
+            })}
+          </h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
@@ -82,7 +89,9 @@ const OneClickStakingModal: React.FC<Props> = ({
 
           <div>
             <Button
-              text="Confirm One-Click Staking"
+              text={t("AddPosition:confirmAddModal.btn", {
+                context: "oneClick",
+              })}
               disabled={!!feeInfo.errorMsg}
               style={{
                 hierarchy: ButtonHierarchy.Primary,

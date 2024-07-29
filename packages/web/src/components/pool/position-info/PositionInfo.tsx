@@ -2,7 +2,7 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   HoverSection,
   IconButton,
@@ -22,6 +22,7 @@ import {
   formatOtherPrice,
   formatPoolPairAmount,
 } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 dayjs.extend(relativeTime);
 
@@ -35,12 +36,12 @@ interface PositionInfoProps {
 
 const PositionInfo: React.FC<PositionInfoProps> = ({
   item,
-  key,
   breakpoint,
   tokenASymbol,
   tokenBSymbol,
 }) => {
   const { getTxUrl } = useGnoscanUrl();
+  const { t } = useTranslation();
   const { time, type, usdValue, amountA, amountB, txHash } = item;
   const tableInfo =
     breakpoint === DEVICE_TYPE.MOBILE
@@ -49,8 +50,27 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
       ? TABLET_POSITION_HISTORY_INFO
       : POSITION_HISTORY_INFO;
 
+  const typeKey = useMemo(() => {
+    switch (type) {
+      case "Create":
+        return "business:positionHistoryAction.create";
+      case "Decrease":
+        return "business:positionHistoryAction.decrease";
+      case "Increase":
+        return "business:positionHistoryAction.increase";
+      case "Remove":
+        return "business:positionHistoryAction.remove";
+      case "Unstake":
+        return "business:positionHistoryAction.unstake";
+      case "Stake":
+        return "business:positionHistoryAction.stake";
+      case "Reposition":
+        return "business:positionHistoryAction.reposition";
+    }
+  }, [type]);
+
   return (
-    <PositionInfoWrapper key={key}>
+    <PositionInfoWrapper key={item.txHash}>
       <HoverSection>
         <TableColumn className="left" tdWidth={tableInfo.list[0].width}>
           <DateTimeTooltip date={time}>
@@ -59,7 +79,7 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
         </TableColumn>
         <TableColumn className="left" tdWidth={tableInfo.list[1].width}>
           <span className="position-index">
-            {type}
+            {t(typeKey)}
             <IconButton onClick={() => window.open(getTxUrl(txHash), "_blank")}>
               <IconOpenLink className="action-icon" />
             </IconButton>

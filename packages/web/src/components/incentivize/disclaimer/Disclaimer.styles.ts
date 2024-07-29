@@ -13,6 +13,7 @@ export const wrapper = (theme: Theme) => css`
   border-radius: 8px;
   padding: 15px;
   .section-title {
+    white-space: nowrap;
     color: ${theme.color.text04};
     ${fonts.body12}
   }

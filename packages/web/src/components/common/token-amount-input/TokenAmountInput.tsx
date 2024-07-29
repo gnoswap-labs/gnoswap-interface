@@ -8,6 +8,7 @@ import BigNumber from "bignumber.js";
 import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -25,6 +26,8 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   connected,
   amount,
 }) => {
+  const { t } = useTranslation();
+
   const disabledSelectPair = useMemo(() => {
     return changable !== true;
   }, [changable]);
@@ -103,7 +106,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
           className={`balance-text ${!connected ? "disable-pointer" : ""}`}
           onClick={handleFillBalance}
         >
-          Balance: {balanceADisplay}
+          {t("business:balance")}: {balanceADisplay}
         </span>
       </div>
     </TokenAmountInputWrapper>

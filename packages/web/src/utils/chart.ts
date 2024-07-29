@@ -41,8 +41,8 @@ export const handleXAxis = (dates: any[], count: number) => {
   return Array.from(positions).sort((a, b) => a - b);
 };
 
-export const parseDate = (dateString: string) => {
-  const date = dayjs(dateString);
+export const parseDate = (dateString: string, locale?: string) => {
+  const date = locale ? dayjs(dateString).local() : dayjs(dateString);
   return date.format("MMM D, YYYY");
 };
 

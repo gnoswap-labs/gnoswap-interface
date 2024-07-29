@@ -19,6 +19,7 @@ import BigNumber from "bignumber.js";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 interface RemoveLiquiditySelectListItemProps {
   position: PoolPositionModel;
@@ -33,6 +34,8 @@ interface TooltipProps {
 }
 
 const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
+  const { t } = useTranslation();
+
   const { getGnotPath } = useGnotToGnot();
 
   const renderTokenValue = (token: TokenModel, tokenBalance: string) => {
@@ -57,7 +60,9 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
     <TooltipWrapperContent>
       <div css={tooltipWrapper()}>
         <TokenTitleWrapper>
-          <div className="title">Token ID</div>
+          <div className="title">
+            {t("RemovePosition:positionList.item.tooltip.tokenID")}
+          </div>
           <div className="title">#{position.id}</div>
         </TokenTitleWrapper>
         {renderTokenValue(position.pool.tokenA, position.tokenABalance)}
@@ -66,7 +71,7 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
       {disabled && <div className="divider"></div>}
       {disabled && (
         <div className="unstake-description">
-          *You need to unstake your position first.
+          {t("RemovePosition:positionList.item.disabled")}
         </div>
       )}
     </TooltipWrapperContent>
@@ -131,8 +136,6 @@ const RemoveLiquiditySelectListItem: React.FC<
           </div>
         </Tooltip>
       </div>
-      {/* <span className="liquidity-value-fake" ref={liquidityRef}>${lpPosition.position.balance.toLocaleString()}</span>
-      <span className="liquidity-value" >${!checkWidth ? convertToMB(lpPosition.position.balance.toString()) : lpPosition.position.balance.toLocaleString()}</span> */}
       <span className="liquidity-value">{liquidityUSD}</span>
     </RemoveLiquiditySelectListItemWrapper>
   );

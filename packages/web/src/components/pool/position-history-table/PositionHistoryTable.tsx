@@ -5,9 +5,7 @@ import {
   TableInfoType,
   TABLET_POSITION_HISTORY_INFO,
 } from "@constants/skeleton.constant";
-import {
-  TABLE_HEAD,
-} from "@containers/position-history-container/PositionHistoryContainer";
+import { TABLE_HEAD } from "@containers/position-history-container/PositionHistoryContainer";
 import { cx } from "@emotion/css";
 import { DEVICE_TYPE } from "@styles/media";
 import React from "react";
@@ -15,10 +13,11 @@ import PositionInfo from "../position-info/PositionInfo";
 import {
   TableHeader,
   TableWrapper,
-  noDataText
+  noDataText,
 } from "./PositionHistoryTable.styles";
 import { TokenModel } from "@models/token/token-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
+import { useTranslation } from "react-i18next";
 
 interface PositionHistoryTableProps {
   list: IPositionHistoryModel[];
@@ -37,12 +36,15 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
   tokenB,
   isLoading,
 }) => {
+  const { t } = useTranslation();
+
   const sekeleton: TableInfoType =
     breakpoint === DEVICE_TYPE.MOBILE
       ? MOBILE_POSITION_HISTORY_INFO
-      : (breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M)
-        ? TABLET_POSITION_HISTORY_INFO
-        : POSITION_HISTORY_INFO;
+      : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
+      ? TABLET_POSITION_HISTORY_INFO
+      : POSITION_HISTORY_INFO;
+
   return (
     <TableWrapper>
       <div className="scroll-wrapper">
@@ -57,25 +59,31 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
               tdWidth={sekeleton.list[idx]?.width ?? 0}
             >
               <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}>
-                {idx === 3 ? `${tokenA?.symbol} Amount` : idx === 4 ? `${tokenB?.symbol} Amount` : head}
+                {idx === 3
+                  ? `${tokenA?.symbol} ${t("business:amount")}`
+                  : idx === 4
+                  ? `${tokenB?.symbol} ${t("business:amount")}`
+                  : t(head)}
               </span>
             </TableHeader>
           ))}
         </div>
         <div className="position-history-list-body">
           {isFetched && list.length === 0 && (
-            <div css={noDataText}>No position history found</div>
+            <div css={noDataText}>{t("Pool:position.card.history.empty")}</div>
           )}
-          {(isFetched && !isLoading) &&
+          {isFetched &&
+            !isLoading &&
             list.length > 0 &&
-            list.map((item, idx) =>
+            list.map((item, idx) => (
               <PositionInfo
                 item={item}
                 key={idx}
                 breakpoint={breakpoint}
                 tokenASymbol={tokenA.symbol}
-                tokenBSymbol={tokenB.symbol} />
-            )}
+                tokenBSymbol={tokenB.symbol}
+              />
+            ))}
           {isLoading && (
             <TableSkeleton
               info={sekeleton}

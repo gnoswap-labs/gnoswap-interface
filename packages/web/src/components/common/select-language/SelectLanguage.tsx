@@ -26,7 +26,7 @@ const SelectLanguage: React.FC<Props> = ({ onClickChangeLanguage }) => {
           <div></div>
         </div>
         <div className="list">
-          {LANGUAGES.map(item => (
+          {[...LANGUAGES].map(item => (
             <div
               onClick={() => {
                 onClickChangeLanguage();

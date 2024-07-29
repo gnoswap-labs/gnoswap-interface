@@ -34,11 +34,11 @@ export const SelectBoxWrapper = styled.div`
   .icon-arrow {
     width: 16px;
     height: 16px;
-      * {
+    * {
       fill: ${({ theme }) => theme.color.icon01};
     }
   }
-    
+
   .current {
     ${fonts.body9}
     color: ${({ theme }) => theme.color.text02};
@@ -53,14 +53,17 @@ export const SelectBoxModalWrapper = styled.div`
   position: absolute;
   top: 53px;
   left: 0;
-  width: 100%;
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   z-index: 4;
+  .item-wrapper {
+    white-space: nowrap;
+  }
+
   display: none;
-    ${media.mobile} {
+  ${media.mobile} {
     transition: max-height 1s ease;
     position: fixed;
     top: auto;
@@ -78,5 +81,4 @@ export const SelectBoxModalWrapper = styled.div`
       max-height: 273px;
     }
   }
-
 `;

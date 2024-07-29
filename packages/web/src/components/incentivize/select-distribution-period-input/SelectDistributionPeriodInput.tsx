@@ -8,6 +8,7 @@ import SelectBox from "@components/common/select-box/SelectBox";
 import IconInfo from "@components/common/icons/IconInfo";
 import { useTheme } from "@emotion/react";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { useTranslation } from "react-i18next";
 
 export interface SelectDistributionPeriodInputProps {
   title: string;
@@ -19,11 +20,14 @@ export interface SelectDistributionPeriodInputProps {
 const SelectDistributionPeriodInput: React.FC<
   SelectDistributionPeriodInputProps
 > = ({ title, period, periods, changePeriod }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const currentPeriodText = useMemo(() => {
-    return `${period} Days`;
-  }, [period]);
+    return t("common:day.count", {
+      count: period,
+    });
+  }, [period, t]);
 
   return (
     <SelectDistributionPeriodInputWrapper>
@@ -33,11 +37,9 @@ const SelectDistributionPeriodInput: React.FC<
           placement="top"
           FloatingContent={
             <DistributionPeriodTooltipContentWrapper>
-              Incentives are distributed based on the
-              <br /> number of blocks. The distribution period
-              <br /> is approximate and may slightly differ from
-              <br /> the actual time based on the network
-              <br /> conditions of the blockchain.
+              {t(
+                "IncentivizePool:incentiPool.form.period.field.disPeriod.tootlip",
+              )}
             </DistributionPeriodTooltipContentWrapper>
           }
         >
@@ -64,9 +66,13 @@ interface SelectDistributionPeriodItemProps {
 const SelectDistributionPeriodItem: React.FC<
   SelectDistributionPeriodItemProps
 > = ({ period }) => {
+  const { t } = useTranslation();
+
   const periodText = useMemo(() => {
-    return `${period} days`;
-  }, [period]);
+    return t("common:day.count", {
+      count: period,
+    });
+  }, [period, t]);
 
   return (
     <PoolIncentivizeSelectPeriodBoxItem>

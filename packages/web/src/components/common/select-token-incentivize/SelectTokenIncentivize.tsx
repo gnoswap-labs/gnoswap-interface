@@ -4,6 +4,7 @@ import IconClose from "@components/common/icons/IconCancel";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import MissingLogo from "../missing-logo/MissingLogo";
+import { useTranslation } from "react-i18next";
 export interface SelectTokenIncentivizeProps {
   keyword: string;
   defaultTokens: TokenModel[];
@@ -21,36 +22,47 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
   changeToken,
   close,
 }) => {
-  const getTokenPrice = useCallback((token: TokenModel) => {
-    const tokenPrice = tokenPrices[token.priceID];
-    if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
-      return "-";
-    }
-    return BigNumber(tokenPrice).dividedBy(Math.pow(10, token.decimals ?? 0)).toFormat();
-  }, [tokenPrices]);
+  const { t } = useTranslation();
+
+  const getTokenPrice = useCallback(
+    (token: TokenModel) => {
+      const tokenPrice = tokenPrices[token.priceID];
+      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
+        return "-";
+      }
+      return BigNumber(tokenPrice)
+        .dividedBy(Math.pow(10, token.decimals ?? 0))
+        .toFormat();
+    },
+    [tokenPrices],
+  );
 
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
 
-  const onClickToken = useCallback((token: TokenModel) => {
-    changeToken(token);
-    close();
-  }, [changeToken, close]);
+  const onClickToken = useCallback(
+    (token: TokenModel) => {
+      changeToken(token);
+      close();
+    },
+    [changeToken, close],
+  );
 
   return (
     <SelectTokenIncentivizeWrapper>
       <div className="content">
         <div className="header">
-          <span>Select a token</span>
+          <span>{t("common:selectPairBtn.modal.title")}</span>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
         </div>
       </div>
       <div
-        className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
-          }`}
+        className={`token-list-wrapper ${
+          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
+        }`}
       >
         {tokens.length > 0 &&
           tokens.map((token, index) => (
@@ -60,7 +72,13 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
               onClick={() => onClickToken(token)}
             >
               <div className="token-info">
-                <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24} />
+                <MissingLogo
+                  symbol={token.symbol}
+                  url={token.logoURI}
+                  className="token-logo"
+                  width={24}
+                  mobileWidth={24}
+                />
                 <span className="token-name">{token.name}</span>
                 <span className="token-symbol">{token.symbol}</span>
               </div>
@@ -68,7 +86,9 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
             </div>
           ))}
         {tokens.length === 0 && (
-          <div className="no-data-found">No data found</div>
+          <div className="no-data-found">
+            {t("common:selectPairBtn.modal.noData")}
+          </div>
         )}
       </div>
     </SelectTokenIncentivizeWrapper>

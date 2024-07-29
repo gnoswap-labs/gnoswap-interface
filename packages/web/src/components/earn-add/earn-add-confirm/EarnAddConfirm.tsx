@@ -6,6 +6,7 @@ import EarnAddConfirmAmountInfo from "../earn-add-confirm-amount-info/EarnAddCon
 import EarnAddConfirmPriceRangeInfo from "../earn-add-confirm-price-range-info/EarnAddConfirmPriceRangeInfo";
 import EarnAddConfirmFeeInfo from "../earn-add-confirm-fee-info/EarnAddConfirmFeeInfo";
 import { TokenModel } from "@models/token/token-model";
+import { useTranslation } from "react-i18next";
 
 export interface EarnAddConfirmProps {
   isPoolCreation?: boolean;
@@ -49,6 +50,8 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
   confirm,
   close,
 }) => {
+  const { t } = useTranslation();
+
   const onClickConfirm = useCallback(() => {
     if (isPoolCreation && feeInfo.errorMsg) {
       return;
@@ -60,7 +63,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
   return (
     <EarnAddConfirmWrapper>
       <div className="confirm-header">
-        <h6 className="title">Confirm Add Position</h6>
+        <h6 className="title">{t("AddPosition:confirmAddModal.title")}</h6>
         <button className="close-button" onClick={close}>
           <IconClose />
         </button>
@@ -73,7 +76,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
       {isPoolCreation && <EarnAddConfirmFeeInfo {...feeInfo} />}
 
       <Button
-        text="Confirm Add Position"
+        text={t("AddPosition:confirmAddModal.btn")}
         onClick={onClickConfirm}
         disabled={isPoolCreation && !!feeInfo.errorMsg}
         style={{

@@ -4,6 +4,7 @@ import RemoveLiquiditySelectListItem from "../remove-liquidity-select-list-item/
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { loadingWrapper } from "../remove-liquidity/RemoveLiquidity.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { useTranslation } from "react-i18next";
 
 interface RemoveLiquiditySelectListProps {
   stakedPositions: PoolPositionModel[];
@@ -24,6 +25,8 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
   checkedAll,
   isLoading,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <RemoveLiquiditySelectListWrapper>
       <div className="checked-all-wrap">
@@ -35,32 +38,44 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             onChange={e => onCheckedAll(e.target.checked)}
           />
           <label htmlFor="checkbox-all" />
-          <span className="custom-label">Select All</span>
+          <span className="custom-label">
+            {t("common:select", {
+              context: "with",
+            })}
+          </span>
         </div>
-        <span>Liquidity</span>
+        <span>{t("business:liquidity")}</span>
       </div>
       <ul>
-        {isLoading && <div css={loadingWrapper}>
-          <LoadingSpinner />
-        </div>}
-        {!isLoading && unstakedPositions.map((position, index) => (
-          <RemoveLiquiditySelectListItem
-            position={position}
-            checkedList={checkedList}
-            onCheckedItem={onCheckedItem}
-            key={index}
-          />
-        ))}
-        {!isLoading && stakedPositions.map((position, index) => (
-          <RemoveLiquiditySelectListItem
-            position={position}
-            checkedList={checkedList}
-            onCheckedItem={onCheckedItem}
-            key={index}
-            disabled
-          />
-        ))}
-        {!isLoading && unstakedPositions.length === 0 && stakedPositions.length === 0 && <div className="no-position">No Position</div>}
+        {isLoading && (
+          <div css={loadingWrapper}>
+            <LoadingSpinner />
+          </div>
+        )}
+        {!isLoading &&
+          unstakedPositions.map((position, index) => (
+            <RemoveLiquiditySelectListItem
+              position={position}
+              checkedList={checkedList}
+              onCheckedItem={onCheckedItem}
+              key={index}
+            />
+          ))}
+        {!isLoading &&
+          stakedPositions.map((position, index) => (
+            <RemoveLiquiditySelectListItem
+              position={position}
+              checkedList={checkedList}
+              onCheckedItem={onCheckedItem}
+              key={index}
+              disabled
+            />
+          ))}
+        {!isLoading &&
+          unstakedPositions.length === 0 &&
+          stakedPositions.length === 0 && (
+            <div className="no-position">{t("business:noPosition")}</div>
+          )}
       </ul>
     </RemoveLiquiditySelectListWrapper>
   );

@@ -72,5 +72,6 @@ export const PoolIncentivizeSelectPeriodBoxItem = styled.div`
 
 export const DistributionPeriodTooltipContentWrapper = styled.div`
   ${fonts.body12}
+  width: 350px;
   color: ${({ theme }) => theme.color.text11};
 `;
