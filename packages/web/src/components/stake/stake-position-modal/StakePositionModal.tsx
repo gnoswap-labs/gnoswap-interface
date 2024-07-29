@@ -8,7 +8,6 @@ import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import React, { useCallback, useMemo } from "react";
-import { useTranslation } from "react-i18next";
 import {
   Divider,
   StakePositionModalWrapper,
@@ -28,8 +27,6 @@ const StakePositionModal: React.FC<Props> = ({
   onSubmit,
   pool,
 }) => {
-  const { t } = useTranslation();
-
   const totalLiquidityUSD = useMemo(() => {
     const totalLiquidity = positions.reduce(
       (accum, position) => accum + Number(position.positionUsdValue),
@@ -56,25 +53,25 @@ const StakePositionModal: React.FC<Props> = ({
     <StakePositionModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>{t("StakePosition:confStakeModal.title")}</h6>
+          <h6>Confirm Stake Position</h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
         </div>
         <div className="content">
           <div className="box-item">
-            <h4>{t("StakePosition:confStakeModal.stakingReward.title")}</h4>
+            <h4>Staking Rewards</h4>
             <div className="item-content">
               <div>
                 <div className="label">
-                  {t("StakePosition:confStakeModal.stakingReward.apr.label")}
+                  Staking APR
                   <Tooltip
                     placement="top"
                     FloatingContent={
                       <ToolTipContentWrapper>
-                        {t(
-                          "StakePosition:confStakeModal.stakingReward.apr.tooltip",
-                        )}
+                        The estimated APR range is calculated by applying a
+                        dynamic multiplier to your staked position, based on the
+                        staking duration.
                       </ToolTipContentWrapper>
                     }
                   >
@@ -86,7 +83,7 @@ const StakePositionModal: React.FC<Props> = ({
             </div>
           </div>
           <div className="box-item">
-            <h4>{t("StakePosition:confStakeModal.positionLst")}</h4>
+            <h4>Positions</h4>
             <div className="item-content">
               {positions.map((position, index) => (
                 <div key={index}>
@@ -118,16 +115,14 @@ const StakePositionModal: React.FC<Props> = ({
           <div className="box-item">
             <div className="item-content">
               <div>
-                <div className="label-large">
-                  {t("StakePosition:confStakeModal.totalAmt")}
-                </div>
+                <div className="label-large">Total Amount</div>
                 <div className="value-large">{totalLiquidityUSD}</div>
               </div>
             </div>
           </div>
           <div>
             <Button
-              text={t("StakePosition:confStakeModal.btn")}
+              text="Confirm Stake Position"
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
