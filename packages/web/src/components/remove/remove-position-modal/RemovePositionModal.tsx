@@ -162,7 +162,7 @@ const RemovePositionModal: React.FC<Props> = ({
               </div>
             </div>
             <WarningCard
-              title={t("RemovePosition:imporNote")}
+              title={t("RemovePosition:confRemoveModal.warning.title")}
               icon={<IconCircleExclamationMark />}
               content={
                 <RemoveWarningContentWrapper>

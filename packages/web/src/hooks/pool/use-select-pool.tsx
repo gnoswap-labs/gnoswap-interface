@@ -431,17 +431,17 @@ export const useSelectPool = ({
 
   const minPrice = useMemo(() => {
     if (fullRange) {
-      return swapFeeTierMaxPriceRangeMap.minPrice;
+      return swapFeeTierMaxPriceRangeMap?.minPrice;
     }
     return minPosition;
-  }, [fullRange, minPosition, swapFeeTierMaxPriceRangeMap.minPrice]);
+  }, [fullRange, minPosition, swapFeeTierMaxPriceRangeMap?.minPrice]);
 
   const maxPrice = useMemo(() => {
     if (fullRange) {
-      return swapFeeTierMaxPriceRangeMap.maxPrice;
+      return swapFeeTierMaxPriceRangeMap?.maxPrice;
     }
     return maxPosition;
-  }, [fullRange, maxPosition, swapFeeTierMaxPriceRangeMap.maxPrice]);
+  }, [fullRange, maxPosition, swapFeeTierMaxPriceRangeMap?.maxPrice]);
 
   const depositRatio = useMemo(() => {
     if (
