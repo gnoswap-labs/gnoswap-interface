@@ -39,6 +39,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
+import { Trans, useTranslation } from "react-i18next";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -84,6 +85,8 @@ const SelectPriceRangeCustom = forwardRef<
     },
     ref,
   ) => {
+    const { t } = useTranslation();
+
     const { getGnotPath } = useGnotToGnot();
     const [shiftPosition, setShiftPosition] = useState(0);
     const GRAPH_WIDTH = 388;
@@ -439,15 +442,16 @@ const SelectPriceRangeCustom = forwardRef<
         {selectPool.isCreate && (
           <StartingPriceWrapper className="starting-price-wrapper">
             <div className="title-wrapper">
-              <span className="sub-title">Starting Price</span>
+              <span className="sub-title">
+                {t("AddPosition:createPool.startingPrice")}
+              </span>
               <div className="price-info">
                 {!startingPriceValue && !isEmptyLiquidity && (
                   <Tooltip
                     placement="top"
                     FloatingContent={
                       <TooltipContentWrapper>
-                        Suggested starting price based on the current price of
-                        the most liquid pool in the same pair.
+                        {t("AddPosition:createPool.tooltip")}
                       </TooltipContentWrapper>
                     }
                   >
@@ -463,7 +467,7 @@ const SelectPriceRangeCustom = forwardRef<
               onChange={onChangeStartingPrice}
               onBlur={updateStartingPrice}
               onFocus={() => setTempPrice("")}
-              placeholder="Enter price"
+              placeholder={t("AddPosition:createPool.placeholder")}
             />
           </StartingPriceWrapper>
         )}
@@ -538,7 +542,7 @@ const SelectPriceRangeCustom = forwardRef<
                 <React.Fragment>
                   {!showDim && (
                     <div className="current-price-wrapper">
-                      <span>Current Price</span>
+                      <span>{t("business:currentPrice")}</span>
                       <span
                         style={{ wordBreak: "break-all", textAlign: "center" }}
                       >
@@ -548,14 +552,20 @@ const SelectPriceRangeCustom = forwardRef<
                   )}
                   {showDim && (
                     <div className="pool-initialization">
-                      <span>Pool Initialization</span>
+                      <span>{t("AddPosition:form.priceRange.dim.title")}</span>
                       <div>
-                        As the first person to Add Position to this pool, you
-                        must initialize it. <span>Enter a starting price</span>{" "}
-                        for the pool, then select the price range and the
-                        deposit amount for your liquidity. Please note that{" "}
-                        <span>gas fees will be higher</span> than usual due to
-                        the initialization transaction.
+                        <Trans
+                          ns="AddPosition"
+                          i18nKey={"form.priceRange.dim.content"}
+                        >
+                          As the first person to Add Position to this pool, you
+                          must initialize it.
+                          <span>Enter a starting price</span>
+                          for the pool, then select the price range and the
+                          deposit amount for your liquidity. Please note that
+                          <span>gas fees will be higher</span> than usual due to
+                          the initialization transaction.
+                        </Trans>
                       </div>
                     </div>
                   )}
@@ -587,7 +597,7 @@ const SelectPriceRangeCustom = forwardRef<
                   <div className="rangge-content-wrapper">
                     <div className="range-controller-wrapper">
                       <SelectPriceRangeCustomController
-                        title="Min Price"
+                        title={t("AddPosition:form.priceRange.minPrice")}
                         current={selectPool.minPrice}
                         token0Symbol={currentTokenA.symbol}
                         token1Symbol={currentTokenB.symbol}
@@ -603,7 +613,7 @@ const SelectPriceRangeCustom = forwardRef<
                         priceRatio={decimalsRatio}
                       />
                       <SelectPriceRangeCustomController
-                        title="Max Price"
+                        title={t("AddPosition:form.priceRange.maxPrice")}
                         current={selectPool.maxPrice}
                         token0Symbol={currentTokenA.symbol}
                         token1Symbol={currentTokenB.symbol}
@@ -628,15 +638,16 @@ const SelectPriceRangeCustom = forwardRef<
                         }}
                       >
                         <IconRefresh />
-                        <span>Reset</span>
+                        <span>{t("common:reset")}</span>
                       </div>
                       <div
                         className="icon-button full"
                         onClick={selectFullRange}
                       >
                         <IconSwap />
-                        <span>Full Price Range</span>
-                        <span>Full Range</span>
+                        <span>
+                          {t("AddPosition:form.priceRange.fullPrice")}
+                        </span>
                       </div>
                     </div>
                     {showDim && <div className="dim-content-3" />}

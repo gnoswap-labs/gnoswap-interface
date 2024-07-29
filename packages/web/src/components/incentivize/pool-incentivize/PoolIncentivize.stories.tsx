@@ -16,7 +16,8 @@ const tokenA = {
   path: "0",
   name: "HEXss",
   symbol: "HEX",
-  logoURI: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
+  logoURI:
+    "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
   balance: "1,234",
 };
 
@@ -24,18 +25,19 @@ const tokenB = {
   path: "1",
   name: "USDCoin",
   symbol: "USDC",
-  logoURI: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
+  logoURI:
+    "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
   balance: "1,234",
 };
 
 const tokens = [tokenA, tokenB];
 
+const pools = await poolRepository.getPools();
 
-const pools = (await poolRepository.getPools());
+const details = await poolRepository.getPoolDetailByPoolPath();
 
-const details = (await poolRepository.getPoolDetailByPoolPath());
-
-const dummyDisclaimer = "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. By adding incentives to the pool, you may draw more liquidity providers, which could lead to better price rates and increased trading activities.As the incentivizer, you can choose the type of the token and the duration of the rewards. The rewards will be automatically distributed by the contract and you will not be able to withdraw the tokens once the you complete this step.";
+const dummyDisclaimer =
+  "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. By adding incentives to the pool, you may draw more liquidity providers, which could lead to better price rates and increased trading activities.As the incentivizer, you can choose the type of the token and the duration of the rewards. The rewards will be automatically distributed by the contract and you will not be able to withdraw the tokens once the you complete this step.";
 const periods = [90, 120, 210];
 
 const Template: ComponentStory<typeof PoolIncentivize> = args => {
@@ -79,5 +81,5 @@ const Template: ComponentStory<typeof PoolIncentivize> = args => {
 export const Default = Template.bind({});
 Default.args = {
   details,
-  disclaimer: dummyDisclaimer,
-}; 
+  dummyDisclaimer: "",
+};

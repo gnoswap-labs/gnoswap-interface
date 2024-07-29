@@ -14,7 +14,7 @@ export interface pathProps {
 }
 
 export const menu = {
-  title: "Earn",
+  title: "business:pageHeader.earn",
   path: "/earn",
 };
 

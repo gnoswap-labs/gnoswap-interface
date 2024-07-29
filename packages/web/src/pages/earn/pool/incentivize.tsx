@@ -13,7 +13,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { makeRouteUrl } from "@utils/page.utils";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
@@ -21,7 +21,10 @@ import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+      ...(await serverSideTranslations(locale, [
+        ...DEFAULT_I18N_NS,
+        "IncentivizePool",
+      ])),
     },
   };
 }

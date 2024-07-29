@@ -29,6 +29,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { useGetTokenPrices } from "@query/token";
 import { checkGnotPath } from "@utils/common";
+import { useTranslation } from "react-i18next";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -48,6 +49,8 @@ const PriceTooltipContent = ({
   period: number;
 }) => {
   const { getGnotPath } = useGnotToGnot();
+  const { t } = useTranslation();
+
   const { data: tokenPrices = {} } = useGetTokenPrices();
 
   const isAnyPriceEmpty = useCallback(
@@ -95,7 +98,9 @@ const PriceTooltipContent = ({
               <span className="title">ID #{position.lpTokenId}</span>
             </div>
             <div className="list">
-              <span className="label">Total Value</span>
+              <span className="label">
+                {t("Pool:staking.period.stakedTooltip.totalValue")}
+              </span>
               <span className="content">
                 {!isAnyPriceEmpty(position)
                   ? formatOtherPrice(position.usdValue, { hasMinLimit: false })
@@ -103,13 +108,17 @@ const PriceTooltipContent = ({
               </span>
             </div>
             <div className="list">
-              <span className="label">Staked Date</span>
+              <span className="label">
+                {t("Pool:staking.period.stakedTooltip.stakedDate")}
+              </span>
               <span className="content">
                 {timeToDateStr(new Date(position.stakedAt).getTime())}
               </span>
             </div>
             <div className="list">
-              <span className="label">Next Tier</span>
+              <span className="label">
+                {t("Pool:staking.period.stakedTooltip.nextTier")}
+              </span>
               <span className="content">
                 {period === -1 ? "-" : `in ${getRemainTime(position)}`}
               </span>
@@ -130,6 +139,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   breakpoint,
   loading,
 }) => {
+  const { t } = useTranslation();
   const { tokenPrices } = useTokenData();
   const hasPosition = positions.length > 0;
 
@@ -224,14 +234,24 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
             )}
           </div>
           <div className="name-wrap">
-            <span className="symbol-text">{periodInfo.title}</span>
+            <span className="symbol-text">
+              {t("Pool:staking.period.title", {
+                days: periodInfo.period,
+              })}
+            </span>
             <div className="icon-wrap">
-              <span className="content-text">{periodInfo.description}</span>
+              <span className="content-text">
+                {t("Pool:staking.period.subtitle", {
+                  percent: periodInfo.rate * 100 + "%",
+                })}
+              </span>
               <Tooltip
                 placement="top"
                 FloatingContent={
                   <ToolTipContentWrapper>
-                    {periodInfo.tooltipContent}
+                    {t("Pool:staking.period.subtitleTooltip", {
+                      percent: periodInfo.rate * 100 + "%",
+                    })}
                   </ToolTipContentWrapper>
                 }
               >
@@ -328,7 +348,9 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   stakingApr,
   loading,
 }) => {
+  const { t } = useTranslation();
   const { tokenPrices } = useTokenData();
+
   const hasPosition = positions.length > 0;
 
   const checkedStep = useMemo(() => {
@@ -403,14 +425,27 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
             {checkedStep && <IconCheck />}
           </div>
           <div className="name-wrap">
-            <span className="symbol-text">{periodInfo.title}</span>
+            <span className="symbol-text">
+              {t("Pool:staking.period.title", {
+                context: "max",
+                days: periodInfo.period,
+              })}
+            </span>
             <div className="icon-wrap">
-              <span className="content-gd-text">{periodInfo.description}</span>
+              <span className="content-gd-text">
+                {t("Pool:staking.period.subtitle", {
+                  context: "max",
+                  percent: periodInfo.rate * 100 + "%",
+                })}
+              </span>
               <Tooltip
                 placement="top"
                 FloatingContent={
                   <ToolTipContentWrapper>
-                    {periodInfo.tooltipContent}
+                    {t("Pool:staking.period.subtitleTooltip", {
+                      context: "max",
+                      percent: periodInfo.rate * 100 + "%",
+                    })}
                   </ToolTipContentWrapper>
                 }
               >

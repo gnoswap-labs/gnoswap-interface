@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import IconStrokeArrowLeft from "../icons/IconStrokeArrowLeft";
 import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
 import { wrapper } from "./Calendar.styles";
@@ -16,18 +17,18 @@ interface CalendarProps {
 }
 
 const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "common:month.jan",
+  "common:month.feb",
+  "common:month.mar",
+  "common:month.apr",
+  "common:month.may",
+  "common:month.june",
+  "common:month.july",
+  "common:month.aug",
+  "common:month.sep",
+  "common:month.oct",
+  "common:month.nov",
+  "common:month.dec",
 ];
 
 const Calendar: React.FC<CalendarProps> = ({
@@ -35,6 +36,8 @@ const Calendar: React.FC<CalendarProps> = ({
   dayOfWeeks = ["S", "M", "T", "W", "T", "F", "S"],
   onClickDate,
 }) => {
+  const { t } = useTranslation();
+
   const [currentDate, setCurrentDate] = useState<CalendarItem>({
     year: selectedDate.year,
     month: selectedDate.month,
@@ -69,10 +72,10 @@ const Calendar: React.FC<CalendarProps> = ({
 
   const currentMonthName = useCallback(() => {
     const month = getCurrent().getMonth();
-    const monthName = MONTH_NAMES[month];
+    const monthName = t(MONTH_NAMES[month]);
     const year = getCurrent().getFullYear();
     return `${monthName} ${year}`;
-  }, [getCurrent]);
+  }, [getCurrent, t]);
 
   const getDates = useCallback(() => {
     const blanks = Array.from({ length: getFirstDate().getDay() }, () => -1);

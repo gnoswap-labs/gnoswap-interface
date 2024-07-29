@@ -5,6 +5,7 @@ import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 export interface MyPositionAprContentProps {
   rewardInfo: { [key in RewardType]: PositionAPRInfo[] };
@@ -14,6 +15,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
   rewardInfo,
 }) => {
   const { getGnotPath } = useGnotToGnot();
+  const { t } = useTranslation();
 
   const swapFeeRewards = useMemo(() => {
     if (rewardInfo.SWAP_FEE.length === 0) {
@@ -41,7 +43,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
       {swapFeeRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">Swap Fees</span>
+            <span className="title">{t("business:rewardType.swapFee")}</span>
           </div>
           {swapFeeRewards.map((reward, index) => (
             <div key={index} className="list">
@@ -57,7 +59,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
                   {formatOtherPrice(reward.accuReward1D, {
                     usd: false,
                   })}{" "}
-                  / day
+                  / {t("common:day.base")}
                 </span>
               </div>
               <span className="position">{formatRate(reward.apr)}</span>
@@ -69,7 +71,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
       {internalRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">Internal Rewards</span>
+            <span className="title">{t("business:rewardType.internal")}</span>
             <span className="title"></span>
           </div>
           {internalRewards.map((reward, index) => (
@@ -83,7 +85,8 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {formatOtherPrice(reward.accuReward1D, { usd: false })} / day
+                  {formatOtherPrice(reward.accuReward1D, { usd: false })} /{" "}
+                  {t("common:day.base")}
                 </span>
               </div>
               <span className="position">{formatRate(reward.apr)}</span>
@@ -95,7 +98,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
       {externalRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">External Rewards</span>
+            <span className="title">{t("business:rewardType.external")}</span>
             <span className="title"></span>
           </div>
           {externalRewards.map((reward, index) => (
@@ -109,7 +112,8 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {formatOtherPrice(reward.accuReward1D, { usd: false })} / day
+                  {formatOtherPrice(reward.accuReward1D, { usd: false })} /{" "}
+                  {t("common:day.base")}
                 </span>
               </div>
               <span className="position">{formatRate(reward.apr)}</span>

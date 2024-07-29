@@ -5,6 +5,7 @@ import {
   EarnAddConfirmFeeInfoWrapper,
 } from "./EarnAddConfirmFeeInfo.styles";
 import { TokenInfo } from "@models/token/token-info";
+import { useTranslation } from "react-i18next";
 
 export interface EarnAddConfirmFeeInfoProps {
   token?: TokenInfo;
@@ -17,9 +18,11 @@ const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
   fee,
   errorMsg,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <EarnAddConfirmFeeInfoWrapper>
-      <p>Pool Creation Fee</p>
+      <p>{t("AddPosition:confirmAddModal.info.label.creationFee")}</p>
       <EarnAddConfirmFeeInfoSection $hasError={!!errorMsg}>
         <div className="token-info">
           <img src={token?.logoURI} alt="token logo" />

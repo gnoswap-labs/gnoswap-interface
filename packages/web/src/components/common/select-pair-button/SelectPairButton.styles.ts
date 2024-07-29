@@ -16,9 +16,9 @@ export const wrapper =
       ${!disabled && "cursor: pointer;"};
       ${!disabled &&
       `
-    transition: 0.2s;
-    &:hover { background-color: ${theme.color.backgroundGradient}; }
-    `};
+        transition: 0.2s;
+        &:hover { background-color: ${theme.color.backgroundGradient}; }
+      `};
       > div {
         ${mixins.flexbox("row", "center", "center")}
         gap: 8px;
@@ -42,5 +42,8 @@ export const wrapper =
         * {
           fill: ${theme.color.icon01};
         }
+      }
+      .token-label-select {
+        white-space: nowrap;
       }
     `;

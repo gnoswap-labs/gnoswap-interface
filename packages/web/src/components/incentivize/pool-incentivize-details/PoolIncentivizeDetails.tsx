@@ -10,6 +10,7 @@ import { getDateUtcToLocal } from "@common/utils/date-util";
 import dayjs from "dayjs";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { useTranslation } from "react-i18next";
 // import Tooltip from "@components/common/tooltip/Tooltip";
 // import IncentivizeBlockTooltipContent from "../incentivize-block-tooltip-content/IncentivizeBlockTooptipContent";
 // import { useGetLastedBlockHeight } from "@query/pools";
@@ -65,13 +66,16 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   amount,
   token,
 }) => {
+  const { t } = useTranslation();
   // const { data: blockHeight } = useGetLastedBlockHeight();
   const { getGnotPath } = useGnotToGnot();
 
   return (
     <div css={wrapper}>
       <section>
-        <h5 className="section-title">Pool</h5>
+        <h5 className="section-title">
+          {t("IncentivizePool:incenDetail.row.label.pool")}
+        </h5>
         {details ? (
           <div className="section-info">
             <DoubleLogo
@@ -92,7 +96,9 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
         )}
       </section>
       <section>
-        <h5 className="section-title">Total Amount</h5>
+        <h5 className="section-title">
+          {t("IncentivizePool:incenDetail.row.label.totalAmt")}
+        </h5>
         {amount && token ? (
           <div className="section-info">
             <MissingLogo
@@ -109,7 +115,9 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
         )}
       </section>
       <section className="period-section">
-        <h5 className="section-title">Period</h5>
+        <h5 className="section-title">
+          {t("IncentivizePool:incenDetail.row.label.period")}
+        </h5>
         <div className="section-info">
           {/* <Tooltip
             placement="top"
@@ -127,7 +135,9 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
           {/* </Tooltip> */}
           <span className="period-desc">
             {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()}{" "}
-            {token?.symbol} will be distributed daily
+            {t("IncentivizePool:incenDetail.row.value.period.desc", {
+              symbol: token?.symbol,
+            })}
           </span>
         </div>
       </section>

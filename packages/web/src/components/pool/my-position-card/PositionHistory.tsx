@@ -5,6 +5,7 @@ import IconArrowDown from "@components/common/icons/IconArrowDown";
 import PositionHistoryContainer from "@containers/position-history-container/PositionHistoryContainer";
 import { TokenModel } from "@models/token/token-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   isClosed: boolean;
@@ -15,10 +16,11 @@ interface Props {
 
 const PositionHistory: FC<Props> = ({ isClosed, tokenB, tokenA, position }) => {
   const [openedSelector, setOpenedSelector] = useState(false);
+  const { t } = useTranslation();
   return (
     <PositionHistoryWrapper isClosed={isClosed}>
       <div className="title" onClick={() => setOpenedSelector(!openedSelector)}>
-        <div>Position History</div>
+        <div>{t("Pool:position.card.history.title")}</div>
         <div className="icon-wrapper">
           {openedSelector ? (
             <IconArrowUp className="icon-arrow" />
@@ -27,7 +29,13 @@ const PositionHistory: FC<Props> = ({ isClosed, tokenB, tokenA, position }) => {
           )}
         </div>
       </div>
-      {openedSelector && <PositionHistoryContainer position={position} tokenA={tokenA} tokenB={tokenB} />}
+      {openedSelector && (
+        <PositionHistoryContainer
+          position={position}
+          tokenA={tokenA}
+          tokenB={tokenB}
+        />
+      )}
     </PositionHistoryWrapper>
   );
 };

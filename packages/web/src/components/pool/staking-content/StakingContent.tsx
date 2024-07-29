@@ -20,6 +20,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IncentivizeTokenDetailTooltipContainer from "@containers/incentivize-token-detail-container/IncentivizeTokenDetailTooltipContainer";
+import { useTranslation } from "react-i18next";
 
 interface StakingContentProps {
   totalApr: string;
@@ -32,10 +33,10 @@ interface StakingContentProps {
 }
 
 const TEXT_BTN = [
-  "Create your first position to get started ⛵",
-  "Stake your position to get started ⛵",
-  "Keep staking to receive higher rewards ⌛",
-  "Receiving max rewards ✨",
+  "Pool:staking.keepStakingNote.one",
+  "Pool:staking.keepStakingNote.two",
+  "Pool:staking.keepStakingNote.three",
+  "Pool:staking.keepStakingNote.four",
 ];
 
 const DAY_TIME = 24 * 60 * 60 * 1000;
@@ -51,6 +52,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
 }) => {
   const { getGnotPath } = useGnotToGnot();
   const [showAprTooltip, setShowAprTooltip] = useState(false);
+  const { t } = useTranslation();
+
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
     const rewardLogo =
@@ -194,12 +197,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             />
           </SkeletonEarnDetailWrapper>
         )}
-        {!loading && (
-          <span>
-            Stake your position to earn rewards up{" "}
-            <span className="to-web">to</span>
-          </span>
-        )}
+        {!loading && <span>{t("Pool:staking.intro")}</span>}
         {!loading && (
           <AprNumberContainer
             placeholderWidth={
@@ -208,7 +206,9 @@ const StakingContent: React.FC<StakingContentProps> = ({
           >
             <Tooltip
               FloatingContent={
-                <NoticeAprToolTip>Hover to view details</NoticeAprToolTip>
+                <NoticeAprToolTip>
+                  {t("Pool:staking.tooltip.hoverGuide")}
+                </NoticeAprToolTip>
               }
               placement="top"
               forcedOpen={showAprTooltip}
@@ -218,7 +218,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
               <div className="placeholder"></div>
             </Tooltip>
             <AprStakingHeader $isMobile={mobile}>
-              <span className="to-mobile">to</span>
               <Tooltip
                 FloatingContent={
                   <IncentivizeTokenDetailTooltipContainer
@@ -245,7 +244,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       </div>
       <div className="staking-wrap">
         <>
-          <span>My Staking</span>
+          <span>{t("Pool:staking.myStake")}</span>
           {STAKING_PERIOS.map((period, index) => {
             return period === "MAX" ? (
               <SummuryApr
@@ -292,7 +291,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
         )}
         {!loading && (
           <Button
-            text={TEXT_BTN[type]}
+            text={t(TEXT_BTN[type])}
             style={{
               width: "100%",
               height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,

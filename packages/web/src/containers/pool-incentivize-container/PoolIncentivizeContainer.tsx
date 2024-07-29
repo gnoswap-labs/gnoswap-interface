@@ -12,15 +12,15 @@ import { EarnState } from "@states/index";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetPoolList } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useTranslation } from "react-i18next";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
-
-export const dummyDisclaimer =
-  "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. Before you proceed, ensure that you understand the mechanics of external incentives and acknowledge that you cannot withdraw the rewards once you complete this step.<br /><br />The incentives you add will be automatically distributed by the contract and may draw more liquidity providers.";
 
 const tokenBalances: TokenBalanceInfo[] = [];
 const periods = [90, 180, 365];
 
 const PoolIncentivizeContainer: React.FC = () => {
+  const { t } = useTranslation();
+
   const [period, setPeriod] = useAtom(EarnState.period);
   const [startDate, setStartDate] = useAtom(EarnState.date);
   const [, setDataModal] = useAtom(EarnState.dataModal);
@@ -125,28 +125,35 @@ const PoolIncentivizeContainer: React.FC = () => {
 
   const textBtn = useMemo(() => {
     if (!connected) {
-      return "Wallet Login";
+      return t("IncentivizePool:submitBtn.walletLoginBtn");
     }
     if (isSwitchNetwork) {
-      return "Switch to Gnoland";
+      return t("IncentivizePool:submitBtn.switch");
     }
     if (!currentPool) {
-      return "Select Pool";
+      return t("IncentivizePool:submitBtn.selectPool");
     }
     if (Number(tokenAmountInput.amount) === 0) {
-      return "Enter Amount";
+      return t("IncentivizePool:submitBtn.enterAmt");
     }
     if (Number(tokenAmountInput.amount) < 0.000001) {
-      return "Amount Too Low";
+      return t("IncentivizePool:submitBtn.amtTooLow");
     }
     if (
       Number(tokenAmountInput.amount) >
       Number(tokenAmountInput.balance.replace(/,/g, ""))
     ) {
-      return "Insufficient Balance";
+      return t("IncentivizePool:submitBtn.insuffi");
     }
-    return "Incentivize Pool";
-  }, [connected, currentPool, tokenAmountInput, isSwitchNetwork]);
+    return t("IncentivizePool:submitBtn.incentiPool");
+  }, [
+    connected,
+    isSwitchNetwork,
+    currentPool,
+    tokenAmountInput.amount,
+    tokenAmountInput.balance,
+    t,
+  ]);
 
   return (
     <PoolIncentivize
@@ -159,7 +166,6 @@ const PoolIncentivizeContainer: React.FC = () => {
       period={period}
       setPeriod={setPeriod}
       details={poolDetail}
-      disclaimer={dummyDisclaimer}
       token={currentToken}
       tokens={tokenBalances}
       selectToken={selectToken}
@@ -169,6 +175,7 @@ const PoolIncentivizeContainer: React.FC = () => {
       textBtn={textBtn}
       disableButton={disableButton}
       connected={connected}
+      dummyDisclaimer={t("IncentivizePool:disclaimer.desc")}
     />
   );
 };

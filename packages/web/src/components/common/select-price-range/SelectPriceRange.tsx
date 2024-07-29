@@ -18,6 +18,7 @@ import SelectPriceRangeCustom from "../select-price-range-custom/SelectPriceRang
 import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { isFetchedPools } from "@states/pool";
+import { useTranslation } from "react-i18next";
 
 interface SelectPriceRangeProps {
   opened: boolean;
@@ -61,6 +62,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   defaultTicks,
   isLoadingSelectPriceRange,
 }) => {
+  const { t } = useTranslation();
+
   const selectPriceRangeRef =
     useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
   const selectedTokenPair = true;
@@ -81,9 +84,10 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
             <SelectPriceRangeItem
               key={index}
               selected={item.type === priceRange?.type}
-              tooltip={
-                PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type]
-              }
+              tooltip={t(
+                PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type] ||
+                  "",
+              )}
               priceRangeStr={
                 PriceRangeStr[selectPool.feeTier || "NONE"][item.type]
               }
@@ -131,6 +135,19 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   changePriceRange,
   priceRangeStr,
 }) => {
+  const { t } = useTranslation();
+
+  const priceRangeDisplay = useMemo(() => {
+    switch (priceRange.type) {
+      case "Active":
+        return t("business:priceRangeType.active");
+      case "Passive":
+        return t("business:priceRangeType.passive");
+      case "Custom":
+        return t("business:priceRangeType.custom");
+    }
+  }, [priceRange.type, t]);
+
   const aprStr = useMemo(() => {
     const apr = priceRange.apr;
     if (apr) {
@@ -148,7 +165,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
       className={selected ? "selected" : ""}
       onClick={onClickItem}
     >
-      <strong className="item-title">{priceRange.type}</strong>
+      <strong className="item-title">{priceRangeDisplay}</strong>
       {priceRange.text && <p>{priceRangeStr}</p>}
       {tooltip && (
         <div className="tooltip-wrap">

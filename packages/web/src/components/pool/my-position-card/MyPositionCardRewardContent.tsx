@@ -9,6 +9,7 @@ import {
   formatOtherPrice,
   formatPoolPairAmount,
 } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 export interface MyPositionRewardContentProps {
   rewardInfo: { [key in RewardType]: PositionRewardInfo[] };
@@ -18,6 +19,7 @@ export const MyPositionRewardContent: React.FC<
   MyPositionRewardContentProps
 > = ({ rewardInfo }) => {
   const { getGnotPath } = useGnotToGnot();
+  const { t } = useTranslation();
 
   const swapFeeRewards = useMemo(() => {
     if (rewardInfo.SWAP_FEE.length === 0) {
@@ -120,7 +122,7 @@ export const MyPositionRewardContent: React.FC<
       {swapFeeRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">Swap Fees</span>
+            <span className="title">{t("business:rewardType.swapFee")}</span>
             <span className="title">{swapFeeRewardUSD}</span>
           </div>
           {swapFeeRewards.map((reward, index) => (
@@ -151,7 +153,7 @@ export const MyPositionRewardContent: React.FC<
       {internalRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">Internal Rewards</span>
+            <span className="title">{t("business:rewardType.internal")}</span>
             <span className="title">{internalRewardUSD}</span>
           </div>
           {internalRewards.map((reward, index) => (
@@ -182,7 +184,7 @@ export const MyPositionRewardContent: React.FC<
       {externalRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">External Rewards</span>
+            <span className="title">{t("business:rewardType.external")}</span>
             <span className="title">{externalRewardUSD}</span>
           </div>
           {externalRewards.map((reward, index) => (

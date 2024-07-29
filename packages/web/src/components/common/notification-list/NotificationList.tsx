@@ -34,11 +34,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
       >
         <NotificationHeader>
           <span className="notification-title">Notification</span>
-          <ClearButton
-            onClick={onClearAll}
-          >
-            Clear All
-          </ClearButton>
+          <ClearButton onClick={onClearAll}>Clear All</ClearButton>
         </NotificationHeader>
         {txsGroupsInformation.length > 0 ? (
           <div className="list-container">

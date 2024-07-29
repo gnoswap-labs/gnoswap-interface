@@ -5,6 +5,7 @@ import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { useTranslation } from "react-i18next";
 
 interface PoolPairInfoHeaderProps {
   tokenA: TokenModel;
@@ -21,16 +22,17 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   rewardTokens,
   incentivizedType,
 }) => {
+  const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const incentivezedStr = useMemo(() => {
     if (incentivizedType === "INCENTIVIZED") {
-      return "Incentive";
+      return t("business:incentive");
     }
     if (incentivizedType === "EXTERNAL") {
-      return "Incentive";
+      return t("business:incentive");
     }
     return "";
-  }, [incentivizedType]);
+  }, [incentivizedType, t]);
 
   const rewardTokenLogos = useMemo(() => {
     return rewardTokens.reduce((acc, current) => {
