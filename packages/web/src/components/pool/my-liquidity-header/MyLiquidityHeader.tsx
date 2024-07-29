@@ -9,6 +9,7 @@ import { CopyTooltip } from "../my-position-card/MyPositionCard.styles";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useTranslation } from "react-i18next";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 interface MyLiquidityHeaderProps {
   isOtherPosition: boolean;
@@ -43,6 +44,8 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   isLoadingPositionsById,
   isSwitchNetwork,
 }) => {
+  const router = useCustomRouter();
+  const poolPath = router.getPoolPath();
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { getAccountUrl } = useGnoscanUrl();
@@ -59,7 +62,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
 
   const onClickCopy = async () => {
     try {
-      const linkUrl = `${location.origin}${location.pathname}?addr=${address}`;
+      const linkUrl = `${location.origin}${location.pathname}?poolPath=${poolPath}&addr=${address}`;
       navigator.clipboard.writeText(linkUrl);
       setCopied(true);
       setTimeout(() => {

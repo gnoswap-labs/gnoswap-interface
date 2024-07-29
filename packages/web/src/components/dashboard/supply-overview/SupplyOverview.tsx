@@ -31,29 +31,39 @@ const LoadingProgress = () => {
   );
 };
 
-const BlockEmissions = () => {
+export interface BlockEmissionsProps {
+  liquidityStaking: string;
+  devOps: string;
+  community: string;
+}
+
+const BlockEmissions = ({
+  liquidityStaking,
+  devOps,
+  community,
+}: BlockEmissionsProps) => {
   return (
     <BlockEmissionsWrapper>
-      <h5>Block Emissions</h5>
+      <h5>Daily Block Emissions</h5>
       <div className="content">
         <div className="label">Liquidity Staking </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>0 / day</div>
+          <div>{liquidityStaking}</div>
         </div>
       </div>
       <div className="content">
         <div className="label">DevOps </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>0 / day</div>
+          <div>{devOps}</div>
         </div>
       </div>
       <div className="content">
         <div className="label">Community </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>0 / day</div>
+          <div>{community}</div>
         </div>
       </div>
     </BlockEmissionsWrapper>
@@ -110,7 +120,11 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
       <div className="daily-block-emissions">
         <div className="label-title">
           <div>Daily Block Emissions</div>
-          <DashboardLabel tooltip="Number of newly minted GNS tokens per block." />
+          <DashboardLabel
+            tooltip={
+              <BlockEmissions {...supplyOverviewInfo.dailyBlockEmissionsInfo} />
+            }
+          />
         </div>
         <div className="daily-block-emissions-tooltip">
           {!loading ? (
@@ -120,7 +134,15 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           ) : (
             <LoadingText />
           )}
-          {!loading && <DashboardLabel tooltip={<BlockEmissions />} />}
+          {!loading && (
+            <DashboardLabel
+              tooltip={
+                <BlockEmissions
+                  {...supplyOverviewInfo.dailyBlockEmissionsInfo}
+                />
+              }
+            />
+          )}
         </div>
       </div>
       <div className="total-staked">

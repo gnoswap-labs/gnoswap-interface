@@ -45,6 +45,8 @@ export interface PositionModel {
 
   incentiveType: INCENTIVE_TYPE;
 
+  tokenUri: string;
+
   // TODO: Remove later
 
   totalDailyRewardsUsd: string;

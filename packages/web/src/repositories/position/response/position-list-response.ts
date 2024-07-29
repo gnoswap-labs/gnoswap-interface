@@ -49,4 +49,6 @@ export interface PositionResponse {
   totalDailyRewardsUsd: string;
 
   stakedUsd?: string;
+
+  tokenUri: string;
 }

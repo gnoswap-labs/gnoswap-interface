@@ -4,4 +4,5 @@ export enum QUERY_KEY {
   estimateReposition = "estimateReposition",
   positionBins = "positionBins",
   positionLazyBins = "positionLazyBins",
+  positionDetail = "positionDetail",
 }

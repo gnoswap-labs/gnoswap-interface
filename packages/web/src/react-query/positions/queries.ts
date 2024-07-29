@@ -90,6 +90,22 @@ export const useGetPositionBins = (
   });
 };
 
+export const useGetPositionById = (
+  lpTokenId: string,
+  options?: UseQueryOptions<PositionModel, Error>,
+) => {
+  const { positionRepository } = useGnoswapContext();
+
+  return useQuery<PositionModel, Error>({
+    queryKey: [QUERY_KEY.positionDetail, lpTokenId],
+    queryFn: async () => {
+      const data = await positionRepository.getPositionById(lpTokenId);
+      return data;
+    },
+    ...options,
+  });
+};
+
 export const useGetLazyPositionBins = (
   lpTokenId: string,
   count: 20 | 40,

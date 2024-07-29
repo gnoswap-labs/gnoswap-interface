@@ -1,5 +1,6 @@
 import React from "react";
-import { LogoWrapper, Image } from "./MissingLogo.styles";
+import Tooltip from "../tooltip/Tooltip";
+import { LogoWrapper, Image, TokenSymbolWrapper } from "./MissingLogo.styles";
 
 interface Props {
   symbol: string;
@@ -9,6 +10,8 @@ interface Props {
   mobileWidth?: number;
   missingLogoClassName?: string;
   placeholderFontSize?: number;
+  tokenTooltipClassName?: string;
+  showTooltip?: boolean;
 }
 
 const MissingLogo: React.FC<Props> = ({
@@ -19,9 +22,16 @@ const MissingLogo: React.FC<Props> = ({
   mobileWidth,
   missingLogoClassName,
   placeholderFontSize,
+  tokenTooltipClassName,
+  showTooltip = false,
 }) => {
   return (
-    <>
+    <Tooltip
+      placement="top"
+      className={tokenTooltipClassName}
+      isShouldShowed={showTooltip}
+      FloatingContent={<TokenSymbolWrapper>{symbol}</TokenSymbolWrapper>}
+    >
       {url ? (
         <Image
           mobileWidth={mobileWidth}
@@ -40,7 +50,7 @@ const MissingLogo: React.FC<Props> = ({
           {(symbol || "").slice(0, 3)}
         </LogoWrapper>
       )}
-    </>
+    </Tooltip>
   );
 };
 

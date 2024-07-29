@@ -11,6 +11,7 @@ import {
   MyPositionCardWrapper,
   PositionCardAnchor,
   ToolTipContentWrapper,
+  UrlCopiedWrapper,
 } from "./MyPositionCard.styles";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { TokenModel } from "@models/token/token-model";
@@ -41,7 +42,6 @@ import IconPolygon from "@components/common/icons/IconPolygon";
 import Button from "@components/common/button/Button";
 import { useGetPositionBins } from "@query/positions";
 import { TokenPriceModel } from "@models/token/token-price-model";
-import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import { isGNOTPath } from "@utils/common";
@@ -90,6 +90,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   );
   const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const [copied, setCopy] = useCopy();
+  const [copiedPosition, setCopiedPosition] = useCopy();
   const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40);
 
   const isClosed = position.closed;
@@ -209,7 +210,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     | { [key in RewardType]: PositionRewardInfo[] }
     | null => {
     const rewards = position.reward;
-    if (rewards.length === 0 || !isDisplay) {
+    if (rewards.length === 0) {
       return null;
     }
 
@@ -780,10 +781,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               )}
               {!loading && (
                 <div className="coin-info">
-                  <OverlapTokenLogo
-                    tokens={[tokenA, tokenB]}
-                    size={36}
-                    mobileSize={24}
+                  <MissingLogo
+                    url={position.tokenUri}
+                    symbol={`ID #${position.id}`}
+                    width={36}
+                    mobileWidth={24}
                   />
                 </div>
               )}
@@ -881,41 +883,59 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         </div>
         <div className="flex-button">
           {!isClosed && (
-            <Button
-              text={t("Pool:position.card.btn.copyPosition")}
-              className="copy-button"
-              style={{
-                textColor: "text14",
-              }}
-              onClick={() => {
-                const queryParamsArr = [
-                  `tickLower=${position.tickLower}`,
-                  `tickUpper=${position.tickUpper}`,
-                  "price_range_type=Custom",
-                ];
+            <Tooltip
+              placement="top"
+              forcedOpen={copiedPosition}
+              isShouldShowed={copiedPosition}
+              FloatingContent={
+                <UrlCopiedWrapper>{t("common:urlCopied")}</UrlCopiedWrapper>
+              }
+            >
+              <Button
+                text={t("Pool:position.card.btn.copyPosition")}
+                className="copy-button"
+                style={{
+                  textColor: "text14",
+                }}
+                onClick={() => {
+                  const queryParamsArr = [
+                    `tickLower=${position.tickLower}`,
+                    `tickUpper=${position.tickUpper}`,
+                    "price_range_type=Custom",
+                  ];
 
-                if (router.asPath.includes("?")) {
-                  const urlWithoutQuery = router.asPath.split("?")[0];
+                  if (router.asPath.includes("?")) {
+                    const urlWithoutQuery = router.asPath.split("?")[0];
 
-                  router.push(
-                    urlWithoutQuery + `/add?${queryParamsArr.join("&")}`,
+                    setCopiedPosition(
+                      window.location.host +
+                        urlWithoutQuery +
+                        `/add?${queryParamsArr.join("&")}`,
+                    );
+                    return;
+                  }
+
+                  if (router.asPath.includes("#")) {
+                    const urlWithoutHash = router.asPath.split("#")[0];
+
+                    setCopiedPosition(
+                      window.location.host +
+                        urlWithoutHash +
+                        `/add?${queryParamsArr.join("&")}`,
+                    );
+                    return;
+                  }
+
+                  setCopiedPosition(
+                    window.location.host +
+                      router.asPath +
+                      `/add?${queryParamsArr.join("&")}`,
                   );
-                  return;
-                }
-
-                if (router.asPath.includes("#")) {
-                  const urlWithoutHash = router.asPath.split("#")[0];
-
-                  router.push(
-                    urlWithoutHash + `/add?${queryParamsArr.join("&")}`,
-                  );
-                  return;
-                }
-
-                router.push(router.asPath + `/add?${queryParamsArr.join("&")}`);
-              }}
-            />
+                }}
+              />
+            </Tooltip>
           )}
+
           {!position.staked && !isHiddenAddPosition && connected && (
             <SelectBox
               current={t("Pool:position.card.btn.manage.label")}
@@ -950,7 +970,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         {!isClosed && !loading ? (
           <Tooltip
             placement="top"
-            isShouldShowed={isDisplay}
             FloatingContent={
               <div>
                 <BalanceTooltipContent balances={balances} />
@@ -972,7 +991,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         {!isClosed && isShowRewardInfoTooltip && !loading ? (
           <Tooltip
             placement="top"
-            isShouldShowed={isDisplay}
             FloatingContent={
               <div>
                 <MyPositionAprContent rewardInfo={aprRewardInfo} />
@@ -996,7 +1014,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         <span className="symbol-text">
           {t("Pool:position.card.claimableReward.title")}
         </span>
-        {!isClosed && !loading && isShowTotalRewardInfo && isDisplay ? (
+        {!isClosed && !loading && isShowTotalRewardInfo ? (
           <Tooltip
             placement="top"
             FloatingContent={

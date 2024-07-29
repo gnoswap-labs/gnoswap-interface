@@ -34,6 +34,7 @@ const PoolIncentivizeContainer: React.FC = () => {
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
   const [token, setToken] = useState<TokenModel | null>(null);
   const tokenAmountInput = useTokenAmountInput(token);
+  console.log("🚀 ~ tokenAmountInput:", tokenAmountInput);
   const { updateTokenPrices } = useTokenData();
   const { data: pools = [] } = useGetPoolList({ enabled: false });
   const { getGnotPath } = useGnotToGnot();
@@ -49,6 +50,11 @@ const PoolIncentivizeContainer: React.FC = () => {
   useEffect(() => {
     updateTokenPrices();
     setCurrentPool(null);
+
+    return () => {
+      setPeriod(EarnState.period.init);
+      setStartDate(EarnState.date.init);
+    };
   }, []);
 
   const changeToken = useCallback((token: TokenModel) => {

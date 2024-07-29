@@ -49,7 +49,7 @@ export default function Earn() {
                 getGnotPath(data?.tokenB).symbol
               } (${Number(data?.fee) / 10000}%)`
             : "...",
-        path: `/earn/pool/${poolPath}`,
+        path: `/earn/pool?poolPath=${poolPath}`,
       },
       { title: t("business:pageHeader.removePosi"), path: "" },
     ];

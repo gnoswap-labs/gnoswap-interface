@@ -100,7 +100,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           />
         </div>
         {!isSwitchNetwork && openedPosition.length > 0 && <PoolDivider />}
-        {!isSwitchNetwork &&
+        {((connected && !isSwitchNetwork) || isOtherPosition) &&
           (breakpoint !== DEVICE_TYPE.MOBILE ? (
             <>
               {showedPosition.map(

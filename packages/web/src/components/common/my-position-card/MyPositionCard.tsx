@@ -4,7 +4,6 @@ import {
   SwapFeeTierInfoMap,
 } from "@constants/option.constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import {
   MyPositionCardWrapper,
@@ -28,6 +27,7 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconStar from "../icons/IconStar";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
+import MissingLogo from "../missing-logo/MissingLogo";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -378,12 +378,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         >
           <div className="title-wrapper">
             <div id={boxHeaderId} className="box-header">
-              <DoubleLogo
-                left={tokenA.logoURI}
-                right={tokenB.logoURI}
-                leftSymbol={tokenA.symbol}
-                rightSymbol={tokenB.symbol}
-                size={24}
+              <MissingLogo
+                symbol={`ID #${position.id}`}
+                url={position.tokenUri}
+                width={24}
+                showTooltip
               />
               <span>{`${tokenA.symbol}/${tokenB.symbol}`}</span>
               <div className="badge-group">
