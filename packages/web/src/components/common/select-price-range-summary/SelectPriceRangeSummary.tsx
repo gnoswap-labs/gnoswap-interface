@@ -25,13 +25,13 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
       <div className="row">
         <div className="title-wrapper">
           <span className="title">
-            {t("AddPosition:overralInfo.label.depositR")}
+            {t("business:positionPriceRangeInfo.depositR.label")}
           </span>
           <Tooltip
             placement="top"
             FloatingContent={
               <ToolTipContentWrapper>
-                {t("AddPosition:overralInfo.tooltip.depositR")}
+                {t("business:positionPriceRangeInfo.depositR.desc")}
               </ToolTipContentWrapper>
             }
           >
@@ -44,13 +44,13 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
       <div className="row">
         <div className="title-wrapper">
           <span className="title">
-            {t("AddPosition:overralInfo.label.capitalEffi")}
+            {t("business:positionPriceRangeInfo.capEff.label")}
           </span>
           <Tooltip
             placement="top"
             FloatingContent={
               <ToolTipContentWrapper>
-                {t("AddPosition:overralInfo.tooltip.capitalEffi")}
+                {t("business:positionPriceRangeInfo.capEff.desc")}
               </ToolTipContentWrapper>
             }
           >
@@ -63,13 +63,13 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
       <div className="row">
         <div className="title-wrapper">
           <span className="title">
-            {t("AddPosition:overralInfo.label.feeApr")}
+            {t("business:positionPriceRangeInfo.feeApr.label")}
           </span>
           <Tooltip
             placement="top"
             FloatingContent={
               <ToolTipContentWrapper>
-                {t("AddPosition:overralInfo.tooltip.feeApr")}
+                {t("business:positionPriceRangeInfo.business.label")}
               </ToolTipContentWrapper>
             }
           >

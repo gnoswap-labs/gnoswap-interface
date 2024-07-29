@@ -15,6 +15,7 @@ import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { makeRouteUrl } from "@utils/page.utils";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import { useTranslation } from "react-i18next";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -25,6 +26,7 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function IncreaseLiquidity() {
+  const { t } = useTranslation();
   const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.getPoolPath();
@@ -35,7 +37,7 @@ export default function IncreaseLiquidity() {
 
   const listBreadcrumb = useMemo(() => {
     return [
-      { title: "Earn", path: "/earn" },
+      { title: t("business:pageHeader.earn"), path: "/earn" },
       {
         title:
           width > DeviceSize.mediumWeb
@@ -47,7 +49,7 @@ export default function IncreaseLiquidity() {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,
         }),
       },
-      { title: "Increase Liquidity", path: "" },
+      { title: t("business:pageHeader.increaseLiqui"), path: "" },
     ];
   }, [data, width]);
 

@@ -15,6 +15,7 @@ import RepositionSelectRange from "../reposition-select-range/RepositionSelectRa
 import { ToolTipContentWrapper } from "../reposition-select-range/RepositionSelectRange.styles";
 import { RepositionContentWrapper } from "./RepositionContent.styles";
 import { REPOSITION_BUTTON_TYPE } from "@hooks/reposition/use-reposition-handle";
+import { useTranslation } from "react-i18next";
 
 interface RepositionContentProps {
   tokenA: TokenModel | null;
@@ -64,15 +65,17 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   buttonType,
   isSkipSwap,
 }) => {
+  const { t } = useTranslation();
+
   const submitButtonText = useMemo(() => {
     if (buttonType === "INSUFFICIENT_LIQUIDITY") {
-      return "Insufficient Liquidity";
+      return t("Reposition:btn.insuffLiqui");
     }
     if (buttonType === "NON_SELECTED_RANGE") {
-      return "Select Range";
+      return t("Reposition:btn.selectRange");
     }
-    return "Reposition";
-  }, [buttonType]);
+    return t("Reposition:btn.reposition");
+  }, [buttonType, t]);
 
   const isSubmit = useMemo(() => {
     if (buttonType === "LOADING" && isSkipSwap) {
@@ -84,14 +87,12 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   return (
     <RepositionContentWrapper>
       <div className="resposition-content-header">
-        <h3>Reposition</h3>
+        <h3>{t("Reposition:title")}</h3>
         <Tooltip
           placement="top"
           FloatingContent={
             <ToolTipContentWrapper>
-              This will remove this position and create a new one with the
-              underlying tokens by swapping them proportionally to the new
-              range.
+              {t("Reposition:tooltip")}
             </ToolTipContentWrapper>
           }
         >

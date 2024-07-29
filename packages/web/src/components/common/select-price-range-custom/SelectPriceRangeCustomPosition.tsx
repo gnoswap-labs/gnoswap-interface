@@ -23,6 +23,7 @@ import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { Trans, useTranslation } from "react-i18next";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -48,6 +49,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   handleSwapValue,
   isKeepToken,
 }) => {
+  const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const [shiftPosition, setShiftPosition] = useState(0);
   const { isLoading: isLoadingCommon } = useLoading();
@@ -376,20 +378,17 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
               <React.Fragment>
                 {!showDim && (
                   <div className="current-price-wrapper">
-                    <span>Current Price</span>
+                    <span>{t("business:currentPrice")}</span>
                     <span>{currentPriceStr}</span>
                   </div>
                 )}
                 {showDim && (
                   <div className="pool-initialization">
-                    <span>Pool Initialization</span>
+                    <span>{t("Reposition:form.selectRange.dim.title")}</span>
                     <div>
-                      As the first person to Add Position to this pool, you must
-                      initialize it. <span>Enter a starting price</span> for the
-                      pool, then select the price range and the deposit amount
-                      for your liquidity. Please note that{" "}
-                      <span>gas fees will be higher</span> than usual due to the
-                      initialization transaction.
+                      <Trans>
+                        {t("Reposition:form.selectRange.dim.content")}
+                      </Trans>
                     </div>
                   </div>
                 )}
@@ -421,7 +420,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <div className="rangge-content-wrapper">
                   <div className="range-controller-wrapper">
                     <SelectPriceRangeCutomController
-                      title="Min Price"
+                      title={t("Reposition:form.price.min")}
                       current={selectPool.minPrice}
                       token0Symbol={currentTokenA.symbol}
                       token1Symbol={currentTokenB.symbol}
@@ -435,7 +434,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
                     />
                     <SelectPriceRangeCutomController
-                      title="Max Price"
+                      title={t("Reposition:form.price.max")}
                       current={selectPool.maxPrice}
                       token0Symbol={currentTokenA.symbol}
                       token1Symbol={currentTokenB.symbol}
@@ -455,13 +454,17 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       onClick={() => onResetRange()}
                     >
                       <IconRefresh />
-                      <span>Reset Range</span>
-                      <span>Reset</span>
+                      <span>{t("Reposition:form.selectRange.resetRange")}</span>
+                      <span>{t("common:reset")}</span>
                     </div>
                     <div className="icon-button full" onClick={selectFullRange}>
                       <IconSwap />
-                      <span>Full Price Range</span>
-                      <span>Full Range</span>
+                      <span>{t("Reposition:form.selectRange.fullPrice")}</span>
+                      <span>
+                        {t("Reposition:form.selectRange.fullPrice", {
+                          context: "short",
+                        })}
+                      </span>
                     </div>
                   </div>
                   {showDim && <div className="dim-content-3" />}

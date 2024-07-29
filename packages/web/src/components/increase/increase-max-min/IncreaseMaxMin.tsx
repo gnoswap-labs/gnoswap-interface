@@ -10,6 +10,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import { TokenModel } from "@models/token/token-model";
+import { useTranslation } from "react-i18next";
 
 export interface IncreaseMaxMinProps {
   minPriceStr: string;
@@ -36,11 +37,12 @@ const IncreaseMaxMin: React.FC<IncreaseMaxMinProps> = ({
   rangeStatus,
   feeRate,
 }) => {
+  const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   return (
     <IncreaseMaxMinWrapper>
       <div className="range-title">
-        <p>Position Details</p>
+        <p>{t("Reposition:confModal.section.posiDetail.label")}</p>
       </div>
       <div className="select-position common-bg">
         <div className="pool-select-wrapper">
@@ -60,17 +62,17 @@ const IncreaseMaxMin: React.FC<IncreaseMaxMinProps> = ({
       </div>
       <div className="price-range-wrapper">
         <IncreaseMaxMinSection className="range-section">
-          <span>Min Price</span>
+          <span>{t("business:minPrice")}</span>
           <span className="amount">{minPriceStr}</span>
           <span className="label">
-            {tokenA?.info.symbol} per {tokenB?.info?.symbol}
+            {tokenA?.info.symbol} {t("common:per")} {tokenB?.info?.symbol}
           </span>
         </IncreaseMaxMinSection>
         <IncreaseMaxMinSection className="range-section">
-          <span>Max Price</span>
+          <span>{t("business:maxPrice")}</span>
           <span className="amount">{maxPriceStr}</span>
           <span className="label">
-            {tokenA?.info.symbol} per {tokenB?.info?.symbol}
+            {tokenA?.info.symbol} {t("common:per")} {tokenB?.info?.symbol}
           </span>
         </IncreaseMaxMinSection>
       </div>
