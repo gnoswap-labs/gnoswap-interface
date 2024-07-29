@@ -662,7 +662,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
           : null,
     };
     if (tokenA?.path && tokenB?.path) {
-      window.history.pushState("", "", makeRouteUrl(PAGE_PATH.POOL_ADD, query));
+      router.replace(makeRouteUrl(PAGE_PATH.POOL_ADD, query));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
