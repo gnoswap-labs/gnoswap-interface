@@ -4,6 +4,7 @@ import React from "react";
 import { wrapper } from "./SelectUnstakeResult.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 interface SelectUnstakeResultProps {
   positions: PoolPositionModel[];
@@ -12,6 +13,7 @@ interface SelectUnstakeResultProps {
 const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
   positions,
 }) => {
+  const { t } = useTranslation();
   const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } =
     useUnstakeData({ positions });
 
@@ -28,7 +30,10 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 width={24}
                 mobileWidth={24}
               />
-              <p>Pooled {pooledTokenInfo.token.symbol}</p>
+              <p>
+                {t("UnstakePosition:overview.pooled")}{" "}
+                {pooledTokenInfo.token.symbol}
+              </p>
               <strong>{pooledTokenInfo.amount}</strong>
             </div>
             <span className="dollar-value">{pooledTokenInfo.amountUSD}</span>
@@ -43,7 +48,10 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 width={24}
                 mobileWidth={24}
               />
-              <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
+              <p>
+                {t("UnstakePosition:overview.unclaimed")}{" "}
+                {pooledTokenInfo.token.symbol}
+              </p>
               <strong>
                 {formatPoolPairAmount(pooledTokenInfo.amount, {
                   decimals: pooledTokenInfo.token.decimals,
@@ -56,7 +64,9 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
-          <h5 className="total-amount-title">Total Amount</h5>
+          <h5 className="total-amount-title">
+            {t("UnstakePosition:overview.totalAmt")}
+          </h5>
           <span className="result-value">{totalLiquidityUSD}</span>
         </div>
       </div>

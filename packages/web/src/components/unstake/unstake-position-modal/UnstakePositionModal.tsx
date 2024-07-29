@@ -23,6 +23,7 @@ import {
   formatPoolPairAmount,
   formatRate,
 } from "@utils/new-number-utils";
+import { Trans, useTranslation } from "react-i18next";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -35,6 +36,7 @@ const UnstakePositionModal: React.FC<Props> = ({
   close,
   onSubmit,
 }) => {
+  const { t } = useTranslation();
   const { unclaimedRewards, totalLiquidityUSD } = useUnstakeData({ positions });
   const { data: unstakingFee } = useGetUnstakingFee();
   const onClickClose = useCallback(() => {
@@ -95,14 +97,14 @@ const UnstakePositionModal: React.FC<Props> = ({
     <UnstakePositionModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Confirm Unstake Position</h6>
+          <h6>{t("UnstakePosition:confStakeModal.title")}</h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
         </div>
         <div className="content">
           <div className="box-item">
-            <h4>Positions</h4>
+            <h4>{t("UnstakePosition:confStakeModal.positionLst")}</h4>
             <div className="item-content">
               {positions.map((position, index) => (
                 <div key={index}>
@@ -132,7 +134,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           </div>
           {unclaimedRewards.length > 0 && (
             <div className="box-item box-item-unclaim">
-              <h4>Unclaimed Rewards</h4>
+              <h4>{t("UnstakePosition:confStakeModal.unclaimedReward")}</h4>
               <div className="item-content">
                 {unclaimedRewards.map((rewardInfo, index) => (
                   <div key={index} className="item-detail">
@@ -163,13 +165,12 @@ const UnstakePositionModal: React.FC<Props> = ({
                   <Divider />
                   <div className="protocol">
                     <div>
-                      <span className="">Protocol Fee</span>
+                      <span className="">{t("business:protocolFee.txt")}</span>
                       <Tooltip
                         placement="top"
                         FloatingContent={
                           <ToolTipContentWrapper width="251px">
-                            The amount of fees charged on each claim that goes
-                            to the protocol.
+                            {t("business:protocolFee.desc")}
                           </ToolTipContentWrapper>
                         }
                       >
@@ -188,24 +189,35 @@ const UnstakePositionModal: React.FC<Props> = ({
           <div className="box-item">
             <div className="item-content">
               <div>
-                <div className="label-large">Total Amount</div>
+                <div className="label-large">
+                  {t("UnstakePosition:confStakeModal.totalAmt")}
+                </div>
                 <div className="value-large">{totalLiquidityUSD}</div>
               </div>
             </div>
           </div>
           <WarningCard
-            title={"Important Note"}
+            title={t("UnstakePosition:confStakeModal.warning.title")}
             icon={<IconCircleExclamationMark />}
             content={
               <UnstakeWarningContentWrapper>
-                Your APR will reduce from {currentPercent} →{" "}
-                <span className="unstake-percent">{swapFeePercent}</span>
+                <Trans
+                  ns="UnstakePosition"
+                  i18nKey="confStakeModal.warning.content"
+                  values={{
+                    currentPercent,
+                    swapFeePercent,
+                  }}
+                >
+                  Your APR will reduce from {currentPercent} →{" "}
+                  <span className="unstake-percent">{swapFeePercent}</span>
+                </Trans>
               </UnstakeWarningContentWrapper>
             }
           />
           <div>
             <Button
-              text="Confirm Unstake Position"
+              text={t("UnstakePosition:confStakeModal.btn")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
