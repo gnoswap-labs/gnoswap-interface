@@ -317,5 +317,3 @@ export const LANGUAGE_CODE_MAP: Record<string, string> = {
 export const getLangCode = (code: string) => {
   return LANGUAGE_CODE_MAP[code];
 };
-
-export const DEFAULT_I18N_NS = ["HeaderFooter", "common", "business"];
