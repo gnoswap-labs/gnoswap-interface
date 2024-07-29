@@ -1,10 +1,8 @@
 import { useAtom } from "jotai";
 import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
 
 import Footer from "@components/common/footer/Footer";
 import SEOHeader from "@components/common/seo-header/seo-header";
-import { SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import EarnAddLiquidityContainer from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
@@ -12,7 +10,6 @@ import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-containe
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
 import useRouter from "@hooks/common/use-custom-router";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import EarnAddLayout from "@layouts/earn-add-layout/EarnAddLayout";
 import { EarnState } from "@states/index";
