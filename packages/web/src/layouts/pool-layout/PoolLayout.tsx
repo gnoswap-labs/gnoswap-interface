@@ -2,6 +2,7 @@ import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight"
 import React from "react";
 import { PoolLayoutWrapper } from "./PoolLayout.styles";
 import useRouter from "@hooks/common/use-custom-router";
+import { useTranslation } from "react-i18next";
 
 interface PoolLayoutProps {
   header: React.ReactNode;
@@ -21,6 +22,7 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
   isStaking,
 }) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const poolPath = router.getPoolPath();
 
   const onClickIncentivize = () => {
@@ -43,11 +45,13 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
           {staking}
           <div className="button">
             <span>
-              Want to {isStaking ? "boost" : "add"} up incentives for this
-              pool?&nbsp;
+              {isStaking
+                ? t("Pool:gotoIncentivizeGuide.boost")
+                : t("Pool:gotoIncentivizeGuide.add")}
+              &nbsp;
             </span>
             <div className="pointer-wrap" onClick={onClickIncentivize}>
-              <span> Click here</span>
+              <span> {t("common:clickHere")}</span>
               <IconStrokeArrowRight className="arrow-icon" />
             </div>
           </div>

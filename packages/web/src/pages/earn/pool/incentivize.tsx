@@ -21,7 +21,12 @@ import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+      ...(await serverSideTranslations(locale, [
+        "HeaderFooter",
+        "common",
+        "business",
+        "IncentivizePool",
+      ])),
     },
   };
 }

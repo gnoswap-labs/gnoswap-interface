@@ -214,16 +214,6 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       flex-direction: row;
       gap: 16px;
       align-items: flex-start;
-      .icon-button {
-        span {
-          &:nth-of-type(1) {
-            display: none;
-          }
-          &:nth-of-type(2) {
-            display: initial;
-          }
-        }
-      }
     }
   }
   ${media.mobile} {

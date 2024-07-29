@@ -17,5 +17,5 @@ const Template: ComponentStory<typeof Disclaimer> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  disclaimer: dummyDisclaimer,
+  dummyDisclaimer: dummyDisclaimer,
 };

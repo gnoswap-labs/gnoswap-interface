@@ -12,6 +12,7 @@ import { EarnAddConfirmAmountInfoProps } from "../earn-add-confirm-amount-info/E
 import IconSwap from "@components/common/icons/IconSwap";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { formatRate } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 
 export interface EarnAddConfirmPriceRangeInfoProps
   extends EarnAddConfirmAmountInfoProps {
@@ -41,6 +42,8 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   tokenA,
   tokenB,
 }) => {
+  const { t } = useTranslation();
+
   const [swap, setSwap] = useState(false);
 
   const currentPriceStr = useMemo(() => {
@@ -68,18 +71,18 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   return (
     <EarnAddConfirmPriceRangeInfoWrapper>
       <div className="range-title">
-        <p>Price Range</p>
+        <p>{t("AddPosition:confirmAddModal.info.section.priceRange")}</p>
         <RangeBadge status={rangeStatus} />
       </div>
 
       <div className="price-range-wrapper">
         <EarnAddConfirmPriceRangeInfoSection className="range-section">
-          <span>Min Price</span>
+          <span>{t("AddPosition:confirmAddModal.info.label.minPrice")}</span>
           <span className="amount">{minPrice}</span>
           <span className="label">{priceLabelMin}</span>
         </EarnAddConfirmPriceRangeInfoSection>
         <EarnAddConfirmPriceRangeInfoSection className="range-section">
-          <span>Max Price</span>
+          <span>{t("AddPosition:confirmAddModal.info.label.maxPrice")}</span>
           <span className="amount">{maxPrice}</span>
           <span className="label">{priceLabelMax}</span>
         </EarnAddConfirmPriceRangeInfoSection>
@@ -87,7 +90,7 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
 
       <EarnAddConfirmPriceRangeInfoSection>
         <div className="row">
-          <span className="key">Current Price:</span>
+          <span className="key">{t("business:currentPrice")}:</span>
           <div className="swap-value">
             <span className="value">{currentPriceStr}</span>
             <div onClick={() => setSwap(!swap)}>
@@ -97,14 +100,14 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
         </div>
         <div className="row">
           <div className="title-wrapper">
-            <span className="key">Capital Efficiency</span>
+            <span className="key">
+              {t("AddPosition:confirmAddModal.info.label.capEff")}
+            </span>
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The multiplier calculated based on the concentration of your
-                  range. This indicates how much more rewards you can earn
-                  compared to a full range position with the same capital.
+                  {t("AddPosition:confirmAddModal.info.tooltip.capEff")}
                 </ToolTipContentWrapper>
               }
             >
@@ -116,13 +119,14 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
         </div>
         <div className="row">
           <div className="title-wrapper">
-            <span className="key">Fee APR</span>
+            <span className="key">
+              {t("AddPosition:confirmAddModal.info.label.feeApr")}
+            </span>
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The estimated APR from swap fees is calculated based on the
-                  selected price range of the position.
+                  {t("AddPosition:confirmAddModal.info.tooltip.feeApr")}
                 </ToolTipContentWrapper>
               }
             >
@@ -134,14 +138,14 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
         {isShowStaking && (
           <div className="row">
             <div className="title-wrapper">
-              <span className="key">Staking APR</span>
+              <span className="key">
+                {t("AddPosition:confirmAddModal.info.label.stakingApr")}
+              </span>
               <Tooltip
                 placement="top"
                 FloatingContent={
                   <ToolTipContentWrapper>
-                    The estimated APR range is calculated by applying a dynamic
-                    multiplier to your staked position, based on the staking
-                    duration.
+                    {t("AddPosition:confirmAddModal.info.tooltip.stakingApr")}
                   </ToolTipContentWrapper>
                 }
               >

@@ -11,6 +11,7 @@ import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import useModalCloseEvent from "@hooks/common/use-modal-close-event";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { QUERY_KEY } from "src/react-query/pools";
+import { useTranslation } from "react-i18next";
 
 export interface PoolIncentivizeSelectPoolProps {
   selectedPool: PoolSelectItemInfo | null;
@@ -25,6 +26,8 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
   select,
   isDisabled,
 }) => {
+  const { t } = useTranslation();
+
   const [searchKeyword, setSearchKeyword] = useState("");
   const [openedSelector, setOpenedSelector] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -85,7 +88,7 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
 
   return (
     <PoolIncentivizeSelectPoolWrapper isDisabled={isDisabled}>
-      <h5>1. Select Pool</h5>
+      <h5>{t("IncentivizePool:incentiPool.form.pool.label")}</h5>
       <div className="pool-select-wrapper" onClick={toggleSelector}>
         <PoolIncentivizeSelectPoolItem
           poolSelectItem={selectedPool}
@@ -110,13 +113,20 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
           <div className="search-wrapper" onClick={e => e.stopPropagation()}>
             <SearchInput
               onChange={onChangeKeyword}
-              placeholder="Search by Name, Symbol, or Path"
+              placeholder={t(
+                "IncentivizePool:incentiPool.form.pool.searchPlaceHolder",
+              )}
             />
           </div>
           <div className="pool-list-wrapper">
             <div className="pool-list-headrer">
-              <span className="total-info">Pools</span>
-              <span className="liquidity-info">Liquidity</span>
+              <span className="total-info">
+                {t("IncentivizePool:incentiPool.form.pool.col.pools")}
+              </span>
+              <span className="liquidity-info">
+                {" "}
+                {t("IncentivizePool:incentiPool.form.pool.col.liqui")}
+              </span>
             </div>
             <div className="pool-list-content">
               {filteredPools.map((pool, index) => (

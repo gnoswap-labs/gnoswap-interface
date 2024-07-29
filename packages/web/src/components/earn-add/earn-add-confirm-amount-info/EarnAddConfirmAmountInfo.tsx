@@ -1,9 +1,13 @@
 import React from "react";
-import { EarnAddConfirmAmountInfoWrapper, EarnAddConfirmFeeInfoSection } from "./EarnAddConfirmAmountInfo.styles";
+import {
+  EarnAddConfirmAmountInfoWrapper,
+  EarnAddConfirmFeeInfoSection,
+} from "./EarnAddConfirmAmountInfo.styles";
 import TokenAmount from "@components/common/token-amount/TokenAmount";
 import IconAdd from "@components/common/icons/IconAdd";
 import { TokenModel } from "@models/token/token-model";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import { useTranslation } from "react-i18next";
 
 export interface EarnAddConfirmAmountInfoProps {
   tokenA: {
@@ -24,6 +28,8 @@ const EarnAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
   tokenB,
   feeRate,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <EarnAddConfirmAmountInfoWrapper>
       <div className="pair-amount">
@@ -43,7 +49,9 @@ const EarnAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
       </div>
 
       <EarnAddConfirmFeeInfoSection>
-        <span className="key">Fee Tier</span>
+        <span className="key">
+          {t("AddPosition:confirmAddModal.info.label.feeTier")}
+        </span>
         <Badge
           text={feeRate}
           type={BADGE_TYPE.DARK_DEFAULT}

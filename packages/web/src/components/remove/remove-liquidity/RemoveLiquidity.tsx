@@ -4,6 +4,7 @@ import { wrapper } from "./RemoveLiquidity.styles";
 import RemoveLiquiditySelectList from "../remove-liquidity-select-list/RemoveLiquiditySelectList";
 import RemoveLiquiditySelectResult from "../remove-liquidity-select-result/RemoveLiquiditySelectResult";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { useTranslation } from "react-i18next";
 
 interface RemoveLiquidityProps {
   stakedPositions: PoolPositionModel[];
@@ -30,6 +31,8 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   isWrap,
   setIsWrap,
 }) => {
+  const { t } = useTranslation();
+
   const disabledRemoveLiquidity = useMemo(() => {
     return checkedList.length === 0;
   }, [checkedList.length]);
@@ -42,7 +45,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
 
   return (
     <div css={wrapper}>
-      <h3 className="title">Remove Position</h3>
+      <h3 className="title">{t("RemovePosition:title")}</h3>
       <RemoveLiquiditySelectList
         stakedPositions={stakedPositions}
         unstakedPositions={unstakedPositions}
@@ -58,7 +61,11 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
         setIsWrap={setIsWrap}
       />
       <Button
-        text={disabledRemoveLiquidity ? "Select Position" : "Remove Position"}
+        text={t(
+          disabledRemoveLiquidity
+            ? "RemovePosition:btn.selectPosi"
+            : "RemovePosition:btn.remove",
+        )}
         disabled={disabledRemoveLiquidity}
         style={{
           hierarchy: ButtonHierarchy.Primary,

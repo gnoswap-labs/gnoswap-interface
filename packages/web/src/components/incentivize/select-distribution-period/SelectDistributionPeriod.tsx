@@ -2,6 +2,7 @@ import React from "react";
 import SelectDistributionPeriodInput from "../select-distribution-period-input/SelectDistributionPeriodInput";
 import { SelectDistributionPeriodWrapper } from "./SelectDistributionPeriod.styles";
 import SelectDistributionDateInput from "../select-distribution-date-input/SelectDistributionDateInput";
+import { useTranslation } from "react-i18next";
 
 interface DistributionPeriodDate {
   year: number;
@@ -10,45 +11,50 @@ interface DistributionPeriodDate {
 }
 
 interface SelectDistributionPeriodProps {
-  startDate?: DistributionPeriodDate,
+  startDate?: DistributionPeriodDate;
   setStartDate: (date: DistributionPeriodDate) => void;
   period: number;
   periods: number[];
   setPeriod: (period: number) => void;
 }
 
-const SelectDistributionPeriod: React.FC<
-  SelectDistributionPeriodProps
-> = ({
+const SelectDistributionPeriod: React.FC<SelectDistributionPeriodProps> = ({
   startDate,
   setStartDate,
   period,
   periods,
   setPeriod,
 }) => {
+  const { t } = useTranslation();
 
-    return (
-      <SelectDistributionPeriodWrapper>
-        <h5 className="section-title">2. Select Distribution Period</h5>
-        <div className="select-date-wrap">
-          <div className="start-date">
-            <SelectDistributionDateInput
-              title="Start Date"
-              date={startDate}
-              setDate={setStartDate}
-            />
-          </div>
-          <div className="period">
-            <SelectDistributionPeriodInput
-              periods={periods}
-              title="Distribution Period"
-              period={period}
-              changePeriod={setPeriod}
-            />
-          </div>
+  return (
+    <SelectDistributionPeriodWrapper>
+      <h5 className="section-title">
+        {t("IncentivizePool:incentiPool.form.period.label")}
+      </h5>
+      <div className="select-date-wrap">
+        <div className="start-date">
+          <SelectDistributionDateInput
+            title={t(
+              "IncentivizePool:incentiPool.form.period.field.startDate.label",
+            )}
+            date={startDate}
+            setDate={setStartDate}
+          />
         </div>
-      </SelectDistributionPeriodWrapper>
-    );
-  };
+        <div className="period">
+          <SelectDistributionPeriodInput
+            periods={periods}
+            title={t(
+              "IncentivizePool:incentiPool.form.period.field.disPeriod.label",
+            )}
+            period={period}
+            changePeriod={setPeriod}
+          />
+        </div>
+      </div>
+    </SelectDistributionPeriodWrapper>
+  );
+};
 
 export default SelectDistributionPeriod;

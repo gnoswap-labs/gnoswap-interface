@@ -22,6 +22,7 @@ import {
   formatPoolPairAmount,
   formatRate,
 } from "@utils/new-number-utils";
+import { Trans, useTranslation } from "react-i18next";
 
 interface Props {
   selectedPosition: PoolPositionModel[];
@@ -36,6 +37,8 @@ const RemovePositionModal: React.FC<Props> = ({
   onSubmit,
   allPositions,
 }) => {
+  const { t } = useTranslation();
+
   const { unclaimedRewards, totalLiquidityUSD } = useRemoveData({
     selectedPosition,
   });
@@ -61,14 +64,14 @@ const RemovePositionModal: React.FC<Props> = ({
     <RemovePositionModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Confirm Remove Position</h6>
+          <h6>{t("RemovePosition:confRemoveModal.title")}</h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
         </div>
         <div className="content">
           <div className="box-item">
-            <h4>Positions</h4>
+            <h4>{t("RemovePosition:confRemoveModal.positionLst")}</h4>
             <div className="item-content">
               {selectedPosition.map((position, index) => (
                 <div key={index}>
@@ -96,7 +99,7 @@ const RemovePositionModal: React.FC<Props> = ({
               ))}
             </div>
             <div className="box-item box-item-unclaim">
-              <h4>Unclaimed Fees</h4>
+              <h4>{t("RemovePosition:confRemoveModal.unclaimedFee")}</h4>
               <div className="item-content">
                 {unclaimedRewards.map((rewardInfo, index) => (
                   <div key={index} className="item-detail">
@@ -124,13 +127,16 @@ const RemovePositionModal: React.FC<Props> = ({
                   <Divider />
                   <div className="protocol">
                     <div>
-                      <span className="">Protocol Fee</span>
+                      <span className="">
+                        {t("RemovePosition:confRemoveModal.protocolFee.label")}
+                      </span>
                       <Tooltip
                         placement="top"
                         FloatingContent={
                           <ToolTipContentWrapper width="251px">
-                            The amount of fees charged on each claim that goes
-                            to the protocol.
+                            {t(
+                              "RemovePosition:confRemoveModal.protocolFee.tooltip",
+                            )}
                           </ToolTipContentWrapper>
                         }
                       >
@@ -148,24 +154,34 @@ const RemovePositionModal: React.FC<Props> = ({
             <div className="box-item">
               <div className="item-content">
                 <div>
-                  <div className="label-large">Total Amount</div>
+                  <div className="label-large">
+                    {t("RemovePosition:confRemoveModal.totalAmt")}
+                  </div>
                   <div className="value-large">{totalLiquidityUSD}</div>
                 </div>
               </div>
             </div>
             <WarningCard
-              title={"Important Note"}
+              title={t("RemovePosition:confRemoveModal.warning.title")}
               icon={<IconCircleExclamationMark />}
               content={
                 <RemoveWarningContentWrapper>
-                  You will stop earning swap fee rewards of{" "}
-                  <span className="remove-percent">{warningPercent} APR</span>
+                  <Trans
+                    ns="RemovePosition"
+                    i18nKey="confRemoveModal.warning.content"
+                    values={{
+                      percent: warningPercent,
+                    }}
+                  >
+                    You will stop earning swap fee rewards of
+                    <span className="remove-percent">{warningPercent} APR</span>
+                  </Trans>
                 </RemoveWarningContentWrapper>
               }
             />
             <div className="button-wrapper">
               <Button
-                text="Confirm Remove Position"
+                text={t("RemovePosition:confRemoveModal.btn")}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                   fullWidth: true,
