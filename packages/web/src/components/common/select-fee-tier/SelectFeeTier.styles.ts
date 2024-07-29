@@ -16,10 +16,13 @@ export const SelectFeeTierWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     grid-gap: 8px;
   }
+  height: 0px;
+  margin-bottom: 0px;
   transition: height 0.5s ease;
   visibility: hidden;
   overflow: hidden;
   &.open {
+    margin-bottom: 15px;
     min-height: 119px;
     visibility: visible;
     ${media.mobile} {
