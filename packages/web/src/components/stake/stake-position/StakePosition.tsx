@@ -1,12 +1,11 @@
 import React, { useMemo } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { wrapper } from "./StakePosition.styles";
-// import { ValuesType } from "utility-types";
+import { ValuesType } from "utility-types";
 import SelectLiquidity from "@components/stake/select-liquidity/SelectLiquidity";
 import SelectStakeResult from "@components/stake/select-stake-result/SelectStakeResult";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PoolModel } from "@models/pool/pool-model";
-import { useTranslation } from "react-i18next";
 
 interface StakePositionProps {
   unstakedPositions: PoolPositionModel[];
@@ -22,6 +21,14 @@ interface StakePositionProps {
   pool?: PoolModel;
 }
 
+export const CONTENT_TITLE = {
+  PERIOD: "1. Select Unstaking Period",
+  LIQUIDITY: "2. Select Liquidity",
+  TOTAL_STAKING: "Total Staking Amount",
+  APR: "Estimated APR",
+};
+export type CONTENT_TITLE = ValuesType<typeof CONTENT_TITLE>;
+
 const StakePosition: React.FC<StakePositionProps> = ({
   unstakedPositions,
   checkedList,
@@ -34,21 +41,17 @@ const StakePosition: React.FC<StakePositionProps> = ({
   connected,
   pool,
 }) => {
-  const { t } = useTranslation();
-
   const isEmptyCheckList = useMemo(() => {
     return checkedList.length === 0 && connected;
   }, [checkedList, connected]);
 
   const selectedPositions = useMemo(() => {
-    return unstakedPositions.filter(position =>
-      checkedList.includes(position.id),
-    );
+    return unstakedPositions.filter(position => checkedList.includes(position.id));
   }, [checkedList, unstakedPositions]);
 
   return (
     <div css={wrapper}>
-      <h3 className="title">{t("StakePosition:title")}</h3>
+      <h3 className="title">Stake Position</h3>
       <SelectLiquidity
         unstakedPositions={unstakedPositions}
         checkedList={checkedList}
@@ -66,13 +69,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
       />
       <Button
         className="button-stake-position"
-        text={
-          !connected
-            ? t("business:walletLogin")
-            : isEmptyCheckList
-            ? t("StakePosition:btn.selectPosi")
-            : t("StakePosition:btn.stake")
-        }
+        text={!connected ? "Wallet Login" : isEmptyCheckList ? "Select Position" : "Stake Position"}
         disabled={isEmptyCheckList}
         style={{
           hierarchy: ButtonHierarchy.Primary,

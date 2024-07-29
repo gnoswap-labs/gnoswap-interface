@@ -8,13 +8,18 @@ import WalletMyPositionsHeader from "@components/wallet/wallet-my-positions-head
 import WalletPositionCardListContainer from "@containers/wallet-position-card-list-container/WalletPositionCardListContainer";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { useMemo } from "react";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Earn"])),
+      ...(await serverSideTranslations(locale, [
+        "HeaderFooter",
+        "common",
+        "business",
+        "Earn",
+      ])),
     },
   };
 }

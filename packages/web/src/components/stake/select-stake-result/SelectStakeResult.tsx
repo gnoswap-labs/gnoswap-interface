@@ -8,7 +8,6 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PoolModel } from "@models/pool/pool-model";
 import { formatRate } from "@utils/new-number-utils";
 import { useStakeData } from "@hooks/stake/use-stake-data";
-import { useTranslation } from "react-i18next";
 
 interface SelectStakeResultProps {
   positions: PoolPositionModel[];
@@ -16,12 +15,14 @@ interface SelectStakeResultProps {
   pool?: PoolModel;
 }
 
+const HOVER_TEXT =
+  "The estimated APR range is calculated by applying a dynamic multiplier to your staked position, based on the staking duration.";
+
 const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   positions,
   isHiddenBadge = false,
   pool,
 }) => {
-  const { t } = useTranslation();
   const { pooledTokenInfos, totalLiquidityUSD } = useStakeData({ positions });
 
   const stakingAPR = useMemo(() => {
@@ -47,10 +48,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
                 width={24}
                 mobileWidth={24}
               />
-              <p>
-                {t("StakePosition:overview.pooled")}{" "}
-                {pooledTokenInfo.token.symbol}
-              </p>
+              <p>Pooled {pooledTokenInfo.token.symbol}</p>
               <strong>{pooledTokenInfo.amount}</strong>
             </div>
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>
@@ -59,26 +57,19 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
-          <h5 className="total-amount-title">
-            {t("StakePosition:overview.totalAmt")}
-          </h5>
+          <h5 className="total-amount-title">Total Amount</h5>
           {!isHiddenBadge && (
             <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />
           )}
           <span className="result-value">{totalLiquidityUSD}</span>
         </div>
         <div className="apr-box">
-          <h5 className="apr-title">
-            {t("StakePosition:overview.stakingApr.label")}
-          </h5>
+          <h5 className="apr-title">Staking APR</h5>
           <div className="hover-info">
             <Tooltip
               placement="top"
               FloatingContent={
-                <HoverTextWrapper>
-                  {" "}
-                  {t("StakePosition:overview.stakingApr.tooltip")}
-                </HoverTextWrapper>
+                <HoverTextWrapper>{HOVER_TEXT}</HoverTextWrapper>
               }
             >
               <IconInfo className="icon-info" />

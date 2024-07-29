@@ -4,13 +4,13 @@ import GovernanceLayout from "@layouts/governance-layout/GovernanceLayout";
 import GovernanceContainer from "@containers/governance-container/GovernanceContainer";
 import ProposalListContainer from "@containers/proposal-list-container/ProposalListContainer";
 import SEOHeader from "@components/common/seo-header/seo-header";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import { SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS])),
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
     },
   };
 }
