@@ -7,13 +7,13 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import SEOHeader from "@components/common/seo-header/seo-header";
-import { SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS])),
     },
   };
 }
