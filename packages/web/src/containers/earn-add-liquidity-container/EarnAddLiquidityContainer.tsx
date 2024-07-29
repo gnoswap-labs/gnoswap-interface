@@ -794,7 +794,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       };
       if (tokenA?.path && tokenB?.path) {
         window.history.pushState(
-          "",
+          null,
           "",
           makeRouteUrl(PAGE_PATH.EARN_ADD, query),
         );
