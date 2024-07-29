@@ -1,18 +1,22 @@
-import React, { useMemo } from "react";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
+import { useAtom } from "jotai";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import Footer from "@components/common/footer/Footer";
-import EarnAddLayout from "@layouts/earn-add-layout/EarnAddLayout";
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { SEOInfo } from "@constants/common.constant";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import EarnAddLiquidityContainer from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
-import { useAtom } from "jotai";
-import { EarnState } from "@states/index";
 import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
 import useRouter from "@hooks/common/use-custom-router";
-import SEOHeader from "@components/common/seo-header/seo-header";
-import { checkGnotPath } from "@utils/common";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import EarnAddLayout from "@layouts/earn-add-layout/EarnAddLayout";
+import { EarnState } from "@states/index";
+import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -32,9 +36,9 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function EarnAdd() {
+  const { query } = useRouter();
   const { t } = useTranslation();
-  const router = useRouter();
-  const query = router.query;
+
   const [isEarnAdd] = useAtom(EarnState.isEarnAdd);
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const listBreadcrumb = [
@@ -50,19 +54,19 @@ export default function EarnAdd() {
   );
 
   const feeStr = useMemo(() => {
-    const feeTier = router.query?.["fee_tier"] as string | undefined;
+    const feeTier = query.fee_tier as string | undefined;
 
     if (!feeTier) {
       return null;
     }
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
-  }, [router.query]);
+  }, [query.fee_tier]);
 
   const seoInfo = useMemo(() => SEOInfo["/earn/add"], []);
 
   const title = useMemo(() => {
-    const tokenAPath = router.query?.["tokenA"] as string | undefined;
-    const tokenBPath = router.query?.["tokenB"] as string | undefined;
+    const tokenAPath = query.tokenA as string | undefined;
+    const tokenBPath = query.tokenB as string | undefined;
 
     const tokenA = getGnotPath(
       tokenAPath
@@ -78,7 +82,7 @@ export default function EarnAdd() {
     return seoInfo.title(
       [tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[],
     );
-  }, [feeStr, router.query, seoInfo, tokens, getGnotPath]);
+  }, [feeStr, query.tokenA, query.tokenB, seoInfo, tokens, getGnotPath]);
 
   return (
     <>
