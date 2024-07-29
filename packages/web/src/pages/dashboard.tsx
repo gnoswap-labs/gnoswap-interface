@@ -6,14 +6,14 @@ import VolumeChartContainer from "@containers/volume-chart-container/VolumeChart
 import DashboardInfoContainer from "@containers/dashboard-info-container/DashboardInfoContainer";
 import DashboardActivitiesContainer from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
 import SEOHeader from "@components/common/seo-header/seo-header";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import { SEOInfo } from "@constants/common.constant";
 import { useMemo } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS])),
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "common"])),
     },
   };
 }

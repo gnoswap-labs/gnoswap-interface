@@ -15,7 +15,6 @@ import { TokenModel } from "@models/token/token-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
 
 interface SelectLiquidityItemProps {
   position: PoolPositionModel;
@@ -27,7 +26,6 @@ interface SelectLiquidityItemProps {
 const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({
   position,
 }) => {
-  const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
 
   const renderTokenValue = (token: TokenModel, tokenBalance: string) => {
@@ -51,9 +49,7 @@ const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({
   return (
     <div css={tooltipWrapper()}>
       <TokenTitleWrapper>
-        <div className="title">
-          {t("UnstakePosition:positionList.item.tooltip.tokenID")}
-        </div>
+        <div className="title">Token ID</div>
         <div className="title">#{position.id}</div>
       </TokenTitleWrapper>
       {renderTokenValue(position.pool.tokenA, position.tokenABalance)}
