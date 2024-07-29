@@ -19,15 +19,17 @@ import EarnAddLayout from "@layouts/earn-add-layout/EarnAddLayout";
 import { EarnState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "react-i18next";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, [
-        "HeaderFooter",
-        "common",
+        ...DEFAULT_I18N_NS,
         "Swap",
-        "business",
         "AddPosition",
       ])),
     },
