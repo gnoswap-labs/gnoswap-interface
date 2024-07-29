@@ -1,1 +1,42 @@
-{"btn":{"selectPosi":"위치 선택","stake":"스테이크 포지션"},"confStakeModal":{"btn":"스테이크 위치 확인","positionLst":"포지션","stakingReward":{"apr":{"label":"APR 스테이킹","tooltip":"예상 APR 범위는 스테이킹 기간에 따라 스테이킹 포지션에 동적 승수를 적용하여 계산됩니다."},"title":"스테이킹 보상","tooltip":"프로토콜로 전송되는 각 청구에 부과되는 수수료 금액입니다."},"title":"스테이크 위치 확인","totalAmt":"총 금액","warning":{"content":"<1>{{percent}} APR의</1> 스왑 수수료 보상 적립이 중단됩니다."}},"liquidity":"유동성","noPosi":"위치 없음","overview":{"pooled":"풀링","totalAmt":"총 금액"},"positionList":{"item":{"disabled":"*포지션을 먼저 언스테이킹해야 합니다.","tooltip":{"tokenID":"토큰 ID"}}},"title":"스테이크 포지션"}
+{
+  "btn": {
+    "selectPosi": "위치 선택",
+    "stake": "스테이크 포지션"
+  },
+  "confStakeModal": {
+    "btn": "스테이크 위치 확인",
+    "positionLst": "포지션",
+    "stakingReward": {
+      "apr": {
+        "label": "APR 스테이킹",
+        "tooltip": "예상 APR 범위는 스테이킹 기간에 따라 스테이킹 포지션에 동적 승수를 적용하여 계산됩니다."
+      },
+      "title": "스테이킹 보상",
+      "tooltip": "프로토콜로 전송되는 각 청구에 부과되는 수수료 금액입니다."
+    },
+    "title": "스테이크 위치 확인",
+    "totalAmt": "총 금액",
+    "warning": {
+      "content": "<1>{{percent}} APR의</1> 스왑 수수료 보상 적립이 중단됩니다."
+    }
+  },
+  "liquidity": "유동성",
+  "noPosi": "위치 없음",
+  "overview": {
+    "pooled": "풀링",
+    "stakingApr": {
+      "label": "APR 스테이킹",
+      "tooltip": "예상 APR 범위는 스테이킹 기간에 따라 스테이킹 포지션에 동적 승수를 적용하여 계산됩니다."
+    },
+    "totalAmt": "총 금액"
+  },
+  "positionList": {
+    "item": {
+      "disabled": "*포지션을 먼저 언스테이킹해야 합니다.",
+      "tooltip": {
+        "tokenID": "토큰 ID"
+      }
+    }
+  },
+  "title": "스테이크 포지션"
+}

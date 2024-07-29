@@ -10,18 +10,13 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { formatAddress } from "@utils/string-utils";
-import { SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        "HeaderFooter",
-        "common",
-        "business",
-        "Earn",
-      ])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Earn"])),
     },
   };
 }

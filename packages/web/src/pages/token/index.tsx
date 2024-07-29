@@ -18,7 +18,7 @@ import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { formatPrice } from "@utils/new-number-utils";
@@ -29,9 +29,7 @@ export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, [
-        "HeaderFooter",
-        "common",
-        "business",
+        ...DEFAULT_I18N_NS,
         "Swap",
         "TokenDetails",
       ])),

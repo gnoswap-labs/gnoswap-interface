@@ -3,6 +3,7 @@ import SelectLiquidityListItem from "@components/stake/select-lilquidity-list-it
 import { loadingWrapper, wrapper } from "./SelectLiquidityList.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { useTranslation } from "react-i18next";
 
 interface SelectLiquidityProps {
   unstakedPositions: PoolPositionModel[];
@@ -23,6 +24,8 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
   isEmpty,
   isLoading,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div css={wrapper}>
       <div className="checked-all-wrap">
@@ -34,9 +37,13 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
             onChange={e => onCheckedAll(e.target.checked)}
           />
           <label htmlFor="checkbox-all" className="select-all-label" />
-          <span className="custom-label">Select All</span>
+          <span className="custom-label">
+            {t("common:select", {
+              context: "all",
+            })}
+          </span>
         </div>
-        <span>Liquidity</span>
+        <span>{t("StakePosition:liquidity")}</span>
       </div>
       <ul>
         {isLoading && (
@@ -56,7 +63,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
               />
             ))}
         {!isLoading && isEmpty && (
-          <div className="no-position">No Position</div>
+          <div className="no-position">{t("StakePosition:noPosi")}</div>
         )}
       </ul>
     </div>

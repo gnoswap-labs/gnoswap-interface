@@ -1,7 +1,7 @@
 import Footer from "@components/common/footer/Footer";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import Banner from "@components/home/banner/Banner";
-import { SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import GnoswapBrandContainer from "@containers/gnoswap-brand-container/GnoswapBrandContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import HighestAprsCardListContainer from "@containers/highest-aprs-card-list-container/HighestAprsCardListContainer";
@@ -17,12 +17,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        "HeaderFooter",
-        "Main",
-        "common",
-        "business",
-      ])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Main"])),
     },
   };
 }

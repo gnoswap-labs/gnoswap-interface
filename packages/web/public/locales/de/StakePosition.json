@@ -1,1 +1,42 @@
-{"btn":{"selectPosi":"Position wählen","stake":"Pfahlstellung"},"confStakeModal":{"btn":"Pfahlposition bestätigen","positionLst":"Positionen","stakingReward":{"apr":{"label":"Absteckung APR","tooltip":"Der geschätzte effektive Jahreszins wird berechnet, indem ein dynamischer Multiplikator auf Ihre eingesetzte Position angewendet wird, der auf der Dauer des Einsatzes basiert."},"title":"Belohnungen für Einsätze","tooltip":"Die Höhe der Gebühren, die für jede Forderung erhoben werden, die an das Protokoll geht."},"title":"Pfahlposition bestätigen","totalAmt":"Gesamtbetrag","warning":{"content":"Sie erhalten keine Swap-Gebührenprämien mehr von <1>{{percent}} APR</1>"}},"liquidity":"Liquidität","noPosi":"Keine Position","overview":{"pooled":"Gepoolt","totalAmt":"Gesamtbetrag"},"positionList":{"item":{"disabled":"*Sie müssen zuerst Ihre Position auflockern.","tooltip":{"tokenID":"Token-ID"}}},"title":"Pfahlstellung"}
+{
+  "btn": {
+    "selectPosi": "Position wählen",
+    "stake": "Pfahlstellung"
+  },
+  "confStakeModal": {
+    "btn": "Pfahlposition bestätigen",
+    "positionLst": "Positionen",
+    "stakingReward": {
+      "apr": {
+        "label": "Absteckung APR",
+        "tooltip": "Der geschätzte effektive Jahreszins wird berechnet, indem ein dynamischer Multiplikator auf Ihre eingesetzte Position angewendet wird, der auf der Dauer des Einsatzes basiert."
+      },
+      "title": "Belohnungen für Einsätze",
+      "tooltip": "Die Höhe der Gebühren, die für jede Forderung erhoben werden, die an das Protokoll geht."
+    },
+    "title": "Pfahlposition bestätigen",
+    "totalAmt": "Gesamtbetrag",
+    "warning": {
+      "content": "Sie erhalten keine Swap-Gebührenprämien mehr von <1>{{percent}} APR</1>"
+    }
+  },
+  "liquidity": "Liquidität",
+  "noPosi": "Keine Position",
+  "overview": {
+    "pooled": "Gepoolt",
+    "stakingApr": {
+      "label": "Absteckung APR",
+      "tooltip": "Der geschätzte effektive Jahreszins wird berechnet, indem ein dynamischer Multiplikator auf Ihre eingesetzte Position angewendet wird, der auf der Dauer des Einsatzes basiert."
+    },
+    "totalAmt": "Gesamtbetrag"
+  },
+  "positionList": {
+    "item": {
+      "disabled": "*Sie müssen zuerst Ihre Position auflockern.",
+      "tooltip": {
+        "tokenID": "Token-ID"
+      }
+    }
+  },
+  "title": "Pfahlstellung"
+}
