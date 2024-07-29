@@ -63,7 +63,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
       <Button
         text={t(
           disabledRemoveLiquidity
-            ? "RemovePosition:selectPosi"
+            ? "RemovePosition:btn.selectPosi"
             : "RemovePosition:btn.remove",
         )}
         disabled={disabledRemoveLiquidity}
