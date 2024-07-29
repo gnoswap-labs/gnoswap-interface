@@ -15,8 +15,8 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { useTranslation } from "react-i18next";
 
 export async function getStaticProps({ locale }: { locale: string }) {
