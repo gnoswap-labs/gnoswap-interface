@@ -35,9 +35,9 @@ import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { useRouterBack } from "@hooks/common/use-router-back";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
-import { PAGE_PATH } from "@constants/page.constant";
 import { checkPoolStakingRewards } from "@utils/pool-utils";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useTranslation } from "react-i18next";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -71,6 +71,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 ];
 
 const EarnAddLiquidityContainer: React.FC = () => {
+  const { i18n } = useTranslation();
   const router = useCustomRouter();
   useRouterBack();
 
@@ -796,7 +797,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         window.history.pushState(
           "",
           "",
-          makeRouteUrl(PAGE_PATH.EARN_ADD, query),
+          makeRouteUrl(window.location.pathname, query),
         );
       }
     }
@@ -810,6 +811,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     router.query.fee_tier,
     router.isReady,
     router.query.price_range_type,
+    i18n.language,
   ]);
 
   const showDim = useMemo(() => {
