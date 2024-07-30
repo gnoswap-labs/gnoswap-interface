@@ -31,7 +31,7 @@ const Custom500Layout: React.FC<Custom500LayoutProps> = ({
           <p>{t("Error:issues")}</p>
           <Button
             leftIcon={<IconStrokeArrowLeft className="btn-arrow-icon" />}
-            text="Go back"
+            text={t("Error:goBackBtn")}
             onClick={goBackClick}
             style={{
               bgColor: themeKey === "dark" ? "background02" : "background04",
