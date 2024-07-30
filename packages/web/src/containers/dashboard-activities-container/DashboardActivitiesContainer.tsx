@@ -15,6 +15,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
 dayjs.extend(relativeTime);
 
 export interface Activity {
@@ -33,12 +34,12 @@ export interface SortOption {
 }
 
 export const TABLE_HEAD = {
-  ACTION: "Action",
-  TOTAL_VALUE: "Total Value",
-  TOKEN_AMOUNT1: "Token amount",
-  TOKEN_AMOUNT2: "Token amount ",
-  ACCOUNT: "Account",
-  TIME: "Time",
+  ACTION: "Dashboard:onchainActi.col.action",
+  TOTAL_VALUE: "Dashboard:onchainActi.col.totalVal",
+  TOKEN_AMOUNT1: "Dashboard:onchainActi.col.tokenAmt",
+  TOKEN_AMOUNT2: "Dashboard:onchainActi.col.tokenAmt",
+  ACCOUNT: "Dashboard:onchainActi.col.acc",
+  TIME: "Dashboard:onchainActi.col.time",
 } as const;
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
@@ -50,6 +51,22 @@ export const ACTIVITY_TYPE = {
   STAKES: "Stakes",
   UNSTAKE: "Unstakes",
 } as const;
+
+export const ACTIVITY_SWITCH_DATA = [
+  { key: ACTIVITY_TYPE.ALL, display: "Dashboard:onchainActi.switch.all" },
+  { key: ACTIVITY_TYPE.SWAPS, display: "Dashboard:onchainActi.switch.swap" },
+  { key: ACTIVITY_TYPE.ADDS, display: "Dashboard:onchainActi.switch.add" },
+  {
+    key: ACTIVITY_TYPE.REMOVES,
+    display: "Dashboard:onchainActi.switch.remove",
+  },
+  { key: ACTIVITY_TYPE.STAKES, display: "Dashboard:onchainActi.switch.stake" },
+  {
+    key: ACTIVITY_TYPE.UNSTAKE,
+    display: "Dashboard:onchainActi.switch.unstake",
+  },
+];
+
 export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
 
 export const dummyTokenList: Activity[] = [
@@ -71,6 +88,7 @@ const replaceToken = (symbol: string) => {
 };
 
 const DashboardActivitiesContainer: React.FC = () => {
+  const { t } = useTranslation();
   const [activityType, setActivityType] = useState<ACTIVITY_TYPE>(
     ACTIVITY_TYPE.ALL,
   );
@@ -98,12 +116,15 @@ const DashboardActivitiesContainer: React.FC = () => {
     refetchInterval: 10_000,
   });
 
-  const changeActivityType = useCallback((newType: string) => {
-    const activityType =
-      Object.values(ACTIVITY_TYPE).find(type => type === newType) ||
-      ACTIVITY_TYPE["ALL"];
-    setActivityType(activityType);
-  }, []);
+  const changeActivityType = useCallback(
+    ({ key: newType }: { display: string; key: string }) => {
+      const activityType =
+        Object.values(ACTIVITY_TYPE).find(type => type === newType) ||
+        ACTIVITY_TYPE["ALL"];
+      setActivityType(activityType);
+    },
+    [],
+  );
   const movePage = useCallback((newPage: number) => {
     setPage(newPage);
   }, []);
@@ -138,11 +159,6 @@ const DashboardActivitiesContainer: React.FC = () => {
     [sortOption],
   );
 
-  const capitalizeFirstLetter = (input: string) => {
-    const str = input.toLowerCase();
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
   const formatActivity = (res: OnchainActivityData): Activity => {
     const explorerUrl = getTxUrl(res?.txHash);
     const tokenASymbol = res.tokenA.symbol;
@@ -155,7 +171,28 @@ const DashboardActivitiesContainer: React.FC = () => {
       (!!res.tokenBAmount && !!Number(res.tokenBAmount));
 
     const actionText = (() => {
-      const action = capitalizeFirstLetter(res.actionType);
+      const action = (() => {
+        switch (res.actionType) {
+          case "SWAP":
+            return t("business:onchainActi.action.swap");
+          case "ADD":
+            return t("business:onchainActi.action.add");
+          case "CLAIM":
+            return t("business:onchainActi.action.claim");
+          case "DECREASE":
+            return t("business:onchainActi.action.decrease");
+          case "INCREASE":
+            return t("business:onchainActi.action.increase");
+          case "REMOVE":
+            return t("business:onchainActi.action.remove");
+          case "REPOSITION":
+            return t("business:onchainActi.action.reposition");
+          case "STAKE":
+            return t("business:onchainActi.action.stake");
+          case "UNSTAKE":
+            return t("business:onchainActi.action.unstake");
+        }
+      })();
       const tokenAText =
         shouldShowTokenAAmount && tokenASymbol
           ? " " + replaceToken(tokenASymbol)
@@ -166,7 +203,10 @@ const DashboardActivitiesContainer: React.FC = () => {
           : "";
       const haveOneToken = !tokenAText || !tokenBText;
       const conjunction = !haveOneToken
-        ? " " + (res.actionType === "SWAP" ? "for" : "and")
+        ? " " +
+          (res.actionType === "SWAP"
+            ? t("common:conjunction.for")
+            : t("common:conjunction.and"))
         : "";
 
       return `${action}${tokenAText}${conjunction}${tokenBText}`;
@@ -207,7 +247,7 @@ const DashboardActivitiesContainer: React.FC = () => {
         activities.filter(
           item => Number(item.tokenAAmount) || Number(item.tokenBAmount),
         ) ?? []
-      ).map(x => formatActivity(x))}
+      ).map(formatActivity)}
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

@@ -9,6 +9,8 @@ import { useColorGraph } from "@hooks/common/use-color-graph";
 import { Global, css } from "@emotion/react";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
 
 export interface BarGraphProps {
   className?: string;
@@ -39,19 +41,10 @@ const VIEWPORT_DEFAULT_HEIGHT = 200;
 const TOP_MARGIN_BAR = 24;
 
 function parseTime(time: string) {
-  const dateObject = new Date(time);
-  const month = dateObject.toLocaleString("en-US", { month: "short" });
-  const day = dateObject.getDate();
-  const year = dateObject.getFullYear();
-  const hours = dateObject.getHours();
-  const minutes = dateObject.getMinutes();
-  const isPM = hours >= 12;
-  const formattedHours = hours % 12 || 12;
+  const dateObject = dayjs(time);
   return {
-    date: `${month} ${day}, ${year}`,
-    time: `${formattedHours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")} ${isPM ? "PM" : "AM"}`,
+    date: dateObject.format("MMM DD, YYYY"),
+    time: dateObject.format("hh:mm A"),
   };
 }
 
@@ -87,6 +80,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
   radiusBorder = 0,
   fees,
 }) => {
+  const { t } = useTranslation();
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
@@ -299,7 +293,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 </span>
               </div>
               <div className="tooltip-header">
-                <span className="label">Trading Volume</span>
+                <span className="label">{t("barGraph.tradingVol")}</span>
                 <span className="value">
                   {formatOtherPrice(datas[currentPointIndex], {
                     isKMB: false,
@@ -307,7 +301,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 </span>
               </div>
               <div className="tooltip-header">
-                <span className="label">Fees</span>
+                <span className="label">{t("barGraph.fees")}</span>
                 <span className="value">
                   {formatOtherPrice(fees[currentPointIndex], {
                     isKMB: false,
@@ -320,9 +314,9 @@ const BarGraph: React.FC<BarGraphProps> = ({
             activated ? (
             <IncentivizeGraphTooltipWrapper>
               <div className="row">
-                <div className="token">Token</div>
-                <div className="amount">Amount</div>
-                <div className="price">Price Range</div>
+                <div className="token">{t("business:token")}</div>
+                <div className="amount">{t("business:amount")}</div>
+                <div className="price">{t("business:priceRange")}</div>
               </div>
               <div className="body">
                 <div className="token">
@@ -345,7 +339,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                   />
                   BTC
                 </div>
-                <div className="amount">Amount</div>
+                <div className="amount">{t("business:amount")}</div>
                 <div className="price">0.000046 - 0.000051 BTC</div>
               </div>
             </IncentivizeGraphTooltipWrapper>

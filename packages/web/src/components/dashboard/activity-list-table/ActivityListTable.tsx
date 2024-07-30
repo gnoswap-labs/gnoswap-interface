@@ -22,6 +22,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import ActivityInfo, {
   MobileActivityInfo,
 } from "../activity-info/ActivityInfo";
+import { useTranslation } from "react-i18next";
 
 interface ActivityListTableProps {
   activities: Activity[];
@@ -40,6 +41,8 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
   isFetched,
   breakpoint,
 }) => {
+  const { t } = useTranslation();
+
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
       return sortOption?.key === head && sortOption.direction === "asc";
@@ -88,7 +91,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
                 {isDescendingOption(head) && (
                   <IconTriangleArrowDown className="icon desc" />
                 )}
-                {head}
+                {t(head)}
               </span>
             </TableHeader>
           ))}
