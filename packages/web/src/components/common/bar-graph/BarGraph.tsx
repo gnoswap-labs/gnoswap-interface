@@ -293,7 +293,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 </span>
               </div>
               <div className="tooltip-header">
-                <span className="label">{t("barGraph.tradingVol")}</span>
+                <span className="label">{t("common:barChart.tradingVol")}</span>
                 <span className="value">
                   {formatOtherPrice(datas[currentPointIndex], {
                     isKMB: false,
@@ -301,7 +301,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 </span>
               </div>
               <div className="tooltip-header">
-                <span className="label">{t("barGraph.fees")}</span>
+                <span className="label">{t("common:barChart.fees")}</span>
                 <span className="value">
                   {formatOtherPrice(fees[currentPointIndex], {
                     isKMB: false,
