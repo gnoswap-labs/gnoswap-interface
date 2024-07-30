@@ -6,9 +6,10 @@ import {
   NotificationListWrapper,
   Overlay,
 } from "./NotificationList.styles";
-import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
 import { DEVICE_TYPE } from "@styles/media";
 import NotificationItem from "./NotificationItem";
+import { useTranslation } from "react-i18next";
+import { TransactionGroupsType } from "@models/notification";
 
 interface NotificationListProps {
   txsGroupsInformation: TransactionGroupsType[];
@@ -23,6 +24,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
   breakpoint,
   onClearAll,
 }) => {
+  const { t } = useTranslation();
   const listRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -33,15 +35,17 @@ const NotificationList: React.FC<NotificationListProps> = ({
         width={window?.innerWidth}
       >
         <NotificationHeader>
-          <span className="notification-title">Notification</span>
-          <ClearButton onClick={onClearAll}>Clear All</ClearButton>
+          <span className="notification-title">{t("Modal:notif.title")}</span>
+          <ClearButton onClick={onClearAll}>
+            {t("Modal:notif.clear")}
+          </ClearButton>
         </NotificationHeader>
         {txsGroupsInformation.length > 0 ? (
           <div className="list-container">
             <div className="list-content">
               {txsGroupsInformation.map(groups => (
                 <NotificationItem
-                  key={groups.title}
+                  key={groups.type}
                   groups={groups}
                   breakpoint={breakpoint}
                 />
@@ -50,7 +54,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
           </div>
         ) : (
           <>
-            <NoDataText>No data</NoDataText>
+            <NoDataText>{t("Modal:notif.empty")}</NoDataText>
           </>
         )}
       </NotificationListWrapper>

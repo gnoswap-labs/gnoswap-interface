@@ -4,13 +4,13 @@ import { NetworkClient } from "@common/clients/network-client";
 import { NotificationRepository } from "./dashboard-repository";
 import { AccountActivityRequest } from "./request";
 import { AccountActivity } from "./response";
-import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
 import { TransactionModel } from "@models/account/account-history-model";
-import dayjs from "dayjs";
 import { prettyNumberFloatInteger } from "@utils/number-utils";
 import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
 import { CommonError } from "@common/errors";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { TransactionGroupsType } from "@models/notification";
+import { NotificationMapper } from "@models/notification/mapper/notification-mapper";
 
 export class NotificationRepositoryImpl implements NotificationRepository {
   private networkClient: NetworkClient | null;
@@ -140,100 +140,6 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     }
   };
 
-  // Function to group the transactions by date
-  groupTransactionsByDate = (
-    transactions: AccountActivity[],
-  ): TransactionGroupsType[] => {
-    const today = dayjs();
-    const todayTransactions: TransactionModel[] = [];
-    const pastWeekTransactions: TransactionModel[] = [];
-    const pastMonthTransactions: TransactionModel[] = [];
-    const olderTransactions: TransactionModel[] = [];
-
-    const removedTxs = this.getRemovedTx();
-    const seenTxs = this.getSeenTx();
-
-    for (const tx of transactions ?? []) {
-      /**
-       * *If tx is removed then ignore it
-       **/
-      if (removedTxs.includes(tx.txHash)) continue;
-
-      /**
-       * *If tx both amounts are `0` ignore it
-       **/
-      if (!Number(tx.tokenAAmount) && !Number(tx.tokenBAmount)) {
-        continue;
-      }
-
-      const tokenA = {
-        ...tx.tokenA,
-        symbol: this.replaceToken(tx.tokenA?.symbol),
-        logoURI: this.replaceUri(tx.tokenA?.symbol, tx.tokenA?.logoURI),
-      };
-      const tokenB = {
-        ...tx.tokenB,
-        symbol: this.replaceToken(tx.tokenB?.symbol),
-        logoURI: this.replaceUri(tx.tokenB?.symbol, tx.tokenB?.logoURI),
-      };
-
-      const transactionDate = dayjs(tx.time);
-      const txModel: TransactionModel = {
-        txType: tx.tokenB.name ? 1 : 0,
-        txHash: tx.txHash,
-        tokenInfo: { tokenA, tokenB },
-        status: "SUCCESS",
-        createdAt: tx.time,
-        content: this.getNotificationMessage(tx),
-        isRead: seenTxs.includes(tx.txHash), // * Check if transaction is already seen
-        rawValue: tx,
-      };
-
-      if (tokenA)
-        if (transactionDate.isSame(today, "day")) {
-          todayTransactions.push(txModel);
-        } else if (transactionDate.isAfter(today.subtract(7, "day"))) {
-          pastWeekTransactions.push(txModel);
-        } else if (transactionDate.isAfter(today.subtract(30, "day"))) {
-          pastMonthTransactions.push(txModel);
-        } else {
-          olderTransactions.push(txModel);
-        }
-    }
-
-    const res = [];
-
-    if (todayTransactions.length !== 0) {
-      res.push({
-        title: "Today",
-        txs: todayTransactions,
-      });
-    }
-
-    if (pastWeekTransactions.length !== 0) {
-      res.push({
-        title: "Past 7 Days",
-        txs: pastWeekTransactions,
-      });
-    }
-
-    if (pastMonthTransactions.length !== 0) {
-      res.push({
-        title: "Past 30 Days",
-        txs: pastMonthTransactions,
-      });
-    }
-
-    if (olderTransactions.length !== 0) {
-      res.push({
-        title: "More than a month ago",
-        txs: olderTransactions,
-      });
-    }
-
-    return res;
-  };
-
   public getAccountOnchainActivity = async (
     request: AccountActivityRequest,
   ): Promise<AccountActivity[]> => {
@@ -261,7 +167,52 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     request: AccountActivityRequest,
   ): Promise<TransactionGroupsType[]> => {
     const data = await this.getAccountOnchainActivity(request);
-    return this.groupTransactionsByDate(data);
+    const removedTxs = this.getRemovedTx();
+    const seenTxs = this.getSeenTx();
+
+    const transactionResult = [];
+
+    for (const tx of data ?? []) {
+      /**
+       * *If tx is removed then ignore it
+       **/
+      if (removedTxs.includes(tx.txHash)) continue;
+
+      /**
+       * *If tx both amounts are `0` ignore it
+       **/
+      if (!Number(tx.tokenAAmount) && !Number(tx.tokenBAmount)) {
+        continue;
+      }
+
+      const tokenA = {
+        ...tx.tokenA,
+        symbol: this.replaceToken(tx.tokenA?.symbol),
+        logoURI: this.replaceUri(tx.tokenA?.symbol, tx.tokenA?.logoURI),
+      };
+      const tokenB = {
+        ...tx.tokenB,
+        symbol: this.replaceToken(tx.tokenB?.symbol),
+        logoURI: this.replaceUri(tx.tokenB?.symbol, tx.tokenB?.logoURI),
+      };
+
+      const txModel: TransactionModel = {
+        txType: tx.tokenB.name ? 1 : 0,
+        txHash: tx.txHash,
+        tokenInfo: { tokenA, tokenB },
+        status: "SUCCESS",
+        createdAt: tx.time,
+        content: this.getNotificationMessage(tx),
+        isRead: seenTxs.includes(tx.txHash), // * Check if transaction is already seen
+        rawValue: tx,
+      };
+
+      if (tokenA) transactionResult.push(txModel);
+    }
+
+    return NotificationMapper.notificationGroupFromTransaction(
+      transactionResult,
+    );
   };
 
   public clearNotification = async (

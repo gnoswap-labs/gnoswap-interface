@@ -1,4 +1,3 @@
-import { TransactionModel } from "@models/account/account-history-model";
 import IconAlert from "@components/common/icons/IconAlert";
 import NotificationList from "@components/common/notification-list/NotificationList";
 import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
@@ -11,10 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useMemo } from "react";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
-export interface TransactionGroupsType {
-  title: string;
-  txs: Array<TransactionModel>;
-}
+import { TransactionGroupsType } from "@models/notification";
 
 const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
@@ -35,7 +31,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   usePreventScroll(toggle.notification);
 
   const {
-    data: txsGroupsInformation,
+    data: transactionGroups,
     refetch,
     isFetched,
   } = useQuery<TransactionGroupsType[], Error>({
@@ -48,11 +44,12 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   });
 
   const txs = useMemo(() => {
-    return (txsGroupsInformation ?? []).reduce((pre, next) => {
+    return (transactionGroups ?? []).reduce((pre, next) => {
       const allTxs = next.txs.flatMap(x => x.txHash);
       return [...pre, ...allTxs];
     }, [] as string[]);
-  }, [txsGroupsInformation]);
+  }, [transactionGroups]);
+
   const handleClearAll = async () => {
     try {
       notificationRepository.appendRemovedTx(txs);
@@ -82,13 +79,13 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
         }}
       >
         <IconAlert className="notification-icon" />
-        {showIcon && isFetched && txsGroupsInformation?.length !== 0 ? (
+        {showIcon && isFetched && transactionGroups?.length !== 0 ? (
           <div className="point-unread" />
         ) : null}
       </AlertButton>
       {toggle.notification && (
         <NotificationList
-          txsGroupsInformation={txsGroupsInformation ?? []}
+          txsGroupsInformation={transactionGroups ?? []}
           onListToggle={() => {
             onListToggle();
           }}
