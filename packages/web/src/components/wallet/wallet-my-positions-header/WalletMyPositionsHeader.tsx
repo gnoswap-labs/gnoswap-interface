@@ -15,7 +15,7 @@ const WalletMyPositionsHeader: React.FC = () => {
   return (
     <div css={wrapper}>
       {positions.length > 0 && (
-        <h2>{`${t("Wallet:myPosition.title")} (${positions.length})`}</h2>
+        <h2>{`${t("Wallet:myPosi")} (${positions.length})`}</h2>
       )}
     </div>
   );
