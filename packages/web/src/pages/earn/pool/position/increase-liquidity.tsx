@@ -54,7 +54,7 @@ export default function IncreaseLiquidity() {
       },
       { title: t("business:pageHeader.increaseLiqui"), path: "" },
     ];
-  }, [data, width]);
+  }, [data, width, t, poolPath]);
 
   const seoInfo = useMemo(
     () => SEOInfo["/earn/pool/position/increase-liquidity"],

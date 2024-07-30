@@ -69,7 +69,7 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
             placement="top"
             FloatingContent={
               <ToolTipContentWrapper>
-                {t("business:positionPriceRangeInfo.business.label")}
+                {t("business:positionPriceRangeInfo.feeApr.tooltip")}
               </ToolTipContentWrapper>
             }
           >

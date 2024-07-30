@@ -68,7 +68,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
   const textButton = useMemo(() => {
     switch (buttonType) {
       case "INCREASE_LIQUIDITY":
-        return t("IncreaseLiquidity:btn.increaseLiqui");
+        return t("IncreaseLiquidity:btn.increaseLiquidity");
       case "INSUFFICIENT_BALANCE":
         return t("IncreaseLiquidity:btn.insufficientBalance");
       case "ENTER_AMOUNT":

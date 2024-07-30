@@ -102,7 +102,7 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.business.label")}
+                  {t("business:positionPriceRangeInfo.feeApr.tooltip")}
                 </ToolTipContentWrapper>
               }
             >
