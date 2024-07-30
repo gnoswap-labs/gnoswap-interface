@@ -190,7 +190,7 @@ const DepositModal: React.FC<Props> = ({
 
             <Button
               onClick={close}
-              text={t("common:close")}
+              text={t("common:action.close")}
               className="btn-deposit"
               style={{
                 fullWidth: true,
