@@ -885,7 +885,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             <Button
               text={
                 copiedPosition
-                  ? t("common:urlCopied")
+                  ? t("common:copied") + "!"
                   : t("Pool:position.card.btn.copyPosition")
               }
               className="copy-button"
