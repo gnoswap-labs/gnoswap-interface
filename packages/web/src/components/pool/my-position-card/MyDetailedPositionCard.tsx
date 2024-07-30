@@ -11,7 +11,6 @@ import {
   MyPositionCardWrapper,
   PositionCardAnchor,
   ToolTipContentWrapper,
-  UrlCopiedWrapper,
 } from "./MyPositionCard.styles";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { TokenModel } from "@models/token/token-model";
@@ -883,57 +882,53 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         </div>
         <div className="flex-button">
           {!isClosed && (
-            <Tooltip
-              placement="top"
-              forcedOpen={copiedPosition}
-              isShouldShowed={copiedPosition}
-              FloatingContent={
-                <UrlCopiedWrapper>{t("common:urlCopied")}</UrlCopiedWrapper>
+            <Button
+              text={
+                copiedPosition
+                  ? t("common:urlCopied")
+                  : t("Pool:position.card.btn.copyPosition")
               }
-            >
-              <Button
-                text={t("Pool:position.card.btn.copyPosition")}
-                className="copy-button"
-                style={{
-                  textColor: "text14",
-                }}
-                onClick={() => {
-                  const queryParamsArr = [
-                    `tickLower=${position.tickLower}`,
-                    `tickUpper=${position.tickUpper}`,
-                    "price_range_type=Custom",
-                  ];
+              className="copy-button"
+              style={{
+                textColor: "text14",
+              }}
+              onClick={() => {
+                const queryParamsArr = [
+                  `poolPath=${position.poolPath}`,
+                  `tickLower=${position.tickLower}`,
+                  `tickUpper=${position.tickUpper}`,
+                  "price_range_type=Custom",
+                ];
 
-                  if (router.asPath.includes("?")) {
-                    const urlWithoutQuery = router.asPath.split("?")[0];
-
-                    setCopiedPosition(
-                      window.location.host +
-                        urlWithoutQuery +
-                        `/add?${queryParamsArr.join("&")}`,
-                    );
-                    return;
-                  }
-
-                  if (router.asPath.includes("#")) {
-                    const urlWithoutHash = router.asPath.split("#")[0];
-
-                    setCopiedPosition(
-                      window.location.host +
-                        urlWithoutHash +
-                        `/add?${queryParamsArr.join("&")}`,
-                    );
-                    return;
-                  }
+                if (router.asPath.includes("?")) {
+                  const urlWithoutQuery = router.asPath.split("?")[0];
 
                   setCopiedPosition(
                     window.location.host +
-                      router.asPath +
+                      urlWithoutQuery +
                       `/add?${queryParamsArr.join("&")}`,
                   );
-                }}
-              />
-            </Tooltip>
+                  return;
+                }
+
+                if (router.asPath.includes("#")) {
+                  const urlWithoutHash = router.asPath.split("#")[0];
+
+                  setCopiedPosition(
+                    window.location.host +
+                      urlWithoutHash +
+                      `/add?${queryParamsArr.join("&")}`,
+                  );
+                  return;
+                }
+
+                setCopiedPosition(
+                  window.location.host +
+                    router.asPath +
+                    `/add?${queryParamsArr.join("&")}`,
+                );
+              }}
+            />
           )}
 
           {!position.staked && !isHiddenAddPosition && connected && (

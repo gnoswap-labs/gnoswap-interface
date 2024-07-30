@@ -566,8 +566,3 @@ export const CopyTooltip = styled.div`
     }
   }
 `;
-
-export const UrlCopiedWrapper = styled.span`
-  ${fonts.body12};
-  color: ${({ theme }) => theme.color.text02};
-`;
