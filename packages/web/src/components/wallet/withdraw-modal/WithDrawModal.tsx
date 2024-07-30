@@ -17,6 +17,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
+import { capitalize } from "@utils/string-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useRef, useState, useMemo } from "react";
@@ -163,12 +164,13 @@ const WithDrawModal: React.FC<Props> = ({
         BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) ||
       !Number(amount || 0)
     ) {
-      return "Insufficient Balance";
+      return t("Wallet:withdrawModal.btn.insuffBal");
     }
-    if (address === "") return "Enter an Address";
-    if (!addressValidationCheck(address)) return "Invalid Address";
-    return "Withdraw";
-  }, [address, amount, currentAvailableBalance, withdrawInfo]);
+    if (address === "") return t("Wallet:withdrawModal.btn.enterAddr");
+    if (!addressValidationCheck(address))
+      return t("Wallet:withdrawModal.btn.invalidAddr");
+    return t("Wallet:withdrawModal.btn.withdraw");
+  }, [address, amount, currentAvailableBalance, withdrawInfo, t]);
 
   const estimatedPrice = useMemo(() => {
     if (estimateFeeUSD < 0.01) return " (<$0.01)";
@@ -186,7 +188,7 @@ const WithDrawModal: React.FC<Props> = ({
         <WithDrawModalWrapper ref={modalRef}>
           <div className="modal-body">
             <div className="header">
-              <h6>Withdraw</h6>
+              <h6>{capitalize(t("Wallet:withdrawModal.title"))}</h6>
               <div className="close-wrap" onClick={close}>
                 <IconClose className="close-icon" />
               </div>
@@ -248,7 +250,9 @@ const WithDrawModal: React.FC<Props> = ({
                     <span className="token-symbol">Gnoland (GRC20)</span>
                   </div>
 
-                  <div className="approximately">≈ 4 seconds</div>
+                  <div className="approximately">
+                    {t("Wallet:withdrawModal.second")}
+                  </div>
                 </div>
               </div>
             </WithdrawContent>
