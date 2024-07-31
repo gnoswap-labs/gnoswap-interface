@@ -1,7 +1,7 @@
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-import { toShiftBitInt } from "./number-utils";
 
+import { toShiftBitInt } from "./number-utils";
 import { getDepositAmountsByAmountA, getDepositAmountsByAmountB } from "./swap-utils";
 import { makeDisplayTokenAmount, makeShiftAmount } from "./token-utils";
 
@@ -60,9 +60,6 @@ export function getRepositionAmountsByPriceRange(
   ).dividedBy(
     Number(newDepositAmounts.amountA) + Number(newDepositAmounts.amountB),
   );
-
-  console.log("origin",originDepositAmounts, originDepositRatioBN.toString());
-  console.log("new",newDepositAmounts, newDepositRatioBN.toString());
 
   const amountARatioBN = newDepositRatioBN.dividedBy(originDepositRatioBN);
   const amountBRatioBN = BigNumber(1 - newDepositRatioBN.toNumber()).dividedBy(

@@ -6,7 +6,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
   DEFAULT_SLIPPAGE,
   RANGE_STATUS_OPTION,
-  SwapFeeTierMaxPriceRangeMap,
+  SwapFeeTierMaxPriceRangeMap
 } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useAddress } from "@hooks/address/use-address";
@@ -31,16 +31,13 @@ import {
 } from "@repositories/swap/response/swap-route-response";
 import { IncreaseState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
-import { subscriptFormat, toShiftBitInt } from "@utils/number-utils";
+import { subscriptFormat } from "@utils/number-utils";
+import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import {
-  getDepositAmountsByAmountA,
-  getDepositAmountsByAmountB,
   priceToNearTick,
-  tickToPrice,
+  tickToPrice
 } from "@utils/swap-utils";
-import { makeDisplayTokenAmount, makeShiftAmount } from "@utils/token-utils";
-import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -274,8 +271,6 @@ export const useRepositionHandle = () => {
       selectedPosition.tokenBBalance,
     );
 
-    console.log("initial estimate",repositionAmountsByNewPriceRange);
-
     return repositionAmountsByNewPriceRange;
   }, [
     selectPool.compareToken,
@@ -490,8 +485,6 @@ export const useRepositionHandle = () => {
           BigNumber(currentAmounts?.amountA || 0),
         );
 
-    console.log(isSwapAtoB, currentAmounts, estimatedRepositionAmounts);
-
     return swapRouterRepository
       .swapRoute({
         ...estimateSwapRequest,
@@ -551,9 +544,6 @@ export const useRepositionHandle = () => {
         ).toString();
         tokenBAmount = estimatedRepositionAmounts.amountB;
       }
-
-
-      console.log(isSwappedAtoB, tokenAAmount, tokenBAmount);
 
       return positionRepository
         .repositionLiquidity({
