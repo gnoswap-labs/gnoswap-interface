@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
+  DEFAULT_SLIPPAGE,
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
   SwapFeeTierMaxPriceRangeMap,
@@ -728,7 +729,7 @@ export const useRepositionHandle = () => {
           tokenB,
           tokenAAmount,
           tokenBAmount,
-          slippage: Number(MAX_UINT64),
+          slippage: DEFAULT_SLIPPAGE,
           minTick: priceToNearTick(
             selectPool.minPrice,
             SwapFeeTierInfoMap[selectPool.feeTier].tickSpacing,
