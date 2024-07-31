@@ -109,7 +109,7 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
         </div>
         <div className="close-button">
           <Button
-            text="Close"
+            text={t("common:action.close")}
             style={{
               fullWidth: true,
               fontType: "body7",
@@ -143,7 +143,7 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
         </div>
         <div className="close-button">
           <Button
-            text="Close"
+            text={t("common:action.close")}
             style={{
               fullWidth: true,
               height: 57,
@@ -177,7 +177,7 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
       </div>
       <div className="close-button">
         <Button
-          text="Close"
+          text={t("common:action.close")}
           style={{
             fullWidth: true,
             height: 57,

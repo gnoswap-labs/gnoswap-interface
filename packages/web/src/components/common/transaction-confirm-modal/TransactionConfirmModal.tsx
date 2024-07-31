@@ -119,7 +119,7 @@ const TransactionConfirmSubmitted: React.FC<
       </div>
       <div className="close-button">
         <Button
-          text={t("common:close")}
+          text={t("common:action.close")}
           style={{
             fullWidth: true,
             fontType: "body7",
@@ -160,7 +160,7 @@ const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({
       </div>
       <div className="close-button">
         <Button
-          text={t("common:close")}
+          text={t("common:action.close")}
           style={{
             fullWidth: true,
             height: 57,
@@ -202,7 +202,7 @@ const TransactionConfirmRejected: React.FC<TransactionConfirmRejectedProps> = ({
       </div>
       <div className="close-button">
         <Button
-          text={t("common:close")}
+          text={t("common:action.close")}
           style={{
             fullWidth: true,
             height: 57,

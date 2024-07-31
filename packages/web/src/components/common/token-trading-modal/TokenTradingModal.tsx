@@ -45,7 +45,7 @@ const TokenTradingModal: React.FC<Props> = ({
           <div className="detail">
             <h5>{t("Modal:tokenTradingWarn.title")}</h5>
             <div className="des">
-              <Trans ns="Modals" i18nKey={"tokenTradingWarn.subtitle"}>
+              <Trans ns="Modal" i18nKey={"tokenTradingWarn.subtitle"}>
                 This token isn’t frequently swapped on GnoSwap.
                 <br /> Always conduct your own research before trading.
               </Trans>
@@ -70,7 +70,7 @@ const TokenTradingModal: React.FC<Props> = ({
           </div>
           <div>
             <Button
-              text={t("Modal:tokenTradingWarn.btn.understand")}
+              text={t("Modal:tokenTradingWarn.understand")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
