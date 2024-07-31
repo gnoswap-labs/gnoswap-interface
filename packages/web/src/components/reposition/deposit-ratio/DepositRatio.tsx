@@ -148,7 +148,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.business.label")}
+                  {t("business:positionPriceRangeInfo.feeApr.desc")}
                 </ToolTipContentWrapper>
               }
             >

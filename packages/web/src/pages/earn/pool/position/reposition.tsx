@@ -55,7 +55,7 @@ export default function Reposition() {
       },
       { title: t("business:pageHeader.reposition"), path: "" },
     ];
-  }, [data, width]);
+  }, [data, width, t, poolPath]);
 
   const seoInfo = useMemo(() => SEOInfo["/earn/pool/position/reposition"], []);
 
