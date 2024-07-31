@@ -14,7 +14,6 @@ const isDateWithTimeZone = (date: string | Date) => {
 };
 
 export const getDateUtcToLocal = (d: string | Date) => {
-  console.log("🚀 ~ getDateUtcToLocal ~ d:", d);
   const timezoneOffset = new Date().getTimezoneOffset();
   const hasTimezone = isDateWithTimeZone(d);
   let currentDate = dayjs(d);

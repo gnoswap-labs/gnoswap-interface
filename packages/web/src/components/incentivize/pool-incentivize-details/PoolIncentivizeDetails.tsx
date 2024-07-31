@@ -55,7 +55,6 @@ function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
     days || 0,
     "day",
   );
-  console.log("🚀 ~ formatDate ~ utcDate:", utcDate);
 
   const formattedDate = getDateUtcToLocal(utcDate.toDate());
   return formattedDate.value;
