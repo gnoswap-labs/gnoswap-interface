@@ -13,6 +13,7 @@ export const PEDING_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE = `
     <span>{amount}</span>
   </div>
   `;
+
 export const SUCCESS_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE = `
   <div>
     Claimed 
@@ -35,6 +36,7 @@ export const PEDING_NOTIFICATION_SWAP_MESSAGE_TEMPLATE = `
     <span>{tokenB}</span> 
     <span>{tokenBSymbol}</span>
   </div>
+  
   `;
 export const SUCCESS_NOTIFICATION_SWAP_MESSAGE_TEMPLATE = `
   <div>
@@ -45,6 +47,7 @@ export const SUCCESS_NOTIFICATION_SWAP_MESSAGE_TEMPLATE = `
     <span>{tokenB}</span> 
     <span>{tokenBSymbol}</span>
   </div>
+  <div>Swapped <span>{{tokenA}}</span> <span>{{tokenASymbol}}</span> and <span>{{tokenB}}</span> <span>{{tokenBSymbol}}</span></div>
   `;
 export const ERROR_NOTIFICATION_SWAP_MESSAGE_TEMPLATE = `
   <div>
@@ -222,14 +225,13 @@ export const SUCCESS_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE = `
   </div>
   `;
 export const ERROR_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE = `
-  <div>
-    Failed to add 
-    <span>{tokenAAmount}</span> 
+  <div> Failed to add <span>{tokenAAmount}</span> 
     <span>{tokenASymbol}</span> 
     and 
     <span>{tokenBAmount}</span> 
     <span>{tokenBSymbol}</span>
   </div>
+  
   `;
 
 /* WRAP TOKEN */
@@ -264,12 +266,14 @@ export const ERROR_NOTIFICATION_WRAP_TOKEN_MESSAGE_TEMPLATE = `
 
 /* UNWRAP TOKEN */
 export const PEDING_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE = `
-  Unwrapping
+  <div>
+    Unwrapping
     <span>{tokenAAmount}</span> 
     <span>{tokenASymbol}</span> 
     to 
     <span>{tokenBAmount}</span> 
     <span>{tokenBSymbol}</span>
+    </div>
   `;
 export const SUCCESS_NOTIFICATION_UNWRAP_TOKEN_MESSAGE_TEMPLATE = `
   <div>

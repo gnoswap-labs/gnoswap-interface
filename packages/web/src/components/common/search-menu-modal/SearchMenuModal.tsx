@@ -191,7 +191,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     (path: string, isNative?: boolean) => {
       const path_ = path;
 
-      if (isNative) return "Native coin";
+      if (isNative) return t("business:nativeCoin");
 
       const tokenPathArr = path_?.split("/") ?? [];
 
@@ -238,7 +238,9 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
               {!keyword && recents.length > 0 && isFetched && (
                 <>
                   <div className="recent-searches">
-                    {!keyword ? "Recent Searches" : "Tokens"}
+                    {!keyword
+                      ? t("Modal:search.recentSearch")
+                      : t("Modal:search.tokens")}
                   </div>
                   {recents.map((item, idx) =>
                     !item.isLiquid ? (
@@ -334,7 +336,9 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
               {popularTokens.length > 0 && (
                 <>
                   <div className="popular-tokens">
-                    {!keyword ? "Popular Tokens" : "Tokens"}
+                    {!keyword
+                      ? t("Modal:search.popular")
+                      : t("Modal:search.tokens")}
                   </div>
                   {popularTokens.map((item, idx) => (
                     <li key={idx} onClick={() => onClickItem(item)}>
@@ -401,7 +405,9 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
               {mostLiquidity.length > 0 && (
                 <>
                   <div className="popular-tokens">
-                    {!keyword ? "Most Liquid Pools" : "Pools"}
+                    {!keyword
+                      ? t("Modal:search.mostLiquiPools")
+                      : t("Modal:search.pools")}
                   </div>
                   {mostLiquidity.map((item, idx) => (
                     <li key={idx} onClick={() => onClickItem(item)}>

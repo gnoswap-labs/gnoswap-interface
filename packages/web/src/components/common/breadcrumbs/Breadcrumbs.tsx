@@ -4,6 +4,7 @@ import { useTheme } from "@emotion/react";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import IconOpenLink from "../icons/IconOpenLink";
 import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
 import { wrapper } from "./Breadcrumbs.styles";
@@ -14,31 +15,35 @@ interface BreadcrumbsProps {
 }
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
 
-  const tokenPathDisplay = useCallback((token?: TokenModel) => {
-    if (!token) return "";
+  const tokenPathDisplay = useCallback(
+    (token?: TokenModel) => {
+      if (!token) return "";
 
-    const path_ = token.path;
+      const path_ = token.path;
 
-    if (isNativeToken(token)) return "Native coin";
+      if (isNativeToken(token)) return t("business:nativeCoin");
 
-    const tokenPathArr = path_?.split("/") ?? [];
+      const tokenPathArr = path_?.split("/") ?? [];
 
-    if (tokenPathArr?.length <= 0) return path_;
+      if (tokenPathArr?.length <= 0) return path_;
 
-    const lastPath = tokenPathArr[tokenPathArr?.length - 1];
+      const lastPath = tokenPathArr[tokenPathArr?.length - 1];
 
-    if (lastPath.length >= 12) {
-      return (
-        "..." +
-        tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1)
-      );
-    }
+      if (lastPath.length >= 12) {
+        return (
+          "..." +
+          tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1)
+        );
+      }
 
-    return path_.replace("gno.land", "...");
-  }, []);
+      return path_.replace("gno.land", "...");
+    },
+    [t],
+  );
 
   const onClickTokenPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {

@@ -1,10 +1,6 @@
 import { ERROR_VALUE } from "@common/errors/adena";
 import RemovePositionModal from "@components/remove/remove-position-modal/RemovePositionModal";
-import {
-  makeBroadcastRemoveMessage,
-  // makeBroadcastUnwrapTokenMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useRemoveData } from "@hooks/stake/use-remove-data";
@@ -17,6 +13,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { useMessage } from "@hooks/common/use-message";
 
 interface RemovePositionModalContainerProps {
   selectedPosition: PoolPositionModel[];
@@ -55,6 +52,8 @@ const RemovePositionModalContainer = ({
       closeCallback: onCloseConfirmTransactionModal,
     },
   );
+
+  const { getMessage } = useMessage();
 
   const gnotToken = useMemo(
     () =>
@@ -127,7 +126,7 @@ const RemovePositionModalContainer = ({
       }),
     };
 
-    broadcastLoading(makeBroadcastRemoveMessage("pending", messageData));
+    broadcastLoading(getMessage("REMOVE", "pending", messageData));
 
     const result = await positionRepository
       .removeLiquidity({
@@ -144,7 +143,8 @@ const RemovePositionModalContainer = ({
         broadcastPending({ txHash: result.data?.hash });
         setTimeout(async () => {
           broadcastSuccess(
-            makeBroadcastRemoveMessage(
+            getMessage(
+              "REMOVE",
               "success",
               {
                 ...messageData,
@@ -158,14 +158,15 @@ const RemovePositionModalContainer = ({
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
         broadcastError(
-          makeBroadcastRemoveMessage("error", {
+          getMessage("REMOVE", "error", {
             ...messageData,
           }),
         );
         clearModal();
       } else {
         broadcastRejected(
-          makeBroadcastRemoveMessage(
+          getMessage(
+            "REMOVE",
             "error",
             {
               ...messageData,

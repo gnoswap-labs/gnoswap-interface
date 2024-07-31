@@ -1,10 +1,11 @@
 import {
   INoticeContext,
   NoticeContext,
-  TNoticeType
+  TNoticeType,
 } from "@context/NoticeContext";
 import { useGnoscanUrl, GnoscanDataType } from "@hooks/common/use-gnoscan-url";
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import IconClose from "../icons/IconCancel";
 import IconFailed from "../icons/IconFailed";
 import IconNewTab from "../icons/IconNewTab";
@@ -27,20 +28,23 @@ interface NoticeProps {
 }
 
 const SuccessContent: FC<{ content?: INoticeContent }> = ({ content }) => {
+  const { t } = useTranslation();
   const { getGnoscanUrl, getTxUrl } = useGnoscanUrl();
 
   return content ? (
     <div className="notice-body">
       <IconSuccess className="icon-success" />
       <div>
-        <h5>{content.title} - Success!</h5>
+        <h5>
+          {content.title} - {t("Modal:toast.success.title")}
+        </h5>
         <div
           className="description"
           dangerouslySetInnerHTML={{ __html: content.description || "" }}
         />
         {content.txHash ? (
           <a href={getTxUrl(content.txHash)} target="_blank">
-            View transaction <IconNewTab />
+            {t("Modal:toast.success.viewTx")} <IconNewTab />
           </a>
         ) : null}
       </div>
@@ -49,30 +53,35 @@ const SuccessContent: FC<{ content?: INoticeContent }> = ({ content }) => {
     <div className="notice-body">
       <IconSuccess className="icon-success" />
       <div>
-        <h5>Success!</h5>
-        <p>Your job was finished successfully</p>
+        <h5>{t("Modal:toast.success.title")}</h5>
+        <p>{t("Modal:toast.success.defaultDesc")}</p>
         <a href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
-          View transaction <IconNewTab />
+          {t("Modal:toast.success.viewTx")} <IconNewTab />
         </a>
       </div>
     </div>
   );
 };
 
-const PendingContent: FC<{ content?: INoticeContent }> = ({ content }: { content?: INoticeContent }) => {
+const PendingContent: FC<{ content?: INoticeContent }> = ({
+  content,
+}: {
+  content?: INoticeContent;
+}) => {
+  const { t } = useTranslation();
   const { getGnoscanUrl, getTxUrl } = useGnoscanUrl();
 
   return content ? (
     <div className="notice-body">
       <LoadingSpinner className="loading-icon" />
       <div>
-        <h5>{content.title ? content.title : "Broadcasting Transaction"}</h5>
-        <p className="waiting-confirmation">
-          Waiting for Transaction Confirmation
-        </p>
+        <h5>
+          {content.title ? content.title : t("Modal:toast.pending.title")}
+        </h5>
+        <p className="waiting-confirmation">{t("Modal:toast.pending.desc")}</p>
         {content.txHash ? (
           <a href={getTxUrl(content.txHash)} target="_blank">
-            View transaction <IconNewTab />
+            {t("Modal:toast.pending.viewTx")} <IconNewTab />
           </a>
         ) : null}
       </div>
@@ -81,33 +90,38 @@ const PendingContent: FC<{ content?: INoticeContent }> = ({ content }: { content
     <div className="notice-body">
       <LoadingSpinner className="loading-icon" />
       <div>
-        <h5>Broadcasting Transaction</h5>
-        <p className="waiting-confirmation">
-          Waiting for Transaction Confirmation
-        </p>
+        <h5>{t("Modal:toast.pending.title")}</h5>
+        <p className="waiting-confirmation">{t("Modal:toast.pending.desc")}</p>
         <a href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
-          View transaction <IconNewTab />
+          {t("Modal:toast.pending.viewTx")} <IconNewTab />
         </a>
       </div>
     </div>
   );
 };
 
-const FailContent: FC<{ content?: INoticeContent }> = ({ content }: { content?: INoticeContent }) => {
+const FailContent: FC<{ content?: INoticeContent }> = ({
+  content,
+}: {
+  content?: INoticeContent;
+}) => {
+  const { t } = useTranslation();
   const { getGnoscanUrl, getTxUrl } = useGnoscanUrl();
 
   return content ? (
     <div className="notice-body">
       <IconFailed className="icon-success" />
       <div>
-        <h5>{content.title} - Failure!</h5>
+        <h5>
+          {content.title} - {t("Modal:toast.failed.title")}
+        </h5>
         <div
           className="description"
           dangerouslySetInnerHTML={{ __html: content.description || "" }}
         />
         {content.txHash ? (
           <a href={getTxUrl(content.txHash)} target="_blank">
-            View transaction <IconNewTab />
+            {t("Modal:toast.failed.viewTx")} <IconNewTab />
           </a>
         ) : null}
       </div>
@@ -116,17 +130,22 @@ const FailContent: FC<{ content?: INoticeContent }> = ({ content }: { content?: 
     <div className="notice-body">
       <IconFailed className="icon-success" />
       <div>
-        <h5>Failure!</h5>
-        <p>This notice occur by some problem.</p>
+        <h5>{t("Modal:toast.failed.title")}</h5>
+        <p>{t("Modal:toast.failed.desc")}</p>
         <a href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
-          View transaction <IconNewTab />
+          {t("Modal:toast.failed.viewTx")} <IconNewTab />
         </a>
       </div>
     </div>
   );
 };
 
-const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id, content }) => {
+const NoticeUIItem: FC<NoticeProps> = ({
+  onClose,
+  type = "success",
+  id,
+  content,
+}) => {
   const isClosed = useRef(false);
   const [typeAnimation, setTypeAnimation] = useState<
     "toast-item" | "closing" | ""
@@ -172,14 +191,19 @@ const Notice: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentNotice, setCurrentNotice] = useState<
     (NoticeProps & { timeout: number }) | null
   >(null);
-  const [list, setList] = useState<{ type: TNoticeType; id: number; content?: INoticeContent; }[]>([]);
+  const [list, setList] = useState<
+    { type: TNoticeType; id: number; content?: INoticeContent }[]
+  >([]);
 
   const setNotice = useCallback<INoticeContext["setNotice"]>(
     (content, options) => {
       setCurrentNotice({
         ...options,
       });
-      setList(prev => [...prev, { type: options.type, id: options.id, content }]);
+      setList(prev => [
+        ...prev,
+        { type: options.type, id: options.id, content },
+      ]);
     },
     [list],
   );

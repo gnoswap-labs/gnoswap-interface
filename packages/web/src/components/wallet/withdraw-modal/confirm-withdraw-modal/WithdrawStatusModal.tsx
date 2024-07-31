@@ -8,6 +8,7 @@ import { Overlay } from "@components/common/modal/Modal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePositionModal } from "@hooks/common/use-position-modal";
 import React, { useRef } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { WithdrawResponse } from "../useWithdrawTokens";
 import {
   ConfirmModal,
@@ -64,6 +65,8 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
   withdrawResult,
   close,
 }) => {
+  const { t } = useTranslation();
+
   if (withdrawResult === null) {
     return (
       <>
@@ -71,9 +74,11 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
           <LoadingSpinner />
         </div>
         <div className="transaction-state">
-          <span className="submitted">Waiting for Confirmation</span>
+          <span className="submitted">
+            {t("Modal:confirm.general.loading.title")}
+          </span>
           <div className="view-transaction">
-            <span>Confirm this transaction in your wallet</span>
+            <span>{t("Modal:confirm.general.loading.desc")}</span>
           </div>
         </div>
       </>
@@ -87,9 +92,11 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
           <IconSuccess className="animation-logo" />
         </div>
         <div className="transaction-state">
-          <span className="submitted">Transaction Submitted</span>
+          <span className="submitted">
+            {t("Modal:confirm.general.submitted.title")}
+          </span>
           <div className="view-transaction">
-            <span>View Transaction</span>
+            <span>{t("Modal:confirm.general.submitted.viewTx")}</span>
             <div
               className="open-link"
               onClick={() => {
@@ -122,11 +129,15 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
           <IconFailed className="animation-logo" />
         </div>
         <div className="transaction-state">
-          <span className="submitted">Broadcasting Failed</span>
+          <span className="submitted">
+            {t("Modal:confirm.general.failed.title")}
+          </span>
           <div className="view-transaction">
             <span>
-              Your transcation has not been broadcasted. <br className="br" />
-              Please try again.
+              <Trans ns="Modal" i18nKey={"confirm.general.failed.desc"}>
+                Your transcation has not been broadcasted. <br className="br" />
+                Please try again.
+              </Trans>
             </span>
           </div>
         </div>
@@ -152,11 +163,15 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
         <IconFailed className="animation-logo" />
       </div>
       <div className="transaction-state">
-        <span className="submitted">Transaction Rejected</span>
+        <span className="submitted">
+          {t("Modal:confirm.general.rejected.title")}
+        </span>
         <div className="view-transaction">
           <span>
-            Your transaction has been rejected.
-            <br /> Please try again.
+            <Trans ns="Modal" i18nKey={"confirm.general.rejected.desc"}>
+              Your transaction has been rejected.
+              <br /> Please try again.
+            </Trans>
           </span>
         </div>
       </div>
