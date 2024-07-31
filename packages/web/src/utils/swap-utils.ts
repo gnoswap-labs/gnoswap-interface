@@ -218,7 +218,7 @@ export function getDepositAmountsByAmountA(
   if (maxPrice < currentPrice) {
     return {
       amountA: 0,
-      amountB: amount,
+      amountB: 0,
     };
   }
   if (minPrice > currentPrice) {
@@ -264,7 +264,7 @@ export function getDepositAmountsByAmountB(
   }
   if (minPrice > currentPrice) {
     return {
-      amountA: amount,
+      amountA: 0,
       amountB: 0,
     };
   }
