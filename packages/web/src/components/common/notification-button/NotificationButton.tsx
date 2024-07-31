@@ -46,10 +46,6 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
       }),
     refetchInterval: 1000 * 10,
   });
-  console.log(
-    "🚀 ~ NotificationButton ~ txsGroupsInformation:",
-    txsGroupsInformation,
-  );
 
   const txs = useMemo(() => {
     return (txsGroupsInformation ?? []).reduce((pre, next) => {

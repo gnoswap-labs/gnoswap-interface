@@ -95,9 +95,7 @@ export default function Pool() {
     ) {
       if (hash && hash !== "staking") {
         const position = positions.find(item => item.id === hash);
-        console.log("🚀 ~ useEffect ~ positions:", positions);
         const isClosedPosition = !position || position?.closed;
-        console.log("🚀 ~ useEffect ~ isClosedPosition:", isClosedPosition);
 
         jumpFlagRef.current = true;
         setTimeout(() => {

@@ -24,7 +24,6 @@ interface PoolIncentivizeDetailsProps {
 }
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
-  console.log("🚀 ~ formatDate ~ myDate:", myDate);
   // Date Format Issue on Mobile Device
   const month = (() => {
     if (!myDate?.month) {
@@ -67,7 +66,6 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   amount,
   token,
 }) => {
-  console.log("🚀 ~ startDate:", startDate);
   const { t } = useTranslation();
   // const { data: blockHeight } = useGetLastedBlockHeight();
   const { getGnotPath } = useGnotToGnot();
