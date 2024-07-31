@@ -113,7 +113,7 @@ const TokenSwapContainer: React.FC = () => {
 
   const handleChangeTokenB = (token: TokenModel) => {
     if (
-      swapValue?.tokenB?.path === router.getTokenPath() &&
+      swapValue?.tokenB?.path !== router.getTokenPath() &&
       swapValue?.tokenA?.symbol !== token?.symbol
     ) {
       router.movePageWithTokenPath("TOKEN", token.path);
@@ -131,13 +131,20 @@ const TokenSwapContainer: React.FC = () => {
     changeTokenA(token);
   };
 
+  const handleSwitch = () => {
+    if (swapValue?.tokenA?.path && swapValue?.tokenA?.path !== path) {
+      router.movePageWithTokenPath("TOKEN", swapValue?.tokenA?.path);
+    }
+    switchSwapDirection();
+  };
+
   return (
     <>
       <TokenSwap
         connected={connectedWallet}
         connectWallet={openConnectWallet}
         swapNow={openConfirmModal}
-        switchSwapDirection={switchSwapDirection}
+        switchSwapDirection={handleSwitch}
         copied={copied}
         handleCopied={copyURL}
         themeKey={themeKey}
