@@ -6,6 +6,7 @@ import SelectTab from "@components/common/select-tab/SelectTab";
 import Switch from "@components/common/switch/Switch";
 import IconSearch from "@components/common/icons/IconSearch";
 import { DEVICE_TYPE } from "@styles/media";
+import { useTranslation } from "react-i18next";
 
 interface AssetListHeaderProps {
   assetType: ASSET_FILTER_TYPE;
@@ -32,10 +33,12 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   onTogleSearch,
   searchRef,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <AssetListHeaderWrapper>
       <div className="title-container">
-        <h2>Assets</h2>
+        <h2>{t("Wallet:assets.title")}</h2>
         {breakpoint !== DEVICE_TYPE.MOBILE ? (
           <SelectTab
             selectType={assetType}
@@ -49,7 +52,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
                 checked={invisibleZeroBalance}
                 onChange={toggleInvisibleZeroBalance}
                 hasLabel={true}
-                labelText={"Hide zero amounts"}
+                labelText={t("Wallet:assets.hideZeroAmt")}
               />
             )}
             {searchIcon ? (
@@ -70,7 +73,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
                   checked={invisibleZeroBalance}
                   onChange={toggleInvisibleZeroBalance}
                   hasLabel={true}
-                  labelText={"Hide zero amounts"}
+                  labelText={t("Wallet:assets.hideZeroAmt")}
                 />
                 <div className="icon-wrap" onClick={onTogleSearch}>
                   <IconSearch className="search-icon" />
@@ -86,7 +89,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
             checked={invisibleZeroBalance}
             onChange={toggleInvisibleZeroBalance}
             hasLabel={true}
-            labelText={"Hide zero amounts"}
+            labelText={t("Wallet:assets.hideZeroAmt")}
           />
           <SearchInput
             width={300}

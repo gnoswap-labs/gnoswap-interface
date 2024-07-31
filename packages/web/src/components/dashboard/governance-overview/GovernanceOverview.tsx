@@ -7,6 +7,7 @@ import {
 } from "./GovernanceOverview.styles";
 import { GovernenceOverviewInfo } from "@containers/dashboard-info-container/DashboardInfoContainer";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useTranslation } from "react-i18next";
 
 interface GovernanceOverviewProps {
   governenceOverviewInfo: GovernenceOverviewInfo;
@@ -24,56 +25,67 @@ const LoadingText = () => {
 const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
   governenceOverviewInfo,
   loading,
-}) => (
-  <GovernanceOverviewWrapper>
-    <GovernanceOverviewTitleWrapper>
-      <div>Governance Overview</div>
-    </GovernanceOverviewTitleWrapper>
-    <GovernanceWrapper>
-      <div className="total-issued">
-        <div className="label-title">
-          <div>Total xGNS Issued</div>
-          <DashboardLabel tooltip="Total amount of xGNS currently issued through GNS-GNOT staking." />
-        </div>
-        {!loading ? (
-          <div className="value">{governenceOverviewInfo.totalXgnosIssued}</div>
-        ) : (
-          <LoadingText />
-        )}
-      </div>
-      <div className="holders">
-        <div className="label-title">
-          <div>Holders</div>
-          <DashboardLabel tooltip="Number of accounts with at least 1 xGNS." />
-        </div>
-        {!loading ? (
-          <div className="value">{governenceOverviewInfo.holders}</div>
-        ) : (
-          <LoadingText />
-        )}
-      </div>
-      <div className="passed-proposals">
-        <div className="label-title">
-          <div>Passed Proposals</div>
-        </div>
-        {!loading ? (
-          <div className="value">{governenceOverviewInfo.passedProposals}</div>
-        ) : (
-          <LoadingText />
-        )}
-      </div>
-      <div className="active-proposals">
-        <div className="label-title">
-          <div>Active Proposals</div>
-        </div>
-        <div className="active-proposals-emissions-tooltip">
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <GovernanceOverviewWrapper>
+      <GovernanceOverviewTitleWrapper>
+        <div>{t("Dashboard:govOver.title")}</div>
+      </GovernanceOverviewTitleWrapper>
+      <GovernanceWrapper>
+        <div className="total-issued">
+          <div className="label-title">
+            <div>{t("Dashboard:govOver.totalxGNS.label")}</div>
+            <DashboardLabel
+              tooltip={t("Dashboard:govOver.totalxGNS.tooltip")}
+            />
+          </div>
           {!loading ? (
-            <div className="value">{governenceOverviewInfo.activeProposals}</div>
+            <div className="value">
+              {governenceOverviewInfo.totalXgnosIssued}
+            </div>
           ) : (
             <LoadingText />
           )}
+        </div>
+        <div className="holders">
+          <div className="label-title">
+            <div>{t("Dashboard:govOver.holders.label")}</div>
+            <DashboardLabel tooltip={t("Dashboard:govOver.holders.tooltip")} />
+          </div>
+          {!loading ? (
+            <div className="value">{governenceOverviewInfo.holders}</div>
+          ) : (
+            <LoadingText />
+          )}
+        </div>
+        <div className="passed-proposals">
+          <div className="label-title">
+            <div>{t("Dashboard:govOver.passedProp.label")}</div>
+          </div>
+          {!loading ? (
+            <div className="value">
+              {governenceOverviewInfo.passedProposals}
+            </div>
+          ) : (
+            <LoadingText />
+          )}
+        </div>
+        <div className="active-proposals">
+          <div className="label-title">
+            <div>{t("Dashboard:govOver.activeProp.label")}</div>
+          </div>
+          <div className="active-proposals-emissions-tooltip">
+            {!loading ? (
+              <div className="value">
+                {governenceOverviewInfo.activeProposals}
+              </div>
+            ) : (
+              <LoadingText />
+            )}
 
-          {/* {!loading && <IconButton
+            {/* {!loading && <IconButton
             onClick={() => {
               alert("open Link");
             }}
@@ -82,21 +94,22 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
               <IconOpenLink className="action-icon" />
             </div>
           </IconButton>} */}
+          </div>
         </div>
-      </div>
-      <div className="community-pool">
-        <div className="label-title">
-          <div>Community Pool</div>
-          <DashboardLabel tooltip="Amount of GNS accumulated in the Community Pool from emissions." />
+        <div className="community-pool">
+          <div className="label-title">
+            <div>{t("Dashboard:govOver.comPool.label")}</div>
+            <DashboardLabel tooltip={t("Dashboard:govOver.comPool.tooltip")} />
+          </div>
+          {!loading ? (
+            <div className="value">{governenceOverviewInfo.communityPool}</div>
+          ) : (
+            <LoadingText />
+          )}
         </div>
-        {!loading ? (
-          <div className="value">{governenceOverviewInfo.communityPool}</div>
-        ) : (
-          <LoadingText />
-        )}
-      </div>
-    </GovernanceWrapper>
-  </GovernanceOverviewWrapper>
-);
+      </GovernanceWrapper>
+    </GovernanceOverviewWrapper>
+  );
+};
 
 export default GovernanceOverview;

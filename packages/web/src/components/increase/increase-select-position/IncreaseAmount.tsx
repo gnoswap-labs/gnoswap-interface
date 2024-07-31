@@ -5,6 +5,7 @@ import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuMod
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { IncreaseSelectPositionWrapper } from "./IncreaseSelectPosition.styles";
 
 export interface IncreaseSelectPositionProps {
@@ -34,11 +35,15 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
   slippage,
   changeSlippage,
 }) => {
+  const { t } = useTranslation();
   const [openedSetting, setOpenedSetting] = useState(false);
+
   return (
     <IncreaseSelectPositionWrapper>
       <div className="header-wrapper">
-        <h5 className="enter-increase-amount">2. Enter Increasing Amount</h5>
+        <h5 className="enter-increase-amount">
+          {t("IncreaseLiquidity:form.enterincreasingAmount.label")}
+        </h5>
         <button
           className="setting-button"
           onClick={() => setOpenedSetting(true)}
@@ -61,7 +66,7 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
             token={tokenA}
             connected={connected}
             changeAmount={changeTokenAAmount}
-            changeToken={() => { }}
+            changeToken={() => {}}
           />
         )}
         {isDepositTokenB && (
@@ -70,10 +75,10 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
             token={tokenB}
             connected={connected}
             changeAmount={changeTokenBAmount}
-            changeToken={() => { }}
+            changeToken={() => {}}
           />
         )}
-        {(isDepositTokenA && isDepositTokenB) && (
+        {isDepositTokenA && isDepositTokenB && (
           <div className="arrow">
             <div className="shape">
               <IconAdd className="add-icon" />

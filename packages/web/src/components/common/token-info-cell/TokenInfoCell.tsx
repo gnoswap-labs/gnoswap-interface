@@ -2,6 +2,7 @@ import { useTheme } from "@emotion/react";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import IconOpenLink from "../icons/IconOpenLink";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
@@ -23,6 +24,7 @@ const DETERMIN_SHORT_SIZE_MOBILE = 130 as const;
 
 function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const { name, path, symbol, logoURI } = token;
+  const { t } = useTranslation();
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const [shortenPath, setShortenPath] = useState(false);
@@ -88,7 +90,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   }, [breakpoint]);
 
   const tokenPathDisplay = useMemo(() => {
-    if (isNative) return "Native coin";
+    if (isNative) return t("business:nativeCoin");
 
     if (shortenPath) return "";
 

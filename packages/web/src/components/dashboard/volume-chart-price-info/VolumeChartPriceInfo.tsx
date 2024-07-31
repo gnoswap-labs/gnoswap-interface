@@ -4,19 +4,26 @@ import {
   FeeInfoWrapper,
   VolumeChartPriceInfoWrapper,
 } from "./VolumeChartPriceInfo.styles";
+import { useTranslation } from "react-i18next";
 interface VolumeChartPriceInfoProps {
   volumePriceInfo: VolumePriceInfo;
 }
 const VolumeChartPriceInfo: React.FC<VolumeChartPriceInfoProps> = ({
   volumePriceInfo,
-}) => (
-  <>
-    <VolumeChartPriceInfoWrapper>
-      <div className="label">Total Volume</div>
-      <div className="price">{volumePriceInfo.amount}</div>
-    </VolumeChartPriceInfoWrapper>
-    <FeeInfoWrapper>Total Fees: {volumePriceInfo.fee}</FeeInfoWrapper>
-  </>
-);
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <VolumeChartPriceInfoWrapper>
+        <div className="label">{t("Dashboard:totalVolChart.title")}</div>
+        <div className="price">{volumePriceInfo.amount}</div>
+      </VolumeChartPriceInfoWrapper>
+      <FeeInfoWrapper>
+        {t("Dashboard:totalVolChart.totalFee")}: {volumePriceInfo.fee}
+      </FeeInfoWrapper>
+    </>
+  );
+};
 
 export default VolumeChartPriceInfo;

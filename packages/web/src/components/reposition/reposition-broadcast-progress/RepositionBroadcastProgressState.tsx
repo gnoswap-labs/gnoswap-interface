@@ -3,6 +3,7 @@ import IconProgressFailure from "@components/common/icons/IconProgressFailure";
 import IconProgressLoader from "@components/common/icons/IconProgressLoader";
 import IconProgressSuccess from "@components/common/icons/IconProgressSuccess";
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { RepositionBroadcastProgressStateWrapper } from "./RepositionBroadcastProgressState.styles";
 
 export type ProgressStateType =
@@ -33,35 +34,48 @@ export interface RepositionBroadcastProgressStateProps {
 const RepositionBroadcastProgressState: React.FC<
   RepositionBroadcastProgressStateProps
 > = ({ state, retry, exit }) => {
+  const { t } = useTranslation();
+
   const description: {
     text: string;
     type?: "RETRY" | "EXIT";
   } = useMemo(() => {
     switch (state) {
       case "WAIT":
-        return { text: "Waiting for confirmation" };
+        return { text: t("Reposition:repos.status.waitingConf") };
       case "BROADCAST":
-        return { text: "Broadcasting transaction" };
+        return { text: t("Reposition:repos.status.broadcasting") };
       case "REJECTED":
-        return { text: "Rejected", type: "RETRY" as const };
+        return {
+          text: t("Reposition:repos.status.rejected"),
+          type: "RETRY" as const,
+        };
       case "FAIL":
-        return { text: "Failed", type: "RETRY" as const };
+        return {
+          text: t("Reposition:repos.status.failed"),
+          type: "RETRY" as const,
+        };
       case "INSUFFICIENT_LIQUIDITY":
-        return { text: "Insufficient Liquidity", type: "EXIT" as const };
+        return {
+          text: t("Reposition:repos.status.insuffLiqui"),
+          type: "EXIT" as const,
+        };
       default:
         return { text: "" };
     }
-  }, [state]);
+  }, [state, t]);
 
   return (
     <RepositionBroadcastProgressStateWrapper>
       {description.type === "RETRY" ? (
         <span className="description">
-          {description.text} - <a onClick={retry}>Try Again</a>
+          {description.text} -{" "}
+          <a onClick={retry}>{t("Reposition:repos.action.retry")}</a>
         </span>
       ) : description.type === "EXIT" ? (
         <span className="description">
-          {description.text} - <a onClick={exit}>Exit</a>
+          {description.text} -{" "}
+          <a onClick={exit}>{t("Reposition:repos.action.exit")}</a>
         </span>
       ) : (
         <span className="description">{description.text}</span>

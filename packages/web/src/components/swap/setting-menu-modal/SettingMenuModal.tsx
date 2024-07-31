@@ -60,7 +60,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
       <div className="tooltip-wrap">
         <p
           dangerouslySetInnerHTML={{
-            __html: t("Swap:settingModal.slipTolTooltip"),
+            __html: t("common:settingModal.slipTolTooltip"),
           }}
         ></p>
       </div>
@@ -109,13 +109,13 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
       <SettingMenuModalWrapper ref={settingMenuRef} className={className}>
         <div className="modal-body">
           <div className="modal-header">
-            <span>{t("Swap:settingModal.title")}</span>
+            <span>{t("common:settingModal.title")}</span>
             <div className="close-wrap" onClick={close} ref={closeRef}>
               <IconClose className="close-icon" />
             </div>
           </div>
           <div className="title">
-            <span>{t("Swap:settingModal.slipTol")}</span>
+            <span>{t("common:settingModal.slipTol")}</span>
             <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
               <div className="info-wrap">
                 <IconInfo className="info-icon" />
@@ -124,7 +124,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
           </div>
           <div className="setting-input">
             <Button
-              text={t("Swap:settingModal.autoButton")}
+              text={t("common:settingModal.autoButton")}
               style={{
                 width: 62,
                 height: 36,

@@ -4,15 +4,13 @@ import {
   TransferNativeTokenRequest,
 } from "@repositories/wallet/request";
 import { useEffect, useState } from "react";
-import {
-  makeBroadcastWithdrawMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { useMessage } from "@hooks/common/use-message";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -36,6 +34,8 @@ const useWithdrawTokens = () => {
   const [result, setResult] = useState<WithdrawResponse>(null);
   const [openedTransactionModal] = useAtom(CommonState.openedTransactionModal);
 
+  const { getMessage } = useMessage();
+
   const onSubmit = async (request: Request, type: "native" | "grc20") => {
     setLoading(true);
 
@@ -55,9 +55,9 @@ const useWithdrawTokens = () => {
     );
 
     broadcastLoading(
-      makeBroadcastWithdrawMessage("pending", {
-        tokenSymbol,
-        tokenAmount,
+      getMessage("WITHDRAW", "pending", {
+        tokenASymbol: tokenSymbol,
+        tokenAAmount: tokenAmount,
       }),
     );
 
@@ -65,22 +65,24 @@ const useWithdrawTokens = () => {
       .then(response => {
         if (response.code === 0) {
           broadcastPending(
-            makeBroadcastWithdrawMessage(
+            getMessage(
+              "WITHDRAW",
               "pending",
               {
-                tokenSymbol,
-                tokenAmount,
+                tokenASymbol: tokenSymbol,
+                tokenAAmount: tokenAmount,
               },
               response.data?.hash,
             ),
           );
           setTimeout(() => {
             broadcastSuccess(
-              makeBroadcastWithdrawMessage(
+              getMessage(
+                "WITHDRAW",
                 "success",
                 {
-                  tokenSymbol,
-                  tokenAmount,
+                  tokenASymbol: tokenSymbol,
+                  tokenAAmount: tokenAmount,
                 },
                 response.data?.hash,
               ),
@@ -91,19 +93,20 @@ const useWithdrawTokens = () => {
           response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
           broadcastRejected(
-            makeBroadcastWithdrawMessage("error", {
-              tokenSymbol,
-              tokenAmount,
+            getMessage("WITHDRAW", "error", {
+              tokenASymbol: tokenSymbol,
+              tokenAAmount: tokenAmount,
             }),
           );
           return false;
         } else {
           broadcastError(
-            makeBroadcastWithdrawMessage(
+            getMessage(
+              "WITHDRAW",
               "error",
               {
-                tokenSymbol,
-                tokenAmount,
+                tokenASymbol: tokenSymbol,
+                tokenAAmount: tokenAmount,
               },
               response.data?.hash,
             ),

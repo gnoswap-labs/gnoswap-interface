@@ -27,6 +27,7 @@ import "dayjs/locale/ko";
 import "dayjs/locale/ru";
 import "dayjs/locale/zh";
 import "dayjs/locale/hi";
+import { LANGUAGE_CODE_MAP } from "@constants/common.constant";
 
 function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();
@@ -44,6 +45,10 @@ function App({ Component, pageProps }: AppProps) {
         },
       }),
   );
+
+  useEffect(() => {
+    dayjs.locale(LANGUAGE_CODE_MAP[i18n.language]);
+  }, []);
 
   useEffect(() => {
     i18n.on("languageChanged", lang => {

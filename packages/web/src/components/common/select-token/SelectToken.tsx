@@ -265,7 +265,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                       ) => onClickPath(e, token.path)}
                     >
                       <div>
-                        {isNativeToken(token) ? "Native Coin" : token.path}
+                        {isNativeToken(token)
+                          ? t("business:nativeCoin")
+                          : token.path}
                       </div>
                       <IconNewTab />
                     </div>

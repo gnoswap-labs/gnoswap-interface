@@ -11,6 +11,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { formatUSDWallet } from "@utils/number-utils";
+import { useTranslation } from "react-i18next";
 
 interface WalletBalanceDetailProps {
   balanceDetailInfo: BalanceDetailInfo;
@@ -28,81 +29,87 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   breakpoint,
   isSwitchNetwork,
   loadngTransactionClaim,
-}) => (
-  <WalletBalanceDetailWrapper>
-    <WalletBalanceDetailInfo
-      loading={balanceDetailInfo.loadingBalance}
-      title={"Available Balance"}
-      value={balanceDetailInfo.availableBalance}
-      tooltip={"Total sum of assets not deposited in liquidity pools."}
-    />
-    <WalletBalanceDetailInfo
-      loading={balanceDetailInfo.loadingPositions}
-      title={"Staked Positions"}
-      value={balanceDetailInfo.stakedLP}
-      tooltip={"Total sum of staked positions."}
-    />
-    <WalletBalanceDetailInfo
-      loading={balanceDetailInfo.loadingPositions}
-      title={"Total Claimed Rewards"}
-      value={balanceDetailInfo.totalClaimedRewards}
-      tooltip={"The cumulative sum of claimed rewards."}
-    />
-    {breakpoint === DEVICE_TYPE.MOBILE ? (
-      <InfoWrapper>
-        <div className="column-batch">
-          <div className="title-wrapper">
-            <span className="title">Claimable Rewards</span>
-            <WalletBalanceDetailInfoTooltip
-              tooltip={"Total sum of unclaimed rewards."}
-            />
-          </div>
-          <div className="value-wrapper">
-            {balanceDetailInfo.loadingPositions ? (
-              <div className="value">
-                <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
-              </div>
-            ) : (
-              <span className="value">
-                {formatUSDWallet(balanceDetailInfo.claimableRewards, true)}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="button-wrapper">
-          <ClaimAllButton
-            onClick={claimAll}
-            loadngTransactionClaim={loadngTransactionClaim}
-            disabled={
-              connected === false ||
-              isSwitchNetwork ||
-              Number(balanceDetailInfo.claimableRewards) === 0
-            }
-          />
-        </div>
-      </InfoWrapper>
-    ) : (
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <WalletBalanceDetailWrapper>
+      <WalletBalanceDetailInfo
+        loading={balanceDetailInfo.loadingBalance}
+        title={t("Wallet:overral.availBal.label")}
+        value={balanceDetailInfo.availableBalance}
+        tooltip={t("Wallet:overral.availBal.tooltip")}
+      />
       <WalletBalanceDetailInfo
         loading={balanceDetailInfo.loadingPositions}
-        title={"Claimable Rewards"}
-        value={balanceDetailInfo.claimableRewards}
-        tooltip={"Total sum of unclaimed rewards."}
-        className="claimable-rewards"
-        button={
-          <ClaimAllButton
-            onClick={claimAll}
-            loadngTransactionClaim={loadngTransactionClaim}
-            disabled={
-              connected === false ||
-              isSwitchNetwork ||
-              Number(balanceDetailInfo.claimableRewards) === 0
-            }
-          />
-        }
+        title={t("Wallet:overral.stakedPosi.label")}
+        value={balanceDetailInfo.stakedLP}
+        tooltip={t("Wallet:overral.stakedPosi.tooltip")}
       />
-    )}
-  </WalletBalanceDetailWrapper>
-);
+      <WalletBalanceDetailInfo
+        loading={balanceDetailInfo.loadingPositions}
+        title={t("Wallet:overral.totalClaimed.label")}
+        value={balanceDetailInfo.totalClaimedRewards}
+        tooltip={t("Wallet:overral.totalClaimed.tooltip")}
+      />
+      {breakpoint === DEVICE_TYPE.MOBILE ? (
+        <InfoWrapper>
+          <div className="column-batch">
+            <div className="title-wrapper">
+              <span className="title">
+                {t("Wallet:overral.claimableReward.label")}
+              </span>
+              <WalletBalanceDetailInfoTooltip
+                tooltip={t("Wallet:overral.claimableReward.tooltip")}
+              />
+            </div>
+            <div className="value-wrapper">
+              {balanceDetailInfo.loadingPositions ? (
+                <div className="value">
+                  <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
+                </div>
+              ) : (
+                <span className="value">
+                  {formatUSDWallet(balanceDetailInfo.claimableRewards, true)}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="button-wrapper">
+            <ClaimAllButton
+              onClick={claimAll}
+              loadngTransactionClaim={loadngTransactionClaim}
+              disabled={
+                connected === false ||
+                isSwitchNetwork ||
+                Number(balanceDetailInfo.claimableRewards) === 0
+              }
+            />
+          </div>
+        </InfoWrapper>
+      ) : (
+        <WalletBalanceDetailInfo
+          loading={balanceDetailInfo.loadingPositions}
+          title={t("Wallet:overral.claimableReward.label")}
+          value={balanceDetailInfo.claimableRewards}
+          tooltip={t("Wallet:overral.claimableReward.tooltip")}
+          className="claimable-rewards"
+          button={
+            <ClaimAllButton
+              onClick={claimAll}
+              loadngTransactionClaim={loadngTransactionClaim}
+              disabled={
+                connected === false ||
+                isSwitchNetwork ||
+                Number(balanceDetailInfo.claimableRewards) === 0
+              }
+            />
+          }
+        />
+      )}
+    </WalletBalanceDetailWrapper>
+  );
+};
 
 interface ClaimAllButtonProps {
   disabled: boolean;
@@ -114,23 +121,27 @@ const ClaimAllButton: React.FC<ClaimAllButtonProps> = ({
   disabled,
   onClick,
   loadngTransactionClaim,
-}) => (
-  <Button
-    style={{
-      width: 86,
-      fontType: "p1",
-      padding: loadngTransactionClaim ? "8px 16px" : "10px 16px",
-      hierarchy: ButtonHierarchy.Primary,
-    }}
-    text={loadngTransactionClaim ? "" : "Claim All"}
-    onClick={onClick}
-    disabled={disabled}
-    leftIcon={
-      loadngTransactionClaim ? (
-        <LoadingSpinner className="loading-button" />
-      ) : undefined
-    }
-  />
-);
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Button
+      style={{
+        minWidth: 86,
+        fontType: "p1",
+        padding: loadngTransactionClaim ? "8px 16px" : "10px 16px",
+        hierarchy: ButtonHierarchy.Primary,
+      }}
+      text={loadngTransactionClaim ? "" : t("Wallet:overral.claimAll.btn")}
+      onClick={onClick}
+      disabled={disabled}
+      leftIcon={
+        loadngTransactionClaim ? (
+          <LoadingSpinner className="loading-button" />
+        ) : undefined
+      }
+    />
+  );
+};
 
 export default WalletBalanceDetail;

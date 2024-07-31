@@ -34,12 +34,12 @@ export interface AssetSortOption {
 }
 
 export const ASSET_HEAD = {
-  ASSET: "Asset",
-  CHAIN: "Chain",
-  AMOUNT: "Amount",
-  BALANCE: "Balance",
-  DEPOSIT: "Deposit",
-  WITHDRAW: "Withdraw",
+  ASSET: "Wallet:assets.col.asset",
+  CHAIN: "Wallet:assets.col.chain",
+  AMOUNT: "Wallet:assets.col.amount",
+  BALANCE: "Wallet:assets.col.bal",
+  DEPOSIT: "Wallet:assets.col.deposit",
+  WITHDRAW: "Wallet:assets.col.withdraw",
 } as const;
 export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
 
@@ -179,7 +179,7 @@ const AssetListContainer: React.FC = () => {
 
     if (tokens?.length === 0) {
       setTokenSortOption({
-        key: "Balance",
+        key: ASSET_HEAD.BALANCE,
         direction: "desc",
       });
     }
@@ -333,14 +333,14 @@ const AssetListContainer: React.FC = () => {
         asset => invisibleZeroBalance === false || filterZeroBalance(asset),
       );
 
-    if (sortOption?.key === "Asset") {
+    if (sortOption?.key === ASSET_HEAD.ASSET) {
       mappedTokens = mappedTokens.sort((x, y) => {
         return sortOption?.direction === "asc"
           ? x.name.localeCompare(y.name)
           : y.name.localeCompare(x.name);
       });
     }
-    if (sortOption?.key === "Chain") {
+    if (sortOption?.key === ASSET_HEAD.CHAIN) {
       mappedTokens = mappedTokens.sort((x, y) => {
         return sortOption?.direction === "asc"
           ? x.type.localeCompare(y.type)
@@ -348,7 +348,7 @@ const AssetListContainer: React.FC = () => {
       });
     }
 
-    if (sortOption?.key === "Amount") {
+    if (sortOption?.key === ASSET_HEAD.AMOUNT) {
       mappedTokens = mappedTokens.sort((x, y) => {
         const xBalance = x.balance === "-" ? "-1" : x.balance;
         const yBalance = y.balance === "-" ? "-1" : y.balance;
@@ -361,7 +361,7 @@ const AssetListContainer: React.FC = () => {
       });
     }
 
-    if (sortOption?.key === "Balance") {
+    if (sortOption?.key === ASSET_HEAD.BALANCE) {
       mappedTokens = mappedTokens.sort((x, y) => {
         if (
           x.sortPrice === undefined ||

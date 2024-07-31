@@ -97,7 +97,7 @@ export const WithdrawContent = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
     margin-bottom: 8px;
-    
+
     label {
       font-size: 14px;
       font-style: normal;
@@ -198,7 +198,7 @@ export const WithdrawContent = styled.div`
       color: ${({ theme }) => theme.color.text01};
       width: 100%;
       font-size: 14px;
-      
+
       ::placeholder {
         color: ${({ theme }) => theme.color.text04};
         opacity: 1;
@@ -219,6 +219,7 @@ export const WithdrawContent = styled.div`
       ${fonts.body9}
     }
     .not-selected-token {
+      white-space: nowrap;
       padding: 5px 10px 5px 12px;
       gap: 8px;
     }

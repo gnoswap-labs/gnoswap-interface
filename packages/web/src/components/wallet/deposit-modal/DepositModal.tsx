@@ -17,6 +17,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import React, { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   DepositBoxContent,
   DepositLabel,
@@ -47,6 +48,7 @@ const DepositModal: React.FC<Props> = ({
   changeToken,
   callback,
 }) => {
+  const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const { account } = useWallet();
   const [copied, copy] = useCopy();
@@ -61,7 +63,7 @@ const DepositModal: React.FC<Props> = ({
         <DepositModalWrapper ref={modalRef}>
           <div className="modal-body">
             <div className="header">
-              <h6>Deposit</h6>
+              <h6>{t("Wallet:depositModal.title")}</h6>
               <div className="close-wrap" onClick={close}>
                 <IconClose className="close-icon" />
               </div>
@@ -69,8 +71,10 @@ const DepositModal: React.FC<Props> = ({
 
             <DepositLabel>
               <div className="title">
-                <label>Supported Tokens</label>
-                <DepositTooltip tooltip="The only types of tokens that are available for deposits." />
+                <label>{t("Wallet:depositModal.supToken.label")}</label>
+                <DepositTooltip
+                  tooltip={t("Wallet:depositModal.supToken.tooltip")}
+                />
               </div>
 
               <DepositBoxContent>
@@ -99,8 +103,10 @@ const DepositModal: React.FC<Props> = ({
 
             <DepositLabel>
               <div className="title">
-                <label>Deposit Network</label>
-                <DepositTooltip tooltip="The network of the token to be deposited." />
+                <label>{t("Wallet:depositModal.depoNet.label")}</label>
+                <DepositTooltip
+                  tooltip={t("Wallet:depositModal.depoNet.tooltip")}
+                />
               </div>
 
               <DepositBoxContent>
@@ -114,15 +120,19 @@ const DepositModal: React.FC<Props> = ({
                     <span className="token-symbol">Gnoland (GRC20)</span>
                   </div>
 
-                  <div className="approximately">≈ 4 seconds</div>
+                  <div className="approximately">
+                    {t("Wallet:depositModal.second")}
+                  </div>
                 </div>
               </DepositBoxContent>
             </DepositLabel>
 
             <DepositLabel>
               <div className="title">
-                <label>Deposit Address</label>
-                <DepositTooltip tooltip="The address that is retrieved from your connected wallet for deposits. " />
+                <label>{t("Wallet:depositModal.depoAddr.label")}</label>
+                <DepositTooltip
+                  tooltip={t("Wallet:depositModal.depoAddr.tooltip")}
+                />
               </div>
 
               <DepositBoxContent>
@@ -136,7 +146,9 @@ const DepositModal: React.FC<Props> = ({
                     <div className="address">
                       <p>{account?.address}</p>
                       <Button
-                        text={copied ? "Copied!" : "Copy"}
+                        text={
+                          copied ? t("common:copied") : t("common:action.copy")
+                        }
                         className="btn-copy"
                         style={{
                           textColor: "text09",
@@ -156,34 +168,29 @@ const DepositModal: React.FC<Props> = ({
 
             <WarningCard
               icon={<IconCircleExclamationMark />}
-              title={"Important Notes"}
-              content={<DepositWarningContentWrapper>
-                <ul>
-                  <li>
-                    Double-check to confirm that your deposit address above
-                    matches the address in your connected wallet.
-                  </li>
-                  <li>
-                    Only send supported tokens to this deposit address. Depositing
-                    any other cryptocurrencies to this address will result in the
-                    loss of your funds.
-                  </li>
-                </ul>
+              title={t("Wallet:depositModal.warning.title")}
+              content={
+                <DepositWarningContentWrapper>
+                  <ul>
+                    <li>{t("Wallet:depositModal.warning.content1")}</li>
+                    <li>{t("Wallet:depositModal.warning.content2")}</li>
+                  </ul>
 
-                <a
-                  href="https://beta.gnoswap.io/"
-                  target="_blank"
-                  className="learn-more-box"
-                >
-                  <p>Learn More</p>
-                  <IconNewTab color={theme.color.icon21} />
-                </a>
-              </DepositWarningContentWrapper>}
+                  <a
+                    href="https://beta.gnoswap.io/"
+                    target="_blank"
+                    className="learn-more-box"
+                  >
+                    <p>{t("common:learnMore")}</p>
+                    <IconNewTab color={theme.color.icon21} />
+                  </a>
+                </DepositWarningContentWrapper>
+              }
             />
 
             <Button
               onClick={close}
-              text="Close"
+              text={t("common:action.close")}
               className="btn-deposit"
               style={{
                 fullWidth: true,

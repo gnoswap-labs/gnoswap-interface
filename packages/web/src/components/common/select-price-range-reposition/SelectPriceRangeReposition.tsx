@@ -12,6 +12,7 @@ import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/
 import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import SelectPriceRangeCustom from "../select-price-range-custom/SelectPriceRangeCustomPosition";
+import { useTranslation } from "react-i18next";
 
 interface SelectPriceRangeProps {
   opened: boolean;
@@ -46,6 +47,8 @@ const SelectPriceRangeReposition: React.FC<SelectPriceRangeProps> = ({
   isEmptyLiquidity,
   isKeepToken,
 }) => {
+  const { t } = useTranslation();
+
   const changePriceRangeWithClear = useCallback(
     (priceRange: AddLiquidityPriceRage) => {
       changePriceRange(priceRange);
@@ -60,9 +63,10 @@ const SelectPriceRangeReposition: React.FC<SelectPriceRangeProps> = ({
           <SelectPriceRangeItem
             key={index}
             selected={item.type === priceRange?.type}
-            tooltip={
-              PriceRangeTooltip[selectPool.feeTier || "NONE"]?.[item.type]
-            }
+            tooltip={t(
+              PriceRangeTooltip[selectPool.feeTier || "NONE"]?.[item.type] ||
+                "",
+            )}
             priceRangeStr={
               PriceRangeStr[selectPool.feeTier || "NONE"]?.[item.type]
             }

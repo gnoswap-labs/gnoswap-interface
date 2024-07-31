@@ -15,6 +15,7 @@ import { removeTrailingZeros } from "@utils/number-utils";
 import { Divider } from "@components/common/select-token/SelectToken.styles";
 import Switch from "@components/common/switch/Switch";
 import { useGetWithdrawalFee } from "@query/pools";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   tokenA: TokenModel;
@@ -37,6 +38,8 @@ const DecreasePoolInfo: React.FC<Props> = ({
   },
   displayGnotSwitch = false,
 }) => {
+  const { t } = useTranslation();
+
   const { breakpoint } = useWindowSize();
   const { data: withdrawalFee } = useGetWithdrawalFee();
 
@@ -91,7 +94,10 @@ const DecreasePoolInfo: React.FC<Props> = ({
               url={tokenA?.logoURI}
               width={24}
             />
-            <p>Pooled {isNotMobile ? tokenA?.symbol : ""}</p>
+            <p>
+              {t("DecreaseLiquidity:form.pooled")}{" "}
+              {isNotMobile ? tokenA?.symbol : ""}
+            </p>
           </div>
           <p>{poolAMount}</p>
         </div>
@@ -105,7 +111,10 @@ const DecreasePoolInfo: React.FC<Props> = ({
               url={tokenB?.logoURI}
               width={24}
             />
-            <p>Pooled {isNotMobile ? tokenB?.symbol : ""}</p>
+            <p>
+              {t("DecreaseLiquidity:form.pooled")}{" "}
+              {isNotMobile ? tokenB?.symbol : ""}
+            </p>
           </div>
           <p>{poolBMount}</p>
         </div>
@@ -119,7 +128,11 @@ const DecreasePoolInfo: React.FC<Props> = ({
               url={tokenA?.logoURI}
               width={24}
             />
-            <p>Unclaimed {isNotMobile ? tokenA?.symbol : ""} Fees</p>
+            <p>
+              {t("DecreaseLiquidity:form.pooled")}{" "}
+              {isNotMobile ? tokenA?.symbol : ""}{" "}
+              {t("DecreaseLiquidity:form.fees")}
+            </p>
           </div>
           <p>{unclaimedPoolAAMount}</p>
         </div>
@@ -133,7 +146,12 @@ const DecreasePoolInfo: React.FC<Props> = ({
               url={tokenB?.logoURI}
               width={24}
             />
-            <p>Unclaimed {isNotMobile ? tokenB?.symbol : ""} Fees</p>
+            <p>
+              {" "}
+              {t("DecreaseLiquidity:form.pooled")}{" "}
+              {isNotMobile ? tokenB?.symbol : ""}{" "}
+              {t("DecreaseLiquidity:form.fees")}
+            </p>
           </div>
           <p>{unclaimedPoolBAMount}</p>
         </div>
@@ -144,13 +162,12 @@ const DecreasePoolInfo: React.FC<Props> = ({
         <div className="box-info">
           <div className="value">
             <p className="protocol-fee">
-              Protocol Fee
+              {t("business:protocolFee.txt")}
               <Tooltip
                 placement="top"
                 FloatingContent={
                   <ToolTipContentWrapper>
-                    The amount of fees charged on the unclaimed fees that goes
-                    to the protocol.
+                    {t("business:protocolFee.desc")}
                   </ToolTipContentWrapper>
                 }
               >
@@ -167,7 +184,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
         <>
           <Divider />
           <GnotCollectSwitchWrapper>
-            <div>Collect as WUGNOT</div>
+            <div>{t("DecreaseLiquidity:form.collectWugnot.switch")}</div>
             <Switch checked={isWrap} onChange={setIsWrap} />
           </GnotCollectSwitchWrapper>
         </>

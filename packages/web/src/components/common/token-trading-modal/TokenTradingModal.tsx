@@ -8,6 +8,7 @@ import IconCopy from "../icons/IconCopy";
 import IconCheck from "../icons/IconCheck";
 import { TokenModel } from "@models/token/token-model";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { Trans, useTranslation } from "react-i18next";
 
 interface Props {
   close: () => void;
@@ -24,6 +25,7 @@ const TokenTradingModal: React.FC<Props> = ({
   handleChecked,
   token,
 }) => {
+  const { t } = useTranslation();
   const { getTokenUrl } = useGnoscanUrl();
 
   const onClickClose = useCallback(() => {
@@ -41,10 +43,12 @@ const TokenTradingModal: React.FC<Props> = ({
         <div className="content">
           <IconFailed className="failed-logo" />
           <div className="detail">
-            <h5>Token Trading Warning</h5>
+            <h5>{t("Modal:tokenTradingWarn.title")}</h5>
             <div className="des">
-              This token isn’t frequently swapped on GnoSwap.
-              <br /> Always conduct your own research before trading.
+              <Trans ns="Modal" i18nKey={"tokenTradingWarn.subtitle"}>
+                This token isn’t frequently swapped on GnoSwap.
+                <br /> Always conduct your own research before trading.
+              </Trans>
             </div>
           </div>
           <div className="link">
@@ -66,7 +70,7 @@ const TokenTradingModal: React.FC<Props> = ({
           </div>
           <div>
             <Button
-              text="I understand"
+              text={t("Modal:tokenTradingWarn.understand")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
@@ -75,7 +79,7 @@ const TokenTradingModal: React.FC<Props> = ({
               onClick={onClickConfirm}
             />
             <div className="cancel-button">
-              <span onClick={onClickClose}>Cancel</span>
+              <span onClick={onClickClose}>{t("common:action.cancel")}</span>
             </div>
           </div>
         </div>

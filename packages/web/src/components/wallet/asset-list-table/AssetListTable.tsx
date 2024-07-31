@@ -17,6 +17,7 @@ import { useCallback, useMemo } from "react";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { DEVICE_TYPE } from "@styles/media";
+import { useTranslation } from "react-i18next";
 
 interface AssetListTableProps {
   assets: Asset[];
@@ -41,6 +42,8 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
   moveTokenPage,
   breakpoint,
 }) => {
+  const { t } = useTranslation();
+
   const isAscendingOption = useCallback(
     (head: ASSET_HEAD) => {
       return sortOption?.key === head && sortOption.direction === "asc";
@@ -92,14 +95,14 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               {isDescendingOption(head) && (
                 <IconTriangleArrowDown className="icon desc" />
               )}
-              {head}
+              {t(head)}
             </span>
           </TableColumn>
         ))}
       </div>
       <div className="asset-list-body">
         {isFetched && assets.length === 0 && (
-          <div css={noDataText}>No tokens found</div>
+          <div css={noDataText}>{t("Wallet:assets.empty")}</div>
         )}
         {isFetched &&
           assets.length > 0 &&

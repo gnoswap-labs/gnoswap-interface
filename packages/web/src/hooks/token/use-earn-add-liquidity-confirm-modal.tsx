@@ -16,10 +16,7 @@ import { useTokenData } from "./use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import useRouter from "@hooks/common/use-custom-router";
-import {
-  makeBroadcastAddLiquidityMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import {
   CreatePoolFailedResponse,
   CreatePoolSuccessResponse,
@@ -37,6 +34,7 @@ import { subscriptFormat } from "@utils/number-utils";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTranslation } from "react-i18next";
+import { useMessage } from "@hooks/common/use-message";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -103,6 +101,9 @@ export const useEarnAddLiquidityConfirmModal = ({
     broadcastPending,
     broadcastError,
   } = useBroadcastHandler();
+
+  const { getMessage } = useMessage();
+
   const router = useRouter();
   const { displayBalanceMap } = useTokenData();
   const { data: creationFee, refetch: refetchGetPoolCreationFee } =
@@ -350,7 +351,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       }
 
       broadcastLoading(
-        makeBroadcastAddLiquidityMessage("pending", {
+        getMessage("ADD", "pending", {
           tokenASymbol: tokenA.symbol,
           tokenBSymbol: tokenB.symbol,
           tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
@@ -389,7 +390,8 @@ export const useEarnAddLiquidityConfirmModal = ({
             broadcastPending({ txHash: resultData.hash });
             setTimeout(() => {
               broadcastSuccess(
-                makeBroadcastAddLiquidityMessage(
+                getMessage(
+                  "ADD",
                   "success",
                   {
                     tokenASymbol: resultData.tokenA.symbol || "",
@@ -410,7 +412,7 @@ export const useEarnAddLiquidityConfirmModal = ({
             result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
             broadcastRejected(
-              makeBroadcastAddLiquidityMessage("error", {
+              getMessage("ADD", "error", {
                 tokenASymbol: tokenA.symbol,
                 tokenBSymbol: tokenB.symbol,
                 tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
@@ -423,7 +425,8 @@ export const useEarnAddLiquidityConfirmModal = ({
             );
           } else {
             broadcastError(
-              makeBroadcastAddLiquidityMessage(
+              getMessage(
+                "ADD",
                 "error",
                 {
                   tokenASymbol: tokenA.symbol,

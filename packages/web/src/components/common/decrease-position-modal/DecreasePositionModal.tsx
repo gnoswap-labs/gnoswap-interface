@@ -8,6 +8,7 @@ import IconClose from "../icons/IconCancel";
 import { DecreasePositionModalWrapper } from "./DecreasePositionModal.styles";
 import BalanceChange from "@components/decrease/balance-change/BalanceChange";
 import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   confirm: () => void;
@@ -33,6 +34,8 @@ const DecreasePositionModal: React.FC<Props> = ({
   rangeStatus,
   pooledTokenInfos,
 }) => {
+  const { t } = useTranslation();
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -41,7 +44,7 @@ const DecreasePositionModal: React.FC<Props> = ({
     <DecreasePositionModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Confirm Decrease Liquidity</h6>
+          <h6>{t("DecreaseLiquidity:confModal.title")}</h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
@@ -54,7 +57,9 @@ const DecreasePositionModal: React.FC<Props> = ({
             rangeStatus={rangeStatus}
           />
           <div>
-            <p className="label">Decreasing Amount</p>
+            <p className="label">
+              {t("DecreaseLiquidity:confModal.decreasingAmount")}
+            </p>
             <DecreasePoolInfo
               {...amountInfo}
               isShowProtocolFee
@@ -65,12 +70,12 @@ const DecreasePositionModal: React.FC<Props> = ({
           <BalanceChange
             {...amountInfo}
             pooledTokenInfos={pooledTokenInfos}
-            title="Balance Changes"
+            title={t("DecreaseLiquidity:confModal.balanceChanges")}
           />
           <div>
             <Button
               onClick={confirm}
-              text="Confirm Decrease Liquidity"
+              text={t("DecreaseLiquidity:confModal.btn")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
