@@ -23,6 +23,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
 
   const [period, setPeriod] = useAtom(EarnState.period);
   const [startDate, setStartDate] = useAtom(EarnState.date);
+  console.log("🚀 ~ startDate:", startDate);
   const [, setDataModal] = useAtom(EarnState.dataModal);
   const router = useCustomRouter();
   const poolPath = router.getPoolPath();
