@@ -117,17 +117,17 @@ const DashboardInfoContainer: React.FC = () => {
             formatOtherPrice(Number(tokenData?.gnsDailyBlockEmissions) * 0.75, {
               isKMB: false,
               usd: false,
-            }) + " / day",
+            }),
           devOps:
             formatOtherPrice(Number(tokenData?.gnsDailyBlockEmissions) * 0.2, {
               isKMB: false,
               usd: false,
-            }) + " / day",
+            }),
           community:
             formatOtherPrice(Number(tokenData?.gnsDailyBlockEmissions) * 0.05, {
               isKMB: false,
               usd: false,
-            }) + " / day",
+            }),
         },
       }}
       governenceOverviewInfo={initialGovernenceOverviewInfo}

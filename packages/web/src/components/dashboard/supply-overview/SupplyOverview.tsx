@@ -47,14 +47,16 @@ const BlockEmissions = ({
   const { t } = useTranslation();
   return (
     <BlockEmissionsWrapper>
-      <h5>Daily Block Emissions</h5>
+      <h5>{t("Dashboard:supOver.dailyBlock.tooltip")}</h5>
       <div className="content">
         <div className="label">
           {t("Dashboard:supOver.blocEmiss.tooltip.liquiStaking")}{" "}
         </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>{liquidityStaking} / {t("common:day.base")}</div>
+          <div>
+            {liquidityStaking} / {t("common:day.base")}
+          </div>
         </div>
       </div>
       <div className="content">
@@ -63,7 +65,9 @@ const BlockEmissions = ({
         </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>{devOps} / {t("common:day.base")}</div>
+          <div>
+            {devOps} / {t("common:day.base")}
+          </div>
         </div>
       </div>
       <div className="content">
@@ -72,7 +76,9 @@ const BlockEmissions = ({
         </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>{community}/ {t("common:day.base")}</div>
+          <div>
+            {community} / {t("common:day.base")}
+          </div>
         </div>
       </div>
     </BlockEmissionsWrapper>
@@ -141,7 +147,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
 
         <div className="daily-block-emissions">
           <div className="label-title">
-            <div>Daily Block Emissions</div>
+            <div>{t("Dashboard:supOver.dailyBlock.label")}</div>
             <DashboardLabel
               tooltip={
                 <BlockEmissions
