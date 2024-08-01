@@ -62,8 +62,7 @@ export function parseTransactionResponse(
     data: {
       hash: walletResponse.data?.hash || "",
       height: walletResponse.data?.height || "",
-      // eslint-disable-next-line quotes
-      data: data?.map(s => s.replaceAll('"', "")),
+      data: data?.map(s => s.replaceAll("\"", "")),
     },
   } as WalletResponse<SendTransactionResponse<string[] | null>>;
 }
