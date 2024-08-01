@@ -9,7 +9,9 @@
     "storybook": "yarn workspace @gnoswap-labs/web storybook",
     "test:ci": "ultra --recursive test:ci",
     "build": "yarn workspace @gnoswap-labs/web build",
-    "start": "yarn workspace @gnoswap-labs/web start"
+    "start": "yarn workspace @gnoswap-labs/web start",
+    "prepare": "husky",
+    "postinstall": "husky"
   },
   "resolutions": {
     "@storybook/react-docgen-typescript-plugin": "npm:react-docgen-typescript-plugin@1.0.5"
@@ -17,11 +19,16 @@
   "devDependencies": {
     "@babel/core": "7.21.0",
     "@babel/runtime": "7.21.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "@yarnpkg/sdks": "3.0.0-rc.40",
     "babel-loader": "9.1.2",
-    "eslint": "8.0.1",
+    "eslint": "8.56.0",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.7",
     "prettier": "2.8.4",
     "typescript": "4.9.5",
+    "typescript-eslint": "^8.0.0",
     "ultra-runner": "3.10.5"
   },
   "license": "MIT"
