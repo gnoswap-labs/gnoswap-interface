@@ -25,6 +25,11 @@ Default.args = {
     dailyBlockEmissions: "580 GNOS",
     totalStaked: "152,412,148 GNOS",
     stakingRatio: "55.15%",
+    dailyBlockEmissionsInfo: {
+      liquidityStaking: "580 GNOS",
+      devOps: "580 GNOS",
+      community: "580 GNOS",
+    },
   },
   governenceOverviewInfo: {
     totalXgnosIssued: "59,144,225 xGNOS",

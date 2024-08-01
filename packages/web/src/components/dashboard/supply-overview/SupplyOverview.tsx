@@ -33,19 +33,28 @@ const LoadingProgress = () => {
   );
 };
 
-const BlockEmissions = () => {
-  const { t } = useTranslation();
+export interface BlockEmissionsProps {
+  liquidityStaking: string;
+  devOps: string;
+  community: string;
+}
 
+const BlockEmissions = ({
+  liquidityStaking,
+  devOps,
+  community,
+}: BlockEmissionsProps) => {
+  const { t } = useTranslation();
   return (
     <BlockEmissionsWrapper>
-      <h5>Block Emissions</h5>
+      <h5>Daily Block Emissions</h5>
       <div className="content">
         <div className="label">
           {t("Dashboard:supOver.blocEmiss.tooltip.liquiStaking")}{" "}
         </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>0 / {t("common:day.base")}</div>
+          <div>{liquidityStaking} / {t("common:day.base")}</div>
         </div>
       </div>
       <div className="content">
@@ -54,7 +63,7 @@ const BlockEmissions = () => {
         </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>0 / {t("common:day.base")}</div>
+          <div>{devOps} / {t("common:day.base")}</div>
         </div>
       </div>
       <div className="content">
@@ -63,7 +72,7 @@ const BlockEmissions = () => {
         </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>0 / {t("common:day.base")}</div>
+          <div>{community}/ {t("common:day.base")}</div>
         </div>
       </div>
     </BlockEmissionsWrapper>
@@ -129,11 +138,16 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
             <LoadingProgress />
           )}
         </div>
+
         <div className="daily-block-emissions">
           <div className="label-title">
-            <div>{t("Dashboard:supOver.dailyBlock.label")}</div>
+            <div>Daily Block Emissions</div>
             <DashboardLabel
-              tooltip={t("Dashboard:supOver.dailyBlock.tooltip")}
+              tooltip={
+                <BlockEmissions
+                  {...supplyOverviewInfo.dailyBlockEmissionsInfo}
+                />
+              }
             />
           </div>
           <div className="daily-block-emissions-tooltip">
@@ -144,9 +158,18 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
             ) : (
               <LoadingText />
             )}
-            {!loading && <DashboardLabel tooltip={<BlockEmissions />} />}
+            {!loading && (
+              <DashboardLabel
+                tooltip={
+                  <BlockEmissions
+                    {...supplyOverviewInfo.dailyBlockEmissionsInfo}
+                  />
+                }
+              />
+            )}
           </div>
         </div>
+
         <div className="total-staked">
           <div className="label-title">
             <div>{t("Dashboard:supOver.totalStaked.label")}</div>

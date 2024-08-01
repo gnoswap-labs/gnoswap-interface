@@ -23,6 +23,7 @@ import {
   IncreaseLiquiditySuccessResponse,
   PositionBinResponse,
   PositionListResponse,
+  PositionResponse,
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
@@ -107,6 +108,18 @@ export class PositionRepositoryImpl implements PositionRepository {
       url: "/positions/" + lpTokenId + `/bins?bins=${count}`,
     });
     return PositionBinMapper.fromList(response.data.data);
+  };
+
+  getPositionById = async (lpTokenId: string): Promise<PositionModel> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const response = await this.networkClient.get<{
+      data: PositionResponse;
+    }>({
+      url: "/positions/" + lpTokenId,
+    });
+    return PositionMapper.from(response.data.data);
   };
 
   getPositionsByAddress = async (

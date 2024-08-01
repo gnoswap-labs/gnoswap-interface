@@ -803,18 +803,18 @@ export const useSwapHandler = () => {
         let url =
           window?.location?.host +
           PAGE_PATH.TOKEN +
-          "?" +
+          "?path=" +
           router.getTokenPath();
         const query = {
           to: tokenB?.path,
           from: tokenA?.path,
         };
         if (query.to && query.from) {
-          url += `?tokenA=${query.from}&tokenB=${query.to}`;
+          url += `&tokenA=${query.from}&tokenB=${query.to}`;
         } else if (query.to) {
-          url += `?tokenB=${query.to}`;
+          url += `&tokenB=${query.to}`;
         } else if (query.from) {
-          url += `?tokenA=${query.from}`;
+          url += `&tokenA=${query.from}`;
         }
         await navigator.clipboard.writeText(url);
         setCopied(true);

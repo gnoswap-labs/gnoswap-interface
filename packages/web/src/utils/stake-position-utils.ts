@@ -1,3 +1,4 @@
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import BigNumber from "bignumber.js";
 import { removeTrailingZeros, toKMBFormat } from "./number-utils";
 
@@ -198,7 +199,7 @@ export const convertToKMB = (
     return result;
   }
 
-  if (numberPriceAbs > 999.99 * 1e9) return "999.99B";
+  if (numberPriceAbs > 999.99 * 1e9) return ">999.99B";
 
   if (numberPriceAbs >= 1e9) {
     return (
@@ -239,74 +240,6 @@ export const convertToKMB = (
       });
 };
 
-export const convertLiquidityUsdToKMB = (
-  price: string,
-  options?: {
-    maximumFractionDigits?: number;
-    minimumFractionDigits?: number;
-    prefix?: string;
-  },
-) => {
-  const { prefix, maximumFractionDigits, minimumFractionDigits } =
-    options ?? {};
-
-  function withPrefix(value: string) {
-    if (prefix) return prefix + value;
-
-    return value;
-  }
-
-  if (Number.isNaN(Number(price))) return "-";
-
-  if (Math.floor(Number(price)).toString().length < 4) {
-    if (Number.isInteger(Number(price))) return withPrefix(`${Number(price)}`);
-    if (Number(price) < 0.01 && Number(price) !== 0) return `<${prefix}0.01`;
-    if (Number(price) < 1)
-      return withPrefix(`${Number(Number(price).toFixed(6))}`);
-    return withPrefix(
-      Number(price).toLocaleString("en-US", {
-        maximumFractionDigits: maximumFractionDigits ?? 2,
-        minimumFractionDigits: minimumFractionDigits ?? 2,
-      }),
-    );
-  }
-
-  const temp = Math.floor(Number(price));
-  if (temp >= 1e9) {
-    if (temp > 999.99 * 1e9) return withPrefix("999.99B");
-    return withPrefix(
-      (temp / 1e9).toLocaleString("en-US", {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      }) + "B",
-    );
-  }
-  if (temp >= 1e6) {
-    return withPrefix(
-      (temp / 1e6).toLocaleString("en-US", {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      }) + "M",
-    );
-  }
-  if (temp >= 1e3) {
-    return withPrefix(
-      (temp / 1e3).toLocaleString("en-US", {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
-      }) + "K",
-    );
-  }
-  return withPrefix(
-    Number.isInteger(price)
-      ? `${Number(price)}`
-      : Number(price).toLocaleString("en-US", {
-          maximumFractionDigits: maximumFractionDigits ?? 2,
-          minimumFractionDigits: minimumFractionDigits ?? 2,
-        }),
-  );
-};
-
 export const formatUsdNumber = (
   price: string,
   maximumFractionDigits?: number,
@@ -335,4 +268,13 @@ export function convertLiquidityUsdValue(value: number) {
   if (valueInNumber > 0 && valueInNumber < 0.01) return "<$0.01";
 
   return "$" + BigNumber(value).toFormat(2);
+}
+
+export function isInRangePosition(position: PoolPositionModel) {
+  const { tickLower, tickUpper, pool } = position;
+  const currentTick = pool.currentTick;
+  if (currentTick < tickLower || currentTick > tickUpper) {
+    return false;
+  }
+  return true;
 }

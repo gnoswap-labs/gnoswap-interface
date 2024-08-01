@@ -3,10 +3,12 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
+import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import { isInRangePosition } from "@utils/stake-position-utils";
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -51,6 +53,11 @@ const StakePositionModal: React.FC<Props> = ({
       pool?.stakingApr,
     )}`;
   }, [pool?.stakingApr]);
+
+  const inRange = useCallback(
+    (position: PoolPositionModel) => isInRangePosition(position),
+    [],
+  );
 
   return (
     <StakePositionModalWrapper>
@@ -104,6 +111,7 @@ const StakePositionModal: React.FC<Props> = ({
                       text={`${Number(position.pool.fee) / 10000}%`}
                       type={BADGE_TYPE.DARK_DEFAULT}
                     />
+                    <RangeBadge status={inRange(position) ? "IN" : "OUT"} />
                   </div>
                   <div className="value">
                     {formatOtherPrice(position.positionUsdValue, {

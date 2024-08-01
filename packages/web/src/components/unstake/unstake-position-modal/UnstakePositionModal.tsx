@@ -24,6 +24,8 @@ import {
   formatRate,
 } from "@utils/new-number-utils";
 import { Trans, useTranslation } from "react-i18next";
+import { isInRangePosition } from "@utils/stake-position-utils";
+import RangeBadge from "@components/common/range-badge/RangeBadge";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -93,6 +95,11 @@ const UnstakePositionModal: React.FC<Props> = ({
     return formatRate(result.unstakeUsd / result.allUsd);
   }, [positions]);
 
+  const inRange = useCallback(
+    (position: PoolPositionModel) => isInRangePosition(position),
+    [],
+  );
+
   return (
     <UnstakePositionModalWrapper>
       <div className="modal-body">
@@ -122,6 +129,7 @@ const UnstakePositionModal: React.FC<Props> = ({
                       type={BADGE_TYPE.DARK_DEFAULT}
                       text={`${Number(position.pool.fee) / 10000}%`}
                     />
+                    <RangeBadge status={inRange(position) ? "IN" : "OUT"} />
                   </div>
                   <div className="value">
                     {formatOtherPrice(position.positionUsdValue, {
