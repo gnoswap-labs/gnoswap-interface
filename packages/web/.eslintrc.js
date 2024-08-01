@@ -6,7 +6,7 @@ module.exports = {
     node: true,
   },
   parser: "@typescript-eslint/parser",
-  extends: ["next", "plugin:@typescript-eslint/recommended"],
+  extends: ["next", "prettier"],
   rules: {
     "linebreak-style": ["error", "unix"],
     quotes: ["error", "double"],
