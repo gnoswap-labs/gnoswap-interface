@@ -123,7 +123,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     positions,
     checkStakedPool,
     getPositions,
-    isFetchedPosition,
+    isFetchedPosition: isFetchedPosition && isFetchedPoolPositions,
     loading,
     isLoadingPool,
   };

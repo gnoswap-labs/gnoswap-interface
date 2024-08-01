@@ -93,7 +93,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     const token0symbol = this.replaceToken(tx?.tokenA?.symbol);
 
     const token1Amount = formatPoolPairAmount(tx?.tokenBAmount, {
-      decimals: tx.tokenA.decimals,
+      decimals: tx.tokenB.decimals,
       isKMB: false,
     });
     const token1symbol = this.replaceToken(tx?.tokenB?.symbol);
@@ -101,9 +101,11 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     const token0Display = Number(tx?.tokenAAmount)
       ? `<span>${token0Amount}</span> <span>${token0symbol}</span>`
       : "";
+
     const token1Display = Number(tx?.tokenBAmount)
       ? `<span>${token1Amount}</span> <span>${token1symbol}</span>`
       : "";
+
     const tokenStr = [token0Display, token1Display]
       .filter(item => item)
       .join(" and ");
@@ -126,9 +128,9 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       case "DEPOSIT":
         return `Received ${token0Display}`;
       case "DECREASE":
-        return `Decreased ${token0Display}`;
+        return `Decreased ${tokenStr}`;
       case "INCREASE":
-        return `Increased ${token0Display}`;
+        return `Increased ${tokenStr}`;
       case "REPOSITION":
         return `Repositioned ${tokenStr}`;
       default:

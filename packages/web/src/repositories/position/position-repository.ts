@@ -34,6 +34,8 @@ export interface PositionRepository {
     count: 20 | 40,
   ) => Promise<PositionBinModel[]>;
 
+  getPositionById: (lpTokenId: string) => Promise<PositionModel>;
+
   claimAll: (
     request: ClaimAllRequest,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;

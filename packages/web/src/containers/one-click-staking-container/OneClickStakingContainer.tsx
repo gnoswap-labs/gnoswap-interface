@@ -19,9 +19,9 @@ const OneClickStakingContainer: React.FC = () => {
     EarnState.poolInfoQuery,
   );
   const poolId =
-    router.query?.["pool-path"] === undefined
+    router.query?.["poolPath"] === undefined
       ? null
-      : `${router.query?.["pool-path"]}`;
+      : `${router.query?.["poolPath"]}`;
 
   const tokenPair = useMemo(() => {
     const tokenAPath = router.query?.["tokenA"] as string;

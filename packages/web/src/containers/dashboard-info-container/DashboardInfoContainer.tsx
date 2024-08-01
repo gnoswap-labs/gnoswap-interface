@@ -6,7 +6,13 @@ import { DashboardTokenResponse } from "@repositories/dashboard/response/token-r
 import { useQuery } from "@tanstack/react-query";
 import { useLoading } from "@hooks/common/use-loading";
 import BigNumber from "bignumber.js";
-import { formatPrice } from "@utils/new-number-utils";
+import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
+
+export interface DailyBlockEmissionsInfo {
+  liquidityStaking: string;
+  devOps: string;
+  community: string;
+}
 
 export interface DashboardTokenInfo {
   gnosAmount: string;
@@ -18,6 +24,7 @@ export interface SupplyOverviewInfo {
   circulatingSupply: string;
   progressBar: string;
   dailyBlockEmissions: string;
+  dailyBlockEmissionsInfo: DailyBlockEmissionsInfo;
   totalStaked: string;
   stakingRatio: string;
 }
@@ -92,14 +99,36 @@ const DashboardInfoContainer: React.FC = () => {
           tokenData?.gnsCirculatingSupply || "-",
           "GNS",
         ),
-        dailyBlockEmissions: formatDashboardPrice(
-          tokenData?.gnsDailyBlockEmissions,
-          "GNS",
-        ),
+        dailyBlockEmissions:
+          formatOtherPrice(tokenData?.gnsDailyBlockEmissions, {
+            isKMB: false,
+            usd: false,
+          }) + " GNS",
         totalSupply: formatDashboardPrice(tokenData?.gnsTotalSupply, "GNS"),
-        totalStaked: formatDashboardPrice(tokenData?.gnsTotalStaked, "GNS"),
+        totalStaked:
+          formatOtherPrice(tokenData?.gnsTotalStaked, {
+            isKMB: false,
+            usd: false,
+          }) + " GNS",
         progressBar: progressBar,
         stakingRatio: stakingRatio,
+        dailyBlockEmissionsInfo: {
+          liquidityStaking:
+            formatOtherPrice(Number(tokenData?.gnsDailyBlockEmissions) * 0.75, {
+              isKMB: false,
+              usd: false,
+            }) + " / day",
+          devOps:
+            formatOtherPrice(Number(tokenData?.gnsDailyBlockEmissions) * 0.2, {
+              isKMB: false,
+              usd: false,
+            }) + " / day",
+          community:
+            formatOtherPrice(Number(tokenData?.gnsDailyBlockEmissions) * 0.05, {
+              isKMB: false,
+              usd: false,
+            }) + " / day",
+        },
       }}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
       breakpoint={breakpoint}

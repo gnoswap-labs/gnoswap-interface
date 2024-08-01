@@ -140,17 +140,14 @@ const PoolAddIncentivizeContainer: React.FC = () => {
     if (Number(tokenAmountInput.amount) < 0.000001) {
       return true;
     }
-    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance)) {
+    if (
+      Number(tokenAmountInput.amount) >
+      Number(tokenAmountInput.balance.replace(/,/g, ""))
+    ) {
       return true;
     }
     return false;
-  }, [
-    connected,
-    currentPool,
-    isSwitchNetwork,
-    tokenAmountInput.amount,
-    tokenAmountInput.balance,
-  ]);
+  }, [connected, currentPool, tokenAmountInput, isSwitchNetwork]);
 
   const textBtn = useMemo(() => {
     if (!connected) {
@@ -168,7 +165,10 @@ const PoolAddIncentivizeContainer: React.FC = () => {
     if (Number(tokenAmountInput.amount) < 0.000001) {
       return t("IncentivizePool:submitBtn.amtTooLow");
     }
-    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance)) {
+    if (
+      Number(tokenAmountInput.amount) >
+      Number(tokenAmountInput.balance.replace(/,/g, ""))
+    ) {
       return t("IncentivizePool:submitBtn.insuffi");
     }
     return t("IncentivizePool:submitBtn.incentiPool");

@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
@@ -113,4 +114,8 @@ export const LogoWrapper = styled.div<Props>`
       return `${mobileWidth}px`;
     }};
   }
+`;
+
+export const TokenSymbolWrapper = styled.div`
+  ${fonts.p1}
 `;

@@ -30,6 +30,11 @@ function IncentivizeTokenDetailTooltipContent({ poolStakings }: Props) {
     <S.IncentivizeTokenDetailTooltipContent key={JSON.stringify(poolStakings)}>
       {[...poolStakings]
         .sort((a, b) => b.incentiveType.localeCompare(a.incentiveType))
+        .sort(
+          (a, b) =>
+            new Date(a.startTimestamp).getTime() -
+            new Date(b.startTimestamp).getTime(),
+        )
         .map((item, index) => {
           const tokenData = getGnotPath(item.rewardToken);
 

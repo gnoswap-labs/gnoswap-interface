@@ -63,6 +63,7 @@ export class PositionMapper {
       totalClaimedUsd: position.totalClaimedUsd,
       usdValue: Number(position.usdValue),
       incentiveType: position.incentiveType as INCENTIVE_TYPE,
+      tokenUri: position.tokenUri,
     };
   }
 

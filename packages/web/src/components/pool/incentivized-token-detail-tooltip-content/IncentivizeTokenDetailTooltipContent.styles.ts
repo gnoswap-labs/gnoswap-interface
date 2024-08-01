@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 export const IncentivizeTokenDetailTooltipContent = styled.div`
   min-width: 348px;
   ${mixins.flexbox("column", "center", "center")}
-  gap: 8px;
+  gap: 16px;
 `;
 
 export const TokenItem = styled.div`

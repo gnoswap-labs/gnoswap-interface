@@ -16,6 +16,8 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
+import { isInRangePosition } from "@utils/stake-position-utils";
+import RangeBadge from "@components/common/range-badge/RangeBadge";
 
 interface SelectLiquidityItemProps {
   position: PoolPositionModel;
@@ -88,6 +90,8 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
     });
   }, [position.positionUsdValue, width]);
 
+  const inRange = useMemo(() => isInRangePosition(position), [position]);
+
   return (
     <li css={wrapper(checked)}>
       <div className="left-content">
@@ -118,6 +122,7 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
               text={`${Number(position.pool.fee) / 10000}%`}
               type={BADGE_TYPE.DARK_DEFAULT}
             />
+            <RangeBadge status={inRange ? "IN" : "OUT"} />
           </div>
         </Tooltip>
       </div>

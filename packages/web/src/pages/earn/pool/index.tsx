@@ -135,6 +135,7 @@ export default function Pool() {
           top: topPosition,
         });
       });
+      return;
     }
 
     if (
