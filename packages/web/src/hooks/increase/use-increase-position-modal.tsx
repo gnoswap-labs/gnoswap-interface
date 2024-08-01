@@ -2,16 +2,14 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
-  SwapFeeTierType
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import IncreasePositionModalContainer from "@containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
-import {
-  makeBroadcastAddLiquidityMessage,
-  useBroadcastHandler
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useMessage } from "@hooks/common/use-message";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -72,9 +70,13 @@ export const useIncreasePositionModal = ({
     router.back();
   }, [router]);
 
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
-    closeCallback: onCloseConfirmTransactionModal,
-  });
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
+    {
+      closeCallback: onCloseConfirmTransactionModal,
+    },
+  );
+
+  const { getMessage } = useMessage();
 
   const amountInfo = useMemo(() => {
     if (!tokenA || !tokenB || !swapFeeTier) {
@@ -104,7 +106,7 @@ export const useIncreasePositionModal = ({
     const tokenB = selectedPosition.pool.tokenB;
 
     broadcastLoading(
-      makeBroadcastAddLiquidityMessage("pending", {
+      getMessage("ADD", "pending", {
         tokenASymbol: tokenA.symbol,
         tokenBSymbol: tokenB.symbol,
         tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString("en-US", {
@@ -142,7 +144,8 @@ export const useIncreasePositionModal = ({
           ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
 
           broadcastSuccess(
-            makeBroadcastAddLiquidityMessage(
+            getMessage(
+              "ADD",
               "success",
               {
                 tokenASymbol: tokenA.symbol,
@@ -160,7 +163,7 @@ export const useIncreasePositionModal = ({
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
         broadcastRejected(
-          makeBroadcastAddLiquidityMessage("error", {
+          getMessage("ADD", "error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
             tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
@@ -175,7 +178,8 @@ export const useIncreasePositionModal = ({
         );
       } else {
         broadcastError(
-          makeBroadcastAddLiquidityMessage(
+          getMessage(
+            "ADD",
             "error",
             {
               tokenASymbol: tokenA.symbol,

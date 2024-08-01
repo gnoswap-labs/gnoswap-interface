@@ -13,5 +13,5 @@ export interface TransactionModel {
   createdAt: string;
   content?: string;
   isRead?: boolean;
-  rawValue?: AccountActivity;
+  rawValue: AccountActivity;
 }

@@ -5,14 +5,12 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import {
-  makeBroadcastStakingMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useGetPoolDetailByPath } from "@query/pools";
+import { useMessage } from "@hooks/common/use-message";
 
 interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -37,6 +35,8 @@ const StakePositionModalContainer = ({
   const { data: pool } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
   });
+
+  const { getMessage } = useMessage();
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
@@ -91,7 +91,7 @@ const StakePositionModalContainer = ({
     const tokenA = pooledTokenInfos?.[0];
     const tokenB = pooledTokenInfos?.[1];
     broadcastLoading(
-      makeBroadcastStakingMessage("pending", {
+      getMessage("STAKE", "pending", {
         tokenASymbol: tokenA?.token?.symbol,
         tokenBSymbol: tokenB?.token?.symbol,
         tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
@@ -114,7 +114,8 @@ const StakePositionModalContainer = ({
         broadcastPending({ txHash: result.data?.hash });
         setTimeout(() => {
           broadcastSuccess(
-            makeBroadcastStakingMessage(
+            getMessage(
+              "STAKE",
               "success",
               {
                 tokenASymbol: tokenA?.token?.symbol,
@@ -133,7 +134,7 @@ const StakePositionModalContainer = ({
         openTransactionConfirmModal();
       } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
         broadcastRejected(
-          makeBroadcastStakingMessage("error", {
+          getMessage("STAKE", "error", {
             tokenASymbol: tokenA?.token?.symbol,
             tokenBSymbol: tokenB?.token?.symbol,
             tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
@@ -146,7 +147,8 @@ const StakePositionModalContainer = ({
         );
       } else {
         broadcastError(
-          makeBroadcastStakingMessage(
+          getMessage(
+            "STAKE",
             "error",
             {
               tokenASymbol: tokenA?.token?.symbol,

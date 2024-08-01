@@ -5,14 +5,12 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import useRouter from "@hooks/common/use-custom-router";
-import {
-  makeBroadcastUnStakingMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { useMessage } from "@hooks/common/use-message";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -37,6 +35,8 @@ const UnstakePositionModalContainer = ({
     confirmCallback: () => router.push(router.asPath.replace("/unstake", "")),
   });
 
+  const { getMessage } = useMessage();
+
   const close = useCallback(() => {
     clearModal();
   }, [clearModal]);
@@ -51,7 +51,7 @@ const UnstakePositionModalContainer = ({
     const tokenB = pooledTokenInfos?.[1];
 
     broadcastLoading(
-      makeBroadcastUnStakingMessage("pending", {
+      getMessage("UNSTAKE", "pending", {
         tokenASymbol: tokenA?.token?.symbol,
         tokenBSymbol: tokenB?.token?.symbol,
         tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
@@ -73,7 +73,8 @@ const UnstakePositionModalContainer = ({
         broadcastPending({ txHash: result.data?.hash });
         setTimeout(() => {
           broadcastSuccess(
-            makeBroadcastUnStakingMessage(
+            getMessage(
+              "UNSTAKE",
               "success",
               {
                 tokenASymbol: tokenA?.token?.symbol,
@@ -92,7 +93,7 @@ const UnstakePositionModalContainer = ({
         }, 1000);
       } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
         broadcastRejected(
-          makeBroadcastUnStakingMessage("error", {
+          getMessage("UNSTAKE", "error", {
             tokenASymbol: tokenA?.token?.symbol,
             tokenBSymbol: tokenB?.token?.symbol,
             tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
@@ -106,7 +107,8 @@ const UnstakePositionModalContainer = ({
         openModal();
       } else {
         broadcastError(
-          makeBroadcastUnStakingMessage(
+          getMessage(
+            "UNSTAKE",
             "error",
             {
               tokenASymbol: tokenA?.token?.symbol,

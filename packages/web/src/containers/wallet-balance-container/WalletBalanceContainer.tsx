@@ -4,10 +4,7 @@ import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
 import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
-import {
-  makeBroadcastClaimMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { usePosition } from "@hooks/common/use-position";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
@@ -24,6 +21,7 @@ import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useMessage } from "@hooks/common/use-message";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -71,6 +69,8 @@ const WalletBalanceContainer: React.FC = () => {
   const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } =
     useGetTokenPrices();
 
+  const { getMessage } = useMessage();
+
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
     setIsShowDepositModal(true);
@@ -97,7 +97,7 @@ const WalletBalanceContainer: React.FC = () => {
       .flatMap(item => item.reward)
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
     const data = {
-      amount: toUnitFormat(amount, true, true),
+      tokenAAmount: toUnitFormat(amount, true, true),
     };
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
@@ -106,7 +106,7 @@ const WalletBalanceContainer: React.FC = () => {
           broadcastPending({ txHash: response.data?.hash });
           setTimeout(() => {
             broadcastSuccess(
-              makeBroadcastClaimMessage("success", data, response.data?.hash),
+              getMessage("CLAIM", "success", data, response.data?.hash),
             );
             setLoadingTransactionClaim(false);
           }, 1000);
@@ -114,17 +114,13 @@ const WalletBalanceContainer: React.FC = () => {
         } else if (
           response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
-          broadcastRejected(
-            makeBroadcastClaimMessage("error", data),
-            () => {},
-            true,
-          );
+          broadcastRejected(getMessage("CLAIM", "error", data), () => {}, true);
           setLoadingTransactionClaim(false);
           openModal();
         } else {
           openModal();
           broadcastError(
-            makeBroadcastClaimMessage("error", data, response.data?.hash),
+            getMessage("CLAIM", "error", data, response.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }

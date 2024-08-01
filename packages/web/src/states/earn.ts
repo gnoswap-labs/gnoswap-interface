@@ -14,7 +14,7 @@ export interface PoolInfoQuery {
   isLoading: boolean;
 }
 
-const DefaultDate = (() => {
+export const DefaultDate = (() => {
   const date = dayjs().add(1, "day");
 
   return {

@@ -31,12 +31,15 @@ const TvlChartContainer: React.FC = () => {
   const { data: tvlData, isLoading } = useGetDashboardTVL({
     refetchInterval: 60 * 1000,
   });
-  const changeTvlChartType = useCallback((newType: string) => {
-    const tvlChartType =
-      Object.values(CHART_TYPE).find(type => type === newType) ||
-      CHART_TYPE["7D"];
-    setTvlChartType(tvlChartType);
-  }, []);
+  const changeTvlChartType = useCallback(
+    ({ key: newType }: { display: string; key: string }) => {
+      const tvlChartType =
+        Object.values(CHART_TYPE).find(type => type === newType) ||
+        CHART_TYPE["7D"];
+      setTvlChartType(tvlChartType);
+    },
+    [],
+  );
   const chartData = useMemo(() => {
     if (!tvlData?.all) return [];
     let currentChartData = tvlData?.last7d;

@@ -5,13 +5,11 @@ import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import useRouter from "@hooks/common/use-custom-router";
-import {
-  makeBroadcastIncentivizeMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import BigNumber from "bignumber.js";
+import { useMessage } from "@hooks/common/use-message";
 
 const DAY_TIME = 24 * 60 * 60;
 const MILLISECONDS = 1000;
@@ -32,6 +30,8 @@ const IncentivizePoolModalContainer = () => {
   const [dataModal] = useAtom(EarnState.dataModal);
   const [pool] = useAtom(EarnState.pool);
 
+  const { getMessage } = useMessage();
+
   const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
 
@@ -43,9 +43,11 @@ const IncentivizePoolModalContainer = () => {
     }
   }, [clearModal, router]);
 
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
-    closeCallback: onCloseConfirmTransactionModal,
-  });
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
+    {
+      closeCallback: onCloseConfirmTransactionModal,
+    },
+  );
 
   const onSubmit = useCallback(() => {
     if (!pool || !dataModal?.token) {
@@ -68,9 +70,9 @@ const IncentivizePoolModalContainer = () => {
     const displayAmount = BigNumber(dataModal.amount).toFormat();
 
     broadcastLoading(
-      makeBroadcastIncentivizeMessage("pending", {
-        tokenAmount: displayAmount,
-        tokenSymbol: dataModal?.token?.symbol,
+      getMessage("ADD_INCENTIVIZE", "pending", {
+        tokenAAmount: displayAmount,
+        tokenASymbol: dataModal?.token?.symbol,
       }),
     );
 
@@ -88,11 +90,12 @@ const IncentivizePoolModalContainer = () => {
             broadcastPending({ txHash: response.data?.hash });
             setTimeout(() => {
               broadcastSuccess(
-                makeBroadcastIncentivizeMessage(
+                getMessage(
+                  "ADD_INCENTIVIZE",
                   "success",
                   {
-                    tokenAmount: displayAmount,
-                    tokenSymbol: dataModal?.token?.symbol,
+                    tokenAAmount: displayAmount,
+                    tokenASymbol: dataModal?.token?.symbol,
                   },
                   response.data?.hash,
                 ),
@@ -103,19 +106,20 @@ const IncentivizePoolModalContainer = () => {
             response.code === ERROR_VALUE.TRANSACTION_REJECTED.status /// 4000
           ) {
             broadcastRejected(
-              makeBroadcastIncentivizeMessage("error", {
-                tokenAmount: displayAmount,
-                tokenSymbol: dataModal?.token?.symbol,
+              getMessage("ADD_INCENTIVIZE", "error", {
+                tokenAAmount: displayAmount,
+                tokenASymbol: dataModal?.token?.symbol,
               }),
             );
             openTransactionConfirmModal();
           } else {
             broadcastError(
-              makeBroadcastIncentivizeMessage(
+              getMessage(
+                "ADD_INCENTIVIZE",
                 "error",
                 {
-                  tokenAmount: displayAmount,
-                  tokenSymbol: dataModal?.token?.symbol,
+                  tokenAAmount: displayAmount,
+                  tokenASymbol: dataModal?.token?.symbol,
                 },
                 response.data?.hash,
               ),

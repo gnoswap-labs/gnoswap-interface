@@ -3,6 +3,7 @@ import React, { useCallback } from "react";
 import IconClose from "../icons/IconCancel";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconFailed from "../icons/IconFailed";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   close: () => void;
@@ -10,6 +11,8 @@ interface Props {
 }
 
 const ConnectWalletStatusModal: React.FC<Props> = ({ close, connect }) => {
+  const { t } = useTranslation();
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -26,16 +29,12 @@ const ConnectWalletStatusModal: React.FC<Props> = ({ close, connect }) => {
           <IconFailed className="fail-icon" />
         </div>
         <div className="content">
-          <h5>
-            Error Connecting
-          </h5>
-          <div>
-            The connection attempt has failed. Please try again.
-          </div>
+          <h5>{t("Modal:connectWallet.failed.title")}</h5>
+          <div>{t("Modal:connectWallet.failed.desc")}</div>
         </div>
         <div className="button-wrapper">
           <Button
-            text="Try Again"
+            text={t("Modal:connectWallet.tryAgain")}
             onClick={connect}
             style={{
               hierarchy: ButtonHierarchy.Primary,

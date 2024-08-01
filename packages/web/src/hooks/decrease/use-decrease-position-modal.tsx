@@ -11,10 +11,7 @@ import {
 } from "@constants/option.constant";
 import DecreasePositionModalContainer from "@containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
-import {
-  makeBroadcastRemoveMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -24,6 +21,7 @@ import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import { IPooledTokenInfo } from "./use-decrease-handle";
+import { useMessage } from "@hooks/common/use-message";
 
 export interface Props {
   openModal: () => void;
@@ -76,6 +74,8 @@ export const useDecreasePositionModal = ({
 
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
+
+  const { getMessage } = useMessage();
 
   const gnotToken = useMemo(
     () => [tokenA, tokenB].find(item => item?.path === GNOT_TOKEN.path),
@@ -140,7 +140,7 @@ export const useDecreasePositionModal = ({
     }
 
     broadcastLoading(
-      makeBroadcastRemoveMessage("pending", {
+      getMessage("REMOVE", "pending", {
         tokenASymbol: tokenTransform(tokenA).symbol,
         tokenBSymbol: tokenTransform(tokenB).symbol,
         tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
@@ -205,7 +205,8 @@ export const useDecreasePositionModal = ({
           ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
 
           broadcastSuccess(
-            makeBroadcastRemoveMessage(
+            getMessage(
+              "REMOVE",
               "success",
               {
                 tokenASymbol: tokenTransform(tokenA).symbol,
@@ -221,16 +222,10 @@ export const useDecreasePositionModal = ({
       } else if (
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
-        broadcastRejected(
-          makeBroadcastRemoveMessage("error", defaultMessageData),
-        );
+        broadcastRejected(getMessage("REMOVE", "error", defaultMessageData));
       } else {
         broadcastError(
-          makeBroadcastRemoveMessage(
-            "error",
-            defaultMessageData,
-            result?.data?.hash,
-          ),
+          getMessage("REMOVE", "error", defaultMessageData, result?.data?.hash),
         );
       }
     }

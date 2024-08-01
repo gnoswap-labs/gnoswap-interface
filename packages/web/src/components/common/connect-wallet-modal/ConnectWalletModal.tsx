@@ -5,6 +5,7 @@ import Button, { ButtonHierarchy } from "../button/Button";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconWalletConnect from "../icons/defaultIcon/IconWalletConnect";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
+import { Trans, useTranslation } from "react-i18next";
 
 interface Props {
   close: () => void;
@@ -12,7 +13,13 @@ interface Props {
   loadingConnect: string;
 }
 
-const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect }) => {
+const ConnectWalletModal: React.FC<Props> = ({
+  close,
+  connect,
+  loadingConnect,
+}) => {
+  const { t } = useTranslation();
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -21,7 +28,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
     <ConnectWalletModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Wallet Login</h6>
+          <h6>{t("Modal:walletLogin.title")}</h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
@@ -29,8 +36,18 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
         <div className="content">
           <div>
             <Button
-              text={(loadingConnect === "loading" || loadingConnect === "done") ? "" : "Adena"}
-              leftIcon={(loadingConnect === "loading" || loadingConnect === "done") ? <LoadingSpinner className="loading-button"/> : <IconAdenaLogo />}
+              text={
+                loadingConnect === "loading" || loadingConnect === "done"
+                  ? ""
+                  : "Adena"
+              }
+              leftIcon={
+                loadingConnect === "loading" || loadingConnect === "done" ? (
+                  <LoadingSpinner className="loading-button" />
+                ) : (
+                  <IconAdenaLogo />
+                )
+              }
               onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
@@ -42,7 +59,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
           <div>
             <Button
               leftIcon={<IconWalletConnect />}
-              text="Wallet Connect"
+              text={t("Modal:walletLogin.btn.connect")}
               onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
@@ -54,15 +71,17 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
           </div>
         </div>
         <div className="footer">
-          By connecting a wallet, you agree to our{" "}
-          <a href="/" target="_blank">
-            Terms of Service
-          </a>{" "}
-          and consent to our{" "}
-          <a href="/" target="_blank">
-            Privacy Policy
-          </a>
-          .
+          <Trans ns="Modal" i18nKey={"walletLogin.desc"}>
+            By connecting a wallet, you agree to our
+            <a href="/" target="_blank">
+              Terms of Service
+            </a>
+            and consent to our
+            <a href="/" target="_blank">
+              Privacy Policy
+            </a>
+            .
+          </Trans>
         </div>
       </div>
     </ConnectWalletModalWrapper>

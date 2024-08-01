@@ -7,6 +7,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { numberToFormat } from "@utils/string-utils";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { SelectPool } from "@hooks/pool/use-select-pool";
+import { useTranslation } from "react-i18next";
 
 export interface BalanceChangeProps {
   tokenA: TokenModel | null;
@@ -22,13 +23,14 @@ export interface BalanceChangeProps {
 const BalanceChange: React.FC<BalanceChangeProps> = ({
   tokenA,
   tokenB,
-  title = "3. Balance Changes",
+  title,
   isHiddenCurrentBalance = true,
   currentAmounts,
   repositionAmounts,
   selectPool,
   isLoadingPosition,
 }) => {
+  const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
 
@@ -104,12 +106,12 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
 
   return (
     <BalanceChangeWrapper>
-      <h5>{title}</h5>
+      <h5>{title || t("common:balanceChange.defaultTitle")}</h5>
       {isMobile && !isHiddenCurrentBalance && (
         <div className="select-position common-bg">
           <div className="table-balance-change">
-            <p className="label">Token</p>
-            <p className="label">Current Balance</p>
+            <p className="label">{t("business:token")}</p>
+            <p className="label">{t("common:balanceChange.currentBalance")}</p>
           </div>
 
           <div className="table-balance-change">
@@ -142,9 +144,11 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
       )}
       <div className="select-position common-bg">
         <div className="table-balance-change">
-          <p className="label">Token</p>
-          {!isMobile && <p className="label">Current Balance</p>}
-          <p className="label">New Balance</p>
+          <p className="label">{t("business:token")}</p>
+          {!isMobile && (
+            <p className="label">{t("common:balanceChange.currentBalance")}</p>
+          )}
+          <p className="label">{t("common:balanceChange.newBalance")}</p>
         </div>
 
         <div className="table-balance-change">

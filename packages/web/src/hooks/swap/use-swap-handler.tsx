@@ -19,12 +19,7 @@ import useRouter from "@hooks/common/use-custom-router";
 import { isEmptyObject } from "@utils/validation-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import {
-  makeBroadcastSwapMessage,
-  makeBroadcastUnwrapTokenMessage,
-  makeBroadcastWrapTokenMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
@@ -34,6 +29,7 @@ import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route
 import { formatPrice } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
 import { PAGE_PATH } from "@constants/page.constant";
+import { useMessage } from "@hooks/common/use-message";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -165,6 +161,8 @@ export const useSwapHandler = () => {
   } = useBroadcastHandler();
 
   usePreventScroll(openedConfirmModal);
+
+  const { getMessage } = useMessage();
 
   const gnotToken = useMemo(
     () => tokens.find(item => item.symbol === "GNOT"),
@@ -863,7 +861,7 @@ export const useSwapHandler = () => {
     };
 
     if (isNativeToken(tokenA)) {
-      broadcastLoading(makeBroadcastWrapTokenMessage("pending", messageData));
+      broadcastLoading(getMessage("WRAP", "pending", messageData));
       openTransactionConfirmModal();
 
       wrap(swapAmount)
@@ -874,7 +872,8 @@ export const useSwapHandler = () => {
               const tokenAAmountStr = tokenAAmount;
               const tokenBAmountStr = tokenBAmount;
               broadcastSuccess(
-                makeBroadcastWrapTokenMessage(
+                getMessage(
+                  "WRAP",
                   "success",
                   {
                     ...messageData,
@@ -890,17 +889,11 @@ export const useSwapHandler = () => {
           } else if (
             response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
-            broadcastRejected(
-              makeBroadcastWrapTokenMessage("error", messageData),
-            );
+            broadcastRejected(getMessage("WRAP", "error", messageData));
             openTransactionConfirmModal();
           } else {
             broadcastError(
-              makeBroadcastWrapTokenMessage(
-                "error",
-                messageData,
-                response?.data?.hash,
-              ),
+              getMessage("WRAP", "error", messageData, response?.data?.hash),
             );
             openTransactionConfirmModal();
           }
@@ -912,7 +905,7 @@ export const useSwapHandler = () => {
           });
         });
     } else {
-      broadcastLoading(makeBroadcastUnwrapTokenMessage("pending", messageData));
+      broadcastLoading(getMessage("UNWRAP", "pending", messageData));
       openTransactionConfirmModal();
 
       unwrap(swapAmount)
@@ -923,7 +916,8 @@ export const useSwapHandler = () => {
               const tokenAAmountStr = tokenAAmount;
               const tokenBAmountStr = tokenBAmount;
               broadcastSuccess(
-                makeBroadcastUnwrapTokenMessage(
+                getMessage(
+                  "UNWRAP",
                   "success",
                   {
                     ...messageData,
@@ -939,17 +933,11 @@ export const useSwapHandler = () => {
           } else if (
             response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
-            broadcastRejected(
-              makeBroadcastUnwrapTokenMessage("error", messageData),
-            );
+            broadcastRejected(getMessage("UNWRAP", "error", messageData));
             openTransactionConfirmModal();
           } else {
             broadcastError(
-              makeBroadcastUnwrapTokenMessage(
-                "error",
-                messageData,
-                response?.data?.hash,
-              ),
+              getMessage("UNWRAP", "error", messageData, response?.data?.hash),
             );
             openTransactionConfirmModal();
           }
@@ -992,7 +980,7 @@ export const useSwapHandler = () => {
       return;
     }
 
-    broadcastLoading(makeBroadcastSwapMessage("pending", broadcastMessage));
+    broadcastLoading(getMessage("SWAP", "pending", broadcastMessage));
     openTransactionConfirmModal();
 
     swap(estimatedRoutes, swapAmount)
@@ -1009,7 +997,8 @@ export const useSwapHandler = () => {
                 ? responseData.resultAmount
                 : tokenBAmount;
               broadcastSuccess(
-                makeBroadcastSwapMessage(
+                getMessage(
+                  "SWAP",
                   "success",
                   {
                     ...broadcastMessage,
@@ -1026,7 +1015,8 @@ export const useSwapHandler = () => {
             response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
             broadcastRejected(
-              makeBroadcastSwapMessage(
+              getMessage(
+                "SWAP",
                 "error",
                 broadcastMessage,
                 response.data?.hash,
@@ -1035,7 +1025,8 @@ export const useSwapHandler = () => {
             openTransactionConfirmModal();
           } else {
             broadcastError(
-              makeBroadcastSwapMessage(
+              getMessage(
+                "SWAP",
                 "error",
                 broadcastMessage,
                 response.type === ERROR_VALUE.TRANSACTION_FAILED.type

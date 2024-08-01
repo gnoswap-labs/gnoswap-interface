@@ -8,13 +8,12 @@ import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import React from "react";
-import {
-  DecreaseSelectPositionWrapper
-} from "./DecreaseSelectPosition.styles";
+import { useTranslation } from "react-i18next";
+import { DecreaseSelectPositionWrapper } from "./DecreaseSelectPosition.styles";
 
 export interface DecreaseSelectPositionProps {
-  tokenA: TokenModel
-  tokenB: TokenModel
+  tokenA: TokenModel;
+  tokenB: TokenModel;
   fee: string;
   maxPriceStr: string;
   minPriceStr: string;
@@ -31,11 +30,13 @@ const DecreaseSelectPosition: React.FC<DecreaseSelectPositionProps> = ({
   maxPriceStr,
   rangeStatus,
 }) => {
+  const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
+
   return (
     <DecreaseSelectPositionWrapper>
-      <h5>1. Selected Position</h5>
+      <h5>{t("DecreaseLiquidity:form.selectedPosition.label")}</h5>
       <div className="select-position common-bg">
         <div className="pool-select-wrapper">
           <DoubleLogo
@@ -52,7 +53,7 @@ const DecreaseSelectPosition: React.FC<DecreaseSelectPositionProps> = ({
       </div>
       <div className="min-max-wrapper">
         <div className="min common-bg">
-          <p>Min Price</p>
+          <p>{t("business:minPrice")}</p>
           <p className="value">{minPriceStr}</p>
           <p className="convert-value">
             {isMobile ? (
@@ -69,13 +70,13 @@ const DecreaseSelectPosition: React.FC<DecreaseSelectPositionProps> = ({
           </p>
         </div>
         <div className="min common-bg">
-          <p>Max Price</p>
+          <p>{t("business:maxPrice")}</p>
           <p className="value">{maxPriceStr}</p>
           <p className="convert-value">
             {isMobile ? (
               <MissingLogo
-              symbol={tokenA?.symbol}
-              url={tokenA?.logoURI}
+                symbol={tokenA?.symbol}
+                url={tokenA?.logoURI}
                 className="token-logo"
                 width={18}
               />

@@ -127,6 +127,7 @@ const HomeSwapContainer: React.FC = () => {
     setTokenAAmount(tokenBAmount);
     setTokenBAmount(tokenAAmount);
   };
+
   const changeTokenAAmount = useCallback((value: string) => {
     setSwapValue(prev => ({
       ...prev,

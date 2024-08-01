@@ -3,6 +3,7 @@ import Calendar from "@components/common/calendar/Calendar";
 import { SelectDistributionDateInputWrapper } from "./SelectDistributionDateInput.styles";
 import IconCalender from "@components/common/icons/IconCalender";
 import useModalCloseEvent from "@hooks/common/use-modal-close-event";
+import { DefaultDate } from "@states/earn";
 
 interface DistributionPeriodDate {
   year: number;
@@ -16,17 +17,9 @@ export interface SelectDistributionDateInputProps {
   setDate: (date: DistributionPeriodDate) => void;
 }
 
-const DefaultDate = {
-  year: new Date().getFullYear(),
-  month: new Date().getMonth() + 1,
-  date: new Date().getDate(),
-};
-
-const SelectDistributionDateInput: React.FC<SelectDistributionDateInputProps> = ({
-  title,
-  date,
-  setDate,
-}) => {
+const SelectDistributionDateInput: React.FC<
+  SelectDistributionDateInputProps
+> = ({ title, date, setDate }) => {
   const [opened, setOpened] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +32,9 @@ const SelectDistributionDateInput: React.FC<SelectDistributionDateInputProps> = 
     if (!date) {
       return "";
     }
-    return `${date.year}/${`0${date.month}`.slice(-2)}/${`0${date.date}`.slice(-2)}`;
+    return `${date.year}/${`0${date.month}`.slice(-2)}/${`0${date.date}`.slice(
+      -2,
+    )}`;
   }, [date]);
 
   const onClickCalendarDate = (date: DistributionPeriodDate) => {

@@ -15,7 +15,13 @@ interface ActivityItem {
   error: Error | null;
   activityType?: ACTIVITY_TYPE;
   sortOption?: SortOption;
-  changeActivityType: (newType: string) => void;
+  changeActivityType: ({
+    display,
+    key,
+  }: {
+    display: string;
+    key: string;
+  }) => void;
   currentPage: number;
   totalPage: number;
   movePage: (page: number) => void;

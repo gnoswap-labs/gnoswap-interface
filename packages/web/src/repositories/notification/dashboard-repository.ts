@@ -1,7 +1,7 @@
 import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
-import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
 import { AccountActivityRequest } from "./request";
 import { AccountActivity } from "./response/account-activity-response";
+import { TransactionGroupsType } from "@models/notification";
 
 export interface NotificationRepository {
   getAccountOnchainActivity: (

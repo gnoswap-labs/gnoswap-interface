@@ -9,6 +9,8 @@ import {
   BlockEmissionsWrapper,
 } from "./SupplyOverview.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { Trans, useTranslation } from "react-i18next";
+import { useMemo } from "react";
 
 interface SupplyOverviewInfoProps {
   supplyOverviewInfo: SupplyOverviewInfo;
@@ -42,28 +44,41 @@ const BlockEmissions = ({
   devOps,
   community,
 }: BlockEmissionsProps) => {
+  const { t } = useTranslation();
   return (
     <BlockEmissionsWrapper>
-      <h5>Daily Block Emissions</h5>
+      <h5>{t("Dashboard:supOver.dailyBlock.tooltip")}</h5>
       <div className="content">
-        <div className="label">Liquidity Staking </div>
+        <div className="label">
+          {t("Dashboard:supOver.blocEmiss.tooltip.liquiStaking")}{" "}
+        </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>{liquidityStaking}</div>
+          <div>
+            {liquidityStaking} / {t("common:day.base")}
+          </div>
         </div>
       </div>
       <div className="content">
-        <div className="label">DevOps </div>
+        <div className="label">
+          {t("Dashboard:supOver.blocEmiss.tooltip.devOps")}{" "}
+        </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>{devOps}</div>
+          <div>
+            {devOps} / {t("common:day.base")}
+          </div>
         </div>
       </div>
       <div className="content">
-        <div className="label">Community </div>
+        <div className="label">
+          {t("Dashboard:supOver.blocEmiss.tooltip.community")}{" "}
+        </div>
         <div className="value">
           <img src="/gnos.svg" alt="logo" />
-          <div>{community}</div>
+          <div>
+            {community} / {t("common:day.base")}
+          </div>
         </div>
       </div>
     </BlockEmissionsWrapper>
@@ -73,68 +88,66 @@ const BlockEmissions = ({
 const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
   supplyOverviewInfo,
   loading,
-}) => (
-  <SupplyOverviewWrapper>
-    <div className="supply-overview">Supply Overview</div>
-    <SupplyInfoWrapper>
-      <div className="total-supply">
-        <div className="label-title">
-          Total Supply
-          <DashboardLabel
-            tooltip={
-              <>
-                The total supply of GNS tokens is <br />
-                1,000,000,000 GNS.
-              </>
-            }
-          />
-        </div>
-        {!loading ? (
-          <div className="supply-value">{supplyOverviewInfo.totalSupply}</div>
-        ) : (
-          <LoadingText />
-        )}
-      </div>
-      <div className="circulating-supply">
-        <div className="circulating-info">
+}) => {
+  const { t } = useTranslation();
+  const amount = useMemo(() => "1,000,000,000 GNS.", []);
+
+  return (
+    <SupplyOverviewWrapper>
+      <div className="supply-overview">{t("Dashboard:supOver.title")}</div>
+      <SupplyInfoWrapper>
+        <div className="total-supply">
           <div className="label-title">
-            <div>Circulating Supply</div>
-            <DashboardLabel tooltip="The sum of liquid GNS tokens including released vesting allocations and cumulative block emissions." />
+            {t("Dashboard:supOver.totalSup.label")}
+            <DashboardLabel
+              tooltip={
+                <Trans
+                  ns="Dashboard"
+                  i18nKey={"supOver.totalSup.tooltip"}
+                  values={{
+                    amount,
+                  }}
+                >
+                  The total supply of GNS tokens is <br />
+                  {amount}
+                </Trans>
+              }
+            />
           </div>
           {!loading ? (
-            <div className="supply-value">
-              {supplyOverviewInfo.circulatingSupply}
-            </div>
+            <div className="supply-value">{supplyOverviewInfo.totalSupply}</div>
           ) : (
             <LoadingText />
           )}
         </div>
-        {!loading ? (
-          <ProgressBar width={supplyOverviewInfo.progressBar}>
-            <div className="progress-bar-rate" />
-          </ProgressBar>
-        ) : (
-          <LoadingProgress />
-        )}
-      </div>
-      <div className="daily-block-emissions">
-        <div className="label-title">
-          <div>Daily Block Emissions</div>
-          <DashboardLabel
-            tooltip={
-              <BlockEmissions {...supplyOverviewInfo.dailyBlockEmissionsInfo} />
-            }
-          />
-        </div>
-        <div className="daily-block-emissions-tooltip">
+        <div className="circulating-supply">
+          <div className="circulating-info">
+            <div className="label-title">
+              <div>{t("Dashboard:supOver.circulSup.label")}</div>
+              <DashboardLabel
+                tooltip={t("Dashboard:supOver.circulSup.tooltip")}
+              />
+            </div>
+            {!loading ? (
+              <div className="supply-value">
+                {supplyOverviewInfo.circulatingSupply}
+              </div>
+            ) : (
+              <LoadingText />
+            )}
+          </div>
           {!loading ? (
-            <div className="supply-value">
-              {supplyOverviewInfo.dailyBlockEmissions}
-            </div>
+            <ProgressBar width={supplyOverviewInfo.progressBar}>
+              <div className="progress-bar-rate" />
+            </ProgressBar>
           ) : (
-            <LoadingText />
+            <LoadingProgress />
           )}
-          {!loading && (
+        </div>
+
+        <div className="daily-block-emissions">
+          <div className="label-title">
+            <div>{t("Dashboard:supOver.dailyBlock.label")}</div>
             <DashboardLabel
               tooltip={
                 <BlockEmissions
@@ -142,31 +155,55 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
                 />
               }
             />
-          )}
+          </div>
+          <div className="daily-block-emissions-tooltip">
+            {!loading ? (
+              <div className="supply-value">
+                {supplyOverviewInfo.dailyBlockEmissions}
+              </div>
+            ) : (
+              <LoadingText />
+            )}
+            {!loading && (
+              <DashboardLabel
+                tooltip={
+                  <BlockEmissions
+                    {...supplyOverviewInfo.dailyBlockEmissionsInfo}
+                  />
+                }
+              />
+            )}
+          </div>
         </div>
-      </div>
-      <div className="total-staked">
-        <div className="label-title">
-          <div>Total Staked</div>
-          <DashboardLabel tooltip="Amount of GNS in LPs being staked." />
+
+        <div className="total-staked">
+          <div className="label-title">
+            <div>{t("Dashboard:supOver.totalStaked.label")}</div>
+            <DashboardLabel
+              tooltip={t("Dashboard:supOver.totalStaked.tooltip")}
+            />
+          </div>
+          <div className="staked-info">
+            {!loading ? (
+              <div className="supply-value">
+                {supplyOverviewInfo.totalStaked}
+              </div>
+            ) : (
+              <LoadingText className="loading-staked-info" />
+            )}
+            {!loading ? (
+              <div className="staked-ratio-title">
+                {t("Dashboard:supOver.totalStaked.stakeRatio")}:{" "}
+                {supplyOverviewInfo.stakingRatio}
+              </div>
+            ) : (
+              <LoadingText className="loading-staked-ratio" />
+            )}
+          </div>
         </div>
-        <div className="staked-info">
-          {!loading ? (
-            <div className="supply-value">{supplyOverviewInfo.totalStaked}</div>
-          ) : (
-            <LoadingText className="loading-staked-info" />
-          )}
-          {!loading ? (
-            <div className="staked-ratio-title">
-              Staking Ratio: {supplyOverviewInfo.stakingRatio}
-            </div>
-          ) : (
-            <LoadingText className="loading-staked-ratio" />
-          )}
-        </div>
-      </div>
-    </SupplyInfoWrapper>
-  </SupplyOverviewWrapper>
-);
+      </SupplyInfoWrapper>
+    </SupplyOverviewWrapper>
+  );
+};
 
 export default SupplyOverview;

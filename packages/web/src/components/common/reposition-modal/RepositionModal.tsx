@@ -18,6 +18,7 @@ import {
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "@repositories/position/response";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   close: () => void;
@@ -69,6 +70,7 @@ const RepositionModal: React.FC<Props> = ({
   reposition,
   isSkipSwap,
 }) => {
+  const { t } = useTranslation();
   const [confirm, setConfirm] = useState(false);
 
   const onClickConfirm = useCallback(() => {
@@ -83,7 +85,7 @@ const RepositionModal: React.FC<Props> = ({
     <RepositionModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Confirm Reposition</h6>
+          <h6>{t("Reposition:confModal.title")}</h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
@@ -94,6 +96,7 @@ const RepositionModal: React.FC<Props> = ({
             maxPriceStr={maxPriceStr}
             {...amountInfo}
             rangeStatus={rangeStatus}
+            title={t("Reposition:confModal.section.posiDetail.label")}
           />
           <RepositionInfo
             tokenA={amountInfo?.tokenA?.info}
@@ -127,7 +130,7 @@ const RepositionModal: React.FC<Props> = ({
             <div className="confirm-area">
               <Button
                 onClick={onClickConfirm}
-                text="Confirm Reposition"
+                text={t("Reposition:confModal.btn")}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                   fullWidth: true,

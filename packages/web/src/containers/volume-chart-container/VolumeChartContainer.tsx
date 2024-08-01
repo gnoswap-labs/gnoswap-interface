@@ -45,12 +45,15 @@ const VolumeChartContainer: React.FC = () => {
     allTimeFeeUsd,
     fee,
   } = volumeEntity || {};
-  const changeVolumeChartType = useCallback((newType: string) => {
-    const volumeChartType =
-      Object.values(CHART_TYPE).find(type => type === newType) ||
-      CHART_TYPE["7D"];
-    setVolumeChartType(volumeChartType);
-  }, []);
+  const changeVolumeChartType = useCallback(
+    ({ key: newType }: { display: string; key: string }) => {
+      const volumeChartType =
+        Object.values(CHART_TYPE).find(type => type === newType) ||
+        CHART_TYPE["7D"];
+      setVolumeChartType(volumeChartType);
+    },
+    [],
+  );
   const chartData = useMemo(() => {
     if (!volumeData?.all)
       return {

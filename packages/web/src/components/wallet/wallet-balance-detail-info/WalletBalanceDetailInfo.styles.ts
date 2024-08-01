@@ -113,6 +113,7 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
       max-width: max-content;
     }
     .button-wrapper {
+      margin-left: 16px;
       flex-shrink: 0;
     }
   }

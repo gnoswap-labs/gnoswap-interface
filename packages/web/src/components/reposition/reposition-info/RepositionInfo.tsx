@@ -7,6 +7,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   RepositionInfoWrapper,
   ToolTipContentWrapper,
@@ -25,6 +26,7 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
   aprFee,
   priceRangeSummary,
 }) => {
+  const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
   return (
@@ -32,13 +34,14 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
       <div className="deposit-ratio common-bg">
         <div>
           <div>
-            <p className="label">Deposit Ratio</p>
+            <p className="label">
+              {t("business:positionPriceRangeInfo.depositR.label")}
+            </p>
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The deposit ratio of the two tokens is determined based on the
-                  current price and the set price range.
+                  {t("business:positionPriceRangeInfo.depositR.desc")}
                 </ToolTipContentWrapper>
               }
             >
@@ -74,14 +77,14 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
         </div>
         <div>
           <div>
-            <p className="label">Capital Efficiency</p>
+            <p className="label">
+              {t("business:positionPriceRangeInfo.capEff.label")}
+            </p>
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The multiplier calculated based on the concentration of your
-                  range. This indicates how much more rewards you can earn
-                  compared to a full range position with the same capital.
+                  {t("business:positionPriceRangeInfo.capEff.desc")}
                 </ToolTipContentWrapper>
               }
             >
@@ -92,13 +95,14 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
         </div>
         <div>
           <div>
-            <p className="label">Fee APR</p>
+            <p className="label">
+              {t("business:positionPriceRangeInfo.feeApr.label")}
+            </p>
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The estimated APR from swap fees is calculated based on the
-                  selected price range of the position.
+                  {t("business:positionPriceRangeInfo.feeApr.desc")}
                 </ToolTipContentWrapper>
               }
             >

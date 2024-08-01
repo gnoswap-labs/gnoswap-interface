@@ -5,15 +5,13 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import useRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePosition } from "@hooks/common/use-position";
-import {
-  makeBroadcastClaimMessage,
-  useBroadcastHandler,
-} from "@hooks/common/use-broadcast-handler";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useGetUsernameByAddress } from "@query/address/queries";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useMessage } from "@hooks/common/use-message";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -41,6 +39,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
   const { tokenPrices } = useTokenData();
+
+  const { getMessage } = useMessage();
 
   const {
     broadcastSuccess,
@@ -104,7 +104,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
 
     const data = {
-      amount: formatOtherPrice(amount, { isKMB: false }),
+      tokenAAmount: formatOtherPrice(amount, { isKMB: false }),
     };
 
     setLoadingTransactionClaim(true);
@@ -114,23 +114,19 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
           broadcastPending({ txHash: response.data?.hash });
           setTimeout(() => {
             broadcastSuccess(
-              makeBroadcastClaimMessage("success", data, response.data?.hash),
+              getMessage("CLAIM", "success", data, response.data?.hash),
             );
             setLoadingTransactionClaim(false);
           }, 1000);
           openModal();
         } else if (response.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
-          broadcastRejected(
-            makeBroadcastClaimMessage("error", data),
-            () => {},
-            true,
-          );
+          broadcastRejected(getMessage("CLAIM", "error", data), () => {}, true);
           setLoadingTransactionClaim(false);
           openModal();
         } else {
           openModal();
           broadcastError(
-            makeBroadcastClaimMessage("error", data, response.data?.hash),
+            getMessage("CLAIM", "error", data, response.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }
