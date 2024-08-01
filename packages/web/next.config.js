@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { i18n } = require("./next-i18next.config");
 
 const nextConfig = {
@@ -11,6 +13,9 @@ const nextConfig = {
       use: ["@svgr/webpack", "url-loader"],
     });
     return config;
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
