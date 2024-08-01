@@ -1,47 +1,43 @@
-import { useMemo, useCallback, useState, useEffect } from "react";
+import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
+  DEFAULT_SLIPPAGE,
   RANGE_STATUS_OPTION,
-  SwapFeeTierInfoMap,
-  SwapFeeTierMaxPriceRangeMap,
+  SwapFeeTierMaxPriceRangeMap
 } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useAddress } from "@hooks/address/use-address";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useSlippage } from "@hooks/common/use-slippage";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
-import {
-  SwapRouteFailedResponse,
-  SwapRouteSuccessResponse,
-} from "@repositories/swap/response/swap-route-response";
-import { IncreaseState } from "@states/index";
-import { MAX_UINT64 } from "@utils/math.utils";
-import {
-  getDepositAmountsByAmountA,
-  getDepositAmountsByAmountB,
-  priceToNearTick,
-  tickToPrice,
-} from "@utils/swap-utils";
-import BigNumber from "bignumber.js";
-import { useAtom } from "jotai";
-import useRouter from "@hooks/common/use-custom-router";
-import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { checkGnotPath } from "@utils/common";
 import { useEstimateSwap } from "@query/router";
-import { makeShiftAmount } from "@utils/token-utils";
 import {
   RepositionLiquidityFailedResponse,
-  RepositionLiquiditySuccessResponse,
+  RepositionLiquiditySuccessResponse
 } from "@repositories/position/response";
-import { toShiftBitInt } from "@utils/number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse
+} from "@repositories/swap/response/swap-route-response";
+import { IncreaseState } from "@states/index";
+import { checkGnotPath } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
+import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import {
+  priceToNearTick,
+  tickToPrice
+} from "@utils/swap-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -54,8 +50,6 @@ export type REPOSITION_BUTTON_TYPE =
   | "LOADING"
   | "NON_SELECTED_RANGE"
   | "INSUFFICIENT_LIQUIDITY";
-
-const compareDepositAmount = 100_000_000n;
 
 export const useRepositionHandle = () => {
   const router = useRouter();
@@ -103,6 +97,7 @@ export const useRepositionHandle = () => {
   });
 
   const fee = poolPath?.split(":")[2];
+
   const tokenA: TokenModel | null = useMemo(() => {
     if (!selectedPosition) return null;
     return {
@@ -175,6 +170,7 @@ export const useRepositionHandle = () => {
     selectPool.setMinPosition(defaultPositionMinPrice);
     selectPool.setMaxPosition(defaultPositionMaxPrice);
   }, [defaultPositionMinPrice, defaultPositionMaxPrice, selectPool.poolPath]);
+
   const formatPriceDisplay = useCallback(
     (price: number | string | BigNumber | null) => {
       if (
@@ -246,7 +242,7 @@ export const useRepositionHandle = () => {
     };
   }, [selectedPosition]);
 
-  const repositionAmounts = useMemo(() => {
+  const initialEstimatedRepositionAmounts = useMemo(() => {
     if (
       !selectedPosition ||
       !selectPool.minPrice ||
@@ -261,84 +257,21 @@ export const useRepositionHandle = () => {
       checkGnotPath(selectPool.compareToken.path) ===
       checkGnotPath(tokenA.path);
 
-    const currentPrice = ordered
-      ? selectPool.currentPrice
-      : 1 / selectPool.currentPrice;
-    const originPrices = ordered
-      ? {
-          minPrice: tickToPrice(selectedPosition.tickLower),
-          maxPrice: tickToPrice(selectedPosition.tickUpper),
-        }
-      : {
-          minPrice: tickToPrice(-1 * selectedPosition.tickUpper),
-          maxPrice: tickToPrice(-1 * selectedPosition.tickLower),
-        };
-    const depositPrices = {
-      minPrice: selectPool.minPrice,
-      maxPrice: selectPool.maxPrice,
-    };
-
-    const originDepositAmounts = getDepositAmountsByAmountA(
-      currentPrice,
-      originPrices.minPrice,
-      originPrices.maxPrice,
-      compareDepositAmount,
-    );
-    const depositAmounts = getDepositAmountsByAmountA(
-      currentPrice,
-      depositPrices.minPrice,
-      depositPrices.maxPrice,
-      compareDepositAmount,
+    const repositionAmountsByNewPriceRange = getRepositionAmountsByPriceRange(
+      ordered ? selectPool.currentPrice : 1 / selectPool.currentPrice,
+      selectPool.minPrice,
+      selectPool.maxPrice,
+      tickToPrice(
+        ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1,
+      ),
+      tickToPrice(
+        ordered ? selectedPosition.tickUpper : selectedPosition.tickLower * -1,
+      ),
+      selectedPosition.tokenABalance,
+      selectedPosition.tokenBBalance,
     );
 
-    const originDepositRatioBN = BigNumber(
-      originDepositAmounts.amountA.toString(),
-    ).dividedBy(
-      Number(originDepositAmounts.amountA.toString()) +
-        Number(originDepositAmounts.amountB.toString()),
-    );
-    const currentDepositRatioBN = BigNumber(
-      Number(depositAmounts.amountA),
-    ).dividedBy(
-      Number(depositAmounts.amountA) + Number(depositAmounts.amountB),
-    );
-
-    const amountARatioBN =
-      currentDepositRatioBN.dividedBy(originDepositRatioBN);
-    const amountBRatioBN = BigNumber(
-      1 - currentDepositRatioBN.toNumber(),
-    ).dividedBy(1 - originDepositRatioBN.toNumber());
-
-    if (originDepositRatioBN.isEqualTo(1)) {
-      return {
-        amountA: Math.floor(
-          BigNumber(selectedPosition.tokenABalance)
-            .multipliedBy(amountARatioBN)
-            .toNumber(),
-        ),
-        amountB: 0,
-      };
-    }
-
-    if (ordered) {
-      return {
-        amountA: BigNumber(selectedPosition.tokenABalance)
-          .multipliedBy(amountARatioBN)
-          .toNumber(),
-        amountB: BigNumber(selectedPosition.tokenBBalance)
-          .multipliedBy(amountBRatioBN)
-          .toNumber(),
-      };
-    }
-
-    return {
-      amountA: BigNumber(selectedPosition.tokenABalance)
-        .multipliedBy(amountBRatioBN)
-        .toNumber(),
-      amountB: BigNumber(selectedPosition.tokenBBalance)
-        .multipliedBy(amountARatioBN)
-        .toNumber(),
-    };
+    return repositionAmountsByNewPriceRange;
   }, [
     selectPool.compareToken,
     selectPool.currentPrice,
@@ -349,58 +282,43 @@ export const useRepositionHandle = () => {
     tokenB,
   ]);
 
-  const swapAmount = useMemo(() => {
-    if (!currentAmounts || !repositionAmounts) {
+  const estimateSwapRequest = useMemo(() => {
+    if (!currentAmounts || !initialEstimatedRepositionAmounts || !selectedPosition) {
       return null;
     }
     const { amountA, amountB } = currentAmounts;
     const { amountA: repositionAmountA, amountB: repositionAmountB } =
-      repositionAmounts;
+      initialEstimatedRepositionAmounts;
 
-    const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
-    if (isSwapTokenA) {
-      return Number(amountA) - repositionAmountA;
-    }
-    return Number(amountB) - repositionAmountB;
-  }, [currentAmounts, repositionAmounts]);
-
-  const estimateSwapRequestByAmounts = useMemo(() => {
-    if (!currentAmounts || !repositionAmounts || !selectedPosition) {
-      return null;
-    }
-
-    const { amountA } = currentAmounts;
-    const { amountA: repositionAmountA } = repositionAmounts;
-
-    const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
-    if (isSwapTokenA) {
+    const isSwapAtoB = BigNumber(amountA).isGreaterThan(repositionAmountA);
+    if (isSwapAtoB) {
       return {
         inputToken: selectedPosition.pool.tokenA,
         outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: swapAmount || 0,
+        tokenAmount: Number(amountA) - repositionAmountA || 0,
         exactType: "EXACT_IN" as const,
       };
     }
     return {
       inputToken: selectedPosition.pool.tokenB,
       outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: swapAmount || 0,
+      tokenAmount: Number(amountB) - repositionAmountB || 0,
       exactType: "EXACT_IN" as const,
     };
-  }, [currentAmounts, repositionAmounts, selectedPosition, swapAmount]);
+  }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
 
   const {
-    data: estimatedRemainSwap,
+    data: estimatedSwapResult,
     isLoading: isEstimatedRemainSwapLoading,
     isError: isErrorLiquidity,
-  } = useEstimateSwap(estimateSwapRequestByAmounts, {
-    enabled: !!estimateSwapRequestByAmounts && !!swapAmount,
+  } = useEstimateSwap(estimateSwapRequest, {
+    enabled: !!estimateSwapRequest && !!estimateSwapRequest.tokenAmount,
     refetchInterval: 10_000,
     staleTime: 10_000,
   });
 
   const buttonType: REPOSITION_BUTTON_TYPE = useMemo(() => {
-    if (!repositionAmounts) {
+    if (!initialEstimatedRepositionAmounts) {
       return "NON_SELECTED_RANGE";
     }
     if (isErrorLiquidity) {
@@ -410,12 +328,12 @@ export const useRepositionHandle = () => {
       return "LOADING";
     }
     return "REPOSITION";
-  }, [repositionAmounts, isErrorLiquidity, isEstimatedRemainSwapLoading]);
+  }, [initialEstimatedRepositionAmounts, isErrorLiquidity, isEstimatedRemainSwapLoading]);
 
   const estimatedRepositionAmounts = useMemo(() => {
     if (
       !currentAmounts ||
-      !repositionAmounts ||
+      !initialEstimatedRepositionAmounts ||
       !selectedPosition ||
       selectPool.minPrice === null ||
       selectPool.maxPrice === null
@@ -423,150 +341,46 @@ export const useRepositionHandle = () => {
       return null;
     }
 
-    if (estimateSwapRequestByAmounts?.tokenAmount === 0) {
+    if (estimateSwapRequest?.tokenAmount === 0) {
       return {
         amountA: currentAmounts.amountA.toString(),
         amountB: currentAmounts.amountB.toString(),
       };
     }
 
-    const { amountA, amountB } = currentAmounts;
-    const { amountA: repositionAmountA, amountB: repositionAmountB } =
-      repositionAmounts;
-
-    const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
-    const isEstimated = !!estimatedRemainSwap && !isEstimatedRemainSwapLoading;
-    const tokenA = selectedPosition.pool.tokenA;
-    const tokenB = selectedPosition.pool.tokenB;
-
-    if (isEstimatedRemainSwapLoading) {
+    if (
+      !estimateSwapRequest?.inputToken ||
+      isEstimatedRemainSwapLoading ||
+      !estimatedSwapResult
+    ) {
       return null;
     }
 
-    if (!isEstimated) {
-      return null;
-    }
-
-    const estimatedResult =
-      makeDisplayTokenAmount(
-        isSwapTokenA ? tokenB : tokenA,
-        estimatedRemainSwap?.amount || 0,
-      ) || 0;
-
-    if (isSwapTokenA) {
-      const estimatedAmountA = repositionAmountA;
-      const estimatedAmountB = isEstimated
-        ? estimatedResult + Number(amountB)
-        : null;
-
-      if (estimatedAmountA === 0) {
-        return {
-          amountA: Number(estimatedAmountA).toString(),
-          amountB: Number(estimatedAmountB).toString(),
-        };
-      }
-
-      const isInsufficientQuantity =
-        repositionAmountB > Number(estimatedResult + Number(amountB) || 0);
-
-      if (isInsufficientQuantity) {
-        const depositAmounts = getDepositAmountsByAmountB(
-          selectPool.currentPrice,
-          selectPool.minPrice || 1,
-          selectPool.maxPrice || 1,
-          toShiftBitInt(estimatedAmountB || 0, tokenB.decimals),
-        );
-        return {
-          amountA: makeShiftAmount(
-            depositAmounts.amountA,
-            tokenA.decimals * -1,
-          ).toString(),
-          amountB: makeShiftAmount(
-            depositAmounts.amountB,
-            tokenB.decimals * -1,
-          ).toString(),
-        };
-      }
-
-      const depositAmounts = getDepositAmountsByAmountA(
-        selectPool.currentPrice,
-        selectPool.minPrice || 1,
-        selectPool.maxPrice || 1,
-        toShiftBitInt(estimatedAmountA, tokenA.decimals),
-      );
-      return {
-        amountA: makeShiftAmount(
-          depositAmounts.amountA,
-          tokenA.decimals * -1,
-        ).toString(),
-        amountB: makeShiftAmount(
-          depositAmounts.amountB,
-          tokenB.decimals * -1,
-        ).toString(),
-      };
-    }
-
-    const estimatedAmountA = isEstimated
-      ? estimatedResult + Number(amountA)
-      : null;
-    const estimatedAmountB = repositionAmountB;
-
-    if (estimatedAmountB === 0) {
-      return {
-        amountA: Number(estimatedAmountA).toString(),
-        amountB: Number(estimatedAmountB).toString(),
-      };
-    }
-
-    const isInsufficientQuantity =
-      repositionAmountA > estimatedResult + Number(amountA);
-
-    if (isInsufficientQuantity) {
-      const depositAmounts = getDepositAmountsByAmountA(
-        selectPool.currentPrice,
-        selectPool.minPrice || 1,
-        selectPool.maxPrice || 1,
-        toShiftBitInt(estimatedAmountA || 0, tokenA.decimals),
-      );
-      return {
-        amountA: makeShiftAmount(
-          depositAmounts.amountA,
-          tokenA.decimals * -1,
-        ).toString(),
-        amountB: makeShiftAmount(
-          depositAmounts.amountB,
-          tokenB.decimals * -1,
-        ).toString(),
-      };
-    }
-
-    const depositAmounts = getDepositAmountsByAmountB(
+    return getRepositionAmountsWithSwapSimulation(
       selectPool.currentPrice,
-      selectPool.minPrice || 1,
-      selectPool.maxPrice || 1,
-      toShiftBitInt(estimatedAmountB || 0, tokenB.decimals),
+      selectPool.minPrice,
+      selectPool.maxPrice,
+      selectedPosition.pool.tokenA,
+      selectedPosition.pool.tokenB,
+      currentAmounts,
+      initialEstimatedRepositionAmounts,
+      estimateSwapRequest.inputToken,
+      estimatedSwapResult.amount,
     );
-
-    return {
-      amountA: makeShiftAmount(
-        depositAmounts.amountA,
-        tokenA.decimals * -1,
-      ).toString(),
-      amountB: makeShiftAmount(
-        depositAmounts.amountB,
-        tokenB.decimals * -1,
-      ).toString(),
-    };
   }, [
     currentAmounts,
-    estimatedRemainSwap,
+    estimateSwapRequest,
+    estimatedSwapResult,
     isEstimatedRemainSwapLoading,
-    repositionAmounts,
+    initialEstimatedRepositionAmounts,
+    selectPool.currentPrice,
+    selectPool.maxPrice,
+    selectPool.minPrice,
     selectedPosition,
   ]);
 
   const isSkipSwap = useMemo(() => {
-    if (estimateSwapRequestByAmounts?.tokenAmount === 0) {
+    if (estimateSwapRequest?.tokenAmount === 0) {
       return true;
     }
     if (
@@ -597,7 +411,7 @@ export const useRepositionHandle = () => {
     }
     return false;
   }, [
-    estimateSwapRequestByAmounts,
+    estimateSwapRequest,
     currentAmounts,
     estimatedRepositionAmounts,
   ]);
@@ -648,39 +462,45 @@ export const useRepositionHandle = () => {
   const swapRemainToken = useCallback(async (): Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null> => {
-    if (!address || !estimatedRemainSwap || !estimateSwapRequestByAmounts) {
+    if (!address || !estimatedSwapResult || !estimateSwapRequest) {
       return null;
     }
 
+    const isSwapAtoB =
+      estimateSwapRequest.inputToken === selectedPosition?.pool.tokenA;
+
+    const inputAmount = isSwapAtoB
+      ? BigNumber(currentAmounts?.amountA || 0).minus(
+          BigNumber(estimatedRepositionAmounts?.amountA || 0),
+        )
+      : BigNumber(currentAmounts?.amountB || 0).minus(
+          BigNumber(estimatedRepositionAmounts?.amountB || 0),
+        );
+
+    const outputAmount = isSwapAtoB
+      ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(
+          BigNumber(currentAmounts?.amountB || 0),
+        )
+      : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(
+          BigNumber(currentAmounts?.amountA || 0),
+        );
+
     return swapRouterRepository
       .swapRoute({
-        ...estimateSwapRequestByAmounts,
-        estimatedRoutes: estimatedRemainSwap.estimatedRoutes,
-        tokenAmount: (estimateSwapRequestByAmounts.inputToken ===
-        selectedPosition?.pool.tokenA
-          ? BigNumber(currentAmounts?.amountA || 0).minus(
-              BigNumber(estimatedRepositionAmounts?.amountA || 0),
-            )
-          : BigNumber(currentAmounts?.amountB || 0).minus(
-              BigNumber(estimatedRepositionAmounts?.amountB || 0),
-            )
-        ).toNumber(),
+        ...estimateSwapRequest,
+        estimatedRoutes: estimatedSwapResult.estimatedRoutes,
+        tokenAmount: inputAmount.toNumber(),
         tokenAmountLimit:
-          (estimateSwapRequestByAmounts.inputToken ===
-          selectedPosition?.pool.tokenA
-            ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(
-                BigNumber(currentAmounts?.amountB || 0),
-              )
-            : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(
-                BigNumber(currentAmounts?.amountA || 0),
-              )
-          ).toNumber() * 0.995,
+          outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100),
       })
       .catch(() => null);
   }, [
     address,
-    estimateSwapRequestByAmounts,
-    estimatedRemainSwap,
+    currentAmounts,
+    estimateSwapRequest,
+    estimatedRepositionAmounts,
+    estimatedSwapResult,
+    selectedPosition?.pool.tokenA,
     swapRouterRepository,
   ]);
 
@@ -700,26 +520,30 @@ export const useRepositionHandle = () => {
         selectPool.minPrice === null ||
         selectPool.maxPrice === null ||
         currentAmounts === null ||
-        repositionAmounts === null ||
-        repositionAmounts.amountA === null ||
-        repositionAmounts.amountB === null
+        estimatedRepositionAmounts === null ||
+        estimatedRepositionAmounts?.amountA === null ||
+        estimatedRepositionAmounts?.amountB === null
       ) {
         return null;
       }
 
-      const isSwappedTokenA =
-        checkGnotPath(selectedPosition.pool.tokenA.path) ===
-        checkGnotPath(swapToken?.path || tokenA.path);
-      const tokenAAmount = isSwappedTokenA
-        ? BigNumber(currentAmounts.amountA)
-            .plus(swapAmount || 0)
-            .toString()
-        : repositionAmounts.amountA.toString();
-      const tokenBAmount = isSwappedTokenA
-        ? repositionAmounts.amountB.toString()
-        : BigNumber(currentAmounts.amountB)
-            .plus(swapAmount || 0)
-            .toString();
+      const isSwappedAtoB =
+        checkGnotPath(selectedPosition.pool.tokenB.path) ===
+        checkGnotPath(swapToken?.path || "");
+
+      let tokenAAmount = estimatedRepositionAmounts.amountA;
+      let tokenBAmount = BigNumber.min(
+        BigNumber(currentAmounts.amountB).plus(swapAmount || 0),
+        estimatedRepositionAmounts.amountB,
+      ).toString();
+
+      if (!isSwappedAtoB) {
+        tokenAAmount = BigNumber.min(
+          BigNumber(currentAmounts.amountA).plus(swapAmount || 0),
+          estimatedRepositionAmounts.amountA,
+        ).toString();
+        tokenBAmount = estimatedRepositionAmounts.amountB;
+      }
 
       return positionRepository
         .repositionLiquidity({
@@ -728,15 +552,9 @@ export const useRepositionHandle = () => {
           tokenB,
           tokenAAmount,
           tokenBAmount,
-          slippage: Number(MAX_UINT64),
-          minTick: priceToNearTick(
-            selectPool.minPrice,
-            SwapFeeTierInfoMap[selectPool.feeTier].tickSpacing,
-          ),
-          maxTick: priceToNearTick(
-            selectPool.maxPrice,
-            SwapFeeTierInfoMap[selectPool.feeTier].tickSpacing,
-          ),
+          slippage: DEFAULT_SLIPPAGE,
+          minTick: priceToNearTick(selectPool.minPrice, selectPool.tickSpacing),
+          maxTick: priceToNearTick(selectPool.maxPrice, selectPool.tickSpacing),
           caller: address,
         })
         .then(result => {
@@ -758,8 +576,13 @@ export const useRepositionHandle = () => {
       selectPool.feeTier,
       selectPool.minPrice,
       selectPool.maxPrice,
-      repositionAmounts,
+      selectPool.tickSpacing,
+      currentAmounts,
+      estimatedRepositionAmounts,
       positionRepository,
+      updateConfirmModalData,
+      openConfirmModal,
+      router,
     ],
   );
 

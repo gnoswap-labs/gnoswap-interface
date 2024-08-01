@@ -543,6 +543,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       maxTick,
       tokenAAmount,
       tokenBAmount,
+      slippage,
       caller,
     } = request;
 
@@ -579,6 +580,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       maxTick,
       tokenAAmountRaw,
       tokenBAmountRaw,
+      slippage,
       caller,
       sendAmount,
     );
