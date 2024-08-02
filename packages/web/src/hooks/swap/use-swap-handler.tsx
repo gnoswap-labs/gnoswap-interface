@@ -240,7 +240,7 @@ export const useSwapHandler = () => {
     if (
       !Number(tokenBAmount) ||
       !tokenB ||
-      !tokenPrices[checkGnotPath(tokenB.priceID)].usd
+      !tokenPrices[checkGnotPath(tokenB.priceID)]?.usd
     ) {
       return null;
     }
@@ -841,7 +841,7 @@ export const useSwapHandler = () => {
         setCopied(false);
       }, 2000);
     } catch (e) {
-      throw new Error("Copy Error!");
+      throw new Error(`Copy Error! , ${e}`);
     }
   };
 
