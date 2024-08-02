@@ -19,7 +19,8 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { prettyNumberFloatInteger } from "@utils/number-utils";
 import { capitalize } from "@utils/string-utils";
 import { AccountActivity } from "@repositories/notification";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
+import { NotificationType } from "@common/values";
 
 interface ItemProps {
   groups: TransactionGroupsType;
@@ -56,46 +57,47 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         isKMB: false,
       });
       const token0symbol = replaceToken(tx?.tokenA?.symbol);
+      const token0Display = Number(tx?.tokenAAmount)
+        ? `<accent>${token0Amount} ${token0symbol}</accent>`
+        : "";
 
       const token1Amount = formatPoolPairAmount(tx?.tokenBAmount, {
         decimals: tx.tokenA.decimals,
         isKMB: false,
       });
       const token1symbol = replaceToken(tx?.tokenB?.symbol);
-
-      const token0Display = Number(tx?.tokenAAmount)
-        ? `<span>${token0Amount}</span> <span>${token0symbol}</span>`
-        : "";
       const token1Display = Number(tx?.tokenBAmount)
-        ? `<span>${token1Amount}</span> <span>${token1symbol}</span>`
+        ? `<accent>${token1Amount} ${token1symbol}</accent>`
         : "";
-      const tokenStr = [token0Display, token1Display]
-        .filter(item => item)
-        .join(` ${t("common:conjunction:and")} `);
+
+      const getPair = () =>
+        [token0Display, token1Display]
+          .filter(item => item)
+          .join(` ${t("common:conjunction:and")} `);
 
       switch (tx.actionType) {
         case "SWAP":
-          return `${t("Modal:notif.action.swapped")} ${tokenStr}`;
+          return `${t("Modal:notif.action.swapped")} ${getPair()}`;
         case "ADD":
-          return `${t("Modal:notif.action.added")} ${tokenStr}`;
+          return `${t("Modal:notif.action.added")} ${getPair()}`;
         case "REMOVE":
-          return `${t("Modal:notif.action.removed")} ${tokenStr}`;
+          return `${t("Modal:notif.action.removed")} ${getPair()}`;
         case "STAKE":
-          return `${t("Modal:notif.action.staked")} ${tokenStr}`;
+          return `${t("Modal:notif.action.staked")} ${getPair()}`;
         case "UNSTAKE":
-          return `${t("Modal:notif.action.unstaked")} ${tokenStr}`;
+          return `${t("Modal:notif.action.unstaked")} ${getPair()}`;
         case "CLAIM":
-          return `${t("Modal:notif.action.claimed")} ${tokenStr}`;
+          return `${t("Modal:notif.action.claimed")} ${getPair()}`;
         case "WITHDRAW":
           return `${t("Modal:notif.action.sent")} ${token0Display}`;
         case "DEPOSIT":
           return `${t("Modal:notif.action.received")} ${token0Display}`;
         case "DECREASE":
-          return `${t("Modal:notif.action.decreased")}  ${token0Display}`;
+          return `${t("Modal:notif.action.decreased")}  ${getPair()}`;
         case "INCREASE":
-          return `${t("Modal:notif.action.increased")} ${token0Display}`;
+          return `${t("Modal:notif.action.increased")} ${getPair()}`;
         case "REPOSITION":
-          return `${t("Modal:notif.action.repositioned")} ${tokenStr}`;
+          return `${t("Modal:notif.action.repositioned")} ${getPair()}`;
         default:
           return `${capitalize(tx.actionType)} ${prettyNumberFloatInteger(
             tx.tokenAAmount,
@@ -103,13 +105,6 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
       }
     },
     [replaceToken, t],
-  );
-
-  const actionFormat = useCallback(
-    (transaction: TransactionModel) => {
-      return getNotificationMessage(transaction.rawValue);
-    },
-    [getNotificationMessage],
   );
 
   return (
@@ -133,7 +128,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
             >
               <div className="list">
                 <div className="coin-info">
-                  {item.txType === 1 ? (
+                  {item.txType === NotificationType.CreatePool ? (
                     <DoubleLogo>
                       {shouldShowTokenALogo && (
                         <MissingLogo
@@ -192,7 +187,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
             onClick={() => window.open(getTxUrl(item.txHash), "_blank")}
             key={idx}
           >
-            {item.txType === 1 ? (
+            {item.txType === NotificationType.CreatePool ? (
               <DoubleLogoWrapperTest>
                 {shouldShowTokenALogo && (
                   <MissingLogo
@@ -225,10 +220,11 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                 />
               </DoubleLogoWrapperTest>
             )}
-            <div
-              className="summary-content"
-              dangerouslySetInnerHTML={{ __html: actionFormat(item) || "" }}
-            />
+            <div className="summary-content">
+              <Trans components={{ accent: <span className="accent" /> }}>
+                {getNotificationMessage(item.rawValue)}
+              </Trans>
+            </div>
             {item.status === "SUCCESS" ? (
               <IconCircleInCheck className="success-icon status-icon" />
             ) : item.status === "FAILED" ? (

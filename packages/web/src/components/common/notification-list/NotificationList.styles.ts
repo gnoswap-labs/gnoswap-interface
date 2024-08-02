@@ -134,7 +134,7 @@ export const TxsSummaryItem = styled.div`
     width: 100%;
     padding: 0px 10px 0px 44px;
     color: ${({ theme }) => theme.color.text22};
-    span {
+    span.accent {
       color: ${({ theme }) => theme.color.text01};
       font-weight: 500;
     }
