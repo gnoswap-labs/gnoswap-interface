@@ -34,7 +34,8 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
     )}`;
   }, [pool?.stakingApr]);
 
-  if (positions.length === 0) return <></>;
+  if (positions.length === 0) return null;
+
   return (
     <div css={wrapper}>
       <ul className="pooled-section">

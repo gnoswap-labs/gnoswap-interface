@@ -121,9 +121,6 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
       if (rewardTokenList.length >= 4) break;
     }
 
-    console.log(positions);
-    console.log(rewardTokenList);
-
     const rewards = rewardTokenList.reduce<
       {
         token: TokenModel;
@@ -168,8 +165,6 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
       });
       return rewardList;
     }, []); 
-
-    console.log(rewards);
 
     return rewards;
   }, [getGnotPath, positions, tokens]);
