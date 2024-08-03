@@ -318,16 +318,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const claimableUSD = useMemo(() => {
     const result = position.reward.reduce((acc: number | null, cur) => {
-      if (acc === null && !cur.claimableUsd) {
+      if (acc === null && (!cur.claimableUsd || cur.claimableUsd === "")) {
         return null;
       }
 
       if (acc === null) return Number(cur.claimableUsd);
 
-      if (!cur.claimableUsd) return acc;
+      if (!cur.claimableUsd || cur.claimableUsd === "") return acc;
 
-      return Number(cur.claimableUsd || 0) + acc;
+      return Number(cur.claimableUsd) + acc;
     }, 0);
+
+    if (!result) return "-";
 
     return formatOtherPrice(result);
   }, [position.reward]);
