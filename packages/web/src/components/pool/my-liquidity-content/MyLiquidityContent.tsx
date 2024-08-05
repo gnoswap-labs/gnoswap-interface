@@ -334,8 +334,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         return accum + current.accumulatedRewardOf1dUsd;
       }, null as number | null);
 
-      console.log(claimableUsdValue);
-
     if (claimableUsdValue === null || claimableUsdValue === -1) {
       return "-";
     }
