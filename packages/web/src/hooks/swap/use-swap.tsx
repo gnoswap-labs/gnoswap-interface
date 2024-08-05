@@ -23,7 +23,7 @@ export const useSwap = ({
 }: UseSwapProps) => {
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
-  const [swapAmount, setSwapAmount] = useState<string | null>(null);
+  const [swapAmount, setSwapAmount] = useState<number | null>(null);
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
@@ -40,13 +40,6 @@ export const useSwap = ({
     return false;
   }, [tokenA, tokenB]);
 
-  const currentSwapAmount = useMemo(() => {
-    if (!swapAmount || BigNumber(swapAmount).isZero()) {
-      return 0;
-    }
-    return BigNumber(swapAmount).toNumber();
-  }, [swapAmount]);
-
   const {
     data: estimatedSwapResult,
     isLoading: isEstimatedSwapLoading,
@@ -56,13 +49,18 @@ export const useSwap = ({
       inputToken: tokenA,
       outputToken: tokenB,
       exactType: direction,
-      tokenAmount: currentSwapAmount,
+      tokenAmount: swapAmount,
     },
     {
-      enabled: currentSwapAmount > 0 && !!tokenA && !!tokenB,
+      enabled:
+        !!swapAmount &&
+        swapAmount > 0 &&
+        !!tokenA &&
+        !!tokenA.path &&
+        !!tokenB &&
+        !!tokenB.path,
       refetchInterval: () => {
-        if (!!tokenA && !!tokenB && direction && currentSwapAmount)
-          return 10_000;
+        if (!!tokenA && !!tokenB && direction && swapAmount) return 10_000;
 
         return false;
       },
@@ -71,7 +69,7 @@ export const useSwap = ({
 
   const swapState: "NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS" =
     useMemo(() => {
-      if (!selectedTokenPair || !currentSwapAmount) {
+      if (!selectedTokenPair || !swapAmount) {
         return "NONE";
       }
 
@@ -89,7 +87,7 @@ export const useSwap = ({
 
       return "SUCCESS";
     }, [
-      currentSwapAmount,
+      swapAmount,
       error,
       estimatedSwapResult?.amount,
       isEstimatedSwapLoading,
@@ -98,15 +96,15 @@ export const useSwap = ({
     ]);
 
   const estimatedRoutes: EstimatedRoute[] = useMemo(() => {
-    if (swapState !== "SUCCESS" || !estimatedSwapResult || !currentSwapAmount) {
+    if (swapState !== "SUCCESS" || !estimatedSwapResult || !swapAmount) {
       return [];
     }
 
     return estimatedSwapResult.estimatedRoutes;
-  }, [swapState, estimatedSwapResult, currentSwapAmount]);
+  }, [swapState, estimatedSwapResult, swapAmount]);
 
   const estimatedAmount: string | null = useMemo(() => {
-    if (!currentSwapAmount || error) {
+    if (!swapAmount || error) {
       return null;
     }
 
@@ -115,7 +113,7 @@ export const useSwap = ({
     }
 
     return estimatedSwapResult.amount;
-  }, [currentSwapAmount, error, swapState, estimatedSwapResult]);
+  }, [swapAmount, error, swapState, estimatedSwapResult]);
 
   const tokenAmountLimit = useMemo(() => {
     if (estimatedAmount && !Number.isNaN(slippage)) {
@@ -137,8 +135,14 @@ export const useSwap = ({
     return 0;
   }, [direction, estimatedAmount, slippage, tokenA]);
 
-  const estimateSwapRoute = useCallback((amount: string) => {
-    setSwapAmount(amount || "0");
+  const updateSwapAmount = useCallback((amount: string) => {
+    let newAmount = 0;
+    if (!amount || BigNumber(amount).isZero()) {
+      newAmount = 0;
+    }
+    newAmount = BigNumber(amount).toNumber();
+
+    setSwapAmount(newAmount);
   }, []);
 
   const wrap = useCallback(
@@ -209,9 +213,9 @@ export const useSwap = ({
     estimatedRoutes,
     swapState,
     swap,
-    estimateSwapRoute,
     wrap,
     unwrap,
-    resetSwapAmount: () => setSwapAmount(""),
+    updateSwapAmount,
+    resetSwapAmount: () => setSwapAmount(0),
   };
 };

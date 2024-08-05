@@ -1,15 +1,17 @@
+import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+
 import {
   IChainResponse,
   ITokenDetailResponse,
   ITokenResponse,
   TokenListResponse,
 } from "@repositories/token";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
-import { QUERY_KEY } from "./types";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
 import { TokenError } from "@common/errors/token";
+
+import { QUERY_KEY } from "./types";
 
 export const useGetTokensList = (
   options?: UseQueryOptions<TokenListResponse, Error>,
@@ -79,6 +81,7 @@ export const useGetTokenDetailByPath = (
       }
       return tokenRepository.getTokenDetailByPath(path);
     },
+    enabled: !!path,
     ...option,
   });
 };

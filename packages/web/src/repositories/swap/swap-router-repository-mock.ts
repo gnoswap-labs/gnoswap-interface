@@ -1,17 +1,11 @@
 import { SwapRouterRepository } from "./swap-router-repository";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
-import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 
 export class SwapRouterRepositoryMock implements SwapRouterRepository {
   public getSwapFee = async () => {
     return 0;
   };
-  public pools: PoolRPCModel[] = [];
-
-  public updatePools(pools: PoolRPCModel[]) {
-    this.pools = pools;
-  }
 
   public estimateSwapRoute = async (
     request: EstimateSwapRouteRequest,

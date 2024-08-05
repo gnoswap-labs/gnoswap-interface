@@ -138,9 +138,9 @@ export const useSwapHandler = () => {
     tokenAmountLimit,
     swapState,
     swap,
-    estimateSwapRoute,
     wrap,
     unwrap,
+    updateSwapAmount,
     resetSwapAmount,
   } = useSwap({
     tokenA,
@@ -608,7 +608,7 @@ export const useSwapHandler = () => {
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenA);
-      estimateSwapRoute(value);
+      updateSwapAmount(value);
 
       if (isSameToken) {
         setTokenAAmount(value);
@@ -687,7 +687,7 @@ export const useSwapHandler = () => {
         ...prev,
         type: "EXACT_OUT",
       }));
-      estimateSwapRoute(value);
+      updateSwapAmount(value);
       setTokenBAmount(value);
     },
     [isSameToken, tokenA, tokenB],
