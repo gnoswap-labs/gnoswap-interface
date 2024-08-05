@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { ReactNode, useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
 import ActivityList from "@components/dashboard/activity-list/ActivityList";
@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 dayjs.extend(relativeTime);
 
 export interface Activity {
-  action: string;
+  action: ReactNode;
   totalValue: string;
   tokenAmountOne: string;
   tokenAmountTwo: string;
@@ -134,7 +134,7 @@ const DashboardActivitiesContainer: React.FC = () => {
       "Action",
       "Total Value",
       "Token amount",
-      "Token amount ",
+      "Token amount",
       "Account",
       "Time",
     ];
@@ -209,7 +209,14 @@ const DashboardActivitiesContainer: React.FC = () => {
             : t("common:conjunction.and"))
         : "";
 
-      return `${action}${tokenAText}${conjunction}${tokenBText}`;
+      return (
+        <span>
+          {action}
+          <span className="symbol-text">{tokenAText} </span>
+          {conjunction}
+          <span className="symbol-text">{tokenBText} </span>
+        </span>
+      );
     })();
 
     const tokenAAmount =

@@ -134,7 +134,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
                 {isDescendingOption(head) && (
                   <IconTriangleArrowDown className="icon desc" />
                 )}
-                {head}
+                {t(head)}
               </span>
             </MobileTableHeader>
           ))}
