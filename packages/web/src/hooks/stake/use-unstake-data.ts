@@ -141,7 +141,10 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
         let usd = 0;
 
         position.reward.forEach((rewardInfo) => {
-          if (rewardInfo.rewardToken.path === rewardTokenPath) {
+          if (
+            rewardInfo.rewardToken.path === rewardTokenPath &&
+            rewardInfo.rewardType !== "SWAP_FEE"
+          ) {
             amount += Number(rewardInfo.claimableAmount);
             usd += Number(rewardInfo.claimableUsd);
           }
