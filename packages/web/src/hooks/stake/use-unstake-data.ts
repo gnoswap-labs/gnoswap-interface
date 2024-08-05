@@ -130,6 +130,10 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
       }[]
     >((rewardList, rewardTokenPath) => {
       const rewardToken = tokens.find(item => item.path === rewardTokenPath);
+      const tokenPriceId = checkGnotPath(rewardToken?.priceID || "");
+      const tokenPrice = tokenPrices[tokenPriceId]?.usd
+        ? Number(tokenPrices[tokenPriceId]?.usd)
+        : 0;
 
       const rewardAccum = positions.reduce<{
         amount: number;
@@ -146,7 +150,9 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
             rewardInfo.rewardType !== "SWAP_FEE"
           ) {
             amount += Number(rewardInfo.claimableAmount);
-            usd += Number(rewardInfo.claimableUsd);
+            usd +=
+              Number(rewardInfo.claimableUsd) ||
+              Number(rewardInfo.claimableAmount) * tokenPrice;
           }
         });
 
@@ -163,7 +169,11 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
       rewardList.push({
         token: { ...rewardToken!, ...getGnotPath(rewardToken) },
         amount: rewardAccum?.amount || null,
-        amountUSD: formatOtherPrice(rewardAccum?.usd, { isKMB: false }),
+        amountUSD: rewardAccum?.usd
+          ? formatOtherPrice(rewardAccum?.usd, {
+              isKMB: false,
+            })
+          : "-",
         rawAmountUsd: rewardAccum?.usd || null,
       });
       return rewardList;
