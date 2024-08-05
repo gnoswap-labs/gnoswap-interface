@@ -39,7 +39,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
   const { getGnotPath } = useGnotToGnot();
   const rewardTokenLogos = useMemo(() => {
     const tokenData = rewardTokens.reduce((acc, current) => {
-      const existToken = acc.some(item => item.path === current.path);
+      const existToken = acc.some(item => item.name === current.name);
 
       if (!existToken) {
         acc.push({
