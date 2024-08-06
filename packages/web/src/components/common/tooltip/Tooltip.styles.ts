@@ -34,7 +34,7 @@ export const Content = styled.div<ContentToolTipProps>`
     @property --scroll-color {
       syntax: "<color>";
       inherits: true;
-      initial-value: ${({ theme }) => theme.color.background12};
+      initial-value: ${({ theme }) => theme.color.background02};
     }
 
     transition: --scroll-color 0.3s;
@@ -53,7 +53,7 @@ export const Content = styled.div<ContentToolTipProps>`
     ::-webkit-scrollbar-thumb {
       background-color: var(--scroll-color);
       border-radius: 8px;
-      border: 4px solid ${({ theme }) => theme.color.background12};
+      border: 4px solid ${({ theme }) => theme.color.background02};
     }
 
     &.show-scroll {
