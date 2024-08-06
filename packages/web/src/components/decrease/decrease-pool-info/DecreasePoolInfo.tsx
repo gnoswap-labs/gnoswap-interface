@@ -1,27 +1,30 @@
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import {
-  DecreasePoolInfoWrapper,
-  GnotCollectSwitchWrapper,
-} from "./DecreasePoolInfo.styles";
-import { TokenModel } from "@models/token/token-model";
-import React, { useMemo } from "react";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { DEVICE_TYPE } from "@styles/media";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import IconInfo from "@components/common/icons/IconInfo";
-import { ToolTipContentWrapper } from "../decrease-select-position/DecreaseSelectPosition.styles";
 import BigNumber from "bignumber.js";
-import { removeTrailingZeros } from "@utils/number-utils";
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import IconInfo from "@components/common/icons/IconInfo";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { Divider } from "@components/common/select-token/SelectToken.styles";
 import Switch from "@components/common/switch/Switch";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
+import { TokenModel } from "@models/token/token-model";
 import { useGetWithdrawalFee } from "@query/pools";
-import { useTranslation } from "react-i18next";
+import { DEVICE_TYPE } from "@styles/media";
+import { removeTrailingZeros } from "@utils/number-utils";
+
+import { ToolTipContentWrapper } from "../decrease-select-position/DecreaseSelectPosition.styles";
+import {
+  DecreasePoolInfoWrapper,
+  GnotCollectSwitchWrapper
+} from "./DecreasePoolInfo.styles";
 
 interface Props {
   tokenA: TokenModel;
   tokenB: TokenModel;
   isShowProtocolFee?: boolean;
-  pooledTokenInfos: any;
+  pooledTokenInfos: IPooledTokenInfo | null;
   isWrap?: boolean;
   setIsWrap?: () => void;
   displayGnotSwitch?: boolean;
@@ -45,40 +48,40 @@ const DecreasePoolInfo: React.FC<Props> = ({
 
   const poolAMount = useMemo(() => {
     if (Number.isInteger(Number(pooledTokenInfos?.poolAmountA))) {
-      return BigNumber(pooledTokenInfos?.poolAmountA).toFormat();
+      return BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toFormat();
     }
 
     return removeTrailingZeros(
-      BigNumber(pooledTokenInfos?.poolAmountA).toFormat(tokenA.decimals),
+      BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toFormat(tokenA.decimals),
     );
   }, [pooledTokenInfos?.poolAmountA, tokenA.decimals]);
 
   const poolBMount = useMemo(() => {
     if (Number.isInteger(Number(pooledTokenInfos?.poolAmountB))) {
-      return BigNumber(pooledTokenInfos?.poolAmountB).toFormat();
+      return BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toFormat();
     }
 
     return removeTrailingZeros(
-      BigNumber(pooledTokenInfos?.poolAmountB).toFormat(tokenB.decimals),
+      BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toFormat(tokenB.decimals),
     );
   }, [pooledTokenInfos?.poolAmountB, tokenB.decimals]);
 
   const unclaimedPoolAAMount = useMemo(() => {
     if (Number.isInteger(Number(pooledTokenInfos?.unClaimTokenAAmount))) {
-      return BigNumber(pooledTokenInfos?.unClaimTokenAAmount).toFormat();
+      return BigNumber(pooledTokenInfos?.unClaimTokenAAmount ?? 0).toFormat();
     }
 
-    return BigNumber(pooledTokenInfos?.unClaimTokenAAmount).toFormat(
+    return BigNumber(pooledTokenInfos?.unClaimTokenAAmount ?? 0).toFormat(
       tokenA.decimals,
     );
   }, [pooledTokenInfos?.unClaimTokenAAmount, tokenA.decimals]);
 
   const unclaimedPoolBAMount = useMemo(() => {
     if (Number.isInteger(Number(pooledTokenInfos?.unClaimTokenBAmount))) {
-      return BigNumber(pooledTokenInfos?.unClaimTokenBAmount).toFormat();
+      return BigNumber(pooledTokenInfos?.unClaimTokenBAmount ?? 0).toFormat();
     }
 
-    return BigNumber(pooledTokenInfos?.unClaimTokenBAmount).toFormat(
+    return BigNumber(pooledTokenInfos?.unClaimTokenBAmount ?? 0).toFormat(
       tokenA.decimals,
     );
   }, [pooledTokenInfos?.unClaimTokenBAmount, tokenA.decimals]);
