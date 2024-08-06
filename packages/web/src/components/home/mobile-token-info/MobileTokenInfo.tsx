@@ -1,18 +1,20 @@
+import { cx } from "@emotion/css";
 import React from "react";
+
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
+import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import { type Token } from "@containers/token-list-container/TokenListContainer";
-import { cx } from "@emotion/css";
+import useCustomRouter from "@hooks/common/use-custom-router";
+
 import {
   HoverSection,
   PriceValueWrapper,
   TableColumn,
-  TokenInfoWrapper,
+  TokenInfoWrapper
 } from "./MobileTokenInfo.styles";
-import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
-import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
-import useCustomRouter from "@hooks/common/use-custom-router";
 
 interface TokenInfoProps {
   item: Token;
@@ -45,7 +47,7 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
           className="name-col left"
           tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}
         >
-          <TokenInfoCell token={token} isNative={item.isNative} />
+          <TokenInfoCell token={token} isNative={item.isNative} isMobile/>
         </TableColumn>
         <TableColumn className="price-col" tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
           {price === "--" ? (
