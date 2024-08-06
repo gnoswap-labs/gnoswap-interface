@@ -13,7 +13,7 @@ import {
 import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
 import { useTranslation } from "react-i18next";
 
-interface AssetInfoProps {
+export interface AssetInfoProps {
   asset: Asset;
   deposit: (asset: Asset) => void;
   withdraw: (asset: Asset) => void;
