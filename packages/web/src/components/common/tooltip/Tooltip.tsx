@@ -1,26 +1,29 @@
-import React, { CSSProperties, useMemo, useRef, useState } from "react";
-import {
-  type Placement,
-  useHover,
-  useFocus,
-  useDismiss,
-  useRole,
-  useInteractions,
-  FloatingPortal,
-  useFloating,
-  autoUpdate,
-  offset,
-  shift,
-  useMergeRefs,
-  FloatingArrow,
-  arrow,
-  flip,
-} from "@floating-ui/react";
-import { BaseTooltipWrapper, Content } from "./Tooltip.styles";
 import { useTheme } from "@emotion/react";
-import { Z_INDEX } from "@styles/zIndex";
+import {
+  arrow,
+  autoUpdate,
+  flip,
+  FloatingArrow,
+  FloatingPortal,
+  offset,
+  safePolygon,
+  shift,
+  useDismiss,
+  useFloating,
+  useFocus,
+  useHover,
+  useInteractions,
+  useMergeRefs,
+  useRole,
+  type Placement
+} from "@floating-ui/react";
 import { useAtomValue } from "jotai";
+import React, { CSSProperties, useMemo, useRef, useState } from "react";
+
 import { ThemeState } from "@states/index";
+import { Z_INDEX } from "@styles/zIndex";
+
+import { BaseTooltipWrapper, Content } from "./Tooltip.styles";
 
 function useTooltip({ placement }: { placement: Placement }) {
   const [open, setOpen] = useState(false);
@@ -30,6 +33,7 @@ function useTooltip({ placement }: { placement: Placement }) {
     placement,
     open,
     onOpenChange: setOpen,
+
     whileElementsMounted: autoUpdate,
     middleware: [
       offset(20),
@@ -46,8 +50,8 @@ function useTooltip({ placement }: { placement: Placement }) {
   const context = data.context;
 
   const hover = useHover(context, {
-    move: false,
     enabled: true,
+    handleClose: safePolygon({ buffer: -Infinity }),
   });
   const focus = useFocus(context, {
     enabled: true,
@@ -86,7 +90,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   floatClassName,
   isShouldShowed = true,
   className,
-  forcedOpen,
+  forcedOpen = false,
 }) => {
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
@@ -137,7 +141,11 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
               />
             )}
             {FloatingContent && (
-              <Content themeKey={themeKey}>{FloatingContent}</Content>
+              <Content
+                themeKey={themeKey}
+              >
+                {FloatingContent}
+              </Content>
             )}
           </div>
         )}
