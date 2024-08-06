@@ -1,22 +1,36 @@
-import { useTranslation } from "react-i18next";
-import { wrapper } from "./Disclaimer.styles";
+import { Trans, useTranslation } from "react-i18next";
 
-interface DisclaimerProps {
-  dummyDisclaimer: string;
-}
+import IconOpenLink from "@components/common/icons/IconOpenLink";
 
-const Disclaimer: React.FC<DisclaimerProps> = ({ dummyDisclaimer }) => {
+import { IconButton, wrapper } from "./Disclaimer.styles";
+
+const Disclaimer: React.FC = () => {
   const { t } = useTranslation();
 
   return (
     <div css={wrapper}>
       <h5 className="section-title">{t("IncentivizePool:disclaimer.title")}</h5>
-      <div
-        className="desc"
-        dangerouslySetInnerHTML={{
-          __html: dummyDisclaimer,
-        }}
-      />
+      <div className="desc">
+        <Trans
+          ns="IncentivizePool"
+          i18nKey={"IncentivizePool:disclaimer.description"}
+          components={{
+            docs_link: (
+                <IconButton
+                  onClick={() => {
+                    window.open(
+                      "https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods",
+                      "_blank",
+                    );
+                  }}
+                  style={{display: "inline-block"}}
+                >
+                  <IconOpenLink className="action-icon" />
+                </IconButton>
+            ),
+          }}
+        />
+      </div>
     </div>
   );
 };

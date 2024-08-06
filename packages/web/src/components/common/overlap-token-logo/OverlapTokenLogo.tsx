@@ -33,7 +33,7 @@ const OverlapTokenLogo = ({
             width={size}
             url={token.logoURI}
             mobileWidth={mobileSize}
-            symbol={token.symbol.slice(0, 3)}
+            symbol={token.symbol}
             placeholderFontSize={placeholderFontSize}
           />
         </OverlapTokenLogoImageWrapper>

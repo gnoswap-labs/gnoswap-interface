@@ -1,5 +1,13 @@
-import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+import {
+  RANGE_STATUS_OPTION,
+  SwapFeeTierType
+} from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -8,12 +16,8 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
-import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
-import BigNumber from "bignumber.js";
-import { useAtom } from "jotai";
-import useCustomRouter from "@hooks/common/use-custom-router";
-import { useCallback, useMemo, useState, useEffect } from "react";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -154,7 +158,7 @@ export const useDecreaseHandle = () => {
   const selectPool = useSelectPool({
     tokenA,
     tokenB,
-    feeTier: `FEE_${fee}` as any,
+    feeTier: `FEE_${fee}` as SwapFeeTierType,
     startPrice: 1,
     isCreate: true,
   });
@@ -235,12 +239,14 @@ export const useDecreaseHandle = () => {
         .dividedBy(100)
         .toNumber()
         .toString(),
-      poolAmountUSDA: formatOtherPrice(
-        (tokenAAmount * Number(tokenAPrice) * percent) / 100,
-        {
-          isKMB: false,
-        },
-      ),
+      poolAmountUSDA: tokenAPrice
+        ? formatOtherPrice(
+            (tokenAAmount * Number(tokenAPrice) * percent) / 100,
+            {
+              isKMB: false,
+            },
+          )
+        : "-",
       tokenABalance: tokenAAmount.toString(),
       tokenBBalance: tokenBAmount.toString(),
       tokenARemainingAmount: BigNumber(tokenAAmount)
@@ -258,26 +264,26 @@ export const useDecreaseHandle = () => {
         .dividedBy(100)
         .toNumber()
         .toString(),
-      poolAmountUSDB: formatOtherPrice(
-        (tokenBAmount * Number(tokenBPrice) * percent) / 100,
-        {
-          isKMB: false,
-        },
-      ),
+      poolAmountUSDB: tokenBPrice
+        ? formatOtherPrice(
+            (tokenBAmount * Number(tokenBPrice) * percent) / 100,
+            {
+              isKMB: false,
+            },
+          )
+        : "-",
       unClaimTokenAAmount: BigNumber(unClaimTokenAAmount).toFormat(),
       unClaimTokenBAmount: BigNumber(unClaimTokenBAmount).toFormat(),
-      unClaimTokenAAmountUSD: formatOtherPrice(
-        unClaimTokenAAmount * Number(tokenAPrice),
-        {
-          isKMB: false,
-        },
-      ),
-      unClaimTokenBAmountUSD: formatOtherPrice(
-        unClaimTokenBAmount * Number(tokenBPrice),
-        {
-          isKMB: false,
-        },
-      ),
+      unClaimTokenAAmountUSD: tokenAPrice
+        ? formatOtherPrice(unClaimTokenAAmount * Number(tokenAPrice), {
+            isKMB: false,
+          })
+        : "-",
+      unClaimTokenBAmountUSD: tokenBPrice
+        ? formatOtherPrice(unClaimTokenBAmount * Number(tokenBPrice), {
+            isKMB: false,
+          })
+        : "-",
     };
   }, [selectedPosition, tokenPrices, percent]);
 

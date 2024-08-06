@@ -1,24 +1,22 @@
-import React, { useMemo } from "react";
-import { type Activity } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
-import IconOpenLink from "@components/common/icons/IconOpenLink";
-import {
-  HoverSection,
-  TableColumn,
-  TokenInfoWrapper,
-  IconButton,
-  TableColumnTooltipContent,
-  MobileActivitiesWrapper,
-  MobileTableColumn,
-} from "./ActivityInfo.styles";
-import Tooltip from "@components/common/tooltip/Tooltip";
 import { formatAddress } from "@utils/string-utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import React from "react";
+
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import {
   ACTIVITY_INFO,
-  MOBILE_ACTIVITY_INFO,
+  MOBILE_ACTIVITY_INFO
 } from "@constants/skeleton.constant";
+import { type Activity } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
+
+import {
+  HoverSection, IconButton, MobileActivitiesWrapper,
+  MobileTableColumn, TableColumn, TableColumnTooltipContent, TokenInfoWrapper
+} from "./ActivityInfo.styles";
+
 dayjs.extend(relativeTime);
 
 interface ActivityInfoProps {
@@ -30,39 +28,13 @@ interface ActivityInfoProps {
 const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
-  const adjective = useMemo(() => ["for", "and"], []);
-
-  const actionText = useMemo(() => {
-    if (action.split(" ").some(i => adjective.includes(i))) {
-      return action.split(" ").map((text, idx) => {
-        return idx === action.split(" ").length - 1 ||
-          idx === action.split(" ").length - 3 ? (
-          <span key={idx} className="symbol-text">
-            {text}
-          </span>
-        ) : (
-          text + " "
-        );
-      });
-    }
-
-    return action.split(" ").map((text, idx) => {
-      return idx === action.split(" ").length - 1 ? (
-        <span key={idx} className="symbol-text">
-          {text}
-        </span>
-      ) : (
-        text + " "
-      );
-    });
-  }, [action, adjective]);
 
   return (
     <TokenInfoWrapper>
       <HoverSection>
         <TableColumn className="left" tdWidth={ACTIVITY_INFO.list[0].width}>
           <span className="token-index">
-            {actionText}
+            {action}
             <IconButton
               onClick={() => {
                 window.open(item.explorerUrl, "_blank");
@@ -108,7 +80,6 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
 export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
-  const adjective = ["for", "and"];
 
   return (
     <MobileActivitiesWrapper>
@@ -118,26 +89,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
           tdWidth={MOBILE_ACTIVITY_INFO.list[0].width}
         >
           <span className="cell">
-            {action.split(" ").some(i => adjective.includes(i))
-              ? action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ||
-                    idx === action.split(" ").length - 3 ? (
-                    <span key={idx} className="symbol-text">
-                      {text}
-                    </span>
-                  ) : (
-                    text + " "
-                  );
-                })
-              : action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ? (
-                    <span key={idx} className="symbol-text">
-                      {text}
-                    </span>
-                  ) : (
-                    text + " "
-                  );
-                })}
+            {action}
             <IconButton
               onClick={() => {
                 window.open(item.explorerUrl, "_blank");

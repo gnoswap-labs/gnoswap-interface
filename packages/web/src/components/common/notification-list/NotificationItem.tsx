@@ -70,6 +70,11 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         ? `<accent>${token1Amount} ${token1symbol}</accent>`
         : "";
 
+      const getSwapPair = () =>
+        [token0Display, token1Display]
+          .filter(item => item)
+          .join(` ${t("common:conjunction:for")} `);
+
       const getPair = () =>
         [token0Display, token1Display]
           .filter(item => item)
@@ -77,7 +82,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
 
       switch (tx.actionType) {
         case "SWAP":
-          return `${t("Modal:notif.action.swapped")} ${getPair()}`;
+          return `${t("Modal:notif.action.swapped")} ${getSwapPair()}`;
         case "ADD":
           return `${t("Modal:notif.action.added")} ${getPair()}`;
         case "REMOVE":

@@ -1,4 +1,31 @@
+import BigNumber from "bignumber.js";
+import { useAtomValue } from "jotai";
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import IconStar from "@components/common/icons/IconStar";
+import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
+import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { TokenModel } from "@models/token/token-model";
+import { ThemeState } from "@states/index";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+  formatRate
+} from "@utils/new-number-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { tickToPrice } from "@utils/swap-utils";
+
 import {
   AprDivider,
   AprSectionWrapper,
@@ -7,33 +34,9 @@ import {
   PoolPairInfoContentWrapper,
   TokenAmountTooltipContentWrapper,
   TvlSectionWrapper,
-  VolumeSectionWrapper,
+  VolumeSectionWrapper
 } from "./PoolPairInfoContent.styles";
-import IconStar from "@components/common/icons/IconStar";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import PoolGraph from "@components/common/pool-graph/PoolGraph";
-import { ThemeState } from "@states/index";
-import { useAtomValue } from "jotai";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
-import BigNumber from "bignumber.js";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-  formatRate,
-} from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
-import { tickToPrice } from "@utils/swap-utils";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -230,7 +233,15 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [getGnotPath, pool.tokenA, pool.tokenB]);
 
   const stakeLogo = useMemo(() => {
-    return pool?.rewardTokens?.map(item => ({
+    return pool?.rewardTokens?.reduce((accum : TokenModel[], current:TokenModel) => {
+      const index = accum.findIndex(
+        inserted => inserted.path === getGnotPath(current).path,
+      );
+      if (index === -1) {
+        accum.push(current);
+      }
+      return accum;
+    }, []).map(item => ({
       ...item,
       ...getGnotPath(item),
     }));

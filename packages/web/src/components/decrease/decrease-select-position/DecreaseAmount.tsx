@@ -1,7 +1,10 @@
-import Range from "@components/common/range/Range";
-import { TokenModel } from "@models/token/token-model";
 import React from "react";
 import { useTranslation } from "react-i18next";
+
+import Range from "@components/common/range/Range";
+import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
+import { TokenModel } from "@models/token/token-model";
+
 import DecreasePoolInfo from "../decrease-pool-info/DecreasePoolInfo";
 import { DecreaseSelectPositionWrapper } from "./DecreaseSelectPosition.styles";
 
@@ -10,7 +13,7 @@ export interface DecreaseSelectPositionProps {
   tokenB: TokenModel;
   percent: number;
   handlePercent: (value: number) => void;
-  pooledTokenInfos: any;
+  pooledTokenInfos: IPooledTokenInfo | null;
   isWrap: boolean;
   setIsWrap: () => void;
 }

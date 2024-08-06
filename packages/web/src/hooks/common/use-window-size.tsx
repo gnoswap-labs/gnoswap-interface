@@ -31,7 +31,6 @@ export const useWindowSize = () => {
   );
 
   const isTablet = [
-    DEVICE_TYPE.MEDIUM_TABLET,
     DEVICE_TYPE.TABLET,
     DEVICE_TYPE.TABLET_M,
     DEVICE_TYPE.TABLET_S,
