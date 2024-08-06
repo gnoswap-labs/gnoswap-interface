@@ -36,7 +36,9 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
 
   const rewardTokenLogos = useMemo(() => {
     return rewardTokens.reduce((acc, current) => {
-      const existToken = acc.some(item => item.name === current.name);
+      const existToken = acc.some(
+        item => item.path === getGnotPath(current).path,
+      );
 
       if (!existToken) {
         acc.push({
