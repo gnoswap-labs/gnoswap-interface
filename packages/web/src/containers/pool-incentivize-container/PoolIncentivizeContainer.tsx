@@ -180,7 +180,6 @@ const PoolIncentivizeContainer: React.FC = () => {
       textBtn={textBtn}
       disableButton={disableButton}
       connected={connected}
-      dummyDisclaimer={t("IncentivizePool:disclaimer.desc")}
     />
   );
 };

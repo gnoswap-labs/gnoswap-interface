@@ -192,9 +192,6 @@ const PoolAddIncentivizeContainer: React.FC = () => {
       period={period}
       setPeriod={setPeriod}
       details={poolDetail}
-      dummyDisclaimer={t("IncentivizePool:disclaimer.desc", {
-        context: "addPage",
-      })}
       token={currentToken}
       tokens={tokenBalances}
       selectToken={selectToken}
