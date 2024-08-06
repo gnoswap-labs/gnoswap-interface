@@ -1,13 +1,15 @@
-import { INoticeContent } from "@components/common/notice/NoticeToast";
-import { CommonState } from "@states/index";
-import { makeRandomId } from "@utils/common";
 import { useAtom } from "jotai";
 import { useCallback, useContext } from "react";
+
+import { INoticeContent } from "@components/common/notice/NoticeToast";
 import {
   INoticeOptions,
   NoticeContext,
-  TNoticeType,
-} from "src/context/NoticeContext";
+  TNoticeType
+} from "@context/NoticeContext";
+import { CommonState } from "@states/index";
+import { makeRandomId } from "@utils/common";
+
 import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
 
 /**
@@ -114,7 +116,7 @@ export const useBroadcastHandler = () => {
         txHash: content?.txHash || null,
         callback,
       });
-      !isHiddenReject && setNotice(content, makeNoticeConfig("error"));
+      if (!isHiddenReject) setNotice(content, makeNoticeConfig("error"));
     },
     [setNotice, setTransactionModalData],
   );

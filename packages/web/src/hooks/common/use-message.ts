@@ -1,7 +1,8 @@
-import { INoticeContent } from "@components/common/notice/NoticeToast";
-import { TNoticeType } from "@context/NoticeContext";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
+
+import { INoticeContent } from "@components/common/notice/NoticeToast";
+import { TNoticeType } from "@context/NoticeContext";
 
 type ACTION_TYPE =
   | "SWAP"
@@ -121,6 +122,8 @@ export const useMessage = () => {
           return t("Modal:confirm.wrap.title");
         case "UNWRAP":
           return t("Modal:confirm.unwrap.title");
+        case "ADD_INCENTIVIZE":
+          return t("Modal:confirm.addIncentive.title");
         case "STAKE":
           return t("Modal:confirm.stake.title");
         case "UNSTAKE":
