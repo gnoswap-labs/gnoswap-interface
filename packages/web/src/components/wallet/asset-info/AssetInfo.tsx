@@ -46,8 +46,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     () => (
       <TokenInfoCell
         token={asset}
-        breakpoint={breakpoint}
         isNative={isNativeToken(asset)}
+        breakpoint={breakpoint}
       />
     ),
     [asset, breakpoint],

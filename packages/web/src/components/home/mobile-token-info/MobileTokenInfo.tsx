@@ -8,6 +8,7 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import { type Token } from "@containers/token-list-container/TokenListContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { DEVICE_TYPE } from "@styles/media";
 
 import {
   HoverSection,
@@ -47,7 +48,11 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
           className="name-col left"
           tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}
         >
-          <TokenInfoCell token={token} isNative={item.isNative} isMobile/>
+          <TokenInfoCell
+            token={token}
+            isNative={item.isNative}
+            breakpoint={DEVICE_TYPE.MOBILE}
+          />
         </TableColumn>
         <TableColumn className="price-col" tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
           {price === "--" ? (

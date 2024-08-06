@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { DEVICE_TYPE } from "@styles/media";
 
 import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
 
@@ -16,40 +17,54 @@ export interface TokenInfoCellProps {
     logoURI: string;
   };
   isNative: boolean;
-  isMobile?: boolean;
+  breakpoint?: DEVICE_TYPE;
 }
 
-const DETERMIN_SHORT_SIZE_WEB = 182 as const;
-const DETERMIN_SHORT_SIZE_MOBILE = 160 as const;
+const DETERMIN_SHORT_SIZE_WEB = 160 as const;
+const DETERMIN_SHORT_SIZE_TABLET = 60 as const;
+const DETERMIN_SHORT_SIZE_MOBILE = 70 as const;
 
-function TokenInfoCell({ token, isMobile, isNative }: TokenInfoCellProps) {
+function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const { name, path, symbol, logoURI } = token;
   const { t } = useTranslation();
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const [shortenPath, setShortenPath] = useState(false);
-  const elementId = useMemo(
-    () => `${token.path}`,
-    [token.path],
-  );
+  const elementId = useMemo(() => `${token.path}`, [token.path]);
 
   useEffect(() => {
     const element = document.getElementById(elementId);
 
-    if (isMobile && (element?.clientWidth || 0) < DETERMIN_SHORT_SIZE_MOBILE) {
+    if (
+      (element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_MOBILE &&
+      breakpoint === DEVICE_TYPE.MOBILE
+    ) {
       setShortenPath(true);
       return;
     }
 
-    if ((element?.clientWidth || 0) < DETERMIN_SHORT_SIZE_WEB) {
+    if (
+      (element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_TABLET &&
+      (breakpoint === DEVICE_TYPE.TABLET ||
+        breakpoint === DEVICE_TYPE.TABLET_M ||
+        breakpoint === DEVICE_TYPE.TABLET_S)
+    ) {
+      setShortenPath(true);
+      return;
+    }
+
+    // breakpoint === DEVICE_TYPE.WEB || breakpoint === DEVICE_TYPE.MEDIUM_WEB
+    if ((element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_WEB) {
       setShortenPath(true);
       return;
     }
 
     setShortenPath(false);
-  }, [elementId, isMobile]);
+  }, [elementId, breakpoint]);
 
-  const length = isMobile ? 15 : 20;
+  const length = useMemo(() => {
+    return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
+  }, [breakpoint]);
 
   const tokenPathDisplay = useMemo(() => {
     if (shortenPath) return "";
@@ -76,7 +91,7 @@ function TokenInfoCell({ token, isMobile, isNative }: TokenInfoCellProps) {
   );
 
   return (
-    <TokenInfoCellWrapper id={elementId}>
+    <TokenInfoCellWrapper>
       <MissingLogo
         symbol={symbol}
         url={logoURI}
@@ -84,9 +99,15 @@ function TokenInfoCell({ token, isMobile, isNative }: TokenInfoCellProps) {
         width={28}
         mobileWidth={28}
       />
-      <div className={`token-name-symbol-path ${isMobile ? "mobile" : ""}`}>
+      <div
+        className={`token-name-symbol-path ${
+          breakpoint === DEVICE_TYPE.MOBILE ? "mobile" : ""
+        }`}
+      >
         <div className="token-name-path">
-          <strong className="token-name">{name}</strong>
+          <strong className="token-name" id={elementId}>
+            {name}
+          </strong>
           <div className="token-link" onClick={onClickPath}>
             {tokenPathDisplay}
             <IconOpenLink
