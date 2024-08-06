@@ -138,9 +138,9 @@ export const useSwapHandler = () => {
     tokenAmountLimit,
     swapState,
     swap,
-    estimateSwapRoute,
     wrap,
     unwrap,
+    updateSwapAmount,
     resetSwapAmount,
   } = useSwap({
     tokenA,
@@ -240,7 +240,7 @@ export const useSwapHandler = () => {
     if (
       !Number(tokenBAmount) ||
       !tokenB ||
-      !tokenPrices[checkGnotPath(tokenB.priceID)].usd
+      !tokenPrices[checkGnotPath(tokenB.priceID)]?.usd
     ) {
       return null;
     }
@@ -608,7 +608,7 @@ export const useSwapHandler = () => {
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenA);
-      estimateSwapRoute(value);
+      updateSwapAmount(value);
 
       if (isSameToken) {
         setTokenAAmount(value);
@@ -687,7 +687,7 @@ export const useSwapHandler = () => {
         ...prev,
         type: "EXACT_OUT",
       }));
-      estimateSwapRoute(value);
+      updateSwapAmount(value);
       setTokenBAmount(value);
     },
     [isSameToken, tokenA, tokenB],
@@ -841,7 +841,7 @@ export const useSwapHandler = () => {
         setCopied(false);
       }, 2000);
     } catch (e) {
-      throw new Error("Copy Error!");
+      throw new Error(`Copy Error! , ${e}`);
     }
   };
 

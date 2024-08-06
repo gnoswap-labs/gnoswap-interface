@@ -47,7 +47,7 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
     const tokenBPriceId = checkGnotPath(tokenB.priceID);
 
     const tokenAPrice = tokenPrices[tokenAPriceId]?.usd
-      ? Number(tokenPrices[tokenBPriceId]?.usd)
+      ? Number(tokenPrices[tokenAPriceId]?.usd)
       : null;
     const tokenBPrice = tokenPrices[tokenBPriceId]?.usd
       ? Number(tokenPrices[tokenBPriceId]?.usd)
@@ -174,42 +174,8 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
       return acc + current.rawAmountUsd;
     }, null);
 
-    const claimUsd = unclaimedRewards.reduce((acc: null | number, current) => {
-      if (acc === null && current.rawAmountUsd === null) {
-        return null;
-      }
-
-      if (acc === null) {
-        return current.rawAmountUsd;
-      }
-
-      if (current.rawAmountUsd === null) {
-        return acc;
-      }
-
-      return acc + current.rawAmountUsd;
-    }, null);
-
-    const total = (() => {
-      if (poolUsd === null && claimUsd === null) {
-        return null;
-      }
-
-      if (poolUsd === null) {
-        return claimUsd;
-      }
-
-      if (claimUsd === null) {
-        return poolUsd;
-      }
-
-      return poolUsd + claimUsd;
-    })();
-
-    return formatOtherPrice(total, {
-      isKMB: false,
-    });
-  }, [pooledTokenInfos, positions.length, unclaimedRewards]);
+    return formatOtherPrice(poolUsd, { isKMB: false });
+  }, [pooledTokenInfos, positions.length]);
 
   return {
     pooledTokenInfos,

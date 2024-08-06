@@ -84,9 +84,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   ]);
 
   const totalBalance = useMemo(() => {
-    const isEmpty = positions.every(item => !item.usdValue);
-
-    if (!canShowData || !isDisplayPrice || isEmpty) {
+    if (!canShowData || !isDisplayPrice) {
       return "-";
     }
     const balance = positions.reduce((current, next) => {
@@ -309,32 +307,36 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [aprRewardInfo]);
 
   const dailyEarning = useMemo(() => {
-    if (!canShowData) {
+    if (!canShowData || !claimableRewardInfo) {
       return "-";
     }
 
-    const claimableUsdValue = claimableRewardInfo
-      ? Object.values(claimableRewardInfo)
-          .flatMap(item => item)
-          .reduce((accum: null | number, current) => {
-            if (
-              (accum === null || accum === undefined) &&
-              current.accumulatedRewardOf1dUsd === null
-            ) {
-              return null;
-            }
+    const claimableUsdValue = Object.values(claimableRewardInfo)
+      .flatMap(item => item)
+      .reduce((accum: null | number, current) => {
+        if (accum === -1) return -1;
 
-            if (accum === null || accum === undefined) {
-              return current.accumulatedRewardOf1dUsd;
-            }
+        if (
+          (accum === null || accum === undefined) &&
+          current.accumulatedRewardOf1dUsd === null
+        ) {
+          return null;
+        }
 
-            if (current.accumulatedRewardOf1dUsd === null) {
-              return accum;
-            }
+        if (accum === null || accum === undefined) {
+          return current.accumulatedRewardOf1dUsd;
+        }
 
-            return accum + current.accumulatedRewardOf1dUsd;
-          }, null as number | null)
-      : null;
+        if (current.accumulatedRewardOf1dUsd === null) {
+          return -1;
+        }
+
+        return accum + current.accumulatedRewardOf1dUsd;
+      }, null as number | null);
+
+    if (claimableUsdValue === null || claimableUsdValue === -1) {
+      return "-";
+    }
 
     return formatOtherPrice(claimableUsdValue, { isKMB: false });
   }, [canShowData, isDisplayPrice, claimableRewardInfo]);

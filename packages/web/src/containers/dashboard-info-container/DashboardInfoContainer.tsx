@@ -113,21 +113,27 @@ const DashboardInfoContainer: React.FC = () => {
         progressBar: progressBar,
         stakingRatio: stakingRatio,
         dailyBlockEmissionsInfo: {
-          liquidityStaking:
-            formatOtherPrice(Number(tokenData?.gnsDailyBlockEmissions) * 0.75, {
+          liquidityStaking: formatOtherPrice(
+            Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 75) / 100,
+            {
               isKMB: false,
               usd: false,
-            }),
-          devOps:
-            formatOtherPrice(Number(tokenData?.gnsDailyBlockEmissions) * 0.2, {
+            },
+          ),
+          devOps: formatOtherPrice(
+            Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 20) / 100,
+            {
               isKMB: false,
               usd: false,
-            }),
-          community:
-            formatOtherPrice(Number(tokenData?.gnsDailyBlockEmissions) * 0.05, {
+            },
+          ),
+          community: formatOtherPrice(
+            Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 5) / 100,
+            {
               isKMB: false,
               usd: false,
-            }),
+            },
+          ),
         },
       }}
       governenceOverviewInfo={initialGovernenceOverviewInfo}

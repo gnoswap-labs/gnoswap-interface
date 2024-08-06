@@ -47,7 +47,7 @@ const BlockEmissions = ({
   const { t } = useTranslation();
   return (
     <BlockEmissionsWrapper>
-      <h5>{t("Dashboard:supOver.dailyBlock.tooltip")}</h5>
+      <h5>{t("Dashboard:supOver.dailyBlock.label")}</h5>
       <div className="content">
         <div className="label">
           {t("Dashboard:supOver.blocEmiss.tooltip.liquiStaking")}{" "}
@@ -148,13 +148,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         <div className="daily-block-emissions">
           <div className="label-title">
             <div>{t("Dashboard:supOver.dailyBlock.label")}</div>
-            <DashboardLabel
-              tooltip={
-                <BlockEmissions
-                  {...supplyOverviewInfo.dailyBlockEmissionsInfo}
-                />
-              }
-            />
+            <DashboardLabel tooltip={t("Dashboard:supOver.dailyBlock.tooltip")} />
           </div>
           <div className="daily-block-emissions-tooltip">
             {!loading ? (

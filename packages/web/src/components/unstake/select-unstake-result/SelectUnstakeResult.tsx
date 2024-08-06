@@ -39,7 +39,9 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
             <span className="dollar-value">{pooledTokenInfo.amountUSD}</span>
           </li>
         ))}
-        {unclaimedRewards.map((pooledTokenInfo, index) => (
+        {unclaimedRewards.map((pooledTokenInfo, index) => {
+          if (!pooledTokenInfo.amount) return null;
+          return (
           <li key={index}>
             <div className="main-info">
               <MissingLogo
@@ -60,7 +62,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
             </div>
             <span className="dollar-value">{pooledTokenInfo.amountUSD}</span>
           </li>
-        ))}
+        );})}
       </ul>
       <div className="result-section">
         <div className="total-amount-box">

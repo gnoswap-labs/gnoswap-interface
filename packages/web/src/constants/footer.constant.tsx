@@ -82,7 +82,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "HeaderFooter:helpSection.item.projectOnboarding",
-        path: "/",
+        path: "https://docs.gnoswap.io/references/onboarding-guide",
         newTab: true,
       },
     ],

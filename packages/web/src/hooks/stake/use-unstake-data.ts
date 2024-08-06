@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -6,14 +8,14 @@ import {
   formatOtherPrice,
   formatPoolPairAmount,
 } from "@utils/new-number-utils";
-import { useMemo } from "react";
+import { TokenModel } from "@models/token/token-model";
 
 export interface UnstakeDataProps {
   positions: PoolPositionModel[];
 }
 
 export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
-  const { tokenPrices } = useTokenData();
+  const { tokens, tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
   const pooledTokenInfos = useMemo(() => {
@@ -107,77 +109,84 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     if (positions.length === 0) {
       return [];
     }
-    const tokenA = positions[0].pool.tokenA;
-    const tokenB = positions[0].pool.tokenB;
-    const unclaimedTokenAAmount = positions.reduce(
-      (accum: number | null, position) => {
-        if (accum === null && !position.unclaimedFeeAAmount) return null;
 
-        if (accum === null) return Number(position.unclaimedFeeAAmount);
+    const rewardTokenList: string[] = [];
 
-        if (!position.unclaimedFeeAAmount) return accum;
+    for (let i = 0; i < positions.length; i++) {
+      for (let j = 0; j < positions[i].reward.length; j++) {
+        if (!rewardTokenList.includes(positions[i].reward[j].rewardToken.path))
+          rewardTokenList.push(positions[i].reward[j].rewardToken.path);
+        if (rewardTokenList.length >= 4) break;
+      }
+      if (rewardTokenList.length >= 4) break;
+    }
 
-        return accum + Number(position.unclaimedFeeAAmount);
-      },
-      null,
-    );
-    const unclaimedTokenBAmount = positions.reduce(
-      (accum: number | null, position) => {
-        if (accum === null && !position.unclaimedFeeBAmount) return null;
-
-        if (accum === null) return Number(position.unclaimedFeeBAmount);
-
-        if (!position.unclaimedFeeBAmount) return accum;
-
-        return accum + Number(position.unclaimedFeeBAmount);
-      },
-      null,
-    );
-
-    const tokenAPriceId = checkGnotPath(tokenA.priceID);
-    const tokenBPriceId = checkGnotPath(tokenB.priceID);
-
-    const tokenAPrice = tokenPrices[tokenAPriceId]?.usd
-      ? Number(tokenPrices[tokenAPriceId]?.usd)
-      : null;
-    const tokenBPrice = tokenPrices[tokenBPriceId]?.usd
-      ? Number(tokenPrices[tokenBPriceId]?.usd)
-      : null;
-
-    const tokenAUSD =
-      unclaimedTokenAAmount !== null && tokenAPrice !== null
-        ? unclaimedTokenAAmount * tokenAPrice
-        : null;
-
-    const tokenBUSD =
-      unclaimedTokenBAmount !== null && tokenBPrice !== null
-        ? unclaimedTokenBAmount * tokenBPrice
-        : null;
-
-    return [
+    const rewards = rewardTokenList.reduce<
       {
-        token: { ...tokenA, ...getGnotPath(tokenA) },
-        amount: unclaimedTokenAAmount,
-        amountUSD: formatOtherPrice(tokenAUSD, {
-          isKMB: false,
-        }),
-        rawAmountUsd: tokenAUSD,
-      },
-      {
-        token: { ...tokenB, ...getGnotPath(tokenB) },
-        amount: unclaimedTokenBAmount,
-        amountUSD: formatOtherPrice(tokenBUSD, {
-          isKMB: false,
-        }),
-        rawAmountUsd: tokenBUSD,
-      },
-    ];
-  }, [getGnotPath, positions, tokenPrices]);
+        token: TokenModel;
+        amount: number | null;
+        amountUSD: string;
+        rawAmountUsd: number | null;
+      }[]
+    >((rewardList, rewardTokenPath) => {
+      const rewardToken = tokens.find(item => item.path === rewardTokenPath);
+      const tokenPriceId = checkGnotPath(rewardToken?.priceID || "");
+      const tokenPrice = tokenPrices[tokenPriceId]?.usd
+        ? Number(tokenPrices[tokenPriceId]?.usd)
+        : 0;
+
+      const rewardAccum = positions.reduce<{
+        amount: number;
+        usd: number;
+      } | null>((accum: { amount: number; usd: number } | null, position) => {
+        if (accum === null && !position.reward) return null;
+
+        let amount = 0;
+        let usd = 0;
+
+        position.reward.forEach((rewardInfo) => {
+          if (
+            rewardInfo.rewardToken.path === rewardTokenPath &&
+            rewardInfo.rewardType !== "SWAP_FEE"
+          ) {
+            amount += Number(rewardInfo.claimableAmount);
+            usd +=
+              Number(rewardInfo.claimableUsd) ||
+              Number(rewardInfo.claimableAmount) * tokenPrice;
+          }
+        });
+
+        if (accum === null) return { amount, usd };
+
+        if (!amount) return accum;
+
+        return {
+          amount: accum.amount + amount,
+          usd: accum.usd + usd,
+        };
+      }, null);
+
+      rewardList.push({
+        token: { ...rewardToken!, ...getGnotPath(rewardToken) },
+        amount: rewardAccum?.amount || null,
+        amountUSD: rewardAccum?.usd
+          ? formatOtherPrice(rewardAccum?.usd, {
+              isKMB: false,
+            })
+          : "-",
+        rawAmountUsd: rewardAccum?.usd || null,
+      });
+      return rewardList;
+    }, []); 
+
+    return rewards;
+  }, [getGnotPath, positions, tokens]);
 
   const totalLiquidityUSD = useMemo(() => {
     if (positions.length === 0) {
       return "-";
     }
+
     const poolUsd = pooledTokenInfos.reduce((acc: null | number, current) => {
       if (acc === null && current.rawAmountUsd === null) {
         return null;
@@ -211,19 +220,8 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     }, null);
 
     const total = (() => {
-      if (poolUsd === null && claimUsd === null) {
-        return null;
-      }
-
-      if (poolUsd === null) {
-        return claimUsd;
-      }
-
-      if (claimUsd === null) {
-        return poolUsd;
-      }
-
-      return poolUsd + claimUsd;
+      const tmpTotal = (poolUsd || 0) + (claimUsd || 0);
+      return tmpTotal !== 0 ? tmpTotal : null;
     })();
 
     return formatOtherPrice(total, { isKMB: false });

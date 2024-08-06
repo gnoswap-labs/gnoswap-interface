@@ -1,40 +1,43 @@
-import { WalletClient } from "@common/clients/wallet-client";
-import { SwapRouterRepository } from "./swap-router-repository";
-import { makeRouteKey, makeRoutesQuery } from "@utils/swap-route-utils";
-import { GnoProvider } from "@gnolang/gno-js-client";
-import { CommonError } from "@common/errors";
-import { SwapError } from "@common/errors/swap";
-import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
-import { SwapRouteRequest } from "./request/swap-route-request";
-import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
-import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import BigNumber from "bignumber.js";
-import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
-import { MAX_UINT64 } from "@utils/math.utils";
-import { isNativeToken } from "@models/token/token-model";
-import {
-  makeDepositMessage,
-  makeWithdrawMessage,
-} from "@common/clients/wallet-client/transaction-messages/token";
-import {
-  makePoolTokenApproveMessage,
-  makeRouterTokenApproveMessage,
-} from "@common/clients/wallet-client/transaction-messages/pool";
+
+import { NetworkClient } from "@common/clients/network-client";
+import { WalletClient } from "@common/clients/wallet-client";
 import {
   SendTransactionErrorResponse,
   SendTransactionSuccessResponse,
-  WalletResponse,
+  WalletResponse
 } from "@common/clients/wallet-client/protocols";
-import { WrapTokenRequest } from "./request/wrap-token-request";
-import { TokenError } from "@common/errors/token";
-import { UnwrapTokenRequest } from "./request/unwrap-token-request";
-import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "./response/swap-route-response";
 import { TransactionMessage } from "@common/clients/wallet-client/transaction-messages";
-import { checkGnotPath, toNativePath } from "@utils/common";
-import { NetworkClient } from "@common/clients/network-client";
-import { EstimatedRoute } from "@models/swap/swap-route-info";
+import {
+  makePoolTokenApproveMessage,
+  makeRouterTokenApproveMessage
+} from "@common/clients/wallet-client/transaction-messages/pool";
+import {
+  makeDepositMessage,
+  makeWithdrawMessage
+} from "@common/clients/wallet-client/transaction-messages/token";
+import { CommonError } from "@common/errors";
+import { SwapError } from "@common/errors/swap";
+import { TokenError } from "@common/errors/token";
 import { PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
+import { GnoProvider } from "@gnolang/gno-js-client";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
+import { isNativeToken } from "@models/token/token-model";
+import { checkGnotPath, toNativePath } from "@utils/common";
+import { MAX_UINT64 } from "@utils/math.utils";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
+import { makeRouteKey, makeRoutesQuery } from "@utils/swap-route-utils";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
+import { SwapRouteRequest } from "./request/swap-route-request";
+import { UnwrapTokenRequest } from "./request/unwrap-token-request";
+import { WrapTokenRequest } from "./request/wrap-token-request";
+import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "./response/swap-route-response";
+import { SwapRouterRepository } from "./swap-router-repository";
 
 const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
@@ -42,7 +45,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
-  private pools: PoolRPCModel[];
 
   constructor(
     rpcProvider: GnoProvider | null,
@@ -51,13 +53,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   ) {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
-    this.pools = [];
     this.networkClient = networkClient;
   }
 
-  public updatePools(pools: PoolRPCModel[]) {
-    this.pools = pools;
-  }
 
   public estimateSwapRoute = async (
     request: EstimateSwapRouteRequest,

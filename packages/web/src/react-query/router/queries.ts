@@ -76,6 +76,7 @@ export const useEstimateSwap = (
       return result;
     },
     // retry: false,
+    enabled: !!request?.inputToken?.path && !!request?.outputToken?.path,
     ...options,
   });
 };
