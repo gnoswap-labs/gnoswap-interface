@@ -33,7 +33,6 @@ function useTooltip({ placement }: { placement: Placement }) {
     placement,
     open,
     onOpenChange: setOpen,
-
     whileElementsMounted: autoUpdate,
     middleware: [
       offset(20),
