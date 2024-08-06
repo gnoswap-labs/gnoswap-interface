@@ -25,6 +25,41 @@ export const Content = styled.div<ContentToolTipProps>`
     padding: 12px;
     gap: 4px;
   }
+
+  &.use-scroll {
+    max-height: calc(min(80vh, 480px));
+    overflow-y: scroll;
+    padding-right: 8px;
+
+    @property --scroll-color {
+      syntax: "<color>";
+      inherits: true;
+      initial-value: ${({ theme }) => theme.color.background12};
+    }
+
+    transition: --scroll-color 0.3s;
+
+    ::-webkit-scrollbar {
+      width: 12px;
+      display: block;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+      padding: 0;
+      display: none;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--scroll-color);
+      border-radius: 8px;
+      border: 4px solid ${({ theme }) => theme.color.background12};
+    }
+
+    &.show-scroll {
+      --scroll-color: #82878ebf;
+    }
+  }
 `;
 
 export const FloatContent = styled.div`

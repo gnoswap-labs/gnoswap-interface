@@ -18,7 +18,7 @@ import {
   type Placement
 } from "@floating-ui/react";
 import { useAtomValue } from "jotai";
-import React, { CSSProperties, useMemo, useRef, useState } from "react";
+import React, { CSSProperties, useCallback, useMemo, useRef, useState } from "react";
 
 import { ThemeState } from "@states/index";
 import { Z_INDEX } from "@styles/zIndex";
@@ -80,6 +80,7 @@ interface TooltipProps {
   className?: string;
   isShouldShowed?: boolean;
   forcedOpen?: boolean;
+  scroll?: boolean;
 }
 
 const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
@@ -91,6 +92,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   isShouldShowed = true,
   className,
   forcedOpen = false,
+  scroll = false,
 }) => {
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
@@ -103,6 +105,20 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   const showFloat = useMemo(() => {
     return forcedOpen || (open && isShouldShowed);
   }, [forcedOpen, isShouldShowed, open]);
+
+  const showScroll = useCallback((scrollContainer: HTMLElement | null) => {
+    let timeout: NodeJS.Timeout;
+    scrollContainer?.addEventListener("scroll", () => {
+      scrollContainer.classList.add("show-scroll");
+
+      clearTimeout(timeout);
+
+      timeout = setTimeout(() => {
+        scrollContainer.classList.remove("show-scroll");
+      }, 1000);
+    });
+  }, []);
+
 
   return (
     <>
@@ -143,6 +159,8 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
             {FloatingContent && (
               <Content
                 themeKey={themeKey}
+                ref={ref => showScroll(ref)}
+                className={`${scroll ? "use-scroll" : ""}`}
               >
                 {FloatingContent}
               </Content>
