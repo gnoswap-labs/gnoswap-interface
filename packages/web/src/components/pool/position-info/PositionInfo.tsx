@@ -60,13 +60,13 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
       case DexEvent.REPOSITION:
         return "business:positionHistoryAction.reposition";
       case DexEvent.CLAIM:
-        return "business:positionHistoryAction.claim";
+        return "business:positionHistoryAction.claimFees";
       case DexEvent.UNSTAKE:
         return "business:positionHistoryAction.unstake";
       case DexEvent.STAKE:
         return "business:positionHistoryAction.stake";
       case DexEvent.CLAIM_STAKING:
-        return "business:positionHistoryAction.claim";
+        return "business:positionHistoryAction.claimRewards";
       default:
         return "undefined";
     }
@@ -96,14 +96,22 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
           </span>
         </TableColumn>
         <TableColumn className="right" tdWidth={tableInfo.list[3].width}>
-          <span className="position-index">{`${formatPoolPairAmount(amountA, {
-            decimals: 6,
-          })} ${tokenASymbol}`}</span>
+          <span className="position-index">
+            {amountA
+              ? `${formatPoolPairAmount(amountA, {
+                  decimals: 6,
+                })} ${tokenASymbol}`
+              : "-"}
+          </span>
         </TableColumn>
         <TableColumn className="right" tdWidth={tableInfo.list[4].width}>
-          <span className="position-index">{`${formatPoolPairAmount(amountB, {
-            decimals: 6,
-          })} ${tokenBSymbol}`}</span>
+          <span className="position-index">
+            {amountB
+              ? `${formatPoolPairAmount(amountB, {
+                  decimals: 6,
+                })} ${tokenBSymbol}`
+              : "-"}
+          </span>
         </TableColumn>
       </HoverSection>
     </PositionInfoWrapper>
