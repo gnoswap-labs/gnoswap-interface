@@ -1,31 +1,32 @@
-import React, { useCallback, useState, useEffect, useMemo } from "react";
-import TokenChart from "@components/token/token-chart/TokenChart";
-import { IPriceResponse, IPrices1d } from "@repositories/token";
+import BigNumber from "bignumber.js";
+import dayjs from "dayjs";
 import { useAtom } from "jotai";
-import { TokenState } from "@states/index";
-import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+
+import TokenChart from "@components/token/token-chart/TokenChart";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useComponentSize from "@hooks/common/use-component-size";
+import useCustomRouter from "@hooks/common/use-custom-router";
+import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { DEVICE_TYPE } from "@styles/media";
-import { checkPositivePrice, generateDateSequence } from "@utils/common";
-import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import {
   useGetTokenByPath,
   useGetTokenDetailByPath,
-  useGetTokenPricesByPath,
+  useGetTokenPricesByPath
 } from "@query/token";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useLoading } from "@hooks/common/use-loading";
-import dayjs from "dayjs";
+import { IPriceResponse, IPrices1d } from "@repositories/token";
+import { TokenState } from "@states/index";
+import { DEVICE_TYPE } from "@styles/media";
 import {
   getLabelChartV2,
   getLocalizeTime,
-  getNumberOfAxis,
+  getNumberOfAxis
 } from "@utils/chart";
-import BigNumber from "bignumber.js";
+import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
-import useCustomRouter from "@hooks/common/use-custom-router";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -221,10 +222,7 @@ const TokenChartContainer: React.FC = () => {
         },
       }));
       if (!fromSelectToken && !tokenB.logoURI) {
-        openTradingModal({
-          symbol: tokenB.symbol,
-          path: tokenB.path,
-        });
+        openTradingModal(tokenB);
       }
     }
   }, [
