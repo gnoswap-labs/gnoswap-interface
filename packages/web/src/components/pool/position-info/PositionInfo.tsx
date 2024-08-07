@@ -90,9 +90,11 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
         </TableColumn>
         <TableColumn className="right" tdWidth={tableInfo.list[2].width}>
           <span className="position-index">
-            {formatOtherPrice(usdValue, {
-              isKMB: false,
-            })}
+            {usdValue
+              ? formatOtherPrice(usdValue, {
+                  isKMB: false,
+                })
+              : "-"}
           </span>
         </TableColumn>
         <TableColumn className="right" tdWidth={tableInfo.list[3].width}>
