@@ -1,16 +1,18 @@
+import { useAtom } from "jotai";
+
+import { ERROR_VALUE } from "@common/errors/adena";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useMessage } from "@hooks/common/use-message";
+import { DexEvent } from "@repositories/common";
 import {
   TransferGRC20TokenRequest,
-  TransferNativeTokenRequest,
+  TransferNativeTokenRequest
 } from "@repositories/wallet/request";
-import { useEffect, useState } from "react";
-import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
-import { ERROR_VALUE } from "@common/errors/adena";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
-import { useMessage } from "@hooks/common/use-message";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { useEffect, useState } from "react";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -55,7 +57,7 @@ const useWithdrawTokens = () => {
     );
 
     broadcastLoading(
-      getMessage("WITHDRAW", "pending", {
+      getMessage(DexEvent.WITHDRAW, "pending", {
         tokenASymbol: tokenSymbol,
         tokenAAmount: tokenAmount,
       }),
@@ -66,7 +68,7 @@ const useWithdrawTokens = () => {
         if (response.code === 0) {
           broadcastPending(
             getMessage(
-              "WITHDRAW",
+              DexEvent.WITHDRAW,
               "pending",
               {
                 tokenASymbol: tokenSymbol,
@@ -78,7 +80,7 @@ const useWithdrawTokens = () => {
           setTimeout(() => {
             broadcastSuccess(
               getMessage(
-                "WITHDRAW",
+                DexEvent.WITHDRAW,
                 "success",
                 {
                   tokenASymbol: tokenSymbol,
@@ -93,7 +95,7 @@ const useWithdrawTokens = () => {
           response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
           broadcastRejected(
-            getMessage("WITHDRAW", "error", {
+            getMessage(DexEvent.WITHDRAW, "error", {
               tokenASymbol: tokenSymbol,
               tokenAAmount: tokenAmount,
             }),
@@ -102,7 +104,7 @@ const useWithdrawTokens = () => {
         } else {
           broadcastError(
             getMessage(
-              "WITHDRAW",
+              DexEvent.WITHDRAW,
               "error",
               {
                 tokenASymbol: tokenSymbol,

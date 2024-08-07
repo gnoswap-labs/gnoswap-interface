@@ -1,8 +1,11 @@
+import { useAtom } from "jotai";
+import { useCallback, useMemo } from "react";
+
 import { ERROR_VALUE } from "@common/errors/adena";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
-  SwapFeeTierType,
+  SwapFeeTierType
 } from "@constants/option.constant";
 import IncreasePositionModalContainer from "@containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
@@ -14,11 +17,10 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { DexEvent } from "@repositories/common";
 import { IncreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useAtom } from "jotai";
-import { useCallback, useMemo } from "react";
 
 export interface Props {
   openModal: () => void;
@@ -106,7 +108,7 @@ export const useIncreasePositionModal = ({
     const tokenB = selectedPosition.pool.tokenB;
 
     broadcastLoading(
-      getMessage("ADD", "pending", {
+      getMessage(DexEvent.ADD, "pending", {
         tokenASymbol: tokenA.symbol,
         tokenBSymbol: tokenB.symbol,
         tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString("en-US", {
@@ -145,7 +147,7 @@ export const useIncreasePositionModal = ({
 
           broadcastSuccess(
             getMessage(
-              "ADD",
+              DexEvent.ADD,
               "success",
               {
                 tokenASymbol: tokenA.symbol,
@@ -163,7 +165,7 @@ export const useIncreasePositionModal = ({
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
         broadcastRejected(
-          getMessage("ADD", "error", {
+          getMessage(DexEvent.ADD, "error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
             tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
@@ -179,7 +181,7 @@ export const useIncreasePositionModal = ({
       } else {
         broadcastError(
           getMessage(
-            "ADD",
+            DexEvent.ADD,
             "error",
             {
               tokenASymbol: tokenA.symbol,

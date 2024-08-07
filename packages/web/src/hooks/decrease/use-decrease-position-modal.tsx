@@ -7,7 +7,7 @@ import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
-  SwapFeeTierType,
+  SwapFeeTierType
 } from "@constants/option.constant";
 import DecreasePositionModalContainer from "@containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
@@ -15,13 +15,14 @@ import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useMessage } from "@hooks/common/use-message";
 import { TokenModel } from "@models/token/token-model";
+import { DexEvent } from "@repositories/common";
 import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import { IPooledTokenInfo } from "./use-decrease-handle";
-import { useMessage } from "@hooks/common/use-message";
 
 export interface Props {
   openModal: () => void;
@@ -140,7 +141,7 @@ export const useDecreasePositionModal = ({
     }
 
     broadcastLoading(
-      getMessage("REMOVE", "pending", {
+      getMessage(DexEvent.REMOVE, "pending", {
         tokenASymbol: tokenTransform(tokenA).symbol,
         tokenBSymbol: tokenTransform(tokenB).symbol,
         tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
@@ -206,7 +207,7 @@ export const useDecreasePositionModal = ({
 
           broadcastSuccess(
             getMessage(
-              "REMOVE",
+              DexEvent.REMOVE,
               "success",
               {
                 tokenASymbol: tokenTransform(tokenA).symbol,
@@ -222,10 +223,17 @@ export const useDecreasePositionModal = ({
       } else if (
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
-        broadcastRejected(getMessage("REMOVE", "error", defaultMessageData));
+        broadcastRejected(
+          getMessage(DexEvent.REMOVE, "error", defaultMessageData),
+        );
       } else {
         broadcastError(
-          getMessage("REMOVE", "error", defaultMessageData, result?.data?.hash),
+          getMessage(
+            DexEvent.REMOVE,
+            "error",
+            defaultMessageData,
+            result?.data?.hash,
+          ),
         );
       }
     }

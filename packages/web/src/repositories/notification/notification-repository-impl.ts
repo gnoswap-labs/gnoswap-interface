@@ -1,16 +1,18 @@
-import { StorageKeyType } from "@common/values";
-import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
-import { NotificationRepository } from "./dashboard-repository";
-import { AccountActivityRequest } from "./request";
-import { AccountActivity } from "./response";
-import { TransactionModel } from "@models/account/account-history-model";
-import { prettyNumberFloatInteger } from "@utils/number-utils";
-import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
+import { StorageClient } from "@common/clients/storage-client";
 import { CommonError } from "@common/errors";
-import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { StorageKeyType } from "@common/values";
+import { TransactionModel } from "@models/account/account-history-model";
 import { TransactionGroupsType } from "@models/notification";
 import { NotificationMapper } from "@models/notification/mapper/notification-mapper";
+import { DexEvent } from "@repositories/common";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { prettyNumberFloatInteger } from "@utils/number-utils";
+
+import { NotificationRepository } from "./dashboard-repository";
+import { AccountActivityRequest } from "./request";
+import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
+import { AccountActivity } from "./response";
 
 export class NotificationRepositoryImpl implements NotificationRepository {
   private networkClient: NetworkClient | null;
@@ -111,27 +113,27 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       .join(" and ");
 
     switch (tx.actionType) {
-      case "SWAP":
+      case DexEvent.SWAP:
         return `Swapped ${tokenStr}`;
-      case "ADD":
+      case DexEvent.ADD:
         return `Added ${tokenStr}`;
-      case "REMOVE":
+      case DexEvent.REMOVE:
         return `Removed ${tokenStr}`;
-      case "STAKE":
+      case DexEvent.STAKE:
         return `Staked ${tokenStr}`;
-      case "UNSTAKE":
+      case DexEvent.UNSTAKE:
         return `Unstaked ${tokenStr}`;
-      case "CLAIM":
+      case DexEvent.CLAIM:
         return `Claimed ${tokenStr}`;
-      case "WITHDRAW":
+      case DexEvent.WITHDRAW:
         return `Sent ${token0Display}`;
-      case "DEPOSIT":
+      case DexEvent.DEPOSIT:
         return `Received ${token0Display}`;
-      case "DECREASE":
+      case DexEvent.DECREASE:
         return `Decreased ${tokenStr}`;
-      case "INCREASE":
+      case DexEvent.INCREASE:
         return `Increased ${tokenStr}`;
-      case "REPOSITION":
+      case DexEvent.REPOSITION:
         return `Repositioned ${tokenStr}`;
       default:
         return `${this.capitalizeFirstLetter(
@@ -154,12 +156,13 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     try {
       const { data } = await this.networkClient.get<{
         data: AccountActivity[];
-        error: any;
+        error: unknown;
       }>({
         url: "/users/" + request.address + "/activity",
       });
 
       return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return [];
     }

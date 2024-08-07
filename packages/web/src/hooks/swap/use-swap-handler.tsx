@@ -1,35 +1,38 @@
+import { useQueryClient } from "@tanstack/react-query";
+import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { ERROR_VALUE } from "@common/errors/adena";
+import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
+import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
+import { PAGE_PATH } from "@constants/page.constant";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import useRouter from "@hooks/common/use-custom-router";
+import { useMessage } from "@hooks/common/use-message";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useSlippage } from "@hooks/common/use-slippage";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { TokenModel, isNativeToken } from "@models/token/token-model";
-import { CommonState, SwapState } from "@states/index";
-import BigNumber from "bignumber.js";
-import { useAtom } from "jotai";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSwap } from "./use-swap";
-import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
-import { matchInputNumber } from "@utils/number-utils";
-import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
-import useRouter from "@hooks/common/use-custom-router";
-import { isEmptyObject } from "@utils/validation-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
-import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
-import { ERROR_VALUE } from "@common/errors/adena";
-import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
-import { useQueryClient } from "@tanstack/react-query";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { QUERY_KEY, useGetSwapFee } from "@query/router";
+import { DexEvent } from "@repositories/common";
 import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
+import { CommonState, SwapState } from "@states/index";
+import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
-import { PAGE_PATH } from "@constants/page.constant";
-import { useMessage } from "@hooks/common/use-message";
+import { matchInputNumber } from "@utils/number-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { isEmptyObject } from "@utils/validation-utils";
+
+import { useSwap } from "./use-swap";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -861,7 +864,7 @@ export const useSwapHandler = () => {
     };
 
     if (isNativeToken(tokenA)) {
-      broadcastLoading(getMessage("WRAP", "pending", messageData));
+      broadcastLoading(getMessage(DexEvent.WRAP, "pending", messageData));
       openTransactionConfirmModal();
 
       wrap(swapAmount)
@@ -873,7 +876,7 @@ export const useSwapHandler = () => {
               const tokenBAmountStr = tokenBAmount;
               broadcastSuccess(
                 getMessage(
-                  "WRAP",
+                  DexEvent.WRAP,
                   "success",
                   {
                     ...messageData,
@@ -889,11 +892,16 @@ export const useSwapHandler = () => {
           } else if (
             response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
-            broadcastRejected(getMessage("WRAP", "error", messageData));
+            broadcastRejected(getMessage(DexEvent.WRAP, "error", messageData));
             openTransactionConfirmModal();
           } else {
             broadcastError(
-              getMessage("WRAP", "error", messageData, response?.data?.hash),
+              getMessage(
+                DexEvent.WRAP,
+                "error",
+                messageData,
+                response?.data?.hash,
+              ),
             );
             openTransactionConfirmModal();
           }
@@ -905,7 +913,7 @@ export const useSwapHandler = () => {
           });
         });
     } else {
-      broadcastLoading(getMessage("UNWRAP", "pending", messageData));
+      broadcastLoading(getMessage(DexEvent.UNWRAP, "pending", messageData));
       openTransactionConfirmModal();
 
       unwrap(swapAmount)
@@ -917,7 +925,7 @@ export const useSwapHandler = () => {
               const tokenBAmountStr = tokenBAmount;
               broadcastSuccess(
                 getMessage(
-                  "UNWRAP",
+                  DexEvent.UNWRAP,
                   "success",
                   {
                     ...messageData,
@@ -933,11 +941,18 @@ export const useSwapHandler = () => {
           } else if (
             response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
-            broadcastRejected(getMessage("UNWRAP", "error", messageData));
+            broadcastRejected(
+              getMessage(DexEvent.UNWRAP, "error", messageData),
+            );
             openTransactionConfirmModal();
           } else {
             broadcastError(
-              getMessage("UNWRAP", "error", messageData, response?.data?.hash),
+              getMessage(
+                DexEvent.UNWRAP,
+                "error",
+                messageData,
+                response?.data?.hash,
+              ),
             );
             openTransactionConfirmModal();
           }
@@ -980,7 +995,7 @@ export const useSwapHandler = () => {
       return;
     }
 
-    broadcastLoading(getMessage("SWAP", "pending", broadcastMessage));
+    broadcastLoading(getMessage(DexEvent.SWAP, "pending", broadcastMessage));
     openTransactionConfirmModal();
 
     swap(estimatedRoutes, swapAmount)
@@ -998,7 +1013,7 @@ export const useSwapHandler = () => {
                 : tokenBAmount;
               broadcastSuccess(
                 getMessage(
-                  "SWAP",
+                  DexEvent.SWAP,
                   "success",
                   {
                     ...broadcastMessage,
@@ -1016,7 +1031,7 @@ export const useSwapHandler = () => {
           ) {
             broadcastRejected(
               getMessage(
-                "SWAP",
+                DexEvent.SWAP,
                 "error",
                 broadcastMessage,
                 response.data?.hash,
@@ -1026,7 +1041,7 @@ export const useSwapHandler = () => {
           } else {
             broadcastError(
               getMessage(
-                "SWAP",
+                DexEvent.SWAP,
                 "error",
                 broadcastMessage,
                 response.type === ERROR_VALUE.TRANSACTION_FAILED.type

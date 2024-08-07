@@ -63,7 +63,6 @@ export class DashboardRepositoryImpl implements DashboardRepository {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    // type: "ALL" | "ADD" | "INCREASE" | "DECREASE" | "SWAP" | "STAKE" | "UNSTAKE" | "CLAIM" | "WITHDRAW" | "REMOVE";
     const response = await this.networkClient
       .get<{ data: OnchainActivityResponse }>({
         url: `/activity?type=${OnChainRequestMapping[request.type]}`,

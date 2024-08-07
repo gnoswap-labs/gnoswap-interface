@@ -1,19 +1,8 @@
-type TxType =
-  | "SWAP"
-  | "ADD"
-  | "REMOVE"
-  | "STAKE"
-  | "UNSTAKE"
-  | "CLAIM"
-  | "WITHDRAW"
-  | "DEPOSIT"
-  | "DECREASE"
-  | "INCREASE"
-  | "REPOSITION";
+import { DexEventType } from "@repositories/common";
 
 export interface AccountActivity {
   txHash: string;
-  actionType: TxType | (string & {});
+  actionType: DexEventType | (string & {});
   tokenA: OnchainToken;
   tokenB: OnchainToken;
   tokenAAmount: string;

@@ -1,40 +1,43 @@
+import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { ERROR_VALUE } from "@common/errors/adena";
+import { GNS_TOKEN } from "@common/values/token-constant";
+import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
 import EarnAddConfirm from "@components/earn-add/earn-add-confirm/EarnAddConfirm";
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType,
+  SwapFeeTierType
 } from "@constants/option.constant";
-import { TokenModel } from "@models/token/token-model";
-import { CommonState } from "@states/index";
-import { useAtom } from "jotai";
-import { useCallback, useEffect, useMemo } from "react";
-import { TokenAmountInputModel } from "./use-token-amount-input";
-import { priceToNearTick } from "@utils/swap-utils";
-import { SelectPool } from "@hooks/pool/use-select-pool";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
-import { useTokenData } from "./use-token-data";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import BigNumber from "bignumber.js";
-import useRouter from "@hooks/common/use-custom-router";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
-import {
-  CreatePoolFailedResponse,
-  CreatePoolSuccessResponse,
-} from "@repositories/pool/response/create-pool-response";
+import useRouter from "@hooks/common/use-custom-router";
+import { useMessage } from "@hooks/common/use-message";
+import { SelectPool } from "@hooks/pool/use-select-pool";
+import { TokenModel } from "@models/token/token-model";
+import { useGetPoolCreationFee } from "@query/pools";
+import { DexEvent } from "@repositories/common";
 import {
   AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse,
+  AddLiquiditySuccessResponse
 } from "@repositories/pool/response/add-liquidity-response";
-import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
-import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import { useGetPoolCreationFee } from "@query/pools";
-import { GNS_TOKEN_PATH } from "@constants/environment.constant";
+import {
+  CreatePoolFailedResponse,
+  CreatePoolSuccessResponse
+} from "@repositories/pool/response/create-pool-response";
+import { CommonState } from "@states/index";
 import { subscriptFormat } from "@utils/number-utils";
-import { GNS_TOKEN } from "@common/values/token-constant";
-import { ERROR_VALUE } from "@common/errors/adena";
-import { useTranslation } from "react-i18next";
-import { useMessage } from "@hooks/common/use-message";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { priceToNearTick } from "@utils/swap-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+
+import { TokenAmountInputModel } from "./use-token-amount-input";
+import { useTokenData } from "./use-token-data";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -351,7 +354,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       }
 
       broadcastLoading(
-        getMessage("ADD", "pending", {
+        getMessage(DexEvent.ADD, "pending", {
           tokenASymbol: tokenA.symbol,
           tokenBSymbol: tokenB.symbol,
           tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
@@ -391,7 +394,7 @@ export const useEarnAddLiquidityConfirmModal = ({
             setTimeout(() => {
               broadcastSuccess(
                 getMessage(
-                  "ADD",
+                  DexEvent.ADD,
                   "success",
                   {
                     tokenASymbol: resultData.tokenA.symbol || "",
@@ -412,7 +415,7 @@ export const useEarnAddLiquidityConfirmModal = ({
             result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
             broadcastRejected(
-              getMessage("ADD", "error", {
+              getMessage(DexEvent.ADD, "error", {
                 tokenASymbol: tokenA.symbol,
                 tokenBSymbol: tokenB.symbol,
                 tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
@@ -426,7 +429,7 @@ export const useEarnAddLiquidityConfirmModal = ({
           } else {
             broadcastError(
               getMessage(
-                "ADD",
+                DexEvent.ADD,
                 "error",
                 {
                   tokenASymbol: tokenA.symbol,

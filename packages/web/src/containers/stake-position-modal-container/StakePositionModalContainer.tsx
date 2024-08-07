@@ -1,16 +1,18 @@
-import React, { useCallback, useMemo } from "react";
-import StakePositionModal from "@components/stake/stake-position-modal/StakePositionModal";
-import { useClearModal } from "@hooks/common/use-clear-modal";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useWallet } from "@hooks/wallet/use-wallet";
-import useCustomRouter from "@hooks/common/use-custom-router";
-import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { useCallback, useMemo } from "react";
+
 import { ERROR_VALUE } from "@common/errors/adena";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { useGetPoolDetailByPath } from "@query/pools";
+import StakePositionModal from "@components/stake/stake-position-modal/StakePositionModal";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { useClearModal } from "@hooks/common/use-clear-modal";
+import useCustomRouter from "@hooks/common/use-custom-router";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { useGetPoolDetailByPath } from "@query/pools";
+import { DexEvent } from "@repositories/common";
 
 interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -91,7 +93,7 @@ const StakePositionModalContainer = ({
     const tokenA = pooledTokenInfos?.[0];
     const tokenB = pooledTokenInfos?.[1];
     broadcastLoading(
-      getMessage("STAKE", "pending", {
+      getMessage(DexEvent.STAKE, "pending", {
         tokenASymbol: tokenA?.token?.symbol,
         tokenBSymbol: tokenB?.token?.symbol,
         tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
@@ -115,7 +117,7 @@ const StakePositionModalContainer = ({
         setTimeout(() => {
           broadcastSuccess(
             getMessage(
-              "STAKE",
+              DexEvent.STAKE,
               "success",
               {
                 tokenASymbol: tokenA?.token?.symbol,
@@ -134,7 +136,7 @@ const StakePositionModalContainer = ({
         openTransactionConfirmModal();
       } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
         broadcastRejected(
-          getMessage("STAKE", "error", {
+          getMessage(DexEvent.STAKE, "error", {
             tokenASymbol: tokenA?.token?.symbol,
             tokenBSymbol: tokenB?.token?.symbol,
             tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
@@ -148,7 +150,7 @@ const StakePositionModalContainer = ({
       } else {
         broadcastError(
           getMessage(
-            "STAKE",
+            DexEvent.STAKE,
             "error",
             {
               tokenASymbol: tokenA?.token?.symbol,

@@ -1,17 +1,19 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { useWallet } from "@hooks/wallet/use-wallet";
-import useRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/common/use-position-data";
-import { usePosition } from "@hooks/common/use-position";
-import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+
 import { ERROR_VALUE } from "@common/errors/adena";
-import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { useGetUsernameByAddress } from "@query/address/queries";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { formatOtherPrice } from "@utils/new-number-utils";
+import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import useRouter from "@hooks/common/use-custom-router";
 import { useMessage } from "@hooks/common/use-message";
+import { usePosition } from "@hooks/common/use-position";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { useGetUsernameByAddress } from "@query/address/queries";
+import { DexEvent } from "@repositories/common";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -114,19 +116,23 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
           broadcastPending({ txHash: response.data?.hash });
           setTimeout(() => {
             broadcastSuccess(
-              getMessage("CLAIM", "success", data, response.data?.hash),
+              getMessage(DexEvent.CLAIM, "success", data, response.data?.hash),
             );
             setLoadingTransactionClaim(false);
           }, 1000);
           openModal();
         } else if (response.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
-          broadcastRejected(getMessage("CLAIM", "error", data), () => {}, true);
+          broadcastRejected(
+            getMessage(DexEvent.CLAIM, "error", data),
+            () => {},
+            true,
+          );
           setLoadingTransactionClaim(false);
           openModal();
         } else {
           openModal();
           broadcastError(
-            getMessage("CLAIM", "error", data, response.data?.hash),
+            getMessage(DexEvent.CLAIM, "error", data, response.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }

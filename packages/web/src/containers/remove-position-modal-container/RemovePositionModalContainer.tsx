@@ -1,19 +1,21 @@
+import { useCallback, useMemo } from "react";
+
 import { ERROR_VALUE } from "@common/errors/adena";
+import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import RemovePositionModal from "@components/remove/remove-position-modal/RemovePositionModal";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
+import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useMessage } from "@hooks/common/use-message";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useRemoveData } from "@hooks/stake/use-remove-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { checkGnotPath } from "@utils/common";
-import useRouter from "@hooks/common/use-custom-router";
-import React, { useCallback, useMemo } from "react";
-import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
+import { DexEvent } from "@repositories/common";
+import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
-import { useMessage } from "@hooks/common/use-message";
 
 interface RemovePositionModalContainerProps {
   selectedPosition: PoolPositionModel[];
@@ -126,7 +128,7 @@ const RemovePositionModalContainer = ({
       }),
     };
 
-    broadcastLoading(getMessage("REMOVE", "pending", messageData));
+    broadcastLoading(getMessage(DexEvent.REMOVE, "pending", messageData));
 
     const result = await positionRepository
       .removeLiquidity({
@@ -144,11 +146,9 @@ const RemovePositionModalContainer = ({
         setTimeout(async () => {
           broadcastSuccess(
             getMessage(
-              "REMOVE",
+              DexEvent.REMOVE,
               "success",
-              {
-                ...messageData,
-              },
+              { ...messageData },
               result.data?.hash,
             ),
           );
@@ -158,19 +158,15 @@ const RemovePositionModalContainer = ({
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
         broadcastError(
-          getMessage("REMOVE", "error", {
-            ...messageData,
-          }),
+          getMessage(DexEvent.REMOVE, "error", { ...messageData }),
         );
         clearModal();
       } else {
         broadcastRejected(
           getMessage(
-            "REMOVE",
+            DexEvent.REMOVE,
             "error",
-            {
-              ...messageData,
-            },
+            { ...messageData },
             result?.data?.hash,
           ),
         );
