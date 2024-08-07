@@ -30,10 +30,6 @@ export const GNOT_TOKEN: TokenModel = {
   address: "",
 };
 
-export const GNOT_SYMBOL = "GNOT";
-export const GNS_SYMBOL = "GNS";
-export const WUGNOT_SYMBOL = "wugnot";
-
 export const GNOT_TOKEN_DEFAULT: TokenModel = {
   type: "native",
   chainId: "dev.gnoswap",
