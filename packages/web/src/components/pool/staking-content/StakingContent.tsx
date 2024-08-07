@@ -74,8 +74,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
     }, []) as TokenModel[];
   }, [pool?.rewardTokens, getGnotPath]);
 
-  const debounce = <Params extends any[]>(
-    func: (...args: Params) => any,
+  const debounce = <Params extends unknown[]>(
+    func: (...args: Params) => void,
     timeout: number,
   ): ((...args: Params) => void) => {
     let timer: NodeJS.Timeout;
@@ -226,6 +226,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 }
                 placement="top"
                 className="apr-text"
+                scroll
               >
                 <span id={"apr-text"}>
                   {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
