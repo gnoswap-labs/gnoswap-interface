@@ -3,18 +3,26 @@ import { IPositionHistoryResponse } from "@repositories/position/response/positi
 
 export class PositionHistoryMapper {
   public static from(res: IPositionHistoryResponse): IPositionHistoryModel {
+    const replaceToken = (symbol: string) => {
+      if (symbol === "wugnot") return "GNOT";
+      return symbol;
+    };
+    
     return {
-      height: res.height,
       time: res.time,
-      txHash: res.txHash, 
-      type: res.type as PositionHistoryType,
-      amountA: Number(res.amountA),
-      amountB: Number(res.amountB),
-      usdValue: Number(res.usdValue),
+      txHash: res.txHash,
+      type: res.actionType as PositionHistoryType,
+      tokenASymbol: replaceToken(res.tokenA.symbol),
+      tokenBSymbol: replaceToken(res.tokenB.symbol),
+      amountA: Number(res.tokenAAmount),
+      amountB: Number(res.tokenBAmount),
+      usdValue: Number(res.totalUsd),
     };
   }
 
-  public static fromList(res: IPositionHistoryResponse[]): IPositionHistoryModel[] {
+  public static fromList(
+    res: IPositionHistoryResponse[],
+  ): IPositionHistoryModel[] {
     return res.map(PositionHistoryMapper.from);
   }
 }

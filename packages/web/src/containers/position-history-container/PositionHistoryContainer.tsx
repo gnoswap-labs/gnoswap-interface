@@ -3,7 +3,6 @@ import React from "react";
 import { ValuesType } from "utility-types";
 
 import PositionHistoryList from "@components/pool/position-history-list/PositionHistoryList";
-import { TokenModel } from "@models/token/token-model";
 import { useGetPositionHistory } from "@query/positions";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useLoading } from "@hooks/common/use-loading";
@@ -22,14 +21,10 @@ export const TABLE_HEAD = {
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
 interface PositionHistoryContainerProps {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
   position: PoolPositionModel;
 }
 
 const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({
-  tokenA,
-  tokenB,
   position,
 }) => {
   const { breakpoint } = useWindowSize();
@@ -46,8 +41,6 @@ const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({
       isLoading={isLoading || isLoadingCommon}
       isFetched={isFetched}
       breakpoint={breakpoint}
-      tokenA={tokenA}
-      tokenB={tokenB}
     />
   );
 };

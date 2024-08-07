@@ -23,6 +23,7 @@ import {
   formatPoolPairAmount,
 } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
+import { DexEvent } from "@repositories/common";
 
 dayjs.extend(relativeTime);
 
@@ -30,19 +31,15 @@ interface PositionInfoProps {
   item: IPositionHistoryModel;
   key?: number;
   breakpoint: DEVICE_TYPE;
-  tokenASymbol: string;
-  tokenBSymbol: string;
 }
 
 const PositionInfo: React.FC<PositionInfoProps> = ({
   item,
   breakpoint,
-  tokenASymbol,
-  tokenBSymbol,
 }) => {
   const { getTxUrl } = useGnoscanUrl();
   const { t } = useTranslation();
-  const { time, type, usdValue, amountA, amountB, txHash } = item;
+  const { time, type, usdValue, amountA, amountB, txHash, tokenASymbol, tokenBSymbol } = item;
   const tableInfo =
     breakpoint === DEVICE_TYPE.MOBILE
       ? MOBILE_POSITION_HISTORY_INFO
@@ -52,20 +49,26 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
 
   const typeKey = useMemo(() => {
     switch (type) {
-      case "Create":
+      case DexEvent.ADD:
         return "business:positionHistoryAction.create";
-      case "Decrease":
+      case DexEvent.DECREASE:
         return "business:positionHistoryAction.decrease";
-      case "Increase":
+      case DexEvent.INCREASE:
         return "business:positionHistoryAction.increase";
-      case "Remove":
+      case DexEvent.REMOVE:
         return "business:positionHistoryAction.remove";
-      case "Unstake":
-        return "business:positionHistoryAction.unstake";
-      case "Stake":
-        return "business:positionHistoryAction.stake";
-      case "Reposition":
+      case DexEvent.REPOSITION:
         return "business:positionHistoryAction.reposition";
+      case DexEvent.CLAIM:
+        return "business:positionHistoryAction.claim";
+      case DexEvent.UNSTAKE:
+        return "business:positionHistoryAction.unstake";
+      case DexEvent.STAKE:
+        return "business:positionHistoryAction.stake";
+      case DexEvent.CLAIM_STAKING:
+        return "business:positionHistoryAction.claim";
+      default:
+        return "undefined";
     }
   }, [type]);
 
