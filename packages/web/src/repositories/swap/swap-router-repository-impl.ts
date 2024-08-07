@@ -5,16 +5,16 @@ import { WalletClient } from "@common/clients/wallet-client";
 import {
   SendTransactionErrorResponse,
   SendTransactionSuccessResponse,
-  WalletResponse
+  WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { TransactionMessage } from "@common/clients/wallet-client/transaction-messages";
 import {
   makePoolTokenApproveMessage,
-  makeRouterTokenApproveMessage
+  makeRouterTokenApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages/pool";
 import {
   makeDepositMessage,
-  makeWithdrawMessage
+  makeWithdrawMessage,
 } from "@common/clients/wallet-client/transaction-messages/token";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
@@ -23,7 +23,7 @@ import { PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { isNativeToken } from "@models/token/token-model";
-import { checkGnotPath, toNativePath } from "@utils/common";
+import { checkGnotPath } from "@utils/common";
 import { MAX_UINT64 } from "@utils/math.utils";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { makeRouteKey, makeRoutesQuery } from "@utils/swap-route-utils";
@@ -55,7 +55,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     this.walletClient = walletClient;
     this.networkClient = networkClient;
   }
-
 
   public estimateSwapRoute = async (
     request: EstimateSwapRouteRequest,
@@ -144,9 +143,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const inputTokenWrappedPath = checkGnotPath(inputToken.path);
     const outputTokenWrappedPath = checkGnotPath(outputToken.path);
 
-    const inputTokenPath = toNativePath(inputTokenWrappedPath);
-    const outputTokenPath = toNativePath(outputTokenWrappedPath);
-
     const approveMessages: TransactionMessage[] = [
       makePoolTokenApproveMessage(
         inputTokenWrappedPath,
@@ -168,7 +164,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const sendTokenAmount =
       exactType === "EXACT_IN" ? tokenAmountRaw : tokenAmountLimitRaw;
 
-    const send = inputTokenPath === "gnot" ? `${sendTokenAmount}ugnot` : "";
+    const send = inputToken.path === "gnot" ? `${sendTokenAmount}ugnot` : "";
 
     const swapMessage = {
       caller: address,
@@ -176,8 +172,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       pkg_path: ROUTER_PACKAGE_PATH,
       func: "SwapRoute",
       args: [
-        inputTokenPath,
-        outputTokenPath,
+        inputToken.path,
+        outputToken.path,
         `${tokenAmountRaw || 0}`,
         exactType,
         `${routesQuery}`,
@@ -269,8 +265,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return {
       ...response,
       data: {
-        hash: response.data?.hash || ""
-      }
+        hash: response.data?.hash || "",
+      },
     };
   };
 
