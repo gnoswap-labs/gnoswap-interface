@@ -95,13 +95,13 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         case DexEvent.REPOSITION:
           return `${t("Modal:notif.action.repositioned")} ${getPair()}`;
         case DexEvent.CLAIM:
-          return `${t("Modal:notif.action.claimed")} ${getPair()}`;
+          return `${t("Modal:notif.action.feesClaimed")} ${getPair()}`;
         case DexEvent.STAKE:
           return `${t("Modal:notif.action.staked")} ${getPair()}`;
         case DexEvent.UNSTAKE:
           return `${t("Modal:notif.action.unstaked")} ${getPair()}`;
         case DexEvent.CLAIM_STAKING:
-          return `${t("Modal:notif.action.stakingClaimed")} ${getPair()}`;
+          return `${t("Modal:notif.action.rewardsClaimed")} ${getPair()}`;
         case DexEvent.DEPOSIT:
           return `${t("Modal:notif.action.received")} ${token0Display}`;
         case DexEvent.WITHDRAW:

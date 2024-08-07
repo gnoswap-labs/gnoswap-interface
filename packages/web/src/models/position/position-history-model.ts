@@ -1,17 +1,13 @@
-export type PositionHistoryType =
-  | "Create"
-  | "Remove"
-  | "Unstake"
-  | "Stake"
-  | "Decrease"
-  | "Increase"
-  | "Reposition";
+import { DexEventType } from "@repositories/common";
+
+export type PositionHistoryType = Omit<DexEventType, "SWAP" | "DEPOSIT" | "WITHDRAW" | "WRAP" | "UNWRAP">;
 
 export interface IPositionHistoryModel {
-  height: number;
   time: string;
   txHash: string;
   type: PositionHistoryType;
+  tokenASymbol: string;
+  tokenBSymbol: string;
   amountA: number;
   amountB: number;
   usdValue: number;

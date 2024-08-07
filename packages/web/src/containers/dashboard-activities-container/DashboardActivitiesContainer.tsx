@@ -188,13 +188,13 @@ const DashboardActivitiesContainer: React.FC = () => {
           case DexEvent.REPOSITION:
             return t("business:onchainActi.action.reposition");
           case DexEvent.CLAIM:
-            return t("business:onchainActi.action.claim");
+            return t("business:onchainActi.action.claimFees");
           case DexEvent.STAKE:
             return t("business:onchainActi.action.stake");
           case DexEvent.UNSTAKE:
             return t("business:onchainActi.action.unstake");
           case DexEvent.CLAIM_STAKING:
-            return t("business:onchainActi.action.claimStaking");
+            return t("business:onchainActi.action.claimRewards");
         }
       })();
       const tokenAText =

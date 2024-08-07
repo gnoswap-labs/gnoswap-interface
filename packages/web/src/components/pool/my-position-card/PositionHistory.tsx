@@ -1,20 +1,19 @@
 import { FC, useState } from "react";
-import { PositionHistoryWrapper } from "./PositionHistory.styles";
-import IconArrowUp from "@components/common/icons/IconArrowUp";
-import IconArrowDown from "@components/common/icons/IconArrowDown";
-import PositionHistoryContainer from "@containers/position-history-container/PositionHistoryContainer";
-import { TokenModel } from "@models/token/token-model";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useTranslation } from "react-i18next";
+
+import IconArrowDown from "@components/common/icons/IconArrowDown";
+import IconArrowUp from "@components/common/icons/IconArrowUp";
+import PositionHistoryContainer from "@containers/position-history-container/PositionHistoryContainer";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+
+import { PositionHistoryWrapper } from "./PositionHistory.styles";
 
 interface Props {
   isClosed: boolean;
-  tokenA: TokenModel;
-  tokenB: TokenModel;
   position: PoolPositionModel;
 }
 
-const PositionHistory: FC<Props> = ({ isClosed, tokenB, tokenA, position }) => {
+const PositionHistory: FC<Props> = ({ isClosed, position }) => {
   const [openedSelector, setOpenedSelector] = useState(false);
   const { t } = useTranslation();
   return (
@@ -32,8 +31,6 @@ const PositionHistory: FC<Props> = ({ isClosed, tokenB, tokenA, position }) => {
       {openedSelector && (
         <PositionHistoryContainer
           position={position}
-          tokenA={tokenA}
-          tokenB={tokenB}
         />
       )}
     </PositionHistoryWrapper>

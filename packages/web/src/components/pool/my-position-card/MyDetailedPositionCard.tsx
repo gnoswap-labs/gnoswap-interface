@@ -1,10 +1,45 @@
+import { useAtom, useAtomValue } from "jotai";
+import React, { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ValuesType } from "utility-types";
+
+import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import Button from "@components/common/button/Button";
+import IconInfo from "@components/common/icons/IconInfo";
+import IconLinkPage from "@components/common/icons/IconLinkPage";
+import IconPolygon from "@components/common/icons/IconPolygon";
 import IconStaking from "@components/common/icons/IconStaking";
+import IconSwap from "@components/common/icons/IconSwap";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import RangeBadge from "@components/common/range-badge/RangeBadge";
+import SelectBox from "@components/common/select-box/SelectBox";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION, RewardType } from "@constants/option.constant";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useCopy } from "@hooks/common/use-copy";
+import useRouter from "@hooks/common/use-custom-router";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { PositionAPRInfo } from "@models/position/info/position-apr-info";
+import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenModel } from "@models/token/token-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
+import { useGetPositionBins } from "@query/positions";
+import { IncreaseState, ThemeState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
-import React, { useCallback, useMemo, useState } from "react";
+import { isGNOTPath } from "@utils/common";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import { makeRouteUrl } from "@utils/page.utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+
+import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import {
   CopyTooltip,
   ManageItem,
@@ -12,43 +47,10 @@ import {
   PositionCardAnchor,
   ToolTipContentWrapper,
 } from "./MyPositionCard.styles";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { TokenModel } from "@models/token/token-model";
+import { MyPositionAprContent } from "./MyPositionCardAprContent";
 import { BalanceTooltipContent } from "./MyPositionCardBalanceContent";
 import { MyPositionRewardContent } from "./MyPositionCardRewardContent";
-import { PositionRewardInfo } from "@models/position/info/position-reward-info";
-import { MyPositionAprContent } from "./MyPositionCardAprContent";
-import { PositionAPRInfo } from "@models/position/info/position-apr-info";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import PoolGraph from "@components/common/pool-graph/PoolGraph";
-import { IncreaseState, ThemeState } from "@states/index";
-import { useAtomValue, useAtom } from "jotai";
-import IconSwap from "@components/common/icons/IconSwap";
-import IconInfo from "@components/common/icons/IconInfo";
-import RangeBadge from "@components/common/range-badge/RangeBadge";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import SelectBox from "@components/common/select-box/SelectBox";
-import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import PositionHistory from "./PositionHistory";
-import useRouter from "@hooks/common/use-custom-router";
-import IconLinkPage from "@components/common/icons/IconLinkPage";
-import { useCopy } from "@hooks/common/use-copy";
-import IconPolygon from "@components/common/icons/IconPolygon";
-import Button from "@components/common/button/Button";
-import { useGetPositionBins } from "@query/positions";
-import { TokenPriceModel } from "@models/token/token-price-model";
-import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
-import { WUGNOT_TOKEN } from "@common/values/token-constant";
-import { isGNOTPath } from "@utils/common";
-import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import { makeRouteUrl } from "@utils/page.utils";
-import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
-import { useTranslation } from "react-i18next";
-import { ValuesType } from "utility-types";
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
@@ -1168,12 +1170,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         {cardHeader}
         {cardStat}
         {cardGraph}
-        <PositionHistory
-          position={position}
-          isClosed={isClosed}
-          tokenA={tokenA}
-          tokenB={tokenB}
-        />
+        <PositionHistory position={position} isClosed={isClosed} />
       </MyPositionCardWrapper>
     </>
   );

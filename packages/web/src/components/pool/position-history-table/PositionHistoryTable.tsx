@@ -1,30 +1,28 @@
+import { cx } from "@emotion/css";
+import React from "react";
+import { useTranslation } from "react-i18next";
+
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import {
   MOBILE_POSITION_HISTORY_INFO,
   POSITION_HISTORY_INFO,
   TableInfoType,
-  TABLET_POSITION_HISTORY_INFO,
+  TABLET_POSITION_HISTORY_INFO
 } from "@constants/skeleton.constant";
 import { TABLE_HEAD } from "@containers/position-history-container/PositionHistoryContainer";
-import { cx } from "@emotion/css";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { DEVICE_TYPE } from "@styles/media";
-import React from "react";
+
 import PositionInfo from "../position-info/PositionInfo";
 import {
-  TableHeader,
-  TableWrapper,
-  noDataText,
+  noDataText, TableHeader,
+  TableWrapper
 } from "./PositionHistoryTable.styles";
-import { TokenModel } from "@models/token/token-model";
-import { IPositionHistoryModel } from "@models/position/position-history-model";
-import { useTranslation } from "react-i18next";
 
 interface PositionHistoryTableProps {
   list: IPositionHistoryModel[];
   isFetched: boolean;
   breakpoint: DEVICE_TYPE;
-  tokenA: TokenModel;
-  tokenB: TokenModel;
   isLoading: boolean;
 }
 
@@ -32,8 +30,6 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
   list,
   isFetched,
   breakpoint,
-  tokenA,
-  tokenB,
   isLoading,
 }) => {
   const { t } = useTranslation();
@@ -59,10 +55,8 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
               tdWidth={sekeleton.list[idx]?.width ?? 0}
             >
               <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}>
-                {idx === 3
-                  ? `${tokenA?.symbol} ${t("business:amount")}`
-                  : idx === 4
-                  ? `${tokenB?.symbol} ${t("business:amount")}`
+                {idx === 3 || idx === 4
+                  ? `${t("business:token")} ${t("business:amount")}`
                   : t(head)}
               </span>
             </TableHeader>
@@ -76,13 +70,7 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
             !isLoading &&
             list.length > 0 &&
             list.map((item, idx) => (
-              <PositionInfo
-                item={item}
-                key={idx}
-                breakpoint={breakpoint}
-                tokenASymbol={tokenA.symbol}
-                tokenBSymbol={tokenB.symbol}
-              />
+              <PositionInfo item={item} key={idx} breakpoint={breakpoint} />
             ))}
           {isLoading && (
             <TableSkeleton

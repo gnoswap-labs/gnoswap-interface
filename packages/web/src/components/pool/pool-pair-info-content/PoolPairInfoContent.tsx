@@ -235,7 +235,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const stakeLogo = useMemo(() => {
     return pool?.rewardTokens?.reduce((accum : TokenModel[], current:TokenModel) => {
       const index = accum.findIndex(
-        inserted => inserted.path === getGnotPath(current).path,
+        inserted => getGnotPath(inserted).path === getGnotPath(current).path,
       );
       if (index === -1) {
         accum.push(current);
