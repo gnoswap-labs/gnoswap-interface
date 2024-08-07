@@ -1,3 +1,4 @@
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
 
 export const GNS_TOKEN: TokenModel = {
@@ -5,14 +6,14 @@ export const GNS_TOKEN: TokenModel = {
   chainId: "dev.gnoswap",
   createdAt: "2024-01-24T15:12:21Z",
   name: "GnoSwap",
-  path: "gno.land/r/gnoswap/gns",
+  path: GNS_TOKEN_PATH,
   decimals: 6,
   symbol: "GNS",
   logoURI: "/gnos.svg",
-  priceID: "gno.land/r/gnoswap/gns",
+  priceID: GNS_TOKEN_PATH,
   description: "GNS is a GRC20 token issued solely for testing purposes.",
   websiteURL: "https://beta.gnoswap.io",
-  wrappedPath: "gno.land/r/gnoswap/gns",
+  wrappedPath: GNS_TOKEN_PATH,
 };
 
 export const GNOT_TOKEN: TokenModel = {
