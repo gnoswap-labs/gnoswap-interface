@@ -278,8 +278,8 @@ const AssetListContainer: React.FC = () => {
       .filter(
         item =>
           item.path !== GNOT_TOKEN.path &&
-          item.symbol !== GNS_TOKEN.path &&
-          item.symbol !== WUGNOT_TOKEN.path,
+          item.path !== GNS_TOKEN.path &&
+          item.path !== WUGNOT_TOKEN.path,
       )
       .map(item => {
         const tokenPrice = balances[item.priceID];
