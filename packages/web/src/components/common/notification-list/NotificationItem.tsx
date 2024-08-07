@@ -21,6 +21,7 @@ import { capitalize } from "@utils/string-utils";
 import { AccountActivity } from "@repositories/notification";
 import { Trans, useTranslation } from "react-i18next";
 import { NotificationType } from "@common/values";
+import { DexEvent } from "@repositories/common";
 
 interface ItemProps {
   groups: TransactionGroupsType;
@@ -81,28 +82,30 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
           .join(` ${t("common:conjunction:and")} `);
 
       switch (tx.actionType) {
-        case "SWAP":
+        case DexEvent.SWAP:
           return `${t("Modal:notif.action.swapped")} ${getSwapPair()}`;
-        case "ADD":
+        case DexEvent.ADD:
           return `${t("Modal:notif.action.added")} ${getPair()}`;
-        case "REMOVE":
+        case DexEvent.REMOVE:
           return `${t("Modal:notif.action.removed")} ${getPair()}`;
-        case "STAKE":
-          return `${t("Modal:notif.action.staked")} ${getPair()}`;
-        case "UNSTAKE":
-          return `${t("Modal:notif.action.unstaked")} ${getPair()}`;
-        case "CLAIM":
-          return `${t("Modal:notif.action.claimed")} ${getPair()}`;
-        case "WITHDRAW":
-          return `${t("Modal:notif.action.sent")} ${token0Display}`;
-        case "DEPOSIT":
-          return `${t("Modal:notif.action.received")} ${token0Display}`;
-        case "DECREASE":
+        case DexEvent.DECREASE:
           return `${t("Modal:notif.action.decreased")}  ${getPair()}`;
-        case "INCREASE":
+        case DexEvent.INCREASE:
           return `${t("Modal:notif.action.increased")} ${getPair()}`;
-        case "REPOSITION":
+        case DexEvent.REPOSITION:
           return `${t("Modal:notif.action.repositioned")} ${getPair()}`;
+        case DexEvent.CLAIM:
+          return `${t("Modal:notif.action.claimed")} ${getPair()}`;
+        case DexEvent.STAKE:
+          return `${t("Modal:notif.action.staked")} ${getPair()}`;
+        case DexEvent.UNSTAKE:
+          return `${t("Modal:notif.action.unstaked")} ${getPair()}`;
+        case DexEvent.CLAIM_STAKING:
+          return `${t("Modal:notif.action.stakingClaimed")} ${getPair()}`;
+        case DexEvent.DEPOSIT:
+          return `${t("Modal:notif.action.received")} ${token0Display}`;
+        case DexEvent.WITHDRAW:
+          return `${t("Modal:notif.action.sent")} ${token0Display}`;
         default:
           return `${capitalize(tx.actionType)} ${prettyNumberFloatInteger(
             tx.tokenAAmount,
@@ -111,6 +114,9 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     },
     [replaceToken, t],
   );
+
+      console.log("=================================");
+
 
   return (
     <TxsListItem key={type}>
@@ -168,10 +174,11 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                       />
                     </DoubleLogo>
                   )}
-                  <div
-                    className="content-wrap"
-                    dangerouslySetInnerHTML={{ __html: item.content || "" }}
-                  />
+                  <div className="content-wrap">
+                    <Trans components={{ accent: <span className="accent" /> }}>
+                      {getNotificationMessage(item.rawValue)}
+                    </Trans>
+                  </div>
                 </div>
               </div>
               {item.status === "SUCCESS" ? (

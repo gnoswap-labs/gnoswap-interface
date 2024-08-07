@@ -1,11 +1,17 @@
-// TODO : remove eslint-disable after work
+import BigNumber from "bignumber.js";
+import React, { useCallback, useMemo, useState } from "react";
+
 import { ERROR_VALUE } from "@common/errors/adena";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
-import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
 import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
+import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { useMessage } from "@hooks/common/use-message";
 import { usePosition } from "@hooks/common/use-position";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -13,15 +19,10 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetTokenPrices } from "@query/token";
-import BigNumber from "bignumber.js";
-import React, { useCallback, useState, useMemo } from "react";
-import { isEmptyObject } from "@utils/validation-utils";
-import { toUnitFormat } from "@utils/number-utils";
-import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
-import { GNOT_TOKEN } from "@common/values/token-constant";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { useMessage } from "@hooks/common/use-message";
+import { toUnitFormat } from "@utils/number-utils";
+import { isEmptyObject } from "@utils/validation-utils";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -106,7 +107,7 @@ const WalletBalanceContainer: React.FC = () => {
           broadcastPending({ txHash: response.data?.hash });
           setTimeout(() => {
             broadcastSuccess(
-              getMessage("CLAIM", "success", data, response.data?.hash),
+              getMessage(DexEvent.CLAIM, "success", data, response.data?.hash),
             );
             setLoadingTransactionClaim(false);
           }, 1000);
@@ -114,13 +115,17 @@ const WalletBalanceContainer: React.FC = () => {
         } else if (
           response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
-          broadcastRejected(getMessage("CLAIM", "error", data), () => {}, true);
+          broadcastRejected(
+            getMessage(DexEvent.CLAIM, "error", data),
+            () => {},
+            true,
+          );
           setLoadingTransactionClaim(false);
           openModal();
         } else {
           openModal();
           broadcastError(
-            getMessage("CLAIM", "error", data, response.data?.hash),
+            getMessage(DexEvent.CLAIM, "error", data, response.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }
@@ -231,7 +236,7 @@ const WalletBalanceContainer: React.FC = () => {
     onSubmit: handleSubmit,
   } = useWithdrawTokens();
 
-  const onSubmit = (amount: any, address: string) => {
+  const onSubmit = (amount: string, address: string) => {
     if (!withdrawInfo || !account?.address) return;
     handleSubmit(
       {

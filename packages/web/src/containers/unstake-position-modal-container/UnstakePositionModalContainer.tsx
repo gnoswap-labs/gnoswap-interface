@@ -11,6 +11,7 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { useMessage } from "@hooks/common/use-message";
+import { DexEvent } from "@repositories/common";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -51,7 +52,7 @@ const UnstakePositionModalContainer = ({
     const tokenB = pooledTokenInfos?.[1];
 
     broadcastLoading(
-      getMessage("UNSTAKE", "pending", {
+      getMessage(DexEvent.UNSTAKE, "pending", {
         tokenASymbol: tokenA?.token?.symbol,
         tokenBSymbol: tokenB?.token?.symbol,
         tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
@@ -74,7 +75,7 @@ const UnstakePositionModalContainer = ({
         setTimeout(() => {
           broadcastSuccess(
             getMessage(
-              "UNSTAKE",
+              DexEvent.UNSTAKE,
               "success",
               {
                 tokenASymbol: tokenA?.token?.symbol,
@@ -93,7 +94,7 @@ const UnstakePositionModalContainer = ({
         }, 1000);
       } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
         broadcastRejected(
-          getMessage("UNSTAKE", "error", {
+          getMessage(DexEvent.UNSTAKE, "error", {
             tokenASymbol: tokenA?.token?.symbol,
             tokenBSymbol: tokenB?.token?.symbol,
             tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
@@ -108,7 +109,7 @@ const UnstakePositionModalContainer = ({
       } else {
         broadcastError(
           getMessage(
-            "UNSTAKE",
+            DexEvent.UNSTAKE,
             "error",
             {
               tokenASymbol: tokenA?.token?.symbol,

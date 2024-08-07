@@ -98,7 +98,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
         </div>
         <div className="activity-list-body">
           {isFetched && activities.length === 0 && (
-            <div css={noDataText}>No tokens found</div>
+            <div css={noDataText}>{t("Dashboard:onchainActi.data.empty")}</div>
           )}
           {isFetched &&
             activities.length > 0 &&
@@ -141,19 +141,19 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
         </div>
         <div className="activity-list-body">
           {isFetched && activities.length === 0 && (
-            <div css={noDataText}>No tokens found</div>
+            <div css={noDataText}>{t("Dashboard:onchainActi.data.empty")}</div>
           )}
           {isFetched &&
             activities.length > 0 &&
             activities.map((item, idx) => (
               <MobileActivityInfo item={item} idx={idx + 1} key={idx} />
             ))}
-          {
+          {!isFetched && (
             <TableSkeleton
               info={MOBILE_ACTIVITY_INFO}
               className="activity-table"
             />
-          }
+          )}
         </div>
       </div>
     </TableWrapper>

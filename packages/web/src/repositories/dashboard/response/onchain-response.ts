@@ -1,25 +1,10 @@
-import { ValuesType } from "utility-types";
+import { DexEventType } from "@repositories/common";
 
 export type OnchainActivityResponse = OnchainActivityData[];
 
-export const OnchainActivityAction = {
-  SWAP: "SWAP",
-  ADD: "ADD",
-  REMOVE: "REMOVE",
-  STAKE: "STAKE",
-  UNSTAKE: "UNSTAKE",
-  CLAIM: "CLAIM",
-  INCREASE: "INCREASE",
-  DECREASE: "DECREASE",
-  REPOSITION: "REPOSITION",
-} as const;
-
-export type OnchainActivityActionType = ValuesType<
-  typeof OnchainActivityAction
->;
 export interface OnchainActivityData {
   txHash: string;
-  actionType: OnchainActivityActionType;
+  actionType: DexEventType;
   tokenA: OnchainToken;
   tokenB: OnchainToken;
   tokenAAmount: string;

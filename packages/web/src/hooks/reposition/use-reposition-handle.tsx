@@ -6,7 +6,8 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
   DEFAULT_SLIPPAGE,
   RANGE_STATUS_OPTION,
-  SwapFeeTierMaxPriceRangeMap
+  SwapFeeTierMaxPriceRangeMap,
+  SwapFeeTierType
 } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useAddress } from "@hooks/address/use-address";
@@ -129,7 +130,7 @@ export const useRepositionHandle = () => {
   const selectPool = useSelectPool({
     tokenA,
     tokenB,
-    feeTier: `FEE_${fee}` as any,
+    feeTier: `FEE_${fee}` as SwapFeeTierType,
   });
 
   const inRange = useMemo(() => {

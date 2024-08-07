@@ -10,6 +10,7 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import BigNumber from "bignumber.js";
 import { useMessage } from "@hooks/common/use-message";
+import { DexEvent } from "@repositories/common";
 
 const DAY_TIME = 24 * 60 * 60;
 const MILLISECONDS = 1000;
@@ -70,7 +71,7 @@ const IncentivizePoolModalContainer = () => {
     const displayAmount = BigNumber(dataModal.amount).toFormat();
 
     broadcastLoading(
-      getMessage("ADD_INCENTIVIZE", "pending", {
+      getMessage(DexEvent.ADD_INCENTIVE, "pending", {
         tokenAAmount: displayAmount,
         tokenASymbol: dataModal?.token?.symbol,
       }),
@@ -91,7 +92,7 @@ const IncentivizePoolModalContainer = () => {
             setTimeout(() => {
               broadcastSuccess(
                 getMessage(
-                  "ADD_INCENTIVIZE",
+                  DexEvent.ADD_INCENTIVE,
                   "success",
                   {
                     tokenAAmount: displayAmount,
@@ -106,7 +107,7 @@ const IncentivizePoolModalContainer = () => {
             response.code === ERROR_VALUE.TRANSACTION_REJECTED.status /// 4000
           ) {
             broadcastRejected(
-              getMessage("ADD_INCENTIVIZE", "error", {
+              getMessage(DexEvent.ADD_INCENTIVE, "error", {
                 tokenAAmount: displayAmount,
                 tokenASymbol: dataModal?.token?.symbol,
               }),
@@ -115,7 +116,7 @@ const IncentivizePoolModalContainer = () => {
           } else {
             broadcastError(
               getMessage(
-                "ADD_INCENTIVIZE",
+                DexEvent.ADD_INCENTIVE,
                 "error",
                 {
                   tokenAAmount: displayAmount,

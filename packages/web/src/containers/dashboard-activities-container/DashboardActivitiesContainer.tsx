@@ -1,21 +1,23 @@
-import React, { ReactNode, useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import React, { ReactNode, useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ValuesType } from "utility-types";
+
 import ActivityList from "@components/dashboard/activity-list/ActivityList";
-import { useWindowSize } from "@hooks/common/use-window-size";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useLoading } from "@hooks/common/use-loading";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { DexEvent } from "@repositories/common";
 import {
   OnchainActivityData,
-  OnchainActivityResponse,
+  OnchainActivityResponse
 } from "@repositories/dashboard/response/onchain-response";
-import dayjs from "dayjs";
-
-import relativeTime from "dayjs/plugin/relativeTime";
-import { useLoading } from "@hooks/common/use-loading";
-import { convertToKMB } from "@utils/stake-position-utils";
-import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
+import { convertToKMB } from "@utils/stake-position-utils";
+
 dayjs.extend(relativeTime);
 
 export interface Activity {
@@ -164,33 +166,35 @@ const DashboardActivitiesContainer: React.FC = () => {
     const tokenASymbol = res.tokenA.symbol;
     const tokenBSymbol = res.tokenB.symbol;
     const shouldShowTokenAAmount =
-      res.actionType !== "CLAIM" ||
+      res.actionType !== DexEvent.CLAIM ||
       (!!res.tokenAAmount && !!Number(res.tokenAAmount));
     const shouldShowTokenBAmount =
-      res.actionType !== "CLAIM" ||
+      res.actionType !== DexEvent.CLAIM ||
       (!!res.tokenBAmount && !!Number(res.tokenBAmount));
 
     const actionText = (() => {
       const action = (() => {
         switch (res.actionType) {
-          case "SWAP":
+          case DexEvent.SWAP:
             return t("business:onchainActi.action.swap");
-          case "ADD":
+          case DexEvent.ADD:
             return t("business:onchainActi.action.add");
-          case "CLAIM":
-            return t("business:onchainActi.action.claim");
-          case "DECREASE":
-            return t("business:onchainActi.action.decrease");
-          case "INCREASE":
-            return t("business:onchainActi.action.increase");
-          case "REMOVE":
+          case DexEvent.REMOVE:
             return t("business:onchainActi.action.remove");
-          case "REPOSITION":
+          case DexEvent.DECREASE:
+            return t("business:onchainActi.action.decrease");
+          case DexEvent.INCREASE:
+            return t("business:onchainActi.action.increase");
+          case DexEvent.REPOSITION:
             return t("business:onchainActi.action.reposition");
-          case "STAKE":
+          case DexEvent.CLAIM:
+            return t("business:onchainActi.action.claim");
+          case DexEvent.STAKE:
             return t("business:onchainActi.action.stake");
-          case "UNSTAKE":
+          case DexEvent.UNSTAKE:
             return t("business:onchainActi.action.unstake");
+          case DexEvent.CLAIM_STAKING:
+            return t("business:onchainActi.action.claimStaking");
         }
       })();
       const tokenAText =
@@ -204,7 +208,7 @@ const DashboardActivitiesContainer: React.FC = () => {
       const haveOneToken = !tokenAText || !tokenBText;
       const conjunction = !haveOneToken
         ? " " +
-          (res.actionType === "SWAP"
+          (res.actionType === DexEvent.SWAP
             ? t("common:conjunction.for")
             : t("common:conjunction.and"))
         : "";
