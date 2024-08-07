@@ -179,20 +179,22 @@ const DashboardActivitiesContainer: React.FC = () => {
             return t("business:onchainActi.action.swap");
           case DexEvent.ADD:
             return t("business:onchainActi.action.add");
-          case DexEvent.CLAIM:
-            return t("business:onchainActi.action.claim");
+          case DexEvent.REMOVE:
+            return t("business:onchainActi.action.remove");
           case DexEvent.DECREASE:
             return t("business:onchainActi.action.decrease");
           case DexEvent.INCREASE:
             return t("business:onchainActi.action.increase");
-          case DexEvent.REMOVE:
-            return t("business:onchainActi.action.remove");
           case DexEvent.REPOSITION:
             return t("business:onchainActi.action.reposition");
+          case DexEvent.CLAIM:
+            return t("business:onchainActi.action.claim");
           case DexEvent.STAKE:
             return t("business:onchainActi.action.stake");
           case DexEvent.UNSTAKE:
             return t("business:onchainActi.action.unstake");
+          case DexEvent.CLAIM_STAKING:
+            return t("business:onchainActi.action.claimStaking");
         }
       })();
       const tokenAText =

@@ -5,9 +5,6 @@ import { StorageKeyType } from "@common/values";
 import { TransactionModel } from "@models/account/account-history-model";
 import { TransactionGroupsType } from "@models/notification";
 import { NotificationMapper } from "@models/notification/mapper/notification-mapper";
-import { DexEvent } from "@repositories/common";
-import { formatPoolPairAmount } from "@utils/new-number-utils";
-import { prettyNumberFloatInteger } from "@utils/number-utils";
 
 import { NotificationRepository } from "./dashboard-repository";
 import { AccountActivityRequest } from "./request";
@@ -71,11 +68,6 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     );
   };
 
-  private capitalizeFirstLetter = (input: string) => {
-    const str = input.toLowerCase();
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
   private replaceToken = (symbol: string) => {
     if (symbol === "wugnot") return "GNOT";
     return symbol;
@@ -85,63 +77,6 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     if (symbol === "wugnot")
       return "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg";
     return uri;
-  };
-
-  private getNotificationMessage = (tx: AccountActivity) => {
-    const token0Amount = formatPoolPairAmount(tx?.tokenAAmount, {
-      decimals: tx.tokenA.decimals,
-      isKMB: false,
-    });
-    const token0symbol = this.replaceToken(tx?.tokenA?.symbol);
-
-    const token1Amount = formatPoolPairAmount(tx?.tokenBAmount, {
-      decimals: tx.tokenB.decimals,
-      isKMB: false,
-    });
-    const token1symbol = this.replaceToken(tx?.tokenB?.symbol);
-
-    const token0Display = Number(tx?.tokenAAmount)
-      ? `<span>${token0Amount}</span> <span>${token0symbol}</span>`
-      : "";
-
-    const token1Display = Number(tx?.tokenBAmount)
-      ? `<span>${token1Amount}</span> <span>${token1symbol}</span>`
-      : "";
-
-    const tokenStr = [token0Display, token1Display]
-      .filter(item => item)
-      .join(" and ");
-
-    switch (tx.actionType) {
-      case DexEvent.SWAP:
-        return `Swapped ${tokenStr}`;
-      case DexEvent.ADD:
-        return `Added ${tokenStr}`;
-      case DexEvent.REMOVE:
-        return `Removed ${tokenStr}`;
-      case DexEvent.STAKE:
-        return `Staked ${tokenStr}`;
-      case DexEvent.UNSTAKE:
-        return `Unstaked ${tokenStr}`;
-      case DexEvent.CLAIM:
-        return `Claimed ${tokenStr}`;
-      case DexEvent.WITHDRAW:
-        return `Sent ${token0Display}`;
-      case DexEvent.DEPOSIT:
-        return `Received ${token0Display}`;
-      case DexEvent.DECREASE:
-        return `Decreased ${tokenStr}`;
-      case DexEvent.INCREASE:
-        return `Increased ${tokenStr}`;
-      case DexEvent.REPOSITION:
-        return `Repositioned ${tokenStr}`;
-      default:
-        return `${this.capitalizeFirstLetter(
-          tx.actionType,
-        )} ${prettyNumberFloatInteger(tx.tokenAAmount)} ${this.replaceToken(
-          tx.tokenA.symbol ?? tx.tokenB.symbol,
-        )}`;
-    }
   };
 
   public getAccountOnchainActivity = async (
@@ -207,7 +142,6 @@ export class NotificationRepositoryImpl implements NotificationRepository {
         tokenInfo: { tokenA, tokenB },
         status: "SUCCESS",
         createdAt: tx.time,
-        content: this.getNotificationMessage(tx),
         isRead: seenTxs.includes(tx.txHash), // * Check if transaction is already seen
         rawValue: tx,
       };

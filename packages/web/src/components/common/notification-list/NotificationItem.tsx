@@ -95,12 +95,13 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         case DexEvent.REPOSITION:
           return `${t("Modal:notif.action.repositioned")} ${getPair()}`;
         case DexEvent.CLAIM:
-        case DexEvent.CLAIM_STAKING:
           return `${t("Modal:notif.action.claimed")} ${getPair()}`;
         case DexEvent.STAKE:
           return `${t("Modal:notif.action.staked")} ${getPair()}`;
         case DexEvent.UNSTAKE:
           return `${t("Modal:notif.action.unstaked")} ${getPair()}`;
+        case DexEvent.CLAIM_STAKING:
+          return `${t("Modal:notif.action.stakingClaimed")} ${getPair()}`;
         case DexEvent.DEPOSIT:
           return `${t("Modal:notif.action.received")} ${token0Display}`;
         case DexEvent.WITHDRAW:
@@ -113,6 +114,9 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     },
     [replaceToken, t],
   );
+
+      console.log("=================================");
+
 
   return (
     <TxsListItem key={type}>
@@ -170,10 +174,11 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                       />
                     </DoubleLogo>
                   )}
-                  <div
-                    className="content-wrap"
-                    dangerouslySetInnerHTML={{ __html: item.content || "" }}
-                  />
+                  <div className="content-wrap">
+                    <Trans components={{ accent: <span className="accent" /> }}>
+                      {getNotificationMessage(item.rawValue)}
+                    </Trans>
+                  </div>
                 </div>
               </div>
               {item.status === "SUCCESS" ? (

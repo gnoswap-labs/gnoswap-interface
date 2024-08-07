@@ -11,7 +11,6 @@ export interface TransactionModel {
   tokenInfo: TokenPairInfo;
   status: StatusOptions;
   createdAt: string;
-  content?: string;
   isRead?: boolean;
   rawValue: AccountActivity;
 }
