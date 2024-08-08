@@ -1,34 +1,36 @@
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { RewardType } from "@constants/option.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { PositionAPRInfo } from "@models/position/info/position-apr-info";
+import { PositionClaimInfo } from "@models/position/info/position-claim-info";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { RewardModel } from "@models/position/reward-model";
+import { TokenModel } from "@models/token/token-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
+import { DEVICE_TYPE } from "@styles/media";
+import { isGNOTPath } from "@utils/common";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount
+} from "@utils/new-number-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
+import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import {
   AmountDisplayWrapper,
   MyLiquidityContentWrapper,
-  TokenAmountTooltipContentWrapper,
+  TokenAmountTooltipContentWrapper
 } from "./MyLiquidityContent.styles";
-import { DEVICE_TYPE } from "@styles/media";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { RewardType } from "@constants/option.constant";
-import { PositionClaimInfo } from "@models/position/info/position-claim-info";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { PositionAPRInfo } from "@models/position/info/position-apr-info";
-import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
-import { TokenPriceModel } from "@models/token/token-price-model";
-import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { TokenModel } from "@models/token/token-model";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-} from "@utils/new-number-utils";
-import { isGNOTPath } from "@utils/common";
-import { WUGNOT_TOKEN } from "@common/values/token-constant";
-import { useTranslation } from "react-i18next";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -221,13 +223,26 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       INTERNAL: {},
       EXTERNAL: {},
     };
+
+    const totalLiquidity = positions.reduce((accum, current) => {
+      accum += current.liquidity;
+      return accum;
+    }, BigInt(0));
+
     positions
-      .flatMap(position => position.reward)
+      .flatMap<RewardModel & { liquidity: bigint }, PoolPositionModel>(
+        position =>
+          position.reward.map(item => ({
+            ...item,
+            liquidity: position.liquidity,
+          })),
+      )
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
         accuReward1D: reward.accuReward1D ? Number(reward.accuReward1D) : null,
         apr: reward.apr ? Number(reward.apr) : null,
+        liquidity: reward.liquidity,
       }))
       .forEach(rewardInfo => {
         const existReward =
@@ -271,7 +286,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               return Number(existReward.apr);
             }
 
-            return Number(existReward.apr) + Number(rewardInfo.apr);
+            return (
+              Number(existReward.apr) +
+              Number(
+                BigInt((rewardInfo.apr * 1000).toFixed(0)) *
+                  rewardInfo.liquidity,
+              )
+            );
           })();
 
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
@@ -287,9 +308,26 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               rewardInfo.accuReward1D !== null && tokenPrice !== null
                 ? Number(rewardInfo.accuReward1D) * tokenPrice
                 : null,
+            apr: rewardInfo.apr
+              ? Number(
+                  BigInt((rewardInfo.apr * 1000).toFixed(0)) *
+                    rewardInfo.liquidity,
+                )
+              : null,
           };
         }
       });
+
+    Object.keys(infoMap).forEach((typeKey: string) => {
+      const categorizedMap = infoMap[typeKey as RewardType];
+      Object.keys(categorizedMap).forEach((positionKey: string) => {
+        const multipliedApr = categorizedMap[positionKey].apr;
+        categorizedMap[positionKey].apr = multipliedApr
+          ? Number(BigInt(multipliedApr) / totalLiquidity) / 1000
+          : null;
+      });
+    });
+
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL: Object.values(infoMap["INTERNAL"]),

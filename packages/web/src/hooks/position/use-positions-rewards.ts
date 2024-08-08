@@ -10,7 +10,6 @@ import {
 } from "@utils/new-number-utils";
 import { TokenModel } from "@models/token/token-model";
 
-
 type RewardAccum = {
   token: TokenModel;
   type: "SWAP_FEE" | "STAKING_REWARDS";
@@ -18,11 +17,11 @@ type RewardAccum = {
   amountUSD: string;
   rawAmountUsd: number | null;
 };
-export interface UnstakeDataProps {
+export interface PositionsRewardsProps {
   positions: PoolPositionModel[];
 }
 
-export const usePositionsRewards = ({ positions }: UnstakeDataProps) => {
+export const usePositionsRewards = ({ positions }: PositionsRewardsProps) => {
   const { tokens, tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
