@@ -1,13 +1,16 @@
-import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
+import WarningCard from "@components/common/warning-card/WarningCard";
 import SelectLiquidity from "@components/unstake/select-liquidity/SelectLiquidity";
 import SelectUnstakeResult from "@components/unstake/select-unstake-result/SelectUnstakeResult";
-import { StakeWarningContentWrapper, wrapper } from "./UnstakeLiquidity.styles";
-import IconOpenLink from "@components/common/icons/IconOpenLink";
+import { EXT_URL } from "@constants/external-url.contant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
-import WarningCard from "@components/common/warning-card/WarningCard";
-import { useTranslation } from "react-i18next";
+
+import { StakeWarningContentWrapper, wrapper } from "./UnstakeLiquidity.styles";
 
 interface UnstakeLiquidityProps {
   stakedPositions: PoolPositionModel[];
@@ -55,7 +58,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
           content={
             <StakeWarningContentWrapper>
               <p>{t("UnstakePosition:warning.content")}</p>
-              <a href="/">
+              <a href={EXT_URL.DOCS_WARMUP} target="_blank">
                 {t("common:learnMore")}
                 <IconOpenLink className="icon-link" />
               </a>

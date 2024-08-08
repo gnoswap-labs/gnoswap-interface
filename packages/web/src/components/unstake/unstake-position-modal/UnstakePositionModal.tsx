@@ -212,14 +212,12 @@ const UnstakePositionModal: React.FC<Props> = ({
                 <Trans
                   ns="UnstakePosition"
                   i18nKey="confStakeModal.warning.content"
+                  components={{span: <span className="unstake-percent"/>}}
                   values={{
                     currentPercent,
                     swapFeePercent,
                   }}
-                >
-                  Your APR will reduce from {currentPercent} →{" "}
-                  <span className="unstake-percent">{swapFeePercent}</span>
-                </Trans>
+                />
               </UnstakeWarningContentWrapper>
             }
           />

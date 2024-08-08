@@ -1,6 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
 
 import IconOpenLink from "@components/common/icons/IconOpenLink";
+import { EXT_URL } from "@constants/external-url.contant";
 
 import { IconButton, wrapper } from "./Disclaimer.styles";
 
@@ -18,10 +19,7 @@ const Disclaimer: React.FC = () => {
             docs_link: (
                 <IconButton
                   onClick={() => {
-                    window.open(
-                      "https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods",
-                      "_blank",
-                    );
+                    window.open(EXT_URL.DOCS_WARMUP, "_blank");
                   }}
                   style={{display: "inline-block"}}
                 >
