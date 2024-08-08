@@ -77,8 +77,8 @@ interface TooltipProps {
   width?: CSSProperties["width"];
   floatClassName?: string;
   className?: string;
-  isShouldShowed?: boolean;
   forcedOpen?: boolean;
+  forcedClose?: boolean;
   scroll?: boolean;
 }
 
@@ -88,22 +88,20 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   FloatingContent,
   width,
   floatClassName,
-  isShouldShowed = true,
   className,
   forcedOpen = false,
+  forcedClose = false,
   scroll = false,
 }) => {
+  const theme = useTheme();
+  const themeKey = useAtomValue(ThemeState.themeKey);
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
   });
   const childrenRef = useMergeRefs([refs.setReference]);
   const floatingRef = useMergeRefs([refs.setFloating]);
-  const themeKey = useAtomValue(ThemeState.themeKey);
-  const theme = useTheme();
 
-  const showFloat = useMemo(() => {
-    return forcedOpen || (open && isShouldShowed);
-  }, [forcedOpen, isShouldShowed, open]);
+  const showTooltip = forcedOpen || (open && !forcedClose);
 
   const showScroll = useCallback((scrollContainer: HTMLElement | null) => {
     let timeout: NodeJS.Timeout;
@@ -123,7 +121,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
     <>
       <BaseTooltipWrapper
         ref={childrenRef}
-        data-state={open && isShouldShowed ? "open" : "closed"}
+        data-state={open && forcedClose ? "open" : "closed"}
         style={{
           display: "flex",
           width: width && width,
@@ -133,7 +131,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
         {children}
       </BaseTooltipWrapper>
       <FloatingPortal>
-        {showFloat && (
+        {showTooltip && (
           <div
             ref={floatingRef}
             style={{
@@ -145,25 +143,21 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
             }}
             className={floatClassName}
           >
-            {FloatingContent && (
-              <FloatingArrow
-                ref={arrowRef}
-                context={context}
-                fill={theme.color.background02}
-                width={20}
-                height={14}
-                tipRadius={4}
-              />
-            )}
-            {FloatingContent && (
-              <Content
-                themeKey={themeKey}
-                ref={ref => showScroll(ref)}
-                className={`${scroll ? "use-scroll" : ""}`}
-              >
-                {FloatingContent}
-              </Content>
-            )}
+            <FloatingArrow
+              ref={arrowRef}
+              context={context}
+              fill={theme.color.background02}
+              width={20}
+              height={14}
+              tipRadius={4}
+            />
+            <Content
+              themeKey={themeKey}
+              ref={ref => showScroll(ref)}
+              className={`${scroll ? "use-scroll" : ""}`}
+            >
+              {FloatingContent}
+            </Content>
           </div>
         )}
       </FloatingPortal>

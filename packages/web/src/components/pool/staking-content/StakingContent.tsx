@@ -212,7 +212,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               }
               placement="top"
               forcedOpen={showAprTooltip}
-              isShouldShowed={showAprTooltip}
+              forcedClose={!showAprTooltip}
               className={"float-view-apr"}
             >
               <div className="placeholder"></div>
