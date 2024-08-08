@@ -47,16 +47,16 @@ const UnstakePositionModal: React.FC<Props> = ({
     close();
   }, [close]);
 
-  const {feeApr, rewardsApr} = useMemo(() => {
+  const {feeApr, totalApr} = useMemo(() => {
     console.log(positions);
     const positionAprs = positions.map(position => {
       const aprs = position.reward.reduce(
         (accum, currentReward) => {
           if (currentReward.rewardType === "SWAP_FEE") {
             accum.fee += currentReward.apr || 0;
-          } else {
-            accum.rewards += currentReward.apr || 0;
           }
+          accum.rewards += currentReward.apr || 0;
+
           return accum;
         },
         { fee: 0, rewards: 0 },
@@ -84,7 +84,7 @@ const UnstakePositionModal: React.FC<Props> = ({
       feeApr: formatRate(
         Number((result.fee / result.liquidity).toString()) / 1000,
       ),
-      rewardsApr: formatRate(
+      totalApr: formatRate(
         Number((result.rewards / result.liquidity).toString()) / 1000,
       ),
     };
@@ -209,7 +209,7 @@ const UnstakePositionModal: React.FC<Props> = ({
                   i18nKey="confStakeModal.warning.content"
                   components={{ span: <span className="unstake-percent" /> }}
                   values={{
-                    currentPercent: rewardsApr,
+                    currentPercent: totalApr,
                     swapFeePercent: feeApr,
                   }}
                 />
