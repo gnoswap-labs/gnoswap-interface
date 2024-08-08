@@ -162,7 +162,11 @@ const StakingContent: React.FC<StakingContentProps> = ({
                   {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
                 </span>
               </Tooltip>
-              <div className="coin-info">
+              <div
+                className="coin-info"
+                onMouseEnter={() => setForceShowAprGuide(false)}
+                onMouseLeave={() => setForceShowAprGuide(true)}
+              >
                 <OverlapTokenLogo
                   tokens={rewardTokenLogos}
                   size={mobile ? 20 : 36}
