@@ -15,10 +15,16 @@ import {
   useInteractions,
   useMergeRefs,
   useRole,
-  type Placement
+  type Placement,
 } from "@floating-ui/react";
 import { useAtomValue } from "jotai";
-import React, { CSSProperties, useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  CSSProperties,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { ThemeState } from "@states/index";
 import { Z_INDEX } from "@styles/zIndex";
@@ -100,22 +106,47 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   });
   const childrenRef = useMergeRefs([refs.setReference]);
   const floatingRef = useMergeRefs([refs.setFloating]);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const showTooltip = forcedOpen || (open && !forcedClose);
 
-  const showScroll = useCallback((scrollContainer: HTMLElement | null) => {
+  useEffect(() => {
     let timeout: NodeJS.Timeout;
-    scrollContainer?.addEventListener("scroll", () => {
-      scrollContainer.classList.add("show-scroll");
+
+    function showScrollEventListener(this: HTMLElement) {
+      this.classList.add("show-scroll");
 
       clearTimeout(timeout);
 
       timeout = setTimeout(() => {
-        scrollContainer.classList.remove("show-scroll");
+        this.classList.remove("show-scroll");
       }, 1000);
-    });
-  }, []);
+    }
 
+    function lockScroll() {
+      document.body.style.overflow = "hidden";
+    }
+
+    function unlockScroll() {
+      document.body.style.overflow = "";
+    }
+
+    const scrollContainer = contentRef.current;
+
+    if (scrollContainer) {
+      scrollContainer.addEventListener("scroll", showScrollEventListener);
+      scrollContainer.addEventListener("mouseover", lockScroll);
+      scrollContainer.addEventListener("mouseout", unlockScroll);
+    }
+
+    return () => {
+      if (scrollContainer) {
+        scrollContainer.removeEventListener("scroll", showScrollEventListener);
+        scrollContainer.removeEventListener("mouseover", lockScroll);
+        scrollContainer.removeEventListener("mouseout", unlockScroll);
+      }
+    };
+  }, [showTooltip]);
 
   return (
     <>
@@ -153,8 +184,8 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
             />
             <Content
               themeKey={themeKey}
-              ref={ref => showScroll(ref)}
-              className={`${scroll ? "use-scroll" : ""}`}
+              ref={contentRef}
+              className={`${scroll ? "use-scroll show-scroll" : ""}`}
             >
               {FloatingContent}
             </Content>
