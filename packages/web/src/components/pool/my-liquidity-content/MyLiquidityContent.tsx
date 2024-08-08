@@ -740,7 +740,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <Tooltip
               placement="top"
               className="sub-content-detail"
-              isShouldShowed={canShowData}
+              forcedClose={!canShowData}
               FloatingContent={
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo
@@ -785,7 +785,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <Tooltip
               placement="top"
               className="sub-content-detail"
-              isShouldShowed={canShowData}
+              forcedClose={!canShowData}
               FloatingContent={
                 <TokenAmountTooltipContentWrapper>
                   <MissingLogo

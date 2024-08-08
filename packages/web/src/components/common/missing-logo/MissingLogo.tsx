@@ -29,7 +29,7 @@ const MissingLogo: React.FC<Props> = ({
     <Tooltip
       placement="top"
       className={tokenTooltipClassName}
-      isShouldShowed={showTooltip}
+      forcedClose={!showTooltip}
       FloatingContent={<TokenSymbolWrapper>{symbol}</TokenSymbolWrapper>}
     >
       {url ? (
