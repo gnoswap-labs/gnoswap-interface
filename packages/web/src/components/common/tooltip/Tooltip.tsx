@@ -111,26 +111,28 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   const contentRef = useRef<HTMLDivElement>(null);
 
   const showTooltip = forcedOpen || (open && !forcedClose);
-
+  const showTooltipRef = useRef(showTooltip);
 
   // trigger callback
   useEffect(() => {
-    if (onChangeOpen) onChangeOpen(showTooltip);
+    if (onChangeOpen && showTooltipRef.current !== showTooltip) {
+      showTooltipRef.current = showTooltip;
+      onChangeOpen(showTooltip);
+    }
   }, [onChangeOpen, showTooltip]);
 
   // handle listner
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
 
-    function showScrollEventListener(this: HTMLElement) {
-      this.classList.add("show-scroll");
-
-      clearTimeout(timeout);
-
-      timeout = setTimeout(() => {
-        this.classList.remove("show-scroll");
-      }, 1000);
-    }
+    // disable auto hide scrollbar
+    // let timeout: NodeJS.Timeout;
+    // function showScrollEventListener(this: HTMLElement) {
+    //   this.classList.add("show-scroll");
+    //   clearTimeout(timeout);
+    //   timeout = setTimeout(() => {
+    //     this.classList.remove("show-scroll");
+    //   }, 1000);
+    // }
 
     function lockScroll() {
       document.body.style.overflow = "hidden";
@@ -143,14 +145,14 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
     const scrollContainer = contentRef.current;
 
     if (scrollContainer) {
-      scrollContainer.addEventListener("scroll", showScrollEventListener);
+      // scrollContainer.addEventListener("scroll", showScrollEventListener);
       scrollContainer.addEventListener("mouseover", lockScroll);
       scrollContainer.addEventListener("mouseout", unlockScroll);
     }
 
     return () => {
       if (scrollContainer) {
-        scrollContainer.removeEventListener("scroll", showScrollEventListener);
+        // scrollContainer.removeEventListener("scroll", showScrollEventListener);
         scrollContainer.removeEventListener("mouseover", lockScroll);
         scrollContainer.removeEventListener("mouseout", unlockScroll);
       }

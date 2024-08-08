@@ -1,9 +1,12 @@
+import React from "react";
+import { useTranslation } from "react-i18next";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconNote from "@components/common/icons/IconNote";
+import { EXT_URL } from "@constants/external-url.contant";
 import { DEVICE_TYPE } from "@styles/media";
-import React from "react";
+
 import { StakingHeaderWrapper } from "./StakingHeader.styles";
-import { useTranslation } from "react-i18next";
 
 interface StakingHeaderProps {
   breakpoint: DEVICE_TYPE;
@@ -14,9 +17,6 @@ interface StakingHeaderProps {
   isOtherPosition: boolean;
   canStake: boolean;
 }
-
-const STAKING_INSTRUCTION_URL =
-  "https://docs.gnoswap.io/user-guide/staking/stake-positions";
 
 const StakingHeader: React.FC<StakingHeaderProps> = ({
   isDisabledButton,
@@ -34,7 +34,9 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({
         <h2>{t("Pool:staking.title")}</h2>
         <div
           className="logo-wrap"
-          onClick={() => window.open(STAKING_INSTRUCTION_URL, "_blank")}
+          onClick={() =>
+            window.open(EXT_URL.DOCS.USER_GUIDE.STAKE_POSITIONS, "_blank")
+          }
         >
           <span className="lean-more">{t("common:learnMore")}</span>
           <IconNote className="icon-logo" />

@@ -1,10 +1,26 @@
+import React, { useCallback, useMemo } from "react";
+import { Trans, useTranslation } from "react-i18next";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import IconInfo from "@components/common/icons/IconInfo";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import RangeBadge from "@components/common/range-badge/RangeBadge";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import WarningCard from "@components/common/warning-card/WarningCard";
 import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import React, { useCallback, useMemo } from "react";
+import { useGetUnstakingFee } from "@query/pools";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+  formatRate,
+} from "@utils/new-number-utils";
+import { isInRangePosition } from "@utils/stake-position-utils";
+
 import {
   Divider,
   RewardLogoSymbolWrapper,
@@ -12,20 +28,6 @@ import {
   UnstakePositionModalWrapper,
   UnstakeWarningContentWrapper,
 } from "./UnstakePositionModal.styles";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import IconInfo from "@components/common/icons/IconInfo";
-import WarningCard from "@components/common/warning-card/WarningCard";
-import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
-import { useGetUnstakingFee } from "@query/pools";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-  formatRate,
-} from "@utils/new-number-utils";
-import { Trans, useTranslation } from "react-i18next";
-import { isInRangePosition } from "@utils/stake-position-utils";
-import RangeBadge from "@components/common/range-badge/RangeBadge";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -45,54 +47,44 @@ const UnstakePositionModal: React.FC<Props> = ({
     close();
   }, [close]);
 
-  const currentPercent = useMemo(() => {
-    const result =
-      positions
-        .flatMap(({ reward, usdValue }) =>
-          reward.map(item => ({ ...item, usdValue: usdValue })),
-        )
-        .reduce(
-          (acc, current) => {
-            return {
-              unstakeUsd:
-                acc.unstakeUsd +
-                Number(current.apr || 0) * Number(current.usdValue),
-              allUsd: acc.allUsd + current.usdValue,
-            };
-          },
-          {
-            unstakeUsd: 0,
-            allUsd: 0,
-          },
-        ) ?? 0;
+  const {feeApr, totalApr} = useMemo(() => {
+    const positionAprs = positions.map(position => {
+      const aprs = position.reward.reduce(
+        (accum, currentReward) => {
+          if (currentReward.rewardType === "SWAP_FEE") {
+            accum.fee += currentReward.apr || 0;
+          }
+          accum.rewards += currentReward.apr || 0;
 
-    return formatRate(result.unstakeUsd / result.allUsd);
-  }, [positions]);
+          return accum;
+        },
+        { fee: 0, rewards: 0 },
+      );
+      return { liquidity: position.liquidity, aprs };
+    });
 
-  const swapFeePercent = useMemo(() => {
-    const result =
-      positions
-        .flatMap(({ reward, usdValue }) =>
-          reward
-            .map(item => ({ ...item, usdValue: usdValue }))
-            .filter(item => item.rewardType === "SWAP_FEE"),
-        )
-        .reduce(
-          (acc, current) => {
-            return {
-              unstakeUsd:
-                acc.unstakeUsd +
-                Number(current.apr || 0) * Number(current.usdValue),
-              allUsd: acc.allUsd + current.usdValue,
-            };
-          },
-          {
-            unstakeUsd: 0,
-            allUsd: 0,
-          },
-        ) ?? 0;
+    const result = positionAprs.reduce(
+      (accum, currentPostionApr) => {
+        accum.fee +=
+          BigInt((currentPostionApr.aprs.fee * 1000).toFixed(0)) *
+          currentPostionApr.liquidity;
+        accum.rewards +=
+          BigInt((currentPostionApr.aprs.rewards * 1000).toFixed(0)) *
+          currentPostionApr.liquidity;
+        accum.liquidity += currentPostionApr.liquidity;
+        return accum;
+      },
+      { fee: 0n, rewards: 0n, liquidity: 0n },
+    );
 
-    return formatRate(result.unstakeUsd / result.allUsd);
+    return {
+      feeApr: formatRate(
+        Number((result.fee / result.liquidity).toString()) / 1000,
+      ),
+      totalApr: formatRate(
+        Number((result.rewards / result.liquidity).toString()) / 1000,
+      ),
+    };
   }, [positions]);
 
   const inRange = useCallback(
@@ -212,14 +204,12 @@ const UnstakePositionModal: React.FC<Props> = ({
                 <Trans
                   ns="UnstakePosition"
                   i18nKey="confStakeModal.warning.content"
+                  components={{ span: <span className="unstake-percent" /> }}
                   values={{
-                    currentPercent,
-                    swapFeePercent,
+                    currentPercent: totalApr,
+                    swapFeePercent: feeApr,
                   }}
-                >
-                  Your APR will reduce from {currentPercent} →{" "}
-                  <span className="unstake-percent">{swapFeePercent}</span>
-                </Trans>
+                />
               </UnstakeWarningContentWrapper>
             }
           />

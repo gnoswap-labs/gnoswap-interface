@@ -3,7 +3,9 @@ import IconGitbook from "@components/common/icons/social/IconGitbook";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconTwitter from "@components/common/icons/social/IconTwitter";
 import IconDiscord from "@components/common/icons/social/IconDiscord";
+
 import { DEFAULT_POOL_PATH } from "./common.constant";
+import { EXT_URL } from "./external-url.contant";
 
 export const FOOTER_LEFT_NAV = {
   content: "HeaderFooter:introduction",
@@ -11,27 +13,27 @@ export const FOOTER_LEFT_NAV = {
     {
       title: "github",
       icon: <IconGithub />,
-      path: "https://github.com/gnoswap-labs/gnoswap",
+      path: EXT_URL.GITHUB.CONTRACTS,
     },
     {
       title: "gitbook",
       icon: <IconGitbook />,
-      path: "https://docs.gnoswap.io/",
+      path: EXT_URL.DOCS.ROOT,
     },
     {
       title: "discord",
       icon: <IconDiscord />,
-      path: "https://discord.gg/u4bdGHStb2",
+      path: EXT_URL.SOCIAL.DISCORD,
     },
     {
       title: "medium",
       icon: <IconMedium />,
-      path: "https://medium.com/@gnoswaplabs",
+      path: EXT_URL.SOCIAL.MEDIUM,
     },
     {
       title: "twitter",
       icon: <IconTwitter />,
-      path: "https://twitter.com/gnoswaplabs",
+      path: EXT_URL.SOCIAL.TWITTER,
     },
   ],
 };
@@ -67,7 +69,7 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "HeaderFooter:helpSection.item.aboutUs",
-        path: "https://docs.gnoswap.io/welcome",
+        path: EXT_URL.DOCS.WELCOME,
         newTab: true,
       },
       {
@@ -77,12 +79,12 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "HeaderFooter:helpSection.item.twitter",
-        path: "https://twitter.com/gnoswaplabs",
+        path: EXT_URL.SOCIAL.TWITTER,
         newTab: true,
       },
       {
         title: "HeaderFooter:helpSection.item.projectOnboarding",
-        path: "https://docs.gnoswap.io/references/onboarding-guide",
+        path: EXT_URL.DOCS.ONBOARDING,
         newTab: true,
       },
     ],
@@ -92,12 +94,12 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "HeaderFooter:developersSection.item.github",
-        path: "https://github.com/gnoswap-labs/gnoswap",
+        path: EXT_URL.GITHUB.CONTRACTS,
         newTab: true,
       },
       {
         title: "HeaderFooter:developersSection.item.docs",
-        path: "https://docs.gnoswap.io/contracts/",
+        path: EXT_URL.DOCS.CONTRACTS,
         newTab: true,
       },
       {
