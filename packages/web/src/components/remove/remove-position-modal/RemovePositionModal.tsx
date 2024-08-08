@@ -37,7 +37,6 @@ const RemovePositionModal: React.FC<Props> = ({
   selectedPositions,
   close,
   onSubmit,
-  allPositions,
 }) => {
   const { t } = useTranslation();
 
@@ -49,18 +48,38 @@ const RemovePositionModal: React.FC<Props> = ({
     close();
   }, [close]);
 
-  const warningPercent = useMemo(() => {
-    const selectRemoveUsd = selectedPosition.reduce((acc, current) => {
-      return acc + Number(current.usdValue || 0) * Number(current.apr || 0);
-    }, 0);
-    const allUsd = allPositions.reduce((acc, current) => {
-      return acc + Number(current.usdValue || 0);
-    }, 0);
+  const feeApr = useMemo(() => {
+    const positionAprs = selectedPositions.map(position => {
+      const aprs = position.reward.reduce(
+        (accum, currentReward) => {
+          if (currentReward.rewardType === "SWAP_FEE") {
+            accum.fee += currentReward.apr || 0;
+          }
+          accum.rewards += currentReward.apr || 0;
 
-    if (selectRemoveUsd === 0) return "0%";
-    if (allUsd === 0) return "-";
-    return formatRate(selectRemoveUsd / allUsd);
-  }, [allPositions, selectedPosition]);
+          return accum;
+        },
+        { fee: 0, rewards: 0 },
+      );
+      return { liquidity: position.liquidity, aprs };
+    });
+
+    const result = positionAprs.reduce(
+      (accum, currentPostionApr) => {
+        accum.fee +=
+          BigInt((currentPostionApr.aprs.fee * 1000).toFixed(0)) *
+          currentPostionApr.liquidity;
+        accum.rewards +=
+          BigInt((currentPostionApr.aprs.rewards * 1000).toFixed(0)) *
+          currentPostionApr.liquidity;
+        accum.liquidity += currentPostionApr.liquidity;
+        return accum;
+      },
+      { fee: 0n, rewards: 0n, liquidity: 0n },
+    );
+
+    return formatRate(Number((result.fee / result.liquidity).toString()) / 1000);
+  }, [selectedPositions]);
 
   return (
     <RemovePositionModalWrapper>
@@ -173,7 +192,7 @@ const RemovePositionModal: React.FC<Props> = ({
                     i18nKey="confRemoveModal.warning.content"
                     components={{ span: <span className="remove-percent" /> }}
                     values={{
-                      percent: warningPercent,
+                      percent: feeApr,
                     }}
                   />
                 </RemoveWarningContentWrapper>
