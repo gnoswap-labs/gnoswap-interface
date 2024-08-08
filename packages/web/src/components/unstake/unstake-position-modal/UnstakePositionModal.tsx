@@ -48,7 +48,6 @@ const UnstakePositionModal: React.FC<Props> = ({
   }, [close]);
 
   const {feeApr, totalApr} = useMemo(() => {
-    console.log(positions);
     const positionAprs = positions.map(position => {
       const aprs = position.reward.reduce(
         (accum, currentReward) => {
@@ -63,7 +62,6 @@ const UnstakePositionModal: React.FC<Props> = ({
       );
       return { liquidity: position.liquidity, aprs };
     });
-    console.log(positionAprs);
 
     const result = positionAprs.reduce(
       (accum, currentPostionApr) => {
@@ -78,7 +76,6 @@ const UnstakePositionModal: React.FC<Props> = ({
       },
       { fee: 0n, rewards: 0n, liquidity: 0n },
     );
-    console.log(result);
 
     return {
       feeApr: formatRate(

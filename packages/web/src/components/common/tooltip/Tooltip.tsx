@@ -116,7 +116,6 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   // trigger callback
   useEffect(() => {
     if (onChangeOpen && showTooltipRef.current !== showTooltip) {
-      console.log(showTooltipRef.current, showTooltip);
       showTooltipRef.current = showTooltip;
       onChangeOpen(showTooltip);
     }

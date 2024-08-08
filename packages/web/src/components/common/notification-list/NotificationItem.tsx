@@ -115,9 +115,6 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     [replaceToken, t],
   );
 
-      console.log("=================================");
-
-
   return (
     <TxsListItem key={type}>
       <TxsDateAgoTitle>{groupLabel}</TxsDateAgoTitle>
