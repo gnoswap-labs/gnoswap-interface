@@ -27,7 +27,7 @@ export const useRemovePositionModal = ({
     setModalContent(
       <RemovePositionModalContainer
         allPosition={positions}
-        selectedPosition={selectedPositions}
+        selectedPositions={selectedPositions}
         isWrap={isWrap}
       />,
     );

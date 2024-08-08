@@ -11,13 +11,13 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
-import { useUnstakeData } from "@hooks/stake/use-unstake-data";
+import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetUnstakingFee } from "@query/pools";
 import {
   formatOtherPrice,
   formatPoolPairAmount,
-  formatRate,
+  formatRate
 } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
 
@@ -26,7 +26,7 @@ import {
   RewardLogoSymbolWrapper,
   ToolTipContentWrapper,
   UnstakePositionModalWrapper,
-  UnstakeWarningContentWrapper,
+  UnstakeWarningContentWrapper
 } from "./UnstakePositionModal.styles";
 
 interface Props {
@@ -41,7 +41,7 @@ const UnstakePositionModal: React.FC<Props> = ({
   onSubmit,
 }) => {
   const { t } = useTranslation();
-  const { unclaimedRewards, totalLiquidityUSD } = useUnstakeData({ positions });
+  const { unclaimedRewards, totalLiquidityUSD } = usePositionsRewards({ positions });
   const { data: unstakingFee } = useGetUnstakingFee();
   const onClickClose = useCallback(() => {
     close();

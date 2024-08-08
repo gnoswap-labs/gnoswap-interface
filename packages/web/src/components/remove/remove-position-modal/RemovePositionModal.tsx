@@ -1,5 +1,5 @@
-import { Trans, useTranslation } from "react-i18next";
 import React, { useCallback, useMemo } from "react";
+import { Trans, useTranslation } from "react-i18next";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -10,7 +10,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
-import { useRemoveData } from "@hooks/stake/use-remove-data";
+import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetWithdrawalFee } from "@query/pools";
 import {
@@ -27,22 +27,22 @@ import {
 } from "./RemovePositionModal.styles";
 
 interface Props {
-  selectedPosition: PoolPositionModel[];
+  selectedPositions: PoolPositionModel[];
   allPositions: PoolPositionModel[];
   close: () => void;
   onSubmit: () => void;
 }
 
 const RemovePositionModal: React.FC<Props> = ({
-  selectedPosition,
+  selectedPositions,
   close,
   onSubmit,
   allPositions,
 }) => {
   const { t } = useTranslation();
 
-  const { unclaimedRewards, totalLiquidityUSD } = useRemoveData({
-    selectedPosition,
+  const { unclaimedFees, totalLiquidityUSD } = usePositionsRewards({
+    positions: selectedPositions,
   });
   const { data: withdrawalFee } = useGetWithdrawalFee();
   const onClickClose = useCallback(() => {
@@ -75,7 +75,7 @@ const RemovePositionModal: React.FC<Props> = ({
           <div className="box-item">
             <h4>{t("RemovePosition:confRemoveModal.positionLst")}</h4>
             <div className="item-content">
-              {selectedPosition.map((position, index) => (
+              {selectedPositions.map((position, index) => (
                 <div key={index}>
                   <div className="label-logo">
                     <DoubleLogo
@@ -103,7 +103,7 @@ const RemovePositionModal: React.FC<Props> = ({
             <div className="box-item box-item-unclaim">
               <h4>{t("RemovePosition:confRemoveModal.unclaimedFee")}</h4>
               <div className="item-content">
-                {unclaimedRewards.map((rewardInfo, index) => (
+                {unclaimedFees.map((rewardInfo, index) => (
                   <div key={index} className="item-detail">
                     <div>
                       <div className="label-logo">

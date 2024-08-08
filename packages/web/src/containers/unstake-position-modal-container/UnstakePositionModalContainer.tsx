@@ -6,7 +6,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import useRouter from "@hooks/common/use-custom-router";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
-import { useUnstakeData } from "@hooks/stake/use-unstake-data";
+import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
@@ -31,7 +31,7 @@ const UnstakePositionModalContainer = ({
     broadcastError,
     broadcastLoading,
   } = useBroadcastHandler();
-  const { pooledTokenInfos } = useUnstakeData({ positions });
+  const { pooledTokenInfos } = usePositionsRewards({ positions });
   const { openModal } = useTransactionConfirmModal({
     confirmCallback: () => router.push(router.asPath.replace("/unstake", "")),
   });

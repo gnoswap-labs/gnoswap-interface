@@ -4,13 +4,13 @@ import {
   RemoveLiquiditySelectResultWrapper,
 } from "./RemoveLiquiditySelectResult.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useRemoveData } from "@hooks/stake/use-remove-data";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { Divider } from "@components/common/divider/divider";
 import Switch from "@components/common/switch/Switch";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
+import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 
 interface RemoveLiquiditySelectResultProps {
   positions: PoolPositionModel[];
@@ -23,19 +23,19 @@ const RemoveLiquiditySelectResult: React.FC<
 > = ({ positions, isWrap, setIsWrap }) => {
   const { t } = useTranslation();
 
-  const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } =
-    useRemoveData({ selectedPosition: positions });
+  const { pooledTokenInfos, unclaimedFees, totalLiquidityUSD } =
+    usePositionsRewards({ positions });
 
   const hasGnotToken = useMemo(() => {
     const anyGnotPooledToken = pooledTokenInfos.some(
       item => item.token.path === GNOT_TOKEN.path,
     );
-    const anyGnotUnclaimedToken = unclaimedRewards.some(
+    const anyGnotUnclaimedToken = unclaimedFees.some(
       item => item.token.path === GNOT_TOKEN.path,
     );
 
     return anyGnotPooledToken || anyGnotUnclaimedToken;
-  }, [pooledTokenInfos, unclaimedRewards]);
+  }, [pooledTokenInfos, unclaimedFees]);
 
   if (positions.length === 0) return <></>;
 
@@ -64,7 +64,7 @@ const RemoveLiquiditySelectResult: React.FC<
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>
           </li>
         ))}
-        {unclaimedRewards.map((pooledTokenInfo, index) => (
+        {unclaimedFees.map((pooledTokenInfo, index) => (
           <li key={index}>
             <div className="main-info">
               <MissingLogo

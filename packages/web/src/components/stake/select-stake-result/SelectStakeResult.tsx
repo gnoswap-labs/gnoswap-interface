@@ -1,14 +1,16 @@
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconInfo from "@components/common/icons/IconInfo";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import React, { useMemo } from "react";
-import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 import { PoolModel } from "@models/pool/pool-model";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatRate } from "@utils/new-number-utils";
-import { useStakeData } from "@hooks/stake/use-stake-data";
-import { useTranslation } from "react-i18next";
+
+import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 
 interface SelectStakeResultProps {
   positions: PoolPositionModel[];
@@ -22,7 +24,9 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   pool,
 }) => {
   const { t } = useTranslation();
-  const { pooledTokenInfos, totalLiquidityUSD } = useStakeData({ positions });
+  const { pooledTokenInfos, totalLiquidityUSD } = usePositionsRewards({
+    positions,
+  });
 
   const stakingAPR = useMemo(() => {
     if (!pool?.stakingApr) return "-";
