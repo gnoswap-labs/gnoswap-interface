@@ -1,18 +1,21 @@
-// TODO : remove eslint-disable after work
+import BigNumber from "bignumber.js";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ValuesType } from "utility-types"; // TODO : remove eslint-disable after work
+
 import {
-  GNOT_SYMBOL,
+  GNOT_TOKEN,
   GNOT_TOKEN_DEFAULT,
-  GNS_SYMBOL,
   GNS_TOKEN,
-  WUGNOT_SYMBOL,
-  WUGNOT_TOKEN,
+  WUGNOT_TOKEN
 } from "@common/values/token-constant";
 import AssetList from "@components/wallet/asset-list/AssetList";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
-import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
 import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
+import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
 import useClickOutside from "@hooks/common/use-click-outside";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -20,13 +23,8 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetTokensList } from "@query/token";
 import { checkGnotPath } from "@utils/common";
-import { isEmptyObject } from "@utils/validation-utils";
-import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ValuesType } from "utility-types";
-import { usePositionData } from "@hooks/common/use-position-data";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
-import useCustomRouter from "@hooks/common/use-custom-router";
+import { isEmptyObject } from "@utils/validation-utils";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -45,7 +43,7 @@ export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
 
 export interface Asset extends TokenModel {
   balance?: number | string | null;
-  price?: any;
+  price?: string;
 }
 
 export const ASSET_TYPE = {
@@ -196,15 +194,15 @@ const AssetListContainer: React.FC = () => {
         break;
       }
 
-      if (tokens[index].symbol === GNOT_SYMBOL) {
+      if (tokens[index].path === GNOT_TOKEN.path) {
         foundCount++;
         gnot = tokens[index];
       }
-      if (tokens[index].symbol === GNS_SYMBOL) {
+      if (tokens[index].path === GNS_TOKEN.path) {
         foundCount++;
         gns = tokens[index];
       }
-      if (tokens[index].symbol === WUGNOT_SYMBOL) {
+      if (tokens[index].path === WUGNOT_TOKEN.path) {
         foundCount++;
         wugnot = tokens[index];
       }
@@ -279,9 +277,9 @@ const AssetListContainer: React.FC = () => {
     let mappedTokens: SortedProps[] = tokens
       .filter(
         item =>
-          item.symbol !== GNOT_SYMBOL &&
-          item.symbol !== GNS_SYMBOL &&
-          item.symbol !== WUGNOT_SYMBOL,
+          item.path !== GNOT_TOKEN.path &&
+          item.path !== GNS_TOKEN.path &&
+          item.path !== WUGNOT_TOKEN.path,
       )
       .map(item => {
         const tokenPrice = balances[item.priceID];
@@ -505,7 +503,7 @@ const AssetListContainer: React.FC = () => {
     router.movePageWithTokenPath("TOKEN", tokenPath);
   }, []);
 
-  const onSubmit = (amount: any, address: string) => {
+  const onSubmit = (amount: string, address: string) => {
     if (!withdrawInfo || !account?.address) return;
     handleSubmit(
       {

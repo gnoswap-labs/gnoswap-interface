@@ -1,18 +1,19 @@
+import BigNumber from "bignumber.js";
+import { useAtom, useAtomValue } from "jotai";
+import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
+
+import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { TokenModel } from "@models/token/token-model";
-import { useAtomValue, useAtom } from "jotai";
-import { ThemeState, TokenState } from "@states/index";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import BigNumber from "bignumber.js";
-import { parseJson } from "@utils/common";
-import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
+import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
+import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useRouter } from "next/router";
+import { TokenModel } from "@models/token/token-model";
+import { ThemeState, TokenState } from "@states/index";
+import { parseJson } from "@utils/common";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -25,7 +26,7 @@ export interface SortedProps extends TokenModel {
   tokenPrice: number;
 }
 
-export const ORDER = [GNOT_SYMBOL, GNS_SYMBOL, "BAR", "BAZ"];
+export const ORDER = [GNOT_TOKEN.symbol, GNS_TOKEN.symbol, "BAR", "BAZ"];
 
 export const customSort = (a: TokenModel, b: TokenModel) => {
   const symbolA = a.symbol.toUpperCase();
@@ -42,18 +43,42 @@ export const customSort = (a: TokenModel, b: TokenModel) => {
 
 
 const handleSort = (list: SortedProps[]) => {
-  const gnot = list.find(a => a.symbol === GNOT_SYMBOL);
-  const gnos = list.find(a => a.symbol === GNS_SYMBOL);
-  const valueOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL).sort((a, b) => {
-    const priceA = parseFloat(a.price.replace(/,/g, ""));
-    const priceB = parseFloat(b.price.replace(/,/g, ""));
-    return priceB - priceA;
-  });
-  const amountOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a) && a.tokenPrice > 0).sort((a, b) => b.tokenPrice - a.tokenPrice);
-  const alphabest = list.filter(a => !amountOfBalance.includes(a) && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+  const gnot = list.find(a => a.path === GNOT_TOKEN.path);
+  const gns = list.find(a => a.path === GNS_TOKEN.path);
+  const valueOfBalance = list
+    .filter(
+      a =>
+        a.price !== "-" &&
+        a.path !== GNOT_TOKEN.path &&
+        a.path !== GNS_TOKEN.path,
+    )
+    .sort((a, b) => {
+      const priceA = parseFloat(a.price.replace(/,/g, ""));
+      const priceB = parseFloat(b.price.replace(/,/g, ""));
+      return priceB - priceA;
+    });
+  const amountOfBalance = list
+    .filter(
+      a =>
+        a.price !== "-" &&
+        a.path !== GNOT_TOKEN.path &&
+        a.path !== GNS_TOKEN.path &&
+        !valueOfBalance.includes(a) &&
+        a.tokenPrice > 0,
+    )
+    .sort((a, b) => b.tokenPrice - a.tokenPrice);
+  const alphabest = list
+    .filter(
+      a =>
+        !amountOfBalance.includes(a) &&
+        a.path !== GNOT_TOKEN.path &&
+        a.path !== GNS_TOKEN.path &&
+        !valueOfBalance.includes(a),
+    )
+    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
   const rs = [];
-  gnot && rs.push(gnot);
-  gnos && rs.push(gnos);
+  if (gnot) rs.push(gnot);
+  if (gns) rs.push(gns);
   return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
 };
 
@@ -82,7 +107,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   }, [recentsData]);
 
   const { openModal: openTradingModal } = useTokenTradingModal({
-    onClickConfirm: (value: any) => {
+    onClickConfirm: (value: TokenModel) => {
       setFromSelectToken(true);
       changeToken?.(value);
       close();
