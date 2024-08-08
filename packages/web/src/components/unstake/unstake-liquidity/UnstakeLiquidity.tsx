@@ -58,7 +58,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
           content={
             <StakeWarningContentWrapper>
               <p>{t("UnstakePosition:warning.content")}</p>
-              <a href={EXT_URL.DOCS_WARMUP} target="_blank">
+              <a href={EXT_URL.DOCS.WARMUP} target="_blank">
                 {t("common:learnMore")}
                 <IconOpenLink className="icon-link" />
               </a>

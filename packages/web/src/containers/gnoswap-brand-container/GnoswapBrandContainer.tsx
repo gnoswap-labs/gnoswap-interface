@@ -1,17 +1,19 @@
+import React, { useCallback, useEffect, useState } from "react";
+
 import GnoswapBrand, {
   SNS_TYPE,
 } from "@components/home/gnoswap-brand/GnoswapBrand";
-import React, { useCallback, useEffect, useState } from "react";
+import { EXT_URL } from "@constants/external-url.contant";
 
 const SNS_URL: {
   [key in SNS_TYPE]: string;
 } = {
-  [SNS_TYPE.GITHUB]: "https://github.com/gnoswap-labs",
-  [SNS_TYPE.GITBOOK]: "https://docs.gnoswap.io/",
-  [SNS_TYPE.DISCORD]: "https://discord.gg/u4bdGHStb2",
-  [SNS_TYPE.TELEGRAM]: "https://t.me/gnoswap",
-  [SNS_TYPE.MEDIUM]: "https://medium.com/@gnoswaplabs",
-  [SNS_TYPE.TWITTER]: "https://twitter.com/gnoswaplabs",
+  [SNS_TYPE.GITHUB]: EXT_URL.GITHUB.ROOT,
+  [SNS_TYPE.GITBOOK]: EXT_URL.DOCS.ROOT,
+  [SNS_TYPE.DISCORD]: EXT_URL.SOCIAL.DISCORD,
+  [SNS_TYPE.TELEGRAM]: EXT_URL.SOCIAL.TELEGRAM,
+  [SNS_TYPE.MEDIUM]: EXT_URL.SOCIAL.MEDIUM,
+  [SNS_TYPE.TWITTER]: EXT_URL.SOCIAL.TWITTER,
 };
 
 const GnoswapBrandContainer: React.FC = () => {

@@ -19,7 +19,7 @@ const Disclaimer: React.FC = () => {
             docs_link: (
                 <IconButton
                   onClick={() => {
-                    window.open(EXT_URL.DOCS_WARMUP, "_blank");
+                    window.open(EXT_URL.DOCS.WARMUP, "_blank");
                   }}
                   style={{display: "inline-block"}}
                 >

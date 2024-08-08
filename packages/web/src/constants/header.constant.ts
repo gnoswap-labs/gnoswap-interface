@@ -1,3 +1,5 @@
+import { EXT_URL } from "./external-url.contant";
+
 export const HEADER_NAV = [
   {
     title: "HeaderFooter:swap",
@@ -43,12 +45,12 @@ export const SIDE_MENU_NAV = [
 export const SIDE_EXTRA_MENU_NAV = [
   {
     title: "HeaderFooter:helpCenter",
-    path: "https://discord.gg/u4bdGHStb2",
+    path: EXT_URL.SOCIAL.DISCORD,
     iconType: "OPEN_LINK",
   },
   {
     title: "HeaderFooter:documentation",
-    path: "https://docs.gnoswap.io/",
+    path: EXT_URL.DOCS.ROOT,
     iconType: "OPEN_LINK",
   },
   {
