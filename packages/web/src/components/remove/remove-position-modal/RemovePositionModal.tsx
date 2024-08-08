@@ -1,28 +1,30 @@
+import { Trans, useTranslation } from "react-i18next";
+import React, { useCallback, useMemo } from "react";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
-import { useRemoveData } from "@hooks/stake/use-remove-data";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import React, { useCallback, useMemo } from "react";
-import {
-  Divider,
-  RemovePositionModalWrapper,
-  RemoveWarningContentWrapper,
-  ToolTipContentWrapper,
-} from "./RemovePositionModal.styles";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import IconInfo from "@components/common/icons/IconInfo";
 import WarningCard from "@components/common/warning-card/WarningCard";
-import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import { useRemoveData } from "@hooks/stake/use-remove-data";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetWithdrawalFee } from "@query/pools";
 import {
   formatOtherPrice,
   formatPoolPairAmount,
-  formatRate,
+  formatRate
 } from "@utils/new-number-utils";
-import { Trans, useTranslation } from "react-i18next";
+
+import {
+  Divider,
+  RemovePositionModalWrapper,
+  RemoveWarningContentWrapper,
+  ToolTipContentWrapper
+} from "./RemovePositionModal.styles";
 
 interface Props {
   selectedPosition: PoolPositionModel[];
@@ -169,13 +171,11 @@ const RemovePositionModal: React.FC<Props> = ({
                   <Trans
                     ns="RemovePosition"
                     i18nKey="confRemoveModal.warning.content"
+                    components={{ span: <span className="remove-percent" /> }}
                     values={{
                       percent: warningPercent,
                     }}
-                  >
-                    You will stop earning swap fee rewards of
-                    <span className="remove-percent">{warningPercent} APR</span>
-                  </Trans>
+                  />
                 </RemoveWarningContentWrapper>
               }
             />
