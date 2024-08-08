@@ -1,26 +1,28 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import Button from "@components/common/button/Button";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import StakingContentCard, {
-  SummuryApr,
+  SummuryApr
 } from "@components/pool/staking-content-card/StakingContentCard";
+import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import IncentivizeTokenDetailTooltipContainer from "@containers/incentivize-token-detail-container/IncentivizeTokenDetailTooltipContainer";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenModel } from "@models/token/token-model";
+import { DEVICE_TYPE } from "@styles/media";
+
 import {
   AprNumberContainer,
   AprStakingHeader,
   NoticeAprToolTip,
-  StakingContentWrapper,
+  StakingContentWrapper
 } from "./StakingContent.styles";
-import Button from "@components/common/button/Button";
-import { DEVICE_TYPE } from "@styles/media";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenModel } from "@models/token/token-model";
-import { STAKING_PERIOS, StakingPeriodType } from "@constants/option.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import IncentivizeTokenDetailTooltipContainer from "@containers/incentivize-token-detail-container/IncentivizeTokenDetailTooltipContainer";
-import { useTranslation } from "react-i18next";
 
 interface StakingContentProps {
   totalApr: string;
@@ -51,7 +53,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   pool,
 }) => {
   const { getGnotPath } = useGnotToGnot();
-  const [showAprTooltip, setShowAprTooltip] = useState(false);
+  const [forceShowAprGuide, setForceShowAprGuide] = useState(true);
   const { t } = useTranslation();
 
   const rewardTokenLogos = useMemo(() => {
@@ -73,44 +75,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
       return acc;
     }, []) as TokenModel[];
   }, [pool?.rewardTokens, getGnotPath]);
-
-  const debounce = <Params extends unknown[]>(
-    func: (...args: Params) => void,
-    timeout: number,
-  ): ((...args: Params) => void) => {
-    let timer: NodeJS.Timeout;
-    return (...args: Params) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func(...args);
-      }, timeout);
-    };
-  };
-
-  const toggleTooltip = useCallback(
-    debounce((state: boolean) => setShowAprTooltip(state), 0),
-    [],
-  );
-
-  useEffect(() => {
-    const fn = () => {
-      toggleTooltip(false);
-
-      const top = document
-        .getElementById("staking-container")
-        ?.getBoundingClientRect().top;
-
-      if (top && top <= 300) {
-        toggleTooltip(true);
-      }
-    };
-
-    window.addEventListener("scroll", fn);
-
-    return () => {
-      window.removeEventListener("scroll", fn);
-    };
-  }, [showAprTooltip, toggleTooltip]);
 
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
@@ -152,41 +116,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
     return STAKING_PERIOS.slice(0, checkPointIndex + 1);
   }, [stakingPositionMap]);
 
-  useEffect(() => {
-    let element: EventTarget | null;
-
-    const moutOutAprText = () => toggleTooltip(true);
-
-    const fn: EventListener = e => {
-      if (e.target instanceof Element) {
-        const isLogoHover = e?.target?.className?.includes?.("coin-item-logo");
-        const isHoverAprText = ["apr-text"].includes(e.target.id);
-
-        if (isLogoHover) {
-          element?.addEventListener("mouseleave", moutOutAprText);
-        }
-
-        if (isHoverAprText || isLogoHover) {
-          toggleTooltip(false);
-        }
-      }
-    };
-
-    document
-      .getElementById("apr-text")
-      ?.addEventListener("mouseleave", moutOutAprText);
-
-    window.addEventListener("mouseover", fn);
-
-    return () => {
-      window.removeEventListener("mouseover", fn);
-      document
-        .getElementById("apr-text")
-        ?.removeEventListener("mouseleave", moutOutAprText);
-      element?.removeEventListener("mouseleave", moutOutAprText);
-    };
-  }, [showAprTooltip, toggleTooltip]);
-
   return (
     <StakingContentWrapper isMobile={mobile}>
       <div className="content-header">
@@ -205,15 +134,15 @@ const StakingContent: React.FC<StakingContentProps> = ({
             }
           >
             <Tooltip
+              className={"float-view-apr"}
               FloatingContent={
                 <NoticeAprToolTip>
                   {t("Pool:staking.tooltip.hoverGuide")}
                 </NoticeAprToolTip>
               }
               placement="top"
-              forcedOpen={showAprTooltip}
-              forcedClose={!showAprTooltip}
-              className={"float-view-apr"}
+              forcedOpen={forceShowAprGuide}
+              forcedClose={!forceShowAprGuide}
             >
               <div className="placeholder"></div>
             </Tooltip>
@@ -227,6 +156,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 placement="top"
                 className="apr-text"
                 scroll
+                onChangeOpen={(open: boolean) => setForceShowAprGuide(!open)}
               >
                 <span id={"apr-text"}>
                   {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}

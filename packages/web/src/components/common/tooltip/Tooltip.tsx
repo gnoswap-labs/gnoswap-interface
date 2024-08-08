@@ -86,6 +86,7 @@ interface TooltipProps {
   forcedOpen?: boolean;
   forcedClose?: boolean;
   scroll?: boolean;
+  onChangeOpen?: (open: boolean) => void;
 }
 
 const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
@@ -98,6 +99,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   forcedOpen = false,
   forcedClose = false,
   scroll = false,
+  onChangeOpen = undefined
 }) => {
   const theme = useTheme();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -110,6 +112,13 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
 
   const showTooltip = forcedOpen || (open && !forcedClose);
 
+
+  // trigger callback
+  useEffect(() => {
+    if (onChangeOpen) onChangeOpen(showTooltip);
+  }, [onChangeOpen, showTooltip]);
+
+  // handle listner
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
