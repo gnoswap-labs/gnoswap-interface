@@ -137,7 +137,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       estimatedRoutes,
       checkGnotPath(inputToken.path),
     );
-    console.log(routesQuery);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
 
     const inputTokenWrappedPath = checkGnotPath(inputToken.path);
