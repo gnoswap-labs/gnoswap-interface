@@ -15,7 +15,7 @@ import { TransactionGroupsType } from "@models/notification";
 const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const { notificationRepository } = useGnoswapContext();
-  const { account } = useWallet();
+  const { account, availNetwork, currentChainId } = useWallet();
   const [notificationHash, setNotificationHash] = useAtom(
     CommonState.notificationHash,
   );
@@ -35,12 +35,13 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     refetch,
     isFetched,
   } = useQuery<TransactionGroupsType[], Error>({
-    queryKey: ["groupedNotification", account?.address],
+    queryKey: ["groupedNotification", currentChainId, account?.address],
     queryFn: () =>
       notificationRepository.getGroupedNotification({
         address: account?.address,
       }),
     refetchInterval: 1000 * 10,
+    enabled: !!account?.address && availNetwork,
   });
 
   const txs = useMemo(() => {

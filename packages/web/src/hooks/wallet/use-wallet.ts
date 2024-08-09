@@ -35,19 +35,50 @@ export const useWallet = () => {
     return walletAccount !== null && walletAccount.address.length > 0;
   }, [walletAccount]);
 
-  const {
-    data: balance,
-    isLoading: isLoadingBalance,
-    isStale: isBalanceStale,
-    refetch,
-  } = useGetTokenBalancesFromChain("ugnot");
-
   const wallet = useMemo(() => {
     if (!connected) {
       return null;
     }
     return walletClient;
   }, [connected, walletClient]);
+
+  const currentChainId = useMemo(() => {
+    if (!walletAccount) {
+      return DEFAULT_CHAIN_ID;
+    }
+
+    return walletAccount.chainId;
+  }, [walletAccount]);
+
+  const availNetwork = useMemo(() => {
+    if (!walletAccount) {
+      return true;
+    }
+
+    return SUPPORT_CHAIN_IDS.includes(walletAccount.chainId);
+  }, [walletAccount]);
+
+  const isSwitchNetwork = useMemo(() => {
+    if (!walletAccount) {
+      return true;
+    }
+
+    return !availNetwork;
+  }, [availNetwork, walletAccount]);
+
+  const {
+    data: balance,
+    isLoading: isLoadingBalance,
+    isStale: isBalanceStale,
+    refetch,
+  } = useGetTokenBalancesFromChain(
+    currentChainId,
+    walletAccount?.address,
+    "ugnot",
+    {
+      enabled: !!walletAccount?.address && availNetwork,
+    },
+  );
 
   useEffect(() => {
     if (walletClient) {
@@ -74,7 +105,7 @@ export const useWallet = () => {
     sessionStorage.removeItem(GNOWSWAP_CONNECTED_KEY);
     accountRepository.setConnectedWallet(false);
     setLoadingConnect("initial");
-  }, [accountRepository, setWalletAccount]);
+  }, [accountRepository]);
 
   async function initSession() {
     try {
@@ -93,23 +124,23 @@ export const useWallet = () => {
     }
   }
 
-  const switchNetwork = useCallback(
-    async (network?: string) => {
-      try {
-        setLoadingConnect("loading");
-        const res = await accountRepository.switchNetwork(
-          network || DEFAULT_CHAIN_ID,
-        );
-        if (res.code === 0) {
-          const account = await accountRepository.getAccount();
-          setWalletAccount(account);
-          accountRepository.setConnectedWallet(true);
-        }
-        setLoadingConnect("done");
-      } catch (error) {}
-    },
-    [accountRepository, setWalletAccount],
-  );
+  const switchNetwork = async (network?: string) => {
+    try {
+      setLoadingConnect("loading");
+      const res = await accountRepository.switchNetwork(
+        network || DEFAULT_CHAIN_ID,
+      );
+      if (res.code === 0) {
+        const account = await accountRepository.getAccount();
+        setWalletAccount(account);
+        accountRepository.setConnectedWallet(true);
+      }
+      setLoadingConnect("done");
+    } catch {
+      // initialize adena client
+      connectAdenaClient();
+    }
+  };
 
   const connectAdenaClient = useCallback(() => {
     if (loadingConnect !== "initial") {
@@ -122,13 +153,7 @@ export const useWallet = () => {
       window.open("https://adena.app/");
     }
     setWalletClient(adena);
-  }, [
-    sessionId,
-    setWalletClient,
-    setLoadingConnect,
-    loadingConnect,
-    sessionId,
-  ]);
+  }, [sessionId, loadingConnect]);
 
   const connectAccount = async () => {
     try {
@@ -162,7 +187,9 @@ export const useWallet = () => {
         accountRepository.setConnectedWallet(false);
         setLoadingConnect("error");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   function updateWalletEvents(walletClient: WalletClient | null) {
@@ -182,12 +209,6 @@ export const useWallet = () => {
     } catch {}
   }
 
-  const isSwitchNetwork = useMemo(() => {
-    if (!walletAccount) return true;
-    const availNetwork = SUPPORT_CHAIN_IDS.includes(walletAccount.chainId);
-    return availNetwork ? false : true;
-  }, [walletAccount]);
-
   useEffect(() => {
     if (!sessionId) {
       const sessionId = uuid.v4();
@@ -200,6 +221,8 @@ export const useWallet = () => {
     wallet,
     account: walletAccount,
     connected,
+    availNetwork,
+    currentChainId,
     connectAccount,
     initSession,
     connectAdenaClient,

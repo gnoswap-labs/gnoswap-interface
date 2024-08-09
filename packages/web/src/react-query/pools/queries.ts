@@ -136,12 +136,8 @@ export const useGetPoolDetailByPath = (
       const data = await poolRepository.getPoolDetailByPoolPath(path);
       return data;
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       if (err instanceof PoolError) {
-        router.movePage("EARN");
-        return;
-      }
-      if (err?.["response"]?.["status"] === 404) {
         router.movePage("EARN");
         return;
       }
