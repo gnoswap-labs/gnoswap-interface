@@ -81,6 +81,10 @@ const RemovePositionModal: React.FC<Props> = ({
     return formatRate(Number((result.fee / result.liquidity).toString()) / 1000);
   }, [selectedPositions]);
 
+  const hasFee = unclaimedFees.reduce((exist, current) => {
+    return exist || current.amount !== 0;
+  }, false);
+
   return (
     <RemovePositionModalWrapper>
       <div className="modal-body">
@@ -119,58 +123,62 @@ const RemovePositionModal: React.FC<Props> = ({
                 </div>
               ))}
             </div>
-            <div className="box-item box-item-unclaim">
-              <h4>{t("RemovePosition:confRemoveModal.unclaimedFee")}</h4>
-              <div className="item-content">
-                {unclaimedFees.map((rewardInfo, index) => (
-                  <div key={index} className="item-detail">
-                    <div>
-                      <div className="label-logo">
-                        <MissingLogo
-                          symbol={rewardInfo.token.symbol}
-                          url={rewardInfo.token.logoURI}
-                          width={24}
-                          mobileWidth={24}
-                          className="image-logo"
-                        />
-                        <div>{rewardInfo.token.symbol}</div>
+            {hasFee && (
+              <div className="box-item box-item-unclaim">
+                <h4>{t("RemovePosition:confRemoveModal.unclaimedFee")}</h4>
+                <div className="item-content">
+                  {unclaimedFees.map((rewardInfo, index) => (
+                    <div key={index} className="item-detail">
+                      <div>
+                        <div className="label-logo">
+                          <MissingLogo
+                            symbol={rewardInfo.token.symbol}
+                            url={rewardInfo.token.logoURI}
+                            width={24}
+                            mobileWidth={24}
+                            className="image-logo"
+                          />
+                          <div>{rewardInfo.token.symbol}</div>
+                        </div>
+                        <div className="value">
+                          {formatPoolPairAmount(rewardInfo.amount, {
+                            decimals: rewardInfo.token.decimals,
+                          })}
+                        </div>
                       </div>
-                      <div className="value">
-                        {formatPoolPairAmount(rewardInfo.amount, {
-                          decimals: rewardInfo.token.decimals,
-                        })}
-                      </div>
+                      <div className="sub-value">{rewardInfo.amountUSD}</div>
                     </div>
-                    <div className="sub-value">{rewardInfo.amountUSD}</div>
-                  </div>
-                ))}
-                <div className="protocal-wrapper">
-                  <Divider />
-                  <div className="protocol">
-                    <div>
-                      <span className="">
-                        {t("RemovePosition:confRemoveModal.protocolFee.label")}
+                  ))}
+                  <div className="protocal-wrapper">
+                    <Divider />
+                    <div className="protocol">
+                      <div>
+                        <span className="">
+                          {t(
+                            "RemovePosition:confRemoveModal.protocolFee.label",
+                          )}
+                        </span>
+                        <Tooltip
+                          placement="top"
+                          FloatingContent={
+                            <ToolTipContentWrapper width="251px">
+                              {t(
+                                "RemovePosition:confRemoveModal.protocolFee.tooltip",
+                              )}
+                            </ToolTipContentWrapper>
+                          }
+                        >
+                          <IconInfo />
+                        </Tooltip>
+                      </div>
+                      <span className="white-text">
+                        {withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}
                       </span>
-                      <Tooltip
-                        placement="top"
-                        FloatingContent={
-                          <ToolTipContentWrapper width="251px">
-                            {t(
-                              "RemovePosition:confRemoveModal.protocolFee.tooltip",
-                            )}
-                          </ToolTipContentWrapper>
-                        }
-                      >
-                        <IconInfo />
-                      </Tooltip>
                     </div>
-                    <span className="white-text">
-                      {withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}
-                    </span>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
             <Divider />
             <div className="box-item">
               <div className="item-content">
