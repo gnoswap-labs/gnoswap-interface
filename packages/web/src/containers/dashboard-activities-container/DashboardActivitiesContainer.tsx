@@ -30,11 +30,11 @@ export interface Activity {
 }
 
 export interface SortOption {
-  key: TABLE_HEAD;
+  key: ACTIVITY_TABLE_HEAD;
   direction: "asc" | "desc";
 }
 
-export const TABLE_HEAD = {
+export const ACTIVITY_TABLE_HEAD = {
   ACTION: "Dashboard:onchainActi.col.action",
   TOTAL_VALUE: "Dashboard:onchainActi.col.totalVal",
   TOKEN_AMOUNT1: "Dashboard:onchainActi.col.tokenAmt",
@@ -42,7 +42,7 @@ export const TABLE_HEAD = {
   ACCOUNT: "Dashboard:onchainActi.col.acc",
   TIME: "Dashboard:onchainActi.col.time",
 } as const;
-export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
+export type ACTIVITY_TABLE_HEAD = ValuesType<typeof ACTIVITY_TABLE_HEAD>;
 
 export const ACTIVITY_TYPE = {
   ALL: "All",
@@ -130,7 +130,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     setPage(newPage);
   }, []);
 
-  const isSortOption = useCallback((head: TABLE_HEAD) => {
+  const isSortOption = useCallback((head: ACTIVITY_TABLE_HEAD) => {
     const disableItems = [
       "Action",
       "Total Value",
@@ -143,7 +143,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   }, []);
 
   const sort = useCallback(
-    (item: TABLE_HEAD) => {
+    (item: ACTIVITY_TABLE_HEAD) => {
       const key = item;
       const direction =
         sortOption?.key !== item
