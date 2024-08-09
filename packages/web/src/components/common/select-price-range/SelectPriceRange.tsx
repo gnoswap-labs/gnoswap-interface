@@ -35,9 +35,6 @@ interface SelectPriceRangeProps {
   isEmptyLiquidity: boolean;
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
-  defaultPriceRangeRef?: React.MutableRefObject<
-    [number | null, number | null] | undefined
-  >;
   resetPriceRangeTypeTarget: PriceRangeType;
   defaultTicks?: DefaultTick;
   isLoadingSelectPriceRange: boolean;
@@ -88,10 +85,10 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
                 PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type] ||
                   "",
               )}
-              priceRangeStr={
-                PriceRangeStr[selectPool.feeTier || "NONE"][item.type]
-              }
-              priceRange={item}
+              priceRange={{
+                ...item,
+                text: PriceRangeStr[selectPool.feeTier || "NONE"][item.type],
+              }}
               changePriceRange={changePriceRangeWithClear}
             />
           ))}
@@ -124,7 +121,6 @@ interface SelectPriceRangeItemProps {
   selected: boolean;
   priceRange: AddLiquidityPriceRage;
   tooltip: string | undefined;
-  priceRangeStr: string;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
 }
 
@@ -133,7 +129,6 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   priceRange,
   tooltip,
   changePriceRange,
-  priceRangeStr,
 }) => {
   const { t } = useTranslation();
 
@@ -166,7 +161,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
       onClick={onClickItem}
     >
       <strong className="item-title">{priceRangeDisplay}</strong>
-      {priceRange.text && <p>{priceRangeStr}</p>}
+      {priceRange.text && <p>{priceRange.text}</p>}
       {tooltip && (
         <div className="tooltip-wrap">
           <Tooltip
