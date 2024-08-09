@@ -124,25 +124,23 @@ export const useWallet = () => {
     }
   }
 
-  const switchNetwork = useCallback(
-    async (network?: string) => {
-      try {
-        setLoadingConnect("loading");
-        const res = await accountRepository.switchNetwork(
-          network || DEFAULT_CHAIN_ID,
-        );
-        if (res.code === 0) {
-          const account = await accountRepository.getAccount();
-          setWalletAccount(account);
-          accountRepository.setConnectedWallet(true);
-        }
-        setLoadingConnect("done");
-      } catch (error) {
-        console.error(error);
+  const switchNetwork = async (network?: string) => {
+    try {
+      setLoadingConnect("loading");
+      const res = await accountRepository.switchNetwork(
+        network || DEFAULT_CHAIN_ID,
+      );
+      if (res.code === 0) {
+        const account = await accountRepository.getAccount();
+        setWalletAccount(account);
+        accountRepository.setConnectedWallet(true);
       }
-    },
-    [accountRepository],
-  );
+      setLoadingConnect("done");
+    } catch {
+      // initialize adena client
+      connectAdenaClient();
+    }
+  };
 
   const connectAdenaClient = useCallback(() => {
     if (loadingConnect !== "initial") {
