@@ -434,8 +434,10 @@ export const useRepositionHandle = () => {
   const changePriceRange = useCallback(
     (priceRange: AddLiquidityPriceRage) => {
       setPriceRange(priceRange);
+
       if (priceRange.type !== "Custom") {
         selectPool.setIsChangeMinMax(false);
+        selectPool.setFullRange(false);
       }
     },
     [selectPool],

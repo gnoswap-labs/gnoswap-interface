@@ -1,18 +1,21 @@
-import { PriceRangeStr, PriceRangeTooltip } from "@constants/option.constant";
 import React, { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { PriceRangeStr, PriceRangeTooltip } from "@constants/option.constant";
+import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import { SelectPool } from "@hooks/pool/use-select-pool";
+import { TokenModel } from "@models/token/token-model";
+
+
+import SelectPriceRangeCustomReposition from "../select-price-range-custom/SelectPriceRangeCustomReposition";
 import {
   SelectPriceRangeItemWrapper,
   SelectPriceRangeWrapper,
-  TooltipContentWrapper,
+  TooltipContentWrapper
 } from "./SelectPriceRangeReposition.styles";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import { TokenModel } from "@models/token/token-model";
-import { SelectPool } from "@hooks/pool/use-select-pool";
-import SelectPriceRangeCustom from "../select-price-range-custom/SelectPriceRangeCustomPosition";
-import { useTranslation } from "react-i18next";
 
 interface SelectPriceRangeProps {
   opened: boolean;
@@ -67,21 +70,22 @@ const SelectPriceRangeReposition: React.FC<SelectPriceRangeProps> = ({
               PriceRangeTooltip[selectPool.feeTier || "NONE"]?.[item.type] ||
                 "",
             )}
-            priceRangeStr={
-              PriceRangeStr[selectPool.feeTier || "NONE"]?.[item.type]
-            }
-            priceRange={item}
+            priceRange={{
+              ...item,
+              text: PriceRangeStr[selectPool.feeTier || "NONE"]?.[item.type],
+            }}
             changePriceRange={changePriceRangeWithClear}
           />
         ))}
       </div>
       {tokenA && tokenB && (
-        <SelectPriceRangeCustom
+        <SelectPriceRangeCustomReposition
           tokenA={tokenA}
           tokenB={tokenB}
           selectPool={selectPool}
           changeStartingPrice={changeStartingPrice}
           priceRangeType={priceRange?.type || null}
+          changePriceRange={changePriceRange}
           showDim={showDim}
           defaultPrice={defaultPrice}
           resetRange={resetRange}
@@ -98,7 +102,6 @@ interface SelectPriceRangeItemProps {
   selected: boolean;
   priceRange: AddLiquidityPriceRage;
   tooltip: string | undefined;
-  priceRangeStr: string;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
 }
 
@@ -107,8 +110,20 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   priceRange,
   tooltip,
   changePriceRange,
-  priceRangeStr,
 }) => {
+  const { t } = useTranslation();
+
+  const priceRangeDisplay = useMemo(() => {
+    switch (priceRange.type) {
+      case "Active":
+        return t("business:priceRangeType.active");
+      case "Passive":
+        return t("business:priceRangeType.passive");
+      case "Custom":
+        return t("business:priceRangeType.custom");
+    }
+  }, [priceRange.type, t]);
+
   const aprStr = useMemo(() => {
     const apr = priceRange.apr;
     if (apr) {
@@ -126,8 +141,8 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
       className={selected ? "selected" : ""}
       onClick={onClickItem}
     >
-      <strong className="item-title">{priceRange.type}</strong>
-      {priceRange.text && <p>{priceRangeStr}</p>}
+      <strong className="item-title">{priceRangeDisplay}</strong>
+      {priceRange.text && <p>{priceRange.text}</p>}
       {tooltip && (
         <div className="tooltip-wrap">
           <Tooltip
