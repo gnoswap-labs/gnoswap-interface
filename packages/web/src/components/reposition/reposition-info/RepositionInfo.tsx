@@ -1,3 +1,6 @@
+import React from "react";
+import { useTranslation } from "react-i18next";
+
 import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -6,8 +9,7 @@ import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
-import React from "react";
-import { useTranslation } from "react-i18next";
+
 import {
   RepositionInfoWrapper,
   ToolTipContentWrapper,
@@ -29,6 +31,7 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
+
   return (
     <RepositionInfoWrapper>
       <div className="deposit-ratio common-bg">

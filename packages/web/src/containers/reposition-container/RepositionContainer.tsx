@@ -44,6 +44,11 @@ const RepositionContainer: React.FC = () => {
     isSkipSwap,
   } = useRepositionHandle();
 
+  const concentratedFeeApr =
+    priceRangeSummary.feeBoost && priceRangeSummary.feeBoost !== "-"
+      ? aprFee * Number(priceRangeSummary.feeBoost.replace("x", ""))
+      : 0; 
+
   const { openModal } = useRepositionModalContainer({
     tokenA,
     tokenB,
@@ -54,7 +59,7 @@ const RepositionContainer: React.FC = () => {
     maxPriceStr,
     rangeStatus,
     priceRangeSummary,
-    aprFee,
+    aprFee: concentratedFeeApr,
     currentAmounts,
     repositionAmounts,
     removePosition,
@@ -78,7 +83,7 @@ const RepositionContainer: React.FC = () => {
       tokenB={tokenB}
       fee={`${Number(fee) / 10000}%`}
       rangeStatus={rangeStatus}
-      aprFee={aprFee}
+      aprFee={concentratedFeeApr}
       priceRangeSummary={priceRangeSummary}
       connected={connected}
       tokenAAmountInput={tokenAAmountInput}

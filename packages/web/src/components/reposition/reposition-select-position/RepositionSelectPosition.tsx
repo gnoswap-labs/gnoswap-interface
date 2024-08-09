@@ -1,3 +1,6 @@
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
@@ -8,8 +11,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+
 import { RepositionSelectPositionWrapper } from "./RepositionSelectPosition.styles";
 
 export interface RepositionSelectPositionProps {
@@ -17,7 +19,6 @@ export interface RepositionSelectPositionProps {
   tokenB: TokenModel | null;
   fee: string;
   rangeStatus: RANGE_STATUS_OPTION;
-  aprFee: number;
   priceRangeSummary: IPriceRange;
   selectedPosition: PoolPositionModel | null;
   isLoadingPosition: boolean;

@@ -101,7 +101,6 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
       </div>
       <article>
         <RepositionSelectPosition
-          aprFee={aprFee}
           tokenA={tokenA}
           tokenB={tokenB}
           fee={fee}
