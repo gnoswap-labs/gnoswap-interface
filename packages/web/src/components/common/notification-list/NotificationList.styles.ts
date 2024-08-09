@@ -153,7 +153,7 @@ export const TxsSummaryItem = styled.div`
   }
 `;
 
-export const DoubleLogoWrapperTest = styled.div`
+export const DoubleLogoDense = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   ${mixins.posTopCenterLeft("24px")};
   border-radius: 50%;
@@ -166,6 +166,20 @@ export const DoubleLogoWrapperTest = styled.div`
   }
   .right-logo {
     margin-left: -12px;
+  }
+
+  .more-token {
+    width: 14px;
+    height: 14px;
+    background: ${({ theme }) => theme.color.border02};
+    border-radious: 8px;
+    margin-left: -24px;
+    margin-top: 12px;
+
+    ${mixins.flexbox("row", "center", "center")};
+
+    ${fonts.p7};
+    font-size: 7px;
   }
 `;
 
@@ -239,6 +253,20 @@ export const DoubleLogo = styled.div`
   }
   .right-logo {
     margin-left: -12px;
+  }
+
+  .more-token {
+    width: 14px;
+    height: 14px;
+    background: ${({ theme }) => theme.color.border02};
+    border-radious: 8px;
+    margin-left: -24px;
+    margin-top: 12px;
+
+    ${mixins.flexbox("row", "center", "center")};
+
+    ${fonts.p7};
+    font-size: 7px;
   }
 `;
 

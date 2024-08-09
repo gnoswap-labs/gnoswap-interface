@@ -15,8 +15,8 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import MissingLogo from "../missing-logo/MissingLogo";
 import {
-  DoubleLogo,
-  DoubleLogoWrapperTest,
+  DoubleLogo as DoubleLogoLocal,
+  DoubleLogoDense,
   TransactionItemsWrap,
   TxsDateAgoTitle,
   TxsListItem,
@@ -141,7 +141,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
               <div className="list">
                 <div className="coin-info">
                   {item.txType === NotificationType.CreatePool ? (
-                    <DoubleLogo>
+                    <DoubleLogoLocal>
                       {shouldShowTokenALogo && (
                         <MissingLogo
                           symbol={item?.tokenInfo?.tokenA?.symbol}
@@ -164,16 +164,22 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                           }
                         />
                       )}
-                    </DoubleLogo>
+                      {item.rawValue.usedTokens &&
+                        item.rawValue.usedTokens > 2 && (
+                          <div className="more-token">
+                            +{item.rawValue.usedTokens - 2}
+                          </div>
+                        )}
+                    </DoubleLogoLocal>
                   ) : (
-                    <DoubleLogo>
+                    <DoubleLogoLocal>
                       <MissingLogo
                         symbol={item?.tokenInfo?.tokenA?.symbol}
                         url={item?.tokenInfo?.tokenA?.logoURI}
                         width={24}
                         mobileWidth={24}
                       />
-                    </DoubleLogo>
+                    </DoubleLogoLocal>
                   )}
                   <div className="content-wrap">
                     <Trans
@@ -206,7 +212,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
             key={idx}
           >
             {item.txType === NotificationType.CreatePool ? (
-              <DoubleLogoWrapperTest>
+              <DoubleLogoDense>
                 {shouldShowTokenALogo && (
                   <MissingLogo
                     symbol={item?.tokenInfo?.tokenA?.symbol}
@@ -227,16 +233,21 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     }
                   />
                 )}
-              </DoubleLogoWrapperTest>
+                {item.rawValue.usedTokens && item.rawValue.usedTokens > 2 && (
+                  <div className="more-token">
+                    +{item.rawValue.usedTokens - 2}
+                  </div>
+                )}
+              </DoubleLogoDense>
             ) : (
-              <DoubleLogoWrapperTest>
+              <DoubleLogoDense>
                 <MissingLogo
                   symbol={item?.tokenInfo?.tokenA?.symbol}
                   url={item?.tokenInfo?.tokenA?.logoURI}
                   width={24}
                   mobileWidth={24}
                 />
-              </DoubleLogoWrapperTest>
+              </DoubleLogoDense>
             )}
             <div className="summary-content">
               <Trans
