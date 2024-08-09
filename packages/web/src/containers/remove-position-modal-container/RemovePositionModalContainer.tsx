@@ -9,22 +9,22 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { useRemoveData } from "@hooks/stake/use-remove-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DexEvent } from "@repositories/common";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 
 interface RemovePositionModalContainerProps {
-  selectedPosition: PoolPositionModel[];
+  selectedPositions: PoolPositionModel[];
   allPosition: PoolPositionModel[];
   isWrap: boolean;
 }
 
 const RemovePositionModalContainer = ({
-  selectedPosition,
+  selectedPositions,
   allPosition,
   isWrap,
 }: RemovePositionModalContainerProps) => {
@@ -40,8 +40,8 @@ const RemovePositionModalContainer = ({
     broadcastError,
     broadcastPending,
   } = useBroadcastHandler();
-  const { pooledTokenInfos, unclaimedRewards } = useRemoveData({
-    selectedPosition,
+  const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
+    positions: selectedPositions,
   });
 
   const onCloseConfirmTransactionModal = useCallback(() => {
@@ -59,25 +59,25 @@ const RemovePositionModalContainer = ({
 
   const gnotToken = useMemo(
     () =>
-      selectedPosition.find(item => item.pool.tokenA.path === GNOT_TOKEN.path)
+      selectedPositions.find(item => item.pool.tokenA.path === GNOT_TOKEN.path)
         ?.pool.tokenA ||
-      selectedPosition.find(item => item.pool.tokenB.path === GNOT_TOKEN.path)
+      selectedPositions.find(item => item.pool.tokenB.path === GNOT_TOKEN.path)
         ?.pool.tokenB,
-    [selectedPosition],
+    [selectedPositions],
   );
 
   const gnotAmount = useMemo(() => {
     const pooledGnotTokenAmount = pooledTokenInfos.find(
       item => item.token.path === gnotToken?.path,
     )?.amount;
-    const unclaimedGnotTokenAmount = unclaimedRewards.find(
+    const unclaimedGnotTokenAmount = unclaimedFees.find(
       item => item.token.path === gnotToken?.path,
     )?.amount;
 
     return (
       Number(pooledGnotTokenAmount || 0) + Number(unclaimedGnotTokenAmount || 0)
     );
-  }, [gnotToken?.path, pooledTokenInfos, unclaimedRewards]);
+  }, [gnotToken?.path, pooledTokenInfos, unclaimedFees]);
 
   const willWrap = useMemo(
     () => isWrap && !!gnotToken && !!gnotAmount,
@@ -102,10 +102,10 @@ const RemovePositionModalContainer = ({
     if (!address) {
       return null;
     }
-    const lpTokenIds = selectedPosition.map(position => position.id);
+    const lpTokenIds = selectedPositions.map(position => position.id);
     const approveTokenPaths = [
       ...new Set(
-        selectedPosition.flatMap(position => [
+        selectedPositions.flatMap(position => [
           position.pool.tokenA.wrappedPath ||
             checkGnotPath(position.pool.tokenA.path),
           position.pool.tokenB.wrappedPath ||
@@ -176,7 +176,7 @@ const RemovePositionModalContainer = ({
     account?.address,
     clearModal,
     positionRepository,
-    selectedPosition,
+    selectedPositions,
     router,
     pooledTokenInfos,
     gnotToken,
@@ -186,7 +186,7 @@ const RemovePositionModalContainer = ({
 
   return (
     <RemovePositionModal
-      selectedPosition={selectedPosition}
+      selectedPositions={selectedPositions}
       allPositions={allPosition}
       close={clearModal}
       onSubmit={onSubmit}

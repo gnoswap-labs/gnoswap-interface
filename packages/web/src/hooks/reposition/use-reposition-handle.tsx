@@ -144,7 +144,7 @@ export const useRepositionHandle = () => {
       return false;
     }
     return true;
-  }, [selectedPosition]);
+  }, [selectPool.maxPrice, selectPool.minPrice, selectedPosition]);
 
   const rangeStatus = useMemo(() => {
     return selectedPosition?.closed

@@ -1,64 +1,85 @@
+import React, { useCallback, useMemo } from "react";
+import { Trans, useTranslation } from "react-i18next";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
-import { useRemoveData } from "@hooks/stake/use-remove-data";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import React, { useCallback, useMemo } from "react";
-import {
-  Divider,
-  RemovePositionModalWrapper,
-  RemoveWarningContentWrapper,
-  ToolTipContentWrapper,
-} from "./RemovePositionModal.styles";
+import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import IconInfo from "@components/common/icons/IconInfo";
 import WarningCard from "@components/common/warning-card/WarningCard";
-import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
+import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetWithdrawalFee } from "@query/pools";
 import {
   formatOtherPrice,
   formatPoolPairAmount,
-  formatRate,
+  formatRate
 } from "@utils/new-number-utils";
-import { Trans, useTranslation } from "react-i18next";
+
+import {
+  Divider,
+  RemovePositionModalWrapper,
+  RemoveWarningContentWrapper,
+  ToolTipContentWrapper
+} from "./RemovePositionModal.styles";
 
 interface Props {
-  selectedPosition: PoolPositionModel[];
+  selectedPositions: PoolPositionModel[];
   allPositions: PoolPositionModel[];
   close: () => void;
   onSubmit: () => void;
 }
 
 const RemovePositionModal: React.FC<Props> = ({
-  selectedPosition,
+  selectedPositions,
   close,
   onSubmit,
-  allPositions,
 }) => {
   const { t } = useTranslation();
 
-  const { unclaimedRewards, totalLiquidityUSD } = useRemoveData({
-    selectedPosition,
+  const { unclaimedFees, totalLiquidityUSD } = usePositionsRewards({
+    positions: selectedPositions,
   });
   const { data: withdrawalFee } = useGetWithdrawalFee();
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
 
-  const warningPercent = useMemo(() => {
-    const selectRemoveUsd = selectedPosition.reduce((acc, current) => {
-      return acc + Number(current.usdValue || 0) * Number(current.apr || 0);
-    }, 0);
-    const allUsd = allPositions.reduce((acc, current) => {
-      return acc + Number(current.usdValue || 0);
-    }, 0);
+  const feeApr = useMemo(() => {
+    const positionAprs = selectedPositions.map(position => {
+      const aprs = position.reward.reduce(
+        (accum, currentReward) => {
+          if (currentReward.rewardType === "SWAP_FEE") {
+            accum.fee += currentReward.apr || 0;
+          }
+          accum.rewards += currentReward.apr || 0;
 
-    if (selectRemoveUsd === 0) return "0%";
-    if (allUsd === 0) return "-";
-    return formatRate(selectRemoveUsd / allUsd);
-  }, [allPositions, selectedPosition]);
+          return accum;
+        },
+        { fee: 0, rewards: 0 },
+      );
+      return { liquidity: position.liquidity, aprs };
+    });
+
+    const result = positionAprs.reduce(
+      (accum, currentPostionApr) => {
+        accum.fee +=
+          BigInt((currentPostionApr.aprs.fee * 1000).toFixed(0)) *
+          currentPostionApr.liquidity;
+        accum.rewards +=
+          BigInt((currentPostionApr.aprs.rewards * 1000).toFixed(0)) *
+          currentPostionApr.liquidity;
+        accum.liquidity += currentPostionApr.liquidity;
+        return accum;
+      },
+      { fee: 0n, rewards: 0n, liquidity: 0n },
+    );
+
+    return formatRate(Number((result.fee / result.liquidity).toString()) / 1000);
+  }, [selectedPositions]);
 
   return (
     <RemovePositionModalWrapper>
@@ -73,7 +94,7 @@ const RemovePositionModal: React.FC<Props> = ({
           <div className="box-item">
             <h4>{t("RemovePosition:confRemoveModal.positionLst")}</h4>
             <div className="item-content">
-              {selectedPosition.map((position, index) => (
+              {selectedPositions.map((position, index) => (
                 <div key={index}>
                   <div className="label-logo">
                     <DoubleLogo
@@ -101,7 +122,7 @@ const RemovePositionModal: React.FC<Props> = ({
             <div className="box-item box-item-unclaim">
               <h4>{t("RemovePosition:confRemoveModal.unclaimedFee")}</h4>
               <div className="item-content">
-                {unclaimedRewards.map((rewardInfo, index) => (
+                {unclaimedFees.map((rewardInfo, index) => (
                   <div key={index} className="item-detail">
                     <div>
                       <div className="label-logo">
@@ -169,13 +190,11 @@ const RemovePositionModal: React.FC<Props> = ({
                   <Trans
                     ns="RemovePosition"
                     i18nKey="confRemoveModal.warning.content"
+                    components={{ span: <span className="remove-percent" /> }}
                     values={{
-                      percent: warningPercent,
+                      percent: feeApr,
                     }}
-                  >
-                    You will stop earning swap fee rewards of
-                    <span className="remove-percent">{warningPercent} APR</span>
-                  </Trans>
+                  />
                 </RemoveWarningContentWrapper>
               }
             />
