@@ -15,8 +15,7 @@ import {
   OnchainActivityData,
   OnchainActivityResponse
 } from "@repositories/dashboard/response/onchain-response";
-import { formatOtherPrice } from "@utils/new-number-utils";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 
 dayjs.extend(relativeTime);
 
@@ -225,17 +224,15 @@ const DashboardActivitiesContainer: React.FC = () => {
 
     const tokenAAmount =
       tokenASymbol && shouldShowTokenAAmount
-        ? `${convertToKMB(res.tokenAAmount, {
-            maximumSignificantDigits: 10,
-            minimumSignificantDigits: 10,
+        ? `${formatPoolPairAmount(res.tokenAAmount, {
+            decimals: res.tokenA.decimals,
           })} ${replaceToken(res.tokenA.symbol)}`
         : "-";
 
     const tokenBAmount =
       tokenBSymbol && shouldShowTokenBAmount
-        ? `${convertToKMB(res.tokenBAmount, {
-            maximumSignificantDigits: 10,
-            minimumSignificantDigits: 10,
+        ? `${formatPoolPairAmount(res.tokenBAmount, {
+            decimals: res.tokenB.decimals
           })} ${replaceToken(res.tokenB.symbol)}`
         : "-";
 
