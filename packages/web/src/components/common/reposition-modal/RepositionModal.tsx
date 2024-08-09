@@ -120,9 +120,9 @@ const RepositionModal: React.FC<Props> = ({
                 swapRemainToken={swapRemainToken}
                 reposition={reposition}
                 closeModal={close}
-                currentAmounts={currentAmounts}
                 tokenA={amountInfo.tokenA.info}
                 tokenB={amountInfo.tokenB.info}
+                swapAtoB={Number(currentAmounts?.amountA) - Number(repositionAmounts?.amountA) > 0}
                 isSkipSwap={isSkipSwap}
               />
             </React.Fragment>
