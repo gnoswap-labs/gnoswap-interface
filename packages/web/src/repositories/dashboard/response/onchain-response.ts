@@ -10,6 +10,7 @@ export interface OnchainActivityData {
   tokenAAmount: string;
   tokenBAmount: string;
   totalUsd: string;
+  usedTokens?: number;
   account: string;
   time: string;
 }

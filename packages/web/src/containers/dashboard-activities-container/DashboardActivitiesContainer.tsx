@@ -201,6 +201,7 @@ const DashboardActivitiesContainer: React.FC = () => {
             return t("business:onchainActi.action.claimRewards");
         }
       })();
+
       const tokenAText =
         shouldShowTokenAAmount && tokenASymbol
           ? " " + replaceToken(tokenASymbol)
@@ -209,20 +210,29 @@ const DashboardActivitiesContainer: React.FC = () => {
         shouldShowTokenBAmount && tokenBSymbol
           ? " " + replaceToken(tokenBSymbol)
           : "";
-      const haveOneToken = !tokenAText || !tokenBText;
-      const conjunction = !haveOneToken
-        ? " " +
-          (res.actionType === DexEvent.SWAP
+
+      const relatedTokens = res.usedTokens || 0;
+
+      let conjunction = "";
+      if (relatedTokens === 2 && tokenAText && tokenBText) {
+        conjunction = ` ${
+          res.actionType === DexEvent.SWAP
             ? t("common:conjunction.for")
-            : t("common:conjunction.and"))
-        : "";
+            : t("common:conjunction.and")
+        }`;
+      } else if (relatedTokens > 2) {
+        conjunction = ", ";
+      }
+
+      const tail = relatedTokens > 2 && ", ...";
 
       return (
         <span>
           {action}
-          <span className="symbol-text">{tokenAText} </span>
+          <span className="symbol-text">{tokenAText}</span>
           {conjunction}
-          <span className="symbol-text">{tokenBText} </span>
+          <span className="symbol-text">{tokenBText}</span>
+          {tail}
         </span>
       );
     })();
