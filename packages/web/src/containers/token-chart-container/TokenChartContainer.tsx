@@ -348,8 +348,10 @@ const TokenChartContainer: React.FC = () => {
     const minValue = BigNumber(Math.min(...convertNumber));
     const maxValue = BigNumber(Math.max(...convertNumber));
 
-    const minPoint = minValue.multipliedBy(0.95);
-    const maxPoint = maxValue.multipliedBy(1.05);
+    const originalGap = maxValue.minus(minValue);
+
+    const minPoint = minValue.minus(originalGap.multipliedBy(0.05));
+    const maxPoint = maxValue.plus(originalGap.multipliedBy(0.05));
 
     if (datas.every(item => item === datas[0])) {
       return [
