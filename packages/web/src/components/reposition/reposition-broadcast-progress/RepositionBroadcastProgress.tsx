@@ -22,7 +22,7 @@ import { useTranslation } from "react-i18next";
 export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
-  currentAmounts: { amountA: string; amountB: string } | null;
+  swapAtoB: boolean;
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
@@ -46,6 +46,7 @@ const RepositionBroadcastProgress: React.FC<
   closeModal,
   tokenA,
   tokenB,
+  swapAtoB,
   isSkipSwap,
 }) => {
   const { t } = useTranslation();
@@ -243,8 +244,8 @@ const RepositionBroadcastProgress: React.FC<
                 )}
               >
                 {t("Reposition:repos.step.swap", {
-                  symbolA: tokenA.symbol,
-                  symbolB: tokenB.symbol,
+                  symbolA: swapAtoB ? tokenA.symbol : tokenB.symbol,
+                  symbolB: swapAtoB ? tokenB.symbol : tokenA.symbol,
                 })}
               </span>
             </div>

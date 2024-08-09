@@ -1,35 +1,34 @@
 import React, { useCallback } from "react";
-import {
-  SortOption,
-  TABLE_HEAD,
-  type Activity,
-} from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
-import { cx } from "@emotion/css";
-import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
-import {
-  noDataText,
-  TableHeader,
-  TableWrapper,
-  MobileTableHeader,
-} from "./ActivityListTable.styles";
-import {
-  ACTIVITY_INFO,
-  MOBILE_ACTIVITY_INFO,
-} from "@constants/skeleton.constant";
+import { useTranslation } from "react-i18next";
+
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
+import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
+import {
+  ACTIVITY_INFO,
+  MOBILE_ACTIVITY_INFO
+} from "@constants/skeleton.constant";
+import {
+  ACTIVITY_TABLE_HEAD, SortOption, type Activity
+} from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
+import { cx } from "@emotion/css";
 import { DEVICE_TYPE } from "@styles/media";
+
 import ActivityInfo, {
-  MobileActivityInfo,
+  MobileActivityInfo
 } from "../activity-info/ActivityInfo";
-import { useTranslation } from "react-i18next";
+import {
+  MobileTableHeader, noDataText,
+  TableHeader,
+  TableWrapper
+} from "./ActivityListTable.styles";
 
 interface ActivityListTableProps {
   activities: Activity[];
   isFetched: boolean;
-  isSortOption: (head: TABLE_HEAD) => boolean;
+  isSortOption: (head: ACTIVITY_TABLE_HEAD) => boolean;
   sortOption?: SortOption;
-  sort: (head: TABLE_HEAD) => void;
+  sort: (head: ACTIVITY_TABLE_HEAD) => void;
   breakpoint: DEVICE_TYPE;
 }
 
@@ -44,35 +43,35 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
   const { t } = useTranslation();
 
   const isAscendingOption = useCallback(
-    (head: TABLE_HEAD) => {
+    (head: ACTIVITY_TABLE_HEAD) => {
       return sortOption?.key === head && sortOption.direction === "asc";
     },
     [sortOption],
   );
 
   const isDescendingOption = useCallback(
-    (head: TABLE_HEAD) => {
+    (head: ACTIVITY_TABLE_HEAD) => {
       return sortOption?.key === head && sortOption.direction === "desc";
     },
     [sortOption],
   );
 
-  const onClickTableHead = (head: TABLE_HEAD) => {
+  const onClickTableHead = (head: ACTIVITY_TABLE_HEAD) => {
     if (!isSortOption(head)) {
       return;
     }
     sort(head);
   };
 
-  const isAlignLeft = (head: TABLE_HEAD) => {
-    return TABLE_HEAD.ACTION === head;
+  const isAlignLeft = (head: ACTIVITY_TABLE_HEAD) => {
+    return ACTIVITY_TABLE_HEAD.ACTION === head;
   };
 
   return breakpoint !== DEVICE_TYPE.MOBILE ? (
     <TableWrapper>
       <div className="scroll-wrapper">
         <div className="activity-list-head">
-          {Object.values(TABLE_HEAD).map((head, idx) => (
+          {Object.values(ACTIVITY_TABLE_HEAD).map((head, idx) => (
             <TableHeader
               key={idx}
               className={cx({
@@ -82,7 +81,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
               tdWidth={ACTIVITY_INFO.list[idx].width}
             >
               <span
-                className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
+                className={Object.keys(ACTIVITY_TABLE_HEAD)[idx].toLowerCase()}
                 onClick={() => onClickTableHead(head)}
               >
                 {isAscendingOption(head) && (
@@ -115,7 +114,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
     <TableWrapper>
       <div className="scroll-wrapper">
         <div className="activity-list-head">
-          {Object.values(TABLE_HEAD).map((head, idx) => (
+          {Object.values(ACTIVITY_TABLE_HEAD).map((head, idx) => (
             <MobileTableHeader
               key={idx}
               className={cx({
@@ -125,7 +124,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
               tdWidth={MOBILE_ACTIVITY_INFO.list[idx].width}
             >
               <span
-                className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
+                className={Object.keys(ACTIVITY_TABLE_HEAD)[idx].toLowerCase()}
                 onClick={() => onClickTableHead(head)}
               >
                 {isAscendingOption(head) && (

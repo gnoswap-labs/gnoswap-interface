@@ -1,14 +1,17 @@
 import React from "react";
-import {
-  ACTIVITY_TYPE,
-  type Activity,
-  TABLE_HEAD,
-  SortOption,
-} from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
+
 import ActivityListHeader from "@components/dashboard/activity-list-header/ActivityListHeader";
 import ActivityListTable from "@components/dashboard/activity-list-table/ActivityListTable";
-import { ActivityListWrapper } from "./ActivityList.styles";
+import {
+  ACTIVITY_TABLE_HEAD,
+  ACTIVITY_TYPE,
+  SortOption,
+  type Activity,
+} from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
 import { DEVICE_TYPE } from "@styles/media";
+
+import { ActivityListWrapper } from "./ActivityList.styles";
+
 interface ActivityItem {
   activities: Activity[];
   isFetched: boolean;
@@ -25,8 +28,8 @@ interface ActivityItem {
   currentPage: number;
   totalPage: number;
   movePage: (page: number) => void;
-  isSortOption: (item: TABLE_HEAD) => boolean;
-  sort: (item: TABLE_HEAD) => void;
+  isSortOption: (item: ACTIVITY_TABLE_HEAD) => boolean;
+  sort: (item: ACTIVITY_TABLE_HEAD) => void;
   breakpoint: DEVICE_TYPE;
 }
 

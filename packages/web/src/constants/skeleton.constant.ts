@@ -56,8 +56,7 @@ const getPulseBackground = (
     case "300":
       return theme.color.skeleton03;
     case "400":
-      theme.color.skeleton04;
-
+      return theme.color.skeleton04;
     case "500":
       return theme.color.skeleton05;
     default:

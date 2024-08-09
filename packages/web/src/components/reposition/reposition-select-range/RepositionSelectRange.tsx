@@ -1,3 +1,6 @@
+import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
@@ -7,8 +10,7 @@ import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
-import React, { useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
+
 import DepositRatio from "../deposit-ratio/DepositRatio";
 import { RepositionSelectRangeWrapper } from "./RepositionSelectRange.styles";
 
@@ -45,7 +47,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
   const [openedPriceRange, setOpenedPriceRange] = useState(true);
 
   const togglePriceRange = useCallback(() => {
-    tokenA && tokenB && setOpenedPriceRange(!openedPriceRange);
+    if (tokenA && tokenB) setOpenedPriceRange(!openedPriceRange);
   }, [tokenA, tokenB, openedPriceRange]);
 
   return (

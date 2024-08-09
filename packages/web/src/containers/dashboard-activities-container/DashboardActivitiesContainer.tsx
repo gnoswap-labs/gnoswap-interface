@@ -15,8 +15,7 @@ import {
   OnchainActivityData,
   OnchainActivityResponse
 } from "@repositories/dashboard/response/onchain-response";
-import { formatOtherPrice } from "@utils/new-number-utils";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 
 dayjs.extend(relativeTime);
 
@@ -31,11 +30,11 @@ export interface Activity {
 }
 
 export interface SortOption {
-  key: TABLE_HEAD;
+  key: ACTIVITY_TABLE_HEAD;
   direction: "asc" | "desc";
 }
 
-export const TABLE_HEAD = {
+export const ACTIVITY_TABLE_HEAD = {
   ACTION: "Dashboard:onchainActi.col.action",
   TOTAL_VALUE: "Dashboard:onchainActi.col.totalVal",
   TOKEN_AMOUNT1: "Dashboard:onchainActi.col.tokenAmt",
@@ -43,7 +42,7 @@ export const TABLE_HEAD = {
   ACCOUNT: "Dashboard:onchainActi.col.acc",
   TIME: "Dashboard:onchainActi.col.time",
 } as const;
-export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
+export type ACTIVITY_TABLE_HEAD = ValuesType<typeof ACTIVITY_TABLE_HEAD>;
 
 export const ACTIVITY_TYPE = {
   ALL: "All",
@@ -131,7 +130,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     setPage(newPage);
   }, []);
 
-  const isSortOption = useCallback((head: TABLE_HEAD) => {
+  const isSortOption = useCallback((head: ACTIVITY_TABLE_HEAD) => {
     const disableItems = [
       "Action",
       "Total Value",
@@ -144,7 +143,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   }, []);
 
   const sort = useCallback(
-    (item: TABLE_HEAD) => {
+    (item: ACTIVITY_TABLE_HEAD) => {
       const key = item;
       const direction =
         sortOption?.key !== item
@@ -225,17 +224,15 @@ const DashboardActivitiesContainer: React.FC = () => {
 
     const tokenAAmount =
       tokenASymbol && shouldShowTokenAAmount
-        ? `${convertToKMB(res.tokenAAmount, {
-            maximumSignificantDigits: 10,
-            minimumSignificantDigits: 10,
+        ? `${formatPoolPairAmount(res.tokenAAmount, {
+            decimals: res.tokenA.decimals,
           })} ${replaceToken(res.tokenA.symbol)}`
         : "-";
 
     const tokenBAmount =
       tokenBSymbol && shouldShowTokenBAmount
-        ? `${convertToKMB(res.tokenBAmount, {
-            maximumSignificantDigits: 10,
-            minimumSignificantDigits: 10,
+        ? `${formatPoolPairAmount(res.tokenBAmount, {
+            decimals: res.tokenB.decimals
           })} ${replaceToken(res.tokenB.symbol)}`
         : "-";
 
