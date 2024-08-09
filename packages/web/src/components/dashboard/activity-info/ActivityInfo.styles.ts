@@ -25,7 +25,12 @@ export const HoverSection = styled.div`
 export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
-  padding: 16px;
+  padding: 16px 0px 16px 16px;
+
+  &:last-child {
+    padding: 16px;
+  }
+
   ${media.mobile} {
     padding: 16px 0px 16px 12px;
     &:nth-last-of-type(1) {
