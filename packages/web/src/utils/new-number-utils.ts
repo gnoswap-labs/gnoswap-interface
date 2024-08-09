@@ -15,12 +15,16 @@ export const formatPoolPairAmount = (
     hasMinLimit?: boolean;
   } = {},
 ) => {
-  if (amount === null || amount === undefined || BigNumber(amount).isNaN()) {
+  if (amount === null || amount === undefined) {
     return "-";
   }
 
   const valueWithoutComma = amount?.toString().replace(/,/g, "");
   const bigNumberValue = BigNumber(valueWithoutComma);
+
+  if (bigNumberValue.isNaN()) {
+    return "-";
+  }
 
   if (bigNumberValue.isEqualTo(0)) return "0";
 
