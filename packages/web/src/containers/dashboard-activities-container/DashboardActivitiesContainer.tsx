@@ -51,6 +51,7 @@ export const ACTIVITY_TYPE = {
   REMOVES: "Removes",
   STAKES: "Stakes",
   UNSTAKE: "Unstakes",
+  CLAIM: "Claims",
 } as const;
 
 export const ACTIVITY_SWITCH_DATA = [
@@ -65,6 +66,10 @@ export const ACTIVITY_SWITCH_DATA = [
   {
     key: ACTIVITY_TYPE.UNSTAKE,
     display: "Dashboard:onchainActi.switch.unstake",
+  },
+  {
+    key: ACTIVITY_TYPE.CLAIM,
+    display: "Dashboard:onchainActi.switch.claim",
   },
 ];
 

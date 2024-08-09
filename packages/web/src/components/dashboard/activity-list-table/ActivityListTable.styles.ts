@@ -43,7 +43,12 @@ export const TableWrapper = styled.div`
 export const TableHeader = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   height: 100%;
-  padding: 16px;
+  padding: 16px 0px 16px 16px;
+
+  &:last-child {
+    padding: 16px;
+  }
+
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;
