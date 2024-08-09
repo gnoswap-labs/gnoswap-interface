@@ -1,27 +1,27 @@
-import { TransactionModel } from "@models/account/account-history-model";
+import React, { useCallback, useMemo } from "react";
+import { Trans, useTranslation } from "react-i18next";
+
+import { NotificationType } from "@common/values";
 import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
 import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import IconCircleInMore from "@components/common/icons/IconCircleInMore";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { TransactionModel } from "@models/account/account-history-model";
+import { TransactionGroupsType } from "@models/notification";
+import { ActivityData } from "@repositories/activity/responses/activity-responses";
+import { DexEvent, DexEventType } from "@repositories/common";
+import { DEVICE_TYPE } from "@styles/media";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
+
+import MissingLogo from "../missing-logo/MissingLogo";
 import {
+  DoubleLogo,
   DoubleLogoWrapperTest,
+  TransactionItemsWrap,
   TxsDateAgoTitle,
   TxsListItem,
-  TxsSummaryItem,
-  TransactionItemsWrap,
-  DoubleLogo,
+  TxsSummaryItem
 } from "./NotificationList.styles";
-import { DEVICE_TYPE } from "@styles/media";
-import React, { useCallback, useMemo } from "react";
-import MissingLogo from "../missing-logo/MissingLogo";
-import { TransactionGroupsType } from "@models/notification";
-import { formatPoolPairAmount } from "@utils/new-number-utils";
-import { prettyNumberFloatInteger } from "@utils/number-utils";
-import { capitalize } from "@utils/string-utils";
-import { AccountActivity } from "@repositories/notification";
-import { Trans, useTranslation } from "react-i18next";
-import { NotificationType } from "@common/values";
-import { DexEvent } from "@repositories/common";
 
 interface ItemProps {
   groups: TransactionGroupsType;
@@ -51,66 +51,70 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     return symbol;
   }, []);
 
+  const actionKeyMap: { [key: string]: string } = {
+    [DexEvent.SWAP]: "Modal:notif.action.swapped",
+    [DexEvent.ADD]: "Modal:notif.action.added",
+    [DexEvent.REMOVE]: "Modal:notif.action.removed",
+    [DexEvent.DECREASE]: "Modal:notif.action.decreased",
+    [DexEvent.INCREASE]: "Modal:notif.action.increased",
+    [DexEvent.REPOSITION]: "Modal:notif.action.repositioned",
+    [DexEvent.CLAIM]: "Modal:notif.action.feesClaimed",
+    [DexEvent.STAKE]: "Modal:notif.action.staked",
+    [DexEvent.UNSTAKE]: "Modal:notif.action.unstaked",
+    [DexEvent.CLAIM_STAKING]: "Modal:notif.action.rewardsClaimed",
+    [DexEvent.DEPOSIT]: "Modal:notif.action.received",
+    [DexEvent.WITHDRAW]: "Modal:notif.action.sent",
+  };
+
   const getNotificationMessage = useCallback(
-    (tx: AccountActivity) => {
+    (tx: ActivityData) => {
       const token0Amount = formatPoolPairAmount(tx?.tokenAAmount, {
         decimals: tx.tokenA.decimals,
         isKMB: false,
       });
       const token0symbol = replaceToken(tx?.tokenA?.symbol);
-      const token0Display = Number(tx?.tokenAAmount)
-        ? `<accent>${token0Amount} ${token0symbol}</accent>`
-        : "";
+      const token0Display = Number(tx?.tokenAAmount) ? (
+        <span className="accent">
+          {" "}
+          {token0Amount} {token0symbol}
+        </span>
+      ) : null;
 
       const token1Amount = formatPoolPairAmount(tx?.tokenBAmount, {
         decimals: tx.tokenA.decimals,
         isKMB: false,
       });
       const token1symbol = replaceToken(tx?.tokenB?.symbol);
-      const token1Display = Number(tx?.tokenBAmount)
-        ? `<accent>${token1Amount} ${token1symbol}</accent>`
-        : "";
+      const token1Display = Number(tx?.tokenBAmount) ? (
+        <span className="accent">
+          {" "}
+          {token1Amount} {token1symbol}
+        </span>
+      ) : null;
 
-      const getSwapPair = () =>
-        [token0Display, token1Display]
-          .filter(item => item)
-          .join(` ${t("common:conjunction:for")} `);
+      const relatedTokens = tx.usedTokens || 0;
 
-      const getPair = () =>
-        [token0Display, token1Display]
-          .filter(item => item)
-          .join(` ${t("common:conjunction:and")} `);
-
-      switch (tx.actionType) {
-        case DexEvent.SWAP:
-          return `${t("Modal:notif.action.swapped")} ${getSwapPair()}`;
-        case DexEvent.ADD:
-          return `${t("Modal:notif.action.added")} ${getPair()}`;
-        case DexEvent.REMOVE:
-          return `${t("Modal:notif.action.removed")} ${getPair()}`;
-        case DexEvent.DECREASE:
-          return `${t("Modal:notif.action.decreased")}  ${getPair()}`;
-        case DexEvent.INCREASE:
-          return `${t("Modal:notif.action.increased")} ${getPair()}`;
-        case DexEvent.REPOSITION:
-          return `${t("Modal:notif.action.repositioned")} ${getPair()}`;
-        case DexEvent.CLAIM:
-          return `${t("Modal:notif.action.feesClaimed")} ${getPair()}`;
-        case DexEvent.STAKE:
-          return `${t("Modal:notif.action.staked")} ${getPair()}`;
-        case DexEvent.UNSTAKE:
-          return `${t("Modal:notif.action.unstaked")} ${getPair()}`;
-        case DexEvent.CLAIM_STAKING:
-          return `${t("Modal:notif.action.rewardsClaimed")} ${getPair()}`;
-        case DexEvent.DEPOSIT:
-          return `${t("Modal:notif.action.received")} ${token0Display}`;
-        case DexEvent.WITHDRAW:
-          return `${t("Modal:notif.action.sent")} ${token0Display}`;
-        default:
-          return `${capitalize(tx.actionType)} ${prettyNumberFloatInteger(
-            tx.tokenAAmount,
-          )} ${replaceToken(tx.tokenA.symbol ?? tx.tokenB.symbol)}`;
+      let conjunction = "";
+      if (relatedTokens === 2) {
+        conjunction = ` ${
+          tx.actionType === DexEvent.SWAP
+            ? t("common:conjunction.for")
+            : t("common:conjunction.and")
+        }`;
+      } else if (relatedTokens > 2) {
+        conjunction = ", ";
       }
+
+      const tail = relatedTokens > 2 && ", ...";
+
+      return (
+        <>
+          {token0Display}
+          {conjunction}
+          {token1Display}
+          {tail}
+        </>
+      );
     },
     [replaceToken, t],
   );
@@ -172,9 +176,14 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     </DoubleLogo>
                   )}
                   <div className="content-wrap">
-                    <Trans components={{ accent: <span className="accent" /> }}>
-                      {getNotificationMessage(item.rawValue)}
-                    </Trans>
+                    <Trans
+                      i18nKey={
+                        actionKeyMap[
+                          item.rawValue.actionType as DexEventType
+                        ] || "Undefined Task"
+                      }
+                    />
+                    {getNotificationMessage(item.rawValue)}
                   </div>
                 </div>
               </div>
@@ -230,9 +239,13 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
               </DoubleLogoWrapperTest>
             )}
             <div className="summary-content">
-              <Trans components={{ accent: <span className="accent" /> }}>
-                {getNotificationMessage(item.rawValue)}
-              </Trans>
+              <Trans
+                i18nKey={
+                  actionKeyMap[item.rawValue.actionType as DexEventType] ||
+                  "Undefined Task"
+                }
+              />
+              {getNotificationMessage(item.rawValue)}
             </div>
             {item.status === "SUCCESS" ? (
               <IconCircleInCheck className="success-icon status-icon" />
