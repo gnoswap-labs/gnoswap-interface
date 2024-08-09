@@ -10,11 +10,11 @@ import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { DexEvent } from "@repositories/common";
 import {
-  OnchainActivityData,
-  OnchainActivityResponse
-} from "@repositories/dashboard/response/onchain-response";
+  ActivityData,
+  ActivityResponse,
+} from "@repositories/activity/responses/activity-responses";
+import { DexEvent } from "@repositories/common";
 import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 
 dayjs.extend(relativeTime);
@@ -109,7 +109,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     isFetched,
     error,
     data: activities = [],
-  } = useQuery<OnchainActivityResponse, Error>({
+  } = useQuery<ActivityResponse, Error>({
     queryKey: [
       "activities",
       activityType,
@@ -165,7 +165,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     [sortOption],
   );
 
-  const formatActivity = (res: OnchainActivityData): Activity => {
+  const formatActivity = (res: ActivityData): Activity => {
     const explorerUrl = getTxUrl(res?.txHash);
     const tokenASymbol = res.tokenA.symbol;
     const tokenBSymbol = res.tokenB.symbol;

@@ -1,8 +1,8 @@
 import { DexEventType } from "@repositories/common";
 
-export type OnchainActivityResponse = OnchainActivityData[];
+export type ActivityResponse = ActivityData[];
 
-export interface OnchainActivityData {
+export interface ActivityData {
   txHash: string;
   actionType: DexEventType;
   tokenA: OnchainToken;
