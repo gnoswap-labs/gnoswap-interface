@@ -33,7 +33,7 @@ export const useTokenData = () => {
     isFetched: isFetchedTokenPrices,
   } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
-  const { account, refetchGnotBalance } = useWallet();
+  const { account, availNetwork, refetchGnotBalance } = useWallet();
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loadingBalance, setLoadingBalance] = useAtom(
@@ -54,7 +54,7 @@ export const useTokenData = () => {
 
   const displayBalanceMap = useMemo(() => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
-    if (tokens.length === 0 || isEmptyObject(balances)) return {};
+    if (tokens.length === 0) return {};
     Object.keys(balances).forEach(key => {
       const token = tokens.find(token => token.priceID === key);
       const balance = balances[key];
@@ -195,7 +195,7 @@ export const useTokenData = () => {
 
   const fetchTokenBalance = useCallback(
     async (token: TokenModel) => {
-      if (!rpcProvider || !account) {
+      if (!rpcProvider || !account || !availNetwork) {
         return null;
       }
       if (token.type === "native") {
@@ -213,13 +213,14 @@ export const useTokenData = () => {
       }
       return null;
     },
-    [account, rpcProvider],
+    [account, availNetwork, rpcProvider],
   );
 
   const updateBalances = useCallback(async () => {
     if (!rpcProvider || !account) {
       return;
     }
+
     if (isEmptyObject(balances) && loadingBalance) {
       setLoadingBalance(true);
     }
@@ -250,6 +251,7 @@ export const useTokenData = () => {
     }
     setLoadingBalance(false);
   }, [
+    availNetwork,
     account,
     balances,
     fetchTokenBalance,

@@ -2,8 +2,6 @@ import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { QUERY_KEY } from "./types";
 import { formatAddress } from "@utils/string-utils";
-import { WalletState } from "@states/index";
-import { useAtom } from "jotai";
 
 export const useGetUsernameByAddress = (
   address: string,
@@ -31,24 +29,24 @@ export const useGetUsernameByAddress = (
 };
 
 export const getAccountBalanceQueryKey = (
-  address: string,
+  chainId: string,
+  address: string | undefined,
   tokenKey: string,
-) => [QUERY_KEY.accountGnotTokenBalance, address, tokenKey];
+) => [QUERY_KEY.accountGnotTokenBalance, chainId, address, tokenKey];
 
 export const useGetTokenBalancesFromChain = (
+  chainId: string,
+  address: string | undefined,
   key: string,
   option?: UseQueryOptions<number | null>,
 ) => {
   const { accountRepository } = useGnoswapContext();
-  const [walletAccount] = useAtom(WalletState.account);
 
   return useQuery({
-    queryKey: [QUERY_KEY.accountGnotTokenBalance, walletAccount?.address, key],
-    queryFn: () =>
-      accountRepository.getBalanceByKey(walletAccount?.address || "", key),
+    queryKey: [chainId, address || "", key],
+    queryFn: () => accountRepository.getBalanceByKey(address || "", key),
     refetchInterval: 5_000,
     refetchOnMount: "always",
-    enabled: !!walletAccount,
     ...option,
   });
 };

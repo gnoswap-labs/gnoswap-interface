@@ -1,6 +1,6 @@
+import { useMemo } from "react";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { QUERY_KEY } from "./types";
 import { PositionModel } from "@models/position/position-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionBinModel } from "@models/position/position-bin-model";
@@ -10,6 +10,7 @@ import { GNOT_TOKEN } from "@common/values/token-constant";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { QUERY_KEY } from "./types";
 
 interface UseGetPositionsByAddressOptions {
   address?: string;
@@ -22,17 +23,34 @@ export const useGetPositionsByAddress = (
   options?: UseGetPositionsByAddressOptions,
 ) => {
   const { positionRepository } = useGnoswapContext();
-  const { account } = useWallet();
+  const { account, currentChainId, availNetwork } = useWallet();
   const key = [
     QUERY_KEY.positions,
+    currentChainId,
     options?.address || account?.address,
     options?.poolPath,
     options?.isClosed,
   ];
 
+  const enabled = useMemo(() => {
+    if (options?.queryOptions?.enabled === false) {
+      return false;
+    }
+
+    if (!!options?.address) {
+      return true;
+    }
+
+    return !!account?.address;
+  }, [options, account, availNetwork]);
+
   return useQuery<PositionModel[], Error>({
     queryKey: key.filter(item => item !== undefined),
     queryFn: async () => {
+      if (!availNetwork) {
+        return [];
+      }
+
       if (!options?.address && !account?.address) {
         return [];
       }
@@ -50,10 +68,8 @@ export const useGetPositionsByAddress = (
         });
       return data;
     },
-    enabled:
-      options?.queryOptions?.enabled &&
-      !!(options?.address || account?.address),
     ...options?.queryOptions,
+    enabled: enabled,
   });
 };
 
