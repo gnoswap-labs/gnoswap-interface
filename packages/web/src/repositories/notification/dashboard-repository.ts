@@ -1,12 +1,13 @@
-import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
-import { AccountActivityRequest } from "./request";
-import { AccountActivity } from "./response/account-activity-response";
 import { TransactionGroupsType } from "@models/notification";
+import { ActivityData } from "@repositories/activity/responses/activity-responses";
+
+import { AccountActivityRequest } from "./request";
+import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
 
 export interface NotificationRepository {
   getAccountOnchainActivity: (
     req: AccountActivityRequest,
-  ) => Promise<AccountActivity[]>;
+  ) => Promise<ActivityData[]>;
 
   getGroupedNotification: (
     req: AccountActivityRequest,

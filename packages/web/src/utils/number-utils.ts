@@ -180,20 +180,6 @@ export function matchInputNumber(value: string) {
   return regexpOfNum.test(value) && regexpOfStartWithZeroes.test(value);
 }
 
-export function prettyNumberFloatInteger(
-  val: string | number,
-  isKMB?: boolean,
-) {
-  if (Number.isInteger(Number(val))) {
-    return convertToKMB(val.toString(), { isIgnoreKFormat: !isKMB });
-  } else {
-    return convertToKMB(val.toString(), {
-      isIgnoreKFormat: !isKMB,
-      maximumFractionDigits: 6,
-    });
-  }
-}
-
 export function formatUsdNumber3Digits(val: string | number) {
   if (Number.isNaN(Number(val))) {
     return String(val);

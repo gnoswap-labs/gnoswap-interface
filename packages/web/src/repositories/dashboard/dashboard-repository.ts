@@ -1,6 +1,7 @@
+import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
+
 import { OnchainAccountRequest, OnchainRequest } from "./request";
 import { TvlResponse } from "./response";
-import { OnchainActivityResponse } from "./response/onchain-response";
 import { DashboardTokenResponse } from "./response/token-response";
 import { IVolumeResponse } from "./response/volume-response";
 
@@ -10,8 +11,8 @@ export interface DashboardRepository {
   getDashboardToken: () => Promise<DashboardTokenResponse>;
   getDashboardOnchainActivity: (
     req: OnchainRequest,
-  ) => Promise<OnchainActivityResponse>;  
+  ) => Promise<ActivityResponse>;  
   getAccountOnchainActivity: (
     req: OnchainAccountRequest,
-  ) => Promise<OnchainActivityResponse>;
+  ) => Promise<ActivityResponse>;
 }

@@ -858,9 +858,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       feeTiers={SWAP_FEE_TIERS}
       feetierOfLiquidityMap={feetierOfLiquidityMap}
       feeTier={swapFeeTier}
-      selectFeeTier={fee => {
-        selectSwapFeeTier(fee);
-      }}
+      selectFeeTier={selectSwapFeeTier}
       priceRanges={priceRanges}
       priceRange={priceRange}
       priceRangeSummary={priceRangeSummary}

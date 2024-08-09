@@ -5,11 +5,11 @@ import { StorageKeyType } from "@common/values";
 import { TransactionModel } from "@models/account/account-history-model";
 import { TransactionGroupsType } from "@models/notification";
 import { NotificationMapper } from "@models/notification/mapper/notification-mapper";
+import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
 
 import { NotificationRepository } from "./dashboard-repository";
 import { AccountActivityRequest } from "./request";
 import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
-import { AccountActivity } from "./response";
 
 export class NotificationRepositoryImpl implements NotificationRepository {
   private networkClient: NetworkClient | null;
@@ -81,7 +81,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
 
   public getAccountOnchainActivity = async (
     request: AccountActivityRequest,
-  ): Promise<AccountActivity[]> => {
+  ): Promise<ActivityResponse> => {
     if (!this.networkClient) {
       return [];
     }
@@ -90,14 +90,14 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     }
     try {
       const { data } = await this.networkClient.get<{
-        data: AccountActivity[];
+        data: ActivityResponse;
         error: unknown;
       }>({
         url: "/users/" + request.address + "/activity",
       });
 
       return data.data;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return [];
     }

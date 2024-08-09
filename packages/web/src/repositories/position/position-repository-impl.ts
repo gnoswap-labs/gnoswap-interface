@@ -6,12 +6,50 @@ import {
   SendTransactionSuccessResponse,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
+import {
+  makeApproveMessage, TransactionMessage
+} from "@common/clients/wallet-client/transaction-messages";
+import { makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
+import {
+  makePositionCollectFeeMessage,
+  makePositionDecreaseLiquidityMessage,
+  makePositionIncreaseLiquidityMessage,
+  makePositionRepositionLiquidityMessage,
+} from "@common/clients/wallet-client/transaction-messages/position";
+import {
+  makeApporveStakeTokenMessage,
+  makeCollectRewardMessage,
+  makeStakeMessage,
+  makeUnstakeMessage,
+} from "@common/clients/wallet-client/transaction-messages/staker";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
+import {
+  PACKAGE_POOL_ADDRESS,
+  PACKAGE_POSITION_ADDRESS,
+  PACKAGE_STAKER_ADDRESS,
+  PACKAGE_STAKER_PATH,
+  WRAPPED_GNOT_PATH,
+} from "@constants/environment.constant";
 import { GnoProvider } from "@gnolang/gno-js-client";
+import { PositionBinMapper } from "@models/position/mapper/position-bin-mapper";
+import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
+import { PositionBinModel } from "@models/position/position-bin-model";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
+import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
+import { checkGnotPath, isGNOTPath } from "@utils/common";
+import { MAX_INT64, MAX_UINT64 } from "@utils/math.utils";
+import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
+import { makeRawTokenAmount } from "@utils/token-utils";
+
 import { PositionRepository } from "./position-repository";
+import {
+  DecreaseLiquidityRequest,
+  IncreaseLiquidityRequest,
+  RepositionLiquidityRequest,
+} from "./request";
 import { ClaimAllRequest } from "./request/claim-all-request";
 import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
@@ -27,44 +65,6 @@ import {
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
-import {
-  makeApporveStakeTokenMessage,
-  makeCollectRewardMessage,
-  makeStakeMessage,
-  makeUnstakeMessage,
-} from "@common/clients/wallet-client/transaction-messages/staker";
-import {
-  makePositionDecreaseLiquidityMessage,
-  makePositionCollectFeeMessage,
-  makePositionIncreaseLiquidityMessage,
-  makePositionRepositionLiquidityMessage,
-} from "@common/clients/wallet-client/transaction-messages/position";
-import { IPositionHistoryModel } from "@models/position/position-history-model";
-import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
-import { IPositionHistoryResponse } from "./response/position-history-response";
-import {
-  TransactionMessage,
-  makeApproveMessage,
-} from "@common/clients/wallet-client/transaction-messages";
-import {
-  PACKAGE_POOL_ADDRESS,
-  PACKAGE_POSITION_ADDRESS,
-  PACKAGE_STAKER_ADDRESS,
-  PACKAGE_STAKER_PATH,
-  WRAPPED_GNOT_PATH,
-} from "@constants/environment.constant";
-import { MAX_INT64, MAX_UINT64 } from "@utils/math.utils";
-import {
-  DecreaseLiquidityRequest,
-  IncreaseLiquidityRequest,
-  RepositionLiquidityRequest,
-} from "./request";
-import { checkGnotPath, isGNOTPath } from "@utils/common";
-import { makeRawTokenAmount } from "@utils/token-utils";
-import { makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
-import { PositionBinModel } from "@models/position/position-bin-model";
-import { PositionBinMapper } from "@models/position/mapper/position-bin-mapper";
-import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient | null;
@@ -88,7 +88,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const response = await this.networkClient.get<{
-      data: IPositionHistoryResponse[];
+      data: ActivityResponse;
     }>({
       url: "/positions/" + lpTokenId + "/history",
     });

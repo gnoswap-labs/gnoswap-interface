@@ -1,17 +1,17 @@
-import { StorageKeyType } from "@common/values";
-import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
+import { StorageClient } from "@common/clients/storage-client";
+import { CommonError } from "@common/errors";
+import { StorageKeyType } from "@common/values";
+import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
+
 import { DashboardRepository } from "./dashboard-repository";
+import {
+  OnchainAccountRequest,
+  OnchainRequest, OnChainRequestMapping
+} from "./request";
 import { TvlResponse } from "./response";
 import { DashboardTokenResponse } from "./response/token-response";
-import {
-  OnChainRequestMapping,
-  OnchainAccountRequest,
-  OnchainRequest,
-} from "./request";
-import { OnchainActivityResponse } from "./response/onchain-response";
 import { IVolumeResponse } from "./response/volume-response";
-import { CommonError } from "@common/errors";
 
 export class DashboardRepositoryImpl implements DashboardRepository {
   private networkClient: NetworkClient | null;
@@ -58,13 +58,13 @@ export class DashboardRepositoryImpl implements DashboardRepository {
 
   public getDashboardOnchainActivity = async (
     request: OnchainRequest,
-  ): Promise<OnchainActivityResponse> => {
+  ): Promise<ActivityResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
     const response = await this.networkClient
-      .get<{ data: OnchainActivityResponse }>({
+      .get<{ data: ActivityResponse }>({
         url: `/activity?type=${OnChainRequestMapping[request.type]}`,
       })
       .catch(() => null);
@@ -76,7 +76,7 @@ export class DashboardRepositoryImpl implements DashboardRepository {
 
   public getAccountOnchainActivity = async (
     request: OnchainAccountRequest,
-  ): Promise<OnchainActivityResponse> => {
+  ): Promise<ActivityResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -84,7 +84,7 @@ export class DashboardRepositoryImpl implements DashboardRepository {
       console.log("");
     }
 
-    const { data } = await this.networkClient.get<OnchainActivityResponse>({
+    const { data } = await this.networkClient.get<ActivityResponse>({
       url: "/users/" + request.address + "/activity",
     });
     return data;

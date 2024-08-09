@@ -27,7 +27,7 @@ import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolRPCResponse } from "./response/pool-rpc-response";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
-import { priceToNearTick } from "@utils/swap-utils";
+import { priceToTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
@@ -282,6 +282,7 @@ export class PoolRepositoryImpl implements PoolRepository {
         ? PoolRPCMapper.detailFrom(responseData.response)
         : null;
     } catch (error) {
+      console.log(error);
       return null;
     }
   };
@@ -669,12 +670,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     const tokenAPath = tokenA.wrappedPath || tokenA.path;
     const tokenBPath = tokenB.wrappedPath || tokenB.path;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-    const startPriceSqrt = tickToSqrtPriceX96(
-      priceToNearTick(
-        Number(startPrice),
-        SwapFeeTierInfoMap[feeTier].tickSpacing,
-      ),
-    );
+    const startPriceSqrt = tickToSqrtPriceX96(priceToTick(Number(startPrice)));
 
     return {
       caller,
