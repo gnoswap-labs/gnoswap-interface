@@ -1,7 +1,7 @@
-import mixins from "@styles/mixins";
-import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import styled from "@emotion/styled";
 import { ContainerWidth, media } from "@styles/media";
+import mixins from "@styles/mixins";
 
 export const DashboardLayoutWrapper = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
@@ -27,7 +27,7 @@ export const DashboardLayoutWrapper = styled.div`
     }
   }
 
-  .title-container {
+  .dashboard-title-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
@@ -40,14 +40,14 @@ export const DashboardLayoutWrapper = styled.div`
       padding: 0px 0px 0px 0px;
       gap: 24px;
     }
-  }
 
-  .title {
-    ${mixins.flexbox("column", "flex-end", "center")};
-    ${fonts.h3};
-    color: ${({ theme }) => theme.color.text02};
-    ${media.mobile} {
-      ${fonts.h5};
+    .title {
+      ${mixins.flexbox("column", "flex-end", "center")};
+      ${fonts.h3};
+      color: ${({ theme }) => theme.color.text02};
+      ${media.mobile} {
+        ${fonts.h5};
+      }
     }
   }
 

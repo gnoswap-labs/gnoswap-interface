@@ -1,14 +1,15 @@
-import DashboardLayout from "@layouts/dashboard-layout/DashboardLayout";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useMemo } from "react";
+
 import Footer from "@components/common/footer/Footer";
-import TvlChartContainer from "@containers/tvl-chart-container/TvlChartContainer";
-import VolumeChartContainer from "@containers/volume-chart-container/VolumeChartContainer";
-import DashboardInfoContainer from "@containers/dashboard-info-container/DashboardInfoContainer";
-import DashboardActivitiesContainer from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import { useMemo } from "react";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import DashboardActivitiesContainer from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
+import DashboardInfoContainer from "@containers/dashboard-info-container/DashboardInfoContainer";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import TvlChartContainer from "@containers/tvl-chart-container/TvlChartContainer";
+import VolumeChartContainer from "@containers/volume-chart-container/VolumeChartContainer";
+import DashboardLayout from "@layouts/dashboard-layout/DashboardLayout";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {

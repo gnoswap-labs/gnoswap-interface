@@ -26,7 +26,7 @@ const DashboardLayout: React.FC<DashboradLayoutProps> = ({
     <DashboardLayoutWrapper>
       {header}
       <section className="dashboard-section">
-        <div className="title-container">
+        <div className="dashboard-title-container">
           <h3 className="title">{t("Dashboard:title")}</h3>
         </div>
         <div className="charts-container">
