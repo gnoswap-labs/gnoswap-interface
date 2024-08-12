@@ -1,12 +1,12 @@
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { EstimateSwapRouteResponse } from "@repositories/swap/response/estimate-swap-route-response";
-
-import { QUERY_KEY } from "./types";
 import { SwapError } from "@common/errors/swap";
-import { wait } from "@utils/common";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenModel } from "@models/token/token-model";
+import { EstimateSwapRouteResponse } from "@repositories/swap/response/estimate-swap-route-response";
+import { wait } from "@utils/common";
+
+import { QUERY_KEY } from "../query-keys";
 
 export const useEstimateSwap = (
   request: {
@@ -81,16 +81,3 @@ export const useEstimateSwap = (
   });
 };
 
-export const useGetSwapFee = (options?: UseQueryOptions<number, Error>) => {
-  const { swapRouterRepository } = useGnoswapContext();
-
-  return useQuery<number, Error>({
-    queryKey: [QUERY_KEY.swapFee],
-    queryFn: async () => {
-      const res = await swapRouterRepository.getSwapFee();
-
-      return res;
-    },
-    ...options,
-  });
-};

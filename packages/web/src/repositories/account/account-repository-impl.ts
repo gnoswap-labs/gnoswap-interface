@@ -1,20 +1,22 @@
+import { NetworkClient } from "@common/clients/network-client";
 import { StorageClient } from "@common/clients/storage-client";
 import { WalletClient } from "@common/clients/wallet-client";
+import { SendTransactionRequestParam } from "@common/clients/wallet-client/protocols";
+import { CommonError } from "@common/errors";
+import { AdenaError } from "@common/errors/adena";
+import { SessionStorageKeyType, StorageKeyType } from "@common/values";
 import { StatusOptions } from "@common/values/data-constant";
+import { GnoProvider } from "@gnolang/gno-js-client";
+import { AccountBalanceModel } from "@models/account/account-balance-model";
 import {
   AccountHistoryModel,
-  TransactionModel,
+  TransactionModel
 } from "@models/account/account-history-model";
-import { SessionStorageKeyType, StorageKeyType } from "@common/values";
-import { AccountBalancesResponse, AccountRepository } from ".";
-import { AdenaError } from "@common/errors/adena";
-import { SendTransactionRequestParam } from "@common/clients/wallet-client/protocols";
 import { AccountMapper } from "@models/account/mapper/account-mapper";
-import { NetworkClient } from "@common/clients/network-client";
-import { AccountBalanceModel } from "@models/account/account-balance-model";
-import { CommonError } from "@common/errors";
 import { GNOWSWAP_CONNECTED_KEY } from "@states/common";
-import { GnoProvider } from "@gnolang/gno-js-client";
+
+import { AccountBalancesResponse, AccountRepository } from ".";
+import { AvgBlockTime } from "./response/get-avg-block-time-response";
 
 export class AccountRepositoryImpl implements AccountRepository {
   private walletClient: WalletClient | null;
@@ -200,7 +202,7 @@ export class AccountRepositoryImpl implements AccountRepository {
     try {
       history = JSON.parse(historyValue);
     } catch (e) {
-      throw new Error("Not found history");
+      throw new Error(`Not found history : ${e}`);
     }
     return history;
   };
@@ -221,4 +223,20 @@ export class AccountRepositoryImpl implements AccountRepository {
     const response = await this.walletClient.switchNetwork(chainId);
     return response;
   };
+
+  public async getAvgBlockTime(request: {
+    startBlock?: number;
+  }): Promise<AvgBlockTime> {
+    if (this.networkClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+    }
+
+    const res = await this.networkClient.get<{ data: AvgBlockTime }>({
+      url: `/util/avgBlockTime${
+        request.startBlock ? `?compareHeight=${request.startBlock}` : ""
+      }`,
+    });
+
+    return res.data.data;
+  }
 }

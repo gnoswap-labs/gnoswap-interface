@@ -1,23 +1,22 @@
+import { useAtom, useAtomValue } from "jotai";
+import React, {
+  useCallback,
+  useEffect, useMemo, useRef,
+  useState
+} from "react";
+
 import EarnMyPositions from "@components/earn/earn-my-positions/EarnMyPositions";
+import { DEFAULT_POOL_PATH } from "@constants/common.constant";
+import { QUERY_PARAMETER } from "@constants/page.constant";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import useCustomRouter from "@hooks/common/use-custom-router";
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-} from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useGetUsernameByAddress } from "@query/address";
 import { EarnState, ThemeState } from "@states/index";
-import { useGetUsernameByAddress } from "@query/address/queries";
-import { DEFAULT_POOL_PATH } from "@constants/common.constant";
-import { QUERY_PARAMETER } from "@constants/page.constant";
 
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
@@ -65,13 +64,15 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
+      if (window.innerWidth < 920) setMobile(true);
+      else setMobile(false);
     }
   };
   useEffect(() => {
     updateTokenPrices();
     if (typeof window !== "undefined") {
-      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
+      if (window.innerWidth < 920) setMobile(true);
+      else setMobile(false);
     }
     window.addEventListener("resize", handleResize);
     return () => {

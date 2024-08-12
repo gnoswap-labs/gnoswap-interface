@@ -38,6 +38,7 @@ interface Props {
   close: () => void;
   breakpoint: DEVICE_TYPE;
   depositInfo?: TokenModel;
+  avgBlockTime: number;
   changeToken: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
 }
@@ -45,6 +46,7 @@ interface Props {
 const DepositModal: React.FC<Props> = ({
   close,
   breakpoint,
+  avgBlockTime,
   changeToken,
   callback,
 }) => {
@@ -63,7 +65,7 @@ const DepositModal: React.FC<Props> = ({
         <DepositModalWrapper ref={modalRef}>
           <div className="modal-body">
             <div className="header">
-              <h6>{t("Wallet:depositModal.title")}</h6>
+              <h6>{t("Modal:deposit.title")}</h6>
               <div className="close-wrap" onClick={close}>
                 <IconClose className="close-icon" />
               </div>
@@ -71,10 +73,8 @@ const DepositModal: React.FC<Props> = ({
 
             <DepositLabel>
               <div className="title">
-                <label>{t("Wallet:depositModal.supToken.label")}</label>
-                <DepositTooltip
-                  tooltip={t("Wallet:depositModal.supToken.tooltip")}
-                />
+                <label>{t("Modal:deposit.supToken.label")}</label>
+                <DepositTooltip tooltip={t("Modal:deposit.supToken.tooltip")} />
               </div>
 
               <DepositBoxContent>
@@ -103,10 +103,8 @@ const DepositModal: React.FC<Props> = ({
 
             <DepositLabel>
               <div className="title">
-                <label>{t("Wallet:depositModal.depoNet.label")}</label>
-                <DepositTooltip
-                  tooltip={t("Wallet:depositModal.depoNet.tooltip")}
-                />
+                <label>{t("Modal:deposit.depoNet.label")}</label>
+                <DepositTooltip tooltip={t("Modal:deposit.depoNet.tooltip")} />
               </div>
 
               <DepositBoxContent>
@@ -121,7 +119,9 @@ const DepositModal: React.FC<Props> = ({
                   </div>
 
                   <div className="approximately">
-                    {t("Wallet:depositModal.second")}
+                    {t("Modal:deposit.second", {
+                      avgBlockTime: (Math.floor(avgBlockTime * 10) / 10).toFixed(1),
+                    })}
                   </div>
                 </div>
               </DepositBoxContent>
@@ -129,10 +129,8 @@ const DepositModal: React.FC<Props> = ({
 
             <DepositLabel>
               <div className="title">
-                <label>{t("Wallet:depositModal.depoAddr.label")}</label>
-                <DepositTooltip
-                  tooltip={t("Wallet:depositModal.depoAddr.tooltip")}
-                />
+                <label>{t("Modal:deposit.depoAddr.label")}</label>
+                <DepositTooltip tooltip={t("Modal:deposit.depoAddr.tooltip")} />
               </div>
 
               <DepositBoxContent>
@@ -168,12 +166,12 @@ const DepositModal: React.FC<Props> = ({
 
             <WarningCard
               icon={<IconCircleExclamationMark />}
-              title={t("Wallet:depositModal.warning.title")}
+              title={t("Modal:deposit.warning.title")}
               content={
                 <DepositWarningContentWrapper>
                   <ul>
-                    <li>{t("Wallet:depositModal.warning.content1")}</li>
-                    <li>{t("Wallet:depositModal.warning.content2")}</li>
+                    <li>{t("Modal:deposit.warning.content1")}</li>
+                    <li>{t("Modal:deposit.warning.content2")}</li>
                   </ul>
 
                   <a

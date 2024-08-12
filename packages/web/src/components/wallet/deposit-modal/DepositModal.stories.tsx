@@ -17,6 +17,7 @@ export const Default = Template.bind({});
 Default.args = {
   breakpoint: DEVICE_TYPE.WEB,
   depositInfo: DEFAULT_DEPOSIT_GNOT,
+  avgBlockTime: 2.2,
   changeToken: action("changeToken"),
   close: action("close"),
 };

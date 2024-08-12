@@ -1,3 +1,7 @@
+import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
+import { useCallback, useMemo } from "react";
+
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -7,18 +11,15 @@ import {
   UpDownType,
 } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
+import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
+import { toUnitFormat } from "@utils/number-utils";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import BigNumber from "bignumber.js";
-import { useAtom } from "jotai";
-import { useCallback, useMemo } from "react";
-import { useGnotToGnot } from "./use-gnot-wugnot";
-import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
-import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
-import { toUnitFormat } from "@utils/number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
+
+import { useGnotToGnot } from "./use-gnot-wugnot";
 
 export const useTokenData = () => {
   const {
@@ -26,13 +27,14 @@ export const useTokenData = () => {
     isLoading: loading,
     isFetched,
     error,
+    refetch: refetchTokenList,
   } = useGetTokensList();
   const {
     data: tokenPrices = {},
     isLoading: isLoadingTokenPrice,
     isFetched: isFetchedTokenPrices,
+    refetch: refetchTokenPrices,
   } = useGetTokenPrices();
-  const forceRefect = useForceRefetchQuery();
   const { account, availNetwork, refetchGnotBalance } = useWallet();
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
@@ -186,11 +188,11 @@ export const useTokenData = () => {
   );
 
   async function updateTokens() {
-    forceRefect({ queryKey: [QUERY_KEY.tokens] });
+    refetchTokenList();
   }
 
   async function updateTokenPrices() {
-    forceRefect({ queryKey: [QUERY_KEY.tokenPrices] });
+    refetchTokenPrices();
   }
 
   const fetchTokenBalance = useCallback(

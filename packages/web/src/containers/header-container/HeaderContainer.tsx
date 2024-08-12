@@ -1,28 +1,30 @@
+import { useAtomValue } from "jotai";
+import React, { useCallback, useMemo, useState } from "react";
+
 import Header from "@components/common/header/Header";
-import useRouter from "@hooks/common/use-custom-router";
-import React, { useState, useCallback, useMemo } from "react";
 import {
   MATH_NEGATIVE_TYPE,
   SwapFeeTierInfoMap,
-  SwapFeeTierType,
+  SwapFeeTierType
 } from "@constants/option.constant";
-import { type TokenInfo } from "@models/token/token-info";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { useWallet } from "@hooks/wallet/use-wallet";
-import { useAtomValue } from "jotai";
-import { ThemeState, TokenState } from "@states/index";
-import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
-import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import useRouter from "@hooks/common/use-custom-router";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { useGetPoolList } from "src/react-query/pools";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
+import { type TokenInfo } from "@models/token/token-info";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
-import { checkPositivePrice, parseJson } from "@utils/common";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGetAvgBlockTime } from "@query/address";
+import { useGetPoolList } from "@query/pools";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
-import { formatApr } from "@utils/string-utils";
+import { ThemeState, TokenState } from "@states/index";
+import { checkPositivePrice, parseJson } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
+import { formatApr } from "@utils/string-utils";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -63,6 +65,7 @@ const HeaderContainer: React.FC = () => {
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
+  const { data: blockTimeData } = useGetAvgBlockTime();
   const { data: poolList = [] } = useGetPoolList({
     enabled: !!searchMenuToggle,
   });
@@ -76,6 +79,7 @@ const HeaderContainer: React.FC = () => {
   });
   const recents = useMemo(() => {
     const storageData = parseJson(recentsData ? recentsData : "[]");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return storageData.map((item: any) => {
       if (!item.isLiquid) {
         const temp: TokenPriceModel = tokenPrices[item?.token?.path] ?? {};
@@ -290,6 +294,7 @@ const HeaderContainer: React.FC = () => {
       gnotBalance={gnotBalance}
       isLoadingGnotBalance={isLoadingGnotBalance}
       gnotToken={gnot}
+      avgBlockTime={blockTimeData?.AvgBlockTime || 2.2}
     />
   );
 };

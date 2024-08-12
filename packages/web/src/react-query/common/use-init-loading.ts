@@ -1,6 +1,8 @@
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+
 import { wait } from "@utils/common";
-import { QUERY_KEY } from "./types";
+
+import { QUERY_KEY } from "../query-keys";
 
 const DEFAULT_LOADING_TIME = 1_500;
 

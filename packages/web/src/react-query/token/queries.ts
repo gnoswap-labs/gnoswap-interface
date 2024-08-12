@@ -11,7 +11,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
 import { TokenError } from "@common/errors/token";
 
-import { QUERY_KEY } from "./types";
+import { QUERY_KEY } from "../query-keys";
 
 export const useGetTokensList = (
   options?: UseQueryOptions<TokenListResponse, Error>,

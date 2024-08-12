@@ -1,12 +1,13 @@
 import {
-  WalletResponse,
   SendTransactionRequestParam,
   SendTransactionResponse,
-  SwitchNetworkResponse,
+  SwitchNetworkResponse, WalletResponse
 } from "@common/clients/wallet-client/protocols";
-import { AccountNotificationRepository } from "./account-notification-repository";
-import { AccountModel } from "@models/account/account-model";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
+import { AccountModel } from "@models/account/account-model";
+
+import { AccountNotificationRepository } from "./account-notification-repository";
+import { AvgBlockTime } from "./response/get-avg-block-time-response";
 
 export interface AccountRepository extends AccountNotificationRepository {
   isConnectedWalletBySession: () => boolean;
@@ -35,4 +36,7 @@ export interface AccountRepository extends AccountNotificationRepository {
     address: string,
     tokenKey: string,
   ) => Promise<number | null>;
+
+  // FIXME: it may goto new repository
+  getAvgBlockTime: (request: { startBlock?: number }) => Promise<AvgBlockTime>;
 }

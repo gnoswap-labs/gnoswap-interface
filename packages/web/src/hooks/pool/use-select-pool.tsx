@@ -1,11 +1,31 @@
+import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import { ZOOL_VALUES } from "@constants/graph.constant";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  MAX_PRICE,
+  MAX_TICK,
+  MIN_PRICE,
+  MIN_TICK,
+} from "@constants/swap.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useLoading } from "@hooks/common/use-loading";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
+import { PoolModel } from "@models/pool/pool-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { useGetBinsByPath, useInitializeBins } from "@query/pools";
+import { QUERY_KEY } from "@query/query-keys";
+import { EarnState } from "@states/index";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { checkGnotPath, encryptId } from "@utils/common";
 import {
   feeBoostRateByPrices,
   getDepositAmountsByAmountA,
@@ -13,25 +33,7 @@ import {
   priceToNearTick,
   tickToPrice,
 } from "@utils/swap-utils";
-import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import {
-  MAX_PRICE,
-  MAX_TICK,
-  MIN_PRICE,
-  MIN_TICK,
-} from "@constants/swap.constant";
-import { EarnState } from "@states/index";
-import { useAtom } from "jotai";
-import { useLoading } from "@hooks/common/use-loading";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { checkGnotPath, encryptId } from "@utils/common";
-import { QUERY_KEY, useGetBinsByPath, useInitializeBins } from "@query/pools";
-import BigNumber from "bignumber.js";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { ZOOL_VALUES } from "@constants/graph.constant";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { PoolModel } from "@models/pool/pool-model";
-import { useRouter } from "next/router";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 

@@ -1,10 +1,12 @@
-import TransactionConfirmModal from "@components/common/transaction-confirm-modal/TransactionConfirmModal";
-import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useEffect } from "react";
-import { useForceRefetchQuery } from "./useForceRefetchQuery";
-import { QUERY_KEY } from "@query/positions";
+
+import TransactionConfirmModal from "@components/common/transaction-confirm-modal/TransactionConfirmModal";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { QUERY_KEY } from "@query/query-keys";
+import { CommonState } from "@states/index";
+
+import { useForceRefetchQuery } from "./useForceRefetchQuery";
 
 export interface TransactionConfirmModalResponse {
   openModal: () => void;
@@ -38,7 +40,7 @@ export const useTransactionConfirmModal = (
       setOpenedModal(false);
       setModalContent(null);
       setTransactionModalData(null);
-      !isClear && props?.closeCallback?.();
+      if (!isClear) props?.closeCallback?.();
     },
     [
       setModalContent,

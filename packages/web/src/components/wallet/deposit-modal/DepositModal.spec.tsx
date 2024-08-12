@@ -13,6 +13,7 @@ describe("DepositModal Component", () => {
     const mockProps = {
       breakpoint: DEVICE_TYPE.WEB,
       depositInfo: DEFAULT_DEPOSIT_GNOT,
+      avgBlockTime: 2.2,
       changeToken: () => null,
       close: () => null,
       callback: () => null,

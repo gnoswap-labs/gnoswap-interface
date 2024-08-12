@@ -62,6 +62,7 @@ interface HeaderProps {
   gnotBalance?: number | null;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
+  avgBlockTime: number;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -91,6 +92,7 @@ const Header: React.FC<HeaderProps> = ({
   gnotBalance,
   isLoadingGnotBalance,
   gnotToken,
+  avgBlockTime,
 }) => {
   const { width } = useWindowSize();
   const router = useCustomRouter();
@@ -249,6 +251,7 @@ const Header: React.FC<HeaderProps> = ({
           breakpoint={breakpoint}
           close={closeDeposit}
           depositInfo={undefined}
+          avgBlockTime={avgBlockTime}
           changeToken={changeTokenDeposit}
           callback={callbackDeposit}
         />

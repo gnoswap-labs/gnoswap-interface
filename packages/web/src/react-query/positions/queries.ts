@@ -1,16 +1,18 @@
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { PositionModel } from "@models/position/position-model";
-import { IPositionHistoryModel } from "@models/position/position-history-model";
-import { PositionBinModel } from "@models/position/position-bin-model";
-import { PoolModel } from "@models/pool/pool-model";
-import { isGNOTPath } from "@utils/common";
+
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolModel } from "@models/pool/pool-model";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useWallet } from "@hooks/wallet/use-wallet";
-import { QUERY_KEY } from "./types";
+import { PositionBinModel } from "@models/position/position-bin-model";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
+import { PositionModel } from "@models/position/position-model";
+import { isGNOTPath } from "@utils/common";
+
+import { QUERY_KEY } from "../query-keys";
 
 interface UseGetPositionsByAddressOptions {
   address?: string;

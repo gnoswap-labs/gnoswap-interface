@@ -25,6 +25,7 @@ import { useGetTokensList } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
+import { useGetAvgBlockTime } from "@query/address";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -122,6 +123,7 @@ const AssetListContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const { isLoadingTokens } = useLoading();
+  const { data: blockTimeData } = useGetAvgBlockTime();
   const { data: { tokens = [] } = {} } = useGetTokensList({
     refetchInterval: 60 * 1000,
   });
@@ -552,6 +554,7 @@ const AssetListContainer: React.FC = () => {
           breakpoint={breakpoint}
           close={closeDeposit}
           depositInfo={depositInfo}
+          avgBlockTime={blockTimeData?.AvgBlockTime || 2.2}
           changeToken={changeTokenDeposit}
           callback={callbackDeposit}
         />
@@ -561,6 +564,7 @@ const AssetListContainer: React.FC = () => {
           breakpoint={breakpoint}
           close={closeWithdraw}
           withdrawInfo={withdrawInfo}
+          avgBlockTime={blockTimeData?.AvgBlockTime || 2.2}
           connected={connected}
           changeToken={changeTokenWithdraw}
           callback={callbackWithdraw}

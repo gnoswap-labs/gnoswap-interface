@@ -18,6 +18,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
+import { useGetAvgBlockTime } from "@query/address";
 import { useGetTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
@@ -50,6 +51,7 @@ const WalletBalanceContainer: React.FC = () => {
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
 
+  const { data: blockTimeData } = useGetAvgBlockTime();
   const { balances: balancesPrice, loadingBalance } = useTokenData();
 
   const { positions, loading: loadingPositions } = usePositionData();
@@ -281,6 +283,7 @@ const WalletBalanceContainer: React.FC = () => {
           breakpoint={breakpoint}
           close={closeDeposit}
           depositInfo={depositInfo}
+          avgBlockTime={blockTimeData?.AvgBlockTime || 2.2}
           changeToken={changeTokenDeposit}
           callback={callbackDeposit}
         />
@@ -290,6 +293,7 @@ const WalletBalanceContainer: React.FC = () => {
           breakpoint={breakpoint}
           close={closeWithdraw}
           withdrawInfo={withdrawInfo}
+          avgBlockTime={blockTimeData?.AvgBlockTime || 2.2}
           connected={connected}
           changeToken={changeTokenWithdraw}
           callback={callbackWithdraw}

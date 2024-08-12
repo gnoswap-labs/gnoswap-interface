@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
+
+import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
-import { QUERY_KEY, useGetPoolList } from "@query/pools";
-import useRouter from "@hooks/common/use-custom-router";
+import { useGetPoolList } from "@query/pools";
 
 const PATH_60SECOND = "/wallet";
 
@@ -15,6 +15,7 @@ export const usePoolData = () => {
     data: pools = [],
     isLoading: loading,
     isFetched: isFetchedPools,
+    refetch: refetchPools
   } = useGetPoolList({
     refetchInterval:
       router.pathname === "/"
@@ -24,7 +25,6 @@ export const usePoolData = () => {
         : false,
   });
 
-  const forceRefetch = useForceRefetchQuery();
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
   const poolListInfos = useMemo(() => {
@@ -83,7 +83,7 @@ export const usePoolData = () => {
   }, [getGnotPath, pools]);
 
   async function updatePools() {
-    forceRefetch({ queryKey: [QUERY_KEY.pools] });
+    refetchPools();
   }
 
   return {
