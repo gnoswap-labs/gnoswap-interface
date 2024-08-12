@@ -29,6 +29,7 @@ Default.args = {
     type: "grc20",
     priceID: "gno.land/r/gns",
   },
+  avgBlockTime: 2.2,
   connected: true,
   changeToken: action("changeToken"),
   close: action("close"),

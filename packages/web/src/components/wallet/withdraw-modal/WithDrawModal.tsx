@@ -36,6 +36,7 @@ interface Props {
   close: () => void;
   breakpoint: DEVICE_TYPE;
   withdrawInfo?: TokenModel;
+  avgBlockTime: number;
   connected: boolean;
   changeToken: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
@@ -53,6 +54,7 @@ const WithDrawModal: React.FC<Props> = ({
   close,
   breakpoint,
   withdrawInfo,
+  avgBlockTime,
   connected,
   changeToken,
   callback,
@@ -251,7 +253,11 @@ const WithDrawModal: React.FC<Props> = ({
                   </div>
 
                   <div className="approximately">
-                    {t("Wallet:withdrawModal.second")}
+                    {t("Wallet:withdrawModal.second", {
+                      avgBlockTime: (
+                        Math.floor(avgBlockTime * 10) / 10
+                      ).toFixed(1),
+                    })}
                   </div>
                 </div>
               </div>

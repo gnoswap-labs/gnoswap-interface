@@ -20,11 +20,12 @@ import {
   WalletResponse,
   SwitchNetworkResponse,
 } from "@common/clients/wallet-client/protocols";
+import { AvgBlockTime } from "./response/get-avg-block-time-response";
 
 export class AccountRepositoryMock implements AccountRepository {
   private localStorageClient: StorageClient;
 
-  constructor(localStorageClient: StorageClient<any>) {
+  constructor(localStorageClient: StorageClient<unknown>) {
     this.localStorageClient = localStorageClient;
   }
 
@@ -170,7 +171,7 @@ export class AccountRepositoryMock implements AccountRepository {
     try {
       history = JSON.parse(historyValue);
     } catch (e) {
-      throw new Error("Not found history");
+      throw new Error(`Not found history: ${e}`);
     }
     return history;
   };
@@ -230,5 +231,23 @@ export class AccountRepositoryMock implements AccountRepository {
     tokenKey: string,
   ) => Promise<number | null> = async () => {
     return 0;
+  };
+
+  public getAvgBlockTime: (request: {
+    startBlock?: number | undefined;
+  }) => Promise<AvgBlockTime> = async () => {
+    const dummyData: AvgBlockTime = {
+      AvgBlockTime: 2.2,
+      Height: {
+        compare: 1,
+        latest: 10,
+      },
+      Time: {
+        compare: "2024-08-12T06:44:54Z",
+        latest: "2024-08-12T06:45:52Z",
+      },
+    };
+
+    return dummyData;
   };
 }

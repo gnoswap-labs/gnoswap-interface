@@ -38,6 +38,7 @@ interface Props {
   close: () => void;
   breakpoint: DEVICE_TYPE;
   depositInfo?: TokenModel;
+  avgBlockTime: number;
   changeToken: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
 }
@@ -45,6 +46,7 @@ interface Props {
 const DepositModal: React.FC<Props> = ({
   close,
   breakpoint,
+  avgBlockTime,
   changeToken,
   callback,
 }) => {
@@ -72,9 +74,7 @@ const DepositModal: React.FC<Props> = ({
             <DepositLabel>
               <div className="title">
                 <label>{t("Modal:deposit.supToken.label")}</label>
-                <DepositTooltip
-                  tooltip={t("Modal:deposit.supToken.tooltip")}
-                />
+                <DepositTooltip tooltip={t("Modal:deposit.supToken.tooltip")} />
               </div>
 
               <DepositBoxContent>
@@ -104,9 +104,7 @@ const DepositModal: React.FC<Props> = ({
             <DepositLabel>
               <div className="title">
                 <label>{t("Modal:deposit.depoNet.label")}</label>
-                <DepositTooltip
-                  tooltip={t("Modal:deposit.depoNet.tooltip")}
-                />
+                <DepositTooltip tooltip={t("Modal:deposit.depoNet.tooltip")} />
               </div>
 
               <DepositBoxContent>
@@ -121,7 +119,9 @@ const DepositModal: React.FC<Props> = ({
                   </div>
 
                   <div className="approximately">
-                    {t("Modal:deposit.second")}
+                    {t("Modal:deposit.second", {
+                      avgBlockTime: (Math.floor(avgBlockTime * 10) / 10).toFixed(1),
+                    })}
                   </div>
                 </div>
               </DepositBoxContent>
@@ -130,9 +130,7 @@ const DepositModal: React.FC<Props> = ({
             <DepositLabel>
               <div className="title">
                 <label>{t("Modal:deposit.depoAddr.label")}</label>
-                <DepositTooltip
-                  tooltip={t("Modal:deposit.depoAddr.tooltip")}
-                />
+                <DepositTooltip tooltip={t("Modal:deposit.depoAddr.tooltip")} />
               </div>
 
               <DepositBoxContent>
