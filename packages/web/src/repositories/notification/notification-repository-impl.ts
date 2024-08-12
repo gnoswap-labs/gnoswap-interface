@@ -7,7 +7,7 @@ import { TransactionGroupsType } from "@models/notification";
 import { NotificationMapper } from "@models/notification/mapper/notification-mapper";
 import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
 
-import { NotificationRepository } from "./dashboard-repository";
+import { NotificationRepository } from "./notification-repository";
 import { AccountActivityRequest } from "./request";
 import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
 
