@@ -1,66 +1,66 @@
-import OneClickStaking from "@components/stake/one-click-staking/OneClickStaking";
-import React, { useCallback, useMemo } from "react";
-import useCustomRouter from "@hooks/common/use-custom-router";
-import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtom } from "jotai";
-import { EarnState } from "@states/index";
-import { checkGnotPath } from "@utils/common";
+import React, { useCallback, useMemo } from "react";
+
+import QuickPoolInfo from "@components/stake/quick-pool-info/QuickPoolInfo";
+import { PAGE_PATH_TYPE } from "@constants/page.constant";
 import { initialPool } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { useGetPoolDetailByPath } from "@query/pools";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
-import { PAGE_PATH_TYPE } from "@constants/page.constant";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { useGetPoolDetailByPath } from "@query/pools";
+import { EarnState } from "@states/index";
+import { checkGnotPath } from "@utils/common";
 
-const OneClickStakingContainer: React.FC = () => {
+const QuickPoolInfoContainer: React.FC = () => {
   const router = useCustomRouter();
   const { account, connected } = useWallet();
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(
     EarnState.poolInfoQuery,
   );
-  const poolId =
-    router.query?.["poolPath"] === undefined
-      ? null
-      : `${router.query?.["poolPath"]}`;
-
-  const tokenPair = useMemo(() => {
-    const tokenAPath = router.query?.["tokenA"] as string;
-    const tokenBPath = router.query?.["tokenB"] as string;
-
-    if (!tokenAPath || !tokenBPath) {
-      return null;
-    }
-
-    return [checkGnotPath(tokenAPath), checkGnotPath(tokenBPath)].sort();
-  }, [router.query]);
   const { pools } = usePoolData();
 
-  const poolPath = useMemo(() => {
-    const feeTier = router.query?.["fee_tier"] as string;
+  const poolPathParam = router.query.poolPath as string;
+  const tokenAPath =
+    (router.query.tokenA as string) || window.history.state?.tokenA;
+  const tokenBPath =
+    (router.query.tokenB as string) || window.history.state?.tokenB;
+  const feeTier =
+    (router.query.fee_tier as string) || window.history.state?.fee_tier;
 
-    if (!tokenPair || !feeTier) return null;
+  const poolPath = useMemo(() => {
+    if (poolPathParam) return poolPathParam;
+
+    if (!tokenAPath || !tokenBPath || !feeTier) return null;
+
+    const tokenPair = [
+      checkGnotPath(tokenAPath),
+      checkGnotPath(tokenBPath),
+    ].sort();
 
     return [...tokenPair, feeTier].join(":");
-  }, [router.query, tokenPair]);
+  }, [poolPathParam, tokenAPath, tokenBPath, feeTier]);
 
   const shouldFetchPool = useMemo(() => {
-    return pools.some(pool => pool.poolPath === (poolId || poolPath));
-  }, [poolId, poolPath, pools]);
+    return pools.some(pool => pool.poolPath === poolPath);
+  }, [poolPath, pools]);
 
   const { positions, loading: isLoadingPosition } = usePositionData({
     isClosed: false,
-    poolPath: poolId || poolPath || "",
+    poolPath: poolPath || "",
     queryOption: {
-      enabled: !!poolId || !!poolPath,
+      enabled: !!poolPath,
     },
   });
 
   const {
     data = initialPool as PoolDetailModel,
     isLoading: isLoadingPoolInfo,
-  } = useGetPoolDetailByPath((poolPath || poolId) as string, {
-    enabled: (!!poolPath || !!poolId) && shouldFetchPool,
+  } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath && shouldFetchPool,
   });
+
 
   const stakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];
@@ -74,20 +74,16 @@ const OneClickStakingContainer: React.FC = () => {
 
   const handleClickGotoStaking = useCallback(
     (type: PAGE_PATH_TYPE) => {
-      if (poolId) {
-        router.movePageWithPoolPath(type, poolId);
-        return;
-      }
       if (poolPath) {
         router.movePageWithPoolPath(type, poolPath);
         return;
       }
     },
-    [poolId, poolPath],
+    [poolPath],
   );
 
   return (
-    <OneClickStaking
+    <QuickPoolInfo
       stakedPositions={stakedPositions}
       unstakedPositions={unstakedPositions}
       handleClickGotoStaking={handleClickGotoStaking}
@@ -98,4 +94,4 @@ const OneClickStakingContainer: React.FC = () => {
     />
   );
 };
-export default OneClickStakingContainer;
+export default QuickPoolInfoContainer;

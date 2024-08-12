@@ -3,7 +3,7 @@ import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
-export const OneClickStakingWrapper = styled.div`
+export const QuickPoolInfoWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   background-color: ${({ theme }) => theme.color.background01};
   width: 430px;
@@ -11,7 +11,7 @@ export const OneClickStakingWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   gap: 16px;
-  .one-click-info,
+  .pool-info,
   .unstake-info,
   .stake-info {
     ${mixins.flexbox("column", "center", "center")};
@@ -36,7 +36,7 @@ export const OneClickStakingWrapper = styled.div`
       ${fonts.body7};
     }
   }
-  .one-click-info {
+  .pool-info {
     > div {
       height: 34px;
       &:last-of-type {
@@ -49,12 +49,14 @@ export const OneClickStakingWrapper = styled.div`
     .value {
       color: ${({ theme }) => theme.color.text02};
 
-      .staking-apr-value, .fee-apr-value {
+      .staking-apr-value,
+      .fee-apr-value {
         ${mixins.flexbox("row", "center", "flex-end")};
       }
     }
   }
-  .unstake-info, .stake-info {
+  .unstake-info,
+  .stake-info {
     .title {
       height: 34px;
       .label {

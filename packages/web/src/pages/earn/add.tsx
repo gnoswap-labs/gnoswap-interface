@@ -5,13 +5,13 @@ import { useTranslation } from "react-i18next";
 
 import Footer from "@components/common/footer/Footer";
 import SEOHeader from "@components/common/seo-header/seo-header";
-import { SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import EarnAddLiquidityContainer from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
+import QuickPoolInfoContainer from "@containers/quick-pool-info-container/QuickPoolInfoContainer";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -19,7 +19,6 @@ import EarnAddLayout from "@layouts/earn-add-layout/EarnAddLayout";
 import { EarnState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
-import { DEFAULT_I18N_NS } from "@constants/common.constant";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -38,7 +37,6 @@ export default function EarnAdd() {
   const router = useRouter();
   const query = router.query;
   const [isEarnAdd] = useAtom(EarnState.isEarnAdd);
-  const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const listBreadcrumb = [
     { title: t("business:pageHeader.earn"), path: "/earn" },
     { title: t("business:pageHeader.addPosi"), path: "" },
@@ -46,19 +44,15 @@ export default function EarnAdd() {
   const { tokens } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
-  const showExchangeRate = useMemo(
-    () => query.tokenA && query.tokenB && !!currentPoolPath,
-    [currentPoolPath, query.tokenA, query.tokenB],
-  );
+  const feeTier =
+    (router.query.fee_tier as string) || window.history.state?.fee_tier;
 
   const feeStr = useMemo(() => {
-    const feeTier = query.fee_tier as string | undefined;
-
     if (!feeTier) {
       return null;
     }
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
-  }, [query.fee_tier]);
+  }, [feeTier]);
 
   const seoInfo = useMemo(() => SEOInfo["/earn/add"], []);
 
@@ -94,10 +88,8 @@ export default function EarnAdd() {
         header={<HeaderContainer />}
         breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} />}
         addLiquidity={<EarnAddLiquidityContainer />}
-        oneStaking={isEarnAdd ? <OneClickStakingContainer /> : null}
-        exchangeRateGraph={
-          showExchangeRate ? <ExchangeRateGraphContainer /> : null
-        }
+        quickPoolInfo={isEarnAdd ? <QuickPoolInfoContainer /> : null}
+        exchangeRateGraph={<ExchangeRateGraphContainer />}
         footer={<Footer />}
       />
     </>

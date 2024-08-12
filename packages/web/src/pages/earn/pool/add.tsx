@@ -1,27 +1,28 @@
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import Footer from "@components/common/footer/Footer";
-import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
-import PoolAddLayout from "@layouts/pool-add-layout/PoolAddLayout";
-import PoolAddLiquidityContainer from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
-import React, { useMemo } from "react";
-import useRouter from "@hooks/common/use-custom-router";
-import { useGetPoolDetailByPath } from "src/react-query/pools";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useLoading } from "@hooks/common/use-loading";
-import { DeviceSize } from "@styles/media";
-import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
-import SEOHeader from "@components/common/seo-header/seo-header";
-import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { makeSwapFeeTier } from "@utils/swap-utils";
-import { checkGnotPath } from "@utils/common";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { makeRouteUrl } from "@utils/page.utils";
-import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+
+import Footer from "@components/common/footer/Footer";
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
+import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import PoolAddLiquidityContainer from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
+import QuickPoolInfoContainer from "@containers/quick-pool-info-container/QuickPoolInfoContainer";
+import useRouter from "@hooks/common/use-custom-router";
+import { useLoading } from "@hooks/common/use-loading";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useTokenData } from "@hooks/token/use-token-data";
+import PoolAddLayout from "@layouts/pool-add-layout/PoolAddLayout";
+import { useGetPoolDetailByPath } from "@query/pools";
+import { DeviceSize } from "@styles/media";
+import { checkGnotPath } from "@utils/common";
+import { makeRouteUrl } from "@utils/page.utils";
+import { makeSwapFeeTier } from "@utils/swap-utils";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -121,7 +122,7 @@ export default function EarnAdd() {
           />
         }
         addLiquidity={<PoolAddLiquidityContainer />}
-        oneStaking={<OneClickStakingContainer />}
+        quickPoolInfo={<QuickPoolInfoContainer />}
         exchangeRateGraph={<ExchangeRateGraphContainer />}
         footer={<Footer />}
       />
