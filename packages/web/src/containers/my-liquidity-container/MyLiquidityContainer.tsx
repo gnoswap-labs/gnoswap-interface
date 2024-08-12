@@ -11,7 +11,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useGetUsernameByAddress } from "@query/address/queries";
+import { useGetUsernameByAddress } from "@query/address";
 import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 

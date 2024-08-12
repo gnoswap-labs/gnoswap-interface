@@ -1,2 +1,2 @@
-export * from "./types";
-export * from "./queries";
+export * from "./use-get-dashbaord-tvl";
+export * from "./use-get-dashboard-volume";

@@ -1,17 +1,19 @@
-import React, { useCallback, useMemo, useState, useRef } from "react";
-import {
-  PoolIncentivizeSelectPoolBox,
-  PoolIncentivizeSelectPoolWrapper,
-} from "./PoolIncentivizeSelectPool.styles";
-import PoolIncentivizeSelectPoolItem from "../pool-incentivize-select-pool-item/PoolIncentivizeSelectPoolItem";
-import SearchInput from "@components/common/search-input/SearchInput";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
-import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import SearchInput from "@components/common/search-input/SearchInput";
 import useModalCloseEvent from "@hooks/common/use-modal-close-event";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
-import { QUERY_KEY } from "src/react-query/pools";
-import { useTranslation } from "react-i18next";
+import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import { QUERY_KEY } from "@query/query-keys";
+
+import PoolIncentivizeSelectPoolItem from "../pool-incentivize-select-pool-item/PoolIncentivizeSelectPoolItem";
+import {
+  PoolIncentivizeSelectPoolBox,
+  PoolIncentivizeSelectPoolWrapper
+} from "./PoolIncentivizeSelectPool.styles";
 
 export interface PoolIncentivizeSelectPoolProps {
   selectedPool: PoolSelectItemInfo | null;
@@ -32,7 +34,7 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
   const [openedSelector, setOpenedSelector] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const closeModal = useCallback(() => setOpenedSelector(false), []);
-  const forceRefect = useForceRefetchQuery();
+  const forceRefetch = useForceRefetchQuery();
 
   useModalCloseEvent(modalRef, closeModal);
 
@@ -66,7 +68,7 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
 
   const toggleSelector = useCallback(() => {
     if (!openedSelector) {
-      forceRefect({ queryKey: [QUERY_KEY.pools] });
+      forceRefetch({ queryKey: [QUERY_KEY.pools] });
     }
     setOpenedSelector(!openedSelector);
   }, [openedSelector]);

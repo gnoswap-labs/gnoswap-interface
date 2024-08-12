@@ -1,7 +1,7 @@
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
-import { QUERY_KEY } from "./types";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { priceToTick } from "@utils/swap-utils";
@@ -10,6 +10,8 @@ import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolError } from "@common/errors/pool";
 import useCustomRouter from "@hooks/common/use-custom-router";
+
+import { QUERY_KEY } from "../query-keys";
 
 export const useGetPoolCreationFee = (
   options?: UseQueryOptions<number, Error>,

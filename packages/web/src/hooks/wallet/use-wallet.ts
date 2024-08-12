@@ -16,7 +16,7 @@ import {
   SUPPORT_CHAIN_IDS,
   DEFAULT_CHAIN_ID,
 } from "@constants/environment.constant";
-import { useGetTokenBalancesFromChain } from "@query/address/queries";
+import { useGetTokenBalancesFromChain } from "@query/address";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
 
