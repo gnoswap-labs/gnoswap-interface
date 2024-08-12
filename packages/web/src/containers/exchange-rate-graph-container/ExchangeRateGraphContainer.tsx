@@ -1,12 +1,15 @@
+import { useAtom } from "jotai";
+import { useMemo, useState } from "react";
+
 import ExchangeRateGraph from "@components/pool/exchange-rate-graph/ExchangeRateGraph";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
-import { useAtom } from "jotai";
-import { useMemo, useState } from "react";
+import { checkGnotPath } from "@utils/common";
 
 export const initialPool: PoolModel = {
   tokenA: {
@@ -68,22 +71,45 @@ export interface LineGraphData {
 }
 
 const ExchangeRateGraphContainer: React.FC = () => {
-  const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [compareToken] = useAtom(EarnState.currentCompareToken);
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(
     EarnState.poolInfoQuery,
   );
+  const router = useCustomRouter();
+  const currentPoolPath = (router.query.poolPath as string) || "";
+    const tokenAPath =
+      (router.query.tokenA as string) || window.history.state?.tokenA;
+    const tokenBPath =
+      (router.query.tokenB as string) || window.history.state?.tokenB;
+    const feeTier =
+      (router.query.fee_tier as string) || window.history.state?.fee_tier;
 
-  const tokenPair = currentPoolPath?.split(":");
+  const tokenPair = useMemo(() => {
+    if (currentPoolPath) return currentPoolPath?.split(":");
+    return [checkGnotPath(tokenAPath), checkGnotPath(tokenBPath)].sort();
+  }, [currentPoolPath, tokenAPath, tokenBPath]);
+
+
+  let poolPath = "";
+  if (currentPoolPath) {
+    poolPath = currentPoolPath;
+  } else {
+    if (tokenAPath && tokenBPath && feeTier) {
+      poolPath = [...tokenPair, feeTier].join(":");
+    } else {
+      poolPath = "";
+    }
+  }
+
   const { getGnotPath } = useGnotToGnot();
 
-  const poolPath = currentPoolPath;
-  const { data: poolData = initialPool, isLoading } = useGetPoolDetailByPath(
-    poolPath as string,
-    {
-      enabled: !!poolPath,
-    },
-  );
+  const {
+    data: poolData = initialPool,
+    isLoading,
+  } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
+
   const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(
     CHART_DAY_SCOPE_TYPE["7D"],
   );
@@ -139,6 +165,8 @@ const ExchangeRateGraphContainer: React.FC = () => {
           price: 1 / poolData.price,
         };
   }, [getGnotPath, poolData, isReversed]);
+
+  if (!poolPath) return null;
 
   return (
     <ExchangeRateGraph

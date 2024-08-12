@@ -2,6 +2,7 @@ import ExchangeRateGraphContent from "@components/pool/exchange-rate-graph-conte
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import {
+  ExchangeChartNotFound,
   ExchangeRateGraphController,
   ExchangeRateGraphHeaderWrapper,
   ExchangeRateGraphTitleWrapper,
@@ -41,6 +42,29 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   const [currentPoint, setCurrentPoint] = useState<string | null>();
   const [active, setActive] = useState<boolean>(false);
 
+  const hasData =
+    poolData.tokenA.name !== undefined && poolData.tokenA.name !== "";
+
+  const showChart = () => {
+    if (!hasData)
+      return (
+        <ExchangeChartNotFound>{t("common:noData")}</ExchangeChartNotFound>
+      );
+    return (
+      <ExchangeRateGraphContent
+        poolData={poolData}
+        selectedScope={selectedScope}
+        isReversed={isReversed}
+        onMouseMove={data => {
+          setCurrentPoint(data?.value);
+        }}
+        onMouseOut={active => {
+          setActive(active);
+        }}
+      />
+    );
+  };
+
   return (
     <ExchangeRateGraphWrapper>
       <ExchangeRateGraphHeaderWrapper>
@@ -60,13 +84,17 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
           </div>
         </ExchangeRateGraphTitleWrapper>
         <ExchangeRateGraphController>
-          <PairRatio
-            onSwap={onSwap}
-            pool={poolData}
-            loading={isLoading}
-            isSwap={isReversed}
-            overrideValue={active ? Number(currentPoint) : undefined}
-          />
+          {hasData ? (
+            <PairRatio
+              onSwap={onSwap}
+              pool={poolData}
+              loading={isLoading}
+              isSwap={isReversed}
+              overrideValue={active ? Number(currentPoint) : undefined}
+            />
+          ) : (
+            <div />
+          )}
           <ChartScopeSelectTab
             size={"SMALL"}
             list={Object.values(CHART_DAY_SCOPE_TYPE)}
@@ -75,19 +103,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
           />
         </ExchangeRateGraphController>
       </ExchangeRateGraphHeaderWrapper>
-      {!isLoading && (
-        <ExchangeRateGraphContent
-          poolData={poolData}
-          selectedScope={selectedScope}
-          isReversed={isReversed}
-          onMouseMove={data => {
-            setCurrentPoint(data?.value);
-          }}
-          onMouseOut={active => {
-            setActive(active);
-          }}
-        />
-      )}
+      {!isLoading && showChart()}
       {isLoading && (
         <LoadingExchangeRateChartWrapper>
           <LoadingSpinner />

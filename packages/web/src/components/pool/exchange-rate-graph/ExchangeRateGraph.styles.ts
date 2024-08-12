@@ -85,3 +85,15 @@ export const ExchangeRateGraphTitleWrapper = styled.div`
   ${mixins.flexbox("row", "center", "start")}
   margin-bottom: 12px
 `;
+
+export const ExchangeChartNotFound = styled.div`
+  ${mixins.flexbox("row", "center", "center")}
+  height: 246px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.color.background15};
+  border-radius: 8px;
+  color: ${({ theme }) => theme.color.text04};
+  ${media.mobile} {
+    height: 224px;
+  }
+`;
