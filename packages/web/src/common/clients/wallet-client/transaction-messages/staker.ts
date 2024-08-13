@@ -21,7 +21,10 @@ export function makeCollectRewardMessage(lpTokenId: string, caller: string) {
     send: "",
     func: "CollectReward",
     packagePath: PACKAGE_STAKER_PATH,
-    args: [lpTokenId.toString()],
+    args: [
+      lpTokenId.toString(),
+      "true", // unwrap wgnot, it's always true for now
+    ],
     caller,
   });
 }
