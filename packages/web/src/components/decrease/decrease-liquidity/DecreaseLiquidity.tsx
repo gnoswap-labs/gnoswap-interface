@@ -1,9 +1,12 @@
-import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { RANGE_STATUS_OPTION } from "@constants/option.constant";
-import { IPriceRange } from "@hooks/increase/use-increase-handle";
-import { TokenModel } from "@models/token/token-model";
 import React from "react";
 import { useTranslation } from "react-i18next";
+
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
+import { IPriceRange } from "@hooks/increase/use-increase-handle";
+import { TokenModel } from "@models/token/token-model";
+
 import DecreaseAmountPosition from "../decrease-select-position/DecreaseAmount";
 import DecreaseSelectPosition from "../decrease-select-position/DecreaseSelectPosition";
 import { DecreaseLiquidityWrapper } from "./DecreaseLiquidity.styles";
@@ -20,9 +23,9 @@ interface DecreaseLiquidityProps {
   onSubmit: () => void;
   percent: number;
   handlePercent: (value: number) => void;
-  pooledTokenInfos: any;
-  isWrap: boolean;
-  setIsWrap: () => void;
+  pooledTokenInfos: IPooledTokenInfo | null;
+  isGetWGNOT: boolean;
+  setIsGetWGNOT: () => void;
 }
 
 const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
@@ -38,8 +41,8 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
   handlePercent,
   percent,
   pooledTokenInfos,
-  isWrap,
-  setIsWrap,
+  isGetWGNOT,
+  setIsGetWGNOT,
 }) => {
   const { t } = useTranslation();
 
@@ -65,8 +68,8 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
           handlePercent={handlePercent}
           percent={percent}
           pooledTokenInfos={pooledTokenInfos}
-          isWrap={isWrap}
-          setIsWrap={setIsWrap}
+          isGetWGNOT={isGetWGNOT}
+          setIsGetWGNOT={setIsGetWGNOT}
         />
       </article>
       <Button

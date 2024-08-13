@@ -14,8 +14,8 @@ export interface DecreaseSelectPositionProps {
   percent: number;
   handlePercent: (value: number) => void;
   pooledTokenInfos: IPooledTokenInfo | null;
-  isWrap: boolean;
-  setIsWrap: () => void;
+  isGetWGNOT: boolean;
+  setIsGetWGNOT: () => void;
 }
 
 const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
@@ -24,8 +24,8 @@ const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
   percent,
   handlePercent,
   pooledTokenInfos,
-  isWrap,
-  setIsWrap,
+  isGetWGNOT,
+  setIsGetWGNOT,
 }) => {
   const { t } = useTranslation();
 
@@ -60,8 +60,8 @@ const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
         tokenA={tokenA}
         tokenB={tokenB}
         pooledTokenInfos={pooledTokenInfos}
-        isWrap={isWrap}
-        setIsWrap={setIsWrap}
+        isGetWGNOT={isGetWGNOT}
+        setIsGetWGNOT={setIsGetWGNOT}
         displayGnotSwitch
       />
     </DecreaseSelectPositionWrapper>

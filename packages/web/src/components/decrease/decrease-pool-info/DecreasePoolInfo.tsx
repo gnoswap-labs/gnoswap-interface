@@ -25,8 +25,8 @@ interface Props {
   tokenB: TokenModel;
   isShowProtocolFee?: boolean;
   pooledTokenInfos: IPooledTokenInfo | null;
-  isWrap?: boolean;
-  setIsWrap?: () => void;
+  isGetWGNOT?: boolean;
+  setIsGetWGNOT?: () => void;
   displayGnotSwitch?: boolean;
 }
 
@@ -35,8 +35,8 @@ const DecreasePoolInfo: React.FC<Props> = ({
   tokenB,
   pooledTokenInfos,
   isShowProtocolFee = false,
-  isWrap = false,
-  setIsWrap = () => {
+  isGetWGNOT = false,
+  setIsGetWGNOT = () => {
     return;
   },
   displayGnotSwitch = false,
@@ -188,7 +188,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
           <Divider />
           <GnotCollectSwitchWrapper>
             <div>{t("DecreaseLiquidity:form.collectWugnot.switch")}</div>
-            <Switch checked={isWrap} onChange={setIsWrap} />
+            <Switch checked={isGetWGNOT} onChange={setIsGetWGNOT} />
           </GnotCollectSwitchWrapper>
         </>
       )}

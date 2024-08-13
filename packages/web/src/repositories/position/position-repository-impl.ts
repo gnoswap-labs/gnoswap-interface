@@ -438,7 +438,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       slippage,
       decreaseRatio,
       caller,
-      existWrappedToken,
+      isGetWGNOT,
     } = request;
 
     const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
@@ -478,7 +478,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       tokenAAmountRaw,
       tokenBAmountRaw,
       slippage,
-      existWrappedToken,
+      isGetWGNOT,
       caller,
     );
 
