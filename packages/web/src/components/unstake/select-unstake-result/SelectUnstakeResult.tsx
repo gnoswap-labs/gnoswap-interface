@@ -2,10 +2,10 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import Switch from "@components/common/switch/Switch";
 import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
-import Switch from "@components/common/switch/Switch";
 
 import { Divider, GnotCollectSwitchWrapper, wrapper } from "./SelectUnstakeResult.styles";
 
@@ -71,11 +71,15 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
             </li>
           );
         })}
-        <Divider />
-        <GnotCollectSwitchWrapper>
-          <div>{t("DecreaseLiquidity:form.collectWugnot.switch")}</div>
-          <Switch checked={isGetWGNOT} onChange={setIsGetWGNOT} />
-        </GnotCollectSwitchWrapper>
+        {unclaimedRewards.find(item => item.token.path === "gnot") && (
+          <>
+            <Divider />
+            <GnotCollectSwitchWrapper>
+              <div>{t("UnstakePosition:overview.collectAsSwitch")}</div>
+              <Switch checked={isGetWGNOT} onChange={setIsGetWGNOT} />
+            </GnotCollectSwitchWrapper>
+          </>
+        )}
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
