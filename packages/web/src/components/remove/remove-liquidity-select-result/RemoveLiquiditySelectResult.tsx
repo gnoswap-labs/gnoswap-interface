@@ -14,13 +14,13 @@ import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 
 interface RemoveLiquiditySelectResultProps {
   positions: PoolPositionModel[];
-  isWrap: boolean;
-  setIsWrap: () => void;
+  isGetWGNOT: boolean;
+  setIsGetWGNOT: () => void;
 }
 
 const RemoveLiquiditySelectResult: React.FC<
   RemoveLiquiditySelectResultProps
-> = ({ positions, isWrap, setIsWrap }) => {
+> = ({ positions, isGetWGNOT, setIsGetWGNOT }) => {
   const { t } = useTranslation();
 
   const { pooledTokenInfos, unclaimedFees, totalLiquidityUSD } =
@@ -91,7 +91,7 @@ const RemoveLiquiditySelectResult: React.FC<
             <Divider />
             <GnotCollectSwitchWrapper>
               <div>{t("RemovePosition:overview.collectAsSwitch")}</div>
-              <Switch checked={isWrap} onChange={setIsWrap} />
+              <Switch checked={isGetWGNOT} onChange={setIsGetWGNOT} />
             </GnotCollectSwitchWrapper>
           </>
         )}

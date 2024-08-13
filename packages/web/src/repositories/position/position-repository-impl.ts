@@ -630,7 +630,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenIds, tokenPaths, caller, existWrappedToken } = request;
+    const { lpTokenIds, tokenPaths, caller, isGetWGNOT } = request;
     const decreaseLiquidityRatio = 100;
 
     // Make Approve messages that can be managed by a Pool package of tokens.
@@ -661,7 +661,7 @@ export class PositionRepositoryImpl implements PositionRepository {
         "0",
         "0",
         0,
-        existWrappedToken,
+        isGetWGNOT,
         caller,
       ),
     );

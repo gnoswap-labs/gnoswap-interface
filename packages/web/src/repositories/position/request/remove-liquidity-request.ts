@@ -5,5 +5,5 @@ export interface RemoveLiquidityRequest {
 
   caller: string;
 
-  existWrappedToken: boolean;
+  isGetWGNOT: boolean;
 }

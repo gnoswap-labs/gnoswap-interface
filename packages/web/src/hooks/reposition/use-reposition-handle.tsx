@@ -457,7 +457,7 @@ export const useRepositionHandle = () => {
             selectedPosition.pool.tokenA.path,
             selectedPosition.pool.tokenB.path,
           ],
-          existWrappedToken: true,
+          isGetWGNOT: false,
         })
         .catch(() => null);
     }, [selectedPosition, positionRepository, address]);
