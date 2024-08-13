@@ -5,15 +5,20 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import Switch from "@components/common/switch/Switch";
 
-import { wrapper } from "./SelectUnstakeResult.styles";
+import { Divider, GnotCollectSwitchWrapper, wrapper } from "./SelectUnstakeResult.styles";
 
 interface SelectUnstakeResultProps {
   positions: PoolPositionModel[];
+  isGetWGNOT: boolean;
+  setIsGetWGNOT: () => void;
 }
 
 const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
   positions,
+  isGetWGNOT,
+  setIsGetWGNOT,
 }) => {
   const { t } = useTranslation();
   const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } =
@@ -66,6 +71,11 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
             </li>
           );
         })}
+        <Divider />
+        <GnotCollectSwitchWrapper>
+          <div>{t("DecreaseLiquidity:form.collectWugnot.switch")}</div>
+          <Switch checked={isGetWGNOT} onChange={setIsGetWGNOT} />
+        </GnotCollectSwitchWrapper>
       </ul>
       <div className="result-section">
         <div className="total-amount-box">

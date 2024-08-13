@@ -263,7 +263,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { positions, caller } = request;
+    const { positions, isGetWGNOT, caller } = request;
     const messages: TransactionMessage[] = [];
 
     const hasGNOTToken = positions.find(
@@ -318,7 +318,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     messages.push(
       ...collectRewardApproveMessages,
       ...positions.map(position =>
-        makeUnstakeMessage(position.lpTokenId, caller),
+        makeUnstakeMessage(position.lpTokenId, isGetWGNOT, caller),
       ),
     );
     const result = await this.walletClient.sendTransaction({

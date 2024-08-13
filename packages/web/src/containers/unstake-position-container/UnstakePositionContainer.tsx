@@ -15,6 +15,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
       },
     });
   const [checkedList, setCheckedList] = useState<string[]>([]);
+  const [isGetWGNOT, setIsGetWGNOT] = useState(false);
 
   const stakedPositions = useMemo(
     () => allPosition.filter(item => item.staked),
@@ -24,6 +25,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
   const { openModal } = useUnstakePositionModal({
     positions: stakedPositions,
     selectedIds: checkedList,
+    isGetWGNOT,
   });
 
   const checkedAll = useMemo(() => {
@@ -69,6 +71,8 @@ const UnstakeLiquidityContainer: React.FC = () => {
       checkedAll={checkedAll}
       handleConfirmUnstake={handleConfirmUnstake}
       isLoading={isPositionsLoading}
+      isGetWGNOT={isGetWGNOT}
+      setIsGetWGNOT={() => setIsGetWGNOT(prev => !prev)}
     />
   );
 };

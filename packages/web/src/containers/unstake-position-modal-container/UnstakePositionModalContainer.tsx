@@ -15,10 +15,12 @@ import { DexEvent } from "@repositories/common";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
+  isGetWGNOT: boolean;
 }
 
 const UnstakePositionModalContainer = ({
   positions,
+  isGetWGNOT,
 }: UnstakePositionModalContainerProps) => {
   const { account } = useWallet();
   const { positionRepository } = useGnoswapContext();
@@ -66,6 +68,7 @@ const UnstakePositionModalContainer = ({
     const result = await positionRepository
       .unstakePositions({
         positions,
+        isGetWGNOT,
         caller: address,
       })
       .catch(() => null);
