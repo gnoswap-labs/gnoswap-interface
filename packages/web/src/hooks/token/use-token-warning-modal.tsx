@@ -26,6 +26,7 @@ export const useTokenWarningModal = ({
   const openModal = useCallback(
     (value: TokenModel) => {
       if (warningStatus.includes(value.path)) {
+        onClickConfirm(value);
         return;
       }
 

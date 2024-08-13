@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 
 import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
@@ -7,8 +7,8 @@ import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useTokenWarningModal } from "@hooks/token/use-token-warning-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { useTokenWarningModal } from "@hooks/token/use-token-warning-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { ThemeState, TokenState } from "@states/index";
@@ -96,7 +96,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const [, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
   const recentsData = useAtomValue(TokenState.selectRecents);
   const { isSwitchNetwork } = useWallet();
 
@@ -104,16 +103,22 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     return parseJson(recentsData ? recentsData : "[]");
   }, [recentsData]);
 
+  const close = useCallback(() => {
+    clearModal();
+    callback?.(true);
+  }, [clearModal, callback]);
+
   const { openModal: openWarningModal } = useTokenWarningModal({
     onClickConfirm: (value: TokenModel) => {
-      setFromSelectToken(true);
       changeToken?.(value);
       close();
     },
     onClickClose: () => {
       // just close
-    }
+    },
   });
+
+  useEscCloseModal(close);
 
   const defaultTokens = useMemo(() => {
     const temp = tokens;
@@ -149,10 +154,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     );
   }, [keyword, tokens, balances, tokenPrices]);
 
-  const close = useCallback(() => {
-    clearModal();
-    callback?.(true);
-  }, [clearModal, callback]);
+
 
   const selectToken = useCallback(
     (token: TokenModel) => {
@@ -160,10 +162,10 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
         return;
       }
       if (token.path && token.logoURI) {
-        changeToken(token);
+      changeToken(token);
         close();
       } else {
-        openWarningModal(token);
+      openWarningModal(token);
       }
     },
     [changeToken, close, openWarningModal],
@@ -173,9 +175,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     setKeyword(keyword);
   }, []);
 
-
-
-  useEscCloseModal(close);
 
   return (
     <SelectToken
