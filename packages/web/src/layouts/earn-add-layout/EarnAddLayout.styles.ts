@@ -41,7 +41,7 @@ export const wrapper = (theme: Theme) => css`
     margin: 0 auto;
     height: 100%;
   }
-  .one-click-staking {
+  .quick-pool-info-section {
     &.margin-bottom {
       margin-bottom: 16px;
     }
@@ -81,7 +81,7 @@ export const wrapper = (theme: Theme) => css`
     .add-liquidity-section {
       margin: auto;
     }
-    .one-click-staking {
+    .quick-pool-info-section {
       padding: 0;
       margin: 16px auto 0;
       width: 100%;

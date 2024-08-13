@@ -6,7 +6,7 @@ interface EarnAddLayoutProps {
   header: React.ReactNode;
   breadcrumbs: React.ReactNode;
   addLiquidity: React.ReactNode;
-  oneStaking: React.ReactNode;
+  quickPoolInfo: React.ReactNode;
   exchangeRateGraph: React.ReactNode;
   footer: React.ReactNode;
 }
@@ -15,7 +15,7 @@ const EarnAddLayout: React.FC<EarnAddLayoutProps> = ({
   header,
   breadcrumbs,
   addLiquidity,
-  oneStaking,
+  quickPoolInfo,
   footer,
   exchangeRateGraph,
 }) => {
@@ -31,17 +31,17 @@ const EarnAddLayout: React.FC<EarnAddLayoutProps> = ({
         </div>
         <div
           className={`wrapper-sub-content ${
-            !oneStaking && !exchangeRateGraph && "full-width"
+            !quickPoolInfo && "full-width"
           }`}
         >
           <div className="add-liquidity-section">{addLiquidity}</div>
           <div className="additional-info-section">
             <div
-              className={`one-click-staking ${
-                oneStaking && exchangeRateGraph ? "margin-bottom" : ""
+              className={`quick-pool-info-section ${
+                quickPoolInfo && exchangeRateGraph ? "margin-bottom" : ""
               }`}
             >
-              {oneStaking ? oneStaking : <div className="fake-div"></div>}
+              {quickPoolInfo ? quickPoolInfo : null}
             </div>
             <div className="exchange-rate-graph">{exchangeRateGraph}</div>
           </div>

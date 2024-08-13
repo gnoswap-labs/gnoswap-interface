@@ -784,7 +784,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return priceRange?.type;
     })()?.toString();
 
-    if (tokenA?.path && tokenB?.path && swapFeeTier && router.isReady) {
+    if (swapFeeTier && router.isReady) {
       const query = {
         tokenA: tokenA?.path,
         tokenB: tokenB?.path,
@@ -793,13 +793,11 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tickLower: nextTickLower,
         tickUpper: nextTickUpper,
       };
-      if (tokenA?.path && tokenB?.path) {
         window.history.pushState(
-          null,
+          query,
           "",
           makeRouteUrl(window.location.pathname, query),
         );
-      }
     }
   }, [
     swapFeeTier,

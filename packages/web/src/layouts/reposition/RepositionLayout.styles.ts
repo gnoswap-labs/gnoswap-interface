@@ -37,11 +37,6 @@ export const wrapper = (theme: Theme) => css`
     margin: 0 auto;
     height: 100%;
   }
-  .one-click-staking {
-    padding: 0 24px 0 16px;
-    .fake-div {
-    }
-  }
   .content-default {
     ${media.tablet} {
       display: none;
@@ -64,15 +59,6 @@ export const wrapper = (theme: Theme) => css`
     }
     .reposition-section {
       margin: auto;
-    }
-    .one-click-staking {
-      padding: 0;
-      margin: 16px auto 0;
-      width: 100%;
-      max-width: 500px;
-      .fake-div {
-        width: 430px;
-      }
     }
     .content-default {
       display: none;
