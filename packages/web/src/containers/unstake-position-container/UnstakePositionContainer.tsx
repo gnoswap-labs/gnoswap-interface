@@ -25,7 +25,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
   const { openModal } = useUnstakePositionModal({
     positions: stakedPositions,
     selectedIds: checkedList,
-    isGetWGNOT,
+    isGetWGNOT: isGetWGNOT,
   });
 
   const checkedAll = useMemo(() => {

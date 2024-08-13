@@ -30,7 +30,7 @@ export const useUnstakePositionModal = ({
         isGetWGNOT={isGetWGNOT}
       />,
     );
-  }, [setModalContent, setOpenedModal, selectedPositions]);
+  }, [setModalContent, setOpenedModal, selectedPositions, isGetWGNOT]);
 
   return {
     openModal,
