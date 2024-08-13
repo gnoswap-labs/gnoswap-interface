@@ -162,7 +162,7 @@ const TokenChartContainer: React.FC = () => {
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const { openModal: openTradingModal } = useTokenWarningModal({
+  const { openModal: openWarningModal } = useTokenWarningModal({
     onClickConfirm: () => {
       setFromSelectToken(false);
       clearModal();
@@ -222,7 +222,7 @@ const TokenChartContainer: React.FC = () => {
         },
       }));
       if (!fromSelectToken && !tokenB.logoURI) {
-        openTradingModal(tokenB);
+        openWarningModal(tokenB);
       }
     }
   }, [

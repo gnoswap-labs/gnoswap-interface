@@ -1,6 +1,5 @@
 import BigNumber from "bignumber.js";
 import { useAtom, useAtomValue } from "jotai";
-import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
 
 import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
@@ -87,7 +86,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   callback,
   modalRef,
 }) => {
-  const router = useRouter();
   const { breakpoint } = useWindowSize();
   const {
     tokens,
@@ -106,14 +104,14 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     return parseJson(recentsData ? recentsData : "[]");
   }, [recentsData]);
 
-  const { openModal: openTradingModal } = useTokenWarningModal({
+  const { openModal: openWarningModal } = useTokenWarningModal({
     onClickConfirm: (value: TokenModel) => {
       setFromSelectToken(true);
       changeToken?.(value);
       close();
     },
     onClickClose: () => {
-      router.push("/");
+      // just close
     }
   });
 
@@ -161,14 +159,14 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       if (!changeToken) {
         return;
       }
-      if (token.path) {
+      if (token.path && token.logoURI) {
         changeToken(token);
         close();
       } else {
-        openTradingModal(token);
+        openWarningModal(token);
       }
     },
-    [changeToken, close, openTradingModal],
+    [changeToken, close, openWarningModal],
   );
 
   const changeKeyword = useCallback((keyword: string) => {
