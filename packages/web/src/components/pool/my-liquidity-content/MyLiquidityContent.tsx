@@ -279,7 +279,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 return null;
               }
 
-              return Number(rewardInfo.apr);
+              return Number(
+                BigInt((rewardInfo.apr * 1000).toFixed(0)) *
+                  rewardInfo.liquidity,
+              );
             }
 
             if (rewardInfo.apr === null) {
