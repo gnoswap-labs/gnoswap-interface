@@ -20,13 +20,13 @@ import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
   allPosition: PoolPositionModel[];
-  isWrap: boolean;
+  isGetWGNOT: boolean;
 }
 
 const RemovePositionModalContainer = ({
   selectedPositions,
   allPosition,
-  isWrap,
+  isGetWGNOT,
 }: RemovePositionModalContainerProps) => {
   const { account } = useWallet();
   const { positionRepository } = useGnoswapContext();
@@ -80,8 +80,8 @@ const RemovePositionModalContainer = ({
   }, [gnotToken?.path, pooledTokenInfos, unclaimedFees]);
 
   const willWrap = useMemo(
-    () => isWrap && !!gnotToken && !!gnotAmount,
-    [gnotAmount, gnotToken, isWrap],
+    () => isGetWGNOT && !!gnotToken && !!gnotAmount,
+    [gnotAmount, gnotToken, isGetWGNOT],
   );
 
   const tokenTransform = useCallback(
@@ -135,8 +135,7 @@ const RemovePositionModalContainer = ({
         lpTokenIds,
         tokenPaths: approveTokenPaths,
         caller: address,
-        // existWrappedToken: “true” when received as GNOT or “false” when received as Wrapped GNOT.
-        existWrappedToken: !willWrap,
+        isGetWGNOT: willWrap,
       })
       .catch(() => null);
 

@@ -263,7 +263,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { positions, caller } = request;
+    const { positions, isGetWGNOT, caller } = request;
     const messages: TransactionMessage[] = [];
 
     const hasGNOTToken = positions.find(
@@ -318,7 +318,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     messages.push(
       ...collectRewardApproveMessages,
       ...positions.map(position =>
-        makeUnstakeMessage(position.lpTokenId, caller),
+        makeUnstakeMessage(position.lpTokenId, isGetWGNOT, caller),
       ),
     );
     const result = await this.walletClient.sendTransaction({
@@ -438,7 +438,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       slippage,
       decreaseRatio,
       caller,
-      existWrappedToken,
+      isGetWGNOT,
     } = request;
 
     const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
@@ -478,7 +478,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       tokenAAmountRaw,
       tokenBAmountRaw,
       slippage,
-      existWrappedToken,
+      isGetWGNOT,
       caller,
     );
 
@@ -630,7 +630,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenIds, tokenPaths, caller, existWrappedToken } = request;
+    const { lpTokenIds, tokenPaths, caller, isGetWGNOT } = request;
     const decreaseLiquidityRatio = 100;
 
     // Make Approve messages that can be managed by a Pool package of tokens.
@@ -661,7 +661,7 @@ export class PositionRepositoryImpl implements PositionRepository {
         "0",
         "0",
         0,
-        existWrappedToken,
+        isGetWGNOT,
         caller,
       ),
     );

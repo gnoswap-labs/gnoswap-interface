@@ -4,11 +4,11 @@ export interface DecreaseLiquidityRequest {
   lpTokenId: string;
 
   decreaseRatio: number;
-  
+
   tokenA: TokenModel;
 
   tokenB: TokenModel;
-  
+
   tokenAAmount: number;
 
   tokenBAmount: number;
@@ -19,5 +19,5 @@ export interface DecreaseLiquidityRequest {
 
   caller: string;
 
-  existWrappedToken: boolean;
+  isGetWGNOT: boolean;
 }

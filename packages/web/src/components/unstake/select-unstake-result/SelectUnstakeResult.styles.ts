@@ -1,5 +1,7 @@
-import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import styled from "@emotion/styled";
+
+import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
@@ -100,4 +102,16 @@ export const wrapper = (theme: Theme) => css`
       }
     }
   }
+`;
+
+export const GnotCollectSwitchWrapper = styled.div`
+  width: 100%;
+  ${mixins.flexbox("row", "center", "space-between")}
+  ${fonts.body12}
+`;
+
+export const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  border-top: 1px solid ${({ theme }) => theme.color.border02};
 `;

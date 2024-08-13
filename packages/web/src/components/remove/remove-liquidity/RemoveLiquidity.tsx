@@ -15,8 +15,8 @@ interface RemoveLiquidityProps {
   checkedAll: boolean;
   removeLiquidity: () => void;
   isLoading: boolean;
-  isWrap: boolean;
-  setIsWrap: () => void;
+  isGetWGNOT: boolean;
+  setIsGetWGNOT: () => void;
 }
 
 const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
@@ -28,8 +28,8 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   checkedAll,
   removeLiquidity,
   isLoading,
-  isWrap,
-  setIsWrap,
+  isGetWGNOT,
+  setIsGetWGNOT,
 }) => {
   const { t } = useTranslation();
 
@@ -57,8 +57,8 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
       />
       <RemoveLiquiditySelectResult
         positions={selectedPositions}
-        isWrap={isWrap}
-        setIsWrap={setIsWrap}
+        isGetWGNOT={isGetWGNOT}
+        setIsGetWGNOT={setIsGetWGNOT}
       />
       <Button
         text={t(

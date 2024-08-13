@@ -150,7 +150,7 @@ export function makePositionDecreaseLiquidityMessage(
   amount0Desired: string,
   amount1Desired: string,
   slippage: number,
-  existWrappedToken: boolean,
+  isGetWGNOT: boolean,
   caller: string,
 ) {
   const slippageRatio = (100 - MAX_SLIPPAGE)/100;
@@ -165,7 +165,7 @@ export function makePositionDecreaseLiquidityMessage(
       BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenA to decrease liquidity
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
       "9999999999", // Deadline UTC time
-      `${existWrappedToken}`, // Whether to receive wrapped tokens as native tokens
+      `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
     ],
     caller,
   });

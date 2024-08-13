@@ -20,6 +20,8 @@ interface UnstakeLiquidityProps {
   checkedAll: boolean;
   handleConfirmUnstake: () => void;
   isLoading: boolean;
+  isGetWGNOT: boolean;
+  setIsGetWGNOT: () => void;
 }
 
 const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
@@ -30,6 +32,8 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
   checkedAll,
   handleConfirmUnstake,
   isLoading,
+  isGetWGNOT,
+  setIsGetWGNOT,
 }) => {
   const { t } = useTranslation();
 
@@ -50,7 +54,11 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
         checkedAll={checkedAll}
         isLoading={isLoading}
       />
-      <SelectUnstakeResult positions={selectedPositions} />
+      <SelectUnstakeResult
+        positions={selectedPositions}
+        isGetWGNOT={isGetWGNOT}
+        setIsGetWGNOT={setIsGetWGNOT}
+      />
       {selectedPositions.length > 0 && (
         <WarningCard
           title={t("UnstakePosition:warning.title")}

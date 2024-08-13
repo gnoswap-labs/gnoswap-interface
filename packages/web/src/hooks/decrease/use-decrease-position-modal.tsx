@@ -39,7 +39,7 @@ export interface DecreasePositionModal {
   rangeStatus: RANGE_STATUS_OPTION;
   percent: number;
   pooledTokenInfos: IPooledTokenInfo | null;
-  isWrap: boolean;
+  isGetWGNOT: boolean;
 }
 
 export const useDecreasePositionModal = ({
@@ -53,7 +53,7 @@ export const useDecreasePositionModal = ({
   rangeStatus,
   percent,
   pooledTokenInfos,
-  isWrap,
+  isGetWGNOT,
 }: DecreasePositionModal): Props => {
   const router = useRouter();
   const { address } = useAddress();
@@ -108,8 +108,8 @@ export const useDecreasePositionModal = ({
   ]);
 
   const willWrap = useMemo(() => {
-    return isWrap && !!gnotToken && !!gnotAmount;
-  }, [gnotAmount, gnotToken, isWrap]);
+    return isGetWGNOT && !!gnotToken && !!gnotAmount;
+  }, [gnotAmount, gnotToken, isGetWGNOT]);
 
   const tokenTransform = useCallback(
     (token: TokenModel) => {
@@ -176,8 +176,7 @@ export const useDecreasePositionModal = ({
         tokenBAmount: poolAmountB,
         slippage,
         caller: address,
-        // existWrappedToken: “true” when received as GNOT or “false” when received as Wrapped GNOT.
-        existWrappedToken: !willWrap,
+        isGetWGNOT: willWrap,
       })
       .catch(() => null);
 

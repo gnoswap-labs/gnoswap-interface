@@ -21,7 +21,10 @@ export function makeCollectRewardMessage(lpTokenId: string, caller: string) {
     send: "",
     func: "CollectReward",
     packagePath: PACKAGE_STAKER_PATH,
-    args: [lpTokenId.toString()],
+    args: [
+      lpTokenId.toString(),
+      "true", // unwrap wgnot, it's always true for now
+    ],
     caller,
   });
 }
@@ -36,12 +39,19 @@ export function makeStakeMessage(lpTokenId: string, caller: string) {
   });
 }
 
-export function makeUnstakeMessage(lpTokenId: string, caller: string) {
+export function makeUnstakeMessage(
+  lpTokenId: string,
+  isGetWGNOT: boolean,
+  caller: string,
+) {
   return makeTransactionMessage({
     send: "",
     func: "UnstakeToken",
     packagePath: PACKAGE_STAKER_PATH,
-    args: [lpTokenId.toString()],
+    args: [
+      lpTokenId.toString(),
+      `${!isGetWGNOT}`, // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
+    ],
     caller,
   });
 }

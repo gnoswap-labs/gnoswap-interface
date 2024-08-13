@@ -12,7 +12,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
   const router = useRouter();
   const { slippage } = useSlippage();
   const positionId = router.getPositionId() || "";
-  const [isWrap, setIsWrap] = useState(false);
+  const [isGetWGNOT, setIsGetWGNOT] = useState(false);
 
   const {
     loading,
@@ -40,7 +40,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     rangeStatus,
     percent,
     pooledTokenInfos,
-    isWrap,
+    isGetWGNOT,
   });
 
   if (!tokenA || !tokenB || loading) return <DecreaseLiquidityLoading />;
@@ -59,8 +59,8 @@ const DecreaseLiquidityContainer: React.FC = () => {
       percent={percent}
       handlePercent={(value: number) => setPercent(value)}
       pooledTokenInfos={pooledTokenInfos}
-      isWrap={isWrap}
-      setIsWrap={() => setIsWrap(prev => !prev)}
+      isGetWGNOT={isGetWGNOT}
+      setIsGetWGNOT={() => setIsGetWGNOT(prev => !prev)}
     />
   );
 };

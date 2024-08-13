@@ -7,11 +7,13 @@ import { useCallback, useMemo } from "react";
 interface Props {
   positions: PoolPositionModel[];
   selectedIds: string[];
+  isGetWGNOT: boolean;
 }
 
 export const useUnstakePositionModal = ({
   positions,
   selectedIds,
+  isGetWGNOT,
 }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -22,8 +24,13 @@ export const useUnstakePositionModal = ({
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
-    setModalContent(<UnstakePositionModalContainer positions={selectedPositions} />);
-  }, [setModalContent, setOpenedModal, selectedPositions]);
+    setModalContent(
+      <UnstakePositionModalContainer
+        positions={selectedPositions}
+        isGetWGNOT={isGetWGNOT}
+      />,
+    );
+  }, [setModalContent, setOpenedModal, selectedPositions, isGetWGNOT]);
 
   return {
     openModal,
