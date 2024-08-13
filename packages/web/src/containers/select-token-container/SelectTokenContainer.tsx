@@ -8,7 +8,7 @@ import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
+import { useTokenWarningModal } from "@hooks/token/use-token-warning-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
@@ -106,7 +106,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     return parseJson(recentsData ? recentsData : "[]");
   }, [recentsData]);
 
-  const { openModal: openTradingModal } = useTokenTradingModal({
+  const { openModal: openTradingModal } = useTokenWarningModal({
     onClickConfirm: (value: TokenModel) => {
       setFromSelectToken(true);
       changeToken?.(value);
