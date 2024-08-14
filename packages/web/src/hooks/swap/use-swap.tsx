@@ -15,6 +15,8 @@ interface UseSwapProps {
   slippage: number;
 }
 
+const EXACT_OUT_PADDING = 1.00150225338007;
+
 export const useSwap = ({
   tokenA,
   tokenB,
@@ -49,7 +51,12 @@ export const useSwap = ({
       inputToken: tokenA,
       outputToken: tokenB,
       exactType: direction,
-      tokenAmount: swapAmount,
+      tokenAmount:
+        direction === "EXACT_IN"
+          ? swapAmount
+          : swapAmount
+          ? swapAmount * EXACT_OUT_PADDING
+          : swapAmount,
     },
     {
       enabled:
@@ -191,7 +198,10 @@ export const useSwap = ({
         outputToken: tokenB,
         estimatedRoutes,
         exactType: direction,
-        tokenAmount: Number(tokenAmount),
+        tokenAmount:
+          direction === "EXACT_IN"
+            ? Number(tokenAmount)
+            : Number(tokenAmount) * EXACT_OUT_PADDING,
         tokenAmountLimit,
       });
     },
