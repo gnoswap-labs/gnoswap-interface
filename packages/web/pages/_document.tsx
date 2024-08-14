@@ -3,7 +3,7 @@ import {
   UMAMI_WEBSITE_ID,
 } from "@constants/environment.constant";
 import Document, { Html, Head, Main, NextScript } from "next/document";
-import i18nextConfig from "../../next-i18next.config";
+import i18nextConfig from "../next-i18next.config";
 import "dayjs/locale/en";
 import "dayjs/locale/de";
 import "dayjs/locale/es";
