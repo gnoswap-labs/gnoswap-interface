@@ -1,10 +1,10 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
-import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
+import { GetRoutesRequest } from "./request/get-routes-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
-import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
+import { GetRoutesResponse } from "./response/get-routes-response";
 import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
@@ -12,8 +12,8 @@ import {
 
 export interface SwapRouterRepository {
   getRoutes: (
-    request: EstimateSwapRouteRequest,
-  ) => Promise<EstimateSwapRouteResponse>;
+    request: GetRoutesRequest,
+  ) => Promise<GetRoutesResponse>;
 
   sendSwapRoute: (
     request: SwapRouteRequest,

@@ -6,7 +6,6 @@ export interface Route {
 }
 
 export interface EstimatedRoute extends Route {
-  routeKey: string;
   quote: number;
   amountIn: bigint;
   amountOut: bigint;

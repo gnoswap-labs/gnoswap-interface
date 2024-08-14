@@ -21,26 +21,23 @@ import { SwapError } from "@common/errors/swap";
 import { TokenError } from "@common/errors/token";
 import { PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
 import { GnoProvider } from "@gnolang/gno-js-client";
-import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { isNativeToken } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { MAX_UINT64 } from "@utils/math.utils";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
-import { makeRouteKey, makeRoutesQuery } from "@utils/swap-route-utils";
+import { makeRoutesQuery } from "@utils/swap-route-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
-import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
+import { GetRoutesRequest } from "./request/get-routes-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
-import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
+import { GetRoutesResponse } from "./response/get-routes-response";
 import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse
 } from "./response/swap-route-response";
 import { SwapRouterRepository } from "./swap-router-repository";
-
-const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -58,8 +55,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   }
 
   public getRoutes = async (
-    request: EstimateSwapRouteRequest,
-  ): Promise<EstimateSwapRouteResponse> => {
+    request: GetRoutesRequest,
+  ): Promise<GetRoutesResponse> => {
     const { inputToken, outputToken, exactType, tokenAmount } = request;
 
     if (!this.networkClient) {
@@ -85,7 +82,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         exactType: string;
         amount: number;
       },
-      EstimateSwapRouteResponse
+      GetRoutesResponse
     >({
       url: "routes",
       body: {
@@ -100,11 +97,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new SwapError("SWAP_FAILED");
     }
 
-    const estimatedRoutes = response.data.estimatedRoutes.map(
-      makeEstimatedRouteWithRouteKey,
-    );
-
-    return { ...response.data, estimatedRoutes };
+    return response.data;
   };
 
   public sendSwapRoute = async (
@@ -116,7 +109,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
     const account = await this.walletClient.getAccount();
-    if (!account.data || !ROUTER_PACKAGE_PATH) {
+    if (!account.data || !PACKAGE_ROUTER_PATH) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const { address } = account.data;
@@ -169,7 +162,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const swapMessage = {
       caller: address,
       send,
-      pkg_path: ROUTER_PACKAGE_PATH,
+      pkg_path: PACKAGE_ROUTER_PATH,
       func: "SwapRoute",
       args: [
         inputToken.path,
@@ -241,7 +234,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
     const account = await this.walletClient.getAccount();
-    if (!account.data || !ROUTER_PACKAGE_PATH) {
+    if (!account.data || !PACKAGE_ROUTER_PATH) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const { address } = account.data;
@@ -277,7 +270,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
     const account = await this.walletClient.getAccount();
-    if (!account.data || !ROUTER_PACKAGE_PATH) {
+    if (!account.data || !PACKAGE_ROUTER_PATH) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const { address } = account.data;
@@ -320,11 +313,4 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       return 0;
     }
   };
-}
-
-function makeEstimatedRouteWithRouteKey(
-  estimatedRoute: EstimatedRoute,
-): EstimatedRoute {
-  const routeKey = makeRouteKey(estimatedRoute);
-  return { ...estimatedRoute, routeKey };
 }

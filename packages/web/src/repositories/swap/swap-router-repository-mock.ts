@@ -1,6 +1,6 @@
 import { SwapRouterRepository } from "./swap-router-repository";
-import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
-import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
+import { GetRoutesRequest } from "./request/get-routes-request";
+import { GetRoutesResponse } from "./response/get-routes-response";
 
 export class SwapRouterRepositoryMock implements SwapRouterRepository {
   public callGetSwapFee = async () => {
@@ -8,8 +8,8 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
   };
 
   public getRoutes = async (
-    request: EstimateSwapRouteRequest,
-  ): Promise<EstimateSwapRouteResponse> => {
+    request: GetRoutesRequest,
+  ): Promise<GetRoutesResponse> => {
     console.log(request);
     return {
       estimatedRoutes: [],
