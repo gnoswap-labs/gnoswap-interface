@@ -135,6 +135,7 @@ export const useSwapHandler = () => {
   } = useTokenData();
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
+  const { data: swapFee } = useGetSwapFee();
   const {
     isSameToken,
     estimatedRoutes,
@@ -151,8 +152,8 @@ export const useSwapHandler = () => {
     tokenB,
     direction: type,
     slippage,
+    swapFee,
   });
-  const { data: swapFee } = useGetSwapFee();
 
   const { openModal: openTransactionConfirmModal } =
     useTransactionConfirmModal();

@@ -13,21 +13,23 @@ interface UseSwapProps {
   tokenB: TokenModel | null;
   direction: SwapDirectionType;
   slippage: number;
+  swapFee?: number;
 }
-
-const EXACT_OUT_PADDING = 1.00150225338007;
 
 export const useSwap = ({
   tokenA,
   tokenB,
   direction,
   slippage,
+  swapFee = 15,
 }: UseSwapProps) => {
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
+
+  const exactOutPadding = 1 / (1 - swapFee/ 10000);
 
   const isSameToken = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -55,7 +57,7 @@ export const useSwap = ({
         direction === "EXACT_IN"
           ? swapAmount
           : swapAmount
-          ? swapAmount * EXACT_OUT_PADDING
+          ? swapAmount * exactOutPadding
           : swapAmount,
     },
     {
@@ -201,7 +203,7 @@ export const useSwap = ({
         tokenAmount:
           direction === "EXACT_IN"
             ? Number(tokenAmount)
-            : Number(tokenAmount) * EXACT_OUT_PADDING,
+            : Number(tokenAmount) * exactOutPadding,
         tokenAmountLimit,
       });
     },
@@ -213,6 +215,7 @@ export const useSwap = ({
       tokenA,
       tokenAmountLimit,
       tokenB,
+      exactOutPadding,
     ],
   );
 
