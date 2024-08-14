@@ -56,7 +56,7 @@ import { useRouter } from "next/navigation";
 interface GnoswapContextProps {
   initialized: boolean;
   rpcProvider: GnoProvider | null;
-  networkClient: NetworkClient | null;
+  gnoswapApiClient: NetworkClient | null;
   accountRepository: AccountRepository;
   liquidityRepository: LiquidityRepository;
   poolRepository: PoolRepository;
@@ -106,10 +106,9 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
   const [status, setStatus] = useAtom(WalletState.status);
 
-  const [networkClient, setNetworkClient] = useState<NetworkClient | null>(
-    null,
-  );
-  const [routerAPIClient, setRouterAPIClient] = useState<NetworkClient | null>(
+  const [gnoswapApiClient, setGnoswapApiClient] =
+    useState<NetworkClient | null>(null);
+  const [routerApiClient, setRouterApiClient] = useState<NetworkClient | null>(
     null,
   );
 
@@ -130,11 +129,11 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [rpcProvider]);
 
   const loadedProviders = useMemo(() => {
-    if (!networkClient || !routerAPIClient || !rpcProvider) {
+    if (!gnoswapApiClient || !routerApiClient || !rpcProvider) {
       return false;
     }
     return true;
-  }, [networkClient, routerAPIClient, rpcProvider]);
+  }, [gnoswapApiClient, routerApiClient, rpcProvider]);
 
   useEffect(() => {
     const sessionId = getSessionId();
@@ -170,26 +169,26 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       NetworkData.find(info => info.chainId === currentChainId) ||
       NetworkData[0];
 
-    setNetworkClient(
+    setGnoswapApiClient(
       new AxiosClient(network.apiUrl, () => {
         router.push("/500");
       }),
     );
-    setRouterAPIClient(new AxiosClient(network.routerUrl));
+    setRouterApiClient(new AxiosClient(network.routerUrl));
     setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
   }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);
 
   const accountRepository = useMemo(() => {
     return new AccountRepositoryImpl(
       walletClient,
-      networkClient,
+      gnoswapApiClient,
       localStorageClient,
       sessionStorageClient,
       rpcProvider,
     );
   }, [
     walletClient,
-    networkClient,
+    gnoswapApiClient,
     localStorageClient,
     sessionStorageClient,
     rpcProvider,
@@ -200,8 +199,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, []);
 
   const poolRepository = useMemo(() => {
-    return new PoolRepositoryImpl(networkClient, rpcProvider, walletClient);
-  }, [networkClient, rpcProvider, walletClient]);
+    return new PoolRepositoryImpl(gnoswapApiClient, rpcProvider, walletClient);
+  }, [gnoswapApiClient, rpcProvider, walletClient]);
 
   const stakingRepository = useMemo(() => {
     return new StakingRepositoryMock();
@@ -219,25 +218,25 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new SwapRouterRepositoryImpl(
       rpcProvider,
       walletClient,
-      routerAPIClient,
+      routerApiClient,
     );
-  }, [rpcProvider, walletClient, routerAPIClient]);
+  }, [rpcProvider, walletClient, routerApiClient]);
 
   const tokenRepository = useMemo(() => {
-    return new TokenRepositoryImpl(networkClient, localStorageClient);
-  }, [localStorageClient, networkClient]);
+    return new TokenRepositoryImpl(gnoswapApiClient, localStorageClient);
+  }, [localStorageClient, gnoswapApiClient]);
 
   const positionRepository = useMemo(() => {
-    return new PositionRepositoryImpl(networkClient, rpcProvider, walletClient);
-  }, [networkClient, rpcProvider, walletClient]);
+    return new PositionRepositoryImpl(gnoswapApiClient, rpcProvider, walletClient);
+  }, [gnoswapApiClient, rpcProvider, walletClient]);
 
   const dashboardRepository = useMemo(() => {
-    return new DashboardRepositoryImpl(networkClient, localStorageClient);
-  }, [localStorageClient, networkClient]);
+    return new DashboardRepositoryImpl(gnoswapApiClient, localStorageClient);
+  }, [localStorageClient, gnoswapApiClient]);
 
   const notificationRepository = useMemo(() => {
-    return new NotificationRepositoryImpl(networkClient, localStorageClient);
-  }, [localStorageClient, networkClient]);
+    return new NotificationRepositoryImpl(gnoswapApiClient, localStorageClient);
+  }, [localStorageClient, gnoswapApiClient]);
   const walletRepository = useMemo(() => {
     return new WalletRepositoryImpl(walletClient);
   }, [walletClient]);
@@ -258,7 +257,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       value={{
         initialized,
         rpcProvider,
-        networkClient,
+        gnoswapApiClient,
         accountRepository,
         liquidityRepository,
         poolRepository,
