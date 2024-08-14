@@ -16,6 +16,8 @@ interface UseSwapProps {
   swapFee?: number;
 }
 
+const EXACT_OUT_PADDING = 1.00150225338007;
+
 export const useSwap = ({
   tokenA,
   tokenB,
