@@ -11,23 +11,23 @@ import {
 } from "./response/swap-route-response";
 
 export interface SwapRouterRepository {
-  estimateSwapRoute: (
+  getRoutes: (
     request: EstimateSwapRouteRequest,
   ) => Promise<EstimateSwapRouteResponse>;
 
-  swapRoute: (
+  sendSwapRoute: (
     request: SwapRouteRequest,
   ) => Promise<
     WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>
   >;
 
-  wrapToken: (
+  sendWrapToken: (
     request: WrapTokenRequest,
   ) => Promise<WalletResponse<{ hash: string }>>;
 
-  unwrapToken: (
+  sendUnwrapToken: (
     request: UnwrapTokenRequest,
   ) => Promise<WalletResponse<{ hash: string }>>;
 
-  getSwapFee: () => Promise<number>;
+  callGetSwapFee: () => Promise<number>;
 }

@@ -10,7 +10,7 @@ export const useGetSwapFee = (options?: UseQueryOptions<number, Error>) => {
   return useQuery<number, Error>({
     queryKey: [QUERY_KEY.swapFee],
     queryFn: async () => {
-      const res = await swapRouterRepository.getSwapFee();
+      const res = await swapRouterRepository.callGetSwapFee();
 
       return res;
     },

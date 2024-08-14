@@ -3,11 +3,11 @@ import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request"
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
 
 export class SwapRouterRepositoryMock implements SwapRouterRepository {
-  public getSwapFee = async () => {
+  public callGetSwapFee = async () => {
     return 0;
   };
 
-  public estimateSwapRoute = async (
+  public getRoutes = async (
     request: EstimateSwapRouteRequest,
   ): Promise<EstimateSwapRouteResponse> => {
     console.log(request);
@@ -17,15 +17,15 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     };
   };
 
-  public swapRoute = async () => {
-    throw new Error("Mock swapRoute");
+  public sendSwapRoute = async () => {
+    throw new Error("Mock sendSwapRoute");
   };
 
-  public wrapToken = async () => {
-    throw new Error("Mock wrapToken");
+  public sendWrapToken = async () => {
+    throw new Error("Mock sendWrapToken");
   };
 
-  public unwrapToken = async () => {
-    throw new Error("Mock unwrapToken");
+  public sendUnwrapToken = async () => {
+    throw new Error("Mock sendUnwrapToken");
   };
 }

@@ -8,14 +8,11 @@ import { wait } from "@utils/common";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useEstimateSwap = (
+export const useGetRoutes = (
   request: {
     inputToken: TokenModel | null;
-
     outputToken: TokenModel | null;
-
     tokenAmount: string | number | null;
-
     exactType: "EXACT_IN" | "EXACT_OUT";
   } | null,
   options?: UseQueryOptions<EstimateSwapRouteResponse, Error>,
@@ -47,7 +44,7 @@ export const useEstimateSwap = (
       const result = await wait<EstimateSwapRouteResponse | null>(
         async () =>
           swapRouterRepository
-            .estimateSwapRoute({
+            .getRoutes({
               inputToken,
               outputToken,
               exactType: request.exactType,

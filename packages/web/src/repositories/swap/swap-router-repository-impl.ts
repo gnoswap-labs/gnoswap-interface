@@ -5,16 +5,16 @@ import { WalletClient } from "@common/clients/wallet-client";
 import {
   SendTransactionErrorResponse,
   SendTransactionSuccessResponse,
-  WalletResponse,
+  WalletResponse
 } from "@common/clients/wallet-client/protocols";
 import { TransactionMessage } from "@common/clients/wallet-client/transaction-messages";
 import {
   makePoolTokenApproveMessage,
-  makeRouterTokenApproveMessage,
+  makeRouterTokenApproveMessage
 } from "@common/clients/wallet-client/transaction-messages/pool";
 import {
   makeDepositMessage,
-  makeWithdrawMessage,
+  makeWithdrawMessage
 } from "@common/clients/wallet-client/transaction-messages/token";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
@@ -28,6 +28,7 @@ import { MAX_UINT64 } from "@utils/math.utils";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { makeRouteKey, makeRoutesQuery } from "@utils/swap-route-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
@@ -35,7 +36,7 @@ import { WrapTokenRequest } from "./request/wrap-token-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
 import {
   SwapRouteFailedResponse,
-  SwapRouteSuccessResponse,
+  SwapRouteSuccessResponse
 } from "./response/swap-route-response";
 import { SwapRouterRepository } from "./swap-router-repository";
 
@@ -56,7 +57,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     this.networkClient = networkClient;
   }
 
-  public estimateSwapRoute = async (
+  public getRoutes = async (
     request: EstimateSwapRouteRequest,
   ): Promise<EstimateSwapRouteResponse> => {
     const { inputToken, outputToken, exactType, tokenAmount } = request;
@@ -106,7 +107,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return { ...response.data, estimatedRoutes };
   };
 
-  public swapRoute = async (
+  public sendSwapRoute = async (
     request: SwapRouteRequest,
   ): Promise<
     WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>
@@ -233,7 +234,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     };
   };
 
-  public wrapToken = async (
+  public sendWrapToken = async (
     request: WrapTokenRequest,
   ): Promise<WalletResponse<{ hash: string }>> => {
     if (this.walletClient === null) {
@@ -269,7 +270,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     };
   };
 
-  public unwrapToken = async (
+  public sendUnwrapToken = async (
     request: UnwrapTokenRequest,
   ): Promise<WalletResponse<{ hash: string }>> => {
     if (this.walletClient === null) {
@@ -301,7 +302,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     };
   };
 
-  getSwapFee = async (): Promise<number> => {
+  callGetSwapFee = async (): Promise<number> => {
     try {
       if (!PACKAGE_ROUTER_PATH || !this.rpcProvider) {
         throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");

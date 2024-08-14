@@ -6,7 +6,7 @@ import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useCallback, useMemo, useState } from "react";
-import { useEstimateSwap } from "@query/router";
+import { useGetRoutes } from "@query/router";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -44,7 +44,7 @@ export const useSwap = ({
     data: estimatedSwapResult,
     isLoading: isEstimatedSwapLoading,
     error,
-  } = useEstimateSwap(
+  } = useGetRoutes(
     {
       inputToken: tokenA,
       outputToken: tokenB,
@@ -153,7 +153,7 @@ export const useSwap = ({
       if (!selectedTokenPair) {
         return null;
       }
-      return swapRouterRepository.wrapToken({
+      return swapRouterRepository.sendWrapToken({
         token: tokenA,
         tokenAmount,
       });
@@ -169,7 +169,7 @@ export const useSwap = ({
       if (!selectedTokenPair) {
         return null;
       }
-      return swapRouterRepository.unwrapToken({
+      return swapRouterRepository.sendUnwrapToken({
         token: tokenA,
         tokenAmount,
       });
@@ -186,7 +186,7 @@ export const useSwap = ({
         return null;
       }
 
-      return swapRouterRepository.swapRoute({
+      return swapRouterRepository.sendSwapRoute({
         inputToken: tokenA,
         outputToken: tokenB,
         estimatedRoutes,

@@ -1,57 +1,57 @@
-"use client";
+import { useAtom } from "jotai";
+import { useRouter } from "next/navigation";
+import { createContext, useEffect, useMemo, useState } from "react";
 
+import { NetworkClient } from "@common/clients/network-client";
 import { AxiosClient } from "@common/clients/network-client/axios-client";
 import { WebStorageClient } from "@common/clients/storage-client";
+import { NetworkData } from "@constants/chains.constant";
+import {
+  DEFAULT_CHAIN_ID,
+  SUPPORT_CHAIN_IDS
+} from "@constants/environment.constant";
+import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
 import {
   AccountRepository,
-  AccountRepositoryImpl,
+  AccountRepositoryImpl
 } from "@repositories/account";
 import {
+  DashboardRepository,
+  DashboardRepositoryImpl
+} from "@repositories/dashboard";
+import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-repository";
+import { LeaderboardRepositoryMock } from "@repositories/leaderboard/leaderboard-repository-mock";
+import {
   LiquidityRepository,
-  LiquidityRepositoryMock,
+  LiquidityRepositoryMock
 } from "@repositories/liquidity";
+import {
+  NotificationRepository,
+  NotificationRepositoryImpl
+} from "@repositories/notification";
 import { PoolRepository } from "@repositories/pool";
 import { PoolRepositoryImpl } from "@repositories/pool/pool-repository-impl";
-import {
-  StakingRepository,
-  StakingRepositoryMock,
-} from "@repositories/staking";
-import { SwapRepository } from "@repositories/swap";
-import { TokenRepository } from "@repositories/token";
-import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
-import { createContext, useEffect, useMemo, useState } from "react";
-import { useAtom } from "jotai";
-import { CommonState, WalletState } from "@states/index";
-import { GnoProvider, GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
-import { NetworkData } from "@constants/chains.constant";
-import { SwapRouterRepository } from "@repositories/swap/swap-router-repository";
-import { SwapRouterRepositoryImpl } from "@repositories/swap/swap-router-repository-impl";
 import { PositionRepository } from "@repositories/position/position-repository";
 import { PositionRepositoryImpl } from "@repositories/position/position-repository-impl";
 import {
-  DashboardRepository,
-  DashboardRepositoryImpl,
-} from "@repositories/dashboard";
+  StakingRepository,
+  StakingRepositoryMock
+} from "@repositories/staking";
 import {
-  NotificationRepository,
-  NotificationRepositoryImpl,
-} from "@repositories/notification";
-import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
+  SwapRouterRepository,
+  SwapRouterRepositoryImpl
+} from "@repositories/swap";
+import { TokenRepository } from "@repositories/token";
+import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
 import { WalletRepository } from "@repositories/wallet/wallet-repository";
+import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
 import {
   ACCOUNT_SESSION_INFO_KEY,
   GNOSWAP_SESSION_ID_KEY,
-  GNOWSWAP_CONNECTED_KEY,
+  GNOWSWAP_CONNECTED_KEY
 } from "@states/common";
-import { LeaderboardRepositoryMock } from "@repositories/leaderboard/leaderboard-repository-mock";
-import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-repository";
-import {
-  DEFAULT_CHAIN_ID,
-  SUPPORT_CHAIN_IDS,
-} from "@constants/environment.constant";
-import { NetworkClient } from "@common/clients/network-client";
-import { useRouter } from "next/navigation";
+import { CommonState, WalletState } from "@states/index";
+
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -61,7 +61,6 @@ interface GnoswapContextProps {
   liquidityRepository: LiquidityRepository;
   poolRepository: PoolRepository;
   stakingRepository: StakingRepository;
-  swapRepository: SwapRepository;
   swapRouterRepository: SwapRouterRepository;
   tokenRepository: TokenRepository;
   positionRepository: PositionRepository;
@@ -206,14 +205,6 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new StakingRepositoryMock();
   }, []);
 
-  const swapRepository = useMemo(() => {
-    return new SwapRepositoryImpl(
-      walletClient,
-      rpcProvider,
-      localStorageClient,
-    );
-  }, [localStorageClient, rpcProvider, walletClient]);
-
   const swapRouterRepository = useMemo(() => {
     return new SwapRouterRepositoryImpl(
       rpcProvider,
@@ -262,7 +253,6 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         liquidityRepository,
         poolRepository,
         stakingRepository,
-        swapRepository,
         tokenRepository,
         swapRouterRepository,
         positionRepository,
