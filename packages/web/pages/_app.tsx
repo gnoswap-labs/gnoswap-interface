@@ -16,7 +16,7 @@ import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWra
 import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
 import Custom500 from "./500";
 import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";
-import nextI18NextConfig from "../../next-i18next.config.js";
+import nextI18NextConfig from "../next-i18next.config.js";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
 import "dayjs/locale/de";

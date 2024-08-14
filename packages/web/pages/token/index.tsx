@@ -44,6 +44,7 @@ export default function Token() {
   const { t } = useTranslation();
 
   const { data: token } = useGetTokenByPath(path, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
       if (err?.["response"]?.["status"] === 404) {
         router.push("/");
