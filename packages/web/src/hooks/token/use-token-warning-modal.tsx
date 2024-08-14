@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { useCallback } from "react";
 
-import TokenTradingModalContainer from "@containers/token-trading-modal-container/TokenTradingModalContainer";
+import TokenWarningModalContainer from "@containers/token-warning-modal-container/TokenWarningModalContainer";
 import { useUncommonToken } from "@hooks/common/use-uncommon-token";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
@@ -10,15 +10,15 @@ export interface Props {
   openModal: (token: TokenModel) => void;
 }
 
-interface TokenTradingModalProps {
+interface useTokenWarningModalProps {
   onClickConfirm: (value: TokenModel) => void;
   onClickClose: () => void;
 }
 
-export const useTokenTradingModal = ({
+export const useTokenWarningModal = ({
   onClickConfirm,
   onClickClose,
-}: TokenTradingModalProps): Props => {
+}: useTokenWarningModalProps): Props => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const { warningStatus, addToken } = useUncommonToken();
@@ -26,12 +26,13 @@ export const useTokenTradingModal = ({
   const openModal = useCallback(
     (value: TokenModel) => {
       if (warningStatus.includes(value.path)) {
+        onClickConfirm(value);
         return;
       }
 
       setOpenedModal(true);
       setModalContent(
-        <TokenTradingModalContainer
+        <TokenWarningModalContainer
           onClose={onClickClose}
           onClickConfirm={() => {
             onClickConfirm(value);

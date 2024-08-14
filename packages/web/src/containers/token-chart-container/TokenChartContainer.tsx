@@ -10,7 +10,7 @@ import useComponentSize from "@hooks/common/use-component-size";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
+import { useTokenWarningModal } from "@hooks/token/use-token-warning-modal";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import {
   useGetTokenByPath,
@@ -162,7 +162,7 @@ const TokenChartContainer: React.FC = () => {
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const { openModal: openTradingModal } = useTokenTradingModal({
+  const { openModal: openWarningModal } = useTokenWarningModal({
     onClickConfirm: () => {
       setFromSelectToken(false);
       clearModal();
@@ -222,7 +222,7 @@ const TokenChartContainer: React.FC = () => {
         },
       }));
       if (!fromSelectToken && !tokenB.logoURI) {
-        openTradingModal(tokenB);
+        openWarningModal(tokenB);
       }
     }
   }, [

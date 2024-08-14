@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import IconClose from "../icons/IconCancel";
-import { TokenTradingModalWrapper } from "./TokenTradingModal.styles";
+import { TokenTradingModalWrapper } from "./TokenWarningModal.styles";
 import IconFailed from "../icons/IconFailed";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconNewTab from "../icons/IconNewTab";
@@ -10,7 +10,7 @@ import { TokenModel } from "@models/token/token-model";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { Trans, useTranslation } from "react-i18next";
 
-interface Props {
+interface TokenWarningModalProps {
   close: () => void;
   onClickConfirm: () => void;
   handleChecked: () => void;
@@ -18,7 +18,7 @@ interface Props {
   token: { [key in string]: string } | TokenModel;
 }
 
-const TokenTradingModal: React.FC<Props> = ({
+const TokenWarningModal: React.FC<TokenWarningModalProps> = ({
   close,
   onClickConfirm,
   checked,
@@ -45,10 +45,11 @@ const TokenTradingModal: React.FC<Props> = ({
           <div className="detail">
             <h5>{t("Modal:tokenTradingWarn.title")}</h5>
             <div className="des">
-              <Trans ns="Modal" i18nKey={"tokenTradingWarn.subtitle"}>
-                This token isn’t frequently swapped on GnoSwap.
-                <br /> Always conduct your own research before trading.
-              </Trans>
+              <Trans
+                ns="Modal"
+                i18nKey={"tokenTradingWarn.subtitle"}
+                components={{ br: <br /> }}
+              />
             </div>
           </div>
           <div className="link">
@@ -88,4 +89,4 @@ const TokenTradingModal: React.FC<Props> = ({
   );
 };
 
-export default TokenTradingModal;
+export default TokenWarningModal;

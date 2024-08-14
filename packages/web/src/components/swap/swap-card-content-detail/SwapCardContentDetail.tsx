@@ -1,23 +1,25 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
-import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
-import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
-import SwapCardFeeInfo from "../swap-card-fee-info/SwapCardFeeInfo";
-import SwapCardAutoRouter from "../swap-card-auto-router/SwapCardAutoRouter";
-import { DEVICE_TYPE } from "@styles/media";
-import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
-import { SwapRouteInfo } from "@models/swap/swap-route-info";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { formatUsdNumber3Digits, toNumberFormat } from "@utils/number-utils";
-import { convertToKMB } from "@utils/stake-position-utils";
-import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
-import { IconGasFilled } from "@components/common/icons/IconsGasFilled";
-import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useTranslation } from "react-i18next";
 
-interface ContentProps {
+import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
+import { IconGasFilled } from "@components/common/icons/IconsGasFilled";
+import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
+import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { DEVICE_TYPE } from "@styles/media";
+import { floorNumber, toNumberFormat } from "@utils/number-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
+
+import SwapCardAutoRouter from "../swap-card-auto-router/SwapCardAutoRouter";
+import SwapCardFeeInfo from "../swap-card-fee-info/SwapCardFeeInfo";
+import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
+
+export interface SwapCardContentDetailProps {
   swapSummaryInfo: SwapSummaryInfo;
   swapRouteInfos: SwapRouteInfo[];
   isLoading: boolean;
@@ -31,7 +33,7 @@ export const convertSwapRate = (value: number) => {
   return value.toFixed(15);
 };
 
-const SwapCardContentDetail: React.FC<ContentProps> = ({
+const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   swapSummaryInfo,
   swapRouteInfos,
   isLoading,
@@ -64,12 +66,27 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
     }
   }, [swapSummaryInfo]);
 
-  const swapRate1USD = useMemo(() => {
-    const swapRate1USD = swapSummaryInfo.swapRate1USD;
-    return convertToKMB(formatUsdNumber3Digits(swapRate1USD), {
-      isIgnoreKFormat: true,
-    });
-  }, [swapSummaryInfo.swapRate1USD]);
+  const unitSwapPrice = useMemo(() => {
+    const { swapRateAction, swapRate } = swapSummaryInfo;
+    const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
+    if (swapRateAction === "ATOB") {
+      if (!tokenBUSD || tokenBUSD === 0) return "-";
+      return convertToKMB(
+        floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3),
+        {
+          isIgnoreKFormat: true,
+        },
+      );
+    } else {
+      if (!tokenAUSD || tokenAUSD === 0) return "-";
+      return convertToKMB(
+        floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3),
+        {
+          isIgnoreKFormat: true,
+        },
+      );
+    }
+  }, [swapSummaryInfo, swapTokenInfo]);
 
   const gasFeeUSDStr = useMemo(() => {
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
@@ -101,7 +118,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
                   {swapRateDescription}
                 </span>
                 {breakpoint !== DEVICE_TYPE.MOBILE && (
-                  <span className="exchange-price">{`($${swapRate1USD})`}</span>
+                  <span className="exchange-price">{`($${unitSwapPrice})`}</span>
                 )}
               </div>
             )}

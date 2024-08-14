@@ -180,23 +180,12 @@ export function matchInputNumber(value: string) {
   return regexpOfNum.test(value) && regexpOfStartWithZeroes.test(value);
 }
 
-export function formatUsdNumber3Digits(val: string | number) {
-  if (Number.isNaN(Number(val))) {
-    return String(val);
-  }
-  if (Number(val) === 0) {
-    return "0";
-  }
-  if (Number(val) >= 1) {
-    return (Math.floor((Number(val) + 0.005) * 100) / 100).toFixed(2);
-  }
-  const stringVal = val.toString();
-  for (let index = 0; index < stringVal.length; index++) {
-    if (stringVal[index] !== "0" && stringVal[index] !== ".") {
-      return stringVal.slice(0, index + 3);
-    }
-  }
-  return stringVal;
+export function floorNumber(val: number, decimal: number = 3): number {
+  const denomenator = Math.pow(10, decimal);
+
+  const result = Math.floor(val * denomenator) / denomenator;
+
+  return result;
 }
 
 export const formatUSDWallet = (

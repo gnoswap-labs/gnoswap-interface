@@ -1,16 +1,16 @@
-import TokenTradingModal from "@components/common/token-trading-modal/TokenTradingModal";
+import TokenWarningModal from "@components/common/token-warning-modal/TokenWarningModal";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TokenModel } from "@models/token/token-model";
 import React, { useCallback, useState } from "react";
 
-interface Props {
+interface TokenWarningModalContainerProps {
   onClickConfirm: () => void;
   onClose: () => void;
   token: { [key in string]: string } | TokenModel;
 }
 
-const TokenTradingModalContainer: React.FC<Props> = ({ onClickConfirm, token, onClose }) => {
+const TokenWarningModalContainer: React.FC<TokenWarningModalContainerProps> = ({ onClickConfirm, token, onClose }) => {
   const clearModal = useClearModal();
   const { getTokenUrl } = useGnoscanUrl();
   const [checked, setChecked] = useState(false);
@@ -25,7 +25,7 @@ const TokenTradingModalContainer: React.FC<Props> = ({ onClickConfirm, token, on
         }, 2000);
       }
     } catch (e) {
-      throw new Error("Copy Error!");
+      throw new Error(`Copy Error! ${e}`);
     }
   };
 
@@ -34,7 +34,7 @@ const TokenTradingModalContainer: React.FC<Props> = ({ onClickConfirm, token, on
     clearModal();
   }, [clearModal, onClose]);
 
-  return <TokenTradingModal
+  return <TokenWarningModal
     close={close}
     onClickConfirm={onClickConfirm}
     handleChecked={handleChecked}
@@ -43,4 +43,4 @@ const TokenTradingModalContainer: React.FC<Props> = ({ onClickConfirm, token, on
   />;
 };
 
-export default TokenTradingModalContainer;
+export default TokenWarningModalContainer;
