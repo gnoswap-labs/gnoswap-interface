@@ -105,7 +105,12 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         conjunction = ", ";
       }
 
-      const tail = relatedTokens > 2 && ", ...";
+      const tail = relatedTokens > 2 && (
+        <>
+          {", "}
+          <span className="accent">{"..."}</span>
+        </>
+      );
 
       return (
         <>
