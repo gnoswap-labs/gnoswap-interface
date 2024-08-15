@@ -33,10 +33,10 @@ export const SnackbarWrapper = styled.div`
   margin-top: 10px;
   position: relative;
   &.toast-item {
-    animation: ${toastInRight} 500ms;
+    animation: ${toastInRight} 500ms forwards;
   }
   &.closing {
-    animation: ${toastOutRightClose} 500ms;
+    animation: ${toastOutRightClose} 500ms forwards;
   }
   ${media.mobile} {
     width: 100%;
@@ -141,7 +141,6 @@ export const SnackbarWrapper = styled.div`
         svg {
           width: 16px;
           height: 16px;
-          
         }
       }
       ${media.mobile} {

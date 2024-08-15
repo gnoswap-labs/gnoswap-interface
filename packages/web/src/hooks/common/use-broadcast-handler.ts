@@ -52,7 +52,7 @@ function makeNoticeConfig(type: SnackbarType): SnackbarOptions {
 }
 
 export const useBroadcastHandler = () => {
-  const { setNotice, onCloseNotice } = useSnackbar();
+  const { enqueue, clear } = useSnackbar();
   const { openModal, closeModal } = useTransactionConfirmModal();
   const [, setTransactionModalData] = useAtom(CommonState.transactionModalData);
 
@@ -76,16 +76,16 @@ export const useBroadcastHandler = () => {
         txHash: content?.txHash || null,
         callback,
       });
-      setNotice(content, makeNoticeConfig("success"));
+      enqueue(content, makeNoticeConfig("success"));
     },
-    [setNotice, setTransactionModalData],
+    [enqueue, setTransactionModalData],
   );
 
   const broadcastPending = useCallback(
     (content?: SnackbarContent) => {
-      setNotice(content, makeNoticeConfig("pending"));
+      enqueue(content, makeNoticeConfig("pending"));
     },
-    [setNotice],
+    [enqueue],
   );
 
   const broadcastError = useCallback(
@@ -96,9 +96,9 @@ export const useBroadcastHandler = () => {
         txHash: content?.txHash || null,
         callback,
       });
-      setNotice(content, makeNoticeConfig("error"));
+      enqueue(content, makeNoticeConfig("error"));
     },
-    [setNotice, setTransactionModalData],
+    [enqueue, setTransactionModalData],
   );
 
   const broadcastRejected = useCallback(
@@ -113,15 +113,15 @@ export const useBroadcastHandler = () => {
         txHash: content?.txHash || null,
         callback,
       });
-      if (!isHiddenReject) setNotice(content, makeNoticeConfig("error"));
+      if (!isHiddenReject) enqueue(content, makeNoticeConfig("error"));
     },
-    [setNotice, setTransactionModalData],
+    [enqueue, setTransactionModalData],
   );
 
   const clearBroadcast = useCallback(() => {
-    onCloseNotice();
+    clear();
     closeModal();
-  }, [onCloseNotice]);
+  }, [clear]);
 
   return {
     broadcastLoading,

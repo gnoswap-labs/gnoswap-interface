@@ -12,7 +12,7 @@ import {
 
 import { SnackbarWrapper } from "./snackbar.styles";
 
-export interface SnackbarProps {
+interface SnackbarProps {
   closeable?: boolean;
   onClose?: (id: number) => void;
   type: SnackbarType;
