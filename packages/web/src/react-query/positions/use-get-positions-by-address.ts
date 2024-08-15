@@ -58,6 +58,8 @@ export const useGetPositionsByAddress = (
         });
     },
     refetchInterval: REFETCH_INTERVAL,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
     ...options,
   });
 };
