@@ -1,16 +1,16 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-import { INoticeContent } from "@components/common/notice/NoticeToast";
-import { TNoticeType } from "@context/NoticeContext";
 import { DexEvent, DexEventType } from "@repositories/common";
+
+import { SnackbarContent, SnackbarType } from "./use-snackbar";
 
 export const useMessage = () => {
   const { t } = useTranslation();
 
   function getDescription(
     action: DexEventType,
-    type: TNoticeType,
+    type: SnackbarType,
     data: {
       tokenASymbol?: string;
       tokenBSymbol?: string;
@@ -131,7 +131,7 @@ export const useMessage = () => {
 
   function getMessage(
     action: DexEventType,
-    type: TNoticeType,
+    type: SnackbarType,
     data: {
       tokenASymbol?: string;
       tokenBSymbol?: string;
@@ -139,7 +139,7 @@ export const useMessage = () => {
       tokenBAmount?: string;
     },
     txHash?: string,
-  ): INoticeContent {
+  ): SnackbarContent {
     return {
       title: title(action),
       description: getDescription(action, type, data),

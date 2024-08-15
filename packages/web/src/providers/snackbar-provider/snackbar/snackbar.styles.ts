@@ -1,9 +1,9 @@
-import { fonts } from "@constants/font.constant";
+import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
+
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { Z_INDEX } from "@styles/zIndex";
-import { keyframes } from "@emotion/react";
+import { fonts } from "@constants/font.constant";
 
 const toastInRight = keyframes`
   from {
@@ -23,28 +23,7 @@ const toastOutRightClose = keyframes`
   }
 `;
 
-export const NoticeUIList = styled.div`
-  display: block;
-  position: fixed;
-  top: 82px;
-  right: 30px;
-  width: 380px;
-  .toast-item {
-    animation: ${toastInRight} 500ms;
-  }
-  z-index: ${Z_INDEX.modalTooltip};
-  ${media.tablet} {
-    top: 70px;
-    right: 30px;
-  }
-  ${media.mobile} {
-    width: 328px;
-    right: 16px;
-    top: -16px;
-  }
-`;
-
-export const NoticeUIWrapper = styled.div`
+export const SnackbarWrapper = styled.div`
   box-shadow: ${({ theme }) => theme.color.shadow};
   padding: 15px 23px;
   color: ${({ theme }) => theme.color.text02};
@@ -53,6 +32,9 @@ export const NoticeUIWrapper = styled.div`
   border-radius: 8px;
   margin-top: 10px;
   position: relative;
+  &.toast-item {
+    animation: ${toastInRight} 500ms;
+  }
   &.closing {
     animation: ${toastOutRightClose} 500ms;
   }
