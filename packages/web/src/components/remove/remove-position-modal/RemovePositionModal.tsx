@@ -143,6 +143,7 @@ const RemovePositionModal: React.FC<Props> = ({
                         <div className="value">
                           {formatPoolPairAmount(rewardInfo.amount, {
                             decimals: rewardInfo.token.decimals,
+                            isKMB: false,
                           })}
                         </div>
                       </div>

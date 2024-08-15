@@ -59,9 +59,11 @@ const UnstakePositionModalContainer = ({
         tokenBSymbol: tokenB?.token?.symbol,
         tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
           decimals: tokenA?.token?.decimals,
+          isKMB: false,
         }),
         tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
           decimals: tokenA?.token?.decimals,
+          isKMB: false,
         }),
       }),
     );
@@ -85,9 +87,11 @@ const UnstakePositionModalContainer = ({
                 tokenBSymbol: tokenB?.token?.symbol,
                 tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
                   decimals: tokenA?.token?.decimals,
+                  isKMB: false,
                 }),
                 tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
                   decimals: tokenA?.token?.decimals,
+                  isKMB: false,
                 }),
               },
               result.data?.hash,
@@ -102,9 +106,11 @@ const UnstakePositionModalContainer = ({
             tokenBSymbol: tokenB?.token?.symbol,
             tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
               decimals: tokenA?.token?.decimals,
+              isKMB: false,
             }),
             tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
               decimals: tokenA?.token?.decimals,
+              isKMB: false,
             }),
           }),
         );
@@ -119,9 +125,11 @@ const UnstakePositionModalContainer = ({
               tokenBSymbol: tokenB?.token?.symbol,
               tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
                 decimals: tokenA?.token?.decimals,
+                isKMB: false,
               }),
               tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
                 decimals: tokenA?.token?.decimals,
+                isKMB: false,
               }),
             },
             result.data?.hash,

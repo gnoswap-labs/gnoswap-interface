@@ -13,6 +13,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -96,11 +97,13 @@ const StakePositionModalContainer = ({
       getMessage(DexEvent.STAKE, "pending", {
         tokenASymbol: tokenA?.token?.symbol,
         tokenBSymbol: tokenB?.token?.symbol,
-        tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
-          maximumFractionDigits: tokenA?.token?.decimals,
+        tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+          decimals: tokenA?.token?.decimals,
+          isKMB: false,
         }),
-        tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
-          maximumFractionDigits: tokenB?.token?.decimals,
+        tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+          decimals: tokenB?.token?.decimals,
+          isKMB: false,
         }),
       }),
     );
@@ -122,11 +125,13 @@ const StakePositionModalContainer = ({
               {
                 tokenASymbol: tokenA?.token?.symbol,
                 tokenBSymbol: tokenB?.token?.symbol,
-                tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
-                  maximumFractionDigits: tokenA?.token?.decimals,
+                tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+                  decimals: tokenA?.token?.decimals,
+                  isKMB: false,
                 }),
-                tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
-                  maximumFractionDigits: tokenB?.token?.decimals,
+                tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+                  decimals: tokenB?.token?.decimals,
+                  isKMB: false,
                 }),
               },
               result.data?.hash,
@@ -139,11 +144,13 @@ const StakePositionModalContainer = ({
           getMessage(DexEvent.STAKE, "error", {
             tokenASymbol: tokenA?.token?.symbol,
             tokenBSymbol: tokenB?.token?.symbol,
-            tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
-              maximumFractionDigits: tokenA?.token?.decimals,
+            tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+              decimals: tokenA?.token?.decimals,
+              isKMB: false,
             }),
-            tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
-              maximumFractionDigits: tokenB?.token?.decimals,
+            tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+              decimals: tokenB?.token?.decimals,
+              isKMB: false,
             }),
           }),
         );
@@ -155,11 +162,13 @@ const StakePositionModalContainer = ({
             {
               tokenASymbol: tokenA?.token?.symbol,
               tokenBSymbol: tokenB?.token?.symbol,
-              tokenAAmount: tokenA?.amount.toLocaleString("en-US", {
-                maximumFractionDigits: tokenA?.token?.decimals,
+              tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+                decimals: tokenA?.token?.decimals,
+                isKMB: false,
               }),
-              tokenBAmount: tokenB?.amount.toLocaleString("en-US", {
-                maximumFractionDigits: tokenB?.token?.decimals,
+              tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+                decimals: tokenB?.token?.decimals,
+                isKMB: false,
               }),
             },
             result.data?.hash,
