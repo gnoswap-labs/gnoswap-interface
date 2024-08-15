@@ -128,8 +128,6 @@ export const useSwapHandler = () => {
     tokens,
     tokenPrices,
     displayBalanceMap,
-    updateTokens,
-    updateTokenPrices,
     updateBalances,
     getTokenUSDPrice,
   } = useTokenData();
@@ -1096,8 +1094,6 @@ export const useSwapHandler = () => {
   }, [swapState, estimatedAmount, type, tokenA, tokenB]);
 
   useEffect(() => {
-    updateTokens();
-    updateTokenPrices();
     if (!isEmptyObject(router?.query)) return;
   }, []);
 

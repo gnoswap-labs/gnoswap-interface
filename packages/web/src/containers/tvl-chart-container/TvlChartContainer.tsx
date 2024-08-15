@@ -1,9 +1,11 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+
 import TvlChart from "@components/dashboard/tvl-chart/TvlChart";
 import { CHART_TYPE } from "@constants/option.constant";
 import { useLoading } from "@hooks/common/use-loading";
-import { getLocalizeTime } from "@utils/chart";
 import { useGetDashboardTVL } from "@query/dashboard";
+import { TvlData } from "@repositories/dashboard";
+import { getLocalizeTime } from "@utils/chart";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 export interface TvlPriceInfo {
@@ -28,9 +30,7 @@ const TvlChartContainer: React.FC = () => {
     CHART_TYPE["7D"],
   );
 
-  const { data: tvlData, isLoading } = useGetDashboardTVL({
-    refetchInterval: 60 * 1000,
-  });
+  const { data: tvlData, isLoading } = useGetDashboardTVL();
   const changeTvlChartType = useCallback(
     ({ key: newType }: { display: string; key: string }) => {
       const tvlChartType =
@@ -60,18 +60,21 @@ const TvlChartContainer: React.FC = () => {
         break;
     }
 
-    return currentChartData?.reduce((pre: any, next: any) => {
-      return [
-        ...pre,
-        {
-          amount: {
-            value: next.tvlUsd || 0,
-            denom: "USD",
+    return currentChartData?.reduce<TvlChartData>(
+      (accum: TvlChartData, current: TvlData) => {
+        return [
+          ...accum,
+          {
+            amount: {
+              value: current.tvlUsd || "0",
+              denom: "USD",
+            },
+            time: getLocalizeTime(current.date),
           },
-          time: getLocalizeTime(next.date),
-        },
-      ];
-    }, [] as TvlChartData);
+        ];
+      },
+      [],
+    );
   }, [tvlChartType, tvlData]);
 
   return (

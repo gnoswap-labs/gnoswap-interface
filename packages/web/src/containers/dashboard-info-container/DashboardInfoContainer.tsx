@@ -1,12 +1,10 @@
 import React, { useMemo } from "react";
 import DashboardInfo from "@components/dashboard/dashboard-info/DashboardInfo";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { DashboardTokenResponse } from "@repositories/dashboard/response/token-response";
-import { useQuery } from "@tanstack/react-query";
 import { useLoading } from "@hooks/common/use-loading";
 import BigNumber from "bignumber.js";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
+import { useGetDashboardToken } from "@query/dashboard";
 
 export interface DailyBlockEmissionsInfo {
   liquidityStaking: string;
@@ -53,17 +51,9 @@ const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
 
 const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
-  const { dashboardRepository } = useGnoswapContext();
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const { data: tokenData, isLoading } = useQuery<
-    DashboardTokenResponse,
-    Error
-  >({
-    queryKey: ["dashboardToken"],
-    queryFn: dashboardRepository.getDashboardToken,
-    refetchInterval: 60 * 1000,
-  });
+  const { data: tokenData, isLoading } = useGetDashboardToken();
 
   const progressBar = useMemo(() => {
     if (!tokenData) return "0%";

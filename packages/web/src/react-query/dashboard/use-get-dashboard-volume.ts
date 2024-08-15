@@ -5,6 +5,8 @@ import { IVolumeResponse } from "@repositories/dashboard/response/volume-respons
 
 import { QUERY_KEY } from "../query-keys";
 
+const REFETCH_INTERVAL = 10_000;
+
 export const useGetDashboardVolume = (
   options?: UseQueryOptions<IVolumeResponse, Error>,
 ) => {
@@ -13,6 +15,9 @@ export const useGetDashboardVolume = (
   return useQuery<IVolumeResponse, Error>({
     queryKey: [QUERY_KEY.dashboardVolume],
     queryFn: dashboardRepository.getDashboardVolume,
+    refetchInterval: REFETCH_INTERVAL,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
     ...options,
   });
 };

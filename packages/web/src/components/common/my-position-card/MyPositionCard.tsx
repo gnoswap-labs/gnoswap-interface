@@ -20,7 +20,7 @@ import {
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
-import { useGetLazyPositionBins } from "@query/positions";
+import { useGetPositionBins } from "@query/positions";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -62,10 +62,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isMouseoverGraph, setIsMouseoverGraph] = useState(false);
   const [shortenInRange, setShortenInRange] = useState(false);
 
-  const { data: bins40, isFetched: isFetchedBins } = useGetLazyPositionBins(
+  const { data: bins40, isFetched: isFetchedBins } = useGetPositionBins(
     position.lpTokenId,
     40,
-    isMouseoverGraph,
+    {
+      enabled: isMouseoverGraph,
+    },
   );
 
   const onMouseoverViewMyRange = useCallback(() => {

@@ -6,7 +6,7 @@ export interface TvlResponse {
   all: TvlData[];
 }
 
-interface TvlData {
+export interface TvlData {
   date: string;
   tvlUsd: string;
 }

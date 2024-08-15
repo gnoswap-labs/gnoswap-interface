@@ -1,5 +1,5 @@
 import { useWindowSize } from "@hooks/common/use-window-size";
-import React from "react";
+import React, { useEffect } from "react";
 import { ValuesType } from "utility-types";
 
 import PositionHistoryList from "@components/pool/position-history-list/PositionHistoryList";
@@ -31,9 +31,14 @@ const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({
   const { isLoading: isLoadingCommon } = useLoading();
   const {
     data: historyList = [],
+    refetch,
     isFetched,
     isLoading,
   } = useGetPositionHistory(position?.lpTokenId);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <PositionHistoryList

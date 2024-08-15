@@ -1,21 +1,21 @@
+import { useAtom } from "jotai";
+import { useMemo } from "react";
+
 import IconAlert from "@components/common/icons/IconAlert";
 import NotificationList from "@components/common/notification-list/NotificationList";
-import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
-import { useAtom } from "jotai";
-import { CommonState } from "@states/index";
-import { DEVICE_TYPE } from "@styles/media";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useQuery } from "@tanstack/react-query";
-import { useWallet } from "@hooks/wallet/use-wallet";
-import { useMemo } from "react";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
-import { TransactionGroupsType } from "@models/notification";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { CommonState } from "@states/index";
+import { DEVICE_TYPE } from "@styles/media";
+import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
+import { useGetNotifications } from "@query/common";
 
 const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const { notificationRepository } = useGnoswapContext();
-  const { account, availNetwork, currentChainId } = useWallet();
+  const { account } = useWallet();
   const [notificationHash, setNotificationHash] = useAtom(
     CommonState.notificationHash,
   );
@@ -30,19 +30,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   useEscCloseModal(handleESC);
   usePreventScroll(toggle.notification);
 
-  const {
-    data: transactionGroups,
-    refetch,
-    isFetched,
-  } = useQuery<TransactionGroupsType[], Error>({
-    queryKey: ["groupedNotification", currentChainId, account?.address],
-    queryFn: () =>
-      notificationRepository.getGroupedNotification({
-        address: account?.address,
-      }),
-    refetchInterval: 1000 * 10,
-    enabled: !!account?.address && availNetwork,
-  });
+  const { data: transactionGroups, refetch, isFetched } = useGetNotifications();
 
   const txs = useMemo(() => {
     return (transactionGroups ?? []).reduce((pre, next) => {

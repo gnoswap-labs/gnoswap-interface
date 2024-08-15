@@ -1,7 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import TokenInfoContent from "@components/token/token-info-content/TokenInfoContent";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetTokenDetailByPath, useGetTokenPricesByPath } from "@query/token";
+import { useGetTokenDetails, useGetTokenPrices } from "@query/token";
 import { checkPositivePrice } from "@utils/common";
 import { useLoading } from "@hooks/common/use-loading";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
@@ -102,11 +102,16 @@ const priceChangeDetailInit = {
 const TokenInfoContentContainer: React.FC = () => {
   const router = useCustomRouter();
   const path = router.getTokenPath();
-  const { data: { market = marketInformationInit } = {}, isLoading } =
-    useGetTokenDetailByPath(
-      path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
-      { enabled: !!path },
-    );
+  const {
+    data: { market = marketInformationInit } = {},
+    isLoading,
+    isStale: isStaleTokenDetails,
+  } = useGetTokenDetails(
+    path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
+    {
+      enabled: !!path,
+    },
+  );
   const {
     data: {
       usd: currentPrice = "0",
@@ -114,7 +119,8 @@ const TokenInfoContentContainer: React.FC = () => {
       pricesBefore = priceChangeDetailInit,
       marketCap,
     } = {},
-  } = useGetTokenPricesByPath(
+    isStale: isStaleTokenPrices,
+  } = useGetTokenPrices(
     path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
     { enabled: !!path },
   );
@@ -239,6 +245,18 @@ const TokenInfoContentContainer: React.FC = () => {
     pricesBefore.priceToday,
     t,
   ]);
+
+  useEffect(() => {
+    if (isStaleTokenDetails) {
+      // refetchTokenDetails();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isStaleTokenPrices) {
+      // refetchTokenPrices();
+    }
+  }, []);
 
   return (
     <TokenInfoContent

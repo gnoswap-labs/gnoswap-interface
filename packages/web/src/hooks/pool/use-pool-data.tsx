@@ -1,29 +1,18 @@
 import { useMemo } from "react";
 
-import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { useGetPoolList } from "@query/pools";
 
-const PATH_60SECOND = "/wallet";
-
 export const usePoolData = () => {
-  const router = useRouter();
   const {
     data: pools = [],
     isLoading: loading,
     isFetched: isFetchedPools,
-    refetch: refetchPools
-  } = useGetPoolList({
-    refetchInterval:
-      router.pathname === "/"
-        ? 10 * 1000
-        : router.pathname === PATH_60SECOND
-        ? 60 * 1000
-        : false,
-  });
+    refetch: refetchPools,
+  } = useGetPoolList();
 
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 

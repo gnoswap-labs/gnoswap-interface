@@ -8,15 +8,13 @@ export const useGetTokenBalancesFromChain = (
   chainId: string,
   address: string | undefined,
   key: string,
-  option?: UseQueryOptions<number | null>,
+  options?: UseQueryOptions<number | null, Error>,
 ) => {
   const { accountRepository } = useGnoswapContext();
 
-  return useQuery({
+  return useQuery<number | null, Error>({
     queryKey: [QUERY_KEY.accountGnotTokenBalance, chainId, address || "", key],
     queryFn: () => accountRepository.getBalanceByKey(address || "", key),
-    refetchInterval: 5_000,
-    refetchOnMount: "always",
-    ...option,
+    ...options,
   });
 };

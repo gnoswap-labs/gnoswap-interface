@@ -13,9 +13,9 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenWarningModal } from "@hooks/token/use-token-warning-modal";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import {
-  useGetTokenByPath,
-  useGetTokenDetailByPath,
-  useGetTokenPricesByPath
+  useGetToken,
+  useGetTokenDetails,
+  useGetTokenPrices,
 } from "@query/token";
 import { IPriceResponse, IPrices1d } from "@repositories/token";
 import { TokenState } from "@states/index";
@@ -23,7 +23,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import {
   getLabelChartV2,
   getLocalizeTime,
-  getNumberOfAxis
+  getNumberOfAxis,
 } from "@utils/chart";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
@@ -172,20 +172,19 @@ const TokenChartContainer: React.FC = () => {
     },
   });
   const path = router.getTokenPath();
-  const { data: tokenB } = useGetTokenByPath(path, {
+  const { data: tokenB } = useGetToken(path, {
     enabled: !!path,
   });
   const {
     data: { prices1d = [], prices7d = [], prices1m = [], prices1y = [] } = {},
     isLoading,
-  } = useGetTokenDetailByPath(path === "gnot" ? wugnotPath : path, {
+  } = useGetTokenDetails(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
-    refetchInterval: 1000 * 10,
   });
 
   const {
     data: { usd: currentPrice, pricesBefore = priceChangeDetailInit } = {},
-  } = useGetTokenPricesByPath(path === "gnot" ? wugnotPath : path, {
+  } = useGetTokenPrices(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
   });
 

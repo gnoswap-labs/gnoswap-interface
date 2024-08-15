@@ -6,7 +6,7 @@ import {
   GNOT_TOKEN,
   GNOT_TOKEN_DEFAULT,
   GNS_TOKEN,
-  WUGNOT_TOKEN
+  WUGNOT_TOKEN,
 } from "@common/values/token-constant";
 import AssetList from "@components/wallet/asset-list/AssetList";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
@@ -21,7 +21,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
-import { useGetTokensList } from "@query/token";
+import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
@@ -124,9 +124,7 @@ const AssetListContainer: React.FC = () => {
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const { isLoadingTokens } = useLoading();
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { data: { tokens = [] } = {} } = useGetTokensList({
-    refetchInterval: 60 * 1000,
-  });
+  const { data: { tokens = [] } = {} } = useGetTokens();
   const { loading: loadingPositions } = usePositionData({
     isClosed: false,
   });

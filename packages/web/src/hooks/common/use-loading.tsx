@@ -3,7 +3,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useInitLoading } from "@query/common";
 import { useGetDashboardVolume } from "@query/dashboard";
 import { useGetPoolList } from "@query/pools";
-import { useGetChainList } from "@query/token";
+import { useGetChainInfo } from "@query/token";
 import { useGetPositionsByAddress } from "@query/positions";
 import { useAddress } from "@hooks/address/use-address";
 
@@ -12,18 +12,20 @@ export const useLoading = () => {
   const { data: initialized } = useInitLoading();
   const { isFetched: isFetchedTokenData, isFetchedTokenPrices } =
     useTokenData();
-  const { isFetched: isFetchedChainList } = useGetChainList({ enabled: false });
+  const { isFetched: isFetchedChainList } = useGetChainInfo({ enabled: false });
   const { isFetched: isFetchedPoolData } = useGetPoolList({ enabled: false });
   const { isFetched: isFetchedDashboardVolume } = useGetDashboardVolume({
     enabled: false,
   });
 
-  const { isFetched: isFetchedPosition } = useGetPositionsByAddress({
-    address: address || "",
-    queryOptions: {
+  const { isFetched: isFetchedPosition } = useGetPositionsByAddress(
+    {
+      address: address || "",
+    },
+    {
       enabled: false,
     },
-  });
+  );
 
   const isLoading = useMemo(() => {
     if (initialized) {
