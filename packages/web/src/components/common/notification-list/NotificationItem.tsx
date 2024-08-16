@@ -95,7 +95,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
       const relatedTokens = tx.usedTokens || 0;
 
       let conjunction = "";
-      if (relatedTokens === 2) {
+      if (relatedTokens === 2 && token0Display && token1Display) {
         conjunction = ` ${
           tx.actionType === DexEvent.SWAP
             ? t("common:conjunction.for")
@@ -105,7 +105,12 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         conjunction = ", ";
       }
 
-      const tail = relatedTokens > 2 && ", ...";
+      const tail = relatedTokens > 2 && (
+        <>
+          {", "}
+          <span className="accent">{"..."}</span>
+        </>
+      );
 
       return (
         <>

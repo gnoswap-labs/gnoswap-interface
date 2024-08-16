@@ -169,17 +169,17 @@ export const DoubleLogoDense = styled.div`
   }
 
   .more-token {
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
     background: ${({ theme }) => theme.color.border02};
     border-radious: 8px;
-    margin-left: -24px;
-    margin-top: 12px;
+    margin-left: -27px;
+    margin-top: 9px;
 
     ${mixins.flexbox("row", "center", "center")};
 
     ${fonts.p7};
-    font-size: 7px;
+    font-size: 8px;
   }
 `;
 
@@ -256,17 +256,17 @@ export const DoubleLogo = styled.div`
   }
 
   .more-token {
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
     background: ${({ theme }) => theme.color.border02};
     border-radious: 8px;
-    margin-left: -24px;
-    margin-top: 12px;
+    margin-left: -27px;
+    margin-top: 9px;
 
     ${mixins.flexbox("row", "center", "center")};
 
     ${fonts.p7};
-    font-size: 7px;
+    font-size: 8px;
   }
 `;
 

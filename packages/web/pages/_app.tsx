@@ -1,33 +1,35 @@
-import { useEffect, useState } from "react";
-import type { AppProps } from "next/app";
 import {
   Hydrate,
   QueryClient,
-  QueryClientProvider,
+  QueryClientProvider
 } from "@tanstack/react-query";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import { Provider as JotaiProvider } from "jotai";
-import GnoswapModalProvider from "@providers/gnoswap-modal-provider/GnoswapModalProvider";
-import ModalContainer from "@containers/modal-container/ModalContainer";
-import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
-import BackgroundContainer from "@containers/background-container/BackgroundContainer";
-import Notice from "@components/common/notice/NoticeToast";
-import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWrapper";
-import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
-import Custom500 from "./500";
-import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";
-import nextI18NextConfig from "../next-i18next.config.js";
 import dayjs from "dayjs";
-import "dayjs/locale/en";
 import "dayjs/locale/de";
+import "dayjs/locale/en";
 import "dayjs/locale/es";
 import "dayjs/locale/fr";
+import "dayjs/locale/hi";
 import "dayjs/locale/ja";
 import "dayjs/locale/ko";
 import "dayjs/locale/ru";
 import "dayjs/locale/zh";
-import "dayjs/locale/hi";
+import { Provider as JotaiProvider } from "jotai";
+import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";
+import type { AppProps } from "next/app";
+import { useEffect, useState } from "react";
+
+import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
+import ScrollTopWrapper from "@components/common/scroll-top-wrapper/ScrollTopWrapper";
 import { LANGUAGE_CODE_MAP } from "@constants/common.constant";
+import BackgroundContainer from "@containers/background-container/BackgroundContainer";
+import ModalContainer from "@containers/modal-container/ModalContainer";
+import GnoswapModalProvider from "@providers/gnoswap-modal-provider/GnoswapModalProvider";
+import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import SnackbarProvider from "@providers/snackbar-provider/SnackbarProvider";
+
+import nextI18NextConfig from "../next-i18next.config.js";
+import Custom500 from "./500";
 
 function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();
@@ -65,7 +67,7 @@ function App({ Component, pageProps }: AppProps) {
           <GnoswapServiceProvider>
             <GnoswapThemeProvider>
               <BackgroundContainer>
-                <Notice>
+                <SnackbarProvider>
                   <ScrollTopWrapper>
                     <ErrorBoundary fallback={<Custom500 />}>
                       <Component {...pageProps} />
@@ -74,7 +76,7 @@ function App({ Component, pageProps }: AppProps) {
                   <GnoswapModalProvider selector={"portal-root"}>
                     <ModalContainer />
                   </GnoswapModalProvider>
-                </Notice>
+                </SnackbarProvider>
               </BackgroundContainer>
             </GnoswapThemeProvider>
           </GnoswapServiceProvider>

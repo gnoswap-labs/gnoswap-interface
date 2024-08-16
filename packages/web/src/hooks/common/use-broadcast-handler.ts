@@ -1,15 +1,12 @@
 import { useAtom } from "jotai";
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 
-import { INoticeContent } from "@components/common/notice/NoticeToast";
-import {
-  INoticeOptions,
-  NoticeContext,
-  TNoticeType
-} from "@context/NoticeContext";
 import { CommonState } from "@states/index";
 import { makeRandomId } from "@utils/common";
 
+import {
+  SnackbarContent, SnackbarOptions, SnackbarType, useSnackbar
+} from "./use-snackbar";
 import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
 
 /**
@@ -44,7 +41,7 @@ import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
  * - Withdraw: Failed to Send n GNOT
  */
 
-function makeNoticeConfig(type: TNoticeType): INoticeOptions {
+function makeNoticeConfig(type: SnackbarType): SnackbarOptions {
   const timeout = 50000;
   return {
     id: makeRandomId(),
@@ -55,12 +52,12 @@ function makeNoticeConfig(type: TNoticeType): INoticeOptions {
 }
 
 export const useBroadcastHandler = () => {
-  const { setNotice, onCloseNotice } = useContext(NoticeContext);
+  const { enqueue, clear } = useSnackbar();
   const { openModal, closeModal } = useTransactionConfirmModal();
   const [, setTransactionModalData] = useAtom(CommonState.transactionModalData);
 
   const broadcastLoading = useCallback(
-    (content?: INoticeContent) => {
+    (content?: SnackbarContent) => {
       setTransactionModalData({
         status: "loading",
         description: content?.description || null,
@@ -72,41 +69,41 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastSuccess = useCallback(
-    (content?: INoticeContent, callback?: () => void) => {
+    (content?: SnackbarContent, callback?: () => void) => {
       setTransactionModalData({
         status: "success",
         description: content?.description || null,
         txHash: content?.txHash || null,
         callback,
       });
-      setNotice(content, makeNoticeConfig("success"));
+      enqueue(content, makeNoticeConfig("success"));
     },
-    [setNotice, setTransactionModalData],
+    [enqueue, setTransactionModalData],
   );
 
   const broadcastPending = useCallback(
-    (content?: INoticeContent) => {
-      setNotice(content, makeNoticeConfig("pending"));
+    (content?: SnackbarContent) => {
+      enqueue(content, makeNoticeConfig("pending"));
     },
-    [setNotice],
+    [enqueue],
   );
 
   const broadcastError = useCallback(
-    (content?: INoticeContent, callback?: () => void) => {
+    (content?: SnackbarContent, callback?: () => void) => {
       setTransactionModalData({
         status: "error",
         description: content?.description || null,
         txHash: content?.txHash || null,
         callback,
       });
-      setNotice(content, makeNoticeConfig("error"));
+      enqueue(content, makeNoticeConfig("error"));
     },
-    [setNotice, setTransactionModalData],
+    [enqueue, setTransactionModalData],
   );
 
   const broadcastRejected = useCallback(
     (
-      content?: INoticeContent,
+      content?: SnackbarContent,
       callback?: () => void,
       isHiddenReject?: boolean,
     ) => {
@@ -116,15 +113,15 @@ export const useBroadcastHandler = () => {
         txHash: content?.txHash || null,
         callback,
       });
-      if (!isHiddenReject) setNotice(content, makeNoticeConfig("error"));
+      if (!isHiddenReject) enqueue(content, makeNoticeConfig("error"));
     },
-    [setNotice, setTransactionModalData],
+    [enqueue, setTransactionModalData],
   );
 
   const clearBroadcast = useCallback(() => {
-    onCloseNotice();
+    clear();
     closeModal();
-  }, [onCloseNotice]);
+  }, [clear]);
 
   return {
     broadcastLoading,

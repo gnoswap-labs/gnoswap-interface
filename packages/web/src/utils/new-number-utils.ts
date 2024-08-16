@@ -52,14 +52,22 @@ export const formatPoolPairAmount = (
     if (kmbNumber) return kmbNumber;
   }
 
+  let stringValue = "";
+
   if (decimals) {
-    return bigNumberValue.toFormat(
+    stringValue = bigNumberValue.toFormat(
       decimals,
       decimals ? BigNumber.ROUND_DOWN : undefined,
     );
   }
 
-  return bigNumberValue.toFormat();
+  stringValue = bigNumberValue.toFormat();
+
+  const [integerValue,fractionValue] = stringValue.split(".");
+  if (fractionValue) {
+    const fractionString = Number(`0.${fractionValue}`).toString().split(".")[1];
+    return `${integerValue}.${fractionString}`;
+  } else return stringValue;
 };
 
 export const formatRate = (
