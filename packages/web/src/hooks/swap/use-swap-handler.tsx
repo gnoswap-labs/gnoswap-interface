@@ -18,7 +18,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { EstimatedRoute, SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
@@ -34,6 +34,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import { useSwap } from "./use-swap";
+import { rawBySqrtX96 } from "@utils/swap-utils";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -49,6 +50,56 @@ type SwapButtonStateType =
   | "HIGHT_PRICE_IMPACT";
 
 export type PriceImpactStatus = "LOW" | "HIGH" | "MEDIUM" | "POSITIVE" | "NONE";
+
+function estimatePriceImpactByRoutes(
+  tokenInPath: string,
+  routes: EstimatedRoute[],
+  swapFeeRate: number,
+) {
+  let amountInBN = BigNumber(0);
+  let amountOutBN = BigNumber(0);
+  let estimatedAmountOutBN = BigNumber(0);
+
+  for (const route of routes) {
+    let currentTokenInPath = tokenInPath;
+
+    const poolTickPrices = route.pools.map(pool => {
+      const isReversePrice = currentTokenInPath === pool.tokenB;
+      if (isReversePrice) {
+        currentTokenInPath = pool.tokenA;
+        return 1 / rawBySqrtX96(pool.price);
+      }
+
+      currentTokenInPath = pool.tokenB;
+      return rawBySqrtX96(pool.price);
+    });
+
+    const routePrice = poolTickPrices.reduce(
+      (price, poolTickPrice) => price * poolTickPrice,
+      1,
+    );
+
+    const amountOutWithSwapFee = BigNumber(
+      route.amountOut.toString(),
+    ).multipliedBy(1 - swapFeeRate / 100);
+
+    amountInBN = amountInBN.plus(route.amountIn.toString());
+    amountOutBN = amountOutBN.plus(amountOutWithSwapFee);
+
+    estimatedAmountOutBN = estimatedAmountOutBN.plus(
+      BigNumber(route.amountIn.toString()).multipliedBy(routePrice),
+    );
+  }
+
+  if (amountOutBN.isZero()) {
+    return BigNumber(0);
+  }
+
+  return amountOutBN
+    .minus(estimatedAmountOutBN)
+    .multipliedBy(100)
+    .dividedBy(estimatedAmountOutBN);
+}
 
 function compareAmountFn(
   amountA: string | number | bigint,
@@ -259,25 +310,46 @@ export const useSwapHandler = () => {
       return BigNumber(0);
     }
 
-    const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 0;
-    const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 0;
+    const hasUSDPrice =
+      !!tokenPrices[checkGnotPath(tokenA.path)]?.usd &&
+      !!tokenPrices[checkGnotPath(tokenB.path)]?.usd;
 
-    const tokenAUSDAmount =
-      (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) *
-      Number(tokenAUSDValue);
+    if (hasUSDPrice) {
+      const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 0;
+      const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 0;
 
-    const tokenBUSDAmount =
-      (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) *
-      Number(tokenBUSDValue);
+      const tokenAUSDAmount =
+        (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) *
+        Number(tokenAUSDValue);
 
-    const priceImpactNum =
-      tokenAUSDAmount !== 0
-        ? BigNumber(tokenBUSDAmount - tokenAUSDAmount)
-            .multipliedBy(100)
-            .dividedBy(tokenAUSDAmount)
-        : BigNumber(0);
+      const tokenBUSDAmount =
+        (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) *
+        Number(tokenBUSDValue);
+
+      const priceImpactNum =
+        tokenAUSDAmount !== 0
+          ? BigNumber(tokenBUSDAmount - tokenAUSDAmount)
+              .multipliedBy(100)
+              .dividedBy(tokenAUSDAmount)
+          : BigNumber(0);
+      return BigNumber(priceImpactNum.toFixed(2));
+    }
+
+    const priceImpactNum = estimatePriceImpactByRoutes(
+      checkGnotPath(tokenA.path),
+      estimatedRoutes,
+      (swapFee || 0) / 100,
+    );
     return BigNumber(priceImpactNum.toFixed(2));
-  }, [tokenA, tokenAAmount, tokenB, tokenBAmount, tokenPrices]);
+  }, [
+    estimatedRoutes,
+    swapFee,
+    tokenA,
+    tokenAAmount,
+    tokenB,
+    tokenBAmount,
+    tokenPrices,
+  ]);
 
   const priceImpactStatus: PriceImpactStatus = useMemo(() => {
     if (!priceImpact) return "NONE";
