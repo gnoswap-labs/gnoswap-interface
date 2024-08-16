@@ -1,14 +1,14 @@
-// import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
-import TokenSwap from "@components/token/token-swap/TokenSwap";
-import React, { useState, useEffect } from "react";
 import { useAtomValue } from "jotai";
-import { ThemeState } from "@states/index";
+import React, { useEffect, useState } from "react";
+
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
-import { useSwapHandler } from "@hooks/swap/use-swap-handler";
-import { useGetToken } from "@query/token";
-import { TokenModel } from "@models/token/token-model";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import TokenSwap from "@components/token/token-swap/TokenSwap";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useSwapHandler } from "@hooks/swap/use-swap-handler";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { TokenModel } from "@models/token/token-model";
+import { useGetToken } from "@query/token";
+import { ThemeState } from "@states/index";
 
 const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);

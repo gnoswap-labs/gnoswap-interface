@@ -1167,6 +1167,17 @@ export const useSwapHandler = () => {
 
   useEffect(() => {
     if (!isEmptyObject(router?.query)) return;
+    return () =>
+      setSwapValue({
+        tokenA: null,
+        tokenB: null,
+        type: "EXACT_IN",
+        tokenAAmount: "",
+        tokenBAmount: "",
+        isEarnChanged: false,
+        isReverted: false,
+        isKeepToken: false,
+      });
   }, []);
 
   useEffect(() => {
