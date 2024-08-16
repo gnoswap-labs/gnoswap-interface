@@ -3,7 +3,7 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
-export const HeaderSideMenuModalWrapper = styled.div`
+export const SubMenuWrapper = styled.div`
   position: absolute;
   top: 44px;
   ${media.tablet} {

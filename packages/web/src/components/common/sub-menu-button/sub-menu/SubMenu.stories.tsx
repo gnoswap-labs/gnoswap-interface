@@ -3,16 +3,16 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { css, Theme } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
 
-import HeaderSideMenuModal from "./HeaderSideMenuModal";
+import SubMenu from "./SubMenu";
 
 export default {
-  title: "common/Header/HeaderSideMenuModal",
-  component: HeaderSideMenuModal,
-} as ComponentMeta<typeof HeaderSideMenuModal>;
+  title: "common/Header/SubMenu",
+  component: SubMenu,
+} as ComponentMeta<typeof SubMenu>;
 
-const Template: ComponentStory<typeof HeaderSideMenuModal> = args => (
+const Template: ComponentStory<typeof SubMenu> = args => (
   <div css={wrapper}>
-    <HeaderSideMenuModal {...args} />
+    <SubMenu {...args} />
   </div>
 );
 
