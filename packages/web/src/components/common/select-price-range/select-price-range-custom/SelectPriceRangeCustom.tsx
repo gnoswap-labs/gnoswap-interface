@@ -238,13 +238,6 @@ const SelectPriceRangeCustom = forwardRef<
       initPriceRange(priceRangeType);
     }
 
-    useEffect(() => {
-      const timeoutId = setTimeout(() => {
-        changeStartingPrice(startingPriceValue);
-      }, 2000);
-      return () => clearTimeout(timeoutId);
-    }, [startingPriceValue]);
-
     const onSelectCustomRangeByMin = useCallback(() => {
       selectPool.setFullRange(false);
       selectPool.setMaxPosition(tickToPrice(MAX_TICK));
