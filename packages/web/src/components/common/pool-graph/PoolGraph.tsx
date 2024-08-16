@@ -371,7 +371,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (!currentBin) {
       setPositionX(null);
       setPositionY(null);
-      !nextSpacing && setTooltipInfo(null);
+      if (!nextSpacing) {
+        setTooltipInfo(null);
+      }
       return;
     }
 
@@ -529,13 +531,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .on("mousemove", onMouseoverChartBin)
       .on("mouseout", onMouseoutChartBin);
 
-    svgElement
-      .append("defs")
-      .append("clipPath")
-      .attr("id", "clip")
-      .append("rect")
-      .attr("width", width)
-      .attr("height", height);
+    if (svgElement.select("defs").empty()) {
+      svgElement
+        .append("defs")
+        .append("clipPath")
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height);
+    }
 
     if (!!width && !!height && !!scaleX && !!scaleY) {
       updateChart();
@@ -634,7 +638,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       return "-";
     }
     return `${tokenAPrice} ${tokenB.symbol}`;
-  }, [tooltipInfo]);
+  }, [tooltipInfo?.tokenB, tooltipInfo?.tokenAPrice]);
 
   const tokenBPriceString = useMemo(() => {
     if (tooltipInfo === null) {
@@ -645,7 +649,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       return "-";
     }
     return `${tokenBPrice} ${tokenA.symbol}`;
-  }, [tooltipInfo]);
+  }, [tooltipInfo?.tokenA, tooltipInfo?.tokenBPrice]);
 
   const tokenAPriceRangeStr = useMemo(() => {
     if (tooltipInfo === null) {
@@ -656,7 +660,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       return "-";
     }
     return `${tokenARange.min} - ${tokenARange.max} ${tokenB.symbol}`;
-  }, [tooltipInfo]);
+  }, [tooltipInfo?.tokenB, tooltipInfo?.tokenARange]);
 
   const tokenBPriceRangeStr = useMemo(() => {
     if (tooltipInfo === null) {
@@ -667,7 +671,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       return "-";
     }
     return `${tokenBRange.max} - ${tokenBRange.min} ${tokenA.symbol}`;
-  }, [tooltipInfo]);
+  }, [tooltipInfo?.tokenA, tooltipInfo?.tokenBRange]);
 
   return tooltipInfo ? (
     <div className="tooltip-wrapper">
