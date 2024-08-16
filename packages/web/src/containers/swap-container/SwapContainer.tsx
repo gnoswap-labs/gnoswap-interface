@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import SwapCard from "@components/swap/swap-card/SwapCard";
-import { useTokenData } from "@hooks/token/use-token-data";
 import { useAtomValue } from "jotai";
-import { ThemeState } from "@states/index";
+import React, { useEffect, useState } from "react";
+
+import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
+import SwapCard from "@components/swap/swap-card/SwapCard";
 import useRouter from "@hooks/common/use-custom-router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
-import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { ThemeState } from "@states/index";
 
 const SwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -41,6 +42,7 @@ const SwapContainer: React.FC = () => {
     setSwapValue,
     setSwapRateAction,
     priceImpactStatus,
+    setTokenAAmount,
     isSameToken,
   } = useSwapHandler();
 
@@ -56,8 +58,8 @@ const SwapContainer: React.FC = () => {
       tokenA: GNOT_TOKEN_DEFAULT,
       tokenB: null,
       type: "EXACT_IN",
-      tokenAAmount: "",
     });
+    setTokenAAmount("");
   }, []);
 
   useEffect(() => {
