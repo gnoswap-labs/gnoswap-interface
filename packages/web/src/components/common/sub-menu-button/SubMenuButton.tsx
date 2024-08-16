@@ -1,10 +1,12 @@
-import React from "react";
-import { SubMenuButtonWrapper } from "./SubMenuButton.styles";
-import HeaderSideMenuModal from "../header-side-menu-modal/HeaderSideMenuModal";
 import { useTheme } from "@emotion/react";
-import { FakeSpaceWrapper } from "../header-side-menu-modal/HeaderSideMenuModal.styles";
+import React, { useEffect, useRef } from "react";
+
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
+import SubMenu from "./sub-menu/SubMenu";
+
+import { FakeSpaceWrapper } from "./sub-menu/SubMenu.styles";
+import { SubMenuButtonWrapper } from "./SubMenuButton.styles";
 
 interface SubMenuButtonProps {
   sideMenuToggle: boolean;
@@ -16,20 +18,64 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
   onSideMenuToggle,
 }) => {
   const theme = useTheme();
+  const buttonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = buttonRef.current;
+    const mouseEventHandler = (e: MouseEvent) => {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      const menu = document.getElementById("sub-item");
+      const menuRect = menu?.getBoundingClientRect();
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      if (
+        (rect &&
+          mouseX >= rect.left &&
+          mouseX <= rect.right &&
+          mouseY >= rect.top &&
+          mouseY <= rect.bottom + 10) ||
+        (menuRect &&
+          mouseX >= menuRect.left &&
+          mouseX <= menuRect.right &&
+          mouseY >= menuRect.top &&
+          mouseY <= menuRect.bottom)
+      ) {
+        onSideMenuToggle(true);
+      } else {
+        onSideMenuToggle(false);
+      }
+    };
+
+    if (element) document.addEventListener("mousemove", mouseEventHandler);
+
+    return () => {
+      if (element) document.removeEventListener("mouseover", mouseEventHandler);
+    };
+  }, []);
+
 
   return (
     <SubMenuButtonWrapper
-      onMouseEnter={() => onSideMenuToggle(true)}
-      onMouseLeave={() => onSideMenuToggle(false)}
+      ref={buttonRef}
       className={`${sideMenuToggle ? "selected" : ""}`}
     >
-      {sideMenuToggle
-        ? <IconStrokeArrowUp className="popup-icon-button" svgProps={{ fill: theme.color.text16 }} />
-        : <IconStrokeArrowDown className="popup-icon-button" svgProps={{ fill: theme.color.text04 }} />}
+      {sideMenuToggle ? (
+        <IconStrokeArrowUp
+          className="popup-icon-button"
+          svgProps={{ fill: theme.color.text16 }}
+        />
+      ) : (
+        <IconStrokeArrowDown
+          className="popup-icon-button"
+          svgProps={{ fill: theme.color.text04 }}
+        />
+      )}
       {sideMenuToggle && (
         <>
           <FakeSpaceWrapper></FakeSpaceWrapper>
-          <HeaderSideMenuModal onSideMenuToggle={() => onSideMenuToggle(false)} />
+          <SubMenu
+            onSideMenuToggle={() => onSideMenuToggle(false)}
+          />
         </>
       )}
     </SubMenuButtonWrapper>

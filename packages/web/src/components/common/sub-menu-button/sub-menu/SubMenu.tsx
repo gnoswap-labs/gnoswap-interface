@@ -1,36 +1,37 @@
+import { useTranslation } from "next-i18next";
 import React, {
   Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
+  useCallback, useMemo,
+  useRef
 } from "react";
+
+import IconOpenLink from "@components/common/icons/IconOpenLink";
+import { BLOCKED_PAGES } from "@constants/environment.constant";
 import {
   HEADER_NAV,
   SIDE_EXTRA_MENU_NAV,
   SIDE_MENU_NAV,
 } from "@constants/header.constant";
-import {
-  Navigation,
-  HeaderSideMenuModalWrapper,
-  LeftIconMenu,
-  LeftIcon,
-  MenuDivider,
-  RightIconMenu,
-  LinkIconButton,
-} from "./HeaderSideMenuModal.styles";
-import IconOpenLink from "@components/common/icons/IconOpenLink";
-import IconAccountUser from "../icons/IconAccountUser";
-import IconPulse from "../icons/IconPulse";
-import { BLOCKED_PAGES } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { useTranslation } from "next-i18next";
+
+import IconAccountUser from "../../icons/IconAccountUser";
+import IconPulse from "../../icons/IconPulse";
+
+import {
+  LeftIcon,
+  LeftIconMenu,
+  LinkIconButton,
+  MenuDivider,
+  Navigation,
+  RightIconMenu,
+  SubMenuWrapper
+} from "./SubMenu.styles";
 
 interface HeaderSideMenuModalProps {
   onSideMenuToggle: () => void;
 }
 
-const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
+const SubMenu: React.FC<HeaderSideMenuModalProps> = ({
   onSideMenuToggle,
 }) => {
   const router = useCustomRouter();
@@ -57,21 +58,6 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
     );
   }, []);
 
-  useEffect(() => {
-    const closeMenu = (e: MouseEvent) => {
-      if (menuRef.current && menuRef.current.contains(e.target as Node)) {
-        return;
-      } else {
-        e.stopPropagation();
-        onSideMenuToggle();
-      }
-    };
-    window.addEventListener("click", closeMenu, true);
-    return () => {
-      window.removeEventListener("click", closeMenu, true);
-    };
-  }, [menuRef, onSideMenuToggle]);
-
   const getIcon = useCallback((iconType: string | null) => {
     switch (iconType) {
       case "PULSE":
@@ -86,7 +72,7 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
   }, []);
 
   return (
-    <HeaderSideMenuModalWrapper ref={menuRef}>
+    <SubMenuWrapper ref={menuRef} id="sub-item">
       <Navigation>
         {navigationItems.length > 0 && (
           <React.Fragment>
@@ -95,14 +81,18 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
                 <li
                   key={index}
                   className="header-side-menu-item"
-                  onClick={() => router.push(item.path)}
+                  onClick={() => {
+                    if (item.path.startsWith("/")) router.push(item.path);
+                    else window.open(item.path);
+                    onSideMenuToggle();
+                  }}
                 >
-                  <a>
+                  <div>
                     <LeftIconMenu>
                       <LeftIcon>{getIcon(item.iconType)}</LeftIcon>
                       {t(item.title)}
                     </LeftIconMenu>
-                  </a>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -114,20 +104,24 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
             <li
               key={index}
               className="header-side-menu-item"
-              onClick={() => router.push(item.path)}
+              onClick={() => {
+                if (item.path.startsWith("/")) router.push(item.path);
+                else window.open(item.path);
+                onSideMenuToggle();
+              }}
             >
-              <a>
+              <div>
                 <RightIconMenu>
                   {t(item.title)}
                   <LinkIconButton>{getIcon(item.iconType)}</LinkIconButton>
                 </RightIconMenu>
-              </a>
+              </div>
             </li>
           ))}
         </ul>
       </Navigation>
-    </HeaderSideMenuModalWrapper>
+    </SubMenuWrapper>
   );
 };
 
-export default HeaderSideMenuModal;
+export default SubMenu;
