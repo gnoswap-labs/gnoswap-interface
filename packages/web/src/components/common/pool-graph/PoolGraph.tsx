@@ -301,7 +301,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
             .attr("class", "bin-inner")
             .style("stroke-width", "0")
             .attr("x", scaleX(bin.minTick) + 1)
-            .attr("width", scaleX(bin.maxTick - bin.minTick) - 1)
+            .attr("width", scaleX(bin.maxTick - bin.minTick) - 0.5)
             .attr("y", () => {
               const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
               return (
@@ -345,6 +345,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       const isHoveringPreviousBin = document
         .getElementById(getBinId(bin.index - 1))
         ?.matches(":hover");
+
       const isHoveringNextBin = document
         .getElementById(getBinId(bin.index + 1))
         ?.matches(":hover");
