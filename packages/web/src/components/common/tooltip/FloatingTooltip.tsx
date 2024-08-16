@@ -1,18 +1,23 @@
-import { FloatingPortal, FloatingArrow } from "@floating-ui/react";
-
+import { FloatingArrow, FloatingPortal } from "@floating-ui/react";
 import type { ElementRef } from "react";
-import React, { cloneElement, forwardRef, useEffect, useRef } from "react";
+import React, {
+  cloneElement,
+  forwardRef,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 
-import { useMergedRef } from "@hooks/common/use-merged-ref";
+import { useTheme } from "@emotion/react";
 import {
   FloatingPosition,
   useFloatingTooltip,
 } from "@hooks/common/use-floating-tooltip";
-import { FloatContent } from "./Tooltip.styles";
-import { Z_INDEX } from "@styles/zIndex";
-import { useTheme } from "@emotion/react";
+import { useMergedRef } from "@hooks/common/use-merged-ref";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
+import { Z_INDEX } from "@styles/zIndex";
+import { FloatContent } from "./Tooltip.styles";
 
 interface TooltipProps {
   offset?: number;
@@ -20,12 +25,23 @@ interface TooltipProps {
   content: React.ReactNode | null;
   className?: string;
   isHiddenArrow?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: any;
   enabled?: boolean;
 }
 
 const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
-  ({ children, content, className, isHiddenArrow, position = "top" as FloatingPosition, offset = 20 }, ref) => {
+  (
+    {
+      children,
+      content,
+      className,
+      isHiddenArrow,
+      position = "top" as FloatingPosition,
+      offset = 20,
+    },
+    ref,
+  ) => {
     const tooltipRef = useRef<HTMLDivElement>(null);
     const { breakpoint, width } = useWindowSize();
     const padding = width <= 768 && width >= 360 ? 16 : 0;
@@ -43,13 +59,19 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
     } = useFloatingTooltip({
       offset: offset,
       position: position,
-      tooltipWidth: Math.max(0, width - (tooltipRef?.current?.offsetWidth || 0) - padding),
+      tooltipWidth: Math.max(
+        0,
+        width - (tooltipRef?.current?.offsetWidth || 0) - padding,
+      ),
     });
     const theme = useTheme();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const targetRef = useMergedRef(boundaryRef, (children as any).ref, ref);
 
-    const onMouseEnter = (event: React.MouseEvent<unknown, MouseEvent> | React.TouchEvent<unknown>) => {
+    const onMouseEnter = (
+      event: React.MouseEvent<unknown, MouseEvent> | React.TouchEvent<unknown>,
+    ) => {
       children.props.onMouseEnter?.(event);
       handleMouseMove(event);
       setOpened(true);
@@ -78,6 +100,17 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
       };
     }, [breakpoint]);
 
+    const isDisplay = useMemo(() => {
+      return content !== null;
+    }, [content]);
+
+    const floatPosition = useMemo(() => {
+      return {
+        top: y || "",
+        left: x || "",
+      };
+    }, [x, y]);
+
     return (
       <>
         {cloneElement(children, {
@@ -93,24 +126,25 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
             ref={floating}
             style={{
               position: strategy,
-              display: (opened && content !== null) ? "block" : "none",
-              top: (y && Math.round(y)) ?? "",
-              left: (x && Math.round(x)) ?? "",
+              display: isDisplay && opened ? "block" : "none",
               zIndex: Z_INDEX.modalTooltip,
-              pointerEvents: "none"
+              pointerEvents: "none",
+              ...floatPosition,
             }}
             className={className}
             onTouchMove={onTouchStart}
             onTouchStart={onTouchStart}
           >
-            {!isHiddenArrow && <FloatingArrow
-              ref={arrowRef}
-              context={context}
-              fill={theme.color.background14}
-              width={20}
-              height={14}
-              tipRadius={4}
-            />}
+            {!isHiddenArrow && (
+              <FloatingArrow
+                ref={arrowRef}
+                context={context}
+                fill={theme.color.background14}
+                width={20}
+                height={14}
+                tipRadius={4}
+              />
+            )}
             {content && <FloatContent ref={tooltipRef}>{content}</FloatContent>}
           </div>
         </FloatingPortal>
