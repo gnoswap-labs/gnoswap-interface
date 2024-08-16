@@ -320,15 +320,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const claimableUSD = useMemo(() => {
     const result = position.reward.reduce((acc: number | null, cur) => {
-      if (acc === -1) return -1;
-
-      if (acc === null && (!cur.claimableUsd || cur.claimableUsd === "")) {
-        return null;
-      }
+      if (acc === -1 || !cur.claimableUsd || cur.claimableUsd === "") return -1;
 
       if (acc === null) return Number(cur.claimableUsd);
-
-      if (!cur.claimableUsd || cur.claimableUsd === "") return -1;
 
       return Number(cur.claimableUsd) + acc;
     }, null);
@@ -339,15 +333,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.reward]);
 
   const dailyEarning = useMemo(() => {
-    let hasEmptyPrice = false;
-
     const result = position.reward.reduce((acc: number | null, current) => {
       const tokenPrice = tokenPrices?.[current.rewardToken.priceID].usd
         ? Number(tokenPrices?.[current.rewardToken.priceID].usd)
         : null;
-      hasEmptyPrice = !tokenPrices?.[current.rewardToken.priceID]?.usd;
-
-      if (tokenPrice === null) return null;
+      if (acc === -1 || tokenPrice === null) return -1;
 
       if (acc === null && !current.accuReward1D) {
         return null;
@@ -358,7 +348,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return acc + Number(current.accuReward1D) * tokenPrice;
     }, null);
 
-    if (hasEmptyPrice) return "-";
+    if (result === null || result === -1) return "-";
 
     return formatOtherPrice(result);
   }, [position.reward, tokenPrices]);

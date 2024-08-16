@@ -357,21 +357,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const claimableUsdValue = Object.values(claimableRewardInfo)
       .flatMap(item => item)
       .reduce((accum: null | number, current) => {
-        if (accum === -1) return -1;
-
-        if (
-          (accum === null || accum === undefined) &&
-          current.accumulatedRewardOf1dUsd === null
-        ) {
-          return null;
-        }
+        if (accum === -1 || current.accumulatedRewardOf1dUsd === null)
+          return -1;
 
         if (accum === null || accum === undefined) {
           return current.accumulatedRewardOf1dUsd;
-        }
-
-        if (current.accumulatedRewardOf1dUsd === null) {
-          return -1;
         }
 
         return accum + current.accumulatedRewardOf1dUsd;
