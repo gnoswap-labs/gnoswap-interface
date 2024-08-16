@@ -462,6 +462,18 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     updatePools();
     updateTokenPrices();
+
+    return () =>
+      setSwapValue({
+        tokenA: null,
+        tokenB: null,
+        type: "EXACT_IN",
+        tokenBAmount: "",
+        tokenAAmount: "",
+        isEarnChanged: false,
+        isReverted: false,
+        isKeepToken: false,
+      });
   }, []);
 
   useEffect(() => {
