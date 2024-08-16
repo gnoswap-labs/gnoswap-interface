@@ -160,6 +160,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
+            minWidth: "136px",
             height: 36,
             padding: isLoading
               ? "8.5px 16px 7.5px 20px"
