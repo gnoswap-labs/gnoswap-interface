@@ -31,7 +31,7 @@ export const useGetPositionsByAddress = (
   }, [props?.poolPath]);
 
   const isClosed = useMemo(() => {
-    return !!props?.isClosed;
+    return props?.isClosed;
   }, [props?.isClosed]);
 
   return useQuery<PositionModel[], Error>({
