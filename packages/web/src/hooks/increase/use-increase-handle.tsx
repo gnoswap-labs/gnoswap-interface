@@ -50,9 +50,6 @@ export const useIncreaseHandle = () => {
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
     type: "Custom",
   });
-  const loading = useMemo(() => {
-    return !selectedPosition;
-  }, [selectedPosition]);
 
   const { positions } = usePositionData({
     poolPath,
@@ -205,11 +202,15 @@ export const useIncreaseHandle = () => {
   ]);
 
   const currentTick = useMemo(() => {
+    if (!selectPool.currentPrice) {
+      return null;
+    }
+
     return priceToTick(selectPool.currentPrice);
   }, [selectPool.currentPrice]);
 
   const isDepositTokenA = useMemo(() => {
-    if (!selectedPosition?.tickUpper) {
+    if (selectedPosition?.tickUpper === undefined || currentTick === null) {
       return false;
     }
 
@@ -217,7 +218,7 @@ export const useIncreaseHandle = () => {
   }, [selectedPosition?.tickUpper, currentTick]);
 
   const isDepositTokenB = useMemo(() => {
-    if (!selectedPosition?.tickLower) {
+    if (selectedPosition?.tickLower === undefined || currentTick === null) {
       return false;
     }
 
@@ -240,12 +241,7 @@ export const useIncreaseHandle = () => {
       tokenBRatioStr,
       feeBoost,
     };
-  }, [
-    selectPool.compareToken?.symbol,
-    selectPool.depositRatio,
-    selectPool.feeBoost,
-    selectPool.selectedFullRange,
-  ]);
+  }, [selectPool.depositRatio, selectPool.feeBoost]);
 
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
@@ -358,6 +354,15 @@ export const useIncreaseHandle = () => {
 
     return "INCREASE_LIQUIDITY";
   }, [tokenAAmountInput, tokenBAmountInput]);
+
+  const loading = useMemo(() => {
+    return (
+      !selectedPosition ||
+      !Number.isFinite(currentTick) ||
+      selectedPosition?.tickUpper === undefined ||
+      selectedPosition?.tickLower === undefined
+    );
+  }, [selectedPosition, currentTick]);
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);

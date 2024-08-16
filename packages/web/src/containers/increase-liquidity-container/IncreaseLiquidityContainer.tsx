@@ -3,6 +3,7 @@ import IncreaseLiquidity from "@components/increase/increase-liquidity/IncreaseL
 import { useIncreaseHandle } from "@hooks/increase/use-increase-handle";
 import { useIncreasePositionModal } from "@hooks/increase/use-increase-position-modal";
 import IncreaseLiquidityLoading from "@components/increase/increase-liquidity/IncreaseLiquidityLoading";
+import { SwapFeeTierType } from "@constants/option.constant";
 
 const IncreaseLiquidityContainer: React.FC = () => {
   const {
@@ -35,7 +36,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
     tokenAAmountInput,
     tokenBAmountInput,
     slippage,
-    swapFeeTier: `FEE_${fee}` as any,
+    swapFeeTier: `FEE_${fee}` as SwapFeeTierType,
     minPriceStr,
     maxPriceStr,
     rangeStatus,
