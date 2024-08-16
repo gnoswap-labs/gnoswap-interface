@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import React, {
   forwardRef,
   useCallback,
@@ -7,39 +8,41 @@ import React, {
   useRef,
   useState,
 } from "react";
-import IconRefresh from "../icons/IconRefresh";
-import IconSwap from "../icons/IconSwap";
-import SelectPriceRangeCustomController from "../select-price-range-cutom-controller/SelectPriceRangeCutomController";
-import SelectTab from "../select-tab/SelectTab";
-import {
-  SelectPriceRangeCustomWrapper,
-  StartingPriceWrapper,
-  TooltipContentWrapper,
-} from "./SelectPriceRangeCustom.styles";
-import { TokenModel } from "@models/token/token-model";
-import { SelectPool } from "@hooks/pool/use-select-pool";
+import { Trans, useTranslation } from "react-i18next";
+
+import { ZOOL_VALUES } from "@constants/graph.constant";
 import {
   DefaultTick,
   PriceRangeType,
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierPriceRange,
 } from "@constants/option.constant";
-import LoadingSpinner from "../loading-spinner/LoadingSpinner";
-import { priceToTick, tickToPrice } from "@utils/swap-utils";
 import { MAX_TICK } from "@constants/swap.constant";
-import BigNumber from "bignumber.js";
-import IconRemove from "../icons/IconRemove";
-import IconAdd from "../icons/IconAdd";
-import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import IconKeyboardArrowLeft from "../icons/IconKeyboardArrowLeft";
-import IconKeyboardArrowRight from "../icons/IconKeyboardArrowRight";
-import IconInfo from "../icons/IconInfo";
-import Tooltip from "../tooltip/Tooltip";
+import { SelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
-import { ZOOL_VALUES } from "@constants/graph.constant";
+import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
-import { Trans, useTranslation } from "react-i18next";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { priceToTick, tickToPrice } from "@utils/swap-utils";
+
+import IconAdd from "../../icons/IconAdd";
+import IconInfo from "../../icons/IconInfo";
+import IconKeyboardArrowLeft from "../../icons/IconKeyboardArrowLeft";
+import IconKeyboardArrowRight from "../../icons/IconKeyboardArrowRight";
+import IconRefresh from "../../icons/IconRefresh";
+import IconRemove from "../../icons/IconRemove";
+import IconSwap from "../../icons/IconSwap";
+import LoadingSpinner from "../../loading-spinner/LoadingSpinner";
+import PoolSelectionGraph from "../../pool-selection-graph/PoolSelectionGraph";
+import SelectTab from "../../select-tab/SelectTab";
+import Tooltip from "../../tooltip/Tooltip";
+import PriceSteps from "./price-steps/PriceSteps";
+
+import {
+  SelectPriceRangeCustomWrapper,
+  StartingPriceWrapper,
+  TooltipContentWrapper,
+} from "./SelectPriceRangeCustom.styles";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -94,9 +97,9 @@ const SelectPriceRangeCustom = forwardRef<
     const [startingPriceValue, setStartingPriceValue] = useState<string>("");
     const [tempPrice, setTempPrice] = useState<string>("");
     const minPriceRangeCustomRef =
-      useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
+      useRef<React.ElementRef<typeof PriceSteps>>(null);
     const maxPriceRangeCustomRef =
-      useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
+      useRef<React.ElementRef<typeof PriceSteps>>(null);
 
     const isCustom = true;
 
@@ -260,7 +263,7 @@ const SelectPriceRangeCustom = forwardRef<
         const priceRange =
           SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
 
-        const getPriceWithTickSpacing = (range :number) => {
+        const getPriceWithTickSpacing = (range: number) => {
           const rangeDiffAmount = currentPrice * (range / 100);
           const currentTick = priceToTick(currentPrice + rangeDiffAmount);
           const nearTick =
@@ -395,7 +398,7 @@ const SelectPriceRangeCustom = forwardRef<
       if (!selectPool.poolPath) {
         changeStartingPrice(startingPriceValue);
       }
-    }, [selectPool.poolPath, priceRangeType]);
+    }, [selectPool.poolPath, startingPriceValue]);
 
     useEffect(() => {
       if (selectPool.selectedFullRange) {
@@ -596,7 +599,7 @@ const SelectPriceRangeCustom = forwardRef<
                   )}
                   <div className="rangge-content-wrapper">
                     <div className="range-controller-wrapper">
-                      <SelectPriceRangeCustomController
+                      <PriceSteps
                         title={t("AddPosition:form.priceRange.minPrice")}
                         current={selectPool.minPrice}
                         token0Symbol={currentTokenA.symbol}
@@ -612,7 +615,7 @@ const SelectPriceRangeCustom = forwardRef<
                         ref={minPriceRangeCustomRef}
                         priceRatio={decimalsRatio}
                       />
-                      <SelectPriceRangeCustomController
+                      <PriceSteps
                         title={t("AddPosition:form.priceRange.maxPrice")}
                         current={selectPool.maxPrice}
                         token0Symbol={currentTokenA.symbol}

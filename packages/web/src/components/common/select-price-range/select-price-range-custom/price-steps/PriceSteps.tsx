@@ -1,28 +1,30 @@
-import {
-  SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
-import { findNearPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import React, {
+  forwardRef,
   useCallback,
   useEffect,
-  useState,
-  forwardRef,
   useImperativeHandle,
   useMemo,
   useRef,
+  useState
 } from "react";
-import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
-import IconAdd from "../icons/IconAdd";
-import IconRemove from "../icons/IconRemove";
+
+import IconAdd from "@components/common/icons/IconAdd";
+import IconRemove from "@components/common/icons/IconRemove";
+import {
+  SwapFeeTierMaxPriceRangeMap,
+  SwapFeeTierType
+} from "@constants/option.constant";
+import { isNumber, subscriptFormat } from "@utils/number-utils";
 import {
   convertToKMB,
-  formatTokenExchangeRate,
+  formatTokenExchangeRate
 } from "@utils/stake-position-utils";
-import { isNumber, subscriptFormat } from "@utils/number-utils";
+import { findNearPrice } from "@utils/swap-utils";
 
-export interface SelectPriceRangeCustomControllerProps {
+import { PriceStepsWrapper } from "./PriceSteps.styles";
+
+export interface PriceStepsProps {
   title: string;
   token0Symbol: string;
   token1Symbol: string;
@@ -38,14 +40,11 @@ export interface SelectPriceRangeCustomControllerProps {
   priceRatio?: number;
 }
 
-export interface SelectPriceRangeCustomControllerRef {
+export interface PriceStepsRef {
   formatData: () => void;
 }
 
-const SelectPriceRangeCustomController = forwardRef<
-  SelectPriceRangeCustomControllerRef,
-  SelectPriceRangeCustomControllerProps
->(
+const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
   (
     {
       title,
@@ -249,7 +248,7 @@ const SelectPriceRangeCustomController = forwardRef<
     }, [current, displayValue]);
 
     return (
-      <SelectPriceRangeCutomControllerWrapper>
+      <PriceStepsWrapper>
         <span className="title">{title}</span>
         <div className="controller-wrapper">
           <div
@@ -293,12 +292,11 @@ const SelectPriceRangeCustomController = forwardRef<
         <div className="token-info-wrapper">
           <span className="token-info">{priceValueString}</span>
         </div>
-      </SelectPriceRangeCutomControllerWrapper>
+      </PriceStepsWrapper>
     );
   },
 );
 
-SelectPriceRangeCustomController.displayName =
-  "SelectPriceRangeCustomController";
+PriceSteps.displayName = "PriceSteps";
 
-export default SelectPriceRangeCustomController;
+export default PriceSteps;

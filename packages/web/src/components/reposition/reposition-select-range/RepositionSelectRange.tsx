@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
-import SelectPriceRangeReposition from "@components/common/select-price-range-reposition/SelectPriceRangeReposition";
+import SelectPriceRangeReposition from "@components/common/select-price-range/SelectPriceRangeReposition";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";

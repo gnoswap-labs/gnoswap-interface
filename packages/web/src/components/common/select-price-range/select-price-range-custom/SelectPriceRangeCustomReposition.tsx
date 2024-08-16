@@ -7,6 +7,7 @@ import {
   SwapFeeTierPriceRange
 } from "@constants/option.constant";
 import { MAX_TICK } from "@constants/swap.constant";
+import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useLoading } from "@hooks/common/use-loading";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -14,18 +15,18 @@ import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 
-import IconAdd from "../icons/IconAdd";
-import IconKeyboardArrowLeft from "../icons/IconKeyboardArrowLeft";
-import IconKeyboardArrowRight from "../icons/IconKeyboardArrowRight";
-import IconRefresh from "../icons/IconRefresh";
-import IconRemove from "../icons/IconRemove";
-import IconSwap from "../icons/IconSwap";
-import LoadingSpinner from "../loading-spinner/LoadingSpinner";
-import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
-import SelectPriceRangeCutomController from "../select-price-range-cutom-controller/SelectPriceRangeCutomController";
-import SelectTab from "../select-tab/SelectTab";
+import IconAdd from "../../icons/IconAdd";
+import IconKeyboardArrowLeft from "../../icons/IconKeyboardArrowLeft";
+import IconKeyboardArrowRight from "../../icons/IconKeyboardArrowRight";
+import IconRefresh from "../../icons/IconRefresh";
+import IconRemove from "../../icons/IconRemove";
+import IconSwap from "../../icons/IconSwap";
+import LoadingSpinner from "../../loading-spinner/LoadingSpinner";
+import PoolSelectionGraph from "../../pool-selection-graph/PoolSelectionGraph";
+import SelectTab from "../../select-tab/SelectTab";
+import SelectPriceRangeCutomController from "./price-steps/PriceSteps";
+
 import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
 
 export interface SelectPriceRangeCustomRepositionProps {

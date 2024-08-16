@@ -10,12 +10,13 @@ import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 
 
-import SelectPriceRangeCustomReposition from "../select-price-range-custom/SelectPriceRangeCustomReposition";
+import SelectPriceRangeCustomReposition from "./select-price-range-custom/SelectPriceRangeCustomReposition";
+
 import {
   SelectPriceRangeItemWrapper,
   SelectPriceRangeWrapper,
   TooltipContentWrapper
-} from "./SelectPriceRangeReposition.styles";
+} from "./SelectPriceRange.styles";
 
 interface SelectPriceRangeProps {
   opened: boolean;
