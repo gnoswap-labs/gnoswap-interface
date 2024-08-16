@@ -59,9 +59,9 @@ export const formatPoolPairAmount = (
       decimals,
       decimals ? BigNumber.ROUND_DOWN : undefined,
     );
+  } else {
+    stringValue = bigNumberValue.toFormat();
   }
-
-  stringValue = bigNumberValue.toFormat();
 
   const [integerValue,fractionValue] = stringValue.split(".");
   if (fractionValue) {
