@@ -2,12 +2,15 @@ export enum QUERY_KEY {
   // common
   initLoading = "initLoading",
   avgBlockTime = "avgBlockTime",
+  notifications = "notifications",
   // address
   username = "username",
   accountGnotTokenBalance = "accountGnotTokenBalance",
   // dashboard
+  dashboardToken = "dashboardToken",
   dashboardTvl = "dashboardTvl",
   dashboardVolume = "dashboardVolume",
+  dashboardActivities = "dashboardActivities",
   // leaderboard
   leaderboard = "leaderboard",
   leaderboardLeader = "leaderboardLeader",
@@ -27,6 +30,7 @@ export enum QUERY_KEY {
   lastedBlockHeight = "lasted_block_height",
   // positions
   positions = "positions",
+  positionHistory = "positionHistory",
   poolPositions = "poolPositions",
   estimateReposition = "estimateReposition",
   positionBins = "positionBins",

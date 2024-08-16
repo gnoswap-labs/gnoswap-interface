@@ -5,7 +5,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { UpDownType } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
-import { useGetChainList, useGetTokensList } from "@query/token";
+import { useGetChainInfo, useGetTokens } from "@query/token";
 import { ITrending } from "@repositories/token";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import React, { useCallback, useMemo } from "react";
@@ -33,8 +33,8 @@ const defaultToken = {
 const TrendingCardListContainer: React.FC = () => {
   const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
-  const { data: { tokens = [] } = {} } = useGetTokensList();
-  const { data: { trending = [] } = {} } = useGetChainList();
+  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { trending = [] } = {} } = useGetChainInfo();
   const { gnot, wugnotPath } = useGnotToGnot();
   const { isLoadingTrendingTokens } = useLoading();
   useTokenData();

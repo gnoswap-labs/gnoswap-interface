@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
-import { useGetTokenByPath } from "@query/token";
+import { useGetToken } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -17,10 +17,10 @@ const TokenSwapContainer: React.FC = () => {
   const { getGnotPath } = useGnotToGnot();
   const path = router.getTokenPath();
   const tokenAPath = router.getParameter("tokenA");
-  const { data: tokenB } = useGetTokenByPath(path, {
+  const { data: tokenB } = useGetToken(path, {
     enabled: !!path,
   });
-  const { data: tokenA = null } = useGetTokenByPath(tokenAPath, {
+  const { data: tokenA = null } = useGetToken(tokenAPath, {
     enabled: !!tokenAPath,
   });
 

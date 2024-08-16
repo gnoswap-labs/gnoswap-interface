@@ -24,8 +24,5 @@ export const useGetUsernameByAddress = (
       return data;
     },
     ...options,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-    retry: false,
   });
 };

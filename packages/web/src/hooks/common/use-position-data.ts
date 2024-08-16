@@ -5,15 +5,9 @@ import {
   useGetPositionsByAddress,
   useMakePoolPositions,
 } from "@query/positions";
-import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "./use-loading";
-import { PATH, PATH_10SECOND, PATH_60SECOND } from "@constants/common.constant";
 import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
 import { PositionModel } from "@models/position/position-model";
-
-function secToMilliSec(sec: number) {
-  return sec * 1000;
-}
 
 export interface UsePositionDataOption {
   address?: string;
@@ -28,8 +22,6 @@ export interface UsePositionDataOption {
 }
 
 export const usePositionData = (options?: UsePositionDataOption) => {
-  const router = useRouter();
-  const { back } = router.query;
   const { account, connected: walletConnected } = useWallet();
   const { pools, loading: isLoadingPool } = usePoolData();
 
@@ -46,18 +38,6 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     address: fetchedAddress as string,
     isClosed: options?.isClosed,
     poolPath: options?.poolPath,
-    queryOptions: {
-      refetchInterval: () => {
-        if (PATH.includes(router.pathname)) return secToMilliSec(back ? 3 : 15);
-
-        if (PATH_10SECOND.includes(router.pathname)) return secToMilliSec(10);
-
-        if (PATH_60SECOND.includes(router.pathname)) return secToMilliSec(60);
-
-        return false;
-      },
-      ...options?.queryOption,
-    },
   });
 
   const { isLoading: isCommonLoading } = useLoading();

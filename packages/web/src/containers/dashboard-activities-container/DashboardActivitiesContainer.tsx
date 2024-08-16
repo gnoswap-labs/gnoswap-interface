@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import React, { ReactNode, useCallback, useState } from "react";
@@ -7,15 +6,15 @@ import { ValuesType } from "utility-types";
 
 import ActivityList from "@components/dashboard/activity-list/ActivityList";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import {
-  ActivityData,
-  ActivityResponse,
-} from "@repositories/activity/responses/activity-responses";
+import { ActivityData } from "@repositories/activity/responses/activity-responses";
 import { DexEvent } from "@repositories/common";
-import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount,
+} from "@utils/new-number-utils";
+import { useGetDashboardActivities } from "@query/dashboard/use-get-dashboard-activities";
 
 dayjs.extend(relativeTime);
 
@@ -75,19 +74,6 @@ export const ACTIVITY_SWITCH_DATA = [
 
 export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
 
-export const dummyTokenList: Activity[] = [
-  {
-    action: "Add GNOT and GNS",
-    totalValue: "$12,090",
-    tokenAmountOne: "100 ATOM",
-    tokenAmountTwo: "19 GNS",
-    account: "g129kua...ndsu12",
-    time: "less than a minute ago",
-    explorerUrl:
-      "https://gnoscan.io/transactions/details?txhash=hNaBGE2oDb15Q08y68wpycjwwGaCcXcU2jnrRRfuUo0%3D",
-  },
-];
-
 const replaceToken = (symbol: string) => {
   if (symbol === "wugnot" || symbol === "WGNOT") return "GNOT";
   return symbol;
@@ -99,7 +85,6 @@ const DashboardActivitiesContainer: React.FC = () => {
     ACTIVITY_TYPE.ALL,
   );
   const { getTxUrl } = useGnoscanUrl();
-  const { dashboardRepository } = useGnoswapContext();
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState<SortOption>();
   const { breakpoint } = useWindowSize();
@@ -109,18 +94,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     isFetched,
     error,
     data: activities = [],
-  } = useQuery<ActivityResponse, Error>({
-    queryKey: [
-      "activities",
-      activityType,
-      page,
-      sortOption?.key,
-      sortOption?.direction,
-    ],
-    queryFn: () =>
-      dashboardRepository.getDashboardOnchainActivity({ type: activityType }),
-    refetchInterval: 10_000,
-  });
+  } = useGetDashboardActivities(activityType);
 
   const changeActivityType = useCallback(
     ({ key: newType }: { display: string; key: string }) => {
@@ -247,7 +221,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     const tokenBAmount =
       tokenBSymbol && shouldShowTokenBAmount
         ? `${formatPoolPairAmount(res.tokenBAmount, {
-            decimals: res.tokenB.decimals
+            decimals: res.tokenB.decimals,
           })} ${replaceToken(res.tokenB.symbol)}`
         : "-";
 

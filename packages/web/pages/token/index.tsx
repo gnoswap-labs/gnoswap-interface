@@ -13,7 +13,7 @@ import TrendingCryptoCardListContainer from "@containers/trending-crypto-card-li
 import TrendingCryptos from "@components/token/trending-cryptos/TrendingCryptos";
 import GainerAndLoserContainer from "@containers/gainer-and-loser-container/GainerAndLoserContainer";
 import { useLoading } from "@hooks/common/use-loading";
-import { useGetTokenByPath, useGetTokenPricesByPath } from "@query/token";
+import { useGetToken, useGetTokenPrices } from "@query/token";
 import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
@@ -43,7 +43,7 @@ export default function Token() {
   const { isLoading } = useLoading();
   const { t } = useTranslation();
 
-  const { data: token } = useGetTokenByPath(path, {
+  const { data: token } = useGetToken(path, {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
       if (err?.["response"]?.["status"] === 404) {
@@ -54,7 +54,7 @@ export default function Token() {
       }
     },
   });
-  const { data: { usd: currentPrice } = {} } = useGetTokenPricesByPath(
+  const { data: { usd: currentPrice } = {} } = useGetTokenPrices(
     path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
     { enabled: !!path },
   );
@@ -77,32 +77,22 @@ export default function Token() {
     ];
   }, [token, t]);
 
-  const price = useMemo(() => {
-    if (currentPrice) {
-      return formatPrice(currentPrice);
+  const wrappedToken = useMemo(() => {
+    if (!token) {
+      return null;
     }
-
-    return null;
-  }, [currentPrice]);
-
-  const wrappedToken = useMemo(() => getGnotPath(token), [getGnotPath, token]);
+    return getGnotPath(token);
+  }, [getGnotPath, token]);
 
   const seoInfo = useMemo(() => SEOInfo["/token"], []);
 
   const title = useMemo(() => {
     return seoInfo.title([
-      currentPrice ? price : undefined,
-      token ? wrappedToken.name : undefined,
-      token ? wrappedToken.symbol : undefined,
+      currentPrice ? formatPrice(currentPrice) : undefined,
+      token ? wrappedToken?.name : undefined,
+      token ? wrappedToken?.symbol : undefined,
     ]);
-  }, [
-    currentPrice,
-    price,
-    seoInfo,
-    token,
-    wrappedToken.name,
-    wrappedToken.symbol,
-  ]);
+  }, [currentPrice, seoInfo, token, wrappedToken?.name, wrappedToken?.symbol]);
 
   const ogTitle = useMemo(
     () =>

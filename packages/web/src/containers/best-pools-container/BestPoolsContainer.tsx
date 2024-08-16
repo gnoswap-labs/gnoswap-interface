@@ -3,10 +3,10 @@ import BestPools from "@components/token/best-pools/BestPools";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import {
-  useGetChainList,
-  useGetTokenByPath,
-  useGetTokenDetailByPath,
-  useGetTokensList,
+  useGetToken,
+  useGetTokens,
+  useGetChainInfo,
+  useGetTokenDetails,
 } from "@query/token";
 import { IBestPoolResponse } from "@repositories/token";
 import { useGetPoolList } from "src/react-query/pools";
@@ -29,15 +29,15 @@ const BestPoolsContainer: React.FC = () => {
   const { wugnotPath, getGnotPath } = useGnotToGnot();
   const router = useCustomRouter();
   const path = router.getTokenPath();
-  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(
+  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetails(
     path === "gnot" ? wugnotPath : path,
     { enabled: !!path },
   );
   const { data: pools = [], isLoading: isLoadingGetPoolList } =
     useGetPoolList();
-  const { data: tokenB } = useGetTokenByPath(path, { enabled: !!path });
-  const { isLoading: isLoadingChainList } = useGetChainList();
-  const { isLoading: isLoadingListToken } = useGetTokensList();
+  const { data: tokenB } = useGetToken(path, { enabled: !!path });
+  const { isLoading: isLoadingChainList } = useGetChainInfo();
+  const { isLoading: isLoadingListToken } = useGetTokens();
   const { isLoading: isLoadingCommon } = useLoading();
 
   const bestPoolList: BestPool[] = useMemo(() => {

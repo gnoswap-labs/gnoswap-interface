@@ -68,11 +68,6 @@ export const useSwap = ({
         !!tokenA.path &&
         !!tokenB &&
         !!tokenB.path,
-      refetchInterval: () => {
-        if (!!tokenA && !!tokenB && direction && swapAmount) return 10_000;
-
-        return false;
-      },
     },
   );
 

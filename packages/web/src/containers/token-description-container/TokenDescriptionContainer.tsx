@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TokenDescription from "@components/token/token-description/TokenDescription";
-import { useGetTokenByPath } from "@query/token";
+import { useGetToken } from "@query/token";
 import { useLoading } from "@hooks/common/use-loading";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -44,7 +44,7 @@ const TokenDescriptionContainer: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const router = useCustomRouter();
   const path = router.getTokenPath();
-  const { data: tokenB, isLoading } = useGetTokenByPath(path, {
+  const { data: tokenB, isLoading } = useGetToken(path, {
     enabled: !!path,
   });
   const { isLoading: isLoadingCommon } = useLoading();
@@ -56,7 +56,7 @@ const TokenDescriptionContainer: React.FC = () => {
       setTimeout(() => {
         setCopied(false);
       }, 2000);
-    } catch (e) {
+    } catch {
       throw new Error("Copy Error!");
     }
   };

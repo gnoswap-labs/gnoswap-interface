@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import Breadcrumbs from "@components/common/breadcrumbs/Breadcrumbs";
 import useRouter from "@hooks/common/use-custom-router";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { useGetTokenByPath } from "@query/token";
+import { useGetToken } from "@query/token";
 import { ITokenResponse } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTranslation } from "react-i18next";
@@ -41,7 +41,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const path = router.getTokenPath();
-  const { data: tokenB } = useGetTokenByPath(path, {
+  const { data: tokenB } = useGetToken(path, {
     enabled: !!path,
   });
   const { t } = useTranslation();

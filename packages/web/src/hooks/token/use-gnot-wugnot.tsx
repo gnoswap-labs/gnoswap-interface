@@ -1,15 +1,25 @@
 import { useCallback } from "react";
-import { useGetTokenByPath } from "@query/token";
+import { useGetToken } from "@query/token";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 
 const GNOT_PATH = "gnot";
 
 export const useGnotToGnot = () => {
-  const { data: gnot, isFetched } = useGetTokenByPath(GNOT_PATH);
-  const { data: wugnot } = useGetTokenByPath(WRAPPED_GNOT_PATH);
+  const { data: gnot, isFetched } = useGetToken(GNOT_PATH);
+  const { data: wugnot } = useGetToken(WRAPPED_GNOT_PATH);
 
   const getGnotPath = useCallback(
-    (token: any) => {
+    (
+      token:
+        | {
+            path?: string;
+            name?: string;
+            logoURI?: string;
+            symbol?: string;
+          }
+        | null
+        | undefined,
+    ) => {
       return {
         path:
           token?.path === WRAPPED_GNOT_PATH

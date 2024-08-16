@@ -2,7 +2,7 @@ import IconNoPosition from "@components/common/icons/IconNoPosition";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { AccountModel } from "@models/account/account-model";
-import { useGetTokenPrices } from "@query/token";
+import { useGetAllTokenPrices } from "@query/token";
 import { convertToKMB } from "@utils/stake-position-utils";
 import BigNumber from "bignumber.js";
 import React, { useMemo } from "react";
@@ -19,7 +19,7 @@ const EarnMyPositionNoLiquidity: React.FC<EarnMyPositionNoLiquidityProps> = ({
 }) => {
   const { t } = useTranslation();
   const { balances: balancesPrice } = useTokenData();
-  const { data: tokenPrices = {} } = useGetTokenPrices();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
       const path = key === "gnot" ? WRAPPED_GNOT_PATH : key;

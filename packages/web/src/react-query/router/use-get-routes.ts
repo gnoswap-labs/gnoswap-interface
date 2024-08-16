@@ -8,6 +8,9 @@ import { wait } from "@utils/common";
 
 import { QUERY_KEY } from "../query-keys";
 
+const REFETCH_INTERVAL = 10_000;
+const STALE_TIME = 10_000;
+
 export const useGetRoutes = (
   request: {
     inputToken: TokenModel | null;
@@ -73,8 +76,9 @@ export const useGetRoutes = (
       return result;
     },
     // retry: false,
+    refetchInterval: REFETCH_INTERVAL,
+    staleTime: STALE_TIME,
     enabled: !!request?.inputToken?.path && !!request?.outputToken?.path,
     ...options,
   });
 };
-

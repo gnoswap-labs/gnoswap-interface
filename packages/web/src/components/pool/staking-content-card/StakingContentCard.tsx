@@ -27,7 +27,7 @@ import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
-import { useGetTokenPrices } from "@query/token";
+import { useGetAllTokenPrices } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 import { useTranslation } from "react-i18next";
 
@@ -51,7 +51,7 @@ const PriceTooltipContent = ({
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
-  const { data: tokenPrices = {} } = useGetTokenPrices();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const isAnyPriceEmpty = useCallback(
     (position: PoolPositionModel) => {

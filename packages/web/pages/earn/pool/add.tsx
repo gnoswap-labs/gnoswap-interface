@@ -43,7 +43,6 @@ export default function EarnAdd() {
   const poolPath = router.getPoolPath();
   const { data, isLoading } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
-    refetchInterval: 10_000,
   });
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();

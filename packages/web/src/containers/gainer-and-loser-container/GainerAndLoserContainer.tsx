@@ -2,9 +2,9 @@ import React, { useMemo } from "react";
 import GainerAndLoser from "@components/token/gainer-and-loser/GainerAndLoser";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import {
-  useGetChainList,
-  useGetTokenDetailByPath,
-  useGetTokensList,
+  useGetChainInfo,
+  useGetTokenDetails,
+  useGetTokens,
 } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
 import { IGainer } from "@repositories/token";
@@ -94,12 +94,12 @@ const GainerAndLoserContainer: React.FC = () => {
   const router = useCustomRouter();
   const path = router.getTokenPath();
   const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } =
-    useGetTokensList();
+    useGetTokens();
   const { data: { gainers = [], losers = [] } = {}, isLoading } =
-    useGetChainList();
+    useGetChainInfo();
   const { gnot, wugnotPath } = useGnotToGnot();
   const { isLoading: isLoadingGetPoolList } = useGetPoolList();
-  const { isLoading: isLoadingTokenDetail } = useGetTokenDetailByPath(
+  const { isLoading: isLoadingTokenDetail } = useGetTokenDetails(
     path === "gnot" ? wugnotPath : path,
     {
       enabled: !!path,

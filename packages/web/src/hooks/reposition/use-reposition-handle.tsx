@@ -7,7 +7,7 @@ import {
   DEFAULT_SLIPPAGE,
   RANGE_STATUS_OPTION,
   SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useAddress } from "@hooks/address/use-address";
@@ -24,21 +24,21 @@ import { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
 import {
   RepositionLiquidityFailedResponse,
-  RepositionLiquiditySuccessResponse
+  RepositionLiquiditySuccessResponse,
 } from "@repositories/position/response";
 import {
   SwapRouteFailedResponse,
-  SwapRouteSuccessResponse
+  SwapRouteSuccessResponse,
 } from "@repositories/swap/response/swap-route-response";
 import { IncreaseState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
-import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
-import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import {
-  priceToNearTick,
-  tickToPrice
-} from "@utils/swap-utils";
+  getRepositionAmountsByPriceRange,
+  getRepositionAmountsWithSwapSimulation,
+} from "@utils/reposition-utils";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -284,7 +284,11 @@ export const useRepositionHandle = () => {
   ]);
 
   const estimateSwapRequest = useMemo(() => {
-    if (!currentAmounts || !initialEstimatedRepositionAmounts || !selectedPosition) {
+    if (
+      !currentAmounts ||
+      !initialEstimatedRepositionAmounts ||
+      !selectedPosition
+    ) {
       return null;
     }
     const { amountA, amountB } = currentAmounts;
@@ -314,8 +318,6 @@ export const useRepositionHandle = () => {
     isError: isErrorLiquidity,
   } = useGetRoutes(estimateSwapRequest, {
     enabled: !!estimateSwapRequest && !!estimateSwapRequest.tokenAmount,
-    refetchInterval: 10_000,
-    staleTime: 10_000,
   });
 
   const buttonType: REPOSITION_BUTTON_TYPE = useMemo(() => {
@@ -329,7 +331,11 @@ export const useRepositionHandle = () => {
       return "LOADING";
     }
     return "REPOSITION";
-  }, [initialEstimatedRepositionAmounts, isErrorLiquidity, isEstimatedRemainSwapLoading]);
+  }, [
+    initialEstimatedRepositionAmounts,
+    isErrorLiquidity,
+    isEstimatedRemainSwapLoading,
+  ]);
 
   const estimatedRepositionAmounts = useMemo(() => {
     if (
@@ -411,11 +417,7 @@ export const useRepositionHandle = () => {
       return true;
     }
     return false;
-  }, [
-    estimateSwapRequest,
-    currentAmounts,
-    estimatedRepositionAmounts,
-  ]);
+  }, [estimateSwapRequest, currentAmounts, estimatedRepositionAmounts]);
 
   const changeTokenAAmount = useCallback(
     (amount: string) => {

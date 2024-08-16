@@ -19,7 +19,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetAvgBlockTime } from "@query/address";
-import { useGetTokenPrices } from "@query/token";
+import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
@@ -70,7 +70,7 @@ const WalletBalanceContainer: React.FC = () => {
   } = useBroadcastHandler();
   const { openModal } = useTransactionConfirmModal();
   const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } =
-    useGetTokenPrices();
+    useGetAllTokenPrices();
 
   const { getMessage } = useMessage();
 

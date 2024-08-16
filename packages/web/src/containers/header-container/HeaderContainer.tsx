@@ -5,7 +5,7 @@ import Header from "@components/common/header/Header";
 import {
   MATH_NEGATIVE_TYPE,
   SwapFeeTierInfoMap,
-  SwapFeeTierType
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
@@ -20,7 +20,7 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetPoolList } from "@query/pools";
-import { useGetTokenPrices, useGetTokensList } from "@query/token";
+import { useGetAllTokenPrices, useGetTokens } from "@query/token";
 import { ThemeState, TokenState } from "@states/index";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
@@ -73,8 +73,8 @@ const HeaderContainer: React.FC = () => {
     data: { tokens: listTokens = [] } = {},
     isFetched,
     error,
-  } = useGetTokensList({ enabled: !!searchMenuToggle });
-  const { data: tokenPrices = {} } = useGetTokenPrices({
+  } = useGetTokens({ enabled: !!searchMenuToggle });
+  const { data: tokenPrices = {} } = useGetAllTokenPrices({
     enabled: !!searchMenuToggle,
   });
   const recents = useMemo(() => {

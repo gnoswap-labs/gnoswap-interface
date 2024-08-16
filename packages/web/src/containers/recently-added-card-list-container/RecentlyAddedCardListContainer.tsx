@@ -3,7 +3,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { CardListKeyStats } from "@models/common/card-list-item-info";
 import { useGetDashboardVolume } from "@query/dashboard";
-import { useGetChainList } from "@query/token";
+import { useGetChainInfo } from "@query/token";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
 import { useTranslation } from "next-i18next";
@@ -14,7 +14,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { isLoadingDashboardStats } = useLoading();
   const { data } = useGetDashboardVolume();
-  const { data: chainData } = useGetChainList();
+  const { data: chainData } = useGetChainInfo();
   const { t } = useTranslation();
 
   const { fees24hUsd } = data || {};

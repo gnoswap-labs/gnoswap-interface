@@ -49,11 +49,6 @@ const StakingContainer: React.FC = () => {
 
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
-    refetchInterval: () => {
-      if (!!poolPath) return 10_000;
-
-      return false;
-    },
   });
   const stakedPositions = useMemo(
     () => allPositions.filter(item => item.staked),
@@ -82,9 +77,10 @@ const StakingContainer: React.FC = () => {
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 931 && window.innerWidth > 375
-        ? setMobile(true)
-        : setMobile(false);
+      const windowInnerWidth = window.innerWidth;
+      // FIXME: Manage with meaningful static variables
+      const isMobile = windowInnerWidth < 931 && windowInnerWidth > 375;
+      setMobile(isMobile);
     }
   };
 

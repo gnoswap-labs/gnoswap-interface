@@ -11,7 +11,7 @@ import {
   UpDownType,
 } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
-import { useGetTokenPrices, useGetTokensList } from "@query/token";
+import { useGetAllTokenPrices, useGetTokens } from "@query/token";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { toUnitFormat } from "@utils/number-utils";
@@ -28,13 +28,13 @@ export const useTokenData = () => {
     isFetched,
     error,
     refetch: refetchTokenList,
-  } = useGetTokensList();
+  } = useGetTokens();
   const {
     data: tokenPrices = {},
     isLoading: isLoadingTokenPrice,
     isFetched: isFetchedTokenPrices,
     refetch: refetchTokenPrices,
-  } = useGetTokenPrices();
+  } = useGetAllTokenPrices();
   const { account, availNetwork, refetchGnotBalance } = useWallet();
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
@@ -70,7 +70,7 @@ export const useTokenData = () => {
 
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
-      .sort((t1, t2) => {
+      .sort((t1: { path: string }, t2: { path: string }) => {
         if (tokenPrices[t1.path] && tokenPrices[t2.path]) {
           return (
             BigNumber(tokenPrices[t2.path].volume).toNumber() -
@@ -85,7 +85,7 @@ export const useTokenData = () => {
         }
         return 0;
       })
-      .filter((_, index) => index < 3);
+      .filter((_: unknown, index: number) => index < 3);
     return sortedTokens.map(token => {
       const tokenPrice = tokenPrices[token.priceID];
       if (
