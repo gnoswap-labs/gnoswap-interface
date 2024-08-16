@@ -144,7 +144,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
-    let feeBoost: string | null = null;
+    let feeBoost: string = "-";
+    let estimatedApr: string = formatRate(selectPool.estimatedAPR) ?? "-";
+
     if (selectPool.selectedFullRange) {
       const tokenASymbol =
         tokenA?.symbol === selectPool.compareToken?.symbol
@@ -158,13 +160,14 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return {
         depositRatio,
         feeBoost: "x1",
-        estimatedApr: "-",
+        estimatedApr,
       };
     }
-    const deposiRatio = selectPool.depositRatio;
-    if (deposiRatio !== null) {
-      const tokenARatioStr = BigNumber(deposiRatio).toFixed(1);
-      const tokenBRatioStr = BigNumber(100 - deposiRatio).toFixed(1);
+
+    const tokenAdepositRatio = selectPool.depositRatio;
+    if (tokenAdepositRatio !== null) {
+      const tokenARatioStr = BigNumber(tokenAdepositRatio).toFixed(1);
+      const tokenBRatioStr = BigNumber(100 - tokenAdepositRatio).toFixed(1);
       const tokenASymbol =
         tokenA?.symbol === selectPool.compareToken?.symbol
           ? tokenA?.symbol
@@ -175,19 +178,25 @@ const EarnAddLiquidityContainer: React.FC = () => {
           : tokenA?.symbol;
       depositRatio = `${tokenARatioStr}% ${tokenASymbol} / ${tokenBRatioStr}% ${tokenBSymbol}`;
     }
-    feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
+    if (tokenAdepositRatio === 0 || tokenAdepositRatio === 100) {
+      estimatedApr = "-";
+    } else {
+      feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
+    }
 
     return {
       depositRatio,
       feeBoost,
-      estimatedApr: formatRate(selectPool.estimatedAPR) ?? "-",
+      estimatedApr,
     };
   }, [
-    selectPool.currentPrice,
-    selectPool.maxPrice,
-    selectPool.minPrice,
+    selectPool.compareToken?.symbol,
+    selectPool.depositRatio,
+    selectPool.feeBoost,
+    selectPool.selectedFullRange,
     tokenA?.symbol,
     tokenB?.symbol,
+    selectPool.estimatedAPR,
   ]);
 
   const submitType: AddLiquiditySubmitType = useMemo(() => {

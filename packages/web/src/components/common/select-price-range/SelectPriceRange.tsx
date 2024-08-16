@@ -1,24 +1,27 @@
-import {
-  DefaultTick,
-  PriceRangeStr,
-  PriceRangeTooltip,
-  PriceRangeType,
-} from "@constants/option.constant";
 import React, { useCallback, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
+
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import {
+  DefaultTick,
+  PriceRangeStr,
+  PriceRangeTooltip,
+  PriceRangeType
+} from "@constants/option.constant";
+import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import { SelectPool } from "@hooks/pool/use-select-pool";
+import { TokenModel } from "@models/token/token-model";
+import { isFetchedPools } from "@states/pool";
+
+import SelectPriceRangeCustom from "./select-price-range-custom/SelectPriceRangeCustom";
+
+import {
   SelectPriceRangeItemWrapper,
   SelectPriceRangeWrapper,
-  TooltipContentWrapper,
+  TooltipContentWrapper
 } from "./SelectPriceRange.styles";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import SelectPriceRangeCustom from "../select-price-range-custom/SelectPriceRangeCustom";
-import { TokenModel } from "@models/token/token-model";
-import { SelectPool } from "@hooks/pool/use-select-pool";
-import { isFetchedPools } from "@states/pool";
-import { useTranslation } from "react-i18next";
 
 interface SelectPriceRangeProps {
   opened: boolean;

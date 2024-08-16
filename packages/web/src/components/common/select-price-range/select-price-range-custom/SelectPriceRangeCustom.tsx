@@ -7,39 +7,38 @@ import React, {
   useRef,
   useState,
 } from "react";
-import IconRefresh from "../icons/IconRefresh";
-import IconSwap from "../icons/IconSwap";
-import SelectPriceRangeCustomController from "../select-price-range-cutom-controller/SelectPriceRangeCutomController";
-import SelectTab from "../select-tab/SelectTab";
-import {
-  SelectPriceRangeCustomWrapper,
-  StartingPriceWrapper,
-  TooltipContentWrapper,
-} from "./SelectPriceRangeCustom.styles";
-import { TokenModel } from "@models/token/token-model";
-import { SelectPool } from "@hooks/pool/use-select-pool";
+import { Trans, useTranslation } from "react-i18next";
+
+import { ZOOL_VALUES } from "@constants/graph.constant";
 import {
   DefaultTick,
   PriceRangeType,
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierPriceRange,
 } from "@constants/option.constant";
-import LoadingSpinner from "../loading-spinner/LoadingSpinner";
-import { priceToTick, tickToPrice } from "@utils/swap-utils";
 import { MAX_TICK } from "@constants/swap.constant";
-import BigNumber from "bignumber.js";
-import IconRemove from "../icons/IconRemove";
-import IconAdd from "../icons/IconAdd";
-import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import IconKeyboardArrowLeft from "../icons/IconKeyboardArrowLeft";
-import IconKeyboardArrowRight from "../icons/IconKeyboardArrowRight";
-import IconInfo from "../icons/IconInfo";
-import Tooltip from "../tooltip/Tooltip";
+import { SelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
-import { ZOOL_VALUES } from "@constants/graph.constant";
+import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
-import { Trans, useTranslation } from "react-i18next";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { priceToTick, tickToPrice } from "@utils/swap-utils";
+
+import IconAdd from "../../icons/IconAdd";
+import IconKeyboardArrowLeft from "../../icons/IconKeyboardArrowLeft";
+import IconKeyboardArrowRight from "../../icons/IconKeyboardArrowRight";
+import IconRefresh from "../../icons/IconRefresh";
+import IconRemove from "../../icons/IconRemove";
+import IconSwap from "../../icons/IconSwap";
+import LoadingSpinner from "../../loading-spinner/LoadingSpinner";
+import PoolSelectionGraph from "../../pool-selection-graph/PoolSelectionGraph";
+import SelectTab from "../../select-tab/SelectTab";
+import PriceSteps from "./price-steps/PriceSteps";
+import StartingPrice from "./starting-price/StartingPrice";
+
+import {
+  SelectPriceRangeCustomWrapper
+} from "./SelectPriceRangeCustom.styles";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -92,11 +91,10 @@ const SelectPriceRangeCustom = forwardRef<
     const GRAPH_WIDTH = 388;
     const GRAPH_HEIGHT = 160;
     const [startingPriceValue, setStartingPriceValue] = useState<string>("");
-    const [tempPrice, setTempPrice] = useState<string>("");
     const minPriceRangeCustomRef =
-      useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
+      useRef<React.ElementRef<typeof PriceSteps>>(null);
     const maxPriceRangeCustomRef =
-      useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
+      useRef<React.ElementRef<typeof PriceSteps>>(null);
 
     const isCustom = true;
 
@@ -110,34 +108,18 @@ const SelectPriceRangeCustom = forwardRef<
       selectPool.renderState() === "DONE";
 
     const flip = useMemo(() => {
-      if (!selectPool.compareToken) {
-        return false;
-      }
-      if (selectPool.startPrice) {
-        return false;
-      }
-
       const compareTokenPaths = [
         checkGnotPath(tokenA.path),
         checkGnotPath(tokenB.path),
       ].sort();
       return (
-        compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path)
+        compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken?.path || "")
       );
     }, [
       selectPool.compareToken,
-      selectPool.startPrice,
       tokenA.path,
       tokenB.path,
     ]);
-
-    const currentTokenA = useMemo(() => {
-      return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
-    }, [flip, tokenA, tokenB]);
-
-    const currentTokenB = useMemo(() => {
-      return flip ? getGnotPath(tokenA) : getGnotPath(tokenB);
-    }, [flip, tokenA, tokenB]);
 
     const currentPriceStr = useMemo(() => {
       if (!selectPool.currentPrice) {
@@ -160,65 +142,28 @@ const SelectPriceRangeCustom = forwardRef<
 
       return (
         <>
-          1 {currentTokenA.symbol} =&nbsp;
+          1 {tokenA.symbol} =&nbsp;
           {formatTokenExchangeRate(currentPrice, {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
           })}
           &nbsp;
-          {currentTokenB.symbol}
+          {tokenB.symbol}
         </>
       );
     }, [
-      currentTokenA.symbol,
-      currentTokenB.symbol,
       selectPool.compareToken?.path,
       selectPool.currentPrice,
+      tokenA.symbol,
       tokenA.decimals,
       tokenA.path,
+      tokenB.symbol,
       tokenB.decimals,
     ]);
 
     useImperativeHandle(ref, () => {
       return { resetRange };
     });
-
-    const startingPriceDescription = useMemo(() => {
-      if (!currentTokenA || !currentTokenB) {
-        return "";
-      }
-      if (startingPriceValue === "" || BigNumber(startingPriceValue).isNaN()) {
-        if (!defaultPrice || !selectPool.isCreate) {
-          return "";
-        }
-        return (
-          <>
-            1 {currentTokenA.symbol} = &nbsp;
-            {formatTokenExchangeRate(defaultPrice, {
-              maxSignificantDigits: 6,
-              minLimit: 0.000001,
-            })}
-            &nbsp;{currentTokenB.symbol}
-          </>
-        );
-      }
-      return (
-        <>
-          1 {currentTokenA.symbol} =&nbsp;
-          {formatTokenExchangeRate(startingPriceValue, {
-            maxSignificantDigits: 6,
-            minLimit: 0.000001,
-          })}
-          &nbsp; {currentTokenB.symbol}
-        </>
-      );
-    }, [
-      currentTokenA,
-      currentTokenB,
-      defaultPrice,
-      selectPool.isCreate,
-      startingPriceValue,
-    ]);
 
     const onClickTabItem = useCallback(
       (symbol: string) => {
@@ -260,7 +205,7 @@ const SelectPriceRangeCustom = forwardRef<
         const priceRange =
           SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
 
-        const getPriceWithTickSpacing = (range :number) => {
+        const getPriceWithTickSpacing = (range: number) => {
           const rangeDiffAmount = currentPrice * (range / 100);
           const currentTick = priceToTick(currentPrice + rangeDiffAmount);
           const nearTick =
@@ -292,32 +237,6 @@ const SelectPriceRangeCustom = forwardRef<
       setShiftPosition(0);
       initPriceRange(priceRangeType);
     }
-
-    const onChangeStartingPrice = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        const formattedValue = value.replace(/[^0-9.]/, "");
-        setStartingPriceValue(formattedValue);
-      },
-      [],
-    );
-
-    useEffect(() => {
-      const timeoutId = setTimeout(() => {
-        changeStartingPrice(startingPriceValue);
-      }, 2000);
-      return () => clearTimeout(timeoutId);
-    }, [startingPriceValue]);
-
-    const updateStartingPrice = useCallback(() => {
-      if (startingPriceValue === "" || !Number(startingPriceValue)) {
-        setStartingPriceValue("");
-        changeStartingPrice("");
-        return;
-      }
-      setTempPrice(startingPriceValue);
-      changeStartingPrice(startingPriceValue);
-    }, [startingPriceValue]);
 
     const onSelectCustomRangeByMin = useCallback(() => {
       selectPool.setFullRange(false);
@@ -395,7 +314,7 @@ const SelectPriceRangeCustom = forwardRef<
       if (!selectPool.poolPath) {
         changeStartingPrice(startingPriceValue);
       }
-    }, [selectPool.poolPath, priceRangeType]);
+    }, [selectPool.poolPath, startingPriceValue]);
 
     useEffect(() => {
       if (selectPool.selectedFullRange) {
@@ -416,14 +335,6 @@ const SelectPriceRangeCustom = forwardRef<
       return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
     }, [tokenA, tokenB, isKeepToken]);
 
-    const formatStartingPrice = useMemo(() => {
-      if (tempPrice) {
-        return tempPrice;
-      }
-
-      return startingPriceValue;
-    }, [startingPriceValue, tempPrice]);
-
     const decimalsRatio = useMemo(
       () => tokenB.decimals - tokenA.decimals || 0,
       [tokenA.decimals, tokenB.decimals],
@@ -440,36 +351,15 @@ const SelectPriceRangeCustom = forwardRef<
     return (
       <>
         {selectPool.isCreate && (
-          <StartingPriceWrapper className="starting-price-wrapper">
-            <div className="title-wrapper">
-              <span className="sub-title">
-                {t("AddPosition:createPool.startingPrice")}
-              </span>
-              <div className="price-info">
-                {!startingPriceValue && !isEmptyLiquidity && (
-                  <Tooltip
-                    placement="top"
-                    FloatingContent={
-                      <TooltipContentWrapper>
-                        {t("AddPosition:createPool.tooltip")}
-                      </TooltipContentWrapper>
-                    }
-                  >
-                    <IconInfo />
-                  </Tooltip>
-                )}
-                <span className="description">{startingPriceDescription}</span>
-              </div>
-            </div>
-            <input
-              className="starting-price-input"
-              value={formatStartingPrice}
-              onChange={onChangeStartingPrice}
-              onBlur={updateStartingPrice}
-              onFocus={() => setTempPrice("")}
-              placeholder={t("AddPosition:createPool.placeholder")}
-            />
-          </StartingPriceWrapper>
+          <StartingPrice
+            tokenASymbol={tokenA.symbol || ""}
+            tokenBSymbol={tokenB.symbol || ""}
+            isEmptyLiquidity={isEmptyLiquidity}
+            defaultPrice={defaultPrice}
+            startingPriceValue={startingPriceValue}
+            setStartingPriceValue={setStartingPriceValue}
+            changeStartingPrice={changeStartingPrice}
+          />
         )}
         <SelectPriceRangeCustomWrapper>
           {(isCustom || selectPool.isCreate || showDim) && (
@@ -555,17 +445,9 @@ const SelectPriceRangeCustom = forwardRef<
                       <span>{t("AddPosition:form.priceRange.dim.title")}</span>
                       <div>
                         <Trans
-                          ns="AddPosition"
-                          i18nKey={"form.priceRange.dim.content"}
-                        >
-                          As the first person to Add Position to this pool, you
-                          must initialize it.
-                          <span>Enter a starting price</span>
-                          for the pool, then select the price range and the
-                          deposit amount for your liquidity. Please note that
-                          <span>gas fees will be higher</span> than usual due to
-                          the initialization transaction.
-                        </Trans>
+                          i18nKey={"AddPosition:form.priceRange.dim.content"}
+                          components={{ bold: <span className="bold" /> }}
+                        />
                       </div>
                     </div>
                   )}
@@ -596,11 +478,11 @@ const SelectPriceRangeCustom = forwardRef<
                   )}
                   <div className="rangge-content-wrapper">
                     <div className="range-controller-wrapper">
-                      <SelectPriceRangeCustomController
+                      <PriceSteps
                         title={t("AddPosition:form.priceRange.minPrice")}
                         current={selectPool.minPrice}
-                        token0Symbol={currentTokenA.symbol}
-                        token1Symbol={currentTokenB.symbol}
+                        token0Symbol={tokenA.symbol}
+                        token1Symbol={tokenB.symbol}
                         tickSpacing={selectPool.tickSpacing}
                         feeTier={selectPool.feeTier || "NONE"}
                         selectedFullRange={selectPool.selectedFullRange}
@@ -612,11 +494,11 @@ const SelectPriceRangeCustom = forwardRef<
                         ref={minPriceRangeCustomRef}
                         priceRatio={decimalsRatio}
                       />
-                      <SelectPriceRangeCustomController
+                      <PriceSteps
                         title={t("AddPosition:form.priceRange.maxPrice")}
                         current={selectPool.maxPrice}
-                        token0Symbol={currentTokenA.symbol}
-                        token1Symbol={currentTokenB.symbol}
+                        token0Symbol={tokenA.symbol}
+                        token1Symbol={tokenB.symbol}
                         tickSpacing={selectPool.tickSpacing}
                         feeTier={selectPool.feeTier || "NONE"}
                         selectedFullRange={selectPool.selectedFullRange}

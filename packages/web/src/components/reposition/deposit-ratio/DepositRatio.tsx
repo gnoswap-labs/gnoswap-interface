@@ -31,6 +31,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
   tokenA,
   tokenB,
   aprFee,
+  rangeStatus,
   priceRangeSummary,
   isLoadingPosition,
   selectPool,
@@ -136,7 +137,11 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
             </Tooltip>
           </div>
           <p className="value">
-            {isLoading ? loadingComp : priceRangeSummary.feeBoost}
+            {isLoading
+              ? loadingComp
+              : rangeStatus === "OUT"
+              ? "-"
+              : priceRangeSummary.feeBoost}
           </p>
         </div>
         <div>
@@ -156,7 +161,11 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
             </Tooltip>
           </div>
           <p className="value">
-            {isLoading ? loadingComp : formatRate(aprFee)}
+            {isLoading
+              ? loadingComp
+              : rangeStatus === "OUT"
+              ? "-"
+              : formatRate(aprFee)}
           </p>
         </div>
       </div>

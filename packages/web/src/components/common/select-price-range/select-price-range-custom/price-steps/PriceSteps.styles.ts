@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
-export const SelectPriceRangeCutomControllerWrapper = styled.div`
+export const PriceStepsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
