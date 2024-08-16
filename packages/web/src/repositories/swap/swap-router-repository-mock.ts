@@ -1,15 +1,15 @@
 import { SwapRouterRepository } from "./swap-router-repository";
-import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
-import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
+import { GetRoutesRequest } from "./request/get-routes-request";
+import { GetRoutesResponse } from "./response/get-routes-response";
 
 export class SwapRouterRepositoryMock implements SwapRouterRepository {
-  public getSwapFee = async () => {
+  public callGetSwapFee = async () => {
     return 0;
   };
 
-  public estimateSwapRoute = async (
-    request: EstimateSwapRouteRequest,
-  ): Promise<EstimateSwapRouteResponse> => {
+  public getRoutes = async (
+    request: GetRoutesRequest,
+  ): Promise<GetRoutesResponse> => {
     console.log(request);
     return {
       estimatedRoutes: [],
@@ -17,15 +17,15 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     };
   };
 
-  public swapRoute = async () => {
-    throw new Error("Mock swapRoute");
+  public sendSwapRoute = async () => {
+    throw new Error("Mock sendSwapRoute");
   };
 
-  public wrapToken = async () => {
-    throw new Error("Mock wrapToken");
+  public sendWrapToken = async () => {
+    throw new Error("Mock sendWrapToken");
   };
 
-  public unwrapToken = async () => {
-    throw new Error("Mock unwrapToken");
+  public sendUnwrapToken = async () => {
+    throw new Error("Mock sendUnwrapToken");
   };
 }

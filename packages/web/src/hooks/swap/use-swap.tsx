@@ -6,13 +6,14 @@ import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useCallback, useMemo, useState } from "react";
-import { useEstimateSwap } from "@query/router";
+import { useGetRoutes } from "@query/router";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   direction: SwapDirectionType;
   slippage: number;
+  swapFee?: number;
 }
 
 export const useSwap = ({
@@ -20,12 +21,15 @@ export const useSwap = ({
   tokenB,
   direction,
   slippage,
+  swapFee = 15,
 }: UseSwapProps) => {
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
+
+  const exactOutPadding = 1 / (1 - swapFee/ 10000);
 
   const isSameToken = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -44,12 +48,17 @@ export const useSwap = ({
     data: estimatedSwapResult,
     isLoading: isEstimatedSwapLoading,
     error,
-  } = useEstimateSwap(
+  } = useGetRoutes(
     {
       inputToken: tokenA,
       outputToken: tokenB,
       exactType: direction,
-      tokenAmount: swapAmount,
+      tokenAmount:
+        direction === "EXACT_IN"
+          ? swapAmount
+          : swapAmount
+          ? swapAmount * exactOutPadding
+          : swapAmount,
     },
     {
       enabled:
@@ -153,7 +162,7 @@ export const useSwap = ({
       if (!selectedTokenPair) {
         return null;
       }
-      return swapRouterRepository.wrapToken({
+      return swapRouterRepository.sendWrapToken({
         token: tokenA,
         tokenAmount,
       });
@@ -169,7 +178,7 @@ export const useSwap = ({
       if (!selectedTokenPair) {
         return null;
       }
-      return swapRouterRepository.unwrapToken({
+      return swapRouterRepository.sendUnwrapToken({
         token: tokenA,
         tokenAmount,
       });
@@ -186,12 +195,15 @@ export const useSwap = ({
         return null;
       }
 
-      return swapRouterRepository.swapRoute({
+      return swapRouterRepository.sendSwapRoute({
         inputToken: tokenA,
         outputToken: tokenB,
         estimatedRoutes,
         exactType: direction,
-        tokenAmount: Number(tokenAmount),
+        tokenAmount:
+          direction === "EXACT_IN"
+            ? Number(tokenAmount)
+            : Number(tokenAmount) * exactOutPadding,
         tokenAmountLimit,
       });
     },
@@ -203,6 +215,7 @@ export const useSwap = ({
       tokenA,
       tokenAmountLimit,
       tokenB,
+      exactOutPadding,
     ],
   );
 

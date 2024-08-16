@@ -21,7 +21,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
-import { useEstimateSwap } from "@query/router";
+import { useGetRoutes } from "@query/router";
 import {
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse
@@ -312,7 +312,7 @@ export const useRepositionHandle = () => {
     data: estimatedSwapResult,
     isLoading: isEstimatedRemainSwapLoading,
     isError: isErrorLiquidity,
-  } = useEstimateSwap(estimateSwapRequest, {
+  } = useGetRoutes(estimateSwapRequest, {
     enabled: !!estimateSwapRequest && !!estimateSwapRequest.tokenAmount,
     refetchInterval: 10_000,
     staleTime: 10_000,
@@ -489,7 +489,7 @@ export const useRepositionHandle = () => {
         );
 
     return swapRouterRepository
-      .swapRoute({
+      .sendSwapRoute({
         ...estimateSwapRequest,
         estimatedRoutes: estimatedSwapResult.estimatedRoutes,
         tokenAmount: inputAmount.toNumber(),

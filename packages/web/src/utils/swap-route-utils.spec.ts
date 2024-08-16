@@ -3,8 +3,6 @@ import { makeRoutesQuery } from "./swap-route-utils";
 
 const estimatedRoutes: EstimatedRoute[] = [
   {
-    routeKey:
-      "gno.land/r/bar:gno.land/r/baz:500*POOL*gno.land/r/baz:gno.land/r/qux:500",
     pools: [
       {
         poolPath: "gno.land/r/bar:gno.land/r/baz:500",
@@ -30,8 +28,6 @@ const estimatedRoutes: EstimatedRoute[] = [
     amountOut: 36480n,
   },
   {
-    routeKey:
-      "gno.land/r/bar:gno.land/r/foo:500*POOL*gno.land/r/foo:gno.land/r/qux:500",
     pools: [
       {
         poolPath: "gno.land/r/bar:gno.land/r/foo:500",

@@ -3,26 +3,23 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { SwapError } from "@common/errors/swap";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenModel } from "@models/token/token-model";
-import { EstimateSwapRouteResponse } from "@repositories/swap/response/estimate-swap-route-response";
+import { GetRoutesResponse } from "@repositories/swap/response/get-routes-response";
 import { wait } from "@utils/common";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useEstimateSwap = (
+export const useGetRoutes = (
   request: {
     inputToken: TokenModel | null;
-
     outputToken: TokenModel | null;
-
     tokenAmount: string | number | null;
-
     exactType: "EXACT_IN" | "EXACT_OUT";
   } | null,
-  options?: UseQueryOptions<EstimateSwapRouteResponse, Error>,
+  options?: UseQueryOptions<GetRoutesResponse, Error>,
 ) => {
   const { swapRouterRepository } = useGnoswapContext();
 
-  return useQuery<EstimateSwapRouteResponse, Error>({
+  return useQuery<GetRoutesResponse, Error>({
     queryKey: [
       QUERY_KEY.router,
       request?.inputToken?.path || "",
@@ -44,10 +41,10 @@ export const useEstimateSwap = (
       const outputToken = request.outputToken;
       const tokenAmount = Number(request.tokenAmount);
 
-      const result = await wait<EstimateSwapRouteResponse | null>(
+      const result = await wait<GetRoutesResponse | null>(
         async () =>
           swapRouterRepository
-            .estimateSwapRoute({
+            .getRoutes({
               inputToken,
               outputToken,
               exactType: request.exactType,

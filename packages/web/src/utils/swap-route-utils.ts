@@ -1,4 +1,4 @@
-import { EstimatedRoute, Route } from "@models/swap/swap-route-info";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
 
 export function makeRoutesQuery(routes: EstimatedRoute[], fromPath: string) {
   const POOL_DIVIDER = "*POOL*";
@@ -17,8 +17,4 @@ export function makeRoutesQuery(routes: EstimatedRoute[], fromPath: string) {
         .join(POOL_DIVIDER);
     })
     .join(",");
-}
-
-export function makeRouteKey(route: Route) {
-  return route.pools.map(p => p.poolPath).join("*POOL*");
 }
