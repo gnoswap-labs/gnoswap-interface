@@ -156,14 +156,6 @@ export const MyLiquidityContentWrapper = styled.div`
     ${mixins.flexbox("row", "center", "space-between")}
     width: 100%;
   }
-  .mobile-wrap {
-    ${mixins.flexbox("row", "center", "space-between")}
-    width: 100%;
-  }
-  .column-wrap {
-    ${mixins.flexbox("column", "flex-start", "flex-start")}
-    gap: 8px;
-  }
 `;
 
 export const RewardsContent = styled.div`

@@ -473,7 +473,6 @@ export const RewardsContent = styled.div`
     padding: 4px 0px;
     .coin-info {
       ${mixins.flexbox("row", "center", "flex-start")};
-      width: 170px;
       gap: 8px;
       flex-shrink: 0;
       .token-logo {

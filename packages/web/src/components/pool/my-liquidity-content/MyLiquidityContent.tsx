@@ -24,8 +24,10 @@ import {
   formatPoolPairAmount
 } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+
 import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
+
 import {
   AmountDisplayWrapper,
   MyLiquidityContentWrapper,
@@ -935,8 +937,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   };
 
   const renderTotalClaim = () => {
-    const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
-
     const title = (
       <h4>
         {t("Pool:position.card.claimableReward.title", {
@@ -979,41 +979,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         !loading && (
           <span className="content-value disabled">{claimableUSD}</span>
         )
-      );
-
-    if (isMobile)
-      return (
-        <div className="mobile-wrap">
-          <div className="column-wrap">
-            {title}
-            {!loading && <div className="claim-wrap">{claimableUsdComp}</div>}
-            {loadingComp}
-          </div>
-          {canClaimAll && !isOtherPosition && (
-            <Button
-              className="button-claim"
-              disabled={!canClaimAll}
-              text={
-                loadingTransactionClaim
-                  ? ""
-                  : t("Pool:position.card.btn.claimAll")
-              }
-              style={{
-                hierarchy: ButtonHierarchy.Primary,
-                width: 86,
-                height: 36,
-                padding: "10px 16px",
-                fontType: "p1",
-              }}
-              leftIcon={
-                loadingTransactionClaim ? (
-                  <LoadingSpinner className="loading-button" />
-                ) : undefined
-              }
-              onClick={claimAll}
-            />
-          )}
-        </div>
       );
 
     return (
