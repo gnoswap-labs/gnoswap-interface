@@ -54,6 +54,7 @@ export type PriceImpactStatus = "LOW" | "HIGH" | "MEDIUM" | "POSITIVE" | "NONE";
 function estimatePriceImpactByRoutes(
   tokenInPath: string,
   routes: EstimatedRoute[],
+  swapFeeRate: number,
 ) {
   let amountInBN = BigNumber(0);
   let amountOutBN = BigNumber(0);
@@ -78,8 +79,13 @@ function estimatePriceImpactByRoutes(
       1,
     );
 
+    const amountOutWithSwapFee = BigNumber(
+      route.amountOut.toString(),
+    ).multipliedBy(1 - swapFeeRate / 100);
+
     amountInBN = amountInBN.plus(route.amountIn.toString());
-    amountOutBN = amountOutBN.plus(route.amountOut.toString());
+    amountOutBN = amountOutBN.plus(amountOutWithSwapFee);
+
     estimatedAmountOutBN = estimatedAmountOutBN.plus(
       BigNumber(route.amountIn.toString()).multipliedBy(routePrice),
     );
@@ -329,12 +335,15 @@ export const useSwapHandler = () => {
       return BigNumber(priceImpactNum.toFixed(2));
     }
 
-    return estimatePriceImpactByRoutes(
+    const priceImpactNum = estimatePriceImpactByRoutes(
       checkGnotPath(tokenA.path),
       estimatedRoutes,
+      (swapFee || 0) / 100,
     );
+    return BigNumber(priceImpactNum.toFixed(2));
   }, [
     estimatedRoutes,
+    swapFee,
     tokenA,
     tokenAAmount,
     tokenB,
