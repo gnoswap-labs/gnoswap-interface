@@ -130,7 +130,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     > div {
       ${fonts.body12}
     }
-    span {
+    span.bold{
       ${fonts.body12}
       font-weight: 600;
     }

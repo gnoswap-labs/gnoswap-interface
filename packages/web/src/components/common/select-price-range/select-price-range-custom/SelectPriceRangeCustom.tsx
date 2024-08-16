@@ -558,17 +558,9 @@ const SelectPriceRangeCustom = forwardRef<
                       <span>{t("AddPosition:form.priceRange.dim.title")}</span>
                       <div>
                         <Trans
-                          ns="AddPosition"
-                          i18nKey={"form.priceRange.dim.content"}
-                        >
-                          As the first person to Add Position to this pool, you
-                          must initialize it.
-                          <span>Enter a starting price</span>
-                          for the pool, then select the price range and the
-                          deposit amount for your liquidity. Please note that
-                          <span>gas fees will be higher</span> than usual due to
-                          the initialization transaction.
-                        </Trans>
+                          i18nKey={"AddPosition:form.priceRange.dim.content"}
+                          components={{ bold: <span className="bold" /> }}
+                        />
                       </div>
                     </div>
                   )}
