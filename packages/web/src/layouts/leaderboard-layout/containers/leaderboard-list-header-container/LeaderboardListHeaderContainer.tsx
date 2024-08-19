@@ -1,9 +1,13 @@
-import { Box } from "@components/leaderboard/common/common.styles";
-import { useConnection } from "@hooks/connection/use-connection";
 import { useEffect, useRef, useState } from "react";
-import ConnectYourWallet from "../../components/leaderboard/connect-your-wallet/ConnectYourWallet";
-import NextUpdate from "../../components/leaderboard/next-update/NextUpdate";
+
+import { useConnection } from "@hooks/connection/use-connection";
+
+import { Box } from "../../components/common/common.styles";
+import ConnectYourWallet from "../../components/connect-your-wallet/ConnectYourWallet";
+import NextUpdate from "../../components/next-update/NextUpdate";
 import { ListHeaderWrapper } from "./LeaderboardListHeaderContainer.styles";
+
+
 
 const LeaderboardListHeaderContainer = () => {
   const { connected } = useConnection();

@@ -1,10 +1,11 @@
-import LeaderboardTableHeaderContainer from "@containers/leaderboard-table-header-container/LeaderboardTableHeaderContainer";
+import React from "react";
+
 import {
   ListBody,
   ScrollWrapper,
   TableWrapper,
 } from "./LeaderboardTableWrapper.styles";
-import React from "react";
+import LeaderboardTableHeaderContainer from "../../containers/leaderboard-table-header-container/LeaderboardTableHeaderContainer";
 
 export default function LeaderboardTableWrapper({
   children,

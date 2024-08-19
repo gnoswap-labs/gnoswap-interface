@@ -1,12 +1,14 @@
+import { useState } from "react";
+
 import Pagination from "@components/common/pagination/Pagination";
-import LeaderboardTableWrapper from "@components/leaderboard/leaderboard-table-wrapper/LeaderboardTableWrapper";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGetLeaders, useGetMyLeader } from "@query/leaderboard";
-import MobileLeaderboardTable from "@components/leaderboard/leaderboard-table/mobile-leaderboard-table/MobileLeaderboardTable";
-import TabletLeaderboardTable from "@components/leaderboard/leaderboard-table/tablet-leaderboard-table/TabletLeaderboardTable";
-import WebLeaderboardTable from "@components/leaderboard/leaderboard-table/web-leaderboard-table/WebLeaderboardTable";
-import { useState } from "react";
-import { Box } from "@components/leaderboard/common/common.styles";
+
+import { Box } from "../../components/common/common.styles";
+import LeaderboardTableWrapper from "../../components/leaderboard-table-wrapper/LeaderboardTableWrapper";
+import MobileLeaderboardTable from "../../components/leaderboard-table/mobile-leaderboard-table/MobileLeaderboardTable";
+import TabletLeaderboardTable from "../../components/leaderboard-table/tablet-leaderboard-table/TabletLeaderboardTable";
+import WebLeaderboardTable from "../../components/leaderboard-table/web-leaderboard-table/WebLeaderboardTable";
 
 export default function LeaderboardTableContainer() {
   const [page, setPage] = useState(0);

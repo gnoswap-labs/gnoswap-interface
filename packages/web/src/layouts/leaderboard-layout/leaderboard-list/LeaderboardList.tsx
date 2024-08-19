@@ -1,10 +1,13 @@
-import { ValuesType } from "utility-types";
-import { Wrapper } from "./LeaderboardList.styles";
-import LeaderboardListHeaderContainer from "@containers/leaderboard-list-header-container/LeaderboardListHeaderContainer";
 import { Suspense } from "react";
-import LeaderboardTableContainer from "@containers/leaderboard-table-container/LeaderboardTableContainer";
-import LeaderboardTableSkeletonContainer from "@containers/leaderboard-table-skeleton-container/LeaderboardTableSkeletonContainer";
+import { ValuesType } from "utility-types";
+
 import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
+
+import LeaderboardListHeaderContainer from "../containers/leaderboard-list-header-container/LeaderboardListHeaderContainer";
+import LeaderboardTableContainer from "../containers/leaderboard-table-container/LeaderboardTableContainer";
+import LeaderboardTableSkeletonContainer from "../containers/leaderboard-table-skeleton-container/LeaderboardTableSkeletonContainer";
+
+import { Wrapper } from "./LeaderboardList.styles";
 
 export const TABLE_HEAD = {
   INDEX: "Rank",
