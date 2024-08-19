@@ -1,35 +1,37 @@
+import BigNumber from "bignumber.js";
+import React, { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import IconCheck from "@components/common/icons/IconCheck";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconLine from "@components/common/icons/IconLine";
 import IconLineLong from "@components/common/icons/IconLineLong";
+import IconStar from "@components/common/icons/IconStar";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import {
+  StakingPeriodType,
+  STAKING_PERIOD_INFO,
+} from "@constants/option.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { PositionModel } from "@models/position/position-model";
+import { useGetAllTokenPrices } from "@query/token";
 import { DEVICE_TYPE } from "@styles/media";
-import React, { useCallback, useMemo } from "react";
+import { checkGnotPath } from "@utils/common";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import { toUnitFormat } from "@utils/number-utils";
+
 import {
   PriceTooltipContentWrapper,
   StakingContentCardWrapper,
   ToolTipContentWrapper,
   TooltipDivider,
 } from "./StakingContentCard.styles";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import {
-  STAKING_PERIOD_INFO,
-  StakingPeriodType,
-} from "@constants/option.constant";
-import { toUnitFormat } from "@utils/number-utils";
-import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { PositionModel } from "@models/position/position-model";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import BigNumber from "bignumber.js";
-import IconStar from "@components/common/icons/IconStar";
-import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
-import { useGetAllTokenPrices } from "@query/token";
-import { checkGnotPath } from "@utils/common";
-import { useTranslation } from "react-i18next";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -264,7 +266,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
       <div className="contents-wrap">
         <div className="contents">
           {loading && (
-            <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <PulseSkeletonWrapper height={36} mobileHeight={24}>
               <span
                 css={pulseSkeletonStyle({
                   h: 22,
@@ -273,7 +275,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                   mobileWidth: 100,
                 })}
               />
-            </SkeletonEarnDetailWrapper>
+            </PulseSkeletonWrapper>
           )}
           {!loading && (
             <div className="price">
@@ -309,7 +311,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
             </div>
           )}
           {loading && (
-            <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <PulseSkeletonWrapper height={36} mobileHeight={24}>
               <span
                 css={pulseSkeletonStyle({
                   h: 22,
@@ -318,7 +320,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                   mobileWidth: 50,
                 })}
               />
-            </SkeletonEarnDetailWrapper>
+            </PulseSkeletonWrapper>
           )}
           {!loading && (
             <div className="apr small-gap">
@@ -458,7 +460,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
       <div className="contents-wrap">
         <div className="contents">
           {loading && (
-            <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <PulseSkeletonWrapper height={36} mobileHeight={24}>
               <span
                 css={pulseSkeletonStyle({
                   h: 22,
@@ -467,7 +469,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
                   mobileWidth: 100,
                 })}
               />
-            </SkeletonEarnDetailWrapper>
+            </PulseSkeletonWrapper>
           )}
           {!loading && (
             <div className="price">
@@ -503,7 +505,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
             </div>
           )}
           {loading && (
-            <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <PulseSkeletonWrapper height={36} mobileHeight={24}>
               <span
                 css={pulseSkeletonStyle({
                   h: 22,
@@ -512,7 +514,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
                   mobileWidth: 50,
                 })}
               />
-            </SkeletonEarnDetailWrapper>
+            </PulseSkeletonWrapper>
           )}
           {!loading && (
             <div className="apr small-gap">

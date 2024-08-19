@@ -1,5 +1,5 @@
 import { ValuesType } from "utility-types";
-import { Wrapper } from "./LeaderboardListLayout.styles";
+import { Wrapper } from "./LeaderboardList.styles";
 import LeaderboardListHeaderContainer from "@containers/leaderboard-list-header-container/LeaderboardListHeaderContainer";
 import { Suspense } from "react";
 import LeaderboardTableContainer from "@containers/leaderboard-table-container/LeaderboardTableContainer";
@@ -23,7 +23,7 @@ export const TABLE_HEAD_MOBILE = {
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
-export default function LeaderboardListLayout() {
+export default function LeaderboardList() {
   return (
     <Wrapper>
       <ErrorBoundary>

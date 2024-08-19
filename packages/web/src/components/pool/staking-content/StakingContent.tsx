@@ -3,15 +3,15 @@ import { useTranslation } from "react-i18next";
 
 import Button from "@components/common/button/Button";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import StakingContentCard, {
-  SummuryApr
+  SummuryApr,
 } from "@components/pool/staking-content-card/StakingContentCard";
 import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import IncentivizeTokenDetailTooltipContainer from "@containers/incentivize-token-detail-container/IncentivizeTokenDetailTooltipContainer";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
@@ -21,7 +21,7 @@ import {
   AprNumberContainer,
   AprStakingHeader,
   NoticeAprToolTip,
-  StakingContentWrapper
+  StakingContentWrapper,
 } from "./StakingContent.styles";
 
 interface StakingContentProps {
@@ -120,11 +120,11 @@ const StakingContent: React.FC<StakingContentProps> = ({
     <StakingContentWrapper isMobile={mobile}>
       <div className="content-header">
         {loading && (
-          <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          <PulseSkeletonWrapper height={36} mobileHeight={24}>
             <span
               css={pulseSkeletonStyle({ h: 22, w: "600px", mobileWidth: 400 })}
             />
-          </SkeletonEarnDetailWrapper>
+          </PulseSkeletonWrapper>
         )}
         {!loading && <span>{t("Pool:staking.intro")}</span>}
         {!loading && (
@@ -209,7 +209,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
         <div className="empty-content"></div>
         {loading && (
           <div className="loading-wrapper">
-            <SkeletonEarnDetailWrapper
+            <PulseSkeletonWrapper
               className="loading-button"
               height={36}
               mobileHeight={24}
@@ -221,7 +221,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                   mobileWidth: 150,
                 })}
               />
-            </SkeletonEarnDetailWrapper>
+            </PulseSkeletonWrapper>
           </div>
         )}
         {!loading && (

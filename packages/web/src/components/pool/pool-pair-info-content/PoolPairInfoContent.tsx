@@ -9,11 +9,11 @@ import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { TokenModel } from "@models/token/token-model";
@@ -21,7 +21,7 @@ import { ThemeState } from "@states/index";
 import {
   formatOtherPrice,
   formatPoolPairAmount,
-  formatRate
+  formatRate,
 } from "@utils/new-number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { tickToPrice } from "@utils/swap-utils";
@@ -259,7 +259,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const tvlDisplay = useMemo(() => {
     if (loading) {
       return (
-        <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+        <PulseSkeletonWrapper height={39} mobileHeight={25}>
           <span
             css={pulseSkeletonStyle({
               h: 20,
@@ -267,7 +267,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               smallTableWidth: 140,
             })}
           />
-        </SkeletonEarnDetailWrapper>
+        </PulseSkeletonWrapper>
       );
     }
 
@@ -378,9 +378,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </>
             )}
             {loading && (
-              <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+              <PulseSkeletonWrapper height={18} mobileHeight={18}>
                 <span css={pulseSkeletonStyle({ h: 20, w: "250px" })} />
-              </SkeletonEarnDetailWrapper>
+              </PulseSkeletonWrapper>
             )}
           </div>
         </TvlSectionWrapper>
@@ -393,7 +393,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             </div>
           )}
           {loading && (
-            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <PulseSkeletonWrapper height={39} mobileHeight={25}>
               <span
                 css={pulseSkeletonStyle({
                   h: 20,
@@ -401,7 +401,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   smallTableWidth: 140,
                 })}
               />
-            </SkeletonEarnDetailWrapper>
+            </PulseSkeletonWrapper>
           )}
           <div className="section-info flex-row">
             <span>{t("Pool:poolInfo.section.volume.allTimeVol")}</span>
@@ -412,9 +412,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             )}
 
             {loading && (
-              <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+              <PulseSkeletonWrapper height={18} mobileHeight={18}>
                 <span css={pulseSkeletonStyle({ h: 20, w: "50px" })} />
-              </SkeletonEarnDetailWrapper>
+              </PulseSkeletonWrapper>
             )}
           </div>
         </VolumeSectionWrapper>
@@ -436,7 +436,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             </Tooltip>
           )}
           {loading && (
-            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <PulseSkeletonWrapper height={39} mobileHeight={25}>
               <span
                 css={pulseSkeletonStyle({
                   h: 20,
@@ -444,16 +444,16 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   smallTableWidth: "130",
                 })}
               />
-            </SkeletonEarnDetailWrapper>
+            </PulseSkeletonWrapper>
           )}
           <div className="apr-info">
             <div className="content-wrap">
               <span>{t("Pool:poolInfo.section.apr.fee")}</span>
               {!loading && <span className="apr-value">{feeChangedStr}</span>}
               {loading && (
-                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <PulseSkeletonWrapper height={18} mobileHeight={18}>
                   <span css={pulseSkeletonStyle({ h: 20, w: "50px" })} />
-                </SkeletonEarnDetailWrapper>
+                </PulseSkeletonWrapper>
               )}
             </div>
             <AprDivider />
@@ -463,9 +463,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 <span className="apr-value">{rewardChangedStr}</span>
               )}
               {loading && (
-                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <PulseSkeletonWrapper height={18} mobileHeight={18}>
                   <span css={pulseSkeletonStyle({ h: 20, w: "50px" })} />
-                </SkeletonEarnDetailWrapper>
+                </PulseSkeletonWrapper>
               )}
             </div>
           </div>
@@ -489,15 +489,15 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 </div>
               )}
               {loading && (
-                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <PulseSkeletonWrapper height={18} mobileHeight={18}>
                   <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-                </SkeletonEarnDetailWrapper>
+                </PulseSkeletonWrapper>
               )}
               <AprDivider className="divider" />
               {loading && (
-                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <PulseSkeletonWrapper height={18} mobileHeight={18}>
                   <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-                </SkeletonEarnDetailWrapper>
+                </PulseSkeletonWrapper>
               )}
               {!loading && (
                 <div className="right">

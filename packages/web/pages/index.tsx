@@ -1,18 +1,10 @@
-import Footer from "@components/common/footer/Footer";
-import SEOHeader from "@components/common/seo-header/seo-header";
-import Banner from "@components/home/banner/Banner";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import GnoswapBrandContainer from "@containers/gnoswap-brand-container/GnoswapBrandContainer";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import HighestAprsCardListContainer from "@containers/highest-aprs-card-list-container/HighestAprsCardListContainer";
-import HomeSwapContainer from "@containers/home-swap-container/HomeSwapContainer";
-import RecentlyAddedCardListContainer from "@containers/recently-added-card-list-container/RecentlyAddedCardListContainer";
-import TokenListContainer from "@containers/token-list-container/TokenListContainer";
-import TrendingCardListContainer from "@containers/trending-card-list-container/TrendingCardListContainer";
-import HomeLayout from "@layouts/home-layout/HomeLayout";
 import { useTranslation } from "next-i18next";
-import { useEffect, useMemo } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useEffect, useMemo } from "react";
+
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import Home from "@layouts/home/Home";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -22,7 +14,7 @@ export async function getStaticProps({ locale }: { locale: string }) {
   };
 }
 
-export default function Home() {
+export default function Page() {
   const { i18n } = useTranslation(
     ["HeaderFooter", "common", "Main", "business"],
     {
@@ -48,17 +40,7 @@ export default function Home() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <HomeLayout
-        header={<HeaderContainer />}
-        brand={<GnoswapBrandContainer />}
-        swap={<HomeSwapContainer />}
-        trending={<TrendingCardListContainer />}
-        highest={<HighestAprsCardListContainer />}
-        recently={<RecentlyAddedCardListContainer />}
-        tokenList={<TokenListContainer />}
-        banner={<Banner />}
-        footer={<Footer />}
-      />
+      <Home />
     </>
   );
 }

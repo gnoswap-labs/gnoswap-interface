@@ -6,11 +6,11 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -21,7 +21,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { isGNOTPath } from "@utils/common";
 import {
   formatOtherPrice,
-  formatPoolPairAmount
+  formatPoolPairAmount,
 } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
@@ -31,7 +31,7 @@ import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimC
 import {
   AmountDisplayWrapper,
   MyLiquidityContentWrapper,
-  TokenAmountTooltipContentWrapper
+  TokenAmountTooltipContentWrapper,
 } from "./MyLiquidityContent.styles";
 
 interface MyLiquidityContentProps {
@@ -757,7 +757,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           <span className="content-value disabled">{totalBalance}</span>
         )}
         {loading && (
-          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <PulseSkeletonWrapper height={39} mobileHeight={25}>
             <span
               css={pulseSkeletonStyle({
                 h: 22,
@@ -766,7 +766,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 smallTableWidth: 140,
               })}
             />
-          </SkeletonEarnDetailWrapper>
+          </PulseSkeletonWrapper>
         )}
         {!loading && positions.length > 0 && canShowData && (
           <div className="sub-content">
@@ -892,7 +892,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           )
         )}
         {loading && (
-          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <PulseSkeletonWrapper height={39} mobileHeight={25}>
             <span
               css={pulseSkeletonStyle({
                 h: 22,
@@ -901,7 +901,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 smallTableWidth: 140,
               })}
             />
-          </SkeletonEarnDetailWrapper>
+          </PulseSkeletonWrapper>
         )}
         {!loading && positions.length > 0 && canShowData && (
           <div className="total-daily">
@@ -938,7 +938,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const loadingComp = (
       <>
         {loading && (
-          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <PulseSkeletonWrapper height={39} mobileHeight={25}>
             <span
               css={pulseSkeletonStyle({
                 h: 22,
@@ -947,7 +947,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 smallTableWidth: 140,
               })}
             />
-          </SkeletonEarnDetailWrapper>
+          </PulseSkeletonWrapper>
         )}
       </>
     );

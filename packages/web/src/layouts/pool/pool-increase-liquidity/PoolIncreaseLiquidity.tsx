@@ -1,39 +1,26 @@
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import Footer from "@components/common/footer/Footer";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
-import DecreaseLiquidityContainer from "@containers/decrease-liquidity-container/DecreaseLiquidityContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
+import IncreaseLiquidityContainer from "@containers/increase-liquidity-container/IncreaseLiquidityContainer";
+import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import IncreaseLiquidityLayout from "@layouts/pool/pool-increase-liquidity/IncreaseLiquidityLayout";
 import { DeviceSize } from "@styles/media";
-import useRouter from "@hooks/common/use-custom-router";
-import { useMemo } from "react";
-import { useGetPoolDetailByPath } from "src/react-query/pools";
-import SEOHeader from "@components/common/seo-header/seo-header";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { makeRouteUrl } from "@utils/page.utils";
-import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
-import { useTranslation } from "react-i18next";
+import { useGetPoolDetailByPath } from "src/react-query/pools";
 
-export async function getStaticProps({ locale }: { locale: string }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, [
-        ...DEFAULT_I18N_NS,
-        "DecreaseLiquidity",
-      ])),
-    },
-  };
-}
+import IncreaseLiquidityLayout from "./IncreaseLiquidityLayout";
 
-export default function Page() {
+const PoolIncreaseLiquidity: React.FC = () => {
   const { t } = useTranslation();
   const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.getPoolPath();
-  const positionId = router.getPositionId();
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string);
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
@@ -48,28 +35,15 @@ export default function Page() {
                 getGnotPath(data?.tokenB).symbol
               } (${Number(data?.fee) / 10000}%)`
             : "...",
-        poolPath: router.getPoolPath(),
         path: makeRouteUrl(PAGE_PATH.POOL, {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,
         }),
       },
-      { title: t("business:pageHeader.decreaseLiqui"), path: "" },
+      { title: t("business:pageHeader.increaseLiqui"), path: "" },
     ];
-  }, [data, width]);
-
-  const seoInfo = useMemo(
-    () => SEOInfo["/earn/pool/position/decrease-liquidity"],
-    [],
-  );
+  }, [data, width, t, poolPath]);
 
   return (
-    <>
-      <SEOHeader
-        title={seoInfo.title([positionId as string])}
-        pageDescription={seoInfo.desc()}
-        ogTitle={seoInfo?.ogTitle?.()}
-        ogDescription={seoInfo?.ogDesc?.()}
-      />
       <IncreaseLiquidityLayout
         header={<HeaderContainer />}
         breadcrumbs={
@@ -78,9 +52,10 @@ export default function Page() {
             isLoading={isLoadingCommon || isLoading}
           />
         }
-        increaseLiquidity={<DecreaseLiquidityContainer />}
+        increaseLiquidity={<IncreaseLiquidityContainer />}
         footer={<Footer />}
       />
-    </>
   );
-}
+};
+
+export default PoolIncreaseLiquidity;

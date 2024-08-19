@@ -1,17 +1,19 @@
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
+import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import PoolPairInfoContent from "@components/pool/pool-pair-info-content/PoolPairInfoContent";
 import PoolPairInfoHeader from "@components/pool/pool-pair-info-header/PoolPairInfoHeader";
-import {
-  PoolPairInformationWrapper,
-  BreadcrumbsWrapper,
-} from "./PoolPairInformation.styles";
-import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
-import { pathProps } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { pathProps } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { useTranslation } from "react-i18next";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+
+import {
+  BreadcrumbsWrapper,
+  PoolPairInformationWrapper,
+} from "./PoolPairInformation.styles";
 
 interface PoolPairInformationProps {
   pool: PoolDetailModel;
@@ -58,9 +60,9 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
       </BreadcrumbsWrapper>
       <div className="token-status">
         {loading && (
-          <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          <PulseSkeletonWrapper height={36} mobileHeight={24}>
             <span css={pulseSkeletonStyle({ w: "200px", h: 20 })} />
-          </SkeletonEarnDetailWrapper>
+          </PulseSkeletonWrapper>
         )}
         {!loading && (
           <PoolPairInfoHeader

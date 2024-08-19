@@ -14,6 +14,7 @@ import IconSwap from "@components/common/icons/IconSwap";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import SelectBox from "@components/common/select-box/SelectBox";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -23,7 +24,6 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useCopy } from "@hooks/common/use-copy";
 import useRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -776,9 +776,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           {breakpoint !== DEVICE_TYPE.MOBILE ? (
             <>
               {loading && (
-                <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+                <PulseSkeletonWrapper height={36} mobileHeight={24}>
                   <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-                </SkeletonEarnDetailWrapper>
+                </PulseSkeletonWrapper>
               )}
               {!loading && (
                 <div className="coin-info">
@@ -820,9 +820,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             <>
               <div className="mobile-container">
                 {loading && (
-                  <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+                  <PulseSkeletonWrapper height={36} mobileHeight={24}>
                     <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-                  </SkeletonEarnDetailWrapper>
+                  </PulseSkeletonWrapper>
                 )}
                 {!loading && (
                   <div className="coin-info">
@@ -960,9 +960,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       <div className="info-box">
         <span className="symbol-text">{t("business:balance")}</span>
         {loading && (
-          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <PulseSkeletonWrapper height={39} mobileHeight={25}>
             <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-          </SkeletonEarnDetailWrapper>
+          </PulseSkeletonWrapper>
         )}
         {!isClosed && !loading ? (
           <Tooltip
@@ -1002,9 +1002,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           )
         )}
         {loading && (
-          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <PulseSkeletonWrapper height={39} mobileHeight={25}>
             <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-          </SkeletonEarnDetailWrapper>
+          </PulseSkeletonWrapper>
         )}
       </div>
       <div className="info-box">
@@ -1030,9 +1030,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           )
         )}
         {loading && (
-          <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <PulseSkeletonWrapper height={39} mobileHeight={25}>
             <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-          </SkeletonEarnDetailWrapper>
+          </PulseSkeletonWrapper>
         )}
       </div>
     </div>
@@ -1058,14 +1058,14 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             </div>
           )}
           {loading && (
-            <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+            <PulseSkeletonWrapper height={18} mobileHeight={18}>
               <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-            </SkeletonEarnDetailWrapper>
+            </PulseSkeletonWrapper>
           )}
           {loading && (
-            <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+            <PulseSkeletonWrapper height={18} mobileHeight={18}>
               <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-            </SkeletonEarnDetailWrapper>
+            </PulseSkeletonWrapper>
           )}
         </div>
         {!loading && (
