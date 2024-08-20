@@ -1,11 +1,13 @@
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { TokenModel } from "@models/token/token-model";
 import React, { useMemo } from "react";
-import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { INCENTIVE_TYPE } from "@constants/option.constant";
-import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { useTranslation } from "react-i18next";
+
+import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { TokenModel } from "@models/token/token-model";
+
+import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 
 interface PoolPairInfoHeaderProps {
   tokenA: TokenModel;

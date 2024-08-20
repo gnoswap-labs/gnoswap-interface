@@ -1,14 +1,16 @@
 import React, { useMemo } from "react";
-import { RewardsContent, TooltipDivider } from "./MyDetailedPositionCard.styles";
-import { RewardType } from "@constants/option.constant";
-import { PositionClaimInfo } from "@models/position/info/position-claim-info";
+import { useTranslation } from "react-i18next";
+
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { RewardType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import {
   formatOtherPrice,
-  formatPoolPairAmount,
+  formatPoolPairAmount
 } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
+
+import { RewardsContent, TooltipDivider } from "./MyDetailedPositionCard.styles";
 
 export interface MyPositionClaimContentProps {
   rewardInfo: { [key in RewardType]: PositionClaimInfo[] } | null;

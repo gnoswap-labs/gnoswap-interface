@@ -1,11 +1,13 @@
 import React, { useMemo } from "react";
-import { RewardsContent } from "./MyDetailedPositionCard.styles";
-import { RewardType } from "@constants/option.constant";
-import { PositionAPRInfo } from "@models/position/info/position-apr-info";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
+
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { RewardType } from "@constants/option.constant";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PositionAPRInfo } from "@models/position/info/position-apr-info";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+
+import { RewardsContent } from "./MyDetailedPositionCard.styles";
 
 export interface MyPositionAprContentProps {
   rewardInfo: { [key in RewardType]: PositionAPRInfo[] };

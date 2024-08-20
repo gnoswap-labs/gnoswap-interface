@@ -1,5 +1,6 @@
-import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+
+import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
@@ -562,6 +563,32 @@ export const CopyTooltip = styled.div`
     & .rotate-90 {
       transform: rotate(90deg);
       margin-right: -10px;
+    }
+  }
+`;
+
+export const LoadingChart = styled.div`
+  ${mixins.flexbox("row", "center", "center")}
+  width: 100%;
+  height: 150px;
+  background-color: transparent;
+  border-radius: 8px;
+  > div {
+    width: 48px;
+    height: 48px;
+    &::before {
+      background-color: ${({ theme }) => theme.color.background01};
+      width: 38px;
+      height: 38px;
+      box-shadow: none;
+    }
+    &::after {
+      ${mixins.positionCenter()};
+      content: "";
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      background-color: ${({ theme }) => theme.color.background15};
     }
   }
 `;

@@ -39,7 +39,6 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import { MyPositionAprContent } from "./MyPositionCardAprContent";
 import { BalanceTooltipContent } from "./MyPositionCardBalanceContent";
 import { MyPositionRewardContent } from "./MyPositionCardRewardContent";
@@ -47,6 +46,7 @@ import PositionHistory from "./PositionHistory";
 
 import {
   CopyTooltip,
+  LoadingChart,
   ManageItem,
   MyPositionCardWrapper,
   PositionCardAnchor,

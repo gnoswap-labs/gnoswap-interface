@@ -1,10 +1,12 @@
 import React from "react";
-import { TooltipContent } from "./MyDetailedPositionCard.styles";
-import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
+import { useTranslation } from "react-i18next";
+
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
+
+import { TooltipContent } from "./MyDetailedPositionCard.styles";
 
 export interface BalanceTooltipContentProps {
   balances: PositionBalanceInfo[];

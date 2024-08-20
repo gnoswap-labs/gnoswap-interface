@@ -3,11 +3,12 @@ import { useTranslation } from "react-i18next";
 
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
-import PoolPairInfoContent from "@components/pool/pool-pair-info-content/PoolPairInfoContent";
-import PoolPairInfoHeader from "@components/pool/pool-pair-info-header/PoolPairInfoHeader";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+
+import PoolPairInfoContent from "./pool-pair-info-content/PoolPairInfoContent";
+import PoolPairInfoHeader from "./pool-pair-info-header/PoolPairInfoHeader";
 
 import {
   BreadcrumbsWrapper,

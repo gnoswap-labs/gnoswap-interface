@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
-import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
 import { useMessage } from "@hooks/common/use-message";
@@ -14,6 +13,8 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
 import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
+
+import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;

@@ -170,14 +170,6 @@ export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
   },
 } as const;
 
-export const STAKED_OPTION = {
-  NONE: "NONE",
-  STAKED: "Staked",
-  UNSTAKING: "Unstaking",
-  UNSTAKED: "Unstaked",
-} as const;
-export type STAKED_OPTION = ValuesType<typeof STAKED_OPTION>;
-
 export const STATUS_OPTION = {
   SUCCESS: "SUCCESS",
   PENDING: "PENDING",

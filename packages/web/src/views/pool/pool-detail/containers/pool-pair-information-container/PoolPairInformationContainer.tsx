@@ -1,12 +1,14 @@
 import React, { useMemo } from "react";
-import useCustomRouter from "@hooks/common/use-custom-router";
-import PoolPairInformation from "@components/pool/pool-pair-information/PoolPairInformation";
-import { makeSwapFeeTier } from "@utils/swap-utils";
+
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
-import { initialPool, PoolDetailModel } from "@models/pool/pool-detail-model";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { initialPool, PoolDetailModel } from "@models/pool/pool-detail-model";
+import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+
+import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
