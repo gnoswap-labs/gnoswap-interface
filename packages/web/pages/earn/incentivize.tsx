@@ -6,7 +6,7 @@ import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import PoolIncentivize from "@layouts/pool/pool-incentivize/PoolIncentivize";
+import PoolIncentivize from "@views/pool/pool-incentivize/PoolIncentivize";
 import { EarnState } from "@states/index";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 

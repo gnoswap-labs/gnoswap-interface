@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import useRouter from "@hooks/common/use-custom-router";
-import PoolReposition from "@layouts/pool/pool-reposition/PoolReposition";
+import PoolReposition from "@views/pool/pool-reposition/PoolReposition";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {

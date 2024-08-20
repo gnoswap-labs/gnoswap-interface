@@ -6,7 +6,7 @@ import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import PoolUnstake from "@layouts/pool/pool-unstake/PoolUnstake";
+import PoolUnstake from "@views/pool/pool-unstake/PoolUnstake";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 

@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Swap from "@layouts/swap/Swap";
+import Swap from "@views/swap/Swap";
 import * as SwapState from "@states/swap";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 

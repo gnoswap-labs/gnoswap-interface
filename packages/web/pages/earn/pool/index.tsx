@@ -8,7 +8,7 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import PoolDetail from "@layouts/pool/pool-detail/PoolDetail";
+import PoolDetail from "@views/pool/pool-detail/PoolDetail";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { formatAddress } from "@utils/string-utils";
 import { makeSwapFeeTier } from "@utils/swap-utils";

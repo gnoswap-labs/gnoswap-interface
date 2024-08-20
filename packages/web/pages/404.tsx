@@ -3,7 +3,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Custom404 from "@layouts/custom-404/Custom404";
+import Custom404 from "@views/custom-404/Custom404";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {

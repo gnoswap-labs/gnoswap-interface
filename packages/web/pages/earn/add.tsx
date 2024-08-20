@@ -7,7 +7,7 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
-import EarnAdd from "@layouts/earn/earn-add/EarnAdd";
+import EarnAdd from "@views/earn/earn-add/EarnAdd";
 import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 

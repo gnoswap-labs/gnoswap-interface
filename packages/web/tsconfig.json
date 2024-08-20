@@ -53,8 +53,8 @@
       "@styles/*": [
         "src/styles/*"
       ],
-      "@layouts/*": [
-        "src/layouts/*"
+      "@views/*": [
+        "src/views/*"
       ],
       "@models/*": [
         "src/models/*"

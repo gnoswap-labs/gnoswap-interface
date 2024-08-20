@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Custom500 from "@layouts/custom-500/Custom500";
+import Custom500 from "@views/custom-500/Custom500";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {

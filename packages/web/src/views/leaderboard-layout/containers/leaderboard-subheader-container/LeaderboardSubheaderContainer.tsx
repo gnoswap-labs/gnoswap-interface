@@ -1,4 +1,4 @@
-import LeaderboardSubheader from "@layouts/leaderboard-layout/components/leaderboard-subheader/LeaderboardSubheader";
+import LeaderboardSubheader from "@views/leaderboard-layout/components/leaderboard-subheader/LeaderboardSubheader";
 import { useAddress } from "@hooks/address/use-address";
 
 export default function LeaderboardSubheaderContainer() {

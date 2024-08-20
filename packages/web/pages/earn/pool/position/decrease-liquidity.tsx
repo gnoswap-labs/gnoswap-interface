@@ -5,7 +5,7 @@ import HeaderContainer from "@containers/header-container/HeaderContainer";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import IncreaseLiquidityLayout from "@layouts/pool/pool-increase-liquidity/IncreaseLiquidityLayout";
+import IncreaseLiquidityLayout from "@views/pool/pool-increase-liquidity/IncreaseLiquidityLayout";
 import { DeviceSize } from "@styles/media";
 import useRouter from "@hooks/common/use-custom-router";
 import { useMemo } from "react";

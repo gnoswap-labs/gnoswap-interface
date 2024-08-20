@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import Earn from "@layouts/earn/earn/Earn";
+import Earn from "@views/earn/earn/Earn";
 import { formatAddress } from "@utils/string-utils";
 
 export async function getStaticProps({ locale }: { locale: string }) {
