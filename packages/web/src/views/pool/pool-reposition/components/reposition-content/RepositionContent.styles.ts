@@ -1,10 +1,8 @@
-import { fonts } from "@constants/font.constant";
-import mixins from "@styles/mixins";
-
 import styled from "@emotion/styled";
-import { Theme } from "@emotion/react";
-import { css } from "@emotion/css";
+
+import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
+import mixins from "@styles/mixins";
 
 export const RepositionContentWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -119,17 +117,8 @@ export const RepositionContentWrapper = styled.div`
   }
 `;
 
-export const RepositionContentBoxStyle = (theme: Theme) => css`
-  ${mixins.flexbox("column", "flex-start", "center")};
-  width: 100%;
-  background-color: ${theme.color.backgroundOpacity};
-  border-radius: 8px;
-  border: 1px solid ${theme.color.border02};
-  padding: 15px;
-  gap: 16px;
-
-  .section-title {
-    color: ${theme.color.text05};
-    ${fonts.body12}
-  }
+export const ToolTipContentWrapper = styled.div`
+  width: 250px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

@@ -1,24 +1,26 @@
+import { useAtom } from "jotai";
+import { useCallback, useMemo } from "react";
+
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import RepositionModalContainer from "@containers/reposition-modal-container/RepoitionModalContainer";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
+import {
+  RepositionLiquidityFailedResponse,
+  RepositionLiquiditySuccessResponse,
+} from "@repositories/position/response";
 import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
 } from "@repositories/swap/response/swap-route-response";
 import { CommonState } from "@states/index";
-import { useAtom } from "jotai";
-import { useCallback, useMemo } from "react";
+
+import RepositionModalContainer from "../containers/reposition-modal-container/RepoitionModalContainer";
 import { IPriceRange } from "./use-reposition-handle";
-import {
-  RepositionLiquidityFailedResponse,
-  RepositionLiquiditySuccessResponse,
-} from "@repositories/position/response";
 
 export interface Props {
   openModal: () => void;

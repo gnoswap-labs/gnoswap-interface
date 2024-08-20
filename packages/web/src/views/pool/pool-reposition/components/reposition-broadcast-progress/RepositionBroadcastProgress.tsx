@@ -1,23 +1,25 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { wait } from "@utils/common";
-import { RepositionBroadcastProgressWrapper } from "./RepositionBroadcastProgress.styles";
-import RepositionBroadcastProgressState, {
-  ProgressStateType,
-} from "./RepositionBroadcastProgressState";
+import { useTranslation } from "react-i18next";
+
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import IconAddPositionCircle from "@components/common/icons/IconAddPositionCircle";
 import IconRemovePositionCircle from "@components/common/icons/IconRemovePositionCircle";
 import IconSwapCircle from "@components/common/icons/IconSwapCircle";
-import IconAddPositionCircle from "@components/common/icons/IconAddPositionCircle";
-import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import {
-  SwapRouteFailedResponse,
-  SwapRouteSuccessResponse,
-} from "@repositories/swap/response/swap-route-response";
 import { TokenModel } from "@models/token/token-model";
 import {
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "@repositories/position/response";
-import { useTranslation } from "react-i18next";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap/response/swap-route-response";
+import { wait } from "@utils/common";
+
+import { RepositionBroadcastProgressWrapper } from "./RepositionBroadcastProgress.styles";
+import RepositionBroadcastProgressState, {
+  ProgressStateType,
+} from "./RepositionBroadcastProgressState";
 
 export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;

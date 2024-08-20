@@ -5,7 +5,6 @@ import Footer from "@components/common/footer/Footer";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import RepositionContainer from "@containers/reposition-container/RepositionContainer";
 import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -14,6 +13,7 @@ import { DeviceSize } from "@styles/media";
 import { makeRouteUrl } from "@utils/page.utils";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 
+import RepositionContainer from "./containers/reposition-container/RepositionContainer";
 import RepositionLayout from "./RepositionLayout";
 
 const PoolReposition : React.FC = () =>  {

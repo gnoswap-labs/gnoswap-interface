@@ -1,14 +1,16 @@
 import styled from "@emotion/styled";
+
 import { fonts } from "@constants/font.constant";
-import mixins from "@styles/mixins";
 import { media } from "@styles/media";
-import { RepositionContentBoxStyle } from "../reposition-content/RepositionContent.styles";
+import mixins from "@styles/mixins";
+
+import { RepositionContentBoxStyle } from "../reposition-content-box/RepositionContnetBox.style";
 
 interface Props {
   isDisabled?: boolean;
 }
 
-export const RepositionInfoWrapper = styled.div<Props>`
+export const DepositRatioWrapper = styled.div<Props>`
   ${({ theme }) => RepositionContentBoxStyle(theme)};
   position: relative;
   display: flex;

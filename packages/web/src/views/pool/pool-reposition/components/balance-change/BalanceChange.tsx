@@ -1,13 +1,15 @@
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { TokenModel } from "@models/token/token-model";
 import React, { useCallback, useMemo } from "react";
-import { BalanceChangeWrapper } from "./BalanceChange.styles";
+import { useTranslation } from "react-i18next";
+
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { SelectPool } from "@hooks/pool/use-select-pool";
+import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { numberToFormat } from "@utils/string-utils";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { SelectPool } from "@hooks/pool/use-select-pool";
-import { useTranslation } from "react-i18next";
+
+import { BalanceChangeWrapper } from "./BalanceChange.styles";
 
 export interface BalanceChangeProps {
   tokenA: TokenModel | null;

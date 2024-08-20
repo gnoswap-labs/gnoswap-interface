@@ -1,8 +1,8 @@
+import React, { useCallback } from "react";
+
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import RepositionModal from "@components/common/reposition-modal/RepositionModal";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-import { IPriceRange } from "@hooks/reposition/use-reposition-handle";
 import { TokenModel } from "@models/token/token-model";
 import {
   RepositionLiquidityFailedResponse,
@@ -12,7 +12,10 @@ import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
 } from "@repositories/swap/response/swap-route-response";
-import React, { useCallback } from "react";
+
+import RepositionModal from "../../components/reposition-modal/RepositionModal";
+import { IPriceRange } from "../../hooks/use-reposition-handle";
+
 
 interface Props {
   amountInfo: {

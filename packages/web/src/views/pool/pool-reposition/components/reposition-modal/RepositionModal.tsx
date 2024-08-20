@@ -1,24 +1,26 @@
+import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconClose from "@components/common/icons/IconCancel";
 import IncreaseMaxMin from "@components/increase/increase-max-min/IncreaseMaxMin";
-import BalanceChange from "@components/reposition/balance-change/BalanceChange";
-import RepositionBroadcastProgress from "@components/reposition/reposition-broadcast-progress/RepositionBroadcastProgress";
-import RepositionInfo from "@components/reposition/reposition-info/RepositionInfo";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import {
-  SwapRouteFailedResponse,
-  SwapRouteSuccessResponse,
-} from "@repositories/swap/response/swap-route-response";
-import React, { useCallback, useState } from "react";
-import Button, { ButtonHierarchy } from "../button/Button";
-import IconClose from "../icons/IconCancel";
-import { RepositionModalWrapper } from "./RepositionModal.styles";
-import {
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "@repositories/position/response";
-import { useTranslation } from "react-i18next";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap/response/swap-route-response";
+
+import BalanceChange from "../balance-change/BalanceChange";
+import RepositionBroadcastProgress from "../reposition-broadcast-progress/RepositionBroadcastProgress";
+import RepositionInfo from "../reposition-info/RepositionInfo";
+import { RepositionModalWrapper } from "./RepositionModal.styles";
 
 interface Props {
   close: () => void;

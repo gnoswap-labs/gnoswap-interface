@@ -1,3 +1,6 @@
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -9,11 +12,10 @@ import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
-import React, { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+
 import {
   DepositRatioWrapper,
-  ToolTipContentWrapper,
+  ToolTipContentWrapper
 } from "./DepositRatio.styles";
 
 export interface DepositRatioProps {
