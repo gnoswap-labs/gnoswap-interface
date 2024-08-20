@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
-import SelectPriceRangeReposition from "@components/common/select-price-range/SelectPriceRangeReposition";
 import {
   PriceRangeMeta,
   RANGE_STATUS_OPTION,
@@ -13,6 +12,7 @@ import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 
+import SelectPriceRangeReposition from "../../../common/components/select-price-range/SelectPriceRangeReposition";
 import DepositRatio from "../deposit-ratio/DepositRatio";
 import { RepositionSelectRangeWrapper } from "./RepositionSelectRange.styles";
 

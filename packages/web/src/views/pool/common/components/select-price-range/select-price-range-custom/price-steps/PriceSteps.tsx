@@ -6,7 +6,7 @@ import React, {
   useImperativeHandle,
   useMemo,
   useRef,
-  useState
+  useState,
 } from "react";
 
 import IconAdd from "@components/common/icons/IconAdd";

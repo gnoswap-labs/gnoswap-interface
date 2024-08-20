@@ -9,6 +9,15 @@ import React, {
 } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
+import IconAdd from "@components/common/icons/IconAdd";
+import IconKeyboardArrowLeft from "@components/common/icons/IconKeyboardArrowLeft";
+import IconKeyboardArrowRight from "@components/common/icons/IconKeyboardArrowRight";
+import IconRefresh from "@components/common/icons/IconRefresh";
+import IconRemove from "@components/common/icons/IconRemove";
+import IconSwap from "@components/common/icons/IconSwap";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import PoolSelectionGraph from "@components/common/pool-selection-graph/PoolSelectionGraph";
+import SelectTab from "@components/common/select-tab/SelectTab";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import {
   DefaultTick,
@@ -24,15 +33,6 @@ import { checkGnotPath } from "@utils/common";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
 
-import IconAdd from "../../icons/IconAdd";
-import IconKeyboardArrowLeft from "../../icons/IconKeyboardArrowLeft";
-import IconKeyboardArrowRight from "../../icons/IconKeyboardArrowRight";
-import IconRefresh from "../../icons/IconRefresh";
-import IconRemove from "../../icons/IconRemove";
-import IconSwap from "../../icons/IconSwap";
-import LoadingSpinner from "../../loading-spinner/LoadingSpinner";
-import PoolSelectionGraph from "../../pool-selection-graph/PoolSelectionGraph";
-import SelectTab from "../../select-tab/SelectTab";
 import PriceSteps from "./price-steps/PriceSteps";
 import StartingPrice from "./starting-price/StartingPrice";
 

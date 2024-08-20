@@ -18,7 +18,6 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useRouterBack } from "@hooks/common/use-router-back";
 import { useSlippage } from "@hooks/common/use-slippage";
-import { usePool } from "@hooks/pool/use-pool";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -41,6 +40,7 @@ import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import PoolAddLiquidity, {
   PriceRangeSummary,
 } from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import { usePool } from "../../hooks/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "../../hooks/use-pool-add-liquidity-confirm-modal";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = [

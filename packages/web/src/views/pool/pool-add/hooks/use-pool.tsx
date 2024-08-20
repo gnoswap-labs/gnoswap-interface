@@ -1,15 +1,16 @@
+import { useCallback, useEffect, useMemo } from "react";
+
 import {
   SwapFeeTierInfoMap,
-  SwapFeeTierType,
+  SwapFeeTierType
 } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { useCallback, useEffect, useMemo } from "react";
-import { usePoolData } from "./use-pool-data";
-import { checkGnotPath } from "@utils/common";
 import { useGetPoolCreationFee, useGetRPCPoolsBy } from "@query/pools";
+import { checkGnotPath } from "@utils/common";
 
 interface Props {
   compareToken: TokenModel | null;
