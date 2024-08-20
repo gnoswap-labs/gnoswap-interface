@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SelectLiquidityListItem from "./SelectLiquidityListItem";
-import { STAKED_OPTION } from "@constants/option.constant";
 import { action } from "@storybook/addon-actions";
 
 export default {

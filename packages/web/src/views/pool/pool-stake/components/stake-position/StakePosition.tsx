@@ -1,12 +1,15 @@
 import React, { useMemo } from "react";
-import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { wrapper } from "./StakePosition.styles";
-// import { ValuesType } from "utility-types";
-import SelectLiquidity from "@components/stake/select-liquidity/SelectLiquidity";
-import SelectStakeResult from "@components/stake/select-stake-result/SelectStakeResult";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { PoolModel } from "@models/pool/pool-model";
 import { useTranslation } from "react-i18next";
+
+// import { ValuesType } from "utility-types";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import { PoolModel } from "@models/pool/pool-model";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+
+import SelectLiquidity from "../select-liquidity/SelectLiquidity";
+import SelectStakeResult from "../select-stake-result/SelectStakeResult";
+
+import { wrapper } from "./StakePosition.styles";
 
 interface StakePositionProps {
   unstakedPositions: PoolPositionModel[];

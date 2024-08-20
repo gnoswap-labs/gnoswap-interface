@@ -1,8 +1,10 @@
-import StakePositionModalContainer from "@containers/stake-position-modal-container/StakePositionModalContainer";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
+
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { CommonState } from "@states/index";
+
+import StakePositionModalContainer from "../containers/stake-position-modal-container/StakePositionModalContainer";
 
 export interface Props {
   positions: PoolPositionModel[];

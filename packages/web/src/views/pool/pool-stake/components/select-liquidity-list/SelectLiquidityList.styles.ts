@@ -1,7 +1,9 @@
-import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+
+import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 import { media } from "@styles/media";
+
 import { inputStyle } from "../stake-position/StakePosition.styles";
 
 export const wrapper = (theme: Theme) => css`

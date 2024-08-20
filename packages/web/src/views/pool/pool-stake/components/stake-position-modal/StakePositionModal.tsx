@@ -1,3 +1,6 @@
+import React, { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -9,8 +12,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
-import React, { useCallback, useMemo } from "react";
-import { useTranslation } from "react-i18next";
+
 import {
   Divider,
   StakePositionModalWrapper,

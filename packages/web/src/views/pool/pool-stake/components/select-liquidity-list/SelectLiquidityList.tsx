@@ -1,9 +1,12 @@
 import React from "react";
-import SelectLiquidityListItem from "@components/stake/select-lilquidity-list-item/SelectLiquidityListItem";
-import { loadingWrapper, wrapper } from "./SelectLiquidityList.styles";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { useTranslation } from "react-i18next";
+
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+
+import SelectLiquidityListItem from "./select-lilquidity-list-item/SelectLiquidityListItem";
+
+import { loadingWrapper, wrapper } from "./SelectLiquidityList.styles";
 
 interface SelectLiquidityProps {
   unstakedPositions: PoolPositionModel[];

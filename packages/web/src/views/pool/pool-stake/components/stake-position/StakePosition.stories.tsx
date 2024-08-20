@@ -1,7 +1,8 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
+
 import StakePosition from "./StakePosition";
-import StakePositionContainer from "@containers/stake-position-container/StakePositionContainer";
+import StakePositionContainer from "../../containers/stake-position-container/StakePositionContainer";
 
 export default {
   title: "stake/StakePosition",

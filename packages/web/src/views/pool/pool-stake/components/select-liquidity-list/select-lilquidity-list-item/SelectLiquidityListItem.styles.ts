@@ -2,7 +2,7 @@ import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import { media } from "@styles/media";
-import { inputStyle } from "@components/stake/stake-position/StakePosition.styles";
+import { inputStyle } from "@views/pool/pool-stake/components/stake-position/StakePosition.styles";
 import styled from "@emotion/styled";
 
 export const wrapper = (checked: boolean) => (theme: Theme) =>

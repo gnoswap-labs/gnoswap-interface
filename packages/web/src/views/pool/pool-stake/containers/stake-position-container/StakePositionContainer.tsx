@@ -1,10 +1,12 @@
-import StakePosition from "@components/stake/stake-position/StakePosition";
-import { usePositionData } from "@hooks/common/use-position-data";
-import { useStakePositionModal } from "@hooks/earn/use-stake-position-modal";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import React, { useCallback, useMemo, useState } from "react";
+
 import useCustomRouter from "@hooks/common/use-custom-router";
-import React, { useCallback, useState, useMemo } from "react";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetPoolDetailByPath } from "@query/pools";
+
+import StakePosition from "../../components/stake-position/StakePosition";
+import { useStakePositionModal } from "../../hooks/use-stake-position-modal";
 
 const StakePositionContainer: React.FC = () => {
   const router = useCustomRouter();

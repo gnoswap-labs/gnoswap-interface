@@ -1,25 +1,26 @@
 /* eslint-disable @next/next/no-img-element */
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import Tooltip from "@components/common/tooltip/Tooltip";
+import BigNumber from "bignumber.js";
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenModel } from "@models/token/token-model";
+import { formatOtherPrice } from "@utils/new-number-utils";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+
 import {
   RemoveLiquiditySelectListItemWrapper,
   TokenTitleWrapper,
   TokenValueWrapper,
   TooltipWrapperContent,
 } from "./RemoveLiquiditySelectListItem.styles";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { tooltipWrapper } from "@components/stake/select-lilquidity-list-item/SelectLiquidityListItem.styles";
-import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { makeSwapFeeTier } from "@utils/swap-utils";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { TokenModel } from "@models/token/token-model";
-import BigNumber from "bignumber.js";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { formatOtherPrice } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
 
 interface RemoveLiquiditySelectListItemProps {
   position: PoolPositionModel;
@@ -58,16 +59,14 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
 
   return (
     <TooltipWrapperContent>
-      <div css={tooltipWrapper()}>
-        <TokenTitleWrapper>
-          <div className="title">
-            {t("RemovePosition:positionList.item.tooltip.tokenID")}
-          </div>
-          <div className="title">#{position.id}</div>
-        </TokenTitleWrapper>
-        {renderTokenValue(position.pool.tokenA, position.tokenABalance)}
-        {renderTokenValue(position.pool.tokenB, position.tokenBBalance)}
-      </div>
+      <TokenTitleWrapper>
+        <div className="title">
+          {t("RemovePosition:positionList.item.tooltip.tokenID")}
+        </div>
+        <div className="title">#{position.id}</div>
+      </TokenTitleWrapper>
+      {renderTokenValue(position.pool.tokenA, position.tokenABalance)}
+      {renderTokenValue(position.pool.tokenB, position.tokenBBalance)}
       {disabled && <div className="divider"></div>}
       {disabled && (
         <div className="unstake-description">

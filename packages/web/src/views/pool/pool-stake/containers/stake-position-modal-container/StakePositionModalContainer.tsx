@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
-import StakePositionModal from "@components/stake/stake-position-modal/StakePositionModal";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -14,6 +13,8 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+
+import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
 
 interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];

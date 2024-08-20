@@ -1,7 +1,10 @@
 import React from "react";
-import { wrapper } from "./SelectLiquidity.styles";
-import SelectLiquidityList from "@components/stake/select-liquidity-list/SelectLiquidityList";
+
 import { PoolPositionModel } from "@models/position/pool-position-model";
+
+import SelectLiquidityList from "../select-liquidity-list/SelectLiquidityList";
+
+import { wrapper } from "./SelectLiquidity.styles";
 
 interface SelectLiquidityProps {
   unstakedPositions: PoolPositionModel[];

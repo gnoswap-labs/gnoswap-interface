@@ -1,23 +1,25 @@
+import BigNumber from "bignumber.js";
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import React, { useMemo } from "react";
+import { TokenModel } from "@models/token/token-model";
+import { formatOtherPrice } from "@utils/new-number-utils";
+import { isInRangePosition } from "@utils/stake-position-utils";
+
 import {
   TokenTitleWrapper,
   TokenValueWrapper,
   tooltipWrapper,
   wrapper,
 } from "./SelectLiquidityListItem.styles";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import BigNumber from "bignumber.js";
-import { TokenModel } from "@models/token/token-model";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { formatOtherPrice } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
-import RangeBadge from "@components/common/range-badge/RangeBadge";
-import { isInRangePosition } from "@utils/stake-position-utils";
 
 interface SelectLiquidityListItemProps {
   disabled?: boolean;
