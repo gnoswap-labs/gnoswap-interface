@@ -9,16 +9,32 @@ jobs:
     name: Run unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-      - run: yarn
-      - run: yarn workspace @gnoswap-labs/web test:ci
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Action
+        uses: ./.github/actions/setup
+
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Run Test
+        run: yarn workspace @gnoswap-labs/web test:ci
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN : ${{ secrets.SONARCLOUD_TOKEN }}
 
   build-tests:
     name: Run build tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: ./.github/actions/setup
       - run: yarn
       - run: yarn workspace @gnoswap-labs/web build
