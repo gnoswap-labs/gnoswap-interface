@@ -5,10 +5,11 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { usePositionsRewards } from "@hooks/position/use-positions-rewards";
 import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatRate } from "@utils/new-number-utils";
+
+import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
 
 import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 

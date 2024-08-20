@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import RemoveLiquidityContainer from "@containers/remove-liquidity-container/RemoveLiquidityContainer";
 import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -13,6 +12,7 @@ import { DeviceSize } from "@styles/media";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 
 import PoolRemoveLayout from "./PoolRemoveLayout";
+import RemoveLiquidityContainer from "./containers/remove-liquidity-container/RemoveLiquidityContainer";
 
 const PoolRemove: React.FC = () => {
   const { t } = useTranslation();
