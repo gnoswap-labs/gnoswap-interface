@@ -42,7 +42,6 @@ const tokenB: TokenModel = {
 
 export const Default = Template.bind({});
 Default.args = {
-  mode: "POOL",
   tokenA: tokenA,
   tokenB: tokenB,
   feeTiers: [],

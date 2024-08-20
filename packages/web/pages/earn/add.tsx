@@ -7,9 +7,9 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
-import EarnAdd from "@views/earn/earn-add/EarnAdd";
 import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
+import PoolAdd from "@views/pool/pool-add/PoolAdd";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -70,7 +70,7 @@ export default function Page() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <EarnAdd />
+      <PoolAdd />
     </>
   );
 }

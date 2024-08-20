@@ -1,19 +1,20 @@
-import { Divider, QuickPoolInfoWrapper } from "./QuickPoolInfo.styles";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import IconStar from "@components/common/icons/IconStar";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
-import { useAtom } from "jotai";
-import { SwapState } from "@states/index";
-import { PositionModel } from "@models/position/position-model";
-import { useMemo, useState, useEffect } from "react";
-import { formatUsdNumber } from "@utils/stake-position-utils";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { PAGE_PATH_TYPE } from "@constants/page.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PositionModel } from "@models/position/position-model";
 import { TokenModel } from "@models/token/token-model";
-import IconStar from "@components/common/icons/IconStar";
-import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
-import { PAGE_PATH_TYPE } from "@constants/page.constant";
+import { formatUsdNumber } from "@utils/stake-position-utils";
+
+import { Divider, QuickPoolInfoDummy, QuickPoolInfoWrapper } from "./QuickPoolInfo.styles";
+
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -31,31 +32,23 @@ const QuickPoolInfo: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
 
-  const [swapValue] = useAtom(SwapState.swap);
   const { getGnotPath } = useGnotToGnot();
-  const { tokenA: tokenAInfo = null, tokenB: tokenBInfo = null } = swapValue;
   const [initialized, setInitialized] = useState<{
     tokenA: TokenModel | null;
     tokenB: TokenModel | null;
   }>({ tokenA: null, tokenB: null });
 
-  const tokenA = tokenAInfo
+  const tokenA = pool.tokenA
     ? {
-        ...tokenAInfo,
-        logoURI: getGnotPath(tokenAInfo).logoURI,
-        path: getGnotPath(tokenAInfo).path,
-        name: getGnotPath(tokenAInfo).name,
-        symbol: getGnotPath(tokenAInfo).symbol,
+        ...pool.tokenA,
+        ...getGnotPath(pool.tokenA),
       }
     : null;
 
-  const tokenB = tokenBInfo
+  const tokenB = pool.tokenB
     ? {
-        ...tokenBInfo,
-        logoURI: getGnotPath(tokenBInfo).logoURI,
-        path: getGnotPath(tokenBInfo).path,
-        name: getGnotPath(tokenBInfo).name,
-        symbol: getGnotPath(tokenBInfo).symbol,
+        ...pool.tokenB,
+        ...getGnotPath(pool.tokenB),
       }
     : null;
 
@@ -153,8 +146,8 @@ const QuickPoolInfo: React.FC<Props> = ({
     );
   }, [isLoadingPool, pool.stakingApr]);
 
-  if (!tokenA || !tokenB || !tokenARevert || !tokenBRevert) {
-    return <></>;
+  if (!tokenA?.path || !tokenB?.path || !tokenARevert || !tokenBRevert) {
+    return <QuickPoolInfoDummy />;
   }
 
   function renderPositionInfo() {

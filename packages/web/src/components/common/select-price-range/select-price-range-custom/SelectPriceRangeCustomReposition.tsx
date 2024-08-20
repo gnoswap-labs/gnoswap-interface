@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
+import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import {
   PriceRangeType,
-  SwapFeeTierPriceRange
+  SwapFeeTierPriceRange,
 } from "@constants/option.constant";
 import { MAX_TICK } from "@constants/swap.constant";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useLoading } from "@hooks/common/use-loading";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";

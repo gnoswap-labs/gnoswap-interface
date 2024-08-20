@@ -1,45 +1,58 @@
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconArrowDown from "@components/common/icons/IconArrowDown";
+import IconArrowUp from "@components/common/icons/IconArrowUp";
+import IconFailed from "@components/common/icons/IconFailed";
+import IconSettings from "@components/common/icons/IconSettings";
+import IconStaking from "@components/common/icons/IconStaking";
+import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import SelectFeeTier from "@components/common/select-fee-tier/SelectFeeTier";
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import SelectPair from "@components/common/select-pair/SelectPair";
+import SelectPriceRangeSummary from "@components/common/select-price-range-summary/SelectPriceRangeSummary";
+import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
+import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
+import {
+  AddLiquiditySubmitType,
+  DefaultTick,
+  PriceRangeType,
+  SwapFeeTierInfoMap,
+  SwapFeeTierType,
+} from "@constants/option.constant";
+import { useLoading } from "@hooks/common/use-loading";
+import { SelectPool } from "@hooks/pool/use-select-pool";
+import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { PoolModel } from "@models/pool/pool-model";
+import { TokenModel } from "@models/token/token-model";
+import { isEmptyObject } from "@utils/validation-utils";
+
 import {
   EarnAddLiquidityWrapper,
   OutOfRangeWrapper,
 } from "./EarnAddLiquidity.styles";
-import {
-  AddLiquidityType,
-  SwapFeeTierType,
-  SwapFeeTierInfoMap,
-  AddLiquiditySubmitType,
-  PriceRangeType,
-  DefaultTick,
-} from "@constants/option.constant";
-import {
-  AddLiquidityPriceRage,
-  PoolTick,
-  PriceRangeSummary,
-} from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
-import SelectPair from "@components/common/select-pair/SelectPair";
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { PoolModel } from "@models/pool/pool-model";
-import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
-import SelectPriceRangeSummary from "@components/common/select-price-range-summary/SelectPriceRangeSummary";
-import { TokenModel } from "@models/token/token-model";
-import IconSettings from "@components/common/icons/IconSettings";
-import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
-import IconStaking from "@components/common/icons/IconStaking";
-import IconArrowDown from "@components/common/icons/IconArrowDown";
-import IconArrowUp from "@components/common/icons/IconArrowUp";
-import { SelectPool } from "@hooks/pool/use-select-pool";
-import IconFailed from "@components/common/icons/IconFailed";
-import { isEmptyObject } from "@utils/validation-utils";
-import { useLoading } from "@hooks/common/use-loading";
-import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { useTranslation } from "react-i18next";
+
+export interface AddLiquidityPriceRage {
+  type: PriceRangeType;
+  apr?: string;
+  text?: string;
+}
+
+export interface PriceRangeSummary {
+  depositRatio: string;
+  feeBoost: string;
+  estimatedApr: string;
+}
+
+export interface PoolTick {
+  value: string;
+  price: string;
+  tick: number;
+}
 
 interface EarnAddLiquidityProps {
-  mode: AddLiquidityType;
   defaultPrice: number | null;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
@@ -140,7 +153,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     }
     return () => {
       setOpenedFeeTier(false);
-      isEarnAdd && setOpenedPriceRange(false);
+      if (isEarnAdd) setOpenedPriceRange(false);
     };
   }, [tokenA, tokenB, isEarnAdd]);
 
@@ -174,13 +187,13 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   }, [existTokenPair, selectPool.isCreate, selectedFeeRate]);
 
   const toggleFeeTier = useCallback(() => {
-    if (isEarnAdd) {
-      tokenA && tokenB && setOpenedFeeTier(!openedFeeTier);
+    if (isEarnAdd && tokenA && tokenB) {
+      setOpenedFeeTier(!openedFeeTier);
     }
   }, [tokenA, tokenB, openedFeeTier, isEarnAdd]);
 
   const togglePriceRange = useCallback(() => {
-    tokenA && tokenB && setOpenedPriceRange(!openedPriceRange);
+    if (tokenA && tokenB) setOpenedPriceRange(!openedPriceRange);
   }, [tokenA, tokenB, openedPriceRange]);
 
   const activatedSubmit = useMemo(() => {

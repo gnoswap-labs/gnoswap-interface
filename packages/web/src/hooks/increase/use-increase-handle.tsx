@@ -1,9 +1,14 @@
+import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
 } from "@constants/option.constant";
 import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
@@ -22,10 +27,6 @@ import {
   tickToPriceStr,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
-import BigNumber from "bignumber.js";
-import { useAtom } from "jotai";
-import useCustomRouter from "@hooks/common/use-custom-router";
-import { useMemo, useCallback, useState, useEffect } from "react";
 
 export interface IPriceRange {
   tokenARatioStr: string;

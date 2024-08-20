@@ -106,3 +106,12 @@ export const Divider = styled.div`
   width: 100%;
   border-top: 1px solid ${({ theme }) => theme.color.border02};
 `;
+
+export const QuickPoolInfoDummy = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 430px;
+  ${media.tablet} {
+    width: 100%;
+    max-width: 500px;
+  }
+}`;

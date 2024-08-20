@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import { PriceRangeStr, PriceRangeTooltip } from "@constants/option.constant";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 

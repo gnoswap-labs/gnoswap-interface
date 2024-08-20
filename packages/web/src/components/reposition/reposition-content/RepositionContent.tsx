@@ -1,21 +1,23 @@
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
+import { REPOSITION_BUTTON_TYPE } from "@hooks/reposition/use-reposition-handle";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
-import React, { useMemo } from "react";
+
 import BalanceChange from "../balance-change/BalanceChange";
 import RepositionSelectPosition from "../reposition-select-position/RepositionSelectPosition";
 import RepositionSelectRange from "../reposition-select-range/RepositionSelectRange";
 import { ToolTipContentWrapper } from "../reposition-select-range/RepositionSelectRange.styles";
 import { RepositionContentWrapper } from "./RepositionContent.styles";
-import { REPOSITION_BUTTON_TYPE } from "@hooks/reposition/use-reposition-handle";
-import { useTranslation } from "react-i18next";
 
 interface RepositionContentProps {
   tokenA: TokenModel | null;

@@ -233,8 +233,6 @@ export const CHART_DAY_SCOPE_TYPE = {
 
 export type CHART_DAY_SCOPE_TYPE = ValuesType<typeof CHART_DAY_SCOPE_TYPE>;
 
-export type AddLiquidityType = "POOL" | "LIQUIDITY";
-
 export type PriceRangeType = "Active" | "Passive" | "Custom";
 
 export const PriceRangeTooltip: {

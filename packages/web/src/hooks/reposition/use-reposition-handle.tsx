@@ -3,13 +3,13 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
   DEFAULT_SLIPPAGE,
   RANGE_STATUS_OPTION,
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useAddress } from "@hooks/address/use-address";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";

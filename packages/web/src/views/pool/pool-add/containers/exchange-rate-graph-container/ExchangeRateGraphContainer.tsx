@@ -166,7 +166,7 @@ const ExchangeRateGraphContainer: React.FC = () => {
         };
   }, [getGnotPath, poolData, isReversed]);
 
-  if (!poolPath) return null;
+  if (!poolData.tokenA?.path || !poolData.tokenB?.path) return null;
 
   return (
     <ExchangeRateGraph

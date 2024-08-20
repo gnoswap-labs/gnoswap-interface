@@ -1,8 +1,9 @@
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import dayjs from "dayjs";
 import { atom } from "jotai";
+
+import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenModel } from "@models/token/token-model";
-import dayjs from "dayjs";
 
 interface DistributionPeriodDate {
   year: number;
@@ -25,7 +26,6 @@ export const DefaultDate = (() => {
 })();
 
 export const isOneClick = atom<boolean>(false);
-export const isEarnAdd = atom<boolean>(false);
 export const currentPoolPath = atom<string | null>(null);
 export const currentCompareToken = atom<TokenModel | null>(null);
 export const period = atom<number>(90);
