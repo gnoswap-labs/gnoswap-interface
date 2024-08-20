@@ -1,9 +1,10 @@
-import { fonts } from "@constants/font.constant";
-import mixins from "@styles/mixins";
-import { inputStyle } from "@views/pool/pool-remove/components/remove-liquidity/RemoveLiquidity.styles";
-
 import styled from "@emotion/styled";
+
+import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
+import mixins from "@styles/mixins";
+
+import { inputStyle } from "../../components/remove-liquidity/RemoveLiquidity.styles";
 
 export const RemoveLiquiditySelectListWrapper = styled.div`
   ${({ theme }) => inputStyle(theme)};

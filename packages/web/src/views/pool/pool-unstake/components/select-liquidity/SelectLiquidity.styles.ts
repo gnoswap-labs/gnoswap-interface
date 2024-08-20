@@ -1,8 +1,10 @@
 import { css, type Theme } from "@emotion/react";
-import { inputStyle } from "@views/pool/pool-unstake/components/unstake-liquidity/UnstakeLiquidity.styles";
+
 import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
+
+import { inputStyle } from "../unstake-liquidity/UnstakeLiquidity.styles";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};

@@ -7,7 +7,7 @@ import {
   MyLiquidityWrapperAnchor,
 } from "./MyLiquidity.styles";
 import { DEVICE_TYPE } from "@styles/media";
-import MyDetailedPositionCard from "../my-position-card/MyDetailedPositionCard";
+import MyDetailedPositionCard from "../my-detailed-position-card/MyDetailedPositionCard";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 

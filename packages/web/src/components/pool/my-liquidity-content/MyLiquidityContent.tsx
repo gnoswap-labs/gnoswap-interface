@@ -25,8 +25,8 @@ import {
 } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
-import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
+import { MyPositionAprContent } from "../my-detailed-position-card/MyPositionCardAprContent";
+import { MyPositionClaimContent } from "../my-detailed-position-card/MyPositionCardClaimContent";
 
 import {
   AmountDisplayWrapper,

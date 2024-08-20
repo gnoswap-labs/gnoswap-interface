@@ -1,9 +1,10 @@
+import styled from "@emotion/styled";
+
 import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
-import { inputStyle } from "@views/pool/pool-remove/components/remove-liquidity/RemoveLiquidity.styles";
-
-import styled from "@emotion/styled";
 import { media } from "@styles/media";
+
+import { inputStyle } from "../../remove-liquidity/RemoveLiquidity.styles";
 
 export const RemoveLiquiditySelectListItemWrapper = styled.li<{
   selected: boolean;

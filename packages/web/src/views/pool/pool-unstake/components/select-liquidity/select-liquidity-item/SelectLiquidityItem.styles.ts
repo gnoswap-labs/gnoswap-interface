@@ -1,9 +1,12 @@
-import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
-import mixins from "@styles/mixins";
-import { inputStyle } from "@views/pool/pool-unstake/components/unstake-liquidity/UnstakeLiquidity.styles";
-import { media } from "@styles/media";
 import styled from "@emotion/styled";
+
+import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
+import mixins from "@styles/mixins";
+
+import { inputStyle } from "../../unstake-liquidity/UnstakeLiquidity.styles";
+
 
 export const wrapper = (checked: boolean) => (theme: Theme) =>
   css`

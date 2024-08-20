@@ -1,15 +1,17 @@
-import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import React, { useCallback, useMemo, useState } from "react";
-import { HeaderWrapper } from "./MyLiquidityHeader.styles";
-import Switch from "@components/common/switch/Switch";
-import IconLinkPage from "@components/common/icons/IconLinkPage";
-import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
-import { CopyTooltip } from "../my-position-card/MyPositionCard.styles";
-import IconPolygon from "@components/common/icons/IconPolygon";
-import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconLinkPage from "@components/common/icons/IconLinkPage";
+import IconPolygon from "@components/common/icons/IconPolygon";
+import Switch from "@components/common/switch/Switch";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { ThemeState } from "@states/index";
+
+import { CopyTooltip } from "../my-detailed-position-card/MyDetailedPositionCard.styles";
+import { HeaderWrapper } from "./MyLiquidityHeader.styles";
 
 interface MyLiquidityHeaderProps {
   isOtherPosition: boolean;
@@ -68,8 +70,8 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
       setTimeout(() => {
         setCopied(false);
       }, 2000);
-    } catch (e) {
-      throw new Error("Copy Error!");
+    } catch (e: unknown) {
+      throw new Error(`Copy Error! ${e}`);
     }
   };
 
