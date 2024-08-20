@@ -2,12 +2,11 @@ import { useAtom } from "jotai";
 import React, { useCallback, useMemo } from "react";
 
 import { PAGE_PATH_TYPE } from "@constants/page.constant";
-import { initialPool } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { initialPool, PoolDetailModel } from "@models/pool/pool-detail-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath } from "@utils/common";

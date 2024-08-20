@@ -1,17 +1,18 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+
 import Staking from "@components/pool/staking/Staking";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { StakingPeriodType } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import useUrlParam from "@hooks/common/use-url-param";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetPoolDetailByPath } from "@query/pools";
-import { StakingPeriodType } from "@constants/option.constant";
-import useUrlParam from "@hooks/common/use-url-param";
-import { addressValidationCheck } from "@utils/validation-utils";
 import { formatRate } from "@utils/new-number-utils";
+import { addressValidationCheck } from "@utils/validation-utils";
 
 const DAY_TIME = 24 * 60 * 60 * 1000;
 

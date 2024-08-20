@@ -9,7 +9,6 @@ import IconFailed from "@components/common/icons/IconFailed";
 import IconSettings from "@components/common/icons/IconSettings";
 import IconStaking from "@components/common/icons/IconStaking";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
 import {
   AddLiquiditySubmitType,
@@ -26,6 +25,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { TokenModel } from "@models/token/token-model";
 import { isEmptyObject } from "@utils/validation-utils";
 
+import SelectPriceRange from "../../../common/components/select-price-range/SelectPriceRange";
 import LiquidityEnterAmounts from "./liquidity-enter-amounts/LiquidityEnterAmounts";
 import SelectFeeTier from "./select-fee-tier/SelectFeeTier";
 import SelectPair from "./select-pair/SelectPair";

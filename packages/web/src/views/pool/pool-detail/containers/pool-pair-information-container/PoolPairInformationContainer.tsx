@@ -5,72 +5,8 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { initialPool, PoolDetailModel } from "@models/pool/pool-detail-model";
 import { usePositionData } from "@hooks/common/use-position-data";
-
-export interface pathProps {
-  title: string;
-  path: string;
-}
-
-export const menu = {
-  title: "business:pageHeader.earn",
-  path: "/earn",
-};
-
-export const initialPool: PoolDetailModel = {
-  tokenA: {
-    chainId: "",
-    createdAt: "",
-    name: "",
-    address: "",
-    path: "",
-    decimals: 4,
-    symbol: "",
-    logoURI: "",
-    type: "native",
-    priceID: "",
-  },
-  tokenB: {
-    chainId: "",
-    createdAt: "",
-    name: "",
-    address: "",
-    path: "",
-    decimals: 4,
-    symbol: "",
-    logoURI: "",
-    type: "native",
-    priceID: "",
-  },
-  incentiveType: "INCENTIVIZED",
-  tvl: "0",
-  tvlChange: 0,
-  volume24h: 0,
-  rewards24hUsd: 0,
-  id: "",
-  apr: "0",
-  fee: "",
-  feeUsd24h: 0,
-  currentTick: 0,
-  price: 0,
-  tokenABalance: 0,
-  tokenBBalance: 0,
-  tickSpacing: 0,
-  rewardTokens: [],
-  totalApr: 0,
-  poolPath: "",
-  liquidity: "",
-  volumeChange24h: 0,
-  feeApr: "",
-  stakingApr: "",
-  allTimeVolumeUsd: "",
-  priceRatio: {
-    "7d": [],
-    "30d": [],
-    all: [],
-  },
-};
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
@@ -133,7 +69,10 @@ const PoolPairInformationContainer: React.FC<
   return (
     <PoolPairInformation
       pool={pool}
-      menu={menu}
+      menu={{
+        title: "business:pageHeader.earn",
+        path: "/earn",
+      }}
       onClickPath={onClickPath}
       feeStr={feeStr}
       loading={loading || loadingPosition}

@@ -6,7 +6,6 @@ import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSke
 import PoolPairInfoContent from "@components/pool/pool-pair-info-content/PoolPairInfoContent";
 import PoolPairInfoHeader from "@components/pool/pool-pair-info-header/PoolPairInfoHeader";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { pathProps } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
@@ -17,7 +16,10 @@ import {
 
 interface PoolPairInformationProps {
   pool: PoolDetailModel;
-  menu: pathProps;
+  menu: {
+    title: string;
+    path: string;
+  };
   feeStr: string | null;
   onClickPath: (path: string) => void;
   loading: boolean;
