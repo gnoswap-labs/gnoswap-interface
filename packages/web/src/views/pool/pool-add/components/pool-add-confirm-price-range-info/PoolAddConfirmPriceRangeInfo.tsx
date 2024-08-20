@@ -1,20 +1,23 @@
 import React, { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import IconInfo from "@components/common/icons/IconInfo";
+import IconSwap from "@components/common/icons/IconSwap";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
-import {
-  EarnAddConfirmPriceRangeInfoSection,
-  EarnAddConfirmPriceRangeInfoWrapper,
-  ToolTipContentWrapper,
-} from "./EarnAddConfirmPriceRangeInfo.styles";
-import { EarnAddConfirmAmountInfoProps } from "../earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
-import IconSwap from "@components/common/icons/IconSwap";
-import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { formatRate } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
-export interface EarnAddConfirmPriceRangeInfoProps
+import { EarnAddConfirmAmountInfoProps } from "../pool-add-confirm-amount-info/PoolAddConfirmAmountInfo";
+
+import {
+  PoolAddConfirmPriceRangeInfoSection,
+  PoolAddConfirmPriceRangeInfoWrapper,
+  ToolTipContentWrapper,
+} from "./PoolAddConfirmPriceRangeInfo.styles";
+
+export interface PoolAddConfirmPriceRangeInfoProps
   extends EarnAddConfirmAmountInfoProps {
   currentPrice: string;
   inRange: boolean;
@@ -27,8 +30,8 @@ export interface EarnAddConfirmPriceRangeInfoProps
   isShowStaking?: boolean;
 }
 
-const EarnAddConfirmPriceRangeInfo: React.FC<
-  EarnAddConfirmPriceRangeInfoProps
+const PoolAddConfirmPriceRangeInfo: React.FC<
+  PoolAddConfirmPriceRangeInfoProps
 > = ({
   currentPrice,
   inRange,
@@ -69,26 +72,26 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
     return inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT;
   }, [inRange]);
   return (
-    <EarnAddConfirmPriceRangeInfoWrapper>
+    <PoolAddConfirmPriceRangeInfoWrapper>
       <div className="range-title">
         <p>{t("AddPosition:confirmAddModal.info.section.priceRange")}</p>
         <RangeBadge status={rangeStatus} />
       </div>
 
       <div className="price-range-wrapper">
-        <EarnAddConfirmPriceRangeInfoSection className="range-section">
+        <PoolAddConfirmPriceRangeInfoSection className="range-section">
           <span>{t("AddPosition:confirmAddModal.info.label.minPrice")}</span>
           <span className="amount">{minPrice}</span>
           <span className="label">{priceLabelMin}</span>
-        </EarnAddConfirmPriceRangeInfoSection>
-        <EarnAddConfirmPriceRangeInfoSection className="range-section">
+        </PoolAddConfirmPriceRangeInfoSection>
+        <PoolAddConfirmPriceRangeInfoSection className="range-section">
           <span>{t("AddPosition:confirmAddModal.info.label.maxPrice")}</span>
           <span className="amount">{maxPrice}</span>
           <span className="label">{priceLabelMax}</span>
-        </EarnAddConfirmPriceRangeInfoSection>
+        </PoolAddConfirmPriceRangeInfoSection>
       </div>
 
-      <EarnAddConfirmPriceRangeInfoSection>
+      <PoolAddConfirmPriceRangeInfoSection>
         <div className="row">
           <span className="key">{t("business:currentPrice")}:</span>
           <div className="swap-value">
@@ -155,9 +158,9 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
             <span className="value">74.24% ~ 124.22%</span>
           </div>
         )}
-      </EarnAddConfirmPriceRangeInfoSection>
-    </EarnAddConfirmPriceRangeInfoWrapper>
+      </PoolAddConfirmPriceRangeInfoSection>
+    </PoolAddConfirmPriceRangeInfoWrapper>
   );
 };
 
-export default EarnAddConfirmPriceRangeInfo;
+export default PoolAddConfirmPriceRangeInfo;

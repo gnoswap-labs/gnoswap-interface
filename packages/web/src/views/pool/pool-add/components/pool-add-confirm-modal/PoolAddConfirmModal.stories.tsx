@@ -1,12 +1,16 @@
 import { action } from "@storybook/addon-actions";
-import EarnAddConfirm, { type EarnAddConfirmProps } from "./EarnAddConfirm";
 import { Meta, StoryObj } from "@storybook/react";
+
 import { TokenModel } from "@models/token/token-model";
 
+import PoolAddConfirmModal, {
+  type PoolAddConfirmModalProps,
+} from "./PoolAddConfirmModal";
+
 export default {
-  title: "earn-add/EarnAddConfirm",
-  component: EarnAddConfirm,
-} as Meta<typeof EarnAddConfirm>;
+  title: "pool/pool-add/PoolAddConfirmModal",
+  component: PoolAddConfirmModal,
+} as Meta<typeof PoolAddConfirmModal>;
 
 
 const tokenA: {
@@ -77,7 +81,7 @@ const feeInfo = {
   fee: "-500",
 };
 
-export const Default: StoryObj<EarnAddConfirmProps> = {
+export const Default: StoryObj<PoolAddConfirmModalProps> = {
   args: {
     amountInfo,
     priceRangeInfo,

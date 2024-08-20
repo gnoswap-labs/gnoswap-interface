@@ -1,10 +1,11 @@
-import EarnAddConfirmFeeInfo, { type EarnAddConfirmFeeInfoProps } from "./EarnAddConfirmFeeInfo";
 import { Meta, StoryObj } from "@storybook/react";
 
+import PoolAddConfirmFeeInfo, { type EarnAddConfirmFeeInfoProps } from "./PoolAddConfirmFeeInfo";
+
 export default {
-  title: "earn-add/EarnAddConfirmFeeInfo",
-  component: EarnAddConfirmFeeInfo,
-} as Meta<typeof EarnAddConfirmFeeInfo>;
+  title: "pool/pool-add/PoolAddConfirmFeeInfo",
+  component: PoolAddConfirmFeeInfo,
+} as Meta<typeof PoolAddConfirmFeeInfo>;
 
 const token = {
   info: {

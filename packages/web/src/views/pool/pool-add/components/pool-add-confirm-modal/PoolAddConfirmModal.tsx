@@ -1,14 +1,17 @@
 import React, { useCallback } from "react";
-import { EarnAddConfirmWrapper } from "./EarnAddConfirm.styles";
-import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconClose from "@components/common/icons/IconCancel";
-import EarnAddConfirmAmountInfo from "../earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
-import EarnAddConfirmPriceRangeInfo from "../earn-add-confirm-price-range-info/EarnAddConfirmPriceRangeInfo";
-import EarnAddConfirmFeeInfo from "../earn-add-confirm-fee-info/EarnAddConfirmFeeInfo";
-import { TokenModel } from "@models/token/token-model";
 import { useTranslation } from "react-i18next";
 
-export interface EarnAddConfirmProps {
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconClose from "@components/common/icons/IconCancel";
+import { TokenModel } from "@models/token/token-model";
+
+import PoolAddConfirmAmountInfo from "../pool-add-confirm-amount-info/PoolAddConfirmAmountInfo";
+import PoolAddConfirmFeeInfo from "../pool-add-confirm-fee-info/PoolAddConfirmFeeInfo";
+import PoolAddConfirmPriceRangeInfo from "../pool-add-confirm-price-range-info/PoolAddConfirmPriceRangeInfo";
+
+import { EarnAddConfirmWrapper } from "./PoolAddConfirmModal.styles";
+
+export interface PoolAddConfirmModalProps {
   isPoolCreation?: boolean;
   amountInfo: {
     tokenA: {
@@ -42,7 +45,7 @@ export interface EarnAddConfirmProps {
   close: () => void;
 }
 
-const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
+const PoolAddConfirmModal: React.FC<PoolAddConfirmModalProps> = ({
   isPoolCreation,
   amountInfo,
   priceRangeInfo,
@@ -69,11 +72,11 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
         </button>
       </div>
 
-      <EarnAddConfirmAmountInfo {...amountInfo} />
+      <PoolAddConfirmAmountInfo {...amountInfo} />
 
-      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} {...amountInfo} />
+      <PoolAddConfirmPriceRangeInfo {...priceRangeInfo} {...amountInfo} />
 
-      {isPoolCreation && <EarnAddConfirmFeeInfo {...feeInfo} />}
+      {isPoolCreation && <PoolAddConfirmFeeInfo {...feeInfo} />}
 
       <Button
         text={t("AddPosition:confirmAddModal.btn")}
@@ -89,4 +92,4 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
   );
 };
 
-export default EarnAddConfirm;
+export default PoolAddConfirmModal;

@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
-import { EarnAddConfirmContentSection } from "../earn-add-confirm/EarnAddConfirm.styles";
+import { EarnAddConfirmContentSection } from "../pool-add-confirm-modal/PoolAddConfirmModal.styles";
 import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 import { media } from "@styles/media";
 
-export const EarnAddConfirmPriceRangeInfoWrapper = styled.div`
+export const PoolAddConfirmPriceRangeInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -35,7 +35,7 @@ export const EarnAddConfirmPriceRangeInfoWrapper = styled.div`
   }
 `;
 
-export const EarnAddConfirmPriceRangeInfoSection = styled(
+export const PoolAddConfirmPriceRangeInfoSection = styled(
   EarnAddConfirmContentSection,
 )`
   gap: 16px;

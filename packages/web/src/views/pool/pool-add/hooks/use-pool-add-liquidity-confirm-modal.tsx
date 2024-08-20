@@ -6,8 +6,6 @@ import { useTranslation } from "react-i18next";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNS_TOKEN } from "@common/values/token-constant";
-import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
-import EarnAddConfirm from "@components/earn-add/earn-add-confirm/EarnAddConfirm";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import {
   SwapFeeTierInfoMap,
@@ -35,9 +33,11 @@ import { subscriptFormat } from "@utils/number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { useTokenData } from "@hooks/token/use-token-data";
 
-import { TokenAmountInputModel } from "../../../../hooks/token/use-token-amount-input";
-import { useTokenData } from "../../../../hooks/token/use-token-data";
+import PoolAddConfirmModal from "../components/pool-add-confirm-modal/PoolAddConfirmModal";
+import OneClickStakingModal from "../components/one-click-staking-modal/OneClickStakingModal";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -472,7 +472,7 @@ export const usePoolAddLiquidityConfirmModal = ({
     }
     setOpenedModal(true);
     setModalContent(
-      <EarnAddConfirm
+      <PoolAddConfirmModal
         isPoolCreation={selectPool.isCreate}
         amountInfo={amountInfo}
         priceRangeInfo={priceRangeInfo}

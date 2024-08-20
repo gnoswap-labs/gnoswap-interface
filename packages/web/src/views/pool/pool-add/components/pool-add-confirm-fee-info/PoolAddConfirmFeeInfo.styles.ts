@@ -1,8 +1,10 @@
 import styled from "@emotion/styled";
-import { EarnAddConfirmContentSection } from "../earn-add-confirm/EarnAddConfirm.styles";
+
 import { fonts } from "@constants/font.constant";
 
-export const EarnAddConfirmFeeInfoWrapper = styled.div`
+import { EarnAddConfirmContentSection } from "../pool-add-confirm-modal/PoolAddConfirmModal.styles";
+
+export const PoolAddConfirmFeeInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -13,7 +15,7 @@ export const EarnAddConfirmFeeInfoWrapper = styled.div`
   }
 `;
 
-export const EarnAddConfirmFeeInfoSection = styled(
+export const PoolAddConfirmFeeInfoSection = styled(
   EarnAddConfirmContentSection,
 ) <{ $hasError: boolean }>`
   height: 60px;

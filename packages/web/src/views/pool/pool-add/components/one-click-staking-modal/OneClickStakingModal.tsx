@@ -1,12 +1,15 @@
-import { OneClickStakingModalWrapper } from "./OneClickStakingModal.styles";
 import React, { useCallback } from "react";
-import IconClose from "../icons/IconCancel";
-import Button, { ButtonHierarchy } from "../button/Button";
-import EarnAddConfirmPriceRangeInfo from "@components/earn-add/earn-add-confirm-price-range-info/EarnAddConfirmPriceRangeInfo";
-import { TokenModel } from "@models/token/token-model";
-import EarnAddConfirmAmountInfo from "@components/earn-add/earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
-import EarnAddConfirmFeeInfo from "@components/earn-add/earn-add-confirm-fee-info/EarnAddConfirmFeeInfo";
 import { useTranslation } from "react-i18next";
+
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconClose from "@components/common/icons/IconCancel";
+import { TokenModel } from "@models/token/token-model";
+
+import PoolAddConfirmAmountInfo from "../pool-add-confirm-amount-info/PoolAddConfirmAmountInfo";
+import PoolAddConfirmFeeInfo from "../pool-add-confirm-fee-info/PoolAddConfirmFeeInfo";
+import PoolAddConfirmPriceRangeInfo from "../pool-add-confirm-price-range-info/PoolAddConfirmPriceRangeInfo";
+
+import { OneClickStakingModalWrapper } from "./OneClickStakingModal.styles";
 
 interface Props {
   isPoolCreation?: boolean;
@@ -77,15 +80,15 @@ const OneClickStakingModal: React.FC<Props> = ({
         </div>
         <div className="content">
           <div>
-            <EarnAddConfirmAmountInfo {...amountInfo} />
+            <PoolAddConfirmAmountInfo {...amountInfo} />
           </div>
-          <EarnAddConfirmPriceRangeInfo
+          <PoolAddConfirmPriceRangeInfo
             {...priceRangeInfo}
             isShowStaking
             {...amountInfo}
           />
 
-          {isPoolCreation && <EarnAddConfirmFeeInfo {...feeInfo} />}
+          {isPoolCreation && <PoolAddConfirmFeeInfo {...feeInfo} />}
 
           <div>
             <Button

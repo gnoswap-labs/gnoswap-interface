@@ -41,8 +41,6 @@ const StartingPrice: React.FC<StartingPriceProps> = ({
       return "";
     }
 
-    console.log(tokenASymbol, tokenBSymbol);
-
     let value = "";
     if (
       (startingPriceValue === "" || BigNumber(startingPriceValue).isNaN()) &&

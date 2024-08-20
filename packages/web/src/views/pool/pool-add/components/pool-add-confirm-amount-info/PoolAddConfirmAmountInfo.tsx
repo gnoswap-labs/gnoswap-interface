@@ -1,13 +1,15 @@
 import React from "react";
-import {
-  EarnAddConfirmAmountInfoWrapper,
-  EarnAddConfirmFeeInfoSection,
-} from "./EarnAddConfirmAmountInfo.styles";
-import TokenAmount from "@components/common/token-amount/TokenAmount";
-import IconAdd from "@components/common/icons/IconAdd";
-import { TokenModel } from "@models/token/token-model";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import { useTranslation } from "react-i18next";
+
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import IconAdd from "@components/common/icons/IconAdd";
+import TokenAmount from "@components/common/token-amount/TokenAmount";
+import { TokenModel } from "@models/token/token-model";
+
+import {
+  PoolAddConfirmAmountInfoWrapper,
+  PoolAddConfirmFeeInfoSection,
+} from "./PoolAddConfirmAmountInfo.styles";
 
 export interface EarnAddConfirmAmountInfoProps {
   tokenA: {
@@ -23,7 +25,7 @@ export interface EarnAddConfirmAmountInfoProps {
   feeRate: string;
 }
 
-const EarnAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
+const PoolAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
   tokenA,
   tokenB,
   feeRate,
@@ -31,7 +33,7 @@ const EarnAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
   const { t } = useTranslation();
 
   return (
-    <EarnAddConfirmAmountInfoWrapper>
+    <PoolAddConfirmAmountInfoWrapper>
       <div className="pair-amount">
         <TokenAmount
           token={tokenA.info}
@@ -48,7 +50,7 @@ const EarnAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
         </div>
       </div>
 
-      <EarnAddConfirmFeeInfoSection>
+      <PoolAddConfirmFeeInfoSection>
         <span className="key">
           {t("AddPosition:confirmAddModal.info.label.feeTier")}
         </span>
@@ -57,9 +59,9 @@ const EarnAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
           type={BADGE_TYPE.DARK_DEFAULT}
           className="value"
         />
-      </EarnAddConfirmFeeInfoSection>
-    </EarnAddConfirmAmountInfoWrapper>
+      </PoolAddConfirmFeeInfoSection>
+    </PoolAddConfirmAmountInfoWrapper>
   );
 };
 
-export default EarnAddConfirmAmountInfo;
+export default PoolAddConfirmAmountInfo;

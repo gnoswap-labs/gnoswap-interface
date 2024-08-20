@@ -1,11 +1,13 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
+import { TokenInfo } from "@models/token/token-info";
+
 import {
   CreationFeeErrorMsgWrapper,
-  EarnAddConfirmFeeInfoSection,
-  EarnAddConfirmFeeInfoWrapper,
-} from "./EarnAddConfirmFeeInfo.styles";
-import { TokenInfo } from "@models/token/token-info";
-import { useTranslation } from "react-i18next";
+  PoolAddConfirmFeeInfoWrapper,
+  PoolAddConfirmFeeInfoSection,
+} from "./PoolAddConfirmFeeInfo.styles";
 
 export interface EarnAddConfirmFeeInfoProps {
   token?: TokenInfo;
@@ -13,7 +15,7 @@ export interface EarnAddConfirmFeeInfoProps {
   errorMsg?: string;
 }
 
-const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
+const PoolAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
   token,
   fee,
   errorMsg,
@@ -21,9 +23,9 @@ const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
   const { t } = useTranslation();
 
   return (
-    <EarnAddConfirmFeeInfoWrapper>
+    <PoolAddConfirmFeeInfoWrapper>
       <p>{t("AddPosition:confirmAddModal.info.label.creationFee")}</p>
-      <EarnAddConfirmFeeInfoSection $hasError={!!errorMsg}>
+      <PoolAddConfirmFeeInfoSection $hasError={!!errorMsg}>
         <div className="token-info">
           <img src={token?.logoURI} alt="token logo" />
           <div>{token?.symbol}</div>
@@ -31,12 +33,12 @@ const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
         <div className="fee-info">
           <span>{fee}</span>
         </div>
-      </EarnAddConfirmFeeInfoSection>
+      </PoolAddConfirmFeeInfoSection>
       {errorMsg && (
         <CreationFeeErrorMsgWrapper>{errorMsg}</CreationFeeErrorMsgWrapper>
       )}
-    </EarnAddConfirmFeeInfoWrapper>
+    </PoolAddConfirmFeeInfoWrapper>
   );
 };
 
-export default EarnAddConfirmFeeInfo;
+export default PoolAddConfirmFeeInfo;
