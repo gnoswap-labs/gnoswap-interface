@@ -1,3 +1,6 @@
+import React, { useRef } from "react";
+import { useTranslation } from "react-i18next";
+
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
@@ -12,12 +15,11 @@ import WarningCard from "@components/common/warning-card/WarningCard";
 import { useTheme } from "@emotion/react";
 import { useCopy } from "@hooks/common/use-copy";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { usePositionModal } from "@hooks/common/use-postion-modal";
+import { usePositionModal } from "@hooks/common/use-position-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import React, { useRef } from "react";
-import { useTranslation } from "react-i18next";
+
 import {
   DepositBoxContent,
   DepositLabel,
@@ -120,7 +122,9 @@ const DepositModal: React.FC<Props> = ({
 
                   <div className="approximately">
                     {t("Modal:deposit.second", {
-                      avgBlockTime: (Math.floor(avgBlockTime * 10) / 10).toFixed(1),
+                      avgBlockTime: (
+                        Math.floor(avgBlockTime * 10) / 10
+                      ).toFixed(1),
                     })}
                   </div>
                 </div>

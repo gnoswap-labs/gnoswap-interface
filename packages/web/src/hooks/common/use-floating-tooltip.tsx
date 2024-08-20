@@ -94,7 +94,6 @@ export function useFloatingTooltip<T extends HTMLElement = any>({
   };
 
   useEffect(() => {
-    console.log(boundaryRef.current);
     if (isDisplay && refs.floating.current && boundaryRef.current) {
       const boundary = boundaryRef.current!;
       boundary.addEventListener("mousemove", handleMouseMove);

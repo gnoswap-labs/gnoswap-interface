@@ -1,3 +1,8 @@
+import { useTheme } from "@emotion/react";
+import BigNumber from "bignumber.js";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
@@ -8,9 +13,8 @@ import { Overlay } from "@components/common/modal/Modal.styles";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
-import { useTheme } from "@emotion/react";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { usePositionModal } from "@hooks/common/use-postion-modal";
+import { usePositionModal } from "@hooks/common/use-position-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
@@ -19,13 +23,11 @@ import { formatPrice } from "@utils/new-number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { capitalize } from "@utils/string-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
-import BigNumber from "bignumber.js";
-import React, { useCallback, useRef, useState, useMemo } from "react";
-import { useTranslation } from "react-i18next";
+
 import {
+  WithdrawContent,
   WithDrawModalBackground,
   WithDrawModalWrapper,
-  WithdrawContent,
   WithdrawTooltipContent,
   WithDrawWarningContentWrapper,
 } from "./WithDrawModal.styles";
