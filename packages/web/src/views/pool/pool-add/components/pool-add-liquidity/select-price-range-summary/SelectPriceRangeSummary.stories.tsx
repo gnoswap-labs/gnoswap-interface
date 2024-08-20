@@ -2,7 +2,7 @@ import SelectPriceRangeSummary, { type SelectPriceRangeSummaryProps } from "./Se
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
-  title: "common/AddLiquidity/SelectPriceRangeSummary",
+  title: "pool/pool-add/SelectPriceRangeSummary",
   component: SelectPriceRangeSummary,
 } as Meta<typeof SelectPriceRangeSummary>;
 

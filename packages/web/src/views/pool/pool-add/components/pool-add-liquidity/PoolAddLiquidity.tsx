@@ -8,16 +8,13 @@ import IconArrowUp from "@components/common/icons/IconArrowUp";
 import IconFailed from "@components/common/icons/IconFailed";
 import IconSettings from "@components/common/icons/IconSettings";
 import IconStaking from "@components/common/icons/IconStaking";
-import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import SelectFeeTier from "@components/common/select-fee-tier/SelectFeeTier";
-import SelectPair from "@components/common/select-pair/SelectPair";
-import SelectPriceRangeSummary from "@components/common/select-price-range-summary/SelectPriceRangeSummary";
 import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
 import {
   AddLiquiditySubmitType,
   DefaultTick,
+  PriceRangeMeta,
   PriceRangeType,
   SwapFeeTierInfoMap,
   SwapFeeTierType,
@@ -29,16 +26,15 @@ import { PoolModel } from "@models/pool/pool-model";
 import { TokenModel } from "@models/token/token-model";
 import { isEmptyObject } from "@utils/validation-utils";
 
-import {
-  EarnAddLiquidityWrapper,
-  OutOfRangeWrapper,
-} from "./EarnAddLiquidity.styles";
+import LiquidityEnterAmounts from "./liquidity-enter-amounts/LiquidityEnterAmounts";
+import SelectFeeTier from "./select-fee-tier/SelectFeeTier";
+import SelectPair from "./select-pair/SelectPair";
+import SelectPriceRangeSummary from "./select-price-range-summary/SelectPriceRangeSummary";
 
-export interface AddLiquidityPriceRage {
-  type: PriceRangeType;
-  apr?: string;
-  text?: string;
-}
+import {
+  OutOfRangeWrapper,
+  PoolAddLiquidityWrapper,
+} from "./PoolAddLiquidity.styles";
 
 export interface PriceRangeSummary {
   depositRatio: string;
@@ -52,7 +48,7 @@ export interface PoolTick {
   tick: number;
 }
 
-interface EarnAddLiquidityProps {
+interface PoolAddLiquidityProps {
   defaultPrice: number | null;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
@@ -67,9 +63,9 @@ interface EarnAddLiquidityProps {
   feeTier: SwapFeeTierType | null;
   pools: PoolModel[];
   selectFeeTier: (feeRate: SwapFeeTierType) => void;
-  priceRanges: AddLiquidityPriceRage[];
-  priceRange: AddLiquidityPriceRage | null;
-  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  priceRanges: PriceRangeMeta[];
+  priceRange: PriceRangeMeta | null;
+  changePriceRange: (priceRange: PriceRangeMeta) => void;
   priceRangeSummary: PriceRangeSummary;
   currentTick: PoolTick | null;
   submitType: AddLiquiditySubmitType;
@@ -97,7 +93,7 @@ interface EarnAddLiquidityProps {
   showOneClickStaking: boolean;
 }
 
-const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
+const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
   defaultPrice,
   tokenA,
   tokenB,
@@ -309,7 +305,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   }, [isKeepToken, tokenA, tokenB]);
 
   return (
-    <EarnAddLiquidityWrapper>
+    <PoolAddLiquidityWrapper>
       <h3>{t("AddPosition:card.title")}</h3>
       <div className="select-content">
         <article className="selector-wrapper">
@@ -476,8 +472,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             <IconStaking /> {t("AddPosition:oneClick")}
           </div>
         )}
-    </EarnAddLiquidityWrapper>
+    </PoolAddLiquidityWrapper>
   );
 };
 
-export default EarnAddLiquidity;
+export default PoolAddLiquidity;

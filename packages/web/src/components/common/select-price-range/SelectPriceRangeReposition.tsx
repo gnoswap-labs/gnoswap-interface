@@ -4,27 +4,29 @@ import { useTranslation } from "react-i18next";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
-import { PriceRangeStr, PriceRangeTooltip } from "@constants/option.constant";
+import {
+  PriceRangeMeta,
+  PriceRangeStr,
+  PriceRangeTooltip,
+} from "@constants/option.constant";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
-
 
 import SelectPriceRangeCustomReposition from "./select-price-range-custom/SelectPriceRangeCustomReposition";
 
 import {
   SelectPriceRangeItemWrapper,
   SelectPriceRangeWrapper,
-  TooltipContentWrapper
+  TooltipContentWrapper,
 } from "./SelectPriceRange.styles";
 
 interface SelectPriceRangeProps {
   opened: boolean;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
-  priceRanges: AddLiquidityPriceRage[];
-  priceRange: AddLiquidityPriceRage | null;
-  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  priceRanges: PriceRangeMeta[];
+  priceRange: PriceRangeMeta | null;
+  changePriceRange: (priceRange: PriceRangeMeta) => void;
   changeStartingPrice: (price: string) => void;
   selectPool: SelectPool;
   showDim: boolean;
@@ -54,7 +56,7 @@ const SelectPriceRangeReposition: React.FC<SelectPriceRangeProps> = ({
   const { t } = useTranslation();
 
   const changePriceRangeWithClear = useCallback(
-    (priceRange: AddLiquidityPriceRage) => {
+    (priceRange: PriceRangeMeta) => {
       changePriceRange(priceRange);
     },
     [changePriceRange],
@@ -101,9 +103,9 @@ const SelectPriceRangeReposition: React.FC<SelectPriceRangeProps> = ({
 
 interface SelectPriceRangeItemProps {
   selected: boolean;
-  priceRange: AddLiquidityPriceRage;
+  priceRange: PriceRangeMeta;
   tooltip: string | undefined;
-  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  changePriceRange: (priceRange: PriceRangeMeta) => void;
 }
 
 export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({

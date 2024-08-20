@@ -2,10 +2,10 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
+  PriceRangeMeta,
   RANGE_STATUS_OPTION,
-  SwapFeeTierType
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
@@ -50,7 +50,7 @@ export const useDecreaseHandle = () => {
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
   const { getGnotPath } = useGnotToGnot();
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
+  const [priceRange, setPriceRange] = useState<PriceRangeMeta | null>({
     type: "Custom",
   });
   const [percent, setPercent] = useState<number>(50);
@@ -211,7 +211,7 @@ export const useDecreaseHandle = () => {
     return "INCREASE_LIQUIDITY";
   }, [tokenAAmountInput, tokenBAmountInput]);
 
-  const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
+  const changePriceRange = useCallback((priceRange: PriceRangeMeta) => {
     setPriceRange(priceRange);
   }, []);
 

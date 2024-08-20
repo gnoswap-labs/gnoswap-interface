@@ -235,6 +235,12 @@ export type CHART_DAY_SCOPE_TYPE = ValuesType<typeof CHART_DAY_SCOPE_TYPE>;
 
 export type PriceRangeType = "Active" | "Passive" | "Custom";
 
+export interface PriceRangeMeta {
+  type: PriceRangeType;
+  apr?: string;
+  text?: string;
+}
+
 export const PriceRangeTooltip: {
   [key in SwapFeeTierType]: { [key in PriceRangeType]: string | undefined };
 } = {

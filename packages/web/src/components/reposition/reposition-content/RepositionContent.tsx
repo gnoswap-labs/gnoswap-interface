@@ -4,8 +4,10 @@ import { useTranslation } from "react-i18next";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
-import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import {
+  PriceRangeMeta,
+  RANGE_STATUS_OPTION,
+} from "@constants/option.constant";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { REPOSITION_BUTTON_TYPE } from "@hooks/reposition/use-reposition-handle";
@@ -36,9 +38,9 @@ interface RepositionContentProps {
   buttonType: REPOSITION_BUTTON_TYPE;
   onSubmit: () => void;
   selectPool: SelectPool;
-  priceRanges: AddLiquidityPriceRage[];
-  priceRange: AddLiquidityPriceRage;
-  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  priceRanges: PriceRangeMeta[];
+  priceRange: PriceRangeMeta;
+  changePriceRange: (priceRange: PriceRangeMeta) => void;
   resetRange: () => void;
   currentAmounts: { amountA: string; amountB: string } | null;
   repositionAmounts: { amountA: string | null; amountB: string | null } | null;

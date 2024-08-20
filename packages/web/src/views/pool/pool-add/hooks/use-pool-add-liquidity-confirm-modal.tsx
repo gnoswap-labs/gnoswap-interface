@@ -36,8 +36,8 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import { TokenAmountInputModel } from "./use-token-amount-input";
-import { useTokenData } from "./use-token-data";
+import { TokenAmountInputModel } from "../../../../hooks/token/use-token-amount-input";
+import { useTokenData } from "../../../../hooks/token/use-token-data";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -84,7 +84,7 @@ export interface SelectTokenModalModel {
   openAddPositionWithStakingModal: () => void;
 }
 
-export const useEarnAddLiquidityConfirmModal = ({
+export const usePoolAddLiquidityConfirmModal = ({
   tokenA,
   tokenB,
   tokenAAmountInput,

@@ -1,9 +1,11 @@
 import React, { useMemo } from "react";
-import IconAdd from "../icons/IconAdd";
-import { LiquidityEnterAmountsWrapper } from "./LiquidityEnterAmounts.styles";
-import TokenAmountInput from "../token-amount-input/TokenAmountInput";
+
+import IconAdd from "@components/common/icons/IconAdd";
+import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
+
+import { LiquidityEnterAmountsWrapper } from "./LiquidityEnterAmounts.styles";
 
 interface LiquidityEnterAmountsProps {
   compareToken: TokenModel | null;

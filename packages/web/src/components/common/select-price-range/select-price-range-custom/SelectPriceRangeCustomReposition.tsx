@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
-import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import {
+  PriceRangeMeta,
   PriceRangeType,
   SwapFeeTierPriceRange,
 } from "@constants/option.constant";
@@ -33,7 +33,7 @@ export interface SelectPriceRangeCustomRepositionProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   priceRangeType: PriceRangeType | null;
-  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  changePriceRange: (priceRange: PriceRangeMeta) => void;
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
   showDim: boolean;

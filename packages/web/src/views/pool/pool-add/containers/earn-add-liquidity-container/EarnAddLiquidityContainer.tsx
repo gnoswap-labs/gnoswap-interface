@@ -5,16 +5,13 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from "react";
 import { useTranslation } from "react-i18next";
 
-import EarnAddLiquidity, {
-  AddLiquidityPriceRage,
-  PriceRangeSummary,
-} from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
   AddLiquiditySubmitType,
+  PriceRangeMeta,
   SwapFeeTierType,
 } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -23,7 +20,6 @@ import { useRouterBack } from "@hooks/common/use-router-back";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { usePool } from "@hooks/pool/use-pool";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
-import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
@@ -42,6 +38,11 @@ import {
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
+import PoolAddLiquidity, {
+  PriceRangeSummary,
+} from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import { usePoolAddLiquidityConfirmModal } from "../../hooks/use-pool-add-liquidity-confirm-modal";
+
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = [
   "FEE_100",
   "FEE_500",
@@ -49,7 +50,7 @@ export const SWAP_FEE_TIERS: SwapFeeTierType[] = [
   "FEE_10000",
 ];
 
-const PRICE_RANGES: AddLiquidityPriceRage[] = [
+const PRICE_RANGES: PriceRangeMeta[] = [
   { type: "Active", text: "[-10% / +10%]" },
   { type: "Passive", text: "[-50% / +100%]" },
   { type: "Custom" },
@@ -75,14 +76,14 @@ const EarnAddLiquidityContainer: React.FC = () => {
     "EXACT_IN",
   );
   const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>(null);
-  const [priceRanges] = useState<AddLiquidityPriceRage[]>(PRICE_RANGES);
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(
+  const [priceRanges] = useState<PriceRangeMeta[]>(PRICE_RANGES);
+  const [priceRange, setPriceRange] = useState<PriceRangeMeta | null>(
     null,
   );
   const [initialized, setInitialized] = useState(false);
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
   const initializedFeeTier = useRef<string>();
-  const initializedPriceRange = useRef<AddLiquidityPriceRage>();
+  const initializedPriceRange = useRef<PriceRangeMeta>();
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
@@ -125,7 +126,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isReverted,
   });
   const { openAddPositionModal, openAddPositionWithStakingModal } =
-    useEarnAddLiquidityConfirmModal({
+    usePoolAddLiquidityConfirmModal({
       tokenA,
       tokenB,
       tokenAAmountInput,
@@ -281,7 +282,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   );
 
   const changePriceRange = useCallback(
-    (priceRange: AddLiquidityPriceRage) => {
+    (priceRange: PriceRangeMeta) => {
       setPriceRange(priceRange);
 
       if (priceRange.type !== "Custom") {
@@ -826,7 +827,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   );
 
   return (
-    <EarnAddLiquidity
+    <PoolAddLiquidity
       isLoadingTokens={isLoadingTokens}
       defaultPrice={defaultPrice}
       tokenA={tokenA}

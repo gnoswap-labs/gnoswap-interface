@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const EarnAddLiquidityWrapper = styled.section`
+export const PoolAddLiquidityWrapper = styled.section`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   gap: 16px;
   color: ${({ theme }) => theme.color.text02};

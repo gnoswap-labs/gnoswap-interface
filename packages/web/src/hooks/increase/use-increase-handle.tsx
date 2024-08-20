@@ -2,10 +2,10 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
+  PriceRangeMeta,
   RANGE_STATUS_OPTION,
-  SwapFeeTierInfoMap,
+  SwapFeeTierInfoMap
 } from "@constants/option.constant";
 import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -24,7 +24,7 @@ import {
   makeSwapFeeTier,
   priceToTick,
   tickToPrice,
-  tickToPriceStr,
+  tickToPriceStr
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
@@ -48,7 +48,7 @@ export const useIncreaseHandle = () => {
   const positionId = router.getPositionId();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
+  const [priceRange, setPriceRange] = useState<PriceRangeMeta | null>({
     type: "Custom",
   });
 
@@ -365,7 +365,7 @@ export const useIncreaseHandle = () => {
     );
   }, [selectedPosition, currentTick]);
 
-  const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
+  const changePriceRange = useCallback((priceRange: PriceRangeMeta) => {
     setPriceRange(priceRange);
   }, []);
 

@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
+  PriceRangeMeta,
   DefaultTick,
   PriceRangeStr,
   PriceRangeTooltip,
@@ -27,9 +27,9 @@ interface SelectPriceRangeProps {
   opened: boolean;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
-  priceRanges: AddLiquidityPriceRage[];
-  priceRange: AddLiquidityPriceRage | null;
-  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  priceRanges: PriceRangeMeta[];
+  priceRange: PriceRangeMeta | null;
+  changePriceRange: (priceRange: PriceRangeMeta) => void;
   changeStartingPrice: (price: string) => void;
   selectPool: SelectPool;
   showDim: boolean;
@@ -69,7 +69,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   const selectedTokenPair = true;
 
   const changePriceRangeWithClear = useCallback(
-    (priceRange: AddLiquidityPriceRage) => {
+    (priceRange: PriceRangeMeta) => {
       changePriceRange(priceRange);
       selectPriceRangeRef.current?.resetRange(priceRange.type);
     },
@@ -122,9 +122,9 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
 
 interface SelectPriceRangeItemProps {
   selected: boolean;
-  priceRange: AddLiquidityPriceRage;
+  priceRange: PriceRangeMeta;
   tooltip: string | undefined;
-  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  changePriceRange: (priceRange: PriceRangeMeta) => void;
 }
 
 export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({

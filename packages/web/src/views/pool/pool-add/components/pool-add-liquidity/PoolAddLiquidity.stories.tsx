@@ -1,17 +1,17 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import EarnAddLiquidity from "./EarnAddLiquidity";
+import PoolAddLiquidity from "./PoolAddLiquidity";
 import { action } from "@storybook/addon-actions";
 import { TokenModel } from "@models/token/token-model";
 
 export default {
-  title: "earn-add/EarnAddLiquidity",
-  component: EarnAddLiquidity,
-} as ComponentMeta<typeof EarnAddLiquidity>;
+  title: "pool/pool-add/PoolAddLiquidity",
+  component: PoolAddLiquidity,
+} as ComponentMeta<typeof PoolAddLiquidity>;
 
-const Template: ComponentStory<typeof EarnAddLiquidity> = args => (
-  <EarnAddLiquidity {...args} />
+const Template: ComponentStory<typeof PoolAddLiquidity> = args => (
+  <PoolAddLiquidity {...args} />
 );
 const tokenA: TokenModel = {
   chainId: "dev",

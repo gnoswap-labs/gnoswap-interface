@@ -1,16 +1,13 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import EarnAddLiquidity, {
-  AddLiquidityPriceRage,
-  PriceRangeSummary,
-} from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
   AddLiquiditySubmitType,
   DefaultTick,
+  PriceRangeMeta,
   PriceRangeType,
-  SwapFeeTierType,
+  SwapFeeTierType
 } from "@constants/option.constant";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -20,7 +17,6 @@ import { useSlippage } from "@hooks/common/use-slippage";
 import { usePool } from "@hooks/pool/use-pool";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
-import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -42,6 +38,11 @@ import {
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
+import PoolAddLiquidity, {
+  PriceRangeSummary,
+} from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import { usePoolAddLiquidityConfirmModal } from "../../hooks/use-pool-add-liquidity-confirm-modal";
+
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = [
   "FEE_100",
   "FEE_500",
@@ -49,7 +50,7 @@ export const SWAP_FEE_TIERS: SwapFeeTierType[] = [
   "FEE_10000",
 ];
 
-const PRICE_RANGES: AddLiquidityPriceRage[] = [
+const PRICE_RANGES: PriceRangeMeta[] = [
   { type: "Active", text: "[-10% / +10%]" },
   { type: "Passive", text: "[-50% / +100%]" },
   { type: "Custom" },
@@ -72,8 +73,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
     "EXACT_IN",
   );
   const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>(null);
-  const [priceRanges] = useState<AddLiquidityPriceRage[]>(PRICE_RANGES);
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(
+  const [priceRanges] = useState<PriceRangeMeta[]>(PRICE_RANGES);
+  const [priceRange, setPriceRange] = useState<PriceRangeMeta | null>(
     null,
   );
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
@@ -115,7 +116,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
   } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
 
   const { openAddPositionModal, openAddPositionWithStakingModal } =
-    useEarnAddLiquidityConfirmModal({
+    usePoolAddLiquidityConfirmModal({
       tokenA,
       tokenB,
       tokenAAmountInput,
@@ -259,7 +260,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     [pools],
   );
 
-  const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
+  const changePriceRange = useCallback((priceRange: PriceRangeMeta) => {
     setPriceRange(priceRange);
     if (priceRange.type !== "Custom") {
       selectPool.setIsChangeMinMax(false);
@@ -704,7 +705,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
   );
 
   return (
-    <EarnAddLiquidity
+    <PoolAddLiquidity
       defaultPrice={defaultPrice}
       tokenA={tokenA}
       tokenB={tokenB}

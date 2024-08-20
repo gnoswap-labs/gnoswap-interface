@@ -1,7 +1,6 @@
 import { useAtom } from "jotai";
 import React, { useCallback, useMemo } from "react";
 
-import QuickPoolInfo from "@components/stake/quick-pool-info/QuickPoolInfo";
 import { PAGE_PATH_TYPE } from "@constants/page.constant";
 import { initialPool } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -12,6 +11,8 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
+
+import QuickPoolInfo from "../../components/quick-pool-info/QuickPoolInfo";
 
 const QuickPoolInfoContainer: React.FC = () => {
   const router = useCustomRouter();

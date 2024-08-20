@@ -1,15 +1,17 @@
 import React, { useCallback, useMemo } from "react";
-import {
-  SelectFeeTierItemWrapper,
-  SelectFeeTierWrapper,
-} from "./SelectFeeTier.styles";
+import { useTranslation } from "react-i18next";
+
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { PoolModel } from "@models/pool/pool-model";
-import LoadingSpinner from "../loading-spinner/LoadingSpinner";
-import { useTranslation } from "react-i18next";
+
+import {
+  SelectFeeTierItemWrapper,
+  SelectFeeTierWrapper,
+} from "./SelectFeeTier.styles";
 
 interface SelectFeeTierProps {
   feetierOfLiquidityMap: { [key in string]: number };

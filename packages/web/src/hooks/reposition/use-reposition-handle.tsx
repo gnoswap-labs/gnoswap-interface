@@ -3,9 +3,9 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
   DEFAULT_SLIPPAGE,
+  PriceRangeMeta,
   RANGE_STATUS_OPTION,
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
@@ -93,7 +93,7 @@ export const useRepositionHandle = () => {
   const { openModal: openConfirmModal, update: updateConfirmModalData } =
     useTransactionConfirmModal();
 
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage>({
+  const [priceRange, setPriceRange] = useState<PriceRangeMeta>({
     type: "Custom",
   });
 
@@ -434,7 +434,7 @@ export const useRepositionHandle = () => {
   );
 
   const changePriceRange = useCallback(
-    (priceRange: AddLiquidityPriceRage) => {
+    (priceRange: PriceRangeMeta) => {
       setPriceRange(priceRange);
 
       if (priceRange.type !== "Custom") {

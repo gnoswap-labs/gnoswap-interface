@@ -6,7 +6,7 @@ import { action } from "@storybook/addon-actions";
 import { TokenModel } from "@models/token/token-model";
 
 export default {
-  title: "common/AddLiquidity/EnterAmounts",
+  title: "pool/pool-add/EnterAmounts",
   component: EnterAmounts,
 } as ComponentMeta<typeof EnterAmounts>;
 

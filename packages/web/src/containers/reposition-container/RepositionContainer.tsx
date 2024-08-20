@@ -1,12 +1,11 @@
 import React from "react";
 
-import { AddLiquidityPriceRage } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import RepositionContent from "@components/reposition/reposition-content/RepositionContent";
-import { SwapFeeTierType } from "@constants/option.constant";
+import { PriceRangeMeta, SwapFeeTierType } from "@constants/option.constant";
 import { useRepositionHandle } from "@hooks/reposition/use-reposition-handle";
 import { useRepositionModalContainer } from "@hooks/reposition/use-reposition-position-modal";
 
-const PRICE_RANGES: AddLiquidityPriceRage[] = [
+const PRICE_RANGES: PriceRangeMeta[] = [
   { type: "Active" },
   { type: "Passive" },
   { type: "Custom" },

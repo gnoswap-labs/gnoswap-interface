@@ -1,7 +1,9 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import IconInfo from "../icons/IconInfo";
-import Tooltip from "../tooltip/Tooltip";
+
+import IconInfo from "@components/common/icons/IconInfo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+
 import {
   SelectPriceRangeSummaryWrapper,
   ToolTipContentWrapper,

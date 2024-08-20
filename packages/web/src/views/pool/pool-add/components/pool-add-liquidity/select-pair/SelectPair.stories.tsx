@@ -5,7 +5,7 @@ import SelectPair from "./SelectPair";
 import { TokenModel } from "@models/token/token-model";
 
 export default {
-  title: "common/AddLiquidity/SelectPair",
+  title: "pool/pool-add/SelectPair",
   component: SelectPair,
 } as ComponentMeta<typeof SelectPair>;
 
