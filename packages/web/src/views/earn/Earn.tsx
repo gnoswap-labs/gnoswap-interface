@@ -3,13 +3,13 @@ import React from "react";
 
 import Footer from "@components/common/footer/Footer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import PoolListContainer from "@containers/pool-list-container/PoolListContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useWallet } from "@hooks/wallet/use-wallet";
 
+import EarnIncentivizedPools from "./components/earn-incentivized-pools/EarnIncentivizedPools";
 import EarnMyPositionContainer from "./containers/earn-my-position-container/EarnMyPositionContainer";
 import IncentivizedPoolCardListContainer from "./containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
-import EarnIncentivizedPools from "./components/earn-incentivized-pools/EarnIncentivizedPools";
+import PoolListContainer from "./containers/pool-list-container/PoolListContainer";
 import EarnLayout from "./EarnLayout";
 
 const Earn: React.FC = () => {

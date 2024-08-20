@@ -1,15 +1,14 @@
-import {
-  POOL_TYPE,
-  PoolSortOption,
-  TABLE_HEAD,
-} from "@containers/pool-list-container/PoolListContainer";
 import React from "react";
-import PoolListHeader from "@components/earn/pool-list-header/PoolListHeader";
-import PoolListTable from "@components/earn/pool-list-table/PoolListTable";
+
 import Pagination from "@components/common/pagination/Pagination";
-import { PoolListWrapper } from "./PoolList.styles";
-import { DEVICE_TYPE } from "@styles/media";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
+import { DEVICE_TYPE } from "@styles/media";
+
+import PoolListHeader from "./pool-list-header/PoolListHeader";
+import PoolListTable from "./pool-list-table/PoolListTable";
+import { PoolSortOption, POOL_TYPE, TABLE_HEAD } from "./types";
+
+import { PoolListWrapper } from "./PoolList.styles";
 
 interface TokenListProps {
   pools: PoolListInfo[];

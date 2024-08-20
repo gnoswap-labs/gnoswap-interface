@@ -1,5 +1,7 @@
-import { fonts } from "@constants/font.constant";
+import { css, Theme } from "@emotion/react";
 import styled from "@emotion/styled";
+
+import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
@@ -110,4 +112,12 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       fill: ${({ theme }) => theme.color.text04};
     }
   }
+`;
+
+export const noDataText = (theme: Theme) => css`
+  ${mixins.flexbox("row", "center", "center")};
+  color: ${theme.color.text04};
+  ${fonts.body12};
+  width: 100%;
+  height: 120px;
 `;

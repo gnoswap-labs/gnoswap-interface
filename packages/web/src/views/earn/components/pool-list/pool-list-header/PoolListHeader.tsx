@@ -1,11 +1,13 @@
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import IconSearch from "@components/common/icons/IconSearch";
 import SearchInput from "@components/common/search-input/SearchInput";
 import SelectTab from "@components/common/select-tab/SelectTab";
-import { POOL_TYPE } from "@containers/pool-list-container/PoolListContainer";
-import { PoolHeaderWrapper } from "./PoolListHeader.styles";
 import { DEVICE_TYPE } from "@styles/media";
-import IconSearch from "@components/common/icons/IconSearch";
-import { useTranslation } from "react-i18next";
+
+import { PoolHeaderWrapper } from "./PoolListHeader.styles";
+import { POOL_TYPE } from "../types";
 
 interface PoolListHeaderProps {
   poolType: POOL_TYPE;

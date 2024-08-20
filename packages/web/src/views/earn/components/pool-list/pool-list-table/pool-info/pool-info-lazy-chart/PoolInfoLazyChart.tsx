@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { PoolInfoLazyChartWrapper } from "./PoolInfoLazyChart.styles";
+
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
-import { PoolListInfo } from "@models/pool/info/pool-list-info";
-import { useTheme } from "@emotion/react";
 import { SkeletonItem } from "@components/common/table-skeleton/TableSkeleton.styles";
-import { cx } from "@emotion/css";
 import { POOL_INFO, pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { cx } from "@emotion/css";
+import { useTheme } from "@emotion/react";
+import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { useGetSimpleBinsByPath } from "@query/pools";
+
+import { PoolInfoLazyChartWrapper } from "./PoolInfoLazyChart.styles";
 
 export interface PoolInfoLazyChartProps {
   width: number;

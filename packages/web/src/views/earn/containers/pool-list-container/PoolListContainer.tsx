@@ -1,71 +1,25 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { type FeeOptions } from "@common/values/data-constant";
-import PoolList from "@components/earn/pool-list/PoolList";
-import { type TokenPairInfo } from "@models/token/token-pair-info";
-import { ValuesType } from "utility-types";
 import { useAtom, useAtomValue } from "jotai";
-import { CommonState } from "@states/index";
-import { usePoolData } from "@hooks/pool/use-pool-data";
-import useClickOutside from "@hooks/common/use-click-outside";
-import { ThemeState } from "@states/index";
-import { PoolListInfo } from "@models/pool/info/pool-list-info";
-import { useLoading } from "@hooks/common/use-loading";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+
 import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
-import { formatOtherPrice } from "@utils/new-number-utils";
+import useClickOutside from "@hooks/common/use-click-outside";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useLoading } from "@hooks/common/use-loading";
+import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { TokenModel } from "@models/token/token-model";
+import { CommonState, ThemeState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
-export interface Pool {
-  poolId: string;
-  tokenPair: TokenPairInfo;
-  feeRate: FeeOptions;
-  liquidity: string;
-  apr: string;
-  volume24h: string;
-  fees24h: string;
-  rewards: Array<string>;
-  incentiveType: POOL_TYPE;
-  tickInfo: {
-    ticks: string[];
-    currentTick: number;
-  };
-}
-
-export interface PoolSortOption {
-  key: TABLE_HEAD;
-  direction: "asc" | "desc";
-}
-
-export const TABLE_HEAD = {
-  POOL_NAME: "Earn:poolList.col.poolName",
-  TVL: "TVL",
-  VOLUME: "Earn:poolList.col.volume",
-  FEES: "Earn:poolList.col.fee",
-  APR: "APR",
-  REWARDS: "Earn:poolList.col.incentive",
-  LIQUIDITY_PLOT: "Earn:poolList.col.liquidityPlot",
-} as const;
-
-export const SORT_SUPPORT_HEAD = [
-  "Earn:poolList.col.poolName",
-  "TVL",
-  "Earn:poolList.col.volume",
-  "Earn:poolList.col.fee",
-  "APR",
-];
-
-export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
-
-export const POOL_TYPE = {
-  ALL: "Earn:poolList.switch.all",
-  INCENTIVIZED: "Earn:poolList.switch.incenti",
-  NONE_INCENTIVIZED: "Earn:poolList.switch.nonIncenti",
-} as const;
-
-export type POOL_TYPE = ValuesType<typeof POOL_TYPE>;
+import PoolList from "../../components/pool-list/PoolList";
+import {
+  PoolSortOption,
+  POOL_TYPE,
+  TABLE_HEAD,
+} from "../../components/pool-list/types";
 
 const PoolListContainer: React.FC = () => {
   const [poolType, setPoolType] = useState<POOL_TYPE>(POOL_TYPE.ALL);

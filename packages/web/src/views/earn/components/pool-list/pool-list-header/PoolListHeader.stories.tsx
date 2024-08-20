@@ -2,9 +2,10 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 
-import PoolListHeader from "./PoolListHeader";
-import { POOL_TYPE } from "@containers/pool-list-container/PoolListContainer";
 import { DEVICE_TYPE } from "@styles/media";
+
+import PoolListHeader from "./PoolListHeader";
+import { POOL_TYPE } from "../types";
 
 export default {
   title: "earn/PoolList/PoolListHeader",

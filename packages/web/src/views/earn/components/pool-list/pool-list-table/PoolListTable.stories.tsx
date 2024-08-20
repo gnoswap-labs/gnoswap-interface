@@ -1,12 +1,14 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-
-import PoolListTable from "./PoolListTable";
 import { action } from "@storybook/addon-actions";
+
 import POOLS from "@repositories/pool/mock/pools.json";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import { PoolModel } from "@models/pool/pool-model";
 
-const pool = POOLS.pools[0] as any;
+import PoolListTable from "./PoolListTable";
+
+const pool = POOLS.pools[0] as unknown as PoolModel;
 
 const listInfo = PoolMapper.toListInfo(pool);
 

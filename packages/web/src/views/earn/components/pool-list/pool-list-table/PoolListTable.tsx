@@ -1,12 +1,9 @@
-import React, { useCallback } from "react";
-import {
-  PoolSortOption,
-  SORT_SUPPORT_HEAD,
-  TABLE_HEAD,
-} from "@containers/pool-list-container/PoolListContainer";
-import PoolInfo from "@components/earn/pool-info/PoolInfo";
-import { noDataText, TableColumn, TableWrapper } from "./PoolListTable.styles";
 import { cx } from "@emotion/css";
+import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
+
+import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
+import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import {
   POOL_INFO,
@@ -14,11 +11,14 @@ import {
   POOL_INFO_SMALL_TABLET,
   POOL_INFO_TABLET,
 } from "@constants/skeleton.constant";
-import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
-import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { DEVICE_TYPE } from "@styles/media";
-import { useTranslation } from "react-i18next";
+
+import { PoolSortOption, SORT_SUPPORT_HEAD, TABLE_HEAD } from "../types";
+
+import PoolInfo from "./pool-info/PoolInfo";
+
+import { noDataText, TableColumn, TableWrapper } from "./PoolListTable.styles";
 
 interface PoolListTableProps {
   pools: PoolListInfo[];
