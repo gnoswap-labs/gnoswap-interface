@@ -4,7 +4,7 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { initialPool, PoolDetailModel } from "@models/pool/pool-detail-model";
+import { initialDetailPool } from "@models/pool/pool-detail-model";
 import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 
@@ -20,7 +20,7 @@ const PoolPairInformationContainer: React.FC<
   const router = useCustomRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.getPoolPath();
-  const { data = initialPool as PoolDetailModel, isLoading: loading } =
+  const { data = initialDetailPool, isLoading: loading } =
     useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { loading: loadingPosition } = usePositionData({
     address,

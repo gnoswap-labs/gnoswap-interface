@@ -3,57 +3,91 @@ import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
 
 export interface PoolModel {
-  rewards24hUsd: number;
-
-  volumeChange24h: number;
-
-  incentiveType: INCENTIVE_TYPE;
-
-  price: number;
-
+  poolPath: string;
   tokenA: TokenModel;
-
   tokenB: TokenModel;
-
   tokenABalance: number;
-
   tokenBBalance: number;
 
-  tickSpacing: number;
-
+  liquidity: string;
+  price: number;
   currentTick: number;
-
-  tvl: string;
-
-  tvlChange: number;
-
-  volume24h: number;
-
-  feeUsd24h: number;
-
+  tickSpacing: number;
+  priceRatio: IPoolPriceRatio;
   fee: string;
 
-  apr: string;
-
-  totalApr: number | string | null;
-
-  poolPath: string;
-
+  incentiveType: INCENTIVE_TYPE;
   rewardTokens: TokenModel[];
 
-  feeApr: string;
-
-  stakingApr: string;
-
+  tvl: string;
+  tvlChange: number;
+  volume24h: number;
+  volumeChange24h: number;
   allTimeVolumeUsd: string;
+  feeUsd24h: number;
+  rewards24hUsd: number;
 
-  priceRatio: IPoolPriceRatio;
-
-  liquidity: string;
-
+  apr: string;
+  stakingApr: string;
+  feeApr: string;
+  totalApr: number | string | null;
   //TODO Remove later
   id: string;
 }
+
+export const initialPool: PoolModel = {
+  poolPath: "",
+  tokenA: {
+    chainId: "",
+    createdAt: "",
+    name: "",
+    address: "",
+    path: "",
+    decimals: 4,
+    symbol: "",
+    logoURI: "",
+    type: "native",
+    priceID: "",
+  },
+  tokenB: {
+    chainId: "",
+    createdAt: "",
+    name: "",
+    address: "",
+    path: "",
+    decimals: 4,
+    symbol: "",
+    logoURI: "",
+    type: "native",
+    priceID: "",
+  },
+  incentiveType: "INCENTIVIZED",
+  tvl: "0",
+  tvlChange: 0,
+  volume24h: 0,
+  id: "",
+  apr: "0",
+  fee: "",
+  feeUsd24h: 0,
+  currentTick: 0,
+  price: 0,
+  tokenABalance: 0,
+  tokenBBalance: 0,
+  tickSpacing: 0,
+  rewardTokens: [],
+  totalApr: 0,
+  liquidity: "",
+  rewards24hUsd: 0,
+  volumeChange24h: 0,
+  feeApr: "",
+  stakingApr: "",
+  allTimeVolumeUsd: "",
+  priceRatio: {
+    "7d": [],
+    "30d": [],
+    all: [],
+  },
+};
 
 export interface IncentivizePoolModel extends PoolModel {
   bins40: PoolBinModel[];

@@ -1,3 +1,6 @@
+import { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { LANGUAGE_CODE_MAP } from "@constants/common.constant";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
@@ -7,8 +10,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLocalizeTime, parseDate } from "@utils/chart";
-import { useCallback, useMemo } from "react";
-import { useTranslation } from "react-i18next";
+
 import {
   ExchangeRateGraphContentWrapper,
   ExchangeRateGraphXAxisWrapper,

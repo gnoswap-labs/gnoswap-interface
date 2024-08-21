@@ -1,6 +1,17 @@
-import ExchangeRateGraphContent from "@components/pool/exchange-rate-graph-content/ExchangeRateGraphContent";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import ChartScopeSelectTab from "@components/common/chart-scope-select-tab/ChartScopeSelectTab";
 import IconInfo from "@components/common/icons/IconInfo";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import PairRatio from "@components/common/pair-ratio/PairRatio";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
+import { PoolModel } from "@models/pool/pool-model";
+import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
+
+import ExchangeRateGraphContent from "./exchange-rate-graph-content/ExchangeRateGraphContent";
+
 import {
   ExchangeChartNotFound,
   ExchangeRateGraphController,
@@ -8,16 +19,8 @@ import {
   ExchangeRateGraphTitleWrapper,
   ExchangeRateGraphWrapper,
   LoadingExchangeRateChartWrapper,
-  TooltipContentWrapper,
+  TooltipContentWrapper
 } from "./ExchangeRateGraph.styles";
-import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
-import { PoolModel } from "@models/pool/pool-model";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
-import ChartScopeSelectTab from "@components/common/chart-scope-select-tab/ChartScopeSelectTab";
-import PairRatio from "@components/common/pair-ratio/PairRatio";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
 
 interface ExchangeRateGraphProps {
   poolData: PoolModel;

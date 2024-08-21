@@ -1,69 +1,16 @@
 import { useAtom } from "jotai";
 import { useMemo, useState } from "react";
 
-import ExchangeRateGraph from "@components/pool/exchange-rate-graph/ExchangeRateGraph";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { PoolModel } from "@models/pool/pool-model";
+import { initialPool } from "@models/pool/pool-model";
 import { isNativeToken } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 
-export const initialPool: PoolModel = {
-  tokenA: {
-    chainId: "",
-    createdAt: "",
-    name: "",
-    address: "",
-    path: "",
-    decimals: 4,
-    symbol: "",
-    logoURI: "",
-    type: "native",
-    priceID: "",
-  },
-  tokenB: {
-    chainId: "",
-    createdAt: "",
-    name: "",
-    address: "",
-    path: "",
-    decimals: 4,
-    symbol: "",
-    logoURI: "",
-    type: "native",
-    priceID: "",
-  },
-  incentiveType: "INCENTIVIZED",
-  tvl: "0",
-  tvlChange: 0,
-  volume24h: 0,
-  id: "",
-  apr: "0",
-  fee: "",
-  feeUsd24h: 0,
-  currentTick: 0,
-  price: 0,
-  tokenABalance: 0,
-  tokenBBalance: 0,
-  tickSpacing: 0,
-  rewardTokens: [],
-  totalApr: 0,
-  poolPath: "",
-  liquidity: "",
-  rewards24hUsd: 0,
-  volumeChange24h: 0,
-  feeApr: "",
-  stakingApr: "",
-  allTimeVolumeUsd: "",
-  priceRatio: {
-    "7d": [],
-    "30d": [],
-    all: [],
-  },
-};
+import ExchangeRateGraph from "../../components/exchange-rate-graph/ExchangeRateGraph";
 
 export interface LineGraphData {
   value: string;

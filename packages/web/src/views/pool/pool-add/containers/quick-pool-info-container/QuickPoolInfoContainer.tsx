@@ -6,7 +6,10 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { initialPool, PoolDetailModel } from "@models/pool/pool-detail-model";
+import {
+  initialDetailPool,
+  PoolDetailModel,
+} from "@models/pool/pool-detail-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
@@ -55,7 +58,7 @@ const QuickPoolInfoContainer: React.FC = () => {
   });
 
   const {
-    data = initialPool as PoolDetailModel,
+    data = initialDetailPool as PoolDetailModel,
     isLoading: isLoadingPoolInfo,
   } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath && shouldFetchPool,
