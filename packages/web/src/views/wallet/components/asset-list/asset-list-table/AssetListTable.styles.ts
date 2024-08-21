@@ -62,25 +62,25 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       padding: 16px 0px 16px 12px;
     }
   }
-  .balance {
-    padding: 16px 0;
-    ${media.tablet} {
-      padding: 16px 0px;
-    }
-  }
-  .deposit {
-    padding: 16px 0 16px 16px;
-    ${media.tablet} {
-      padding: 16px 0 16px 12px;
-    }
-  }
   .amount {
     padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }
   }
-  .withdraw {
+  .balance {
+    padding: 16px 0;
+    ${media.tablet} {
+      padding: 16px 0px;
+    }
+  }
+  .receive {
+    padding: 16px 0 16px 16px;
+    ${media.tablet} {
+      padding: 16px 0 16px 12px;
+    }
+  }
+  .send {
     padding: 16px 16px 16px 12px;
     ${media.tablet} {
       padding: 16px 16px 16px 12px;

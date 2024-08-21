@@ -24,10 +24,10 @@ import {
   DepositBoxContent,
   DepositLabel,
   DepositModalBackground,
-  DepositModalWrapper,
-  DepositTooltipContent,
+  AssetReceiveModalWrapper,
+  AssetReceiveTooltipContent,
   DepositWarningContentWrapper,
-} from "./DepositModal.styles";
+} from "./AssetReceiveModal.styles";
 
 export const DEFAULT_DEPOSIT_GNOT = GNOT_TOKEN;
 
@@ -45,7 +45,7 @@ interface Props {
   callback?: (value: boolean) => void;
 }
 
-const DepositModal: React.FC<Props> = ({
+const AssetReceiveModal: React.FC<Props> = ({
   close,
   breakpoint,
   avgBlockTime,
@@ -64,10 +64,10 @@ const DepositModal: React.FC<Props> = ({
   return (
     <>
       <DepositModalBackground>
-        <DepositModalWrapper ref={modalRef}>
+        <AssetReceiveModalWrapper ref={modalRef}>
           <div className="modal-body">
             <div className="header">
-              <h6>{t("Modal:deposit.title")}</h6>
+              <h6>{t("Modal:assetReceive.title")}</h6>
               <div className="close-wrap" onClick={close}>
                 <IconClose className="close-icon" />
               </div>
@@ -75,8 +75,8 @@ const DepositModal: React.FC<Props> = ({
 
             <DepositLabel>
               <div className="title">
-                <label>{t("Modal:deposit.supToken.label")}</label>
-                <DepositTooltip tooltip={t("Modal:deposit.supToken.tooltip")} />
+                <label>{t("Modal:assetReceive.supToken.label")}</label>
+                <DepositTooltip tooltip={t("Modal:assetReceive.supToken.tooltip")} />
               </div>
 
               <DepositBoxContent>
@@ -105,8 +105,8 @@ const DepositModal: React.FC<Props> = ({
 
             <DepositLabel>
               <div className="title">
-                <label>{t("Modal:deposit.depoNet.label")}</label>
-                <DepositTooltip tooltip={t("Modal:deposit.depoNet.tooltip")} />
+                <label>{t("Modal:assetReceive.network.label")}</label>
+                <DepositTooltip tooltip={t("Modal:assetReceive.network.tooltip")} />
               </div>
 
               <DepositBoxContent>
@@ -121,7 +121,7 @@ const DepositModal: React.FC<Props> = ({
                   </div>
 
                   <div className="approximately">
-                    {t("Modal:deposit.second", {
+                    {t("Modal:assetReceive.second", {
                       avgBlockTime: (
                         Math.floor(avgBlockTime * 10) / 10
                       ).toFixed(1),
@@ -133,8 +133,8 @@ const DepositModal: React.FC<Props> = ({
 
             <DepositLabel>
               <div className="title">
-                <label>{t("Modal:deposit.depoAddr.label")}</label>
-                <DepositTooltip tooltip={t("Modal:deposit.depoAddr.tooltip")} />
+                <label>{t("Modal:assetReceive.addr.label")}</label>
+                <DepositTooltip tooltip={t("Modal:assetReceive.addr.tooltip")} />
               </div>
 
               <DepositBoxContent>
@@ -170,12 +170,12 @@ const DepositModal: React.FC<Props> = ({
 
             <WarningCard
               icon={<IconCircleExclamationMark />}
-              title={t("Modal:deposit.warning.title")}
+              title={t("Modal:assetReceive.warning.title")}
               content={
                 <DepositWarningContentWrapper>
                   <ul>
-                    <li>{t("Modal:deposit.warning.content1")}</li>
-                    <li>{t("Modal:deposit.warning.content2")}</li>
+                    <li>{t("Modal:assetReceive.warning.content1")}</li>
+                    <li>{t("Modal:assetReceive.warning.content2")}</li>
                   </ul>
 
                   <a
@@ -201,18 +201,18 @@ const DepositModal: React.FC<Props> = ({
               }}
             />
           </div>
-        </DepositModalWrapper>
+        </AssetReceiveModalWrapper>
       </DepositModalBackground>
       <Overlay onClick={close} />
     </>
   );
 };
 
-export default DepositModal;
+export default AssetReceiveModal;
 
 export const DepositTooltip: React.FC<{ tooltip: string }> = ({ tooltip }) => {
   const TooltipFloatingContent = (
-    <DepositTooltipContent>{tooltip}</DepositTooltipContent>
+    <AssetReceiveTooltipContent>{tooltip}</AssetReceiveTooltipContent>
   );
 
   return (

@@ -64,9 +64,9 @@ export const useMessage = () => {
           };
         case DexEvent.WITHDRAW:
           return {
-            pending: t("Modal:confirm.withdraw.status.pending", data),
-            success: t("Modal:confirm.withdraw.status.success", data),
-            error: t("Modal:confirm.withdraw.status.error", data),
+            pending: t("Modal:confirm.assetSend.status.pending", data),
+            success: t("Modal:confirm.assetSend.status.success", data),
+            error: t("Modal:confirm.assetSend.status.error", data),
           };
         case DexEvent.WRAP:
           return {
@@ -117,7 +117,7 @@ export const useMessage = () => {
         case DexEvent.UNSTAKE:
           return t("Modal:confirm.unstake.title");
         case DexEvent.WITHDRAW:
-          return t("Modal:confirm.withdraw.title");
+          return t("Modal:confirm.assetSend.title");
         case DexEvent.WRAP:
           return t("Modal:confirm.wrap.title");
         case DexEvent.UNWRAP:

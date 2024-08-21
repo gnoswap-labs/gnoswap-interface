@@ -3,9 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNOT_TOKEN } from "@common/values/token-constant";
-import DepositModal from "@components/wallet/deposit-modal/DepositModal";
-import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
-import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetReceiveModal";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useMessage } from "@hooks/common/use-message";
@@ -24,7 +22,9 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
+import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
+import useSendAsset from "../../hooks/useSendAsset";
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();
@@ -221,7 +221,7 @@ const WalletBalanceContainer: React.FC = () => {
     isConfirm,
     setIsConfirm,
     onSubmit: handleSubmit,
-  } = useWithdrawTokens();
+  } = useSendAsset();
 
   const onSubmit = (amount: string, address: string) => {
     if (!withdrawInfo || !account?.address) return;
@@ -264,7 +264,7 @@ const WalletBalanceContainer: React.FC = () => {
         loadngTransactionClaim={loadngTransactionClaim}
       />
       {isShowDepositModal && (
-        <DepositModal
+        <AssetReceiveModal
           breakpoint={breakpoint}
           close={closeDeposit}
           depositInfo={depositInfo}
@@ -274,7 +274,7 @@ const WalletBalanceContainer: React.FC = () => {
         />
       )}
       {isShowWithdrawModal && (
-        <WithDrawModal
+        <AssetSendModal
           breakpoint={breakpoint}
           close={closeWithdraw}
           withdrawInfo={withdrawInfo}

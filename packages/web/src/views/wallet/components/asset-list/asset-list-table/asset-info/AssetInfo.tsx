@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from "react";
 
 import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
-import { DepositButton } from "@components/wallet/buttons/DepositButton";
-import { WithdrawButton } from "@components/wallet/buttons/WithdrawButton";
+import { AssetReceiveButton } from "@components/wallet/asset-button/AssetReceiveButton";
+import { AssetSendButton } from "@components/wallet/asset-button/AssetSendButton";
 import {
   ASSET_INFO,
   ASSET_INFO_MOBILE,
@@ -77,10 +77,10 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <span className="balance">{price}</span>
       </TableColumn>
       <TableColumn tdWidth={ASSET_INFO.list?.[4].width}>
-        <DepositButton onClick={onClickDeposit} />
+        <AssetReceiveButton onClick={onClickDeposit} />
       </TableColumn>
       <TableColumn tdWidth={ASSET_INFO.list?.[5].width}>
-        <WithdrawButton onClick={onClickWithdraw} />
+        <AssetSendButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
   ) : breakpoint !== DEVICE_TYPE.MOBILE ? (
@@ -104,10 +104,10 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <span className="balance">{price}</span>
       </TableColumn>
       <TableColumn tdWidth={ASSET_INFO_TABLET.list[4].width}>
-        <DepositButton onClick={onClickDeposit} />
+        <AssetReceiveButton onClick={onClickDeposit} />
       </TableColumn>
       <TableColumn tdWidth={ASSET_INFO_TABLET.list[5].width}>
-        <WithdrawButton onClick={onClickWithdraw} />
+        <AssetSendButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
   ) : (
@@ -131,10 +131,10 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <span className="balance">{price}</span>
       </TableColumn>
       <TableColumn tdWidth={ASSET_INFO_MOBILE.list[4].width}>
-        <DepositButton onClick={onClickDeposit} />
+        <AssetReceiveButton onClick={onClickDeposit} />
       </TableColumn>
       <TableColumn tdWidth={ASSET_INFO_MOBILE.list[5].width}>
-        <WithdrawButton onClick={onClickWithdraw} />
+        <AssetSendButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
   );

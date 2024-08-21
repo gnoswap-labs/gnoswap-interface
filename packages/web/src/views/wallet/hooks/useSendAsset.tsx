@@ -1,4 +1,5 @@
 import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -7,12 +8,11 @@ import { useMessage } from "@hooks/common/use-message";
 import { DexEvent } from "@repositories/common";
 import {
   TransferGRC20TokenRequest,
-  TransferNativeTokenRequest
+  TransferNativeTokenRequest,
 } from "@repositories/wallet/request";
 import { CommonState } from "@states/index";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useEffect, useState } from "react";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -21,7 +21,7 @@ export type WithdrawResponse = {
   code?: number;
 } | null;
 
-const useWithdrawTokens = () => {
+const useSendAsset = () => {
   const {
     broadcastLoading,
     broadcastSuccess,
@@ -137,4 +137,4 @@ const useWithdrawTokens = () => {
   };
 };
 
-export default useWithdrawTokens;
+export default useSendAsset;

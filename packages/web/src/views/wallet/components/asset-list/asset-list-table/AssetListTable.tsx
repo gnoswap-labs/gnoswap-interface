@@ -27,8 +27,8 @@ export const ASSET_HEAD = {
   CHAIN: "Wallet:assets.col.chain",
   AMOUNT: "Wallet:assets.col.amount",
   BALANCE: "Wallet:assets.col.bal",
-  DEPOSIT: "Wallet:assets.col.deposit",
-  WITHDRAW: "Wallet:assets.col.withdraw",
+  RECEIVE: "Wallet:assets.col.assetReceive",
+  SEND: "Wallet:assets.col.assetSend",
 } as const;
 export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
 

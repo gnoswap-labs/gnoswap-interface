@@ -1,16 +1,16 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import DepositModal, { DEFAULT_DEPOSIT_GNOT } from "./DepositModal";
+import AssetReceiveModal, { DEFAULT_DEPOSIT_GNOT } from "./AssetReceiveModal";
 import { action } from "@storybook/addon-actions";
 import { DEVICE_TYPE } from "@styles/media";
 
 export default {
-  title: "wallet/DepositModal",
-  component: DepositModal,
-} as ComponentMeta<typeof DepositModal>;
+  title: "wallet/AssetReceiveModal",
+  component: AssetReceiveModal,
+} as ComponentMeta<typeof AssetReceiveModal>;
 
-const Template: ComponentStory<typeof DepositModal> = args => (
-  <DepositModal {...args} />
+const Template: ComponentStory<typeof AssetReceiveModal> = args => (
+  <AssetReceiveModal {...args} />
 );
 
 export const Default = Template.bind({});

@@ -3,11 +3,11 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { Z_INDEX } from "@styles/zIndex";
-export const DepositModalBackground = styled.div`
-  z-index: ${Z_INDEX.modal};
+export const AssetSendModalBackground = styled.div`
+  z-index: ${Z_INDEX.modalOverlay};
 `;
 
-export const DepositModalWrapper = styled.div`
+export const AssetSendModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   position: fixed;
   overflow: auto;
@@ -68,7 +68,7 @@ export const DepositModalWrapper = styled.div`
       padding: 0px;
     }
   }
-  .btn-deposit {
+  .btn-withdraw {
     padding: 16px 0;
     ${media.mobile} {
       padding: 10px;
@@ -76,7 +76,7 @@ export const DepositModalWrapper = styled.div`
   }
 `;
 
-export const DepositTooltipContent = styled.div`
+export const AssetSendTooltipContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   max-width: 300px;
   ${fonts.body12};
@@ -90,80 +90,14 @@ export const DepositTooltipContent = styled.div`
   }
 `;
 
-export const DepositBoxContent = styled.div`
-  background-color: ${({ theme }) => theme.color.background01};
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  border-radius: 8px;
-  width: 100%;
-
-  .supported-tokens-box {
-    ${mixins.flexbox("row", "align-center", "flex-start")};
-    flex-wrap: wrap;
-    padding: 11px 16px;
-    gap: 8px;
-
-    .token {
-      height: 34px;
-    }
-  }
-
-  .normal-box {
-    padding: 16px;
-    ${mixins.flexbox("row", "center", "space-between")};
-    
-    .network {
-      color: ${({ theme }) => theme.color.text02};
-      ${mixins.flexbox("row", "center", "space-between")};
-      gap: 8px;
-      font-size: 16px;
-      font-style: normal;
-      font-weight: 500;
-    }
-
-    .approximately {
-      color: ${({ theme }) => theme.color.text04};
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 500;
-    }
-
-    .address-box {
-      ${mixins.flexbox("row", "center")};
-      gap: 30px;
-
-      .address {
-        color: ${({ theme }) => theme.color.text04};
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        word-break: break-word;
-
-        ${mixins.flexbox("column", "flex-start")};
-        gap: 12px;
-      }
-
-      .btn-copy {
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 500;
-        padding: 5px 16px;
-        border-radius: 999px;
-      }
-    }
-  }
-`;
-
-export const DepositLabel = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+export const AssetSendContent = styled.div`
   width: 100%;
 
   .title {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
-    
+    margin-bottom: 8px;
+
     label {
       font-size: 14px;
       font-style: normal;
@@ -175,10 +109,59 @@ export const DepositLabel = styled.div`
       fill: ${({ theme }) => theme.color.icon03};
     }
   }
-`;
+  .label {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    color: ${({ theme }) => theme.color.text10};
+    margin-bottom: 8px;
+  }
 
-export const DepositContent = styled.div`
-  .deposit {
+  .estimate-fee {
+    color: ${({ theme }) => theme.color.text04};
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%;
+  }
+
+  .tokens-fee {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+    color: ${({ theme }) => theme.color.text05};
+  }
+
+  .withdrawal-network {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+
+    .network {
+      ${mixins.flexbox("row", "center")};
+      color: ${({ theme }) => theme.color.text01};
+      gap: 8px;
+
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 130%;
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    .approximately {
+      color: ${({ theme }) => theme.color.text04};
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+    }
+  }
+
+  .withdraw {
     ${mixins.flexbox("row", "center", "space-between")};
     flex-wrap: wrap;
 
@@ -193,6 +176,36 @@ export const DepositContent = styled.div`
     }
   }
 
+  .estimate-box {
+    ${mixins.flexbox("row", "center", "space-between")};
+    flex-wrap: wrap;
+
+    width: 100%;
+    padding: 15px;
+    height: 60px;
+
+    background-color: ${({ theme }) => theme.color.background01};
+    border: 1px solid ${({ theme }) => theme.color.border02};
+    border-radius: 8px;
+    ${media.mobile} {
+      padding: 11px;
+    }
+  }
+
+  .withdraw-address {
+    width: 100%;
+    .address-input {
+      color: ${({ theme }) => theme.color.text01};
+      width: 100%;
+      font-size: 14px;
+
+      ::placeholder {
+        color: ${({ theme }) => theme.color.text04};
+        opacity: 1;
+      }
+    }
+  }
+
   .amount {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
@@ -200,12 +213,18 @@ export const DepositContent = styled.div`
   }
 
   .token {
-    height: 32px;
+    height: 34px;
     cursor: default;
     span {
       ${fonts.body9}
-      height: auto !important;
-      line-height: 19px;
+    }
+    .not-selected-token {
+      white-space: nowrap;
+      padding: 5px 10px 5px 12px;
+      gap: 8px;
+    }
+    .selected-token {
+      padding: 5px 10px 5px 6px;
     }
   }
 
@@ -221,15 +240,24 @@ export const DepositContent = styled.div`
     ${media.mobile} {
       ${fonts.body5}
     }
+
+    ::placeholder {
+      color: ${({ theme }) => theme.color.text01};
+      opacity: 1;
+    }
   }
 
   .price-text,
   .balance-text {
     ${fonts.body12};
-    color: ${({ theme }) => theme.color.text10};
+    color: ${({ theme }) => theme.color.text04};
     ${media.mobile} {
       ${fonts.p2}
     }
+  }
+
+  .balance-text {
+    cursor: pointer;
   }
 `;
 
@@ -284,7 +312,7 @@ export const IconButton = styled.div`
   }
 `;
 
-export const DepositWarningContentWrapper = styled.div`
+export const AssetSendWarningContentWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start")}
   gap: 16px;
 

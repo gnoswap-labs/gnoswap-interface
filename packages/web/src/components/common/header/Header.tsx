@@ -6,7 +6,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconDownload from "@components/common/icons/IconDownload";
 import IconHeaderLogo from "@components/common/icons/IconHeaderLogo";
 import IconSearch from "@components/common/icons/IconSearch";
-import DepositModal from "@components/wallet/deposit-modal/DepositModal";
+import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetReceiveModal";
 import { BLOCKED_PAGES } from "@constants/environment.constant";
 import { HEADER_NAV, SIDE_MENU_NAV } from "@constants/header.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -179,7 +179,7 @@ const Header: React.FC<HeaderProps> = ({
                       <IconDownload />
                     </DepositIconWrapper>
                   }
-                  text={t("HeaderFooter:deposit")}
+                  text={t("HeaderFooter:receive")}
                   onClick={() => changeTokenDeposit()}
                   style={{
                     hierarchy: ButtonHierarchy.Primary,
@@ -249,7 +249,7 @@ const Header: React.FC<HeaderProps> = ({
       </HeaderWrapper>
 
       {isShowDepositModal && (
-        <DepositModal
+        <AssetReceiveModal
           breakpoint={breakpoint}
           close={closeDeposit}
           depositInfo={undefined}

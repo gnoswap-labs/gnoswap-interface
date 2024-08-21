@@ -8,9 +8,7 @@ import {
   GNS_TOKEN,
   WUGNOT_TOKEN,
 } from "@common/values/token-constant";
-import DepositModal from "@components/wallet/deposit-modal/DepositModal";
-import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
-import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetReceiveModal";
 import useClickOutside from "@hooks/common/use-click-outside";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
@@ -33,6 +31,8 @@ import {
   type Asset,
 } from "../../components/asset-list/asset-list-table/AssetListTable";
 import AssetList from "../../components/asset-list/AssetList";
+import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
+import useSendAsset from "../../hooks/useSendAsset";
 
 export const ASSET_TYPE = {
   NATIVE: "native",
@@ -451,7 +451,7 @@ const AssetListContainer: React.FC = () => {
   );
 
   const isSortOption = useCallback((head: ASSET_HEAD) => {
-    const disableItems = ["Deposit", "Withdraw"];
+    const disableItems: ASSET_HEAD[] = [ASSET_HEAD.SEND, ASSET_HEAD.RECEIVE];
     return !disableItems.includes(head);
   }, []);
 
@@ -477,7 +477,7 @@ const AssetListContainer: React.FC = () => {
     isConfirm,
     setIsConfirm,
     onSubmit: handleSubmit,
-  } = useWithdrawTokens();
+  } = useSendAsset();
 
   const moveTokenPage = useCallback((tokenPath: string) => {
     router.movePageWithTokenPath("TOKEN", tokenPath);
@@ -528,7 +528,7 @@ const AssetListContainer: React.FC = () => {
         searchRef={componentRef}
       />
       {isShowDepositModal && (
-        <DepositModal
+        <AssetReceiveModal
           breakpoint={breakpoint}
           close={closeDeposit}
           depositInfo={depositInfo}
@@ -538,7 +538,7 @@ const AssetListContainer: React.FC = () => {
         />
       )}
       {isShowWithdrawModal && (
-        <WithDrawModal
+        <AssetSendModal
           breakpoint={breakpoint}
           close={closeWithdraw}
           withdrawInfo={withdrawInfo}

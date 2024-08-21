@@ -1,16 +1,16 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import WithDrawModal from "./WithDrawModal";
+import AssetSendModal from "./AssetSendModal";
 import { action } from "@storybook/addon-actions";
 import { DEVICE_TYPE } from "@styles/media";
 
 export default {
-  title: "wallet/WithDrawModal",
-  component: WithDrawModal,
-} as ComponentMeta<typeof WithDrawModal>;
+  title: "wallet/AssetSendModal",
+  component: AssetSendModal,
+} as ComponentMeta<typeof AssetSendModal>;
 
-const Template: ComponentStory<typeof WithDrawModal> = args => (
-  <WithDrawModal {...args} />
+const Template: ComponentStory<typeof AssetSendModal> = args => (
+  <AssetSendModal {...args} />
 );
 
 export const Default = Template.bind({});

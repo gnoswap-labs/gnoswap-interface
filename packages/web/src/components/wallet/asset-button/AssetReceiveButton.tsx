@@ -2,9 +2,9 @@ import { useTranslation } from "react-i18next";
 
 import IconDownload from "@components/common/icons/IconDownload";
 
-import { LoadButton } from "./buttons.styles";
+import { LoadButton } from "./AssetButton.styles";
 
-export const DepositButton = ({
+export const AssetReceiveButton = ({
   onClick,
   disabled = false,
 }: {
@@ -16,7 +16,7 @@ export const DepositButton = ({
   return (
     <LoadButton onClick={onClick} disabled={disabled}>
       <IconDownload />
-      <span>{t("Wallet:assets.action.deposit")}</span>
+      <span>{t("Wallet:assets.action.receive")}</span>
     </LoadButton>
   );
 };

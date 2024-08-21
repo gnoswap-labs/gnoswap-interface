@@ -1,8 +1,8 @@
 import { cx } from "@emotion/css";
 import React from "react";
 
-import { DepositButton } from "@components/wallet/buttons/DepositButton";
-import { WithdrawButton } from "@components/wallet/buttons/WithdrawButton";
+import { AssetReceiveButton } from "@components/wallet/asset-button/AssetReceiveButton";
+import { AssetSendButton } from "@components/wallet/asset-button/AssetSendButton";
 import {
   emptyArrayInit,
   pulseSkeletonStyle,
@@ -51,13 +51,13 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({ info, className }) => {
                 className="right-padding-16"
                 tdWidth={ASSET_TD[ASSET_TD.length - 2]}
               >
-                <DepositButton onClick={() => false} disabled />
+                <AssetReceiveButton onClick={() => false} disabled />
               </UnLoadingItem>
               <UnLoadingItem
                 className="right-padding-16"
                 tdWidth={ASSET_TD[ASSET_TD.length - 1]}
               >
-                <WithdrawButton onClick={() => false} disabled />
+                <AssetSendButton onClick={() => false} disabled />
               </UnLoadingItem>
             </>
           )}
