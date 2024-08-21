@@ -1,21 +1,21 @@
+import { cx } from "@emotion/css";
 import React from "react";
+
+import { DepositButton } from "@components/wallet/buttons/DepositButton";
+import { WithdrawButton } from "@components/wallet/buttons/WithdrawButton";
 import {
   emptyArrayInit,
   pulseSkeletonStyle,
-  TABLE_TITLE,
   TableInfoType,
+  TABLE_TITLE
 } from "@constants/skeleton.constant";
-import { cx } from "@emotion/css";
+import { DEVICE_TYPE } from "@styles/media";
+
 import {
   SkeletonItem,
   SkeletonWrapper,
-  UnLoadingItem,
+  UnLoadingItem
 } from "./TableSkeleton.styles";
-import {
-  DepositButton,
-  WithdrawButton,
-} from "@components/wallet/asset-info/AssetInfo";
-import { DEVICE_TYPE } from "@styles/media";
 
 
 interface TableSkeletonProps {

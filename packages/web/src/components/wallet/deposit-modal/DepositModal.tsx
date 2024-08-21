@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@emotion/react";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -12,7 +13,6 @@ import { QRCodeGenerator } from "@components/common/qr-code/QRCode";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
-import { useTheme } from "@emotion/react";
 import { useCopy } from "@hooks/common/use-copy";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePositionModal } from "@hooks/common/use-position-modal";
