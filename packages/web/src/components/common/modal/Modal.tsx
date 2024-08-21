@@ -1,10 +1,8 @@
-import { usePositionModal } from "@hooks/common/use-postion-modal";
-import {
-  ModalStyleProps,
-  ModalWrapper,
-  Overlay,
-} from "./Modal.styles";
-import React, { useRef, cloneElement } from "react";
+import React, { cloneElement, useRef } from "react";
+
+import { usePositionModal } from "@hooks/common/use-position-modal";
+
+import { ModalStyleProps, ModalWrapper, Overlay } from "./Modal.styles";
 
 interface ModalProps {
   hasLeftArrow?: boolean;
@@ -17,15 +15,11 @@ interface ModalProps {
   children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({
-  exitClick,
-  style,
-  children,
-}) => {
+const Modal: React.FC<ModalProps> = ({ exitClick, style, children }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const cloneChildren = () =>
-    React.Children.map(children, (child) =>
-      cloneElement(child as React.ReactElement, { modalRef })
+    React.Children.map(children, child =>
+      cloneElement(child as React.ReactElement, { modalRef }),
     );
   usePositionModal(modalRef);
   return (

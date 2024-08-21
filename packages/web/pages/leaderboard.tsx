@@ -1,12 +1,9 @@
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import Footer from "@components/common/footer/Footer";
-import LeaderboardLayout from "@layouts/leaderboard-layout/LeaderboardLayout";
-import LeaderboardListLayout from "@layouts/leaderboard-list-layout/LeaderboardListLayout";
-import LeaderboardSubHeaderContainer from "@containers/leaderboard-subheader-container/LeaderboardSubheaderContainer";
-import SEOHeader from "@components/common/seo-header/seo-header";
-import { useMemo } from "react";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useMemo } from "react";
+
+import SEOHeader from "@components/common/seo-header/seo-header";
+import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import Leaderboard from "@views/leaderboard-layout/Leaderboard";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -15,7 +12,8 @@ export async function getStaticProps({ locale }: { locale: string }) {
     },
   };
 }
-export default function Leaderboard() {
+
+export default function Page() {
   const seoInfo = useMemo(() => SEOInfo["/leaderboard"], []);
 
   return (
@@ -26,12 +24,7 @@ export default function Leaderboard() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <LeaderboardLayout
-        header={<HeaderContainer />}
-        subheader={<LeaderboardSubHeaderContainer />}
-        list={<LeaderboardListLayout />}
-        footer={<Footer />}
-      />
+      <Leaderboard/>
     </>
   );
 }

@@ -1,9 +1,10 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import WalletMyPositions from "./WalletMyPositions";
-import MyPositionCardListContainer from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import WalletMyPositionsHeader from "@components/wallet/wallet-my-positions-header/WalletMyPositionsHeader";
+import WalletPositionCardListContainer from "@containers/wallet-position-card-list-container/WalletPositionCardListContainer";
+
+import WalletMyPositions from "./WalletMyPositions";
 
 export default {
   title: "wallet/WalletMyPositions",
@@ -14,7 +15,7 @@ const Template: ComponentStory<typeof WalletMyPositions> = args => (
   <WalletMyPositions
     {...args}
     header={<WalletMyPositionsHeader />}
-    cardList={<MyPositionCardListContainer loadMore={false} />}
+    cardList={<WalletPositionCardListContainer />}
   />
 );
 

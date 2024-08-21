@@ -170,14 +170,6 @@ export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
   },
 } as const;
 
-export const STAKED_OPTION = {
-  NONE: "NONE",
-  STAKED: "Staked",
-  UNSTAKING: "Unstaking",
-  UNSTAKED: "Unstaked",
-} as const;
-export type STAKED_OPTION = ValuesType<typeof STAKED_OPTION>;
-
 export const STATUS_OPTION = {
   SUCCESS: "SUCCESS",
   PENDING: "PENDING",
@@ -233,9 +225,13 @@ export const CHART_DAY_SCOPE_TYPE = {
 
 export type CHART_DAY_SCOPE_TYPE = ValuesType<typeof CHART_DAY_SCOPE_TYPE>;
 
-export type AddLiquidityType = "POOL" | "LIQUIDITY";
-
 export type PriceRangeType = "Active" | "Passive" | "Custom";
+
+export interface PriceRangeMeta {
+  type: PriceRangeType;
+  apr?: string;
+  text?: string;
+}
 
 export const PriceRangeTooltip: {
   [key in SwapFeeTierType]: { [key in PriceRangeType]: string | undefined };

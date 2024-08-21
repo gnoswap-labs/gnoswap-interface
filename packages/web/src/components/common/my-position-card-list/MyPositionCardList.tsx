@@ -1,14 +1,17 @@
 import React from "react";
+
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
-import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
+
+import MyPositionCard from "./my-position-card/MyPositionCard";
+
 import {
   BlankPositionCard,
   CardListWrapper,
   GridWrapper,
 } from "./MyPositionCardList.styles";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenPriceModel } from "@models/token/token-price-model";
 
 interface MyPositionCardListProps {
   loadMore: boolean;
