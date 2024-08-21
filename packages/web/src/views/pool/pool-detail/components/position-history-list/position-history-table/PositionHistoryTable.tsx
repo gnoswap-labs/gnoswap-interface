@@ -9,16 +9,16 @@ import {
   TableInfoType,
   TABLET_POSITION_HISTORY_INFO,
 } from "@constants/skeleton.constant";
-import { TABLE_HEAD } from "@containers/position-history-container/PositionHistoryContainer";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { DEVICE_TYPE } from "@styles/media";
 
-import PositionInfo from "../position-info/PositionInfo";
+import { TABLE_HEAD } from "../../../containers/position-history-container/PositionHistoryContainer";
+import PositionInfo from "./position-info/PositionInfo";
 
 import {
   noDataText,
   TableHeader,
-  TableWrapper,
+  TableWrapper
 } from "./PositionHistoryTable.styles";
 
 interface PositionHistoryTableProps {

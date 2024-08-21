@@ -5,23 +5,25 @@ import Button from "@components/common/button/Button";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import StakingContentCard, {
-  SummuryApr,
-} from "@components/pool/staking-content-card/StakingContentCard";
 import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import IncentivizeTokenDetailTooltipContainer from "@containers/incentivize-token-detail-container/IncentivizeTokenDetailTooltipContainer";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
+
+import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
+import StakingContentCard, {
+  SummuryApr,
+} from "./staking-content-card/StakingContentCard";
 
 import {
   AprNumberContainer,
   AprStakingHeader,
   NoticeAprToolTip,
-  StakingContentWrapper,
+  StakingContentWrapper
 } from "./StakingContent.styles";
 
 interface StakingContentProps {
@@ -32,6 +34,7 @@ interface StakingContentProps {
   type: number;
   loading: boolean;
   pool: PoolDetailModel | null;
+  poolStakings: PoolStakingModel[];
 }
 
 const TEXT_BTN = [
@@ -51,6 +54,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   type,
   loading,
   pool,
+  poolStakings,
 }) => {
   const { getGnotPath } = useGnotToGnot();
   const [forceShowAprGuide, setForceShowAprGuide] = useState(true);
@@ -149,8 +153,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
                 FloatingContent={
-                  <IncentivizeTokenDetailTooltipContainer
-                    poolPath={pool?.poolPath}
+                  <IncentivizeTokenDetailTooltipContent
+                    poolStakings={poolStakings}
                   />
                 }
                 placement="top"

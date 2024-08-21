@@ -3,8 +3,10 @@ import React from "react";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { DEVICE_TYPE } from "@styles/media";
 
-import PositionHistoryTable from "../position-history-table/PositionHistoryTable";
+import PositionHistoryTable from "./position-history-table/PositionHistoryTable";
+
 import { PositionHistoryListWrapper } from "./PositionHistoryList.styles";
+
 interface IPositionHistoryList {
   list: IPositionHistoryModel[];
   isFetched: boolean;

@@ -1,3 +1,6 @@
+import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
+
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
@@ -5,16 +8,14 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { capitalize } from "@utils/string-utils";
-import { useCallback } from "react";
-import { useTranslation } from "react-i18next";
+
 import * as S from "./IncentivizeTokenDetailTooltipContent.styles";
 
 type Props = {
   poolStakings: PoolStakingModel[];
-  latestBlockHeight: string;
 };
 
-function IncentivizeTokenDetailTooltipContent({ poolStakings }: Props) {
+const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }: Props) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
@@ -103,6 +104,6 @@ function IncentivizeTokenDetailTooltipContent({ poolStakings }: Props) {
         })}
     </S.IncentivizeTokenDetailTooltipContent>
   );
-}
+};
 
 export default IncentivizeTokenDetailTooltipContent;

@@ -3,8 +3,9 @@ import { useTranslation } from "react-i18next";
 
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
-import PositionHistoryContainer from "@containers/position-history-container/PositionHistoryContainer";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+
+import PositionHistoryContainer from "../../../containers/position-history-container/PositionHistoryContainer";
 
 import { PositionHistoryWrapper } from "./PositionHistory.styles";
 

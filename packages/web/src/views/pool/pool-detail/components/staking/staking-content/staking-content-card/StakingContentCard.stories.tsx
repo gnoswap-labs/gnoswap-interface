@@ -1,7 +1,9 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import StakingContentCard from "./StakingContentCard";
+
 import { DEVICE_TYPE } from "@styles/media";
+
+import StakingContentCard from "./StakingContentCard";
 
 export default {
   title: "pool/StakingContentCard",

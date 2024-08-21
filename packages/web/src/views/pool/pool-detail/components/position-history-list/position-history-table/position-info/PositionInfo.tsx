@@ -1,29 +1,30 @@
-import IconOpenLink from "@components/common/icons/IconOpenLink";
-
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
+import {
+  MOBILE_POSITION_HISTORY_INFO,
+  POSITION_HISTORY_INFO,
+  TABLET_POSITION_HISTORY_INFO
+} from "@constants/skeleton.constant";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
+import { DexEvent } from "@repositories/common";
+import { DEVICE_TYPE } from "@styles/media";
+import {
+  formatOtherPrice,
+  formatPoolPairAmount
+} from "@utils/new-number-utils";
+
 import {
   HoverSection,
   IconButton,
   PositionInfoWrapper,
-  TableColumn,
+  TableColumn
 } from "./PositionInfo.styles";
-import { DEVICE_TYPE } from "@styles/media";
-import { IPositionHistoryModel } from "@models/position/position-history-model";
-import {
-  MOBILE_POSITION_HISTORY_INFO,
-  POSITION_HISTORY_INFO,
-  TABLET_POSITION_HISTORY_INFO,
-} from "@constants/skeleton.constant";
-import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
-import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-} from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
-import { DexEvent } from "@repositories/common";
 
 dayjs.extend(relativeTime);
 

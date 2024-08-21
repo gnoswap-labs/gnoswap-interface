@@ -2,10 +2,12 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import React, { useEffect } from "react";
 import { ValuesType } from "utility-types";
 
-import PositionHistoryList from "@components/pool/position-history-list/PositionHistoryList";
-import { useGetPositionHistory } from "@query/positions";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useLoading } from "@hooks/common/use-loading";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { useGetPositionHistory } from "@query/positions";
+
+import PositionHistoryList from "../../components/position-history-list/PositionHistoryList";
+
 export interface SortOption {
   key: TABLE_HEAD;
   direction: "asc" | "desc";

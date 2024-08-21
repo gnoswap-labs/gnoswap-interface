@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import Staking from "@components/pool/staking/Staking";
 import { StakingPeriodType } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
@@ -10,9 +9,11 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useGetPoolDetailByPath } from "@query/pools";
+import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
+
+import Staking from "../../components/staking/Staking";
 
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
@@ -45,6 +46,13 @@ const StakingContainer: React.FC = () => {
         enabled: !!poolPath,
       },
     });
+
+  const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(
+    poolPath || "",
+    {
+      enabled: !!poolPath,
+    },
+  );
 
   const { getGnotPath } = useGnotToGnot();
 
@@ -162,6 +170,7 @@ const StakingContainer: React.FC = () => {
       pool={pool}
       totalApr={totalApr}
       stakedPosition={stakedPositions}
+      poolStakings={poolStakings}
       breakpoint={breakpoint}
       mobile={mobile}
       isDisabledButton={isDisabledButton}
