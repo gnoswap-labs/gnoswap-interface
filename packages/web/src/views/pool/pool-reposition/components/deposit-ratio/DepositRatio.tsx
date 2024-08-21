@@ -7,11 +7,12 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
+
+import { IPriceRange } from "../../hooks/use-reposition-handle";
 
 import {
   DepositRatioWrapper,

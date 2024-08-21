@@ -1,3 +1,6 @@
+import React from "react";
+import { useTranslation } from "react-i18next";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconInfo from "@components/common/icons/IconInfo";
@@ -6,15 +9,15 @@ import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
-import React from "react";
-import { useTranslation } from "react-i18next";
+
+import { IPriceRange } from "../../../hooks/use-increase-handle";
+
 import {
   IncreaseSelectPositionWrapper,
-  ToolTipContentWrapper,
+  ToolTipContentWrapper
 } from "./IncreaseSelectPosition.styles";
 
 export interface IncreaseSelectPositionProps {

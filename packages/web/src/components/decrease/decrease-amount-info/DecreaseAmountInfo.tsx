@@ -4,7 +4,7 @@ import { TokenModel } from "@models/token/token-model";
 import React from "react";
 import { IncreaseAmountInfoWrapper } from "./DecreaseAmountInfo.styles";
 
-export interface IncreaseAmountInfoProps {
+export interface DecreaseAmountInfoProps {
   tokenA: {
     info: TokenModel;
     amount: string;
@@ -18,7 +18,7 @@ export interface IncreaseAmountInfoProps {
   feeRate: string;
 }
 
-const IncreaseAmountInfo: React.FC<IncreaseAmountInfoProps> = ({
+const DecreaseAmountInfo: React.FC<DecreaseAmountInfoProps> = ({
   tokenA,
   tokenB,
 }) => {
@@ -43,4 +43,4 @@ const IncreaseAmountInfo: React.FC<IncreaseAmountInfoProps> = ({
   );
 };
 
-export default IncreaseAmountInfo;
+export default DecreaseAmountInfo;

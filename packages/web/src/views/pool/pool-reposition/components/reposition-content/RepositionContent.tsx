@@ -8,13 +8,15 @@ import {
   PriceRangeMeta,
   RANGE_STATUS_OPTION,
 } from "@constants/option.constant";
-import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 
-import { REPOSITION_BUTTON_TYPE } from "../../hooks/use-reposition-handle";
+import {
+  IPriceRange,
+  REPOSITION_BUTTON_TYPE,
+} from "../../hooks/use-reposition-handle";
 import BalanceChange from "../balance-change/BalanceChange";
 import RepositionSelectPosition from "../reposition-select-position/RepositionSelectPosition";
 import RepositionSelectRange from "../reposition-select-range/RepositionSelectRange";

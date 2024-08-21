@@ -1,12 +1,15 @@
 import React, { useCallback } from "react";
-import IconClose from "../icons/IconCancel";
-import Button, { ButtonHierarchy } from "../button/Button";
-import { TokenModel } from "@models/token/token-model";
-import { IncreasePositionModalWrapper } from "./IncreasePositionModal.styles";
-import IncreaseAmountInfo from "@components/increase/increase-amount-info/IncreaseAmountInfo";
-import IncreaseMaxMin from "@components/increase/increase-max-min/IncreaseMaxMin";
-import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useTranslation } from "react-i18next";
+
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconClose from "@components/common/icons/IconCancel";
+import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import { TokenModel } from "@models/token/token-model";
+
+import IncreaseMaxMin from "../../../common/components/increase-max-min/IncreaseMaxMin";
+import IncreaseAmountInfo from "./increase-amount-info/IncreaseAmountInfo";
+
+import { IncreasePositionModalWrapper } from "./IncreasePositionModal.styles";
 
 interface Props {
   confirm: () => void;

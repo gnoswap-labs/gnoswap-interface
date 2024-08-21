@@ -1,16 +1,18 @@
+import React from "react";
+import { useTranslation } from "react-i18next";
+
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
-import React from "react";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { TokenModel } from "@models/token/token-model";
+import { DEVICE_TYPE } from "@styles/media";
+
 import {
   IncreaseMaxMinSection,
   IncreaseMaxMinWrapper,
 } from "./IncreaseMaxMin.styles";
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { DEVICE_TYPE } from "@styles/media";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { TokenModel } from "@models/token/token-model";
-import { useTranslation } from "react-i18next";
 
 export interface IncreaseMaxMinProps {
   minPriceStr: string;

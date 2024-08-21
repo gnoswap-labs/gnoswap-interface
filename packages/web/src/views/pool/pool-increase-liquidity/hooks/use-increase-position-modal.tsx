@@ -7,7 +7,6 @@ import {
   SwapFeeTierInfoMap,
   SwapFeeTierType
 } from "@constants/option.constant";
-import IncreasePositionModalContainer from "@containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
@@ -21,6 +20,8 @@ import { DexEvent } from "@repositories/common";
 import { IncreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+
+import IncreasePositionModalContainer from "../containers/increase-position-modal-container/IncreasePositionModalContainer";
 
 export interface Props {
   openModal: () => void;

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   PriceRangeMeta,
   RANGE_STATUS_OPTION,
-  SwapFeeTierInfoMap
+  SwapFeeTierInfoMap,
 } from "@constants/option.constant";
 import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -24,7 +24,7 @@ import {
   makeSwapFeeTier,
   priceToTick,
   tickToPrice,
-  tickToPriceStr
+  tickToPriceStr,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 

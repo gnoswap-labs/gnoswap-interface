@@ -4,9 +4,7 @@ import { useTranslation } from "react-i18next";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
-import IncreaseMaxMin from "@components/increase/increase-max-min/IncreaseMaxMin";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
-import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import {
   RepositionLiquidityFailedResponse,
@@ -17,9 +15,12 @@ import {
   SwapRouteSuccessResponse,
 } from "@repositories/swap/response/swap-route-response";
 
+import IncreaseMaxMin from "../../../common/components/increase-max-min/IncreaseMaxMin";
+import { IPriceRange } from "../../hooks/use-reposition-handle";
 import BalanceChange from "../balance-change/BalanceChange";
 import RepositionBroadcastProgress from "../reposition-broadcast-progress/RepositionBroadcastProgress";
 import RepositionInfo from "../reposition-info/RepositionInfo";
+
 import { RepositionModalWrapper } from "./RepositionModal.styles";
 
 interface Props {

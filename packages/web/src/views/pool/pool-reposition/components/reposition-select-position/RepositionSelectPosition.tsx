@@ -6,11 +6,12 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
+
+import { IPriceRange } from "../../hooks/use-reposition-handle";
 
 import { RepositionSelectPositionWrapper } from "./RepositionSelectPosition.styles";
 

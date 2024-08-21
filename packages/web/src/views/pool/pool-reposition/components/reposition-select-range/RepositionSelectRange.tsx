@@ -8,11 +8,11 @@ import {
   PriceRangeMeta,
   RANGE_STATUS_OPTION,
 } from "@constants/option.constant";
-import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 
 import SelectPriceRangeReposition from "../../../common/components/select-price-range/SelectPriceRangeReposition";
+import { IPriceRange } from "../../hooks/use-reposition-handle";
 import DepositRatio from "../deposit-ratio/DepositRatio";
 import { RepositionSelectRangeWrapper } from "./RepositionSelectRange.styles";
 

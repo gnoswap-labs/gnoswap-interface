@@ -5,10 +5,11 @@ import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
+
+import { IPriceRange } from "../../hooks/use-reposition-handle";
 
 import {
   RepositionInfoWrapper,

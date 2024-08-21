@@ -1,16 +1,20 @@
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { TokenModel } from "@models/token/token-model";
+
 import {
   INCREASE_BUTTON_TYPE,
   IPriceRange,
-} from "@hooks/increase/use-increase-handle";
-import { TokenModel } from "@models/token/token-model";
-import React, { useMemo } from "react";
-import IncreaseAmountPosition from "../increase-select-position/IncreaseAmount";
-import IncreaseSelectPosition from "../increase-select-position/IncreaseSelectPosition";
+} from "../../hooks/use-increase-handle";
+import IncreaseAmountPosition from "./increase-select-position/IncreaseAmount";
+import IncreaseSelectPosition from "./increase-select-position/IncreaseSelectPosition";
+
+
 import { IncreaseLiquidityWrapper } from "./IncreaseLiquidity.styles";
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
-import { useTranslation } from "react-i18next";
 
 interface IncreaseLiquidityProps {
   tokenA: TokenModel;

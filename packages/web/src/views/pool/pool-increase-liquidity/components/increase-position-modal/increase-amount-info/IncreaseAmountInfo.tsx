@@ -1,7 +1,9 @@
+import React from "react";
+
 import IconAdd from "@components/common/icons/IconAdd";
 import TokenAmount from "@components/common/token-amount/TokenAmount";
 import { TokenModel } from "@models/token/token-model";
-import React from "react";
+
 import { IncreaseAmountInfoWrapper } from "./IncreaseAmountInfo.styles";
 
 export interface IncreaseAmountInfoProps {

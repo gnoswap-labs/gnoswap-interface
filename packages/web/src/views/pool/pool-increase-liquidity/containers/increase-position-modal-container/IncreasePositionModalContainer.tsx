@@ -1,8 +1,10 @@
-import IncreasePositionModal from "@components/common/increase-position-modal/IncreasePositionModal";
+import React, { useCallback } from "react";
+
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { TokenModel } from "@models/token/token-model";
-import React, { useCallback } from "react";
+
+import IncreasePositionModal from "../../components/increase-position-modal/IncreasePositionModal";
 
 interface Props {
   amountInfo: {
