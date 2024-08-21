@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-import DecreaseLiquidity from "@components/decrease/decrease-liquidity/DecreaseLiquidity";
-import DecreaseLiquidityLoading from "@components/decrease/decrease-liquidity/DecreaseLiquidityLoading";
+import DecreaseLiquidity from "@views/pool/pool-decrease-liquidity/components/decrease-liquidity/DecreaseLiquidity";
+import DecreaseLiquidityLoading from "@views/pool/pool-decrease-liquidity/components/decrease-liquidity/DecreaseLiquidityLoading";
 import useRouter from "@hooks/common/use-custom-router";
 import { useSlippage } from "@hooks/common/use-slippage";
-import { useDecreaseHandle } from "@hooks/decrease/use-decrease-handle";
-import { useDecreasePositionModal } from "@hooks/decrease/use-decrease-position-modal";
+import { useDecreaseHandle } from "@views/pool/pool-decrease-liquidity/hooks/use-decrease-handle";
+import { useDecreasePositionModal } from "@views/pool/pool-decrease-liquidity/hooks/use-decrease-position-modal";
 import { SwapFeeTierType } from "@constants/option.constant";
 
 const DecreaseLiquidityContainer: React.FC = () => {

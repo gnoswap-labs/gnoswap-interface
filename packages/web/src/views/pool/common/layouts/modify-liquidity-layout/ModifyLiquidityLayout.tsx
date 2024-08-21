@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { wrapper } from "./IncreaseLiquidityLayout.styles";
+import { wrapper } from "./ModifyLiquidityLayout.styles";
 
 interface PoolAddLayoutProps {
   header: React.ReactNode;
@@ -9,7 +9,7 @@ interface PoolAddLayoutProps {
   footer: React.ReactNode;
 }
 
-const IncreaseLiquidityLayout: React.FC<PoolAddLayoutProps> = ({
+const ModifyLiquidityLayout: React.FC<PoolAddLayoutProps> = ({
   header,
   breadcrumbs,
   increaseLiquidity,
@@ -34,4 +34,4 @@ const IncreaseLiquidityLayout: React.FC<PoolAddLayoutProps> = ({
   );
 };
 
-export default IncreaseLiquidityLayout;
+export default ModifyLiquidityLayout;

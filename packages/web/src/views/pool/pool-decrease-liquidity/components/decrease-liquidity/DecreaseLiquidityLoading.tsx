@@ -1,8 +1,11 @@
 import React from "react";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { DecreaseLiquidityWrapper } from "./DecreaseLiquidity.styles";
-import DecreaseSelectPositionLoading from "../decrease-select-position/DecreaseSelectPositionLoading";
+
 import DecreaseAmountPositionLoading from "../decrease-select-position/DecreaseAmountLoading";
+import DecreaseSelectPositionLoading from "../decrease-select-position/DecreaseSelectPositionLoading";
+
+import { DecreaseLiquidityWrapper } from "./DecreaseLiquidity.styles";
 
 const DecreaseLiquidityLoading: React.FC = () => {
   return (

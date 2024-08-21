@@ -8,16 +8,17 @@ import { Divider } from "@components/common/select-token/SelectToken.styles";
 import Switch from "@components/common/switch/Switch";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
 import { TokenModel } from "@models/token/token-model";
 import { useGetWithdrawalFee } from "@query/pools";
 import { DEVICE_TYPE } from "@styles/media";
 import { removeTrailingZeros } from "@utils/number-utils";
 
+import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
 import { ToolTipContentWrapper } from "../decrease-select-position/DecreaseSelectPosition.styles";
+
 import {
   DecreasePoolInfoWrapper,
-  GnotCollectSwitchWrapper
+  GnotCollectSwitchWrapper,
 } from "./DecreasePoolInfo.styles";
 
 interface Props {

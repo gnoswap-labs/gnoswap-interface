@@ -9,7 +9,6 @@ import {
   SwapFeeTierInfoMap,
   SwapFeeTierType
 } from "@constants/option.constant";
-import DecreasePositionModalContainer from "@containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { useAddress } from "@hooks/address/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
@@ -22,6 +21,7 @@ import { DecreaseLiquiditySuccessResponse } from "@repositories/position/respons
 import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
+import DecreasePositionModalContainer from "../containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { IPooledTokenInfo } from "./use-decrease-handle";
 
 export interface Props {

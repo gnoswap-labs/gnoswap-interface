@@ -1,5 +1,6 @@
-import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
+
+import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 

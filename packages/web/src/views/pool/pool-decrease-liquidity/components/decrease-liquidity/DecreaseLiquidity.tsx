@@ -2,13 +2,11 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
+
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
-import {
-  IPooledTokenInfo,
-  IPriceRange,
-} from "@hooks/decrease/use-decrease-handle";
 import { TokenModel } from "@models/token/token-model";
 
+import { IPooledTokenInfo, IPriceRange } from "../../hooks/use-decrease-handle";
 import DecreaseAmountPosition from "../decrease-select-position/DecreaseAmount";
 import DecreaseSelectPosition from "../decrease-select-position/DecreaseSelectPosition";
 

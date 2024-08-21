@@ -1,8 +1,10 @@
 import styled from "@emotion/styled";
+
 import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 import { media } from "@styles/media";
-import { DecreaseLiquidityBoxStyle } from "../decrease-liquidity/DecreaseLiquidity.styles";
+
+import { DecreaseLiquidityBoxStyle } from "../../decrease-liquidity/DecreaseLiquidity.styles";
 
 interface Props {
   isDisabled?: boolean;

@@ -1,14 +1,17 @@
-import DecreaseMaxMin from "@components/decrease/decrease-max-min/DecreaseMaxMin";
-import DecreasePoolInfo from "@components/decrease/decrease-pool-info/DecreasePoolInfo";
+import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
+
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconClose from "@components/common/icons/IconCancel";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
-import React, { useCallback } from "react";
-import Button, { ButtonHierarchy } from "../button/Button";
-import IconClose from "../icons/IconCancel";
+
+import DecreasePoolInfo from "../decrease-pool-info/DecreasePoolInfo";
+import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
+import BalanceChange from "./balance-change/BalanceChange";
+import DecreaseMaxMin from "./decrease-max-min/DecreaseMaxMin";
+
 import { DecreasePositionModalWrapper } from "./DecreasePositionModal.styles";
-import BalanceChange from "@components/decrease/balance-change/BalanceChange";
-import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
-import { useTranslation } from "react-i18next";
 
 interface Props {
   confirm: () => void;

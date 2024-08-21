@@ -13,10 +13,10 @@ import { DeviceSize } from "@styles/media";
 import { makeRouteUrl } from "@utils/page.utils";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 
-import IncreaseLiquidityContainer from "./containers/increase-liquidity-container/IncreaseLiquidityContainer";
+import DecreaseLiquidityContainer from "./containers/decrease-liquidity-container/DecreaseLiquidityContainer";
 import ModifyLiquidityLayout from "../common/layouts/modify-liquidity-layout/ModifyLiquidityLayout";
 
-const PoolIncreaseLiquidity: React.FC = () => {
+const PoolDecreaseLiquidity: React.FC = () => {
   const { t } = useTranslation();
   const { width } = useWindowSize();
   const router = useRouter();
@@ -39,23 +39,23 @@ const PoolIncreaseLiquidity: React.FC = () => {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,
         }),
       },
-      { title: t("business:pageHeader.increaseLiqui"), path: "" },
+      { title: t("business:pageHeader.decreaseLiqui"), path: "" },
     ];
   }, [data, width, t, poolPath]);
 
   return (
-      <ModifyLiquidityLayout
-        header={<HeaderContainer />}
-        breadcrumbs={
-          <BreadcrumbsContainer
-            listBreadcrumb={listBreadcrumb}
-            isLoading={isLoadingCommon || isLoading}
-          />
-        }
-        increaseLiquidity={<IncreaseLiquidityContainer />}
-        footer={<Footer />}
-      />
+    <ModifyLiquidityLayout
+      header={<HeaderContainer />}
+      breadcrumbs={
+        <BreadcrumbsContainer
+          listBreadcrumb={listBreadcrumb}
+          isLoading={isLoadingCommon || isLoading}
+        />
+      }
+      increaseLiquidity={<DecreaseLiquidityContainer />}
+      footer={<Footer />}
+    />
   );
 };
 
-export default PoolIncreaseLiquidity;
+export default PoolDecreaseLiquidity;

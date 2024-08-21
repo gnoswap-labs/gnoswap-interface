@@ -1,9 +1,12 @@
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
-import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import React from "react";
 import { useTranslation } from "react-i18next";
+
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { TokenModel } from "@models/token/token-model";
+
+import { IPooledTokenInfo } from "../../../hooks/use-decrease-handle";
+
 import { BalanceChangeWrapper } from "./BalanceChange.styles";
 
 export interface BalanceChangeProps {

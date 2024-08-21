@@ -1,9 +1,11 @@
-import DecreasePositionModal from "@components/common/decrease-position-modal/DecreasePositionModal";
+import React, { useCallback } from "react";
+
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-import { IPooledTokenInfo } from "@hooks/decrease/use-decrease-handle";
 import { TokenModel } from "@models/token/token-model";
-import React, { useCallback } from "react";
+
+import DecreasePositionModal from "../../components/decrease-position-modal/DecreasePositionModal";
+import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
 
 interface Props {
   amountInfo: {
