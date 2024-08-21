@@ -164,6 +164,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     const messages = positions.flatMap(position => {
       let hasFee = false;
       let hasStakingReward = false;
+      let isGnotApproved = false;
       const approveMessages: TransactionMessage[] = [];
       const collectMessages: TransactionMessage[] = [];
 
@@ -181,18 +182,18 @@ export class PositionRepositoryImpl implements PositionRepository {
           );
         }
         // Reward token approve to Staker(When GNOT token)
-        else if (
-          rewardTokenWrappedPath === WRAPPED_GNOT_PATH &&
-          !hasStakingReward
-        ) {
-          approveMessages.push(
-            makeApproveMessage(
-              checkGnotPath(WRAPPED_GNOT_PATH),
-              [PACKAGE_STAKER_ADDRESS, MAX_UINT64.toString()],
-              recipient,
-            ),
-          );
+        else {
           hasStakingReward = true;
+          if (rewardTokenWrappedPath === WRAPPED_GNOT_PATH && !isGnotApproved) {
+            approveMessages.push(
+              makeApproveMessage(
+                checkGnotPath(WRAPPED_GNOT_PATH),
+                [PACKAGE_STAKER_ADDRESS, MAX_UINT64.toString()],
+                recipient,
+              ),
+            );
+            isGnotApproved = true;
+          }
         }
       });
 
