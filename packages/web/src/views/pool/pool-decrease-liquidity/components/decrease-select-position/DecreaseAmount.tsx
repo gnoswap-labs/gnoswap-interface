@@ -2,12 +2,12 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import Range from "@components/common/range/Range";
-import { IPooledTokenInfo } from "@views/pool/pool-decrease-liquidity/hooks/use-decrease-handle";
 import { TokenModel } from "@models/token/token-model";
 
+import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
 import DecreasePoolInfo from "../decrease-pool-info/DecreasePoolInfo";
-import { DecreaseSelectPositionWrapper } from "./DecreaseSelectPosition.styles";
 
+import { DecreaseSelectPositionWrapper } from "./DecreaseSelectPosition.styles";
 export interface DecreaseSelectPositionProps {
   tokenA: TokenModel;
   tokenB: TokenModel;

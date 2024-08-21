@@ -7,9 +7,10 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { IPriceRange } from "@views/pool/pool-decrease-liquidity/hooks/use-decrease-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
+
+import { IPriceRange } from "../../hooks/use-decrease-handle";
 
 import { DecreaseSelectPositionWrapper } from "./DecreaseSelectPosition.styles";
 
