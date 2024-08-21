@@ -1,32 +1,54 @@
-import { Token } from "@containers/header-container/HeaderContainer";
+import { useAtom } from "jotai";
 import React, {
-  useRef,
   useCallback,
-  useState,
   useEffect,
   useMemo,
+  useRef,
+  useState,
 } from "react";
+import { useTranslation } from "react-i18next";
+
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import IconNewTab from "@components/common/icons/IconNewTab";
+import IconSearch from "@components/common/icons/IconSearch";
+import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
+import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { TokenState } from "@states/index";
+import { DEVICE_TYPE } from "@styles/media";
+import { TokenInfo } from "@models/token/token-info";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+
 import {
-  SearchModalBackground,
-  SearchContainer,
-  SearchWrapper,
   InputStyle,
   ModalContainer,
   Overlay,
+  SearchContainer,
+  SearchModalBackground,
+  SearchWrapper,
   TokenInfoWrapper,
 } from "./SearchMenuModal.styles";
-import IconSearch from "@components/common/icons/IconSearch";
-import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import Badge, { BADGE_TYPE } from "../badge/Badge";
-import DoubleLogo from "../double-logo/DoubleLogo";
-import IconNewTab from "../icons/IconNewTab";
-import IconTriangleArrowDownV2 from "../icons/IconTriangleArrowDownV2";
-import IconTriangleArrowUpV2 from "../icons/IconTriangleArrowUpV2";
-import { DEVICE_TYPE } from "@styles/media";
-import { useAtom } from "jotai";
-import { TokenState } from "@states/index";
-import MissingLogo from "../missing-logo/MissingLogo";
-import { useTranslation } from "react-i18next";
+
+interface NegativeStatusType {
+  status: MATH_NEGATIVE_TYPE;
+  value: string;
+}
+export interface Token {
+  path: string;
+  searchType: string;
+  token: TokenInfo;
+  price: string;
+  priceOf1d: NegativeStatusType;
+  tokenB?: TokenInfo;
+  isLiquid?: boolean;
+  fee: string;
+  apr?: string;
+  volume?: string;
+  liquidity: number;
+  isNative: boolean;
+}
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -201,7 +223,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
       if (replacedPath.length >= length) {
         return (
-          "..." +
+          "@components/common." +
           replacedPath.slice(
             replacedPath.length - length,
             replacedPath.length - 1,
@@ -209,7 +231,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
         );
       }
 
-      return path_.replace("gno.land", "...");
+      return path_.replace("gno.land", "@components/common.");
     },
     [length],
   );
@@ -264,7 +286,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                                 ref={tokenNameRecentsRef.current[idx]}
                               >
                                 {item.token.name.length > length
-                                  ? `${item.token.name.slice(0, length)}...`
+                                  ? `${item.token.name.slice(0, length)}@components/common.`
                                   : item.token.name}
                               </span>
                               <div
@@ -361,7 +383,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               ref={tokenNamePopularRef.current[idx]}
                             >
                               {item.token.name.length > length
-                                ? `${item.token.name.slice(0, length)}...`
+                                ? `${item.token.name.slice(0, length)}@components/common.`
                                 : item.token.name}
                             </span>
                             <div

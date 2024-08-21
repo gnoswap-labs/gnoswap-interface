@@ -2,15 +2,17 @@ import { useAtom } from "jotai";
 import { useMemo } from "react";
 
 import IconAlert from "@components/common/icons/IconAlert";
-import NotificationList from "@components/common/notification-list/NotificationList";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useGetNotifications } from "@query/common";
 import { CommonState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
+
+import NotificationList from "./notification-list/NotificationList";
+
 import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
-import { useGetNotifications } from "@query/common";
 
 const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);

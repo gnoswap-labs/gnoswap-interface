@@ -15,7 +15,6 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
-import { type TokenInfo } from "@models/token/token-info";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetAvgBlockTime } from "@query/address";
@@ -25,25 +24,6 @@ import { ThemeState, TokenState } from "@states/index";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 import { formatApr } from "@utils/string-utils";
-
-interface NegativeStatusType {
-  status: MATH_NEGATIVE_TYPE;
-  value: string;
-}
-export interface Token {
-  path: string;
-  searchType: string;
-  token: TokenInfo;
-  price: string;
-  priceOf1d: NegativeStatusType;
-  tokenB?: TokenInfo;
-  isLiquid?: boolean;
-  fee: string;
-  apr?: string;
-  volume?: string;
-  liquidity: number;
-  isNative: boolean;
-}
 
 const HeaderContainer: React.FC = () => {
   const { pathname, movePageWithTokenPath, movePageWithPoolPath } = useRouter();

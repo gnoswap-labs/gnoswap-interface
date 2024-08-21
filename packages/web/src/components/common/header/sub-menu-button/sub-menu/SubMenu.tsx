@@ -1,11 +1,9 @@
 import { useTranslation } from "next-i18next";
-import React, {
-  Fragment,
-  useCallback, useMemo,
-  useRef
-} from "react";
+import React, { Fragment, useCallback, useMemo, useRef } from "react";
 
+import IconAccountUser from "@components/common/icons/IconAccountUser";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
+import IconPulse from "@components/common/icons/IconPulse";
 import { BLOCKED_PAGES } from "@constants/environment.constant";
 import {
   HEADER_NAV,
@@ -14,9 +12,6 @@ import {
 } from "@constants/header.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 
-import IconAccountUser from "../../icons/IconAccountUser";
-import IconPulse from "../../icons/IconPulse";
-
 import {
   LeftIcon,
   LeftIconMenu,
@@ -24,7 +19,7 @@ import {
   MenuDivider,
   Navigation,
   RightIconMenu,
-  SubMenuWrapper
+  SubMenuWrapper,
 } from "./SubMenu.styles";
 
 interface HeaderSideMenuModalProps {

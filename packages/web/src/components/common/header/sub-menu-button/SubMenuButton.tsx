@@ -1,8 +1,9 @@
 import { useTheme } from "@emotion/react";
 import React, { useEffect, useRef } from "react";
 
-import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
-import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
+import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
+import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
+
 import SubMenu from "./sub-menu/SubMenu";
 
 import { FakeSpaceWrapper } from "./sub-menu/SubMenu.styles";

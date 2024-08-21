@@ -1,24 +1,27 @@
+import { css, Global } from "@emotion/react";
+import { useAtom } from "jotai";
+import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
+import IconFailed from "@components/common/icons/IconFailed";
+import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import { AccountModel } from "@models/account/account-model";
+import { ITokenResponse } from "@repositories/token";
+import { CommonState } from "@states/index";
+import { formatAddress } from "@utils/string-utils";
+
+import SelectLanguage from "./select-language/SelectLanguage";
+import WalletConnectorMenu from "./wallet-connector-menu/WalletConnectorMenu";
+
 import {
   FailNetworkTooltipContentWrap,
   WalletConnectorButtonWrapper,
 } from "./WalletConnectorButton.styles";
-import WalletConnectorMenu from "@components/common/wallet-connector-menu/WalletConnectorMenu";
-import { formatAddress } from "@utils/string-utils";
-import { useAtom } from "jotai";
-import { CommonState } from "@states/index";
-import { AccountModel } from "@models/account/account-model";
-import IconFailed from "../icons/IconFailed";
-import Tooltip from "../tooltip/Tooltip";
-import { Global, css } from "@emotion/react";
-import LoadingSpinner from "../loading-spinner/LoadingSpinner";
-import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import SelectLanguage from "../select-language/SelectLanguage";
-import { ITokenResponse } from "@repositories/token";
-import { useTranslation } from "next-i18next";
 
 interface WalletConnectProps {
   account: AccountModel | null;

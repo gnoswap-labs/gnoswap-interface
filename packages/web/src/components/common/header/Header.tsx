@@ -1,18 +1,26 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import React, { useCallback, useMemo, useState } from "react";
+
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconDownload from "@components/common/icons/IconDownload";
+import IconHeaderLogo from "@components/common/icons/IconHeaderLogo";
 import IconSearch from "@components/common/icons/IconSearch";
-import NotificationButton from "@components/common/notification-button/NotificationButton";
-import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
+import { BLOCKED_PAGES } from "@constants/environment.constant";
 import { HEADER_NAV, SIDE_MENU_NAV } from "@constants/header.constant";
-import { Token } from "@containers/header-container/HeaderContainer";
+import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { AccountModel } from "@models/account/account-model";
-import { DEVICE_TYPE, DeviceSize } from "@styles/media";
-import IconDownload from "../icons/IconDownload";
-import IconHeaderLogo from "../icons/IconHeaderLogo";
-import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
-import SubMenuButton from "../sub-menu-button/SubMenuButton";
+import { ITokenResponse } from "@repositories/token";
+import { DeviceSize, DEVICE_TYPE } from "@styles/media";
+
+import NotificationButton from "./notification-button/NotificationButton";
+import SearchMenuModal, { Token } from "./search-menu-modal/SearchMenuModal";
+import SubMenuButton from "./sub-menu-button/SubMenuButton";
+import WalletConnectorButton from "./wallet-connector-button/WalletConnectorButton";
+
 import {
   BottomNavContainer,
   BottomNavItem,
@@ -25,14 +33,8 @@ import {
   Navigation,
   RightSection,
   SearchButton,
-  SearchContainer,
+  SearchContainer
 } from "./Header.styles";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { ITokenResponse } from "@repositories/token";
-import { BLOCKED_PAGES } from "@constants/environment.constant";
-import useCustomRouter from "@hooks/common/use-custom-router";
-import { useTranslation } from "next-i18next";
-import Button, { ButtonHierarchy } from "../button/Button";
 
 interface HeaderProps {
   pathname?: string;

@@ -5,6 +5,7 @@ import { NotificationType } from "@common/values";
 import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
 import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import IconCircleInMore from "@components/common/icons/IconCircleInMore";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TransactionModel } from "@models/account/account-history-model";
 import { TransactionGroupsType } from "@models/notification";
@@ -13,7 +14,6 @@ import { DexEvent, DexEventType } from "@repositories/common";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
-import MissingLogo from "../missing-logo/MissingLogo";
 import {
   DoubleLogo as DoubleLogoLocal,
   DoubleLogoDense,

@@ -1,9 +1,25 @@
+import BigNumber from "bignumber.js";
+import { useAtomValue } from "jotai";
+import { useTranslation } from "next-i18next";
 import React, { useCallback, useMemo, useRef, useState } from "react";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconCopy from "@components/common/icons/IconCopy";
-import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconExit from "@components/common/icons/IconExit";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
+import { LANGUAGES } from "@constants/common.constant";
+import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContainer";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { AccountModel } from "@models/account/account-model";
+import { ITokenResponse } from "@repositories/token";
+import { CommonState } from "@states/index";
+import { roundDownDecimalNumber } from "@utils/regex";
+import { formatAddress } from "@utils/string-utils";
+import IconFailed from "@components/common/icons/IconFailed";
+import IconPolygon from "@components/common/icons/IconPolygon";
+import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
+
 import {
   AmountInfoBox,
   CopyTooltip,
@@ -13,20 +29,6 @@ import {
   ThemeSelector,
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
-import { formatAddress } from "@utils/string-utils";
-import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContainer";
-import { AccountModel } from "@models/account/account-model";
-import IconPolygon from "../icons/IconPolygon";
-import IconFailed from "../icons/IconFailed";
-import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
-import { roundDownDecimalNumber } from "@utils/regex";
-import BigNumber from "bignumber.js";
-import { ITokenResponse } from "@repositories/token";
-import { useTranslation } from "next-i18next";
-import { LANGUAGES } from "@constants/common.constant";
-import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { useAtomValue } from "jotai";
-import { CommonState } from "@states/index";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -106,8 +108,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
       setTimeout(() => {
         setCopied(false);
       }, 2000);
-    } catch (e) {
-      throw new Error("Copy Error!");
+    } catch (e: unknown) {
+      throw new Error(`Copy Error! ${e}`);
     }
   };
   const openLinkClick = () => {

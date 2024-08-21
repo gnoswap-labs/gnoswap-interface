@@ -1,11 +1,13 @@
-import React from "react";
-import { SelectLanguageWrapper } from "./SelectLanguage.styles";
-import IconStrokeArrowLeft from "../icons/IconStrokeArrowLeft";
-import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
-import { Overlay } from "../wallet-connector-menu/WalletConnectorMenu.styles";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import React from "react";
+
+import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
+import IconStrokeArrowLeft from "@components/common/icons/IconStrokeArrowLeft";
 import { LANGUAGES } from "@constants/common.constant";
+
+import { Overlay } from "../wallet-connector-menu/WalletConnectorMenu.styles";
+import { SelectLanguageWrapper } from "./SelectLanguage.styles";
 
 interface Props {
   onClickChangeLanguage: () => void;

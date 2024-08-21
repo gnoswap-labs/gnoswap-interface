@@ -1,4 +1,11 @@
 import React, { useRef } from "react";
+import { useTranslation } from "react-i18next";
+
+import { TransactionGroupsType } from "@models/notification";
+import { DEVICE_TYPE } from "@styles/media";
+
+import NotificationItem from "./NotificationItem";
+
 import {
   ClearButton,
   NoDataText,
@@ -6,10 +13,6 @@ import {
   NotificationListWrapper,
   Overlay,
 } from "./NotificationList.styles";
-import { DEVICE_TYPE } from "@styles/media";
-import NotificationItem from "./NotificationItem";
-import { useTranslation } from "react-i18next";
-import { TransactionGroupsType } from "@models/notification";
 
 interface NotificationListProps {
   txsGroupsInformation: TransactionGroupsType[];
