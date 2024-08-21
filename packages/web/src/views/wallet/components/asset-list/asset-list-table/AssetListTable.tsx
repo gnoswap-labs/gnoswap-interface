@@ -32,7 +32,6 @@ export const ASSET_HEAD = {
 } as const;
 export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
 
-
 export interface AssetSortOption {
   key: ASSET_HEAD;
   direction: "asc" | "desc";

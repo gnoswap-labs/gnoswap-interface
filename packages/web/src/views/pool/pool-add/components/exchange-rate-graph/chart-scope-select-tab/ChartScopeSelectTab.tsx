@@ -1,5 +1,7 @@
 import React from "react";
+
 import SelectTab from "@components/common/select-tab/SelectTab";
+
 import { ChartScopeSelectTabWrapper } from "./ChartScopeSelectTab.styles";
 
 export type TAB_SIZE = "MEDIUM" | "SMALL";

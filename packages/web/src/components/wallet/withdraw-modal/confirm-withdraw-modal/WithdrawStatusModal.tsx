@@ -1,3 +1,6 @@
+import React, { useRef } from "react";
+import { Trans, useTranslation } from "react-i18next";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconFailed from "@components/common/icons/IconFailed";
@@ -7,9 +10,9 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePositionModal } from "@hooks/common/use-position-modal";
-import React, { useRef } from "react";
-import { Trans, useTranslation } from "react-i18next";
+
 import { WithdrawResponse } from "../useWithdrawTokens";
+
 import {
   ConfirmModal,
   WithdrawStatusBackground,

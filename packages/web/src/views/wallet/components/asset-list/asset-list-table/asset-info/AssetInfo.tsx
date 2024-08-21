@@ -11,8 +11,9 @@ import {
 import { isNativeToken } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 
-import { AssetInfoWrapper, TableColumn } from "./AssetInfo.styles";
 import { Asset } from "../AssetListTable";
+
+import { AssetInfoWrapper, TableColumn } from "./AssetInfo.styles";
 
 export interface AssetInfoProps {
   asset: Asset;

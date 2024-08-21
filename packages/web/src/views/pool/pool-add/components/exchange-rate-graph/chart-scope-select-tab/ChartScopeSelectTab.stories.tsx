@@ -1,9 +1,8 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import VolumeChartSelectTabV2 from "./ChartScopeSelectTab";
-import { ACTIVITY_TYPE } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
 import { CHART_TYPE } from "@constants/option.constant";
+
 import ChartScopeSelectTab from "./ChartScopeSelectTab";
 
 export default {

@@ -1,6 +1,7 @@
+import React from "react";
+
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { DEVICE_TYPE } from "@styles/media";
-import React from "react";
 
 import AssetListHeader, {
   ASSET_FILTER_TYPE,
