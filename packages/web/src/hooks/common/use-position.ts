@@ -26,7 +26,7 @@ export const usePosition = (positions: PositionModel[]) => {
     );
 
     return positionRepository
-      .claimAll({
+      .sendClaimAll({
         positions: claimablePositions,
         recipient: address,
       })
