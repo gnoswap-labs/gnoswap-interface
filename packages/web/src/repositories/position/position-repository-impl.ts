@@ -7,7 +7,8 @@ import {
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import {
-  makeApproveMessage, TransactionMessage
+  makeApproveMessage,
+  TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
 import { makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
 import {
@@ -153,7 +154,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     return PositionMapper.fromList(response.data.data);
   };
 
-  claimAll = async (
+  sendClaimAll = async (
     request: ClaimAllRequest,
   ): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
     if (this.walletClient === null) {
@@ -161,55 +162,29 @@ export class PositionRepositoryImpl implements PositionRepository {
     }
     const { positions, recipient } = request;
     const messages = positions.flatMap(position => {
-      const hasSwapFee =
-        position.reward.findIndex(reward => reward.rewardType === "SWAP_FEE") >
-        -1;
-      const hasReward =
-        position.reward.findIndex(reward =>
-          ["INTERNAL", "EXTERNAL"].includes(reward.rewardType),
-        ) > -1;
+      let hasFee = false;
+      let hasStakingReward = false;
+      let isGnotApproved = false;
+      const approveMessages: TransactionMessage[] = [];
+      const collectMessages: TransactionMessage[] = [];
 
-      const approveMessages = [];
-      const collectMessages = [];
-      const tokenPaths = position.poolPath.split(":");
-      const includedTokenPaths: string[] = [...tokenPaths];
-      if (hasSwapFee && tokenPaths.length === 3) {
-        approveMessages.push(
-          makeApproveMessage(
-            tokenPaths[0],
-            [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
-            recipient,
-          ),
-        );
-        approveMessages.push(
-          makeApproveMessage(
-            tokenPaths[1],
-            [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
-            recipient,
-          ),
-        );
-        collectMessages.push(
-          makePositionCollectFeeMessage(position.lpTokenId, recipient),
-        );
-      }
-      if (hasReward) {
-        // Reward token approve to Pool and Staker(When GNOT token)
-        const rewardTokenMessages = position.reward.flatMap(reward => {
-          const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
-          if (includedTokenPaths.includes(rewardTokenWrappedPath)) {
-            return [];
-          }
-
-          const approveMessages: TransactionMessage[] = [];
+      position.reward.forEach(reward => {
+        const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
+        // Reward token approve to Pool
+        if (reward.rewardType === "SWAP_FEE") {
+          hasFee = true;
           approveMessages.push(
             makeApproveMessage(
-              rewardTokenWrappedPath,
+              checkGnotPath(reward.rewardToken.path),
               [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
               recipient,
             ),
           );
-
-          if (reward.rewardToken.path === WRAPPED_GNOT_PATH) {
+        }
+        // Reward token approve to Staker(When GNOT token)
+        else {
+          hasStakingReward = true;
+          if (rewardTokenWrappedPath === WRAPPED_GNOT_PATH && !isGnotApproved) {
             approveMessages.push(
               makeApproveMessage(
                 checkGnotPath(WRAPPED_GNOT_PATH),
@@ -217,16 +192,22 @@ export class PositionRepositoryImpl implements PositionRepository {
                 recipient,
               ),
             );
+            isGnotApproved = true;
           }
+        }
+      });
 
-          includedTokenPaths.push(rewardTokenWrappedPath);
-          return approveMessages;
-        });
-        approveMessages.push(...rewardTokenMessages);
+      if (hasFee) {
+        collectMessages.push(
+          makePositionCollectFeeMessage(position.lpTokenId, recipient),
+        );
+      }
+      if (hasStakingReward) {
         collectMessages.push(
           makeCollectRewardMessage(position.lpTokenId, recipient),
         );
       }
+
       const messages = [...approveMessages, ...collectMessages];
       return messages;
     });
@@ -282,13 +263,13 @@ export class PositionRepositoryImpl implements PositionRepository {
       );
     }
 
-    const includedTokenPaths: string[] = [];
+    const approvedTokenPaths: string[] = [];
 
     // Reward token approve to Pool and Staker(When GNOT token)
     const collectRewardApproveMessages = positions.flatMap(position =>
       position.reward.flatMap(reward => {
         const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
-        if (includedTokenPaths.includes(rewardTokenWrappedPath)) {
+        if (approvedTokenPaths.includes(rewardTokenWrappedPath)) {
           return [];
         }
 
@@ -310,7 +291,7 @@ export class PositionRepositoryImpl implements PositionRepository {
             ),
           );
         }
-        includedTokenPaths.push(rewardTokenWrappedPath);
+        approvedTokenPaths.push(rewardTokenWrappedPath);
         return messages;
       }),
     );

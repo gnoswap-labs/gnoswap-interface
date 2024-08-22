@@ -1,13 +1,20 @@
-import { PositionModel } from "@models/position/position-model";
-import { ClaimAllRequest } from "./request/claim-all-request";
-import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
-import { StakePositionsRequest } from "./request/stake-positions-request";
-import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import {
   SendTransactionResponse,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
+import { PositionBinModel } from "@models/position/position-bin-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
+import { PositionModel } from "@models/position/position-model";
+
+import {
+  DecreaseLiquidityRequest,
+  IncreaseLiquidityRequest,
+  RepositionLiquidityRequest,
+} from "./request";
+import { ClaimAllRequest } from "./request/claim-all-request";
+import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
+import { StakePositionsRequest } from "./request/stake-positions-request";
+import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import {
   DecreaseLiquidityFailedResponse,
   DecreaseLiquiditySuccessResponse,
@@ -16,12 +23,6 @@ import {
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
-import {
-  DecreaseLiquidityRequest,
-  IncreaseLiquidityRequest,
-  RepositionLiquidityRequest,
-} from "./request";
-import { PositionBinModel } from "@models/position/position-bin-model";
 
 export interface PositionRepository {
   getPositionsByAddress: (
@@ -36,7 +37,7 @@ export interface PositionRepository {
 
   getPositionById: (lpTokenId: string) => Promise<PositionModel>;
 
-  claimAll: (
+  sendClaimAll: (
     request: ClaimAllRequest,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
