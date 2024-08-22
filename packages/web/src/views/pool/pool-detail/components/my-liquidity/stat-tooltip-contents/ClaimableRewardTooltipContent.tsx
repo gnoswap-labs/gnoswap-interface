@@ -1,141 +1,135 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { RewardType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { PositionClaimInfo } from "@models/position/info/position-claim-info";
+import { TokenModel } from "@models/token/token-model";
 import {
   formatOtherPrice,
-  formatPoolPairAmount
+  formatPoolPairAmount,
 } from "@utils/new-number-utils";
 
-import { RewardsContent, TooltipDivider } from "./MyDetailedPositionCard.styles";
+import { StatTooltipContentWrapper } from "./StatTooltipContents.styles";
 
-export interface MyPositionClaimContentProps {
-  rewardInfo: { [key in RewardType]: PositionClaimInfo[] } | null;
-  unclaimedRewardInfo: PositionClaimInfo[] | null;
+export interface PositionRewardInfo {
+  rewardType: RewardType;
+  token: TokenModel;
+  claimableAmount: number | null;
+  claimableUSD: number | null;
+  accumulatedRewardOf1d: number | null;
+  accumulatedRewardOf1dUsd: number | null;
 }
 
-export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
-  rewardInfo,
-}) => {
+export interface ClaimableRewardTooltipContentProps {
+  rewardInfo: { [key in RewardType]: PositionRewardInfo[] } | null;
+}
+
+export const ClaimableRewardTooltipContent: React.FC<
+  ClaimableRewardTooltipContentProps
+> = ({ rewardInfo }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
   const swapFeeRewards = useMemo(() => {
-    if (!rewardInfo) {
-      return null;
-    }
-    if (rewardInfo.SWAP_FEE.length === 0) {
+    if (!rewardInfo || rewardInfo.SWAP_FEE.length === 0) {
       return null;
     }
     return rewardInfo.SWAP_FEE;
   }, [rewardInfo]);
 
-  const stakingRewards = useMemo(() => {
-    if (!rewardInfo) {
-      return null;
-    }
-    if (rewardInfo.INTERNAL.length === 0) {
+  const internalRewards = useMemo(() => {
+    if (!rewardInfo || rewardInfo.INTERNAL.length === 0) {
       return null;
     }
     return rewardInfo.INTERNAL;
   }, [rewardInfo]);
 
   const externalRewards = useMemo(() => {
-    if (!rewardInfo) {
-      return null;
-    }
-    if (rewardInfo.EXTERNAL.length === 0) {
+    if (!rewardInfo || rewardInfo.EXTERNAL.length === 0) {
       return null;
     }
     return rewardInfo.EXTERNAL;
   }, [rewardInfo]);
 
   const swapFeeRewardUSD = useMemo(() => {
-    if (!rewardInfo || rewardInfo.SWAP_FEE.length === 0) {
-      return "-";
-    }
-    const sumUSD = rewardInfo.SWAP_FEE.reduce(
-      (accum: null | number, current) => {
-        if (accum === null && current.claimableUSD === null) {
-          return null;
-        }
+    const isEmpty = !swapFeeRewards || swapFeeRewards?.length === 0;
 
-        if (accum === null) {
-          return current.claimableUSD;
-        }
+    if (isEmpty) return "-";
 
-        if (current.claimableUSD === null) {
-          return accum;
-        }
+    const sumUSD = swapFeeRewards?.reduce((accum: null | number, current) => {
+      if (accum === null && current.claimableUSD === null) {
+        return null;
+      }
 
-        return accum + current.claimableUSD;
-      },
-      null,
-    );
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
     return formatOtherPrice(sumUSD, {
       isKMB: false,
     });
-  }, [rewardInfo]);
+  }, [swapFeeRewards]);
 
   const internalRewardUSD = useMemo(() => {
-    if (!rewardInfo || rewardInfo.INTERNAL.length === 0) {
-      return "-";
-    }
-    const sumUSD = rewardInfo.INTERNAL.reduce(
-      (accum: null | number, current) => {
-        if (accum === null && current.claimableUSD === null) {
-          return null;
-        }
+    const isEmpty = !internalRewards;
 
-        if (accum === null) {
-          return current.claimableUSD;
-        }
+    if (isEmpty) return "-";
 
-        if (current.claimableUSD === null) {
-          return accum;
-        }
+    const sumUSD = internalRewards.reduce((accum: null | number, current) => {
+      if (accum === null && current.claimableUSD === null) {
+        return null;
+      }
 
-        return accum + current.claimableUSD;
-      },
-      null,
-    );
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
     return formatOtherPrice(sumUSD, {
       isKMB: false,
     });
-  }, [rewardInfo]);
+  }, [internalRewards]);
 
   const externalRewardUSD = useMemo(() => {
-    if (!rewardInfo || rewardInfo.EXTERNAL.length === 0) {
-      return "-";
-    }
-    const sumUSD = rewardInfo.EXTERNAL.reduce(
-      (accum: null | number, current) => {
-        if (accum === null && current.claimableUSD === null) {
-          return null;
-        }
+    const isEmpty = !externalRewards;
 
-        if (accum === null) {
-          return current.claimableUSD;
-        }
+    if (isEmpty) return "-";
 
-        if (current.claimableUSD === null) {
-          return accum;
-        }
+    const sumUSD = externalRewards.reduce((accum: null | number, current) => {
+      if (accum === null && current.claimableUSD === null) {
+        return null;
+      }
 
-        return accum + current.claimableUSD;
-      },
-      null,
-    );
+      if (accum === null) {
+        return current.claimableUSD;
+      }
+
+      if (current.claimableUSD === null) {
+        return accum;
+      }
+
+      return accum + current.claimableUSD;
+    }, null);
     return formatOtherPrice(sumUSD, {
       isKMB: false,
     });
-  }, [rewardInfo]);
+  }, [externalRewards]);
 
   return (
-    <RewardsContent>
+    <StatTooltipContentWrapper>
       {swapFeeRewards && (
         <React.Fragment>
           <div className="list">
@@ -166,15 +160,14 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
           ))}
         </React.Fragment>
       )}
-      {stakingRewards && <TooltipDivider />}
-
-      {stakingRewards && (
+      {internalRewards && <div className="divider" />}
+      {internalRewards && (
         <React.Fragment>
           <div className="list">
             <span className="title">{t("business:rewardType.internal")}</span>
             <span className="title">{internalRewardUSD}</span>
           </div>
-          {stakingRewards.map((reward, index) => (
+          {internalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
                 <MissingLogo
@@ -198,8 +191,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
           ))}
         </React.Fragment>
       )}
-      {externalRewards && <TooltipDivider />}
-
+      {externalRewards && <div className="divider" />}
       {externalRewards && (
         <React.Fragment>
           <div className="list">
@@ -230,28 +222,6 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
           ))}
         </React.Fragment>
       )}
-      {/* {unclaimedRewards && <TooltipDivider />}
-      {unclaimedRewards && (
-        <React.Fragment>
-          <div className="list">
-            <span className="title">Unclaimed</span>
-            <span className="title">{unclaimedRewardUSD}</span>
-          </div>
-          {unclaimedRewards.map((reward, index) => (
-            <div key={index} className="list">
-              <div className="coin-info">
-                <MissingLogo symbol={getGnotPath(reward.token).symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20}/>
-                <span className="position">
-                  {getGnotPath(reward.token).symbol}
-                </span>
-              </div>
-              <span className="position">
-                {numberToFormat(reward.balance, reward.token.decimals)}
-              </span>
-            </div>
-          ))}
-        </React.Fragment>
-      )} */}
-    </RewardsContent>
+    </StatTooltipContentWrapper>
   );
 };

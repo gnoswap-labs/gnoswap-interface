@@ -22,10 +22,7 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useCopy } from "@hooks/common/use-copy";
 import useRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { PositionAPRInfo } from "@models/position/info/position-apr-info";
-import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetPositionBins } from "@query/positions";
 import { ThemeState } from "@states/index";
@@ -37,18 +34,27 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import { MyPositionAprContent } from "./MyPositionCardAprContent";
-import { BalanceTooltipContent } from "./MyPositionCardBalanceContent";
-import { MyPositionRewardContent } from "./MyPositionCardRewardContent";
-import PositionHistory from "./PositionHistory";
+import {
+  ClaimableRewardTooltipContent,
+  PositionRewardInfo,
+} from "../stat-tooltip-contents/ClaimableRewardTooltipContent";
+import {
+  DailyEarningTooltipContent,
+  PositionAPRInfo,
+} from "../stat-tooltip-contents/DailyEarningTooltipContent";
+import {
+  BalanceTooltipContent,
+  PositionBalanceInfo,
+} from "./BalanceTooltipContent";
 import ManageButton from "./manage-button/ManageButton";
+import PositionHistory from "./PositionHistory";
 
 import {
   CopyTooltip,
   LoadingChart,
   MyPositionCardWrapper,
   PositionCardAnchor,
-  ToolTipContentWrapper
+  ToolTipContentWrapper,
 } from "./MyDetailedPositionCard.styles";
 
 interface MyDetailedPositionCardProps {
@@ -158,12 +164,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return formatOtherPrice(position.positionUsdValue, { isKMB: false });
   }, [isDisplay, position.positionUsdValue]);
 
-  const balances = useMemo((): {
-    token: TokenModel;
-    balance: number;
-    balanceUSD: number;
-    percent: string;
-  }[] => {
+  const balances = useMemo((): PositionBalanceInfo[] => {
     const sumOfBalances =
       Number(position.tokenABalance) + Number(position.tokenBBalance);
     const tokenABalance = Number(position.tokenABalance);
@@ -272,7 +273,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           accum[current.rewardType][index] = {
             ...existReward,
             claimableAmount:
-              accum[current.rewardType][index].claimableAmount +
+              (accum[current.rewardType][index].claimableAmount || 0) +
               Number(current.claimableAmount),
             claimableUSD: claimableUSD,
             accumulatedRewardOf1dUsd: accuReward1DUsd,
@@ -280,16 +281,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           };
         } else {
           accum[current.rewardType].push({
-            claimableAmount: Number(current.claimableAmount) || 0,
+            rewardType: current.rewardType,
             token: current.rewardToken,
-            balance:
-              makeDisplayTokenAmount(
-                current.rewardToken,
-                current.totalAmount,
-              ) || 0,
-            balanceUSD:
-              Number(current.totalAmount) *
-              Number(getTokenPrice(current.rewardToken.priceID) || 0),
+            claimableAmount: Number(current.claimableAmount) || 0,
             claimableUSD: current.claimableUsd
               ? Number(current.claimableUsd)
               : null,
@@ -943,7 +937,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             placement="top"
             FloatingContent={
               <div>
-                <MyPositionAprContent rewardInfo={aprRewardInfo} />
+                <DailyEarningTooltipContent rewardInfo={aprRewardInfo} />
               </div>
             }
           >
@@ -970,7 +964,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             FloatingContent={
               <div>
                 {totalRewardInfo && (
-                  <MyPositionRewardContent rewardInfo={totalRewardInfo} />
+                  <ClaimableRewardTooltipContent rewardInfo={totalRewardInfo} />
                 )}
               </div>
             }

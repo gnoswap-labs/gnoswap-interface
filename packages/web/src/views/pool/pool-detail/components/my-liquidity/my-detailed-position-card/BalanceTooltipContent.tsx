@@ -3,10 +3,17 @@ import { useTranslation } from "react-i18next";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
+import { TokenModel } from "@models/token/token-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { TooltipContent } from "./MyDetailedPositionCard.styles";
+
+export interface PositionBalanceInfo {
+  token: TokenModel;
+  balance: number;
+  balanceUSD: number;
+  percent: string;
+}
 
 export interface BalanceTooltipContentProps {
   balances: PositionBalanceInfo[];

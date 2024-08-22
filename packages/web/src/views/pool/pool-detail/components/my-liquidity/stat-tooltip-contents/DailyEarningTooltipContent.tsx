@@ -4,18 +4,26 @@ import { useTranslation } from "react-i18next";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { RewardType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { PositionAPRInfo } from "@models/position/info/position-apr-info";
+import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 
-import { RewardsContent } from "./MyDetailedPositionCard.styles";
+import { StatTooltipContentWrapper } from "./StatTooltipContents.styles";
 
-export interface MyPositionAprContentProps {
+export interface PositionAPRInfo {
+  token: TokenModel;
+  rewardType: RewardType;
+  accuReward1D: number | null;
+  accuReward1DPrice: number | null;
+  apr: number | null;
+}
+
+export interface DailyEarningTooltipContentProps {
   rewardInfo: { [key in RewardType]: PositionAPRInfo[] };
 }
 
-export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
-  rewardInfo,
-}) => {
+export const DailyEarningTooltipContent: React.FC<
+  DailyEarningTooltipContentProps
+> = ({ rewardInfo }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
@@ -41,7 +49,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
   }, [rewardInfo.EXTERNAL]);
 
   return (
-    <RewardsContent>
+    <StatTooltipContentWrapper>
       {swapFeeRewards && (
         <React.Fragment>
           <div className="list">
@@ -123,6 +131,6 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({
           ))}
         </React.Fragment>
       )}
-    </RewardsContent>
+    </StatTooltipContentWrapper>
   );
 };

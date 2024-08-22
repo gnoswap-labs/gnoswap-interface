@@ -11,8 +11,6 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { RewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { PositionAPRInfo } from "@models/position/info/position-apr-info";
-import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { RewardModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
@@ -25,8 +23,14 @@ import {
 } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import { MyPositionAprContent } from "../my-detailed-position-card/MyPositionCardAprContent";
-import { MyPositionClaimContent } from "../my-detailed-position-card/MyPositionCardClaimContent";
+import {
+  ClaimableRewardTooltipContent,
+  PositionRewardInfo,
+} from "../stat-tooltip-contents/ClaimableRewardTooltipContent";
+import {
+  DailyEarningTooltipContent,
+  PositionAPRInfo,
+} from "../stat-tooltip-contents/DailyEarningTooltipContent";
 
 import {
   AmountDisplayWrapper,
@@ -99,13 +103,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [canShowData, isDisplayPrice, positions]);
 
   const claimableRewardInfo = useMemo(():
-    | { [key in RewardType]: PositionClaimInfo[] }
+    | { [key in RewardType]: PositionRewardInfo[] }
     | null => {
     if (!canShowData) {
       return null;
     }
     const infoMap: {
-      [key in RewardType]: { [key in string]: PositionClaimInfo };
+      [key in RewardType]: { [key in string]: PositionRewardInfo };
     } = {
       SWAP_FEE: {},
       INTERNAL: {},
@@ -374,11 +378,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return formatOtherPrice(claimableUsdValue, { isKMB: false });
   }, [canShowData, isDisplayPrice, claimableRewardInfo]);
 
-  const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
+  const unclaimedRewardInfo = useMemo((): PositionRewardInfo[] | null => {
     if (!canShowData) {
       return null;
     }
-    const infoMap: { [key in string]: PositionClaimInfo } = {};
+    const infoMap: { [key in string]: PositionRewardInfo } = {};
     positions
       .flatMap(position => position.reward)
       .map(reward => ({
@@ -879,7 +883,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             FloatingContent={
               <div>
                 {aprRewardInfo && (
-                  <MyPositionAprContent rewardInfo={aprRewardInfo} />
+                  <DailyEarningTooltipContent rewardInfo={aprRewardInfo} />
                 )}
               </div>
             }
@@ -957,10 +961,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         <Tooltip
           placement="top"
           FloatingContent={
-            <MyPositionClaimContent
-              rewardInfo={claimableRewardInfo}
-              unclaimedRewardInfo={unclaimedRewardInfo}
-            />
+            <ClaimableRewardTooltipContent rewardInfo={claimableRewardInfo} />
           }
         >
           <span className="content-value">{claimableUSD}</span>

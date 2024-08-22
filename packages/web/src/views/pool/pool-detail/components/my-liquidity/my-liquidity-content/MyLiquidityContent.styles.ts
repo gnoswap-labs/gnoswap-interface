@@ -158,49 +158,6 @@ export const MyLiquidityContentWrapper = styled.div`
   }
 `;
 
-export const RewardsContent = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
-  gap: 8px;
-  width: 268px;
-  ${fonts.body12};
-  ${media.mobile} {
-    gap: 4px;
-    ${fonts.p2};
-  }
-  .list {
-    ${mixins.flexbox("row", "center", "space-between")};
-    width: 100%;
-    padding: 4px 0px;
-    .coin-info {
-      ${mixins.flexbox("row", "center", "flex-start")};
-      width: 170px;
-      gap: 8px;
-      flex-shrink: 0;
-      .token-logo {
-        width: 20px;
-        height: 20px;
-      }
-    }
-  }
-  .title {
-    color: ${({ theme }) => theme.color.text04};
-  }
-  .content {
-    color: ${({ theme }) => theme.color.text02};
-  }
-  p {
-    ${fonts.p4};
-    color: ${({ theme }) => theme.color.text04};
-  }
-`;
-
-export const TooltipDivider = styled.div`
-  ${mixins.flexbox("column", "center", "flex-start")};
-  height: 1px;
-  width: 100%;
-  background: ${({ theme }) => theme.color.border01};
-`;
-
 export const AmountDisplayWrapper = styled.div`
   ${fonts.body11}
 
