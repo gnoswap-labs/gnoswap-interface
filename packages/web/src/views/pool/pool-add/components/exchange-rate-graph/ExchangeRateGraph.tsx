@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import ChartScopeSelectTab from "@components/common/chart-scope-select-tab/ChartScopeSelectTab";
 import IconInfo from "@components/common/icons/IconInfo";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import PairRatio from "@components/common/pair-ratio/PairRatio";
@@ -10,6 +9,7 @@ import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
 
+import ChartScopeSelectTab from "./chart-scope-select-tab/ChartScopeSelectTab";
 import ExchangeRateGraphContent from "./exchange-rate-graph-content/ExchangeRateGraphContent";
 
 import {

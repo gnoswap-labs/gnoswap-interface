@@ -1,21 +1,21 @@
+import { cx } from "@emotion/css";
 import React from "react";
+
+import { AssetReceiveButton } from "@components/wallet/asset-button/AssetReceiveButton";
+import { AssetSendButton } from "@components/wallet/asset-button/AssetSendButton";
 import {
   emptyArrayInit,
   pulseSkeletonStyle,
-  TABLE_TITLE,
   TableInfoType,
+  TABLE_TITLE
 } from "@constants/skeleton.constant";
-import { cx } from "@emotion/css";
+import { DEVICE_TYPE } from "@styles/media";
+
 import {
   SkeletonItem,
   SkeletonWrapper,
-  UnLoadingItem,
+  UnLoadingItem
 } from "./TableSkeleton.styles";
-import {
-  DepositButton,
-  WithdrawButton,
-} from "@components/wallet/asset-info/AssetInfo";
-import { DEVICE_TYPE } from "@styles/media";
 
 
 interface TableSkeletonProps {
@@ -51,13 +51,13 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({ info, className }) => {
                 className="right-padding-16"
                 tdWidth={ASSET_TD[ASSET_TD.length - 2]}
               >
-                <DepositButton onClick={() => false} disabled />
+                <AssetReceiveButton onClick={() => false} disabled />
               </UnLoadingItem>
               <UnLoadingItem
                 className="right-padding-16"
                 tdWidth={ASSET_TD[ASSET_TD.length - 1]}
               >
-                <WithdrawButton onClick={() => false} disabled />
+                <AssetSendButton onClick={() => false} disabled />
               </UnLoadingItem>
             </>
           )}

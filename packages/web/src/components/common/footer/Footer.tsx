@@ -1,20 +1,22 @@
-import React from "react";
-import IconFooterDarkLogo from "../icons/IconFooterDarkLogo";
-import IconFooterLightLogo from "../icons/IconFooterLightLogo";
 import { useAtomValue } from "jotai";
-import { ThemeState } from "@states/index";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import React from "react";
+
+import IconFooterDarkLogo from "@components/common/icons/IconFooterDarkLogo";
+import IconFooterLightLogo from "@components/common/icons/IconFooterLightLogo";
+import { FOOTER_LEFT_NAV, FOOTER_RIGHT_NAV } from "@constants/footer.constant";
+import { ThemeState } from "@states/index";
+
 import {
-  FooterWrapper,
-  FooterContainer,
+  AnchorStyle,
   FirstSection,
+  FooterContainer,
+  FooterWrapper,
   MenuSection,
   SecondSection,
   SocialNav,
-  AnchorStyle,
 } from "./Footer.styles";
-import { FOOTER_LEFT_NAV, FOOTER_RIGHT_NAV } from "@constants/footer.constant";
-import { useTranslation } from "next-i18next";
 
 type AnchorProps = {
   path: string;
