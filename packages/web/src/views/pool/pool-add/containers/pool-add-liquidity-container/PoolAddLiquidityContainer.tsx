@@ -23,7 +23,6 @@ import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
-import { isFetchedPools } from "@states/pool";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
 import { checkPoolStakingRewards } from "@utils/pool-utils";
@@ -619,7 +618,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (
-      !isFetchedPools ||
       !swapFeeTier ||
       !tokenA ||
       !tokenB ||
@@ -649,7 +647,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
   }, [
     swapFeeTier,
     pools,
-    isFetchedPools,
     priceRanges,
     tokenA,
     tokenB,
@@ -684,8 +681,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       tokenA &&
       tokenB &&
       selectPool.isCreate &&
-      !createOption.startPrice &&
-      isFetchedPools
+      !createOption.startPrice
     );
   }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
 
