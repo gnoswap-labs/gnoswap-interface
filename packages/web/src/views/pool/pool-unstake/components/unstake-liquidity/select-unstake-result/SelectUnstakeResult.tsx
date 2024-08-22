@@ -59,8 +59,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                   mobileWidth={24}
                 />
                 <p>
-                  {t("UnstakePosition:overview.unclaimed")}{" "}
-                  {pooledTokenInfo.token.symbol}
+                  {t("UnstakePosition:overview.unclaimed")}
                 </p>
                 <strong>
                   {formatPoolPairAmount(pooledTokenInfo.amount, {
