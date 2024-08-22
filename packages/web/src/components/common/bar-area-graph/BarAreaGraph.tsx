@@ -52,18 +52,20 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   poolBins,
 }) => {
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = poolBins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
-    const isAllReserveZeroBin = positionBins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin40 = poolBins.every(
+      item =>
+        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+    );
+    const isAllReserveZeroBin = positionBins.every(
+      item =>
+        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+    );
 
     return isAllReserveZeroBin40 && isAllReserveZeroBin;
   }, [poolBins, positionBins]);
 
   return (
-    <BarAreaGraphWrapper
-      className={className}
-      width={width}
-      height={height}
-    >
+    <BarAreaGraphWrapper className={className} width={width} height={height}>
       <PoolGraph
         currentTick={currentTick !== undefined ? currentTick : null}
         width={width}
@@ -80,7 +82,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         poolPrice={pool?.price || 1}
         isPosition
         binsMyAmount={positionBins}
-        showBar={!isHideBar}
+        disabled={isHideBar}
       />
     </BarAreaGraphWrapper>
   );

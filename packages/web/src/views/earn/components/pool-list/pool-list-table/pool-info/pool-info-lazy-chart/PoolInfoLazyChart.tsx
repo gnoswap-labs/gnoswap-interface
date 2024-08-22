@@ -91,7 +91,7 @@ const PoolInfoLazyChart: React.FC<PoolInfoLazyChartProps> = ({
           currentTick={currentTick}
           bins={bins ?? []}
           mouseover
-          showBar={!isHideBar}
+          disabled={isHideBar}
           themeKey={themeKey}
           position="top"
           nextSpacing={false}

@@ -34,7 +34,7 @@ import {
   PoolPairInfoContentWrapper,
   TokenAmountTooltipContentWrapper,
   TvlSectionWrapper,
-  VolumeSectionWrapper
+  VolumeSectionWrapper,
 } from "./PoolPairInfoContent.styles";
 import TooltipAPR from "./TooltipAPR";
 
@@ -233,18 +233,20 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [getGnotPath, pool.tokenA, pool.tokenB]);
 
   const stakeLogo = useMemo(() => {
-    return pool?.rewardTokens?.reduce((accum : TokenModel[], current:TokenModel) => {
-      const index = accum.findIndex(
-        inserted => getGnotPath(inserted).path === getGnotPath(current).path,
-      );
-      if (index === -1) {
-        accum.push(current);
-      }
-      return accum;
-    }, []).map(item => ({
-      ...item,
-      ...getGnotPath(item),
-    }));
+    return pool?.rewardTokens
+      ?.reduce((accum: TokenModel[], current: TokenModel) => {
+        const index = accum.findIndex(
+          inserted => getGnotPath(inserted).path === getGnotPath(current).path,
+        );
+        if (index === -1) {
+          accum.push(current);
+        }
+        return accum;
+      }, [])
+      .map(item => ({
+        ...item,
+        ...getGnotPath(item),
+      }));
   }, [getGnotPath, pool?.rewardTokens]);
 
   const isHideBar = useMemo(() => {
@@ -526,7 +528,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               position="top"
               offset={40}
               poolPrice={tickToPrice(pool.currentTick) || 1}
-              showBar={!isHideBar}
+              disabled={isHideBar}
             />
           )}
           {loadingBins && (
