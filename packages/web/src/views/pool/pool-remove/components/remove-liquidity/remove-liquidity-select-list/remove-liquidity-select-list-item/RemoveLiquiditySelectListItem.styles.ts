@@ -29,6 +29,7 @@ export const RemoveLiquiditySelectListItemWrapper = styled.li<{
   .logo-wrapper {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 5px;
+    margin-left: 5px;
   }
   input[type="checkbox"] + label:before {
     background-color: ${({ theme }) => theme.color.background12};
@@ -36,7 +37,6 @@ export const RemoveLiquiditySelectListItemWrapper = styled.li<{
 
   .left-content {
     ${mixins.flexbox("row", "center", "flex-start")};
-    gap: 5px;
   }
   .liquidity-value {
     margin-left: auto;

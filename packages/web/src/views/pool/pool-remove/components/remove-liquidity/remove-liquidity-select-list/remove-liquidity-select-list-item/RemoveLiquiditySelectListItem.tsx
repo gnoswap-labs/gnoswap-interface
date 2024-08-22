@@ -67,7 +67,7 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
       </TokenTitleWrapper>
       {renderTokenValue(position.pool.tokenA, position.tokenABalance)}
       {renderTokenValue(position.pool.tokenB, position.tokenBBalance)}
-      {disabled && <div className="divider"></div>}
+      {position && disabled && <div className="divider"></div>}
       {disabled && (
         <div className="unstake-description">
           {t("RemovePosition:positionList.item.disabled")}
@@ -103,23 +103,30 @@ const RemoveLiquiditySelectListItem: React.FC<
     return SwapFeeTierInfoMap[makeSwapFeeTier(position.pool.fee)].rateStr;
   }, [position]);
 
+  const Checkbox = (
+    <>
+      <input
+        id={`checkbox-item-${position.id}`}
+        type="checkbox"
+        disabled={disabled}
+        checked={checked}
+        onChange={e => onCheckedItem(e.target.checked, position.id)}
+      />
+      <label htmlFor={`checkbox-item-${position.id}`} />
+    </>
+  );
+
   return (
     <RemoveLiquiditySelectListItemWrapper selected={checked}>
       <div className="left-content">
-        <input
-          id={`checkbox-item-${position.id}`}
-          type="checkbox"
-          disabled={disabled}
-          checked={checked}
-          onChange={e => onCheckedItem(e.target.checked, position.id)}
-        />
-        <label htmlFor={`checkbox-item-${position.id}`} />
+        {!disabled && Checkbox}
         <Tooltip
           placement="top"
           FloatingContent={
             <TooltipContent position={position} disabled={disabled} />
           }
         >
+          {disabled && Checkbox}
           <div className="logo-wrapper">
             <DoubleLogo
               left={tokenA.logoURI}
