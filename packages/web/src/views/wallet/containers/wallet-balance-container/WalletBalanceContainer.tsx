@@ -94,7 +94,7 @@ const WalletBalanceContainer: React.FC = () => {
           broadcastPending({ txHash: response.data?.hash });
           setTimeout(() => {
             broadcastSuccess(
-              getMessage(DexEvent.CLAIM, "success", data, response.data?.hash),
+              getMessage(DexEvent.CLAIM_FEE, "success", data, response.data?.hash),
             );
             setLoadingTransactionClaim(false);
           }, 1000);
@@ -103,7 +103,7 @@ const WalletBalanceContainer: React.FC = () => {
           response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
           broadcastRejected(
-            getMessage(DexEvent.CLAIM, "error", data),
+            getMessage(DexEvent.CLAIM_FEE, "error", data),
             () => {},
             true,
           );
@@ -112,7 +112,7 @@ const WalletBalanceContainer: React.FC = () => {
         } else {
           openModal();
           broadcastError(
-            getMessage(DexEvent.CLAIM, "error", data, response.data?.hash),
+            getMessage(DexEvent.CLAIM_FEE, "error", data, response.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }

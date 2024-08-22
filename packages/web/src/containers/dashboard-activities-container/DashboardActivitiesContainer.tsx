@@ -144,10 +144,10 @@ const DashboardActivitiesContainer: React.FC = () => {
     const tokenASymbol = res.tokenA.symbol;
     const tokenBSymbol = res.tokenB.symbol;
     const shouldShowTokenAAmount =
-      res.actionType !== DexEvent.CLAIM ||
+      res.actionType !== DexEvent.CLAIM_FEE ||
       (!!res.tokenAAmount && !!Number(res.tokenAAmount));
     const shouldShowTokenBAmount =
-      res.actionType !== DexEvent.CLAIM ||
+      res.actionType !== DexEvent.CLAIM_FEE ||
       (!!res.tokenBAmount && !!Number(res.tokenBAmount));
 
     const actionText = (() => {
@@ -165,13 +165,15 @@ const DashboardActivitiesContainer: React.FC = () => {
             return t("business:onchainActi.action.increase");
           case DexEvent.REPOSITION:
             return t("business:onchainActi.action.reposition");
-          case DexEvent.CLAIM:
+          case DexEvent.CLAIM_FEE:
             return t("business:onchainActi.action.claimFees");
+          case DexEvent.ADD_INCENTIVE:
+            return t("business:onchainActi.action.incentivize");
           case DexEvent.STAKE:
             return t("business:onchainActi.action.stake");
           case DexEvent.UNSTAKE:
             return t("business:onchainActi.action.unstake");
-          case DexEvent.CLAIM_STAKING:
+          case DexEvent.CLAIM_REWARD:
             return t("business:onchainActi.action.claimRewards");
         }
       })();

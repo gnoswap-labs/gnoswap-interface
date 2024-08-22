@@ -60,13 +60,13 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
         return "business:positionHistoryAction.remove";
       case DexEvent.REPOSITION:
         return "business:positionHistoryAction.reposition";
-      case DexEvent.CLAIM:
+      case DexEvent.CLAIM_FEE:
         return "business:positionHistoryAction.claimFees";
       case DexEvent.UNSTAKE:
         return "business:positionHistoryAction.unstake";
       case DexEvent.STAKE:
         return "business:positionHistoryAction.stake";
-      case DexEvent.CLAIM_STAKING:
+      case DexEvent.CLAIM_REWARD:
         return "business:positionHistoryAction.claimRewards";
       default:
         return "undefined";

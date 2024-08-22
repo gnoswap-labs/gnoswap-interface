@@ -38,7 +38,7 @@ export const useMessage = () => {
             success: t("Modal:confirm.remove.status.success", data),
             error: t("Modal:confirm.remove.status.error", data),
           };
-        case DexEvent.CLAIM:
+        case DexEvent.CLAIM_FEE:
           return {
             pending: t("Modal:confirm.claim.status.pending", data),
             success: t("Modal:confirm.claim.status.success", data),
@@ -108,7 +108,7 @@ export const useMessage = () => {
           return t("Modal:confirm.add.title");
         case DexEvent.REMOVE:
           return t("Modal:confirm.remove.title");
-        case DexEvent.CLAIM:
+        case DexEvent.CLAIM_FEE:
           return t("Modal:confirm.claim.title");
         case DexEvent.ADD_INCENTIVE:
           return t("Modal:confirm.addIncentive.title");

@@ -58,10 +58,11 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     [DexEvent.DECREASE]: "Modal:notif.action.decreased",
     [DexEvent.INCREASE]: "Modal:notif.action.increased",
     [DexEvent.REPOSITION]: "Modal:notif.action.repositioned",
-    [DexEvent.CLAIM]: "Modal:notif.action.feesClaimed",
+    [DexEvent.CLAIM_FEE]: "Modal:notif.action.feesClaimed",
+    [DexEvent.ADD_INCENTIVE]: "Modal:notif.action.incentivized",
     [DexEvent.STAKE]: "Modal:notif.action.staked",
     [DexEvent.UNSTAKE]: "Modal:notif.action.unstaked",
-    [DexEvent.CLAIM_STAKING]: "Modal:notif.action.rewardsClaimed",
+    [DexEvent.CLAIM_REWARD]: "Modal:notif.action.rewardsClaimed",
     [DexEvent.ASSET_RECEIVE]: "Modal:notif.action.received",
     [DexEvent.ASSET_SEND]: "Modal:notif.action.sent",
   };
