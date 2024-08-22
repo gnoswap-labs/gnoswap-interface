@@ -119,14 +119,14 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
           broadcastPending({ txHash: response.data?.hash });
           setTimeout(() => {
             broadcastSuccess(
-              getMessage(DexEvent.CLAIM, "success", data, response.data?.hash),
+              getMessage(DexEvent.CLAIM_FEE, "success", data, response.data?.hash),
             );
             setLoadingTransactionClaim(false);
           }, 1000);
           openModal();
         } else if (response.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
           broadcastRejected(
-            getMessage(DexEvent.CLAIM, "error", data),
+            getMessage(DexEvent.CLAIM_FEE, "error", data),
             () => {},
             true,
           );
@@ -135,7 +135,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         } else {
           openModal();
           broadcastError(
-            getMessage(DexEvent.CLAIM, "error", data, response.data?.hash),
+            getMessage(DexEvent.CLAIM_FEE, "error", data, response.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }

@@ -167,6 +167,8 @@ const DashboardActivitiesContainer: React.FC = () => {
             return t("business:onchainActi.action.reposition");
           case DexEvent.CLAIM:
             return t("business:onchainActi.action.claimFees");
+          case DexEvent.ADD_INCENTIVE:
+            return t("business:onchainActi.action.incentivize");
           case DexEvent.STAKE:
             return t("business:onchainActi.action.stake");
           case DexEvent.UNSTAKE:
