@@ -57,7 +57,7 @@ const useSendAsset = () => {
     );
 
     broadcastLoading(
-      getMessage(DexEvent.WITHDRAW, "pending", {
+      getMessage(DexEvent.ASSET_SEND, "pending", {
         tokenASymbol: tokenSymbol,
         tokenAAmount: tokenAmount,
       }),
@@ -68,7 +68,7 @@ const useSendAsset = () => {
         if (response.code === 0) {
           broadcastPending(
             getMessage(
-              DexEvent.WITHDRAW,
+              DexEvent.ASSET_SEND,
               "pending",
               {
                 tokenASymbol: tokenSymbol,
@@ -80,7 +80,7 @@ const useSendAsset = () => {
           setTimeout(() => {
             broadcastSuccess(
               getMessage(
-                DexEvent.WITHDRAW,
+                DexEvent.ASSET_SEND,
                 "success",
                 {
                   tokenASymbol: tokenSymbol,
@@ -95,7 +95,7 @@ const useSendAsset = () => {
           response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
           broadcastRejected(
-            getMessage(DexEvent.WITHDRAW, "error", {
+            getMessage(DexEvent.ASSET_SEND, "error", {
               tokenASymbol: tokenSymbol,
               tokenAAmount: tokenAmount,
             }),
@@ -104,7 +104,7 @@ const useSendAsset = () => {
         } else {
           broadcastError(
             getMessage(
-              DexEvent.WITHDRAW,
+              DexEvent.ASSET_SEND,
               "error",
               {
                 tokenASymbol: tokenSymbol,

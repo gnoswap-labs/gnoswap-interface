@@ -62,8 +62,8 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     [DexEvent.STAKE]: "Modal:notif.action.staked",
     [DexEvent.UNSTAKE]: "Modal:notif.action.unstaked",
     [DexEvent.CLAIM_STAKING]: "Modal:notif.action.rewardsClaimed",
-    [DexEvent.DEPOSIT]: "Modal:notif.action.received",
-    [DexEvent.WITHDRAW]: "Modal:notif.action.sent",
+    [DexEvent.ASSET_RECEIVE]: "Modal:notif.action.received",
+    [DexEvent.ASSET_SEND]: "Modal:notif.action.sent",
   };
 
   const getNotificationMessage = useCallback(
