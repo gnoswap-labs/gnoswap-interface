@@ -1,7 +1,6 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ValuesType } from "utility-types";
 
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -16,7 +15,6 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
-import SelectBox from "@components/common/select-box/SelectBox";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION, RewardType } from "@constants/option.constant";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
@@ -30,7 +28,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetPositionBins } from "@query/positions";
-import { IncreaseState, ThemeState } from "@states/index";
+import { ThemeState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { isGNOTPath } from "@utils/common";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
@@ -43,14 +41,14 @@ import { MyPositionAprContent } from "./MyPositionCardAprContent";
 import { BalanceTooltipContent } from "./MyPositionCardBalanceContent";
 import { MyPositionRewardContent } from "./MyPositionCardRewardContent";
 import PositionHistory from "./PositionHistory";
+import ManageButton from "./manage-button/ManageButton";
 
 import {
   CopyTooltip,
   LoadingChart,
-  ManageItem,
   MyPositionCardWrapper,
   PositionCardAnchor,
-  ToolTipContentWrapper,
+  ToolTipContentWrapper
 } from "./MyDetailedPositionCard.styles";
 
 interface MyDetailedPositionCardProps {
@@ -62,14 +60,6 @@ interface MyDetailedPositionCardProps {
   connected: boolean;
   tokenPrices: Record<string, TokenPriceModel>;
 }
-
-export const POSITION_ACTION = {
-  DECREASE: "Pool:position.card.btn.manage.decrease",
-  INCREASE: "Pool:position.card.btn.manage.increase",
-  REPOSITION: "Pool:position.card.btn.manage.reposition",
-} as const;
-
-export type POSITION_ACTION = ValuesType<typeof POSITION_ACTION>;
 
 const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   position,
@@ -90,7 +80,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     () => Math.min(width - (width > 767 ? 224 : 80), 1216),
     [width],
   );
-  const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const [copied, setCopy] = useCopy();
   const [copiedPosition, setCopiedPosition] = useCopy();
   const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40);
@@ -692,34 +681,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return (!isSwap ? maxTickRate : -minTickRate) > 0 ? "positive" : "negative";
   }, [maxTickRate, isSwap, minTickRate]);
 
-  const handleSelect = (text: POSITION_ACTION) => {
-    switch (text) {
-      case POSITION_ACTION.DECREASE:
-        setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POSITION_DECREASE_LIQUIDITY",
-          position.poolPath,
-          position?.id,
-        );
-        break;
-      case POSITION_ACTION.INCREASE:
-        setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POSITION_INCREASE_LIQUIDITY",
-          position.poolPath,
-          position?.id,
-        );
-        break;
-      case POSITION_ACTION.REPOSITION:
-        setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POSITION_REPOSITION",
-          position.poolPath,
-          position?.id,
-        );
-        break;
-    }
-  };
 
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = poolBin.every(
@@ -934,21 +895,12 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             />
           )}
 
-          {!position.staked && !isHiddenAddPosition && connected && (
-            <SelectBox
-              current={t("Pool:position.card.btn.manage.label")}
-              items={
-                isClosed
-                  ? [POSITION_ACTION.INCREASE]
-                  : [
-                      POSITION_ACTION.REPOSITION,
-                      POSITION_ACTION.INCREASE,
-                      POSITION_ACTION.DECREASE,
-                    ]
-              }
-              select={handleSelect}
-              render={item => <ManageItem>{t(item)}</ManageItem>}
-              className={!inRange && !isClosed ? "out-range" : ""}
+          {!isHiddenAddPosition && connected && (
+            <ManageButton
+              position={position}
+              inRange={inRange}
+              isClosed={isClosed}
+              isStaked={position.staked}
             />
           )}
         </div>
