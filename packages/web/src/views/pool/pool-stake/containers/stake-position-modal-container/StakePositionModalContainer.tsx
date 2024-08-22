@@ -91,7 +91,7 @@ const StakePositionModalContainer = ({
     if (!address) {
       return null;
     }
-    const lpTokenIds = positions.map(position => position.id);
+    const lpTokenIds = positions.map(position => position.id.toString());
     const tokenA = pooledTokenInfos?.[0];
     const tokenB = pooledTokenInfos?.[1];
     broadcastLoading(

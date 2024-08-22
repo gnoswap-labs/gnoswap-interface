@@ -8,7 +8,7 @@ import StakePositionModalContainer from "../containers/stake-position-modal-cont
 
 export interface Props {
   positions: PoolPositionModel[];
-  selectedIds: string[];
+  selectedIds: number[];
 }
 
 export const useStakePositionModal = ({ positions, selectedIds }: Props) => {

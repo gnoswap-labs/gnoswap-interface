@@ -3,7 +3,7 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
 
 export interface PositionModel {
-  id: string;
+  id: number;
 
   lpTokenId: string;
 
@@ -41,7 +41,7 @@ export interface PositionModel {
 
   totalClaimedUsd: string;
 
-  usdValue: any;
+  usdValue: number;
 
   incentiveType: INCENTIVE_TYPE;
 

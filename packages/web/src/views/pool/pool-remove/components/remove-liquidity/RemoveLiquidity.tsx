@@ -4,16 +4,16 @@ import { useTranslation } from "react-i18next";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
-import RemoveLiquiditySelectList from "../remove-liquidity-select-list/RemoveLiquiditySelectList";
-import RemoveLiquiditySelectResult from "../remove-liquidity-select-result/RemoveLiquiditySelectResult";
+import RemoveLiquiditySelectList from "./remove-liquidity-select-list/RemoveLiquiditySelectList";
+import RemoveLiquiditySelectResult from "./remove-liquidity-select-result/RemoveLiquiditySelectResult";
 
 import { wrapper } from "./RemoveLiquidity.styles";
 
 interface RemoveLiquidityProps {
   stakedPositions: PoolPositionModel[];
   unstakedPositions: PoolPositionModel[];
-  checkedList: string[];
-  onCheckedItem: (checked: boolean, path: string) => void;
+  checkedList: number[];
+  onCheckedItem: (checked: boolean, id: number) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   removeLiquidity: () => void;

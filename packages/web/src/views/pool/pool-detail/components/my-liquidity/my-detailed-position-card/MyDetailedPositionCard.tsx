@@ -1,7 +1,6 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ValuesType } from "utility-types";
 
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -16,7 +15,6 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
-import SelectBox from "@components/common/select-box/SelectBox";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION, RewardType } from "@constants/option.constant";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
@@ -24,13 +22,10 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useCopy } from "@hooks/common/use-copy";
 import useRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { PositionAPRInfo } from "@models/position/info/position-apr-info";
-import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetPositionBins } from "@query/positions";
-import { IncreaseState, ThemeState } from "@states/index";
+import { ThemeState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { isGNOTPath } from "@utils/common";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
@@ -39,15 +34,24 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import { MyPositionAprContent } from "./MyPositionCardAprContent";
-import { BalanceTooltipContent } from "./MyPositionCardBalanceContent";
-import { MyPositionRewardContent } from "./MyPositionCardRewardContent";
+import {
+  ClaimableRewardTooltipContent,
+  PositionRewardInfo,
+} from "../stat-tooltip-contents/ClaimableRewardTooltipContent";
+import {
+  DailyEarningTooltipContent,
+  PositionAPRInfo,
+} from "../stat-tooltip-contents/DailyEarningTooltipContent";
+import {
+  BalanceTooltipContent,
+  PositionBalanceInfo,
+} from "./BalanceTooltipContent";
+import ManageButton from "./manage-button/ManageButton";
 import PositionHistory from "./PositionHistory";
 
 import {
   CopyTooltip,
   LoadingChart,
-  ManageItem,
   MyPositionCardWrapper,
   PositionCardAnchor,
   ToolTipContentWrapper,
@@ -55,6 +59,7 @@ import {
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
+  isStakable: boolean;
   breakpoint: DEVICE_TYPE;
   loading: boolean;
   address: string;
@@ -63,16 +68,9 @@ interface MyDetailedPositionCardProps {
   tokenPrices: Record<string, TokenPriceModel>;
 }
 
-export const POSITION_ACTION = {
-  DECREASE: "Pool:position.card.btn.manage.decrease",
-  INCREASE: "Pool:position.card.btn.manage.increase",
-  REPOSITION: "Pool:position.card.btn.manage.reposition",
-} as const;
-
-export type POSITION_ACTION = ValuesType<typeof POSITION_ACTION>;
-
 const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   position,
+  isStakable,
   breakpoint,
   loading,
   address,
@@ -90,7 +88,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     () => Math.min(width - (width > 767 ? 224 : 80), 1216),
     [width],
   );
-  const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const [copied, setCopy] = useCopy();
   const [copiedPosition, setCopiedPosition] = useCopy();
   const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40);
@@ -169,12 +166,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return formatOtherPrice(position.positionUsdValue, { isKMB: false });
   }, [isDisplay, position.positionUsdValue]);
 
-  const balances = useMemo((): {
-    token: TokenModel;
-    balance: number;
-    balanceUSD: number;
-    percent: string;
-  }[] => {
+  const balances = useMemo((): PositionBalanceInfo[] => {
     const sumOfBalances =
       Number(position.tokenABalance) + Number(position.tokenBBalance);
     const tokenABalance = Number(position.tokenABalance);
@@ -283,7 +275,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           accum[current.rewardType][index] = {
             ...existReward,
             claimableAmount:
-              accum[current.rewardType][index].claimableAmount +
+              (accum[current.rewardType][index].claimableAmount || 0) +
               Number(current.claimableAmount),
             claimableUSD: claimableUSD,
             accumulatedRewardOf1dUsd: accuReward1DUsd,
@@ -291,16 +283,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           };
         } else {
           accum[current.rewardType].push({
-            claimableAmount: Number(current.claimableAmount) || 0,
+            rewardType: current.rewardType,
             token: current.rewardToken,
-            balance:
-              makeDisplayTokenAmount(
-                current.rewardToken,
-                current.totalAmount,
-              ) || 0,
-            balanceUSD:
-              Number(current.totalAmount) *
-              Number(getTokenPrice(current.rewardToken.priceID) || 0),
+            claimableAmount: Number(current.claimableAmount) || 0,
             claimableUSD: current.claimableUsd
               ? Number(current.claimableUsd)
               : null,
@@ -692,34 +677,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return (!isSwap ? maxTickRate : -minTickRate) > 0 ? "positive" : "negative";
   }, [maxTickRate, isSwap, minTickRate]);
 
-  const handleSelect = (text: POSITION_ACTION) => {
-    switch (text) {
-      case POSITION_ACTION.DECREASE:
-        setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POSITION_DECREASE_LIQUIDITY",
-          position.poolPath,
-          position?.id,
-        );
-        break;
-      case POSITION_ACTION.INCREASE:
-        setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POSITION_INCREASE_LIQUIDITY",
-          position.poolPath,
-          position?.id,
-        );
-        break;
-      case POSITION_ACTION.REPOSITION:
-        setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POSITION_REPOSITION",
-          position.poolPath,
-          position?.id,
-        );
-        break;
-    }
-  };
 
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = poolBin.every(
@@ -934,21 +891,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             />
           )}
 
-          {!position.staked && !isHiddenAddPosition && connected && (
-            <SelectBox
-              current={t("Pool:position.card.btn.manage.label")}
-              items={
-                isClosed
-                  ? [POSITION_ACTION.INCREASE]
-                  : [
-                      POSITION_ACTION.REPOSITION,
-                      POSITION_ACTION.INCREASE,
-                      POSITION_ACTION.DECREASE,
-                    ]
-              }
-              select={handleSelect}
-              render={item => <ManageItem>{t(item)}</ManageItem>}
-              className={!inRange && !isClosed ? "out-range" : ""}
+          {!isHiddenAddPosition && connected && (
+            <ManageButton
+              position={position}
+              inRange={inRange}
+              isClosed={isClosed}
+              isStaked={position.staked}
+              isStakable={isStakable}
             />
           )}
         </div>
@@ -991,7 +940,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             placement="top"
             FloatingContent={
               <div>
-                <MyPositionAprContent rewardInfo={aprRewardInfo} />
+                <DailyEarningTooltipContent rewardInfo={aprRewardInfo} />
               </div>
             }
           >
@@ -1018,7 +967,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             FloatingContent={
               <div>
                 {totalRewardInfo && (
-                  <MyPositionRewardContent rewardInfo={totalRewardInfo} />
+                  <ClaimableRewardTooltipContent rewardInfo={totalRewardInfo} />
                 )}
               </div>
             }

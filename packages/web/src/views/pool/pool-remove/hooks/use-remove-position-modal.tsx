@@ -8,7 +8,7 @@ import RemovePositionModalContainer from "../containers/remove-position-modal-co
 
 export interface Props {
   positions: PoolPositionModel[];
-  selectedIds: string[];
+  selectedIds: number[];
   isGetWGNOT: boolean;
 }
 

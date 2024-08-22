@@ -8,14 +8,15 @@ import WarningCard from "@components/common/warning-card/WarningCard";
 import { EXT_URL } from "@constants/external-url.contant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
+import SelectLiquidity from "./select-liquidity/SelectLiquidity";
+import SelectUnstakeResult from "./select-unstake-result/SelectUnstakeResult";
+
 import { StakeWarningContentWrapper, wrapper } from "./UnstakeLiquidity.styles";
-import SelectUnstakeResult from "../select-unstake-result/SelectUnstakeResult";
-import SelectLiquidity from "../select-liquidity/SelectLiquidity";
 
 interface UnstakeLiquidityProps {
   stakedPositions: PoolPositionModel[];
-  checkedList: string[];
-  onCheckedItem: (checked: boolean, path: string) => void;
+  checkedList: number[];
+  onCheckedItem: (checked: boolean, id: number) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   handleConfirmUnstake: () => void;

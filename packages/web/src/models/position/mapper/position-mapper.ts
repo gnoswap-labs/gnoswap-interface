@@ -33,10 +33,8 @@ export class PositionMapper {
   }
 
   public static from(position: PositionResponse): PositionModel {
-    const id = position.lpTokenId;
-
     return {
-      id,
+      id: Number(position.lpTokenId),
       lpTokenId: position.lpTokenId,
       poolPath: position.poolPath,
       staked: position.staked,

@@ -123,7 +123,7 @@ export const useIncreasePositionModal = ({
 
     const result = await positionRepository
       .increaseLiquidity({
-        lpTokenId: selectedPosition.id,
+        lpTokenId: selectedPosition.id.toString(),
         tokenA: tokenA,
         tokenB: tokenB,
         tokenAAmount: Number(tokenAAmountInput.amount),

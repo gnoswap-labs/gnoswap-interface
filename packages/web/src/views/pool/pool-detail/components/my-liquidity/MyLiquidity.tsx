@@ -29,6 +29,7 @@ interface MyLiquidityProps {
   onScroll: () => void;
   currentIndex: number;
   claimAll: () => void;
+  isStakable: boolean;
   isShowRemovePositionButton: boolean;
   loading: boolean;
   loadingTransactionClaim: boolean;
@@ -53,6 +54,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   onScroll,
   currentIndex,
   claimAll,
+  isStakable,
   isShowRemovePositionButton,
   loading,
   loadingTransactionClaim,
@@ -108,8 +110,9 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             {showedPosition.map(
               (position: PoolPositionModel, index: number) => (
                 <MyDetailedPositionCard
-                  position={position}
                   key={index.toString() + position.id}
+                  position={position}
+                  isStakable={isStakable}
                   breakpoint={breakpoint}
                   loading={loading}
                   address={address || ""}
@@ -131,8 +134,9 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                 {showedPosition.map(
                   (position: PoolPositionModel, index: number) => (
                     <MyDetailedPositionCard
-                      position={position}
                       key={index.toString() + position.id}
+                      position={position}
+                      isStakable={isStakable}
                       breakpoint={breakpoint}
                       loading={loading}
                       address={address || ""}

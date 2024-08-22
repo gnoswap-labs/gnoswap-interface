@@ -8,7 +8,7 @@ import UnstakePositionModalContainer from "../containers/unstake-position-modal-
 
 interface Props {
   positions: PoolPositionModel[];
-  selectedIds: string[];
+  selectedIds: number[];
   isGetWGNOT: boolean;
 }
 

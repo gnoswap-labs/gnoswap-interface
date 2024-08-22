@@ -17,7 +17,7 @@ export interface EarnMyPositionContentProps {
   isError: boolean;
   positions: PoolPositionModel[];
   connect: () => void;
-  movePoolDetail: (poolId: string, positionId: string) => void;
+  movePoolDetail: (poolId: string, positionId: number) => void;
   isSwitchNetwork: boolean;
   mobile: boolean;
   divRef: React.RefObject<HTMLDivElement>;

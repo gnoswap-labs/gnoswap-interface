@@ -103,7 +103,7 @@ const RemovePositionModalContainer = ({
     if (!address) {
       return null;
     }
-    const lpTokenIds = selectedPositions.map(position => position.id);
+    const lpTokenIds = selectedPositions.map(position => position.id.toString());
     const approveTokenPaths = [
       ...new Set(
         selectedPositions.flatMap(position => [

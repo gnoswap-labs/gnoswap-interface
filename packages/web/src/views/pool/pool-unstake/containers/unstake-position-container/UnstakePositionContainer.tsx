@@ -9,6 +9,7 @@ import { useUnstakePositionModal } from "../../hooks/use-unstake-position-modal"
 const UnstakeLiquidityContainer: React.FC = () => {
   const router = useCustomRouter();
   const poolPath = router.getPoolPath();
+  const positionId = router.getPositionId();
   const { positions: allPosition, loading: isPositionsLoading } =
     usePositionData({
       poolPath,
@@ -16,7 +17,9 @@ const UnstakeLiquidityContainer: React.FC = () => {
         enabled: !!poolPath,
       },
     });
-  const [checkedList, setCheckedList] = useState<string[]>([]);
+  const [checkedList, setCheckedList] = useState<number[]>(
+    positionId ? [Number(positionId)] : [],
+  );
   const [isGetWGNOT, setIsGetWGNOT] = useState(false);
 
   const stakedPositions = useMemo(
@@ -38,12 +41,12 @@ const UnstakeLiquidityContainer: React.FC = () => {
   }, [stakedPositions, checkedList]);
 
   const onCheckedItem = useCallback(
-    (isChecked: boolean, path: string) => {
+    (isChecked: boolean, id: number) => {
       if (isChecked) {
-        return setCheckedList((prev: string[]) => [...prev, path]);
+        return setCheckedList((prev: number[]) => [...prev, id]);
       }
-      if (!isChecked && checkedList.includes(path)) {
-        return setCheckedList(checkedList.filter(el => el !== path));
+      if (!isChecked && checkedList.includes(id)) {
+        return setCheckedList(checkedList.filter(el => el !== id));
       }
     },
     [checkedList],

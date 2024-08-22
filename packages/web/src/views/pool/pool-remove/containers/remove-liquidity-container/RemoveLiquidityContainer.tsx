@@ -10,9 +10,12 @@ import { useRemovePositionModal } from "../../hooks/use-remove-position-modal";
 const RemoveLiquidityContainer: React.FC = () => {
   const router = useCustomRouter();
   const { connected } = useWallet();
-  const [checkedList, setCheckedList] = useState<string[]>([]);
   const [isGetWGNOT, setIsGetWGNOT] = useState(false);
   const poolPath = router.getPoolPath();
+  const positionId = router.getPositionId();
+  const [checkedList, setCheckedList] = useState<number[]>(
+    positionId ? [Number(positionId)] : [],
+  );
   const { positions, loading: isLoadingPositions } = usePositionData({
     isClosed: false,
     poolPath,
@@ -45,12 +48,12 @@ const RemoveLiquidityContainer: React.FC = () => {
   }, [unstakedPositions, checkedList]);
 
   const onCheckedItem = useCallback(
-    (isChecked: boolean, path: string) => {
+    (isChecked: boolean, id: number) => {
       if (isChecked) {
-        return setCheckedList((prev: string[]) => [...prev, path]);
+        return setCheckedList((prev: number[]) => [...prev, id]);
       }
-      if (!isChecked && checkedList.includes(path)) {
-        return setCheckedList(checkedList.filter(el => el !== path));
+      if (!isChecked && checkedList.includes(id)) {
+        return setCheckedList(checkedList.filter(el => el !== id));
       }
     },
     [checkedList],

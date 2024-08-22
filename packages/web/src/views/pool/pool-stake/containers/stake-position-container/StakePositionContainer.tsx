@@ -11,6 +11,7 @@ import { useStakePositionModal } from "../../hooks/use-stake-position-modal";
 const StakePositionContainer: React.FC = () => {
   const router = useCustomRouter();
   const poolPath = router.getPoolPath();
+  const positionId = router.getPositionId();
   const { connected, connectAccount } = useWallet();
   const {
     positions: allPositionData,
@@ -26,7 +27,9 @@ const StakePositionContainer: React.FC = () => {
   const { data: poolDetail } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
   });
-  const [checkedList, setCheckedList] = useState<string[]>([]);
+  const [checkedList, setCheckedList] = useState<number[]>(
+    positionId ? [Number(positionId)] : [],
+  );
   // For this domain only show `closed = false` && `staked = false` position
   const unstakedPositions = useMemo(
     () => allPositionData.filter(item => !item.staked),
@@ -46,12 +49,12 @@ const StakePositionContainer: React.FC = () => {
   }, [unstakedPositions.length, checkedList.length]);
 
   const onCheckedItem = useCallback(
-    (isChecked: boolean, path: string) => {
+    (isChecked: boolean, id: number) => {
       if (isChecked) {
-        return setCheckedList((prev: string[]) => [...prev, path]);
+        return setCheckedList((prev: number[]) => [...prev, id]);
       }
-      if (!isChecked && checkedList.includes(path)) {
-        return setCheckedList(checkedList.filter(el => el !== path));
+      if (!isChecked && checkedList.includes(id)) {
+        return setCheckedList(checkedList.filter(el => el !== id));
       }
     },
     [checkedList],

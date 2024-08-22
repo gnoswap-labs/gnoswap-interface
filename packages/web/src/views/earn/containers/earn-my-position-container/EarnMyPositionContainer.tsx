@@ -102,7 +102,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, [router]);
 
   const movePoolDetail = useCallback(
-    (poolId: string, positionId: string) => {
+    (poolId: string, positionId: number) => {
       router.movePage(
         "POOL",
         {

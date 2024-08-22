@@ -31,7 +31,7 @@ import MissingLogo from "../../missing-logo/MissingLogo";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
-  movePoolDetail: (poolId: string, positionId: string) => void;
+  movePoolDetail: (poolId: string, positionId: number) => void;
   mobile: boolean;
   currentIndex?: number;
   themeKey: "dark" | "light";
