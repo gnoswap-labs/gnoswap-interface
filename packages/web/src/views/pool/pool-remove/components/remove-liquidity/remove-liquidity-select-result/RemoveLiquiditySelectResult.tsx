@@ -77,8 +77,7 @@ const RemoveLiquiditySelectResult: React.FC<
                 mobileWidth={24}
               />
               <p>
-                {t("RemovePosition:overview.unclaimed")}{" "}
-                {pooledTokenInfo.token.symbol}
+                {t("RemovePosition:overview.unclaimed")}
               </p>
               <strong>
                 {formatPoolPairAmount(pooledTokenInfo.amount, {
