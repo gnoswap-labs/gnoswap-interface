@@ -110,8 +110,9 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             {showedPosition.map(
               (position: PoolPositionModel, index: number) => (
                 <MyDetailedPositionCard
-                  position={position}
                   key={index.toString() + position.id}
+                  position={position}
+                  isStakable={isStakable}
                   breakpoint={breakpoint}
                   loading={loading}
                   address={address || ""}
