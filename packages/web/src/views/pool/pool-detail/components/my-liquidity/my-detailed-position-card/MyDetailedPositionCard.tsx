@@ -1049,8 +1049,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           minTickPosition={minTickPosition}
           maxTickPosition={maxTickPosition}
           binsMyAmount={positionBin}
-          isSwap={isSwap}
-          showBar={!isHideBar}
+          isReversed={isSwap}
+          disabled={isHideBar}
         />
       )}
       {loading && (

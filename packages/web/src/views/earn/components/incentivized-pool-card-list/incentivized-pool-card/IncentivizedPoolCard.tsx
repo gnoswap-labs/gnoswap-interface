@@ -8,7 +8,7 @@ import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapToken
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import {
   INCENTIVE_TYPE_MAPPER,
-  SwapFeeTierInfoMap
+  SwapFeeTierInfoMap,
 } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
@@ -17,7 +17,7 @@ import { numberToFormat } from "@utils/string-utils";
 
 import {
   PoolCardWrapper,
-  PoolCardWrapperWrapperBorder
+  PoolCardWrapperWrapperBorder,
 } from "./IncentivizedPoolCard.styles";
 
 export interface IncentivizedPoolCardProps {
@@ -173,7 +173,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 position="top"
                 offset={40}
                 poolPrice={pool?.price || 1}
-                showBar={!isHideBar}
+                disabled={isHideBar}
               />
               <div className="price-section">
                 <span className="label-text">{"Current Price"}</span>
