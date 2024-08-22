@@ -53,14 +53,28 @@ export const ManageButtonWrapper = styled(SelectBox<POSITION_ACTION>)`
     }
   }
   &.out-range {
-    background: linear-gradient(270deg, #536cd7 0%, #233dbd 100%);
-    .current {
-      color: ${({ theme }) => theme.color.text27};
+    :not(&.staked) {
+      background: linear-gradient(270deg, #536cd7 0%, #233dbd 100%);
+      .current {
+        color: ${({ theme }) => theme.color.text27};
+      }
     }
-    .item-wrapper {
-      &:first-of-type {
-        > div {
-          color: ${({ theme }) => theme.color.text29};
+
+    &.stakable {
+      .item-wrapper {
+        &:nth-of-type(3) {
+          > div {
+            color: ${({ theme }) => theme.color.text29};
+          }
+        }
+      }
+    }
+    :not(&.stakable) {
+      .item-wrapper {
+        &:nth-of-type(2) {
+          > div {
+            color: ${({ theme }) => theme.color.text29};
+          }
         }
       }
     }

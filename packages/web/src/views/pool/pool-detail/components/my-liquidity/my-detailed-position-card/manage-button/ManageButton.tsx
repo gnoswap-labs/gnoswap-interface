@@ -97,7 +97,11 @@ const ManageButton: React.FC<ManageButtonProps> = ({
 
   return (
     <ManageButtonWrapper
-      className={!inRange && !isClosed ? "out-range" : ""}
+      className={[
+        !inRange && !isClosed ? "out-range" : "",
+        isStakable ? "stakable" : "",
+        isStaked ? "staked" : "",
+      ].join(" ")}
       current={t("Pool:position.card.btn.manage.label")}
       items={itemList}
       select={handleSelect}
