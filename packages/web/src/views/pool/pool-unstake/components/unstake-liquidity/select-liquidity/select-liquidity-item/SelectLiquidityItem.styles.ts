@@ -5,16 +5,15 @@ import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-import { inputStyle } from "../../stake-position/StakePosition.styles";
+import { inputStyle } from "../../UnstakeLiquidity.styles";
+
 
 export const wrapper = (checked: boolean) => (theme: Theme) =>
   css`
-    position: relative;
     ${inputStyle(theme)};
     ${mixins.flexbox("row", "center", "flex-start")};
-    gap: 8px;
     width: 100%;
-    height: 56px;
+    gap: 8px;
     background-color: ${theme.color.background20};
     border: 1px solid ${checked ? theme.color.border15 : theme.color.border02};
     border-radius: 8px;
@@ -28,24 +27,22 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     .left-content {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 5px;
-      > div:first-of-type {
-        margin-left: 3px;
-      }
     }
-    .logo-wrapper {
-      ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 5px;
+    .period-value {
+      color: ${theme.color.text02};
+      width: 60px;
+      text-align: right;
+      margin-right: 62px;
+      margin-left: auto;
     }
     .liquidity-value {
       margin-left: auto;
       color: ${theme.color.text02};
+      text-align: right;
     }
-    .liquidity-value-fake {
-      position: absolute;
-      visibility: hidden;
-      opacity: 0;
-      pointer-events: none;
-      right: 0;
+    .logo-wrapper {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 5px;
     }
     .hover-info {
       &,
@@ -63,50 +60,51 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     .token-id {
       cursor: default;
     }
-
+    .img-logo {
+      width: 24px;
+      height: 24px;
+    }
+    label {
+      margin-right: 3px;
+    }
+    .liquidity-value-fake {
+      position: absolute;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      right: 0;
+    }
     ${media.mobile} {
       padding: 11px;
-      height: 48px;
     }
   `;
 
 export const tooltipWrapper = () => (theme: Theme) =>
   css`
-  width: 268px;
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
-  gap: 8px;
-  ${fonts.body12}
-  > div {
-    &:not(:first-of-type) {
-      padding: 4px 0;
-    }
-    width: 100%;
-    ${mixins.flexbox("row", "center", "space-between")};
-    .title {
-      color: ${theme.color.text04};
-    }
-    .value {
-      ${mixins.flexbox("row", "center", "center")};
-      gap: 8px;
-      color: ${theme.color.text02};
-      img {
-        width: 20px;
-        height: 20px;
+    width: 268px;
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    gap: 8px;
+    ${fonts.body12}
+    > div {
+      &:not(:first-of-type) {
+        padding: 4px 0;
+      }
+      width: 100%;
+      ${mixins.flexbox("row", "center", "space-between")};
+      .title {
+        color: ${theme.color.text04};
+      }
+      .value {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 8px;
+        color: ${theme.color.text02};
+        img {
+          width: 20px;
+          height: 20px;
+        }
       }
     }
-  }
-  .divider {
-    width: 100%;
-    height: 1px;
-    border-top: 1px solid ${theme.color.border01};
-    padding: 0 !important;
-  }
-  .unstake-description {
-    color: ${theme.color.text04};
-    padding: 0 !important;
-    ${fonts.p4}
-  }
-`;
+  `;
 
 export const TokenValueWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};

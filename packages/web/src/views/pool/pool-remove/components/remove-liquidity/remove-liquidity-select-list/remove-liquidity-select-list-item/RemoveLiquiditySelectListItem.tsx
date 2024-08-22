@@ -24,8 +24,8 @@ import {
 
 interface RemoveLiquiditySelectListItemProps {
   position: PoolPositionModel;
-  checkedList: string[];
-  onCheckedItem: (checked: boolean, path: string) => void;
+  checkedList: number[];
+  onCheckedItem: (checked: boolean, id: number) => void;
   disabled?: boolean;
 }
 

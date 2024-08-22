@@ -4,7 +4,7 @@ import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 import { media } from "@styles/media";
 
-import { inputStyle } from "../../remove-liquidity/RemoveLiquidity.styles";
+import { inputStyle } from "../../RemoveLiquidity.styles";
 
 export const RemoveLiquiditySelectListItemWrapper = styled.li<{
   selected: boolean;

@@ -14,7 +14,7 @@ const Template: ComponentStory<typeof SelectLiquidityListItem> = args => {
     <SelectLiquidityListItem
       {...args}
       onCheckedItem={() => setChecked(prev => !prev)}
-      checkedList={checked ? ["#11111"] : []}
+      checkedList={checked ? [111] : []}
     />
   );
 };

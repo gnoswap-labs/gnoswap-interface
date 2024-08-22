@@ -8,16 +8,16 @@ export default {
 } as ComponentMeta<typeof SelectLiquidity>;
 
 const Template: ComponentStory<typeof SelectLiquidity> = args => {
-  const [checkedList, setCheckedList] = useState<string[]>([]);
+  const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkedAll] = useState(false);
 
   const onCheckedItem = useCallback(
-    (isChecked: boolean, path: string) => {
+    (isChecked: boolean, id: number) => {
       if (isChecked) {
-        return setCheckedList((prev: string[]) => [...prev, path]);
+        return setCheckedList((prev: number[]) => [...prev, id]);
       }
-      if (!isChecked && checkedList.includes(path)) {
-        return setCheckedList(checkedList.filter(el => el !== path));
+      if (!isChecked && checkedList.includes(id)) {
+        return setCheckedList(checkedList.filter(el => el !== id));
       }
     },
     [checkedList],

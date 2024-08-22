@@ -4,7 +4,7 @@ import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-import { inputStyle } from "../../components/remove-liquidity/RemoveLiquidity.styles";
+import { inputStyle } from "../RemoveLiquidity.styles";
 
 export const RemoveLiquiditySelectListWrapper = styled.div`
   ${({ theme }) => inputStyle(theme)};

@@ -9,7 +9,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatRate } from "@utils/new-number-utils";
 
-import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
+import { usePositionsRewards } from "../../../../common/hooks/use-positions-rewards";
 
 import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 

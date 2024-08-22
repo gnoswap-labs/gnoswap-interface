@@ -4,7 +4,7 @@ import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
-import { inputStyle } from "../unstake-liquidity/UnstakeLiquidity.styles";
+import { inputStyle } from "../UnstakeLiquidity.styles";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};

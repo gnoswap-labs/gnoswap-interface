@@ -6,14 +6,14 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import RemoveLiquiditySelectListItem from "./remove-liquidity-select-list-item/RemoveLiquiditySelectListItem";
 
-import { loadingWrapper } from "../remove-liquidity/RemoveLiquidity.styles";
+import { loadingWrapper } from "../RemoveLiquidity.styles";
 import { RemoveLiquiditySelectListWrapper } from "./RemoveLiquiditySelectList.styles";
 
 interface RemoveLiquiditySelectListProps {
   stakedPositions: PoolPositionModel[];
   unstakedPositions: PoolPositionModel[];
-  checkedList: string[];
-  onCheckedItem: (checked: boolean, path: string) => void;
+  checkedList: number[];
+  onCheckedItem: (checked: boolean, id: number) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   isLoading: boolean;

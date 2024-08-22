@@ -10,8 +10,8 @@ import { loadingWrapper, wrapper } from "./SelectLiquidity.styles";
 
 interface SelectLiquidityProps {
   stakedPositions: PoolPositionModel[];
-  checkedList: string[];
-  onCheckedItem: (checked: boolean, path: string) => void;
+  checkedList: number[];
+  onCheckedItem: (checked: boolean, id: number) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   isLoading: boolean;

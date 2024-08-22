@@ -1,20 +1,19 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-// import { ValuesType } from "utility-types";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
-import SelectLiquidity from "../select-liquidity/SelectLiquidity";
-import SelectStakeResult from "../select-stake-result/SelectStakeResult";
+import SelectLiquidity from "./select-liquidity/SelectLiquidity";
+import SelectStakeResult from "./select-stake-result/SelectStakeResult";
 
 import { wrapper } from "./StakePosition.styles";
 
 interface StakePositionProps {
   unstakedPositions: PoolPositionModel[];
-  checkedList: string[];
-  onCheckedItem: (checked: boolean, path: string) => void;
+  checkedList: number[];
+  onCheckedItem: (checked: boolean, path: number) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   submitPosition: () => void;

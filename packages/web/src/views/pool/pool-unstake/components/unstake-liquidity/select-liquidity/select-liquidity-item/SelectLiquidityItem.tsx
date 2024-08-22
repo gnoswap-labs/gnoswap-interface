@@ -19,19 +19,18 @@ import {
   TokenValueWrapper,
   tooltipWrapper,
   wrapper,
-} from "./SelectLiquidityListItem.styles";
+} from "./SelectLiquidityItem.styles";
 
-interface SelectLiquidityListItemProps {
-  disabled?: boolean;
+interface SelectLiquidityItemProps {
   position: PoolPositionModel;
-  checkedList: string[];
-  onCheckedItem: (checked: boolean, path: string) => void;
+  checkedList: number[];
+  onCheckedItem: (checked: boolean, id: number) => void;
+  disabled?: boolean;
 }
 
-const TooltipContent: React.FC<{
-  position: PoolPositionModel;
-  disabled: boolean;
-}> = ({ position, disabled }) => {
+const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({
+  position,
+}) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
 
@@ -57,23 +56,17 @@ const TooltipContent: React.FC<{
     <div css={tooltipWrapper()}>
       <TokenTitleWrapper>
         <div className="title">
-          {t("StakePosition:positionList.item.tooltip.tokenID")}
+          {t("UnstakePosition:positionList.item.tooltip.tokenID")}
         </div>
         <div className="title">#{position.id}</div>
       </TokenTitleWrapper>
       {renderTokenValue(position.pool.tokenA, position.tokenABalance)}
       {renderTokenValue(position.pool.tokenB, position.tokenBBalance)}
-      {disabled && <div className="divider"></div>}
-      {disabled && (
-        <div className="unstake-description">
-          {t("StakePosition:positionList.item.disabled")}
-        </div>
-      )}
     </div>
   );
 };
 
-const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
+const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
   position,
   checkedList,
   onCheckedItem,
@@ -114,9 +107,7 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
         <label htmlFor={`checkbox-item-${position.id}`} />
         <Tooltip
           placement="top"
-          FloatingContent={
-            <TooltipContent position={position} disabled={disabled} />
-          }
+          FloatingContent={<TooltipContent position={position} />}
         >
           <div className="logo-wrapper">
             <DoubleLogo
@@ -127,7 +118,7 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
               rightSymbol={tokenB.symbol}
             />
             {width > 768 && (
-              <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>
+              <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
             )}
             <Badge
               text={`${Number(position.pool.fee) / 10000}%`}
@@ -142,4 +133,4 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
   );
 };
 
-export default SelectLiquidityListItem;
+export default SelectLiquidityItem;

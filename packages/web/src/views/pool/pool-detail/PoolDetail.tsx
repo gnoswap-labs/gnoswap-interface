@@ -76,7 +76,7 @@ const PoolDetail: React.FC =() => {
       !jumpFlagRef.current
     ) {
       if (hash && hash !== "staking") {
-        const position = positions.find(item => item.id === hash);
+        const position = positions.find(item => item.id.toString() === hash);
         const isClosedPosition = !position || position?.closed;
 
         jumpFlagRef.current = true;
@@ -128,7 +128,7 @@ const PoolDetail: React.FC =() => {
       poolPath &&
       !jumpFlagRef.current
     ) {
-      const position = positions.find(item => item.id === hash);
+      const position = positions.find(item => item.id.toString() === hash);
       const isClosedPosition = !position || position?.closed;
 
       jumpFlagRef.current = true;

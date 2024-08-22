@@ -59,8 +59,8 @@ const WalletPositionCardListContainer: React.FC = () => {
   }, []);
 
   const movePoolDetail = useCallback(
-    (id: string) => {
-      router.movePageWithPoolPath("POOL", router.getPoolPath() || id);
+    (path: string) => {
+      router.movePageWithPoolPath("POOL", router.getPoolPath() || path);
     },
     [router],
   );

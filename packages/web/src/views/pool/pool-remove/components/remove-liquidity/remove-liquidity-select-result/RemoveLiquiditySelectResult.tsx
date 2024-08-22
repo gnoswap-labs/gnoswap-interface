@@ -8,7 +8,7 @@ import Switch from "@components/common/switch/Switch";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
-import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
+import { usePositionsRewards } from "../../../../common/hooks/use-positions-rewards";
 
 import {
   GnotCollectSwitchWrapper,
