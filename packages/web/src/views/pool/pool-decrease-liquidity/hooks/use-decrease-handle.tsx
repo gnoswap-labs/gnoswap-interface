@@ -16,6 +16,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
+import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
 
@@ -226,13 +227,14 @@ export const useDecreaseHandle = () => {
     const unClaimTokenA = selectedPosition.unclaimedFeeAAmount;
     const unClaimTokenB = selectedPosition.unclaimedFeeBAmount;
 
-    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
-    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
+    const tokenAPrice = tokenPrices[checkGnotPath(tokenA.priceID)]?.usd || 0;
+    const tokenBPrice = tokenPrices[checkGnotPath(tokenB.priceID)]?.usd || 0;
 
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
     const unClaimTokenAAmount = Number(unClaimTokenA) || 0;
     const unClaimTokenBAmount = Number(unClaimTokenB) || 0;
+
     return {
       poolAmountA: BigNumber(tokenAAmount)
         .multipliedBy(percent)
