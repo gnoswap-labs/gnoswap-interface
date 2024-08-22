@@ -59,6 +59,7 @@ import {
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
+  isStakable: boolean;
   breakpoint: DEVICE_TYPE;
   loading: boolean;
   address: string;
@@ -69,6 +70,7 @@ interface MyDetailedPositionCardProps {
 
 const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   position,
+  isStakable,
   breakpoint,
   loading,
   address,
@@ -895,6 +897,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               inRange={inRange}
               isClosed={isClosed}
               isStaked={position.staked}
+              isStakable={isStakable}
             />
           )}
         </div>

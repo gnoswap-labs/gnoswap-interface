@@ -41,7 +41,7 @@ const PoolDetail: React.FC =() => {
     },
   });
 
-  const isStaking = useMemo(() => {
+  const isStakable = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {
       return true;
     }
@@ -56,7 +56,7 @@ const PoolDetail: React.FC =() => {
   }, [data?.incentiveType, positions]);
 
   useEffect(() => {
-    if (hash === "staking" && !loading && isFetchedPosition && isStaking) {
+    if (hash === "staking" && !loading && isFetchedPosition && isStakable) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -161,7 +161,7 @@ const PoolDetail: React.FC =() => {
     hash,
     address,
     loading,
-    isStaking,
+    isStakable,
     poolPath,
     positions,
     router,
@@ -171,10 +171,12 @@ const PoolDetail: React.FC =() => {
     <PoolLayout
       header={<HeaderContainer />}
       poolPairInformation={<PoolPairInformationContainer />}
-      liquidity={<MyLiquidityContainer address={address} />}
-      staking={isStaking ? <StakingContainer /> : null}
+      liquidity={
+        <MyLiquidityContainer address={address} isStakable={isStakable} />
+      }
+      staking={isStakable ? <StakingContainer /> : null}
       footer={<Footer />}
-      isStaking={isStaking}
+      isStaking={isStakable}
     />
   );
 };

@@ -15,6 +15,7 @@ interface ManageButtonProps {
   inRange: boolean;
   isClosed: boolean;
   isStaked: boolean;
+  isStakable: boolean;
 }
 
 const ManageButton: React.FC<ManageButtonProps> = ({
@@ -22,6 +23,7 @@ const ManageButton: React.FC<ManageButtonProps> = ({
   inRange,
   isClosed,
   isStaked,
+  isStakable,
 }) => {
   const router = useCustomRouter();
   const { t } = useTranslation();
@@ -83,14 +85,15 @@ const ManageButton: React.FC<ManageButtonProps> = ({
   const itemList = useMemo(() => {
     if (isClosed) return [POSITION_ACTION.INCREASE];
     if (isStaked) return [POSITION_ACTION.UNSTAKE];
+    const base = isStakable ? [POSITION_ACTION.STAKE] : [];
     return [
-      POSITION_ACTION.STAKE,
+      ...base,
       POSITION_ACTION.REMOVE,
       POSITION_ACTION.REPOSITION,
       POSITION_ACTION.INCREASE,
       POSITION_ACTION.DECREASE,
     ];
-  }, [isClosed, isStaked]);
+  }, [isClosed, isStaked, isStakable]);
 
   return (
     <ManageButtonWrapper

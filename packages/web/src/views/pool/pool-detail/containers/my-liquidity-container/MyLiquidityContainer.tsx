@@ -18,10 +18,12 @@ import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
+  isStakable: boolean;
 }
 
 const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   address,
+  isStakable,
 }) => {
   const router = useRouter();
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -194,6 +196,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       onScroll={handleScroll}
       currentIndex={currentIndex}
       claimAll={claimAllReward}
+      isStakable={isStakable}
       isShowRemovePositionButton={isShowRemovePositionButton}
       loading={isLoadingPosition}
       loadingTransactionClaim={loadingTransactionClaim}
