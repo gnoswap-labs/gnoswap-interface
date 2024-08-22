@@ -207,9 +207,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         if (mouseY < 0.000001 || mouseY > height) {
           return false;
         }
-        if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
-          return false;
-        }
         const isHoveringCurrentBin = document
           .getElementById(getBinId(bin.index))
           ?.matches(":hover");
@@ -235,24 +232,27 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         return bin.index === hoveredBinIndex;
       });
 
-      if (currentBin?.index) {
-        if (currentBin.index !== lastHoverBinIndexRef.current) {
-          lastHoverBinIndexRef.current = currentBin.index;
-        } else {
+      if (!currentBin) {
+        lastHoverBinIndexRef.current = -1;
+        setPositionX(null);
+        setPositionY(null);
+
+        if (!nextSpacing) {
+          setTooltipInfo(null);
+        }
+        return;
+      }
+
+      // Only updates the position when the hovered area is the same bar and has tooltip information.
+      if (currentBin.index === lastHoverBinIndexRef.current) {
+        if (tooltipInfo) {
           setPositionX(mouseX);
           setPositionY(mouseY);
           return;
         }
       }
 
-      if (!currentBin) {
-        setPositionX(null);
-        setPositionY(null);
-        if (!nextSpacing) {
-          setTooltipInfo(null);
-        }
-        return;
-      }
+      lastHoverBinIndexRef.current = currentBin.index;
 
       if (
         Math.abs(height - mouseY - 0.0001) >
