@@ -10,7 +10,7 @@ import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -22,11 +22,11 @@ import { useGetPoolCreationFee } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import {
   AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse
+  AddLiquiditySuccessResponse,
 } from "@repositories/pool/response/add-liquidity-response";
 import {
   CreatePoolFailedResponse,
-  CreatePoolSuccessResponse
+  CreatePoolSuccessResponse,
 } from "@repositories/pool/response/create-pool-response";
 import { CommonState } from "@states/index";
 import { subscriptFormat } from "@utils/number-utils";
@@ -38,6 +38,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 
 import PoolAddConfirmModal from "../components/pool-add-confirm-modal/PoolAddConfirmModal";
 import OneClickStakingModal from "../components/one-click-staking-modal/OneClickStakingModal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -101,9 +102,9 @@ export const usePoolAddLiquidityConfirmModal = ({
     broadcastLoading,
     broadcastRejected,
     broadcastSuccess,
-    broadcastPending,
     broadcastError,
   } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
 
   const { getMessage } = useMessage();
 
@@ -391,6 +392,33 @@ export const usePoolAddLiquidityConfirmModal = ({
           if (result.code === 0) {
             const resultData = result?.data as CreatePoolSuccessResponse;
             broadcastPending({ txHash: resultData.hash });
+            enqueueEvent({
+              txHash: resultData.hash,
+              action: DexEvent.WRAP,
+              formatData: response => {
+                if (!response) {
+                  return {
+                    tokenASymbol: tokenA.symbol,
+                    tokenBSymbol: tokenB.symbol,
+                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: tokenA.decimals,
+                    }),
+                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: tokenB.decimals,
+                    }),
+                  };
+                }
+
+                return {
+                  ...messageData,
+                  tokenAAmount: response[0],
+                  tokenBAmount: response[1],
+                };
+              },
+              callback: async () => {
+                await updateBalances();
+              },
+            });
             setTimeout(() => {
               broadcastSuccess(
                 getMessage(

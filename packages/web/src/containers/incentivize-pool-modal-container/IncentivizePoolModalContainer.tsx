@@ -11,6 +11,9 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import BigNumber from "bignumber.js";
 import { useMessage } from "@hooks/common/use-message";
 import { DexEvent } from "@repositories/common";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useGetPoolList } from "@query/pools";
+import { useGetPositionsByAddress } from "@query/positions";
 
 const DAY_TIME = 24 * 60 * 60;
 const MILLISECONDS = 1000;
@@ -18,11 +21,11 @@ const MILLISECONDS = 1000;
 const IncentivizePoolModalContainer = () => {
   const {
     broadcastSuccess,
-    broadcastPending,
     broadcastError,
     broadcastRejected,
     broadcastLoading,
   } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
   const router = useRouter();
   const clearModal = useClearModal();
   const { poolRepository } = useGnoswapContext();
@@ -30,6 +33,8 @@ const IncentivizePoolModalContainer = () => {
   const [startDate] = useAtom(EarnState.date);
   const [dataModal] = useAtom(EarnState.dataModal);
   const [pool] = useAtom(EarnState.pool);
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPositions } = useGetPositionsByAddress();
 
   const { getMessage } = useMessage();
 
@@ -88,7 +93,18 @@ const IncentivizePoolModalContainer = () => {
       .then(response => {
         if (response) {
           if (response.code === 0) {
-            broadcastPending({ txHash: response.data?.hash });
+            enqueueEvent({
+              txHash: response.data?.hash,
+              action: DexEvent.ADD_INCENTIVE,
+              formatData: () => ({
+                tokenAAmount: displayAmount,
+                tokenASymbol: dataModal?.token?.symbol,
+              }),
+              callback: async () => {
+                await refetchPools();
+                await refetchPositions();
+              },
+            });
             setTimeout(() => {
               broadcastSuccess(
                 getMessage(

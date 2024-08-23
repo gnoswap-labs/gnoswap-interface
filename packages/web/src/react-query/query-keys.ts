@@ -3,6 +3,7 @@ export enum QUERY_KEY {
   initLoading = "initLoading",
   avgBlockTime = "avgBlockTime",
   notifications = "notifications",
+  transactionEvents = "transactionEvents",
   // address
   username = "username",
   accountGnotTokenBalance = "accountGnotTokenBalance",

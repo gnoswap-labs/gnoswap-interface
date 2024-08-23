@@ -2,11 +2,8 @@ import { useAtom } from "jotai";
 import { useCallback } from "react";
 
 import { CommonState } from "@states/index";
-import { makeRandomId } from "@utils/common";
 
-import {
-  SnackbarContent, SnackbarOptions, SnackbarType, useSnackbar
-} from "./use-snackbar";
+import { SnackbarContent, useSnackbar } from "./use-snackbar";
 import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
 
 /**
@@ -41,16 +38,6 @@ import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
  * - Withdraw: Failed to Send n GNOT
  */
 
-function makeNoticeConfig(type: SnackbarType): SnackbarOptions {
-  const timeout = 50000;
-  return {
-    id: makeRandomId(),
-    type,
-    closeable: true,
-    timeout,
-  };
-}
-
 export const useBroadcastHandler = () => {
   const { enqueue, clear } = useSnackbar();
   const { openModal, closeModal } = useTransactionConfirmModal();
@@ -76,16 +63,11 @@ export const useBroadcastHandler = () => {
         txHash: content?.txHash || null,
         callback,
       });
-      enqueue(content, makeNoticeConfig("success"));
+      if (content?.txHash) {
+      }
+      // enqueue(content, makeNoticeConfig("success"));
     },
     [enqueue, setTransactionModalData],
-  );
-
-  const broadcastPending = useCallback(
-    (content?: SnackbarContent) => {
-      enqueue(content, makeNoticeConfig("pending"));
-    },
-    [enqueue],
   );
 
   const broadcastError = useCallback(
@@ -96,26 +78,20 @@ export const useBroadcastHandler = () => {
         txHash: content?.txHash || null,
         callback,
       });
-      enqueue(content, makeNoticeConfig("error"));
     },
-    [enqueue, setTransactionModalData],
+    [setTransactionModalData],
   );
 
   const broadcastRejected = useCallback(
-    (
-      content?: SnackbarContent,
-      callback?: () => void,
-      isHiddenReject?: boolean,
-    ) => {
+    (content?: SnackbarContent, callback?: () => void) => {
       setTransactionModalData({
         status: "rejected",
         description: content?.description || null,
         txHash: content?.txHash || null,
         callback,
       });
-      if (!isHiddenReject) enqueue(content, makeNoticeConfig("error"));
     },
-    [enqueue, setTransactionModalData],
+    [setTransactionModalData],
   );
 
   const clearBroadcast = useCallback(() => {
@@ -126,7 +102,6 @@ export const useBroadcastHandler = () => {
   return {
     broadcastLoading,
     broadcastSuccess,
-    broadcastPending,
     broadcastError,
     clearBroadcast,
     broadcastRejected,

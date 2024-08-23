@@ -35,6 +35,7 @@ import { isEmptyObject } from "@utils/validation-utils";
 
 import { useSwap } from "./use-swap";
 import { rawBySqrtX96 } from "@utils/swap-utils";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -148,6 +149,7 @@ export const useSwapHandler = () => {
     tokenBAmount: defaultTokenBAmount,
   } = swapValue;
   const { t } = useTranslation();
+  const { enqueueEvent } = useTransactionEventStore();
 
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount = "", setTokenAAmount] = useState(
@@ -209,7 +211,6 @@ export const useSwapHandler = () => {
   const {
     broadcastSuccess,
     broadcastLoading,
-    broadcastPending,
     broadcastError,
     broadcastRejected,
   } = useBroadcastHandler();
@@ -941,8 +942,26 @@ export const useSwapHandler = () => {
 
       wrap(swapAmount)
         .then(response => {
+          enqueueEvent({
+            txHash: response?.data?.hash,
+            action: DexEvent.WRAP,
+            formatData: response => {
+              if (!response) {
+                return messageData;
+              }
+
+              return {
+                ...messageData,
+                tokenAAmount: response[0],
+                tokenBAmount: response[1],
+              };
+            },
+            callback: async () => {
+              await updateBalances();
+            },
+          });
+
           if (response?.code === 0) {
-            broadcastPending({ txHash: response.data?.hash });
             setTimeout(() => {
               const tokenAAmountStr = tokenAAmount;
               const tokenBAmountStr = tokenBAmount;
@@ -990,8 +1009,25 @@ export const useSwapHandler = () => {
 
       unwrap(swapAmount)
         .then(response => {
+          enqueueEvent({
+            txHash: response?.data?.hash,
+            action: DexEvent.UNWRAP,
+            formatData: response => {
+              if (!response) {
+                return messageData;
+              }
+
+              return {
+                ...messageData,
+                tokenAAmount: response[0],
+                tokenBAmount: response[1],
+              };
+            },
+            callback: async () => {
+              await updateBalances();
+            },
+          });
           if (response?.status === "success") {
-            broadcastPending({ txHash: response.data?.hash });
             setTimeout(() => {
               const tokenAAmountStr = tokenAAmount;
               const tokenBAmountStr = tokenBAmount;
@@ -1073,9 +1109,27 @@ export const useSwapHandler = () => {
     swap(estimatedRoutes, swapAmount)
       .then(response => {
         if (response) {
+          enqueueEvent({
+            txHash: response?.data?.hash,
+            action: DexEvent.SWAP,
+            formatData: response => {
+              if (!response) {
+                return broadcastMessage;
+              }
+
+              return {
+                ...broadcastMessage,
+                tokenAAmount: response[0],
+                tokenBAmount: response[1],
+              };
+            },
+            callback: async () => {
+              await updateBalances();
+            },
+          });
+
           if (response.code === 0) {
             const responseData = response?.data as SwapRouteSuccessResponse;
-            broadcastPending({ txHash: responseData.hash });
             setTimeout(() => {
               const tokenAAmountStr = isExactIn
                 ? tokenAAmount

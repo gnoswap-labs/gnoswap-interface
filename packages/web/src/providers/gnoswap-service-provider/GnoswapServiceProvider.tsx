@@ -1,33 +1,34 @@
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { createContext, useEffect, useMemo, useState } from "react";
+import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
 
 import { NetworkClient } from "@common/clients/network-client";
 import { AxiosClient } from "@common/clients/network-client/axios-client";
 import { WebStorageClient } from "@common/clients/storage-client";
+import { EventStore, TransactionEventStore } from "@common/modules/event-store";
 import { NetworkData } from "@constants/chains.constant";
 import {
   DEFAULT_CHAIN_ID,
-  SUPPORT_CHAIN_IDS
+  SUPPORT_CHAIN_IDS,
 } from "@constants/environment.constant";
-import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
 import {
   AccountRepository,
-  AccountRepositoryImpl
+  AccountRepositoryImpl,
 } from "@repositories/account";
 import {
   DashboardRepository,
-  DashboardRepositoryImpl
+  DashboardRepositoryImpl,
 } from "@repositories/dashboard";
 import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-repository";
 import { LeaderboardRepositoryMock } from "@repositories/leaderboard/leaderboard-repository-mock";
 import {
   LiquidityRepository,
-  LiquidityRepositoryMock
+  LiquidityRepositoryMock,
 } from "@repositories/liquidity";
 import {
   NotificationRepository,
-  NotificationRepositoryImpl
+  NotificationRepositoryImpl,
 } from "@repositories/notification";
 import { PoolRepository } from "@repositories/pool";
 import { PoolRepositoryImpl } from "@repositories/pool/pool-repository-impl";
@@ -35,11 +36,11 @@ import { PositionRepository } from "@repositories/position/position-repository";
 import { PositionRepositoryImpl } from "@repositories/position/position-repository-impl";
 import {
   StakingRepository,
-  StakingRepositoryMock
+  StakingRepositoryMock,
 } from "@repositories/staking";
 import {
   SwapRouterRepository,
-  SwapRouterRepositoryImpl
+  SwapRouterRepositoryImpl,
 } from "@repositories/swap";
 import { TokenRepository } from "@repositories/token";
 import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
@@ -48,14 +49,15 @@ import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-imp
 import {
   ACCOUNT_SESSION_INFO_KEY,
   GNOSWAP_SESSION_ID_KEY,
-  GNOWSWAP_CONNECTED_KEY
+  GNOWSWAP_CONNECTED_KEY,
 } from "@states/common";
 import { CommonState, WalletState } from "@states/index";
-
+import axios from "axios";
 
 interface GnoswapContextProps {
   initialized: boolean;
   rpcProvider: GnoProvider | null;
+  eventStore: EventStore<string[]>;
   gnoswapApiClient: NetworkClient | null;
   accountRepository: AccountRepository;
   liquidityRepository: LiquidityRepository;
@@ -177,6 +179,21 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
   }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);
 
+  const eventStore = useMemo(() => {
+    const currentChainId = SUPPORT_CHAIN_IDS.includes(
+      walletAccount?.chainId || "",
+    )
+      ? walletAccount?.chainId
+      : DEFAULT_CHAIN_ID;
+
+    const network =
+      NetworkData.find(info => info.chainId === currentChainId) ||
+      NetworkData[0];
+
+    const axiosClient = axios.create({ baseURL: network.rpcUrl });
+    return new TransactionEventStore(axiosClient);
+  }, [walletAccount]);
+
   const accountRepository = useMemo(() => {
     return new AccountRepositoryImpl(
       walletClient,
@@ -218,7 +235,11 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [localStorageClient, gnoswapApiClient]);
 
   const positionRepository = useMemo(() => {
-    return new PositionRepositoryImpl(gnoswapApiClient, rpcProvider, walletClient);
+    return new PositionRepositoryImpl(
+      gnoswapApiClient,
+      rpcProvider,
+      walletClient,
+    );
   }, [gnoswapApiClient, rpcProvider, walletClient]);
 
   const dashboardRepository = useMemo(() => {
@@ -248,6 +269,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       value={{
         initialized,
         rpcProvider,
+        eventStore,
         gnoswapApiClient,
         accountRepository,
         liquidityRepository,
