@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconInfo from "@components/common/icons/IconInfo";
@@ -6,6 +6,7 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import PairRatio from "@components/common/pair-ratio/PairRatio";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
 
@@ -24,29 +25,69 @@ import {
 
 interface ExchangeRateGraphProps {
   poolData: PoolModel;
-  onSwap?: (swap: boolean) => void;
+  isReversed: boolean;
   data?: TokenExchangeRateGraphResponse;
   isLoading: boolean;
-  isReversed: boolean;
-  selectedScope: CHART_DAY_SCOPE_TYPE;
-  setSelectedScope: (type: CHART_DAY_SCOPE_TYPE) => void;
+  defaultScope?: CHART_DAY_SCOPE_TYPE;
 }
 
 const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   poolData,
-  onSwap,
-  isLoading,
   isReversed,
-  setSelectedScope,
-  selectedScope,
+  isLoading,
+  defaultScope,
 }) => {
   const { t } = useTranslation();
+  const { getGnotPath } = useGnotToGnot();
 
   const [currentPoint, setCurrentPoint] = useState<string | null>();
   const [active, setActive] = useState<boolean>(false);
+  const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(
+    defaultScope ?? CHART_DAY_SCOPE_TYPE["7D"],
+  );
+
+  const changedPoolInfo = useMemo(() => {
+    return isReversed === false
+      ? {
+          ...poolData,
+          tokenA: {
+            ...poolData.tokenA,
+            logoURI: getGnotPath(poolData.tokenA).logoURI,
+            path: getGnotPath(poolData.tokenA).path,
+            name: getGnotPath(poolData.tokenA).name,
+            symbol: getGnotPath(poolData.tokenA).symbol,
+          },
+          tokenB: {
+            ...poolData.tokenB,
+            logoURI: getGnotPath(poolData.tokenB).logoURI,
+            path: getGnotPath(poolData.tokenB).path,
+            name: getGnotPath(poolData.tokenB).name,
+            symbol: getGnotPath(poolData.tokenB).symbol,
+          },
+        }
+      : {
+          ...poolData,
+          tokenA: {
+            ...poolData.tokenA,
+            logoURI: getGnotPath(poolData.tokenA).logoURI,
+            path: getGnotPath(poolData.tokenA).path,
+            name: getGnotPath(poolData.tokenA).name,
+            symbol: getGnotPath(poolData.tokenA).symbol,
+          },
+          tokenB: {
+            ...poolData.tokenB,
+            logoURI: getGnotPath(poolData.tokenB).logoURI,
+            path: getGnotPath(poolData.tokenB).path,
+            name: getGnotPath(poolData.tokenB).name,
+            symbol: getGnotPath(poolData.tokenB).symbol,
+          },
+          price: 1 / poolData.price,
+        };
+  }, [getGnotPath, poolData, isReversed]);
 
   const hasData =
-    poolData.tokenA.name !== undefined && poolData.tokenA.name !== "";
+    changedPoolInfo.tokenA.name !== undefined &&
+    changedPoolInfo.tokenA.name !== "";
 
   const showChart = () => {
     if (!hasData)
@@ -55,7 +96,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
       );
     return (
       <ExchangeRateGraphContent
-        poolData={poolData}
+        poolData={changedPoolInfo}
         selectedScope={selectedScope}
         isReversed={isReversed}
         onMouseMove={data => {
@@ -89,7 +130,6 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
         <ExchangeRateGraphController>
           {hasData ? (
             <PairRatio
-              onSwap={onSwap}
               pool={poolData}
               loading={isLoading}
               isSwap={isReversed}

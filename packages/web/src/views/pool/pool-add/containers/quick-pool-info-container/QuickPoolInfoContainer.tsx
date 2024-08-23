@@ -6,15 +6,12 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import {
-  initialDetailPool,
-  PoolDetailModel,
-} from "@models/pool/pool-detail-model";
+import { initialDetailPool } from "@models/pool/pool-detail-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
-import { checkGnotPath } from "@utils/common";
 
 import QuickPoolInfo from "../../components/quick-pool-info/QuickPoolInfo";
+import { usePoolAddSearchParams } from "../../hooks/use-pool-add-serach-param";
 
 const QuickPoolInfoContainer: React.FC = () => {
   const router = useCustomRouter();
@@ -23,27 +20,7 @@ const QuickPoolInfoContainer: React.FC = () => {
     EarnState.poolInfoQuery,
   );
   const { pools } = usePoolData();
-
-  const poolPathParam = router.query.poolPath as string;
-  const tokenAPath =
-    (router.query.tokenA as string) || window.history.state?.tokenA;
-  const tokenBPath =
-    (router.query.tokenB as string) || window.history.state?.tokenB;
-  const feeTier =
-    (router.query.fee_tier as string) || window.history.state?.fee_tier;
-
-  const poolPath = useMemo(() => {
-    if (poolPathParam) return poolPathParam;
-
-    if (!tokenAPath || !tokenBPath || !feeTier) return null;
-
-    const tokenPair = [
-      checkGnotPath(tokenAPath),
-      checkGnotPath(tokenBPath),
-    ].sort();
-
-    return [...tokenPair, feeTier].join(":");
-  }, [poolPathParam, tokenAPath, tokenBPath, feeTier]);
+  const { poolPath } = usePoolAddSearchParams();
 
   const shouldFetchPool = useMemo(() => {
     return pools.some(pool => pool.poolPath === poolPath);
@@ -58,12 +35,11 @@ const QuickPoolInfoContainer: React.FC = () => {
   });
 
   const {
-    data = initialDetailPool as PoolDetailModel,
+    data = initialDetailPool,
     isLoading: isLoadingPoolInfo,
   } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath && shouldFetchPool,
   });
-
 
   const stakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];
@@ -79,7 +55,6 @@ const QuickPoolInfoContainer: React.FC = () => {
     (type: PAGE_PATH_TYPE) => {
       if (poolPath) {
         router.movePageWithPoolPath(type, poolPath);
-        return;
       }
     },
     [poolPath],
