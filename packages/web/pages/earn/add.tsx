@@ -70,7 +70,7 @@ export default function Page() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <PoolAdd />
+      <PoolAdd useDedicatedPool={false} />
     </>
   );
 }

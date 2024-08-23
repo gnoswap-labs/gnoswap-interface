@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { wrapper } from "./PoolAddLayout.styles";
+import { PoolAddLayoutWrapper } from "./PoolAddLayout.styles";
 
 interface PoolAddLayoutProps {
   header: React.ReactNode;
@@ -23,7 +23,7 @@ const PoolAddLayout: React.FC<PoolAddLayoutProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div css={wrapper}>
+    <PoolAddLayoutWrapper>
       {header}
       <main className="content-wrap">
         <div className="title-container">
@@ -49,7 +49,7 @@ const PoolAddLayout: React.FC<PoolAddLayoutProps> = ({
         </div>
       </main>
       {footer}
-    </div>
+    </PoolAddLayoutWrapper>
   );
 };
 

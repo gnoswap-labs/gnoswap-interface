@@ -1,9 +1,10 @@
+import styled from "@emotion/styled";
+
 import { fonts } from "@constants/font.constant";
-import { css, Theme } from "@emotion/react";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const wrapper = (theme: Theme) => css`
+export const PoolAddLayoutWrapper = styled.div`
   width: 100%;
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   main {
@@ -29,7 +30,7 @@ export const wrapper = (theme: Theme) => css`
     }
     .title {
       ${fonts.h3};
-      color: ${theme.color.text02};
+      color: ${({ theme }) => theme.color.text02};
     }
   }
 
