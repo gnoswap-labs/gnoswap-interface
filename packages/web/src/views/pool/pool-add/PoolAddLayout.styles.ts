@@ -17,9 +17,7 @@ export const PoolAddLayoutWrapper = styled.div`
   }
   .wrapper-sub-content {
     ${mixins.flexbox("row", "flex-start", "flex-end")};
-    &.full-width {
-      width: 100%;
-    }
+    width: 100%;
   }
   .title-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -34,21 +32,14 @@ export const PoolAddLayoutWrapper = styled.div`
     }
   }
 
-  .additional-info-section {
-    padding: 0 24px 0 16px;
-  }
-
   .add-liquidity-section {
     margin: 0 auto;
     height: 100%;
-  }
-  .quick-pool-info-section {
-    &.margin-bottom {
-      margin-bottom: 16px;
-    }
-    .fake-div {
+    &:not(&:last-child) {
+      margin: 0 0 0 auto;
     }
   }
+
   .content-default {
     ${media.tablet} {
       display: none;
@@ -69,27 +60,8 @@ export const PoolAddLayoutWrapper = styled.div`
         ${fonts.h4};
       }
     }
-    .additional-info-section {
-      width: 100%;
-      margin: auto;
-      padding: 0;
-    }
-    .exchange-rate-graph {
-      margin: auto;
-      max-width: 500px;
-      width: 100%;
-    }
     .add-liquidity-section {
       margin: auto;
-    }
-    .quick-pool-info-section {
-      padding: 0;
-      margin: 16px auto 0;
-      width: 100%;
-      max-width: 500px;
-      .fake-div {
-        width: 430px;
-      }
     }
     .content-default {
       display: none;

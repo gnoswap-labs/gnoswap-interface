@@ -13,7 +13,7 @@ import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 
-import { Divider, QuickPoolInfoDummy, QuickPoolInfoWrapper } from "./QuickPoolInfo.styles";
+import { Divider, QuickPoolInfoWrapper } from "./QuickPoolInfo.styles";
 
 interface Props {
   stakedPositions: PositionModel[];
@@ -147,7 +147,7 @@ const QuickPoolInfo: React.FC<Props> = ({
   }, [isLoadingPool, pool.stakingApr]);
 
   if (!tokenA?.path || !tokenB?.path || !tokenARevert || !tokenBRevert) {
-    return <QuickPoolInfoDummy />;
+    return null;
   }
 
   function renderPositionInfo() {

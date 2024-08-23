@@ -7,20 +7,22 @@ import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { initialDetailPool } from "@models/pool/pool-detail-model";
+import { isNativeToken } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
 
-import QuickPoolInfo from "../../components/quick-pool-info/QuickPoolInfo";
+import AdditionalInfo from "../../components/additional-info/AdditionalInfo";
 import { usePoolAddSearchParams } from "../../hooks/use-pool-add-serach-param";
 
-const QuickPoolInfoContainer: React.FC = () => {
+const AdditionalInfoContainer: React.FC = () => {
   const router = useCustomRouter();
   const { account, connected } = useWallet();
+  const [compareToken] = useAtom(EarnState.currentCompareToken);
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(
     EarnState.poolInfoQuery,
   );
   const { pools } = usePoolData();
-  const { poolPath } = usePoolAddSearchParams();
+  const { poolPath, tokenPair } = usePoolAddSearchParams();
 
   const shouldFetchPool = useMemo(() => {
     return pools.some(pool => pool.poolPath === poolPath);
@@ -41,6 +43,15 @@ const QuickPoolInfoContainer: React.FC = () => {
     enabled: !!poolPath && shouldFetchPool,
   });
 
+  const handleClickGotoStaking = useCallback(
+    (type: PAGE_PATH_TYPE) => {
+      if (poolPath) {
+        router.movePageWithPoolPath(type, poolPath);
+      }
+    },
+    [poolPath],
+  );
+
   const stakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];
     return positions.filter(position => position.staked);
@@ -51,17 +62,21 @@ const QuickPoolInfoContainer: React.FC = () => {
     return positions.filter(position => !position.staked);
   }, [poolPath, account, connected, positions]);
 
-  const handleClickGotoStaking = useCallback(
-    (type: PAGE_PATH_TYPE) => {
-      if (poolPath) {
-        router.movePageWithPoolPath(type, poolPath);
-      }
-    },
-    [poolPath],
-  );
+  const isReversed = useMemo(() => {
+    return (
+      tokenPair?.findIndex(path => {
+        if (compareToken) {
+          return isNativeToken(compareToken) || compareToken.path === "gnot"
+            ? compareToken.wrappedPath === path
+            : compareToken.path === path;
+        }
+        return false;
+      }) === 1
+    );
+  }, [compareToken, tokenPair]);
 
   return (
-    <QuickPoolInfo
+    <AdditionalInfo
       stakedPositions={stakedPositions}
       unstakedPositions={unstakedPositions}
       handleClickGotoStaking={handleClickGotoStaking}
@@ -69,7 +84,8 @@ const QuickPoolInfoContainer: React.FC = () => {
       isLoadingPool={
         isLoadingRPCPoolInfo || isLoadingPoolInfo || isLoadingPosition
       }
+      isReversed={isReversed}
     />
   );
 };
-export default QuickPoolInfoContainer;
+export default AdditionalInfoContainer;

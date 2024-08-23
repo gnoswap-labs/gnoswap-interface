@@ -14,9 +14,8 @@ import { DeviceSize } from "@styles/media";
 import { makeRouteUrl } from "@utils/page.utils";
 
 import EarnAddLiquidityContainer from "./containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import ExchangeRateGraphContainer from "./containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
 import PoolAddLiquidityContainer from "./containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
-import QuickPoolInfoContainer from "./containers/quick-pool-info-container/QuickPoolInfoContainer";
+import AdditionalInfoContainer from "./containers/additional-info-container/AdditionalInfoContainer";
 import PoolAddLayout from "./PoolAddLayout";
 
 interface PoolAddProps {
@@ -81,8 +80,7 @@ const PoolAdd: React.FC<PoolAddProps> = ({useDedicatedPool}) => {
           <EarnAddLiquidityContainer />
         )
       }
-      quickPoolInfo={<QuickPoolInfoContainer />}
-      exchangeRateGraph={<ExchangeRateGraphContainer />}
+      additionalInfo={<AdditionalInfoContainer />}
       footer={<Footer />}
     />
   );
