@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import IconInfo from "@components/common/icons/IconInfo";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import PairRatio from "@components/common/pair-ratio/PairRatio";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -12,6 +11,7 @@ import { TokenExchangeRateGraphResponse } from "@repositories/token/response/tok
 
 import ChartScopeSelectTab from "./chart-scope-select-tab/ChartScopeSelectTab";
 import ExchangeRateGraphContent from "./exchange-rate-graph-content/ExchangeRateGraphContent";
+import PairRatio from "./pair-ratio/PairRatio";
 
 import {
   ExchangeChartNotFound,
@@ -20,7 +20,7 @@ import {
   ExchangeRateGraphTitleWrapper,
   ExchangeRateGraphWrapper,
   LoadingExchangeRateChartWrapper,
-  TooltipContentWrapper
+  TooltipContentWrapper,
 } from "./ExchangeRateGraph.styles";
 
 interface ExchangeRateGraphProps {
@@ -52,34 +52,22 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
           ...poolData,
           tokenA: {
             ...poolData.tokenA,
-            logoURI: getGnotPath(poolData.tokenA).logoURI,
-            path: getGnotPath(poolData.tokenA).path,
-            name: getGnotPath(poolData.tokenA).name,
-            symbol: getGnotPath(poolData.tokenA).symbol,
+            ...getGnotPath(poolData.tokenA),
           },
           tokenB: {
             ...poolData.tokenB,
-            logoURI: getGnotPath(poolData.tokenB).logoURI,
-            path: getGnotPath(poolData.tokenB).path,
-            name: getGnotPath(poolData.tokenB).name,
-            symbol: getGnotPath(poolData.tokenB).symbol,
+            ...getGnotPath(poolData.tokenB),
           },
         }
       : {
           ...poolData,
           tokenA: {
             ...poolData.tokenA,
-            logoURI: getGnotPath(poolData.tokenA).logoURI,
-            path: getGnotPath(poolData.tokenA).path,
-            name: getGnotPath(poolData.tokenA).name,
-            symbol: getGnotPath(poolData.tokenA).symbol,
+            ...getGnotPath(poolData.tokenA),
           },
           tokenB: {
             ...poolData.tokenB,
-            logoURI: getGnotPath(poolData.tokenB).logoURI,
-            path: getGnotPath(poolData.tokenB).path,
-            name: getGnotPath(poolData.tokenB).name,
-            symbol: getGnotPath(poolData.tokenB).symbol,
+            ...getGnotPath(poolData.tokenB),
           },
           price: 1 / poolData.price,
         };
@@ -130,7 +118,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
         <ExchangeRateGraphController>
           {hasData ? (
             <PairRatio
-              pool={poolData}
+              pool={changedPoolInfo}
               loading={isLoading}
               isSwap={isReversed}
               overrideValue={active ? Number(currentPoint) : undefined}

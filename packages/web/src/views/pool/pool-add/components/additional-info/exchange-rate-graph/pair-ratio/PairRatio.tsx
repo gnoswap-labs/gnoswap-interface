@@ -9,8 +9,8 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolModel } from "@models/pool/pool-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
-import IconSwap from "../icons/IconSwap";
-import MissingLogo from "../missing-logo/MissingLogo";
+import IconSwap from "../../../../../../../components/common/icons/IconSwap";
+import MissingLogo from "../../../../../../../components/common/missing-logo/MissingLogo";
 import { PairRatioWrapper } from "./PairRatio.styles";
 
 function replaceGnotSymbol(symbol: string) {
@@ -35,6 +35,7 @@ export function PairRatio({
   pool,
   overrideValue,
 }: PairRatioProps) {
+
   const displayTokenSymbol = useMemo(
     () =>
       replaceGnotSymbol(!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),

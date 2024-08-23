@@ -126,13 +126,6 @@ const AdditionalInfoContainer: React.FC = () => {
     );
   }, [compareToken, tokenPair]);
 
-  console.log(
-    isLoadingRPCPoolInfo,
-    isFetchingFeetierOfLiquidityMap,
-    isLoadingPoolInfo,
-    isLoadingPosition,
-  );
-
   return (
     <AdditionalInfo
       tokenPair={tokenPair}

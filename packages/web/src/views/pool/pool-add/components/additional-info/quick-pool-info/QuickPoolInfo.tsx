@@ -39,8 +39,6 @@ const QuickPoolInfo: React.FC<Props> = ({
   const { getGnotPath } = useGnotToGnot();
   const { tokens } = useTokenData();
 
-  console.log(pool);
-
   const tokenA = useMemo(
     () =>
       pool.tokenA.path
