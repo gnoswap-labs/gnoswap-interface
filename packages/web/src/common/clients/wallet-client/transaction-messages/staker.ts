@@ -50,7 +50,7 @@ export function makeUnstakeMessage(
     packagePath: PACKAGE_STAKER_PATH,
     args: [
       lpTokenId.toString(),
-      `${!isGetWGNOT}`, // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
+      // `${!isGetWGNOT}`, // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
     ],
     caller,
   });
