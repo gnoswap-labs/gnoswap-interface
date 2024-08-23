@@ -40,11 +40,6 @@ export const PoolAddLayoutWrapper = styled.div`
     }
   }
 
-  .content-default {
-    ${media.tablet} {
-      display: none;
-    }
-  }
   ${media.tablet} {
     main {
       margin: 60px 0;
@@ -61,7 +56,8 @@ export const PoolAddLayoutWrapper = styled.div`
       }
     }
     .add-liquidity-section {
-      margin: auto;
+      ${mixins.flexbox("row", "center", "center")};
+      width: 100%;
     }
     .content-default {
       display: none;
@@ -82,9 +78,6 @@ export const PoolAddLayoutWrapper = styled.div`
     .content-wrap {
       gap: 24px;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
-    }
-    .add-liquidity-section {
-      margin: none;
     }
   }
   ${media.mobile} {

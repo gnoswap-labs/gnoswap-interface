@@ -6,13 +6,10 @@ import { checkGnotPath } from "@utils/common";
 export const usePoolAddSearchParams = () => {
   const router = useCustomRouter();
 
-    const poolPathParam = router.query.poolPath as string;
-    const tokenAPath =
-      (router.query.tokenA as string) || window.history.state?.tokenA;
-    const tokenBPath =
-      (router.query.tokenB as string) || window.history.state?.tokenB;
-    const feeTier =
-      (router.query.fee_tier as string) || window.history.state?.fee_tier;
+  const poolPathParam = router.query.poolPath as string;
+  const tokenAPath = router.query.tokenA as string;
+  const tokenBPath = router.query.tokenB as string;
+  const feeTier = router.query.fee_tier as string;
 
   const tokenPair = useMemo(() => {
     if (poolPathParam){

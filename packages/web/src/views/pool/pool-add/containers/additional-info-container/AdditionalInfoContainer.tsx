@@ -4,15 +4,18 @@ import React, { useCallback, useMemo } from "react";
 import { PAGE_PATH_TYPE } from "@constants/page.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
-import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { initialDetailPool } from "@models/pool/pool-detail-model";
-import { isNativeToken } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { checkGnotPath } from "@utils/common";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 import AdditionalInfo from "../../components/additional-info/AdditionalInfo";
 import { usePoolAddSearchParams } from "../../hooks/use-pool-add-serach-param";
+import { usePool } from "../../hooks/use-pool";
 
 const AdditionalInfoContainer: React.FC = () => {
   const router = useCustomRouter();
@@ -21,8 +24,37 @@ const AdditionalInfoContainer: React.FC = () => {
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(
     EarnState.poolInfoQuery,
   );
-  const { pools } = usePoolData();
   const { poolPath, tokenPair } = usePoolAddSearchParams();
+  const { tokens } = useTokenData();
+  const { getGnotPath } = useGnotToGnot();
+
+  const tokenA = useMemo(
+    () =>
+      ({
+        ...tokens.find(item => item.path === checkGnotPath(tokenPair[0])),
+        ...getGnotPath(
+          tokens.find(item => item.path === checkGnotPath(tokenPair[0])),
+        ),
+      } as TokenModel),
+    [getGnotPath, tokens, tokenPair],
+  );
+
+  const tokenB = useMemo(
+    () =>
+      ({
+        ...tokens.find(item => item.path === checkGnotPath(tokenPair[1])),
+        ...getGnotPath(
+          tokens.find(item => item.path === checkGnotPath(tokenPair[1])),
+        ),
+      } as TokenModel),
+    [getGnotPath, tokens, tokenPair],
+  );
+
+  const {
+    pools,
+    feetierOfLiquidityMap,
+    fetching: isFetchingFeetierOfLiquidityMap,
+  } = usePool({ tokenA, tokenB, compareToken });
 
   const shouldFetchPool = useMemo(() => {
     return pools.some(pool => pool.poolPath === poolPath);
@@ -36,11 +68,30 @@ const AdditionalInfoContainer: React.FC = () => {
     },
   });
 
+  const { data = initialDetailPool, isLoading: isLoadingPoolInfo } =
+    useGetPoolDetailByPath(poolPath, {
+      enabled: !!poolPath && shouldFetchPool,
+    });
+
+  const biggestPoolPath = useMemo(() => {
+    if (!feetierOfLiquidityMap || feetierOfLiquidityMap.length === 0)
+      return null;
+    let biggestFeeTier = "";
+    Object.keys(feetierOfLiquidityMap).forEach((feeTier) => {
+      if(biggestFeeTier === "") biggestFeeTier = feeTier;
+      else {
+        if (feetierOfLiquidityMap[biggestFeeTier] < feetierOfLiquidityMap[feeTier] )
+          biggestFeeTier = feeTier;
+      }
+    });
+    return [...tokenPair, biggestFeeTier].join(":");
+  }, [tokenPair, feetierOfLiquidityMap]);
+
   const {
-    data = initialDetailPool,
-    isLoading: isLoadingPoolInfo,
-  } = useGetPoolDetailByPath(poolPath as string, {
-    enabled: !!poolPath && shouldFetchPool,
+    data: biggestPool = initialDetailPool,
+    isLoading: isLoadingBiggestPoolInfo,
+  } = useGetPoolDetailByPath(biggestPoolPath, {
+    enabled: !!biggestPoolPath && shouldFetchPool,
   });
 
   const handleClickGotoStaking = useCallback(
@@ -75,15 +126,28 @@ const AdditionalInfoContainer: React.FC = () => {
     );
   }, [compareToken, tokenPair]);
 
+  console.log(
+    isLoadingRPCPoolInfo,
+    isFetchingFeetierOfLiquidityMap,
+    isLoadingPoolInfo,
+    isLoadingPosition,
+  );
+
   return (
     <AdditionalInfo
+      tokenPair={tokenPair}
       stakedPositions={stakedPositions}
       unstakedPositions={unstakedPositions}
       handleClickGotoStaking={handleClickGotoStaking}
       pool={data}
+      biggestPool={biggestPool}
       isLoadingPool={
-        isLoadingRPCPoolInfo || isLoadingPoolInfo || isLoadingPosition
+        isLoadingRPCPoolInfo ||
+        isFetchingFeetierOfLiquidityMap ||
+        isLoadingPoolInfo ||
+        isLoadingPosition
       }
+      isLoadingGraph={isLoadingBiggestPoolInfo}
       isReversed={isReversed}
     />
   );

@@ -10,29 +10,35 @@ import QuickPoolInfo from "./quick-pool-info/QuickPoolInfo";
 import { AdditionalInfoDummy, AdditionalInfoWrapper } from "./AdditonalInfo.styles";
 
 interface AdditionalInfoProps {
+  tokenPair: string[];
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
   handleClickGotoStaking: (type: PAGE_PATH_TYPE) => void;
   pool: PoolDetailModel;
+  biggestPool: PoolDetailModel;
   isLoadingPool: boolean;
+  isLoadingGraph: boolean;
   isReversed: boolean;
 }
 
 const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
+  tokenPair,
   stakedPositions,
   unstakedPositions,
   handleClickGotoStaking,
   pool,
+  biggestPool,
   isLoadingPool,
+  isLoadingGraph,
   isReversed,
 }) => {
-
-  if (!pool.tokenA?.path || !pool.tokenB?.path) return <AdditionalInfoDummy />;
-
+  if (!tokenPair || tokenPair.length < 2 || !tokenPair[0] || !tokenPair[1])
+    return <AdditionalInfoDummy />;
 
   return (
     <AdditionalInfoWrapper>
       <QuickPoolInfo
+        tokenPair={tokenPair}
         stakedPositions={stakedPositions}
         unstakedPositions={unstakedPositions}
         handleClickGotoStaking={handleClickGotoStaking}
@@ -40,8 +46,8 @@ const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
         isLoadingPool={isLoadingPool}
       />
       <ExchangeRateGraph
-        poolData={pool}
-        isLoading={isLoadingPool}
+        poolData={biggestPool}
+        isLoading={isLoadingGraph}
         isReversed={isReversed}
       />
     </AdditionalInfoWrapper>
