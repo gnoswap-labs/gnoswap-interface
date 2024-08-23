@@ -199,7 +199,7 @@ export class PositionRepositoryImpl implements PositionRepository {
 
       if (hasFee) {
         collectMessages.push(
-          makePositionCollectFeeMessage(position.lpTokenId, recipient),
+          makePositionCollectFeeMessage(position.lpTokenId, false, recipient),
         );
       }
       if (hasStakingReward) {
