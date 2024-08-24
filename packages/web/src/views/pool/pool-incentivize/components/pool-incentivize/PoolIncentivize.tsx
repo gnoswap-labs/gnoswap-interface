@@ -19,6 +19,7 @@ import PoolIncentivizeSelectPool from "./pool-incentivize-select-pool/PoolIncent
 import SelectDistributionPeriod from "./select-distribution-period/SelectDistributionPeriod";
 
 import { PoolIncentivizeWrapper } from "./PoolIncentivize.styles";
+import IncentiveCreationDeposit from "./incentive-creation-deposit/IncentiveCreationDeposit";
 
 interface PoolIncentivizeProps {
   token: TokenBalanceInfo | null;
@@ -140,6 +141,9 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
       />
 
       <Disclaimer />
+
+      <IncentiveCreationDeposit />
+
       <Button
         text={textBtn}
         style={{
