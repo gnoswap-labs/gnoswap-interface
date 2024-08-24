@@ -1,12 +1,14 @@
+export type ActivityType =
+  | "All"
+  | "Swaps"
+  | "Adds"
+  | "Removes"
+  | "Stakes"
+  | "Unstakes"
+  | "Claims";
+
 export interface OnchainRequest {
-  type:
-    | "All"
-    | "Swaps"
-    | "Adds"
-    | "Removes"
-    | "Stakes"
-    | "Unstakes"
-    | "Claims";
+  type: ActivityType;
 }
 
 export const OnChainRequestMapping: Record<OnchainRequest["type"], string> = {
