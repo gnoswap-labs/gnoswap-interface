@@ -1,29 +1,22 @@
 import React, { useMemo } from "react";
-import BestPools from "@components/token/best-pools/BestPools";
+
 import { SwapFeeTierType } from "@constants/option.constant";
-import { type TokenPairInfo } from "@models/token/token-pair-info";
+import useCustomRouter from "@hooks/common/use-custom-router";
+import { useLoading } from "@hooks/common/use-loading";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PoolModel } from "@models/pool/pool-model";
+import { useGetPoolList } from "@query/pools";
 import {
-  useGetToken,
-  useGetTokens,
   useGetChainInfo,
+  useGetToken,
   useGetTokenDetails,
+  useGetTokens
 } from "@query/token";
 import { IBestPoolResponse } from "@repositories/token";
-import { useGetPoolList } from "src/react-query/pools";
-import { PoolModel } from "@models/pool/pool-model";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useLoading } from "@hooks/common/use-loading";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import useCustomRouter from "@hooks/common/use-custom-router";
 
-export interface BestPool {
-  tokenPair: TokenPairInfo;
-  feeRate: SwapFeeTierType;
-  tvl: string;
-  apr: string;
-  id: string;
-  poolPath: string;
-}
+import { BestPool } from "../../components/best-pools/best-pool-card-list/BestPoolCardList";
+import BestPools from "../../components/best-pools/BestPools";
 
 const BestPoolsContainer: React.FC = () => {
   const { wugnotPath, getGnotPath } = useGnotToGnot();

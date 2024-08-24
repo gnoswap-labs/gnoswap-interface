@@ -1,16 +1,27 @@
-import React from "react";
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { type BestPool } from "@containers/best-pools-container/BestPoolsContainer";
-import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
-import { loadingWrapper, wrapper } from "./BestPoolCardList.styles";
 import Link from "next/link";
-import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import React from "react";
+import { useTranslation } from "react-i18next";
+
+import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStar from "@components/common/icons/IconStar";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
-import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
-import { useTranslation } from "react-i18next";
+import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
+
+import { TokenPairInfo } from "@models/token/token-pair-info";
+import { loadingWrapper, wrapper } from "./BestPoolCardList.styles";
+
+export interface BestPool {
+  tokenPair: TokenPairInfo;
+  feeRate: SwapFeeTierType;
+  tvl: string;
+  apr: string;
+  id: string;
+  poolPath: string;
+}
 
 interface BestPoolCardListProps {
   list: BestPool[];

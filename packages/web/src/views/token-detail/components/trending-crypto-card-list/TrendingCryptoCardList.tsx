@@ -1,10 +1,13 @@
 import React from "react";
-import TrendingCryptoCard from "@components/token/trending-crypto-card/TrendingCryptoCard";
-import { loadingWrapper, wrapper } from "./TrendingCryptoCardList.styles";
+
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
+import TrendingCryptoCard, { TrendingCryptoInfo } from "./trending-crypto-card/TrendingCryptoCard";
+
+import { loadingWrapper, wrapper } from "./TrendingCryptoCardList.styles";
+
 interface TrendingCryptoCardListProps {
-  list: any[];
+  list: TrendingCryptoInfo[];
   loading: boolean;
 }
 

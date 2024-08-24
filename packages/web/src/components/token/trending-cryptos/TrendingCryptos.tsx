@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+
 import { wrapper } from "./TrendingCryptos.styles";
 
 interface TrendingCryptosProps {

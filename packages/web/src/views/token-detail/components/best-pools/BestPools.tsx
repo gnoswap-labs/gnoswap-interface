@@ -1,8 +1,9 @@
-import { BestPool } from "@containers/best-pools-container/BestPoolsContainer";
 import React from "react";
-import BestPoolCardList from "@components/token/best-pool-card-list/BestPoolCardList";
-import { wrapper } from "./BestPools.styles";
 import { useTranslation } from "react-i18next";
+
+import BestPoolCardList, { BestPool } from "./best-pool-card-list/BestPoolCardList";
+
+import { wrapper } from "./BestPools.styles";
 
 interface BestPoolsProps {
   titleSymbol: string;

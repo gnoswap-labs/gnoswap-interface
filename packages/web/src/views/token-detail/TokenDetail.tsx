@@ -4,7 +4,6 @@ import { useTranslation } from "next-i18next";
 import { TokenError } from "@common/errors/token";
 import Footer from "@components/common/footer/Footer";
 import TrendingCryptos from "@components/token/trending-cryptos/TrendingCryptos";
-import BestPoolsContainer from "@containers/best-pools-container/BestPoolsContainer";
 import BreadcrumbsContainer, {
   BreadcrumbTypes,
 } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
@@ -14,11 +13,12 @@ import TokenChartContainer from "@containers/token-chart-container/TokenChartCon
 import TokenDescriptionContainer from "@containers/token-description-container/TokenDescriptionContainer";
 import TokenInfoContentContainer from "@containers/token-info-content-container/TokenInfoContentContainer";
 import TokenSwapContainer from "@containers/token-swap-container/TokenSwapContainer";
-import TrendingCryptoCardListContainer from "@containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useGetToken } from "@query/token";
 
+import TrendingCryptoCardListContainer from "./containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
+import BestPoolsContainer from "./containers/best-pools-container/BestPoolsContainer";
 import TokenLayout from "./TokenLayout";
 
 const TokenDetail: React.FC = () => {

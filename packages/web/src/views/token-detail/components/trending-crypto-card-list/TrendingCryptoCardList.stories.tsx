@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TrendingCryptoCardList from "./TrendingCryptoCardList";
-import { trendingCryptoListInit } from "@containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
+import { trendingCryptoListInit } from "@views/token-detail/containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
 
 export default {
   title: "token/TrendingCryptoCardList",

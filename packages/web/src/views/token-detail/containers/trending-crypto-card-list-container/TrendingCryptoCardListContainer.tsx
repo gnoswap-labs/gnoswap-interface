@@ -1,20 +1,23 @@
 import React, { useMemo } from "react";
-import TrendingCryptoCardList from "@components/token/trending-crypto-card-list/TrendingCryptoCardList";
+
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import useCustomRouter from "@hooks/common/use-custom-router";
+import { useLoading } from "@hooks/common/use-loading";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { TokenModel } from "@models/token/token-model";
+import { useGetPoolList } from "@query/pools";
 import {
   useGetChainInfo,
   useGetTokenDetails,
   useGetTokens,
 } from "@query/token";
 import { ITrending } from "@repositories/token";
-import { TokenModel } from "@models/token/token-model";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useGetPoolList } from "@query/pools";
-import { useLoading } from "@hooks/common/use-loading";
 import { formatPrice, formatRate } from "@utils/new-number-utils";
-import useCustomRouter from "@hooks/common/use-custom-router";
 
-const trendingCryptoInit = [
+import TrendingCryptoCardList from "../../components/trending-crypto-card-list/TrendingCryptoCardList";
+import { TrendingCryptoInfo } from "../../components/trending-crypto-card-list/trending-crypto-card/TrendingCryptoCard";
+
+const trendingCryptoInit: TrendingCryptoInfo[] = [
   {
     path: "1",
     name: "HEX",

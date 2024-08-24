@@ -1,12 +1,27 @@
-import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { cx } from "@emotion/css";
-import React from "react";
-import { NameSectionWrapper, wrapper } from "./TrendingCryptoCard.styles";
 import Link from "next/link";
+import React from "react";
+
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { makeTokenRouteUrl } from "@utils/page.utils";
+
+import { NameSectionWrapper, wrapper } from "./TrendingCryptoCard.styles";
+
+export type TrendingCryptoInfo = {
+    path: string;
+    symbol: string;
+    logoURI: string;
+    name: string;
+    price: string;
+    change: {
+      status: MATH_NEGATIVE_TYPE;
+      value: string;
+    };
+  }
+
 interface TrendingCryptoCardProps {
-  item: any;
+  item: TrendingCryptoInfo;
 }
 
 const TrendingCryptoCard: React.FC<TrendingCryptoCardProps> = ({ item }) => {
