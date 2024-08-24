@@ -11,17 +11,15 @@ import {
   MOBILE_ACTIVITY_INFO,
 } from "@constants/skeleton.constant";
 import { DEVICE_TYPE } from "@styles/media";
+import { ActivityData } from "@repositories/activity/responses/activity-responses";
 
-import ActivityInfo, {
-  type Activity,
-  MobileActivityInfo,
-} from "./activity-info/ActivityInfo";
+import ActivityInfo, { MobileActivityInfo } from "./activity-info/ActivityInfo";
 
 import {
   MobileTableHeader,
   noDataText,
   TableHeader,
-  TableWrapper
+  TableWrapper,
 } from "./ActivityListTable.styles";
 
 export interface SortOption {
@@ -40,7 +38,7 @@ export const ACTIVITY_TABLE_HEAD = {
 export type ACTIVITY_TABLE_HEAD = ValuesType<typeof ACTIVITY_TABLE_HEAD>;
 
 interface ActivityListTableProps {
-  activities: Activity[];
+  activities: ActivityData[];
   isFetched: boolean;
   isSortOption: (head: ACTIVITY_TABLE_HEAD) => boolean;
   sortOption?: SortOption;

@@ -1,7 +1,8 @@
 import React from "react";
 
-import { DEVICE_TYPE } from "@styles/media";
+import { ActivityData } from "@repositories/activity/responses/activity-responses";
 import { ActivityType } from "@repositories/dashboard";
+import { DEVICE_TYPE } from "@styles/media";
 
 import ActivityListHeader from "./activity-list-header/ActivityListHeader";
 import ActivityListTable, {
@@ -9,11 +10,10 @@ import ActivityListTable, {
   SortOption,
 } from "./activity-list-table/ActivityListTable";
 
-import { type Activity } from "./activity-list-table/activity-info/ActivityInfo";
 import { ActivityListWrapper } from "./ActivityList.styles";
 
 interface ActivityItem {
-  activities: Activity[];
+  activities: ActivityData[];
   isFetched: boolean;
   error: Error | null;
   activityType?: ActivityType;
