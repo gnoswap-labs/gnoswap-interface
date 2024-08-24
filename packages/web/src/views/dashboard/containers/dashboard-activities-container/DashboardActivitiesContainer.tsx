@@ -9,12 +9,12 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGetDashboardActivities } from "@query/dashboard/use-get-dashboard-activities";
 import { ActivityData } from "@repositories/activity/responses/activity-responses";
 import { DexEvent } from "@repositories/common";
+import { ActivityType } from "@repositories/dashboard";
 import {
   formatOtherPrice,
   formatPoolPairAmount,
 } from "@utils/new-number-utils";
 
-import { ACTIVITY_TYPE } from "../../components/activity-list/activity-list-header/ActivityListHeader";
 import { Activity } from "../../components/activity-list/activity-list-table/activity-info/ActivityInfo";
 import {
   ACTIVITY_TABLE_HEAD,
@@ -31,8 +31,8 @@ const replaceToken = (symbol: string) => {
 
 const DashboardActivitiesContainer: React.FC = () => {
   const { t } = useTranslation();
-  const [activityType, setActivityType] = useState<ACTIVITY_TYPE>(
-    ACTIVITY_TYPE.ALL,
+  const [activityType, setActivityType] = useState<ActivityType>(
+    ActivityType.ALL,
   );
   const { getTxUrl } = useGnoscanUrl();
   const [page, setPage] = useState(0);
@@ -49,8 +49,8 @@ const DashboardActivitiesContainer: React.FC = () => {
   const changeActivityType = useCallback(
     ({ key: newType }: { display: string; key: string }) => {
       const activityType =
-        Object.values(ACTIVITY_TYPE).find(type => type === newType) ||
-        ACTIVITY_TYPE["ALL"];
+        Object.values(ActivityType).find(type => type === newType) ||
+        ActivityType.ALL;
       setActivityType(activityType);
     },
     [],

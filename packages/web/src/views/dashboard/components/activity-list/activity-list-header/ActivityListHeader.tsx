@@ -1,43 +1,32 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ValuesType } from "utility-types";
 
 import SelectTabV2 from "@components/common/select-tab-v2/SelectTabV2";
+import { ActivityType } from "@repositories/dashboard";
 
 import { ActivityListHeaderwrapper } from "./ActivityListHeader.styles";
 
-export const ACTIVITY_TYPE = {
-  ALL: "All",
-  SWAPS: "Swaps",
-  ADDS: "Adds",
-  REMOVES: "Removes",
-  STAKES: "Stakes",
-  UNSTAKE: "Unstakes",
-  CLAIM: "Claims",
-} as const;
-export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
-
 export const ACTIVITY_SWITCH_DATA = [
-  { key: ACTIVITY_TYPE.ALL, display: "Dashboard:onchainActi.switch.all" },
-  { key: ACTIVITY_TYPE.SWAPS, display: "Dashboard:onchainActi.switch.swap" },
-  { key: ACTIVITY_TYPE.ADDS, display: "Dashboard:onchainActi.switch.add" },
+  { key: ActivityType.ALL, display: "Dashboard:onchainActi.switch.all" },
+  { key: ActivityType.SWAP, display: "Dashboard:onchainActi.switch.swap" },
+  { key: ActivityType.ADD, display: "Dashboard:onchainActi.switch.add" },
   {
-    key: ACTIVITY_TYPE.REMOVES,
+    key: ActivityType.REMOVE,
     display: "Dashboard:onchainActi.switch.remove",
   },
-  { key: ACTIVITY_TYPE.STAKES, display: "Dashboard:onchainActi.switch.stake" },
+  { key: ActivityType.STAKE, display: "Dashboard:onchainActi.switch.stake" },
   {
-    key: ACTIVITY_TYPE.UNSTAKE,
+    key: ActivityType.UNSTAKE,
     display: "Dashboard:onchainActi.switch.unstake",
   },
   {
-    key: ACTIVITY_TYPE.CLAIM,
+    key: ActivityType.CLAIM,
     display: "Dashboard:onchainActi.switch.claim",
   },
 ];
 
 interface ActivityListHeaderProps {
-  activityType: ACTIVITY_TYPE;
+  activityType: ActivityType;
   changeActivityType: ({
     display,
     key,

@@ -23,7 +23,6 @@ import {
 
 dayjs.extend(relativeTime);
 
-
 export interface Activity {
   action: ReactNode;
   totalValue: string;

@@ -2,10 +2,10 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { ActivityType } from "@repositories/dashboard";
 import { DEVICE_TYPE } from "@styles/media";
 
 import ActivityList from "./ActivityList";
-import { ACTIVITY_TYPE } from "./activity-list-header/ActivityListHeader";
 
 const dummyTokenList = [
   {
@@ -26,7 +26,7 @@ describe("ActivityList Component", () => {
       activities: dummyTokenList,
       isFetched: true,
       error: null,
-      activityType: ACTIVITY_TYPE.ALL,
+      activityType: ActivityType.ALL,
       changeActivityType: () => null,
       currentPage: 0,
       totalPage: 10,

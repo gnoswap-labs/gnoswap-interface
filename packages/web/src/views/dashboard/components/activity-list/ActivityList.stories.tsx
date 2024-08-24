@@ -1,9 +1,11 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import ActivityList from "./ActivityList";
 import { css, Theme } from "@emotion/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
+
+import { ActivityType } from "@repositories/dashboard";
 import { DEVICE_TYPE } from "@styles/media";
+
+import ActivityList from "./ActivityList";
 
 const dummyTokenList = [
   {
@@ -34,7 +36,7 @@ Default.args = {
   activities: dummyTokenList,
   isFetched: true,
   error: null,
-  activityType: "All",
+  activityType: ActivityType.ALL,
   changeActivityType: action("changeActivityType"),
   currentPage: 0,
   totalPage: 10,

@@ -7,7 +7,7 @@ import { ActivityResponse } from "@repositories/activity/responses/activity-resp
 import { DashboardRepository } from "./dashboard-repository";
 import {
   OnchainAccountRequest,
-  OnchainRequest, OnChainRequestMapping
+  OnchainRequest,
 } from "./request";
 import { TvlResponse } from "./response";
 import { DashboardTokenResponse } from "./response/token-response";
@@ -68,7 +68,7 @@ export class DashboardRepositoryImpl implements DashboardRepository {
 
     const response = await this.networkClient
       .get<{ data: ActivityResponse }>({
-        url: `/activity?type=${OnChainRequestMapping[type]}`,
+        url: `/activity?type=${type}`,
       })
       .catch(() => null);
     if (!response?.data?.data) {

@@ -2,13 +2,14 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { ActivityType } from "@repositories/dashboard";
 
-import ActivityListHeader, { ACTIVITY_TYPE } from "./ActivityListHeader";
+import ActivityListHeader from "./ActivityListHeader";
 
 describe("ActivityListHeader Component", () => {
   it("ActivityListHeader render", () => {
     const mockProps = {
-      activityType: ACTIVITY_TYPE.ALL,
+      activityType: ActivityType.ALL,
       changeActivityType: () => null,
     };
 

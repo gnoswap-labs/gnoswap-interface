@@ -1,10 +1,9 @@
 import React from "react";
 
 import { DEVICE_TYPE } from "@styles/media";
+import { ActivityType } from "@repositories/dashboard";
 
-import ActivityListHeader, {
-  ACTIVITY_TYPE,
-} from "./activity-list-header/ActivityListHeader";
+import ActivityListHeader from "./activity-list-header/ActivityListHeader";
 import ActivityListTable, {
   ACTIVITY_TABLE_HEAD,
   SortOption,
@@ -17,7 +16,7 @@ interface ActivityItem {
   activities: Activity[];
   isFetched: boolean;
   error: Error | null;
-  activityType?: ACTIVITY_TYPE;
+  activityType?: ActivityType;
   sortOption?: SortOption;
   changeActivityType: ({
     display,
@@ -37,7 +36,7 @@ interface ActivityItem {
 const ActivityList: React.FC<ActivityItem> = ({
   activities,
   isFetched,
-  activityType = ACTIVITY_TYPE.ALL,
+  activityType = ActivityType.ALL,
   sortOption,
   changeActivityType,
   isSortOption,
