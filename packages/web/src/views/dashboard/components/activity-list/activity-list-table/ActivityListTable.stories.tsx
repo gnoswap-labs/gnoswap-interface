@@ -1,21 +1,12 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import ActivityListTable from "./ActivityListTable";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { dummyActivityData } from "@repositories/activity/responses/activity-responses";
 import { DEVICE_TYPE } from "@styles/media";
 
-const dummyTokenList = [
-  {
-    action: "Add GNOT and GNS",
-    totalValue: "$12,090",
-    tokenAmountOne: "100 ATOM",
-    tokenAmountTwo: "19 GNS",
-    account: "g129kua...ndsu12",
-    time: "less than a minute ago",
-    explorerUrl:
-      "https://gnoscan.io/transactions/details?txhash=hNaBGE2oDb15Q08y68wpycjwwGaCcXcU2jnrRRfuUo0%3D",
-  },
-];
+import ActivityListTable from "./ActivityListTable";
+
+const dummyTokenList = [dummyActivityData];
 
 export default {
   title: "dashboard/ActivityListTable",
