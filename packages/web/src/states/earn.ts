@@ -5,7 +5,7 @@ import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenModel } from "@models/token/token-model";
 
-interface DistributionPeriodDate {
+export interface DistributionPeriodDate {
   year: number;
   month: number;
   date: number;

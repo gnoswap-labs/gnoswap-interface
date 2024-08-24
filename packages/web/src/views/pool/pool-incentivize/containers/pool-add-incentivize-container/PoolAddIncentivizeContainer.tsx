@@ -1,19 +1,21 @@
-import PoolIncentivize from "@components/incentivize/pool-incentivize/PoolIncentivize";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { TokenBalanceInfo } from "@models/token/token-balance-info";
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
-import { useIncentivizePoolModal } from "@hooks/incentivize/use-incentivize-pool-modal";
-import { TokenModel } from "@models/token/token-model";
-import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
-import { useTokenData } from "@hooks/token/use-token-data";
 import { useAtom } from "jotai";
-import { EarnState } from "@states/index";
-import { useWallet } from "@hooks/wallet/use-wallet";
-import { useGetPoolDetailByPath, useGetPoolList } from "@query/pools";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useTranslation } from "react-i18next";
+import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { TokenBalanceInfo } from "@models/token/token-balance-info";
+import { TokenModel } from "@models/token/token-model";
+import { useGetPoolDetailByPath, useGetPoolList } from "@query/pools";
+import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
+import { EarnState } from "@states/index";
+import PoolIncentivize from "@views/pool/pool-incentivize/components/pool-incentivize/PoolIncentivize";
+
+import { useIncentivizePoolModal } from "../../hooks/use-incentivize-pool-modal";
 
 const tokenBalances: TokenBalanceInfo[] = [];
 const periods = [90, 180, 365];
