@@ -1,28 +1,42 @@
+import { useTheme } from "@emotion/react";
+import BigNumber from "bignumber.js";
+import * as d3 from "d3";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import * as uuid from "uuid";
 import {
   EventBlocker,
   PoolSelectionGraphTooltipWrapper,
   PoolSelectionGraphWrapper,
 } from "./PoolSelectionGraph.styles";
-import * as d3 from "d3";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { TokenModel } from "@models/token/token-model";
-import { useColorGraph } from "@hooks/common/use-color-graph";
-import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import FloatingTooltip from "../tooltip/FloatingTooltip";
-import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
-import { convertToKMB } from "@utils/stake-position-utils";
-import {
-  PoolSelectionGraphBinTooptip,
-  TooltipInfo,
-} from "./PoolSelectionGraphBinTooltip";
-import { useTheme } from "@emotion/react";
-import BigNumber from "bignumber.js";
-import { displayTickNumber } from "@utils/string-utils";
+
 import {
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
+import { useColorGraph } from "@hooks/common/use-color-graph";
+import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { TokenModel } from "@models/token/token-model";
+import { convertToKMB } from "@utils/stake-position-utils";
+import { displayTickNumber } from "@utils/string-utils";
+import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+
+import FloatingTooltip from "../tooltip/FloatingTooltip";
+import {
+  PoolSelectionGraphBinTooptip,
+  TooltipInfo,
+} from "./PoolSelectionGraphBinTooltip";
+
+interface SelectionColor {
+  startPercent: string;
+  endPercent: string;
+  start: string;
+  end: string;
+  lineStart: string;
+  lineEnd: string;
+  badgeStart: string;
+  badgeEnd: string;
+}
 
 interface ResolveBinModel {
   index: number;
@@ -95,6 +109,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   onFinishMove,
 }) => {
   const { themeKey } = useTheme();
+  const graphIdRef = useRef(uuid.v4());
+  const graphId = graphIdRef.current.toString();
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
   const brushRef = useRef<SVGGElement | null>(null);
@@ -110,7 +126,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   const { redColor, greenColor } = useColorGraph();
 
-  const [selectionColor, setSelectionColor] = useState(
+  const [selectionColor, setSelectionColor] = useState<SelectionColor>(
     getSelectionColor("0", "0"),
   );
 
@@ -250,7 +266,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     }
     return `${isStart ? "right" : "left"}`;
   }, [width, height, positionX, positionY, position]);
-  const random = Math.random().toString();
 
   const minBrushX =
     scaleX(swapFeeTierMaxPriceRange.minTick - graphMinTick) >= -20
@@ -355,12 +370,14 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     );
   }
 
-  function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<any>) {
+  function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<unknown>) {
     if (!brushRef.current || event.mode === undefined) {
       return;
     }
 
-    onFinishMove && onFinishMove();
+    if (!!onFinishMove) {
+      onFinishMove();
+    }
     if (fullRange) {
       setMinPrice(null);
       setMaxPrice(null);
@@ -441,9 +458,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       }
       if (Number(bin.maxTick) - 5 < currentTick) {
-        return `url(#gradient-bar-green-${random})`;
+        return `url(#gradient-bar-green-${graphId})`;
       }
-      return `url(#gradient-bar-red-${random})`;
+      return `url(#gradient-bar-red-${graphId})`;
     }
 
     // Clean child elements.
@@ -687,14 +704,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       .on("mousemove", onMouseoverChartBin)
       .on("mouseout", onMouseoutChartBin);
 
-    svgElement
-      .append("defs")
-      .append("clipPath")
-      .attr("id", "clip")
-      .append("rect")
-      .attr("width", width)
-      .attr("height", height);
-
     const defElement = svgElement.select("defs");
     const existClipPath = defElement.select("clipPath").empty();
 
@@ -710,7 +719,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (!!width && !!height && !!scaleX && !!scaleY) {
       updateChart();
     }
-  }, [width, height, scaleX, scaleY]);
+  }, [width, height, svgRef?.current, chartRef?.current, resolvedDisplayBins]);
 
   // Brush settings, on currentPrice change, zoom, move ...
   useEffect(() => {
@@ -794,7 +803,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         <svg ref={svgRef}>
           <defs>
             <linearGradient
-              id={`gradient-bar-green-${random}`}
+              id={`gradient-bar-green-${graphId}`}
               x1="0"
               x2="0"
               y1="0"
@@ -804,7 +813,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
               <stop offset="100%" stopColor={greenColor.end} />
             </linearGradient>
             <linearGradient
-              id={`gradient-bar-red-${random}`}
+              id={`gradient-bar-red-${graphId}`}
               x1="0"
               x2="0"
               y1="0"
@@ -898,9 +907,9 @@ const getSelectionColor = (start: string, end: string) => {
 };
 
 function makeLeftBadge(
-  refer: d3.Selection<any, unknown, null, undefined>,
+  refer: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   reverse = false,
-  selectionColor: any,
+  selectionColor: SelectionColor,
 ) {
   const badge = refer
     .append("svg")
@@ -936,9 +945,9 @@ function makeLeftBadge(
 }
 
 function makeRightBadge(
-  refer: d3.Selection<any, unknown, null, undefined>,
+  refer: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   reverse = false,
-  selectionColor: any,
+  selectionColor: SelectionColor,
 ) {
   const badge = refer
     .append("svg")
@@ -974,10 +983,10 @@ function makeRightBadge(
 }
 
 function makeLabel(
-  refer: d3.Selection<any, unknown, null, undefined>,
+  refer: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   right = false,
   reverse = false,
-  selectionColor: any,
+  selectionColor: SelectionColor,
 ) {
   const id = right === false ? "start-price" : "end-price";
   const color =
@@ -1007,13 +1016,13 @@ function makeLabel(
 }
 
 function changeLine(
-  selectionElement: d3.Selection<any, unknown, null, undefined>,
+  selectionElement: d3.Selection<SVGGElement, unknown, null, undefined>,
   type: "start" | "end",
   x: number,
   rate: number,
   right = false,
   selectedFullRange = false,
-  selectionColor: any,
+  selectionColor: SelectionColor,
 ) {
   const hidden = type === "end" && selectedFullRange === true;
   const rateStr = `${rate > 0 ? "+" : ""}${Math.round(rate).toFixed(0)}%`;
