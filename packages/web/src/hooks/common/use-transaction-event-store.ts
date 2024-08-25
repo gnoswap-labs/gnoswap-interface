@@ -6,7 +6,7 @@ import { makeRandomId } from "@utils/common";
 import { useMessage } from "./use-message";
 
 function makeNoticeConfig(type: SnackbarType): SnackbarOptions {
-  const timeout = 50000;
+  const timeout = 3_000;
   return {
     id: makeRandomId(),
     type,
@@ -40,13 +40,7 @@ export const useTransactionEventStore = () => {
       return;
     }
 
-    const pendingMessage = getMessage(
-      action,
-      "pending",
-      formatData(null),
-      txHash,
-    );
-    enqueue(pendingMessage, makeNoticeConfig("pending"));
+    enqueue(undefined, makeNoticeConfig("pending"));
 
     eventStore.addEvent(txHash, async event => {
       const messageType = event.status === "SUCCESS" ? "success" : "error";

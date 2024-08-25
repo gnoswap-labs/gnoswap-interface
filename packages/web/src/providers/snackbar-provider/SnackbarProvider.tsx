@@ -1,15 +1,6 @@
-import {
-  createContext,
-  FC,
-  useCallback,
-  useMemo, useState
-} from "react";
+import { createContext, FC, useCallback, useMemo, useState } from "react";
 
-import {
-  Snackbar,
-  SnackbarType,
-  SnackbarContent,
-} from "./snackbar";
+import { Snackbar, SnackbarType, SnackbarContent } from "./snackbar";
 import { SnackbarOptions } from "./type";
 
 import { SnackbarList } from "./snackbar-provider.styles";
@@ -33,14 +24,24 @@ export const SnackbarContext = createContext<SnackbarContenxtProps>({
 
 const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [snackbars, setSnackbars] = useState<
-    { type: SnackbarType; id: number; content?: SnackbarContent }[]
+    {
+      type: SnackbarType;
+      id: number;
+      content?: SnackbarContent;
+      timeout: number;
+    }[]
   >([]);
 
   const enqueue = useCallback<SnackbarContenxtProps["enqueue"]>(
     (content, options) => {
       setSnackbars(prev => [
         ...prev,
-        { type: options.type, id: options.id, content },
+        {
+          type: options.type,
+          id: options.id,
+          content,
+          timeout: options.timeout,
+        },
       ]);
     },
     [setSnackbars],
@@ -75,6 +76,7 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
                 key={item_.id}
                 type={item_.type}
                 id={item_.id}
+                timeout={item_.timeout}
                 onClose={handleClose}
                 content={item_.content}
               />

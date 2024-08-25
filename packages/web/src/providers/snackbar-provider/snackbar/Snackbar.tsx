@@ -18,6 +18,7 @@ interface SnackbarProps {
   type: SnackbarType;
   id: number;
   content?: SnackbarContent;
+  timeout: number;
 }
 
 const Snackbar: FC<SnackbarProps> = ({
@@ -26,6 +27,7 @@ const Snackbar: FC<SnackbarProps> = ({
   type = "success",
   id,
   content,
+  timeout,
 }) => {
   const isClosed = useRef(false);
   const [typeAnimation, setTypeAnimation] = useState<
@@ -49,7 +51,7 @@ const Snackbar: FC<SnackbarProps> = ({
         if (isClosed.current === false) onClose?.(id);
       }, 500);
       return () => clearTimeout(animationTimeout);
-    }, 6000);
+    }, timeout);
 
     return () => {
       clearTimeout(autoCloseTimeout);
