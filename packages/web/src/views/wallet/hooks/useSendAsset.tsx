@@ -13,6 +13,8 @@ import {
 import { CommonState } from "@states/index";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useTokenData } from "@hooks/token/use-token-data";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -22,14 +24,17 @@ export type WithdrawResponse = {
 } | null;
 
 const useSendAsset = () => {
+  const { walletRepository } = useGnoswapContext();
   const {
     broadcastLoading,
     broadcastSuccess,
-    broadcastPending,
     broadcastError,
     broadcastRejected,
   } = useBroadcastHandler();
-  const { walletRepository } = useGnoswapContext();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
+  const { updateBalances } = useTokenData();
 
   const [loading, setLoading] = useState(false);
   const [isConfirm, setIsConfirm] = useState(false);
@@ -65,11 +70,28 @@ const useSendAsset = () => {
 
     callAction
       .then(response => {
+        if (
+          response.code === 0 ||
+          response.code === ERROR_VALUE.TRANSACTION_FAILED.status
+        ) {
+          enqueueEvent({
+            txHash: response.data?.hash,
+            action: DexEvent.ASSET_SEND,
+            formatData: () => ({
+              tokenASymbol: tokenSymbol,
+              tokenAAmount: tokenAmount,
+            }),
+            callback: async () => {
+              updateBalances();
+            },
+          });
+        }
+
         if (response.code === 0) {
-          broadcastPending(
+          broadcastSuccess(
             getMessage(
               DexEvent.ASSET_SEND,
-              "pending",
+              "success",
               {
                 tokenASymbol: tokenSymbol,
                 tokenAAmount: tokenAmount,
@@ -77,19 +99,6 @@ const useSendAsset = () => {
               response.data?.hash,
             ),
           );
-          setTimeout(() => {
-            broadcastSuccess(
-              getMessage(
-                DexEvent.ASSET_SEND,
-                "success",
-                {
-                  tokenASymbol: tokenSymbol,
-                  tokenAAmount: tokenAmount,
-                },
-                response.data?.hash,
-              ),
-            );
-          }, 1000);
           return true;
         } else if (
           response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000

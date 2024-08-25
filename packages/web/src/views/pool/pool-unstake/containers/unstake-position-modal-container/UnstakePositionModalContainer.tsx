@@ -14,6 +14,9 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
 import UnstakePositionModal from "../../components/unstake-position-modal/UnstakePositionModal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useGetPoolList } from "@query/pools";
+import { useGetPositionsByAddress } from "@query/positions";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -31,10 +34,15 @@ const UnstakePositionModalContainer = ({
   const {
     broadcastRejected,
     broadcastSuccess,
-    broadcastPending,
     broadcastError,
     broadcastLoading,
   } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPositions } = useGetPositionsByAddress();
+
   const { pooledTokenInfos } = usePositionsRewards({ positions });
   const { openModal } = useTransactionConfirmModal({
     confirmCallback: () => router.push(router.asPath.replace("/unstake", "")),
@@ -77,8 +85,32 @@ const UnstakePositionModalContainer = ({
       })
       .catch(() => null);
     if (result) {
+      if (
+        result.code === 0 ||
+        result.code === ERROR_VALUE.TRANSACTION_FAILED.status
+      ) {
+        enqueueEvent({
+          txHash: result.data?.hash,
+          action: DexEvent.UNSTAKE,
+          formatData: () => ({
+            tokenASymbol: tokenA?.token?.symbol,
+            tokenBSymbol: tokenB?.token?.symbol,
+            tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+              decimals: tokenA?.token?.decimals,
+              isKMB: false,
+            }),
+            tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
+              decimals: tokenA?.token?.decimals,
+              isKMB: false,
+            }),
+          }),
+          callback: async () => {
+            refetchPools();
+            refetchPositions();
+          },
+        });
+      }
       if (result.code === 0) {
-        broadcastPending({ txHash: result.data?.hash });
         setTimeout(() => {
           broadcastSuccess(
             getMessage(

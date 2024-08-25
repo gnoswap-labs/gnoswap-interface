@@ -17,6 +17,9 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
 import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useGetPoolList } from "@query/pools";
+import { useGetPositionsByAddress } from "@query/positions";
 
 interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
@@ -39,8 +42,12 @@ const RemovePositionModalContainer = ({
     broadcastSuccess,
     broadcastLoading,
     broadcastError,
-    broadcastPending,
   } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPositions } = useGetPositionsByAddress();
   const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
     positions: selectedPositions,
   });
@@ -103,7 +110,9 @@ const RemovePositionModalContainer = ({
     if (!address) {
       return null;
     }
-    const lpTokenIds = selectedPositions.map(position => position.id.toString());
+    const lpTokenIds = selectedPositions.map(position =>
+      position.id.toString(),
+    );
     const approveTokenPaths = [
       ...new Set(
         selectedPositions.flatMap(position => [
@@ -141,8 +150,27 @@ const RemovePositionModalContainer = ({
       .catch(() => null);
 
     if (result) {
+      if (
+        result.code === 0 ||
+        result.code === ERROR_VALUE.TRANSACTION_FAILED.status
+      ) {
+        enqueueEvent({
+          txHash: result.data?.hash,
+          action: DexEvent.ADD,
+          formatData: response => {
+            if (!response) {
+              return messageData;
+            }
+
+            return messageData;
+          },
+          callback: async () => {
+            refetchPools();
+            refetchPositions();
+          },
+        });
+      }
       if (result.code === 0) {
-        broadcastPending({ txHash: result.data?.hash });
         setTimeout(async () => {
           broadcastSuccess(
             getMessage(

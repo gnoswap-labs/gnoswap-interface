@@ -942,44 +942,47 @@ export const useSwapHandler = () => {
 
       wrap(swapAmount)
         .then(response => {
-          enqueueEvent({
-            txHash: response?.data?.hash,
-            action: DexEvent.WRAP,
-            formatData: response => {
-              if (!response) {
-                return messageData;
-              }
+          if (
+            response?.code === 0 ||
+            response?.code === ERROR_VALUE.TRANSACTION_FAILED.status
+          ) {
+            enqueueEvent({
+              txHash: response?.data?.hash,
+              action: DexEvent.WRAP,
+              formatData: response => {
+                if (!response) {
+                  return messageData;
+                }
 
-              return {
-                ...messageData,
-                tokenAAmount: response[0],
-                tokenBAmount: response[1],
-              };
-            },
-            callback: async () => {
-              await updateBalances();
-            },
-          });
+                return {
+                  ...messageData,
+                  tokenAAmount: response[0],
+                  tokenBAmount: response[1],
+                };
+              },
+              callback: async () => {
+                await updateBalances();
+              },
+            });
+          }
 
           if (response?.code === 0) {
-            setTimeout(() => {
-              const tokenAAmountStr = tokenAAmount;
-              const tokenBAmountStr = tokenBAmount;
-              broadcastSuccess(
-                getMessage(
-                  DexEvent.WRAP,
-                  "success",
-                  {
-                    ...messageData,
-                    tokenAAmount: tokenAAmountStr || "0",
-                    tokenBAmount: tokenBAmountStr || "0",
-                  },
-                  response.data?.hash,
-                ),
-                onFinishSwap,
-              );
-            }, 1000);
             openTransactionConfirmModal();
+            const tokenAAmountStr = tokenAAmount;
+            const tokenBAmountStr = tokenBAmount;
+            broadcastSuccess(
+              getMessage(
+                DexEvent.WRAP,
+                "success",
+                {
+                  ...messageData,
+                  tokenAAmount: tokenAAmountStr || "0",
+                  tokenBAmount: tokenBAmountStr || "0",
+                },
+                response.data?.hash,
+              ),
+              onFinishSwap,
+            );
           } else if (
             response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
@@ -1009,43 +1012,37 @@ export const useSwapHandler = () => {
 
       unwrap(swapAmount)
         .then(response => {
-          enqueueEvent({
-            txHash: response?.data?.hash,
-            action: DexEvent.UNWRAP,
-            formatData: response => {
-              if (!response) {
-                return messageData;
-              }
+          if (
+            response?.code === 0 ||
+            response?.code === ERROR_VALUE.TRANSACTION_FAILED.status
+          ) {
+            enqueueEvent({
+              txHash: response?.data?.hash,
+              action: DexEvent.UNWRAP,
+              formatData: () => messageData,
+              callback: async () => {
+                await updateBalances();
+              },
+            });
+          }
 
-              return {
-                ...messageData,
-                tokenAAmount: response[0],
-                tokenBAmount: response[1],
-              };
-            },
-            callback: async () => {
-              await updateBalances();
-            },
-          });
           if (response?.status === "success") {
-            setTimeout(() => {
-              const tokenAAmountStr = tokenAAmount;
-              const tokenBAmountStr = tokenBAmount;
-              broadcastSuccess(
-                getMessage(
-                  DexEvent.UNWRAP,
-                  "success",
-                  {
-                    ...messageData,
-                    tokenAAmount: tokenAAmountStr || "0",
-                    tokenBAmount: tokenBAmountStr || "0",
-                  },
-                  response.data?.hash,
-                ),
-                onFinishSwap,
-              );
-            }, 1000);
+            const tokenAAmountStr = tokenAAmount;
+            const tokenBAmountStr = tokenBAmount;
             openTransactionConfirmModal();
+            broadcastSuccess(
+              getMessage(
+                DexEvent.UNWRAP,
+                "success",
+                {
+                  ...messageData,
+                  tokenAAmount: tokenAAmountStr || "0",
+                  tokenBAmount: tokenBAmountStr || "0",
+                },
+                response.data?.hash,
+              ),
+              onFinishSwap,
+            );
           } else if (
             response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
@@ -1054,6 +1051,7 @@ export const useSwapHandler = () => {
             );
             openTransactionConfirmModal();
           } else {
+            openTransactionConfirmModal();
             broadcastError(
               getMessage(
                 DexEvent.UNWRAP,
@@ -1062,7 +1060,6 @@ export const useSwapHandler = () => {
                 response?.data?.hash,
               ),
             );
-            openTransactionConfirmModal();
           }
         })
         .catch(() => {
@@ -1109,49 +1106,63 @@ export const useSwapHandler = () => {
     swap(estimatedRoutes, swapAmount)
       .then(response => {
         if (response) {
-          enqueueEvent({
-            txHash: response?.data?.hash,
-            action: DexEvent.SWAP,
-            formatData: response => {
-              if (!response) {
-                return broadcastMessage;
-              }
+          if (
+            response.code === 0 ||
+            response.type === ERROR_VALUE.TRANSACTION_FAILED.type
+          ) {
+            enqueueEvent({
+              txHash: response?.data?.hash,
+              action: DexEvent.SWAP,
+              formatData: response => {
+                if (!response) {
+                  return broadcastMessage;
+                }
 
-              return {
-                ...broadcastMessage,
-                tokenAAmount: response[0],
-                tokenBAmount: response[1],
-              };
-            },
-            callback: async () => {
-              await updateBalances();
-            },
-          });
+                const tokenAAmount = isExactIn ? response[0] : response[1];
+                const tokenBAmount = isExactIn ? response[1] : response[0];
+
+                return {
+                  ...broadcastMessage,
+                  tokenAAmount:
+                    makeDisplayTokenAmount(
+                      tokenA,
+                      BigNumber(tokenAAmount).abs().toString(),
+                    )?.toString() || "0",
+                  tokenBAmount:
+                    makeDisplayTokenAmount(
+                      tokenB,
+                      BigNumber(tokenBAmount).abs().toString(),
+                    )?.toString() || "0",
+                };
+              },
+              callback: async () => {
+                await updateBalances();
+              },
+            });
+          }
 
           if (response.code === 0) {
             const responseData = response?.data as SwapRouteSuccessResponse;
-            setTimeout(() => {
-              const tokenAAmountStr = isExactIn
-                ? tokenAAmount
-                : responseData.resultAmount;
-              const tokenBAmountStr = isExactIn
-                ? responseData.resultAmount
-                : tokenBAmount;
-              broadcastSuccess(
-                getMessage(
-                  DexEvent.SWAP,
-                  "success",
-                  {
-                    ...broadcastMessage,
-                    tokenAAmount: tokenAAmountStr || "0",
-                    tokenBAmount: tokenBAmountStr || "0",
-                  },
-                  responseData.hash,
-                ),
-                onFinishSwap,
-              );
-            }, 1000);
+            const tokenAAmountStr = isExactIn
+              ? tokenAAmount
+              : responseData.resultAmount;
+            const tokenBAmountStr = isExactIn
+              ? responseData.resultAmount
+              : tokenBAmount;
             openTransactionConfirmModal();
+            broadcastSuccess(
+              getMessage(
+                DexEvent.SWAP,
+                "success",
+                {
+                  ...broadcastMessage,
+                  tokenAAmount: tokenAAmountStr || "0",
+                  tokenBAmount: tokenBAmountStr || "0",
+                },
+                responseData.hash,
+              ),
+              onFinishSwap,
+            );
           } else if (
             response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {

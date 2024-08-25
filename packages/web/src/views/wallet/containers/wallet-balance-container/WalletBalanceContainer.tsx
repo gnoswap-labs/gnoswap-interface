@@ -25,6 +25,7 @@ import { isEmptyObject } from "@utils/validation-utils";
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
 import useSendAsset from "../../hooks/useSendAsset";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();
@@ -37,7 +38,11 @@ const WalletBalanceContainer: React.FC = () => {
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
 
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { balances: balancesPrice, loadingBalance } = useTokenData();
+  const {
+    balances: balancesPrice,
+    loadingBalance,
+    updateBalances,
+  } = useTokenData();
 
   const { positions, loading: loadingPositions } = usePositionData();
 
@@ -47,12 +52,11 @@ const WalletBalanceContainer: React.FC = () => {
   );
 
   const { claimAll } = usePosition(positions);
-  const {
-    broadcastSuccess,
-    broadcastPending,
-    broadcastError,
-    broadcastRejected,
-  } = useBroadcastHandler();
+  const { broadcastSuccess, broadcastError, broadcastRejected } =
+    useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
   const { openModal } = useTransactionConfirmModal();
   const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } =
     useGetAllTokenPrices();
@@ -90,22 +94,36 @@ const WalletBalanceContainer: React.FC = () => {
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
       if (response) {
+        if (
+          response.code === 0 ||
+          response.code === ERROR_VALUE.TRANSACTION_FAILED.status
+        ) {
+          enqueueEvent({
+            txHash: response.data.hash,
+            action: DexEvent.CLAIM_FEE,
+            formatData: () => data,
+            callback: async () => {
+              updateBalances();
+            },
+          });
+        }
         if (response.code === 0) {
-          broadcastPending({ txHash: response.data?.hash });
-          setTimeout(() => {
-            broadcastSuccess(
-              getMessage(DexEvent.CLAIM_FEE, "success", data, response.data?.hash),
-            );
-            setLoadingTransactionClaim(false);
-          }, 1000);
           openModal();
+          broadcastSuccess(
+            getMessage(
+              DexEvent.CLAIM_FEE,
+              "success",
+              data,
+              response.data?.hash,
+            ),
+          );
+          setLoadingTransactionClaim(false);
         } else if (
           response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
           broadcastRejected(
             getMessage(DexEvent.CLAIM_FEE, "error", data),
             () => {},
-            true,
           );
           setLoadingTransactionClaim(false);
           openModal();
@@ -217,11 +235,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
 
-  const {
-    isConfirm,
-    setIsConfirm,
-    onSubmit: handleSubmit,
-  } = useSendAsset();
+  const { isConfirm, setIsConfirm, onSubmit: handleSubmit } = useSendAsset();
 
   const onSubmit = (amount: string, address: string) => {
     if (!withdrawInfo || !account?.address) return;

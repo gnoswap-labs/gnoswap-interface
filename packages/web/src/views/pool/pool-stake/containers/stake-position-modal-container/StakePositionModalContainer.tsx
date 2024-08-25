@@ -10,11 +10,13 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useGetPoolDetailByPath } from "@query/pools";
+import { useGetPoolDetailByPath, useGetPoolList } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useGetPositionsByAddress } from "@query/positions";
 
 interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -29,8 +31,13 @@ const StakePositionModalContainer = ({
     broadcastSuccess,
     broadcastLoading,
     broadcastError,
-    broadcastPending,
   } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPositions } = useGetPositionsByAddress();
+
   const { positionRepository } = useGnoswapContext();
   const router = useCustomRouter();
   const clearModal = useClearModal();
@@ -116,30 +123,52 @@ const StakePositionModalContainer = ({
       .catch(() => null);
 
     if (result) {
+      if (
+        result.code === 0 ||
+        result.code === ERROR_VALUE.TRANSACTION_FAILED.status
+      ) {
+        enqueueEvent({
+          txHash: result.data?.hash,
+          action: DexEvent.STAKE,
+          formatData: () => ({
+            tokenASymbol: tokenA?.token?.symbol,
+            tokenBSymbol: tokenB?.token?.symbol,
+            tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+              decimals: tokenA?.token?.decimals,
+              isKMB: false,
+            }),
+            tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+              decimals: tokenB?.token?.decimals,
+              isKMB: false,
+            }),
+          }),
+          callback: async () => {
+            refetchPools();
+            refetchPositions();
+          },
+        });
+      }
       if (result.code === 0) {
-        broadcastPending({ txHash: result.data?.hash });
-        setTimeout(() => {
-          broadcastSuccess(
-            getMessage(
-              DexEvent.STAKE,
-              "success",
-              {
-                tokenASymbol: tokenA?.token?.symbol,
-                tokenBSymbol: tokenB?.token?.symbol,
-                tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
-                  decimals: tokenA?.token?.decimals,
-                  isKMB: false,
-                }),
-                tokenBAmount: formatPoolPairAmount(tokenB.amount, {
-                  decimals: tokenB?.token?.decimals,
-                  isKMB: false,
-                }),
-              },
-              result.data?.hash,
-            ),
-          );
-        }, 1000);
         openTransactionConfirmModal();
+        broadcastSuccess(
+          getMessage(
+            DexEvent.STAKE,
+            "success",
+            {
+              tokenASymbol: tokenA?.token?.symbol,
+              tokenBSymbol: tokenB?.token?.symbol,
+              tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+                decimals: tokenA?.token?.decimals,
+                isKMB: false,
+              }),
+              tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+                decimals: tokenB?.token?.decimals,
+                isKMB: false,
+              }),
+            },
+            result.data?.hash,
+          ),
+        );
       } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
         broadcastRejected(
           getMessage(DexEvent.STAKE, "error", {
@@ -156,6 +185,7 @@ const StakePositionModalContainer = ({
           }),
         );
       } else {
+        openTransactionConfirmModal();
         broadcastError(
           getMessage(
             DexEvent.STAKE,

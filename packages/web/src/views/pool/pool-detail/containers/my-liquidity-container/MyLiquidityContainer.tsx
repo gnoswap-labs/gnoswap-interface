@@ -15,6 +15,7 @@ import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -43,16 +44,13 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
-  const { tokenPrices } = useTokenData();
+  const { tokenPrices, updateBalances } = useTokenData();
 
   const { getMessage } = useMessage();
 
-  const {
-    broadcastSuccess,
-    broadcastPending,
-    broadcastError,
-    broadcastRejected,
-  } = useBroadcastHandler();
+  const { broadcastSuccess, broadcastError, broadcastRejected } =
+    useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
 
   const isOtherPosition = useMemo(() => {
     return Boolean(address) && address !== account?.address;
@@ -115,20 +113,38 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
       if (response) {
+        const resultData = response.data;
+        if (
+          response.code === 0 ||
+          response.code === ERROR_VALUE.TRANSACTION_FAILED.status
+        ) {
+          enqueueEvent({
+            txHash: resultData.hash,
+            action: DexEvent.CLAIM_FEE,
+            formatData: () => {
+              return data;
+            },
+            callback: async () => {
+              updateBalances();
+            },
+          });
+        }
+
         if (response.code === 0) {
-          broadcastPending({ txHash: response.data?.hash });
-          setTimeout(() => {
-            broadcastSuccess(
-              getMessage(DexEvent.CLAIM_FEE, "success", data, response.data?.hash),
-            );
-            setLoadingTransactionClaim(false);
-          }, 1000);
+          broadcastSuccess(
+            getMessage(
+              DexEvent.CLAIM_FEE,
+              "success",
+              data,
+              response.data?.hash,
+            ),
+          );
+          setLoadingTransactionClaim(false);
           openModal();
         } else if (response.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
           broadcastRejected(
             getMessage(DexEvent.CLAIM_FEE, "error", data),
             () => {},
-            true,
           );
           setLoadingTransactionClaim(false);
           openModal();

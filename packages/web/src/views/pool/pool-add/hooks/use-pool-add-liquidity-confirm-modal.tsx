@@ -18,7 +18,7 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useMessage } from "@hooks/common/use-message";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
-import { useGetPoolCreationFee } from "@query/pools";
+import { useGetPoolCreationFee, useGetPoolList } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import {
   AddLiquidityFailedResponse,
@@ -39,6 +39,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import PoolAddConfirmModal from "../components/pool-add-confirm-modal/PoolAddConfirmModal";
 import OneClickStakingModal from "../components/one-click-staking-modal/OneClickStakingModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useGetPositionsByAddress } from "@query/positions";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -97,7 +98,6 @@ export const usePoolAddLiquidityConfirmModal = ({
   addLiquidity,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
   const { t } = useTranslation();
-
   const {
     broadcastLoading,
     broadcastRejected,
@@ -112,6 +112,10 @@ export const usePoolAddLiquidityConfirmModal = ({
   const { displayBalanceMap } = useTokenData();
   const { data: creationFee, refetch: refetchGetPoolCreationFee } =
     useGetPoolCreationFee();
+
+  // Refetch functions
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPositions } = useGetPositionsByAddress();
 
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -389,12 +393,13 @@ export const usePoolAddLiquidityConfirmModal = ({
           });
       transaction.then(result => {
         if (result) {
-          if (result.code === 0) {
-            const resultData = result?.data as CreatePoolSuccessResponse;
-            broadcastPending({ txHash: resultData.hash });
+          if (
+            result.code === 0 ||
+            result.code === ERROR_VALUE.TRANSACTION_FAILED.status
+          ) {
             enqueueEvent({
-              txHash: resultData.hash,
-              action: DexEvent.WRAP,
+              txHash: result.data?.hash,
+              action: DexEvent.ADD,
               formatData: response => {
                 if (!response) {
                   return {
@@ -410,35 +415,43 @@ export const usePoolAddLiquidityConfirmModal = ({
                 }
 
                 return {
-                  ...messageData,
-                  tokenAAmount: response[0],
-                  tokenBAmount: response[1],
+                  tokenASymbol: tokenA.symbol,
+                  tokenBSymbol: tokenB.symbol,
+                  tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenA.decimals,
+                  }),
+                  tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenB.decimals,
+                  }),
                 };
               },
               callback: async () => {
-                await updateBalances();
+                refetchPools();
+                refetchPositions();
               },
             });
-            setTimeout(() => {
-              broadcastSuccess(
-                getMessage(
-                  DexEvent.ADD,
-                  "success",
-                  {
-                    tokenASymbol: resultData.tokenA.symbol || "",
-                    tokenBSymbol: resultData.tokenB.symbol || "",
-                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: tokenA.decimals,
-                    }),
-                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: tokenB.decimals,
-                    }),
-                  },
-                  resultData.hash,
-                ),
-                moveToBack,
-              );
-            }, 1000);
+          }
+
+          if (result.code === 0) {
+            const resultData = result?.data as CreatePoolSuccessResponse;
+            broadcastSuccess(
+              getMessage(
+                DexEvent.ADD,
+                "success",
+                {
+                  tokenASymbol: resultData.tokenA.symbol || "",
+                  tokenBSymbol: resultData.tokenB.symbol || "",
+                  tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenA.decimals,
+                  }),
+                  tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenB.decimals,
+                  }),
+                },
+                resultData.hash,
+              ),
+              moveToBack,
+            );
           } else if (
             result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {

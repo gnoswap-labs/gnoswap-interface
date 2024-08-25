@@ -40,13 +40,22 @@ export const useTransactionEventStore = () => {
       return;
     }
 
-    const pendingMessage = getMessage(action, "pending", formatData(null));
+    const pendingMessage = getMessage(
+      action,
+      "pending",
+      formatData(null),
+      txHash,
+    );
     enqueue(pendingMessage, makeNoticeConfig("pending"));
 
     eventStore.addEvent(txHash, async event => {
-      console.log("event.data", event.data);
       const messageType = event.status === "SUCCESS" ? "success" : "error";
-      const message = getMessage(action, messageType, formatData(event.data));
+      const message = getMessage(
+        action,
+        messageType,
+        formatData(event.data),
+        txHash,
+      );
       enqueue(message, makeNoticeConfig(messageType));
       await callback();
     });

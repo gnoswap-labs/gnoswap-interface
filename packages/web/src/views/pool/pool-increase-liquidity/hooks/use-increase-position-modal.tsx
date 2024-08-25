@@ -5,7 +5,7 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import {
   RANGE_STATUS_OPTION,
   SwapFeeTierInfoMap,
-  SwapFeeTierType
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import { useAddress } from "@hooks/address/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -22,6 +22,9 @@ import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import IncreasePositionModalContainer from "../containers/increase-position-modal-container/IncreasePositionModalContainer";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useGetPoolList } from "@query/pools";
+import { useGetPositionsByAddress } from "@query/positions";
 
 export interface Props {
   openModal: () => void;
@@ -61,13 +64,18 @@ export const useIncreasePositionModal = ({
     broadcastSuccess,
     broadcastLoading,
     broadcastError,
-    broadcastPending,
   } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
   const router = useRouter();
   const { positionRepository } = useGnoswapContext();
   const { address } = useAddress();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
+
+  // Refetch functions
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPositions } = useGetPositionsByAddress();
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     router.back();
@@ -134,9 +142,48 @@ export const useIncreasePositionModal = ({
       .catch(() => null);
 
     if (result) {
+      if (
+        result.code === 0 ||
+        result.code === ERROR_VALUE.TRANSACTION_FAILED.status
+      ) {
+        enqueueEvent({
+          txHash: result.data?.hash,
+          action: DexEvent.ADD,
+          formatData: response => {
+            if (!response) {
+              return {
+                tokenASymbol: tokenA.symbol,
+                tokenBSymbol: tokenB.symbol,
+                tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
+                  "en-US",
+                  { maximumFractionDigits: tokenA.decimals },
+                ),
+                tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
+                  "en-US",
+                  { maximumFractionDigits: tokenB.decimals },
+                ),
+              };
+            }
+            return {
+              tokenASymbol: tokenA.symbol,
+              tokenBSymbol: tokenB.symbol,
+              tokenAAmount: Number(response[0]).toLocaleString("en-US", {
+                maximumFractionDigits: tokenA.decimals,
+              }),
+              tokenBAmount: Number(response[1]).toLocaleString("en-US", {
+                maximumFractionDigits: tokenB.decimals,
+              }),
+            };
+          },
+          callback: async () => {
+            refetchPools();
+            refetchPositions();
+          },
+        });
+      }
       if (result.code === 0 && result?.data) {
         const resultData = result?.data as IncreaseLiquiditySuccessResponse;
-        broadcastPending({ txHash: resultData.hash });
+
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (

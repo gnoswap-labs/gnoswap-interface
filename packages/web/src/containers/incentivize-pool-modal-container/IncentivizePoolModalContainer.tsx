@@ -92,7 +92,10 @@ const IncentivizePoolModalContainer = () => {
       })
       .then(response => {
         if (response) {
-          if (response.code === 0) {
+          if (
+            response.code === 0 ||
+            response.code === ERROR_VALUE.TRANSACTION_FAILED.status
+          ) {
             enqueueEvent({
               txHash: response.data?.hash,
               action: DexEvent.ADD_INCENTIVE,
@@ -105,20 +108,20 @@ const IncentivizePoolModalContainer = () => {
                 await refetchPositions();
               },
             });
-            setTimeout(() => {
-              broadcastSuccess(
-                getMessage(
-                  DexEvent.ADD_INCENTIVE,
-                  "success",
-                  {
-                    tokenAAmount: displayAmount,
-                    tokenASymbol: dataModal?.token?.symbol,
-                  },
-                  response.data?.hash,
-                ),
-              );
-              openTransactionConfirmModal();
-            }, 1000);
+          }
+          if (response.code === 0) {
+            openTransactionConfirmModal();
+            broadcastSuccess(
+              getMessage(
+                DexEvent.ADD_INCENTIVE,
+                "success",
+                {
+                  tokenAAmount: displayAmount,
+                  tokenASymbol: dataModal?.token?.symbol,
+                },
+                response.data?.hash,
+              ),
+            );
           } else if (
             response.code === ERROR_VALUE.TRANSACTION_REJECTED.status /// 4000
           ) {
