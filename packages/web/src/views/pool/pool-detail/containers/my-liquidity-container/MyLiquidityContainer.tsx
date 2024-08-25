@@ -113,13 +113,12 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
       if (response) {
-        const resultData = response.data;
         if (
           response.code === 0 ||
           response.code === ERROR_VALUE.TRANSACTION_FAILED.status
         ) {
           enqueueEvent({
-            txHash: resultData.hash,
+            txHash: response?.data?.hash,
             action: DexEvent.CLAIM_FEE,
             formatData: () => {
               return data;
@@ -136,7 +135,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
               DexEvent.CLAIM_FEE,
               "success",
               data,
-              response.data?.hash,
+              response?.data?.hash,
             ),
           );
           setLoadingTransactionClaim(false);
@@ -151,7 +150,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         } else {
           openModal();
           broadcastError(
-            getMessage(DexEvent.CLAIM_FEE, "error", data, response.data?.hash),
+            getMessage(DexEvent.CLAIM_FEE, "error", data, response?.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }

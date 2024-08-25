@@ -138,7 +138,9 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
       }
     }
 
-    return updatedEvents.filter(event => event !== null);
+    return updatedEvents.filter(
+      event => event !== null,
+    ) as Event<ResponseDataType>[];
   }
 
   /**

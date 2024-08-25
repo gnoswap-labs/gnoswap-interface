@@ -95,11 +95,11 @@ const WalletBalanceContainer: React.FC = () => {
     claimAll().then(response => {
       if (response) {
         if (
-          response.code === 0 ||
-          response.code === ERROR_VALUE.TRANSACTION_FAILED.status
+          response?.code === 0 ||
+          response?.code === ERROR_VALUE.TRANSACTION_FAILED.status
         ) {
           enqueueEvent({
-            txHash: response.data.hash,
+            txHash: response?.data?.hash,
             action: DexEvent.CLAIM_FEE,
             formatData: () => data,
             callback: async () => {
@@ -107,19 +107,19 @@ const WalletBalanceContainer: React.FC = () => {
             },
           });
         }
-        if (response.code === 0) {
+        if (response?.code === 0) {
           openModal();
           broadcastSuccess(
             getMessage(
               DexEvent.CLAIM_FEE,
               "success",
               data,
-              response.data?.hash,
+              response?.data?.hash,
             ),
           );
           setLoadingTransactionClaim(false);
         } else if (
-          response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+          response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
           broadcastRejected(
             getMessage(DexEvent.CLAIM_FEE, "error", data),
@@ -130,7 +130,7 @@ const WalletBalanceContainer: React.FC = () => {
         } else {
           openModal();
           broadcastError(
-            getMessage(DexEvent.CLAIM_FEE, "error", data, response.data?.hash),
+            getMessage(DexEvent.CLAIM_FEE, "error", data, response?.data?.hash),
           );
           setLoadingTransactionClaim(false);
         }
