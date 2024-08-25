@@ -89,7 +89,6 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
    */
   async emitAllEvents(blockHeight: number): Promise<Event<ResponseDataType>[]> {
     const triggeredEvents: Event<ResponseDataType>[] = [];
-    console.log("emitted", this.events);
 
     for (const [transactionHash, event] of this.events.entries()) {
       if (event.emitNumber === null) {

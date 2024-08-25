@@ -1143,22 +1143,12 @@ export const useSwapHandler = () => {
 
           if (response.code === 0) {
             const responseData = response?.data as SwapRouteSuccessResponse;
-            const tokenAAmountStr = isExactIn
-              ? tokenAAmount
-              : responseData.resultAmount;
-            const tokenBAmountStr = isExactIn
-              ? responseData.resultAmount
-              : tokenBAmount;
             openTransactionConfirmModal();
             broadcastSuccess(
               getMessage(
                 DexEvent.SWAP,
                 "success",
-                {
-                  ...broadcastMessage,
-                  tokenAAmount: tokenAAmountStr || "0",
-                  tokenBAmount: tokenBAmountStr || "0",
-                },
+                broadcastMessage,
                 responseData.hash,
               ),
               onFinishSwap,
