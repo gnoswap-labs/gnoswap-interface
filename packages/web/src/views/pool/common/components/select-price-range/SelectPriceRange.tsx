@@ -13,7 +13,6 @@ import {
 } from "@constants/option.constant";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
-import { isFetchedPools } from "@states/pool";
 
 import SelectPriceRangeCustom from "./select-price-range-custom/SelectPriceRangeCustom";
 
@@ -97,7 +96,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           ))}
         </div>
       )}
-      {selectedTokenPair && tokenA && tokenB && isFetchedPools && (
+      {selectedTokenPair && tokenA && tokenB && (
         <SelectPriceRangeCustom
           tokenA={tokenA}
           tokenB={tokenB}

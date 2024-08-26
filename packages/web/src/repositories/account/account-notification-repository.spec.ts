@@ -1,13 +1,14 @@
+import { AxiosClient } from "@common/clients/network-client/axios-client";
 import { StorageClient } from "@common/clients/storage-client";
 import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena/adena-client";
-import { generateTokenModel } from "@common/utils/test-util";
 import { NotificationType } from "@common/values/data-constant";
 import { TransactionModel } from "@models/account/account-history-model";
+import { generateTokenModel } from "@test/generate-utils";
+
 import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountRepositoryImpl } from "./account-repository-impl";
-import { AxiosClient } from "@common/clients/network-client/axios-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;

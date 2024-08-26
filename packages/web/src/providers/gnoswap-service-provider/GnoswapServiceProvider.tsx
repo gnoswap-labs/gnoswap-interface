@@ -1,7 +1,8 @@
+import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
+import axios from "axios";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { createContext, useEffect, useMemo, useState } from "react";
-import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
 
 import { NetworkClient } from "@common/clients/network-client";
 import { AxiosClient } from "@common/clients/network-client/axios-client";
@@ -20,41 +21,33 @@ import {
   DashboardRepository,
   DashboardRepositoryImpl,
 } from "@repositories/dashboard";
-import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-repository";
-import { LeaderboardRepositoryMock } from "@repositories/leaderboard/leaderboard-repository-mock";
 import {
-  LiquidityRepository,
-  LiquidityRepositoryMock,
-} from "@repositories/liquidity";
+  LeaderboardRepository,
+  LeaderboardRepositoryMock,
+} from "@repositories/leaderboard";
 import {
   NotificationRepository,
   NotificationRepositoryImpl,
 } from "@repositories/notification";
-import { PoolRepository } from "@repositories/pool";
-import { PoolRepositoryImpl } from "@repositories/pool/pool-repository-impl";
-import { PositionRepository } from "@repositories/position/position-repository";
-import { PositionRepositoryImpl } from "@repositories/position/position-repository-impl";
+import { PoolRepository, PoolRepositoryImpl } from "@repositories/pool";
 import {
-  StakingRepository,
-  StakingRepositoryMock,
-} from "@repositories/staking";
+  PositionRepository,
+  PositionRepositoryImpl,
+} from "@repositories/position";
+import { StatusRepository } from "@repositories/status/status-repository";
+import { StatusRepositoryImpl } from "@repositories/status/status-repository-impl";
 import {
   SwapRouterRepository,
   SwapRouterRepositoryImpl,
 } from "@repositories/swap";
-import { TokenRepository } from "@repositories/token";
-import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
-import { WalletRepository } from "@repositories/wallet/wallet-repository";
-import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
+import { TokenRepository, TokenRepositoryImpl } from "@repositories/token";
+import { WalletRepository, WalletRepositoryImpl } from "@repositories/wallet";
 import {
   ACCOUNT_SESSION_INFO_KEY,
   GNOSWAP_SESSION_ID_KEY,
   GNOWSWAP_CONNECTED_KEY,
 } from "@states/common";
 import { CommonState, WalletState } from "@states/index";
-import axios from "axios";
-import { StatusRepository } from "@repositories/status/status-repository";
-import { StatusRepositoryImpl } from "@repositories/status/status-repository-impl";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -62,9 +55,7 @@ interface GnoswapContextProps {
   eventStore: EventStore<string[]>;
   gnoswapApiClient: NetworkClient | null;
   accountRepository: AccountRepository;
-  liquidityRepository: LiquidityRepository;
   poolRepository: PoolRepository;
-  stakingRepository: StakingRepository;
   swapRouterRepository: SwapRouterRepository;
   tokenRepository: TokenRepository;
   positionRepository: PositionRepository;
@@ -213,17 +204,9 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     rpcProvider,
   ]);
 
-  const liquidityRepository = useMemo(() => {
-    return new LiquidityRepositoryMock();
-  }, []);
-
   const poolRepository = useMemo(() => {
     return new PoolRepositoryImpl(gnoswapApiClient, rpcProvider, walletClient);
   }, [gnoswapApiClient, rpcProvider, walletClient]);
-
-  const stakingRepository = useMemo(() => {
-    return new StakingRepositoryMock();
-  }, []);
 
   const swapRouterRepository = useMemo(() => {
     return new SwapRouterRepositoryImpl(
@@ -279,9 +262,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         eventStore,
         gnoswapApiClient,
         accountRepository,
-        liquidityRepository,
         poolRepository,
-        stakingRepository,
         tokenRepository,
         swapRouterRepository,
         positionRepository,

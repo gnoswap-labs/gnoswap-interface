@@ -79,7 +79,7 @@ const RemovePositionModalContainer = ({
   const gnotAmount = useMemo(() => {
     const pooledGnotTokenAmount = pooledTokenInfos.find(
       item => item.token.path === gnotToken?.path,
-    )?.amount;
+    )?.amount.replaceAll(",","");
     const unclaimedGnotTokenAmount = unclaimedFees.find(
       item => item.token.path === gnotToken?.path,
     )?.amount;

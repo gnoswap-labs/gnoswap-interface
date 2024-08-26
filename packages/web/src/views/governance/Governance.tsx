@@ -1,10 +1,10 @@
 import React from "react";
 
 import Footer from "@components/common/footer/Footer";
-import GovernanceContainer from "@containers/governance-container/GovernanceContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import ProposalListContainer from "@containers/proposal-list-container/ProposalListContainer";
 
+import GovernanceContainer from "./containers/governance-container/GovernanceContainer";
+import ProposalListContainer from "./containers/proposal-list-container/ProposalListContainer";
 import GovernanceLayout from "./GovernanceLayout";
 
 const Governance: React.FC = () => {

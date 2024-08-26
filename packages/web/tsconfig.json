@@ -20,51 +20,22 @@
     "incremental": true,
     "baseUrl": "./",
     "paths": {
-      "@constants/*": [
-        "src/constants/*"
-      ],
-      "@containers/*": [
-        "src/containers/*"
-      ],
-      "@common/*": [
-        "src/common/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@hooks/*": [
-        "src/hooks/*"
-      ],
-      "@repositories/*": [
-        "src/repositories/*"
-      ],
-      "@resources/*": [
-        "src/resources/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@providers/*": [
-        "src/providers/*"
-      ],
-      "@states/*": [
-        "src/states/*"
-      ],
-      "@styles/*": [
-        "src/styles/*"
-      ],
-      "@views/*": [
-        "src/views/*"
-      ],
-      "@models/*": [
-        "src/models/*"
-      ],
-      "@query/*": [
-        "src/react-query/*"
-      ],
-      "@context/*": [
-        "src/context/*"
-      ]
+      "@constants/*": ["src/constants/*"],
+      "@containers/*": ["src/containers/*"],
+      "@common/*": ["src/common/*"],
+      "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@resources/*": ["src/resources/*"],
+      "@utils/*": ["src/utils/*"],
+      "@providers/*": ["src/providers/*"],
+      "@states/*": ["src/states/*"],
+      "@styles/*": ["src/styles/*"],
+      "@views/*": ["src/views/*"],
+      "@models/*": ["src/models/*"],
+      "@query/*": ["src/react-query/*"],
+      "@context/*": ["src/context/*"],
+      "@test/*": ["src/test-utils/*"]
     },
     "jsxImportSource": "@emotion/react"
   },

@@ -1,19 +1,23 @@
-import PoolIncentivize from "@components/incentivize/pool-incentivize/PoolIncentivize";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { TokenBalanceInfo } from "@models/token/token-balance-info";
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
-import { useIncentivizePoolModal } from "@hooks/incentivize/use-incentivize-pool-modal";
-import { TokenModel } from "@models/token/token-model";
+import { useAtom } from "jotai";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { useAtom } from "jotai";
-import { EarnState } from "@states/index";
-import { useWallet } from "@hooks/wallet/use-wallet";
-import { useGetPoolList } from "src/react-query/pools";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useTranslation } from "react-i18next";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { TokenBalanceInfo } from "@models/token/token-balance-info";
+import { TokenModel } from "@models/token/token-model";
+import { useGetPoolList } from "@query/pools";
+import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
+import { EarnState } from "@states/index";
+
+import { GNS_DEPOSIT_AMOUNT } from "../../components/pool-incentivize/incentive-creation-deposit/IncentiveCreationDeposit";
+import PoolIncentivize from "../../components/pool-incentivize/PoolIncentivize";
+import { useIncentivizePoolModal } from "../../hooks/use-incentivize-pool-modal";
 
 const tokenBalances: TokenBalanceInfo[] = [];
 const periods = [90, 180, 365];
@@ -34,9 +38,10 @@ const PoolIncentivizeContainer: React.FC = () => {
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
   const [token, setToken] = useState<TokenModel | null>(null);
   const tokenAmountInput = useTokenAmountInput(token);
-  const { updateTokenPrices } = useTokenData();
+  const { updateTokenPrices, balances } = useTokenData();
   const { data: pools = [] } = useGetPoolList({ enabled: false });
   const { getGnotPath } = useGnotToGnot();
+
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
@@ -103,60 +108,69 @@ const PoolIncentivizeContainer: React.FC = () => {
     }
   }, [connected, openConnectWalletModal, openModal]);
 
-  const disableButton = useMemo(() => {
+  const btnStatus: { text: string; disabled: boolean } = useMemo(() => {
     if (!connected) {
-      return false;
+      return {
+        text: t("IncentivizePool:submitBtn.walletLoginBtn"),
+        disabled: true,
+      };
     }
     if (isSwitchNetwork) {
-      return false;
+      return {
+        text: t("IncentivizePool:submitBtn.switch"),
+        disabled: true,
+      };
     }
     if (!currentPool) {
-      return true;
+      return {
+        text: t("IncentivizePool:submitBtn.selectPool"),
+        disabled: true,
+      };
     }
     if (Number(tokenAmountInput.amount) === 0) {
-      return true;
+      return {
+        text: t("IncentivizePool:submitBtn.enterAmt"),
+        disabled: true,
+      };
     }
     if (Number(tokenAmountInput.amount) < 0.000001) {
-      return true;
+      return {
+        text: t("IncentivizePool:submitBtn.amtTooLow"),
+        disabled: true,
+      };
     }
     if (
       Number(tokenAmountInput.amount) >
       Number(tokenAmountInput.balance.replace(/,/g, ""))
     ) {
-      return true;
-    }
-    return false;
-  }, [connected, currentPool, tokenAmountInput, isSwitchNetwork]);
-
-  const textBtn = useMemo(() => {
-    if (!connected) {
-      return t("IncentivizePool:submitBtn.walletLoginBtn");
-    }
-    if (isSwitchNetwork) {
-      return t("IncentivizePool:submitBtn.switch");
-    }
-    if (!currentPool) {
-      return t("IncentivizePool:submitBtn.selectPool");
-    }
-    if (Number(tokenAmountInput.amount) === 0) {
-      return t("IncentivizePool:submitBtn.enterAmt");
-    }
-    if (Number(tokenAmountInput.amount) < 0.000001) {
-      return t("IncentivizePool:submitBtn.amtTooLow");
+      return {
+        text: t("IncentivizePool:submitBtn.insuffi"),
+        disabled: true,
+      };
     }
     if (
-      Number(tokenAmountInput.amount) >
-      Number(tokenAmountInput.balance.replace(/,/g, ""))
-    ) {
-      return t("IncentivizePool:submitBtn.insuffi");
-    }
-    return t("IncentivizePool:submitBtn.incentiPool");
+      (token?.path === GNS_TOKEN_PATH &&
+        Number(tokenAmountInput.amount) + 1000 >
+          Number(tokenAmountInput.balance.replace(/,/g, ""))) ||
+      (token?.path !== GNS_TOKEN_PATH &&
+        GNS_DEPOSIT_AMOUNT * 1_000_000 > (balances[GNS_TOKEN_PATH] || 0))
+    )
+      return {
+        text: t("IncentivizePool:submitBtn.insuffiDep"),
+        disabled: true,
+      };
+    return {
+      text: t("IncentivizePool:submitBtn.incentiPool"),
+      disabled: false,
+    };
   }, [
     connected,
     isSwitchNetwork,
     currentPool,
     tokenAmountInput.amount,
     tokenAmountInput.balance,
+    token?.path,
+    balances,
     t,
   ]);
 
@@ -177,8 +191,8 @@ const PoolIncentivizeContainer: React.FC = () => {
       handleConfirmIncentivize={handleConfirmIncentivize}
       tokenAmountInput={tokenAmountInput}
       changeToken={changeToken}
-      textBtn={textBtn}
-      disableButton={disableButton}
+      textBtn={btnStatus.text}
+      disableButton={btnStatus.disabled}
       connected={connected}
     />
   );

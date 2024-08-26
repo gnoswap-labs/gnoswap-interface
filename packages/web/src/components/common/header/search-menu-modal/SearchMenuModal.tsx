@@ -223,7 +223,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
       if (replacedPath.length >= length) {
         return (
-          "@components/common." +
+          "..." +
           replacedPath.slice(
             replacedPath.length - length,
             replacedPath.length - 1,
@@ -231,7 +231,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
         );
       }
 
-      return path_.replace("gno.land", "@components/common.");
+      return path_.replace("gno.land", "...");
     },
     [length],
   );
@@ -286,7 +286,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                                 ref={tokenNameRecentsRef.current[idx]}
                               >
                                 {item.token.name.length > length
-                                  ? `${item.token.name.slice(0, length)}@components/common.`
+                                  ? `${item.token.name.slice(0, length)}...`
                                   : item.token.name}
                               </span>
                               <div
@@ -383,7 +383,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               ref={tokenNamePopularRef.current[idx]}
                             >
                               {item.token.name.length > length
-                                ? `${item.token.name.slice(0, length)}@components/common.`
+                                ? `${item.token.name.slice(0, length)}...`
                                 : item.token.name}
                             </span>
                             <div

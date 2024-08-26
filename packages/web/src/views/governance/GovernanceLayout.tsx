@@ -1,9 +1,9 @@
-import IconFile from "@components/common/icons/IconFile";
-import React, { useState } from "react";
-import { GovernanceLayoutWrapper, LinkButton } from "./GovernanceLayout.styles";
 import Link from "next/link";
+import React from "react";
+
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
-import LearnMoreModal from "@components/governance/learn-more-modal/LearnMoreModal";
+
+import { GovernanceLayoutWrapper, LinkButton } from "./GovernanceLayout.styles";
 
 interface GovernanceLayoutProps {
   header: React.ReactNode;
@@ -18,20 +18,12 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
   list,
   footer,
 }) => {
-  const [isShowLearnMoreModal, setIsShowLearnMoreModal] = useState(false);
   return (
     <GovernanceLayoutWrapper>
       {header}
       <section className="governance-section">
         <div className="title-container">
           <h3 className="title">Governance</h3>
-          <div
-            className="sub-title-layout"
-            onClick={() => setIsShowLearnMoreModal(true)}
-          >
-            <p>Learn More</p>
-            <IconFile />
-          </div>
         </div>
         <div className="summary-container">
           {summary}
@@ -47,9 +39,6 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
         <div className="list-container">{list}</div>
       </div>
       {footer}
-      {isShowLearnMoreModal && (
-        <LearnMoreModal setIsShowLearnMoreModal={setIsShowLearnMoreModal} />
-      )}
     </GovernanceLayoutWrapper>
   );
 };

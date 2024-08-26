@@ -7,7 +7,7 @@ import { ActivityResponse } from "@repositories/activity/responses/activity-resp
 import { DashboardRepository } from "./dashboard-repository";
 import {
   OnchainAccountRequest,
-  OnchainRequest, OnChainRequestMapping
+  OnchainRequest,
 } from "./request";
 import { TvlResponse } from "./response";
 import { DashboardTokenResponse } from "./response/token-response";
@@ -35,6 +35,7 @@ export class DashboardRepositoryImpl implements DashboardRepository {
 
     return data.data;
   };
+
   public getDashboardVolume = async (): Promise<IVolumeResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
@@ -44,6 +45,7 @@ export class DashboardRepositoryImpl implements DashboardRepository {
     });
     return data.data;
   };
+
   public getDashboardToken = async (): Promise<DashboardTokenResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
@@ -62,10 +64,11 @@ export class DashboardRepositoryImpl implements DashboardRepository {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
+    const { type } = request;
 
     const response = await this.networkClient
       .get<{ data: ActivityResponse }>({
-        url: `/activity?type=${OnChainRequestMapping[request.type]}`,
+        url: `/activity?type=${type}`,
       })
       .catch(() => null);
     if (!response?.data?.data) {

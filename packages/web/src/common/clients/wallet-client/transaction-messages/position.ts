@@ -173,13 +173,17 @@ export function makePositionDecreaseLiquidityMessage(
 
 export function makePositionCollectFeeMessage(
   lpTokenId: string,
+  isGetWGNOT: boolean,
   caller: string,
 ) {
   return makeTransactionMessage({
     send: "",
     func: "CollectFee",
     packagePath: PACKAGE_POSITION_PATH,
-    args: [lpTokenId],
+    args: [
+      lpTokenId,
+      `${!isGetWGNOT}`, // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
+    ],
     caller,
   });
 }
