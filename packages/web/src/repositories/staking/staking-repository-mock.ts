@@ -1,4 +1,5 @@
-import { generateTxHash } from "@common/utils/test-util";
+import { generateTxHash } from "@test/generate-utils";
+
 import { StakeResponse, StakingRepository, UnstakeResponse } from ".";
 
 export class StakingRepositoryMock implements StakingRepository {

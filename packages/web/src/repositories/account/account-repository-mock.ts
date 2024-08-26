@@ -1,25 +1,24 @@
+import { faker } from "@faker-js/faker";
+
 import { StorageClient } from "@common/clients/storage-client";
 import {
-  generateAddress,
-  generateNumber,
-  generateTime,
-  generateNumberPlus,
-} from "@common/utils/test-util";
+  SwitchNetworkResponse,
+  WalletResponse
+} from "@common/clients/wallet-client/protocols";
 import { StatusOptions } from "@common/values/data-constant";
+import { AccountBalanceModel } from "@models/account/account-balance-model";
 import {
   AccountHistoryModel,
-  TransactionModel,
+  TransactionModel
 } from "@models/account/account-history-model";
-import { faker } from "@faker-js/faker";
-import { AccountRepository, AccountTransactionResponse } from ".";
 import { AccountModel } from "@models/account/account-model";
-import { AccountBalanceModel } from "@models/account/account-balance-model";
-
-import AccountBalancesData from "./mock/account-balances.json";
 import {
-  WalletResponse,
-  SwitchNetworkResponse,
-} from "@common/clients/wallet-client/protocols";
+  generateAddress,
+  generateNumber, generateNumberPlus, generateTime
+} from "@test/generate-utils";
+
+import { AccountRepository, AccountTransactionResponse } from ".";
+import AccountBalancesData from "./mock/account-balances.json";
 import { AvgBlockTime } from "./response/get-avg-block-time-response";
 
 export class AccountRepositoryMock implements AccountRepository {

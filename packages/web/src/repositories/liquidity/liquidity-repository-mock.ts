@@ -1,10 +1,12 @@
-import { generateTxHash } from "@common/utils/test-util";
+import { generateTxHash } from "@test/generate-utils";
+
 import {
   AddLiquidityResponse,
   ClaimRewardResponse,
   LiquidityRepository,
   RemoveLiquidityResponse,
 } from ".";
+
 export class LiquidityRepositoryMock implements LiquidityRepository {
   public addLiquidityBy = async (): Promise<AddLiquidityResponse> => {
     return {

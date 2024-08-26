@@ -1,12 +1,14 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import PoolPairInfoHeader from "./PoolPairInfoHeader";
-import { PoolRepositoryMock } from "@repositories/pool";
-import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context";
-import { createMockRouter } from "../../../../../../test-utils/createMockRouter";
+
+import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { PoolRepositoryMock } from "@repositories/pool";
+import { createMockRouter } from "@test/createMockRouter";
+
+import PoolPairInfoHeader from "./PoolPairInfoHeader";
 
 const poolRepository = new PoolRepositoryMock();
 

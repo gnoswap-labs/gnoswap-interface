@@ -29,10 +29,6 @@ export const generateBoolean = () => {
   return results[index];
 };
 
-export const rand = () => {
-  return `${Math.round(generateNumberPlus())}`;
-};
-
 export const generateTokenModel = () => {
   return {
     path: `${generateAddress()}`,
