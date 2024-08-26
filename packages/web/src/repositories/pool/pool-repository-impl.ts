@@ -602,11 +602,30 @@ export class PoolRepositoryImpl implements PoolRepository {
     const rewardAmountRaw =
       makeRawTokenAmount(rewardToken, rewardAmount) || "0";
 
+    const GNS_DEPOSIT_AMOUNT = 1_000_000_000;
+
     const messages = [];
     const tokenPath = checkGnotPath(rewardToken.path);
-    messages.push(
-      makeStakerApproveMessage(tokenPath, rewardAmountRaw, address),
-    );
+    if (tokenPath === GNS_TOKEN_PATH) {
+      messages.push(
+        makeStakerApproveMessage(
+          tokenPath,
+          BigNumber(rewardAmountRaw).plus(GNS_DEPOSIT_AMOUNT).toString(),
+          address,
+        ),
+      );
+    } else {
+      messages.push(
+        makeStakerApproveMessage(tokenPath, rewardAmountRaw, address),
+      );
+      messages.push(
+        makeStakerApproveMessage(
+          GNS_TOKEN_PATH,
+          GNS_DEPOSIT_AMOUNT.toString(),
+          address,
+        ),
+      );
+    }
     messages.push(
       makeCreateIncentiveMessage(
         poolPath,

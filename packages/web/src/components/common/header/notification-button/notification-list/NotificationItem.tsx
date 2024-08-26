@@ -21,7 +21,7 @@ import {
   TxsDateAgoTitle,
   TxsListItem,
   TxsSummaryItem
-} from "./NotificationList.styles";
+} from "./NotificationItem.styles";
 
 interface ItemProps {
   groups: TransactionGroupsType;
@@ -46,11 +46,6 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     }
   }, [t, type]);
 
-  const replaceToken = useCallback((symbol: string) => {
-    if (symbol === "wugnot") return "GNOT";
-    return symbol;
-  }, []);
-
   const actionKeyMap: { [key: string]: string } = {
     [DexEvent.SWAP]: "Modal:notif.action.swapped",
     [DexEvent.ADD]: "Modal:notif.action.added",
@@ -73,7 +68,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         decimals: tx.tokenA.decimals,
         isKMB: false,
       });
-      const token0symbol = replaceToken(tx?.tokenA?.symbol);
+      const token0symbol = tx?.tokenA?.symbol;
       const token0Display = Number(tx?.tokenAAmount) ? (
         <span className="accent">
           {" "}
@@ -85,7 +80,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         decimals: tx.tokenA.decimals,
         isKMB: false,
       });
-      const token1symbol = replaceToken(tx?.tokenB?.symbol);
+      const token1symbol = tx?.tokenB?.symbol;
       const token1Display = Number(tx?.tokenBAmount) ? (
         <span className="accent">
           {" "}
@@ -122,7 +117,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         </>
       );
     },
-    [replaceToken, t],
+    [t],
   );
 
   return (

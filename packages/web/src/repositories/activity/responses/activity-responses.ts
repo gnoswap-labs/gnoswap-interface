@@ -1,4 +1,4 @@
-import { DexEventType } from "@repositories/common";
+import { DexEvent, DexEventType } from "@repositories/common";
 
 export type ActivityResponse = ActivityData[];
 
@@ -26,3 +26,36 @@ export interface OnchainToken {
   logoURI: string;
   priceID: string;
 }
+
+export const dummyActivityData: ActivityData = {
+  txHash: "hNaBGE2oDb15Q08y68wpycjwwGaCcXcU2jnrRRfuUo0%3D",
+  actionType: DexEvent.ADD,
+  tokenA: {
+    type: "grc20",
+    chainId: "dev",
+    createdAt: "",
+    name: "gnoland",
+    path: "gnot",
+    decimals: 6,
+    symbol: "GNOT",
+    logoURI: "",
+    priceID: "gnot",
+  },
+  tokenB: {
+    type: "grc20",
+    chainId: "dev",
+    createdAt: "",
+    name: "gnoland",
+    path: "gnot",
+    decimals: 6,
+    symbol: "GNOT",
+    logoURI: "",
+    priceID: "gnot",
+  },
+  tokenAAmount: "100",
+  tokenBAmount: "10",
+  totalUsd: "1000",
+  usedTokens: 2,
+  account: "",
+  time: "",
+};

@@ -1,18 +1,19 @@
-import { generateAddress } from "@common/utils/test-util";
 import dayjs from "dayjs";
+
+import { generateAddress } from "@test/generate-utils";
+
 import { LeaderboardRepository } from "./leaderboard-repository";
 import {
-  GetLeadersRequest,
   GetLeaderByAddressRequest,
-  UpdateLeaderByAddressRequest,
+  GetLeadersRequest,
   GetNextUpdateTimeRequest,
+  UpdateLeaderByAddressRequest,
 } from "./request";
-
 import {
-  GetLeadersResponse,
   GetLeaderByAddressResponse,
-  UpdateLeaderByAddressResponse,
+  GetLeadersResponse,
   GetNextUpdateTimeResponse,
+  UpdateLeaderByAddressResponse,
 } from "./response";
 
 export class LeaderboardRepositoryMock implements LeaderboardRepository {
