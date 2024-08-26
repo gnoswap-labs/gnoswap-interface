@@ -1,9 +1,11 @@
-import React, { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import ProposalList from "@views/governance/components/proposals-list/ProposalList";
+import React, { useCallback, useState } from "react";
+
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useWallet } from "@hooks/wallet/use-wallet";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import { useWallet } from "@hooks/wallet/use-wallet";
+
+import ProposalList from "../../components/proposals-list/ProposalList";
 
 type ProposalStatus = "ACTIVE" | "REJECTED" | "PASSED" | "CANCELLED";
 export type TypeVote = "" | "YES" | "NO" | "ABSTAIN";
