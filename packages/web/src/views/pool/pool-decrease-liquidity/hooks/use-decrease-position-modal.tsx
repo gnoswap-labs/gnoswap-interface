@@ -86,14 +86,14 @@ export const useDecreasePositionModal = ({
   const gnotAmount = useMemo(() => {
     if (tokenA?.path === gnotToken?.path) {
       return (
-        Number(pooledTokenInfos?.poolAmountA || 0) +
-        Number(pooledTokenInfos?.unClaimTokenAAmount || 0)
+        Number(pooledTokenInfos?.poolAmountA.replaceAll(",", "") || 0) +
+        Number(pooledTokenInfos?.unClaimTokenAAmount.replaceAll(",", "") || 0)
       );
     }
     if (tokenB?.path === gnotToken?.path) {
       return (
-        Number(pooledTokenInfos?.poolAmountB || 0) +
-        Number(pooledTokenInfos?.unClaimTokenBAmount || 0)
+        Number(pooledTokenInfos?.poolAmountB.replaceAll(",", "") || 0) +
+        Number(pooledTokenInfos?.unClaimTokenBAmount.replaceAll(",", "") || 0)
       );
     }
     return 0;
