@@ -19,24 +19,28 @@ import {
   DashboardRepository,
   DashboardRepositoryImpl,
 } from "@repositories/dashboard";
-import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-repository";
-import { LeaderboardRepositoryMock } from "@repositories/leaderboard/leaderboard-repository-mock";
+import {
+  LeaderboardRepository,
+  LeaderboardRepositoryMock,
+} from "@repositories/leaderboard";
 import {
   NotificationRepository,
   NotificationRepositoryImpl,
 } from "@repositories/notification";
-import { PoolRepository } from "@repositories/pool";
-import { PoolRepositoryImpl } from "@repositories/pool/pool-repository-impl";
-import { PositionRepository } from "@repositories/position/position-repository";
-import { PositionRepositoryImpl } from "@repositories/position/position-repository-impl";
+import { PoolRepository, PoolRepositoryImpl } from "@repositories/pool";
+import {
+  PositionRepository,
+  PositionRepositoryImpl,
+} from "@repositories/position";
 import {
   SwapRouterRepository,
   SwapRouterRepositoryImpl,
 } from "@repositories/swap";
-import { TokenRepository } from "@repositories/token";
-import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
-import { WalletRepository } from "@repositories/wallet/wallet-repository";
-import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
+import { TokenRepository, TokenRepositoryImpl } from "@repositories/token";
+import {
+  WalletRepository,
+  WalletRepositoryImpl,
+} from "@repositories/wallet";
 import {
   ACCOUNT_SESSION_INFO_KEY,
   GNOSWAP_SESSION_ID_KEY,
