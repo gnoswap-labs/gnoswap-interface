@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import FormInput from "@components/common/form-input/FormInput";
@@ -16,7 +17,6 @@ import IconAdd from "@components/common/icons/IconAdd";
 import IconClose from "@components/common/icons/IconCancel";
 import IconRemove from "@components/common/icons/IconRemove";
 import { Overlay } from "@components/common/modal/Modal.styles";
-import { yupResolver } from "@hookform/resolvers/yup";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import useLockedBody from "@hooks/common/use-lock-body";
 import { DEVICE_TYPE } from "@styles/media";
@@ -115,7 +115,8 @@ const CreateProposalModal: React.FC<Props> = ({
     };
   }, [modalRef]);
 
-  const validationProps = useMemo(() => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const validationProps: any = useMemo(() => {
     if (type === ProposalOption[1]) {
       return getCreateProposalCommunityPoolSpendValidation();
     }
