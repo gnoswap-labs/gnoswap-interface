@@ -4,6 +4,7 @@ import { SnackbarOptions, SnackbarType, useSnackbar } from "./use-snackbar";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { makeRandomId } from "@utils/common";
 import { useMessage } from "./use-message";
+import { useGetNotifications } from "@query/common";
 
 function makeNoticeConfig(type: SnackbarType): SnackbarOptions {
   const timeout = 3_000;
@@ -19,6 +20,11 @@ export const useTransactionEventStore = () => {
   const { eventStore } = useGnoswapContext();
   const { enqueue } = useSnackbar();
   const { getMessage } = useMessage();
+  const { refetch: refetchNotifications } = useGetNotifications();
+
+  async function callbackCommon() {
+    await refetchNotifications();
+  }
 
   function enqueueEvent({
     txHash,
@@ -52,6 +58,7 @@ export const useTransactionEventStore = () => {
       );
       enqueue(message, makeNoticeConfig(messageType));
       await callback();
+      await callbackCommon();
     });
   }
 
