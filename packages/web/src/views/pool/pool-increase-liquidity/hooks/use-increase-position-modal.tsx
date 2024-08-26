@@ -24,7 +24,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import IncreasePositionModalContainer from "../containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetPoolList } from "@query/pools";
-import { useGetPositionsByAddress } from "@query/positions";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface Props {
   openModal: () => void;
@@ -74,8 +74,8 @@ export const useIncreasePositionModal = ({
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
   // Refetch functions
+  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPositions } = useGetPositionsByAddress();
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     router.back();

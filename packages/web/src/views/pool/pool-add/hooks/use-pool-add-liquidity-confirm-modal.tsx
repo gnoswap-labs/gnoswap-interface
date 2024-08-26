@@ -39,7 +39,8 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import PoolAddConfirmModal from "../components/pool-add-confirm-modal/PoolAddConfirmModal";
 import OneClickStakingModal from "../components/one-click-staking-modal/OneClickStakingModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPositionsByAddress } from "@query/positions";
+import { useAddress } from "@hooks/address/use-address";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -114,8 +115,9 @@ export const usePoolAddLiquidityConfirmModal = ({
     useGetPoolCreationFee();
 
   // Refetch functions
+  const { address } = useAddress();
+  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPositions } = useGetPositionsByAddress();
 
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);

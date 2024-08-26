@@ -13,7 +13,8 @@ import { useMessage } from "@hooks/common/use-message";
 import { DexEvent } from "@repositories/common";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetPoolList } from "@query/pools";
-import { useGetPositionsByAddress } from "@query/positions";
+import { useAddress } from "@hooks/address/use-address";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 const DAY_TIME = 24 * 60 * 60;
 const MILLISECONDS = 1000;
@@ -33,8 +34,10 @@ const IncentivizePoolModalContainer = () => {
   const [startDate] = useAtom(EarnState.date);
   const [dataModal] = useAtom(EarnState.dataModal);
   const [pool] = useAtom(EarnState.pool);
+
+  const { address } = useAddress();
+  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPositions } = useGetPositionsByAddress();
 
   const { getMessage } = useMessage();
 

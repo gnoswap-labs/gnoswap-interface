@@ -16,7 +16,8 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPositionsByAddress } from "@query/positions";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { useAddress } from "@hooks/address/use-address";
 
 interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -35,8 +36,9 @@ const StakePositionModalContainer = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
+  const { address } = useAddress();
+  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPositions } = useGetPositionsByAddress();
 
   const { positionRepository } = useGnoswapContext();
   const router = useCustomRouter();

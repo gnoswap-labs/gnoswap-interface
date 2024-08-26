@@ -15,7 +15,10 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { TokenModel } from "@models/token/token-model";
+import { useGetPoolList } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
@@ -23,9 +26,6 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import DecreasePositionModalContainer from "../containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { IPooledTokenInfo } from "./use-decrease-handle";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPoolList } from "@query/pools";
-import { useGetPositionsByAddress } from "@query/positions";
 
 export interface Props {
   openModal: () => void;
@@ -77,8 +77,8 @@ export const useDecreasePositionModal = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
+  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPositions } = useGetPositionsByAddress();
 
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);

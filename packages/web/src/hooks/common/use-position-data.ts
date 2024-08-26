@@ -31,6 +31,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
   const {
     data,
+    refetch,
     isError,
     isFetched: isFetchedPosition,
     isLoading: isLoadingPosition,
@@ -101,6 +102,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     availableStake,
     isError,
     positions,
+    refetch,
     checkStakedPool,
     getPositions,
     isFetchedPosition: isFetchedPosition && isFetchedPoolPositions,

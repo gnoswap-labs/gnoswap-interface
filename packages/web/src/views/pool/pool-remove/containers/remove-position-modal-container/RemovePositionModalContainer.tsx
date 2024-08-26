@@ -2,24 +2,25 @@ import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
+import { useAddress } from "@hooks/address/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { useGetPoolList } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
 import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPoolList } from "@query/pools";
-import { useGetPositionsByAddress } from "@query/positions";
 
 interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
@@ -46,8 +47,9 @@ const RemovePositionModalContainer = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
+  const { address } = useAddress();
+  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPositions } = useGetPositionsByAddress();
   const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
     positions: selectedPositions,
   });
