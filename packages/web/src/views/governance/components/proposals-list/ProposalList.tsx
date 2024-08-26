@@ -1,12 +1,15 @@
-import { ProposalDetailProps } from "@containers/proposal-list-container/ProposalListContainer";
 import { DEVICE_TYPE } from "@styles/media";
-import ProposalDetail from "../proposal-detail/ProposalDetail";
-import ProposalHeader from "../proposal-header/ProposalHeader";
-import ViewProposalModal from "../view-proposal-modal/ViewProposalModal";
-import { ProposalListWrapper } from "./ProposalList.styles";
+import { ProposalDetailProps } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
 import { Dispatch, SetStateAction } from "react";
-import CreateProposalModal from "../create-proposal-modal/CreateProposalModal";
-import ProposalDetailSkeleton from "../proposal-detail/ProposalDetailSekeleton";
+
+import CreateProposalModal from "./create-proposal-modal/CreateProposalModal";
+import ProposalDetail from "./proposal-detail/ProposalDetail";
+import ProposalDetailSkeleton from "./proposal-detail/ProposalDetailSekeleton";
+import ProposalHeader from "./proposal-header/ProposalHeader";
+import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
+
+import { ProposalListWrapper } from "./ProposalList.styles";
+
 interface ProposalListProps {
   proposalList: ProposalDetailProps[];
   isShowCancelled: boolean;

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import ProposalList from "@components/governance/proposals-list/ProposalList";
+import ProposalList from "@views/governance/components/proposals-list/ProposalList";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";

@@ -1,3 +1,15 @@
+import dayjs from "dayjs";
+import relative from "dayjs/plugin/relativeTime";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
@@ -7,18 +19,13 @@ import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconOutlineClock from "@components/common/icons/IconOutlineClock";
 import IconPass from "@components/common/icons/IconPass";
+import { Overlay } from "@components/common/modal/Modal.styles";
 import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
-import { ProposalDetailProps } from "@containers/proposal-list-container/ProposalListContainer";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import useLockedBody from "@hooks/common/use-lock-body";
 import { DEVICE_TYPE } from "@styles/media";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ProposalDetailProps } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
+
 import {
   BoxQuorumWrapper,
   ModalHeaderWrapper,
@@ -28,13 +35,8 @@ import {
   ProposalContentWrapper,
   ViewProposalModalBackground,
   ViewProposalModalWrapper,
-  VotingPowerWrapper,
+  VotingPowerWrapper
 } from "./ViewProposalModal.styles";
-import dayjs from "dayjs";
-import relative from "dayjs/plugin/relativeTime";
-import { Overlay } from "@components/common/modal/Modal.styles";
-import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import useLockedBody from "@hooks/common/use-lock-body";
 
 dayjs.extend(relative);
 

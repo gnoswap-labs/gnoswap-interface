@@ -1,20 +1,22 @@
+import { css, Global, type Theme } from "@emotion/react";
+import dayjs from "dayjs";
+import relative from "dayjs/plugin/relativeTime";
+import React from "react";
+
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
 import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
+import IconInfo from "@components/common/icons/IconInfo";
 import IconOutlineClock from "@components/common/icons/IconOutlineClock";
+import IconPass from "@components/common/icons/IconPass";
 import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
+import { ProposalDetailProps } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
+
 import {
   ProgressBar,
   ProgressWrapper,
-  ProposalDetailWrapper,
+  ProposalDetailWrapper
 } from "./ProposalDetail.styles";
-import React from "react";
-import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
-import IconInfo from "@components/common/icons/IconInfo";
-import { ProposalDetailProps } from "@containers/proposal-list-container/ProposalListContainer";
-import IconPass from "@components/common/icons/IconPass";
-import { Global, css, type Theme } from "@emotion/react";
-import dayjs from "dayjs";
-import relative from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relative);
 

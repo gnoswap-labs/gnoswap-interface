@@ -1,3 +1,13 @@
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import FormInput from "@components/common/form-input/FormInput";
 import FormTextArea from "@components/common/form-textarea/FormTextArea";
@@ -8,6 +18,7 @@ import IconRemove from "@components/common/icons/IconRemove";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import useLockedBody from "@hooks/common/use-lock-body";
 import { DEVICE_TYPE } from "@styles/media";
 import {
   getCreateProposalChangeParameterValidation,
@@ -15,22 +26,13 @@ import {
   getCreateProposalValidation,
 } from "@utils/create-proposal-validation";
 import { isEmptyObject } from "@utils/validation-utils";
-import React, {
-  useMemo,
-  useState,
-  useRef,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+
 import {
   BoxItem,
   CreateProposalModalBackground,
   CreateProposalModalWrapper,
   IconButton,
 } from "./CreateProposalModal.styles";
-import useLockedBody from "@hooks/common/use-lock-body";
 
 interface Props {
   breakpoint: DEVICE_TYPE;
@@ -113,7 +115,7 @@ const CreateProposalModal: React.FC<Props> = ({
     };
   }, [modalRef]);
 
-  const validationProps: any = useMemo(() => {
+  const validationProps = useMemo(() => {
     if (type === ProposalOption[1]) {
       return getCreateProposalCommunityPoolSpendValidation();
     }
@@ -257,11 +259,11 @@ const CreateProposalModal: React.FC<Props> = ({
                           placeholder="Subspace"
                           errorText={
                             errors?.variable
-                              ? (errors?.variable as any)[index]?.subspace
+                              ? (errors?.variable)[index]?.subspace
                                   ?.message ||
-                                (errors?.variable as any)[index]?.key
+                                (errors?.variable)[index]?.key
                                   ?.message ||
-                                (errors?.variable as any)[index]?.value?.message
+                                (errors?.variable)[index]?.value?.message
                               : undefined
                           }
                           {...register(`variable.${index}.subspace`)}

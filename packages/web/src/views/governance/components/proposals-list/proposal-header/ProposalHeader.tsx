@@ -1,8 +1,10 @@
+import { Dispatch, SetStateAction } from "react";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconNewTab from "@components/common/icons/IconNewTab";
 import Switch from "@components/common/switch/Switch";
+
 import { ProposalHeaderWrapper } from "./ProposalHeader.styles";
-import { Dispatch, SetStateAction } from "react";
 
 interface ProposalHeaderProps {
   isShowCancelled: boolean;

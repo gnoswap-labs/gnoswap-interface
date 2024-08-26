@@ -1,30 +1,25 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import GovernanceSummary from "@components/governance/governance-summary/GovernanceSummary";
+import React from "react";
 
-export interface GovernanceDetailInfoProps {
-  totalXGnosIssued: string;
-  communityPool: string;
-  passedProposals: string;
-  activeProposals: string;
-}
+import { GovernanceDetailData } from "../../components/governance-summary/governance-detail/governance-detail-info/GovernanceDetailInfo";
+import GovernanceSummary from "../../components/governance-summary/GovernanceSummary";
 
-const initialGovernanceDetailInfo: GovernanceDetailInfoProps = {
+const dummyGovernanceDetailInfo: GovernanceDetailData = {
   totalXGnosIssued: "59,144,225",
   communityPool: "2,412,148",
   passedProposals: "42",
   activeProposals: "2",
 };
 
-async function fetchGovernanceDetailInfo(): Promise<GovernanceDetailInfoProps> {
+async function fetchGovernanceDetailInfo(): Promise<GovernanceDetailData> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(
-    () => initialGovernanceDetailInfo,
+    () => dummyGovernanceDetailInfo,
   );
 }
 
 const GovernanceContainer: React.FC = () => {
   const { data: governanceDetailInfo, isFetching } = useQuery<
-    GovernanceDetailInfoProps,
+    GovernanceDetailData,
     Error
   >({
     queryKey: ["governanceDetailInfo"],

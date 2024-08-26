@@ -1,12 +1,21 @@
+import { css, Global, type Theme } from "@emotion/react";
 import React from "react";
+
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+
 import {
   GovernanceDetailInfoTooltipContent,
-  GovernanceDetailInfoWrapper,
+  GovernanceDetailInfoWrapper
 } from "./GovernanceDetailInfo.styles";
-import { Global, css, type Theme } from "@emotion/react";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+
+export interface GovernanceDetailData {
+  totalXGnosIssued: string;
+  communityPool: string;
+  passedProposals: string;
+  activeProposals: string;
+}
 
 interface GovernanceDetailInfoProps {
   title: string;

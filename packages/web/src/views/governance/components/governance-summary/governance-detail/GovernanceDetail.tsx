@@ -1,9 +1,9 @@
+import GovernanceDetailInfo, { GovernanceDetailData } from "./governance-detail-info/GovernanceDetailInfo";
+
 import { GovernanceDetailWrapper } from "./GovernanceDetail.styles";
-import { GovernanceDetailInfoProps } from "@containers/governance-container/GovernanceContainer";
-import GovernanceDetailInfo from "../governance-detail-info/GovernanceDetailInfo";
 
 interface GovernanceDetailProps {
-  governanceDetailInfo?: GovernanceDetailInfoProps;
+  governanceDetailInfo?: GovernanceDetailData;
   loading?: boolean;
 }
 
