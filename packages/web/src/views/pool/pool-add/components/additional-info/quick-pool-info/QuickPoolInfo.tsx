@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -7,15 +7,18 @@ import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight"
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PAGE_PATH_TYPE } from "@constants/page.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PositionModel } from "@models/position/position-model";
 import { TokenModel } from "@models/token/token-model";
+import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 
-import { Divider, QuickPoolInfoDummy, QuickPoolInfoWrapper } from "./QuickPoolInfo.styles";
+import { Divider, QuickPoolInfoWrapper } from "./QuickPoolInfo.styles";
 
 interface Props {
+  tokenPair: string[];
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
   handleClickGotoStaking: (type: PAGE_PATH_TYPE) => void;
@@ -24,6 +27,7 @@ interface Props {
 }
 
 const QuickPoolInfo: React.FC<Props> = ({
+  tokenPair,
   stakedPositions,
   unstakedPositions,
   handleClickGotoStaking,
@@ -33,49 +37,43 @@ const QuickPoolInfo: React.FC<Props> = ({
   const { t } = useTranslation();
 
   const { getGnotPath } = useGnotToGnot();
-  const [initialized, setInitialized] = useState<{
-    tokenA: TokenModel | null;
-    tokenB: TokenModel | null;
-  }>({ tokenA: null, tokenB: null });
+  const { tokens } = useTokenData();
 
-  const tokenA = pool.tokenA
-    ? {
-        ...pool.tokenA,
-        ...getGnotPath(pool.tokenA),
-      }
-    : null;
+  const tokenA = useMemo(
+    () =>
+      pool.tokenA.path
+        ? {
+            ...pool.tokenA,
+            ...getGnotPath(pool.tokenA),
+          }
+        : ({
+            ...tokens.find(item => item.path === checkGnotPath(tokenPair[0])),
+            ...getGnotPath(
+              tokens.find(item => item.path === checkGnotPath(tokenPair[0])),
+            ),
+          } as TokenModel),
+    [pool.tokenA, getGnotPath, tokens, tokenPair],
+  );
 
-  const tokenB = pool.tokenB
-    ? {
-        ...pool.tokenB,
-        ...getGnotPath(pool.tokenB),
-      }
-    : null;
-
-  useEffect(() => {
-    const temp = [
-      initialized?.tokenA?.symbol,
-      initialized?.tokenB?.symbol,
-    ].sort();
-    const tempToken = [tokenA?.symbol, tokenB?.symbol].sort();
-    const condition = temp[0] === tempToken[0] && temp[1] === tempToken[1];
-
-    if (!condition) {
-      setInitialized({ tokenA, tokenB });
-    }
-  }, [tokenA?.symbol, tokenB?.symbol, initialized]);
+  const tokenB = useMemo(
+    () =>
+      pool.tokenB.path
+        ? {
+            ...pool.tokenB,
+            ...getGnotPath(pool.tokenB),
+          }
+        : ({
+            ...tokens.find(item => item.path === checkGnotPath(tokenPair[1])),
+            ...getGnotPath(
+              tokens.find(item => item.path === checkGnotPath(tokenPair[1])),
+            ),
+          } as TokenModel),
+    [pool.tokenB, getGnotPath, tokens, tokenPair],
+  );
 
   const canUnstake = useMemo(() => {
     return stakedPositions.length > 0;
   }, [stakedPositions]);
-
-  const tokenARevert = useMemo(() => {
-    return initialized?.tokenA;
-  }, [initialized]);
-
-  const tokenBRevert = useMemo(() => {
-    return initialized?.tokenB;
-  }, [initialized]);
 
   const isStakable = useMemo(() => {
     return unstakedPositions.length > 0;
@@ -146,10 +144,6 @@ const QuickPoolInfo: React.FC<Props> = ({
     );
   }, [isLoadingPool, pool.stakingApr]);
 
-  if (!tokenA?.path || !tokenB?.path || !tokenARevert || !tokenBRevert) {
-    return <QuickPoolInfoDummy />;
-  }
-
   function renderPositionInfo() {
     return (
       <div className="pool-info">
@@ -174,11 +168,11 @@ const QuickPoolInfo: React.FC<Props> = ({
           <div className="value">
             {!isLoadingPool && (
               <DoubleLogo
-                left={tokenARevert?.logoURI || ""}
-                right={tokenBRevert?.logoURI || ""}
+                left={tokenA?.logoURI || ""}
+                right={tokenB?.logoURI || ""}
                 size={24}
-                leftSymbol={tokenARevert?.symbol || ""}
-                rightSymbol={tokenBRevert?.symbol || ""}
+                leftSymbol={tokenA?.symbol || ""}
+                rightSymbol={tokenB?.symbol || ""}
               />
             )}
             <span className="fee-apr-value">{feeApr}</span>
@@ -218,10 +212,7 @@ const QuickPoolInfo: React.FC<Props> = ({
             <div className="content" key={index}>
               <div className="label">
                 {!isLoadingPool && (
-                  <OverlapTokenLogo
-                    tokens={[tokenARevert, tokenBRevert]}
-                    size={24}
-                  />
+                  <OverlapTokenLogo tokens={[tokenA, tokenB]} size={24} />
                 )}
                 ID #{item.id}
               </div>
@@ -255,10 +246,7 @@ const QuickPoolInfo: React.FC<Props> = ({
           {stakedPositions.map((item, index) => (
             <div className="content" key={index}>
               <div className="label">
-                <OverlapTokenLogo
-                  tokens={[tokenARevert, tokenBRevert]}
-                  size={24}
-                />
+                <OverlapTokenLogo tokens={[tokenA, tokenB]} size={24} />
                 ID #{item.id}
               </div>
               <div className="value">
@@ -274,8 +262,8 @@ const QuickPoolInfo: React.FC<Props> = ({
   return (
     <QuickPoolInfoWrapper>
       <div className="token-pair">
-        <OverlapTokenLogo tokens={[tokenARevert, tokenBRevert]} size={24} />
-        <span className="token-name">{`${tokenARevert?.symbol}/${tokenBRevert?.symbol}`}</span>
+        <OverlapTokenLogo tokens={[tokenA, tokenB]} size={24} />
+        <span className="token-name">{`${tokenA?.symbol}/${tokenB?.symbol}`}</span>
       </div>
       {renderPositionInfo()}
       {(isStakable || canUnstake) && !isLoadingPool && <Divider />}

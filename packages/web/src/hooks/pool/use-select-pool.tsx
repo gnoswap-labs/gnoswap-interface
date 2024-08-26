@@ -218,10 +218,7 @@ export const useSelectPool = ({
         return await Promise.resolve<{
           chainData: PoolDetailRPCModel | null;
           dbData: PoolModel | null;
-        }>({ chainData: null, dbData: null } as {
-          chainData: PoolDetailRPCModel | null;
-          dbData: PoolModel | null;
-        });
+        }>({ chainData: null, dbData: null });
       }
 
       const defaultPoolInfo: PoolDetailRPCModel = {
@@ -251,10 +248,7 @@ export const useSelectPool = ({
           return await Promise.resolve<{
             chainData: PoolDetailRPCModel | null;
             dbData: PoolModel | null;
-          }>({ chainData: null, dbData: null } as {
-            chainData: PoolDetailRPCModel | null;
-            dbData: PoolModel | null;
-          });
+          }>({ chainData: null, dbData: null });
         }
         const poolInfo: PoolDetailRPCModel = {
           ...defaultPoolInfo,
@@ -264,10 +258,7 @@ export const useSelectPool = ({
         return Promise.resolve<{
           chainData: PoolDetailRPCModel | null;
           dbData: PoolModel | null;
-        }>({ chainData: poolInfo, dbData: null } as {
-          chainData: PoolDetailRPCModel | null;
-          dbData: PoolModel | null;
-        });
+        }>({ chainData: poolInfo, dbData: null });
       }
 
       const poolPath = `${tokenPair?.join(":")}:${

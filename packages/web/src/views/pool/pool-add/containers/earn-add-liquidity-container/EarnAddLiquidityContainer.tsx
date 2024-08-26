@@ -14,6 +14,7 @@ import {
   PriceRangeMeta,
   SwapFeeTierType,
 } from "@constants/option.constant";
+import { PAGE_PATH } from "@constants/page.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useRouterBack } from "@hooks/common/use-router-back";
@@ -779,11 +780,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tickLower: nextTickLower,
         tickUpper: nextTickUpper,
       };
-      window.history.pushState(
-        query,
-        "",
-        makeRouteUrl(window.location.pathname, query),
-      );
+      router.replace(makeRouteUrl(PAGE_PATH.EARN_ADD, query), undefined, {
+        shallow: true,
+      });
     }
   }, [
     swapFeeTier,

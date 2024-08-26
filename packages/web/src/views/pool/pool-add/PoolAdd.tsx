@@ -14,12 +14,15 @@ import { DeviceSize } from "@styles/media";
 import { makeRouteUrl } from "@utils/page.utils";
 
 import EarnAddLiquidityContainer from "./containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import ExchangeRateGraphContainer from "./containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
 import PoolAddLiquidityContainer from "./containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
-import QuickPoolInfoContainer from "./containers/quick-pool-info-container/QuickPoolInfoContainer";
+import AdditionalInfoContainer from "./containers/additional-info-container/AdditionalInfoContainer";
 import PoolAddLayout from "./PoolAddLayout";
 
-const PoolAdd: React.FC = () => {
+interface PoolAddProps {
+  useDedicatedPool: boolean;
+}
+
+const PoolAdd: React.FC<PoolAddProps> = ({useDedicatedPool}) => {
   const { t } = useTranslation();
   const { width } = useWindowSize();
   const router = useCustomRouter();
@@ -30,12 +33,10 @@ const PoolAdd: React.FC = () => {
   const { getGnotPath } = useGnotToGnot();
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const hasDedicatedPool = router.asPath.includes("/pool");
-
   const listBreadcrumb = useMemo(() => {
     const base = [{ title: t("business:pageHeader.earn"), path: "/earn" }];
 
-    if (hasDedicatedPool) {
+    if (useDedicatedPool) {
       base.push({
         title:
           width > DeviceSize.mediumWeb
@@ -54,7 +55,7 @@ const PoolAdd: React.FC = () => {
     return base;
   }, [
     t,
-    hasDedicatedPool,
+    useDedicatedPool,
     width,
     getGnotPath,
     data?.tokenA,
@@ -69,18 +70,17 @@ const PoolAdd: React.FC = () => {
       breadcrumbs={
         <BreadcrumbsContainer
           listBreadcrumb={listBreadcrumb}
-          isLoading={hasDedicatedPool ? isLoadingCommon || isLoading : false}
+          isLoading={useDedicatedPool ? isLoadingCommon || isLoading : false}
         />
       }
       addLiquidity={
-        hasDedicatedPool ? (
+        useDedicatedPool ? (
           <PoolAddLiquidityContainer />
         ) : (
           <EarnAddLiquidityContainer />
         )
       }
-      quickPoolInfo={<QuickPoolInfoContainer />}
-      exchangeRateGraph={<ExchangeRateGraphContainer />}
+      additionalInfo={<AdditionalInfoContainer />}
       footer={<Footer />}
     />
   );

@@ -30,8 +30,7 @@ export default function Page() {
   const { tokens } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
-  const feeTier =
-    (router.query.fee_tier as string) || window.history.state?.fee_tier;
+  const feeTier = query.fee_tier as string;
 
   const feeStr = useMemo(() => {
     if (!feeTier) {
@@ -70,7 +69,7 @@ export default function Page() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <PoolAdd />
+      <PoolAdd useDedicatedPool={false} />
     </>
   );
 }

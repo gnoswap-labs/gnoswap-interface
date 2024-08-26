@@ -45,8 +45,9 @@ export const ExchangeRateGraphHeaderWrapper = styled.div`
 `;
 
 export const TooltipContentWrapper = styled.div`
-    ${fonts.body12}
-    color: ${({ theme }) => theme.color.text02};
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;
 
 export const LoadingExchangeRateChartWrapper = styled.div`

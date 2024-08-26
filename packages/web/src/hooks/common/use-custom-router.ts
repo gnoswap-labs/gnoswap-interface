@@ -31,8 +31,9 @@ const useCustomRouter = () => {
     router.push(pathname, as, options);
   }
 
-  function replace(pathname: string) {
-    router.replace(pathname);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function replace(pathname: string, as?: any, options?: any) {
+    router.replace(pathname, as, options);
   }
 
   function getParameter(key: string): string | null {
