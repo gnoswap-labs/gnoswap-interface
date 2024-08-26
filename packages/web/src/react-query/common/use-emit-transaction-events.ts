@@ -5,12 +5,12 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 500;
+const REFETCH_INTERVAL = 1_000;
 
 export const useEmitTransactionEvents = (
   options?: UseQueryOptions<Event<string[]>[], Error>,
 ) => {
-  const { accountRepository, eventStore } = useGnoswapContext();
+  const { statusRepository, eventStore } = useGnoswapContext();
 
   return useQuery<Event<string[]>[], Error>({
     queryKey: [QUERY_KEY.transactionEvents],
@@ -21,11 +21,10 @@ export const useEmitTransactionEvents = (
 
       await eventStore.updatePendingEvents();
 
-      const result = await accountRepository
-        .getAvgBlockTime({ startBlock: undefined })
-        .catch(() => null);
+      const result = await statusRepository.getSyncInfo().catch(() => null);
 
-      const blockHeight = result?.Height.latest;
+      const blockHeight = result?.syncInfo.height;
+      console.log(result);
       if (!blockHeight) {
         return [];
       }

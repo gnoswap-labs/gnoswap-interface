@@ -53,6 +53,8 @@ import {
 } from "@states/common";
 import { CommonState, WalletState } from "@states/index";
 import axios from "axios";
+import { StatusRepository } from "@repositories/status/status-repository";
+import { StatusRepositoryImpl } from "@repositories/status/status-repository-impl";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -70,6 +72,7 @@ interface GnoswapContextProps {
   notificationRepository: NotificationRepository;
   walletRepository: WalletRepository;
   leaderboardRepository: LeaderboardRepository;
+  statusRepository: StatusRepository;
   localStorageClient: WebStorageClient;
 }
 
@@ -257,6 +260,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new LeaderboardRepositoryMock();
   }, []);
 
+  const statusRepository = useMemo(() => {
+    return new StatusRepositoryImpl(gnoswapApiClient);
+  }, [gnoswapApiClient]);
+
   useEffect(() => {
     if (window) {
       setLocalStorageClient(WebStorageClient.createLocalStorageClient());
@@ -282,6 +289,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         notificationRepository,
         walletRepository,
         leaderboardRepository,
+        statusRepository,
         localStorageClient,
       }}
     >
