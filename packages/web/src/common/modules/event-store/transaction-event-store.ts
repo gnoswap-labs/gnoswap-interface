@@ -106,7 +106,7 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
     return triggeredEvents;
   }
 
-  async updatePendingEvents(): Promise<Promise<Event<ResponseDataType>[]>> {
+  async updatePendingEvents(): Promise<Event<ResponseDataType>[]> {
     const pendingEvents = Array.from(this.events.values()).filter(
       event => event.status === "PENDING",
     );

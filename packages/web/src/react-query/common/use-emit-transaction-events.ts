@@ -18,7 +18,6 @@ export const useEmitTransactionEvents = (
       if (eventStore.count() === 0) {
         return [];
       }
-      console.log(eventStore.list());
 
       await eventStore.updatePendingEvents();
 

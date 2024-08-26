@@ -14,7 +14,7 @@ export interface EventStore<T = unknown> {
 
   emitAllEvents: (emitNumber: number) => Promise<Event<T>[]>;
 
-  updatePendingEvents: () => Promise<Promise<Event<T>[]>>;
+  updatePendingEvents: () => Promise<Event<T>[]>;
 
   removeEvent: (id: string) => Event<T> | null;
 
