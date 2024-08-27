@@ -14,9 +14,9 @@ const Template: ComponentStory<typeof GovernanceSummary> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
   governanceDetailInfo: {
-    totalXGnosIssued: "59,144,225 xGNOS",
-    communityPool: "2,412,148 GNOS",
-    passedProposals: "42",
-    activeProposals: "2",
+    totalXGnosIssued: "0 xGNOS",
+    communityPool: "0 GNOS",
+    passedProposals: "0",
+    activeProposals: "0",
   },
 };

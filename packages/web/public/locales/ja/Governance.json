@@ -1,1 +1,1 @@
-{"header":"ガバナンス"}
+{"header":"ガバナンス","summary":{"apy":{"title":"xGNS APY","tooltip":"プロトコル・フィー報酬に基づくxGNSの推定APRをリアルタイムで表示。"},"commPool":{"title":"コミュニティ・プール","tooltip":"コミュニティ・プールの資産総額。"},"delRatio":{"title":"委任比率","tooltip":"xGNS ステーキングプールで委譲された GNS トークンの流通総量に対する割合。"},"guide":{"guide":"GNSに統治権を委任し、プロトコル料金の一部を受け取る。","link":"さらに詳しく"},"totalDel":{"title":"委任合計","tooltip":"xGNS ステーキングプールで委譲された GNS トークンの総量。"}}}

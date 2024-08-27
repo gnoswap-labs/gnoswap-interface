@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
-import mixins from "@styles/mixins";
+
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
+import mixins from "@styles/mixins";
 
 export const GovernanceDetailInfoWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -89,10 +90,6 @@ export const GovernanceDetailInfoWrapper = styled.div`
     gap: 8px;
     width: 100%;
     flex-wrap: wrap;
-    .currency {
-      ${fonts.body6};
-      color: ${({ theme }) => theme.color.text04};
-    }
     .value {
       display: inline-flex;
       ${fonts.body2};
@@ -108,9 +105,6 @@ export const GovernanceDetailInfoWrapper = styled.div`
       .value {
         ${fonts.body6};
       }
-      .currency {
-        ${fonts.body8};
-      }
     }
     .button-wrapper {
       flex-shrink: 0;
@@ -123,5 +117,4 @@ export const GovernanceDetailInfoTooltipContent = styled.div`
   width: calc(300px - 32px);
   ${fonts.body12};
   color: ${({ theme }) => theme.color.text15};
-  background-color: ${({ theme }) => theme.color.background14};
 `;

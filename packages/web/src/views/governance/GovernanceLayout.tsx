@@ -1,10 +1,7 @@
-import Link from "next/link";
 import React from "react";
 
-import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
-
-import { GovernanceLayoutWrapper, LinkButton } from "./GovernanceLayout.styles";
 import { useTranslation } from "react-i18next";
+import { GovernanceLayoutWrapper } from "./GovernanceLayout.styles";
 
 interface GovernanceLayoutProps {
   header: React.ReactNode;
@@ -30,12 +27,7 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
         </div>
         <div className="summary-container">
           {summary}
-          <LinkButton>
-            <div>Stake GNS/GNOT Positions to earn xGNOS</div>
-            <Link href="/earn/pool/1">
-              Click here <IconStrokeArrowRight className="link-icon" />
-            </Link>
-          </LinkButton>
+
         </div>
       </section>
       <div className="proposal-list-wrapper">

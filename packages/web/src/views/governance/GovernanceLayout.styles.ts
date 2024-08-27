@@ -150,39 +150,3 @@ export const GovernanceLayoutWrapper = styled.div`
     }
   }
 `;
-
-export const LinkButton = styled.div`
-  ${mixins.flexbox("row", "center", "center")};
-  width: 100%;
-  ${fonts.body11};
-  gap: 4px;
-  color: ${({ theme }) => theme.color.text04};
-  ${media.mobile} {
-    ${fonts.p3};
-    flex-direction: column;
-  }
-  a {
-    display: block;
-    ${mixins.flexbox("row", "center", "center")};
-    color: ${({ theme }) => theme.color.text07};
-    &:hover {
-      color: ${({ theme }) => theme.color.text08};
-      svg {
-        * {
-          fill: ${({ theme }) => theme.color.icon14};
-        }
-      }
-    }
-  }
-  svg {
-    width: 16px;
-    height: 16px;
-    * {
-      fill: ${({ theme }) => theme.color.text07};
-    }
-  }
-  ${media.mobile} {
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-  }
-`;
