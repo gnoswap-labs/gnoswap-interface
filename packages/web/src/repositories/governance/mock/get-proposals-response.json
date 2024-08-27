@@ -1,0 +1,301 @@
+[
+  {
+    "id": 1,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Text Proposal",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "Onbloc",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 2,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Text Proposal",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "GovDao",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 3,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Text Proposal",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "GnoSwap Foundation",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 4,
+    "status": "Executed",
+    "title": "Very Very Very Very Very Extraordinary Long Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "Onbloc",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 5,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "Onbloc",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 6,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "GnoSwap Foundation",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 7,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "Onbloc",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 8,
+    "status": "Passed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "proponent": "Onbloc",
+    "time": "2024-08-21 11:13:28",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 9,
+    "status": "Rejected",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "proponent": "Onbloc",
+    "time": "2024-08-22 14:39:57",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 10,
+    "status": "Cancelled",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "proponent": "Onbloc",
+    "time": "2024-08-23 07:52:01",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 11,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "Onbloc",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 12,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "GnoSwap Foundation",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 13,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "GovDao",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 14,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "Onbloc",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 15,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "Onbloc",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 16,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "Onbloc",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 17,
+    "status": "Executed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "time": "2024-08-20 10:10:29",
+    "proponent": "Onbloc",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 18,
+    "status": "Passed",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "proponent": "Onbloc",
+    "time": "2024-08-21 11:13:28",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 19,
+    "status": "Rejected",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "proponent": "Onbloc",
+    "time": "2024-08-22 14:39:57",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 20,
+    "status": "Cancelled",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "proponent": "Onbloc",
+    "time": "2024-08-23 07:52:01",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 21,
+    "status": "Active",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "proponent": "Onbloc",
+    "time": "2024-09-27 10:00:00",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 22,
+    "status": "Active",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "proponent": "Onbloc",
+    "time": "2025-01-27 17:00:00",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  },
+  {
+    "id": 23,
+    "status": "Upcomming",
+    "title": "Proposal Title",
+    "type": "Community Pool Spend",
+    "proponent": "Onbloc",
+    "time": "2025-02-27 10:00:00",
+    "votes": {
+      "max": 40000,
+      "yes": 2000,
+      "no": 1000
+    }
+  }
+]

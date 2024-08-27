@@ -6,12 +6,13 @@ import GovernanceSummary from "./GovernanceSummary";
 describe("GovernanceSummary Component", () => {
   it("GovernanceSummary render", () => {
     const mockProps = {
-      governanceDetailInfo: {
-        totalXGnosIssued: "59,144,225 xGNOS",
-        communityPool: "2,412,148 GNOS",
-        passedProposals: "42",
-        activeProposals: "2",
+      governanceSummary: {
+        totalDeligated: 59144225,
+        DeligatedRatio: 55.12,
+        apy: 12.51,
+        communityPool: 2412148.12,
       },
+      isLoading: false,
     };
 
     render(
