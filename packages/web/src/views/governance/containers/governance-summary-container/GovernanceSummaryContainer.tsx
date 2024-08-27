@@ -5,7 +5,7 @@ import { dummyGovernanceSummaryInfo } from "@repositories/governance";
 
 import GovernanceSummary from "../../components/governance-summary/GovernanceSummary";
 
-const GovernanceContainer: React.FC = () => {
+const GovernanceSummaryContainer: React.FC = () => {
   const { data: governanceSummaryInfo, isFetching } = useGetGovernanceSummary();
 
   return (
@@ -16,4 +16,4 @@ const GovernanceContainer: React.FC = () => {
   );
 };
 
-export default GovernanceContainer;
+export default GovernanceSummaryContainer;

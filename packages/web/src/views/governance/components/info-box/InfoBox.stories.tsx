@@ -1,14 +1,14 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import GovernanceDetailInfo from "./GovernanceDetailInfo";
+import InfoBox from "./InfoBox";
 
 export default {
-  title: "governance/GovernanceDetailInfo",
-  component: GovernanceDetailInfo,
-} as ComponentMeta<typeof GovernanceDetailInfo>;
+  title: "governance/InfoBox",
+  component: InfoBox,
+} as ComponentMeta<typeof InfoBox>;
 
-const Template: ComponentStory<typeof GovernanceDetailInfo> = (args) => (
-  <GovernanceDetailInfo {...args} />
+const Template: ComponentStory<typeof InfoBox> = (args) => (
+  <InfoBox {...args} />
 );
 
 export const Default = Template.bind({});

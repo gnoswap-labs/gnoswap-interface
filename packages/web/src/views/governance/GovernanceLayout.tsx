@@ -6,6 +6,7 @@ import { GovernanceLayoutWrapper } from "./GovernanceLayout.styles";
 interface GovernanceLayoutProps {
   header: React.ReactNode;
   summary: React.ReactNode;
+  myDelegation: React.ReactNode;
   footer: React.ReactNode;
   list: React.ReactNode;
 }
@@ -13,6 +14,7 @@ interface GovernanceLayoutProps {
 const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
   header,
   summary,
+  myDelegation,
   list,
   footer,
 }) => {
@@ -27,7 +29,7 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
         </div>
         <div className="summary-container">
           {summary}
-
+          {myDelegation}
         </div>
       </section>
       <div className="proposal-list-wrapper">
