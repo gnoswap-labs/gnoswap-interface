@@ -32,3 +32,38 @@ export const MyDelegationWrapper = styled.div`
     }
   }
 `;
+
+export const MyDelegationTooltipContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 300px;
+  ${fonts.body12};
+  gap: 8px;
+
+  > .delegation-item {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 100%;
+    gap: 8px;
+
+    > .divider {
+      height: 1px;
+      width: 100%;
+      background-color: ${({ theme }) => theme.color.border01};
+    }
+
+    > .info-row {
+      ${mixins.flexbox("row", "center", "space-between")};
+      height: 26px;
+      width: 100%;
+
+      > .info-subject {
+        color: ${({ theme }) => theme.color.text04};
+      }
+
+      > .info-value {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+        color: ${({ theme }) => theme.color.text02};
+      }
+    }
+  }
+`;

@@ -6,7 +6,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 import {
-  GovernanceDetailInfoTooltipContent,
+  InfoBoxTooltipContent,
   GovernanceDetailInfoWrapper
 } from "./InfoBox.styles";
 
@@ -43,9 +43,9 @@ const InfoBox: React.FC<GovernanceDetailInfoProps> = ({
             <Tooltip
               placement="top"
               FloatingContent={
-                <GovernanceDetailInfoTooltipContent>
+                <InfoBoxTooltipContent>
                   {tooltip}
-                </GovernanceDetailInfoTooltipContent>
+                </InfoBoxTooltipContent>
               }
             >
               <IconInfo />

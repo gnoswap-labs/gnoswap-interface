@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { GNS_TOKEN } from "@common/values/token-constant";
+import IconSwap from "@components/common/icons/IconSwap";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import { MyDelegationInfo } from "@repositories/governance";
 
 import InfoBox from "../info-box/InfoBox";
 
-import { MyDelegationWrapper } from "./MyDelegation.styles";
-import IconSwap from "@components/common/icons/IconSwap";
 import TokenChip from "../token-chip/TokenChip";
-import { GNS_TOKEN } from "@common/values/token-constant";
+import {
+  MyDelegationTooltipContent,
+  MyDelegationWrapper,
+} from "./MyDelegation.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface MyDelegationProps {
   myDelegationInfo: MyDelegationInfo;
@@ -25,9 +30,16 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
 
   const hasUndel = !!myDelegationInfo.undeligatedAmount;
 
+  const votingWeightInfos = myDelegationInfo.delegations.filter(
+    item => !item.unlockDate,
+  );
+  const undeligationInfos = myDelegationInfo.delegations.filter(
+    item => item.unlockDate,
+  );
+
   return (
     <MyDelegationWrapper>
-      <div className="my-delegation-title">My Delegation</div>
+      <div className="my-delegation-title">{t("Governance:myDel.title")}</div>
       <div className="info-wrapper">
         <InfoBox
           title={t("Governance:myDel.availBal.title")}
@@ -47,14 +59,69 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               : t("Governance:myDel.votingWeight.title")
           }
           value={
-            <>
+            <Tooltip
+              FloatingContent={
+                <MyDelegationTooltipContent>
+                  {(showUndel ? undeligationInfos : votingWeightInfos).map(
+                    (item, index) => (
+                      <div
+                        key={`del-item-${item.updatedDate}-${index}`}
+                        className="delegation-item"
+                      >
+                        {index !== 0 && <div className="divider" />}
+                        <div className="info-row">
+                          <div className="info-subject">
+                            {t("Governance:myDel.tooltip.delegatee")}
+                          </div>
+                          <div className="info-value">
+                            <MissingLogo
+                              symbol={item.delegatee}
+                              url={item.logoUrl}
+                              width={20}
+                            />
+                            {item.delegatee}
+                          </div>
+                        </div>
+                        <div className="info-row">
+                          <div className="info-subject">
+                            {t("Governance:myDel.tooltip.amount")}
+                          </div>
+                          <div className="info-value">
+                            {item.amount.toLocaleString("en")} GNS
+                          </div>
+                        </div>
+                        <div className="info-row">
+                          <div className="info-subject">
+                            {t(
+                              showUndel
+                                ? "Governance:myDel.tooltip.undelegated"
+                                : "Governance:myDel.tooltip.date",
+                            )}
+                          </div>
+                          <div className="info-value">{item.updatedDate}</div>
+                        </div>
+                        {item.unlockDate && (
+                          <div className="info-row">
+                            <div className="info-subject">
+                              {t("Governance:myDel.tooltip.unlockDate")}
+                            </div>
+                            <div className="info-value">{item.unlockDate}</div>
+                          </div>
+                        )}
+                      </div>
+                    ),
+                  )}
+                </MyDelegationTooltipContent>
+              }
+              placement="top"
+            >
               {`${
                 hasUndel && showUndel
                   ? myDelegationInfo.undeligatedAmount.toLocaleString("en")
                   : myDelegationInfo.votingWeight.toLocaleString("en")
               }`}
               <TokenChip tokenInfo={GNS_TOKEN} />
-            </>
+            </Tooltip>
           }
           tooltip={
             hasUndel && showUndel
