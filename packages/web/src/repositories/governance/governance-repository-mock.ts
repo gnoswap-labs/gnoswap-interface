@@ -1,6 +1,7 @@
 
 import { GovernanceRepository } from "./governance-repository";
 import GetProposalsResponseMock from "./mock/get-proposals-response.json";
+import GetMyDelegationResposneMock from "./mock/get-my-delegation-response.json";
 import { GovernanceSummaryInfo, MyDelegationInfo } from "./model";
 import { GetMyDeligationRequest, GetProposalsReqeust } from "./request";
 import {
@@ -30,13 +31,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     request: GetMyDeligationRequest,
   ) :Promise<MyDelegationInfo> => {
     console.log(request);
-    const res: GetMyDeligationResponse = {
-      availableBalance: 4225.12,
-      votingWeight: 110102.23,
-      undeligatedAmount: 422.12,
-      claimableRewardsUsd: 4225.12,
-    };
-
+    const res: GetMyDeligationResponse = GetMyDelegationResposneMock;
     const result = res;
 
     return new Promise(resolve => setTimeout(resolve, 500)).then(

@@ -3,11 +3,21 @@ export interface MyDelegationInfo {
   votingWeight: number;
   undeligatedAmount: number;
   claimableRewardsUsd: number;
+  delegations: DelegationItemInfo[];
 }
 
-export const dummyMyDelegationInfo: MyDelegationInfo = {
-  availableBalance: 4225.12,
-  votingWeight: 110102.23,
-  undeligatedAmount: 422.12,
-  claimableRewardsUsd: 4225.12,
+interface DelegationItemInfo {
+  delegatee: string;
+  logoUrl: string;
+  amount: number;
+  updatedDate: string;
+  unlockDate: string | null;
+}
+
+export const nullMyDelegationInfo: MyDelegationInfo = {
+  availableBalance: 0,
+  votingWeight: 0,
+  undeligatedAmount: 0,
+  claimableRewardsUsd: 0,
+  delegations: [],
 };
