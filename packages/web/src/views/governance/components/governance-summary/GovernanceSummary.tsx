@@ -5,15 +5,15 @@ import { GovernanceSummaryWrapper } from "./GovernanceSummary.styles";
 
 interface GovernanceSummaryProps {
   governanceDetailInfo?: GovernanceDetailData;
-  loading?: boolean;
+  isLoading?: boolean;
 }
 
 const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   governanceDetailInfo,
-  loading,
+  isLoading,
 }) => (
   <GovernanceSummaryWrapper>
-    <GovernanceDetail loading={loading} governanceDetailInfo={governanceDetailInfo} />
+    <GovernanceDetail isLoading={isLoading} governanceDetailInfo={governanceDetailInfo} />
   </GovernanceSummaryWrapper>
 );
 

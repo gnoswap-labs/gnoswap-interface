@@ -4,12 +4,12 @@ import { GovernanceDetailWrapper } from "./GovernanceDetail.styles";
 
 interface GovernanceDetailProps {
   governanceDetailInfo?: GovernanceDetailData;
-  loading?: boolean;
+  isLoading?: boolean;
 }
 
 const GovernanceDetail: React.FC<GovernanceDetailProps> = ({
   governanceDetailInfo,
-  loading,
+  isLoading,
 }) => (
   <GovernanceDetailWrapper>
     <GovernanceDetailInfo
@@ -19,7 +19,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({
         "Total amount of xGNS currently issued through GNS-GNOT staking."
       }
       currency="xGNS"
-      loading={loading}
+      isLoading={isLoading}
     />
     <GovernanceDetailInfo
       title={"Community Pool"}
@@ -28,19 +28,19 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({
         "Amount of GNS accumulated in the Community Pool from Emissions."
       }
       currency="GNS"
-      loading={loading}
+      isLoading={isLoading}
     />
     <GovernanceDetailInfo
       title={"Passed Proposals"}
       value={governanceDetailInfo?.passedProposals}
       tooltip={"Proposals that were successfully executed."}
-      loading={loading}
+      isLoading={isLoading}
     />
     <GovernanceDetailInfo
       title={"Active Proposals"}
       value={governanceDetailInfo?.activeProposals}
       tooltip={"Proposals that are currently available for voting."}
-      loading={loading}
+      isLoading={isLoading}
     />
   </GovernanceDetailWrapper>
 );

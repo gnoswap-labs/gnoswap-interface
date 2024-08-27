@@ -27,9 +27,10 @@ const GovernanceContainer: React.FC = () => {
       return fetchGovernanceDetailInfo();
     },
   });
+
   return (
     <GovernanceSummary
-      loading={isFetching}
+      isLoading={isFetching}
       governanceDetailInfo={governanceDetailInfo}
     />
   );

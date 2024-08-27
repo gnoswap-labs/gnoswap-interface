@@ -22,7 +22,7 @@ interface GovernanceDetailInfoProps {
   value?: string;
   tooltip?: string;
   currency?: string;
-  loading?: boolean;
+  isLoading?: boolean;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -48,7 +48,7 @@ const GovernanceDetailInfo: React.FC<GovernanceDetailInfoProps> = ({
   value,
   tooltip,
   currency,
-  loading,
+  isLoading,
 }) => {
   return (
     <GovernanceDetailInfoWrapper>
@@ -58,7 +58,7 @@ const GovernanceDetailInfo: React.FC<GovernanceDetailInfoProps> = ({
           <GovernanceDetailInfoTooltip tooltip={tooltip} />
         )}
       </div>
-      {loading ? (
+      {isLoading ? (
         <div className="value-wrapper-skeleton">
           <span css={pulseSkeletonStyle({ w: "100%" })} />
         </div>
