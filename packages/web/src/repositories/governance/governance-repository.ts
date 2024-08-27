@@ -1,7 +1,6 @@
-import { GovernanceSummaryInfo, MyDelegationInfo } from "./model";
+import { GovernanceSummaryInfo, MyDelegationInfo, ProposalsInfo } from "./model";
 import { GetProposalsReqeust } from "./request";
 import { GetMyDeligationRequest } from "./request/get-my-deligation-request";
-import { GetProposalsResponse } from "./response";
 
 export interface GovernanceRepository {
   getGovernanceSummary: () => Promise<GovernanceSummaryInfo>;
@@ -10,5 +9,5 @@ export interface GovernanceRepository {
     request: GetMyDeligationRequest,
   ) => Promise<MyDelegationInfo>;
 
-  getProposals: (request: GetProposalsReqeust) => Promise<GetProposalsResponse>;
+  getProposals: (request: GetProposalsReqeust) => Promise<ProposalsInfo>;
 }

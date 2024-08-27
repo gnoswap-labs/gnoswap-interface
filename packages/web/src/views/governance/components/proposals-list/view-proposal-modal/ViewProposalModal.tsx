@@ -24,7 +24,7 @@ import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import useLockedBody from "@hooks/common/use-lock-body";
 import { DEVICE_TYPE } from "@styles/media";
-import { ProposalDetailProps } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
+import { ProposalDetailInfo } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
 
 import {
   BoxQuorumWrapper,
@@ -42,7 +42,7 @@ dayjs.extend(relative);
 
 interface Props {
   breakpoint: DEVICE_TYPE;
-  proposalDetail: ProposalDetailProps;
+  proposalDetail: ProposalDetailInfo;
   setIsShowProposalModal: Dispatch<SetStateAction<boolean>>;
   isConnected: boolean;
   isSwitchNetwork: boolean;
@@ -81,7 +81,7 @@ const BoxQuorum = ({
   setOptionVote,
 }: {
   breakpoint?: DEVICE_TYPE;
-  proposalDetail: ProposalDetailProps;
+  proposalDetail: ProposalDetailInfo;
   optionVote: OptionVote;
   setOptionVote: Dispatch<SetStateAction<OptionVote>>;
 }) => {
@@ -133,7 +133,7 @@ const BoxQuorum = ({
 const VotingPower = ({
   proposalDetail,
 }: {
-  proposalDetail: ProposalDetailProps;
+  proposalDetail: ProposalDetailInfo;
 }) => {
   return (
     <VotingPowerWrapper>
@@ -154,7 +154,7 @@ const VotingPower = ({
 const ProposalContent = ({
   proposalDetail,
 }: {
-  proposalDetail: ProposalDetailProps;
+  proposalDetail: ProposalDetailInfo;
 }) => {
   return (
     <ProposalContentWrapper>

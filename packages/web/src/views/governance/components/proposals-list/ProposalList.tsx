@@ -1,6 +1,8 @@
-import { DEVICE_TYPE } from "@styles/media";
-import { ProposalDetailProps } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
 import { Dispatch, SetStateAction } from "react";
+
+import { ProposalItemInfo } from "@repositories/governance";
+import { DEVICE_TYPE } from "@styles/media";
+import { ProposalDetailInfo } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
 
 import CreateProposalModal from "./create-proposal-modal/CreateProposalModal";
 import ProposalDetail from "./proposal-detail/ProposalDetail";
@@ -11,12 +13,12 @@ import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 import { ProposalListWrapper } from "./ProposalList.styles";
 
 interface ProposalListProps {
-  proposalList: ProposalDetailProps[];
+  proposalList: ProposalItemInfo[];
   isShowCancelled: boolean;
   toggleShowCancelled: () => void;
   isShowProposalModal: boolean;
   breakpoint: DEVICE_TYPE;
-  proposalDetail: ProposalDetailProps;
+  proposalDetail: ProposalDetailInfo;
   setIsShowProposalModal: Dispatch<SetStateAction<boolean>>;
   onClickProposalDetail: (id: string) => void;
   isShowCreateProposal: boolean;
@@ -57,7 +59,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
       ))
     ) : (
       <>
-        {proposalList.map((proposalDetail: ProposalDetailProps) => (
+        {proposalList.map((proposalDetail: ProposalItemInfo ) => (
           <ProposalDetail
             key={proposalDetail.id}
             proposalDetail={proposalDetail}

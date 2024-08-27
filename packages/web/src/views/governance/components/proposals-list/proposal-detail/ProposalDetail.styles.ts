@@ -9,7 +9,7 @@ export const ProposalDetailWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border01};
   cursor: pointer;
   border-radius: 8px;
-  padding: 24px 36px 32px 36px;
+  padding: 24px 36px;
   gap: 8px;
   width: 100%;
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
@@ -156,17 +156,9 @@ export const ProgressBar = styled.div<progressBarProps>`
     }};
     height: 100%;
     border-radius: 8px;
-    background-color: ${({ theme }) => theme.color.text08};
-  }
-  .progress-bar-abstain {
-    z-index: 1;
-    width: ${({ abstainOfQuorumWidth }) => {
-      return abstainOfQuorumWidth ? abstainOfQuorumWidth : "0%";
-    }};
-    height: 100%;
-    border-radius: 8px;
     background-color: ${({ theme }) => theme.color.background12};
   }
+
   ${media.mobile} {
     width: 100%;
     height: 10px;

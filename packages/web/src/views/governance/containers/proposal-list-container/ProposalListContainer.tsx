@@ -1,15 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useState } from "react";
 
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useGetProposals } from "@query/governance/use-get-proposals";
 
 import ProposalList from "../../components/proposals-list/ProposalList";
 
 type ProposalStatus = "ACTIVE" | "REJECTED" | "PASSED" | "CANCELLED";
 export type TypeVote = "" | "YES" | "NO" | "ABSTAIN";
-export interface ProposalDetailProps {
+export interface ProposalDetailInfo {
   id: string;
   title: string;
   label: string;
@@ -29,7 +29,7 @@ export interface ProposalDetailProps {
 
 const statusArray = ["ACTIVE", "REJECTED", "PASSED", "CANCELLED"];
 
-export const createDummyProposalItem = (): ProposalDetailProps => {
+export const createDummyProposalItem = (): ProposalDetailInfo => {
   return {
     id: Math.floor(Math.random() * 500 + 1).toString(),
     title: "#7 Proposal Title",
@@ -52,26 +52,6 @@ export const createDummyProposalItem = (): ProposalDetailProps => {
   };
 };
 
-async function fetchListProposal(
-  isShowCancelled: boolean,
-): Promise<ProposalDetailProps[]> {
-  const data = [
-    createDummyProposalItem(),
-    createDummyProposalItem(),
-    createDummyProposalItem(),
-    createDummyProposalItem(),
-    createDummyProposalItem(),
-    createDummyProposalItem(),
-    createDummyProposalItem(),
-  ];
-  if (isShowCancelled) return data.filter(item => item.status === "CANCELLED");
-  return Promise.resolve(data);
-}
-
-async function fetchProposalDetail() {
-  return Promise.resolve(createDummyProposalItem());
-}
-
 const ProposalListContainer: React.FC = () => {
   const [isShowCancelled, toggleShowCancelled] = useState(false);
   const [isShowProposalModal, setIsShowProposalModal] = useState(false);
@@ -80,36 +60,12 @@ const ProposalListContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { openModal } = useConnectWalletModal();
 
-  const { data: proposalList = [] } = useQuery<ProposalDetailProps[], Error>({
-    queryKey: ["proposalList", isShowCancelled],
-    queryFn: async () => {
-      return await fetchListProposal(isShowCancelled);
-    },
-  });
+  const [page, setPage] = useState(0);
 
-  const { data: proposalDetail, isFetching } = useQuery<ProposalDetailProps, Error>({
-    queryKey: ["proposalDetail"],
-    queryFn: async () => {
-      return await fetchProposalDetail();
-    },
-    initialData: {
-      id: Math.floor(Math.random() * 500 + 1).toString(),
-      title: "#7 Proposal Title",
-      label: "Community Pool Spend",
-      status: "ACTIVE",
-      timeEnd: "2023-08-01, 12:00:00 UTC+9",
-      abstainOfQuorum: 30,
-      noOfQuorum: 20,
-      currentValue: 20000,
-      maxValue: 40000,
-      yesOfQuorum: 50,
-      votingPower: 14245,
-      icon: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      currency: "xGNOS",
-      typeVote: "",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisiorci, ultrices sit amet mi eget, efficitur elementum tellus. Integeraugue purus, rutrum eu pretium sit amet, varius in quam.Lorem ipsumdolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.",
-    },
+  const { data: proposalsInfo, isFetching } = useGetProposals({
+    isActive: false,
+    offset: page,
+    limit: 20,
   });
 
   const handleClickProposalDetail = () => {
@@ -125,26 +81,35 @@ const ProposalListContainer: React.FC = () => {
   }, [switchNetwork, openModal, isSwitchNetwork, connected]);
 
   return (
-    <ProposalList
-      loading={isFetching}
-      isConnected={connected}
-      proposalList={proposalList}
-      isShowCancelled={isShowCancelled}
-      toggleShowCancelled={() => toggleShowCancelled(!isShowCancelled)}
-      proposalDetail={proposalDetail}
-      isShowProposalModal={isShowProposalModal}
-      setIsShowProposalModal={() =>
-        setIsShowProposalModal(!isShowProposalModal)
-      }
-      breakpoint={breakpoint}
-      onClickProposalDetail={handleClickProposalDetail}
-      isShowCreateProposal={isShowCreateProposal}
-      setIsShowCreateProposal={() =>
-        setIsShowCreateProposal(!isShowCreateProposal)
-      }
-      isSwitchNetwork={isSwitchNetwork}
-      handleSelectVote={handleSelectVote}
-    />
+    <>
+      <ProposalList
+        loading={isFetching}
+        isConnected={connected}
+        proposalList={proposalsInfo?.proposals || []}
+        isShowCancelled={isShowCancelled}
+        toggleShowCancelled={() => toggleShowCancelled(!isShowCancelled)}
+        proposalDetail={createDummyProposalItem()}
+        isShowProposalModal={isShowProposalModal}
+        setIsShowProposalModal={() =>
+          setIsShowProposalModal(!isShowProposalModal)
+        }
+        breakpoint={breakpoint}
+        onClickProposalDetail={handleClickProposalDetail}
+        isShowCreateProposal={isShowCreateProposal}
+        setIsShowCreateProposal={() =>
+          setIsShowCreateProposal(!isShowCreateProposal)
+        }
+        isSwitchNetwork={isSwitchNetwork}
+        handleSelectVote={handleSelectVote}
+      />
+      {(proposalsInfo?.pageInfo.currentPage || 0) !== 0 && (
+        <div onClick={() => setPage(page - 1)}> Prev Page </div>
+      )}
+      {(proposalsInfo?.pageInfo.totalPages || 0) >
+        (proposalsInfo?.pageInfo.currentPage || 0) + 1 && (
+        <div onClick={() => setPage(page + 1)}> Next Page </div>
+      )}
+    </>
   );
 };
 

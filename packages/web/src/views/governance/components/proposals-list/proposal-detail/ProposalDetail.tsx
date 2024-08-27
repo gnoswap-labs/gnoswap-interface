@@ -10,7 +10,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import IconOutlineClock from "@components/common/icons/IconOutlineClock";
 import IconPass from "@components/common/icons/IconPass";
 import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
-import { ProposalDetailProps } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
+import { ProposalItemInfo } from "@repositories/governance";
 
 import {
   ProgressBar,
@@ -21,7 +21,7 @@ import {
 dayjs.extend(relative);
 
 interface Props {
-  proposalDetail: ProposalDetailProps;
+  proposalDetail: ProposalItemInfo;
   onClickProposalDetail: (id: string) => void;
 }
 
@@ -71,13 +71,24 @@ const ProposalDetail: React.FC<Props> = ({
   proposalDetail,
   onClickProposalDetail,
 }) => {
+  const yesRate = (
+    (100 * proposalDetail.votes.yes) /
+    proposalDetail.votes.max
+  ).toLocaleString(undefined, { maximumFractionDigits: 2 });
+  const noRate = (
+    (100 * proposalDetail.votes.no) /
+    proposalDetail.votes.max
+  ).toLocaleString(undefined, { maximumFractionDigits: 2 });
+
   return (
     <ProposalDetailWrapper
-      onClick={() => onClickProposalDetail(proposalDetail.id)}
+      onClick={() => onClickProposalDetail(proposalDetail.id.toString())}
     >
       <div className="header">
-        <div className="title">{proposalDetail.title}</div>
-        <Badge type={BADGE_TYPE.DARK_DEFAULT} text={proposalDetail.label} />
+        <div className="title">
+          {`#${proposalDetail.id} ${proposalDetail.title}`}
+        </div>
+        <Badge type={BADGE_TYPE.DARK_DEFAULT} text={proposalDetail.type} />
       </div>
       <div className="active-wrapper">
         {MAPPING_STATUS[proposalDetail.status]}
@@ -85,48 +96,36 @@ const ProposalDetail: React.FC<Props> = ({
           <IconOutlineClock />{" "}
           {`Voting ${
             proposalDetail.status === "ACTIVE" ? "Ends in" : "Ended"
-          } ${dayjs(proposalDetail.timeEnd).fromNow()} ${
-            proposalDetail.timeEnd
-          }`}
+          } ${dayjs(proposalDetail.time).fromNow()} ${proposalDetail.time}`}
         </div>
       </div>
       <ProgressWrapper>
         <ProgressBar
-          rateWidth={`${proposalDetail.yesOfQuorum}%`}
-          abstainOfQuorumWidth={`${
-            proposalDetail.abstainOfQuorum +
-            proposalDetail.yesOfQuorum +
-            proposalDetail.noOfQuorum
-          }%`}
-          noOfQuorumWidth={`${
-            proposalDetail.noOfQuorum + proposalDetail.yesOfQuorum
-          }%`}
+          rateWidth={`${yesRate}%`}
+          noOfQuorumWidth={`${Number(yesRate) + Number(noRate)}%`}
         >
           <FloatingTooltip
             className="float-progress"
             position="top"
-            content={`Yes ${proposalDetail.yesOfQuorum}%`}
+            content={`Yes ${yesRate}%`}
           >
             <div className="progress-bar-yes-of-quorum progress-bar-rate" />
           </FloatingTooltip>
           <FloatingTooltip
             className="float-progress"
             position="top"
-            content={`No ${proposalDetail.noOfQuorum}%`}
+            content={`No ${noRate}%`}
           >
             <div className="progress-bar-no-of-quorum progress-bar-rate" />
           </FloatingTooltip>
-          <FloatingTooltip
-            className="float-progress"
-            position="top"
-            content={`Abstain ${proposalDetail.abstainOfQuorum}%`}
-          >
-            <div className="progress-bar-abstain progress-bar-rate" />
-          </FloatingTooltip>
         </ProgressBar>
         <div className="progress-value">
-          <span>{proposalDetail.currentValue.toLocaleString()}</span>/
-          <div> {proposalDetail.maxValue.toLocaleString()}</div>
+          <span>
+            {(
+              proposalDetail.votes.yes + proposalDetail.votes.no
+            ).toLocaleString()}
+          </span>
+          /<div> {proposalDetail.votes.max.toLocaleString()}</div>
         </div>
       </ProgressWrapper>
       <ToolTipGlobalStyle />
