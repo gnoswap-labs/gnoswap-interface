@@ -96,7 +96,7 @@ export const GovernanceLayoutWrapper = styled.div`
     }
   }
 
-  .list-wrapper {
+  .proposal-list-wrapper {
     margin-top: 60px;
     width: 100%;
     padding-top: 100px;
@@ -118,7 +118,7 @@ export const GovernanceLayoutWrapper = styled.div`
     }
   }
 
-  .list-container {
+  .proposal-list-container {
     margin: 0 auto;
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: ${ContainerWidth.WEB_CONTAINER};
