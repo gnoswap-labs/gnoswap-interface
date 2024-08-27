@@ -1,5 +1,7 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+
+import { dummyGovernanceSummaryInfo } from "@repositories/governance";
+
 import GovernanceSummary from "./GovernanceSummary";
 
 export default {
@@ -13,10 +15,5 @@ const Template: ComponentStory<typeof GovernanceSummary> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  governanceDetailInfo: {
-    totalXGnosIssued: "0 xGNOS",
-    communityPool: "0 GNOS",
-    passedProposals: "0",
-    activeProposals: "0",
-  },
+  governanceSummary: dummyGovernanceSummaryInfo,
 };

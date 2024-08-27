@@ -32,8 +32,12 @@ const GovernanceSummary: React.FC<GovernanceDetailProps> = ({
             <>
               {governanceSummary.totalDeligated.toLocaleString("en")}
               <TokenChip>
-                <MissingLogo symbol="GNS" url={GNS_TOKEN.logoURI} width={24} />
-                GNS
+                <MissingLogo
+                  symbol={GNS_TOKEN.symbol}
+                  url={GNS_TOKEN.logoURI}
+                  width={24}
+                />
+                {GNS_TOKEN.symbol}
               </TokenChip>
             </>
           }
