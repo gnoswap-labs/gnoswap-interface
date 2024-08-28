@@ -87,7 +87,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                             {t("Governance:myDel.tooltip.amount")}
                           </div>
                           <div className="info-value">
-                            {item.amount.toLocaleString("en")} GNS
+                            {item.amount.toLocaleString("en")} {GNS_TOKEN.symbol}
                           </div>
                         </div>
                         <div className="info-row">
