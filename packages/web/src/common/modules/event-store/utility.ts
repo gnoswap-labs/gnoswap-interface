@@ -25,7 +25,6 @@ function matchValues(str: string): string[] {
 }
 
 export function parseABCIValue(str: string): string[] {
-  const regexp = /^\s+|\s+$/g;
   try {
     const decodedData = window.atob(str);
 
@@ -37,9 +36,12 @@ export function parseABCIValue(str: string): string[] {
     const result = matchValues(decodedData);
 
     if (Array.isArray(result) && result.length > 0) {
-      return result.map(value =>
-        value.replace(regexp, "").slice(1).replace(/"/g, ""),
-      );
+      return result.map(value => {
+        let cleanedValue = value.trim();
+        cleanedValue = cleanedValue.slice(1);
+        cleanedValue = cleanedValue.replace(/"/g, "");
+        return cleanedValue;
+      });
     } else {
       console.warn("No valid values found in the decoded data.");
     }
