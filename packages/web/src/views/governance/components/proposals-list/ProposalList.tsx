@@ -13,9 +13,10 @@ import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 import { ProposalListWrapper } from "./ProposalList.styles";
 
 interface ProposalListProps {
+  isLoading?: boolean;
+  isShowActiveOnly: boolean;
+  toggleIsShowActiveOnly: () => void;
   proposalList: ProposalItemInfo[];
-  isShowCancelled: boolean;
-  toggleShowCancelled: () => void;
   isShowProposalModal: boolean;
   breakpoint: DEVICE_TYPE;
   proposalDetail: ProposalDetailInfo;
@@ -26,13 +27,13 @@ interface ProposalListProps {
   isConnected: boolean;
   isSwitchNetwork: boolean;
   handleSelectVote: () => void;
-  loading?: boolean;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
+  isLoading,
+  isShowActiveOnly,
+  toggleIsShowActiveOnly,
   proposalList,
-  toggleShowCancelled,
-  isShowCancelled,
   isShowProposalModal,
   breakpoint,
   proposalDetail,
@@ -43,23 +44,21 @@ const ProposalList: React.FC<ProposalListProps> = ({
   isConnected,
   isSwitchNetwork,
   handleSelectVote,
-  loading,
 }) => (
   <ProposalListWrapper>
     <ProposalHeader
-      toggleShowCancelled={toggleShowCancelled}
-      isShowCancelled={isShowCancelled}
+      isShowActiveOnly={isShowActiveOnly}
+      toggleIsShowActiveOnly={toggleIsShowActiveOnly}
       setIsShowCreateProposal={setIsShowCreateProposal}
-      isConnected={isConnected}
-      isSwitchNetwork={isSwitchNetwork}
+      isDisabledCreateButton={!isConnected || !isSwitchNetwork}
     />
-    {loading ? (
+    {isLoading ? (
       Array.from({ length: 3 }).map((_, idx) => (
         <ProposalDetailSkeleton key={`skeleton-${idx}`} />
       ))
     ) : (
       <>
-        {proposalList.map((proposalDetail: ProposalItemInfo ) => (
+        {proposalList.map((proposalDetail: ProposalItemInfo) => (
           <ProposalDetail
             key={proposalDetail.id}
             proposalDetail={proposalDetail}

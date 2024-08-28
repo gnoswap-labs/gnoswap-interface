@@ -12,16 +12,19 @@ export const ProposalHeaderWrapper = styled.div`
     align-items: flex-start;
     gap: 24px;
   }
-  .title-header {
-    position: relative;
-    ${mixins.flexbox("row", "center", "flex-start")};
+  > .header-title {
+    flex: 1;
+    flex-shrink: 0;
+    ${mixins.flexbox("row", "baseline", "flex-start")};
+    gap: 20px;
+    ${fonts.h5}
+    color: ${({ theme }) => theme.color.text02};
+
     .sub-title {
       ${mixins.flexbox("row", "center", "flex-start", false)};
       gap: 4px;
       color: ${({ theme }) => theme.color.text04};
       ${fonts.body11};
-      position: absolute;
-      width: 100%;
       left: 134.98px;
       bottom: 1px;
       top: 9px;
@@ -48,6 +51,7 @@ export const ProposalHeaderWrapper = styled.div`
     }
     ${media.mobile} {
       justify-content: space-between;
+      ${fonts.h6}
       .sub-title {
         left: 96.24px;
         width: max-content;
@@ -56,26 +60,21 @@ export const ProposalHeaderWrapper = styled.div`
       }
     }
   }
-  h2 {
-    ${fonts.h5};
-    color: ${({ theme }) => theme.color.text02};
-    ${media.mobile} {
-      ${fonts.h6};
-    }
-  }
-  .switch-button {
+
+  .switch-cta-wrapper {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 36px;
-    button {
+
+    > button {
       padding: 10px 16px;
     }
     ${media.mobile} {
-      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      ${mixins.flexbox("column", "flex-end", "flex-start")};
       flex-direction: column-reverse;
-      gap: 12px;
+      gap: 16px;
       width: 100%;
       justify-content: space-between;
-      button {
+      > button {
         padding: 10px 8px;
         width: 100%;
       }

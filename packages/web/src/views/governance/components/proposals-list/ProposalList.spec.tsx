@@ -6,8 +6,8 @@ import ProposalList from "./ProposalList";
 describe("ProposalList Component", () => {
   it("ProposalList render", () => {
     const mockProps = {
-      isShowCancelled: false,
-      toggleShowCancelled: () => null,
+      isShowActiveOnly: false,
+      toggleIsShowActiveOnly: () => null,
       proposalList: [],
       isConnected: false,
     };

@@ -53,7 +53,7 @@ export const createDummyProposalItem = (): ProposalDetailInfo => {
 };
 
 const ProposalListContainer: React.FC = () => {
-  const [isShowCancelled, toggleShowCancelled] = useState(false);
+  const [isShowActiveOnly, setIsShowActiveOnly] = useState(false);
   const [isShowProposalModal, setIsShowProposalModal] = useState(false);
   const [isShowCreateProposal, setIsShowCreateProposal] = useState(false);
   const { isSwitchNetwork, connected, switchNetwork } = useWallet();
@@ -83,11 +83,11 @@ const ProposalListContainer: React.FC = () => {
   return (
     <>
       <ProposalList
-        loading={isFetching}
+        isLoading={isFetching}
         isConnected={connected}
         proposalList={proposalsInfo?.proposals || []}
-        isShowCancelled={isShowCancelled}
-        toggleShowCancelled={() => toggleShowCancelled(!isShowCancelled)}
+        isShowActiveOnly={isShowActiveOnly}
+        toggleIsShowActiveOnly={() => setIsShowActiveOnly(a => !a)}
         proposalDetail={createDummyProposalItem()}
         isShowProposalModal={isShowProposalModal}
         setIsShowProposalModal={() =>

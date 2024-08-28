@@ -15,9 +15,10 @@ export type ProposalItemInfo = {
   type: string;
   proponent: string;
   time: string;
+  myVote?: string;
   votes: {
     max: number;
     yes: number;
     no: number;
-  }
-}
+  };
+};

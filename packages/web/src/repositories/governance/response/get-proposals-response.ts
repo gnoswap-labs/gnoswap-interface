@@ -15,6 +15,7 @@ export type ProposalItemResponse = {
   type: string;
   proponent: string;
   time: string;
+  myVote?: string;
   votes: {
     max: number;
     yes: number;
