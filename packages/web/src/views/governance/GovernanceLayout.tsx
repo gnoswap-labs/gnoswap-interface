@@ -33,6 +33,7 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
         </div>
       </section>
       <div className="proposal-list-wrapper">
+        <div className="background"/>
         <div className="proposal-list-container">{list}</div>
       </div>
       {footer}

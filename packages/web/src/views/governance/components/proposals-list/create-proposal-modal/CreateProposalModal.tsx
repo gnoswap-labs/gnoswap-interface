@@ -36,7 +36,7 @@ import {
 
 interface Props {
   breakpoint: DEVICE_TYPE;
-  setIsShowCreateProposal: Dispatch<SetStateAction<boolean>>;
+  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
 }
 
 interface BoxContentProps {
@@ -85,7 +85,7 @@ const BoxContent: React.FC<BoxContentProps> = ({
 
 const CreateProposalModal: React.FC<Props> = ({
   breakpoint,
-  setIsShowCreateProposal,
+  setIsOpenCreateModal,
 }) => {
   const [type, setType] = useState<string>(ProposalOption[0]);
 
@@ -105,7 +105,7 @@ const CreateProposalModal: React.FC<Props> = ({
   };
 
   useLockedBody(true);
-  useEscCloseModal(() => setIsShowCreateProposal(false));
+  useEscCloseModal(() => setIsOpenCreateModal(false));
 
   useEffect(() => {
     handleResize();
@@ -184,7 +184,7 @@ const CreateProposalModal: React.FC<Props> = ({
                 <h6>Create Proposal</h6>
                 <div
                   className="close-wrap"
-                  onClick={() => setIsShowCreateProposal(false)}
+                  onClick={() => setIsOpenCreateModal(false)}
                 >
                   <IconClose className="close-icon" />
                 </div>
@@ -324,7 +324,7 @@ const CreateProposalModal: React.FC<Props> = ({
           </CreateProposalModalWrapper>
         </FormProvider>
       </CreateProposalModalBackground>
-      <Overlay onClick={() => setIsShowCreateProposal(false)} />
+      <Overlay onClick={() => setIsOpenCreateModal(false)} />
     </>
   );
 };

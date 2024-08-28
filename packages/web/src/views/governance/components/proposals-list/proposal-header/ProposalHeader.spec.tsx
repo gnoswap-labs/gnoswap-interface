@@ -9,7 +9,7 @@ describe("ProposalHeader Component", () => {
       isShowActiveOnly: false,
       toggleIsShowActiveOnly: () => null,
       isDisabledCreateButton: false,
-      setIsShowCreateProposal: () => {
+      setIsOpenCreateModal: () => {
         console.log("test");
       },
     };

@@ -10,7 +10,7 @@ describe("ProposalCard Component", () => {
   it("ProposalCard render", () => {
     const mockProps = {
       proposalDetail: GetProposalsResponseMock[0],
-      onClickProposalDetail: (id: string) => {
+      onClickCard: (id: string) => {
         console.log(id);
       },
     };

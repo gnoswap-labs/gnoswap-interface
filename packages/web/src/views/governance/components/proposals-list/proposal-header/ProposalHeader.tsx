@@ -11,14 +11,14 @@ import { EXT_URL } from "@constants/external-url.contant";
 export interface ProposalHeaderProps {
   isShowActiveOnly: boolean;
   toggleIsShowActiveOnly: () => void;
-  setIsShowCreateProposal: Dispatch<SetStateAction<boolean>>;
+  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
   isDisabledCreateButton: boolean;
 }
 
 const ProposalHeader: React.FC<ProposalHeaderProps> = ({
   isShowActiveOnly,
   toggleIsShowActiveOnly,
-  setIsShowCreateProposal,
+  setIsOpenCreateModal,
   isDisabledCreateButton,
 }) => {
   const { t } = useTranslation();
@@ -46,7 +46,7 @@ const ProposalHeader: React.FC<ProposalHeaderProps> = ({
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
           }}
-          onClick={() => setIsShowCreateProposal(true)}
+          onClick={() => setIsOpenCreateModal(true)}
         />
       </div>
     </ProposalHeaderWrapper>

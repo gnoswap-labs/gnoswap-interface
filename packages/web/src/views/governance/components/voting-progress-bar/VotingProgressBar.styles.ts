@@ -34,6 +34,7 @@ export interface progressBarProps {
 }
 
 export const ProgressBar = styled.div<progressBarProps>`
+  flex: 1;
   ${mixins.flexbox("column", "flex-start", "center")};
   min-width: calc(100% - 200px);
   height: 14px;
@@ -66,6 +67,7 @@ export const ProgressBar = styled.div<progressBarProps>`
   }
 
   ${media.mobile} {
+    flex: unset;
     width: 100%;
     height: 10px;
   }

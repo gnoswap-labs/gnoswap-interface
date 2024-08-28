@@ -11,8 +11,9 @@ export interface GetProposalsResponse {
 export type ProposalItemResponse = {
   id: number;
   status: string;
-  title: string;
   type: string;
+  title: string;
+  description: string;
   proponent: string;
   time: string;
   myVote?: string;

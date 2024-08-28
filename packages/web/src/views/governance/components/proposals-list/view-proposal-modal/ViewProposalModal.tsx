@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-import relative from "dayjs/plugin/relativeTime";
 import React, {
   Dispatch,
   SetStateAction,
@@ -7,72 +5,44 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from "react";
 
+import { GNS_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconCheck from "@components/common/icons/IconCheck";
-import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
-import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
-import IconInfo from "@components/common/icons/IconInfo";
-import IconOutlineClock from "@components/common/icons/IconOutlineClock";
-import IconPass from "@components/common/icons/IconPass";
 import { Overlay } from "@components/common/modal/Modal.styles";
-import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import useLockedBody from "@hooks/common/use-lock-body";
+import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
-import { ProposalDetailInfo } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
+
+import StatusBadge from "../../status-badge/StatusBadge";
+import TokenChip from "../../token-chip/TokenChip";
+import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 
 import {
   BoxQuorumWrapper,
   ModalHeaderWrapper,
   ModalQuorum,
-  ProgressBar,
-  ProgressWrapper,
   ProposalContentWrapper,
   ViewProposalModalBackground,
   ViewProposalModalWrapper,
-  VotingPowerWrapper
+  VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
 
-dayjs.extend(relative);
-
-interface Props {
+export interface ViewProposalModalProps {
   breakpoint: DEVICE_TYPE;
-  proposalDetail: ProposalDetailInfo;
-  setIsShowProposalModal: Dispatch<SetStateAction<boolean>>;
+  proposalDetail: ProposalItemInfo;
+  setSelectedProposalId: Dispatch<SetStateAction<number>>;
   isConnected: boolean;
   isSwitchNetwork: boolean;
   handleSelectVote: () => void;
 }
 
-type OptionVote = "YES" | "NO" | "ABSTAIN" | "";
-
-const MAPPING_STATUS: Record<string, JSX.Element> = {
-  ACTIVE: (
-    <div className="status success">
-      <IconCircleInCheck className="success-icon status-icon" /> Active
-    </div>
-  ),
-  REJECTED: (
-    <div className="status failed">
-      <IconCircleInCancel className="failed-icon status-icon" /> Reject
-    </div>
-  ),
-  CANCELLED: (
-    <div className="status cancelled">
-      <IconInfo className="cancelled-icon status-icon" /> Cancelled
-    </div>
-  ),
-  PASSED: (
-    <div className="status passed">
-      <IconPass className="passed-icon status-icon" /> Passed
-    </div>
-  ),
-};
+type OptionVote = "YES" | "NO" | "";
 
 const BoxQuorum = ({
   breakpoint,
@@ -81,7 +51,7 @@ const BoxQuorum = ({
   setOptionVote,
 }: {
   breakpoint?: DEVICE_TYPE;
-  proposalDetail: ProposalDetailInfo;
+  proposalDetail: ProposalItemInfo;
   optionVote: OptionVote;
   setOptionVote: Dispatch<SetStateAction<OptionVote>>;
 }) => {
@@ -101,7 +71,7 @@ const BoxQuorum = ({
         onClick={() => setOptionVote("YES")}
       >
         <span>Yes</span>
-        <div>{proposalDetail.currentValue.toLocaleString()}</div>
+        <div>{proposalDetail.votes.yes.toLocaleString()}</div>
         {optionVote === "YES" && showBadge}
       </div>
       <div
@@ -109,65 +79,17 @@ const BoxQuorum = ({
         onClick={() => setOptionVote("NO")}
       >
         <span>No</span>
-        <div>
-          {(
-            proposalDetail.currentValue +
-            (proposalDetail.maxValue * proposalDetail.noOfQuorum) / 100
-          ).toLocaleString()}
-        </div>
+        <div>{proposalDetail.votes.no.toLocaleString()}</div>
         {optionVote === "NO" && showBadge}
-      </div>
-      <div
-        className={`box-quorum ${optionVote === "ABSTAIN" ? "active-quorum" : ""
-          }`}
-        onClick={() => setOptionVote("ABSTAIN")}
-      >
-        <span>Abstain</span>
-        <div>{proposalDetail.maxValue.toLocaleString()}</div>
-        {optionVote === "ABSTAIN" && showBadge}
       </div>
     </BoxQuorumWrapper>
   );
 };
 
-const VotingPower = ({
-  proposalDetail,
-}: {
-  proposalDetail: ProposalDetailInfo;
-}) => {
-  return (
-    <VotingPowerWrapper>
-      <span>Your Voting Power</span>
-      <div>
-        <div className="power-value">
-          {proposalDetail.votingPower.toLocaleString()}
-        </div>
-        <div className="power-currency">
-          <img src={proposalDetail.icon} alt="token logo" />
-          <span>{proposalDetail.currency}</span>
-        </div>
-      </div>
-    </VotingPowerWrapper>
-  );
-};
-
-const ProposalContent = ({
-  proposalDetail,
-}: {
-  proposalDetail: ProposalDetailInfo;
-}) => {
-  return (
-    <ProposalContentWrapper>
-      <div className="title">{proposalDetail.title}</div>
-      <div className="content">{proposalDetail.description}</div>
-    </ProposalContentWrapper>
-  );
-};
-
-const ViewProposalModal: React.FC<Props> = ({
+const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   breakpoint,
   proposalDetail,
-  setIsShowProposalModal,
+  setSelectedProposalId,
   isSwitchNetwork,
   isConnected,
   handleSelectVote,
@@ -190,7 +112,7 @@ const ViewProposalModal: React.FC<Props> = ({
     }
   };
 
-  useEscCloseModal(() => setIsShowProposalModal(false));
+  useEscCloseModal(() => setSelectedProposalId(0));
 
   useEffect(() => {
     handleResize();
@@ -221,7 +143,7 @@ const ViewProposalModal: React.FC<Props> = ({
     if (isSwitchNetwork) {
       return "Switch to Gnoland";
     }
-    return proposalDetail.typeVote
+    return proposalDetail?.myVote
       ? "Already Vote"
       : optionVote === ""
         ? "Select Voting Option"
@@ -243,13 +165,13 @@ const ViewProposalModal: React.FC<Props> = ({
                     <Badge
                       className="badge-label"
                       type={BADGE_TYPE.DARK_DEFAULT}
-                      text={proposalDetail.label}
+                      text={proposalDetail.type}
                     />
                   )}
                 </div>
                 <div
                   className="close-wrap"
-                  onClick={() => setIsShowProposalModal(false)}
+                  onClick={() => setSelectedProposalId(0)}
                 >
                   <IconClose className="close-icon" />
                 </div>
@@ -258,61 +180,38 @@ const ViewProposalModal: React.FC<Props> = ({
                 <Badge
                   className="badge-label"
                   type={BADGE_TYPE.DARK_DEFAULT}
-                  text={proposalDetail.label}
+                  text={proposalDetail.type}
                 />
               )}
               <div className="active-wrapper">
-                {MAPPING_STATUS[proposalDetail.status]}
-                <div className="status time">
-                  <IconOutlineClock className="status-icon" />{" "}
-                  {`Voting ${proposalDetail.status === "ACTIVE" ? "Ends in" : "Ended1"
-                    } ${dayjs(proposalDetail.timeEnd).fromNow()} `}
-                  <br />
-                  {proposalDetail.timeEnd}
-                </div>
+                <StatusBadge
+                  status={proposalDetail.status}
+                  time={proposalDetail.time}
+                />
               </div>
             </ModalHeaderWrapper>
+            <ProposalContentWrapper>
+              <div className="title">{proposalDetail.title}</div>
+              <div className="content">{proposalDetail.description || ""}</div>
+            </ProposalContentWrapper>
             <ModalQuorum>
               <div className="quorum-header">
                 <span>Quorum</span>
                 <div className="progress-value">
-                  <span>{proposalDetail.currentValue.toLocaleString()}</span>/
-                  <div>{proposalDetail.maxValue.toLocaleString()}</div>
+                  <span>
+                    {(
+                      proposalDetail.votes.yes + proposalDetail.votes.no
+                    ).toLocaleString()}
+                  </span>
+                  /<div>{proposalDetail.votes.max.toLocaleString()}</div>
                 </div>
               </div>
-              <ProgressWrapper>
-                <ProgressBar
-                  rateWidth={`${proposalDetail.yesOfQuorum}%`}
-                  abstainOfQuorumWidth={`${proposalDetail.abstainOfQuorum +
-                    proposalDetail.yesOfQuorum +
-                    proposalDetail.noOfQuorum
-                    }%`}
-                  noOfQuorumWidth={`${proposalDetail.noOfQuorum + proposalDetail.yesOfQuorum
-                    }%`}
-                >
-                  <FloatingTooltip
-                    className="float-progress"
-                    position="top"
-                    content={`Yes ${proposalDetail.yesOfQuorum}%`}
-                  >
-                    <div className="progress-bar-yes-of-quorum progress-bar-rate" />
-                  </FloatingTooltip>
-                  <FloatingTooltip
-                    className="float-progress"
-                    position="top"
-                    content={`No ${proposalDetail.noOfQuorum}%`}
-                  >
-                    <div className="progress-bar-no-of-quorum progress-bar-rate" />
-                  </FloatingTooltip>
-                  <FloatingTooltip
-                    className="float-progress"
-                    position="top"
-                    content={`Abstain ${proposalDetail.abstainOfQuorum}%`}
-                  >
-                    <div className="progress-bar-abstain progress-bar-rate" />
-                  </FloatingTooltip>
-                </ProgressBar>
-              </ProgressWrapper>
+              <VotingProgressBar
+                yes={proposalDetail.votes.yes}
+                no={proposalDetail.votes.no}
+                max={proposalDetail.votes.max}
+                hideNumber
+              />
             </ModalQuorum>
             <BoxQuorum
               breakpoint={breakpoint}
@@ -320,7 +219,15 @@ const ViewProposalModal: React.FC<Props> = ({
               optionVote={optionVote}
               setOptionVote={setOptionVote}
             />
-            <VotingPower proposalDetail={proposalDetail} />
+            <VotingPowerWrapper>
+              <span>Your Voting Weight</span>
+              <div>
+                <div className="power-value">
+                  {(proposalDetail.votes.yes || 0).toLocaleString()}
+                </div>
+                <TokenChip tokenInfo={GNS_TOKEN} />
+              </div>
+            </VotingPowerWrapper>
             {proposalDetail.status === "ACTIVE" && (
               <Button
                 disabled={disableButton}
@@ -341,11 +248,10 @@ const ViewProposalModal: React.FC<Props> = ({
                 onClick={handleSelectVoting}
               />
             )}
-            <ProposalContent proposalDetail={proposalDetail} />
           </div>
         </ViewProposalModalWrapper>
       </ViewProposalModalBackground>
-      <Overlay onClick={() => setIsShowProposalModal(false)} />
+      <Overlay onClick={() => setSelectedProposalId(0)} />
     </>
   );
 };

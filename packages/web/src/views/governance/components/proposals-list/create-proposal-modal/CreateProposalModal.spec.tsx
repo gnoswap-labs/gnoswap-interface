@@ -8,7 +8,7 @@ describe("CreateProposalModal Component", () => {
   it("CreateProposalModal render", () => {
     const mockProps = {
       breakpoint: DEVICE_TYPE.WEB,
-      setIsShowCreateProposal: () => null,
+      setIsOpenCreateModal: () => null,
     };
 
     render(

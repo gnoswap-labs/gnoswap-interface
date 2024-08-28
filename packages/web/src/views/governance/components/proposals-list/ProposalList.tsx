@@ -1,12 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { ProposalItemInfo } from "@repositories/governance";
+import { nullProposalItemInfo, ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
-import { ProposalDetailInfo } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
 
 import CreateProposalModal from "./create-proposal-modal/CreateProposalModal";
-import ProposalCard from "./proposal-detail/ProposalCard";
-import ProposalCardSkeleton from "./proposal-detail/ProposalCardSekeleton";
+import ProposalCard from "./proposal-card/ProposalCard";
+import ProposalCardSkeleton from "./proposal-card/ProposalCardSekeleton";
 import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
@@ -16,17 +15,16 @@ interface ProposalListProps {
   isLoading?: boolean;
   isShowActiveOnly: boolean;
   toggleIsShowActiveOnly: () => void;
+  // proposalDetail: ProposalItemInfo;
   proposalList: ProposalItemInfo[];
-  isShowProposalModal: boolean;
-  breakpoint: DEVICE_TYPE;
-  proposalDetail: ProposalDetailInfo;
-  setIsShowProposalModal: Dispatch<SetStateAction<boolean>>;
-  onClickProposalDetail: (id: string) => void;
-  isShowCreateProposal: boolean;
-  setIsShowCreateProposal: Dispatch<SetStateAction<boolean>>;
   isConnected: boolean;
   isSwitchNetwork: boolean;
   handleSelectVote: () => void;
+  breakpoint: DEVICE_TYPE;
+  selectedProposalId: number;
+  setSelectedProposalId: Dispatch<SetStateAction<number>>;
+  isOpenCreateModal: boolean;
+  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
@@ -34,13 +32,12 @@ const ProposalList: React.FC<ProposalListProps> = ({
   isShowActiveOnly,
   toggleIsShowActiveOnly,
   proposalList,
-  isShowProposalModal,
   breakpoint,
-  proposalDetail,
-  setIsShowProposalModal,
-  onClickProposalDetail,
-  isShowCreateProposal,
-  setIsShowCreateProposal,
+  // proposalDetail,
+  selectedProposalId,
+  setSelectedProposalId,
+  isOpenCreateModal,
+  setIsOpenCreateModal,
   isConnected,
   isSwitchNetwork,
   handleSelectVote,
@@ -49,8 +46,8 @@ const ProposalList: React.FC<ProposalListProps> = ({
     <ProposalHeader
       isShowActiveOnly={isShowActiveOnly}
       toggleIsShowActiveOnly={toggleIsShowActiveOnly}
-      setIsShowCreateProposal={setIsShowCreateProposal}
-      isDisabledCreateButton={!isConnected || !isSwitchNetwork}
+      setIsOpenCreateModal={setIsOpenCreateModal}
+      isDisabledCreateButton={!isConnected || isSwitchNetwork}
     />
     {isLoading ? (
       Array.from({ length: 3 }).map((_, idx) => (
@@ -62,26 +59,29 @@ const ProposalList: React.FC<ProposalListProps> = ({
           <ProposalCard
             key={proposalDetail.id}
             proposalDetail={proposalDetail}
-            onClickProposalDetail={onClickProposalDetail}
+            onClickCard={() => setSelectedProposalId(proposalDetail.id)}
           />
         ))}
       </>
     )}
 
-    {isShowProposalModal && (
+    {selectedProposalId !== 0 && (
       <ViewProposalModal
         breakpoint={breakpoint}
-        proposalDetail={proposalDetail}
-        setIsShowProposalModal={setIsShowProposalModal}
+        proposalDetail={
+          proposalList.find(item => item.id === selectedProposalId - 1) ||
+          nullProposalItemInfo
+        }
+        setSelectedProposalId={setSelectedProposalId}
         isConnected={isConnected}
         isSwitchNetwork={isSwitchNetwork}
         handleSelectVote={handleSelectVote}
       />
     )}
-    {isShowCreateProposal && (
+    {isOpenCreateModal && (
       <CreateProposalModal
         breakpoint={breakpoint}
-        setIsShowCreateProposal={setIsShowCreateProposal}
+        setIsOpenCreateModal={setIsOpenCreateModal}
       />
     )}
   </ProposalListWrapper>
