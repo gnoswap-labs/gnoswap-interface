@@ -59,14 +59,3 @@ export const GovernanceSummaryWrapper = styled.div`
     }
   }
 `;
-
-export const TokenChip = styled.div`
-  ${mixins.flexbox("row", "center", "flex-start")};
-  padding: 4px 12px 4px 6px;
-  margin-left: 8px;
-  gap: 8px;
-  border-radius: 36px;
-  background: ${({ theme }) => theme.color.background05};
-  ${fonts.body9};
-  color: ${({ theme }) => theme.color.text02};
-`;

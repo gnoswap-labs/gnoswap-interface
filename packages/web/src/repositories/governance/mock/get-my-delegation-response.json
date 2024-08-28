@@ -1,0 +1,36 @@
+{
+  "availableBalance": 4225.12,
+  "votingWeight": 110102.23,
+  "undeligatedAmount": 422.12,
+  "claimableRewardsUsd": 4225.12,
+  "delegations": [
+    {
+      "delegatee": "Onbloc",
+      "logoUrl": "",
+      "amount": 10000,
+      "updatedDate": "2024-08-20 10:10:30",
+      "unlockDate": null
+    },
+    {
+      "delegatee": "GovDao",
+      "logoUrl": "",
+      "amount": 20000,
+      "updatedDate": "2024-08-21 11:11:31",
+      "unlockDate": null
+    },
+    {
+      "delegatee": "Onbloc",
+      "logoUrl": "",
+      "amount": 400,
+      "updatedDate": "2024-08-22 12:12:32",
+      "unlockDate": "2024-08-29 12:12:32"
+    },
+    {
+      "delegatee": "GnoSwap Foundation",
+      "logoUrl": "",
+      "amount": 21354,
+      "updatedDate": "2024-08-22 12:12:32",
+      "unlockDate": "2024-08-29 12:12:32"
+    }
+  ]
+}

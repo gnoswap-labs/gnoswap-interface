@@ -5,9 +5,9 @@ export interface GovernanceSummaryInfo {
   communityPool: number;
 }
 
-export const dummyGovernanceSummaryInfo: GovernanceSummaryInfo = {
-  totalDeligated: 59144225,
-  DeligatedRatio: 55.12,
-  apy: 12.51,
-  communityPool: 2412148.12,
+export const nullGovernanceSummaryInfo: GovernanceSummaryInfo = {
+  totalDeligated: 0,
+  DeligatedRatio: 0,
+  apy: 0,
+  communityPool: 0,
 };
