@@ -2,13 +2,11 @@ import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
-import { useAddress } from "@hooks/address/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
-import { usePositionData } from "@hooks/common/use-position-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -26,12 +24,14 @@ interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
   allPosition: PoolPositionModel[];
   isGetWGNOT: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 const RemovePositionModalContainer = ({
   selectedPositions,
   allPosition,
   isGetWGNOT,
+  refetchPositions,
 }: RemovePositionModalContainerProps) => {
   const { account } = useWallet();
   const { positionRepository } = useGnoswapContext();
@@ -47,8 +47,6 @@ const RemovePositionModalContainer = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
-  const { address } = useAddress();
-  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
   const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
     positions: selectedPositions,
@@ -77,9 +75,9 @@ const RemovePositionModalContainer = ({
   );
 
   const gnotAmount = useMemo(() => {
-    const pooledGnotTokenAmount = pooledTokenInfos.find(
-      item => item.token.path === gnotToken?.path,
-    )?.amount.replaceAll(",","");
+    const pooledGnotTokenAmount = pooledTokenInfos
+      .find(item => item.token.path === gnotToken?.path)
+      ?.amount.replaceAll(",", "");
     const unclaimedGnotTokenAmount = unclaimedFees.find(
       item => item.token.path === gnotToken?.path,
     )?.amount;
@@ -159,14 +157,14 @@ const RemovePositionModalContainer = ({
         enqueueEvent({
           txHash: result.data?.hash,
           action: DexEvent.ADD,
+          visibleEmitResult: true,
           formatData: response => {
             if (!response) {
               return messageData;
             }
-
             return messageData;
           },
-          callback: async () => {
+          onEmit: async () => {
             refetchPools();
             refetchPositions();
           },

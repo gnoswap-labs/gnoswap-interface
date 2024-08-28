@@ -24,14 +24,16 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
    */
   addEvent(
     transactionHash: string,
-    callback: (event: Event<ResponseDataType>) => Promise<void>,
+    onUpdate: (event: Event<ResponseDataType>) => Promise<void>,
+    onEmit: (event: Event<ResponseDataType>) => Promise<void>,
   ): Event<ResponseDataType> {
     const event: Event<ResponseDataType> = {
       id: transactionHash,
       status: "PENDING",
       emitNumber: null,
       data: null,
-      callback,
+      onUpdate,
+      onEmit,
     };
     this.events.set(transactionHash, event);
     return event;
@@ -69,7 +71,7 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
     }
 
     try {
-      await event.callback(event);
+      await event.onEmit(event);
     } catch (error) {
       console.error(
         `Error executing callback for event ${transactionHash}:`,
@@ -134,6 +136,7 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
     for (const updatedEvent of updatedEvents) {
       if (updatedEvent) {
         this.events.set(updatedEvent.id, updatedEvent);
+        updatedEvent.onUpdate(updatedEvent);
       }
     }
 

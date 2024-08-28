@@ -44,7 +44,11 @@ const WalletBalanceContainer: React.FC = () => {
     updateBalances,
   } = useTokenData();
 
-  const { positions, loading: loadingPositions } = usePositionData();
+  const {
+    positions,
+    loading: loadingPositions,
+    refetch: refetchPositions,
+  } = usePositionData();
 
   const isLoadingPosition = useMemo(
     () => connected && loadingPositions,
@@ -102,8 +106,11 @@ const WalletBalanceContainer: React.FC = () => {
             txHash: response?.data?.hash,
             action: DexEvent.CLAIM_FEE,
             formatData: () => data,
-            callback: async () => {
-              updateBalances();
+            onUpdate: async () => {
+              await updateBalances();
+            },
+            onEmit: async () => {
+              await refetchPositions();
             },
           });
         }

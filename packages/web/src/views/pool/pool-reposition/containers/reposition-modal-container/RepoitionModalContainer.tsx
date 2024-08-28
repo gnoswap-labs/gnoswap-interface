@@ -16,7 +16,6 @@ import {
 import RepositionModal from "../../components/reposition-modal/RepositionModal";
 import { IPriceRange } from "../../hooks/use-reposition-handle";
 
-
 interface Props {
   amountInfo: {
     tokenA: {
@@ -49,6 +48,7 @@ interface Props {
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
   isSkipSwap: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 const RepositionModalContainer: React.FC<Props> = ({
@@ -64,6 +64,7 @@ const RepositionModalContainer: React.FC<Props> = ({
   swapRemainToken,
   reposition,
   isSkipSwap,
+  refetchPositions,
 }) => {
   const clearModal = useClearModal();
 
@@ -86,6 +87,7 @@ const RepositionModalContainer: React.FC<Props> = ({
       swapRemainToken={swapRemainToken}
       reposition={reposition}
       isSkipSwap={isSkipSwap}
+      refetchPositions={refetchPositions}
     />
   );
 };

@@ -10,13 +10,16 @@ const UnstakeLiquidityContainer: React.FC = () => {
   const router = useCustomRouter();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
-  const { positions: allPosition, loading: isPositionsLoading } =
-    usePositionData({
-      poolPath,
-      queryOption: {
-        enabled: !!poolPath,
-      },
-    });
+  const {
+    positions: allPosition,
+    loading: isPositionsLoading,
+    refetch: refetchPositions,
+  } = usePositionData({
+    poolPath,
+    queryOption: {
+      enabled: !!poolPath,
+    },
+  });
   const [checkedList, setCheckedList] = useState<number[]>(
     positionId ? [Number(positionId)] : [],
   );
@@ -31,6 +34,9 @@ const UnstakeLiquidityContainer: React.FC = () => {
     positions: stakedPositions,
     selectedIds: checkedList,
     isGetWGNOT: isGetWGNOT,
+    refetchPositions: async () => {
+      await refetchPositions();
+    },
   });
 
   const checkedAll = useMemo(() => {

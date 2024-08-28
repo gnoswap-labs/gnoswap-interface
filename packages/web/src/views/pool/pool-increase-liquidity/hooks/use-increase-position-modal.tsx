@@ -24,7 +24,6 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import IncreasePositionModalContainer from "../containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetPoolList } from "@query/pools";
-import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface Props {
   openModal: () => void;
@@ -43,6 +42,7 @@ export interface IncreasePositionModal {
   rangeStatus: RANGE_STATUS_OPTION;
   isDepositTokenA: boolean;
   isDepositTokenB: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 export const useIncreasePositionModal = ({
@@ -58,6 +58,7 @@ export const useIncreasePositionModal = ({
   rangeStatus,
   isDepositTokenA,
   isDepositTokenB,
+  refetchPositions,
 }: IncreasePositionModal): Props => {
   const {
     broadcastRejected,
@@ -74,7 +75,6 @@ export const useIncreasePositionModal = ({
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
   // Refetch functions
-  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
 
   const onCloseConfirmTransactionModal = useCallback(() => {
@@ -149,6 +149,7 @@ export const useIncreasePositionModal = ({
         enqueueEvent({
           txHash: result.data?.hash,
           action: DexEvent.ADD,
+          visibleEmitResult: true,
           formatData: response => {
             if (!response) {
               return {
@@ -175,7 +176,7 @@ export const useIncreasePositionModal = ({
               }),
             };
           },
-          callback: async () => {
+          onEmit: async () => {
             refetchPools();
             refetchPositions();
           },

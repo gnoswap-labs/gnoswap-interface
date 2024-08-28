@@ -81,7 +81,7 @@ const useSendAsset = () => {
               tokenASymbol: tokenSymbol,
               tokenAAmount: tokenAmount,
             }),
-            callback: async () => {
+            onUpdate: async () => {
               updateBalances();
             },
           });

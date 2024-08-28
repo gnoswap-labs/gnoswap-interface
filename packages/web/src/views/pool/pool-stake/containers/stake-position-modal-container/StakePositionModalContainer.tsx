@@ -16,15 +16,15 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { usePositionData } from "@hooks/common/use-position-data";
-import { useAddress } from "@hooks/address/use-address";
 
 interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];
+  refetchPositions: () => Promise<void>;
 }
 
 const StakePositionModalContainer = ({
   positions,
+  refetchPositions,
 }: StakePositionModalContainerProps) => {
   const { account } = useWallet();
   const {
@@ -36,8 +36,6 @@ const StakePositionModalContainer = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
-  const { address } = useAddress();
-  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
 
   const { positionRepository } = useGnoswapContext();
@@ -132,6 +130,7 @@ const StakePositionModalContainer = ({
         enqueueEvent({
           txHash: result.data?.hash,
           action: DexEvent.STAKE,
+          visibleEmitResult: true,
           formatData: () => ({
             tokenASymbol: tokenA?.token?.symbol,
             tokenBSymbol: tokenB?.token?.symbol,
@@ -144,7 +143,7 @@ const StakePositionModalContainer = ({
               isKMB: false,
             }),
           }),
-          callback: async () => {
+          onEmit: async () => {
             refetchPools();
             refetchPositions();
           },

@@ -3,7 +3,8 @@ import { Event, EventStatus } from ".";
 export interface EventStore<T = unknown> {
   addEvent: (
     id: string,
-    callback: (event: Event<T>) => Promise<void>,
+    onUpdate: (event: Event<T>) => Promise<void>,
+    onEmit: (event: Event<T>) => Promise<void>,
   ) => Event<T>;
 
   getEvent: (id: string) => Event<T> | null;

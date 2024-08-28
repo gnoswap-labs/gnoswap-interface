@@ -16,16 +16,16 @@ import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards
 import UnstakePositionModal from "../../components/unstake-position-modal/UnstakePositionModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetPoolList } from "@query/pools";
-import { usePositionData } from "@hooks/common/use-position-data";
-import { useAddress } from "@hooks/address/use-address";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
   isGetWGNOT: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 const UnstakePositionModalContainer = ({
   positions,
+  refetchPositions,
   isGetWGNOT,
 }: UnstakePositionModalContainerProps) => {
   const { account } = useWallet();
@@ -41,8 +41,6 @@ const UnstakePositionModalContainer = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
-  const { address } = useAddress();
-  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
 
   const { pooledTokenInfos } = usePositionsRewards({ positions });
@@ -94,6 +92,7 @@ const UnstakePositionModalContainer = ({
         enqueueEvent({
           txHash: result.data?.hash,
           action: DexEvent.UNSTAKE,
+          visibleEmitResult: true,
           formatData: () => ({
             tokenASymbol: tokenA?.token?.symbol,
             tokenBSymbol: tokenB?.token?.symbol,
@@ -106,7 +105,7 @@ const UnstakePositionModalContainer = ({
               isKMB: false,
             }),
           }),
-          callback: async () => {
+          onEmit: async () => {
             refetchPools();
             refetchPositions();
           },

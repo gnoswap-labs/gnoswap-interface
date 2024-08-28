@@ -32,7 +32,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const poolPath = router.getPoolPath();
-  const { positions: positions, loading: isLoadingPosition } = usePositionData({
+  const {
+    positions: positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+  } = usePositionData({
     address,
     poolPath,
     queryOption: {
@@ -91,6 +95,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   };
 
   const openedPosition = useMemo(() => {
+    console.log(positions);
     return (
       positions
         .filter(item => !item.closed)
@@ -120,11 +125,15 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
           enqueueEvent({
             txHash: response?.data?.hash,
             action: DexEvent.CLAIM_FEE,
+            visibleEmitResult: true,
             formatData: () => {
               return data;
             },
-            callback: async () => {
-              updateBalances();
+            onUpdate: async () => {
+              await updateBalances();
+            },
+            onEmit: async () => {
+              await refetchPositions();
             },
           });
         }

@@ -104,11 +104,12 @@ const IncentivizePoolModalContainer = () => {
             enqueueEvent({
               txHash: response.data?.hash,
               action: DexEvent.ADD_INCENTIVE,
+              visibleEmitResult: true,
               formatData: () => ({
                 tokenAAmount: displayAmount,
                 tokenASymbol: dataModal?.token?.symbol,
               }),
-              callback: async () => {
+              onEmit: async () => {
                 await refetchPools();
                 await refetchPositions();
               },

@@ -57,7 +57,7 @@ export const useDecreaseHandle = () => {
   const [percent, setPercent] = useState<number>(50);
   const { tokenPrices } = useTokenData();
 
-  const { positions } = usePositionData({
+  const { positions, refetch: refetchPositions } = usePositionData({
     poolPath,
   });
 
@@ -321,5 +321,6 @@ export const useDecreaseHandle = () => {
     setPercent,
     percent,
     pooledTokenInfos,
+    refetchPositions,
   };
 };

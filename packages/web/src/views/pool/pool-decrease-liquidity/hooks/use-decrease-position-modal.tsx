@@ -15,7 +15,6 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
-import { usePositionData } from "@hooks/common/use-position-data";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { TokenModel } from "@models/token/token-model";
 import { useGetPoolList } from "@query/pools";
@@ -43,6 +42,7 @@ export interface DecreasePositionModal {
   percent: number;
   pooledTokenInfos: IPooledTokenInfo | null;
   isGetWGNOT: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 export const useDecreasePositionModal = ({
@@ -57,6 +57,7 @@ export const useDecreasePositionModal = ({
   percent,
   pooledTokenInfos,
   isGetWGNOT,
+  refetchPositions,
 }: DecreasePositionModal): Props => {
   const router = useRouter();
   const { address } = useAddress();
@@ -77,7 +78,6 @@ export const useDecreasePositionModal = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
-  const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
 
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
@@ -206,6 +206,7 @@ export const useDecreasePositionModal = ({
         enqueueEvent({
           txHash: result.data?.hash,
           action: DexEvent.DECREASE,
+          visibleEmitResult: true,
           formatData: response => {
             if (!response) {
               return defaultMessageData;
@@ -221,7 +222,7 @@ export const useDecreasePositionModal = ({
               }),
             };
           },
-          callback: async () => {
+          onEmit: async () => {
             refetchPools();
             refetchPositions();
           },

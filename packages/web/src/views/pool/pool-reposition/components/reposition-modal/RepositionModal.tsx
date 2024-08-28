@@ -56,6 +56,7 @@ interface Props {
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
   isSkipSwap: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 const RepositionModal: React.FC<Props> = ({
@@ -71,6 +72,7 @@ const RepositionModal: React.FC<Props> = ({
   removePosition,
   swapRemainToken,
   reposition,
+  refetchPositions,
   isSkipSwap,
 }) => {
   const { t } = useTranslation();
@@ -122,10 +124,15 @@ const RepositionModal: React.FC<Props> = ({
                 removePosition={removePosition}
                 swapRemainToken={swapRemainToken}
                 reposition={reposition}
+                refetchPositions={refetchPositions}
                 closeModal={close}
                 tokenA={amountInfo.tokenA.info}
                 tokenB={amountInfo.tokenB.info}
-                swapAtoB={Number(currentAmounts?.amountA) - Number(repositionAmounts?.amountA) > 0}
+                swapAtoB={
+                  Number(currentAmounts?.amountA) -
+                    Number(repositionAmounts?.amountA) >
+                  0
+                }
                 isSkipSwap={isSkipSwap}
               />
             </React.Fragment>

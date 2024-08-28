@@ -65,7 +65,11 @@ export const useRepositionHandle = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account } = useWallet();
   const [initialized, setInitialized] = useState(false);
-  const { positions, loading: isLoadingPosition } = usePositionData({
+  const {
+    positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+  } = usePositionData({
     poolPath,
   });
 
@@ -633,5 +637,6 @@ export const useRepositionHandle = () => {
     selectedPosition,
     isLoadingPosition,
     isErrorLiquidity,
+    refetchPositions,
   };
 };

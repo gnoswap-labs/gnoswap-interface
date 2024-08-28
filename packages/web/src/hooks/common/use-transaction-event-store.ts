@@ -6,7 +6,7 @@ import { makeRandomId } from "@utils/common";
 import { useMessage } from "./use-message";
 import { useGetNotifications } from "@query/common";
 
-function makeNoticeConfig(type: SnackbarType): SnackbarOptions {
+function makeSnackbarConfig(type: SnackbarType): SnackbarOptions {
   const timeout = 3_000;
   return {
     id: makeRandomId(),
@@ -22,44 +22,64 @@ export const useTransactionEventStore = () => {
   const { getMessage } = useMessage();
   const { refetch: refetchNotifications } = useGetNotifications();
 
-  async function callbackCommon() {
+  async function onEmitCommon() {
     await refetchNotifications();
   }
 
   function enqueueEvent({
     txHash,
     action,
+    visibleEmitResult = false,
     formatData = () => ({}),
-    callback = async () => {},
+    onUpdate = async () => {},
+    onEmit,
   }: {
     txHash?: string;
     action: DexEventType;
+    visibleEmitResult?: boolean;
     formatData?: (result: string[] | null) => {
       tokenASymbol?: string;
       tokenBSymbol?: string;
       tokenAAmount?: string;
       tokenBAmount?: string;
     };
-    callback?: () => Promise<void>;
+    onUpdate?: () => Promise<void>;
+    onEmit?: () => Promise<void>;
   }) {
     if (!txHash) {
       return;
     }
 
-    enqueue(undefined, makeNoticeConfig("pending"));
+    enqueue(undefined, makeSnackbarConfig("pending"));
 
-    eventStore.addEvent(txHash, async event => {
-      const messageType = event.status === "SUCCESS" ? "success" : "error";
-      const message = getMessage(
-        action,
-        messageType,
-        formatData(event.data),
-        txHash,
-      );
-      enqueue(message, makeNoticeConfig(messageType));
-      await callback();
-      await callbackCommon();
-    });
+    const hasEmitCallback = onEmit !== undefined;
+
+    eventStore.addEvent(
+      txHash,
+      async event => {
+        const messageType = event.status === "SUCCESS" ? "success" : "error";
+        const message = getMessage(
+          action,
+          messageType,
+          formatData(event.data),
+          txHash,
+        );
+        enqueue(message, makeSnackbarConfig(messageType));
+        onUpdate();
+
+        if (visibleEmitResult && event.status === "SUCCESS") {
+          enqueue(undefined, makeSnackbarConfig("pending"));
+        }
+      },
+      async () => {
+        onEmitCommon();
+        if (!hasEmitCallback) {
+          return;
+        }
+
+        await onEmit();
+      },
+    );
   }
 
   return { enqueueEvent };

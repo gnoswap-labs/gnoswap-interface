@@ -402,6 +402,7 @@ export const usePoolAddLiquidityConfirmModal = ({
             enqueueEvent({
               txHash: result.data?.hash,
               action: DexEvent.ADD,
+              visibleEmitResult: true,
               formatData: response => {
                 if (!response) {
                   return {
@@ -427,7 +428,7 @@ export const usePoolAddLiquidityConfirmModal = ({
                   }),
                 };
               },
-              callback: async () => {
+              onEmit: async () => {
                 refetchPools();
                 refetchPositions();
               },

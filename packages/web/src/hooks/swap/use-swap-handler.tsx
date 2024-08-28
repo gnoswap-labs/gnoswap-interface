@@ -960,7 +960,7 @@ export const useSwapHandler = () => {
                   tokenBAmount: response[1],
                 };
               },
-              callback: async () => {
+              onUpdate: async () => {
                 await updateBalances();
               },
             });
@@ -1020,7 +1020,7 @@ export const useSwapHandler = () => {
               txHash: response?.data?.hash,
               action: DexEvent.UNWRAP,
               formatData: () => messageData,
-              callback: async () => {
+              onUpdate: async () => {
                 await updateBalances();
               },
             });
@@ -1135,7 +1135,7 @@ export const useSwapHandler = () => {
                     )?.toString() || "0",
                 };
               },
-              callback: async () => {
+              onUpdate: async () => {
                 await updateBalances();
               },
             });

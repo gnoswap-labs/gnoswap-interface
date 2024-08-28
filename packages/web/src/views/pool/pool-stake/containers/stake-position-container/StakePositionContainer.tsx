@@ -17,6 +17,7 @@ const StakePositionContainer: React.FC = () => {
     positions: allPositionData,
     isFetchedPosition: isFetched,
     loading: isLoadingAllPositions,
+    refetch: refetchPositions,
   } = usePositionData({
     isClosed: false,
     poolPath,
@@ -39,6 +40,9 @@ const StakePositionContainer: React.FC = () => {
   const { openModal } = useStakePositionModal({
     positions: unstakedPositions,
     selectedIds: checkedList,
+    refetchPositions: async () => {
+      await refetchPositions();
+    },
   });
 
   const checkedAll = useMemo(() => {

@@ -5,5 +5,6 @@ export interface Event<T = unknown> {
   status: EventStatus;
   emitNumber: number | null;
   data: T | null;
-  callback: (event: Event<T>) => Promise<void>;
+  onUpdate: (event: Event<T>) => Promise<void>;
+  onEmit: (event: Event<T>) => Promise<void>;
 }
