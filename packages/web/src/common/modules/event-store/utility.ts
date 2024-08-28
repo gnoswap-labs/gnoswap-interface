@@ -8,25 +8,50 @@ export function makeHexByBase64(base64Hash: string) {
 }
 
 function matchValues(str: string): string[] {
-  const regexp = /\((.*)\)/g;
-  const result = str.match(regexp);
-  if (result === null || result.length < 1) {
-    return [];
+  const results: string[] = [];
+
+  const pattern = /\b(\d+)\b (\w+)|\("([^"]*)"\) (\w+)/g;
+
+  let match;
+  while ((match = pattern.exec(str)) !== null) {
+    if (match[1]) {
+      results.push(match[1]);
+    } else if (match[3]) {
+      results.push(match[3]);
+    }
   }
-  return result;
+
+  return results;
 }
 
 export function parseABCIValue(str: string): string[] {
-  const regexp = /\s.*$/;
+  const regexp = /^\s+|\s+$/g;
   try {
     const decodedData = window.atob(str);
-    const result = matchValues(decodedData);
-    if (result.length > 0) {
-      return result.map(value =>
-        // eslint-disable-next-line quotes
-        value.replace(regexp, "").slice(1).replaceAll('"', ""),
-      );
+
+    if (!decodedData) {
+      console.warn("Decoded data is empty or null.");
+      return [];
     }
-  } catch {}
+
+    const result = matchValues(decodedData);
+
+    if (Array.isArray(result) && result.length > 0) {
+      return result.map(value =>
+        value.replace(regexp, "").slice(1).replace(/"/g, ""),
+      );
+    } else {
+      console.warn("No valid values found in the decoded data.");
+    }
+  } catch (error) {
+    if (
+      error instanceof DOMException &&
+      error.name === "InvalidCharacterError"
+    ) {
+      console.error("Invalid Base64 string:", str);
+    } else {
+      console.error("Failed to parse ABCI value:", error);
+    }
+  }
   return [];
 }
