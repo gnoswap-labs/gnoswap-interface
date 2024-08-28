@@ -1,5 +1,6 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import GetProposalsResponseMock from "@repositories/governance/mock/get-proposals-response.json";
+
 import ProposalDetail from "./ProposalDetail";
 
 export default {
@@ -13,21 +14,5 @@ const Template: ComponentStory<typeof ProposalDetail> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  proposalDetail: {
-    id: "1",
-    title: "#7 Proposal Title",
-    label: "Community Pool Spend",
-    status: "ACTIVE",
-    timeEnd: "2023-08-01, 12:00:00 UTC+9",
-    abstainOfQuorum: 30,
-    noOfQuorum: 20,
-    yesOfQuorum: 50,
-    currentValue: 20000000,
-    maxValue: 40000000,
-    votingPower: 0,
-    icon: "",
-    currency: "",
-    description: "",
-    typeVote: "",
-  },
+  proposalDetail: GetProposalsResponseMock[0]
 };
