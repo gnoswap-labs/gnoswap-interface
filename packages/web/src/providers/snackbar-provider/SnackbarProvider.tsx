@@ -10,12 +10,16 @@ interface SnackbarContenxtProps {
     content: SnackbarContent | undefined,
     options: SnackbarOptions,
   ) => void;
+  dequeue: (id: number) => void;
   clear: () => void;
 }
 
 export const SnackbarContext = createContext<SnackbarContenxtProps>({
   enqueue: () => {
     console.error("Calling notice without notice context");
+  },
+  dequeue: () => {
+    console.error("Close notice");
   },
   clear: () => {
     console.log("Close notice");
@@ -25,10 +29,11 @@ export const SnackbarContext = createContext<SnackbarContenxtProps>({
 const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [snackbars, setSnackbars] = useState<
     {
-      type: SnackbarType;
       id: number;
-      content?: SnackbarContent;
+      type: SnackbarType;
       timeout: number;
+      content?: SnackbarContent;
+      isClosing?: boolean;
     }[]
   >([]);
 
@@ -37,12 +42,29 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
       setSnackbars(prev => [
         ...prev,
         {
-          type: options.type,
           id: options.id,
-          content,
+          type: options.type,
           timeout: options.timeout,
+          content,
+          isClosing: false,
         },
       ]);
+    },
+    [setSnackbars],
+  );
+
+  const dequeue = useCallback<SnackbarContenxtProps["dequeue"]>(
+    id => {
+      setSnackbars(prev =>
+        prev.map(item =>
+          item.id === id
+            ? {
+                ...item,
+                isClosing: true,
+              }
+            : item,
+        ),
+      );
     },
     [setSnackbars],
   );
@@ -61,9 +83,10 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const contextValue = useMemo(
     () => ({
       enqueue,
+      dequeue,
       clear,
     }),
-    [enqueue, clear],
+    [enqueue, dequeue, clear],
   );
 
   return (
@@ -74,11 +97,12 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
             return (
               <Snackbar
                 key={item_.id}
-                type={item_.type}
                 id={item_.id}
+                type={item_.type}
                 timeout={item_.timeout}
-                onClose={handleClose}
                 content={item_.content}
+                isClosing={item_.isClosing}
+                onClose={handleClose}
               />
             );
           })}

@@ -24,7 +24,6 @@ export const useEmitTransactionEvents = (
       const result = await statusRepository.getSyncInfo().catch(() => null);
 
       const blockHeight = result?.syncInfo.height;
-      console.log(result);
       if (!blockHeight) {
         return [];
       }

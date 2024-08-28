@@ -95,7 +95,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   };
 
   const openedPosition = useMemo(() => {
-    console.log(positions);
     return (
       positions
         .filter(item => !item.closed)

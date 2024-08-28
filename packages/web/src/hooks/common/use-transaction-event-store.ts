@@ -6,8 +6,13 @@ import { makeRandomId } from "@utils/common";
 import { useMessage } from "./use-message";
 import { useGetNotifications } from "@query/common";
 
-function makeSnackbarConfig(type: SnackbarType): SnackbarOptions {
-  const timeout = 3_000;
+const DEFAULT_SNACKBAR_TIMEOUT = 3_000;
+const UPDATING_SNACKBAR_TIMEOUT = 60_000;
+
+function makeSnackbarConfig(
+  type: SnackbarType,
+  timeout = DEFAULT_SNACKBAR_TIMEOUT,
+): SnackbarOptions {
   return {
     id: makeRandomId(),
     type,
@@ -18,7 +23,7 @@ function makeSnackbarConfig(type: SnackbarType): SnackbarOptions {
 
 export const useTransactionEventStore = () => {
   const { eventStore } = useGnoswapContext();
-  const { enqueue } = useSnackbar();
+  const { enqueue, dequeue } = useSnackbar();
   const { getMessage } = useMessage();
   const { refetch: refetchNotifications } = useGetNotifications();
 
@@ -52,7 +57,10 @@ export const useTransactionEventStore = () => {
 
     enqueue(undefined, makeSnackbarConfig("pending"));
 
-    const hasEmitCallback = onEmit !== undefined;
+    const updatingSnackbarConfig = makeSnackbarConfig(
+      "updating",
+      UPDATING_SNACKBAR_TIMEOUT,
+    );
 
     eventStore.addEvent(
       txHash,
@@ -68,16 +76,24 @@ export const useTransactionEventStore = () => {
         onUpdate();
 
         if (visibleEmitResult && event.status === "SUCCESS") {
-          enqueue(undefined, makeSnackbarConfig("pending"));
+          setTimeout(() => {
+            enqueue(undefined, updatingSnackbarConfig);
+          }, 3_000);
         }
       },
       async () => {
+        console.log("emitted event");
         onEmitCommon();
-        if (!hasEmitCallback) {
-          return;
+
+        if (onEmit !== undefined) {
+          onEmit();
         }
 
-        await onEmit();
+        if (visibleEmitResult) {
+          setTimeout(() => {
+            dequeue(updatingSnackbarConfig.id);
+          }, 3_000);
+        }
       },
     );
   }

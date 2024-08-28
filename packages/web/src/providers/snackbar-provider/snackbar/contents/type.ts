@@ -1,8 +1,8 @@
 export type SnackbarType =
   | "success"
   | "error"
-  | "loading"
   | "pending"
+  | "updating"
   | "withdraw-success"
   | "withdraw-error";
 
