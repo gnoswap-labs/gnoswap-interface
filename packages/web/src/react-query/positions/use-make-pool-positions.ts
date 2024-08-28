@@ -15,8 +15,8 @@ export const useMakePoolPositions = (
   isFetchedPosition: boolean,
   options?: UseQueryOptions<PoolPositionModel[], Error>,
 ) => {
-  return useQuery<PoolPositionModel[], Error>({
-    queryKey: [QUERY_KEY.poolPositions, positions?.map(p => p.id).join(",")],
+  const query = useQuery<PoolPositionModel[], Error>({
+    queryKey: [QUERY_KEY.poolPositions],
     queryFn: async () => {
       return new Promise(resolve => {
         const poolPositions: PoolPositionModel[] = [];
@@ -48,4 +48,6 @@ export const useMakePoolPositions = (
     enabled: isFetchedPosition && pools.length > 0,
     ...options,
   });
+
+  return query;
 };
