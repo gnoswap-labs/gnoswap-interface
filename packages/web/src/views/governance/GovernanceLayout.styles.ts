@@ -96,7 +96,7 @@ export const GovernanceLayoutWrapper = styled.div`
     }
   }
 
-  .list-wrapper {
+  .proposal-list-wrapper {
     margin-top: 60px;
     width: 100%;
     padding-top: 100px;
@@ -118,7 +118,7 @@ export const GovernanceLayoutWrapper = styled.div`
     }
   }
 
-  .list-container {
+  .proposal-list-container {
     margin: 0 auto;
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: ${ContainerWidth.WEB_CONTAINER};
@@ -148,41 +148,5 @@ export const GovernanceLayoutWrapper = styled.div`
     ${media.mobile} {
       padding: 12px 0px 24px 0px;
     }
-  }
-`;
-
-export const LinkButton = styled.div`
-  ${mixins.flexbox("row", "center", "center")};
-  width: 100%;
-  ${fonts.body11};
-  gap: 4px;
-  color: ${({ theme }) => theme.color.text04};
-  ${media.mobile} {
-    ${fonts.p3};
-    flex-direction: column;
-  }
-  a {
-    display: block;
-    ${mixins.flexbox("row", "center", "center")};
-    color: ${({ theme }) => theme.color.text07};
-    &:hover {
-      color: ${({ theme }) => theme.color.text08};
-      svg {
-        * {
-          fill: ${({ theme }) => theme.color.icon14};
-        }
-      }
-    }
-  }
-  svg {
-    width: 16px;
-    height: 16px;
-    * {
-      fill: ${({ theme }) => theme.color.text07};
-    }
-  }
-  ${media.mobile} {
-    margin-bottom: 8px;
-    flex-wrap: wrap;
   }
 `;

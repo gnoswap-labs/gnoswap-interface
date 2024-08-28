@@ -1,0 +1,1 @@
+{"header":"管理","summary":{"apy":{"title":"xGNS APY","tooltip":"根据协议费实时奖励估算的 xGNS 年利率。"},"commPool":{"title":"社区游泳池","tooltip":"社区资金池的资产总额。"},"delRatio":{"title":"授权比率","tooltip":"xGNS 托管池中委托的 GNS 代币占总流通量的百分比。"},"guide":{"guide":"授权 GNS 获得管理权并收取部分协议费。","link":"了解更多"},"totalDel":{"title":"授权总数","tooltip":"xGNS 记账池中委托的 GNS 代币总量。"}}}

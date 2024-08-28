@@ -22,6 +22,10 @@ import {
   DashboardRepositoryImpl,
 } from "@repositories/dashboard";
 import {
+  GovernanceRepository,
+  GovernanceRepositoryMock,
+} from "@repositories/governance";
+import {
   LeaderboardRepository,
   LeaderboardRepositoryMock,
 } from "@repositories/leaderboard";
@@ -62,6 +66,7 @@ interface GnoswapContextProps {
   dashboardRepository: DashboardRepository;
   notificationRepository: NotificationRepository;
   walletRepository: WalletRepository;
+  governanceRepository: GovernanceRepository;
   leaderboardRepository: LeaderboardRepository;
   statusRepository: StatusRepository;
   localStorageClient: WebStorageClient;
@@ -235,9 +240,14 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const notificationRepository = useMemo(() => {
     return new NotificationRepositoryImpl(gnoswapApiClient, localStorageClient);
   }, [localStorageClient, gnoswapApiClient]);
+
   const walletRepository = useMemo(() => {
     return new WalletRepositoryImpl(walletClient);
   }, [walletClient]);
+
+  const governanceRepository = useMemo(() => {
+    return new GovernanceRepositoryMock();
+  }, []);
 
   const leaderboardRepository = useMemo(() => {
     return new LeaderboardRepositoryMock();
@@ -269,6 +279,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         dashboardRepository,
         notificationRepository,
         walletRepository,
+        governanceRepository,
         leaderboardRepository,
         statusRepository,
         localStorageClient,

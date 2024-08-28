@@ -12,6 +12,8 @@ export enum QUERY_KEY {
   dashboardTvl = "dashboardTvl",
   dashboardVolume = "dashboardVolume",
   dashboardActivities = "dashboardActivities",
+  // governance
+  governanceSummary = "governanceSummary",
   // leaderboard
   leaderboard = "leaderboard",
   leaderboardLeader = "leaderboardLeader",

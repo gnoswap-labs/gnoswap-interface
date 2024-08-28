@@ -10,6 +10,7 @@ export const EXT_URL = {
       STAKE_POSITIONS:
         "https://docs.gnoswap.io/user-guide/staking/stake-positions",
     },
+    GOVERNANCE: "https://docs.gnoswap.io/core-concepts/governance",
   },
   SOCIAL: {
     DISCORD: "https://discord.gg/u4bdGHStb2",

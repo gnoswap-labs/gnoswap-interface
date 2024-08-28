@@ -9,6 +9,7 @@ describe("GovernanceDetailInfo Component", () => {
       title: "DefaultTooltip",
       value: "$1.10",
       tooltip: "Hello world",
+      isLoading: false,
     };
 
     render(
