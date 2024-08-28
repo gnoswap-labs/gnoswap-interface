@@ -5,8 +5,8 @@ import { DEVICE_TYPE } from "@styles/media";
 import { ProposalDetailInfo } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
 
 import CreateProposalModal from "./create-proposal-modal/CreateProposalModal";
-import ProposalDetail from "./proposal-detail/ProposalDetail";
-import ProposalDetailSkeleton from "./proposal-detail/ProposalDetailSekeleton";
+import ProposalCard from "./proposal-detail/ProposalCard";
+import ProposalCardSkeleton from "./proposal-detail/ProposalCardSekeleton";
 import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
@@ -54,12 +54,12 @@ const ProposalList: React.FC<ProposalListProps> = ({
     />
     {isLoading ? (
       Array.from({ length: 3 }).map((_, idx) => (
-        <ProposalDetailSkeleton key={`skeleton-${idx}`} />
+        <ProposalCardSkeleton key={`skeleton-${idx}`} />
       ))
     ) : (
       <>
         {proposalList.map((proposalDetail: ProposalItemInfo) => (
-          <ProposalDetail
+          <ProposalCard
             key={proposalDetail.id}
             proposalDetail={proposalDetail}
             onClickProposalDetail={onClickProposalDetail}

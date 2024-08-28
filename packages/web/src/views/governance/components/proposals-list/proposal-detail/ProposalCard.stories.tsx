@@ -1,15 +1,15 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import GetProposalsResponseMock from "@repositories/governance/mock/get-proposals-response.json";
 
-import ProposalDetail from "./ProposalDetail";
+import ProposalCard from "./ProposalCard";
 
 export default {
-  title: "governance/ProposalDetail",
-  component: ProposalDetail,
-} as ComponentMeta<typeof ProposalDetail>;
+  title: "governance/ProposalCard",
+  component: ProposalCard,
+} as ComponentMeta<typeof ProposalCard>;
 
-const Template: ComponentStory<typeof ProposalDetail> = (args) => (
-  <ProposalDetail {...args} />
+const Template: ComponentStory<typeof ProposalCard> = (args) => (
+  <ProposalCard {...args} />
 );
 
 export const Default = Template.bind({});

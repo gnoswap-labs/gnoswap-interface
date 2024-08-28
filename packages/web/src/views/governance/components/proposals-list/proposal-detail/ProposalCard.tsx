@@ -9,14 +9,11 @@ import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconOutlineClock from "@components/common/icons/IconOutlineClock";
 import IconPass from "@components/common/icons/IconPass";
-import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
 import { ProposalItemInfo } from "@repositories/governance";
 
-import {
-  ProgressBar,
-  ProgressWrapper,
-  ProposalDetailWrapper
-} from "./ProposalDetail.styles";
+import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
+
+import { ProposalDetailWrapper } from "./ProposalCard.styles";
 
 dayjs.extend(relative);
 
@@ -67,18 +64,10 @@ const MAPPING_STATUS: Record<string, JSX.Element> = {
   ),
 };
 
-const ProposalDetail: React.FC<Props> = ({
+const ProposalCard: React.FC<Props> = ({
   proposalDetail,
   onClickProposalDetail,
 }) => {
-  const yesRate = (
-    (100 * proposalDetail.votes.yes) /
-    proposalDetail.votes.max
-  ).toLocaleString(undefined, { maximumFractionDigits: 2 });
-  const noRate = (
-    (100 * proposalDetail.votes.no) /
-    proposalDetail.votes.max
-  ).toLocaleString(undefined, { maximumFractionDigits: 2 });
 
   return (
     <ProposalDetailWrapper
@@ -99,38 +88,14 @@ const ProposalDetail: React.FC<Props> = ({
           } ${dayjs(proposalDetail.time).fromNow()} ${proposalDetail.time}`}
         </div>
       </div>
-      <ProgressWrapper>
-        <ProgressBar
-          rateWidth={`${yesRate}%`}
-          noOfQuorumWidth={`${Number(yesRate) + Number(noRate)}%`}
-        >
-          <FloatingTooltip
-            className="float-progress"
-            position="top"
-            content={`Yes ${yesRate}%`}
-          >
-            <div className="progress-bar-yes-of-quorum progress-bar-rate" />
-          </FloatingTooltip>
-          <FloatingTooltip
-            className="float-progress"
-            position="top"
-            content={`No ${noRate}%`}
-          >
-            <div className="progress-bar-no-of-quorum progress-bar-rate" />
-          </FloatingTooltip>
-        </ProgressBar>
-        <div className="progress-value">
-          <span>
-            {(
-              proposalDetail.votes.yes + proposalDetail.votes.no
-            ).toLocaleString()}
-          </span>
-          /<div> {proposalDetail.votes.max.toLocaleString()}</div>
-        </div>
-      </ProgressWrapper>
+      <VotingProgressBar
+        max={proposalDetail.votes.max}
+        yes={proposalDetail.votes.yes}
+        no={proposalDetail.votes.no}
+      />
       <ToolTipGlobalStyle />
     </ProposalDetailWrapper>
   );
 };
 
-export default ProposalDetail;
+export default ProposalCard;
