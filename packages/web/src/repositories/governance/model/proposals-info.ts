@@ -13,7 +13,16 @@ export type ProposalItemInfo = {
   status: string;
   type: string;
   title: string;
-  description: string;
+  content: {
+    description: string;
+    recipient?: string;
+    amount?: number;
+    parameters?: {
+      subspace: string;
+      key: string;
+      value: string;
+    }[];
+  };
   proponent: string;
   time: string;
   myVote?: {
@@ -32,7 +41,18 @@ export const nullProposalItemInfo: ProposalItemInfo = {
   status: "",
   type: "",
   title: "",
-  description: "",
+  content: {
+    description: "",
+    recipient: "",
+    amount: 0,
+    parameters: [
+      {
+        subspace: "",
+        key: "",
+        value: "",
+      },
+    ],
+  },
   proponent: "",
   time: "",
   myVote: {

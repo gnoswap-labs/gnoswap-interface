@@ -42,7 +42,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     const mock: ProposalItemResponse[] = GetProposalsResponseMock.filter(
       item => {
         if (request.isActive)
-          return ["ACTIVE", "Upcomming"].includes(item.status);
+          return ["ACTIVE", "UPCOMMING"].includes(item.status);
         return true;
       },
     );

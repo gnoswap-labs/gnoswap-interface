@@ -1,4 +1,3 @@
-
 export interface GetProposalsResponse {
   proposals: ProposalItemResponse[];
   pageInfo: {
@@ -13,7 +12,16 @@ export type ProposalItemResponse = {
   status: string;
   type: string;
   title: string;
-  description: string;
+  content: {
+    description: string;
+    recipient?: string;
+    amount?: number;
+    parameters?: {
+      subspace: string;
+      key: string;
+      value: string;
+    }[];
+  };
   proponent: string;
   time: string;
   myVote?: {

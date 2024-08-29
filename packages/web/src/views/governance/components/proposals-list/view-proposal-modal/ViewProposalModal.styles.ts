@@ -136,6 +136,15 @@ export const ProposalContentWrapper = styled.div`
     ${media.mobile} {
       ${fonts.p2}
     }
+
+    .variable {
+      margin-bottom: 12px;
+      .variable-type {
+        ${fonts.body11}
+        color: ${({ theme }) => theme.color.text03};
+        margin-bottom: 12px;
+      }
+    }
   }
   ${media.mobile} {
     padding: 12px 4px 12px 12px;

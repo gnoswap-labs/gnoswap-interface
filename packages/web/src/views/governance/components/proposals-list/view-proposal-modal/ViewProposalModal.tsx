@@ -116,7 +116,38 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               </div>
             </ModalHeaderWrapper>
             <ProposalContentWrapper>
-              <div className="content">{proposalDetail.description || ""}</div>
+              <div className="content">
+                {proposalDetail.type === "COMMUNITY_POOL_SPEND" && (
+                  <>
+                    <div className="variable">
+                      <div className="variable-type">
+                        {t("Governance:detailModal.content.recipient")}
+                      </div>
+                      {proposalDetail.content.recipient}
+                    </div>
+                    <div className="variable">
+                      <div className="variable-type">
+                        {t("Governance:detailModal.content.amount")}
+                      </div>
+                      {proposalDetail.content.amount}
+                    </div>
+                  </>
+                )}
+                {proposalDetail.type === "PARAMETER_CHANGE" && (
+                  <div className="variable">
+                    <div className="variable-type">
+                      {t("Governance:detailModal.content.change")}
+                    </div>
+                    {proposalDetail.content.parameters?.map((item, index) => (
+                      <div key={index}>
+                        {`Subspace: "${item.subspace}", Key: "${item.key}", Value: "${item.value}"`}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {proposalDetail.content.description || ""}
+              </div>
             </ProposalContentWrapper>
             <ModalQuorum>
               <div className="quorum-header">
