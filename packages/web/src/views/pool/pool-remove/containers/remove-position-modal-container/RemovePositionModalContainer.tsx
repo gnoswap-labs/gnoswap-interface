@@ -12,7 +12,7 @@ import { useTransactionEventStore } from "@hooks/common/use-transaction-event-st
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
-import { useGetPoolList } from "@query/pools";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
@@ -48,6 +48,9 @@ const RemovePositionModalContainer = ({
 
   // Refetch functions
   const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
+    selectedPositions?.[0]?.poolPath,
+  );
   const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
     positions: selectedPositions,
   });
@@ -167,6 +170,7 @@ const RemovePositionModalContainer = ({
           onEmit: async () => {
             refetchPools();
             refetchPositions();
+            refetchPoolDetails();
           },
         });
       }

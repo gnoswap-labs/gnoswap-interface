@@ -15,7 +15,7 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
 import UnstakePositionModal from "../../components/unstake-position-modal/UnstakePositionModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPoolList } from "@query/pools";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -42,6 +42,9 @@ const UnstakePositionModalContainer = ({
 
   // Refetch functions
   const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
+    positions?.[0]?.poolPath,
+  );
 
   const { pooledTokenInfos } = usePositionsRewards({ positions });
   const { openModal } = useTransactionConfirmModal({
@@ -108,6 +111,7 @@ const UnstakePositionModalContainer = ({
           onEmit: async () => {
             refetchPools();
             refetchPositions();
+            refetchPoolDetails();
           },
         });
       }

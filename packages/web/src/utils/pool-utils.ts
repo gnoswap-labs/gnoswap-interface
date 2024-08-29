@@ -1,8 +1,11 @@
 import {
   INCENTIVE_TYPE,
+  SwapFeeTierInfoMap,
   SwapFeeTierMaxPriceRangeMap,
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import { tickToPriceStr } from "./swap-utils";
+import { TokenModel } from "@models/token/token-model";
 
 const maxTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(
   range => range.maxTick,
@@ -10,6 +13,23 @@ const maxTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(
 const minTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(
   range => range.maxTick,
 );
+
+export function makePoolPath(
+  tokenA: TokenModel | null,
+  tokenB: TokenModel | null,
+  swapFeeTier: SwapFeeTierType | null,
+) {
+  if (!tokenA || !tokenB || !swapFeeTier) {
+    return "";
+  }
+  const tokenAPath = tokenA.wrappedPath || tokenA.path || "";
+  const tokenBPath = tokenB.wrappedPath || tokenB.path || "";
+  return (
+    [tokenAPath, tokenBPath].sort().join(":") +
+    ":" +
+    SwapFeeTierInfoMap[swapFeeTier].fee
+  );
+}
 
 export function isMaxTick(tick: number) {
   return maxTicks.includes(tick);

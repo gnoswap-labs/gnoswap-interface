@@ -7,10 +7,11 @@ import {
 } from "@providers/snackbar-provider/snackbar";
 
 export const useSnackbar = () => {
-  const { enqueue, dequeue, clear } = useContext(SnackbarContext);
+  const { enqueue, dequeue, change, clear } = useContext(SnackbarContext);
 
   return {
     enqueue,
+    change,
     dequeue,
     clear,
   };

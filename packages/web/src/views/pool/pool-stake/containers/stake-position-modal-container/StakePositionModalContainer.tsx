@@ -10,7 +10,11 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useGetPoolDetailByPath, useGetPoolList } from "@query/pools";
+import {
+  useGetPoolDetailByPath,
+  useGetPoolList,
+  useRefetchGetPoolDetailByPath,
+} from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
@@ -37,6 +41,9 @@ const StakePositionModalContainer = ({
 
   // Refetch functions
   const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
+    positions?.[0]?.poolPath,
+  );
 
   const { positionRepository } = useGnoswapContext();
   const router = useCustomRouter();
@@ -146,6 +153,7 @@ const StakePositionModalContainer = ({
           onEmit: async () => {
             refetchPools();
             refetchPositions();
+            refetchPoolDetails();
           },
         });
       }

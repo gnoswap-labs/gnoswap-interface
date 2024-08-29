@@ -17,13 +17,12 @@ import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DexEvent } from "@repositories/common";
-import { IncreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import IncreasePositionModalContainer from "../containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPoolList } from "@query/pools";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 
 export interface Props {
   openModal: () => void;
@@ -76,6 +75,9 @@ export const useIncreasePositionModal = ({
 
   // Refetch functions
   const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
+    selectedPosition?.poolPath,
+  );
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     router.back();
@@ -108,7 +110,7 @@ export const useIncreasePositionModal = ({
     };
   }, [swapFeeTier, tokenA, tokenAAmountInput, tokenBAmountInput, tokenB]);
 
-  const confirm = useCallback(async () => {
+  const confirm = async () => {
     if (!address || !selectedPosition) {
       return false;
     }
@@ -151,27 +153,19 @@ export const useIncreasePositionModal = ({
           action: DexEvent.ADD,
           visibleEmitResult: true,
           formatData: response => {
-            if (!response) {
-              return {
-                tokenASymbol: tokenA.symbol,
-                tokenBSymbol: tokenB.symbol,
-                tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
-                  "en-US",
-                  { maximumFractionDigits: tokenA.decimals },
-                ),
-                tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
-                  "en-US",
-                  { maximumFractionDigits: tokenB.decimals },
-                ),
-              };
-            }
+            const tokenAAmount = response
+              ? response[2]
+              : tokenAAmountInput.amount;
+            const tokenBAmount = response
+              ? response[3]
+              : tokenBAmountInput.amount;
             return {
               tokenASymbol: tokenA.symbol,
               tokenBSymbol: tokenB.symbol,
-              tokenAAmount: Number(response[0]).toLocaleString("en-US", {
+              tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
                 maximumFractionDigits: tokenA.decimals,
               }),
-              tokenBAmount: Number(response[1]).toLocaleString("en-US", {
+              tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
                 maximumFractionDigits: tokenB.decimals,
               }),
             };
@@ -179,37 +173,34 @@ export const useIncreasePositionModal = ({
           onEmit: async () => {
             refetchPools();
             refetchPositions();
+            refetchPoolDetails();
           },
         });
       }
-      if (result.code === 0 && result?.data) {
-        const resultData = result?.data as IncreaseLiquiditySuccessResponse;
 
-        setTimeout(() => {
-          // Make display token amount
-          const tokenAAmount = (
-            makeDisplayTokenAmount(tokenA, resultData.tokenAAmount) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
-          const tokenBAmount = (
-            makeDisplayTokenAmount(tokenB, resultData.tokenBAmount) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
-
-          broadcastSuccess(
-            getMessage(
-              DexEvent.ADD,
-              "success",
-              {
-                tokenASymbol: tokenA.symbol,
-                tokenBSymbol: tokenB.symbol,
-                tokenAAmount,
-                tokenBAmount,
-              },
-              resultData.hash,
-            ),
-          );
-        }, 1000);
-
+      if (result.code === 0) {
         openTransactionConfirmModal();
+        // Make display token amount
+        const tokenAAmount = (
+          makeDisplayTokenAmount(tokenA, tokenAAmountInput.amount) || 0
+        ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
+        const tokenBAmount = (
+          makeDisplayTokenAmount(tokenB, tokenBAmountInput.amount) || 0
+        ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
+
+        broadcastSuccess(
+          getMessage(
+            DexEvent.ADD,
+            "success",
+            {
+              tokenASymbol: tokenA.symbol,
+              tokenBSymbol: tokenB.symbol,
+              tokenAAmount,
+              tokenBAmount,
+            },
+            result.data?.hash,
+          ),
+        );
       } else if (
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
@@ -250,15 +241,7 @@ export const useIncreasePositionModal = ({
       }
     }
     return true;
-  }, [
-    address,
-    positionRepository,
-    router,
-    selectedPosition,
-    tokenAAmountInput.amount,
-    tokenBAmountInput.amount,
-    slippage,
-  ]);
+  };
 
   const openModal = useCallback(() => {
     if (!amountInfo) {
@@ -276,14 +259,7 @@ export const useIncreasePositionModal = ({
         confirm={confirm}
       />,
     );
-  }, [
-    setModalContent,
-    setOpenedModal,
-    confirm,
-    amountInfo,
-    isDepositTokenA,
-    isDepositTokenB,
-  ]);
+  }, [amountInfo, isDepositTokenA, isDepositTokenB, confirm]);
 
   return {
     openModal,

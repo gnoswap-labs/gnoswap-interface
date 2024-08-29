@@ -6,6 +6,7 @@ import { PoolError } from "@common/errors/pool";
 import useCustomRouter from "@hooks/common/use-custom-router";
 
 import { QUERY_KEY } from "../query-keys";
+import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 
 const REFETCH_INTERVAL = 60_000;
 
@@ -36,4 +37,23 @@ export const useGetPoolDetailByPath = (
     refetchInterval: REFETCH_INTERVAL,
     ...options,
   });
+};
+
+export const useRefetchGetPoolDetailByPath = (
+  poolPath: string | null | undefined,
+) => {
+  const refetchFn = useForceRefetchQuery();
+
+  const refetchPoolDetails = async () => {
+    if (!poolPath) {
+      return;
+    }
+
+    await refetchFn({
+      queryKey: [QUERY_KEY.poolDetail, poolPath],
+      retry: 0,
+    });
+  };
+
+  return { refetch: refetchPoolDetails };
 };

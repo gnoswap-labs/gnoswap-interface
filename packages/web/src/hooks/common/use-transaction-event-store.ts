@@ -2,7 +2,7 @@ import { DexEventType } from "@repositories/common";
 
 import { SnackbarOptions, SnackbarType, useSnackbar } from "./use-snackbar";
 import { useGnoswapContext } from "./use-gnoswap-context";
-import { makeRandomId } from "@utils/common";
+import { makeRandomId, wait } from "@utils/common";
 import { useMessage } from "./use-message";
 import { useGetNotifications } from "@query/common";
 
@@ -23,7 +23,7 @@ function makeSnackbarConfig(
 
 export const useTransactionEventStore = () => {
   const { eventStore } = useGnoswapContext();
-  const { enqueue, dequeue } = useSnackbar();
+  const { enqueue, dequeue, change } = useSnackbar();
   const { getMessage } = useMessage();
   const { refetch: refetchNotifications } = useGetNotifications();
 
@@ -76,9 +76,9 @@ export const useTransactionEventStore = () => {
         onUpdate();
 
         if (visibleEmitResult && event.status === "SUCCESS") {
-          setTimeout(() => {
+          wait<boolean>(async () => true, 3_000).then(() => {
             enqueue(undefined, updatingSnackbarConfig);
-          }, 3_000);
+          });
         }
       },
       async () => {
@@ -90,9 +90,11 @@ export const useTransactionEventStore = () => {
         }
 
         if (visibleEmitResult) {
-          setTimeout(() => {
+          change(updatingSnackbarConfig.id, "updating-done");
+
+          wait<boolean>(async () => true, 3_000).then(() => {
             dequeue(updatingSnackbarConfig.id);
-          }, 3_000);
+          });
         }
       },
     );

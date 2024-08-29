@@ -12,7 +12,11 @@ import { useMessage } from "@hooks/common/use-message";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPoolList } from "@query/pools";
+import {
+  useGetIncentivizePoolList,
+  useGetPoolList,
+  useRefetchGetPoolDetailByPath,
+} from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { EarnState } from "@states/index";
 
@@ -21,7 +25,13 @@ import IncentivizePoolModal from "../../components/incentivize-pool-modal/Incent
 const DAY_TIME = 24 * 60 * 60;
 const MILLISECONDS = 1000;
 
-const IncentivizePoolModalContainer = () => {
+interface IncentivizePoolModalContainerProps {
+  poolPath?: string;
+}
+
+const IncentivizePoolModalContainer: React.FC<
+  IncentivizePoolModalContainerProps
+> = ({ poolPath }) => {
   const {
     broadcastSuccess,
     broadcastError,
@@ -38,8 +48,13 @@ const IncentivizePoolModalContainer = () => {
   const [pool] = useAtom(EarnState.pool);
 
   const { address } = useAddress();
+
+  // refetch functions
   const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchIncentivizePools } = useGetIncentivizePoolList();
+  const { refetch: refetchPoolDetails } =
+    useRefetchGetPoolDetailByPath(poolPath);
 
   const { getMessage } = useMessage();
 
@@ -110,8 +125,10 @@ const IncentivizePoolModalContainer = () => {
                 tokenASymbol: dataModal?.token?.symbol,
               }),
               onEmit: async () => {
-                await refetchPools();
-                await refetchPositions();
+                refetchPools();
+                refetchPositions();
+                refetchIncentivizePools();
+                refetchPoolDetails();
               },
             });
           }

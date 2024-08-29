@@ -18,7 +18,11 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useMessage } from "@hooks/common/use-message";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
-import { useGetPoolCreationFee, useGetPoolList } from "@query/pools";
+import {
+  useGetPoolCreationFee,
+  useGetPoolList,
+  useRefetchGetPoolDetailByPath,
+} from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import {
   AddLiquidityFailedResponse,
@@ -118,7 +122,9 @@ export const usePoolAddLiquidityConfirmModal = ({
   const { address } = useAddress();
   const { refetch: refetchPositions } = usePositionData({ address });
   const { refetch: refetchPools } = useGetPoolList();
-
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
+    selectPool.poolPath,
+  );
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -431,6 +437,7 @@ export const usePoolAddLiquidityConfirmModal = ({
               onEmit: async () => {
                 refetchPools();
                 refetchPositions();
+                refetchPoolDetails();
               },
             });
           }

@@ -10,6 +10,7 @@ interface SnackbarContenxtProps {
     content: SnackbarContent | undefined,
     options: SnackbarOptions,
   ) => void;
+  change: (id: number, type: SnackbarType) => void;
   dequeue: (id: number) => void;
   clear: () => void;
 }
@@ -17,6 +18,9 @@ interface SnackbarContenxtProps {
 export const SnackbarContext = createContext<SnackbarContenxtProps>({
   enqueue: () => {
     console.error("Calling notice without notice context");
+  },
+  change: () => {
+    console.error("Close notice");
   },
   dequeue: () => {
     console.error("Close notice");
@@ -53,6 +57,22 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     [setSnackbars],
   );
 
+  const change = useCallback<SnackbarContenxtProps["change"]>(
+    (id, type) => {
+      setSnackbars(prev =>
+        prev.map(item =>
+          item.id === id
+            ? {
+                ...item,
+                type,
+              }
+            : item,
+        ),
+      );
+    },
+    [setSnackbars],
+  );
+
   const dequeue = useCallback<SnackbarContenxtProps["dequeue"]>(
     id => {
       setSnackbars(prev =>
@@ -83,10 +103,11 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const contextValue = useMemo(
     () => ({
       enqueue,
+      change,
       dequeue,
       clear,
     }),
-    [enqueue, dequeue, clear],
+    [enqueue, change, dequeue, clear],
   );
 
   return (

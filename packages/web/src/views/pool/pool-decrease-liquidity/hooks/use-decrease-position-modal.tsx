@@ -17,7 +17,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { TokenModel } from "@models/token/token-model";
-import { useGetPoolList } from "@query/pools";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
@@ -25,6 +25,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import DecreasePositionModalContainer from "../containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { IPooledTokenInfo } from "./use-decrease-handle";
+import { makePoolPath } from "@utils/pool-utils";
 
 export interface Props {
   openModal: () => void;
@@ -79,6 +80,9 @@ export const useDecreasePositionModal = ({
 
   // Refetch functions
   const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
+    makePoolPath(tokenA, tokenB, swapFeeTier),
+  );
 
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -225,6 +229,7 @@ export const useDecreasePositionModal = ({
           onEmit: async () => {
             refetchPools();
             refetchPositions();
+            refetchPoolDetails();
           },
         });
       }

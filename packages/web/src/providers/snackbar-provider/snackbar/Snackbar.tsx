@@ -12,6 +12,7 @@ import {
 } from "./contents";
 
 import { SnackbarWrapper } from "./snackbar.styles";
+import { UpdatingDoneContent } from "./contents/UpdatingDoneContent";
 
 interface SnackbarProps {
   id: number;
@@ -73,6 +74,7 @@ const Snackbar: FC<SnackbarProps> = ({
       {type === "error" && <FailContent content={content} />}
       {type === "pending" && <PendingContent content={content} />}
       {type === "updating" && <UpdatingContent content={content} />}
+      {type === "updating-done" && <UpdatingDoneContent content={content} />}
       {closeable && (
         <div className="icon-close" onClick={handleClose}>
           <IconClose />

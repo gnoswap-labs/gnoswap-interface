@@ -3,10 +3,7 @@ import { useCallback, useEffect } from "react";
 
 import TransactionConfirmModal from "@components/common/transaction-confirm-modal/TransactionConfirmModal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { QUERY_KEY } from "@query/query-keys";
 import { CommonState } from "@states/index";
-
-import { useForceRefetchQuery } from "./useForceRefetchQuery";
 
 export interface TransactionConfirmModalResponse {
   openModal: () => void;
@@ -32,7 +29,6 @@ export const useTransactionConfirmModal = (
   const [transactionModalData, setTransactionModalData] = useAtom(
     CommonState.transactionModalData,
   );
-  const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
 
   const closeModal = useCallback(
@@ -42,23 +38,16 @@ export const useTransactionConfirmModal = (
       setTransactionModalData(null);
       if (!isClear) props?.closeCallback?.();
     },
-    [
-      setModalContent,
-      setOpenedModal,
-      setTransactionModalData,
-      transactionModalData,
-      props,
-    ],
+    [props],
   );
 
   const confirm = useCallback(() => {
     closeModal();
     props?.confirmCallback?.();
-    forceRefect({ queryKey: [QUERY_KEY.positions, account?.address || ""] });
     if (transactionModalData?.callback) {
       transactionModalData?.callback();
     }
-  }, [closeModal, transactionModalData, account, props]);
+  }, [transactionModalData, account, props]);
 
   const update = useCallback(
     (
@@ -96,7 +85,7 @@ export const useTransactionConfirmModal = (
     return () => {
       setModalContent(null);
     };
-  }, [closeModal, confirm, setModalContent, transactionModalData]);
+  }, [transactionModalData]);
 
   useEffect(() => {
     return () => {
