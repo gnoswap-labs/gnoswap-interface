@@ -83,7 +83,6 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             <span className="name" onClick={onClickAddressPosition}>
               {addressName}
             </span>
-            &nbsp;
             <span>{`${t("Pool:position.title", {
               context: "other",
             })}${!isLoadingPositionsById ? ` (${positionLength})` : ""}`}</span>
