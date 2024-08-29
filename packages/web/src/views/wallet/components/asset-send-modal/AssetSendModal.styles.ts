@@ -154,7 +154,7 @@ export const AssetSendContent = styled.div`
     }
 
     .approximately {
-      color: ${({ theme }) => theme.color.text04};
+      color: ${({ theme }) => theme.color.text30};
       font-size: 14px;
       font-style: normal;
       font-weight: 500;
