@@ -15,11 +15,12 @@ interface ProposalListProps {
   isLoading?: boolean;
   isShowActiveOnly: boolean;
   toggleIsShowActiveOnly: () => void;
-  // proposalDetail: ProposalItemInfo;
   proposalList: ProposalItemInfo[];
   isConnected: boolean;
   isSwitchNetwork: boolean;
-  handleSelectVote: () => void;
+  handleVote: (voteYes: boolean) => void;
+  connectWallet: () => void;
+  switchNetwork: () => void;
   breakpoint: DEVICE_TYPE;
   selectedProposalId: number;
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
@@ -33,14 +34,15 @@ const ProposalList: React.FC<ProposalListProps> = ({
   toggleIsShowActiveOnly,
   proposalList,
   breakpoint,
-  // proposalDetail,
   selectedProposalId,
   setSelectedProposalId,
+  connectWallet,
+  switchNetwork,
   isOpenCreateModal,
   setIsOpenCreateModal,
   isConnected,
   isSwitchNetwork,
-  handleSelectVote,
+  handleVote,
 }) => (
   <ProposalListWrapper>
     <ProposalHeader
@@ -69,13 +71,15 @@ const ProposalList: React.FC<ProposalListProps> = ({
       <ViewProposalModal
         breakpoint={breakpoint}
         proposalDetail={
-          proposalList.find(item => item.id === selectedProposalId - 1) ||
+          proposalList.find(item => item.id === selectedProposalId) ||
           nullProposalItemInfo
         }
         setSelectedProposalId={setSelectedProposalId}
         isConnected={isConnected}
         isSwitchNetwork={isSwitchNetwork}
-        handleSelectVote={handleSelectVote}
+        handleVote={handleVote}
+        connectWallet={connectWallet}
+        switchNetwork={switchNetwork}
       />
     )}
     {isOpenCreateModal && (

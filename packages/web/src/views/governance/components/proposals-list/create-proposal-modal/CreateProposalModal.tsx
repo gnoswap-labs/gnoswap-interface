@@ -59,9 +59,9 @@ interface FormValues {
 }
 
 const ProposalOption = [
-  "Text Proposal",
-  "Community Pool Spend",
-  "Parameter Change",
+  "TEXT",
+  "COMMUNITY_POOL_SPEND",
+  "PARAMETER_CHANGE",
 ];
 
 const TOKEN = {

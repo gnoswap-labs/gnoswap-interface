@@ -16,7 +16,10 @@ export type ProposalItemInfo = {
   description: string;
   proponent: string;
   time: string;
-  myVote?: string;
+  myVote?: {
+    type: string;
+    weight: number;
+  };
   votes: {
     max: number;
     yes: number;
@@ -32,7 +35,10 @@ export const nullProposalItemInfo: ProposalItemInfo = {
   description: "",
   proponent: "",
   time: "",
-  myVote: "",
+  myVote: {
+    type: "",
+    weight: 0,
+  },
   votes: {
     max: 0,
     yes: 0,

@@ -18,18 +18,15 @@ const ProposalListContainer: React.FC = () => {
   const [page, setPage] = useState(0);
 
   const { data: proposalsInfo, isFetching } = useGetProposals({
-    isActive: false,
+    isActive: isShowActiveOnly,
     offset: page,
     limit: 20,
   });
 
-  const handleSelectVote = useCallback(() => {
-    if (!connected) {
-      openModal();
-    } else if (isSwitchNetwork) {
-      switchNetwork();
-    }
-  }, [switchNetwork, openModal, isSwitchNetwork, connected]);
+    const handleVote = useCallback((voteYes: boolean) => {
+      // vote yes
+      console.log("vote to ", voteYes);
+    }, []);
 
   return (
     <>
@@ -41,8 +38,9 @@ const ProposalListContainer: React.FC = () => {
         breakpoint={breakpoint}
         toggleIsShowActiveOnly={() => setIsShowActiveOnly(a => !a)}
         proposalList={proposalsInfo?.proposals || []}
-        // proposalDetail={createDummyProposalItem()}
-        handleSelectVote={handleSelectVote}
+        handleVote={handleVote}
+        connectWallet={openModal}
+        switchNetwork={switchNetwork}
         selectedProposalId={selectedProposalId}
         setSelectedProposalId={setSelectedProposalId}
         isOpenCreateModal={isOpenCreateModal}

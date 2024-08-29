@@ -16,10 +16,13 @@ export type ProposalItemResponse = {
   description: string;
   proponent: string;
   time: string;
-  myVote?: string;
+  myVote?: {
+    type: string;
+    weight: number;
+  };
   votes: {
     max: number;
     yes: number;
     no: number;
-  }
-}
+  };
+};

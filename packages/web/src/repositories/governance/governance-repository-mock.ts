@@ -39,7 +39,13 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     request: GetProposalsReqeust,
   ): Promise<ProposalsInfo> => {
     console.log(request);
-    const mock: ProposalItemResponse[] = GetProposalsResponseMock;
+    const mock: ProposalItemResponse[] = GetProposalsResponseMock.filter(
+      item => {
+        if (request.isActive)
+          return ["ACTIVE", "Upcomming"].includes(item.status);
+        return true;
+      },
+    );
     const startIndex = request.offset * request.limit;
     const res: GetProposalsResponse = {
       proposals: [...mock]

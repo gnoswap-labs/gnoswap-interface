@@ -8,6 +8,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import IconOutlineClock from "@components/common/icons/IconOutlineClock";
 import IconPass from "@components/common/icons/IconPass";
 import { StatusBadgeWrapper } from "./StatusBadge.style";
+import { useTranslation } from "react-i18next";
 
 dayjs.extend(relative);
 
@@ -17,39 +18,45 @@ interface StatusBadgeProps {
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time }) => {
+  const {t} = useTranslation();
 
   const getContent = () => {
     switch (status) {
-      case "Upcomming":
+      case "UPCOMMING":
         return (
           <div className="status success">
-            <IconCircleInCheck className="success-icon status-icon" /> Upcoming
+            <IconCircleInCheck className="success-icon status-icon" />
+            {t("Governance:proposal.status.upcomming")}
           </div>
         );
-      case "Active":
+      case "ACTIVE":
         return (
           <div className="status success">
-            <IconCircleInCheck className="success-icon status-icon" /> Active
+            <IconCircleInCheck className="success-icon status-icon" />
+            {t("Governance:proposal.status.active")}
           </div>
         );
-      case "Executed":
-      case "Passed":
+      case "EXECUTED":
+      case "PASSED":
         return (
           <div className="status passed">
-            <IconPass className="passed-icon status-icon" /> Passed
+            <IconPass className="passed-icon status-icon" />
+            {t("Governance:proposal.status.passed")}
           </div>
         );
-      case "Rejected":
+      case "REJECTED":
         return (
           <div className="status failed">
-            <IconCircleInCancel className="failed-icon status-icon" /> Reject
+            <IconCircleInCancel className="failed-icon status-icon" />
+            {t("Governance:proposal.status.rejected")}
           </div>
         );
-      case "Cancelled":
+      case "CANCELLED":
       default:
         return (
           <div className="status cancelled">
-            <IconInfo className="cancelled-icon status-icon" /> Cancelled
+            <IconInfo className="cancelled-icon status-icon" />
+            {t("Governance:proposal.status.cancelled")}
           </div>
         );
     }

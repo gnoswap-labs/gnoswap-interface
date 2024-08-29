@@ -1,18 +1,14 @@
 import React, {
   Dispatch,
   SetStateAction,
-  useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
-import IconCheck from "@components/common/icons/IconCheck";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import useLockedBody from "@hooks/common/use-lock-body";
@@ -22,9 +18,10 @@ import { DEVICE_TYPE } from "@styles/media";
 import StatusBadge from "../../status-badge/StatusBadge";
 import TokenChip from "../../token-chip/TokenChip";
 import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
+import VoteButtons from "./VoteButtons";
+import VoteCtaButton from "./VoteCtaButton";
 
 import {
-  BoxQuorumWrapper,
   ModalHeaderWrapper,
   ModalQuorum,
   ProposalContentWrapper,
@@ -32,6 +29,8 @@ import {
   ViewProposalModalWrapper,
   VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
+import TypeBadge from "../../type-badge/TypeBadge";
+
 
 export interface ViewProposalModalProps {
   breakpoint: DEVICE_TYPE;
@@ -39,52 +38,10 @@ export interface ViewProposalModalProps {
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
   isConnected: boolean;
   isSwitchNetwork: boolean;
-  handleSelectVote: () => void;
+  handleVote: (voteYes: boolean) => void;
+  connectWallet: () => void;
+  switchNetwork: () => void;
 }
-
-type OptionVote = "YES" | "NO" | "";
-
-const BoxQuorum = ({
-  breakpoint,
-  proposalDetail,
-  optionVote,
-  setOptionVote,
-}: {
-  breakpoint?: DEVICE_TYPE;
-  proposalDetail: ProposalItemInfo;
-  optionVote: OptionVote;
-  setOptionVote: Dispatch<SetStateAction<OptionVote>>;
-}) => {
-  const showBadge = useMemo(() => {
-    return breakpoint !== DEVICE_TYPE.MOBILE ? (
-      <Badge className="badge" type={BADGE_TYPE.DARK_DEFAULT} text={"Voted"} />
-    ) : (
-      <div className="badge">
-        <IconCheck />
-      </div>
-    );
-  }, [, breakpoint]);
-  return (
-    <BoxQuorumWrapper>
-      <div
-        className={`box-quorum ${optionVote === "YES" ? "active-quorum" : ""}`}
-        onClick={() => setOptionVote("YES")}
-      >
-        <span>Yes</span>
-        <div>{proposalDetail.votes.yes.toLocaleString()}</div>
-        {optionVote === "YES" && showBadge}
-      </div>
-      <div
-        className={`box-quorum ${optionVote === "NO" ? "active-quorum" : ""}`}
-        onClick={() => setOptionVote("NO")}
-      >
-        <span>No</span>
-        <div>{proposalDetail.votes.no.toLocaleString()}</div>
-        {optionVote === "NO" && showBadge}
-      </div>
-    </BoxQuorumWrapper>
-  );
-};
 
 const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   breakpoint,
@@ -92,12 +49,18 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   setSelectedProposalId,
   isSwitchNetwork,
   isConnected,
-  handleSelectVote,
+  handleVote,
+  connectWallet,
+  switchNetwork,
 }) => {
-  const [optionVote, setOptionVote] = useState<OptionVote>("");
+  const { t } = useTranslation();
+  const [selectedVote, setSelectedVote] = useState(
+    proposalDetail.myVote?.type || "",
+  );
+  useEscCloseModal(() => setSelectedProposalId(0));
+  useLockedBody(true);
 
   const modalRef = useRef<HTMLDivElement | null>(null);
-  useLockedBody(true);
 
   const handleResize = () => {
     if (typeof window !== "undefined" && modalRef.current) {
@@ -112,8 +75,6 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
     }
   };
 
-  useEscCloseModal(() => setSelectedProposalId(0));
-
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -121,34 +82,6 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
       window.removeEventListener("resize", handleResize);
     };
   }, [modalRef]);
-
-  const handleSelectVoting = useCallback(() => {
-    handleSelectVote();
-  }, [optionVote, handleSelectVote]);
-
-  const disableButton = useMemo(() => {
-    if (!isConnected) {
-      return false;
-    }
-    if (isSwitchNetwork) {
-      return false;
-    }
-    return optionVote === "";
-  }, [isConnected, isSwitchNetwork, optionVote]);
-
-  const textButton = useMemo(() => {
-    if (!isConnected) {
-      return "Wallet Login";
-    }
-    if (isSwitchNetwork) {
-      return "Switch to Gnoland";
-    }
-    return proposalDetail?.myVote
-      ? "Already Vote"
-      : optionVote === ""
-        ? "Select Voting Option"
-        : "Vote";
-  }, [isConnected, isSwitchNetwork, proposalDetail, optionVote]);
 
   if (!proposalDetail) return null;
 
@@ -160,13 +93,9 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <ModalHeaderWrapper>
               <div className="header">
                 <div className="title">
-                  <span>{proposalDetail.title}</span>
+                  <span>{`#${proposalDetail.id} ${proposalDetail.title}`}</span>
                   {breakpoint !== DEVICE_TYPE.MOBILE && (
-                    <Badge
-                      className="badge-label"
-                      type={BADGE_TYPE.DARK_DEFAULT}
-                      text={proposalDetail.type}
-                    />
+                    <TypeBadge type={proposalDetail.type} />
                   )}
                 </div>
                 <div
@@ -177,11 +106,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 </div>
               </div>
               {breakpoint === DEVICE_TYPE.MOBILE && (
-                <Badge
-                  className="badge-label"
-                  type={BADGE_TYPE.DARK_DEFAULT}
-                  text={proposalDetail.type}
-                />
+                <TypeBadge type={proposalDetail.type} />
               )}
               <div className="active-wrapper">
                 <StatusBadge
@@ -191,12 +116,11 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               </div>
             </ModalHeaderWrapper>
             <ProposalContentWrapper>
-              <div className="title">{proposalDetail.title}</div>
               <div className="content">{proposalDetail.description || ""}</div>
             </ProposalContentWrapper>
             <ModalQuorum>
               <div className="quorum-header">
-                <span>Quorum</span>
+                <span>{t("Governance:detailModal.quorum")}</span>
                 <div className="progress-value">
                   <span>
                     {(
@@ -213,14 +137,20 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 hideNumber
               />
             </ModalQuorum>
-            <BoxQuorum
+            <VoteButtons
               breakpoint={breakpoint}
-              proposalDetail={proposalDetail}
-              optionVote={optionVote}
-              setOptionVote={setOptionVote}
+              isVoted={
+                proposalDetail.myVote
+                  ? proposalDetail.myVote.type !== ""
+                  : false
+              }
+              yesCount={proposalDetail.votes.yes}
+              noCount={proposalDetail.votes.no}
+              selectedVote={selectedVote}
+              setSelectedVote={setSelectedVote}
             />
             <VotingPowerWrapper>
-              <span>Your Voting Weight</span>
+              <span>{t("Governance:detailModal.votingWeight")}</span>
               <div>
                 <div className="power-value">
                   {(proposalDetail.votes.yes || 0).toLocaleString()}
@@ -228,26 +158,18 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 <TokenChip tokenInfo={GNS_TOKEN} />
               </div>
             </VotingPowerWrapper>
-            {proposalDetail.status === "ACTIVE" && (
-              <Button
-                disabled={disableButton}
-                text={textButton}
-                style={{
-                  fullWidth: true,
-                  height: breakpoint !== DEVICE_TYPE.MOBILE ? 57 : 41,
-                  fontType:
-                    breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-                  textColor: "text09",
-                  bgColor: "background17",
-                  width:
-                    breakpoint !== DEVICE_TYPE.MOBILE ? undefined : "304px",
-                  hierarchy: disableButton
-                    ? undefined
-                    : ButtonHierarchy.Primary,
-                }}
-                onClick={handleSelectVoting}
-              />
-            )}
+            <VoteCtaButton
+              breakpoint={breakpoint}
+              isWalletConnected={isConnected}
+              isSwitchNetwork={isSwitchNetwork}
+              voteType={proposalDetail.myVote?.type}
+              voteWeigth={proposalDetail.myVote?.weight}
+              status={proposalDetail.status}
+              selectedVote={selectedVote}
+              handleVote={handleVote}
+              connectWallet={connectWallet}
+              switchNetwork={switchNetwork}
+            />
           </div>
         </ViewProposalModalWrapper>
       </ViewProposalModalBackground>

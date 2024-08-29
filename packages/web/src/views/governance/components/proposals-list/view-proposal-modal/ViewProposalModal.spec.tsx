@@ -15,7 +15,9 @@ describe("ViewProposalModal Component", () => {
       setSelectedProposalId: () => null,
       isConnected: true,
       isSwitchNetwork: false,
-      handleSelectVote: () => null,
+      handleVote: () => null,
+      connectWallet: () => null,
+      switchNetwork: () => null,
     };
 
     render(

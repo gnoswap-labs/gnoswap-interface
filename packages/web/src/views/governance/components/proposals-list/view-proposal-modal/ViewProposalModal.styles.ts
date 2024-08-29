@@ -56,8 +56,9 @@ export const ModalHeaderWrapper = styled.div`
     gap: 12px;
   }
   .header {
-    width: 100%;
     ${mixins.flexbox("row", "center", "space-between")};
+    gap: 8px;
+    width: 100%;
     .title {
       color: ${({ theme }) => theme.color.text02};
       ${mixins.flexbox("row", "center", "space-between")};
@@ -68,6 +69,7 @@ export const ModalHeaderWrapper = styled.div`
       }
     }
     .badge-label {
+      flex-shrink: 0;
       color: ${({ theme }) => theme.color.text12};
     }
     .close-wrap {
@@ -97,6 +99,47 @@ export const ModalHeaderWrapper = styled.div`
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 8px;
     }
+  }
+`;
+
+export const ProposalContentWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 100%;
+  border: 1px solid ${({ theme }) => theme.color.border02};
+  height: 335px;
+  overflow: scroll;
+  padding: 24px;
+  gap: 12px;
+  border-radius: 8px;
+  &::-webkit-scrollbar {
+    width: 8px;
+    display: block;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    padding: 0;
+    height: 0;
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.color.background12};
+    border-radius: 8px;
+    padding: 0;
+  }
+
+  .content {
+    color: ${({ theme }) => theme.color.text04};
+    ${fonts.body12}
+    ${media.mobile} {
+      ${fonts.p2}
+    }
+  }
+  ${media.mobile} {
+    padding: 12px 4px 12px 12px;
+    gap: 8px;
   }
 `;
 
@@ -139,58 +182,6 @@ export const ModalQuorum = styled.div`
   }
 `;
 
-export const BoxQuorumWrapper = styled.div`
-  ${mixins.flexbox("row", "center", "center")};
-  width: 100%;
-  gap: 2px;
-  .box-quorum {
-    ${mixins.flexbox("column", "center", "center")};
-    gap: 8px;
-    cursor: pointer;
-    position: relative;
-    padding: 15px 8px;
-    border-radius: 8px;
-    flex: 1;
-    background-color: ${({ theme }) => theme.color.backgroundOpacity2};
-    border: 1px solid ${({ theme }) => theme.color.border02};
-    span {
-      color: ${({ theme }) => theme.color.text10};
-      ${fonts.body12}
-    }
-    > div:first-of-type {
-      ${fonts.body4}
-      color: ${({ theme }) => theme.color.text02};
-    }
-    .badge {
-      > span {
-        color: ${({ theme }) => theme.color.text12};
-      }
-      position: absolute;
-      top: 8px;
-      right: 12px;
-    }
-    ${media.mobile} {
-      ${mixins.flexbox("column", "flex-start", "flex-start")};
-      padding: 12px;
-      > div {
-        ${fonts.body11}
-      }
-
-      > div:first-of-type {
-        ${fonts.body12}
-      }
-    }
-    &:hover {
-      background-color: ${({ theme }) => theme.color.background05Hover};
-      border: 1px solid ${({ theme }) => theme.color.border03};
-    }
-  }
-  .active-quorum {
-    background-color: ${({ theme }) => theme.color.background05Hover};
-    border: 1px solid ${({ theme }) => theme.color.border03};
-  }
-`;
-
 export const VotingPowerWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   background-color: ${({ theme }) => theme.color.backgroundOpacity2};
@@ -218,53 +209,5 @@ export const VotingPowerWrapper = styled.div`
     .power-value {
       ${fonts.body11}
     }
-  }
-`;
-
-export const ProposalContentWrapper = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
-  width: 100%;
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  height: 335px;
-  overflow: scroll;
-  padding: 24px;
-  gap: 12px;
-  border-radius: 8px;
-  &::-webkit-scrollbar {
-    width: 8px;
-    display: block;
-    height: 0;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-    padding: 0;
-    height: 0;
-    display: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) => theme.color.background12};
-    border-radius: 8px;
-    padding: 0;
-  }
-
-  .title {
-    ${fonts.body7}
-    color: ${({ theme }) => theme.color.text01};
-    ${media.mobile} {
-      ${fonts.body11}
-    }
-  }
-  .content {
-    color: ${({ theme }) => theme.color.text04};
-    ${fonts.body12}
-    ${media.mobile} {
-      ${fonts.p2}
-    }
-  }
-  ${media.mobile} {
-    padding: 12px 4px 12px 12px;
-    gap: 8px;
   }
 `;
