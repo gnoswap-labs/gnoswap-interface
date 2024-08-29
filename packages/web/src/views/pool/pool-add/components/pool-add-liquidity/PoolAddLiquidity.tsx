@@ -230,7 +230,7 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
 
   const handleChangeTokenB = useCallback(
     (token: TokenModel) => {
-      if (tokenA && tokenA.symbol !== token.symbol) {
+      if (tokenA && tokenA.path !== token.path) {
         setOpenedFeeTier(true);
         setOpenedPriceRange(true);
       }
@@ -241,7 +241,7 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
 
   const handleChangeTokenA = useCallback(
     (token: TokenModel) => {
-      if (tokenB && tokenB.symbol !== token.symbol) {
+      if (tokenB && tokenB.path !== token.path) {
         setOpenedFeeTier(true);
         setOpenedPriceRange(true);
       }
