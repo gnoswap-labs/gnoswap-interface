@@ -9,6 +9,8 @@ export const EXT_URL = {
     USER_GUIDE: {
       STAKE_POSITIONS:
         "https://docs.gnoswap.io/user-guide/staking/stake-positions",
+      PROVIDING_LIQUIDITY:
+        "https://docs.gnoswap.io/user-guide/providing-liquidity/create-a-position",
     },
     GOVERNANCE: "https://docs.gnoswap.io/core-concepts/governance",
   },
