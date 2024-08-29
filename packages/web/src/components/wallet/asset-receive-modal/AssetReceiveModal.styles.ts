@@ -110,7 +110,7 @@ export const DepositBoxContent = styled.div`
   .normal-box {
     padding: 16px;
     ${mixins.flexbox("row", "center", "space-between")};
-    
+
     .network {
       color: ${({ theme }) => theme.color.text02};
       ${mixins.flexbox("row", "center", "space-between")};
@@ -121,7 +121,7 @@ export const DepositBoxContent = styled.div`
     }
 
     .approximately {
-      color: ${({ theme }) => theme.color.text04};
+      color: ${({ theme }) => theme.color.text30};
       font-size: 14px;
       font-style: normal;
       font-weight: 500;
