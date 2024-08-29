@@ -8,7 +8,7 @@ import IconHeaderLogo from "@components/common/icons/IconHeaderLogo";
 import IconSearch from "@components/common/icons/IconSearch";
 import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetReceiveModal";
 import { BLOCKED_PAGES } from "@constants/environment.constant";
-import { HEADER_NAV, SIDE_MENU_NAV } from "@constants/header.constant";
+import { HEADER_NAV } from "@constants/header.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -33,7 +33,7 @@ import {
   Navigation,
   RightSection,
   SearchButton,
-  SearchContainer
+  SearchContainer,
 } from "./Header.styles";
 
 interface HeaderProps {
@@ -102,13 +102,7 @@ const Header: React.FC<HeaderProps> = ({
   const { t } = useTranslation();
 
   const navigationItems = useMemo(() => {
-    // Make path by page name
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
-    if (blockedPaths.length > 0) {
-      return [...HEADER_NAV, ...SIDE_MENU_NAV].filter(
-        item => !blockedPaths.includes(item.path),
-      );
-    }
     return HEADER_NAV.filter(item => !blockedPaths.includes(item.path));
   }, []);
 

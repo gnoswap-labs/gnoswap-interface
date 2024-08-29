@@ -52,41 +52,47 @@ export const Navigation = styled.nav`
   ul {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    gap: 0px;
+    gap: 4px;
     &:last-of-type {
       li {
         padding: 10px 16px;
       }
     }
-  }
-  li {
-    ${mixins.flexbox("column", "flex-start", "center")};
-    width: 100%;
-    &.first-side-menu {
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-    }
-    &.last-side-menu {
-      border-bottom-right-radius: 8px;
-      border-bottom-left-radius: 8px;
-    }
-    height: 41px;
-    padding: 8px 16px;
-    color: ${({ theme }) => theme.color.text04};
-    &.selected,
-    &:hover {
-      background-color: ${({ theme }) => theme.color.hover04};
-      > a > div {
-        color: ${({ theme }) => theme.color.text16};
-        .left-icon * {
-          stroke: ${({ theme }) => theme.color.text16};
-        }
-        .right-icon {
-          fill: ${({ theme }) => theme.color.text16};
-        }
-        button {
-          svg * {
+
+    li {
+      ${mixins.flexbox("column", "flex-start", "center")};
+      width: 100%;
+      &.first-side-menu {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+      &.last-side-menu {
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+      }
+      height: 38px;
+      padding: 8px 16px;
+      color: ${({ theme }) => theme.color.text04};
+
+      .left-icon * {
+        stroke: ${({ theme }) => theme.color.text04};
+      }
+
+      &.selected,
+      &:hover {
+        background-color: ${({ theme }) => theme.color.hover04};
+        > div {
+          color: ${({ theme }) => theme.color.text16};
+          .left-icon * {
+            stroke: ${({ theme }) => theme.color.text16};
+          }
+          .right-icon {
             fill: ${({ theme }) => theme.color.text16};
+          }
+          button {
+            svg * {
+              fill: ${({ theme }) => theme.color.text16};
+            }
           }
         }
       }
