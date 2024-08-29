@@ -52,7 +52,7 @@ export const useIncreaseHandle = () => {
     type: "Custom",
   });
 
-  const { positions } = usePositionData({
+  const { positions, refetch: refetchPositions } = usePositionData({
     poolPath,
   });
 
@@ -403,5 +403,6 @@ export const useIncreaseHandle = () => {
     selectedPosition,
     isDepositTokenA,
     isDepositTokenB,
+    refetchPositions,
   };
 };

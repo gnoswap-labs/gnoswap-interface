@@ -5,16 +5,16 @@ import { WalletClient } from "@common/clients/wallet-client";
 import {
   SendTransactionErrorResponse,
   SendTransactionSuccessResponse,
-  WalletResponse
+  WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { TransactionMessage } from "@common/clients/wallet-client/transaction-messages";
 import {
   makePoolTokenApproveMessage,
-  makeRouterTokenApproveMessage
+  makeRouterTokenApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages/pool";
 import {
   makeDepositMessage,
-  makeWithdrawMessage
+  makeWithdrawMessage,
 } from "@common/clients/wallet-client/transaction-messages/token";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
@@ -35,7 +35,7 @@ import { WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
 import {
   SwapRouteFailedResponse,
-  SwapRouteSuccessResponse
+  SwapRouteSuccessResponse,
 } from "./response/swap-route-response";
 import { SwapRouterRepository } from "./swap-router-repository";
 
@@ -181,16 +181,17 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       gasFee: 1,
       memo: "",
     });
-    if (response.code !== 0 || !response.data) {
+    if (response.code !== 0 || !response?.data) {
       const { hash } = response.data as SendTransactionErrorResponse;
       return {
         ...response,
         data: { hash: hash },
       };
     }
+
     const { data, hash, height } =
       response.data as SendTransactionSuccessResponse<string[]>;
-    if (data === null || data.length === 0) {
+    if (!data) {
       return {
         ...response,
         data: {

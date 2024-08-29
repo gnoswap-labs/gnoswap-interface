@@ -369,7 +369,7 @@ export class PositionRepositoryImpl implements PositionRepository {
 
     const result = response as WalletResponse;
 
-    if (result.code !== 0 || !result.data) {
+    if (result.code !== 0) {
       const { hash } = result.data as SendTransactionErrorResponse;
       return {
         ...result,
@@ -383,7 +383,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (!data || data.length < 5) {
       return {
         ...result,
-        data: null,
+        data: { hash },
       };
     }
 
@@ -473,7 +473,7 @@ export class PositionRepositoryImpl implements PositionRepository {
 
     const result = response as WalletResponse;
 
-    if (result.code !== 0 || !result.data) {
+    if (result.code !== 0) {
       const { hash } = result.data as SendTransactionErrorResponse;
       return {
         ...result,
@@ -487,7 +487,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (!data || data.length < 7) {
       return {
         ...result,
-        data: null,
+        data: { hash },
       };
     }
 
@@ -575,32 +575,28 @@ export class PositionRepositoryImpl implements PositionRepository {
     });
 
     const result = response as WalletResponse;
-    if (result.code !== 0 || !result.data) {
+    if (result.code !== 0) {
       return {
         ...result,
-        data: null,
+        data: {
+          hash: response.data?.hash || "",
+        },
       };
     }
 
-    const data = (
-      result.data as SendTransactionSuccessResponse<string[] | null>
-    ).data;
-    if (!data || data.length < 5) {
-      return {
-        ...result,
-        data: null,
-      };
-    }
-
+    const { hash } = result.data as SendTransactionSuccessResponse<
+      string[] | null
+    >;
     return {
-      ...result,
+      ...response,
       data: {
-        tokenID: data[0],
-        liquidity: data[1],
-        minTick: Number(data[2]),
-        maxTick: Number(data[3]),
-        tokenAAmount: data[4],
-        tokenBAmount: data[5],
+        hash,
+        tokenID: "",
+        liquidity: "0",
+        minTick: 0,
+        maxTick: 0,
+        tokenAAmount: "0",
+        tokenBAmount: "0",
       },
     };
   };

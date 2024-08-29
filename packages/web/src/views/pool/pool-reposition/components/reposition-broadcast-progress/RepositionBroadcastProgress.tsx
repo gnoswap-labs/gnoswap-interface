@@ -36,6 +36,7 @@ export interface RepositionBroadcastProgressProps {
     RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
   > | null>;
   closeModal: () => void;
+  refetchPositions: () => Promise<void>;
   isSkipSwap: boolean;
 }
 
@@ -46,6 +47,7 @@ const RepositionBroadcastProgress: React.FC<
   reposition,
   swapRemainToken,
   closeModal,
+  refetchPositions,
   tokenA,
   tokenB,
   swapAtoB,
@@ -203,7 +205,7 @@ const RepositionBroadcastProgress: React.FC<
 
   useEffect(() => {
     if (addPositionState === "INIT") {
-      processAddPosition(() => {});
+      processAddPosition(() => refetchPositions());
     }
   }, [addPositionState]);
 

@@ -10,12 +10,14 @@ interface Props {
   positions: PoolPositionModel[];
   selectedIds: number[];
   isGetWGNOT: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 export const useUnstakePositionModal = ({
   positions,
   selectedIds,
   isGetWGNOT,
+  refetchPositions,
 }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -30,9 +32,16 @@ export const useUnstakePositionModal = ({
       <UnstakePositionModalContainer
         positions={selectedPositions}
         isGetWGNOT={isGetWGNOT}
+        refetchPositions={refetchPositions}
       />,
     );
-  }, [setModalContent, setOpenedModal, selectedPositions, isGetWGNOT]);
+  }, [
+    setModalContent,
+    setOpenedModal,
+    refetchPositions,
+    selectedPositions,
+    isGetWGNOT,
+  ]);
 
   return {
     openModal,

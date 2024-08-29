@@ -8,9 +8,11 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
@@ -22,12 +24,14 @@ interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
   allPosition: PoolPositionModel[];
   isGetWGNOT: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 const RemovePositionModalContainer = ({
   selectedPositions,
   allPosition,
   isGetWGNOT,
+  refetchPositions,
 }: RemovePositionModalContainerProps) => {
   const { account } = useWallet();
   const { positionRepository } = useGnoswapContext();
@@ -39,8 +43,14 @@ const RemovePositionModalContainer = ({
     broadcastSuccess,
     broadcastLoading,
     broadcastError,
-    broadcastPending,
   } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
+    selectedPositions?.[0]?.poolPath,
+  );
   const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
     positions: selectedPositions,
   });
@@ -68,9 +78,9 @@ const RemovePositionModalContainer = ({
   );
 
   const gnotAmount = useMemo(() => {
-    const pooledGnotTokenAmount = pooledTokenInfos.find(
-      item => item.token.path === gnotToken?.path,
-    )?.amount.replaceAll(",","");
+    const pooledGnotTokenAmount = pooledTokenInfos
+      .find(item => item.token.path === gnotToken?.path)
+      ?.amount.replaceAll(",", "");
     const unclaimedGnotTokenAmount = unclaimedFees.find(
       item => item.token.path === gnotToken?.path,
     )?.amount;
@@ -103,7 +113,9 @@ const RemovePositionModalContainer = ({
     if (!address) {
       return null;
     }
-    const lpTokenIds = selectedPositions.map(position => position.id.toString());
+    const lpTokenIds = selectedPositions.map(position =>
+      position.id.toString(),
+    );
     const approveTokenPaths = [
       ...new Set(
         selectedPositions.flatMap(position => [
@@ -141,8 +153,28 @@ const RemovePositionModalContainer = ({
       .catch(() => null);
 
     if (result) {
+      if (
+        result.code === 0 ||
+        result.code === ERROR_VALUE.TRANSACTION_FAILED.status
+      ) {
+        enqueueEvent({
+          txHash: result.data?.hash,
+          action: DexEvent.REMOVE,
+          visibleEmitResult: true,
+          formatData: response => {
+            if (!response) {
+              return messageData;
+            }
+            return messageData;
+          },
+          onEmit: async () => {
+            refetchPools();
+            refetchPositions();
+            refetchPoolDetails();
+          },
+        });
+      }
       if (result.code === 0) {
-        broadcastPending({ txHash: result.data?.hash });
         setTimeout(async () => {
           broadcastSuccess(
             getMessage(

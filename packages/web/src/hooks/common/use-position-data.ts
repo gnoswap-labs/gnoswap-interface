@@ -1,6 +1,6 @@
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   useGetPositionsByAddress,
   useMakePoolPositions,
@@ -31,6 +31,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
   const {
     data,
+    refetch,
     isError,
     isFetched: isFetchedPosition,
     isLoading: isLoadingPosition,
@@ -46,6 +47,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     data: positions = [],
     isFetched: isFetchedPoolPositions,
     isLoading: isLoadingPoolPositions,
+    refetch: refetchPooPositions,
   } = useMakePoolPositions(data, pools, isFetchedPosition);
 
   const availableStake = useMemo(() => {
@@ -97,10 +99,15 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     account,
   ]);
 
+  useEffect(() => {
+    refetchPooPositions();
+  }, [data, pools]);
+
   return {
     availableStake,
     isError,
     positions,
+    refetch,
     checkStakedPool,
     getPositions,
     isFetchedPosition: isFetchedPosition && isFetchedPoolPositions,

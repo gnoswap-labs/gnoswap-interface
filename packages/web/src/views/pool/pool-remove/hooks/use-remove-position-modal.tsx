@@ -10,12 +10,14 @@ export interface Props {
   positions: PoolPositionModel[];
   selectedIds: number[];
   isGetWGNOT: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 export const useRemovePositionModal = ({
   positions,
   selectedIds,
   isGetWGNOT,
+  refetchPositions,
 }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -31,9 +33,17 @@ export const useRemovePositionModal = ({
         allPosition={positions}
         selectedPositions={selectedPositions}
         isGetWGNOT={isGetWGNOT}
+        refetchPositions={refetchPositions}
       />,
     );
-  }, [positions, selectedPositions, setModalContent, setOpenedModal, isGetWGNOT]);
+  }, [
+    positions,
+    selectedPositions,
+    setModalContent,
+    setOpenedModal,
+    refetchPositions,
+    isGetWGNOT,
+  ]);
 
   return {
     openModal,

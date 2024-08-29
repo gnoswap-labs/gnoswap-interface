@@ -40,7 +40,8 @@ export function parseTransactionResponse(
   }
 
   let data: string | string[] | null = null;
-  const encodedData = walletResponse.data?.deliver_tx.ResponseBase.Data || null;
+  const encodedData =
+    walletResponse?.data?.deliver_tx?.ResponseBase?.Data || null;
   if (encodedData) {
     const decodedData = window.atob(encodedData);
     try {
@@ -54,6 +55,7 @@ export function parseTransactionResponse(
       data = null;
     }
   }
+
   return {
     code: walletResponse.code,
     status: walletResponse.status,

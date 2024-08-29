@@ -32,9 +32,11 @@ const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
     <TransactionConfirmModalWrapper className="modal-body-wrapper">
       <div className="modal-body submitted-modal">
         <div className="modal-header model-header-submitted">
-          <div className="close-wrap" onClick={close}>
-            <IconClose className="close-icon" />
-          </div>
+          {status !== "loading" && (
+            <div className="close-wrap" onClick={close}>
+              <IconClose className="close-icon" />
+            </div>
+          )}
         </div>
         {status === "loading" && (
           <TransactionConfirmLoading description={description} />

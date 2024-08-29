@@ -9,9 +9,14 @@ import StakePositionModalContainer from "../containers/stake-position-modal-cont
 export interface Props {
   positions: PoolPositionModel[];
   selectedIds: number[];
+  refetchPositions: () => Promise<void>;
 }
 
-export const useStakePositionModal = ({ positions, selectedIds }: Props) => {
+export const useStakePositionModal = ({
+  positions,
+  selectedIds,
+  refetchPositions,
+}: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -22,9 +27,12 @@ export const useStakePositionModal = ({ positions, selectedIds }: Props) => {
   const openModal = useCallback(() => {
     setOpenedModal(true);
     setModalContent(
-      <StakePositionModalContainer positions={selectedPositions} />,
+      <StakePositionModalContainer
+        positions={selectedPositions}
+        refetchPositions={refetchPositions}
+      />,
     );
-  }, [selectedPositions, setModalContent, setOpenedModal]);
+  }, [refetchPositions, selectedPositions, setModalContent, setOpenedModal]);
 
   return {
     openModal,

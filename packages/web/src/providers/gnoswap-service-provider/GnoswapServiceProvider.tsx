@@ -1,3 +1,5 @@
+import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
+import axios from "axios";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { createContext, useEffect, useMemo, useState } from "react";
@@ -5,12 +7,12 @@ import { createContext, useEffect, useMemo, useState } from "react";
 import { NetworkClient } from "@common/clients/network-client";
 import { AxiosClient } from "@common/clients/network-client/axios-client";
 import { WebStorageClient } from "@common/clients/storage-client";
+import { EventStore, TransactionEventStore } from "@common/modules/event-store";
 import { NetworkData } from "@constants/chains.constant";
 import {
   DEFAULT_CHAIN_ID,
   SUPPORT_CHAIN_IDS,
 } from "@constants/environment.constant";
-import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
 import {
   AccountRepository,
   AccountRepositoryImpl,
@@ -36,15 +38,14 @@ import {
   PositionRepository,
   PositionRepositoryImpl,
 } from "@repositories/position";
+import { StatusRepository } from "@repositories/status/status-repository";
+import { StatusRepositoryImpl } from "@repositories/status/status-repository-impl";
 import {
   SwapRouterRepository,
   SwapRouterRepositoryImpl,
 } from "@repositories/swap";
 import { TokenRepository, TokenRepositoryImpl } from "@repositories/token";
-import {
-  WalletRepository,
-  WalletRepositoryImpl,
-} from "@repositories/wallet";
+import { WalletRepository, WalletRepositoryImpl } from "@repositories/wallet";
 import {
   ACCOUNT_SESSION_INFO_KEY,
   GNOSWAP_SESSION_ID_KEY,
@@ -52,10 +53,10 @@ import {
 } from "@states/common";
 import { CommonState, WalletState } from "@states/index";
 
-
 interface GnoswapContextProps {
   initialized: boolean;
   rpcProvider: GnoProvider | null;
+  eventStore: EventStore<string[]>;
   gnoswapApiClient: NetworkClient | null;
   accountRepository: AccountRepository;
   poolRepository: PoolRepository;
@@ -67,6 +68,7 @@ interface GnoswapContextProps {
   walletRepository: WalletRepository;
   governanceRepository: GovernanceRepository;
   leaderboardRepository: LeaderboardRepository;
+  statusRepository: StatusRepository;
   localStorageClient: WebStorageClient;
 }
 
@@ -176,6 +178,21 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
   }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);
 
+  const eventStore = useMemo(() => {
+    const currentChainId = SUPPORT_CHAIN_IDS.includes(
+      walletAccount?.chainId || "",
+    )
+      ? walletAccount?.chainId
+      : DEFAULT_CHAIN_ID;
+
+    const network =
+      NetworkData.find(info => info.chainId === currentChainId) ||
+      NetworkData[0];
+
+    const axiosClient = axios.create({ baseURL: network.rpcUrl });
+    return new TransactionEventStore(axiosClient);
+  }, [walletAccount]);
+
   const accountRepository = useMemo(() => {
     return new AccountRepositoryImpl(
       walletClient,
@@ -196,7 +213,6 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new PoolRepositoryImpl(gnoswapApiClient, rpcProvider, walletClient);
   }, [gnoswapApiClient, rpcProvider, walletClient]);
 
-
   const swapRouterRepository = useMemo(() => {
     return new SwapRouterRepositoryImpl(
       rpcProvider,
@@ -210,7 +226,11 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [localStorageClient, gnoswapApiClient]);
 
   const positionRepository = useMemo(() => {
-    return new PositionRepositoryImpl(gnoswapApiClient, rpcProvider, walletClient);
+    return new PositionRepositoryImpl(
+      gnoswapApiClient,
+      rpcProvider,
+      walletClient,
+    );
   }, [gnoswapApiClient, rpcProvider, walletClient]);
 
   const dashboardRepository = useMemo(() => {
@@ -233,6 +253,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new LeaderboardRepositoryMock();
   }, []);
 
+  const statusRepository = useMemo(() => {
+    return new StatusRepositoryImpl(gnoswapApiClient);
+  }, [gnoswapApiClient]);
+
   useEffect(() => {
     if (window) {
       setLocalStorageClient(WebStorageClient.createLocalStorageClient());
@@ -245,6 +269,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       value={{
         initialized,
         rpcProvider,
+        eventStore,
         gnoswapApiClient,
         accountRepository,
         poolRepository,
@@ -256,6 +281,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         walletRepository,
         governanceRepository,
         leaderboardRepository,
+        statusRepository,
         localStorageClient,
       }}
     >

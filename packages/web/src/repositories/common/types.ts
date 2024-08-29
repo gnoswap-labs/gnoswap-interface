@@ -19,3 +19,11 @@ export const DexEvent = {
 } as const;
 
 export type DexEventType = ValuesType<typeof DexEvent>;
+
+export interface APIResponse<T = unknown> {
+  error: {
+    code?: number;
+    msg?: string;
+  };
+  data: T;
+}

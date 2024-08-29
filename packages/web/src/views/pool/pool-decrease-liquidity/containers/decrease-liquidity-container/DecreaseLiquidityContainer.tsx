@@ -28,6 +28,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     percent,
     setPercent,
     pooledTokenInfos,
+    refetchPositions,
   } = useDecreaseHandle();
 
   const { openModal } = useDecreasePositionModal({
@@ -42,6 +43,9 @@ const DecreaseLiquidityContainer: React.FC = () => {
     percent,
     pooledTokenInfos,
     isGetWGNOT,
+    refetchPositions: async () => {
+      await refetchPositions();
+    },
   });
 
   if (!tokenA || !tokenB || loading) return <DecreaseLiquidityLoading />;

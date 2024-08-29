@@ -8,24 +8,30 @@ import {
   SnackbarContent,
   SuccessContent,
   SnackbarType,
+  UpdatingContent,
 } from "./contents";
 
 import { SnackbarWrapper } from "./snackbar.styles";
+import { UpdatingDoneContent } from "./contents/UpdatingDoneContent";
 
 interface SnackbarProps {
-  closeable?: boolean;
-  onClose?: (id: number) => void;
-  type: SnackbarType;
   id: number;
+  type: SnackbarType;
+  timeout: number;
   content?: SnackbarContent;
+  closeable?: boolean;
+  isClosing?: boolean;
+  onClose?: (id: number) => void;
 }
 
 const Snackbar: FC<SnackbarProps> = ({
-  closeable = true,
-  onClose,
-  type = "success",
   id,
+  type = "success",
+  timeout,
+  closeable = true,
+  isClosing = false,
   content,
+  onClose,
 }) => {
   const isClosed = useRef(false);
   const [typeAnimation, setTypeAnimation] = useState<
@@ -49,18 +55,26 @@ const Snackbar: FC<SnackbarProps> = ({
         if (isClosed.current === false) onClose?.(id);
       }, 500);
       return () => clearTimeout(animationTimeout);
-    }, 6000);
+    }, timeout);
 
     return () => {
       clearTimeout(autoCloseTimeout);
     };
   }, [onClose]);
 
+  useEffect(() => {
+    if (isClosing) {
+      handleClose();
+    }
+  }, [handleClose, isClosing]);
+
   return (
     <SnackbarWrapper className={`${typeAnimation}`}>
       {type === "success" && <SuccessContent content={content} />}
       {type === "error" && <FailContent content={content} />}
       {type === "pending" && <PendingContent content={content} />}
+      {type === "updating" && <UpdatingContent content={content} />}
+      {type === "updating-done" && <UpdatingDoneContent content={content} />}
       {closeable && (
         <div className="icon-close" onClick={handleClose}>
           <IconClose />

@@ -61,6 +61,13 @@ export const useDecreaseHandle = () => {
     poolPath,
   });
 
+  const { refetch: refetchPositions } = usePositionData({
+    poolPath: poolPath,
+    queryOption: {
+      enabled: !!poolPath,
+    },
+  });
+
   const loading = useMemo(() => {
     return !selectedPosition;
   }, [selectedPosition]);
@@ -321,5 +328,6 @@ export const useDecreaseHandle = () => {
     setPercent,
     percent,
     pooledTokenInfos,
+    refetchPositions,
   };
 };

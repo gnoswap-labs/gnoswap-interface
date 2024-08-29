@@ -110,6 +110,7 @@ export const SnackbarWrapper = styled.div`
         }
       }
       .waiting-confirmation {
+        ${fonts.body12}
         color: ${({ theme }) => theme.color.text19};
       }
       .description {

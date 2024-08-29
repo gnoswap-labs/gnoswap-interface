@@ -10,7 +10,7 @@ import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -18,15 +18,19 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useMessage } from "@hooks/common/use-message";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
-import { useGetPoolCreationFee } from "@query/pools";
+import {
+  useGetPoolCreationFee,
+  useGetPoolList,
+  useRefetchGetPoolDetailByPath,
+} from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import {
   AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse
+  AddLiquiditySuccessResponse,
 } from "@repositories/pool/response/add-liquidity-response";
 import {
   CreatePoolFailedResponse,
-  CreatePoolSuccessResponse
+  CreatePoolSuccessResponse,
 } from "@repositories/pool/response/create-pool-response";
 import { CommonState } from "@states/index";
 import { subscriptFormat } from "@utils/number-utils";
@@ -38,6 +42,9 @@ import { useTokenData } from "@hooks/token/use-token-data";
 
 import PoolAddConfirmModal from "../components/pool-add-confirm-modal/PoolAddConfirmModal";
 import OneClickStakingModal from "../components/one-click-staking-modal/OneClickStakingModal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useGetPositionsByAddress } from "@query/positions";
+import { useAddress } from "@hooks/address/use-address";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -96,14 +103,13 @@ export const usePoolAddLiquidityConfirmModal = ({
   addLiquidity,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
   const { t } = useTranslation();
-
   const {
     broadcastLoading,
     broadcastRejected,
     broadcastSuccess,
-    broadcastPending,
     broadcastError,
   } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
 
   const { getMessage } = useMessage();
 
@@ -112,6 +118,18 @@ export const usePoolAddLiquidityConfirmModal = ({
   const { data: creationFee, refetch: refetchGetPoolCreationFee } =
     useGetPoolCreationFee();
 
+  // Refetch functions
+  const { address } = useAddress();
+  const { refetch: refetchAccountPositions } = useGetPositionsByAddress({
+    address,
+  });
+  const { refetch: refetchPoolPositions } = useGetPositionsByAddress({
+    poolPath: selectPool.poolPath,
+  });
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
+    selectPool.poolPath,
+  );
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -388,29 +406,68 @@ export const usePoolAddLiquidityConfirmModal = ({
           });
       transaction.then(result => {
         if (result) {
-          if (result.code === 0) {
-            const resultData = result?.data as CreatePoolSuccessResponse;
-            broadcastPending({ txHash: resultData.hash });
-            setTimeout(() => {
-              broadcastSuccess(
-                getMessage(
-                  DexEvent.ADD,
-                  "success",
-                  {
-                    tokenASymbol: resultData.tokenA.symbol || "",
-                    tokenBSymbol: resultData.tokenB.symbol || "",
+          if (
+            result.code === 0 ||
+            result.code === ERROR_VALUE.TRANSACTION_FAILED.status
+          ) {
+            enqueueEvent({
+              txHash: result.data?.hash,
+              action: DexEvent.ADD,
+              visibleEmitResult: true,
+              formatData: response => {
+                if (!response) {
+                  return {
+                    tokenASymbol: tokenA.symbol,
+                    tokenBSymbol: tokenB.symbol,
                     tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
                       maximumFractionDigits: tokenA.decimals,
                     }),
                     tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
                       maximumFractionDigits: tokenB.decimals,
                     }),
-                  },
-                  resultData.hash,
-                ),
-                moveToBack,
-              );
-            }, 1000);
+                  };
+                }
+
+                return {
+                  tokenASymbol: tokenA.symbol,
+                  tokenBSymbol: tokenB.symbol,
+                  tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenA.decimals,
+                  }),
+                  tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenB.decimals,
+                  }),
+                };
+              },
+              onEmit: async () => {
+                refetchPools();
+                refetchAccountPositions();
+                refetchPoolPositions();
+                refetchPoolDetails();
+              },
+            });
+          }
+
+          if (result.code === 0) {
+            const resultData = result?.data as CreatePoolSuccessResponse;
+            broadcastSuccess(
+              getMessage(
+                DexEvent.ADD,
+                "success",
+                {
+                  tokenASymbol: resultData.tokenA.symbol || "",
+                  tokenBSymbol: resultData.tokenB.symbol || "",
+                  tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenA.decimals,
+                  }),
+                  tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: tokenB.decimals,
+                  }),
+                },
+                resultData.hash,
+              ),
+              moveToBack,
+            );
           } else if (
             result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {

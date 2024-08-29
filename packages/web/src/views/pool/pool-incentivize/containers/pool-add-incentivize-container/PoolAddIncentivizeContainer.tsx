@@ -75,7 +75,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
     setDataModal(tokenAmountInput);
   }, [tokenAmountInput.amount, token]);
 
-  const { openModal } = useIncentivizePoolModal();
+  const { openModal } = useIncentivizePoolModal({ poolPath: poolPath || "" });
 
   useEffect(() => {
     updateTokenPrices();

@@ -29,6 +29,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
     isDepositTokenA,
     isDepositTokenB,
     loading,
+    refetchPositions,
   } = useIncreaseHandle();
 
   const { openModal } = useIncreasePositionModal({
@@ -44,6 +45,9 @@ const IncreaseLiquidityContainer: React.FC = () => {
     rangeStatus,
     isDepositTokenA,
     isDepositTokenB,
+    refetchPositions: async () => {
+      await refetchPositions();
+    },
   });
 
   if (!tokenA || !tokenB || loading) return <IncreaseLiquidityLoading />;

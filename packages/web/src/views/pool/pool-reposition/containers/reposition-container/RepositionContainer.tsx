@@ -42,12 +42,13 @@ const RepositionContainer: React.FC = () => {
     selectedPosition,
     isLoadingPosition,
     isSkipSwap,
+    refetchPositions,
   } = useRepositionHandle();
 
   const concentratedFeeApr =
     priceRangeSummary.feeBoost && priceRangeSummary.feeBoost !== "-"
       ? aprFee * Number(priceRangeSummary.feeBoost.replace("x", ""))
-      : 0; 
+      : 0;
 
   const { openModal } = useRepositionModalContainer({
     tokenA,
@@ -66,6 +67,9 @@ const RepositionContainer: React.FC = () => {
     swapRemainToken,
     reposition,
     isSkipSwap,
+    refetchPositions: async () => {
+      await refetchPositions();
+    },
   });
 
   const onSubmit = () => {
