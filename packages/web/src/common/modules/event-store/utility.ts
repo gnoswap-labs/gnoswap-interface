@@ -7,23 +7,6 @@ export function makeHexByBase64(base64Hash: string) {
   return "0x" + buffer.toString("hex");
 }
 
-function matchValues(str: string): string[] {
-  const results: string[] = [];
-
-  const pattern = /\b(\d+)\b (\w+)|\("([^"]*)"\) (\w+)/g;
-
-  let match;
-  while ((match = pattern.exec(str)) !== null) {
-    if (match[1]) {
-      results.push(match[1]);
-    } else if (match[3]) {
-      results.push(match[3]);
-    }
-  }
-
-  return results;
-}
-
 export function parseABCIValue(str: string): string[] {
   try {
     const decodedData = window.atob(str);
@@ -33,18 +16,19 @@ export function parseABCIValue(str: string): string[] {
       return [];
     }
 
-    const result = matchValues(decodedData);
+    const pattern = /\((\d+|"-?\d+") \w+\)/g;
+    const results: string[] = [];
+    let match;
 
-    if (Array.isArray(result) && result.length > 0) {
-      return result.map(value => {
-        let cleanedValue = value.trim();
-        cleanedValue = cleanedValue.slice(1);
-        cleanedValue = cleanedValue.replace(/"/g, "");
-        return cleanedValue;
-      });
-    } else {
-      console.warn("No valid values found in the decoded data.");
+    while ((match = pattern.exec(decodedData)) !== null) {
+      let value = match[1];
+
+      value = value.replace(/"/g, "");
+
+      results.push(value);
     }
+
+    return results;
   } catch (error) {
     if (
       error instanceof DOMException &&
