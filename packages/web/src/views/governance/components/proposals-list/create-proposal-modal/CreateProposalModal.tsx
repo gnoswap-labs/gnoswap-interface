@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import React, {
   Dispatch,
   SetStateAction,
@@ -7,8 +8,9 @@ import React, {
   useState,
 } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useTranslation } from "react-i18next";
 
+import { GNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import FormInput from "@components/common/form-input/FormInput";
 import FormTextArea from "@components/common/form-textarea/FormTextArea";
@@ -26,6 +28,9 @@ import {
   getCreateProposalValidation,
 } from "@utils/create-proposal-validation";
 import { isEmptyObject } from "@utils/validation-utils";
+
+import TokenChip from "../../token-chip/TokenChip";
+
 
 import {
   BoxItem,
@@ -64,12 +69,12 @@ const ProposalOption = [
   "PARAMETER_CHANGE",
 ];
 
-const TOKEN = {
-  urlIcon:
-    "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-  currency: "GNS",
-  value: -500,
+const TypeTransMap: { [key: string]: string } = {
+  TEXT: "Governance:proposal.type.text",
+  COMMUNITY_POOL_SPEND: "Governance:proposal.type.community",
+  PARAMETER_CHANGE: "Governance:proposal.type.paramChange",
 };
+
 const BoxContent: React.FC<BoxContentProps> = ({
   label,
   children,
@@ -87,6 +92,7 @@ const CreateProposalModal: React.FC<Props> = ({
   breakpoint,
   setIsOpenCreateModal,
 }) => {
+  const {t} = useTranslation();
   const [type, setType] = useState<string>(ProposalOption[0]);
 
   const modalRef = useRef<HTMLDivElement | null>(null);
@@ -181,7 +187,7 @@ const CreateProposalModal: React.FC<Props> = ({
           <CreateProposalModalWrapper ref={modalRef}>
             <div className="modal-body">
               <div className="header">
-                <h6>Create Proposal</h6>
+                <h6>{t("Governance:createModal.title")}</h6>
                 <div
                   className="close-wrap"
                   onClick={() => setIsOpenCreateModal(false)}
@@ -189,7 +195,7 @@ const CreateProposalModal: React.FC<Props> = ({
                   <IconClose className="close-icon" />
                 </div>
               </div>
-              <BoxContent label="Type">
+              <BoxContent label={t("Governance:createModal.type")}>
                 <div className="type-tab">
                   {ProposalOption.map((item, index) => (
                     <div
@@ -199,32 +205,42 @@ const CreateProposalModal: React.FC<Props> = ({
                       }
                       onClick={() => setType(ProposalOption[index])}
                     >
-                      {ProposalOption[index]}
+                      {t(TypeTransMap[item])}
                     </div>
                   ))}
                 </div>
               </BoxContent>
-              <BoxContent label="Proposal Details">
+              <BoxContent
+                label={t("Governance:createModal.proposalDetails.title")}
+              >
                 <FormInput
-                  placeholder="Enter a title"
+                  placeholder={t(
+                    "Governance:createModal.proposalDetails.placeholder.title",
+                  )}
                   errorText={errors?.title ? errors.title.message : undefined}
                   {...register("title")}
                   name="title"
                 />
                 <FormTextArea
-                  placeholder="Enter a description"
+                  placeholder={t(
+                    "Governance:createModal.proposalDetails.placeholder.description",
+                  )}
                   errorText={
                     errors?.description ? errors.description.message : undefined
                   }
-                  rows={11}
+                  rows={type === ProposalOption[0] ? 20 : 10}
                   {...register("description")}
                   name="description"
                 />
               </BoxContent>
               {type === ProposalOption[1] && (
-                <BoxContent label="Set Variable">
+                <BoxContent
+                  label={t("Governance:createModal.setVariable.title")}
+                >
                   <FormInput
-                    placeholder="Enter a Recipient address"
+                    placeholder={t(
+                      "Governance:createModal.setVariable.placeholder.recipient",
+                    )}
                     errorText={
                       errors?.recipientAddress
                         ? errors.recipientAddress.message
@@ -245,8 +261,7 @@ const CreateProposalModal: React.FC<Props> = ({
                       name="amount"
                     />
                     <div className="deposit-currency suffix-currency">
-                      <img src={TOKEN.urlIcon} alt="token logo" />
-                      <span>{TOKEN.currency}</span>
+                      <TokenChip tokenInfo={GNS_TOKEN} />
                     </div>
                   </div>
                 </BoxContent>
@@ -257,14 +272,14 @@ const CreateProposalModal: React.FC<Props> = ({
                     <div className="multiple-variable" key={item.id}>
                       <div>
                         <FormInput
-                          placeholder="Subspace"
+                          placeholder={t(
+                            "Governance:createModal.setVariable.placeholder.subspace",
+                          )}
                           errorText={
                             errors?.variable
-                              ? (errors?.variable)[index]?.subspace
-                                  ?.message ||
-                                (errors?.variable)[index]?.key
-                                  ?.message ||
-                                (errors?.variable)[index]?.value?.message
+                              ? errors?.variable[index]?.subspace?.message ||
+                                errors?.variable[index]?.key?.message ||
+                                errors?.variable[index]?.value?.message
                               : undefined
                           }
                           {...register(`variable.${index}.subspace`)}
@@ -272,12 +287,16 @@ const CreateProposalModal: React.FC<Props> = ({
                         />
 
                         <FormInput
-                          placeholder="Key"
+                          placeholder={t(
+                            "Governance:createModal.setVariable.placeholder.key",
+                          )}
                           {...register(`variable.${index}.key`)}
                           name={`variable.${index}.key`}
                         />
                         <FormInput
-                          placeholder="Value"
+                          placeholder={t(
+                            "Governance:createModal.setVariable.placeholder.value",
+                          )}
                           {...register(`variable.${index}.value`)}
                           name={`variable.${index}.value`}
                         />
@@ -295,7 +314,7 @@ const CreateProposalModal: React.FC<Props> = ({
                   ))}
                 </BoxContent>
               )}
-              <BoxContent label="Deposit">
+              {/* <BoxContent label="Deposit">
                 <div className="deposit">
                   <div>
                     <div className="deposit-currency">
@@ -305,11 +324,11 @@ const CreateProposalModal: React.FC<Props> = ({
                   </div>
                   <span>{TOKEN.value}</span>
                 </div>
-              </BoxContent>
+              </BoxContent> */}
             </div>
             <Button
               disabled={isDisableSubmit}
-              text="Submit"
+              text={t("Governance:createModal.submit")}
               className="btn-submit"
               style={{
                 fullWidth: true,
