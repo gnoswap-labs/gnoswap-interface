@@ -16,13 +16,15 @@ const RemoveLiquidityContainer: React.FC = () => {
   const [checkedList, setCheckedList] = useState<number[]>(
     positionId ? [Number(positionId)] : [],
   );
-  const {
-    positions,
-    loading: isLoadingPositions,
-    refetch: refetchPositions,
-  } = usePositionData({
+  const { positions, loading: isLoadingPositions } = usePositionData({
     isClosed: false,
     poolPath,
+    queryOption: {
+      enabled: !!poolPath,
+    },
+  });
+  const { refetch: refetchPositions } = usePositionData({
+    poolPath: poolPath,
     queryOption: {
       enabled: !!poolPath,
     },

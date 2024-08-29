@@ -57,8 +57,15 @@ export const useDecreaseHandle = () => {
   const [percent, setPercent] = useState<number>(50);
   const { tokenPrices } = useTokenData();
 
-  const { positions, refetch: refetchPositions } = usePositionData({
+  const { positions } = usePositionData({
     poolPath,
+  });
+
+  const { refetch: refetchPositions } = usePositionData({
+    poolPath: poolPath,
+    queryOption: {
+      enabled: !!poolPath,
+    },
   });
 
   const loading = useMemo(() => {

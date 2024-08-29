@@ -159,7 +159,7 @@ const RemovePositionModalContainer = ({
       ) {
         enqueueEvent({
           txHash: result.data?.hash,
-          action: DexEvent.ADD,
+          action: DexEvent.REMOVE,
           visibleEmitResult: true,
           formatData: response => {
             if (!response) {

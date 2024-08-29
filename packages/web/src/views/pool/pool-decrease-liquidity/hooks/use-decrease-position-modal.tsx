@@ -209,7 +209,7 @@ export const useDecreasePositionModal = ({
       ) {
         enqueueEvent({
           txHash: result.data?.hash,
-          action: DexEvent.DECREASE,
+          action: DexEvent.REMOVE,
           visibleEmitResult: true,
           formatData: response => {
             if (!response) {

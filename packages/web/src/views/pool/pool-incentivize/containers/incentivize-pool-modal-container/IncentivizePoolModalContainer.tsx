@@ -51,6 +51,7 @@ const IncentivizePoolModalContainer: React.FC<
 
   // refetch functions
   const { refetch: refetchPositions } = usePositionData({ address });
+
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchIncentivizePools } = useGetIncentivizePoolList();
   const { refetch: refetchPoolDetails } =
