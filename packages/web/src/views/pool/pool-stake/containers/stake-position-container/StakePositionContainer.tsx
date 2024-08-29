@@ -17,9 +17,14 @@ const StakePositionContainer: React.FC = () => {
     positions: allPositionData,
     isFetchedPosition: isFetched,
     loading: isLoadingAllPositions,
-    refetch: refetchPositions,
   } = usePositionData({
     isClosed: false,
+    poolPath,
+    queryOption: {
+      enabled: !!poolPath,
+    },
+  });
+  const { refetch: refetchPositions } = usePositionData({
     poolPath,
     queryOption: {
       enabled: !!poolPath,
