@@ -43,7 +43,8 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import PoolAddConfirmModal from "../components/pool-add-confirm-modal/PoolAddConfirmModal";
 import OneClickStakingModal from "../components/one-click-staking-modal/OneClickStakingModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { useGetPositionsByAddress } from "@query/positions";
+import { useAddress } from "@hooks/address/use-address";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -118,11 +119,12 @@ export const usePoolAddLiquidityConfirmModal = ({
     useGetPoolCreationFee();
 
   // Refetch functions
-  const { refetch: refetchPositions } = usePositionData({
+  const { address } = useAddress();
+  const { refetch: refetchAccountPositions } = useGetPositionsByAddress({
+    address,
+  });
+  const { refetch: refetchPoolPositions } = useGetPositionsByAddress({
     poolPath: selectPool.poolPath,
-    queryOption: {
-      enabled: !!selectPool.poolPath,
-    },
   });
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
@@ -439,7 +441,8 @@ export const usePoolAddLiquidityConfirmModal = ({
               },
               onEmit: async () => {
                 refetchPools();
-                refetchPositions();
+                refetchAccountPositions();
+                refetchPoolPositions();
                 refetchPoolDetails();
               },
             });

@@ -7,6 +7,7 @@ import { useMessage } from "./use-message";
 import { useGetNotifications } from "@query/common";
 
 const DEFAULT_SNACKBAR_TIMEOUT = 3_000;
+const TX_RESULT_SNACKBAR_TIMEOUT = 4_000;
 const UPDATING_SNACKBAR_TIMEOUT = 60_000;
 
 function makeSnackbarConfig(
@@ -72,13 +73,18 @@ export const useTransactionEventStore = () => {
           formatData(event.data),
           txHash,
         );
-        enqueue(message, makeSnackbarConfig(messageType));
+        enqueue(
+          message,
+          makeSnackbarConfig(messageType, TX_RESULT_SNACKBAR_TIMEOUT),
+        );
         onUpdate();
 
         if (visibleEmitResult && event.status === "SUCCESS") {
-          wait<boolean>(async () => true, 3_000).then(() => {
-            enqueue(undefined, updatingSnackbarConfig);
-          });
+          wait<boolean>(async () => true, TX_RESULT_SNACKBAR_TIMEOUT).then(
+            () => {
+              enqueue(undefined, updatingSnackbarConfig);
+            },
+          );
         }
       },
       async () => {
