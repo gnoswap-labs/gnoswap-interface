@@ -33,28 +33,21 @@ export const EarnDescriptionWrapper = styled.div`
     }
 
     .description-wrapper {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
       ${fonts.p2}
       ${media.tablet} {
         ${fonts.p4}
       }
       color: ${({ theme }) => theme.color.text04};
       white-space: nowrap;
-      .text {
-        .highlight {
-          display: none;
+
+      .docs {
+        color: ${({ theme }) => theme.color.text30};
+        &:hover {
+          color: ${({ theme }) => theme.color.text07};
         }
-      }
-      .text::after {
-        content: " ";
       }
 
       .highlight {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
         height: 18px;
         background: ${({ theme }) => theme.color.text32};
         -webkit-background-clip: text;
@@ -89,16 +82,6 @@ export const EarnDescriptionWrapper = styled.div`
       .description-wrapper {
         white-space: normal;
         ${fonts.p2}
-
-        .text {
-          .highlight {
-            font-weight: 500;
-            display: inline-flex;
-          }
-        }
-        > .highlight {
-          display: none;
-        }
       }
       .link-wrapper {
         ${fonts.p3}

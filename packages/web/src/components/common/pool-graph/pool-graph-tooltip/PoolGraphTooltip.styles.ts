@@ -62,14 +62,6 @@ export const PoolGraphTooltipContainer = styled.div`
       .row {
         padding: 4px 0;
       }
-
-      &:last-of-type {
-        .token {
-          ${media.mobile} {
-            display: none;
-          }
-        }
-      }
     }
 
     .token {
@@ -80,9 +72,6 @@ export const PoolGraphTooltipContainer = styled.div`
       img {
         width: 20px;
         height: 20px;
-      }
-      ${media.mobile} {
-        display: none;
       }
     }
     .amount {

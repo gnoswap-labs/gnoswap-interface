@@ -186,7 +186,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
           )}
           <span
             className={makeClassNameWithSmallFont(
-              "token-amount-value",
+              "token-amount-value price-range",
               displayTooltipInfo.tokenAPriceRange,
             )}
           >
@@ -224,7 +224,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
           )}
           <span
             className={makeClassNameWithSmallFont(
-              "token-amount-value",
+              "token-amount-value price-range",
               displayTooltipInfo.tokenBPriceRange,
             )}
           >

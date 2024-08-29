@@ -84,9 +84,13 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
             checked={isClosed}
             onChange={handleChangeClosed}
             hasLabel={true}
-            labelText={t("Earn:positions.showClosedSwitch", {
-              context: "short",
-            })}
+            labelText={
+              isOtherPosition
+                ? ""
+                : t("Earn:positions.showClosedSwitch", {
+                    context: "short",
+                  })
+            }
           />
         )}
       </div>
