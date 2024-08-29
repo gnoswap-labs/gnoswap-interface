@@ -46,6 +46,13 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
         return true;
       },
     );
+
+    if (!request.address) {
+      mock.forEach(item => {
+        item.myVote = undefined;
+      });
+    }
+
     const startIndex = request.offset * request.limit;
     const res: GetProposalsResponse = {
       proposals: [...mock]

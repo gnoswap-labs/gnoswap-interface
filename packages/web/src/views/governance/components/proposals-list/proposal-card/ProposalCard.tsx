@@ -42,6 +42,14 @@ const ProposalCard: React.FC<Props> = ({
               text={t("Governance:proposal.status.executed")}
             />
           )}
+          {proposalDetail.myVote &&
+            proposalDetail.myVote.type !== "" && (
+              <Badge
+                className="proposal-badge"
+                type={BADGE_TYPE.DARK_DEFAULT}
+                text={t("Governance:detailModal.badge.voted")}
+              />
+            )}
         </div>
         <div className="proponent">By {proposalDetail.proponent}</div>
       </div>

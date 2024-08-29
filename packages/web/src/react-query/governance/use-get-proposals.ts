@@ -18,6 +18,7 @@ export const useGetProposals = (
       QUERY_KEY.governanceProposals,
       request.isActive,
       request.offset,
+      request.address,
       request.limit,
     ],
     queryFn: () => {

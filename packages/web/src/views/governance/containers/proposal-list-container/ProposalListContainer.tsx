@@ -12,13 +12,14 @@ const ProposalListContainer: React.FC = () => {
   const [isShowActiveOnly, setIsShowActiveOnly] = useState(false);
   const [selectedProposalId, setSelectedProposalId] = useState(0);
   const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
-  const { isSwitchNetwork, connected, switchNetwork } = useWallet();
+  const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
 
   const [page, setPage] = useState(0);
 
   const { data: proposalsInfo, isFetching } = useGetProposals({
     isActive: isShowActiveOnly,
+    address: account?.address,
     offset: page,
     limit: 20,
   });
