@@ -415,8 +415,8 @@ export const CopyTooltip = styled.div`
 
   ${media.mobile} {
     ${mixins.flexbox("row", "center", "flex-start")};
-    top: -8px;
-    left: 20px;
+    top: -40px;
+    left: -40px;
     .box {
       padding: 12px;
     }
@@ -424,6 +424,10 @@ export const CopyTooltip = styled.div`
     & .rotate-90 {
       transform: rotate(90deg);
       margin-right: -10px;
+    }
+
+    .polygon-icon * {
+      fill: unset;
     }
   }
 `;
