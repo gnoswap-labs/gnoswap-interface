@@ -20,8 +20,8 @@ export const HEADER_NAV = [
     subPath: [],
   },
   {
-    title: "HeaderFooter:leaderboard",
-    path: "/leaderboard",
+    title: "HeaderFooter:dashboard",
+    path: "/dashboard",
     iconType: null,
     subPath: [],
   },
@@ -29,8 +29,8 @@ export const HEADER_NAV = [
 
 export const SIDE_MENU_NAV = [
   {
-    title: "HeaderFooter:dashboard",
-    path: "/dashboard",
+    title: "HeaderFooter:leaderboard",
+    path: "/leaderboard",
     iconType: "PULSE",
     subPath: [],
   },
