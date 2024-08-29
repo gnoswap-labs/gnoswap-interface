@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import GovernanceDetailInfo from "./GovernanceDetailInfo";
+import InfoBox from "./InfoBox";
 
-describe("GovernanceDetailInfo Component", () => {
-  it("GovernanceDetailInfo render", () => {
+describe("InfoBox Component", () => {
+  it("InfoBox render", () => {
     const mockProps = {
       title: "DefaultTooltip",
       value: "$1.10",
@@ -15,7 +15,7 @@ describe("GovernanceDetailInfo Component", () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <GovernanceDetailInfo {...mockProps} />
+          <InfoBox {...mockProps} />
         </GnoswapThemeProvider>
       </JotaiProvider>
     );

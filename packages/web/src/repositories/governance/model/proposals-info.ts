@@ -1,6 +1,6 @@
 
-export interface GetProposalsResponse {
-  proposals: ProposalItemResponse[];
+export interface ProposalsInfo {
+  proposals: ProposalItemInfo[];
   pageInfo: {
     totalItems: number;
     totalPages: number;
@@ -8,7 +8,7 @@ export interface GetProposalsResponse {
   };
 }
 
-export type ProposalItemResponse = {
+export type ProposalItemInfo = {
   id: number;
   status: string;
   title: string;

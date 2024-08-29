@@ -1,12 +1,14 @@
 
 import { GovernanceRepository } from "./governance-repository";
+import GetMyDelegationResposneMock from "./mock/get-my-delegation-response.json";
 import GetProposalsResponseMock from "./mock/get-proposals-response.json";
-import { GovernanceSummaryInfo } from "./model";
+import { GovernanceSummaryInfo, MyDelegationInfo, ProposalsInfo } from "./model";
 import { GetMyDeligationRequest, GetProposalsReqeust } from "./request";
 import {
   GetGovernanceSummaryResponse,
   GetMyDeligationResponse,
-  GetProposalsResponse
+  GetProposalsResponse,
+  ProposalItemResponse,
 } from "./response";
 
 export class GovernanceRepositoryMock implements GovernanceRepository {
@@ -21,28 +23,41 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
 
       const result = res;
 
-      return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+      return new Promise(resolve => setTimeout(resolve, 500)).then(
+        () => result,
+      );
     };
 
   public getMyDeligation = async (
     request: GetMyDeligationRequest,
-  ) :Promise<GetMyDeligationResponse> => {
+  ) :Promise<MyDelegationInfo> => {
     console.log(request);
-    return {
-      availableBalance: 4225.12,
-      votingWeight: 110102.23,
-      undeligatedAmount: 422.12,
-      claimableRewardsUsd: 4225.12,
-    };
+    const res: GetMyDeligationResponse = GetMyDelegationResposneMock;
+    const result = res;
+
+    return new Promise(resolve => setTimeout(resolve, 500)).then(
+      () => result,
+    );
   };
 
   public getProposals = async (
     request: GetProposalsReqeust,
-  ): Promise<GetProposalsResponse> => {
+  ): Promise<ProposalsInfo> => {
     console.log(request);
+    const mock: ProposalItemResponse[] = GetProposalsResponseMock;
+    const startIndex = request.offset * request.limit;
+    const res: GetProposalsResponse = {
+      proposals: [...mock]
+        .reverse()
+        .slice(startIndex, startIndex + request.limit),
+      pageInfo: {
+        totalItems: mock.length,
+        totalPages: (mock.length + request.limit) % request.limit,
+        currentPage: request.offset,
+      },
+    };
+    const result = res;
 
-    return new Promise(resolve => setTimeout(resolve, 5000)).then(() => ({
-      proposals: GetProposalsResponseMock,
-    }));
+    return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
   };
 }

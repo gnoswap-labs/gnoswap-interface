@@ -8,8 +8,8 @@
     "proponent": "Onbloc",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 22000,
+      "no": 10500
     }
   },
   {
@@ -21,8 +21,8 @@
     "proponent": "GovDao",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 24000,
+      "no": 10060
     }
   },
   {
@@ -34,8 +34,8 @@
     "proponent": "GnoSwap Foundation",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 27000,
+      "no": 10040
     }
   },
   {
@@ -47,8 +47,8 @@
     "proponent": "Onbloc",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 28000,
+      "no": 10400
     }
   },
   {
@@ -60,8 +60,8 @@
     "proponent": "Onbloc",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 22000,
+      "no": 15000
     }
   },
   {
@@ -73,8 +73,8 @@
     "proponent": "GnoSwap Foundation",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 24000,
+      "no": 10060
     }
   },
   {
@@ -86,8 +86,8 @@
     "proponent": "Onbloc",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 23000,
+      "no": 10060
     }
   },
   {
@@ -99,8 +99,8 @@
     "time": "2024-08-21 11:13:28",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 27000,
+      "no": 10080
     }
   },
   {
@@ -112,8 +112,8 @@
     "time": "2024-08-22 14:39:57",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 25000,
+      "no": 10600
     }
   },
   {
@@ -125,8 +125,8 @@
     "time": "2024-08-23 07:52:01",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 26000,
+      "no": 10500
     }
   },
   {
@@ -138,8 +138,8 @@
     "proponent": "Onbloc",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 29000,
+      "no": 10500
     }
   },
   {
@@ -151,8 +151,8 @@
     "proponent": "GnoSwap Foundation",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 31340,
+      "no": 10500
     }
   },
   {
@@ -164,8 +164,8 @@
     "proponent": "GovDao",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 20430,
+      "no": 10060
     }
   },
   {
@@ -177,8 +177,8 @@
     "proponent": "Onbloc",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 26430,
+      "no": 10008
     }
   },
   {
@@ -190,7 +190,7 @@
     "proponent": "Onbloc",
     "votes": {
       "max": 40000,
-      "yes": 2000,
+      "yes": 23340,
       "no": 1000
     }
   },
@@ -203,8 +203,8 @@
     "proponent": "Onbloc",
     "votes": {
       "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "yes": 21443.43,
+      "no": 10040
     }
   },
   {
@@ -215,9 +215,9 @@
     "time": "2024-08-20 10:10:29",
     "proponent": "Onbloc",
     "votes": {
-      "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "max": 45000,
+      "yes": 32552.24,
+      "no": 2343
     }
   },
   {
@@ -228,9 +228,9 @@
     "proponent": "Onbloc",
     "time": "2024-08-21 11:13:28",
     "votes": {
-      "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "max": 40020,
+      "yes": 24352.245432,
+      "no": 2003
     }
   },
   {
@@ -241,9 +241,9 @@
     "proponent": "Onbloc",
     "time": "2024-08-22 14:39:57",
     "votes": {
-      "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "max": 40450,
+      "yes": 10002,
+      "no": 24000
     }
   },
   {
@@ -254,8 +254,8 @@
     "proponent": "Onbloc",
     "time": "2024-08-23 07:52:01",
     "votes": {
-      "max": 40000,
-      "yes": 2000,
+      "max": 40345,
+      "yes": 24445.435433,
       "no": 1000
     }
   },
@@ -267,22 +267,22 @@
     "proponent": "Onbloc",
     "time": "2024-09-27 10:00:00",
     "votes": {
-      "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "max": 40450,
+      "yes": 20300,
+      "no": 2343
     }
   },
   {
     "id": 22,
     "status": "Active",
-    "title": "Proposal Title",
+    "title": "Very Very Very Very Very Extraordinary Long Proposal Title",
     "type": "Community Pool Spend",
     "proponent": "Onbloc",
     "time": "2025-01-27 17:00:00",
     "votes": {
-      "max": 40000,
+      "max": 40440,
       "yes": 2000,
-      "no": 1000
+      "no": 1343
     }
   },
   {
@@ -293,9 +293,9 @@
     "proponent": "Onbloc",
     "time": "2025-02-27 10:00:00",
     "votes": {
-      "max": 40000,
-      "yes": 2000,
-      "no": 1000
+      "max": 40033,
+      "yes": 0,
+      "no": 0
     }
   }
 ]

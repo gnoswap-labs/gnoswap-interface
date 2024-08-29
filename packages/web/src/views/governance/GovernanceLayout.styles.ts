@@ -25,74 +25,47 @@ export const GovernanceLayoutWrapper = styled.div`
       padding: 24px 16px 0px 16px;
       gap: 12px;
     }
-  }
 
-  .title-container {
-    position: relative;
-    max-width: ${ContainerWidth.WEB_CONTAINER};
-    width: 100%;
-    padding: 0px 40px 0px 40px;
-    ${media.tablet} {
-      gap: 16px;
-    }
-    ${media.mobile} {
-      padding: 0px 0px 0px 0px;
-      gap: 12px;
-    }
-  }
+    .title-container {
+      position: relative;
+      max-width: ${ContainerWidth.WEB_CONTAINER};
+      width: 100%;
+      padding: 0px 40px 0px 40px;
+      ${media.tablet} {
+        gap: 16px;
+      }
+      ${media.mobile} {
+        padding: 0px 0px 0px 0px;
+        gap: 12px;
+      }
 
-  .title {
-    display: inline-block;
-    ${fonts.h3};
-    color: ${({ theme }) => theme.color.text02};
-    @media (max-width: 1180px) {
-      ${fonts.h4};
-    }
-    ${media.mobile} {
-      ${fonts.h5};
-    }
-  }
-  .sub-title-layout {
-    position: absolute;
-    ${mixins.flexbox("row", "center", "center", false)};
-    ${fonts.body11};
-    gap: 4px;
-    margin-left: 20px;
-    bottom: 7px;
-    top: 19px;
-    cursor: pointer;
-    p {
-      display: inline-block;
-    }
-    color: ${({ theme }) => theme.color.text04};
-    svg * {
-      fill: ${({ theme }) => theme.color.icon03};
-    }
-    &:hover {
-      color: ${({ theme }) => theme.color.text03};
-      svg {
-        * {
-          fill: ${({ theme }) => theme.color.icon07};
+      .title {
+        display: inline-block;
+        ${fonts.h3};
+        color: ${({ theme }) => theme.color.text02};
+        @media (max-width: 1180px) {
+          ${fonts.h4};
+        }
+        ${media.mobile} {
+          ${fonts.h5};
         }
       }
     }
-    @media (max-width: 1180px) {
-      margin-left: 12px;
-      bottom: 6px;
-      top: 15px;
-    }
-    ${media.mobile} {
-      margin-left: 10px;
-      bottom: 2px;
-      top: 9px;
-    }
-  }
 
-  .link-icon {
-    width: 16px;
-    height: 16px;
-    * {
-      fill: ${({ theme }) => theme.color.text07};
+    .summary-container {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      max-width: ${ContainerWidth.WEB_CONTAINER};
+      width: 100%;
+      padding: 0px 40px;
+      margin: 0 auto;
+      gap: 40px;
+      @media (max-width: 1180px) {
+        gap: 16px;
+      }
+
+      ${media.mobile} {
+        padding: 12px 0px 24px 0px;
+      }
     }
   }
 
@@ -116,37 +89,21 @@ export const GovernanceLayoutWrapper = styled.div`
       padding-top: 24px;
       margin-top: 24px;
     }
-  }
 
-  .proposal-list-container {
-    margin: 0 auto;
-    ${mixins.flexbox("column", "flex-start", "flex-start")};
-    max-width: ${ContainerWidth.WEB_CONTAINER};
-    width: 100%;
-    padding: 0px 40px;
-    gap: 22px;
-    @media (max-width: 1180px) {
-      gap: 16px;
-    }
+    .proposal-list-container {
+      margin: 0 auto;
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      max-width: ${ContainerWidth.WEB_CONTAINER};
+      width: 100%;
+      padding: 0px 40px;
+      gap: 22px;
+      @media (max-width: 1180px) {
+        gap: 16px;
+      }
 
-    ${media.mobile} {
-      padding: 0px 16px;
-    }
-  }
-
-  .summary-container {
-    margin: 0 auto;
-    ${mixins.flexbox("column", "flex-start", "flex-start")};
-    max-width: ${ContainerWidth.WEB_CONTAINER};
-    width: 100%;
-    padding: 0px 40px;
-    gap: 22px;
-    @media (max-width: 1180px) {
-      gap: 16px;
-    }
-
-    ${media.mobile} {
-      padding: 12px 0px 24px 0px;
+      ${media.mobile} {
+        padding: 0px 16px;
+      }
     }
   }
 `;

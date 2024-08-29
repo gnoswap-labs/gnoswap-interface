@@ -1,1 +1,65 @@
-{"header":"Gouvernance","myDel":{"availBal":{"title":"Solde disponible","tooltip":"La quantité de xGNS disponible pour l'activation est égale à la quantité de GNS dans votre position au moment de la mise en jeu."},"reward":{"btn":"Réclamer tout","title":"Récompenses à réclamer","tooltip":"Infobulle des récompenses à réclamer"},"switch":{"toUndel":"Ma non-délégation","toVotingWeight":"Mon poids dans les votes"},"title":"Ma délégation","tooltip":{"amount":"Montant","date":"Date","delegatee":"Délégué","undelegated":"Non délégué","unlockDate":"Date de déblocage"},"undel":{"btn":"Réclamation","title":"La non-délégation","tooltip":"Bulle d'aide à la non-délégation"},"votingWeight":{"title":"Poids du vote","tooltip":"La quantité de xGNS que vous avez activée, qui représente votre droit de vote dans la gouvernance de Gnoswap."}},"proposalList":{"header":{"btn":"Créer une proposition","link":"Aller au forum","title":"Propositions","toggle":"Afficher uniquement les actifs"}},"summary":{"apy":{"title":"xGNS APY","tooltip":"Le TAEG estimé de xGNS sur la base de la rémunération des frais de protocole en temps réel."},"commPool":{"title":"Piscine communautaire","tooltip":"Le montant total des actifs de la réserve communautaire."},"delRatio":{"title":"Ratio délégué","tooltip":"Le pourcentage de jetons GNS délégués dans le pool de participation xGNS par rapport à l'offre totale en circulation."},"guide":{"guide":"Déléguer le GNS pour obtenir des pouvoirs de gouvernance et recevoir une partie des frais de protocole.","link":"En savoir plus"},"totalDel":{"title":"Total délégué","tooltip":"Le montant total des jetons GNS délégués dans le pool de participation xGNS."}}}
+{
+  "header": "Gouvernance",
+  "myDel": {
+    "availBal": {
+      "title": "Solde disponible",
+      "tooltip": "La quantité de xGNS disponible pour l'activation est égale à la quantité de GNS dans votre position au moment de la mise en jeu."
+    },
+    "reward": {
+      "btn": "Réclamer tout",
+      "title": "Récompenses à réclamer",
+      "tooltip": "Infobulle des récompenses à réclamer"
+    },
+    "switch": {
+      "toUndel": "Ma non-délégation",
+      "toVotingWeight": "Mon poids dans les votes"
+    },
+    "title": "Ma délégation",
+    "tooltip": {
+      "amount": "Montant",
+      "date": "Date",
+      "delegatee": "Délégué",
+      "undelegated": "Non délégué",
+      "unlockDate": "Date de déblocage"
+    },
+    "undel": {
+      "btn": "Réclamation",
+      "title": "La non-délégation",
+      "tooltip": "Bulle d'aide à la non-délégation"
+    },
+    "votingWeight": {
+      "title": "Poids du vote",
+      "tooltip": "La quantité de xGNS que vous avez activée, qui représente votre droit de vote dans la gouvernance de Gnoswap."
+    }
+  },
+  "proposalList": {
+    "header": {
+      "btn": "Créer une proposition",
+      "link": "Aller au forum",
+      "title": "Propositions",
+      "toggle": "Afficher uniquement les actifs"
+    }
+  },
+  "summary": {
+    "apy": {
+      "title": "xGNS APY",
+      "tooltip": "Le TAEG estimé de xGNS sur la base de la rémunération des frais de protocole en temps réel."
+    },
+    "commPool": {
+      "title": "Piscine communautaire",
+      "tooltip": "Le montant total des actifs de la réserve communautaire."
+    },
+    "delRatio": {
+      "title": "Ratio délégué",
+      "tooltip": "Le pourcentage de jetons GNS délégués dans le pool de participation xGNS par rapport à l'offre totale en circulation."
+    },
+    "guide": {
+      "guide": "Déléguer le GNS pour obtenir des pouvoirs de gouvernance et recevoir une partie des frais de protocole.",
+      "link": "En savoir plus"
+    },
+    "totalDel": {
+      "title": "Total délégué",
+      "tooltip": "Le montant total des jetons GNS délégués dans le pool de participation xGNS."
+    }
+  }
+}
