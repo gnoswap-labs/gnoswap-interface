@@ -398,42 +398,35 @@ export const useSwapHandler = () => {
       return "AMOUNT_TOO_LOW";
     }
 
-    if (priceImpactStatus === "HIGH" && estimatedRoutes.length !== 0) {
-      return "HIGHT_PRICE_IMPACT";
-    }
-
     if (compareAmountFn(tokenAAmount, tokenABalance) > 0) {
       return "INSUFFICIENT_BALANCE";
     }
 
-    if (!isSameToken && swapState === "NO_LIQUIDITY") {
-      return "INSUFFICIENT_LIQUIDITY";
-    }
     if (
       !isSameToken &&
-      Number(tokenAAmount) > 0 &&
-      tokenBAmount === "0" &&
-      !isLoading &&
-      type === "EXACT_IN"
+      (swapState === "NO_LIQUIDITY" ||
+        (type === "EXACT_IN" &&
+          Number(tokenAAmount) > 0 &&
+          tokenBAmount === "0" &&
+          !isLoading) ||
+        (type === "EXACT_OUT" &&
+          Number(tokenBAmount) > 0 &&
+          tokenAAmount === "0" &&
+          !isLoading) ||
+        estimatedRoutes.length === 0)
     ) {
       return "INSUFFICIENT_LIQUIDITY";
     }
 
-    if (
-      ((Number(tokenBAmount) > 0 &&
-        tokenAAmount === "0" &&
-        !isLoading &&
-        type === "EXACT_OUT") ||
-        estimatedRoutes.length === 0) &&
-      !isSameToken
-    ) {
-      return "INSUFFICIENT_LIQUIDITY";
-    }
     if (isSameToken) {
       if (isNativeToken(tokenA)) {
         return "WRAP";
       }
       return "UNWRAP";
+    }
+
+    if (priceImpactStatus === "HIGH" && estimatedRoutes.length !== 0) {
+      return "HIGHT_PRICE_IMPACT";
     }
     return "SWAP";
   }, [
