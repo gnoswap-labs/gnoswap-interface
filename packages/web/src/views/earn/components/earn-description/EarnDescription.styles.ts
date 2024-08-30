@@ -41,7 +41,7 @@ export const EarnDescriptionWrapper = styled.div`
       white-space: nowrap;
 
       .docs {
-        color: ${({ theme }) => theme.color.text30};
+        color: ${({ theme }) => theme.color.text08};
         &:hover {
           color: ${({ theme }) => theme.color.text07};
         }

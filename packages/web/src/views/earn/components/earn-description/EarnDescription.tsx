@@ -1,13 +1,22 @@
+import BigNumber from "bignumber.js";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import IconArrowRight from "@components/common/icons/IconArrowRight";
-import { DEFAULT_POOL_PATH } from "@constants/common.constant";
 import { EXT_URL } from "@constants/external-url.contant";
 
 import { EarnDescriptionWrapper } from "./EarnDescription.styles";
 
-const EarnDescription: React.FC = () => {
+interface EarnDescriptionProps {
+  highestAprInfo: {
+    apr: number;
+    path: string;
+  };
+}
+
+const EarnDescription: React.FC<EarnDescriptionProps> = ({
+  highestAprInfo,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -49,14 +58,14 @@ const EarnDescription: React.FC = () => {
                 ),
                 highlight: <span className="highlight" />,
               }}
-              // TODO: update with best APR
-              values={{ apr: "89%" }}
+              values={{
+                apr: `${BigNumber(highestAprInfo.apr).toFormat(0)}%`,
+              }}
             />
           </div>
           <a
             className="link-wrapper"
-            // TODO: update with best APR
-            href={`/earn/pool?poolPath=${DEFAULT_POOL_PATH}#staking`}
+            href={`/earn/pool?poolPath=${highestAprInfo.path}#staking`}
           >
             {t("Earn:earnInstruction.stake.goto")}
             <IconArrowRight />
