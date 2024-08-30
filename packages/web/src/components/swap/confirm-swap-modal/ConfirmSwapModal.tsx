@@ -242,7 +242,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                         placement="top"
                         FloatingContent={
                           <ToolTipContentWrapper>
-                            {t("business:protocolFee.desc")}
+                            {t("Swap:swapInfo.tooltip.swapFee")}
                           </ToolTipContentWrapper>
                         }
                       >

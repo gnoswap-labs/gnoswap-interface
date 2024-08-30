@@ -171,7 +171,7 @@ const UnstakePositionModal: React.FC<Props> = ({
                         placement="top"
                         FloatingContent={
                           <ToolTipContentWrapper width="251px">
-                            {t("business:protocolFee.desc")}
+                            {t("UnstakePosition:confStakeModal.unstakingFee.tooltip")}
                           </ToolTipContentWrapper>
                         }
                       >

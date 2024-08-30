@@ -127,7 +127,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
             placement="top"
             FloatingContent={
               <ToolTipContentWrapper>
-                {t("business:protocolFee.desc")}
+                {t("Swap:swapInfo.tooltip.swapFee")}
               </ToolTipContentWrapper>
             }
           >

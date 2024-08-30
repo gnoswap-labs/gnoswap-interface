@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 
 import { fonts } from "@constants/font.constant";
+import mixins from "@styles/mixins";
 
 import { EarnAddConfirmContentSection } from "../pool-add-confirm-modal/PoolAddConfirmModal.styles";
 
@@ -12,6 +13,19 @@ export const PoolAddConfirmFeeInfoWrapper = styled.div`
   p {
     ${fonts.body12}
     color: ${({ theme }) => theme.color.text10};
+  }
+
+  .title-wrapper {
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    gap: 4px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+    }
   }
 `;
 
@@ -49,4 +63,10 @@ export const PoolAddConfirmFeeInfoSection = styled(
 export const CreationFeeErrorMsgWrapper = styled.div`
   ${fonts.p3}
   color: ${({ theme }) => theme.color.red01}
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 275px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

@@ -226,7 +226,7 @@ export const DecreaseSelectPositionWrapper = styled.div<Props>`
 `;
 
 export const ToolTipContentWrapper = styled.div`
-  width: 250px;
+  width: 260px;
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
 `;

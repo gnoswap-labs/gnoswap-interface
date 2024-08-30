@@ -164,7 +164,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
                 placement="top"
                 FloatingContent={
                   <ToolTipContentWrapper>
-                    {t("business:protocolFee.desc")}
+                    {t("DecreaseLiquidity:confModal.tooltip.withdrawalFee")}
                   </ToolTipContentWrapper>
                 }
               >
