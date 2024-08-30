@@ -7,6 +7,7 @@ import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSke
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
@@ -23,7 +24,7 @@ import {
   AprNumberContainer,
   AprStakingHeader,
   NoticeAprToolTip,
-  StakingContentWrapper
+  StakingContentWrapper,
 } from "./StakingContent.styles";
 
 interface StakingContentProps {
@@ -59,6 +60,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const [forceShowAprGuide, setForceShowAprGuide] = useState(true);
   const { t } = useTranslation();
+
+  const { ref, entry } = useIntersectionObserver();
 
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
@@ -121,7 +124,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   }, [stakingPositionMap]);
 
   return (
-    <StakingContentWrapper isMobile={mobile}>
+    <StakingContentWrapper ref={ref} isMobile={mobile}>
       <div className="content-header">
         {loading && (
           <PulseSkeletonWrapper height={36} mobileHeight={24}>
@@ -145,7 +148,11 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 </NoticeAprToolTip>
               }
               placement="top"
-              forcedOpen={forceShowAprGuide}
+              forcedOpen={
+                entry?.isIntersecting &&
+                !((entry?.boundingClientRect.top || 20) < 20) &&
+                forceShowAprGuide
+              }
               forcedClose={!forceShowAprGuide}
             >
               <div className="placeholder"></div>
