@@ -74,6 +74,26 @@ export const PoolGraphTooltipContainer = styled.div`
         height: 20px;
       }
     }
+
+    .content-token {
+      flex-shrink: 0;
+      min-width: 80px;
+      gap: 8px;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+
+      ${media.mobile} {
+        min-width: 24px;
+        width: 24px;
+        .symbol {
+          display: none;
+        }
+      }
+    }
+
     .amount {
       flex-shrink: 0;
       min-width: 76px;
@@ -92,6 +112,11 @@ export const PoolGraphTooltipContainer = styled.div`
 
       &.w-100 {
         min-width: 108px;
+        ${media.mobile} {
+          &.in-header {
+            padding-left: 30px;
+          }
+        }
       }
 
       img {
