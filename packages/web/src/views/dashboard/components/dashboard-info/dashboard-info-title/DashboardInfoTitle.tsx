@@ -26,7 +26,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
     <TokenWrapper>
       <TokenLogoWrapper>
         <div className="token-image-wrapper">
-          <IconLogoWhite className="token-image" />
+          <IconLogoWhite />
         </div>
         <div className="token-symbol">{GNS_TOKEN.symbol}</div>
       </TokenLogoWrapper>
@@ -38,7 +38,6 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
         <div className="token-image-wrapper">
           <img
             src="https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg"
-            className="token-image"
           />
         </div>
         <div className="token-symbol">GNOT</div>
