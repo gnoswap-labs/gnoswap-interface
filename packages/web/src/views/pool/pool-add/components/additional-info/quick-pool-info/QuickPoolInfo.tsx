@@ -107,7 +107,9 @@ const QuickPoolInfo: React.FC<Props> = ({
 
   const rewardTokens = useMemo(() => {
     return pool?.rewardTokens.reduce((acc, current) => {
-      const existToken = acc.some(item => item.path === current.path);
+      const existToken = acc.some(
+        item => item.path === getGnotPath(current).path,
+      );
 
       if (!existToken) {
         acc.push({
