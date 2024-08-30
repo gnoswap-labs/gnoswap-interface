@@ -62,14 +62,6 @@ export const PoolGraphTooltipContainer = styled.div`
       .row {
         padding: 4px 0;
       }
-
-      &:last-of-type {
-        .token {
-          ${media.mobile} {
-            display: none;
-          }
-        }
-      }
     }
 
     .token {
@@ -81,10 +73,27 @@ export const PoolGraphTooltipContainer = styled.div`
         width: 20px;
         height: 20px;
       }
+    }
+
+    .content-token {
+      flex-shrink: 0;
+      min-width: 80px;
+      gap: 8px;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+
       ${media.mobile} {
-        display: none;
+        min-width: 24px;
+        width: 24px;
+        .symbol {
+          display: none;
+        }
       }
     }
+
     .amount {
       flex-shrink: 0;
       min-width: 76px;
@@ -103,6 +112,11 @@ export const PoolGraphTooltipContainer = styled.div`
 
       &.w-100 {
         min-width: 108px;
+        ${media.mobile} {
+          &.in-header {
+            padding-left: 30px;
+          }
+        }
       }
 
       img {

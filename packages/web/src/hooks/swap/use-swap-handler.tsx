@@ -398,42 +398,35 @@ export const useSwapHandler = () => {
       return "AMOUNT_TOO_LOW";
     }
 
-    if (priceImpactStatus === "HIGH" && estimatedRoutes.length !== 0) {
-      return "HIGHT_PRICE_IMPACT";
-    }
-
     if (compareAmountFn(tokenAAmount, tokenABalance) > 0) {
       return "INSUFFICIENT_BALANCE";
     }
 
-    if (!isSameToken && swapState === "NO_LIQUIDITY") {
-      return "INSUFFICIENT_LIQUIDITY";
-    }
     if (
       !isSameToken &&
-      Number(tokenAAmount) > 0 &&
-      tokenBAmount === "0" &&
-      !isLoading &&
-      type === "EXACT_IN"
+      (swapState === "NO_LIQUIDITY" ||
+        (type === "EXACT_IN" &&
+          Number(tokenAAmount) > 0 &&
+          tokenBAmount === "0" &&
+          !isLoading) ||
+        (type === "EXACT_OUT" &&
+          Number(tokenBAmount) > 0 &&
+          tokenAAmount === "0" &&
+          !isLoading) ||
+        estimatedRoutes.length === 0)
     ) {
       return "INSUFFICIENT_LIQUIDITY";
     }
 
-    if (
-      ((Number(tokenBAmount) > 0 &&
-        tokenAAmount === "0" &&
-        !isLoading &&
-        type === "EXACT_OUT") ||
-        estimatedRoutes.length === 0) &&
-      !isSameToken
-    ) {
-      return "INSUFFICIENT_LIQUIDITY";
-    }
     if (isSameToken) {
       if (isNativeToken(tokenA)) {
         return "WRAP";
       }
       return "UNWRAP";
+    }
+
+    if (priceImpactStatus === "HIGH" && estimatedRoutes.length !== 0) {
+      return "HIGHT_PRICE_IMPACT";
     }
     return "SWAP";
   }, [
@@ -794,9 +787,9 @@ export const useSwapHandler = () => {
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue(prev => ({
-        tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
+        tokenA: prev.tokenB?.path === token.path ? prev.tokenB : token,
         tokenB:
-          prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+          prev.tokenB?.path === token.path ? prev.tokenA : prev.tokenB,
         type: changedSwapDirection,
       }));
       if (!!Number(tokenAAmount)) {
@@ -823,9 +816,8 @@ export const useSwapHandler = () => {
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue(prev => ({
-        tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
-        tokenA:
-          prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+        tokenB: prev.tokenA?.path === token.path ? prev.tokenA : token,
+        tokenA: prev.tokenA?.path === token.path ? prev.tokenB : prev.tokenA,
         type: changedSwapDirection,
       }));
       if (!!Number(tokenAAmount)) {

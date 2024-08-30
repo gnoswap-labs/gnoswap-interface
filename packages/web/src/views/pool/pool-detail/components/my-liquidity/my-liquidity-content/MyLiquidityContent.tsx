@@ -939,23 +939,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       </h4>
     );
 
-    const loadingComp = (
-      <>
-        {loading && (
-          <PulseSkeletonWrapper height={39} mobileHeight={25}>
-            <span
-              css={pulseSkeletonStyle({
-                h: 22,
-                w: "200px",
-                tabletWidth: 160,
-                smallTableWidth: 140,
-              })}
-            />
-          </PulseSkeletonWrapper>
-        )}
-      </>
-    );
-
     const claimableUsdComp =
       isShowClaimableRewardInfo || isShowUnclaimableRewardInfo ? (
         <Tooltip
@@ -976,8 +959,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       <section>
         {title}
         <div className="claim-wrap">
-          {claimableUsdComp}
-          {loadingComp}
+          {loading ? (
+            <PulseSkeletonWrapper height={39} mobileHeight={25}>
+              <span
+                css={pulseSkeletonStyle({
+                  h: 22,
+                  w: "200px",
+                  tabletWidth: 160,
+                  smallTableWidth: 140,
+                })}
+              />
+            </PulseSkeletonWrapper>
+          ) : (
+            claimableUsdComp
+          )}
           {canClaimAll && !isOtherPosition && (
             <Button
               className="button-claim"

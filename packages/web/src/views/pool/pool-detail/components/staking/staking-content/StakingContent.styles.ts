@@ -37,14 +37,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     .to-mobile {
       display: none;
     }
-    @media (max-width: 376px) {
-      .to-web {
-        display: none;
-      }
-      .to-mobile {
-        display: initial;
-      }
-    }
+
     .coin-info {
       ${mixins.flexbox("row", "flex-start", "flex-start")};
       .overlap-logo-wrapper {
@@ -78,11 +71,6 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       }
     }
     .apr-text {
-      &:hover {
-        .float-view-apr {
-          visibility: hidden;
-        }
-      }
       ${fonts.h5}
       ${media.tablet} {
         ${fonts.body7}
@@ -107,9 +95,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     ${media.mobile} {
       gap: 16px;
     }
-    @media (max-width: 376px) {
-      margin-top: 24px;
-    }
+
     span {
       color: ${({ theme }) => theme.color.text04};
       ${fonts.body8}
@@ -197,6 +183,7 @@ export const AprViewRewardTooltipWrapper = styled.div`
 export const AprNumberContainer = styled.div<{ placeholderWidth: number }>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   .placeholder {
+    position: absolute;
     width: ${({ placeholderWidth }) => `${placeholderWidth}px`};
     top: 0px;
   }
@@ -212,16 +199,41 @@ export const AprStakingHeader = styled.div<{
   ${media.mobile} {
     gap: 5px;
   }
-  @media (max-width: 376px) {
-    position: absolute;
-    left: 0;
-    bottom: ${({ $isMobile }) => {
-      return $isMobile ? "-21px" : "calc(-100% - 5px)";
-    }};
-  }
 `;
 
 export const NoticeAprToolTip = styled.div`
-  ${fonts.body12}
-  color: ${({ theme }) => theme.color.text01}
+  ${mixins.flexbox("column", "center", "flex-start")};
+  position: absolute;
+  top: -65px;
+  left: -40px;
+  z-index: 2;
+  .box {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 100%;
+    padding: 16px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text01};
+    background-color: ${({ theme }) => theme.color.background02};
+    & > span {
+      white-space: nowrap;
+    }
+  }
+
+  .dark-shadow {
+    box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
+  }
+  .light-shadow {
+    box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
+  }
+
+  .polygon-icon * {
+    fill: ${({ theme }) => theme.color.background02};
+  }
+
+  ${media.mobile} {
+    left: -20px;
+  }
 `;

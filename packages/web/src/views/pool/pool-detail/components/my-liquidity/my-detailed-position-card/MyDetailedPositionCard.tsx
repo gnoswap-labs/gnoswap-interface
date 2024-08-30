@@ -775,63 +775,52 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               )}
             </>
           ) : (
-            <>
-              <div className="mobile-container">
-                {loading && (
-                  <PulseSkeletonWrapper height={36} mobileHeight={24}>
-                    <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-                  </PulseSkeletonWrapper>
-                )}
-                {!loading && (
-                  <div className="coin-info">
-                    <MissingLogo
-                      symbol={tokenA.symbol}
-                      url={tokenA.logoURI}
-                      className="token-logo"
-                      width={36}
-                      mobileWidth={24}
-                    />
-                    <MissingLogo
-                      symbol={tokenB.symbol}
-                      url={tokenB.logoURI}
-                      className="token-logo"
-                      width={36}
-                      mobileWidth={24}
-                    />
+            <div className="mobile-container">
+              {loading && (
+                <PulseSkeletonWrapper height={36} mobileHeight={24}>
+                  <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+                </PulseSkeletonWrapper>
+              )}
+              {!loading && (
+                <div className="coin-info">
+                  <MissingLogo
+                    url={position.tokenUri}
+                    symbol={`ID #${position.id}`}
+                    width={36}
+                    mobileWidth={24}
+                  />
+                </div>
+              )}
+              {!loading && (
+                <div className="link-page">
+                  <span className="product-id">ID #{position.id}</span>
+                  <div
+                    onClick={() => {
+                      if (isClosed) {
+                        setCopy(getPoolLink(false));
+                        return;
+                      }
+                      setCopy(getPoolLink(true));
+                    }}
+                  >
+                    <IconLinkPage className="icon-link" />
+                    {copied && (
+                      <CopyTooltip>
+                        {breakpoint === DEVICE_TYPE.MOBILE && (
+                          <IconPolygon className="polygon-icon rotate-90" />
+                        )}
+                        <div className={`box ${themeKey}-shadow`}>
+                          <span>{t("common:urlCopied")}</span>
+                        </div>
+                        {breakpoint !== DEVICE_TYPE.MOBILE && (
+                          <IconPolygon className="polygon-icon" />
+                        )}
+                      </CopyTooltip>
+                    )}
                   </div>
-                )}
-                {!loading && (
-                  <div className="link-page">
-                    <span className="product-id">ID #{position.id}</span>
-                    <div
-                      onClick={() => {
-                        if (isClosed) {
-                          setCopy(getPoolLink(false));
-                          return;
-                        }
-
-                        setCopy(getPoolLink(true));
-                      }}
-                    >
-                      <IconLinkPage className="icon-link" />
-                      {copied && (
-                        <CopyTooltip>
-                          {breakpoint === DEVICE_TYPE.MOBILE && (
-                            <IconPolygon className="polygon-icon rotate-90" />
-                          )}
-                          <div className={`box ${themeKey}-shadow`}>
-                            <span>{t("common:urlCopied")}</span>
-                          </div>
-                          {breakpoint !== DEVICE_TYPE.MOBILE && (
-                            <IconPolygon className="polygon-icon" />
-                          )}
-                        </CopyTooltip>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </>
+                </div>
+              )}
+            </div>
           )}
           <Badge
             type={BADGE_TYPE.PRIMARY}

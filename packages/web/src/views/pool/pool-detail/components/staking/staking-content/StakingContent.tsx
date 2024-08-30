@@ -1,17 +1,20 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button from "@components/common/button/Button";
+import IconPolygon from "@components/common/icons/IconPolygon";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { themeKey } from "@states/theme";
 import { DEVICE_TYPE } from "@styles/media";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
@@ -23,7 +26,7 @@ import {
   AprNumberContainer,
   AprStakingHeader,
   NoticeAprToolTip,
-  StakingContentWrapper
+  StakingContentWrapper,
 } from "./StakingContent.styles";
 
 interface StakingContentProps {
@@ -59,6 +62,44 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const [forceShowAprGuide, setForceShowAprGuide] = useState(true);
   const { t } = useTranslation();
+
+  const { ref, entry } = useIntersectionObserver();
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  const debounce = (func: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (...args: any[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  };
+
+  const [isVisible, setIsVisible] = useState(true);
+  const scrollTimeoutRef = useRef<number | null>(null);
+
+  const handleScroll = debounce(() => {
+    setIsVisible(false); 
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    scrollTimeoutRef.current = window.setTimeout(() => {
+      setIsVisible(true); 
+    }, 500); 
+  }, 10); 
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
@@ -121,7 +162,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   }, [stakingPositionMap]);
 
   return (
-    <StakingContentWrapper isMobile={mobile}>
+    <StakingContentWrapper ref={ref} isMobile={mobile}>
       <div className="content-header">
         {loading && (
           <PulseSkeletonWrapper height={36} mobileHeight={24}>
@@ -137,19 +178,19 @@ const StakingContent: React.FC<StakingContentProps> = ({
               document.getElementsByClassName("apr-text")?.[0]?.clientWidth
             }
           >
-            <Tooltip
-              className={"float-view-apr"}
-              FloatingContent={
-                <NoticeAprToolTip>
-                  {t("Pool:staking.tooltip.hoverGuide")}
-                </NoticeAprToolTip>
-              }
-              placement="top"
-              forcedOpen={forceShowAprGuide}
-              forcedClose={!forceShowAprGuide}
-            >
-              <div className="placeholder"></div>
-            </Tooltip>
+            <div className="placeholder">
+              {entry?.isIntersecting &&
+                (entry?.boundingClientRect.top || 20) > 20 &&
+                isVisible &&
+                forceShowAprGuide && (
+                  <NoticeAprToolTip>
+                    <div className={`box ${themeKey}-shadow`}>
+                      <span>{t("Pool:staking.tooltip.hoverGuide")}</span>
+                    </div>
+                    <IconPolygon className="polygon-icon" />
+                  </NoticeAprToolTip>
+                )}
+            </div>
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
                 FloatingContent={
@@ -182,32 +223,30 @@ const StakingContent: React.FC<StakingContentProps> = ({
         )}
       </div>
       <div className="staking-wrap">
-        <>
-          <span>{t("Pool:staking.myStake")}</span>
-          {STAKING_PERIOS.map((period, index) => {
-            return period === "MAX" ? (
-              <SummuryApr
-                loading={loading}
-                key={index}
-                stakingApr={pool?.stakingApr}
-                period={period}
-                positions={stakingPositionMap[period]}
-                checkPoints={checkPoints}
-                breakpoint={breakpoint}
-              />
-            ) : (
-              <StakingContentCard
-                key={index}
-                stakingApr={pool?.stakingApr}
-                period={period}
-                positions={stakingPositionMap[period]}
-                breakpoint={breakpoint}
-                loading={loading}
-                checkPoints={checkPoints}
-              />
-            );
-          })}
-        </>
+        <span>{t("Pool:staking.myStake")}</span>
+        {STAKING_PERIOS.map((period, index) => {
+          return period === "MAX" ? (
+            <SummuryApr
+              loading={loading}
+              key={index}
+              stakingApr={pool?.stakingApr}
+              period={period}
+              positions={stakingPositionMap[period]}
+              checkPoints={checkPoints}
+              breakpoint={breakpoint}
+            />
+          ) : (
+            <StakingContentCard
+              key={index}
+              stakingApr={pool?.stakingApr}
+              period={period}
+              positions={stakingPositionMap[period]}
+              breakpoint={breakpoint}
+              loading={loading}
+              checkPoints={checkPoints}
+            />
+          );
+        })}
       </div>
       <div className="button-wrap">
         <div className="empty-content"></div>

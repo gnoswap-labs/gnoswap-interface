@@ -276,9 +276,12 @@ const formatActivity = (
 
   return {
     action: actionText,
-    totalValue: formatOtherPrice(res.totalUsd, {
-      isKMB: false,
-    }),
+    totalValue:
+      res.totalUsd === "0"
+        ? "<$0.01"
+        : formatOtherPrice(res.totalUsd, {
+            isKMB: false,
+          }),
     tokenAmountOne: tokenAAmount,
     tokenAmountTwo: tokenBAmount,
     account: res.account,

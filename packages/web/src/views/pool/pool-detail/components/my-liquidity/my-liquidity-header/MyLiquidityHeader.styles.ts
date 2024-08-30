@@ -9,6 +9,7 @@ export const HeaderWrapper = styled.div`
   ${fonts.h5};
   color: ${({ theme }) => theme.color.text02};
   .header {
+    text-wrap: nowrap;
     ${mixins.flexbox("row", "center", "flex-start")};
     .hide-close-position {
       display: none;
@@ -17,6 +18,11 @@ export const HeaderWrapper = styled.div`
       width: 100%;
       .hide-close-position {
         display: flex;
+        ${media.mobile} {
+          label {
+            display: none;
+          }
+        }
       }
       ${mixins.flexbox("row", "center", "space-between")};
     }

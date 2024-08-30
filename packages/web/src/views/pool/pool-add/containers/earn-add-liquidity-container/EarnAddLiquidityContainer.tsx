@@ -324,9 +324,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
           };
         }
         const nextTokenA =
-          prev.tokenB?.symbol === token.symbol ? prev.tokenB : token;
+          prev.tokenB?.path === token.path ? prev.tokenB : token;
         const nextTokenB =
-          prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB;
+          prev.tokenB?.path === token.path ? prev.tokenA : prev.tokenB;
         selectPool.setCompareToken(token);
         if (!nextTokenA || !nextTokenB) {
           selectSwapFeeTier("NONE");
@@ -354,9 +354,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
           };
         }
         const nextTokenA =
-          prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA;
+          prev.tokenA?.path === token.path ? prev.tokenB : prev.tokenA;
         const nextTokenB =
-          prev.tokenA?.symbol === token.symbol ? prev.tokenA : token;
+          prev.tokenA?.path === token.path ? prev.tokenA : token;
         if (!nextTokenA || !nextTokenB) {
           selectSwapFeeTier("NONE");
         }

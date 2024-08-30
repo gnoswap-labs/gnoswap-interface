@@ -89,65 +89,63 @@ const SwapCard: React.FC<SwapCardProps> = ({
   );
 
   return (
-    <>
-      <SwapCardWrapper>
-        <SwapCardHeader
-          copied={copied}
-          copyURL={copyURL}
-          slippage={swapTokenInfo.slippage}
-          changeSlippage={changeSlippage}
-          themeKey={themeKey}
-        />
-        <SwapCardContent
-          swapTokenInfo={swapTokenInfo}
-          swapSummaryInfo={swapSummaryInfo}
-          swapRouteInfos={swapRouteInfos}
-          changeTokenA={changeTokenA}
-          changeTokenAAmount={changeTokenAAmount}
-          changeTokenB={changeTokenB}
-          changeTokenBAmount={changeTokenBAmount}
-          switchSwapDirection={switchSwapDirection}
-          connectedWallet={connectedWallet}
-          isLoading={isLoading}
-          setSwapRateAction={setSwapRateAction}
-          isSwitchNetwork={isSwitchNetwork}
-          priceImpactStatus={priceImpactStatus}
-          isSameToken={isSameToken}
-        />
-        {shouldShowPriceImpactWarning && (
-          <SwapWarningSection>
-            <WarningCard
-              type={"Error"}
-              hasBorder={false}
-              content={
-                <HighPriceWarningContentWrapper>
-                  <IconTriangleWarningOutlined
-                    stroke={theme.color.red01}
-                    width={"20"}
-                    height={"20"}
-                  />
-                  <p>{t("Swap:priceImpactWarn")}</p>
-                </HighPriceWarningContentWrapper>
-              }
-              icon={<IconTriangleWarningOutlined stroke={theme.color.red01} />}
-            />
-          </SwapWarningSection>
-        )}
-
-        <div className="footer">
-          <SwapButton
-            isSwitchNetwork={isSwitchNetwork}
-            connectedWallet={connectedWallet}
-            isAvailSwap={isAvailSwap}
-            openConfirmModal={openConfirmModal}
-            openConnectWallet={openConnectWallet}
-            text={swapButtonText}
-            isLoading={isLoading}
-            switchNetwork={switchNetwork}
+    <SwapCardWrapper>
+      <SwapCardHeader
+        copied={copied}
+        copyURL={copyURL}
+        slippage={swapTokenInfo.slippage}
+        changeSlippage={changeSlippage}
+        themeKey={themeKey}
+      />
+      <SwapCardContent
+        swapTokenInfo={swapTokenInfo}
+        swapSummaryInfo={swapSummaryInfo}
+        swapRouteInfos={swapRouteInfos}
+        changeTokenA={changeTokenA}
+        changeTokenAAmount={changeTokenAAmount}
+        changeTokenB={changeTokenB}
+        changeTokenBAmount={changeTokenBAmount}
+        switchSwapDirection={switchSwapDirection}
+        connectedWallet={connectedWallet}
+        isLoading={isLoading}
+        setSwapRateAction={setSwapRateAction}
+        isSwitchNetwork={isSwitchNetwork}
+        priceImpactStatus={priceImpactStatus}
+        isSameToken={isSameToken}
+      />
+      {shouldShowPriceImpactWarning && (
+        <SwapWarningSection>
+          <WarningCard
+            type={"Error"}
+            hasBorder={false}
+            content={
+              <HighPriceWarningContentWrapper>
+                <IconTriangleWarningOutlined
+                  stroke={theme.color.red01}
+                  width={"20"}
+                  height={"20"}
+                />
+                <p>{t("Swap:priceImpactWarn")}</p>
+              </HighPriceWarningContentWrapper>
+            }
+            icon={<IconTriangleWarningOutlined stroke={theme.color.red01} />}
           />
-        </div>
-      </SwapCardWrapper>
-    </>
+        </SwapWarningSection>
+      )}
+
+      <div className="footer">
+        <SwapButton
+          isSwitchNetwork={isSwitchNetwork}
+          connectedWallet={connectedWallet}
+          isAvailSwap={isAvailSwap}
+          openConfirmModal={openConfirmModal}
+          openConnectWallet={openConnectWallet}
+          text={swapButtonText}
+          isLoading={isLoading}
+          switchNetwork={switchNetwork}
+        />
+      </div>
+    </SwapCardWrapper>
   );
 };
 

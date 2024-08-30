@@ -10,17 +10,22 @@ import { PoolsWrapper } from "./EarnIncentivizedPools.styles";
 interface EarnIncentivizedPoolsProps {
   cardList: React.ReactNode;
   isOtherPosition: boolean;
+  highestAprInfo: {
+    apr: number;
+    path: string;
+  };
 }
 
 const EarnIncentivizedPools: React.FC<EarnIncentivizedPoolsProps> = ({
   cardList,
   isOtherPosition,
+  highestAprInfo,
 }) => {
   const { t } = useTranslation();
   const router = useRouter();
 
   if (isOtherPosition) {
-    return <EarnDescription />;
+    return <EarnDescription highestAprInfo={highestAprInfo} />;
   }
 
   return (

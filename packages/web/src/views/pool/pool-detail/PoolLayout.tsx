@@ -40,7 +40,6 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
         <div
           id="staking-container"
           className="staking-container"
-          style={{ marginTop: !isStaking ? "-44px" : "0" }}
         >
           {staking}
           <div className="button">

@@ -74,6 +74,7 @@ export const PoolAddConfirmPriceRangeInfoSection = styled(
     ${mixins.flexbox("flex", "center", "flex-end")}
     gap: 4px;
     > div {
+      ${mixins.flexbox("flex", "center", "center")}
       cursor: pointer;
     }
     svg * {
@@ -83,7 +84,7 @@ export const PoolAddConfirmPriceRangeInfoSection = styled(
       fill: ${({ theme }) => theme.color.icon07};
     }
   }
-  
+
   .row {
     display: flex;
     flex-direction: row;
@@ -130,7 +131,8 @@ export const PoolAddConfirmPriceRangeInfoSection = styled(
   }
   ${media.mobile} {
     gap: 8px;
-    .key, .value {
+    .key,
+    .value {
       ${fonts.p2}
     }
   }

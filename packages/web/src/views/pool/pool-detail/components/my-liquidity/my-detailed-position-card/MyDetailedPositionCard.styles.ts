@@ -57,9 +57,10 @@ export const MyPositionCardWrapper = styled.div<Props>`
           visibility: hidden;
         }
         .link-page {
-          ${mixins.flexbox("row", "center", "flex-start")};
+          ${mixins.flexbox("row", "center", "center")};
           gap: 8px;
           .icon-link {
+            ${mixins.flexbox("row", "center", "center")};
             width: 22px;
             height: 22px;
             cursor: pointer;
@@ -409,14 +410,16 @@ export const CopyTooltip = styled.div`
   .light-shadow {
     box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   }
+
   .polygon-icon * {
     fill: ${({ theme }) => theme.color.background02};
   }
 
   ${media.mobile} {
     ${mixins.flexbox("row", "center", "flex-start")};
-    top: -8px;
-    left: 20px;
+    top: -40px;
+    left: -40px;
+    z-index: 2;
     .box {
       padding: 12px;
     }
@@ -424,6 +427,10 @@ export const CopyTooltip = styled.div`
     & .rotate-90 {
       transform: rotate(90deg);
       margin-right: -10px;
+    }
+
+    .polygon-icon * {
+      fill: unset;
     }
   }
 `;

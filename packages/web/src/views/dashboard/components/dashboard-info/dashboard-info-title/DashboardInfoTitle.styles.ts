@@ -24,73 +24,34 @@ export const TokenWrapper = styled.div`
   .amount-info {
     ${fonts.body5};
     ${media.mobile} {
-      ${fonts.body9};
+      ${fonts.body7};
     }
   }
 `;
 
-export const GnosLogoWrapper = styled.div`
+export const TokenLogoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   gap: 8px;
 
-  .gnos-image-wrapper {
+  .token-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
-    svg {
+    svg,
+    img {
       width: 32px;
       height: 32px;
       ${media.mobile} {
-        width: 22px;
-        height: 22px;
+        width: 24px;
+        height: 24px;
       }
     }
   }
-  .gnos-image {
-    width: 17px;
-    height: 19.5px;
-    ${media.mobile} {
-      width: 14.84px;
-      height: 14.84px;
-    }
-  }
-  .gnos-symbol {
+  .token-symbol {
     ${fonts.body5};
     ${media.tablet} {
       ${fonts.body3};
     }
     ${media.mobile} {
-      ${fonts.body9};
-    }
-  }
-`;
-export const GnotLogoWrapper = styled.div`
-  ${mixins.flexbox("row", "center", "flex-start")};
-  gap: 8px;
-  .gnot-image-wrapper {
-    ${mixins.flexbox("row", "center", "center")};
-    svg {
-      width: 32px;
-      height: 32px;
-      ${media.mobile} {
-        width: 22px;
-        height: 22px;
-      }
-    }
-  }
-  .gnot-symbol {
-    ${fonts.body5};
-    ${media.tablet} {
-      ${fonts.body3};
-    }
-    ${media.mobile} {
-      ${fonts.body9};
-    }
-  }
-  .gnot-image {
-    width: 32px;
-    height: 32px;
-    ${media.mobile} {
-      width: 22px;
-      height: 22px;
+      ${fonts.body7}
     }
   }
 `;

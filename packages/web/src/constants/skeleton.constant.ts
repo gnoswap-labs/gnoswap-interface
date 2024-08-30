@@ -890,16 +890,16 @@ export const ACTIVITY_INFO = {
   total: 15,
   list: [
     {
-      width: 250,
+      width: 260,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
-      skeletonWidth: 161,
+      skeletonWidth: 181,
     },
     {
-      width: 220,
+      width: 210,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
-      skeletonWidth: 120,
+      skeletonWidth: 100,
     },
     {
       width: 230,

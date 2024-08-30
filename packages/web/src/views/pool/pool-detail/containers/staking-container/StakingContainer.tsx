@@ -88,7 +88,7 @@ const StakingContainer: React.FC = () => {
     if (typeof window !== "undefined") {
       const windowInnerWidth = window.innerWidth;
       // FIXME: Manage with meaningful static variables
-      const isMobile = windowInnerWidth < 931 && windowInnerWidth > 375;
+      const isMobile = windowInnerWidth < 931;
       setMobile(isMobile);
     }
   };

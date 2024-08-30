@@ -1,11 +1,22 @@
+import BigNumber from "bignumber.js";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import IconArrowRight from "@components/common/icons/IconArrowRight";
+import { EXT_URL } from "@constants/external-url.contant";
 
 import { EarnDescriptionWrapper } from "./EarnDescription.styles";
 
-const EarnDescription: React.FC = () => {
+interface EarnDescriptionProps {
+  highestAprInfo: {
+    apr: number;
+    path: string;
+  };
+}
+
+const EarnDescription: React.FC<EarnDescriptionProps> = ({
+  highestAprInfo,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -18,10 +29,14 @@ const EarnDescription: React.FC = () => {
           <div className="description-wrapper">
             {t("Earn:earnInstruction.about.subtitle")}
           </div>
-          <div className="link-wrapper">
+          <a
+            className="link-wrapper"
+            href={EXT_URL.DOCS.USER_GUIDE.PROVIDING_LIQUIDITY}
+            target="_blank"
+          >
             <span>{t("Earn:earnInstruction.about.goto")}</span>
             <IconArrowRight />
-          </div>
+          </a>
         </div>
       </div>
 
@@ -31,21 +46,30 @@ const EarnDescription: React.FC = () => {
         </div>
         <div className="content-wrapper">
           <div className="description-wrapper">
-            <span
-              className="text"
-              dangerouslySetInnerHTML={{
-                __html: t("Earn:earnInstruction.stake.subtitle", {
-                  apr: "89%",
-                }),
+            <Trans
+              i18nKey="Earn:earnInstruction.stake.subtitle"
+              components={{
+                docs: (
+                  <a
+                    className="docs"
+                    href={EXT_URL.DOCS.USER_GUIDE.STAKE_POSITIONS}
+                    target="_blank"
+                  />
+                ),
+                highlight: <span className="highlight" />,
+              }}
+              values={{
+                apr: `${BigNumber(highestAprInfo.apr).toFormat(0)}%`,
               }}
             />
-            &nbsp;
-            <span className="highlight">89% APR.</span>
           </div>
-          <div className="link-wrapper">
+          <a
+            className="link-wrapper"
+            href={`/earn/pool?poolPath=${highestAprInfo.path}#staking`}
+          >
             {t("Earn:earnInstruction.stake.goto")}
             <IconArrowRight />
-          </div>
+          </a>
         </div>
       </div>
 
@@ -57,10 +81,14 @@ const EarnDescription: React.FC = () => {
           <div className="description-wrapper">
             {t("Earn:earnInstruction.community.subtitle")}
           </div>
-          <div className="link-wrapper">
+          <a
+            className="link-wrapper"
+            href={EXT_URL.SOCIAL.DISCORD}
+            target="_blank"
+          >
             {t("Earn:earnInstruction.community.goto")}
             <IconArrowRight />
-          </div>
+          </a>
         </div>
       </div>
     </EarnDescriptionWrapper>

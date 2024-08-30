@@ -33,8 +33,8 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const [mobile, setMobile] = useState(false);
   const {
     data: incentivizePools = [],
-    isFetched: isFetchedPools,
-    isLoading: isLoadingPool,
+    isFetched: isFetchedIncentivizedPools,
+    isLoading: isLoadingIncentivizedPool,
   } = useIncentivizePool();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -182,7 +182,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   return (
     <IncentivizedPoolCardList
       incentivizedPools={incentivizePools}
-      isPoolFetched={isFetchedPools}
+      isPoolFetched={isFetchedIncentivizedPools}
       loadMore={!!loadMore}
       onClickLoadMore={handleClickLoadMore}
       currentIndex={currentIndex}
@@ -194,7 +194,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       onScroll={handleScroll}
       showPagination={showPagination}
       width={width}
-      isLoading={isLoadingPool || isLoadingPosition}
+      isLoading={isLoadingIncentivizedPool || isLoadingPosition}
       checkStakedPool={checkStakedPool}
     />
   );
