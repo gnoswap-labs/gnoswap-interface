@@ -79,16 +79,16 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const scrollTimeoutRef = useRef<number | null>(null);
 
   const handleScroll = debounce(() => {
-    setIsVisible(false); // 스크롤 중에는 숨깁니다
+    setIsVisible(false); 
 
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
 
     scrollTimeoutRef.current = window.setTimeout(() => {
-      setIsVisible(true); // 스크롤이 멈춘 후 일정 시간이 지나면 보이도록 합니다
-    }, 500); // 500ms 동안 스크롤이 멈춘 경우
-  }, 100); // 100ms마다 스크롤 이벤트를 감지
+      setIsVisible(true); 
+    }, 1000); 
+  }, 10); 
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
