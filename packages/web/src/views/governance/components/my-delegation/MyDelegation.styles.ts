@@ -30,6 +30,18 @@ export const MyDelegationWrapper = styled.div`
     ${media.mobile} {
       flex-direction: column;
     }
+
+    > .require-wallet {
+      ${mixins.flexbox("column", "center", "center")};
+      width: 100%;
+      padding: 30.5px 0;
+      gap: 20px;
+
+      button {
+        flex-shrink: 0;
+        padding: 10px 16px;
+      }
+    }
   }
 `;
 

@@ -1,7 +1,7 @@
-import { ProposalDetailWrapper } from "./ProposalDetail.styles";
+import { ProposalDetailWrapper } from "./ProposalCard.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
-const ProposalDetailSkeleton = () => {
+const ProposalCardSkeleton = () => {
   return (
     <ProposalDetailWrapper>
       <div className="header">
@@ -20,4 +20,4 @@ const ProposalDetailSkeleton = () => {
   );
 };
 
-export default ProposalDetailSkeleton;
+export default ProposalCardSkeleton;

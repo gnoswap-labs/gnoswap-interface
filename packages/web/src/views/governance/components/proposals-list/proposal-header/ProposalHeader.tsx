@@ -5,48 +5,52 @@ import IconNewTab from "@components/common/icons/IconNewTab";
 import Switch from "@components/common/switch/Switch";
 
 import { ProposalHeaderWrapper } from "./ProposalHeader.styles";
+import { useTranslation } from "react-i18next";
+import { EXT_URL } from "@constants/external-url.contant";
 
-interface ProposalHeaderProps {
-  isShowCancelled: boolean;
-  toggleShowCancelled: () => void;
-  setIsShowCreateProposal: Dispatch<SetStateAction<boolean>>;
-  isConnected: boolean;
-  isSwitchNetwork: boolean;
+export interface ProposalHeaderProps {
+  isShowActiveOnly: boolean;
+  toggleIsShowActiveOnly: () => void;
+  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+  isDisabledCreateButton: boolean;
 }
 
 const ProposalHeader: React.FC<ProposalHeaderProps> = ({
-  isShowCancelled,
-  toggleShowCancelled,
-  setIsShowCreateProposal,
-  isConnected,
-  isSwitchNetwork,
-}) => (
-  <ProposalHeaderWrapper>
-    <div className="title-header">
-      <h2>Proposals</h2>
-      <a href="/" target="_blank" className="sub-title">
-        <p>Go to Forum</p>
-        <IconNewTab />
-      </a>
-    </div>
-    <div className="switch-button">
-      <Switch
-        checked={isShowCancelled}
-        onChange={toggleShowCancelled}
-        hasLabel={true}
-        labelText="Show Cancelled"
-      />
-      <Button
-        disabled={!isConnected || isSwitchNetwork}
-        text="Create Proposal"
-        style={{
-          hierarchy: ButtonHierarchy.Primary,
-          fontType: "p1",
-        }}
-        onClick={() => setIsShowCreateProposal(true)}
-      />
-    </div>
-  </ProposalHeaderWrapper>
-);
+  isShowActiveOnly,
+  toggleIsShowActiveOnly,
+  setIsOpenCreateModal,
+  isDisabledCreateButton,
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <ProposalHeaderWrapper>
+      <div className="header-title">
+        {t("Governance:proposalList.header.title")}
+        <a href={EXT_URL.SOCIAL.DISCORD} target="_blank" className="sub-title">
+          {t("Governance:proposalList.header.link")}
+          <IconNewTab />
+        </a>
+      </div>
+      <div className="switch-cta-wrapper">
+        <Switch
+          checked={isShowActiveOnly}
+          onChange={toggleIsShowActiveOnly}
+          hasLabel={true}
+          labelText={t("Governance:proposalList.header.toggle")}
+        />
+        <Button
+          disabled={isDisabledCreateButton}
+          text={t("Governance:proposalList.header.btn")}
+          style={{
+            hierarchy: ButtonHierarchy.Primary,
+            fontType: "p1",
+          }}
+          onClick={() => setIsOpenCreateModal(true)}
+        />
+      </div>
+    </ProposalHeaderWrapper>
+  );
+};
 
 export default ProposalHeader;

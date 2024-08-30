@@ -12,39 +12,47 @@ import {
 } from "./response";
 
 export class GovernanceRepositoryMock implements GovernanceRepository {
-  public getGovernanceSummary =
-    async (): Promise<GovernanceSummaryInfo> => {
-      const res: GetGovernanceSummaryResponse = {
-        totalDeligated: 59144225,
-        DeligatedRatio: 55.12,
-        apy: 12.51,
-        communityPool: 2412148.12,
-      };
-
-      const result = res;
-
-      return new Promise(resolve => setTimeout(resolve, 500)).then(
-        () => result,
-      );
+  public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
+    const res: GetGovernanceSummaryResponse = {
+      totalDeligated: 59144225,
+      DeligatedRatio: 55.12,
+      apy: 12.51,
+      communityPool: 2412148.12,
     };
+
+    const result = res;
+
+    return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
 
   public getMyDeligation = async (
     request: GetMyDeligationRequest,
-  ) :Promise<MyDelegationInfo> => {
+  ): Promise<MyDelegationInfo> => {
     console.log(request);
     const res: GetMyDeligationResponse = GetMyDelegationResposneMock;
     const result = res;
 
-    return new Promise(resolve => setTimeout(resolve, 500)).then(
-      () => result,
-    );
+    return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
   };
 
   public getProposals = async (
     request: GetProposalsReqeust,
   ): Promise<ProposalsInfo> => {
     console.log(request);
-    const mock: ProposalItemResponse[] = GetProposalsResponseMock;
+    const mock: ProposalItemResponse[] = GetProposalsResponseMock.filter(
+      item => {
+        if (request.isActive)
+          return ["ACTIVE", "UPCOMMING"].includes(item.status);
+        return true;
+      },
+    );
+
+    if (!request.address) {
+      mock.forEach(item => {
+        item.myVote = undefined;
+      });
+    }
+
     const startIndex = request.offset * request.limit;
     const res: GetProposalsResponse = {
       proposals: [...mock]

@@ -1,181 +1,66 @@
-import dayjs from "dayjs";
-import relative from "dayjs/plugin/relativeTime";
 import React, {
   Dispatch,
   SetStateAction,
-  useCallback,
   useEffect,
-  useMemo,
   useRef,
-  useState
+  useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import { GNS_TOKEN } from "@common/values/token-constant";
 import IconClose from "@components/common/icons/IconCancel";
-import IconCheck from "@components/common/icons/IconCheck";
-import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
-import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
-import IconInfo from "@components/common/icons/IconInfo";
-import IconOutlineClock from "@components/common/icons/IconOutlineClock";
-import IconPass from "@components/common/icons/IconPass";
 import { Overlay } from "@components/common/modal/Modal.styles";
-import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import useLockedBody from "@hooks/common/use-lock-body";
+import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
-import { ProposalDetailInfo } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
+
+import StatusBadge from "../../status-badge/StatusBadge";
+import TokenChip from "../../token-chip/TokenChip";
+import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
+import VoteButtons from "./VoteButtons";
+import VoteCtaButton from "./VoteCtaButton";
 
 import {
-  BoxQuorumWrapper,
   ModalHeaderWrapper,
   ModalQuorum,
-  ProgressBar,
-  ProgressWrapper,
   ProposalContentWrapper,
   ViewProposalModalBackground,
   ViewProposalModalWrapper,
-  VotingPowerWrapper
+  VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
+import TypeBadge from "../../type-badge/TypeBadge";
 
-dayjs.extend(relative);
 
-interface Props {
+export interface ViewProposalModalProps {
   breakpoint: DEVICE_TYPE;
-  proposalDetail: ProposalDetailInfo;
-  setIsShowProposalModal: Dispatch<SetStateAction<boolean>>;
+  proposalDetail: ProposalItemInfo;
+  setSelectedProposalId: Dispatch<SetStateAction<number>>;
   isConnected: boolean;
   isSwitchNetwork: boolean;
-  handleSelectVote: () => void;
+  handleVote: (voteYes: boolean) => void;
+  connectWallet: () => void;
+  switchNetwork: () => void;
 }
 
-type OptionVote = "YES" | "NO" | "ABSTAIN" | "";
-
-const MAPPING_STATUS: Record<string, JSX.Element> = {
-  ACTIVE: (
-    <div className="status success">
-      <IconCircleInCheck className="success-icon status-icon" /> Active
-    </div>
-  ),
-  REJECTED: (
-    <div className="status failed">
-      <IconCircleInCancel className="failed-icon status-icon" /> Reject
-    </div>
-  ),
-  CANCELLED: (
-    <div className="status cancelled">
-      <IconInfo className="cancelled-icon status-icon" /> Cancelled
-    </div>
-  ),
-  PASSED: (
-    <div className="status passed">
-      <IconPass className="passed-icon status-icon" /> Passed
-    </div>
-  ),
-};
-
-const BoxQuorum = ({
+const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   breakpoint,
   proposalDetail,
-  optionVote,
-  setOptionVote,
-}: {
-  breakpoint?: DEVICE_TYPE;
-  proposalDetail: ProposalDetailInfo;
-  optionVote: OptionVote;
-  setOptionVote: Dispatch<SetStateAction<OptionVote>>;
-}) => {
-  const showBadge = useMemo(() => {
-    return breakpoint !== DEVICE_TYPE.MOBILE ? (
-      <Badge className="badge" type={BADGE_TYPE.DARK_DEFAULT} text={"Voted"} />
-    ) : (
-      <div className="badge">
-        <IconCheck />
-      </div>
-    );
-  }, [, breakpoint]);
-  return (
-    <BoxQuorumWrapper>
-      <div
-        className={`box-quorum ${optionVote === "YES" ? "active-quorum" : ""}`}
-        onClick={() => setOptionVote("YES")}
-      >
-        <span>Yes</span>
-        <div>{proposalDetail.currentValue.toLocaleString()}</div>
-        {optionVote === "YES" && showBadge}
-      </div>
-      <div
-        className={`box-quorum ${optionVote === "NO" ? "active-quorum" : ""}`}
-        onClick={() => setOptionVote("NO")}
-      >
-        <span>No</span>
-        <div>
-          {(
-            proposalDetail.currentValue +
-            (proposalDetail.maxValue * proposalDetail.noOfQuorum) / 100
-          ).toLocaleString()}
-        </div>
-        {optionVote === "NO" && showBadge}
-      </div>
-      <div
-        className={`box-quorum ${optionVote === "ABSTAIN" ? "active-quorum" : ""
-          }`}
-        onClick={() => setOptionVote("ABSTAIN")}
-      >
-        <span>Abstain</span>
-        <div>{proposalDetail.maxValue.toLocaleString()}</div>
-        {optionVote === "ABSTAIN" && showBadge}
-      </div>
-    </BoxQuorumWrapper>
-  );
-};
-
-const VotingPower = ({
-  proposalDetail,
-}: {
-  proposalDetail: ProposalDetailInfo;
-}) => {
-  return (
-    <VotingPowerWrapper>
-      <span>Your Voting Power</span>
-      <div>
-        <div className="power-value">
-          {proposalDetail.votingPower.toLocaleString()}
-        </div>
-        <div className="power-currency">
-          <img src={proposalDetail.icon} alt="token logo" />
-          <span>{proposalDetail.currency}</span>
-        </div>
-      </div>
-    </VotingPowerWrapper>
-  );
-};
-
-const ProposalContent = ({
-  proposalDetail,
-}: {
-  proposalDetail: ProposalDetailInfo;
-}) => {
-  return (
-    <ProposalContentWrapper>
-      <div className="title">{proposalDetail.title}</div>
-      <div className="content">{proposalDetail.description}</div>
-    </ProposalContentWrapper>
-  );
-};
-
-const ViewProposalModal: React.FC<Props> = ({
-  breakpoint,
-  proposalDetail,
-  setIsShowProposalModal,
+  setSelectedProposalId,
   isSwitchNetwork,
   isConnected,
-  handleSelectVote,
+  handleVote,
+  connectWallet,
+  switchNetwork,
 }) => {
-  const [optionVote, setOptionVote] = useState<OptionVote>("");
+  const { t } = useTranslation();
+  const [selectedVote, setSelectedVote] = useState(
+    proposalDetail.myVote?.type || "",
+  );
+  useEscCloseModal(() => setSelectedProposalId(0));
+  useLockedBody(true);
 
   const modalRef = useRef<HTMLDivElement | null>(null);
-  useLockedBody(true);
 
   const handleResize = () => {
     if (typeof window !== "undefined" && modalRef.current) {
@@ -190,8 +75,6 @@ const ViewProposalModal: React.FC<Props> = ({
     }
   };
 
-  useEscCloseModal(() => setIsShowProposalModal(false));
-
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -199,34 +82,6 @@ const ViewProposalModal: React.FC<Props> = ({
       window.removeEventListener("resize", handleResize);
     };
   }, [modalRef]);
-
-  const handleSelectVoting = useCallback(() => {
-    handleSelectVote();
-  }, [optionVote, handleSelectVote]);
-
-  const disableButton = useMemo(() => {
-    if (!isConnected) {
-      return false;
-    }
-    if (isSwitchNetwork) {
-      return false;
-    }
-    return optionVote === "";
-  }, [isConnected, isSwitchNetwork, optionVote]);
-
-  const textButton = useMemo(() => {
-    if (!isConnected) {
-      return "Wallet Login";
-    }
-    if (isSwitchNetwork) {
-      return "Switch to Gnoland";
-    }
-    return proposalDetail.typeVote
-      ? "Already Vote"
-      : optionVote === ""
-        ? "Select Voting Option"
-        : "Vote";
-  }, [isConnected, isSwitchNetwork, proposalDetail, optionVote]);
 
   if (!proposalDetail) return null;
 
@@ -238,114 +93,118 @@ const ViewProposalModal: React.FC<Props> = ({
             <ModalHeaderWrapper>
               <div className="header">
                 <div className="title">
-                  <span>{proposalDetail.title}</span>
+                  <span>{`#${proposalDetail.id} ${proposalDetail.title}`}</span>
                   {breakpoint !== DEVICE_TYPE.MOBILE && (
-                    <Badge
-                      className="badge-label"
-                      type={BADGE_TYPE.DARK_DEFAULT}
-                      text={proposalDetail.label}
-                    />
+                    <TypeBadge type={proposalDetail.type} />
                   )}
                 </div>
                 <div
                   className="close-wrap"
-                  onClick={() => setIsShowProposalModal(false)}
+                  onClick={() => setSelectedProposalId(0)}
                 >
                   <IconClose className="close-icon" />
                 </div>
               </div>
               {breakpoint === DEVICE_TYPE.MOBILE && (
-                <Badge
-                  className="badge-label"
-                  type={BADGE_TYPE.DARK_DEFAULT}
-                  text={proposalDetail.label}
-                />
+                <TypeBadge type={proposalDetail.type} />
               )}
               <div className="active-wrapper">
-                {MAPPING_STATUS[proposalDetail.status]}
-                <div className="status time">
-                  <IconOutlineClock className="status-icon" />{" "}
-                  {`Voting ${proposalDetail.status === "ACTIVE" ? "Ends in" : "Ended1"
-                    } ${dayjs(proposalDetail.timeEnd).fromNow()} `}
-                  <br />
-                  {proposalDetail.timeEnd}
-                </div>
+                <StatusBadge
+                  status={proposalDetail.status}
+                  time={proposalDetail.time}
+                />
               </div>
             </ModalHeaderWrapper>
+            <ProposalContentWrapper>
+              <div className="content">
+                {proposalDetail.type === "COMMUNITY_POOL_SPEND" && (
+                  <>
+                    <div className="variable">
+                      <div className="variable-type">
+                        {t("Governance:detailModal.content.recipient")}
+                      </div>
+                      {proposalDetail.content.recipient}
+                    </div>
+                    <div className="variable">
+                      <div className="variable-type">
+                        {t("Governance:detailModal.content.amount")}
+                      </div>
+                      {proposalDetail.content.amount}
+                    </div>
+                  </>
+                )}
+                {proposalDetail.type === "PARAMETER_CHANGE" && (
+                  <div className="variable">
+                    <div className="variable-type">
+                      {t("Governance:detailModal.content.change")}
+                    </div>
+                    {proposalDetail.content.parameters?.map((item, index) => (
+                      <div key={index}>
+                        {`Subspace: "${item.subspace}", Key: "${item.key}", Value: "${item.value}"`}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {proposalDetail.content.description || ""}
+              </div>
+            </ProposalContentWrapper>
             <ModalQuorum>
               <div className="quorum-header">
-                <span>Quorum</span>
+                <span>{t("Governance:detailModal.quorum")}</span>
                 <div className="progress-value">
-                  <span>{proposalDetail.currentValue.toLocaleString()}</span>/
-                  <div>{proposalDetail.maxValue.toLocaleString()}</div>
+                  <span>
+                    {(
+                      proposalDetail.votes.yes + proposalDetail.votes.no
+                    ).toLocaleString()}
+                  </span>
+                  /<div>{proposalDetail.votes.max.toLocaleString()}</div>
                 </div>
               </div>
-              <ProgressWrapper>
-                <ProgressBar
-                  rateWidth={`${proposalDetail.yesOfQuorum}%`}
-                  abstainOfQuorumWidth={`${proposalDetail.abstainOfQuorum +
-                    proposalDetail.yesOfQuorum +
-                    proposalDetail.noOfQuorum
-                    }%`}
-                  noOfQuorumWidth={`${proposalDetail.noOfQuorum + proposalDetail.yesOfQuorum
-                    }%`}
-                >
-                  <FloatingTooltip
-                    className="float-progress"
-                    position="top"
-                    content={`Yes ${proposalDetail.yesOfQuorum}%`}
-                  >
-                    <div className="progress-bar-yes-of-quorum progress-bar-rate" />
-                  </FloatingTooltip>
-                  <FloatingTooltip
-                    className="float-progress"
-                    position="top"
-                    content={`No ${proposalDetail.noOfQuorum}%`}
-                  >
-                    <div className="progress-bar-no-of-quorum progress-bar-rate" />
-                  </FloatingTooltip>
-                  <FloatingTooltip
-                    className="float-progress"
-                    position="top"
-                    content={`Abstain ${proposalDetail.abstainOfQuorum}%`}
-                  >
-                    <div className="progress-bar-abstain progress-bar-rate" />
-                  </FloatingTooltip>
-                </ProgressBar>
-              </ProgressWrapper>
-            </ModalQuorum>
-            <BoxQuorum
-              breakpoint={breakpoint}
-              proposalDetail={proposalDetail}
-              optionVote={optionVote}
-              setOptionVote={setOptionVote}
-            />
-            <VotingPower proposalDetail={proposalDetail} />
-            {proposalDetail.status === "ACTIVE" && (
-              <Button
-                disabled={disableButton}
-                text={textButton}
-                style={{
-                  fullWidth: true,
-                  height: breakpoint !== DEVICE_TYPE.MOBILE ? 57 : 41,
-                  fontType:
-                    breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-                  textColor: "text09",
-                  bgColor: "background17",
-                  width:
-                    breakpoint !== DEVICE_TYPE.MOBILE ? undefined : "304px",
-                  hierarchy: disableButton
-                    ? undefined
-                    : ButtonHierarchy.Primary,
-                }}
-                onClick={handleSelectVoting}
+              <VotingProgressBar
+                yes={proposalDetail.votes.yes}
+                no={proposalDetail.votes.no}
+                max={proposalDetail.votes.max}
+                hideNumber
               />
-            )}
-            <ProposalContent proposalDetail={proposalDetail} />
+            </ModalQuorum>
+            <VoteButtons
+              breakpoint={breakpoint}
+              isVoted={
+                proposalDetail.myVote
+                  ? proposalDetail.myVote.type !== ""
+                  : false
+              }
+              yesCount={proposalDetail.votes.yes}
+              noCount={proposalDetail.votes.no}
+              selectedVote={selectedVote}
+              setSelectedVote={setSelectedVote}
+            />
+            <VotingPowerWrapper>
+              <span>{t("Governance:detailModal.votingWeight")}</span>
+              <div>
+                <div className="power-value">
+                  {(proposalDetail.votes.yes || 0).toLocaleString()}
+                </div>
+                <TokenChip tokenInfo={GNS_TOKEN} />
+              </div>
+            </VotingPowerWrapper>
+            <VoteCtaButton
+              breakpoint={breakpoint}
+              isWalletConnected={isConnected}
+              isSwitchNetwork={isSwitchNetwork}
+              voteType={proposalDetail.myVote?.type}
+              voteWeigth={proposalDetail.myVote?.weight}
+              status={proposalDetail.status}
+              selectedVote={selectedVote}
+              handleVote={handleVote}
+              connectWallet={connectWallet}
+              switchNetwork={switchNetwork}
+            />
           </div>
         </ViewProposalModalWrapper>
       </ViewProposalModalBackground>
-      <Overlay onClick={() => setIsShowProposalModal(false)} />
+      <Overlay onClick={() => setSelectedProposalId(0)} />
     </>
   );
 };

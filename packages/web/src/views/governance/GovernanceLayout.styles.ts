@@ -70,15 +70,11 @@ export const GovernanceLayoutWrapper = styled.div`
   }
 
   .proposal-list-wrapper {
-    margin-top: 60px;
+    position: relative;
+    margin-top: 100px;
     width: 100%;
     padding-top: 100px;
     padding-bottom: 48px;
-    background: linear-gradient(
-      180deg,
-      rgba(20, 26, 41, 0.5) 0%,
-      rgba(20, 26, 41, 0) 100%
-    );
 
     ${media.tablet} {
       padding-top: 60px;
@@ -90,7 +86,21 @@ export const GovernanceLayoutWrapper = styled.div`
       margin-top: 24px;
     }
 
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(
+        180deg,
+        ${({ theme }) => theme.color.backgroundGradient2} 0%,
+        ${({ theme }) => theme.color.backgroundGradient3} 100%
+      );
+    }
+
     .proposal-list-container {
+      position: relative;
       margin: 0 auto;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       max-width: ${ContainerWidth.WEB_CONTAINER};

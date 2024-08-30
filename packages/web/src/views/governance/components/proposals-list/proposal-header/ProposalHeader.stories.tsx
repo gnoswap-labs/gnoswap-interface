@@ -14,6 +14,6 @@ const Template: ComponentStory<typeof ProposalHeader> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  isShowCancelled: true,
-  toggleShowCancelled: action("toggleShowCancelled"),
+  isShowActiveOnly: true,
+  toggleIsShowActiveOnly: action("toggleIsShowActiveOnly"),
 };

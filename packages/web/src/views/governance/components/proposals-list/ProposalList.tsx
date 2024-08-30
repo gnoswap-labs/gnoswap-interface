@@ -1,88 +1,91 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { ProposalItemInfo } from "@repositories/governance";
+import { nullProposalItemInfo, ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
-import { ProposalDetailInfo } from "@views/governance/containers/proposal-list-container/ProposalListContainer";
 
 import CreateProposalModal from "./create-proposal-modal/CreateProposalModal";
-import ProposalDetail from "./proposal-detail/ProposalDetail";
-import ProposalDetailSkeleton from "./proposal-detail/ProposalDetailSekeleton";
+import ProposalCard from "./proposal-card/ProposalCard";
+import ProposalCardSkeleton from "./proposal-card/ProposalCardSekeleton";
 import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
 import { ProposalListWrapper } from "./ProposalList.styles";
 
 interface ProposalListProps {
+  isLoading?: boolean;
+  isShowActiveOnly: boolean;
+  toggleIsShowActiveOnly: () => void;
   proposalList: ProposalItemInfo[];
-  isShowCancelled: boolean;
-  toggleShowCancelled: () => void;
-  isShowProposalModal: boolean;
-  breakpoint: DEVICE_TYPE;
-  proposalDetail: ProposalDetailInfo;
-  setIsShowProposalModal: Dispatch<SetStateAction<boolean>>;
-  onClickProposalDetail: (id: string) => void;
-  isShowCreateProposal: boolean;
-  setIsShowCreateProposal: Dispatch<SetStateAction<boolean>>;
   isConnected: boolean;
   isSwitchNetwork: boolean;
-  handleSelectVote: () => void;
-  loading?: boolean;
+  handleVote: (voteYes: boolean) => void;
+  connectWallet: () => void;
+  switchNetwork: () => void;
+  breakpoint: DEVICE_TYPE;
+  selectedProposalId: number;
+  setSelectedProposalId: Dispatch<SetStateAction<number>>;
+  isOpenCreateModal: boolean;
+  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
+  isLoading,
+  isShowActiveOnly,
+  toggleIsShowActiveOnly,
   proposalList,
-  toggleShowCancelled,
-  isShowCancelled,
-  isShowProposalModal,
   breakpoint,
-  proposalDetail,
-  setIsShowProposalModal,
-  onClickProposalDetail,
-  isShowCreateProposal,
-  setIsShowCreateProposal,
+  selectedProposalId,
+  setSelectedProposalId,
+  connectWallet,
+  switchNetwork,
+  isOpenCreateModal,
+  setIsOpenCreateModal,
   isConnected,
   isSwitchNetwork,
-  handleSelectVote,
-  loading,
+  handleVote,
 }) => (
   <ProposalListWrapper>
     <ProposalHeader
-      toggleShowCancelled={toggleShowCancelled}
-      isShowCancelled={isShowCancelled}
-      setIsShowCreateProposal={setIsShowCreateProposal}
-      isConnected={isConnected}
-      isSwitchNetwork={isSwitchNetwork}
+      isShowActiveOnly={isShowActiveOnly}
+      toggleIsShowActiveOnly={toggleIsShowActiveOnly}
+      setIsOpenCreateModal={setIsOpenCreateModal}
+      isDisabledCreateButton={!isConnected || isSwitchNetwork}
     />
-    {loading ? (
+    {isLoading ? (
       Array.from({ length: 3 }).map((_, idx) => (
-        <ProposalDetailSkeleton key={`skeleton-${idx}`} />
+        <ProposalCardSkeleton key={`skeleton-${idx}`} />
       ))
     ) : (
       <>
-        {proposalList.map((proposalDetail: ProposalItemInfo ) => (
-          <ProposalDetail
+        {proposalList.map((proposalDetail: ProposalItemInfo) => (
+          <ProposalCard
             key={proposalDetail.id}
             proposalDetail={proposalDetail}
-            onClickProposalDetail={onClickProposalDetail}
+            onClickCard={() => setSelectedProposalId(proposalDetail.id)}
           />
         ))}
       </>
     )}
 
-    {isShowProposalModal && (
+    {selectedProposalId !== 0 && (
       <ViewProposalModal
         breakpoint={breakpoint}
-        proposalDetail={proposalDetail}
-        setIsShowProposalModal={setIsShowProposalModal}
+        proposalDetail={
+          proposalList.find(item => item.id === selectedProposalId) ||
+          nullProposalItemInfo
+        }
+        setSelectedProposalId={setSelectedProposalId}
         isConnected={isConnected}
         isSwitchNetwork={isSwitchNetwork}
-        handleSelectVote={handleSelectVote}
+        handleVote={handleVote}
+        connectWallet={connectWallet}
+        switchNetwork={switchNetwork}
       />
     )}
-    {isShowCreateProposal && (
+    {isOpenCreateModal && (
       <CreateProposalModal
         breakpoint={breakpoint}
-        setIsShowCreateProposal={setIsShowCreateProposal}
+        setIsOpenCreateModal={setIsOpenCreateModal}
       />
     )}
   </ProposalListWrapper>

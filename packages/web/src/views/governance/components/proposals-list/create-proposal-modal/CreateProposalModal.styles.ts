@@ -191,9 +191,6 @@ export const BoxItem = styled.div`
     position: absolute;
     right: 24px;
     top: 21px;
-    background-color: ${({ theme }) => theme.color.background02};
-    border-radius: 36px;
-    padding: 4px 12px 4px 6px;
     ${media.mobile} {
       top: 18px;
       right: 16px;
