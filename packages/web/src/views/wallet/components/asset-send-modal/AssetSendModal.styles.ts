@@ -130,7 +130,7 @@ export const AssetSendContent = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 130%;
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text30};
   }
 
   .withdrawal-network {
