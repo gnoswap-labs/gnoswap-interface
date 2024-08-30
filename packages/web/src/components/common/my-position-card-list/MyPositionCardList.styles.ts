@@ -41,9 +41,9 @@ export const GridWrapper = styled.div<Props>`
   grid-template-rows: auto;
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
-  overflow: visible;
+  overflow: scroll;
   @media (max-width: 1430px) {
-    overflow-x: scroll;
+    overflow-x: visible;
   }
   @media (max-width: 920px) {
     overflow-x: auto;
