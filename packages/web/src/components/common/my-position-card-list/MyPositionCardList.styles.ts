@@ -45,8 +45,10 @@ export const GridWrapper = styled.div<Props>`
   @media (max-width: 1430px) {
     overflow-x: visible;
   }
+  ${media.tablet} {
+    grid-template-columns: repeat(3, 1fr);
+  }
   @media (max-width: 920px) {
-    overflow-x: auto;
     grid-gap: 12px;
     grid-template-columns: repeat(auto-fill, 322px);
     grid-auto-flow: column;
@@ -58,16 +60,6 @@ export const GridWrapper = styled.div<Props>`
     height: 198px;
     border-radius: 10px;
     box-shadow: ${({ theme }) => theme.color.shadow02};
-  }
-  ${media.tablet} {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  ${media.mobile} {
-    overflow-x: auto;
-    grid-gap: 12px;
-    grid-template-columns: repeat(auto-fill, 322px);
-    grid-auto-flow: column;
-    grid-auto-columns: 322px;
   }
 `;
 
