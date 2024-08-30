@@ -35,21 +35,14 @@ export const TokenLogoWrapper = styled.div`
 
   .token-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
-    svg {
+    svg,
+    img {
       width: 32px;
       height: 32px;
       ${media.mobile} {
         width: 24px;
         height: 24px;
       }
-    }
-  }
-  .tokne-image {
-    width: 17px;
-    height: 19.5px;
-    ${media.mobile} {
-      width: 14.84px;
-      height: 14.84px;
     }
   }
   .token-symbol {

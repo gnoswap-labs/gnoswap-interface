@@ -787,9 +787,9 @@ export const useSwapHandler = () => {
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue(prev => ({
-        tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
+        tokenA: prev.tokenB?.path === token.path ? prev.tokenB : token,
         tokenB:
-          prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+          prev.tokenB?.path === token.path ? prev.tokenA : prev.tokenB,
         type: changedSwapDirection,
       }));
       if (!!Number(tokenAAmount)) {
@@ -816,9 +816,8 @@ export const useSwapHandler = () => {
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue(prev => ({
-        tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
-        tokenA:
-          prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+        tokenB: prev.tokenA?.path === token.path ? prev.tokenA : token,
+        tokenA: prev.tokenA?.path === token.path ? prev.tokenB : prev.tokenA,
         type: changedSwapDirection,
       }));
       if (!!Number(tokenAAmount)) {

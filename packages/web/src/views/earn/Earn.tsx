@@ -6,9 +6,9 @@ import HeaderContainer from "@containers/header-container/HeaderContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useWallet } from "@hooks/wallet/use-wallet";
 
-import EarnIncentivizedPools from "./components/earn-incentivized-pools/EarnIncentivizedPools";
 import EarnMyPositionContainer from "./containers/earn-my-position-container/EarnMyPositionContainer";
 import IncentivizedPoolCardListContainer from "./containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
+import IncentivizedPoolsContainer from "./containers/incentivized-pools-container/IncentivizedPoolsContainer";
 import PoolListContainer from "./containers/pool-list-container/PoolListContainer";
 import EarnLayout from "./EarnLayout";
 
@@ -19,23 +19,23 @@ const Earn: React.FC = () => {
   const isOtherPosition = !!(addr && addr !== account?.address);
 
   return (
-      <EarnLayout
-        header={<HeaderContainer />}
-        positions={
-          <EarnMyPositionContainer
-            isOtherPosition={isOtherPosition}
-            address={(addr || "") as string}
-          />
-        }
-        incentivizedPools={
-          <EarnIncentivizedPools
-            isOtherPosition={isOtherPosition}
-            cardList={<IncentivizedPoolCardListContainer />}
-          />
-        }
-        poolList={<PoolListContainer />}
-        footer={<Footer />}
-      />
+    <EarnLayout
+      header={<HeaderContainer />}
+      positions={
+        <EarnMyPositionContainer
+          isOtherPosition={isOtherPosition}
+          address={(addr || "") as string}
+        />
+      }
+      incentivizedPools={
+        <IncentivizedPoolsContainer
+          isOtherPosition={isOtherPosition}
+          cardList={<IncentivizedPoolCardListContainer />}
+        />
+      }
+      poolList={<PoolListContainer />}
+      footer={<Footer />}
+    />
   );
 };
 

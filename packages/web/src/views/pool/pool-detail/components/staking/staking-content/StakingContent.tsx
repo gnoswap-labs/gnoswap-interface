@@ -87,7 +87,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
 
     scrollTimeoutRef.current = window.setTimeout(() => {
       setIsVisible(true); 
-    }, 1000); 
+    }, 500); 
   }, 10); 
 
   useEffect(() => {
