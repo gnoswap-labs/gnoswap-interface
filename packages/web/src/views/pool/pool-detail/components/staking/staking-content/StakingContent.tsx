@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button from "@components/common/button/Button";
+import IconPolygon from "@components/common/icons/IconPolygon";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -13,6 +14,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { themeKey } from "@states/theme";
 import { DEVICE_TYPE } from "@styles/media";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
@@ -140,23 +142,18 @@ const StakingContent: React.FC<StakingContentProps> = ({
               document.getElementsByClassName("apr-text")?.[0]?.clientWidth
             }
           >
-            <Tooltip
-              className={"float-view-apr"}
-              FloatingContent={
-                <NoticeAprToolTip>
-                  {t("Pool:staking.tooltip.hoverGuide")}
-                </NoticeAprToolTip>
-              }
-              placement="top"
-              forcedOpen={
-                entry?.isIntersecting &&
-                !((entry?.boundingClientRect.top || 20) < 20) &&
-                forceShowAprGuide
-              }
-              forcedClose={!forceShowAprGuide}
-            >
-              <div className="placeholder"></div>
-            </Tooltip>
+            <div className="placeholder">
+              {entry?.isIntersecting &&
+                (entry?.boundingClientRect.top || 20) > 20 &&
+                forceShowAprGuide && (
+                  <NoticeAprToolTip>
+                    <div className={`box ${themeKey}-shadow`}>
+                      <span>{t("Pool:staking.tooltip.hoverGuide")}</span>
+                    </div>
+                    <IconPolygon className="polygon-icon" />
+                  </NoticeAprToolTip>
+                )}
+            </div>
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
                 FloatingContent={
@@ -189,32 +186,30 @@ const StakingContent: React.FC<StakingContentProps> = ({
         )}
       </div>
       <div className="staking-wrap">
-        <>
-          <span>{t("Pool:staking.myStake")}</span>
-          {STAKING_PERIOS.map((period, index) => {
-            return period === "MAX" ? (
-              <SummuryApr
-                loading={loading}
-                key={index}
-                stakingApr={pool?.stakingApr}
-                period={period}
-                positions={stakingPositionMap[period]}
-                checkPoints={checkPoints}
-                breakpoint={breakpoint}
-              />
-            ) : (
-              <StakingContentCard
-                key={index}
-                stakingApr={pool?.stakingApr}
-                period={period}
-                positions={stakingPositionMap[period]}
-                breakpoint={breakpoint}
-                loading={loading}
-                checkPoints={checkPoints}
-              />
-            );
-          })}
-        </>
+        <span>{t("Pool:staking.myStake")}</span>
+        {STAKING_PERIOS.map((period, index) => {
+          return period === "MAX" ? (
+            <SummuryApr
+              loading={loading}
+              key={index}
+              stakingApr={pool?.stakingApr}
+              period={period}
+              positions={stakingPositionMap[period]}
+              checkPoints={checkPoints}
+              breakpoint={breakpoint}
+            />
+          ) : (
+            <StakingContentCard
+              key={index}
+              stakingApr={pool?.stakingApr}
+              period={period}
+              positions={stakingPositionMap[period]}
+              breakpoint={breakpoint}
+              loading={loading}
+              checkPoints={checkPoints}
+            />
+          );
+        })}
       </div>
       <div className="button-wrap">
         <div className="empty-content"></div>

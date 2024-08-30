@@ -12,7 +12,7 @@ const useIntersectionObserver = () => {
       {
         root: null, // viewport
         rootMargin: "0px",
-        threshold: [0.1, 0.2, 0.7, 0.95],
+        threshold: [0.2],
       },
     );
 

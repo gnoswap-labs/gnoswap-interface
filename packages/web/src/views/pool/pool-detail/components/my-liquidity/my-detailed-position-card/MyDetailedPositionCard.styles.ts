@@ -409,6 +409,7 @@ export const CopyTooltip = styled.div`
   .light-shadow {
     box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   }
+
   .polygon-icon * {
     fill: ${({ theme }) => theme.color.background02};
   }
