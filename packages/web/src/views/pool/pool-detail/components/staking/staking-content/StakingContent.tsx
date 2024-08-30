@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button from "@components/common/button/Button";
@@ -64,6 +64,42 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const { t } = useTranslation();
 
   const { ref, entry } = useIntersectionObserver();
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  const debounce = (func: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (...args: any[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  };
+
+  const [isVisible, setIsVisible] = useState(true);
+  const scrollTimeoutRef = useRef<number | null>(null);
+
+  const handleScroll = debounce(() => {
+    setIsVisible(false); // 스크롤 중에는 숨깁니다
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    scrollTimeoutRef.current = window.setTimeout(() => {
+      setIsVisible(true); // 스크롤이 멈춘 후 일정 시간이 지나면 보이도록 합니다
+    }, 500); // 500ms 동안 스크롤이 멈춘 경우
+  }, 100); // 100ms마다 스크롤 이벤트를 감지
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
@@ -145,6 +181,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             <div className="placeholder">
               {entry?.isIntersecting &&
                 (entry?.boundingClientRect.top || 20) > 20 &&
+                isVisible &&
                 forceShowAprGuide && (
                   <NoticeAprToolTip>
                     <div className={`box ${themeKey}-shadow`}>

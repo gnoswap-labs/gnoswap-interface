@@ -232,4 +232,9 @@ export const NoticeAprToolTip = styled.div`
   .polygon-icon * {
     fill: ${({ theme }) => theme.color.background02};
   }
+
+  ${media.mobile} {
+    left: -20px;
+    top: -45px;
+  }
 `;
