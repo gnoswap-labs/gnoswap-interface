@@ -235,6 +235,5 @@ export const NoticeAprToolTip = styled.div`
 
   ${media.mobile} {
     left: -20px;
-    top: -45px;
   }
 `;
