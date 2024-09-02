@@ -49,6 +49,9 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   const { t } = useTranslation();
 
   const stakedPositions = useMemo(() => {
+    if (!positions || positions.length === 0)
+      return [];
+
     return positions
       .filter(item => item.staked === true)
       .map(item => ({
