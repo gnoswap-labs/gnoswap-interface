@@ -214,7 +214,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
-  }, [canShowData, isDisplayPrice, positions, tokenPrices]);
+  }, [canShowData, positions, tokenPrices]);
 
   const aprRewardInfo = useMemo(():
     | { [key in RewardType]: PositionAPRInfo[] }

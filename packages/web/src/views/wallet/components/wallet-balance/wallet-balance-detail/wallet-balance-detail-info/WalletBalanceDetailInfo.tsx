@@ -1,31 +1,38 @@
-import React, { useRef, useEffect, useState, useMemo } from "react";
+import BigNumber from "bignumber.js";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import {
-  WalletBalanceDetailInfoTooltipContent,
-  WalletBalanceDetailInfoWrapper,
-} from "./WalletBalanceDetailInfo.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
 import { numberToFormat } from "@utils/string-utils";
-import BigNumber from "bignumber.js";
+
+import {
+  WalletBalanceDetailInfoTooltipContent,
+  WalletBalanceDetailInfoWrapper
+} from "./WalletBalanceDetailInfo.styles";
 
 interface WalletBalanceDetailInfoProps {
   title: string;
-  value: string;
   tooltip?: string;
+  value: string;
+  valueTooltip?: React.ReactNode;
   button?: React.ReactNode;
   loading: boolean;
   className?: string;
+  breakpoint: DEVICE_TYPE;
 }
 
 const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   title,
-  value,
   tooltip,
+  value,
+  valueTooltip,
   button,
   loading,
   className,
+  breakpoint,
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const valueRef = useRef<HTMLDivElement | null>(null);
@@ -59,32 +66,47 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
 
   return (
     <WalletBalanceDetailInfoWrapper className={className}>
-      <div className="title-wrapper">
-        <span className="title">{title}</span>
-        {tooltip !== undefined && (
-          <WalletBalanceDetailInfoTooltip tooltip={tooltip} />
-        )}
+      <div className="wallet-detail-left-side">
+        <div className="title-wrapper">
+          <span className="title">{title}</span>
+          {tooltip !== undefined && (
+            <WalletBalanceDetailInfoTooltip tooltip={tooltip} />
+          )}
+        </div>
+        <div className="value-wrapper" ref={valueRef}>
+          {loading ? (
+            <div className="value loading">
+              <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
+            </div>
+          ) : (
+            <Tooltip
+              placement="top"
+              forcedClose={!valueTooltip}
+              FloatingContent={valueTooltip}
+            >
+              <span
+                className="value"
+                style={isClaim ? { fontSize: `${fontSize}px` } : {}}
+              >
+                {displayValue}
+              </span>
+            </Tooltip>
+          )}
+          {breakpoint !== DEVICE_TYPE.MOBILE && button && (
+            <div className="button-wrapper">{button}</div>
+          )}
+          {isClaim && (
+            <span className="value hidden-value" ref={divRef}>
+              {displayValue}
+            </span>
+          )}
+        </div>
       </div>
-      <div className="value-wrapper" ref={valueRef}>
-        {loading ? (
-          <div className="value loading">
-            <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
-          </div>
-        ) : (
-          <span
-            className="value"
-            style={isClaim ? { fontSize: `${fontSize}px` } : {}}
-          >
-            {displayValue}
-          </span>
-        )}
-        {button && <div className="button-wrapper">{button}</div>}
-        {isClaim && (
-          <span className="value hidden-value" ref={divRef}>
-            {displayValue}
-          </span>
-        )}
-      </div>
+      {breakpoint === DEVICE_TYPE.MOBILE && button && (
+        <div className="wallet-detail-right-side">
+          <div className="button-wrapper">{button}</div>
+        </div>
+      )}
     </WalletBalanceDetailInfoWrapper>
   );
 };
