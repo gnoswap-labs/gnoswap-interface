@@ -47,10 +47,18 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const claimableRewardInfo = useMemo(():
-    | { [key in RewardType]: PositionRewardForTooltip[] }
-    | null => {
-    const infoMap: {
+  const { claimedRewardInfo, claimableRewardInfo } = useMemo((): {
+    claimedRewardInfo: { [key in RewardType]: PositionRewardForTooltip[] };
+    claimableRewardInfo: { [key in RewardType]: PositionRewardForTooltip[] };
+  } => {
+    const claimableMap: {
+      [key in RewardType]: { [key in string]: PositionRewardForTooltip };
+    } = {
+      SWAP_FEE: {},
+      INTERNAL: {},
+      EXTERNAL: {},
+    };
+    const claimedMap: {
       [key in RewardType]: { [key in string]: PositionRewardForTooltip };
     } = {
       SWAP_FEE: {},
@@ -60,10 +68,33 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 
     if (!positions || positions.length === 0)
       return {
-        SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-        INTERNAL: Object.values(infoMap["INTERNAL"]),
-        EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+        claimedRewardInfo: {
+          SWAP_FEE: Object.values(claimedMap["SWAP_FEE"]),
+          INTERNAL: Object.values(claimedMap["INTERNAL"]),
+          EXTERNAL: Object.values(claimedMap["EXTERNAL"]),
+        },
+        claimableRewardInfo: {
+          SWAP_FEE: Object.values(claimableMap["SWAP_FEE"]),
+          INTERNAL: Object.values(claimableMap["INTERNAL"]),
+          EXTERNAL: Object.values(claimableMap["EXTERNAL"]),
+        },
       };
+
+    const getAccumulatedRewardOf1d = (
+      cached: PositionRewardForTooltip,
+      current: { accumulatedRewardOf1d: number | null },
+    ) => {
+      if (cached.accumulatedRewardOf1d === null) {
+        if (current.accumulatedRewardOf1d === null) {
+          return null;
+        }
+        return current.accumulatedRewardOf1d;
+      }
+      if (current.accumulatedRewardOf1d === null) {
+        return cached.accumulatedRewardOf1d;
+      }
+      return cached.accumulatedRewardOf1d + current.accumulatedRewardOf1d;
+    };
 
     positions
       .flatMap(position => position.reward)
@@ -88,38 +119,21 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       }))
       .forEach(rewardInfo => {
         const existReward =
-          infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
+          claimableMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
         const tokenPrice = tokenPrices[rewardInfo.token.priceID].usd
           ? Number(tokenPrices[rewardInfo.token.priceID].usd)
           : null;
         if (existReward) {
-          const accumulatedRewardOf1d = (() => {
-            if (
-              existReward.accumulatedRewardOf1d === null &&
-              rewardInfo.accumulatedRewardOf1d === null
-            ) {
-              return null;
-            }
-
-            if (existReward.accumulatedRewardOf1d === null) {
-              return rewardInfo.accumulatedRewardOf1d;
-            }
-
-            if (rewardInfo.accumulatedRewardOf1d === null) {
-              return existReward.accumulatedRewardOf1d;
-            }
-
-            return (
-              existReward.accumulatedRewardOf1d +
-              rewardInfo.accumulatedRewardOf1d
-            );
-          })();
+          const accumulatedRewardOf1d = getAccumulatedRewardOf1d(
+            existReward,
+            rewardInfo,
+          );
           const accumulatedRewardOf1dUsd =
             accumulatedRewardOf1d !== null && tokenPrice !== null
               ? accumulatedRewardOf1d * tokenPrice
               : null;
 
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
+          claimableMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
             usd: (() => {
               if (existReward.usd === null && rewardInfo.usd === null) {
@@ -141,7 +155,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
             accumulatedRewardOf1dUsd: accumulatedRewardOf1dUsd,
           };
         } else {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
+          claimableMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...rewardInfo,
             accumulatedRewardOf1dUsd:
               rewardInfo.accumulatedRewardOf1d !== null && tokenPrice !== null
@@ -152,11 +166,28 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       });
 
     return {
-      SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      INTERNAL: Object.values(infoMap["INTERNAL"]),
-      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      claimedRewardInfo: {
+        SWAP_FEE: Object.values(claimedMap["SWAP_FEE"]),
+        INTERNAL: Object.values(claimedMap["INTERNAL"]),
+        EXTERNAL: Object.values(claimedMap["EXTERNAL"]),
+      },
+      claimableRewardInfo: {
+        SWAP_FEE: Object.values(claimableMap["SWAP_FEE"]),
+        INTERNAL: Object.values(claimableMap["INTERNAL"]),
+        EXTERNAL: Object.values(claimableMap["EXTERNAL"]),
+      },
     };
   }, [positions, tokenPrices]);
+
+  const hasInfo = (data: {[key in RewardType]: PositionRewardForTooltip[]}): boolean => {
+    if (
+      data.SWAP_FEE.length === 0 &&
+      data.INTERNAL.length === 0 &&
+      data.EXTERNAL.length === 0
+    )
+      return false;
+    return true;
+  };
 
   return (
     <WalletBalanceDetailWrapper>
@@ -179,6 +210,11 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={t("Wallet:overral.totalClaimed.label")}
         value={balanceDetailInfo.totalClaimedRewards}
         tooltip={t("Wallet:overral.totalClaimed.tooltip")}
+        valueTooltip={
+          hasInfo(claimedRewardInfo) ? (
+            <RewardTooltipContent rewardInfo={claimedRewardInfo} />
+          ) : undefined
+        }
         breakpoint={breakpoint}
       />
       <WalletBalanceDetailInfo
@@ -187,7 +223,9 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         tooltip={t("Wallet:overral.claimableReward.tooltip")}
         value={balanceDetailInfo.claimableRewards}
         valueTooltip={
-          <RewardTooltipContent rewardInfo={claimableRewardInfo} />
+          hasInfo(claimableRewardInfo) ? (
+            <RewardTooltipContent rewardInfo={claimableRewardInfo} />
+          ) : undefined
         }
         className="claimable-rewards"
         button={
