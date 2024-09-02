@@ -7,6 +7,9 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
+import RewardTooltipContent, {
+  PositionRewardForTooltip,
+} from "@components/common/reward-tooltip-content/RewardTooltipContent";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
@@ -23,10 +26,6 @@ import {
 } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import {
-  ClaimableRewardTooltipContent,
-  PositionRewardInfo,
-} from "../stat-tooltip-contents/ClaimableRewardTooltipContent";
 import {
   DailyEarningTooltipContent,
   PositionAPRInfo,
@@ -103,13 +102,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [canShowData, isDisplayPrice, positions]);
 
   const claimableRewardInfo = useMemo(():
-    | { [key in RewardType]: PositionRewardInfo[] }
+    | { [key in RewardType]: PositionRewardForTooltip[] }
     | null => {
     if (!canShowData) {
       return null;
     }
     const infoMap: {
-      [key in RewardType]: { [key in string]: PositionRewardInfo };
+      [key in RewardType]: { [key in string]: PositionRewardForTooltip };
     } = {
       SWAP_FEE: {},
       INTERNAL: {},
@@ -128,10 +127,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             Number(reward.totalAmount) *
               Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
-        claimableAmount: reward.claimableAmount
-          ? Number(reward.claimableAmount)
-          : null,
-        claimableUSD: reward.claimableUsd ? Number(reward.claimableUsd) : null,
+        amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
+        usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
         accumulatedRewardOf1d: reward.accuReward1D
           ? Number(reward.accuReward1D)
           : null,
@@ -174,27 +171,22 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
-            claimableUSD: (() => {
-              if (
-                existReward.claimableUSD === null &&
-                rewardInfo.claimableUSD === null
-              ) {
+            usd: (() => {
+              if (existReward.usd === null && rewardInfo.usd === null) {
                 return null;
               }
 
-              if (existReward.claimableUSD === null) {
-                return rewardInfo.claimableUSD;
+              if (existReward.usd === null) {
+                return rewardInfo.usd;
               }
 
-              if (rewardInfo.claimableUSD === null) {
-                return existReward.claimableUSD;
+              if (rewardInfo.usd === null) {
+                return existReward.usd;
               }
 
-              return existReward.claimableUSD + rewardInfo.claimableUSD;
+              return existReward.usd + rewardInfo.usd;
             })(),
-            claimableAmount:
-              Number(existReward.claimableAmount || 0) +
-              Number(rewardInfo.claimableAmount),
+            amount: Number(existReward.amount || 0) + Number(rewardInfo.amount),
             accumulatedRewardOf1d: accumulatedRewardOf1d,
             accumulatedRewardOf1dUsd: accumulatedRewardOf1dUsd,
           };
@@ -378,26 +370,26 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return formatOtherPrice(claimableUsdValue, { isKMB: false });
   }, [canShowData, isDisplayPrice, claimableRewardInfo]);
 
-  const unclaimedRewardInfo = useMemo((): PositionRewardInfo[] | null => {
+  const unclaimedRewardInfo = useMemo((): PositionRewardForTooltip[] | null => {
     if (!canShowData) {
       return null;
     }
-    const infoMap: { [key in string]: PositionRewardInfo } = {};
+    const infoMap: { [key in string]: PositionRewardForTooltip } = {};
     positions
       .flatMap(position => position.reward)
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
-        claimableAmount: reward.claimableAmount
+        amount: reward.claimableAmount
           ? makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount)
           : null,
-        claimableUSD: reward.claimableUsd ? Number(reward.claimableUsd) : null,
+        usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
         accumulatedRewardOf1d: reward.accuReward1D
           ? makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D)
           : null,
       }))
       .forEach(rewardInfo => {
-        if (rewardInfo.claimableAmount) {
+        if (rewardInfo.amount) {
           const existReward = infoMap[rewardInfo.token.priceID];
           const tokenPrice = tokenPrices[rewardInfo.token.priceID]?.usd
             ? Number(tokenPrices[rewardInfo.token.priceID]?.usd)
@@ -432,41 +424,35 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
             infoMap[rewardInfo.token.priceID] = {
               ...existReward,
-              claimableAmount: (() => {
-                if (
-                  existReward.claimableAmount === null &&
-                  rewardInfo.claimableAmount === null
-                ) {
+              amount: (() => {
+                if (existReward.amount === null && rewardInfo.amount === null) {
                   return null;
                 }
 
-                if (existReward.claimableAmount === null) {
-                  return rewardInfo.claimableAmount;
+                if (existReward.amount === null) {
+                  return rewardInfo.amount;
                 }
 
-                if (rewardInfo.claimableAmount === null) {
-                  return existReward.claimableAmount;
+                if (rewardInfo.amount === null) {
+                  return existReward.amount;
                 }
 
-                return existReward.claimableAmount + rewardInfo.claimableAmount;
+                return existReward.amount + rewardInfo.amount;
               })(),
-              claimableUSD: (() => {
-                if (
-                  existReward.claimableUSD === null &&
-                  rewardInfo.claimableUSD === null
-                ) {
+              usd: (() => {
+                if (existReward.usd === null && rewardInfo.usd === null) {
                   return null;
                 }
 
-                if (existReward.claimableUSD === null) {
-                  return rewardInfo.claimableUSD;
+                if (existReward.usd === null) {
+                  return rewardInfo.usd;
                 }
 
-                if (rewardInfo.claimableUSD === null) {
-                  return existReward.claimableUSD;
+                if (rewardInfo.usd === null) {
+                  return existReward.usd;
                 }
 
-                return existReward.claimableUSD + rewardInfo.claimableUSD;
+                return existReward.usd + rewardInfo.usd;
               })(),
               accumulatedRewardOf1d: (() => {
                 if (
@@ -519,7 +505,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return unclaimedRewardInfo && unclaimedRewardInfo.length > 0;
   }, [unclaimedRewardInfo]);
 
-  const claimableUSD = useMemo(() => {
+  const usd = useMemo(() => {
     const isEmpty = positions
       .filter(item => !item.closed)
       .flatMap(item => item.reward)
@@ -535,20 +521,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           .reduce((accum: null | number, current) => {
             if (
               (accum === null || accum === undefined) &&
-              current.claimableUSD === null
+              current.usd === null
             ) {
               return null;
             }
 
             if (accum === null || accum === undefined) {
-              return current.claimableUSD;
+              return current.usd;
             }
 
-            if (current.claimableUSD === null) {
+            if (current.usd === null) {
               return accum;
             }
 
-            return accum + current.claimableUSD;
+            return accum + current.usd;
           }, null as number | null)
       : null;
 
@@ -560,7 +546,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return false;
     }
 
-    return unclaimedRewardInfo.some(item => item.claimableAmount);
+    return unclaimedRewardInfo.some(item => item.amount);
   }, [canShowData, unclaimedRewardInfo]);
 
   const tokenABalance = useMemo(() => {
@@ -629,16 +615,16 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     const sumUsd = swapFeeReward?.reduce((accum: number | null, current) => {
       if (accum === null || accum === undefined) {
-        if (current.claimableUSD === null) return null;
+        if (current.usd === null) return null;
 
-        return current.claimableUSD;
+        return current.usd;
       }
 
-      if (current.claimableUSD === null) {
+      if (current.usd === null) {
         return accum;
       }
 
-      return accum + current.claimableUSD;
+      return accum + current.usd;
     }, null);
 
     if (!canShowData || !isDisplayPrice) return "-";
@@ -724,17 +710,17 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     ];
 
     const sumUSD = rewards?.reduce((accum: number | null, current) => {
-      if (accum === null && current.claimableUSD === null) return null;
+      if (accum === null && current.usd === null) return null;
 
       if (accum === null) {
-        return current.claimableUSD;
+        return current.usd;
       }
 
-      if (current.claimableUSD === null) {
+      if (current.usd === null) {
         return accum;
       }
 
-      return accum + current.claimableUSD;
+      return accum + current.usd;
     }, null);
 
     const isEmpty = sumUSD === 0;
@@ -944,14 +930,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         <Tooltip
           placement="top"
           FloatingContent={
-            <ClaimableRewardTooltipContent rewardInfo={claimableRewardInfo} />
+            <RewardTooltipContent rewardInfo={claimableRewardInfo} />
           }
         >
-          <span className="content-value">{claimableUSD}</span>
+          <span className="content-value">{usd}</span>
         </Tooltip>
       ) : (
         !loading && (
-          <span className="content-value disabled">{claimableUSD}</span>
+          <span className="content-value disabled">{usd}</span>
         )
       );
 

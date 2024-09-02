@@ -8,8 +8,8 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { RewardType } from "@constants/option.constant";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import RewardTooltipContent, { PositionRewardForTooltip } from "@components/common/reward-tooltip-content/RewardTooltipContent";
 
-import { ClaimableRewardTooltipContent, PositionRewardInfo } from "./stat-tooltip-contents/ClaimableRewardTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
 
 import { WalletBalanceDetailWrapper } from "./WalletBalanceDetail.styles";
@@ -24,7 +24,7 @@ export interface BalanceDetailInfo {
   totalClaimedRewards: string;
 }
 
-interface WalletBalanceDetailProps {
+export interface WalletBalanceDetailProps {
   balanceDetailInfo: BalanceDetailInfo;
   connected: boolean;
   isSwitchNetwork: boolean;
@@ -48,15 +48,22 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   const { t } = useTranslation();
 
   const claimableRewardInfo = useMemo(():
-    | { [key in RewardType]: PositionRewardInfo[] }
+    | { [key in RewardType]: PositionRewardForTooltip[] }
     | null => {
     const infoMap: {
-      [key in RewardType]: { [key in string]: PositionRewardInfo };
+      [key in RewardType]: { [key in string]: PositionRewardForTooltip };
     } = {
       SWAP_FEE: {},
       INTERNAL: {},
       EXTERNAL: {},
     };
+
+    if (!positions || positions.length === 0)
+      return {
+        SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
+        INTERNAL: Object.values(infoMap["INTERNAL"]),
+        EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      };
 
     positions
       .flatMap(position => position.reward)
@@ -70,10 +77,8 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
             Number(reward.totalAmount) *
               Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
-        claimableAmount: reward.claimableAmount
-          ? Number(reward.claimableAmount)
-          : null,
-        claimableUSD: reward.claimableUsd ? Number(reward.claimableUsd) : null,
+        amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
+        usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
         accumulatedRewardOf1d: reward.accuReward1D
           ? Number(reward.accuReward1D)
           : null,
@@ -116,27 +121,22 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
-            claimableUSD: (() => {
-              if (
-                existReward.claimableUSD === null &&
-                rewardInfo.claimableUSD === null
-              ) {
+            usd: (() => {
+              if (existReward.usd === null && rewardInfo.usd === null) {
                 return null;
               }
 
-              if (existReward.claimableUSD === null) {
-                return rewardInfo.claimableUSD;
+              if (existReward.usd === null) {
+                return rewardInfo.usd;
               }
 
-              if (rewardInfo.claimableUSD === null) {
-                return existReward.claimableUSD;
+              if (rewardInfo.usd === null) {
+                return existReward.usd;
               }
 
-              return existReward.claimableUSD + rewardInfo.claimableUSD;
+              return existReward.usd + rewardInfo.usd;
             })(),
-            claimableAmount:
-              Number(existReward.claimableAmount || 0) +
-              Number(rewardInfo.claimableAmount),
+            amount: Number(existReward.amount || 0) + Number(rewardInfo.amount),
             accumulatedRewardOf1d: accumulatedRewardOf1d,
             accumulatedRewardOf1dUsd: accumulatedRewardOf1dUsd,
           };
@@ -187,7 +187,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         tooltip={t("Wallet:overral.claimableReward.tooltip")}
         value={balanceDetailInfo.claimableRewards}
         valueTooltip={
-          <ClaimableRewardTooltipContent rewardInfo={claimableRewardInfo} />
+          <RewardTooltipContent rewardInfo={claimableRewardInfo} />
         }
         className="claimable-rewards"
         button={

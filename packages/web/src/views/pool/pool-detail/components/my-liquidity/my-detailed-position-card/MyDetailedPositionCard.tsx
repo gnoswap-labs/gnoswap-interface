@@ -15,6 +15,9 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
+import RewardTooltipContent, {
+  PositionRewardForTooltip,
+} from "@components/common/reward-tooltip-content/RewardTooltipContent";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION, RewardType } from "@constants/option.constant";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
@@ -34,10 +37,6 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import {
-  ClaimableRewardTooltipContent,
-  PositionRewardInfo,
-} from "../stat-tooltip-contents/ClaimableRewardTooltipContent";
 import {
   DailyEarningTooltipContent,
   PositionAPRInfo,
@@ -201,7 +200,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   ]);
 
   const totalRewardInfo = useMemo(():
-    | { [key in RewardType]: PositionRewardInfo[] }
+    | { [key in RewardType]: PositionRewardForTooltip[] }
     | null => {
     const rewards = position.reward;
     if (rewards.length === 0) {
@@ -209,7 +208,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     }
 
     const totalRewardInfo = rewards.reduce<{
-      [key in RewardType]: PositionRewardInfo[];
+      [key in RewardType]: PositionRewardForTooltip[];
     }>(
       (accum, current) => {
         if (!accum[current.rewardType]) {
@@ -250,34 +249,34 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             accuReward1D !== null && tokenPrice !== null
               ? accuReward1D * tokenPrice
               : null;
-          const claimableUSD = (() => {
+          const usd = (() => {
             if (
-              accum[current.rewardType][index].claimableUSD === null &&
+              accum[current.rewardType][index].usd === null &&
               !current.claimableUsd
             ) {
               return null;
             }
 
-            if (accum[current.rewardType][index].claimableUSD === null) {
+            if (accum[current.rewardType][index].usd === null) {
               return Number(current.claimableUsd);
             }
 
             if (!current.claimableUsd) {
-              return accum[current.rewardType][index].claimableUSD;
+              return accum[current.rewardType][index].usd;
             }
 
             return (
-              (accum[current.rewardType][index].claimableUSD || 0) +
+              (accum[current.rewardType][index].usd || 0) +
               Number(current.claimableUsd)
             );
           })();
 
           accum[current.rewardType][index] = {
             ...existReward,
-            claimableAmount:
-              (accum[current.rewardType][index].claimableAmount || 0) +
+            amount:
+              (accum[current.rewardType][index].amount || 0) +
               Number(current.claimableAmount),
-            claimableUSD: claimableUSD,
+            usd: usd,
             accumulatedRewardOf1dUsd: accuReward1DUsd,
             accumulatedRewardOf1d: accuReward1D,
           };
@@ -285,10 +284,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           accum[current.rewardType].push({
             rewardType: current.rewardType,
             token: current.rewardToken,
-            claimableAmount: Number(current.claimableAmount) || 0,
-            claimableUSD: current.claimableUsd
-              ? Number(current.claimableUsd)
-              : null,
+            amount: Number(current.claimableAmount) || 0,
+            usd: current.claimableUsd ? Number(current.claimableUsd) : null,
             accumulatedRewardOf1d: current.accuReward1D
               ? Number(current.accuReward1D)
               : 0,
@@ -956,7 +953,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             FloatingContent={
               <div>
                 {totalRewardInfo && (
-                  <ClaimableRewardTooltipContent rewardInfo={totalRewardInfo} />
+                  <RewardTooltipContent rewardInfo={totalRewardInfo} />
                 )}
               </div>
             }

@@ -4,7 +4,7 @@ import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const StatTooltipContentWrapper = styled.div`
+export const RewardTooltipContentWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "space-between")};
   gap: 8px;
   width: 268px;
