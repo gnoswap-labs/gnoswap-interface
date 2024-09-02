@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
 export const StakedPostionsTooltipContentWrapper = styled.div`
-  min-width: 330px;
+  min-width: 300px;
   ${mixins.flexbox("column", "center", "center")}
   gap: 16px;
 `;
