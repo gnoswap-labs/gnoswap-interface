@@ -13,6 +13,7 @@ import RewardTooltipContent, { PositionRewardForTooltip } from "@components/comm
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
 
 import { WalletBalanceDetailWrapper } from "./WalletBalanceDetail.styles";
+import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 
 export interface BalanceDetailInfo {
   availableBalance: string;
@@ -46,6 +47,19 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   tokenPrices,
 }) => {
   const { t } = useTranslation();
+
+  const stakedPositions = useMemo(() => {
+    return positions
+      .filter(item => item.staked === true)
+      .map(item => ({
+        lpId: item.lpTokenId,
+        tokenA: item.pool.tokenA,
+        tokenB: item.pool.tokenB,
+        totalValue: item.stakedUsdValue,
+        stakedDate: item.stakedAt,
+      }));
+  }, [positions]);
+
 
   const { claimedRewardInfo, claimableRewardInfo } = useMemo((): {
     claimedRewardInfo: { [key in RewardType]: PositionRewardForTooltip[] };
@@ -203,6 +217,11 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={t("Wallet:overral.stakedPosi.label")}
         value={balanceDetailInfo.stakedLP}
         tooltip={t("Wallet:overral.stakedPosi.tooltip")}
+        valueTooltip={
+          stakedPositions.length> 0 ? (
+            <StakedPostionsTooltipContent poolStakings={stakedPositions} />
+          ) : undefined
+        }
         breakpoint={breakpoint}
       />
       <WalletBalanceDetailInfo

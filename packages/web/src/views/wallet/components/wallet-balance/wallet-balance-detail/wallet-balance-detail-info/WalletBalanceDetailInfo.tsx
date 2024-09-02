@@ -83,6 +83,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
               placement="top"
               forcedClose={!valueTooltip}
               FloatingContent={valueTooltip}
+              scroll
             >
               <span
                 className="value"
