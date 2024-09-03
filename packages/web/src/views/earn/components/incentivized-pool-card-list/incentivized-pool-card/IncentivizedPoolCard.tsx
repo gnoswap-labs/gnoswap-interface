@@ -176,7 +176,9 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 disabled={isHideBar}
               />
               <div className="price-section">
-                <span className="label-text">{"Current Price"}</span>
+                <span className="label-text">
+                  {t("Earn:incentiPools.card.current.price")}
+                </span>
                 <span className="label-text">{`1 ${
                   pool.tokenA.symbol
                 } = ${numberToFormat(pool.price, { decimals: 2 })} ${
