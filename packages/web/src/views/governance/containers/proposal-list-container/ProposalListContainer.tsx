@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useGetProposals } from "@query/governance/use-get-proposals";
+import { useGetProposals } from "@query/governance";
 
 import ProposalList from "../../components/proposals-list/ProposalList";
 

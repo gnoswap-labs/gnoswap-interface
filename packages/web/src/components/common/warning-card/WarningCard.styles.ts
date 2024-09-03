@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -40,10 +41,9 @@ export const WarningCardWrapper = styled.div<{
 `;
 
 export const TitleWrapper = styled.div`
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
   ${mixins.flexbox("row", "center")}
+  ${fonts.body13}
+  font-weight: 600;
   gap: 4px;
 `;
 

@@ -9,12 +9,26 @@ export const MyDelegationWrapper = styled.div`
   width: 100%;
   gap: 24px;
 
-  > .my-delegation-title {
+  > .header-wrapper {
     width: 100%;
-    ${fonts.h5}
-    color: ${({ theme }) => theme.color.text02};
-    ${media.mobile} {
-      ${fonts.h6};
+    ${mixins.flexbox("row", "center", "space-between")};
+
+    > .my-delegation-title {
+      width: 100%;
+      ${fonts.h5}
+      color: ${({ theme }) => theme.color.text02};
+      ${media.mobile} {
+        ${fonts.h6};
+      }
+    }
+
+    > .delegate-buttons {
+      ${mixins.flexbox("row", "center", "flex-end")};
+      gap: 8px;
+      button {
+        flex-shrink: 0;
+        padding: 10px 16px;
+      }
     }
   }
 
