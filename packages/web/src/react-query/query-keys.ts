@@ -16,6 +16,7 @@ export enum QUERY_KEY {
   governanceSummary = "governanceSummary",
   governanceMyDelegation = "governanceMyDelegation",
   governanceProposals = "governanceProposals",
+  governanceDelegatees = "governanceDelegatees",
   // leaderboard
   leaderboard = "leaderboard",
   leaderboardLeader = "leaderboardLeader",

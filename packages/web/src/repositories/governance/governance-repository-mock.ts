@@ -1,8 +1,15 @@
 
 import { GovernanceRepository } from "./governance-repository";
+import GetDelegateesResponseMock from "./mock/get-delegatees-response.json";
+import GetGovernanceSummaryResponseMock from "./mock/get-governance-summary-response.json";
 import GetMyDelegationResposneMock from "./mock/get-my-delegation-response.json";
 import GetProposalsResponseMock from "./mock/get-proposals-response.json";
-import { GovernanceSummaryInfo, MyDelegationInfo, ProposalsInfo } from "./model";
+import {
+  DelegateeInfo,
+  GovernanceSummaryInfo,
+  MyDelegationInfo,
+  ProposalsInfo,
+} from "./model";
 import { GetMyDeligationRequest, GetProposalsReqeust } from "./request";
 import {
   GetGovernanceSummaryResponse,
@@ -10,15 +17,11 @@ import {
   GetProposalsResponse,
   ProposalItemResponse,
 } from "./response";
+import { GetDelegateesResponse } from "./response/get-delegatees-response";
 
 export class GovernanceRepositoryMock implements GovernanceRepository {
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
-    const res: GetGovernanceSummaryResponse = {
-      totalDeligated: 59144225,
-      DeligatedRatio: 55.12,
-      apy: 12.51,
-      communityPool: 2412148.12,
-    };
+    const res: GetGovernanceSummaryResponse = GetGovernanceSummaryResponseMock;
 
     const result = res;
 
@@ -66,6 +69,16 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     };
     const result = res;
 
+    return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
+
+  public getDelegatees = async (): Promise<DelegateeInfo[]> => {
+    const res: GetDelegateesResponse = {
+      delegatees: GetDelegateesResponseMock,
+    };
+
+    const result = res.delegatees;
+    
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
   };
 }

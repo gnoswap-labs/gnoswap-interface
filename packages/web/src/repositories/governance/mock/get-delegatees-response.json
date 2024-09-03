@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Onbloc",
+    "logoUrl": "",
+    "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
+    "votingPower": 12345678,
+    "description": "Onboarding the Masses to the Blockchain Ecosystem",
+    "website": "https://onbloc.xyz"
+  },
+  {
+    "name": "GovDao",
+    "logoUrl": "",
+    "address": "g13dmbtutu9khhfwc4nxmuhcpftf0pajdh3hcsj4",
+    "votingPower": 5334,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisiorci, ultrices sit amet mi eget, efficitur elementum tellus. Integeraugue purus, rutrum eu pretium sit amet, varius in quam.Lorem ipsumdolor sit amet, consectetur adipiscing elit.",
+    "website": "https://gnoscan.io"
+  },
+  {
+    "name": "GnoSwap Foundation",
+    "logoUrl" : "",
+    "address": "g139dn8glz9khhfwc4nxmuhcpftf0pajg8dzml8e",
+    "votingPower": 92334,
+    "description": "The team that works on the core contracts for GnoSwap Protocol and maintains the GnoSwap Interface and API.",
+    "website": "https://beta.gnoswap.io"
+  },
+  {
+    "name": "GnoSwap Labs",
+    "logoUrl": "",
+    "address": "g1def43glz9khhfwc4nxmuhcpftf0pajg8dz2bkf",
+    "votingPower": 876234,
+    "description": "The team that works on the core contracts for GnoSwap Protocol and maintains the GnoSwap Interface and API.",
+    "website": "https://beta.gnoswap.io"
+  }
+]
