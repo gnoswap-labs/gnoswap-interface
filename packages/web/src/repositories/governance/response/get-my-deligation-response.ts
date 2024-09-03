@@ -8,7 +8,8 @@ export interface GetMyDeligationResponse {
 }
 
 interface DelegationItemResponse {
-  delegatee: string;
+  name: string;
+  address: string;
   logoUrl: string;
   amount: number;
   updatedDate: string;

@@ -120,11 +120,11 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                               </div>
                               <div className="info-value">
                                 <MissingLogo
-                                  symbol={item.delegatee}
+                                  symbol={item.name}
                                   url={item.logoUrl}
                                   width={20}
                                 />
-                                {item.delegatee}
+                                {item.name}
                               </div>
                             </div>
                             <div className="info-row">
@@ -241,13 +241,17 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           totalDelegatedAmount={totalDelegatedAmount}
           delegatees={delegatees}
           isWalletConnected={isWalletConnected}
-          onSubmit={() => console.log("submit")}
+          onSubmit={() => console.log("delegate")}
           setIsOpen={setIsOpenDelegateModal}
         />
       )}
       {isOpenUndelegateModal && (
         <MyDelegationUndelegateModal
-          onSubmit={() => console.log("submit")}
+          currentDelegatedAmount={myDelegationInfo.votingWeight}
+          totalDelegatedAmount={totalDelegatedAmount}
+          delegatedInfos={votingWeightInfos}
+          isWalletConnected={isWalletConnected}
+          onSubmit={() => console.log("undelegate")}
           setIsOpen={setIsOpenUndelegateModal}
         />
       )}

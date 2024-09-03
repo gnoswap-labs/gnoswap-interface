@@ -13,6 +13,7 @@ export const EXT_URL = {
         "https://docs.gnoswap.io/user-guide/providing-liquidity/create-a-position",
     },
     GOVERNANCE: "https://docs.gnoswap.io/core-concepts/governance",
+    XGNS: "https://docs.gnoswap.io/gnoswap-token/xgns",
   },
   SOCIAL: {
     DISCORD: "https://discord.gg/u4bdGHStb2",

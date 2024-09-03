@@ -15,6 +15,7 @@ import { Overlay } from "@components/common/modal/Modal.styles";
 import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
+import { EXT_URL } from "@constants/external-url.contant";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import useLockedBody from "@hooks/common/use-lock-body";
@@ -235,7 +236,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <MyDelWarningContentWrapper>
             {t("Governance:myDel.delModal.warning.description")}
             <a
-              href="https://beta.gnoswap.io/"
+              href={EXT_URL.DOCS.XGNS}
               target="_blank"
               className="learn-more-box"
             >
