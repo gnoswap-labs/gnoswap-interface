@@ -5,28 +5,32 @@
   "claimableRewardsUsd": 4225.12,
   "delegations": [
     {
-      "delegatee": "Onbloc",
+      "name": "Onbloc",
+      "address" : "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234",
       "logoUrl": "",
       "amount": 10000,
       "updatedDate": "2024-08-20 10:10:30",
       "unlockDate": null
     },
     {
-      "delegatee": "GovDao",
+      "name": "GovDao",
+      "address": "g13dmbtutu9khhfwc4nxmuhcpftf0pajdh3hcsj4",
       "logoUrl": "",
       "amount": 20000,
       "updatedDate": "2024-08-21 11:11:31",
       "unlockDate": null
     },
     {
-      "delegatee": "Onbloc",
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234",
       "logoUrl": "",
       "amount": 400,
       "updatedDate": "2024-08-22 12:12:32",
       "unlockDate": "2024-08-29 12:12:32"
     },
     {
-      "delegatee": "GnoSwap Foundation",
+      "name": "GnoSwap Foundation",
+      "address": "g139dn8glz9khhfwc4nxmuhcpftf0pajg8dzml8e",
       "logoUrl": "",
       "amount": 21354,
       "updatedDate": "2024-08-22 12:12:32",

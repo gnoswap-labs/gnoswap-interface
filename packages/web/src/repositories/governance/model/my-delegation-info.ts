@@ -6,8 +6,9 @@ export interface MyDelegationInfo {
   delegations: DelegationItemInfo[];
 }
 
-interface DelegationItemInfo {
-  delegatee: string;
+export interface DelegationItemInfo {
+  name: string;
+  address: string;
   logoUrl: string;
   amount: number;
   updatedDate: string;
