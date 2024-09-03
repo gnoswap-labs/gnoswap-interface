@@ -86,7 +86,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
               scroll
             >
               <span
-                className="value"
+                className={`value ${valueTooltip ? "has-tooltip" : ""}`}
                 style={isClaim ? { fontSize: `${fontSize}px` } : {}}
               >
                 {displayValue}

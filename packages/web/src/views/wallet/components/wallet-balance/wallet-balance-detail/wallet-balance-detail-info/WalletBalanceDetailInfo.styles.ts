@@ -106,6 +106,12 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
         ${media.mobile} {
           ${fonts.body6};
         }
+        &.has-tooltip {
+          &:hover {
+            color: ${({ theme }) => theme.color.text07};
+            cursor: default;
+          }
+        }
       }
       .hidden-value {
         opacity: 0;
@@ -121,7 +127,7 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     }
   }
   .wallet-detail-right-side {
-  padding: 12px;
+    padding: 12px;
   }
 `;
 
