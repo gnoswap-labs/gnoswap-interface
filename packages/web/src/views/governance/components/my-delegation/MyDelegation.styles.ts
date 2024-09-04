@@ -45,6 +45,14 @@ export const MyDelegationWrapper = styled.div`
       flex-direction: column;
     }
 
+    .value-wrapper-for-hover {
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
+      &:hover {
+        color: ${({ theme }) => theme.color.text07};
+        cursor: default;
+      }
+    }
+
     > .require-wallet {
       ${mixins.flexbox("column", "center", "center")};
       width: 100%;
