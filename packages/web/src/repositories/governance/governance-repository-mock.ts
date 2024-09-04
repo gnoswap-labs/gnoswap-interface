@@ -1,4 +1,6 @@
 
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
+
 import { GovernanceRepository } from "./governance-repository";
 import GetDelegateesResponseMock from "./mock/get-delegatees-response.json";
 import GetGovernanceSummaryResponseMock from "./mock/get-governance-summary-response.json";
@@ -10,14 +12,26 @@ import {
   MyDelegationInfo,
   ProposalsInfo,
 } from "./model";
-import { GetMyDeligationRequest, GetProposalsReqeust } from "./request";
 import {
+  GetMyDeligationRequest,
+  GetProposalsReqeust,
+  SendCancelReqeust,
+  SendDelegateReqeust,
+  SendExecuteReqeust,
+  SendProposeCommunityPoolSpendReqeust,
+  SendProposeParameterChangeReqeust,
+  SendProposeTextReqeust,
+  SendRedelegateReqeust,
+  SendUndelegateReqeust,
+  SendVoteReqeust
+} from "./request";
+import {
+  GetDelegateesResponse,
   GetGovernanceSummaryResponse,
   GetMyDeligationResponse,
   GetProposalsResponse,
   ProposalItemResponse,
 } from "./response";
-import { GetDelegateesResponse } from "./response/get-delegatees-response";
 
 export class GovernanceRepositoryMock implements GovernanceRepository {
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
@@ -78,7 +92,73 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     };
 
     const result = res.delegatees;
-    
+
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
+
+  public sendProposeText = async (
+    request: SendProposeTextReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendProposeText : ${request}`);
+  };
+
+  public sendProposeCommunityPoolSpend = async (
+    request: SendProposeCommunityPoolSpendReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendProposeCommunityPoolSpend : ${request}`);
+  };
+
+  public sendProposeParameterChange = async (
+    request: SendProposeParameterChangeReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendProposeParameterChange : ${request}`);
+  };
+
+  public sendVote = async (
+    request: SendVoteReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendVote : ${request}`);
+  };
+
+  public sendCancel = async (
+    request: SendCancelReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendCancel : ${request}`);
+  };
+
+  public sendExecute = async (
+    request: SendExecuteReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendExecute : ${request}`);
+  };
+
+  public sendDelegate = async (
+    request: SendDelegateReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendDelegate : ${request}`);
+  };
+
+  public sendUndelegate = async (
+    request: SendUndelegateReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendUndelegate : ${request}`);
+  };
+
+  public sendRedelegate = async (
+    request: SendRedelegateReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendRedelegate : ${request}`);
+  };
+
+  public sendCollectUndelegated = async (): Promise<
+    WalletResponse<{ hash: string }>
+  > => {
+    throw new Error("Mock sendCollectUndelegated");
+  };
+
+  public sendCollectReward = async (): Promise<
+    WalletResponse<{ hash: string }>
+  > => {
+    throw new Error("Mock sendCollectUndelegated");
   };
 }

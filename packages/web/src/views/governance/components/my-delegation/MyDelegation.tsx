@@ -165,12 +165,16 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   }
                   placement="top"
                 >
-                  {`${
-                    hasUndel && showUndel
-                      ? myDelegationInfo.undeligatedAmount.toLocaleString("en")
-                      : myDelegationInfo.votingWeight.toLocaleString("en")
-                  }`}
-                  <TokenChip tokenInfo={GNS_TOKEN} />
+                  <div className="value-wrapper-for-hover">
+                    {`${
+                      hasUndel && showUndel
+                        ? myDelegationInfo.undeligatedAmount.toLocaleString(
+                            "en",
+                          )
+                        : myDelegationInfo.votingWeight.toLocaleString("en")
+                    }`}
+                    <TokenChip tokenInfo={GNS_TOKEN} />
+                  </div>
                 </Tooltip>
               }
               tooltip={
