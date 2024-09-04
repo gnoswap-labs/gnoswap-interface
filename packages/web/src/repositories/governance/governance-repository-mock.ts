@@ -11,7 +11,7 @@ import {
   MyDelegationInfo,
   ProposalsInfo,
 } from "./model";
-import { GetMyDeligationRequest, GetProposalsReqeust, SendProposeCommunityPoolSpendReqeust, SendProposeParameterChangeReqeust, SendProposeTextReqeust } from "./request";
+import { GetMyDeligationRequest, GetProposalsReqeust, SendCancelReqeust, SendExecuteReqeust, SendProposeCommunityPoolSpendReqeust, SendProposeParameterChangeReqeust, SendProposeTextReqeust, SendVoteReqeust } from "./request";
 import {
   GetGovernanceSummaryResponse,
   GetMyDeligationResponse,
@@ -99,5 +99,23 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     request: SendProposeParameterChangeReqeust,
   ): Promise<WalletResponse<{ hash: string }>> => {
     throw new Error(`Mock sendProposeParameterChange : ${request}`);
+  };
+
+  public sendVote = async (
+    request: SendVoteReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendVote : ${request}`);
+  };
+
+  public sendCancel = async (
+    request: SendCancelReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendCancel : ${request}`);
+  };
+
+  public sendExecute = async (
+    request: SendExecuteReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendExecute : ${request}`);
   };
 }

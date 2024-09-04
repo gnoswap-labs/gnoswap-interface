@@ -17,9 +17,12 @@ import {
 import {
   GetMyDeligationRequest,
   GetProposalsReqeust,
+  SendCancelReqeust,
+  SendExecuteReqeust,
   SendProposeCommunityPoolSpendReqeust,
   SendProposeParameterChangeReqeust,
   SendProposeTextReqeust,
+  SendVoteReqeust,
 } from "./request";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
@@ -129,7 +132,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
       data: {
         hash: response.data?.hash || "",
       },
-    };;
+    };
   };
 
   public sendProposeParameterChange = async (
@@ -153,6 +156,120 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
         send: "",
         func: "ProposeParameterChange",
         args: [title, description, pkgPath, functionName, param],
+        caller: address,
+      }),
+    );
+    const response = await this.walletClient.sendTransaction({
+      messages,
+      gasFee: 1,
+      memo: "",
+    });
+
+    return {
+      ...response,
+      data: {
+        hash: response.data?.hash || "",
+      },
+    };
+  };
+
+  public sendVote = async (
+    request: SendVoteReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const account = await this.walletClient.getAccount();
+    if (!account.data || !PACKAGE_GOVERNANCE_PATH) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const { address } = account.data;
+    const { proposalId, voteYes } = request;
+
+    const messages = [];
+    messages.push(
+      makeTransactionMessage({
+        packagePath: PACKAGE_GOVERNANCE_PATH,
+        send: "",
+        func: "Vote",
+        args: [proposalId.toString(), `${voteYes}`],
+        caller: address,
+      }),
+    );
+    const response = await this.walletClient.sendTransaction({
+      messages,
+      gasFee: 1,
+      memo: "",
+    });
+
+    return {
+      ...response,
+      data: {
+        hash: response.data?.hash || "",
+      },
+    };
+  };
+
+  public sendCancel = async (
+    request: SendCancelReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const account = await this.walletClient.getAccount();
+    if (!account.data || !PACKAGE_GOVERNANCE_PATH) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const { address } = account.data;
+    const { proposalId } = request;
+
+    const messages = [];
+    messages.push(
+      makeTransactionMessage({
+        packagePath: PACKAGE_GOVERNANCE_PATH,
+        send: "",
+        func: "Cancel",
+        args: [proposalId.toString()],
+        caller: address,
+      }),
+    );
+    const response = await this.walletClient.sendTransaction({
+      messages,
+      gasFee: 1,
+      memo: "",
+    });
+
+    return {
+      ...response,
+      data: {
+        hash: response.data?.hash || "",
+      },
+    };
+  };
+
+  public sendExecute = async (
+    request: SendExecuteReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const account = await this.walletClient.getAccount();
+    if (!account.data || !PACKAGE_GOVERNANCE_PATH) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const { address } = account.data;
+    const { proposalId } = request;
+
+    const messages = [];
+    messages.push(
+      makeTransactionMessage({
+        packagePath: PACKAGE_GOVERNANCE_PATH,
+        send: "",
+        func: "Execute",
+        args: [proposalId.toString()],
         caller: address,
       }),
     );

@@ -5,8 +5,16 @@ import {
   MyDelegationInfo,
   ProposalsInfo,
 } from "./model";
-import { GetProposalsReqeust, SendProposeCommunityPoolSpendReqeust, SendProposeParameterChangeReqeust, SendProposeTextReqeust } from "./request";
-import { GetMyDeligationRequest } from "./request/get-my-deligation-request";
+import {
+  GetProposalsReqeust,
+  SendProposeCommunityPoolSpendReqeust,
+  SendProposeParameterChangeReqeust,
+  SendProposeTextReqeust,
+  SendVoteReqeust,
+  GetMyDeligationRequest,
+  SendCancelReqeust,
+  SendExecuteReqeust,
+} from "./request";
 
 export interface GovernanceRepository {
   getGovernanceSummary: () => Promise<GovernanceSummaryInfo>;
@@ -29,5 +37,17 @@ export interface GovernanceRepository {
 
   sendProposeParameterChange: (
     request: SendProposeParameterChangeReqeust,
+  ) => Promise<WalletResponse<{ hash: string }>>;
+
+  sendVote: (
+    request: SendVoteReqeust,
+  ) => Promise<WalletResponse<{ hash: string }>>;
+
+  sendCancel: (
+    request: SendCancelReqeust,
+  ) => Promise<WalletResponse<{ hash: string }>>;
+
+  sendExecute: (
+    request: SendExecuteReqeust,
   ) => Promise<WalletResponse<{ hash: string }>>;
 }
