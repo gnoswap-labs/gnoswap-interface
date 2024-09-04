@@ -11,7 +11,7 @@ import {
   MyDelegationInfo,
   ProposalsInfo,
 } from "./model";
-import { GetMyDeligationRequest, GetProposalsReqeust, SendCancelReqeust, SendExecuteReqeust, SendProposeCommunityPoolSpendReqeust, SendProposeParameterChangeReqeust, SendProposeTextReqeust, SendVoteReqeust } from "./request";
+import { GetMyDeligationRequest, GetProposalsReqeust, SendCancelReqeust, SendDelegateReqeust, SendExecuteReqeust, SendProposeCommunityPoolSpendReqeust, SendProposeParameterChangeReqeust, SendProposeTextReqeust, SendRedelegateReqeust, SendUndelegateReqeust, SendVoteReqeust } from "./request";
 import {
   GetGovernanceSummaryResponse,
   GetMyDeligationResponse,
@@ -117,5 +117,35 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     request: SendExecuteReqeust,
   ): Promise<WalletResponse<{ hash: string }>> => {
     throw new Error(`Mock sendExecute : ${request}`);
+  };
+
+  public sendDelegate = async (
+    request: SendDelegateReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendDelegate : ${request}`);
+  };
+
+  public sendUndelegate = async (
+    request: SendUndelegateReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendUndelegate : ${request}`);
+  };
+
+  public sendRedelegate = async (
+    request: SendRedelegateReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendRedelegate : ${request}`);
+  };
+
+  public sendCollectUndelegated = async (): Promise<
+    WalletResponse<{ hash: string }>
+  > => {
+    throw new Error("Mock sendCollectUndelegated");
+  };
+
+  public sendCollectReward = async (): Promise<
+    WalletResponse<{ hash: string }>
+  > => {
+    throw new Error("Mock sendCollectUndelegated");
   };
 }
