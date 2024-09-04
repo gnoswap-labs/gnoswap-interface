@@ -38,8 +38,7 @@ import {
   PositionRepository,
   PositionRepositoryImpl,
 } from "@repositories/position";
-import { StatusRepository } from "@repositories/status/status-repository";
-import { StatusRepositoryImpl } from "@repositories/status/status-repository-impl";
+import { StatusRepository, StatusRepositoryImpl } from "@repositories/status";
 import {
   SwapRouterRepository,
   SwapRouterRepositoryImpl,
