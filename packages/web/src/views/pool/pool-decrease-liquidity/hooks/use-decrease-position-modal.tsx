@@ -215,14 +215,17 @@ export const useDecreasePositionModal = ({
             if (!response) {
               return defaultMessageData;
             }
-
             return {
               ...defaultMessageData,
-              tokenAAmount: Number(response[0]).toLocaleString("en-US", {
-                maximumFractionDigits: tokenA.decimals,
+              tokenAAmount: Number(
+                makeDisplayTokenAmount(tokenTransform(tokenA), response[4]),
+              ).toLocaleString("en-US", {
+                maximumFractionDigits: tokenTransform(tokenA).decimals,
               }),
-              tokenBAmount: Number(response[1]).toLocaleString("en-US", {
-                maximumFractionDigits: tokenA.decimals,
+              tokenBAmount: Number(
+                makeDisplayTokenAmount(tokenTransform(tokenB), response[5]),
+              ).toLocaleString("en-US", {
+                maximumFractionDigits: tokenTransform(tokenB).decimals,
               }),
             };
           },
