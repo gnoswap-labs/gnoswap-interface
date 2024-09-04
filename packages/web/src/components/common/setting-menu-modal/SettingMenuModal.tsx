@@ -1,21 +1,23 @@
+import React, { useCallback, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { isAmount } from "@common/utils/data-check-util";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import React, { useCallback, useRef, useState } from "react";
-import {
-  ModalTooltipWrap,
-  Overlay,
-  SettingMenuModalWrapper,
-} from "./SettingMenuModal.styles";
-import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { isAmount } from "@common/utils/data-check-util";
 import {
   DEFAULT_SLIPPAGE,
   MAX_SLIPPAGE,
   MIN_SLIPPAGE,
 } from "@constants/option.constant";
-import { useTranslation } from "react-i18next";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+
+import {
+  ModalTooltipWrap,
+  Overlay,
+  SettingMenuModalWrapper
+} from "./SettingMenuModal.styles";
 
 interface SettingMenuModalProps {
   slippage: number;

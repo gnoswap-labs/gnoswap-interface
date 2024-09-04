@@ -9,7 +9,7 @@ import IconFailed from "@components/common/icons/IconFailed";
 import IconSettings from "@components/common/icons/IconSettings";
 import IconStaking from "@components/common/icons/IconStaking";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
+import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
 import {
   AddLiquiditySubmitType,
   DefaultTick,
