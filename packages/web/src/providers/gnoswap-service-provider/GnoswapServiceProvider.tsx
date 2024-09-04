@@ -23,7 +23,7 @@ import {
 } from "@repositories/dashboard";
 import {
   GovernanceRepository,
-  GovernanceRepositoryMock,
+  GovernanceRepositoryImpl,
 } from "@repositories/governance";
 import {
   LeaderboardRepository,
@@ -245,7 +245,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [walletClient]);
 
   const governanceRepository = useMemo(() => {
-    return new GovernanceRepositoryMock();
+    return new GovernanceRepositoryImpl(gnoswapApiClient, walletClient);
   }, []);
 
   const leaderboardRepository = useMemo(() => {

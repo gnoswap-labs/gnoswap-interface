@@ -1,10 +1,11 @@
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
   DelegateeInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
   ProposalsInfo,
 } from "./model";
-import { GetProposalsReqeust } from "./request";
+import { GetProposalsReqeust, SendProposeCommunityPoolSpendReqeust, SendProposeParameterChangeReqeust, SendProposeTextReqeust } from "./request";
 import { GetMyDeligationRequest } from "./request/get-my-deligation-request";
 
 export interface GovernanceRepository {
@@ -16,5 +17,17 @@ export interface GovernanceRepository {
 
   getProposals: (request: GetProposalsReqeust) => Promise<ProposalsInfo>;
 
-  getDelegatees: () => Promise<DelegateeInfo[]>
+  getDelegatees: () => Promise<DelegateeInfo[]>;
+
+  sendProposeText: (
+    request: SendProposeTextReqeust,
+  ) => Promise<WalletResponse<{ hash: string }>>;
+
+  sendProposeCommunityPoolSpend: (
+    request: SendProposeCommunityPoolSpendReqeust,
+  ) => Promise<WalletResponse<{ hash: string }>>;
+
+  sendProposeParameterChange: (
+    request: SendProposeParameterChangeReqeust,
+  ) => Promise<WalletResponse<{ hash: string }>>;
 }

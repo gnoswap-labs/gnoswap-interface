@@ -1,4 +1,5 @@
 
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { GovernanceRepository } from "./governance-repository";
 import GetDelegateesResponseMock from "./mock/get-delegatees-response.json";
 import GetGovernanceSummaryResponseMock from "./mock/get-governance-summary-response.json";
@@ -10,7 +11,7 @@ import {
   MyDelegationInfo,
   ProposalsInfo,
 } from "./model";
-import { GetMyDeligationRequest, GetProposalsReqeust } from "./request";
+import { GetMyDeligationRequest, GetProposalsReqeust, SendProposeCommunityPoolSpendReqeust, SendProposeParameterChangeReqeust, SendProposeTextReqeust } from "./request";
 import {
   GetGovernanceSummaryResponse,
   GetMyDeligationResponse,
@@ -78,7 +79,25 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     };
 
     const result = res.delegatees;
-    
+
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
+
+  public sendProposeText = async (
+    request: SendProposeTextReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendProposeText : ${request}`);
+  };
+
+  public sendProposeCommunityPoolSpend = async (
+    request: SendProposeCommunityPoolSpendReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendProposeCommunityPoolSpend : ${request}`);
+  };
+
+  public sendProposeParameterChange = async (
+    request: SendProposeParameterChangeReqeust,
+  ): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendProposeParameterChange : ${request}`);
   };
 }
