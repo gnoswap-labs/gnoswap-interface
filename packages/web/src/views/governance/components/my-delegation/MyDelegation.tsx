@@ -2,34 +2,42 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
-import IconSwap from "@components/common/icons/IconSwap";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import { MyDelegationInfo } from "@repositories/governance";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconSwap from "@components/common/icons/IconSwap";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { DelegateeInfo, MyDelegationInfo } from "@repositories/governance";
 
 import InfoBox from "../info-box/InfoBox";
-
 import TokenChip from "../token-chip/TokenChip";
+import MyDelegationDelegateModal from "./my-delegation-modals/MyDelegationDelegateModal";
+import MyDelegationUndelegateModal from "./my-delegation-modals/MyDelegationUndelegateModal";
+
 import {
   MyDelegationTooltipContent,
   MyDelegationWrapper,
 } from "./MyDelegation.styles";
 
 interface MyDelegationProps {
+  totalDelegatedAmount: number;
   myDelegationInfo: MyDelegationInfo;
+  delegatees: DelegateeInfo[];
   isLoading: boolean;
   isWalletConnected: boolean;
   connectWallet: () => void;
 }
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
+  totalDelegatedAmount,
   myDelegationInfo,
+  delegatees,
   isLoading,
   isWalletConnected,
   connectWallet,
 }) => {
   const { t } = useTranslation(); 
+  const [isOpenDelegateModal, setIsOpenDelegateModal] = useState(false);
+  const [isOpenUndelegateModal, setIsOpenUndelegateModal] = useState(false);
   
   const [showUndel, setShowUndel] = useState(false);
 
@@ -44,7 +52,37 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
 
   return (
     <MyDelegationWrapper>
-      <div className="my-delegation-title">{t("Governance:myDel.title")}</div>
+      <div className="header-wrapper">
+        <div className="my-delegation-title">{t("Governance:myDel.title")}</div>
+        <div className="delegate-buttons">
+          <Button
+            disabled={isLoading || !isWalletConnected}
+            style={{
+              hierarchy: ButtonHierarchy.Primary,
+              fontType: "p1",
+            }}
+            text={t("Governance:myDel.undelegate")}
+            onClick={
+              !isLoading && isWalletConnected
+                ? () => setIsOpenUndelegateModal(true)
+                : undefined
+            }
+          />
+          <Button
+            disabled={isLoading}
+            style={{
+              hierarchy: ButtonHierarchy.Primary,
+              fontType: "p1",
+            }}
+            text={t("Governance:myDel.delegate")}
+            onClick={
+              !isLoading && isWalletConnected
+                ? () => setIsOpenDelegateModal(true)
+                : undefined
+            }
+          />
+        </div>
+      </div>
       <div className="info-wrapper">
         {isWalletConnected ? (
           <>
@@ -82,11 +120,11 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                               </div>
                               <div className="info-value">
                                 <MissingLogo
-                                  symbol={item.delegatee}
+                                  symbol={item.name}
                                   url={item.logoUrl}
                                   width={20}
                                 />
-                                {item.delegatee}
+                                {item.name}
                               </div>
                             </div>
                             <div className="info-row">
@@ -197,6 +235,26 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           </div>
         )}
       </div>
+      {isOpenDelegateModal && (
+        <MyDelegationDelegateModal
+          currentDelegatedAmount={myDelegationInfo.votingWeight}
+          totalDelegatedAmount={totalDelegatedAmount}
+          delegatees={delegatees}
+          isWalletConnected={isWalletConnected}
+          onSubmit={() => console.log("delegate")}
+          setIsOpen={setIsOpenDelegateModal}
+        />
+      )}
+      {isOpenUndelegateModal && (
+        <MyDelegationUndelegateModal
+          currentDelegatedAmount={myDelegationInfo.votingWeight}
+          totalDelegatedAmount={totalDelegatedAmount}
+          delegatedInfos={votingWeightInfos}
+          isWalletConnected={isWalletConnected}
+          onSubmit={() => console.log("undelegate")}
+          setIsOpen={setIsOpenUndelegateModal}
+        />
+      )}
     </MyDelegationWrapper>
   );};
 
