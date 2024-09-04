@@ -10,17 +10,19 @@ import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
 import { ProposalListWrapper } from "./ProposalList.styles";
+import withLastCheck from "./LastCardWrapper";
 
 interface ProposalListProps {
   isLoading?: boolean;
+  isConnected: boolean;
+  connectWallet: () => void;
+  isSwitchNetwork: boolean;
+  switchNetwork: () => void;
   isShowActiveOnly: boolean;
   toggleIsShowActiveOnly: () => void;
   proposalList: ProposalItemInfo[];
-  isConnected: boolean;
-  isSwitchNetwork: boolean;
+  fetchMore: () => void;
   handleVote: (voteYes: boolean) => void;
-  connectWallet: () => void;
-  switchNetwork: () => void;
   breakpoint: DEVICE_TYPE;
   selectedProposalId: number;
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
@@ -30,65 +32,82 @@ interface ProposalListProps {
 
 const ProposalList: React.FC<ProposalListProps> = ({
   isLoading,
+  isConnected,
+  connectWallet,
+  isSwitchNetwork,
+  switchNetwork,
   isShowActiveOnly,
   toggleIsShowActiveOnly,
   proposalList,
+  fetchMore,
+  handleVote,
   breakpoint,
   selectedProposalId,
   setSelectedProposalId,
-  connectWallet,
-  switchNetwork,
   isOpenCreateModal,
   setIsOpenCreateModal,
-  isConnected,
-  isSwitchNetwork,
-  handleVote,
-}) => (
-  <ProposalListWrapper>
-    <ProposalHeader
-      isShowActiveOnly={isShowActiveOnly}
-      toggleIsShowActiveOnly={toggleIsShowActiveOnly}
-      setIsOpenCreateModal={setIsOpenCreateModal}
-      isDisabledCreateButton={!isConnected || isSwitchNetwork}
-    />
-    {isLoading ? (
-      Array.from({ length: 3 }).map((_, idx) => (
-        <ProposalCardSkeleton key={`skeleton-${idx}`} />
-      ))
-    ) : (
-      <>
-        {proposalList.map((proposalDetail: ProposalItemInfo) => (
-          <ProposalCard
-            key={proposalDetail.id}
-            proposalDetail={proposalDetail}
-            onClickCard={() => setSelectedProposalId(proposalDetail.id)}
-          />
-        ))}
-      </>
-    )}
+}) => {
+  const LastCard = withLastCheck(ProposalCard, fetchMore);
 
-    {selectedProposalId !== 0 && (
-      <ViewProposalModal
-        breakpoint={breakpoint}
-        proposalDetail={
-          proposalList.find(item => item.id === selectedProposalId) ||
-          nullProposalItemInfo
-        }
-        setSelectedProposalId={setSelectedProposalId}
-        isConnected={isConnected}
-        isSwitchNetwork={isSwitchNetwork}
-        handleVote={handleVote}
-        connectWallet={connectWallet}
-        switchNetwork={switchNetwork}
-      />
-    )}
-    {isOpenCreateModal && (
-      <CreateProposalModal
-        breakpoint={breakpoint}
+  return (
+    <ProposalListWrapper>
+      <ProposalHeader
+        isShowActiveOnly={isShowActiveOnly}
+        toggleIsShowActiveOnly={toggleIsShowActiveOnly}
         setIsOpenCreateModal={setIsOpenCreateModal}
+        isDisabledCreateButton={!isConnected || isSwitchNetwork}
       />
-    )}
-  </ProposalListWrapper>
-);
+      {proposalList && proposalList.length > 0 && (
+        <>
+          {proposalList.map(
+            (proposalDetail: ProposalItemInfo, index: number) => {
+              if (index < proposalList.length - 1) {
+                return (
+                  <ProposalCard
+                    key={proposalDetail.id}
+                    proposalDetail={proposalDetail}
+                    onClickCard={() => setSelectedProposalId(proposalDetail.id)}
+                  />
+                );
+              }
+              return (
+                <LastCard
+                  key={proposalDetail.id}
+                  proposalDetail={proposalDetail}
+                  onClickCard={() => setSelectedProposalId(proposalDetail.id)}
+                />
+              );
+            },
+          )}
+        </>
+      )}
+      {isLoading &&
+        Array.from({ length: 3 }).map((_, idx) => (
+          <ProposalCardSkeleton key={`skeleton-${idx}`} />
+        ))}
+
+      {selectedProposalId !== 0 && (
+        <ViewProposalModal
+          breakpoint={breakpoint}
+          proposalDetail={
+            proposalList.find(item => item.id === selectedProposalId) ||
+            nullProposalItemInfo
+          }
+          setSelectedProposalId={setSelectedProposalId}
+          isConnected={isConnected}
+          isSwitchNetwork={isSwitchNetwork}
+          handleVote={handleVote}
+          connectWallet={connectWallet}
+          switchNetwork={switchNetwork}
+        />
+      )}
+      {isOpenCreateModal && (
+        <CreateProposalModal
+          breakpoint={breakpoint}
+          setIsOpenCreateModal={setIsOpenCreateModal}
+        />
+      )}
+    </ProposalListWrapper>
+  );};
 
 export default ProposalList;

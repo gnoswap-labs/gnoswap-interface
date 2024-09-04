@@ -77,7 +77,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
         .slice(startIndex, startIndex + request.limit),
       pageInfo: {
         totalItems: mock.length,
-        totalPages: (mock.length + request.limit) % request.limit,
+        totalPages: Math.floor((mock.length + request.limit) / request.limit),
         currentPage: request.offset,
       },
     };

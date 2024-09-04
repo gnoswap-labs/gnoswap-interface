@@ -15,46 +15,39 @@ const ProposalListContainer: React.FC = () => {
   const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
 
-  const [page, setPage] = useState(0);
-
-  const { data: proposalsInfo, isFetching } = useGetProposals({
+  const { data: proposalsInfo, isFetching, hasNextPage, fetchNextPage } = useGetProposals({
     isActive: isShowActiveOnly,
     address: account?.address,
-    offset: page,
     limit: 20,
   });
 
-    const handleVote = useCallback((voteYes: boolean) => {
-      // vote yes
-      console.log("vote to ", voteYes);
-    }, []);
+  const fetchNextItems = () => {
+    if (hasNextPage) fetchNextPage();
+  };
+
+  const handleVote = useCallback((voteYes: boolean) => {
+    // vote yes
+    console.log("vote to ", voteYes);
+  }, []);
 
   return (
-    <>
-      <ProposalList
-        isLoading={isFetching}
-        isConnected={connected}
-        isSwitchNetwork={isSwitchNetwork}
-        isShowActiveOnly={isShowActiveOnly}
-        breakpoint={breakpoint}
-        toggleIsShowActiveOnly={() => setIsShowActiveOnly(a => !a)}
-        proposalList={proposalsInfo?.proposals || []}
-        handleVote={handleVote}
-        connectWallet={openModal}
-        switchNetwork={switchNetwork}
-        selectedProposalId={selectedProposalId}
-        setSelectedProposalId={setSelectedProposalId}
-        isOpenCreateModal={isOpenCreateModal}
-        setIsOpenCreateModal={setIsOpenCreateModal}
-      />
-      {(proposalsInfo?.pageInfo.currentPage || 0) !== 0 && (
-        <div onClick={() => setPage(page - 1)}> Prev Page </div>
-      )}
-      {(proposalsInfo?.pageInfo.totalPages || 0) >
-        (proposalsInfo?.pageInfo.currentPage || 0) + 1 && (
-        <div onClick={() => setPage(page + 1)}> Next Page </div>
-      )}
-    </>
+    <ProposalList
+      isLoading={isFetching}
+      isConnected={connected}
+      connectWallet={openModal}
+      isSwitchNetwork={isSwitchNetwork}
+      switchNetwork={switchNetwork}
+      isShowActiveOnly={isShowActiveOnly}
+      breakpoint={breakpoint}
+      toggleIsShowActiveOnly={() => setIsShowActiveOnly(a => !a)}
+      proposalList={proposalsInfo?.pages.flatMap(item => item.proposals) || []}
+      fetchMore={fetchNextItems}
+      handleVote={handleVote}
+      selectedProposalId={selectedProposalId}
+      setSelectedProposalId={setSelectedProposalId}
+      isOpenCreateModal={isOpenCreateModal}
+      setIsOpenCreateModal={setIsOpenCreateModal}
+    />
   );
 };
 
