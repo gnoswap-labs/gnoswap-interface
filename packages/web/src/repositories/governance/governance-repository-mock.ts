@@ -1,5 +1,6 @@
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
+
 import { GovernanceRepository } from "./governance-repository";
 import GetDelegateesResponseMock from "./mock/get-delegatees-response.json";
 import GetGovernanceSummaryResponseMock from "./mock/get-governance-summary-response.json";
@@ -11,14 +12,26 @@ import {
   MyDelegationInfo,
   ProposalsInfo,
 } from "./model";
-import { GetMyDeligationRequest, GetProposalsReqeust, SendCancelReqeust, SendDelegateReqeust, SendExecuteReqeust, SendProposeCommunityPoolSpendReqeust, SendProposeParameterChangeReqeust, SendProposeTextReqeust, SendRedelegateReqeust, SendUndelegateReqeust, SendVoteReqeust } from "./request";
 import {
+  GetMyDeligationRequest,
+  GetProposalsReqeust,
+  SendCancelReqeust,
+  SendDelegateReqeust,
+  SendExecuteReqeust,
+  SendProposeCommunityPoolSpendReqeust,
+  SendProposeParameterChangeReqeust,
+  SendProposeTextReqeust,
+  SendRedelegateReqeust,
+  SendUndelegateReqeust,
+  SendVoteReqeust
+} from "./request";
+import {
+  GetDelegateesResponse,
   GetGovernanceSummaryResponse,
   GetMyDeligationResponse,
   GetProposalsResponse,
   ProposalItemResponse,
 } from "./response";
-import { GetDelegateesResponse } from "./response/get-delegatees-response";
 
 export class GovernanceRepositoryMock implements GovernanceRepository {
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
