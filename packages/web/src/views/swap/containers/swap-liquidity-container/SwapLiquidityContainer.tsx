@@ -1,8 +1,6 @@
 import { useAtom } from "jotai";
 import React, { useMemo } from "react";
-import { ValuesType } from "utility-types";
 
-import { SwapFeeTierType } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
@@ -10,64 +8,9 @@ import { useGetPoolList } from "@query/pools";
 import { SwapState } from "@states/index";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
-import SwapLiquidity from "../../components/swap-liquidity/SwapLiquidity";
-
-export interface LiquidityInfo {
-  feeTier: string;
-  volume: string;
-  liquidity: string;
-  apr: string;
-  feeTierType: SwapFeeTierType;
-  active: boolean;
-  id: string;
-}
-
-export const LIQUIDITY_HEAD = {
-  FEETIER: "Swap:poolInfo.col.feeTier",
-  VOLUME: "Swap:poolInfo.col.vol",
-  LIQUIDITY: "Swap:poolInfo.col.liquidity",
-  APR: "APR",
-} as const;
-export type LIQUIDITY_HEAD = ValuesType<typeof LIQUIDITY_HEAD>;
-
-export const dummyLiquidityList: LiquidityInfo[] = [
-  {
-    feeTier: "0.01",
-    volume: "-",
-    liquidity: "-",
-    apr: "-",
-    feeTierType: "FEE_100",
-    active: false,
-    id: "",
-  },
-  {
-    feeTier: "0.05",
-    volume: "-",
-    liquidity: "-",
-    apr: "-",
-    feeTierType: "FEE_500",
-    active: false,
-    id: "",
-  },
-  {
-    feeTier: "0.3",
-    volume: "-",
-    liquidity: "-",
-    apr: "-",
-    feeTierType: "FEE_3000",
-    active: false,
-    id: "",
-  },
-  {
-    feeTier: "1",
-    volume: "-",
-    liquidity: "-",
-    apr: "-",
-    feeTierType: "FEE_10000",
-    active: false,
-    id: "",
-  },
-];
+import SwapLiquidity, {
+  dummyLiquidityList,
+} from "../../components/swap-liquidity/SwapLiquidity";
 
 const SwapLiquidityContainer: React.FC = () => {
   const [swapValue] = useAtom(SwapState.swap);

@@ -1,21 +1,75 @@
 import Link from "next/link";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { ValuesType } from "utility-types";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconAdd from "@components/common/icons/IconAdd";
 import IconStar from "@components/common/icons/IconStar";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { SwapFeeTierType } from "@constants/option.constant";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import { TokenModel } from "@models/token/token-model";
 import { formatRate } from "@utils/new-number-utils";
 
-import {
-  LiquidityInfo,
-  LIQUIDITY_HEAD,
-} from "@views/swap/containers/swap-liquidity-container/SwapLiquidityContainer";
-
 import { SwapLiquidityWrapper } from "./SwapLiquidity.styles";
+
+export const LIQUIDITY_HEAD = {
+  FEETIER: "Swap:poolInfo.col.feeTier",
+  VOLUME: "Swap:poolInfo.col.vol",
+  LIQUIDITY: "Swap:poolInfo.col.liquidity",
+  APR: "APR",
+} as const;
+export type LIQUIDITY_HEAD = ValuesType<typeof LIQUIDITY_HEAD>;
+
+export interface LiquidityInfo {
+  feeTier: string;
+  volume: string;
+  liquidity: string;
+  apr: string;
+  feeTierType: SwapFeeTierType;
+  active: boolean;
+  id: string;
+}
+
+export const dummyLiquidityList: LiquidityInfo[] = [
+  {
+    feeTier: "0.01",
+    volume: "-",
+    liquidity: "-",
+    apr: "-",
+    feeTierType: "FEE_100",
+    active: false,
+    id: "",
+  },
+  {
+    feeTier: "0.05",
+    volume: "-",
+    liquidity: "-",
+    apr: "-",
+    feeTierType: "FEE_500",
+    active: false,
+    id: "",
+  },
+  {
+    feeTier: "0.3",
+    volume: "-",
+    liquidity: "-",
+    apr: "-",
+    feeTierType: "FEE_3000",
+    active: false,
+    id: "",
+  },
+  {
+    feeTier: "1",
+    volume: "-",
+    liquidity: "-",
+    apr: "-",
+    feeTierType: "FEE_10000",
+    active: false,
+    id: "",
+  },
+];
 
 interface SwapLiquidityProps {
   liquiditys: LiquidityInfo[];

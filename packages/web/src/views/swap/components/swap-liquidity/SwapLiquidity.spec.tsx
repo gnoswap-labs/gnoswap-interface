@@ -1,9 +1,10 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
+
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import SwapLiquidity from "./SwapLiquidity";
-import { dummyLiquidityList } from "@views/swap/containers/swap-liquidity-container/SwapLiquidityContainer";
 import { TokenModel } from "@models/token/token-model";
+
+import SwapLiquidity, { dummyLiquidityList } from "./SwapLiquidity";
 
 const tokenA: TokenModel = {
   type: "grc20",
