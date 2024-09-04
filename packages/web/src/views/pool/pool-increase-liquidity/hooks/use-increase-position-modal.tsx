@@ -18,11 +18,11 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DexEvent } from "@repositories/common";
 import { CommonState } from "@states/index";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import IncreasePositionModalContainer from "../containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 export interface Props {
   openModal: () => void;
@@ -154,10 +154,10 @@ export const useIncreasePositionModal = ({
           visibleEmitResult: true,
           formatData: response => {
             const tokenAAmount = response
-              ? response[2]
+              ? makeDisplayTokenAmount(tokenA, response[2])
               : tokenAAmountInput.amount;
             const tokenBAmount = response
-              ? response[3]
+              ? makeDisplayTokenAmount(tokenA, response[3])
               : tokenBAmountInput.amount;
             return {
               tokenASymbol: tokenA.symbol,
@@ -196,7 +196,7 @@ export const useIncreasePositionModal = ({
               tokenASymbol: tokenA.symbol,
               tokenBSymbol: tokenB.symbol,
               tokenAAmount,
-              tokenBAmount,
+              tokenBAmount, 
             },
             result.data?.hash,
           ),
