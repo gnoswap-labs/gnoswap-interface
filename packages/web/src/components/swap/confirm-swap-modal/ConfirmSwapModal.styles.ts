@@ -443,3 +443,9 @@ export const PriceImpactStrWrapper = styled.span<{
     }
   }}
 `;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
+`;

@@ -3,11 +3,9 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
-import TrendingCryptoCardList from "./TrendingCryptoCardList";
-import { TrendingCryptoInfo } from "./trending-crypto-card/TrendingCryptoCard";
+import GainerCardList from "./GainerCardList";
 
-
-const trendingCryptoInit: TrendingCryptoInfo[] = [
+export const gainersInit = [
   {
     path: "1",
     name: "HEX",
@@ -32,24 +30,29 @@ const trendingCryptoInit: TrendingCryptoInfo[] = [
       value: "+17.43%",
     },
   },
-];
-
-export const trendingCryptoListInit = [
-  ...trendingCryptoInit,
-  ...trendingCryptoInit,
-  trendingCryptoInit[0],
+  {
+    path: "1",
+    name: "Bitcoin",
+    symbol: "BTC",
+    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+    price: "$12,908.25",
+    change: {
+      status: MATH_NEGATIVE_TYPE.POSITIVE,
+      value: "+17.43%",
+    },
+  },
 ];
 
 export default {
-  title: "token/TrendingCryptoCardList",
-  component: TrendingCryptoCardList,
-} as ComponentMeta<typeof TrendingCryptoCardList>;
+  title: "token/GainerCardList",
+  component: GainerCardList,
+} as ComponentMeta<typeof GainerCardList>;
 
-const Template: ComponentStory<typeof TrendingCryptoCardList> = args => (
-  <TrendingCryptoCardList {...args} />
+const Template: ComponentStory<typeof GainerCardList> = args => (
+  <GainerCardList {...args} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  list: trendingCryptoListInit,
+  gainers: gainersInit,
 };
