@@ -15,8 +15,9 @@ import { DEVICE_TYPE } from "@styles/media";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
 
-import SwapCardAutoRouter from "../swap-card-auto-router/SwapCardAutoRouter";
-import SwapCardFeeInfo from "../swap-card-fee-info/SwapCardFeeInfo";
+import SwapCardAutoRouter from "./swap-card-auto-router/SwapCardAutoRouter";
+import SwapCardFeeInfo from "./swap-card-fee-info/SwapCardFeeInfo";
+
 import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
 
 export interface SwapCardContentDetailProps {

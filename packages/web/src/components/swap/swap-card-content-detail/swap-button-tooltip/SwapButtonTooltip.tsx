@@ -1,13 +1,15 @@
 import React, { useMemo } from "react";
-import { IconWrap, SwapButtonTooltipWrap } from "./SwapButtonTooltip.styles";
-import Tooltip from "@components/common/tooltip/Tooltip";
+import { useTranslation } from "react-i18next";
+
 import IconInfo from "@components/common/icons/IconInfo";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import {
-  SwapSummaryInfo,
   swapDirectionToGuaranteedType,
+  SwapSummaryInfo,
 } from "@models/swap/swap-summary-info";
 import { toNumberFormat } from "@utils/number-utils";
-import { useTranslation } from "react-i18next";
+
+import { IconWrap, SwapButtonTooltipWrap } from "./SwapButtonTooltip.styles";
 
 interface WalletBalanceDetailInfoProps {
   swapSummaryInfo: SwapSummaryInfo;

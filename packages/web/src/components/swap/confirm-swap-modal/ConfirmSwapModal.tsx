@@ -1,31 +1,33 @@
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
+import IconClose from "@components/common/icons/IconCancel";
+import IconInfo from "@components/common/icons/IconInfo";
+import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
+import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { useTheme } from "@emotion/react";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { SwapResultInfo } from "@models/swap/swap-result-info";
+import {
+  swapDirectionToGuaranteedType, SwapSummaryInfo
+} from "@models/swap/swap-summary-info";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { formatOtherPrice } from "@utils/new-number-utils";
+import { toNumberFormat } from "@utils/number-utils";
+
+import { convertSwapRate } from "../swap-card-content-detail/SwapCardContentDetail";
+
 import {
   ConfirmModal,
   PriceImpactStatusWrapper,
   PriceImpactStrWrapper,
   PriceImpactWrapper,
+  ToolTipContentWrapper,
 } from "./ConfirmSwapModal.styles";
-import IconClose from "@components/common/icons/IconCancel";
-import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import {
-  SwapSummaryInfo,
-  swapDirectionToGuaranteedType,
-} from "@models/swap/swap-summary-info";
-import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { toNumberFormat } from "@utils/number-utils";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import IconInfo from "@components/common/icons/IconInfo";
-import { ToolTipContentWrapper } from "../swap-card-fee-info/SwapCardFeeInfo.styles";
-import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
-import { convertSwapRate } from "../swap-card-content-detail/SwapCardContentDetail";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
-import { useTheme } from "@emotion/react";
-import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
-import { formatOtherPrice } from "@utils/new-number-utils";
-import { useTranslation } from "react-i18next";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
