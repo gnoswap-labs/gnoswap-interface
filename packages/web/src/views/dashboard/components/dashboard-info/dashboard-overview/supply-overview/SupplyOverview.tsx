@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
@@ -103,7 +102,6 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-  const amount = useMemo(() => "1,000,000,000 GNS.", []);
 
   return (
     <SupplyOverviewWrapper>
@@ -117,13 +115,9 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
                 <Trans
                   ns="Dashboard"
                   i18nKey={"supOver.totalSup.tooltip"}
-                  values={{
-                    amount,
-                  }}
-                >
-                  The total supply of GNS tokens is <br />
-                  {amount}
-                </Trans>
+                  values={{ amount: supplyOverviewInfo.totalSupply }}
+                  components={{ br: <br /> }}
+                />
               }
             />
           </div>
@@ -161,7 +155,9 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         <div className="daily-block-emissions">
           <div className="label-title">
             <div>{t("Dashboard:supOver.dailyBlock.label")}</div>
-            <DashboardLabel tooltip={t("Dashboard:supOver.dailyBlock.tooltip")} />
+            <DashboardLabel
+              tooltip={t("Dashboard:supOver.dailyBlock.tooltip")}
+            />
           </div>
           <div className="daily-block-emissions-tooltip">
             {!loading ? (
