@@ -2157,6 +2157,7 @@ __metadata:
     babel-loader: "npm:9.1.2"
     bech32: "npm:2.0.0"
     bignumber.js: "npm:9.1.1"
+    crypto: "npm:^1.0.1"
     crypto-js: "npm:^4.2.0"
     d3: "npm:^7.8.5"
     dayjs: "npm:1.11.7"
@@ -8552,6 +8553,13 @@ __metadata:
   version: 4.2.0
   resolution: "crypto-js@npm:4.2.0"
   checksum: 10/c7bcc56a6e01c3c397e95aa4a74e4241321f04677f9a618a8f48a63b5781617248afb9adb0629824792e7ec20ca0d4241a49b6b2938ae6f973ec4efc5c53c924
+  languageName: node
+  linkType: hard
+
+"crypto@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "crypto@npm:1.0.1"
+  checksum: 10/087fe3165bd94c333a49e6ed66a0193911f63eac38a24f379b3001a5fe260a59c413646e53a0f67875ba13902b2686d81dc703cb2c147a4ec727dcdc04e5645e
   languageName: node
   linkType: hard
 
