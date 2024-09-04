@@ -1,18 +1,21 @@
+import Link from "next/link";
 import React from "react";
-import { SwapLiquidityWrapper } from "./SwapLiquidity.styles";
+import { useTranslation } from "react-i18next";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconAdd from "@components/common/icons/IconAdd";
+import IconStar from "@components/common/icons/IconStar";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import { TokenModel } from "@models/token/token-model";
+import { formatRate } from "@utils/new-number-utils";
+
 import {
   LiquidityInfo,
   LIQUIDITY_HEAD,
-} from "@containers/swap-liquidity-container/SwapLiquidityContainer";
-import Link from "next/link";
-import { TokenModel } from "@models/token/token-model";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { formatRate } from "@utils/new-number-utils";
-import IconStar from "@components/common/icons/IconStar";
-import { useTranslation } from "react-i18next";
-import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+} from "@views/swap/containers/swap-liquidity-container/SwapLiquidityContainer";
+
+import { SwapLiquidityWrapper } from "./SwapLiquidity.styles";
 
 interface SwapLiquidityProps {
   liquiditys: LiquidityInfo[];

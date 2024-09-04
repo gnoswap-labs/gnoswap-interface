@@ -1,14 +1,17 @@
+import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import IconLink from "@components/common/icons/IconLink";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconSettings from "@components/common/icons/IconSettings";
-import React, { useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
-import SettingMenuModal from "../setting-menu-modal/SettingMenuModal";
+import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
+
 import {
   CopyTooltip,
   SettingMenuButton,
-  SwapCardHeaderWrapper,
+  SwapCardHeaderWrapper
 } from "./SwapCardHeader.styles";
+
 interface SwapCardHeaderProps {
   copied: boolean;
   copyURL: () => void;
@@ -39,17 +42,15 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
       <h2>{t("Swap:cardTitle")}</h2>
       <div className="button-wrap">
         <div className="setting-wrap" onClick={copyURL}>
-          <>
-            <IconLink className="setting-icon" />
-            {copied && (
-              <CopyTooltip>
-                <div className={`box ${themeKey}-shadow`}>
-                  <span>{t("Swap:swapURLCopied")}</span>
-                </div>
-                <IconPolygon className="polygon-icon" />
-              </CopyTooltip>
-            )}
-          </>
+          <IconLink className="setting-icon" />
+          {copied && (
+            <CopyTooltip>
+              <div className={`box ${themeKey}-shadow`}>
+                <span>{t("Swap:swapURLCopied")}</span>
+              </div>
+              <IconPolygon className="polygon-icon" />
+            </CopyTooltip>
+          )}
         </div>
         <SettingMenuButton>
           <div className="setting-wrap" onClick={openSetting}>

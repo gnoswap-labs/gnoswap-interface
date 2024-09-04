@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapLiquidity from "./SwapLiquidity";
-import { dummyLiquidityList } from "@containers/swap-liquidity-container/SwapLiquidityContainer";
+import { dummyLiquidityList } from "@views/swap/containers/swap-liquidity-container/SwapLiquidityContainer";
 import { css } from "@emotion/react";
 
 export default {

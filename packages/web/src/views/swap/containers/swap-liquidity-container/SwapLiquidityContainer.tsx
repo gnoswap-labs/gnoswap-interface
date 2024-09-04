@@ -1,14 +1,16 @@
-import SwapLiquidity from "@components/swap/swap-liquidity/SwapLiquidity";
+import { useAtom } from "jotai";
 import React, { useMemo } from "react";
 import { ValuesType } from "utility-types";
+
 import { SwapFeeTierType } from "@constants/option.constant";
-import { useGetPoolList } from "@query/pools";
 import useRouter from "@hooks/common/use-custom-router";
-import { PoolModel } from "@models/pool/pool-model";
-import { useAtom } from "jotai";
-import { SwapState } from "@states/index";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PoolModel } from "@models/pool/pool-model";
+import { useGetPoolList } from "@query/pools";
+import { SwapState } from "@states/index";
 import { formatOtherPrice } from "@utils/new-number-utils";
+
+import SwapLiquidity from "../../components/swap-liquidity/SwapLiquidity";
 
 export interface LiquidityInfo {
   feeTier: string;

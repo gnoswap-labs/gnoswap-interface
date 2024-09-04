@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import React, { useEffect, useState } from "react";
 
-import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
+import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
 import TokenSwap from "@components/token/token-swap/TokenSwap";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";

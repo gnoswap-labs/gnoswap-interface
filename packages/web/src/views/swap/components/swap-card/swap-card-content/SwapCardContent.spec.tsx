@@ -55,7 +55,9 @@ describe("SwapCardContent Component", () => {
       switchSwapDirection: () => null,
       connectedWallet: false,
       isLoading: false,
-      setSwapRateAction: (type: "ATOB" | "BTOA") => null,
+      setSwapRateAction: (type: "ATOB" | "BTOA") => {
+        console.log(type);
+      },
       isSwitchNetwork: false,
       priceImpactStatus: "NONE" as PriceImpactStatus,
       isSameToken: false,

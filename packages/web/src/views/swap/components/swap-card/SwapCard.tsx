@@ -1,22 +1,25 @@
+import { useTheme } from "@emotion/react";
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
+import WarningCard from "@components/common/warning-card/WarningCard";
+import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { SwapResultInfo } from "@models/swap/swap-result-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { TokenModel } from "@models/token/token-model";
+
+import SwapCardContent from "./swap-card-content/SwapCardContent";
+import SwapCardHeader from "./swap-card-header/SwapCardHeader";
+
 import {
   HighPriceWarningContentWrapper,
   SwapCardWrapper,
-  SwapWarningSection,
+  SwapWarningSection
 } from "./SwapCard.styles";
-import SwapCardHeader from "../swap-card-header/SwapCardHeader";
-import SwapCardContent from "../swap-card-content/SwapCardContent";
-import { TokenModel } from "@models/token/token-model";
-import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
-import { SwapRouteInfo } from "@models/swap/swap-route-info";
-import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
-import { useTheme } from "@emotion/react";
-import WarningCard from "@components/common/warning-card/WarningCard";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
-import { useTranslation } from "react-i18next";
 
 interface SwapCardProps {
   connectedWallet: boolean;
