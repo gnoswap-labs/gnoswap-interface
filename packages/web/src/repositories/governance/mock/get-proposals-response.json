@@ -427,6 +427,10 @@
     },
     "proponent": "Onbloc",
     "time": "2025-01-27 17:00:0 UTC+9",
+    "myVote": {
+      "type": "",
+      "weight": 1000
+    },
     "votes": {
       "max": 40440,
       "yes": 2000,

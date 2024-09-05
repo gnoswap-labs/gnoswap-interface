@@ -22,7 +22,6 @@ interface ProposalListProps {
   toggleIsShowActiveOnly: () => void;
   proposalList: ProposalItemInfo[];
   fetchMore: () => void;
-  handleVote: (voteYes: boolean) => void;
   breakpoint: DEVICE_TYPE;
   selectedProposalId: number;
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
@@ -43,6 +42,7 @@ interface ProposalListProps {
     functionName: string,
     param: string,
   ) => void;
+  voteProposal: (proposalId: number, voteYes: boolean) => void;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
@@ -55,7 +55,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
   toggleIsShowActiveOnly,
   proposalList,
   fetchMore,
-  handleVote,
   breakpoint,
   selectedProposalId,
   setSelectedProposalId,
@@ -64,6 +63,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   proposeTextProposal,
   proposeCommunityPoolSpendProposal,
   proposeParamChnageProposal,
+  voteProposal,
 }) => {
   const LastCard = withIntersection(ProposalCard, fetchMore);
 
@@ -114,9 +114,9 @@ const ProposalList: React.FC<ProposalListProps> = ({
           setSelectedProposalId={setSelectedProposalId}
           isConnected={isConnected}
           isSwitchNetwork={isSwitchNetwork}
-          handleVote={handleVote}
           connectWallet={connectWallet}
           switchNetwork={switchNetwork}
+          voteProposal={voteProposal}
         />
       )}
       {isOpenCreateModal && (

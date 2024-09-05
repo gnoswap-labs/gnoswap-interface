@@ -17,6 +17,7 @@ export const useMessage = () => {
       tokenAAmount?: string;
       tokenBAmount?: string;
       target?: string;
+      memo0?: string;
     },
   ) {
     const message = (() => {
@@ -105,6 +106,12 @@ export const useMessage = () => {
             success: t("Modal:confirm.propose.status.success", data),
             error: t("Modal:confirm.propose.status.error", data),
           };
+        case DexEvent.VOTE:
+          return {
+            pending: t("Modal:confirm.vote.status.pending", data),
+            success: t("Modal:confirm.vote.status.success", data),
+            error: t("Modal:confirm.vote.status.error", data),
+          };
         default:
           return {
             pending: "Undefined task",
@@ -159,6 +166,8 @@ export const useMessage = () => {
         case DexEvent.PROPOSE_COMM_POOL_SPEND:
         case DexEvent.PROPOSE_PARAM_CHANGE:
           return t("Modal:confirm.propose.title");
+        case DexEvent.VOTE:
+          return t("Modal:confirm.vote.title");
         default:
           return "Undefined task";
       }

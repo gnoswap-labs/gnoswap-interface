@@ -250,11 +250,37 @@ export const useGovernanceTx = () => {
     );
   };
 
+    const voteProposal = (
+      proposalId: number,
+      voteYes: boolean,
+    ) => {
+      if (!account) {
+        return;
+      }
+
+      const messageData = {
+        target: proposalId.toString(),
+        memo0: t(voteYes ? "Governance:vote.yes" : "Governance:vote.no"),
+      };
+
+      processTx(
+        () =>
+          governanceRepository.sendVote({
+            proposalId,
+            voteYes,
+          }),
+        DexEvent.VOTE,
+        messageData,
+        () => messageData,
+      );
+    };
+
   return {
     delegateGNS,
     undelegateGNS,
     proposeTextProposal,
     proposeCommunityPoolSpendProposal,
     proposeParamChnageProposal,
+    voteProposal,
   };
 };

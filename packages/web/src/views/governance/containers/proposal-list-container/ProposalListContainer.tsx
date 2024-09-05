@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
@@ -16,7 +16,12 @@ const ProposalListContainer: React.FC = () => {
   const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
 
-  const { proposeCommunityPoolSpendProposal, proposeTextProposal, proposeParamChnageProposal} = useGovernanceTx();
+  const {
+    proposeCommunityPoolSpendProposal,
+    proposeTextProposal,
+    proposeParamChnageProposal,
+    voteProposal,
+  } = useGovernanceTx();
 
   const { data: proposalsInfo, isFetching, hasNextPage, fetchNextPage } = useGetProposals({
     isActive: isShowActiveOnly,
@@ -27,11 +32,6 @@ const ProposalListContainer: React.FC = () => {
   const fetchNextItems = () => {
     if (hasNextPage) fetchNextPage();
   };
-
-  const handleVote = useCallback((voteYes: boolean) => {
-    // vote yes
-    console.log("vote to ", voteYes);
-  }, []);
 
   return (
     <ProposalList
@@ -45,7 +45,6 @@ const ProposalListContainer: React.FC = () => {
       toggleIsShowActiveOnly={() => setIsShowActiveOnly(a => !a)}
       proposalList={proposalsInfo?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}
-      handleVote={handleVote}
       selectedProposalId={selectedProposalId}
       setSelectedProposalId={setSelectedProposalId}
       isOpenCreateModal={isOpenCreateModal}
@@ -53,6 +52,7 @@ const ProposalListContainer: React.FC = () => {
       proposeTextProposal={proposeTextProposal}
       proposeCommunityPoolSpendProposal={proposeCommunityPoolSpendProposal}
       proposeParamChnageProposal={proposeParamChnageProposal}
+      voteProposal={voteProposal}
     />
   );
 };

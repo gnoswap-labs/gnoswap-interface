@@ -28,9 +28,9 @@ export interface ViewProposalModalProps {
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
   isConnected: boolean;
   isSwitchNetwork: boolean;
-  handleVote: (voteYes: boolean) => void;
   connectWallet: () => void;
   switchNetwork: () => void;
+  voteProposal: (proposalId: number, voteYes: boolean) => void;
 }
 
 const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
@@ -39,9 +39,9 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   setSelectedProposalId,
   isSwitchNetwork,
   isConnected,
-  handleVote,
   connectWallet,
   switchNetwork,
+  voteProposal,
 }) => {
   const Modal = useMemo(
     () =>
@@ -152,7 +152,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           <span>{t("Governance:detailModal.votingWeight")}</span>
           <div>
             <div className="power-value">
-              {(proposalDetail.votes.yes || 0).toLocaleString()}
+              {(proposalDetail.myVote?.weight || 0).toLocaleString()}
             </div>
             <TokenChip tokenInfo={GNS_TOKEN} />
           </div>
@@ -165,7 +165,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           voteWeigth={proposalDetail.myVote?.weight}
           status={proposalDetail.status}
           selectedVote={selectedVote}
-          handleVote={handleVote}
+          handleVote={() => voteProposal(proposalDetail.id, selectedVote === "YES")}
           connectWallet={connectWallet}
           switchNetwork={switchNetwork}
         />
