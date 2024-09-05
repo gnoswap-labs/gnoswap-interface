@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
+import withIntersection from "@components/hoc/with-intersection";
 import { nullProposalItemInfo, ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -10,7 +11,6 @@ import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
 import { ProposalListWrapper } from "./ProposalList.styles";
-import withLastCheck from "./LastCardWrapper";
 
 interface ProposalListProps {
   isLoading?: boolean;
@@ -47,7 +47,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   isOpenCreateModal,
   setIsOpenCreateModal,
 }) => {
-  const LastCard = withLastCheck(ProposalCard, fetchMore);
+  const LastCard = withIntersection(ProposalCard, fetchMore);
 
   return (
     <ProposalListWrapper>

@@ -2,7 +2,7 @@ import React from "react";
 
 import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
 
-const withLastCheck = <P extends object>(
+const withIntersection = <P extends object>(
   ProposalCard: React.ComponentType<P>,
   callback: () => void,
 ) => {
@@ -19,4 +19,4 @@ const withLastCheck = <P extends object>(
   return LastCardWrapper;
 };
 
-export default withLastCheck;
+export default withIntersection;
