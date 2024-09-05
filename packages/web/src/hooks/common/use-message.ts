@@ -16,16 +16,31 @@ export const useMessage = () => {
       tokenBSymbol?: string;
       tokenAAmount?: string;
       tokenBAmount?: string;
+      target?: string;
     },
   ) {
     const message = (() => {
       switch (action) {
+        // Swap
         case DexEvent.SWAP:
           return {
             pending: t("Modal:confirm.swap.status.pending", data),
             success: t("Modal:confirm.swap.status.success", data),
             error: t("Modal:confirm.swap.status.error", data),
           };
+        case DexEvent.WRAP:
+          return {
+            pending: t("Modal:confirm.wrap.status.pending", data),
+            success: t("Modal:confirm.wrap.status.success", data),
+            error: t("Modal:confirm.wrap.status.error", data),
+          };
+        case DexEvent.UNWRAP:
+          return {
+            pending: t("Modal:confirm.unwrap.status.pending", data),
+            success: t("Modal:confirm.unwrap.status.success", data),
+            error: t("Modal:confirm.unwrap.status.error", data),
+          };
+        // Position
         case DexEvent.ADD:
           return {
             pending: t("Modal:confirm.add.status.pending", data),
@@ -56,6 +71,7 @@ export const useMessage = () => {
             success: t("Modal:confirm.stake.status.success", data),
             error: t("Modal:confirm.stake.status.error", data),
           };
+        // Wallet
         case DexEvent.UNSTAKE:
           return {
             pending: t("Modal:confirm.unstake.status.pending", data),
@@ -68,17 +84,12 @@ export const useMessage = () => {
             success: t("Modal:confirm.assetSend.status.success", data),
             error: t("Modal:confirm.assetSend.status.error", data),
           };
-        case DexEvent.WRAP:
+        // Governance
+        case DexEvent.DELEGATE:
           return {
-            pending: t("Modal:confirm.wrap.status.pending", data),
-            success: t("Modal:confirm.wrap.status.success", data),
-            error: t("Modal:confirm.wrap.status.error", data),
-          };
-        case DexEvent.UNWRAP:
-          return {
-            pending: t("Modal:confirm.unwrap.status.pending", data),
-            success: t("Modal:confirm.unwrap.status.success", data),
-            error: t("Modal:confirm.unwrap.status.error", data),
+            pending: t("Modal:confirm.delegate.status.pending", data),
+            success: t("Modal:confirm.delegate.status.success", data),
+            error: t("Modal:confirm.delegate.status.error", data),
           };
         default:
           return {
@@ -102,8 +113,14 @@ export const useMessage = () => {
   const title = useCallback(
     (action: DexEventType) => {
       switch (action) {
+        // Swap
         case DexEvent.SWAP:
           return t("Modal:confirm.swap.title");
+        case DexEvent.WRAP:
+          return t("Modal:confirm.wrap.title");
+        case DexEvent.UNWRAP:
+          return t("Modal:confirm.unwrap.title");
+        // Position
         case DexEvent.ADD:
           return t("Modal:confirm.add.title");
         case DexEvent.REMOVE:
@@ -116,12 +133,12 @@ export const useMessage = () => {
           return t("Modal:confirm.stake.title");
         case DexEvent.UNSTAKE:
           return t("Modal:confirm.unstake.title");
+        // Wallet
         case DexEvent.ASSET_SEND:
           return t("Modal:confirm.assetSend.title");
-        case DexEvent.WRAP:
-          return t("Modal:confirm.wrap.title");
-        case DexEvent.UNWRAP:
-          return t("Modal:confirm.unwrap.title");
+        // Governance
+        case DexEvent.DELEGATE:
+          return t("Modal:confirm.delegate.title");
         default:
           return "Undefined task";
       }

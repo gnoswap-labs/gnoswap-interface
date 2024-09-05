@@ -35,7 +35,7 @@ interface MyDelegationDelegateModalProps {
   totalDelegatedAmount: number;
   delegatees: DelegateeInfo[];
   isWalletConnected: boolean;
-  onSubmit: () => void;
+  onSubmit: (toName: string, toAddress: string, amount: string) => void;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -64,8 +64,6 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
   const [selfAddress, setSelfAddress] = useState("");
   const isSelfAddrValid = addressValidationCheck(selfAddress);
-
-  const isSubmit = false;
 
   const showDelegateInfo = () => (
     <>
@@ -221,13 +219,18 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       />
 
       <Button
-        onClick={onSubmit}
+        onClick={() =>
+          onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount)
+        }
         text={t("Governance:myDel.delModal.ctaBtn")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={!isSubmit}
+        disabled={
+          gnsAmountInput.amount === "0" ||
+          Number(gnsAmountInput.amount) > Number(gnsAmountInput.balance)
+        }
         className="button-confirm"
       />
     </>

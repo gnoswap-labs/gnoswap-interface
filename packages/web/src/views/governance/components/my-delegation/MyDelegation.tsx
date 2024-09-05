@@ -25,6 +25,7 @@ interface MyDelegationProps {
   isLoading: boolean;
   isWalletConnected: boolean;
   connectWallet: () => void;
+  delegateGNS: (toName: string, toAddress: string, amount: string) => void;
 }
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
@@ -34,11 +35,12 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   isLoading,
   isWalletConnected,
   connectWallet,
+  delegateGNS,
 }) => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const [isOpenDelegateModal, setIsOpenDelegateModal] = useState(false);
   const [isOpenUndelegateModal, setIsOpenUndelegateModal] = useState(false);
-  
+
   const [showUndel, setShowUndel] = useState(false);
 
   const hasUndel = !!myDelegationInfo.undeligatedAmount;
@@ -245,7 +247,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           totalDelegatedAmount={totalDelegatedAmount}
           delegatees={delegatees}
           isWalletConnected={isWalletConnected}
-          onSubmit={() => console.log("delegate")}
+          onSubmit={delegateGNS}
           setIsOpen={setIsOpenDelegateModal}
         />
       )}
@@ -260,6 +262,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         />
       )}
     </MyDelegationWrapper>
-  );};
+  );
+};
 
 export default MyDelegation;

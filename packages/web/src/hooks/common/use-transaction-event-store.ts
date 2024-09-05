@@ -48,6 +48,7 @@ export const useTransactionEventStore = () => {
       tokenBSymbol?: string;
       tokenAAmount?: string;
       tokenBAmount?: string;
+      target?: string;
     };
     onUpdate?: () => Promise<void>;
     onEmit?: () => Promise<void>;
