@@ -28,6 +28,21 @@ interface ProposalListProps {
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
   isOpenCreateModal: boolean;
   setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+  proposeTextProposal: (title: string, description: string) => void;
+  proposeCommunityPoolSpendProposal: (
+    title: string,
+    description: string,
+    tokenPath: string,
+    toAddress: string,
+    amount: string,
+  ) => void;
+  proposeParamChnageProposal: (
+    title: string,
+    description: string,
+    pkgPath: string,
+    functionName: string,
+    param: string,
+  ) => void;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
@@ -46,6 +61,9 @@ const ProposalList: React.FC<ProposalListProps> = ({
   setSelectedProposalId,
   isOpenCreateModal,
   setIsOpenCreateModal,
+  proposeTextProposal,
+  proposeCommunityPoolSpendProposal,
+  proposeParamChnageProposal,
 }) => {
   const LastCard = withIntersection(ProposalCard, fetchMore);
 
@@ -105,9 +123,13 @@ const ProposalList: React.FC<ProposalListProps> = ({
         <CreateProposalModal
           breakpoint={breakpoint}
           setIsOpenCreateModal={setIsOpenCreateModal}
+          proposeTextProposal={proposeTextProposal}
+          proposeCommunityPoolSpendProposal={proposeCommunityPoolSpendProposal}
+          proposeParamChnageProposal={proposeParamChnageProposal}
         />
       )}
     </ProposalListWrapper>
-  );};
+  );
+};
 
 export default ProposalList;

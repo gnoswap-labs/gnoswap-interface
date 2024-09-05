@@ -1,4 +1,4 @@
-import React, { FC, memo } from "react";
+import React, { FC, memo, ReactNode } from "react";
 import { FormInputStyle, FormInputWrapper } from "./FormInput.styles";
 
 interface ParentProps {
@@ -9,7 +9,8 @@ type Props = {
   placeholder?: string;
   name: string;
   type?: string;
-  errorText?: any;
+  errorText?: ReactNode;
+  disabled?: boolean;
   parentProps?: ParentProps;
 };
 
@@ -18,7 +19,7 @@ const FormInput: FC<Props> = React.forwardRef<HTMLInputElement, Props>(
     const { errorText, parentProps } = props;
     return (
       <FormInputWrapper {...parentProps}>
-        <FormInputStyle {...props} ref={ref} />
+        <FormInputStyle {...props} ref={ref}/>
         {errorText && <div className="error-text">{errorText}</div>}
       </FormInputWrapper>
     );

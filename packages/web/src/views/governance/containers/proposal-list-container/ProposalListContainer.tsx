@@ -6,6 +6,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetProposals } from "@query/governance";
 
 import ProposalList from "../../components/proposals-list/ProposalList";
+import { useGovernanceTx } from "../../hooks/use-governance-tx";
 
 const ProposalListContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
@@ -14,6 +15,8 @@ const ProposalListContainer: React.FC = () => {
   const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
   const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
+
+  const { proposeCommunityPoolSpendProposal, proposeTextProposal, proposeParamChnageProposal} = useGovernanceTx();
 
   const { data: proposalsInfo, isFetching, hasNextPage, fetchNextPage } = useGetProposals({
     isActive: isShowActiveOnly,
@@ -47,6 +50,9 @@ const ProposalListContainer: React.FC = () => {
       setSelectedProposalId={setSelectedProposalId}
       isOpenCreateModal={isOpenCreateModal}
       setIsOpenCreateModal={setIsOpenCreateModal}
+      proposeTextProposal={proposeTextProposal}
+      proposeCommunityPoolSpendProposal={proposeCommunityPoolSpendProposal}
+      proposeParamChnageProposal={proposeParamChnageProposal}
     />
   );
 };

@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { addressValidationCheck } from "./validation-utils";
 
 export const getCreateProposalValidation = () =>
   yup
@@ -15,15 +16,24 @@ export const getCreateProposalCommunityPoolSpendValidation = () =>
     .shape({
       title: yup.string().trim().required("Title is required"),
       description: yup.string().trim().required("Description is required"),
-      recipientAddress: yup.string().trim().required("Recipient is required"),
-      amount: yup.number().typeError("Amount is required").required("Amount is required"),
+      recipientAddress: yup
+        .string()
+        .trim()
+        .required("Recipient is required")
+        .test("is-valid", "Address is not valid", value =>
+          addressValidationCheck(value),
+        ),
+      amount: yup
+        .number()
+        .typeError("Amount is required")
+        .required("Amount is required"),
     })
     .required();
 
 const variableSchema = {
-  subspace: yup.string().trim().required("Subspace is required"),
-  key: yup.string().trim().required("Key is required"),
-  value: yup.string().trim().required("Value is required"),
+  pkgPath: yup.string(),
+  func: yup.string(),
+  param: yup.string(),
 };
 
 export const getCreateProposalChangeParameterValidation = () =>
@@ -32,6 +42,18 @@ export const getCreateProposalChangeParameterValidation = () =>
     .shape({
       title: yup.string().trim().required("Title is required"),
       description: yup.string().trim().required("Description is required"),
-      variable: yup.array().of(yup.object().shape(variableSchema)),
+      variable: yup.array().of(yup.object().shape(variableSchema)).min(1, "At least one change is reqruied").test("check-valid", "Variable is not valid", value => {
+        if (
+          !value ||
+          value[0].pkgPath === undefined ||
+          value[0].pkgPath === "" ||
+          value[0].func === undefined ||
+          value[0].func === "" ||
+          value[0].param === undefined ||
+          value[0].param === ""
+        )
+          return false;
+        return value.every((item) => item.param !== undefined && item.param !== "");
+      }),
     })
     .required();

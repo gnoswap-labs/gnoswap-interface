@@ -97,6 +97,14 @@ export const useMessage = () => {
             success: t("Modal:confirm.undel.status.success", data),
             error: t("Modal:confirm.undel.status.error", data),
           };
+        case DexEvent.PROPOSE_TEXT:
+        case DexEvent.PROPOSE_COMM_POOL_SPEND:
+        case DexEvent.PROPOSE_PARAM_CHANGE:
+          return {
+            pending: t("Modal:confirm.propose.status.pending", data),
+            success: t("Modal:confirm.propose.status.success", data),
+            error: t("Modal:confirm.propose.status.error", data),
+          };
         default:
           return {
             pending: "Undefined task",
@@ -147,6 +155,10 @@ export const useMessage = () => {
           return t("Modal:confirm.delegate.title");
         case DexEvent.UNDELEGATE:
           return t("Modal:confirm.undel.title");
+        case DexEvent.PROPOSE_TEXT:
+        case DexEvent.PROPOSE_COMM_POOL_SPEND:
+        case DexEvent.PROPOSE_PARAM_CHANGE:
+          return t("Modal:confirm.propose.title");
         default:
           return "Undefined task";
       }

@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
@@ -28,20 +28,9 @@ import {
   IconButton,
 } from "./CreateProposalModal.styles";
 
-interface Props {
-  breakpoint: DEVICE_TYPE;
-  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
-}
-
 interface BoxContentProps {
   label: string;
   children?: React.ReactNode;
-}
-
-interface Variable {
-  subspace: string;
-  key: string;
-  value: string;
 }
 
 interface FormValues {
@@ -49,7 +38,11 @@ interface FormValues {
   description: string;
   amount: number;
   recipientAddress: string;
-  variable: Variable[];
+  variable: {
+    pkgPath: string;
+    func: string;
+    param: string;
+  }[];
 }
 
 const ProposalOption = [
@@ -77,15 +70,38 @@ const BoxContent: React.FC<BoxContentProps> = ({
   );
 };
 
-const CreateProposalModal: React.FC<Props> = ({
+interface CreateProposalModalProps {
+  breakpoint: DEVICE_TYPE;
+  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+  proposeTextProposal: (title: string, description: string) => void;
+  proposeCommunityPoolSpendProposal: (
+    title: string,
+    description: string,
+    tokenPath: string,
+    toAddress: string,
+    amount: string,
+  ) => void;
+  proposeParamChnageProposal: (
+    title: string,
+    description: string,
+    pkgPath: string,
+    functionName: string,
+    param: string,
+  ) => void;
+}
+
+const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   breakpoint,
   setIsOpenCreateModal,
+  proposeTextProposal,
+  proposeCommunityPoolSpendProposal,
+  proposeParamChnageProposal,
 }) => {
   const Modal = useMemo(
     () => withLocalModal(CreateProposalModalWrapper, setIsOpenCreateModal),
     [setIsOpenCreateModal],
   );
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [type, setType] = useState<string>(ProposalOption[0]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -108,22 +124,23 @@ const CreateProposalModal: React.FC<Props> = ({
       recipientAddress: "",
       variable: [
         {
-          subspace: "",
-          key: "",
-          value: "",
+          pkgPath: "",
+          func: "",
+          param: "",
         },
         {
-          subspace: "",
-          key: "",
-          value: "",
+          pkgPath: "",
+          func: "",
+          param: "",
         },
       ],
     },
   });
   const {
     register,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty, isValid, },
     control,
+    getValues,
   } = methods;
 
   const { fields, append, remove } = useFieldArray({
@@ -134,21 +151,47 @@ const CreateProposalModal: React.FC<Props> = ({
   const handleClickFormFieldArray = (index: number) => {
     if (index === fields.length - 1) {
       append({
-        subspace: "",
-        key: "",
-        value: "",
+        pkgPath: "",
+        func: "",
+        param: "",
       });
     } else {
       remove(index);
     }
   };
 
+  console.log(errors, isDirty, isValid, getValues());
   const isDisableSubmit = useMemo(() => {
     return !isEmptyObject(errors) || !isDirty || !isValid;
   }, [isDirty, isValid, errors]);
 
+  const sendTx: SubmitHandler<FormValues> = (data) => {
+    console.log(data);
+    if (type === ProposalOption[0]) {
+      proposeTextProposal(data.title, data.description);
+      return;
+    }
+    else if (type === ProposalOption[1]) {
+      proposeCommunityPoolSpendProposal(
+        data.title,
+        data.description,
+        GNS_TOKEN.path,
+        data.recipientAddress,
+        data.amount.toString(),
+      );
+      return;
+    }
+    proposeParamChnageProposal(
+      data.title,
+      data.description,
+      data.variable[0].pkgPath,
+      data.variable[0].func,
+      data.variable.map(item => item.param).join("*gov*"),
+    );
+  };
+
   return (
-    <FormProvider methods={methods} onSubmit={() => {}}>
+    <FormProvider methods={methods} onSubmit={sendTx}>
       <Modal>
         <div className="modal-body">
           <div className="header">
@@ -193,7 +236,6 @@ const CreateProposalModal: React.FC<Props> = ({
               }
               rows={type === ProposalOption[0] ? 20 : 10}
               {...register("description")}
-              name="description"
             />
           </BoxContent>
           {type === ProposalOption[1] && (
@@ -217,7 +259,6 @@ const CreateProposalModal: React.FC<Props> = ({
                   placeholder="0"
                   errorText={errors?.amount ? errors.amount.message : undefined}
                   {...register("amount")}
-                  name="amount"
                 />
                 <div className="deposit-currency suffix-currency">
                   <TokenChip tokenInfo={GNS_TOKEN} />
@@ -232,32 +273,35 @@ const CreateProposalModal: React.FC<Props> = ({
                   <div>
                     <FormInput
                       placeholder={t(
-                        "Governance:createModal.setVariable.placeholder.subspace",
+                        index === 0
+                          ? "Governance:createModal.setVariable.placeholder.pkgPath"
+                          : "Governance:createModal.setVariable.placeholder.same",
                       )}
                       errorText={
                         errors?.variable
-                          ? errors?.variable[index]?.subspace?.message ||
-                            errors?.variable[index]?.key?.message ||
-                            errors?.variable[index]?.value?.message
+                          ? errors?.variable[index]?.pkgPath?.message ||
+                            errors?.variable[index]?.func?.message ||
+                            errors?.variable[index]?.param?.message
                           : undefined
                       }
-                      {...register(`variable.${index}.subspace`)}
-                      name={`variable.${index}.subspace`}
+                      {...register(`variable.${index}.pkgPath`)}
+                      disabled={index !== 0}
                     />
 
                     <FormInput
                       placeholder={t(
-                        "Governance:createModal.setVariable.placeholder.key",
+                        index === 0
+                          ? "Governance:createModal.setVariable.placeholder.func"
+                          : "Governance:createModal.setVariable.placeholder.same",
                       )}
-                      {...register(`variable.${index}.key`)}
-                      name={`variable.${index}.key`}
+                      {...register(`variable.${index}.func`)}
+                      disabled={index !== 0}
                     />
                     <FormInput
                       placeholder={t(
-                        "Governance:createModal.setVariable.placeholder.value",
+                        "Governance:createModal.setVariable.placeholder.param",
                       )}
-                      {...register(`variable.${index}.value`)}
-                      name={`variable.${index}.value`}
+                      {...register(`variable.${index}.param`)}
                     />
                   </div>
                   <IconButton onClick={() => handleClickFormFieldArray(index)}>
@@ -287,8 +331,7 @@ const CreateProposalModal: React.FC<Props> = ({
             fullWidth: true,
             textColor: "text09",
             fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-            hierarchy: isDisableSubmit ? undefined : ButtonHierarchy.Primary,
-            bgColor: isDisableSubmit ? "background17" : undefined,
+            hierarchy: ButtonHierarchy.Primary,
           }}
         />
       </Modal>

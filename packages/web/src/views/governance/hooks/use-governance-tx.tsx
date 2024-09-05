@@ -1,7 +1,9 @@
-
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
+import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
@@ -10,10 +12,9 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
-import { GNS_TOKEN } from "@common/values/token-constant";
-import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 export const useGovernanceTx = () => {
+  const {t} = useTranslation();
   const { account } = useWallet();
   const { governanceRepository } = useGnoswapContext();
   const { getMessage } = useMessage();
@@ -133,43 +134,127 @@ export const useGovernanceTx = () => {
     );
   };
 
-const undelegateGNS = (fromName: string, fromAddress: string, amount: string) => {
-  if (!account) {
-    return;
-  }
+  const undelegateGNS = (fromName: string, fromAddress: string, amount: string) => {
+    if (!account) {
+      return;
+    }
 
-  const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
+    const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
 
-  const messageData = {
-    tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString("en"),
-    tokenASymbol: GNS_TOKEN.symbol,
-    target: fromName,
+    const messageData = {
+      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString("en"),
+      tokenASymbol: GNS_TOKEN.symbol,
+      target: fromName,
+    };
+
+    processTx(
+      () =>
+        governanceRepository.sendUndelegate({
+          to: fromAddress,
+          amount: unitAmount.toString(),
+        }),
+      DexEvent.UNDELEGATE,
+      messageData,
+      response => {
+        if (!response) {
+          return messageData;
+        }
+        // TODO : use tx data
+        return {
+          ...messageData,
+          // tokenAAmount: response[0],
+        };
+      },
+    );
   };
 
-  processTx(
-    () =>
-      governanceRepository.sendUndelegate({
-        to: fromAddress,
-        amount: unitAmount.toString(),
-      }),
-    DexEvent.UNDELEGATE,
-    messageData,
-    response => {
-      if (!response) {
-        return messageData;
-      }
-      // TODO : use tx data
-      return {
-        ...messageData,
-        // tokenAAmount: response[0],
-      };
-    },
-  );
+  const proposeTextProposal = (title: string, description: string) => {
+    if (!account) {
+      return;
+    }
 
-};
+    const messageData = {
+      target: t("Governance:proposal.type.text"),
+    };
+
+    processTx(
+      () =>
+        governanceRepository.sendProposeText({
+          title,
+          description,
+        }),
+      DexEvent.PROPOSE_TEXT,
+      messageData,
+      () => messageData,
+    );
+  };
+
+  const proposeCommunityPoolSpendProposal = (
+    title: string,
+    description: string,
+    tokenPath: string,
+    toAddress: string,
+    amount: string,
+  ) => {
+    if (!account) {
+      return;
+    }
+
+    const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
+    const messageData = {
+      target: t("Governance:proposal.type.community"),
+    };
+
+    processTx(
+      () =>
+        governanceRepository.sendProposeCommunityPoolSpend({
+          title,
+          description,
+          tokenPath,
+          to: toAddress,
+          amount: unitAmount.toString(),
+        }),
+      DexEvent.PROPOSE_COMM_POOL_SPEND,
+      messageData,
+      () => messageData,
+    );
+  };
+
+  const proposeParamChnageProposal = (
+    title: string,
+    description: string,
+    pkgPath: string,
+    functionName: string,
+    param: string,
+  ) => {
+    if (!account) {
+      return;
+    }
+
+    const messageData = {
+      target: t("Governance:proposal.type.paramChange"),
+    };
+
+    processTx(
+      () =>
+        governanceRepository.sendProposeParameterChange({
+          title,
+          description,
+          functionName,
+          param,
+          pkgPath,
+        }),
+      DexEvent.PROPOSE_PARAM_CHANGE,
+      messageData,
+      () => messageData,
+    );
+  };
 
   return {
     delegateGNS,
     undelegateGNS,
+    proposeTextProposal,
+    proposeCommunityPoolSpendProposal,
+    proposeParamChnageProposal,
   };
 };
