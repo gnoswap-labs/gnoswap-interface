@@ -69,7 +69,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
             }
           />
           <Button
-            disabled={isLoading}
+            disabled={isLoading || !isWalletConnected}
             style={{
               hierarchy: ButtonHierarchy.Primary,
               fontType: "p1",
