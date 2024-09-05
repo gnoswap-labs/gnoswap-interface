@@ -5,7 +5,7 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const MyDelegationModalWrapper = styled.div`
-  width: 100%;
+  width: 500px;
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   gap: 4px;
 
@@ -23,6 +23,7 @@ export const MyDelegationModalWrapper = styled.div`
   }
 
   ${media.mobile} {
+    width: 100vw;
     padding: 15px;
     max-width: 500px;
     gap: 4px;

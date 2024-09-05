@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 
-import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { Z_INDEX } from "@styles/zIndex";
 
@@ -27,9 +26,5 @@ export const LocalModalBackground = styled.div`
     margin: 0 auto;
 
     pointer-events: initial;
-
-    ${media.mobile} {
-      ${mixins.flexbox("column", "center", "flex-start")};
-    }
   }
 `;
