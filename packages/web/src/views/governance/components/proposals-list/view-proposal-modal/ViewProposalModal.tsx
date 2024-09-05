@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
@@ -43,11 +43,12 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   connectWallet,
   switchNetwork,
 }) => {
-  const Modal = withLocalModal(
-    ViewProposalModalWrapper,
-    (isOpen: boolean) => {
-      if (!isOpen) setSelectedProposalId(0);
-    },
+  const Modal = useMemo(
+    () =>
+      withLocalModal(ViewProposalModalWrapper, (isOpen: boolean) => {
+        if (!isOpen) setSelectedProposalId(0);
+      }),
+    [setSelectedProposalId],
   );
   const { t } = useTranslation();
   const [selectedVote, setSelectedVote] = useState(

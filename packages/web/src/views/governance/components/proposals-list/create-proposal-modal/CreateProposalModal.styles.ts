@@ -2,19 +2,6 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { Z_INDEX } from "@styles/zIndex";
-export const CreateProposalModalBackground = styled.div`
-  position: fixed;
-  overflow: hidden;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: 100%;
-  height: 100lvh;
-  z-index: ${Z_INDEX.modal};
-  pointer-events: none;
-`;
 
 export const CreateProposalModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};

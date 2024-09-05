@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
@@ -47,11 +47,14 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   onSubmit,
   setIsOpen,
 }) => {
+  const Modal = useMemo(
+    () => withLocalModal(MyDelegationModalWrapper, setIsOpen),
+    [setIsOpen],
+  );
   const { t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
   const theme = useTheme();
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
-  const Modal = withLocalModal(MyDelegationModalWrapper, setIsOpen);
   const [stage, setStage] = useState<"MAIN" | "SELECT_DELEGATE">("MAIN");
   const [delegatee, setDelegatee] = useState<DelegateeInfo>(
     delegatees[0] || nullDelegateeInfo,

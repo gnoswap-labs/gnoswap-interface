@@ -81,9 +81,9 @@ const CreateProposalModal: React.FC<Props> = ({
   breakpoint,
   setIsOpenCreateModal,
 }) => {
-  const Modal = withLocalModal(
-    CreateProposalModalWrapper,
-    setIsOpenCreateModal,
+  const Modal = useMemo(
+    () => withLocalModal(CreateProposalModalWrapper, setIsOpenCreateModal),
+    [setIsOpenCreateModal],
   );
   const {t} = useTranslation();
   const [type, setType] = useState<string>(ProposalOption[0]);
