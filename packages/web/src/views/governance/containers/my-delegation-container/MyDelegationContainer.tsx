@@ -15,7 +15,7 @@ import { useGovernanceTx } from "@views/governance/hooks/use-governance-tx";
 const MyDelegationContainer: React.FC = () => {
   const { account, connected } = useWallet();
   const { openModal } = useConnectWalletModal();
-  const { delegateGNS } = useGovernanceTx();
+  const { delegateGNS, undelegateGNS } = useGovernanceTx();
 
   const {
     data: governanceSummaryInfo,
@@ -42,6 +42,7 @@ const MyDelegationContainer: React.FC = () => {
       isWalletConnected={connected}
       connectWallet={openModal}
       delegateGNS={delegateGNS}
+      undelegateGNS={undelegateGNS}
     />
   );
 };

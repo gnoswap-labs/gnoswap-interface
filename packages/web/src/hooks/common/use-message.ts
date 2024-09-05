@@ -91,6 +91,12 @@ export const useMessage = () => {
             success: t("Modal:confirm.delegate.status.success", data),
             error: t("Modal:confirm.delegate.status.error", data),
           };
+        case DexEvent.UNDELEGATE:
+          return {
+            pending: t("Modal:confirm.undel.status.pending", data),
+            success: t("Modal:confirm.undel.status.success", data),
+            error: t("Modal:confirm.undel.status.error", data),
+          };
         default:
           return {
             pending: "Undefined task",
@@ -139,6 +145,8 @@ export const useMessage = () => {
         // Governance
         case DexEvent.DELEGATE:
           return t("Modal:confirm.delegate.title");
+        case DexEvent.UNDELEGATE:
+          return t("Modal:confirm.undel.title");
         default:
           return "Undefined task";
       }

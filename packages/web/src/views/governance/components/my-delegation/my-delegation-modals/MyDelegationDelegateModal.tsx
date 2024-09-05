@@ -229,7 +229,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         }}
         disabled={
           gnsAmountInput.amount === "0" ||
-          Number(gnsAmountInput.amount) > Number(gnsAmountInput.balance)
+          Number(gnsAmountInput.amount) >
+            Number(gnsAmountInput.balance.replaceAll(",", ""))
         }
         className="button-confirm"
       />

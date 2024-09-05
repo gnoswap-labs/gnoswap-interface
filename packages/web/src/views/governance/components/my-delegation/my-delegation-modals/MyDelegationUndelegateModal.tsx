@@ -31,7 +31,11 @@ interface MyDelegationUndelegateModalProps {
   totalDelegatedAmount: number;
   delegatedInfos: DelegationItemInfo[];
   isWalletConnected: boolean;
-  onSubmit: () => void;
+  onSubmit: (
+    fromName: string,
+    fromAddress: string,
+    amount: string,
+  ) => void;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -54,8 +58,6 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
   const [selectedDelegatedInfo, setSelectedDelegatedInfo] = useState<DelegationItemInfo>(
     delegatedInfos[0] || nullMyDelegationInfo,
   );
-
-  const isSubmit = false;
 
   const showDelegateInfo = () => (
     <>
@@ -115,7 +117,8 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
                   usd: false,
                 },
               )}% -> ${formatOtherPrice(
-                ((currentDelegatedAmount - Number(gnsAmountInput.amount)) * 100) /
+                ((currentDelegatedAmount - Number(gnsAmountInput.amount)) *
+                  100) /
                   totalDelegatedAmount,
                 {
                   usd: false,
@@ -163,13 +166,23 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
       />
 
       <Button
-        onClick={onSubmit}
+        onClick={() =>
+          onSubmit(
+            selectedDelegatedInfo.name,
+            selectedDelegatedInfo.address,
+            gnsAmountInput.amount,
+          )
+        }
         text={t("Governance:myDel.undelModal.ctaBtn")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={!isSubmit}
+        disabled={
+          gnsAmountInput.amount === "0" ||
+          Number(gnsAmountInput.amount) >
+            Number(selectedDelegatedInfo.amount)
+        }
         className="button-confirm"
       />
     </>
