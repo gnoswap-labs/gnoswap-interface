@@ -112,6 +112,12 @@ export const useMessage = () => {
             success: t("Modal:confirm.vote.status.success", data),
             error: t("Modal:confirm.vote.status.error", data),
           };
+        case DexEvent.EXECUTE_PROPOSAL:
+          return {
+            pending: t("Modal:confirm.executeProposal.status.pending", data),
+            success: t("Modal:confirm.executeProposal.status.success", data),
+            error: t("Modal:confirm.executeProposal.status.error", data),
+          };
         default:
           return {
             pending: "Undefined task",
@@ -168,6 +174,8 @@ export const useMessage = () => {
           return t("Modal:confirm.propose.title");
         case DexEvent.VOTE:
           return t("Modal:confirm.vote.title");
+        case DexEvent.EXECUTE_PROPOSAL:
+          return t("Modal:confirm.executeProposal.title");
         default:
           return "Undefined task";
       }

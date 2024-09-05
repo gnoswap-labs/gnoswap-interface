@@ -11,19 +11,22 @@ import TypeBadge from "../../type-badge/TypeBadge";
 import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 
 import { ProposalDetailWrapper } from "./ProposalCard.styles";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
 
 dayjs.extend(relative);
 
 interface Props {
   proposalDetail: ProposalItemInfo;
   onClickCard: (id: string) => void;
+  executeProposal: (id: number) => void;
 }
 
 const ProposalCard: React.FC<Props> = ({
   proposalDetail,
   onClickCard,
+  executeProposal,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <ProposalDetailWrapper
@@ -42,16 +45,30 @@ const ProposalCard: React.FC<Props> = ({
               text={t("Governance:proposal.status.executed")}
             />
           )}
-          {proposalDetail.myVote &&
-            proposalDetail.myVote.type !== "" && (
-              <Badge
-                className="proposal-badge"
-                type={BADGE_TYPE.DARK_DEFAULT}
-                text={t("Governance:detailModal.badge.voted")}
+          {proposalDetail.myVote && proposalDetail.myVote.type !== "" && (
+            <Badge
+              className="proposal-badge"
+              type={BADGE_TYPE.DARK_DEFAULT}
+              text={t("Governance:detailModal.badge.voted")}
+            />
+          )}
+        </div>
+
+        <div className="right-section">
+          <div className="proponent">By {proposalDetail.proponent}</div>
+          {proposalDetail.status === "PASSED" &&
+            proposalDetail.type === "PARAMETER_CHANGE" && (
+              <Button
+                text={t("Governance:proposalList.executeBtn")}
+                style={{
+                  hierarchy: ButtonHierarchy.Primary,
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  executeProposal(proposalDetail.id);}}
               />
             )}
         </div>
-        <div className="proponent">By {proposalDetail.proponent}</div>
       </div>
       <div className="active-wrapper">
         <StatusBadge

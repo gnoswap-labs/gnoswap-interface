@@ -41,9 +41,20 @@ export const ProposalDetailWrapper = styled.div`
       }
     }
 
-    .proponent {
-      ${fonts.p4};
-      white-space: nowrap;
+    .right-section {
+      ${mixins.flexbox("row", "center", "center")};
+      flex-wrap: nowrap;
+      gap: 12px;
+      .proponent {
+        ${fonts.p4};
+        white-space: nowrap;
+      }
+      button {
+        padding: 10px 16px;
+        span {
+          ${fonts.p1};
+        }
+      }
     }
   }
   ${media.mobile} {

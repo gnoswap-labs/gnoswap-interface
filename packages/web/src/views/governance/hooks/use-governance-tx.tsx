@@ -250,30 +250,47 @@ export const useGovernanceTx = () => {
     );
   };
 
-    const voteProposal = (
-      proposalId: number,
-      voteYes: boolean,
-    ) => {
-      if (!account) {
-        return;
-      }
+  const voteProposal = (proposalId: number, voteYes: boolean) => {
+    if (!account) {
+      return;
+    }
 
-      const messageData = {
-        target: proposalId.toString(),
-        memo0: t(voteYes ? "Governance:vote.yes" : "Governance:vote.no"),
-      };
-
-      processTx(
-        () =>
-          governanceRepository.sendVote({
-            proposalId,
-            voteYes,
-          }),
-        DexEvent.VOTE,
-        messageData,
-        () => messageData,
-      );
+    const messageData = {
+      target: proposalId.toString(),
+      memo0: t(voteYes ? "Governance:vote.yes" : "Governance:vote.no"),
     };
+
+    processTx(
+      () =>
+        governanceRepository.sendVote({
+          proposalId,
+          voteYes,
+        }),
+      DexEvent.VOTE,
+      messageData,
+      () => messageData,
+    );
+  };
+
+  const executeProposal = (proposalId: number) => {
+    if (!account) {
+      return;
+    }
+
+    const messageData = {
+      target: proposalId.toString(),
+    };
+
+    processTx(
+      () =>
+        governanceRepository.sendExecute({
+          proposalId,
+        }),
+      DexEvent.EXECUTE_PROPOSAL,
+      messageData,
+      () => messageData,
+    );
+  };
 
   return {
     delegateGNS,
@@ -282,5 +299,6 @@ export const useGovernanceTx = () => {
     proposeCommunityPoolSpendProposal,
     proposeParamChnageProposal,
     voteProposal,
+    executeProposal,
   };
 };

@@ -21,6 +21,7 @@ const ProposalListContainer: React.FC = () => {
     proposeTextProposal,
     proposeParamChnageProposal,
     voteProposal,
+    executeProposal,
   } = useGovernanceTx();
 
   const { data: proposalsInfo, isFetching, hasNextPage, fetchNextPage } = useGetProposals({
@@ -53,6 +54,7 @@ const ProposalListContainer: React.FC = () => {
       proposeCommunityPoolSpendProposal={proposeCommunityPoolSpendProposal}
       proposeParamChnageProposal={proposeParamChnageProposal}
       voteProposal={voteProposal}
+      executeProposal={executeProposal}
     />
   );
 };

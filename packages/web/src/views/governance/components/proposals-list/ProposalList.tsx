@@ -43,6 +43,7 @@ interface ProposalListProps {
     param: string,
   ) => void;
   voteProposal: (proposalId: number, voteYes: boolean) => void;
+  executeProposal: (id: number) => void;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
@@ -64,6 +65,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   proposeCommunityPoolSpendProposal,
   proposeParamChnageProposal,
   voteProposal,
+  executeProposal,
 }) => {
   const LastCard = withIntersection(ProposalCard, fetchMore);
 
@@ -85,6 +87,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
                     key={proposalDetail.id}
                     proposalDetail={proposalDetail}
                     onClickCard={() => setSelectedProposalId(proposalDetail.id)}
+                    executeProposal={executeProposal}
                   />
                 );
               }
@@ -93,6 +96,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
                   key={proposalDetail.id}
                   proposalDetail={proposalDetail}
                   onClickCard={() => setSelectedProposalId(proposalDetail.id)}
+                  executeProposal={executeProposal}
                 />
               );
             },
