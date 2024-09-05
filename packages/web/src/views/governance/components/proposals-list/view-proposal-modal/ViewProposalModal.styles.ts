@@ -1,33 +1,15 @@
+import styled from "@emotion/styled";
+
 import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
-import styled from "@emotion/styled";
-import { Z_INDEX } from "@styles/zIndex";
 import { media } from "@styles/media";
 
-export const ViewProposalModalBackground = styled.div`
-  position: fixed;
-  overflow: scroll;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: 100%;
-  height: 100lvh;
-  z-index: ${Z_INDEX.modal};
-  pointer-events: none;
-`;
-
 export const ViewProposalModalWrapper = styled.div`
-  pointer-events: initial;
-  position: absolute;
-  overflow: hidden;
+  overflow: scroll;
   width: 700px;
   border-radius: 8px;
   padding: 24px 0px;
   gap: 16px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
@@ -35,7 +17,6 @@ export const ViewProposalModalWrapper = styled.div`
     width: 328px;
     height: 610px;
     padding: 16px 12px 0px 12px;
-    transform: translate(-50%, -50%);
   }
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -43,7 +24,7 @@ export const ViewProposalModalWrapper = styled.div`
     padding: 0px 24px;
     gap: 16px;
     ${media.mobile} {
-      padding: 0px;
+      padding: 0 0 12px 0;
     }
   }
 `;

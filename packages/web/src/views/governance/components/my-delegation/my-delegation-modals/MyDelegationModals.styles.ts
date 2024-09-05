@@ -3,38 +3,20 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { Z_INDEX } from "@styles/zIndex";
-
-export const CreateProposalModalBackground = styled.div`
-  position: fixed;
-  overflow: hidden;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: 100%;
-  height: 100lvh;
-  z-index: ${Z_INDEX.modal};
-  pointer-events: none;
-`;
 
 export const MyDelegationModalWrapper = styled.div`
-  pointer-events: initial;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 100%;
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   gap: 4px;
 
-  width: 500px;
+  overflow-y: scroll;
+
   color: ${({ theme }) => theme.color.text02};
   background-color: ${({ theme }) => theme.color.background06};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: ${({ theme }) => theme.color.shadow01};
   padding: 23px;
-  margin: 0 auto;
 
   &.large-gap {
     gap: 24px;
@@ -42,7 +24,6 @@ export const MyDelegationModalWrapper = styled.div`
 
   ${media.mobile} {
     padding: 15px;
-    width: 100%;
     max-width: 500px;
     gap: 4px;
   }
@@ -153,6 +134,7 @@ export const MyDelegationModalWrapper = styled.div`
     }
 
     .info-rows {
+      flex-shrink: 0;
       width: 100%;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 16px;
@@ -201,6 +183,7 @@ export const MyDelegationModalWrapper = styled.div`
     }
 
     .delegatee-info-rows {
+      flex-shrink: 0;
       width: 100%;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 16px;
@@ -302,6 +285,7 @@ export const MyDelegationModalWrapper = styled.div`
   }
 
   .button-confirm {
+    flex-shrink: 0;
     gap: 8px;
     margin-top: 16px;
     height: 57px;
