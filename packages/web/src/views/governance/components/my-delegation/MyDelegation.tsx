@@ -31,6 +31,8 @@ interface MyDelegationProps {
     fromAddress: string,
     amount: string,
   ) => void;
+  collectUndelegated: () => void;
+  collectReward: (usdValue: string) => void;
 }
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
@@ -42,6 +44,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   connectWallet,
   delegateGNS,
   undelegateGNS,
+  collectUndelegated,
+  collectReward
 }) => {
   const { t } = useTranslation();
   const [isOpenDelegateModal, setIsOpenDelegateModal] = useState(false);
@@ -209,9 +213,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 showUndel
                   ? {
                       text: t("Governance:myDel.undel.btn"),
-                      onClick: () => {
-                        console.log("claim undelegated token");
-                      },
+                      onClick: collectUndelegated,
                     }
                   : undefined
               }
@@ -226,7 +228,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               valueButton={{
                 text: t("Governance:myDel.reward.btn"),
                 onClick: () => {
-                  console.log("claim all");
+                  collectReward(
+                    `$${myDelegationInfo.claimableRewardsUsd.toLocaleString("en")}`,
+                  );
                 },
                 disabled: !myDelegationInfo.claimableRewardsUsd,
               }}

@@ -54,7 +54,8 @@ export const useMessage = () => {
             success: t("Modal:confirm.remove.status.success", data),
             error: t("Modal:confirm.remove.status.error", data),
           };
-        case DexEvent.CLAIM_FEE:
+          case DexEvent.CLAIM_FEE:
+          case DexEvent.COLLECT_GOV_REWARD: // governance reward
           return {
             pending: t("Modal:confirm.claim.status.pending", data),
             success: t("Modal:confirm.claim.status.success", data),
@@ -97,6 +98,12 @@ export const useMessage = () => {
             pending: t("Modal:confirm.undel.status.pending", data),
             success: t("Modal:confirm.undel.status.success", data),
             error: t("Modal:confirm.undel.status.error", data),
+          };
+        case DexEvent.COLLECT_UNDEL:
+          return {
+            pending: t("Modal:confirm.collectUndel.status.pending", data),
+            success: t("Modal:confirm.collectUndel.status.success", data),
+            error: t("Modal:confirm.collectUndel.status.error", data),
           };
         case DexEvent.PROPOSE_TEXT:
         case DexEvent.PROPOSE_COMM_POOL_SPEND:
@@ -153,6 +160,7 @@ export const useMessage = () => {
         case DexEvent.REMOVE:
           return t("Modal:confirm.remove.title");
         case DexEvent.CLAIM_FEE:
+        case DexEvent.COLLECT_GOV_REWARD: // governance reward
           return t("Modal:confirm.claim.title");
         case DexEvent.ADD_INCENTIVE:
           return t("Modal:confirm.addIncentive.title");
@@ -168,6 +176,8 @@ export const useMessage = () => {
           return t("Modal:confirm.delegate.title");
         case DexEvent.UNDELEGATE:
           return t("Modal:confirm.undel.title");
+        case DexEvent.COLLECT_UNDEL:
+          return t("Modal:confirm.collectUndel.title");
         case DexEvent.PROPOSE_TEXT:
         case DexEvent.PROPOSE_COMM_POOL_SPEND:
         case DexEvent.PROPOSE_PARAM_CHANGE:

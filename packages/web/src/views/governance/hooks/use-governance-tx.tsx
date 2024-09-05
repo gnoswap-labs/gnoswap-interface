@@ -45,6 +45,7 @@ export const useGovernanceTx = () => {
       tokenAAmount?: string;
       tokenBAmount?: string;
       target?: string;
+      memo0?: string;
     },
     formatData: (result: string[] | null) => {
       tokenASymbol?: string;
@@ -52,10 +53,10 @@ export const useGovernanceTx = () => {
       tokenAAmount?: string;
       tokenBAmount?: string;
       target?: string;
+      memo0?: string;
     },
     updateCallback?: () => Promise<void>,
   ) => {
-
     broadcastLoading(getMessage(eventType, "pending", messageData));
     openTransactionConfirmModal();
 
@@ -95,7 +96,6 @@ export const useGovernanceTx = () => {
       .catch(e => {
         console.warn(`Something wrong in ${eventType}: ${e}`);
       });
-
   };
 
   const delegateGNS = (toName: string, toAddress: string, amount: string) => {
@@ -165,6 +165,48 @@ export const useGovernanceTx = () => {
           // tokenAAmount: response[0],
         };
       },
+    );
+  };
+
+  const collectUndelegated = () => {
+    if (!account) {
+      return;
+    }
+
+    const messageData = {
+      tokenASymbol: "xGNS",
+    };
+
+    processTx(
+      () => governanceRepository.sendCollectUndelegated(),
+      DexEvent.COLLECT_UNDEL,
+      messageData,
+      response => {
+        if (!response) return messageData;
+        // TODO : use tx data
+        return {
+          ...messageData,
+          // tokenAAmount: response[0],
+        };
+      },
+    );
+  };
+
+  const collectReward = (usdValue: string) => {
+    if (!account) {
+      return;
+    }
+
+    const messageData = {
+      tokenAAmount: usdValue,
+    };
+
+    processTx(
+      () =>
+        governanceRepository.sendCollectReward(),
+      DexEvent.COLLECT_GOV_REWARD,
+      messageData,
+      () => messageData,
     );
   };
 
@@ -295,6 +337,8 @@ export const useGovernanceTx = () => {
   return {
     delegateGNS,
     undelegateGNS,
+    collectUndelegated,
+    collectReward,
     proposeTextProposal,
     proposeCommunityPoolSpendProposal,
     proposeParamChnageProposal,
