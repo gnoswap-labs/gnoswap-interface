@@ -1,13 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
@@ -18,9 +11,7 @@ import FormProvider from "@components/common/form/FormProvider";
 import IconAdd from "@components/common/icons/IconAdd";
 import IconClose from "@components/common/icons/IconCancel";
 import IconRemove from "@components/common/icons/IconRemove";
-import { Overlay } from "@components/common/modal/Modal.styles";
-import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import useLockedBody from "@hooks/common/use-lock-body";
+import withLocalModal from "@components/hoc/with-local-modal";
 import { DEVICE_TYPE } from "@styles/media";
 import {
   getCreateProposalChangeParameterValidation,
@@ -31,28 +22,15 @@ import { isEmptyObject } from "@utils/validation-utils";
 
 import TokenChip from "../../token-chip/TokenChip";
 
-
 import {
   BoxItem,
-  CreateProposalModalBackground,
   CreateProposalModalWrapper,
   IconButton,
 } from "./CreateProposalModal.styles";
 
-interface Props {
-  breakpoint: DEVICE_TYPE;
-  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
-}
-
 interface BoxContentProps {
   label: string;
   children?: React.ReactNode;
-}
-
-interface Variable {
-  subspace: string;
-  key: string;
-  value: string;
 }
 
 interface FormValues {
@@ -60,7 +38,11 @@ interface FormValues {
   description: string;
   amount: number;
   recipientAddress: string;
-  variable: Variable[];
+  variable: {
+    pkgPath: string;
+    func: string;
+    param: string;
+  }[];
 }
 
 const ProposalOption = [
@@ -88,38 +70,39 @@ const BoxContent: React.FC<BoxContentProps> = ({
   );
 };
 
-const CreateProposalModal: React.FC<Props> = ({
+interface CreateProposalModalProps {
+  breakpoint: DEVICE_TYPE;
+  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+  proposeTextProposal: (title: string, description: string) => void;
+  proposeCommunityPoolSpendProposal: (
+    title: string,
+    description: string,
+    tokenPath: string,
+    toAddress: string,
+    amount: string,
+  ) => void;
+  proposeParamChnageProposal: (
+    title: string,
+    description: string,
+    pkgPath: string,
+    functionName: string,
+    param: string,
+  ) => void;
+}
+
+const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   breakpoint,
   setIsOpenCreateModal,
+  proposeTextProposal,
+  proposeCommunityPoolSpendProposal,
+  proposeParamChnageProposal,
 }) => {
-  const {t} = useTranslation();
+  const Modal = useMemo(
+    () => withLocalModal(CreateProposalModalWrapper, setIsOpenCreateModal),
+    [setIsOpenCreateModal],
+  );
+  const { t } = useTranslation();
   const [type, setType] = useState<string>(ProposalOption[0]);
-
-  const modalRef = useRef<HTMLDivElement | null>(null);
-
-  const handleResize = () => {
-    if (typeof window !== "undefined" && modalRef.current) {
-      const height = modalRef.current.getBoundingClientRect().height;
-      if (height >= window?.innerHeight) {
-        modalRef.current.style.top = "0";
-        modalRef.current.style.transform = "translateX(-50%)";
-      } else {
-        modalRef.current.style.top = "50%";
-        modalRef.current.style.transform = "translate(-50%, -50%)";
-      }
-    }
-  };
-
-  useLockedBody(true);
-  useEscCloseModal(() => setIsOpenCreateModal(false));
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [modalRef]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validationProps: any = useMemo(() => {
@@ -141,22 +124,23 @@ const CreateProposalModal: React.FC<Props> = ({
       recipientAddress: "",
       variable: [
         {
-          subspace: "",
-          key: "",
-          value: "",
+          pkgPath: "",
+          func: "",
+          param: "",
         },
         {
-          subspace: "",
-          key: "",
-          value: "",
+          pkgPath: "",
+          func: "",
+          param: "",
         },
       ],
     },
   });
   const {
     register,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty, isValid, },
     control,
+    getValues,
   } = methods;
 
   const { fields, append, remove } = useFieldArray({
@@ -167,154 +151,167 @@ const CreateProposalModal: React.FC<Props> = ({
   const handleClickFormFieldArray = (index: number) => {
     if (index === fields.length - 1) {
       append({
-        subspace: "",
-        key: "",
-        value: "",
+        pkgPath: "",
+        func: "",
+        param: "",
       });
     } else {
       remove(index);
     }
   };
 
+  console.log(errors, isDirty, isValid, getValues());
   const isDisableSubmit = useMemo(() => {
     return !isEmptyObject(errors) || !isDirty || !isValid;
   }, [isDirty, isValid, errors]);
 
+  const sendTx: SubmitHandler<FormValues> = (data) => {
+    console.log(data);
+    if (type === ProposalOption[0]) {
+      proposeTextProposal(data.title, data.description);
+      return;
+    }
+    else if (type === ProposalOption[1]) {
+      proposeCommunityPoolSpendProposal(
+        data.title,
+        data.description,
+        GNS_TOKEN.path,
+        data.recipientAddress,
+        data.amount.toString(),
+      );
+      return;
+    }
+    proposeParamChnageProposal(
+      data.title,
+      data.description,
+      data.variable[0].pkgPath,
+      data.variable[0].func,
+      data.variable.map(item => item.param).join("*gov*"),
+    );
+  };
+
   return (
-    <>
-      <CreateProposalModalBackground>
-        <FormProvider methods={methods} onSubmit={() => {}}>
-          <CreateProposalModalWrapper ref={modalRef}>
-            <div className="modal-body">
-              <div className="header">
-                <h6>{t("Governance:createModal.title")}</h6>
+    <FormProvider methods={methods} onSubmit={sendTx}>
+      <Modal>
+        <div className="modal-body">
+          <div className="header">
+            <h6>{t("Governance:createModal.title")}</h6>
+            <div
+              className="close-wrap"
+              onClick={() => setIsOpenCreateModal(false)}
+            >
+              <IconClose className="close-icon" />
+            </div>
+          </div>
+          <BoxContent label={t("Governance:createModal.type")}>
+            <div className="type-tab">
+              {ProposalOption.map((item, index) => (
                 <div
-                  className="close-wrap"
-                  onClick={() => setIsOpenCreateModal(false)}
+                  key={index}
+                  className={
+                    type === ProposalOption[index] ? "active-type-tab" : ""
+                  }
+                  onClick={() => setType(ProposalOption[index])}
                 >
-                  <IconClose className="close-icon" />
+                  {t(TypeTransMap[item])}
+                </div>
+              ))}
+            </div>
+          </BoxContent>
+          <BoxContent label={t("Governance:createModal.proposalDetails.title")}>
+            <FormInput
+              placeholder={t(
+                "Governance:createModal.proposalDetails.placeholder.title",
+              )}
+              errorText={errors?.title ? errors.title.message : undefined}
+              {...register("title")}
+              name="title"
+            />
+            <FormTextArea
+              placeholder={t(
+                "Governance:createModal.proposalDetails.placeholder.description",
+              )}
+              errorText={
+                errors?.description ? errors.description.message : undefined
+              }
+              rows={type === ProposalOption[0] ? 20 : 10}
+              {...register("description")}
+            />
+          </BoxContent>
+          {type === ProposalOption[1] && (
+            <BoxContent label={t("Governance:createModal.setVariable.title")}>
+              <FormInput
+                placeholder={t(
+                  "Governance:createModal.setVariable.placeholder.recipient",
+                )}
+                errorText={
+                  errors?.recipientAddress
+                    ? errors.recipientAddress.message
+                    : undefined
+                }
+                {...register("recipientAddress")}
+                name="recipientAddress"
+              />
+              <div className="suffix-wrapper">
+                <FormInput
+                  type="number"
+                  min={0}
+                  placeholder="0"
+                  errorText={errors?.amount ? errors.amount.message : undefined}
+                  {...register("amount")}
+                />
+                <div className="deposit-currency suffix-currency">
+                  <TokenChip tokenInfo={GNS_TOKEN} />
                 </div>
               </div>
-              <BoxContent label={t("Governance:createModal.type")}>
-                <div className="type-tab">
-                  {ProposalOption.map((item, index) => (
-                    <div
-                      key={index}
-                      className={
-                        type === ProposalOption[index] ? "active-type-tab" : ""
-                      }
-                      onClick={() => setType(ProposalOption[index])}
-                    >
-                      {t(TypeTransMap[item])}
-                    </div>
-                  ))}
-                </div>
-              </BoxContent>
-              <BoxContent
-                label={t("Governance:createModal.proposalDetails.title")}
-              >
-                <FormInput
-                  placeholder={t(
-                    "Governance:createModal.proposalDetails.placeholder.title",
-                  )}
-                  errorText={errors?.title ? errors.title.message : undefined}
-                  {...register("title")}
-                  name="title"
-                />
-                <FormTextArea
-                  placeholder={t(
-                    "Governance:createModal.proposalDetails.placeholder.description",
-                  )}
-                  errorText={
-                    errors?.description ? errors.description.message : undefined
-                  }
-                  rows={type === ProposalOption[0] ? 20 : 10}
-                  {...register("description")}
-                  name="description"
-                />
-              </BoxContent>
-              {type === ProposalOption[1] && (
-                <BoxContent
-                  label={t("Governance:createModal.setVariable.title")}
-                >
-                  <FormInput
-                    placeholder={t(
-                      "Governance:createModal.setVariable.placeholder.recipient",
-                    )}
-                    errorText={
-                      errors?.recipientAddress
-                        ? errors.recipientAddress.message
-                        : undefined
-                    }
-                    {...register("recipientAddress")}
-                    name="recipientAddress"
-                  />
-                  <div className="suffix-wrapper">
+            </BoxContent>
+          )}
+          {type === ProposalOption[2] && (
+            <BoxContent label="Set Variable">
+              {fields.map((item, index) => (
+                <div className="multiple-variable" key={item.id}>
+                  <div>
                     <FormInput
-                      type="number"
-                      min={0}
-                      placeholder="0"
+                      placeholder={t(
+                        index === 0
+                          ? "Governance:createModal.setVariable.placeholder.pkgPath"
+                          : "Governance:createModal.setVariable.placeholder.same",
+                      )}
                       errorText={
-                        errors?.amount ? errors.amount.message : undefined
+                        errors?.variable
+                          ? errors?.variable[index]?.pkgPath?.message ||
+                            errors?.variable[index]?.func?.message ||
+                            errors?.variable[index]?.param?.message
+                          : undefined
                       }
-                      {...register("amount")}
-                      name="amount"
+                      {...register(`variable.${index}.pkgPath`)}
+                      disabled={index !== 0}
                     />
-                    <div className="deposit-currency suffix-currency">
-                      <TokenChip tokenInfo={GNS_TOKEN} />
-                    </div>
-                  </div>
-                </BoxContent>
-              )}
-              {type === ProposalOption[2] && (
-                <BoxContent label="Set Variable">
-                  {fields.map((item, index) => (
-                    <div className="multiple-variable" key={item.id}>
-                      <div>
-                        <FormInput
-                          placeholder={t(
-                            "Governance:createModal.setVariable.placeholder.subspace",
-                          )}
-                          errorText={
-                            errors?.variable
-                              ? errors?.variable[index]?.subspace?.message ||
-                                errors?.variable[index]?.key?.message ||
-                                errors?.variable[index]?.value?.message
-                              : undefined
-                          }
-                          {...register(`variable.${index}.subspace`)}
-                          name={`variable.${index}.subspace`}
-                        />
 
-                        <FormInput
-                          placeholder={t(
-                            "Governance:createModal.setVariable.placeholder.key",
-                          )}
-                          {...register(`variable.${index}.key`)}
-                          name={`variable.${index}.key`}
-                        />
-                        <FormInput
-                          placeholder={t(
-                            "Governance:createModal.setVariable.placeholder.value",
-                          )}
-                          {...register(`variable.${index}.value`)}
-                          name={`variable.${index}.value`}
-                        />
-                      </div>
-                      <IconButton
-                        onClick={() => handleClickFormFieldArray(index)}
-                      >
-                        {index === fields.length - 1 ? (
-                          <IconAdd />
-                        ) : (
-                          <IconRemove />
-                        )}
-                      </IconButton>
-                    </div>
-                  ))}
-                </BoxContent>
-              )}
-              {/* <BoxContent label="Deposit">
+                    <FormInput
+                      placeholder={t(
+                        index === 0
+                          ? "Governance:createModal.setVariable.placeholder.func"
+                          : "Governance:createModal.setVariable.placeholder.same",
+                      )}
+                      {...register(`variable.${index}.func`)}
+                      disabled={index !== 0}
+                    />
+                    <FormInput
+                      placeholder={t(
+                        "Governance:createModal.setVariable.placeholder.param",
+                      )}
+                      {...register(`variable.${index}.param`)}
+                    />
+                  </div>
+                  <IconButton onClick={() => handleClickFormFieldArray(index)}>
+                    {index === fields.length - 1 ? <IconAdd /> : <IconRemove />}
+                  </IconButton>
+                </div>
+              ))}
+            </BoxContent>
+          )}
+          {/* <BoxContent label="Deposit">
                 <div className="deposit">
                   <div>
                     <div className="deposit-currency">
@@ -325,26 +322,20 @@ const CreateProposalModal: React.FC<Props> = ({
                   <span>{TOKEN.value}</span>
                 </div>
               </BoxContent> */}
-            </div>
-            <Button
-              disabled={isDisableSubmit}
-              text={t("Governance:createModal.submit")}
-              className="btn-submit"
-              style={{
-                fullWidth: true,
-                textColor: "text09",
-                fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-                hierarchy: isDisableSubmit
-                  ? undefined
-                  : ButtonHierarchy.Primary,
-                bgColor: isDisableSubmit ? "background17" : undefined,
-              }}
-            />
-          </CreateProposalModalWrapper>
-        </FormProvider>
-      </CreateProposalModalBackground>
-      <Overlay onClick={() => setIsOpenCreateModal(false)} />
-    </>
+        </div>
+        <Button
+          disabled={isDisableSubmit}
+          text={t("Governance:createModal.submit")}
+          className="btn-submit"
+          style={{
+            fullWidth: true,
+            textColor: "text09",
+            fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
+            hierarchy: ButtonHierarchy.Primary,
+          }}
+        />
+      </Modal>
+    </FormProvider>
   );
 };
 

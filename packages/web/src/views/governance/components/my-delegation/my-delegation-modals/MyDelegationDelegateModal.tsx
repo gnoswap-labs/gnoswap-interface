@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
@@ -11,14 +11,12 @@ import IconNewTab from "@components/common/icons/IconNewTab";
 import IconStrokeArrowLeft from "@components/common/icons/IconStrokeArrowLeft";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { Overlay } from "@components/common/modal/Modal.styles";
 import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
+import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
-import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import useLockedBody from "@hooks/common/use-lock-body";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { DelegateeInfo, nullDelegateeInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
@@ -27,10 +25,9 @@ import { addressValidationCheck } from "@utils/validation-utils";
 import DelegateeChip from "./delegatee-chip/DelegateeChip";
 
 import {
-  CreateProposalModalBackground,
   MyDelegationModalWrapper,
   MyDelWarningContentWrapper,
-  ToolTipContentWrapper,
+  ToolTipContentWrapper
 } from "./MyDelegationModals.styles";
 
 interface MyDelegationDelegateModalProps {
@@ -38,7 +35,7 @@ interface MyDelegationDelegateModalProps {
   totalDelegatedAmount: number;
   delegatees: DelegateeInfo[];
   isWalletConnected: boolean;
-  onSubmit: () => void;
+  onSubmit: (toName: string, toAddress: string, amount: string) => void;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -50,6 +47,10 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   onSubmit,
   setIsOpen,
 }) => {
+  const Modal = useMemo(
+    () => withLocalModal(MyDelegationModalWrapper, setIsOpen),
+    [setIsOpen],
+  );
   const { t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
   const theme = useTheme();
@@ -63,36 +64,6 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
   const [selfAddress, setSelfAddress] = useState("");
   const isSelfAddrValid = addressValidationCheck(selfAddress);
-
-
-  const modalRef = useRef<HTMLDivElement | null>(null);
-
-  const handleResize = () => {
-    if (typeof window !== "undefined" && modalRef.current) {
-      const height = modalRef.current.getBoundingClientRect().height;
-      if (height >= window?.innerHeight) {
-        modalRef.current.style.top = "0";
-        modalRef.current.style.transform = "translateX(-50%)";
-      } else {
-        modalRef.current.style.top = "50%";
-        modalRef.current.style.transform = "translate(-50%, -50%)";
-      }
-    }
-  };
-
-  useLockedBody(true);
-  useEscCloseModal(() => setIsOpen(false));
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [modalRef]);
-
-
-  const isSubmit = false;
 
   const showDelegateInfo = () => (
     <>
@@ -248,13 +219,19 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       />
 
       <Button
-        onClick={onSubmit}
+        onClick={() =>
+          onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount)
+        }
         text={t("Governance:myDel.delModal.ctaBtn")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={!isSubmit}
+        disabled={
+          gnsAmountInput.amount === "0" ||
+          Number(gnsAmountInput.amount) >
+            Number(gnsAmountInput.balance.replaceAll(",", ""))
+        }
         className="button-confirm"
       />
     </>
@@ -414,16 +391,9 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
 
   return (
-    <>
-      <CreateProposalModalBackground>
-        <MyDelegationModalWrapper
-          className={stage === "MAIN" ? "" : "large-gap"}
-        >
-          {stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}
-        </MyDelegationModalWrapper>
-      </CreateProposalModalBackground>
-      <Overlay onClick={() => setIsOpen(false)} />
-    </>
+    <Modal className={stage === "MAIN" ? "" : "large-gap"}>
+      {stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}
+    </Modal>
   );
 };
 

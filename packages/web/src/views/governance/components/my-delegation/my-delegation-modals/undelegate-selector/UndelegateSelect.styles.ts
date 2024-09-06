@@ -104,18 +104,19 @@ export const UndelegateSelectBox = styled.div`
       }
     }
   }
-  ${media.mobile} {
-    top: auto;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
-    position: fixed;
-    min-width: 360px;
-    z-index: ${Z_INDEX.fixed};
-    max-height: 0;
-    transition: max-height 0.8s ease;
-    display: block;
-  }
+  // not speced mobile UI yet
+  // ${media.mobile} {
+  //   top: auto;
+  //   bottom: 0;
+  //   left: 0;
+  //   width: 100vw;
+  //   position: fixed;
+  //   min-width: 360px;
+  //   z-index: ${Z_INDEX.fixed};
+  //   max-height: 0;
+  //   transition: max-height 0.8s ease;
+  //   display: block;
+  // }
   &.open {
     display: block;
     ${media.mobile} {

@@ -10,10 +10,13 @@ import {
 import { nullMyDelegationInfo } from "@repositories/governance";
 
 import MyDelegation from "../../components/my-delegation/MyDelegation";
+import { useGovernanceTx } from "@views/governance/hooks/use-governance-tx";
 
 const MyDelegationContainer: React.FC = () => {
   const { account, connected } = useWallet();
   const { openModal } = useConnectWalletModal();
+  const { delegateGNS, undelegateGNS, collectUndelegated, collectReward } =
+    useGovernanceTx();
 
   const {
     data: governanceSummaryInfo,
@@ -39,6 +42,10 @@ const MyDelegationContainer: React.FC = () => {
       }
       isWalletConnected={connected}
       connectWallet={openModal}
+      delegateGNS={delegateGNS}
+      undelegateGNS={undelegateGNS}
+      collectUndelegated={collectUndelegated}
+      collectReward={collectReward}
     />
   );
 };

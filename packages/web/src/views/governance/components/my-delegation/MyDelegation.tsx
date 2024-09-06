@@ -25,6 +25,14 @@ interface MyDelegationProps {
   isLoading: boolean;
   isWalletConnected: boolean;
   connectWallet: () => void;
+  delegateGNS: (toName: string, toAddress: string, amount: string) => void;
+  undelegateGNS: (
+    fromName: string,
+    fromAddress: string,
+    amount: string,
+  ) => void;
+  collectUndelegated: () => void;
+  collectReward: (usdValue: string) => void;
 }
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
@@ -34,11 +42,15 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   isLoading,
   isWalletConnected,
   connectWallet,
+  delegateGNS,
+  undelegateGNS,
+  collectUndelegated,
+  collectReward
 }) => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const [isOpenDelegateModal, setIsOpenDelegateModal] = useState(false);
   const [isOpenUndelegateModal, setIsOpenUndelegateModal] = useState(false);
-  
+
   const [showUndel, setShowUndel] = useState(false);
 
   const hasUndel = !!myDelegationInfo.undeligatedAmount;
@@ -69,7 +81,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
             }
           />
           <Button
-            disabled={isLoading}
+            disabled={isLoading || !isWalletConnected}
             style={{
               hierarchy: ButtonHierarchy.Primary,
               fontType: "p1",
@@ -201,9 +213,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 showUndel
                   ? {
                       text: t("Governance:myDel.undel.btn"),
-                      onClick: () => {
-                        console.log("claim undelegated token");
-                      },
+                      onClick: collectUndelegated,
                     }
                   : undefined
               }
@@ -218,7 +228,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               valueButton={{
                 text: t("Governance:myDel.reward.btn"),
                 onClick: () => {
-                  console.log("claim all");
+                  collectReward(
+                    `$${myDelegationInfo.claimableRewardsUsd.toLocaleString("en")}`,
+                  );
                 },
                 disabled: !myDelegationInfo.claimableRewardsUsd,
               }}
@@ -245,7 +257,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           totalDelegatedAmount={totalDelegatedAmount}
           delegatees={delegatees}
           isWalletConnected={isWalletConnected}
-          onSubmit={() => console.log("delegate")}
+          onSubmit={delegateGNS}
           setIsOpen={setIsOpenDelegateModal}
         />
       )}
@@ -255,11 +267,12 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           totalDelegatedAmount={totalDelegatedAmount}
           delegatedInfos={votingWeightInfos}
           isWalletConnected={isWalletConnected}
-          onSubmit={() => console.log("undelegate")}
+          onSubmit={undelegateGNS}
           setIsOpen={setIsOpenUndelegateModal}
         />
       )}
     </MyDelegationWrapper>
-  );};
+  );
+};
 
 export default MyDelegation;
