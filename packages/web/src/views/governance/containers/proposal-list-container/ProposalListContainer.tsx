@@ -22,6 +22,7 @@ const ProposalListContainer: React.FC = () => {
     proposeParamChnageProposal,
     voteProposal,
     executeProposal,
+    cancelProposal,
   } = useGovernanceTx();
 
   const { data: proposalsInfo, isFetching, hasNextPage, fetchNextPage } = useGetProposals({
@@ -40,6 +41,7 @@ const ProposalListContainer: React.FC = () => {
       isConnected={connected}
       connectWallet={openModal}
       isSwitchNetwork={isSwitchNetwork}
+      address={account?.address || ""}
       switchNetwork={switchNetwork}
       isShowActiveOnly={isShowActiveOnly}
       breakpoint={breakpoint}
@@ -55,6 +57,7 @@ const ProposalListContainer: React.FC = () => {
       proposeParamChnageProposal={proposeParamChnageProposal}
       voteProposal={voteProposal}
       executeProposal={executeProposal}
+      cancelProposal={cancelProposal}
     />
   );
 };

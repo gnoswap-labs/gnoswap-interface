@@ -16,15 +16,19 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 dayjs.extend(relative);
 
 interface Props {
+  address: string;
   proposalDetail: ProposalItemInfo;
   onClickCard: (id: string) => void;
   executeProposal: (id: number) => void;
+  cancelProposal: (id: number) => void;
 }
 
 const ProposalCard: React.FC<Props> = ({
+  address,
   proposalDetail,
   onClickCard,
   executeProposal,
+  cancelProposal,
 }) => {
   const { t } = useTranslation();
 
@@ -55,7 +59,14 @@ const ProposalCard: React.FC<Props> = ({
         </div>
 
         <div className="right-section">
-          <div className="proponent">By {proposalDetail.proponent}</div>
+          <div className="proposer">
+            By{" "}
+            {proposalDetail.proposer.name ||
+              [
+                proposalDetail.proposer.address.slice(0, 8),
+                proposalDetail.proposer.address.slice(32, 40),
+              ].join("...")}
+          </div>
           {proposalDetail.status === "PASSED" &&
             proposalDetail.type === "PARAMETER_CHANGE" && (
               <Button
@@ -63,9 +74,23 @@ const ProposalCard: React.FC<Props> = ({
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                 }}
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
-                  executeProposal(proposalDetail.id);}}
+                  executeProposal(proposalDetail.id);
+                }}
+              />
+            )}
+          {proposalDetail.status === "UPCOMMING" &&
+            proposalDetail.proposer.address === address && (
+              <Button
+                text={t("Governance:proposalList.cancelBtn")}
+                style={{
+                  hierarchy: ButtonHierarchy.Primary,
+                }}
+                onClick={e => {
+                  e.stopPropagation();
+                  cancelProposal(proposalDetail.id);
+                }}
               />
             )}
         </div>

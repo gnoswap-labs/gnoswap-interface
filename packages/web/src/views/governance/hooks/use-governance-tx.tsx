@@ -334,6 +334,26 @@ export const useGovernanceTx = () => {
     );
   };
 
+  const cancelProposal = (proposalId: number) => {
+    if (!account) {
+      return;
+    }
+
+    const messageData = {
+      target: proposalId.toString(),
+    };
+
+    processTx(
+      () =>
+        governanceRepository.sendCancel({
+          proposalId,
+        }),
+      DexEvent.EXECUTE_PROPOSAL,
+      messageData,
+      () => messageData,
+    );
+  };
+
   return {
     delegateGNS,
     undelegateGNS,
@@ -344,5 +364,6 @@ export const useGovernanceTx = () => {
     proposeParamChnageProposal,
     voteProposal,
     executeProposal,
+    cancelProposal,
   };
 };

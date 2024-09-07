@@ -23,7 +23,10 @@ export type ProposalItemInfo = {
       param: string;
     }[];
   };
-  proponent: string;
+  proposer: {
+    name: string;
+    address: string;
+  };
   time: string;
   myVote?: {
     type: string;
@@ -53,7 +56,10 @@ export const nullProposalItemInfo: ProposalItemInfo = {
       },
     ],
   },
-  proponent: "",
+  proposer: {
+    name: "",
+    address: "",
+  },
   time: "",
   myVote: {
     type: "",

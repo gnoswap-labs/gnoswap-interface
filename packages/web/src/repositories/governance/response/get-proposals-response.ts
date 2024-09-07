@@ -22,7 +22,10 @@ export type ProposalItemResponse = {
       param: string;
     }[];
   };
-  proponent: string;
+  proposer: {
+    name: string;
+    address: string;
+  };
   time: string;
   myVote?: {
     type: string;

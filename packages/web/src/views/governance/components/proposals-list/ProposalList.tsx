@@ -19,6 +19,7 @@ interface ProposalListProps {
   isSwitchNetwork: boolean;
   switchNetwork: () => void;
   isShowActiveOnly: boolean;
+  address: string;
   toggleIsShowActiveOnly: () => void;
   proposalList: ProposalItemInfo[];
   fetchMore: () => void;
@@ -44,6 +45,7 @@ interface ProposalListProps {
   ) => void;
   voteProposal: (proposalId: number, voteYes: boolean) => void;
   executeProposal: (id: number) => void;
+  cancelProposal: (id: number) => void;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
@@ -52,6 +54,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   connectWallet,
   isSwitchNetwork,
   switchNetwork,
+  address,
   isShowActiveOnly,
   toggleIsShowActiveOnly,
   proposalList,
@@ -66,6 +69,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   proposeParamChnageProposal,
   voteProposal,
   executeProposal,
+  cancelProposal,
 }) => {
   const LastCard = withIntersection(ProposalCard, fetchMore);
 
@@ -85,18 +89,22 @@ const ProposalList: React.FC<ProposalListProps> = ({
                 return (
                   <ProposalCard
                     key={proposalDetail.id}
+                    address={address}
                     proposalDetail={proposalDetail}
                     onClickCard={() => setSelectedProposalId(proposalDetail.id)}
                     executeProposal={executeProposal}
+                    cancelProposal={cancelProposal}
                   />
                 );
               }
               return (
                 <LastCard
                   key={proposalDetail.id}
+                  address={address}
                   proposalDetail={proposalDetail}
                   onClickCard={() => setSelectedProposalId(proposalDetail.id)}
                   executeProposal={executeProposal}
+                  cancelProposal={cancelProposal}
                 />
               );
             },

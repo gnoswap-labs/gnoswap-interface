@@ -46,7 +46,7 @@ export const MyDelegationWrapper = styled.div`
     }
 
     .value-wrapper-for-hover {
-      ${mixins.flexbox("row", "flex-start", "flex-start")};
+      ${mixins.flexbox("row", "center", "flex-start")};
       &:hover {
         color: ${({ theme }) => theme.color.text07};
         cursor: default;
