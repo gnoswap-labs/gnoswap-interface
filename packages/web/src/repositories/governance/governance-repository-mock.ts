@@ -70,15 +70,17 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
       });
     }
 
-    const startIndex = request.offset * request.limit;
+    const startIndex = (request.page - 1) * request.itemsPerPage;
     const res: GetProposalsResponse = {
       proposals: [...mock]
         .reverse()
-        .slice(startIndex, startIndex + request.limit),
+        .slice(startIndex, startIndex + request.itemsPerPage),
       pageInfo: {
         totalItems: mock.length,
-        totalPages: Math.floor((mock.length + request.limit) / request.limit),
-        currentPage: request.offset,
+        totalPages: Math.floor(
+          (mock.length + request.itemsPerPage) / request.itemsPerPage,
+        ),
+        currentPage: request.page,
       },
     };
     const result = res;

@@ -27,7 +27,7 @@ const ProposalListContainer: React.FC = () => {
   const { data: proposalsInfo, isFetching, hasNextPage, fetchNextPage } = useGetProposals({
     isActive: isShowActiveOnly,
     address: account?.address,
-    limit: 20,
+    itemsPerPage: 20,
   });
 
   const fetchNextItems = () => {

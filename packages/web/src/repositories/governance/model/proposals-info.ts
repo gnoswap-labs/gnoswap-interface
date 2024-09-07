@@ -18,9 +18,9 @@ export type ProposalItemInfo = {
     recipient?: string;
     amount?: number;
     parameters?: {
-      subspace: string;
-      key: string;
-      value: string;
+      pkgPath: string;
+      func: string;
+      param: string;
     }[];
   };
   proponent: string;
@@ -47,9 +47,9 @@ export const nullProposalItemInfo: ProposalItemInfo = {
     amount: 0,
     parameters: [
       {
-        subspace: "",
-        key: "",
-        value: "",
+        pkgPath: "",
+        func: "",
+        param: "",
       },
     ],
   },

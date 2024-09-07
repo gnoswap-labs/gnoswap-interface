@@ -110,7 +110,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 </div>
                 {proposalDetail.content.parameters?.map((item, index) => (
                   <div key={index}>
-                    {`Subspace: "${item.subspace}", Key: "${item.key}", Value: "${item.value}"`}
+                    {`Subspace: "${item.pkgPath}", Key: "${item.func}", Value: "${item.param}"`}
                   </div>
                 ))}
               </div>
@@ -165,7 +165,9 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           voteWeigth={proposalDetail.myVote?.weight}
           status={proposalDetail.status}
           selectedVote={selectedVote}
-          handleVote={() => voteProposal(proposalDetail.id, selectedVote === "YES")}
+          handleVote={() =>
+            voteProposal(proposalDetail.id, selectedVote === "YES")
+          }
           connectWallet={connectWallet}
           switchNetwork={switchNetwork}
         />
