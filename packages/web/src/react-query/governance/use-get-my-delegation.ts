@@ -5,7 +5,7 @@ import { GetMyDelegationRequest, MyDelegationInfo } from "@repositories/governan
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 60_000;
 
 export const useGetMyDelegation = (
   request: GetMyDelegationRequest,

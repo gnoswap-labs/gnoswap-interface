@@ -5,7 +5,7 @@ import { DelegateeInfo } from "@repositories/governance";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 60_000;
 
 export const useGetDelegatees = (
   options?: UseQueryOptions<DelegateeInfo[], Error>,
