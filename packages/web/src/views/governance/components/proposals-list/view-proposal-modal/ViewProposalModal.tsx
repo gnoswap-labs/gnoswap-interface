@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { XGNS_TOKEN } from "@common/values/token-constant";
 import IconClose from "@components/common/icons/IconCancel";
+import withLocalModal from "@components/hoc/with-local-modal";
 import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -12,7 +13,6 @@ import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 import VoteButtons from "./VoteButtons";
 import VoteCtaButton from "./VoteCtaButton";
 
-import withLocalModal from "@components/hoc/with-local-modal";
 import TypeBadge from "../../type-badge/TypeBadge";
 import {
   ModalHeaderWrapper,
@@ -108,15 +108,17 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 <div className="variable-type">
                   {t("Governance:detailModal.content.change")}
                 </div>
-                {proposalDetail.content.parameters?.map((item, index) => (
-                  <div key={index}>
-                    {`Subspace: "${item.pkgPath}", Key: "${item.func}", Value: "${item.param}"`}
-                  </div>
-                ))}
+                {`Pkg Path: "${proposalDetail.content.parameters?.[0].pkgPath}"`}
+                <br />
+                {`Func: "${proposalDetail.content.parameters?.[0].func}"`}
+                <br />
+                {`Param: "${proposalDetail.content.parameters
+                  ?.map(item => item.param)
+                  .join(", ")}"`}
               </div>
             )}
-
-            {proposalDetail.content.description || ""}
+            {`${proposalDetail.content.description.replaceAll("\\n", "\n")}` ||
+              ""}
           </div>
         </ProposalContentWrapper>
         <ModalQuorum>

@@ -117,6 +117,7 @@ export const ProposalContentWrapper = styled.div`
     ${media.mobile} {
       ${fonts.p2}
     }
+    white-space: pre-wrap !important;
 
     .variable {
       margin-bottom: 12px;
