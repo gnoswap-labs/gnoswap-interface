@@ -1,13 +1,13 @@
 export interface GovernanceSummaryInfo {
-  totalDeligated: number;
-  DeligatedRatio: number;
+  totalDelegated: number;
+  delegatedRatio: number;
   apy: number;
   communityPool: number;
 }
 
 export const nullGovernanceSummaryInfo: GovernanceSummaryInfo = {
-  totalDeligated: 0,
-  DeligatedRatio: 0,
+  totalDelegated: 0,
+  delegatedRatio: 0,
   apy: 0,
   communityPool: 0,
 };

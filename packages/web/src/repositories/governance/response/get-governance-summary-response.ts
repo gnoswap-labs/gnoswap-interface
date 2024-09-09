@@ -1,6 +1,6 @@
 export interface GetGovernanceSummaryResponse {
-  totalDeligated: number;
-  DeligatedRatio: number;
+  totalDelegated: number;
+  delegatedRatio: number;
   apy: number;
   communityPool: number;
 }

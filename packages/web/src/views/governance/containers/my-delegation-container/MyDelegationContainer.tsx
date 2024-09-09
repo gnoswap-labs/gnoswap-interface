@@ -31,7 +31,7 @@ const MyDelegationContainer: React.FC = () => {
 
   return (
     <MyDelegation
-      totalDelegatedAmount={governanceSummaryInfo?.totalDeligated || 0}
+      totalDelegatedAmount={governanceSummaryInfo?.totalDelegated || 0}
       myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
       delegatees={delegatees ?? []}
       isLoading={
