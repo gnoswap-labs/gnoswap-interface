@@ -39,6 +39,15 @@ export type ProposalItemInfo = {
   };
 };
 
+export const nullProposalsInfo: ProposalsInfo = {
+  proposals: [],
+  pageInfo: {
+    totalItems: 0,
+    totalPages: 1,
+    currentPage: 1,
+  },
+};
+
 export const nullProposalItemInfo: ProposalItemInfo = {
   id: 0,
   status: "",

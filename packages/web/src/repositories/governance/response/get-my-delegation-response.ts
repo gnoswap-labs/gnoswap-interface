@@ -1,8 +1,8 @@
 
-export interface GetMyDeligationResponse {
+export interface GetMyDelegationResponse {
   availableBalance: number;
   votingWeight: number;
-  undeligatedAmount: number;
+  undelegatedAmount: number;
   claimableRewardsUsd: number;
   delegations: DelegationItemResponse[];
 }

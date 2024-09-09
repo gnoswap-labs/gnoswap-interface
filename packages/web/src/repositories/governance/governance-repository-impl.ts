@@ -23,7 +23,7 @@ import {
   ProposalsInfo,
 } from "./model";
 import {
-  GetMyDeligationRequest,
+  GetMyDelegationRequest,
   GetProposalsReqeust,
   SendCancelReqeust,
   SendDelegateReqeust,
@@ -55,7 +55,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   };
 
   public getMyDeligation = async (
-    request: GetMyDeligationRequest,
+    request: GetMyDelegationRequest,
   ): Promise<MyDelegationInfo> => {
     return this.mockRepository.getMyDeligation(request);
   };

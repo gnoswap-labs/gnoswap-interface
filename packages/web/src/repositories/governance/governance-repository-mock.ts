@@ -13,7 +13,7 @@ import {
   ProposalsInfo,
 } from "./model";
 import {
-  GetMyDeligationRequest,
+  GetMyDelegationRequest,
   GetProposalsReqeust,
   SendCancelReqeust,
   SendDelegateReqeust,
@@ -28,7 +28,7 @@ import {
 import {
   GetDelegateesResponse,
   GetGovernanceSummaryResponse,
-  GetMyDeligationResponse,
+  GetMyDelegationResponse,
   GetProposalsResponse,
   ProposalItemResponse,
 } from "./response";
@@ -43,10 +43,10 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
   };
 
   public getMyDeligation = async (
-    request: GetMyDeligationRequest,
+    request: GetMyDelegationRequest,
   ): Promise<MyDelegationInfo> => {
     console.log(request);
-    const res: GetMyDeligationResponse = GetMyDelegationResposneMock;
+    const res: GetMyDelegationResponse = GetMyDelegationResposneMock;
     const result = res;
 
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);

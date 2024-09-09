@@ -53,12 +53,12 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
 
   const [showUndel, setShowUndel] = useState(false);
 
-  const hasUndel = !!myDelegationInfo.undeligatedAmount;
+  const hasUndel = !!myDelegationInfo.undelegatedAmount;
 
   const votingWeightInfos = myDelegationInfo.delegations.filter(
     item => !item.unlockDate,
   );
-  const undeligationInfos = myDelegationInfo.delegations.filter(
+  const undelegationInfos = myDelegationInfo.delegations.filter(
     item => item.unlockDate,
   );
 
@@ -119,7 +119,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 <Tooltip
                   FloatingContent={
                     <MyDelegationTooltipContent>
-                      {(showUndel ? undeligationInfos : votingWeightInfos).map(
+                      {(showUndel ? undelegationInfos : votingWeightInfos).map(
                         (item, index) => (
                           <div
                             key={`del-item-${item.updatedDate}-${index}`}
@@ -180,7 +180,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   <div className="value-wrapper-for-hover">
                     {`${
                       hasUndel && showUndel
-                        ? myDelegationInfo.undeligatedAmount.toLocaleString(
+                        ? myDelegationInfo.undelegatedAmount.toLocaleString(
                             "en",
                           )
                         : myDelegationInfo.votingWeight.toLocaleString("en")
