@@ -51,11 +51,11 @@ export const ProposalDetailWrapper = styled.div`
         ${fonts.p4};
         white-space: nowrap;
 
-        svg {
+        > svg {
           width: 16px;
           height: 16px;
           path {
-            fill: ${({ theme }) => theme.color.icon05};
+            fill: ${({ theme }) => theme.color.icon15};
           }
         }
 
