@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconSwap from "@components/common/icons/IconSwap";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -185,7 +185,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           )
                         : myDelegationInfo.votingWeight.toLocaleString("en")
                     }`}
-                    <TokenChip tokenInfo={GNS_TOKEN} />
+                    <TokenChip tokenInfo={XGNS_TOKEN} />
                   </div>
                 </Tooltip>
               }

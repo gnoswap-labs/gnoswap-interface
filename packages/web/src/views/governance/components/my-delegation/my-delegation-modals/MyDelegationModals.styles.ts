@@ -92,7 +92,7 @@ export const MyDelegationModalWrapper = styled.div`
 
       svg {
         path {
-          fill: ${({ theme }) => theme.color.text10};
+          fill: ${({ theme }) => theme.color.icon03};
         }
       }
     }
@@ -103,11 +103,12 @@ export const MyDelegationModalWrapper = styled.div`
       padding: 12px 16px;
       border-radius: 8px;
       border: 1px solid ${({ theme }) => theme.color.border02};
+      background-color: ${({ theme }) => theme.color.backgroundOpacity8};
       cursor: pointer;
 
       .selected-delegatee {
         ${mixins.flexbox("row", "center", "flex-start")};
-        color: ${({ theme }) => theme.color.text19};
+        color: ${({ theme }) => theme.color.text01};
         ${fonts.body13}
         gap: 5px;
 
@@ -115,12 +116,12 @@ export const MyDelegationModalWrapper = styled.div`
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 2px;
           ${fonts.p6}
-          color: ${({ theme }) => theme.color.text05};
+          color: ${({ theme }) => theme.color.text04};
 
           svg {
             width: 10px;
             path {
-              fill: ${({ theme }) => theme.color.text05};
+              fill: ${({ theme }) => theme.color.icon03};
             }
           }
         }
@@ -129,8 +130,12 @@ export const MyDelegationModalWrapper = styled.div`
       > .arrow {
         width: 16px;
         path {
-          fill: ${({ theme }) => theme.color.text19};
+          fill: ${({ theme }) => theme.color.icon11};
         }
+      }
+
+      &:hover {
+        background-color: ${({ theme }) => theme.color.hover02};
       }
     }
 
@@ -153,9 +158,6 @@ export const MyDelegationModalWrapper = styled.div`
           svg * {
             fill: ${({ theme }) => theme.color.icon03};
           }
-          svg:hover * {
-            fill: ${({ theme }) => theme.color.icon07};
-          }
         }
         .label {
           flex-shrink: 0;
@@ -171,7 +173,7 @@ export const MyDelegationModalWrapper = styled.div`
           ${mixins.flexbox("row", "center", "center")};
           gap: 4px;
           text-align: end;
-          color: ${({ theme }) => theme.color.text10};
+          color: ${({ theme }) => theme.color.text03};
           ${fonts.body12}
           ${media.mobile} {
             ${fonts.p2}
@@ -208,7 +210,7 @@ export const MyDelegationModalWrapper = styled.div`
           ${mixins.flexbox("row", "center", "center")};
           gap: 4px;
           text-align: end;
-          color: ${({ theme }) => theme.color.text05};
+          color: ${({ theme }) => theme.color.text10};
           ${fonts.body13}
           ${media.mobile} {
             ${fonts.p2}

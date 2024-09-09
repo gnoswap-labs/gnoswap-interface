@@ -52,7 +52,7 @@ export const StatusBadgeWrapper = styled.div`
     ${mixins.flexbox("row", "center", "center")};
     gap: 6px;
     ${fonts.p6};
-    color: ${({ theme }) => theme.color.text10};
+    color: ${({ theme }) => theme.color.text05};
     br {
       display: none;
     }
@@ -62,7 +62,7 @@ export const StatusBadgeWrapper = styled.div`
       }
     }
     * {
-      fill: ${({ theme }) => theme.color.text10};
+      fill: ${({ theme }) => theme.color.text05};
     }
   }
 `;

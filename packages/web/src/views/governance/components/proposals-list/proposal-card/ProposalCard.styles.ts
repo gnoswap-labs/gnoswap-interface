@@ -14,7 +14,7 @@ export const ProposalDetailWrapper = styled.div`
   width: 100%;
   &:hover {
     background-color: ${({ theme }) => theme.color.hover01};
-    border: 1px solid ${({ theme }) => theme.color.border14};
+    border: 1px solid ${({ theme }) => theme.color.border02};
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   }
   .header {
@@ -46,8 +46,27 @@ export const ProposalDetailWrapper = styled.div`
       flex-wrap: nowrap;
       gap: 12px;
       .proposer {
+        ${mixins.flexbox("row", "center", "center")};\
+        gap: 4px;
         ${fonts.p4};
         white-space: nowrap;
+
+        svg {
+          width: 16px;
+          height: 16px;
+          path {
+            fill: ${({ theme }) => theme.color.icon05};
+          }
+        }
+
+        :hover {
+          color: ${({ theme }) => theme.color.text16};
+          > svg {
+            * {
+              fill: ${({ theme }) => theme.color.icon10};
+            }
+          }
+        }
       }
       button {
         padding: 10px 16px;

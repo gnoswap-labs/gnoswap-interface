@@ -185,7 +185,6 @@ export const VotingPowerWrapper = styled.div`
   }
   > div {
     ${mixins.flexbox("row", "center", "center")};
-    gap: 16px;
     color: ${({ theme }) => theme.color.text01};
   }
   .power-value {

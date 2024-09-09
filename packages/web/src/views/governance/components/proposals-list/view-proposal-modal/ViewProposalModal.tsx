@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { XGNS_TOKEN } from "@common/values/token-constant";
 import IconClose from "@components/common/icons/IconCancel";
 import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
@@ -154,7 +154,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <div className="power-value">
               {(proposalDetail.myVote?.weight || 0).toLocaleString()}
             </div>
-            <TokenChip tokenInfo={GNS_TOKEN} />
+            <TokenChip tokenInfo={XGNS_TOKEN} />
           </div>
         </VotingPowerWrapper>
         <VoteCtaButton

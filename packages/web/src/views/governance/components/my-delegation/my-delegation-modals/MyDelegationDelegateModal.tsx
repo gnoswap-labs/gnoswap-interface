@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
@@ -302,12 +302,12 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               {t("Governance:myDel.delModal.selectDel.votingPower")}
             </div>
             <div className="value">
-              <MissingLogo symbol="xGNS" url={GNS_TOKEN.logoURI} width={24} />
-              {tmpDelegatee.votingPower.toLocaleString("en")}
-              {" xGNS"}
+              <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
+              {tmpDelegatee.votingPower.toLocaleString("en")}{" "}
+              {XGNS_TOKEN.symbol}
               <span className="sub">
                 {` (${formatOtherPrice(
-                  tmpDelegatee.votingPower * 100 / totalDelegatedAmount,
+                  (tmpDelegatee.votingPower * 100) / totalDelegatedAmount,
                   {
                     usd: false,
                   },

@@ -9,7 +9,7 @@ export const TokenChipWrapper = styled.div`
   margin-left: 8px;
   gap: 8px;
   border-radius: 36px;
-  background: ${({ theme }) => theme.color.background05};
+  background: ${({ theme }) => theme.color.background13};
   ${fonts.body9};
   color: ${({ theme }) => theme.color.text02};
 `;

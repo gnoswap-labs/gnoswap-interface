@@ -28,7 +28,7 @@ export const GovernanceSummaryWrapper = styled.div`
     width: 100%;
     ${fonts.body11};
     gap: 4px;
-    color: ${({ theme }) => theme.color.text22};
+    color: ${({ theme }) => theme.color.text04};
     ${media.mobile} {
       ${fonts.p3};
       flex-direction: column;

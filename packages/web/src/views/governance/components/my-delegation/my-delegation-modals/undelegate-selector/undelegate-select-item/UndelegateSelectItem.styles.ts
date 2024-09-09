@@ -4,6 +4,7 @@ import { media } from "@styles/media";
 
 interface Props {
   visibleAmount: boolean;
+  onSelectedArea?: boolean;
 }
 
 export const UndelegateSelectItemWrapper = styled.div<Props>`
@@ -54,8 +55,8 @@ export const UndelegateSelectItemWrapper = styled.div<Props>`
   }
 
   &:hover {
-    background-color: ${({ visibleAmount, theme }) => {
-      return visibleAmount ? theme.color.hover02 : "transparent";
+    background-color: ${({ onSelectedArea, theme }) => {
+      return onSelectedArea ? "transparent" : theme.color.hover02;
     }};
   }
 `;
