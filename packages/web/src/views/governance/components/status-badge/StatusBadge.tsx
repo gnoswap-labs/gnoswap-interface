@@ -22,7 +22,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time }) => {
 
   const getContent = () => {
     switch (status) {
-      case "UPCOMMING":
+      case "UPCOMING":
         return (
           <div className="status success">
             <IconCircleInCheck className="success-icon status-icon" />

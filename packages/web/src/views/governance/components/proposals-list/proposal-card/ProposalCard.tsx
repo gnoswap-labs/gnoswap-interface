@@ -93,7 +93,7 @@ const ProposalCard: React.FC<Props> = ({
                 }}
               />
             )}
-          {proposalDetail.status === "UPCOMMING" &&
+          {proposalDetail.status === "UPCOMING" &&
             proposalDetail.proposer.address === address && (
               <Button
                 text={t("Governance:proposalList.cancelBtn")}
