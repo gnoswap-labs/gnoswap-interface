@@ -136,7 +136,11 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                                   url={item.logoUrl}
                                   width={20}
                                 />
-                                {item.name}
+                                {item.name ||
+                                  [
+                                    item.address.slice(0, 8),
+                                    item.address.slice(32, 40),
+                                  ].join("...")}
                               </div>
                             </div>
                             <div className="info-row">
@@ -176,6 +180,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                     </MyDelegationTooltipContent>
                   }
                   placement="top"
+                  scroll
                 >
                   <div className="value-wrapper-for-hover">
                     {`${
@@ -229,7 +234,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 text: t("Governance:myDel.reward.btn"),
                 onClick: () => {
                   collectReward(
-                    `$${myDelegationInfo.claimableRewardsUsd.toLocaleString("en")}`,
+                    `$${myDelegationInfo.claimableRewardsUsd.toLocaleString(
+                      "en",
+                    )}`,
                   );
                 },
                 disabled: !myDelegationInfo.claimableRewardsUsd,
