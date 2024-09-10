@@ -20,6 +20,7 @@ import {
   DelegateeInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
+  nullGovernanceSummaryInfo,
   nullProposalsInfo,
   ProposalsInfo,
 } from "./model";
@@ -37,6 +38,7 @@ import {
   SendVoteReqeust,
 } from "./request";
 import {
+  GetGovernanceSummaryResponse,
   GetProposalsResponse,
 } from "./response";
 
@@ -55,7 +57,23 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   }
 
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
-    return this.mockRepository.getGovernanceSummary();
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{
+      data: GetGovernanceSummaryResponse;
+    }>({
+      url: "governance/summary",
+    });
+
+    if (!response?.data?.data) {
+      return nullGovernanceSummaryInfo;
+    }
+
+    const data: GovernanceSummaryInfo = response.data.data;
+
+    return data;
   };
 
   public getMyDeligation = async (
