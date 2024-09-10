@@ -70,6 +70,7 @@ export const useGovernanceTx = () => {
             txHash: response?.data?.hash,
             action: eventType,
             formatData,
+            visibleEmitResult : true,
             onEmit: async () => {
               if (emitCallback) await emitCallback();
             },
