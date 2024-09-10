@@ -20,6 +20,7 @@ import {
   DelegateeInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
+  nullDelegateeInfo,
   nullGovernanceSummaryInfo,
   nullMyDelegationInfo,
   nullProposalsInfo,
@@ -39,6 +40,7 @@ import {
   SendVoteReqeust,
 } from "./request";
 import {
+  GetDelegateesResponse,
   GetGovernanceSummaryResponse,
   GetMyDelegationResponse,
   GetProposalsResponse,
@@ -128,7 +130,23 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   };
 
   public getDelegatees = async (): Promise<DelegateeInfo[]> => {
-    return this.mockRepository.getDelegatees();
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{
+      data: GetDelegateesResponse;
+    }>({
+      url: "governance/delegatees",
+    });
+
+    if (!response?.data?.data) {
+      return [nullDelegateeInfo];
+    }
+
+    const data: DelegateeInfo[] = response.data.data.delegatees;
+
+    return data;
   };
 
   public sendProposeText = async (
