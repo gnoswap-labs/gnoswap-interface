@@ -220,7 +220,10 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 
       <Button
         onClick={() =>
-          onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount)
+          {
+            onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
+            setIsOpen(false);
+          }
         }
         text={t("Governance:myDel.delModal.ctaBtn")}
         style={{

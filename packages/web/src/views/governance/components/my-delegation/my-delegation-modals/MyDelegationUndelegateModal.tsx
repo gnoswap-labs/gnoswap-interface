@@ -188,12 +188,14 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
       />
 
       <Button
-        onClick={() =>
+        onClick={() => {
           onSubmit(
             selectedDelegatedInfo.name,
             selectedDelegatedInfo.address,
             gnsAmountInput.amount,
-          )
+          );
+          setIsOpen(false);
+        }
         }
         text={t("Governance:myDel.undelModal.ctaBtn")}
         style={{

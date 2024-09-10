@@ -170,6 +170,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     console.log(data);
     if (type === ProposalOption[0]) {
       proposeTextProposal(data.title, data.description);
+      setIsOpenCreateModal(false);
       return;
     }
     else if (type === ProposalOption[1]) {
@@ -180,6 +181,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         data.recipientAddress,
         data.amount.toString(),
       );
+      setIsOpenCreateModal(false);
       return;
     }
     proposeParamChnageProposal(
@@ -189,6 +191,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       data.variable[0].func,
       data.variable.map(item => item.param).join("*gov*"),
     );
+    setIsOpenCreateModal(false);
   };
 
   return (
