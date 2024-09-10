@@ -55,9 +55,32 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
   const { t } = useTranslation();
   const theme = useTheme();
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
-  const [selectedDelegatedInfo, setSelectedDelegatedInfo] = useState<DelegationItemInfo>(
-    delegatedInfos[0] || nullMyDelegationInfo,
-  );
+
+  const accumedDelegationInfo = useMemo(() => {
+    return delegatedInfos.reduce(
+      (acc: DelegationItemInfo[], item: DelegationItemInfo) => {
+        let accumed = false;
+        for (const accumedItem of acc) {
+          if (accumedItem.address === item.address) {
+            accumedItem.amount += item.amount;
+            accumed = true;
+            break;
+          }
+        }
+        if (!accumed) {
+          acc.push({ ...item });
+        }
+        return acc;
+      },
+      [],
+    );
+  }, [delegatedInfos]);
+
+  const [selectedDelegatedInfo, setSelectedDelegatedInfo] =
+    useState<DelegationItemInfo>(
+      accumedDelegationInfo[0] || nullMyDelegationInfo,
+    );
+
 
   const showDelegateInfo = () => (
     <>
@@ -69,7 +92,7 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
       </div>
 
       <UndelegateSelect
-        delegatedInfos={delegatedInfos}
+        delegatedInfos={accumedDelegationInfo}
         select={setSelectedDelegatedInfo}
         selectedDelegationInfo={selectedDelegatedInfo}
       />
