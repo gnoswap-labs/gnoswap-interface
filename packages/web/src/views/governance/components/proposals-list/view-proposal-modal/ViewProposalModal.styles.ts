@@ -117,6 +117,7 @@ export const ProposalContentWrapper = styled.div`
     ${media.mobile} {
       ${fonts.p2}
     }
+    white-space: pre-wrap !important;
 
     .variable {
       margin-bottom: 12px;
@@ -185,7 +186,6 @@ export const VotingPowerWrapper = styled.div`
   }
   > div {
     ${mixins.flexbox("row", "center", "center")};
-    gap: 16px;
     color: ${({ theme }) => theme.color.text01};
   }
   .power-value {

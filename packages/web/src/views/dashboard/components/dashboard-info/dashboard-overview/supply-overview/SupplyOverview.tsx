@@ -65,7 +65,7 @@ const BlockEmissions = ({
           {t("Dashboard:supOver.blocEmiss.tooltip.liquiStaking")}{" "}
         </div>
         <div className="value">
-          <img src="/gnos.svg" alt="logo" />
+          <img src="/gns.svg" alt="logo" />
           <div>
             {liquidityStaking} / {t("common:day.base")}
           </div>
@@ -76,7 +76,7 @@ const BlockEmissions = ({
           {t("Dashboard:supOver.blocEmiss.tooltip.devOps")}{" "}
         </div>
         <div className="value">
-          <img src="/gnos.svg" alt="logo" />
+          <img src="/gns.svg" alt="logo" />
           <div>
             {devOps} / {t("common:day.base")}
           </div>
@@ -87,7 +87,7 @@ const BlockEmissions = ({
           {t("Dashboard:supOver.blocEmiss.tooltip.community")}{" "}
         </div>
         <div className="value">
-          <img src="/gnos.svg" alt="logo" />
+          <img src="/gns.svg" alt="logo" />
           <div>
             {community} / {t("common:day.base")}
           </div>

@@ -8,8 +8,10 @@ import { GetProposalsReqeust, ProposalsInfo } from "@repositories/governance";
 
 import { QUERY_KEY } from "../query-keys";
 
+const REFETCH_INTERVAL = 60_000;
+
 export const useGetProposals = (
-  request: Omit<GetProposalsReqeust, "offset">,
+  request: Omit<GetProposalsReqeust, "page">,
   options?: UseInfiniteQueryOptions<ProposalsInfo, Error>,
 ) => {
   const { governanceRepository } = useGnoswapContext();
@@ -19,19 +21,20 @@ export const useGetProposals = (
       QUERY_KEY.governanceProposals,
       request.isActive,
       request.address,
-      request.limit,
+      request.itemsPerPage,
     ],
-    queryFn: ({ pageParam = 0 }) => {
+    queryFn: ({ pageParam = 1 }) => {
       return governanceRepository.getProposals({
         ...request,
-        offset: pageParam,
+        page: pageParam,
       });
     },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.pageInfo.totalPages <= lastPage.pageInfo.currentPage + 1)
+    getNextPageParam: lastPage => {
+      if (lastPage.pageInfo.totalPages <= lastPage.pageInfo.currentPage)
         return null;
       return lastPage.pageInfo.currentPage + 1;
     },
+    refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,
     refetchOnReconnect: true,
     ...options,

@@ -14,7 +14,7 @@ export const UndelegateSelectWrapper = styled.div<Props>`
   position: relative;
   width: 100%;
   ${mixins.flexbox("column", "flex-start", "center")};
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.backgroundOpacity5};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   padding: 15px;

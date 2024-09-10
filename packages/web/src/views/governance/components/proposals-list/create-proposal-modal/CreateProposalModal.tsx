@@ -3,14 +3,16 @@ import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import FormInput from "@components/common/form-input/FormInput";
 import FormTextArea from "@components/common/form-textarea/FormTextArea";
 import FormProvider from "@components/common/form/FormProvider";
 import IconAdd from "@components/common/icons/IconAdd";
 import IconClose from "@components/common/icons/IconCancel";
+import IconInfo from "@components/common/icons/IconInfo";
 import IconRemove from "@components/common/icons/IconRemove";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { DEVICE_TYPE } from "@styles/media";
 import {
@@ -26,6 +28,7 @@ import {
   BoxItem,
   CreateProposalModalWrapper,
   IconButton,
+  ToolTipContentWrapper,
 } from "./CreateProposalModal.styles";
 
 interface BoxContentProps {
@@ -64,7 +67,7 @@ const BoxContent: React.FC<BoxContentProps> = ({
 }) => {
   return (
     <BoxItem {...props}>
-      <label className="box-label">{label}</label>
+      {label && <label className="box-label">{label}</label>}
       {children}
     </BoxItem>
   );
@@ -140,7 +143,6 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     register,
     formState: { errors, isDirty, isValid, },
     control,
-    getValues,
   } = methods;
 
   const { fields, append, remove } = useFieldArray({
@@ -160,7 +162,6 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     }
   };
 
-  console.log(errors, isDirty, isValid, getValues());
   const isDisableSubmit = useMemo(() => {
     return !isEmptyObject(errors) || !isDirty || !isValid;
   }, [isDirty, isValid, errors]);
@@ -234,7 +235,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
               errorText={
                 errors?.description ? errors.description.message : undefined
               }
-              rows={type === ProposalOption[0] ? 20 : 10}
+              rows={type === ProposalOption[0] ? 14 : 8}
               {...register("description")}
             />
           </BoxContent>
@@ -260,7 +261,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                   errorText={errors?.amount ? errors.amount.message : undefined}
                   {...register("amount")}
                 />
-                <div className="deposit-currency suffix-currency">
+                <div className="suffix-currency">
                   <TokenChip tokenInfo={GNS_TOKEN} />
                 </div>
               </div>
@@ -311,17 +312,27 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
               ))}
             </BoxContent>
           )}
-          {/* <BoxContent label="Deposit">
-                <div className="deposit">
-                  <div>
-                    <div className="deposit-currency">
-                      <img src={TOKEN.urlIcon} alt="token logo" />
-                      <span>{TOKEN.currency}</span>
-                    </div>
-                  </div>
-                  <span>{TOKEN.value}</span>
-                </div>
-              </BoxContent> */}
+          <BoxContent label="">
+            <div className="minimum">
+              <div className="title">
+                {t("Governance:createModal.minimum.title")}
+                <Tooltip
+                  placement="top"
+                  FloatingContent={
+                    <ToolTipContentWrapper>
+                      {t("Governance:createModal.minimum.tooltip")}
+                    </ToolTipContentWrapper>
+                  }
+                >
+                  <IconInfo size={16} />
+                </Tooltip>
+              </div>
+              <div className="value">
+                <span>{(1000).toLocaleString("en")}</span>
+                <TokenChip tokenInfo={XGNS_TOKEN} />
+              </div>
+            </div>
+          </BoxContent>
         </div>
         <Button
           disabled={isDisableSubmit}

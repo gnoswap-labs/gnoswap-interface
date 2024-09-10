@@ -1,8 +1,9 @@
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { XGNS_TOKEN } from "@common/values/token-constant";
 import IconClose from "@components/common/icons/IconCancel";
+import withLocalModal from "@components/hoc/with-local-modal";
 import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -12,7 +13,6 @@ import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 import VoteButtons from "./VoteButtons";
 import VoteCtaButton from "./VoteCtaButton";
 
-import withLocalModal from "@components/hoc/with-local-modal";
 import TypeBadge from "../../type-badge/TypeBadge";
 import {
   ModalHeaderWrapper,
@@ -108,15 +108,17 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 <div className="variable-type">
                   {t("Governance:detailModal.content.change")}
                 </div>
-                {proposalDetail.content.parameters?.map((item, index) => (
-                  <div key={index}>
-                    {`Subspace: "${item.subspace}", Key: "${item.key}", Value: "${item.value}"`}
-                  </div>
-                ))}
+                {`Pkg Path: "${proposalDetail.content.parameters?.[0].pkgPath}"`}
+                <br />
+                {`Func: "${proposalDetail.content.parameters?.[0].func}"`}
+                <br />
+                {`Param: "${proposalDetail.content.parameters
+                  ?.map(item => item.param)
+                  .join(", ")}"`}
               </div>
             )}
-
-            {proposalDetail.content.description || ""}
+            {`${proposalDetail.content.description.replaceAll("\\n", "\n")}` ||
+              ""}
           </div>
         </ProposalContentWrapper>
         <ModalQuorum>
@@ -154,7 +156,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <div className="power-value">
               {(proposalDetail.myVote?.weight || 0).toLocaleString()}
             </div>
-            <TokenChip tokenInfo={GNS_TOKEN} />
+            <TokenChip tokenInfo={XGNS_TOKEN} />
           </div>
         </VotingPowerWrapper>
         <VoteCtaButton
@@ -165,7 +167,9 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           voteWeigth={proposalDetail.myVote?.weight}
           status={proposalDetail.status}
           selectedVote={selectedVote}
-          handleVote={() => voteProposal(proposalDetail.id, selectedVote === "YES")}
+          handleVote={() =>
+            voteProposal(proposalDetail.id, selectedVote === "YES")
+          }
           connectWallet={connectWallet}
           switchNetwork={switchNetwork}
         />

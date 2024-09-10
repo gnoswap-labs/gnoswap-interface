@@ -36,7 +36,7 @@ const VoteCtaButton: React.FC<VoteCtaButtonProps> = ({
     text: string;
     action: (() => void) | null;
   } = useMemo(() => {
-    if (status === "UPCOMMING")
+    if (status === "UPCOMING")
       return {
         disabled: true,
         text: t("Governance:proposal.status.upcomming"),

@@ -11,7 +11,7 @@ import {
   SendProposeParameterChangeReqeust,
   SendProposeTextReqeust,
   SendVoteReqeust,
-  GetMyDeligationRequest,
+  GetMyDelegationRequest,
   SendCancelReqeust,
   SendExecuteReqeust,
   SendDelegateReqeust,
@@ -23,7 +23,7 @@ export interface GovernanceRepository {
   getGovernanceSummary: () => Promise<GovernanceSummaryInfo>;
 
   getMyDeligation: (
-    request: GetMyDeligationRequest,
+    request: GetMyDelegationRequest,
   ) => Promise<MyDelegationInfo>;
 
   getProposals: (request: GetProposalsReqeust) => Promise<ProposalsInfo>;

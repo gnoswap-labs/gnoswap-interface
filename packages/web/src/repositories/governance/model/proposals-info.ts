@@ -18,12 +18,15 @@ export type ProposalItemInfo = {
     recipient?: string;
     amount?: number;
     parameters?: {
-      subspace: string;
-      key: string;
-      value: string;
+      pkgPath: string;
+      func: string;
+      param: string;
     }[];
   };
-  proponent: string;
+  proposer: {
+    name: string;
+    address: string;
+  };
   time: string;
   myVote?: {
     type: string;
@@ -34,6 +37,15 @@ export type ProposalItemInfo = {
     yes: number;
     no: number;
   };
+};
+
+export const nullProposalsInfo: ProposalsInfo = {
+  proposals: [],
+  pageInfo: {
+    totalItems: 0,
+    totalPages: 1,
+    currentPage: 1,
+  },
 };
 
 export const nullProposalItemInfo: ProposalItemInfo = {
@@ -47,13 +59,16 @@ export const nullProposalItemInfo: ProposalItemInfo = {
     amount: 0,
     parameters: [
       {
-        subspace: "",
-        key: "",
-        value: "",
+        pkgPath: "",
+        func: "",
+        param: "",
       },
     ],
   },
-  proponent: "",
+  proposer: {
+    name: "",
+    address: "",
+  },
   time: "",
   myVote: {
     type: "",

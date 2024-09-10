@@ -48,6 +48,7 @@ const UndelegateSelect: React.FC<UndelegateSelectProps> = ({
         <UndelegateSelectItem
           delegationItemInfo={selectedDelegationInfo}
           visibleAmount={true}
+          onSelectedArea={true}
           select={toggleSelector}
         />
         {!isDisabled && (

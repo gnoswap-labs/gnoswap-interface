@@ -9,9 +9,10 @@ export const DelegateeChipWrapper = styled.div`
   padding: 4px 12px 4px 6px;
   gap: 8px;
   border-radius: 36px;
-  background: ${({ theme }) => theme.color.background05};
+  border: 1px solid ${({ theme }) => theme.color.border12};
+  background-color: ${({ theme }) => theme.color.background02};
   ${fonts.body9};
-  color: ${({ theme }) => theme.color.text02};
+  color: ${({ theme }) => theme.color.text01};
 
   &.no-logo {
     padding: 4px 12px;

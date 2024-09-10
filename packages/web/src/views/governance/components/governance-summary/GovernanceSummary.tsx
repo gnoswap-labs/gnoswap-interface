@@ -30,7 +30,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
           title={t("Governance:summary.totalDel.title")}
           value={
             <>
-              {governanceSummary.totalDeligated.toLocaleString("en")}
+              {governanceSummary.totalDelegated.toLocaleString("en")}
               <TokenChip tokenInfo={GNS_TOKEN} />
             </>
           }
@@ -39,7 +39,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         />
         <InfoBox
           title={t("Governance:summary.delRatio.title")}
-          value={`${governanceSummary.DeligatedRatio.toString()}%`}
+          value={`${governanceSummary.delegatedRatio.toString()}%`}
           tooltip={t("Governance:summary.delRatio.tooltip")}
           isLoading={isLoading}
         />

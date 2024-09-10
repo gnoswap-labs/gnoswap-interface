@@ -17,12 +17,15 @@ export type ProposalItemResponse = {
     recipient?: string;
     amount?: number;
     parameters?: {
-      subspace: string;
-      key: string;
-      value: string;
+      pkgPath: string;
+      func: string;
+      param: string;
     }[];
   };
-  proponent: string;
+  proposer: {
+    name: string;
+    address: string;
+  };
   time: string;
   myVote?: {
     type: string;

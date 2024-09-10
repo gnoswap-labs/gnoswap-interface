@@ -4,6 +4,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconNewTab from "@components/common/icons/IconNewTab";
 import { ProposalItemInfo } from "@repositories/governance";
 
 import StatusBadge from "../../status-badge/StatusBadge";
@@ -11,22 +13,27 @@ import TypeBadge from "../../type-badge/TypeBadge";
 import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 
 import { ProposalDetailWrapper } from "./ProposalCard.styles";
-import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 dayjs.extend(relative);
 
 interface Props {
+  address: string;
   proposalDetail: ProposalItemInfo;
   onClickCard: (id: string) => void;
   executeProposal: (id: number) => void;
+  cancelProposal: (id: number) => void;
 }
 
 const ProposalCard: React.FC<Props> = ({
+  address,
   proposalDetail,
   onClickCard,
   executeProposal,
+  cancelProposal,
 }) => {
   const { t } = useTranslation();
+  const { getAccountUrl } = useGnoscanUrl();
 
   return (
     <ProposalDetailWrapper
@@ -55,7 +62,24 @@ const ProposalCard: React.FC<Props> = ({
         </div>
 
         <div className="right-section">
-          <div className="proponent">By {proposalDetail.proponent}</div>
+          <div
+            className="proposer"
+            onClick={e => {
+              e.stopPropagation();
+              window.open(
+                getAccountUrl(proposalDetail.proposer.address),
+                "_blank",
+              );
+            }}
+          >
+            By{" "}
+            {proposalDetail.proposer.name ||
+              [
+                proposalDetail.proposer.address.slice(0, 8),
+                proposalDetail.proposer.address.slice(32, 40),
+              ].join("...")}
+            <IconNewTab />
+          </div>
           {proposalDetail.status === "PASSED" &&
             proposalDetail.type === "PARAMETER_CHANGE" && (
               <Button
@@ -63,9 +87,23 @@ const ProposalCard: React.FC<Props> = ({
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                 }}
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
-                  executeProposal(proposalDetail.id);}}
+                  executeProposal(proposalDetail.id);
+                }}
+              />
+            )}
+          {proposalDetail.status === "UPCOMING" &&
+            proposalDetail.proposer.address === address && (
+              <Button
+                text={t("Governance:proposalList.cancelBtn")}
+                style={{
+                  hierarchy: ButtonHierarchy.Primary,
+                }}
+                onClick={e => {
+                  e.stopPropagation();
+                  cancelProposal(proposalDetail.id);
+                }}
               />
             )}
         </div>

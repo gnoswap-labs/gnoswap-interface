@@ -110,7 +110,7 @@ export const GovernanceDetailInfoWrapper = styled.div`
     gap: 8px;
 
     .value {
-      display: inline-flex;
+      ${mixins.flexbox("row", "center", "flex-start")};
       ${fonts.body2};
       color: ${({ theme }) => theme.color.text02};
 
@@ -141,5 +141,6 @@ export const InfoBoxTooltipContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: calc(300px - 32px);
   ${fonts.body12};
-  color: ${({ theme }) => theme.color.text15};
+  background-color: ${({ theme }) => theme.color.background02};
+  color: ${({ theme }) => theme.color.text02};
 `;
