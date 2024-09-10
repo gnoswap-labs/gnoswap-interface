@@ -25,7 +25,13 @@ const ProposalListContainer: React.FC = () => {
     cancelProposal,
   } = useGovernanceTx();
 
-  const { data: proposalsInfo, isFetching, hasNextPage, fetchNextPage } = useGetProposals({
+  const {
+    data: proposalsInfo,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+    refetch: refetchProposals,
+  } = useGetProposals({
     isActive: isShowActiveOnly,
     address: account?.address,
     itemsPerPage: 20,
@@ -52,12 +58,36 @@ const ProposalListContainer: React.FC = () => {
       setSelectedProposalId={setSelectedProposalId}
       isOpenCreateModal={isOpenCreateModal}
       setIsOpenCreateModal={setIsOpenCreateModal}
-      proposeTextProposal={proposeTextProposal}
-      proposeCommunityPoolSpendProposal={proposeCommunityPoolSpendProposal}
-      proposeParamChnageProposal={proposeParamChnageProposal}
-      voteProposal={voteProposal}
-      executeProposal={executeProposal}
-      cancelProposal={cancelProposal}
+      proposeTextProposal={(...params) =>
+        proposeTextProposal(...params, async () => {
+          await refetchProposals();
+        })
+      }
+      proposeCommunityPoolSpendProposal={(...params) =>
+        proposeCommunityPoolSpendProposal(...params, async () => {
+          await refetchProposals();
+        })
+      }
+      proposeParamChnageProposal={(...params) =>
+        proposeParamChnageProposal(...params, async () => {
+          await refetchProposals();
+        })
+      }
+      voteProposal={(...params) =>
+        voteProposal(...params, async () => {
+          await refetchProposals();
+        })
+      }
+      executeProposal={(...params) =>
+        executeProposal(...params, async () => {
+          await refetchProposals();
+        })
+      }
+      cancelProposal={(...params) =>
+        cancelProposal(...params, async () => {
+          await refetchProposals();
+        })
+      }
     />
   );
 };

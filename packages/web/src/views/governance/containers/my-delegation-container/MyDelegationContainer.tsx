@@ -21,13 +21,20 @@ const MyDelegationContainer: React.FC = () => {
   const {
     data: governanceSummaryInfo,
     isFetching: isFetchingGovernanceSummaryInfo,
+    refetch: refetchSummary,
   } = useGetGovernanceSummary();
-  const { data: myDelegationInfo, isFetching: isFetchingMyDelegation } =
-    useGetMyDelegation({
-      address: account?.address || "",
-    });
-  const { data: delegatees, isFetching: isFetchingDelegatees } =
-    useGetDelegatees();
+  const {
+    data: myDelegationInfo,
+    isFetching: isFetchingMyDelegation,
+    refetch: refetchMyDelegation,
+  } = useGetMyDelegation({
+    address: account?.address || "",
+  });
+  const {
+    data: delegatees,
+    isFetching: isFetchingDelegatees,
+    refetch: refetchDelegatees,
+  } = useGetDelegatees();
 
   return (
     <MyDelegation
@@ -42,10 +49,32 @@ const MyDelegationContainer: React.FC = () => {
       }
       isWalletConnected={connected}
       connectWallet={openModal}
-      delegateGNS={delegateGNS}
-      undelegateGNS={undelegateGNS}
-      collectUndelegated={collectUndelegated}
-      collectReward={collectReward}
+      delegateGNS={(...params) =>
+        delegateGNS(...params, async () => {
+          await refetchSummary();
+          await refetchMyDelegation();
+          await refetchDelegatees();
+        })
+      }
+      undelegateGNS={(...params) =>
+        undelegateGNS(...params, async () => {
+          await refetchSummary();
+          await refetchMyDelegation();
+          await refetchDelegatees();
+        })
+      }
+      collectUndelegated={(...params) =>
+        collectUndelegated(...params, async () => {
+          await refetchSummary();
+          await refetchMyDelegation();
+        })
+      }
+      collectReward={(...params) =>
+        collectReward(...params, async () => {
+          await refetchSummary();
+          await refetchMyDelegation();
+        })
+      }
     />
   );
 };
