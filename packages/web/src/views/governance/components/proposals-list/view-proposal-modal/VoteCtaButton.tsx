@@ -39,7 +39,7 @@ const VoteCtaButton: React.FC<VoteCtaButtonProps> = ({
     if (status === "UPCOMING")
       return {
         disabled: true,
-        text: t("Governance:proposal.status.upcomming"),
+        text: t("Governance:proposal.status.upcoming"),
         action: null,
       };
     if (status === "REJECTED")

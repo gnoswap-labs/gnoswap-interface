@@ -148,7 +148,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           yesCount={proposalDetail.votes.yes}
           noCount={proposalDetail.votes.no}
           selectedVote={selectedVote}
-          setSelectedVote={setSelectedVote}
+          setSelectedVote={proposalDetail.status === "ACTIVE" ? setSelectedVote : () => {}}
         />
         <VotingPowerWrapper>
           <span>{t("Governance:detailModal.votingWeight")}</span>
