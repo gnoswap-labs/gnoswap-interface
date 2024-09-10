@@ -81,7 +81,9 @@ const ProposalCard: React.FC<Props> = ({
             <IconNewTab />
           </div>
           {proposalDetail.status === "PASSED" &&
-            proposalDetail.type === "PARAMETER_CHANGE" && (
+            ["PARAMETER_CHANGE", "COMMUNITY_POOL_SPEND"].includes(
+              proposalDetail.type,
+            ) && (
               <Button
                 text={t("Governance:proposalList.executeBtn")}
                 style={{
