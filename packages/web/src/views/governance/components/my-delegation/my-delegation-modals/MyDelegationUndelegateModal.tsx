@@ -83,6 +83,7 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
           token={GNS_TOKEN}
           connected={isWalletConnected}
           changeAmount={gnsAmountInput.changeAmount}
+          balance={selectedDelegatedInfo.amount.toString()}
           changeToken={() => {}}
         />
       </article>
@@ -113,16 +114,14 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
             <div className="value">
               {`${formatOtherPrice(
                 (currentDelegatedAmount * 100) / totalDelegatedAmount,
-                {
-                  usd: false,
-                },
+                { usd: false },
               )}% -> ${formatOtherPrice(
-                ((currentDelegatedAmount - Number(gnsAmountInput.amount)) *
-                  100) /
-                  totalDelegatedAmount,
-                {
-                  usd: false,
-                },
+                currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
+                  ? ((currentDelegatedAmount - Number(gnsAmountInput.amount)) *
+                      100) /
+                      (totalDelegatedAmount - Number(gnsAmountInput.amount))
+                  : 0,
+                { usd: false },
               )}%`}
             </div>
           </div>
@@ -180,8 +179,7 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
         }}
         disabled={
           gnsAmountInput.amount === "0" ||
-          Number(gnsAmountInput.amount) >
-            Number(selectedDelegatedInfo.amount)
+          Number(gnsAmountInput.amount) > Number(selectedDelegatedInfo.amount)
         }
         className="button-confirm"
       />

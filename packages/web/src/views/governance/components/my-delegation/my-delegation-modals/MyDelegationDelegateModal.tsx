@@ -153,7 +153,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
             </div>
             <div className="value">
               <MissingLogo symbol="xGNS" url={GNS_TOKEN.logoURI} width={24} />
-              {gnsAmountInput.amount}
+              {Number(gnsAmountInput.amount).toLocaleString()}
               {" xGNS"}
             </div>
           </div>
@@ -172,7 +172,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               )}% -> ${formatOtherPrice(
                 ((currentDelegatedAmount + Number(gnsAmountInput.amount)) *
                   100) /
-                  totalDelegatedAmount,
+                  (totalDelegatedAmount + Number(gnsAmountInput.amount)),
                 {
                   usd: false,
                 },
