@@ -20,6 +20,7 @@ import {
   DelegateeInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
+  nullProposalsInfo,
   ProposalsInfo,
 } from "./model";
 import {
@@ -35,6 +36,9 @@ import {
   SendUndelegateReqeust,
   SendVoteReqeust,
 } from "./request";
+import {
+  GetProposalsResponse,
+} from "./response";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -63,7 +67,28 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   public getProposals = async (
     request: GetProposalsReqeust,
   ): Promise<ProposalsInfo> => {
-    return this.mockRepository.getProposals(request);
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const queries = [
+      request.isActive !== undefined ? `isActive=${request.isActive}` : "",
+      request.address !== undefined ? `address=${request.address}` : "",
+      request.page !== undefined ? `page=${request.page}` : "",
+      request.itemsPerPage !== undefined ? `itemsPerPage=${request.itemsPerPage}` : "",
+    ];
+    
+    const response = await this.networkClient.get<{data: GetProposalsResponse}>({
+      url: `governance/proposals?${queries.filter(item => !! item).join("&")}`
+    });
+
+    if (!response?.data?.data) {
+      return nullProposalsInfo;
+    }
+
+    const data: ProposalsInfo = response.data.data;
+
+    return data;
   };
 
   public getDelegatees = async (): Promise<DelegateeInfo[]> => {
