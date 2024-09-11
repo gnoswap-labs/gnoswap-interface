@@ -63,7 +63,7 @@ const VoteCtaButton: React.FC<VoteCtaButtonProps> = ({
     if (!isWalletConnected)
       return {
         disabled: false,
-        text: t("Governance:detailModal.btn.login"),
+        text: t("common:btn.walletLogin"),
         action: connectWallet,
       };
     if (isSwitchNetwork)

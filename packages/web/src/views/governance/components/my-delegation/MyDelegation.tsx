@@ -262,7 +262,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 hierarchy: ButtonHierarchy.Primary,
                 fontType: "p1",
               }}
-              text={t("Governance:myDel.login.btn")}
+              text={t("common:btn.walletLogin")}
               onClick={connectWallet}
             />
           </div>

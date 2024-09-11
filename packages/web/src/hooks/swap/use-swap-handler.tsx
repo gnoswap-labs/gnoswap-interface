@@ -448,7 +448,7 @@ export const useSwapHandler = () => {
   const swapButtonText = useMemo(() => {
     switch (swapButtonState) {
       case "WALLET_LOGIN":
-        return t("Swap:swapButton.walletLogin");
+        return t("common:btn.walletLogin");
       case "SWITCH_NETWORK":
         return t("Swap:swapButton.switchNetwork");
       case "SELECT_TOKEN":

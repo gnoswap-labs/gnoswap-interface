@@ -35,7 +35,7 @@ const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({
       )}
       <Button
         text={
-          connected ? t("business:switchGnoland") : t("business:walletLogin")
+          connected ? t("business:switchGnoland") : t("common:btn.walletLogin")
         }
         onClick={onClickConnect}
         style={{ hierarchy: ButtonHierarchy.Primary }}
