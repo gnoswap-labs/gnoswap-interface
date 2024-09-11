@@ -75,6 +75,8 @@ const BoxContent: React.FC<BoxContentProps> = ({
 interface CreateProposalModalProps {
   breakpoint: DEVICE_TYPE;
   setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+  myVotingWeight: number;
+  proposalCreationThreshold: number;
   proposeTextProposal: (title: string, description: string) => void;
   proposeCommunityPoolSpendProposal: (
     title: string,
@@ -95,6 +97,8 @@ interface CreateProposalModalProps {
 const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   breakpoint,
   setIsOpenCreateModal,
+  myVotingWeight,
+  proposalCreationThreshold,
   proposeTextProposal,
   proposeCommunityPoolSpendProposal,
   proposeParamChnageProposal,
@@ -162,8 +166,8 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   };
 
   const isDisableSubmit = useMemo(() => {
-    return !isDirty || !isValid;
-  }, [isDirty, isValid]);
+    return !isDirty || !isValid || myVotingWeight < proposalCreationThreshold;
+  }, [isDirty, isValid, proposalCreationThreshold, myVotingWeight]);
 
   const sendTx: SubmitHandler<FormValues> = (data) => {
     console.log(data);
@@ -330,7 +334,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                 </Tooltip>
               </div>
               <div className="value">
-                <span>{(1000).toLocaleString("en")}</span>
+                <span>{proposalCreationThreshold.toLocaleString("en")}</span>
                 <TokenChip tokenInfo={XGNS_TOKEN} />
               </div>
             </div>
@@ -338,7 +342,11 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         </div>
         <Button
           disabled={isDisableSubmit}
-          text={t("Governance:createModal.submit")}
+          text={t(
+            myVotingWeight < proposalCreationThreshold
+              ? "Governance:createModal.submit.insuffiXGNS"
+              : "Governance:createModal.submit.ok",
+          )}
           className="btn-submit"
           style={{
             fullWidth: true,

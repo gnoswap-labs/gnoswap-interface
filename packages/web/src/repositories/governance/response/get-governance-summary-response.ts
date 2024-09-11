@@ -3,4 +3,5 @@ export interface GetGovernanceSummaryResponse {
   delegatedRatio: number;
   apy: number;
   communityPool: number;
+  creationThreshold: number;
 }

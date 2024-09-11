@@ -14,6 +14,7 @@ import { ProposalListWrapper } from "./ProposalList.styles";
 import { useTranslation } from "react-i18next";
 
 interface ProposalListProps {
+  breakpoint: DEVICE_TYPE;
   isLoading?: boolean;
   isConnected: boolean;
   connectWallet: () => void;
@@ -22,9 +23,10 @@ interface ProposalListProps {
   isShowActiveOnly: boolean;
   address: string;
   toggleIsShowActiveOnly: () => void;
+  myVotingWeight: number;
+  proposalCreationThreshold: number;
   proposalList: ProposalItemInfo[];
   fetchMore: () => void;
-  breakpoint: DEVICE_TYPE;
   selectedProposalId: number;
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
   isOpenCreateModal: boolean;
@@ -50,6 +52,7 @@ interface ProposalListProps {
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
+  breakpoint,
   isLoading,
   isConnected,
   connectWallet,
@@ -58,9 +61,10 @@ const ProposalList: React.FC<ProposalListProps> = ({
   address,
   isShowActiveOnly,
   toggleIsShowActiveOnly,
+  myVotingWeight,
+  proposalCreationThreshold,
   proposalList,
   fetchMore,
-  breakpoint,
   selectedProposalId,
   setSelectedProposalId,
   isOpenCreateModal,
@@ -140,6 +144,8 @@ const ProposalList: React.FC<ProposalListProps> = ({
         <CreateProposalModal
           breakpoint={breakpoint}
           setIsOpenCreateModal={setIsOpenCreateModal}
+          myVotingWeight={myVotingWeight}
+          proposalCreationThreshold={proposalCreationThreshold}
           proposeTextProposal={proposeTextProposal}
           proposeCommunityPoolSpendProposal={proposeCommunityPoolSpendProposal}
           proposeParamChnageProposal={proposeParamChnageProposal}

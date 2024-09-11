@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useGetProposals } from "@query/governance";
+import { useGetGovernanceSummary, useGetMyDelegation, useGetProposals } from "@query/governance";
 
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "../../hooks/use-governance-tx";
@@ -26,8 +26,18 @@ const ProposalListContainer: React.FC = () => {
   } = useGovernanceTx();
 
   const {
+    data: governanceSummaryInfo,
+    isFetching: isFetchingGovernanceSummaryInfo,
+  } = useGetGovernanceSummary();
+  const {
+    data: myDelegationInfo,
+    isFetching: isFetchingMyDelegation,
+  } = useGetMyDelegation({
+    address: account?.address || "",
+  });
+  const {
     data: proposalsInfo,
-    isFetching,
+    isFetching: isFetchingProposalsInfo,
     hasNextPage,
     fetchNextPage,
     refetch: refetchProposals,
@@ -43,15 +53,23 @@ const ProposalListContainer: React.FC = () => {
 
   return (
     <ProposalList
-      isLoading={isFetching}
+      breakpoint={breakpoint}
+      isLoading={
+        isFetchingProposalsInfo ||
+        isFetchingGovernanceSummaryInfo ||
+        isFetchingMyDelegation
+      }
       isConnected={connected}
       connectWallet={openModal}
       isSwitchNetwork={isSwitchNetwork}
       address={account?.address || ""}
       switchNetwork={switchNetwork}
       isShowActiveOnly={isShowActiveOnly}
-      breakpoint={breakpoint}
       toggleIsShowActiveOnly={() => setIsShowActiveOnly(a => !a)}
+      myVotingWeight={myDelegationInfo?.votingWeight || 0}
+      proposalCreationThreshold={
+        governanceSummaryInfo?.creationThreshold || 1000
+      }
       proposalList={proposalsInfo?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}
       selectedProposalId={selectedProposalId}
