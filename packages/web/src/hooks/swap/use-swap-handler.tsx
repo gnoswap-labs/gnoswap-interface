@@ -458,7 +458,7 @@ export const useSwapHandler = () => {
       case "AMOUNT_TOO_LOW":
         return t("Swap:swapButton.amtLow");
       case "INSUFFICIENT_BALANCE":
-        return t("Swap:swapButton.insuffiBalance");
+        return t("common:btn.insuffiBal");
       case "INSUFFICIENT_LIQUIDITY":
         return t("Swap:swapButton.insuffiLiq");
       case "WRAP":

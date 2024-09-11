@@ -168,7 +168,7 @@ const AssetSendModal: React.FC<Props> = ({
         BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) ||
       !Number(amount || 0)
     ) {
-      return t("Wallet:assetSendModal.btn.insuffBal");
+      return t("common:btn.insuffiBal");
     }
     if (address === "") return t("Wallet:assetSendModal.btn.enterAddr");
     if (!addressValidationCheck(address))

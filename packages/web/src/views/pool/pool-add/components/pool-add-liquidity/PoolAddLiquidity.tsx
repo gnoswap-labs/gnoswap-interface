@@ -217,7 +217,7 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
       case "INVALID_PAIR":
         return t("AddPosition:btn.invalidPair");
       case "INSUFFICIENT_BALANCE":
-        return t("AddPosition:btn.insuffiBal");
+        return t("common:btn.insuffiBal");
       case "INVALID_RANGE":
         return t("AddPosition:btn.invalidRange");
       case "AMOUNT_TOO_LOW":

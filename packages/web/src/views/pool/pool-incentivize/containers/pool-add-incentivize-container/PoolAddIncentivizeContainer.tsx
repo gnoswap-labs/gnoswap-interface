@@ -164,7 +164,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
       Number(tokenAmountInput.balance.replace(/,/g, ""))
     ) {
       return {
-        text: t("IncentivizePool:submitBtn.insuffi"),
+        text: t("common:btn.insuffiBal"),
         disabled: true,
       };
     }
