@@ -188,7 +188,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       data.description,
       data.variable[0].pkgPath,
       data.variable[0].func,
-      data.variable.map(item => item.param).join("*gov*"),
+      data.variable.map(item => item.param).join("*GOV*"),
     );
     setIsOpenCreateModal(false);
   };
