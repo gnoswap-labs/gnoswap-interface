@@ -142,15 +142,12 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
         </ModalQuorum>
         <VoteButtons
           breakpoint={breakpoint}
-          isVoted={
-            proposalDetail.myVote ? proposalDetail.myVote.type !== "" : false
-          }
+          votedType={proposalDetail.myVote?.type || ""}
+          isClickable={proposalDetail.status === "ACTIVE"}
           yesCount={proposalDetail.votes.yes}
           noCount={proposalDetail.votes.no}
           selectedVote={selectedVote}
-          setSelectedVote={
-            proposalDetail.status === "ACTIVE" ? setSelectedVote : () => {}
-          }
+          setSelectedVote={setSelectedVote}
         />
         {["UPCOMING", "ACTIVE"].includes(proposalDetail.status) && (
           <>

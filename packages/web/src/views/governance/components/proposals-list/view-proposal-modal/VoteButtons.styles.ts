@@ -11,7 +11,6 @@ export const VoteButtonsWrapper = styled.div`
   .vote-button {
     ${mixins.flexbox("column", "center", "center")};
     gap: 8px;
-    cursor: pointer;
     position: relative;
     padding: 15px 8px;
     border-radius: 8px;
@@ -45,9 +44,10 @@ export const VoteButtonsWrapper = styled.div`
         ${fonts.body12}
       }
     }
-    &:hover {
+    &.use-hover:hover {
       background-color: ${({ theme }) => theme.color.background05Hover};
       border: 1px solid ${({ theme }) => theme.color.border03};
+      cursor: pointer;
     }
   }
   .active-button {
