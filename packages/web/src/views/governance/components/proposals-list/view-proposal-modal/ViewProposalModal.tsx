@@ -21,6 +21,7 @@ import {
   ViewProposalModalWrapper,
   VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 
 export interface ViewProposalModalProps {
   breakpoint: DEVICE_TYPE;
@@ -65,7 +66,23 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <div className="title">
               <span>{`#${proposalDetail.id} ${proposalDetail.title}`}</span>
               {breakpoint !== DEVICE_TYPE.MOBILE && (
-                <TypeBadge type={proposalDetail.type} />
+                <>
+                  <TypeBadge type={proposalDetail.type} />
+                  {proposalDetail.status === "EXPIRED" && (
+                    <Badge
+                      className="proposal-badge"
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                      text={t("Governance:proposal.status.expired")}
+                    />
+                  )}
+                  {proposalDetail.status === "EXECUTED" && (
+                    <Badge
+                      className="proposal-badge"
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                      text={t("Governance:proposal.status.executed")}
+                    />
+                  )}
+                </>
               )}
             </div>
             <div
@@ -76,7 +93,23 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             </div>
           </div>
           {breakpoint === DEVICE_TYPE.MOBILE && (
-            <TypeBadge type={proposalDetail.type} />
+            <div className="mobile-badges">
+              <TypeBadge type={proposalDetail.type} />
+              {proposalDetail.status === "EXPIRED" && (
+                <Badge
+                  className="proposal-badge"
+                  type={BADGE_TYPE.DARK_DEFAULT}
+                  text={t("Governance:proposal.status.expired")}
+                />
+              )}
+              {proposalDetail.status === "EXECUTED" && (
+                <Badge
+                  className="proposal-badge"
+                  type={BADGE_TYPE.DARK_DEFAULT}
+                  text={t("Governance:proposal.status.executed")}
+                />
+              )}
+            </div>
           )}
           <div className="active-wrapper">
             <StatusBadge

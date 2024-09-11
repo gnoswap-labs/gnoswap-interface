@@ -72,6 +72,13 @@ export const ModalHeaderWrapper = styled.div`
       }
     }
   }
+
+  .mobile-badges {
+    width: 100%;
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 4px;
+  }
+
   .active-wrapper {
     gap: 12px;
     ${mixins.flexbox("row", "center", "center")};

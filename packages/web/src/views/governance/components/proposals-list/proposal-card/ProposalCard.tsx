@@ -45,6 +45,13 @@ const ProposalCard: React.FC<Props> = ({
             {`#${proposalDetail.id} ${proposalDetail.title}`}
           </div>
           <TypeBadge type={proposalDetail.type} />
+          {proposalDetail.status === "EXPIRED" && (
+            <Badge
+              className="proposal-badge"
+              type={BADGE_TYPE.DARK_DEFAULT}
+              text={t("Governance:proposal.status.expired")}
+            />
+          )}
           {proposalDetail.status === "EXECUTED" && (
             <Badge
               className="proposal-badge"

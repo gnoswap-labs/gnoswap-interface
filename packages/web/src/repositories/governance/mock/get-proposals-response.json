@@ -260,6 +260,10 @@
       "address": "g13dmbtutu9khhfwc4nxmuhcpftf0pajdh3hcsj4"
     },
     "time": "2024-08-20 10:10:2 UTC+9",
+    "myVote": {
+      "type": "NO",
+      "weight": 0
+    },
     "votes": {
       "max": 40000,
       "yes": 20430,
@@ -406,7 +410,7 @@
   {
     "id": 21,
     "type": "PARAMETER_CHANGE",
-    "status": "PASSED",
+    "status": "EXPIRED",
     "title": "Proposal Title",
     "proposer": {
       "name": "Onbloc",

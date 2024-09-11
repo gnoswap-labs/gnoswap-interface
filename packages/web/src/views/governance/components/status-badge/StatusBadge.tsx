@@ -36,6 +36,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time }) => {
             {t("Governance:proposal.status.active")}
           </div>
         );
+      case "EXPIRED":
       case "EXECUTED":
       case "PASSED":
         return (
@@ -74,6 +75,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time }) => {
           rel_time: dayjs(time).fromNow(),
         })} (${timeString})`;
       case "EXECUTED":
+      case "EXPIRED":
       case "PASSED":
       case "REJECTED":
       case "CANCELLED":

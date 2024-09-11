@@ -54,7 +54,7 @@ const VoteButtons : React.FC<VoteButtonsWrapper> = ({
         onClick={() => !votedType && setSelectedVote("YES")}
       >
         <span>{t("Governance:vote.yes")}</span>
-        <div>{yesCount.toLocaleString()}</div>
+        <div>{yesCount.toLocaleString("en", { maximumFractionDigits: 0 })}</div>
         {votedType === "YES" && votedBadge}
       </div>
       <div
@@ -66,7 +66,7 @@ const VoteButtons : React.FC<VoteButtonsWrapper> = ({
         onClick={() => !votedType && setSelectedVote("NO")}
       >
         <span>{t("Governance:vote.no")}</span>
-        <div>{noCount.toLocaleString()}</div>
+        <div>{noCount.toLocaleString("en", { maximumFractionDigits: 0 })}</div>
         {votedType === "NO" && votedBadge}
       </div>
     </VoteButtonsWrapper>
