@@ -20,6 +20,7 @@ import {
 
 interface MyDelegationProps {
   totalDelegatedAmount: number;
+  apy: number;
   myDelegationInfo: MyDelegationInfo;
   delegatees: DelegateeInfo[];
   isLoading: boolean;
@@ -37,6 +38,7 @@ interface MyDelegationProps {
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
   totalDelegatedAmount,
+  apy,
   myDelegationInfo,
   delegatees,
   isLoading,
@@ -68,7 +70,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         <div className="my-delegation-title">{t("Governance:myDel.title")}</div>
         <div className="delegate-buttons">
           <Button
-            disabled={isLoading || !isWalletConnected}
+            disabled={isLoading || !isWalletConnected || !hasUndel}
             style={{
               hierarchy: ButtonHierarchy.Primary,
               fontType: "p1",
@@ -262,6 +264,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         <MyDelegationDelegateModal
           currentDelegatedAmount={myDelegationInfo.votingWeight}
           totalDelegatedAmount={totalDelegatedAmount}
+          apy={apy}
           delegatees={delegatees}
           isWalletConnected={isWalletConnected}
           onSubmit={delegateGNS}
@@ -272,6 +275,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         <MyDelegationUndelegateModal
           currentDelegatedAmount={myDelegationInfo.votingWeight}
           totalDelegatedAmount={totalDelegatedAmount}
+          apy={apy}
           delegatedInfos={votingWeightInfos}
           isWalletConnected={isWalletConnected}
           onSubmit={undelegateGNS}

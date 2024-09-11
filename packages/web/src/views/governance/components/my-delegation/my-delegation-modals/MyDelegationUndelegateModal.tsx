@@ -29,19 +29,19 @@ import {
 interface MyDelegationUndelegateModalProps {
   currentDelegatedAmount: number;
   totalDelegatedAmount: number;
+  apy: number;
   delegatedInfos: DelegationItemInfo[];
   isWalletConnected: boolean;
-  onSubmit: (
-    fromName: string,
-    fromAddress: string,
-    amount: string,
-  ) => void;
+  onSubmit: (fromName: string, fromAddress: string, amount: string) => void;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = ({
+const MyDelegationUndelegateModal: React.FC<
+  MyDelegationUndelegateModalProps
+> = ({
   currentDelegatedAmount,
   totalDelegatedAmount,
+  apy,
   delegatedInfos,
   isWalletConnected,
   onSubmit,
@@ -164,7 +164,11 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
                 <IconInfo size={16} />
               </Tooltip>
             </div>
-            <div className="value">? %</div>
+            <div className="value">{`${apy.toLocaleString("en")}% -> ${
+              currentDelegatedAmount <= Number(gnsAmountInput.amount)
+                ? 0
+                : apy.toLocaleString("en")
+            }%`}</div>
           </div>
         </div>
       </article>
@@ -195,8 +199,7 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
             gnsAmountInput.amount,
           );
           setIsOpen(false);
-        }
-        }
+        }}
         text={t("Governance:myDel.undelModal.ctaBtn")}
         style={{
           hierarchy: ButtonHierarchy.Primary,

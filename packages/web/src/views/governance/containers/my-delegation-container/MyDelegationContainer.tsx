@@ -36,9 +36,12 @@ const MyDelegationContainer: React.FC = () => {
     refetch: refetchDelegatees,
   } = useGetDelegatees();
 
+  console.log(governanceSummaryInfo, myDelegationInfo, delegatees);
+
   return (
     <MyDelegation
       totalDelegatedAmount={governanceSummaryInfo?.totalDelegated || 0}
+      apy={governanceSummaryInfo?.apy || 0}
       myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
       delegatees={delegatees ?? []}
       isLoading={

@@ -33,6 +33,7 @@ import {
 interface MyDelegationDelegateModalProps {
   currentDelegatedAmount: number;
   totalDelegatedAmount: number;
+  apy: number;
   delegatees: DelegateeInfo[];
   isWalletConnected: boolean;
   onSubmit: (toName: string, toAddress: string, amount: string) => void;
@@ -42,6 +43,7 @@ interface MyDelegationDelegateModalProps {
 const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   currentDelegatedAmount,
   totalDelegatedAmount,
+  apy,
   delegatees,
   isWalletConnected,
   onSubmit,
@@ -195,7 +197,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
                 <IconInfo size={16} />
               </Tooltip>
             </div>
-            <div className="value">? %</div>
+            <div className="value">{apy.toLocaleString("en")}%</div>
           </div>
         </div>
       </article>
@@ -219,12 +221,10 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       />
 
       <Button
-        onClick={() =>
-          {
-            onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
-            setIsOpen(false);
-          }
-        }
+        onClick={() => {
+          onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
+          setIsOpen(false);
+        }}
         text={t("Governance:myDel.delModal.ctaBtn")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
