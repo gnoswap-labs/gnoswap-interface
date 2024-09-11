@@ -11,6 +11,7 @@ import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
 import { ProposalListWrapper } from "./ProposalList.styles";
+import { useTranslation } from "react-i18next";
 
 interface ProposalListProps {
   isLoading?: boolean;
@@ -71,6 +72,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   executeProposal,
   cancelProposal,
 }) => {
+  const { t } = useTranslation();
   const LastCard = withIntersection(ProposalCard, fetchMore);
 
   return (
@@ -115,6 +117,9 @@ const ProposalList: React.FC<ProposalListProps> = ({
         Array.from({ length: 3 }).map((_, idx) => (
           <ProposalCardSkeleton key={`skeleton-${idx}`} />
         ))}
+      {!isLoading && (!proposalList || proposalList.length === 0) && (
+        <div className="no-data-found">{t("common:noDataFound")}</div>
+      )}
 
       {selectedProposalId !== 0 && (
         <ViewProposalModal
