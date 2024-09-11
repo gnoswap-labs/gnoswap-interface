@@ -70,7 +70,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         <div className="my-delegation-title">{t("Governance:myDel.title")}</div>
         <div className="delegate-buttons">
           <Button
-            disabled={isLoading || !isWalletConnected || !hasUndel}
+            disabled={
+              isLoading || !isWalletConnected || votingWeightInfos.length === 0
+            }
             style={{
               hierarchy: ButtonHierarchy.Primary,
               fontType: "p1",
