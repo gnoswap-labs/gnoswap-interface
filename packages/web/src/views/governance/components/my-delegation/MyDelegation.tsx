@@ -181,6 +181,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           </div>
                         ),
                       )}
+                      {(showUndel ? undelegationInfos : votingWeightInfos)
+                        .length === 0 ? (
+                        <div className="no-data">{t("common:noData")}</div>
+                      ) : null}
                     </MyDelegationTooltipContent>
                   }
                   placement="top"
@@ -194,7 +198,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           )
                         : myDelegationInfo.votingWeight.toLocaleString("en")
                     }`}
-                    <TokenChip tokenInfo={XGNS_TOKEN} />
+                    <TokenChip
+                      tokenInfo={hasUndel && showUndel ? GNS_TOKEN : XGNS_TOKEN}
+                    />
                   </div>
                 </Tooltip>
               }

@@ -100,4 +100,10 @@ export const MyDelegationTooltipContent = styled.div`
       }
     }
   }
+
+  .no-data {
+    width: 100%;
+    ${mixins.flexbox("column", "center", "center")};
+    color: ${({ theme }) => theme.color.text04};
+  }
 `;
