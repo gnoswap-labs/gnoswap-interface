@@ -314,7 +314,9 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               {XGNS_TOKEN.symbol}
               <span className="sub">
                 {` (${formatOtherPrice(
-                  (tmpDelegatee.votingPower * 100) / totalDelegatedAmount,
+                  totalDelegatedAmount
+                    ? (tmpDelegatee.votingPower * 100) / totalDelegatedAmount
+                    : 0,
                   {
                     usd: false,
                   },
