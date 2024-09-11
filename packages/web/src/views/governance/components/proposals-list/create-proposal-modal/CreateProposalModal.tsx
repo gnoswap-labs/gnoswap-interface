@@ -20,7 +20,6 @@ import {
   getCreateProposalCommunityPoolSpendValidation,
   getCreateProposalValidation,
 } from "@utils/create-proposal-validation";
-import { isEmptyObject } from "@utils/validation-utils";
 
 import TokenChip from "../../token-chip/TokenChip";
 
@@ -141,7 +140,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   });
   const {
     register,
-    formState: { errors, isDirty, isValid, },
+    formState: { errors, isDirty, isValid },
     control,
   } = methods;
 
@@ -151,7 +150,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   });
 
   const handleClickFormFieldArray = (index: number) => {
-    if (index === fields.length - 1) {
+    if (index === 0) {
       append({
         pkgPath: "",
         func: "",
@@ -163,8 +162,8 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   };
 
   const isDisableSubmit = useMemo(() => {
-    return !isEmptyObject(errors) || !isDirty || !isValid;
-  }, [isDirty, isValid, errors]);
+    return !isDirty || !isValid;
+  }, [isDirty, isValid]);
 
   const sendTx: SubmitHandler<FormValues> = (data) => {
     console.log(data);
@@ -271,7 +270,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
             </BoxContent>
           )}
           {type === ProposalOption[2] && (
-            <BoxContent label="Set Variable">
+            <BoxContent label={t("Governance:createModal.setVariable.title")}>
               {fields.map((item, index) => (
                 <div className="multiple-variable" key={item.id}>
                   <div>
@@ -309,7 +308,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                     />
                   </div>
                   <IconButton onClick={() => handleClickFormFieldArray(index)}>
-                    {index === fields.length - 1 ? <IconAdd /> : <IconRemove />}
+                    {index === 0 ? <IconAdd /> : <IconRemove />}
                   </IconButton>
                 </div>
               ))}
