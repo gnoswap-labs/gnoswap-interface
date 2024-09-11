@@ -148,31 +148,37 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           yesCount={proposalDetail.votes.yes}
           noCount={proposalDetail.votes.no}
           selectedVote={selectedVote}
-          setSelectedVote={proposalDetail.status === "ACTIVE" ? setSelectedVote : () => {}}
-        />
-        <VotingPowerWrapper>
-          <span>{t("Governance:detailModal.votingWeight")}</span>
-          <div>
-            <div className="power-value">
-              {(proposalDetail.myVote?.weight || 0).toLocaleString()}
-            </div>
-            <TokenChip tokenInfo={XGNS_TOKEN} />
-          </div>
-        </VotingPowerWrapper>
-        <VoteCtaButton
-          breakpoint={breakpoint}
-          isWalletConnected={isConnected}
-          isSwitchNetwork={isSwitchNetwork}
-          voteType={proposalDetail.myVote?.type}
-          voteWeigth={proposalDetail.myVote?.weight}
-          status={proposalDetail.status}
-          selectedVote={selectedVote}
-          handleVote={() =>
-            voteProposal(proposalDetail.id, selectedVote === "YES")
+          setSelectedVote={
+            proposalDetail.status === "ACTIVE" ? setSelectedVote : () => {}
           }
-          connectWallet={connectWallet}
-          switchNetwork={switchNetwork}
         />
+        {["UPCOMING", "ACTIVE"].includes(proposalDetail.status) && (
+          <>
+            <VotingPowerWrapper>
+              <span>{t("Governance:detailModal.votingWeight")}</span>
+              <div>
+                <div className="power-value">
+                  {(proposalDetail.myVote?.weight || 0).toLocaleString()}
+                </div>
+                <TokenChip tokenInfo={XGNS_TOKEN} />
+              </div>
+            </VotingPowerWrapper>
+            <VoteCtaButton
+              breakpoint={breakpoint}
+              isWalletConnected={isConnected}
+              isSwitchNetwork={isSwitchNetwork}
+              voteType={proposalDetail.myVote?.type}
+              voteWeigth={proposalDetail.myVote?.weight}
+              status={proposalDetail.status}
+              selectedVote={selectedVote}
+              handleVote={() =>
+                voteProposal(proposalDetail.id, selectedVote === "YES")
+              }
+              connectWallet={connectWallet}
+              switchNetwork={switchNetwork}
+            />
+          </>
+        )}
       </div>
     </Modal>
   );
