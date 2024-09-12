@@ -133,6 +133,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           connected={isWalletConnected}
           changeAmount={gnsAmountInput.changeAmount}
           changeToken={() => {}}
+          style={{ padding: "16px" }}
         />
       </article>
 
@@ -325,7 +326,11 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           </div>
           <div className="value">
             <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
-            {tmpDelegatee.votingPower.toLocaleString("en")} {XGNS_TOKEN.symbol}
+            {formatOtherPrice(tmpDelegatee.votingPower, {
+              isKMB: false,
+              usd: false,
+            })}{" "}
+            {XGNS_TOKEN.symbol}
             <span className="sub">
               {` (${formatOtherPrice(
                 totalDelegatedAmount

@@ -21,16 +21,19 @@ export const UndelegateSelectWrapper = styled.div<Props>`
   gap: 16px;
 
   .section-title {
-    color: ${({ theme }) => theme.color.text05};
+    ${mixins.flexbox("row", "center", "flex-start")};
+    width: 100%;
+    gap: 4px;
+    color: ${({ theme }) => theme.color.text10};
     ${fonts.body12}
+
+    svg {
+      path {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+    }
   }
 
-  h5 {
-    color: ${({ isDisabled, theme }) => {
-      return isDisabled ? theme.color.text04 : theme.color.text10;
-    }};
-    ${fonts.body12}
-  }
   ${media.mobile} {
     gap: 8px;
   }
@@ -123,4 +126,10 @@ export const UndelegateSelectBox = styled.div`
       max-height: 600px;
     }
   }
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

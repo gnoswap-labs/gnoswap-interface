@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
@@ -78,7 +78,8 @@ const MyDelegationUndelegateModal: React.FC<
 
   const [selectedDelegatedInfo, setSelectedDelegatedInfo] =
     useState<DelegationItemInfo>(
-      accumedDelegationInfo?.[0] || nullDelegationItemInfo,
+      accumedDelegationInfo.sort((a, b) =>  b.amount - a.amount)[0] ||
+        nullDelegationItemInfo,
     );
 
   const showDelegateInfo = () => (
@@ -102,11 +103,12 @@ const MyDelegationUndelegateModal: React.FC<
         </div>
         <TokenAmountInput
           {...gnsAmountInput}
-          token={GNS_TOKEN}
+          token={XGNS_TOKEN}
           connected={isWalletConnected}
           changeAmount={gnsAmountInput.changeAmount}
           balance={selectedDelegatedInfo.amount.toString()}
           changeToken={() => {}}
+          style={{ padding: "16px" }}
         />
       </article>
 
@@ -119,11 +121,21 @@ const MyDelegationUndelegateModal: React.FC<
             {t("Governance:myDel.undelModal.step3.remainXGns")}
           </div>
           <div className="value">
-            <MissingLogo symbol="xGNS" url={GNS_TOKEN.logoURI} width={24} />
-            {(
-              currentDelegatedAmount - Number(gnsAmountInput.amount)
-            ).toLocaleString("en")}
-            {" xGNS"}
+            <MissingLogo
+              symbol={XGNS_TOKEN.symbol}
+              url={XGNS_TOKEN.logoURI}
+              width={24}
+            />
+            {formatOtherPrice(
+              currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
+                ? currentDelegatedAmount - Number(gnsAmountInput.amount)
+                : 0,
+              {
+                isKMB: false,
+                usd: false,
+              },
+            )}
+            {` ${XGNS_TOKEN.symbol}`}
           </div>
         </div>
         <div className="info-rows">
@@ -158,10 +170,13 @@ const MyDelegationUndelegateModal: React.FC<
               <IconInfo size={16} />
             </Tooltip>
           </div>
-          <div className="value">{`${apy.toLocaleString("en")}% -> ${
+          <div className="value">{`${formatOtherPrice(apy, {
+            isKMB: false,
+            usd: false,
+          })}% -> ${
             currentDelegatedAmount <= Number(gnsAmountInput.amount)
               ? 0
-              : apy.toLocaleString("en")
+              : formatOtherPrice(apy, { isKMB: false, usd: false })
           }%`}</div>
         </div>
       </article>
