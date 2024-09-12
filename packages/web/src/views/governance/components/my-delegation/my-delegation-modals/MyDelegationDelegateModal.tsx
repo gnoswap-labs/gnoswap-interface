@@ -27,7 +27,7 @@ import DelegateeChip from "./delegatee-chip/DelegateeChip";
 import {
   MyDelegationModalWrapper,
   MyDelWarningContentWrapper,
-  ToolTipContentWrapper
+  ToolTipContentWrapper,
 } from "./MyDelegationModals.styles";
 
 interface MyDelegationDelegateModalProps {
@@ -59,7 +59,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
   const [stage, setStage] = useState<"MAIN" | "SELECT_DELEGATE">("MAIN");
   const [delegatee, setDelegatee] = useState<DelegateeInfo>(
-    delegatees[0] || nullDelegateeInfo,
+    nullDelegateeInfo,
   );
   const [tmpDelegatee, setTmpDelegatee] = useState<DelegateeInfo>(
     delegatees[0] || nullDelegateeInfo,
@@ -94,27 +94,31 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           className="delegatee-select-btn"
           onClick={() => setStage("SELECT_DELEGATE")}
         >
-          <div className="selected-delegatee">
-            <MissingLogo
-              url={delegatee.logoUrl}
-              symbol={delegatee.name}
-              width={24}
-            />
-            {delegatee.name}
-            <div
-              className="addr"
-              onClick={e => {
-                e.stopPropagation();
-                window.open(getAccountUrl(delegatee.address));
-              }}
-            >
-              {[
-                delegatee.address.slice(0, 8),
-                delegatee.address.slice(32, 40),
-              ].join("...")}
-              <IconNewTab />
+          {delegatee.address === "" ? (
+            <div className="before-select">Select</div>
+          ) : (
+            <div className="selected-delegatee">
+              <MissingLogo
+                url={delegatee.logoUrl}
+                symbol={delegatee.name}
+                width={24}
+              />
+              {delegatee.name}
+              <div
+                className="addr"
+                onClick={e => {
+                  e.stopPropagation();
+                  window.open(getAccountUrl(delegatee.address));
+                }}
+              >
+                {[
+                  delegatee.address.slice(0, 8),
+                  delegatee.address.slice(32, 40),
+                ].join("...")}
+                <IconNewTab />
+              </div>
             </div>
-          </div>
+          )}
           <IconStrokeArrowRight className="arrow" />
         </div>
       </article>
@@ -137,71 +141,83 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           {t("Governance:myDel.delModal.step3.title")}
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.delModal.step3.currentlyDel")}
-            </div>
-            <div className="value">
-              <MissingLogo symbol="xGNS" url={GNS_TOKEN.logoURI} width={24} />
-              {currentDelegatedAmount.toLocaleString("en")}
-              {" xGNS"}
-            </div>
+          <div className="label">
+            {t("Governance:myDel.delModal.step3.currentlyDel")}
+          </div>
+          <div className="value">
+            <MissingLogo
+              symbol={XGNS_TOKEN.symbol}
+              url={XGNS_TOKEN.logoURI}
+              width={24}
+            />
+            {formatOtherPrice(currentDelegatedAmount, {
+              isKMB: false,
+              usd: false,
+            })}
+            {` ${XGNS_TOKEN.symbol}`}
           </div>
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.delModal.step3.newlyDel")}
-            </div>
-            <div className="value">
-              <MissingLogo symbol="xGNS" url={GNS_TOKEN.logoURI} width={24} />
-              {Number(gnsAmountInput.amount).toLocaleString()}
-              {" xGNS"}
-            </div>
+          <div className="label">
+            {t("Governance:myDel.delModal.step3.newlyDel")}
+          </div>
+          <div className="value">
+            <MissingLogo
+              symbol={XGNS_TOKEN.symbol}
+              url={XGNS_TOKEN.logoURI}
+              width={24}
+            />
+            {formatOtherPrice(gnsAmountInput.amount, {
+              isKMB: false,
+              usd: false,
+            })}
+            {` ${XGNS_TOKEN.symbol}`}
           </div>
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.delModal.step3.votingPowerShare")}
-            </div>
-            <div className="value">
-              {`${formatOtherPrice(
-                totalDelegatedAmount
-                  ? (currentDelegatedAmount * 100) / totalDelegatedAmount
-                  : 0,
-                {
-                  usd: false,
-                },
-              )}% -> ${formatOtherPrice(
-                totalDelegatedAmount + Number(gnsAmountInput.amount)
-                  ? ((currentDelegatedAmount + Number(gnsAmountInput.amount)) *
-                      100) /
-                      (totalDelegatedAmount + Number(gnsAmountInput.amount))
-                  : 0,
-                {
-                  usd: false,
-                },
-              )}%`}
-            </div>
+          <div className="label">
+            {t("Governance:myDel.delModal.step3.votingPowerShare")}
+          </div>
+          <div className="value">
+            {`${formatOtherPrice(
+              totalDelegatedAmount
+                ? (currentDelegatedAmount * 100) / totalDelegatedAmount
+                : 0,
+              {
+                usd: false,
+              },
+            )}% -> ${formatOtherPrice(
+              totalDelegatedAmount + Number(gnsAmountInput.amount)
+                ? ((currentDelegatedAmount + Number(gnsAmountInput.amount)) *
+                    100) /
+                    (totalDelegatedAmount + Number(gnsAmountInput.amount))
+                : 0,
+              {
+                usd: false,
+              },
+            )}%`}
           </div>
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.delModal.step3.estimatedAPR")}
-              <Tooltip
-                placement="top"
-                FloatingContent={
-                  <ToolTipContentWrapper>
-                    {t("Governance:myDel.delModal.step3.aprTooltip")}
-                  </ToolTipContentWrapper>
-                }
-              >
-                <IconInfo size={16} />
-              </Tooltip>
-            </div>
-            <div className="value">{apy.toLocaleString("en")}%</div>
+          <div className="label">
+            {t("Governance:myDel.delModal.step3.estimatedAPR")}
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <ToolTipContentWrapper>
+                  {t("Governance:myDel.delModal.step3.aprTooltip")}
+                </ToolTipContentWrapper>
+              }
+            >
+              <IconInfo size={16} />
+            </Tooltip>
+          </div>
+          <div className="value">
+            {formatOtherPrice(apy, {
+              isKMB: false,
+              usd: false,
+            })}
+            %
           </div>
         </div>
       </article>
@@ -304,79 +320,70 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 
       <article>
         <div className="delegatee-info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.delModal.selectDel.votingPower")}
-            </div>
-            <div className="value">
-              <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
-              {tmpDelegatee.votingPower.toLocaleString("en")}{" "}
-              {XGNS_TOKEN.symbol}
-              <span className="sub">
-                {` (${formatOtherPrice(
-                  totalDelegatedAmount
-                    ? (tmpDelegatee.votingPower * 100) / totalDelegatedAmount
-                    : 0,
-                  {
-                    usd: false,
-                  },
-                )}%)`}
-              </span>
-            </div>
+          <div className="label">
+            {t("Governance:myDel.delModal.selectDel.votingPower")}
+          </div>
+          <div className="value">
+            <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
+            {tmpDelegatee.votingPower.toLocaleString("en")} {XGNS_TOKEN.symbol}
+            <span className="sub">
+              {` (${formatOtherPrice(
+                totalDelegatedAmount
+                  ? (tmpDelegatee.votingPower * 100) / totalDelegatedAmount
+                  : 0,
+                {
+                  usd: false,
+                },
+              )}%)`}
+            </span>
           </div>
         </div>
         <div className="delegatee-info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.delModal.selectDel.address")}
-            </div>
-            {tmpDelegatee.address !== "" ? (
-              <div
-                className="value clickable"
-                onClick={e => {
-                  e.stopPropagation();
-                  window.open(getAccountUrl(tmpDelegatee.address));
-                }}
-              >
-                {[
-                  tmpDelegatee.address.slice(0, 8),
-                  tmpDelegatee.address.slice(32, 40),
-                ].join("...")}
-                <IconNewTab />
-              </div>
-            ) : (
-              <div className="value"> - </div>
-            )}
+          <div className="label">
+            {t("Governance:myDel.delModal.selectDel.address")}
           </div>
+          {tmpDelegatee.address !== "" ? (
+            <div
+              className="value clickable"
+              onClick={e => {
+                e.stopPropagation();
+                window.open(getAccountUrl(tmpDelegatee.address));
+              }}
+            >
+              {[
+                tmpDelegatee.address.slice(0, 8),
+                tmpDelegatee.address.slice(32, 40),
+              ].join("...")}
+              <IconNewTab />
+            </div>
+          ) : (
+            <div className="value"> - </div>
+          )}
         </div>
         <div className="delegatee-info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.delModal.selectDel.description")}
-            </div>
-            <div className="value">{tmpDelegatee.description || "-"}</div>
+          <div className="label">
+            {t("Governance:myDel.delModal.selectDel.description")}
           </div>
+          <div className="value">{tmpDelegatee.description || "-"}</div>
         </div>
         <div className="delegatee-info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.delModal.selectDel.website")}
-            </div>
-            {tmpDelegatee.website !== "" ? (
-              <div
-                className="value clickable"
-                onClick={e => {
-                  e.stopPropagation();
-                  window.open(tmpDelegatee.website);
-                }}
-              >
-                {tmpDelegatee.website}
-                <IconNewTab />
-              </div>
-            ) : (
-              <div className="value"> - </div>
-            )}
+          <div className="label">
+            {t("Governance:myDel.delModal.selectDel.website")}
           </div>
+          {tmpDelegatee.website !== "" ? (
+            <div
+              className="value clickable"
+              onClick={e => {
+                e.stopPropagation();
+                window.open(tmpDelegatee.website);
+              }}
+            >
+              {tmpDelegatee.website}
+              <IconNewTab />
+            </div>
+          ) : (
+            <div className="value"> - </div>
+          )}
         </div>
       </article>
       <Button

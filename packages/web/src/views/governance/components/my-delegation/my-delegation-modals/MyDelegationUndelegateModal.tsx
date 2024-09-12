@@ -115,60 +115,54 @@ const MyDelegationUndelegateModal: React.FC<
           {t("Governance:myDel.undelModal.step3.title")}
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.undelModal.step3.remainXGns")}
-            </div>
-            <div className="value">
-              <MissingLogo symbol="xGNS" url={GNS_TOKEN.logoURI} width={24} />
-              {(
-                currentDelegatedAmount - Number(gnsAmountInput.amount)
-              ).toLocaleString("en")}
-              {" xGNS"}
-            </div>
+          <div className="label">
+            {t("Governance:myDel.undelModal.step3.remainXGns")}
+          </div>
+          <div className="value">
+            <MissingLogo symbol="xGNS" url={GNS_TOKEN.logoURI} width={24} />
+            {(
+              currentDelegatedAmount - Number(gnsAmountInput.amount)
+            ).toLocaleString("en")}
+            {" xGNS"}
           </div>
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.undelModal.step3.remainVotingWeight")}
-            </div>
-            <div className="value">
-              {`${formatOtherPrice(
-                (currentDelegatedAmount * 100) / totalDelegatedAmount,
-                { usd: false },
-              )}% -> ${formatOtherPrice(
-                currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
-                  ? ((currentDelegatedAmount - Number(gnsAmountInput.amount)) *
-                      100) /
-                      (totalDelegatedAmount - Number(gnsAmountInput.amount))
-                  : 0,
-                { usd: false },
-              )}%`}
-            </div>
+          <div className="label">
+            {t("Governance:myDel.undelModal.step3.remainVotingWeight")}
+          </div>
+          <div className="value">
+            {`${formatOtherPrice(
+              (currentDelegatedAmount * 100) / totalDelegatedAmount,
+              { usd: false },
+            )}% -> ${formatOtherPrice(
+              currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
+                ? ((currentDelegatedAmount - Number(gnsAmountInput.amount)) *
+                    100) /
+                    (totalDelegatedAmount - Number(gnsAmountInput.amount))
+                : 0,
+              { usd: false },
+            )}%`}
           </div>
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.undelModal.step3.aprChange")}
-              <Tooltip
-                placement="top"
-                FloatingContent={
-                  <ToolTipContentWrapper>
-                    {t("Governance:myDel.undelModal.step3.aprTooltip")}
-                  </ToolTipContentWrapper>
-                }
-              >
-                <IconInfo size={16} />
-              </Tooltip>
-            </div>
-            <div className="value">{`${apy.toLocaleString("en")}% -> ${
-              currentDelegatedAmount <= Number(gnsAmountInput.amount)
-                ? 0
-                : apy.toLocaleString("en")
-            }%`}</div>
+          <div className="label">
+            {t("Governance:myDel.undelModal.step3.aprChange")}
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <ToolTipContentWrapper>
+                  {t("Governance:myDel.undelModal.step3.aprTooltip")}
+                </ToolTipContentWrapper>
+              }
+            >
+              <IconInfo size={16} />
+            </Tooltip>
           </div>
+          <div className="value">{`${apy.toLocaleString("en")}% -> ${
+            currentDelegatedAmount <= Number(gnsAmountInput.amount)
+              ? 0
+              : apy.toLocaleString("en")
+          }%`}</div>
         </div>
       </article>
 

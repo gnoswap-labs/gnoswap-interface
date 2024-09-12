@@ -242,7 +242,7 @@ export const formatOtherPrice = (
   const prefix = usd ? "$" : "";
   const negativeSign = valueAsBigNum.isLessThan(0) ? "-" : "";
 
-  if (absValue.isNaN()) return value.toString();
+  if (absValue.isNaN()) return "-";
 
   if (absValue.isEqualTo(0)) {
     if (zeroAsEmpty) return "-";
@@ -266,9 +266,16 @@ export const formatOtherPrice = (
     if (kmbNumber) return kmbNumber;
   }
 
+  const [integer, fraction] = valueAsBigNum.toFormat(decimals, BigNumber.ROUND_DOWN).split(".");
+  let newFraction = "";
+  if (fraction && Number(fraction) > 0) {
+    newFraction = Number(`0.${fraction}`).toString().split(".")[1];
+  }
+
   return (
     negativeSign +
     prefix +
-    valueAsBigNum.toFormat(decimals, BigNumber.ROUND_DOWN)
+    integer +
+    (newFraction ? `.${newFraction.toString()}` : "")
   );
 };

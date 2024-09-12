@@ -45,6 +45,11 @@ export const MyDelegationWrapper = styled.div`
       flex-direction: column;
     }
 
+    .del-undel-switch {
+      ${mixins.flexbox("row", "center", "center")};
+      gap: 4px;
+    }
+
     .value-wrapper-for-hover {
       ${mixins.flexbox("row", "center", "flex-start")};
       &:hover {

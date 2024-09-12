@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -7,6 +8,7 @@ import IconSwap from "@components/common/icons/IconSwap";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { DelegateeInfo, MyDelegationInfo } from "@repositories/governance";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
@@ -47,7 +49,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   delegateGNS,
   undelegateGNS,
   collectUndelegated,
-  collectReward
+  collectReward,
 }) => {
   const { t } = useTranslation();
   const [isOpenDelegateModal, setIsOpenDelegateModal] = useState(false);
@@ -85,14 +87,14 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
             }
           />
           <Button
-            disabled={isLoading || !isWalletConnected}
+            disabled={isLoading}
             style={{
               hierarchy: ButtonHierarchy.Primary,
               fontType: "p1",
             }}
             text={t("Governance:myDel.delegate")}
             onClick={
-              !isLoading && isWalletConnected
+              !isLoading
                 ? () => setIsOpenDelegateModal(true)
                 : undefined
             }
@@ -106,7 +108,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               title={t("Governance:myDel.availBal.title")}
               value={
                 <>
-                  {myDelegationInfo.availableBalance.toLocaleString("en")}
+                  {formatOtherPrice(myDelegationInfo.availableBalance, {
+                    isKMB: false,
+                    usd: false,
+                  })}
                   <TokenChip tokenInfo={GNS_TOKEN} />
                 </>
               }
@@ -165,7 +170,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                                 )}
                               </div>
                               <div className="info-value">
-                                {item.updatedDate}
+                                {dayjs(item.updatedDate).format(
+                                  "YYYY-MM-DD HH:mm:ss",
+                                )}
                               </div>
                             </div>
                             {item.unlockDate && (
@@ -174,7 +181,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                                   {t("Governance:myDel.tooltip.unlockDate")}
                                 </div>
                                 <div className="info-value">
-                                  {item.unlockDate}
+                                  {dayjs(item.unlockDate).format(
+                                    "YYYY-MM-DD HH:mm:ss",
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -191,13 +200,15 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   scroll
                 >
                   <div className="value-wrapper-for-hover">
-                    {`${
-                      hasUndel && showUndel
-                        ? myDelegationInfo.undelegatedAmount.toLocaleString(
-                            "en",
-                          )
-                        : myDelegationInfo.votingWeight.toLocaleString("en")
-                    }`}
+                    {hasUndel && showUndel
+                      ? formatOtherPrice(myDelegationInfo.undelegatedAmount, {
+                          isKMB: false,
+                          usd: false,
+                        })
+                      : formatOtherPrice(myDelegationInfo.votingWeight, {
+                          isKMB: false,
+                          usd: false,
+                        })}
                     <TokenChip
                       tokenInfo={hasUndel && showUndel ? GNS_TOKEN : XGNS_TOKEN}
                     />
@@ -213,12 +224,12 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 hasUndel
                   ? {
                       text: (
-                        <>
+                        <div className="del-undel-switch">
                           {showUndel
                             ? t("Governance:myDel.switch.toVotingWeight")
                             : t("Governance:myDel.switch.toUndel")}
                           <IconSwap />
-                        </>
+                        </div>
                       ),
                       onClick: () => setShowUndel(a => !a),
                     }
@@ -236,21 +247,21 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
             />
             <InfoBox
               title={t("Governance:myDel.reward.title")}
-              value={`$${myDelegationInfo.claimableRewardsUsd.toLocaleString(
-                "en",
-              )}`}
+              value={formatOtherPrice(myDelegationInfo.claimableRewardsUsd, {
+                isKMB: false,
+              })}
               tooltip={t("Governance:myDel.reward.tooltip")}
-              valueButton={{
+              valueButton={myDelegationInfo.claimableRewardsUsd ? {
                 text: t("Governance:myDel.reward.btn"),
                 onClick: () => {
                   collectReward(
-                    `$${myDelegationInfo.claimableRewardsUsd.toLocaleString(
-                      "en",
-                    )}`,
+                    formatOtherPrice(myDelegationInfo.claimableRewardsUsd, {
+                      isKMB: false,
+                    }),
                   );
                 },
                 disabled: !myDelegationInfo.claimableRewardsUsd,
-              }}
+              }: undefined}
               isLoading={isLoading}
             />
           </>

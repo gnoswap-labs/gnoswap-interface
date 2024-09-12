@@ -61,10 +61,9 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         />
         <InfoBox
           title={t("Governance:summary.commPool.title")}
-          value={`$${formatOtherPrice(governanceSummary.communityPool, {
+          value={formatOtherPrice(governanceSummary.communityPool, {
             isKMB: false,
-            usd: false,
-          })}`}
+          })}
           tooltip={t("Governance:summary.commPool.tooltip")}
           isLoading={isLoading}
         />
