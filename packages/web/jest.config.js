@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const nextJest = require("next/jest");
 const { pathsToModuleNameMapper } = require("ts-jest");
 const { compilerOptions } = require("./tsconfig");
@@ -13,6 +14,8 @@ const customJestConfig = {
   modulePaths: [compilerOptions.baseUrl],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: "<rootDir>/",
+    "react-markdown": "<rootDir>/__mocks__/react-markdown.tsx",
+    "remark-gfm": "<rootDir>/__mocks__/remark-gfm.ts",
     "^@(.*)$": "<rootDir>/src/$1",
   }),
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
