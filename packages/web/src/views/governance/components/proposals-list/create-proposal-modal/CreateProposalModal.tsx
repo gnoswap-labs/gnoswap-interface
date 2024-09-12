@@ -47,11 +47,7 @@ interface FormValues {
   }[];
 }
 
-const ProposalOption = [
-  "TEXT",
-  "COMMUNITY_POOL_SPEND",
-  "PARAMETER_CHANGE",
-];
+const ProposalOption = ["TEXT", "COMMUNITY_POOL_SPEND", "PARAMETER_CHANGE"];
 
 const TypeTransMap: { [key: string]: string } = {
   TEXT: "Governance:proposal.type.text",
@@ -85,12 +81,14 @@ interface CreateProposalModalProps {
     toAddress: string,
     amount: string,
   ) => void;
-  proposeParamChnageProposal: (
+  proposeParamChangeProposal: (
     title: string,
     description: string,
-    pkgPath: string,
-    functionName: string,
-    param: string,
+    variables: {
+      pkgPath: string;
+      func: string;
+      param: string;
+    }[],
   ) => void;
 }
 
@@ -101,7 +99,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   proposalCreationThreshold,
   proposeTextProposal,
   proposeCommunityPoolSpendProposal,
-  proposeParamChnageProposal,
+  proposeParamChangeProposal,
 }) => {
   const Modal = useMemo(
     () => withLocalModal(CreateProposalModalWrapper, setIsOpenCreateModal),
@@ -169,14 +167,13 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     return !isDirty || !isValid || myVotingWeight < proposalCreationThreshold;
   }, [isDirty, isValid, proposalCreationThreshold, myVotingWeight]);
 
-  const sendTx: SubmitHandler<FormValues> = (data) => {
+  const sendTx: SubmitHandler<FormValues> = data => {
     console.log(data);
     if (type === ProposalOption[0]) {
       proposeTextProposal(data.title, data.description);
       setIsOpenCreateModal(false);
       return;
-    }
-    else if (type === ProposalOption[1]) {
+    } else if (type === ProposalOption[1]) {
       proposeCommunityPoolSpendProposal(
         data.title,
         data.description,
@@ -187,13 +184,16 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       setIsOpenCreateModal(false);
       return;
     }
-    proposeParamChnageProposal(
-      data.title,
-      data.description,
-      data.variable[0].pkgPath,
-      data.variable[0].func,
-      data.variable.map(item => item.param).join("*GOV*"),
+
+    const variables = data.variable.filter(
+      variable =>
+        variable.pkgPath.trim().length > 0 && variable.func.trim().length > 0,
     );
+    if (variables.length === 0) {
+      return;
+    }
+
+    proposeParamChangeProposal(data.title, data.description, variables);
     setIsOpenCreateModal(false);
   };
 
@@ -280,9 +280,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                   <div>
                     <FormInput
                       placeholder={t(
-                        index === 0
-                          ? "Governance:createModal.setVariable.placeholder.pkgPath"
-                          : "Governance:createModal.setVariable.placeholder.same",
+                        "Governance:createModal.setVariable.placeholder.pkgPath",
                       )}
                       errorText={
                         errors?.variable
@@ -292,17 +290,13 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                           : undefined
                       }
                       {...register(`variable.${index}.pkgPath`)}
-                      disabled={index !== 0}
                     />
 
                     <FormInput
                       placeholder={t(
-                        index === 0
-                          ? "Governance:createModal.setVariable.placeholder.func"
-                          : "Governance:createModal.setVariable.placeholder.same",
+                        "Governance:createModal.setVariable.placeholder.func",
                       )}
                       {...register(`variable.${index}.func`)}
-                      disabled={index !== 0}
                     />
                     <FormInput
                       placeholder={t(

@@ -1,4 +1,3 @@
-
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 import { GovernanceRepository } from "./governance-repository";
@@ -19,11 +18,11 @@ import {
   SendDelegateReqeust,
   SendExecuteReqeust,
   SendProposeCommunityPoolSpendReqeust,
-  SendProposeParameterChangeReqeust,
+  SendProposeParameterChangeRequest,
   SendProposeTextReqeust,
   SendRedelegateReqeust,
   SendUndelegateReqeust,
-  SendVoteReqeust
+  SendVoteReqeust,
 } from "./request";
 import {
   GetDelegateesResponse,
@@ -111,7 +110,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
   };
 
   public sendProposeParameterChange = async (
-    request: SendProposeParameterChangeReqeust,
+    request: SendProposeParameterChangeRequest,
   ): Promise<WalletResponse<{ hash: string }>> => {
     throw new Error(`Mock sendProposeParameterChange : ${request}`);
   };

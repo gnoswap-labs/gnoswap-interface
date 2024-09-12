@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useGetGovernanceSummary, useGetMyDelegation, useGetProposals } from "@query/governance";
+import {
+  useGetGovernanceSummary,
+  useGetMyDelegation,
+  useGetProposals,
+} from "@query/governance";
 
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "../../hooks/use-governance-tx";
@@ -19,7 +23,7 @@ const ProposalListContainer: React.FC = () => {
   const {
     proposeCommunityPoolSpendProposal,
     proposeTextProposal,
-    proposeParamChnageProposal,
+    proposeParamChangeProposal,
     voteProposal,
     executeProposal,
     cancelProposal,
@@ -29,12 +33,10 @@ const ProposalListContainer: React.FC = () => {
     data: governanceSummaryInfo,
     isFetching: isFetchingGovernanceSummaryInfo,
   } = useGetGovernanceSummary();
-  const {
-    data: myDelegationInfo,
-    isFetching: isFetchingMyDelegation,
-  } = useGetMyDelegation({
-    address: account?.address || "",
-  });
+  const { data: myDelegationInfo, isFetching: isFetchingMyDelegation } =
+    useGetMyDelegation({
+      address: account?.address || "",
+    });
   const {
     data: proposalsInfo,
     isFetching: isFetchingProposalsInfo,
@@ -86,8 +88,8 @@ const ProposalListContainer: React.FC = () => {
           await refetchProposals();
         })
       }
-      proposeParamChnageProposal={(...params) =>
-        proposeParamChnageProposal(...params, async () => {
+      proposeParamChangeProposal={(...params) =>
+        proposeParamChangeProposal(...params, async () => {
           await refetchProposals();
         })
       }

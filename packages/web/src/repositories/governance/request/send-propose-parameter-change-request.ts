@@ -1,7 +1,9 @@
-export interface SendProposeParameterChangeReqeust {
+export interface SendProposeParameterChangeRequest {
   title: string;
   description: string;
-  pkgPath: string;
-  functionName: string;
-  param: string;
+  variables: {
+    pkgPath: string;
+    func: string;
+    param: string;
+  }[];
 }

@@ -1,4 +1,3 @@
-
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
@@ -13,6 +12,7 @@ import {
   PACKAGE_GOVERNANCE_STAKER_ADDRESS,
   PACKAGE_GOVERNANCE_STAKER_PATH,
 } from "@constants/environment.constant";
+import { makeProposalVariablesQuery } from "@utils/governance-utils";
 
 import { GovernanceRepository } from "./governance-repository";
 import { GovernanceRepositoryMock } from "./governance-repository-mock";
@@ -33,7 +33,7 @@ import {
   SendDelegateReqeust,
   SendExecuteReqeust,
   SendProposeCommunityPoolSpendReqeust,
-  SendProposeParameterChangeReqeust,
+  SendProposeParameterChangeRequest,
   SendProposeTextReqeust,
   SendRedelegateReqeust,
   SendUndelegateReqeust,
@@ -113,11 +113,15 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
       request.isActive !== undefined ? `isActive=${request.isActive}` : "",
       request.address !== undefined ? `address=${request.address}` : "",
       request.page !== undefined ? `page=${request.page}` : "",
-      request.itemsPerPage !== undefined ? `itemsPerPage=${request.itemsPerPage}` : "",
+      request.itemsPerPage !== undefined
+        ? `itemsPerPage=${request.itemsPerPage}`
+        : "",
     ];
-    
-    const response = await this.networkClient.get<{data: GetProposalsResponse}>({
-      url: `governance/proposals?${queries.filter(item => !! item).join("&")}`
+
+    const response = await this.networkClient.get<{
+      data: GetProposalsResponse;
+    }>({
+      url: `governance/proposals?${queries.filter(item => !!item).join("&")}`,
     });
 
     if (!response?.data?.data) {
@@ -226,7 +230,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   };
 
   public sendProposeParameterChange = async (
-    request: SendProposeParameterChangeReqeust,
+    request: SendProposeParameterChangeRequest,
   ): Promise<WalletResponse<{ hash: string }>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
@@ -237,7 +241,8 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const { address } = account.data;
-    const { title, description, pkgPath, functionName, param } = request;
+    const { title, description, variables } = request;
+    const variableQuery = makeProposalVariablesQuery(variables);
 
     const messages = [];
     messages.push(
@@ -245,7 +250,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
         packagePath: PACKAGE_GOVERNANCE_PATH,
         send: "",
         func: "ProposeParameterChange",
-        args: [title, description, pkgPath, functionName, param],
+        args: [title, description, variableQuery],
         caller: address,
       }),
     );

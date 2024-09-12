@@ -1,7 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
 
 import withIntersection from "@components/hoc/with-intersection";
-import { nullProposalItemInfo, ProposalItemInfo } from "@repositories/governance";
+import {
+  nullProposalItemInfo,
+  ProposalItemInfo,
+} from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
 import CreateProposalModal from "./create-proposal-modal/CreateProposalModal";
@@ -10,8 +13,8 @@ import ProposalCardSkeleton from "./proposal-card/ProposalCardSekeleton";
 import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
-import { ProposalListWrapper } from "./ProposalList.styles";
 import { useTranslation } from "react-i18next";
+import { ProposalListWrapper } from "./ProposalList.styles";
 
 interface ProposalListProps {
   breakpoint: DEVICE_TYPE;
@@ -39,12 +42,14 @@ interface ProposalListProps {
     toAddress: string,
     amount: string,
   ) => void;
-  proposeParamChnageProposal: (
+  proposeParamChangeProposal: (
     title: string,
     description: string,
-    pkgPath: string,
-    functionName: string,
-    param: string,
+    variables: {
+      pkgPath: string;
+      func: string;
+      param: string;
+    }[],
   ) => void;
   voteProposal: (proposalId: number, voteYes: boolean) => void;
   executeProposal: (id: number) => void;
@@ -71,7 +76,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   setIsOpenCreateModal,
   proposeTextProposal,
   proposeCommunityPoolSpendProposal,
-  proposeParamChnageProposal,
+  proposeParamChangeProposal,
   voteProposal,
   executeProposal,
   cancelProposal,
@@ -150,7 +155,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
           proposalCreationThreshold={proposalCreationThreshold}
           proposeTextProposal={proposeTextProposal}
           proposeCommunityPoolSpendProposal={proposeCommunityPoolSpendProposal}
-          proposeParamChnageProposal={proposeParamChnageProposal}
+          proposeParamChangeProposal={proposeParamChangeProposal}
         />
       )}
     </ProposalListWrapper>
