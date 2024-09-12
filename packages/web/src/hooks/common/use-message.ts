@@ -54,8 +54,8 @@ export const useMessage = () => {
             success: t("Modal:confirm.remove.status.success", data),
             error: t("Modal:confirm.remove.status.error", data),
           };
-          case DexEvent.CLAIM_FEE:
-          case DexEvent.COLLECT_GOV_REWARD: // governance reward
+        case DexEvent.CLAIM_FEE:
+        case DexEvent.COLLECT_GOV_REWARD: // governance reward
           return {
             pending: t("Modal:confirm.claim.status.pending", data),
             success: t("Modal:confirm.claim.status.success", data),
@@ -125,6 +125,12 @@ export const useMessage = () => {
             success: t("Modal:confirm.executeProposal.status.success", data),
             error: t("Modal:confirm.executeProposal.status.error", data),
           };
+        case DexEvent.CANCEL_PROPOSAL:
+          return {
+            pending: t("Modal:confirm.cancelProposal.status.pending", data),
+            success: t("Modal:confirm.cancelProposal.status.success", data),
+            error: t("Modal:confirm.cancelProposal.status.error", data),
+          };
         default:
           return {
             pending: "Undefined task",
@@ -186,6 +192,8 @@ export const useMessage = () => {
           return t("Modal:confirm.vote.title");
         case DexEvent.EXECUTE_PROPOSAL:
           return t("Modal:confirm.executeProposal.title");
+        case DexEvent.CANCEL_PROPOSAL:
+          return t("Modal:confirm.cancelProposal.title");
         default:
           return "Undefined task";
       }

@@ -1,7 +1,8 @@
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { XGNS_TOKEN } from "@common/values/token-constant";
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconClose from "@components/common/icons/IconCancel";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { ProposalItemInfo } from "@repositories/governance";
@@ -9,11 +10,11 @@ import { DEVICE_TYPE } from "@styles/media";
 
 import StatusBadge from "../../status-badge/StatusBadge";
 import TokenChip from "../../token-chip/TokenChip";
+import TypeBadge from "../../type-badge/TypeBadge";
 import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 import VoteButtons from "./VoteButtons";
 import VoteCtaButton from "./VoteCtaButton";
 
-import TypeBadge from "../../type-badge/TypeBadge";
 import {
   ModalHeaderWrapper,
   ModalQuorum,
@@ -21,12 +22,11 @@ import {
   ViewProposalModalWrapper,
   VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 
 export interface ViewProposalModalProps {
   breakpoint: DEVICE_TYPE;
   proposalDetail: ProposalItemInfo;
-  setSelectedProposalId: Dispatch<SetStateAction<number>>;
+  setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
   isSwitchNetwork: boolean;
   connectWallet: () => void;
@@ -37,7 +37,7 @@ export interface ViewProposalModalProps {
 const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   breakpoint,
   proposalDetail,
-  setSelectedProposalId,
+  setIsModalOpen,
   isSwitchNetwork,
   isConnected,
   connectWallet,
@@ -47,9 +47,9 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   const Modal = useMemo(
     () =>
       withLocalModal(ViewProposalModalWrapper, (isOpen: boolean) => {
-        if (!isOpen) setSelectedProposalId(0);
+        if (!isOpen) setIsModalOpen(false);
       }),
-    [setSelectedProposalId],
+    [setIsModalOpen],
   );
   const { t } = useTranslation();
   const [selectedVote, setSelectedVote] = useState(
@@ -85,10 +85,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 </>
               )}
             </div>
-            <div
-              className="close-wrap"
-              onClick={() => setSelectedProposalId(0)}
-            >
+            <div className="close-wrap" onClick={() => setIsModalOpen(false)}>
               <IconClose className="close-icon" />
             </div>
           </div>
@@ -201,9 +198,10 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               voteWeigth={proposalDetail.myVote?.weight}
               status={proposalDetail.status}
               selectedVote={selectedVote}
-              handleVote={() =>
-                voteProposal(proposalDetail.id, selectedVote === "YES")
-              }
+              handleVote={() => {
+                voteProposal(proposalDetail.id, selectedVote === "YES");
+                setIsModalOpen(false);
+              }}
               connectWallet={connectWallet}
               switchNetwork={switchNetwork}
             />

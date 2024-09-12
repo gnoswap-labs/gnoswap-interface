@@ -132,7 +132,9 @@ const ProposalList: React.FC<ProposalListProps> = ({
             proposalList.find(item => item.id === selectedProposalId) ||
             nullProposalItemInfo
           }
-          setSelectedProposalId={setSelectedProposalId}
+          setIsModalOpen={(isOpen: boolean) =>
+            setSelectedProposalId(isOpen ? selectedProposalId : 0)
+          }
           isConnected={isConnected}
           isSwitchNetwork={isSwitchNetwork}
           connectWallet={connectWallet}

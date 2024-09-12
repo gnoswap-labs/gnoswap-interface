@@ -385,7 +385,7 @@ export const useGovernanceTx = () => {
         governanceRepository.sendCancel({
           proposalId,
         }),
-      DexEvent.EXECUTE_PROPOSAL,
+      DexEvent.CANCEL_PROPOSAL,
       messageData,
       () => messageData,
       emitCallback,
