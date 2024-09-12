@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
 import { nullProposalItemInfo, ProposalItemInfo } from "@repositories/governance";
@@ -11,9 +12,8 @@ import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
 import { ProposalListWrapper } from "./ProposalList.styles";
-import { useTranslation } from "react-i18next";
 
-interface ProposalListProps {
+export interface ProposalListProps {
   breakpoint: DEVICE_TYPE;
   isLoading?: boolean;
   isConnected: boolean;

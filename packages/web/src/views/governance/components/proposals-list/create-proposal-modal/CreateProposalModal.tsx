@@ -72,7 +72,7 @@ const BoxContent: React.FC<BoxContentProps> = ({
   );
 };
 
-interface CreateProposalModalProps {
+export interface CreateProposalModalProps {
   breakpoint: DEVICE_TYPE;
   setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
   myVotingWeight: number;
