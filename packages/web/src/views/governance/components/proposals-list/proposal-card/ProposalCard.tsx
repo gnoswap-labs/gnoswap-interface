@@ -88,6 +88,7 @@ const ProposalCard: React.FC<Props> = ({
             <IconNewTab />
           </div>
           {proposalDetail.status === "PASSED" &&
+            address !== "" &&
             ["PARAMETER_CHANGE", "COMMUNITY_POOL_SPEND"].includes(
               proposalDetail.type,
             ) && (
@@ -125,8 +126,10 @@ const ProposalCard: React.FC<Props> = ({
       </div>
       <VotingProgressBar
         max={proposalDetail.votes.max}
-        yes={proposalDetail.votes.yes}
-        no={proposalDetail.votes.no}
+        yes={
+          proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.yes
+        }
+        no={proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.no}
       />
     </ProposalDetailWrapper>
   );

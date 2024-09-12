@@ -64,7 +64,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time }) => {
   };
 
   const getTimeInfo = () => {
-    const timeString = dayjs(time).format("YYYY-MM-DD, hh:mm:ss");
+    const timeString = dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
     switch (status) {
       case "UPCOMING":
         return `${t("Governance:proposal.time.start", {
@@ -81,7 +81,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time }) => {
       case "CANCELLED":
       default:
         return `${t("Governance:proposal.time.ended", {
-          rel_time: dayjs(time).fromNow(),
+          rel_time: "",
         })} (${timeString})`;
     }
   };
