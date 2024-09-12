@@ -119,12 +119,12 @@ export const ProposalContentWrapper = styled.div`
   }
 
   .content {
+    width: 100%;
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body12}
     ${media.mobile} {
       ${fonts.p2}
     }
-    white-space: pre-wrap !important;
 
     .variable {
       margin-bottom: 12px;
@@ -132,6 +132,33 @@ export const ProposalContentWrapper = styled.div`
         ${fonts.body11}
         color: ${({ theme }) => theme.color.text03};
         margin-bottom: 12px;
+      }
+    }
+
+    .markdown-style {
+      width: 100%;
+      h1 {
+        ${fonts.h4}
+      }
+      h2 {
+        ${fonts.h5}
+      }
+      h3 {
+        ${fonts.h6}
+      }
+      hr {
+        border-color: ${({ theme }) => theme.color.border02};
+      }
+      ul {
+        padding-left: 16px;
+        padding-bottom: 4px;
+        li {
+          list-style: circle;
+        }
+      }
+      ol {
+        list-style: decimal;
+        padding-left: 8px;
       }
     }
   }

@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { XGNS_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -147,8 +149,9 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                   .join(", ")}"`}
               </div>
             )}
-            {`${proposalDetail.content.description.replaceAll("\\n", "\n")}` ||
-              ""}
+            <ReactMarkdown remarkPlugins={[remarkGfm]} className="markdown-style">
+              {`${proposalDetail.content.description.replaceAll("\\n", "\n")}`}
+            </ReactMarkdown>
           </div>
         </ProposalContentWrapper>
         <ModalQuorum>
