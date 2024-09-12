@@ -64,8 +64,8 @@ const MyDelegationContainer: React.FC = () => {
           await refetchDelegatees();
         })
       }
-      collectUndelegated={(...params) =>
-        collectUndelegated(...params, async () => {
+      collectUndelegated={() =>
+        collectUndelegated(async () => {
           await refetchSummary();
           await refetchMyDelegation();
         })
