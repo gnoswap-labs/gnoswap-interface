@@ -11,6 +11,7 @@ import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
 
 import { GovernanceSummaryWrapper } from "./GovernanceSummary.styles";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 interface GovernanceSummaryProps {
   governanceSummary: GovernanceSummaryInfo;
@@ -30,7 +31,10 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
           title={t("Governance:summary.totalDel.title")}
           value={
             <>
-              {governanceSummary.totalDelegated.toLocaleString("en")}
+              {formatOtherPrice(governanceSummary.totalDelegated, {
+                isKMB: false,
+                usd: false,
+              })}
               <TokenChip tokenInfo={GNS_TOKEN} />
             </>
           }
@@ -39,26 +43,35 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         />
         <InfoBox
           title={t("Governance:summary.delRatio.title")}
-          value={`${governanceSummary.delegatedRatio.toString()}%`}
+          value={`${formatOtherPrice(governanceSummary.delegatedRatio, {
+            isKMB: false,
+            usd: false,
+          })}%`}
           tooltip={t("Governance:summary.delRatio.tooltip")}
           isLoading={isLoading}
         />
         <InfoBox
           title={t("Governance:summary.apy.title")}
-          value={`${governanceSummary.apy.toString()}%`}
+          value={`${formatOtherPrice(governanceSummary.apy, {
+            isKMB: false,
+            usd: false,
+          })}%`}
           tooltip={t("Governance:summary.apy.tooltip")}
           isLoading={isLoading}
         />
         <InfoBox
           title={t("Governance:summary.commPool.title")}
-          value={`$${governanceSummary.communityPool.toLocaleString("en")}`}
+          value={`$${formatOtherPrice(governanceSummary.communityPool, {
+            isKMB: false,
+            usd: false,
+          })}`}
           tooltip={t("Governance:summary.commPool.tooltip")}
           isLoading={isLoading}
         />
       </div>
       <div className="link-button">
         <div>{t("Governance:summary.guide.guide")}</div>
-        <Link href={EXT_URL.DOCS.GOVERNANCE} target="_blank">
+        <Link href={EXT_URL.DOCS.XGNS} target="_blank">
           {t("Governance:summary.guide.link")}
           <IconStrokeArrowRight className="link-icon" />
         </Link>
