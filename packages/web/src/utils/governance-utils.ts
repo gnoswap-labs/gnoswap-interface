@@ -7,6 +7,10 @@ interface ProposalVariables {
 const queryMethodSeparator = "*GOV*";
 const queryArgumentSeparator = "*EXE*";
 
+export const makeDisplayPackagePath = (packagePath: string): string => {
+  return packagePath.replace("gno.land/r/gnoswap", "");
+};
+
 export const makeProposalVariablesQuery = (
   variables: ProposalVariables[],
 ): string => {

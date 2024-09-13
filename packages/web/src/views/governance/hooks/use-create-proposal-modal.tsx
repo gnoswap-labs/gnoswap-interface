@@ -8,10 +8,14 @@ export interface CreateProposalModalOpenOption {
   breakpoint: DEVICE_TYPE;
   myVotingWeight: number;
   proposalCreationThreshold: number;
+  executablePackages: {
+    pkgName: string;
+    pkgPath: string;
+  }[];
   executableFunctions: {
-    packagePath: string;
-    functionName: string;
-    parameterNum: number;
+    pkgPath: string;
+    funcName: string;
+    paramNum: number;
   }[];
   proposeTextProposal: (title: string, description: string) => void;
   proposeCommunityPoolSpendProposal: (

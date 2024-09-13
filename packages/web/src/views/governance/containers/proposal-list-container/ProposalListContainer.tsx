@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
@@ -9,7 +9,6 @@ import {
   useGetProposals,
 } from "@query/governance";
 
-import { useGetExecutableFunctions } from "@query/governance/use-get-executable-functions";
 import { useCreateProposalModal } from "@views/governance/hooks/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "../../hooks/use-governance-tx";
@@ -36,14 +35,11 @@ const ProposalListContainer: React.FC = () => {
     isFetching: isFetchingGovernanceSummaryInfo,
   } = useGetGovernanceSummary();
 
-  const {
-    data: executableFunctions = [],
-    isFetching: isFetchingExecutableFunctions,
-  } = useGetExecutableFunctions();
   const { data: myDelegationInfo, isFetching: isFetchingMyDelegation } =
     useGetMyDelegation({
       address: account?.address || "",
     });
+
   const {
     data: proposalsInfo,
     isFetching: isFetchingProposalsInfo,
@@ -56,6 +52,22 @@ const ProposalListContainer: React.FC = () => {
     itemsPerPage: 20,
   });
 
+  const executablePackages = useMemo(() => {
+    if (!governanceSummaryInfo) {
+      return [];
+    }
+
+    return governanceSummaryInfo.changeParamOptions.packages;
+  }, [governanceSummaryInfo?.changeParamOptions.packages]);
+
+  const executableFunctions = useMemo(() => {
+    if (!governanceSummaryInfo) {
+      return [];
+    }
+
+    return governanceSummaryInfo.changeParamOptions.functions;
+  }, [governanceSummaryInfo?.changeParamOptions.functions]);
+
   const fetchNextItems = () => {
     if (hasNextPage) fetchNextPage();
   };
@@ -66,7 +78,6 @@ const ProposalListContainer: React.FC = () => {
       isLoading={
         isFetchingProposalsInfo ||
         isFetchingGovernanceSummaryInfo ||
-        isFetchingExecutableFunctions ||
         isFetchingMyDelegation
       }
       isConnected={connected}
@@ -85,6 +96,7 @@ const ProposalListContainer: React.FC = () => {
       selectedProposalId={selectedProposalId}
       setSelectedProposalId={setSelectedProposalId}
       openCreateProposalModal={openCreateProposalModal}
+      executablePackages={executablePackages}
       executableFunctions={executableFunctions}
       proposeTextProposal={(...params) =>
         proposeTextProposal(...params, async () => {

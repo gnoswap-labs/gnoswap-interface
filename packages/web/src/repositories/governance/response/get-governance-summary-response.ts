@@ -4,4 +4,15 @@ export interface GetGovernanceSummaryResponse {
   apy: number;
   communityPool: number;
   creationThreshold: number;
+  changeParamOptions: {
+    packages: {
+      pkgName: string;
+      pkgPath: string;
+    }[];
+    functions: {
+      pkgPath: string;
+      funcName: string;
+      paramNum: number;
+    }[];
+  };
 }

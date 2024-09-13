@@ -33,10 +33,14 @@ export interface ProposalListProps {
   selectedProposalId: number;
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
   openCreateProposalModal: (options: CreateProposalModalOpenOption) => void;
+  executablePackages: {
+    pkgName: string;
+    pkgPath: string;
+  }[];
   executableFunctions: {
-    packagePath: string;
-    functionName: string;
-    parameterNum: number;
+    pkgPath: string;
+    funcName: string;
+    paramNum: number;
   }[];
   proposeTextProposal: (title: string, description: string) => void;
   proposeCommunityPoolSpendProposal: (
@@ -76,6 +80,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   fetchMore,
   selectedProposalId,
   setSelectedProposalId,
+  executablePackages,
   executableFunctions,
   openCreateProposalModal,
   proposeTextProposal,
@@ -93,6 +98,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
       breakpoint: breakpoint,
       myVotingWeight: myVotingWeight,
       proposalCreationThreshold: proposalCreationThreshold,
+      executablePackages: executablePackages,
       executableFunctions: executableFunctions,
       proposeTextProposal: proposeTextProposal,
       proposeCommunityPoolSpendProposal: proposeCommunityPoolSpendProposal,
