@@ -111,14 +111,14 @@ export const GovernanceDetailInfoWrapper = styled.div`
 
     .value {
       ${mixins.flexbox("row", "center", "flex-start")};
-      ${fonts.body2};
+      ${fonts.body1};
       color: ${({ theme }) => theme.color.text02};
 
       @media (max-width: 1180px) {
-        ${fonts.body6};
+        ${fonts.body5};
       }
       ${media.tablet} {
-        ${fonts.body4};
+        ${fonts.body3};
       }
       @media (max-width: 968px) {
         width: 100%;
@@ -126,7 +126,7 @@ export const GovernanceDetailInfoWrapper = styled.div`
       }
       ${media.mobile} {
         ${mixins.flexbox("row", "flex-end", "flex-start")};
-        ${fonts.body6};
+        ${fonts.body5};
       }
     }
 
