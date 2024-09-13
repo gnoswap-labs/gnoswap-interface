@@ -23,10 +23,11 @@ export const VariableSelectBoxWrapper = styled.div`
 
     > .selected-item-wrapper {
       color: ${({ theme }) => theme.color.text04};
-      stroke: ${({ theme }) => theme.color.text04};
 
       > .icon-arrow {
-        stroke: ${({ theme }) => theme.color.text04};
+        path {
+          fill: ${({ theme }) => theme.color.text04};
+        }
       }
     }
   }
@@ -57,6 +58,9 @@ export const VariableSelectBoxWrapper = styled.div`
     > .icon-arrow {
       display: flex;
       flex-shrink: 0;
+      path {
+        fill: ${({ theme }) => theme.color.icon05};
+      }
     }
   }
 `;

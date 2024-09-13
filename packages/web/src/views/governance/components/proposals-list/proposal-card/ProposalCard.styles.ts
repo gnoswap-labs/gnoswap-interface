@@ -13,7 +13,7 @@ export const ProposalDetailWrapper = styled.div`
   gap: 8px;
   width: 100%;
   &:hover {
-    background-color: ${({ theme }) => theme.color.hover01};
+    background-color: ${({ theme }) => theme.themeKey === "dark" ? theme.color.hover01 : theme.color.hover02};
     border: 1px solid ${({ theme }) => theme.color.border02};
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   }
