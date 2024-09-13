@@ -14,7 +14,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
 
 export const useGovernanceTx = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { account } = useWallet();
   const { governanceRepository } = useGnoswapContext();
   const { getMessage } = useMessage();
@@ -70,7 +70,7 @@ export const useGovernanceTx = () => {
             txHash: response?.data?.hash,
             action: eventType,
             formatData,
-            visibleEmitResult : true,
+            visibleEmitResult: true,
             onEmit: async () => {
               if (emitCallback) await emitCallback();
             },
@@ -209,7 +209,10 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const collectReward = (usdValue: string, emitCallback: () => Promise<void>) => {
+  const collectReward = (
+    usdValue: string,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -286,12 +289,14 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const proposeParamChnageProposal = (
+  const proposeParamChangeProposal = (
     title: string,
     description: string,
-    pkgPath: string,
-    functionName: string,
-    param: string,
+    variables: {
+      pkgPath: string;
+      func: string;
+      param: string;
+    }[],
     emitCallback: () => Promise<void>,
   ) => {
     if (!account) {
@@ -307,9 +312,7 @@ export const useGovernanceTx = () => {
         governanceRepository.sendProposeParameterChange({
           title,
           description,
-          functionName,
-          param,
-          pkgPath,
+          variables,
         }),
       DexEvent.PROPOSE_PARAM_CHANGE,
       messageData,
@@ -400,7 +403,7 @@ export const useGovernanceTx = () => {
     collectReward,
     proposeTextProposal,
     proposeCommunityPoolSpendProposal,
-    proposeParamChnageProposal,
+    proposeParamChangeProposal,
     voteProposal,
     executeProposal,
     cancelProposal,

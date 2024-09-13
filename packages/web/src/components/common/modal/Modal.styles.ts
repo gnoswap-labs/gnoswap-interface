@@ -1,9 +1,9 @@
+import { fonts, type FontsKey } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
-import { Z_INDEX } from "@styles/zIndex";
 import { ThemeColorKeyTypes } from "@styles/ThemeTypes";
+import { Z_INDEX } from "@styles/zIndex";
 import { CSSProperties } from "react";
-import { fonts, type FontsKey } from "@constants/font.constant";
 
 export interface ModalStyleProps {
   fontType?: FontsKey;
@@ -26,14 +26,13 @@ export const ModalWrapper = styled.div<ModalStyleProps>`
   }};
   ${mixins.positionCenter()};
   position: fixed;
-  z-index: ${({zIndex}) => zIndex || Z_INDEX.modal};
+  z-index: ${({ zIndex }) => zIndex || Z_INDEX.modal};
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   max-height: 100vh;
-  overflow: scroll;
-  display: ${({hidden}) => hidden === true ? "none" : "flex"} ;
+  display: ${({ hidden }) => (hidden === true ? "none" : "flex")};
 `;
 
 export const ModalHeader = styled.div<ModalStyleProps>`

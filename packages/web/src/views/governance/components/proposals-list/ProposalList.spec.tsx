@@ -1,6 +1,6 @@
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 import ProposalList, { ProposalListProps } from "./ProposalList";
 
@@ -22,8 +22,11 @@ describe("ProposalList Component", () => {
       executeProposal: (id: number) => {
         console.log(id);
       },
+      openCreateProposalModal: () => {
+        console.log("open");
+      },
+      executableFunctions: [],
       fetchMore: () => null,
-      isOpenCreateModal: true,
       isSwitchNetwork: false,
       proposeCommunityPoolSpendProposal: (
         title: string,
@@ -34,25 +37,26 @@ describe("ProposalList Component", () => {
       ) => {
         console.log(title, description, tokenPath, toAddress, amount);
       },
-      proposeParamChnageProposal: (
+      proposeParamChangeProposal: (
         title: string,
         description: string,
-        pkgPath: string,
-        functionName: string,
-        param: string,
+        variables: {
+          pkgPath: string;
+          func: string;
+          param: string;
+        }[],
       ) => {
-        console.log(title, description, pkgPath, functionName, param);
+        console.log(title, description, variables);
       },
       proposeTextProposal: (title: string, description: string) => {
         console.log(title, description);
       },
       selectedProposalId: 0,
-      setIsOpenCreateModal: () => null,
       setSelectedProposalId: () => null,
-      switchNetwork:() => null,
-      voteProposal:(proposalId: number, voteYes: boolean) => {
+      switchNetwork: () => null,
+      voteProposal: (proposalId: number, voteYes: boolean) => {
         console.log(proposalId, voteYes);
-      }
+      },
     };
 
     render(

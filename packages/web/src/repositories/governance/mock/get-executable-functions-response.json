@@ -1,0 +1,87 @@
+[
+  {
+    "packagePath": "gno.land/r/gnoswap/community_pool",
+    "functionName": "TransferToken",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/emission",
+    "functionName": "ChangeDistributionPct",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/gns",
+    "functionName": "SetAvgBlockTimeInMs",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/governance",
+    "functionName": "Reconfigure",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/pool",
+    "functionName": "SetFeeProtocol",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/pool",
+    "functionName": "SetPoolCreationFee",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/pool",
+    "functionName": "SetWithdrawalFee",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/protocol_fee",
+    "functionName": "SetDevOpsPct",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/router",
+    "functionName": "SetSwapFee",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/staker",
+    "functionName": "SetDepositGnsAmount",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/staker",
+    "functionName": "SetPoolTier",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/staker",
+    "functionName": "ChangePoolTier",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/staker",
+    "functionName": "RemovePoolTier",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/staker",
+    "functionName": "SetUnstakingFee",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/staker",
+    "functionName": "SetWarmUp",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/staker",
+    "functionName": "GnsSetAvgBlockTimeInMs",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/common",
+    "functionName": "SetHalt",
+    "parameterNum": 1
+  }
+]

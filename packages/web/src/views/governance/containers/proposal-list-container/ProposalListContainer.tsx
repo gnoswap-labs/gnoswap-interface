@@ -3,8 +3,14 @@ import React, { useState } from "react";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useGetGovernanceSummary, useGetMyDelegation, useGetProposals } from "@query/governance";
+import {
+  useGetGovernanceSummary,
+  useGetMyDelegation,
+  useGetProposals,
+} from "@query/governance";
 
+import { useGetExecutableFunctions } from "@query/governance/use-get-executable-functions";
+import { useCreateProposalModal } from "@views/governance/hooks/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "../../hooks/use-governance-tx";
 
@@ -12,14 +18,14 @@ const ProposalListContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [isShowActiveOnly, setIsShowActiveOnly] = useState(false);
   const [selectedProposalId, setSelectedProposalId] = useState(0);
-  const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
   const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
+  const { openModal: openCreateProposalModal } = useCreateProposalModal();
 
   const {
     proposeCommunityPoolSpendProposal,
     proposeTextProposal,
-    proposeParamChnageProposal,
+    proposeParamChangeProposal,
     voteProposal,
     executeProposal,
     cancelProposal,
@@ -29,12 +35,15 @@ const ProposalListContainer: React.FC = () => {
     data: governanceSummaryInfo,
     isFetching: isFetchingGovernanceSummaryInfo,
   } = useGetGovernanceSummary();
+
   const {
-    data: myDelegationInfo,
-    isFetching: isFetchingMyDelegation,
-  } = useGetMyDelegation({
-    address: account?.address || "",
-  });
+    data: executableFunctions = [],
+    isFetching: isFetchingExecutableFunctions,
+  } = useGetExecutableFunctions();
+  const { data: myDelegationInfo, isFetching: isFetchingMyDelegation } =
+    useGetMyDelegation({
+      address: account?.address || "",
+    });
   const {
     data: proposalsInfo,
     isFetching: isFetchingProposalsInfo,
@@ -57,6 +66,7 @@ const ProposalListContainer: React.FC = () => {
       isLoading={
         isFetchingProposalsInfo ||
         isFetchingGovernanceSummaryInfo ||
+        isFetchingExecutableFunctions ||
         isFetchingMyDelegation
       }
       isConnected={connected}
@@ -74,8 +84,8 @@ const ProposalListContainer: React.FC = () => {
       fetchMore={fetchNextItems}
       selectedProposalId={selectedProposalId}
       setSelectedProposalId={setSelectedProposalId}
-      isOpenCreateModal={isOpenCreateModal}
-      setIsOpenCreateModal={setIsOpenCreateModal}
+      openCreateProposalModal={openCreateProposalModal}
+      executableFunctions={executableFunctions}
       proposeTextProposal={(...params) =>
         proposeTextProposal(...params, async () => {
           await refetchProposals();
@@ -86,8 +96,8 @@ const ProposalListContainer: React.FC = () => {
           await refetchProposals();
         })
       }
-      proposeParamChnageProposal={(...params) =>
-        proposeParamChnageProposal(...params, async () => {
+      proposeParamChangeProposal={(...params) =>
+        proposeParamChangeProposal(...params, async () => {
           await refetchProposals();
         })
       }
