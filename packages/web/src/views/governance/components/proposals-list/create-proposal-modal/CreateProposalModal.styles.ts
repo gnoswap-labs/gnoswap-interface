@@ -27,7 +27,6 @@ export const CreateProposalModalWrapper = styled.div`
     }
   }
   .modal-body {
-    border: 1px solid ${({ theme }) => theme.color.border02};
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 24px 24px 73px 24px;
@@ -158,14 +157,14 @@ export const BoxItem = styled.div`
       ${fonts.body13};
       ${mixins.flexbox("row", "center", "center")};
       gap: 4px;
-      color: ${({ theme }) => theme.color.text04};
+      color: ${({ theme }) => theme.color.text10};
 
       svg {
         width: 16px;
         height: 16px;
       }
       svg * {
-        fill: ${({ theme }) => theme.color.icon03};
+        fill: ${({ theme }) => theme.color.icon15};
       }
     }
 
