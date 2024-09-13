@@ -273,7 +273,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
             <FormTextArea
               placeholder={t(
                 "Governance:createModal.proposalDetails.placeholder.description",
-              )}
+              ).replaceAll("<nl/>", "\n\n")}
               errorText={
                 errors?.description ? errors.description.message : undefined
               }
