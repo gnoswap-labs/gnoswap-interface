@@ -18,6 +18,7 @@ export const StatusBadgeWrapper = styled.div`
     ${fonts.body11};
 
     .status-icon {
+      ${mixins.flexbox("row", "center", "center")};
       width: 16px;
       height: 16px;
     }
@@ -50,17 +51,11 @@ export const StatusBadgeWrapper = styled.div`
 
   .time {
     ${mixins.flexbox("row", "center", "center")};
+    height: 18px;
     gap: 6px;
-    ${fonts.p6};
+    ${fonts.p4};
+    line-height: 18px;
     color: ${({ theme }) => theme.color.text05};
-    br {
-      display: none;
-    }
-    ${media.mobile} {
-      br {
-        display: block;
-      }
-    }
     * {
       fill: ${({ theme }) => theme.color.text05};
     }

@@ -36,7 +36,7 @@ export const MyDelegationWrapper = styled.div`
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     width: 100%;
     border-radius: 8px;
-    background-color: ${({ theme }) => theme.color.background11};
+    background-color: ${({ theme }) => theme.color.background06};
     border: 1px solid ${({ theme }) => theme.color.border02};
     @media (max-width: 968px) {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -63,6 +63,7 @@ export const MyDelegationWrapper = styled.div`
       width: 100%;
       padding: 20px 12px 23px;
       gap: 18px;
+      background-color: ${({ theme }) => theme.color.background11};
 
       ${fonts.body8}
       color: ${({ theme }) => theme.color.text22};
