@@ -318,10 +318,7 @@ const formatActivity = (
         case DexEvent.EXECUTE_PROPOSAL:
         case DexEvent.CANCEL_PROPOSAL:
           return (
-            <>
-              <span className="symbol-text">{` #${res?.tokenAAmount} `}</span>
-              Proposal
-            </>
+            <span className="symbol-text">{` #${res?.tokenAAmount} Proposal`}</span>
           );
         case DexEvent.VOTE:
           return (
