@@ -138,13 +138,13 @@ export const ProposalContentWrapper = styled.div`
     .markdown-style {
       width: 100%;
       h1 {
-        ${fonts.h4}
+        ${fonts.body5}
       }
       h2 {
-        ${fonts.h5}
+        ${fonts.body7}
       }
       h3 {
-        ${fonts.h6}
+        ${fonts.body9}
       }
       hr {
         border-color: ${({ theme }) => theme.color.border02};

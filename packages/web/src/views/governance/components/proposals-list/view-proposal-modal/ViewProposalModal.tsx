@@ -140,16 +140,18 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 <div className="variable-type">
                   {t("Governance:detailModal.content.change")}
                 </div>
-                {`Pkg Path: "${proposalDetail.content.parameters?.[0].pkgPath}"`}
-                <br />
-                {`Func: "${proposalDetail.content.parameters?.[0].func}"`}
-                <br />
-                {`Param: "${proposalDetail.content.parameters
-                  ?.map(item => item.param)
-                  .join(", ")}"`}
+                {proposalDetail.content.parameters?.map(item => (
+                  <>
+                    {`Pkg Path: "${item.pkgPath}", Func: "${item.func}", Params: "${item.param}"`}
+                    <br />
+                  </>
+                ))}
               </div>
             )}
-            <ReactMarkdown remarkPlugins={[remarkGfm]} className="markdown-style">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              className="markdown-style"
+            >
               {`${proposalDetail.content.description.replaceAll("\\n", "\n")}`}
             </ReactMarkdown>
           </div>
