@@ -36,7 +36,7 @@ export const MyDelegationWrapper = styled.div`
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     width: 100%;
     border-radius: 8px;
-    background-color: ${({ theme }) => theme.color.background06};
+    background-color: ${({ theme }) => theme.color.background11};
     border: 1px solid ${({ theme }) => theme.color.border02};
     @media (max-width: 968px) {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -61,12 +61,35 @@ export const MyDelegationWrapper = styled.div`
     > .require-wallet {
       ${mixins.flexbox("column", "center", "center")};
       width: 100%;
-      padding: 30.5px 0;
-      gap: 20px;
+      padding: 20px 12px 23px;
+      gap: 18px;
+
+      ${fonts.body8}
+      color: ${({ theme }) => theme.color.text22};
+      text-align: center;
+
+      .unconnected-icon {
+        width: 50px;
+        height: 50px;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+        ${media.mobile} {
+          width: 36px;
+          height: 36px;
+        }
+      }
 
       button {
-        flex-shrink: 0;
-        padding: 10px 16px;
+        > span {
+          ${fonts.body7}
+        }
+        width: 200px;
+        height: 46px;
+        ${media.mobile} {
+          height: 41px;
+          width: 100%;
+        }
       }
     }
   }

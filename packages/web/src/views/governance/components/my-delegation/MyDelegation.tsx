@@ -19,6 +19,7 @@ import {
   MyDelegationTooltipContent,
   MyDelegationWrapper,
 } from "./MyDelegation.styles";
+import IconLinkOff from "@components/common/icons/IconLinkOff";
 
 interface MyDelegationProps {
   totalDelegatedAmount: number;
@@ -94,9 +95,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
             }}
             text={t("Governance:myDel.delegate")}
             onClick={
-              !isLoading
-                ? () => setIsOpenDelegateModal(true)
-                : undefined
+              !isLoading ? () => setIsOpenDelegateModal(true) : undefined
             }
           />
         </div>
@@ -251,22 +250,30 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 isKMB: false,
               })}
               tooltip={t("Governance:myDel.reward.tooltip")}
-              valueButton={myDelegationInfo.claimableRewardsUsd ? {
-                text: t("Governance:myDel.reward.btn"),
-                onClick: () => {
-                  collectReward(
-                    formatOtherPrice(myDelegationInfo.claimableRewardsUsd, {
-                      isKMB: false,
-                    }),
-                  );
-                },
-                disabled: !myDelegationInfo.claimableRewardsUsd,
-              }: undefined}
+              valueButton={
+                myDelegationInfo.claimableRewardsUsd
+                  ? {
+                      text: t("Governance:myDel.reward.btn"),
+                      onClick: () => {
+                        collectReward(
+                          formatOtherPrice(
+                            myDelegationInfo.claimableRewardsUsd,
+                            {
+                              isKMB: false,
+                            },
+                          ),
+                        );
+                      },
+                      disabled: !myDelegationInfo.claimableRewardsUsd,
+                    }
+                  : undefined
+              }
               isLoading={isLoading}
             />
           </>
         ) : (
           <div className="require-wallet">
+            <IconLinkOff className="unconnected-icon" />
             {t("Governance:myDel.login.description")}
             <Button
               style={{
