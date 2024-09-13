@@ -94,14 +94,14 @@ export const BoxItem = styled.div`
       > * {
         flex: 1;
         display: flex;
-        max-width: 181px;
+        max-width: 179px;
 
         ${media.mobile} {
           max-width: 100%;
         }
 
         .display-value {
-          max-width: 181px;
+          max-width: 179px;
 
           ${media.mobile} {
             max-width: 100%;

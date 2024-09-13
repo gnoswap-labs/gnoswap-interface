@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +22,7 @@ import {
 
 import TokenChip from "../../token-chip/TokenChip";
 
+import { makeDisplayPackagePath } from "@utils/governance-utils";
 import VariableSelectBox from "../variable-select-box/VariableSelectBox";
 import {
   BoxItem,
@@ -109,6 +110,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [type, setType] = useState<string>(ProposalOption[0]);
+  const modalBodyRef = useRef<HTMLDivElement>(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validationProps: any = useMemo(() => {
@@ -173,7 +175,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       ...new Set(executableFunctions.map(func => func.packagePath)),
     ];
     return packagePaths.map(packagePath => ({
-      displayValue: packagePath,
+      displayValue: packagePath.substring(packagePath.lastIndexOf("/") + 1),
       value: packagePath,
     }));
   }, [executableFunctions]);
@@ -236,7 +238,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   return (
     <FormProvider methods={methods} onSubmit={sendTx}>
       <CreateProposalModalWrapper>
-        <div className="modal-body">
+        <div className="modal-body" ref={modalBodyRef}>
           <div className="header">
             <h6>{t("Governance:createModal.title")}</h6>
             <div
@@ -315,26 +317,35 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                 <div className="multiple-variable" key={item.id}>
                   <div className="variable-input-wrapper">
                     <VariableSelectBox
+                      modalBodyRef={modalBodyRef}
                       currentItem={
                         item.pkgPath
                           ? {
-                              displayValue: item.pkgPath,
+                              displayValue: makeDisplayPackagePath(
+                                item.pkgPath,
+                              ),
                               value: item.pkgPath,
                             }
                           : null
                       }
                       items={executablePackagePaths}
-                      onChange={value =>
+                      onChange={value => {
+                        if (item.pkgPath === value) {
+                          return;
+                        }
+
                         update(index, {
-                          ...item,
                           pkgPath: value,
-                        })
-                      }
+                          func: "",
+                          param: "",
+                        });
+                      }}
                       placeholder={t(
                         "Governance:createModal.setVariable.placeholder.pkgPath",
                       )}
                     />
                     <VariableSelectBox
+                      modalBodyRef={modalBodyRef}
                       currentItem={
                         item.func
                           ? {
@@ -344,37 +355,22 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                           : null
                       }
                       items={filterExecutableFunctions(item.pkgPath || null)}
-                      onChange={value =>
+                      onChange={value => {
+                        if (item.func === value) {
+                          return;
+                        }
+
                         update(index, {
-                          ...item,
+                          pkgPath: item.pkgPath,
                           func: value,
-                        })
-                      }
+                          param: "",
+                        });
+                      }}
                       placeholder={t(
                         "Governance:createModal.setVariable.placeholder.func",
                       )}
                       disabled={!item.pkgPath}
                     />
-                    {/* <FormInput
-                      placeholder={t(
-                        "Governance:createModal.setVariable.placeholder.pkgPath",
-                      )}
-                      errorText={
-                        errors?.variable
-                          ? errors?.variable[index]?.pkgPath?.message ||
-                            errors?.variable[index]?.func?.message ||
-                            errors?.variable[index]?.param?.message
-                          : undefined
-                      }
-                      {...register(`variable.${index}.pkgPath`)}
-                    /> */}
-
-                    {/* <FormInput
-                      placeholder={t(
-                        "Governance:createModal.setVariable.placeholder.func",
-                      )}
-                      {...register(`variable.${index}.func`)}
-                    /> */}
                     <FormInput
                       placeholder={t(
                         "Governance:createModal.setVariable.placeholder.param",
