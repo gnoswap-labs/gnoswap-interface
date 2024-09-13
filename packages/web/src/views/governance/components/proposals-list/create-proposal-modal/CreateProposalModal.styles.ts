@@ -95,6 +95,7 @@ export const BoxItem = styled.div`
         flex: 1;
         display: flex;
         max-width: 179px;
+        align-self: flex-start;
 
         ${media.mobile} {
           max-width: 100%;

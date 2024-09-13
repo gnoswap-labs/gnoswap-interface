@@ -25,6 +25,7 @@ export interface VariableSelectBoxProps {
   } | null;
   onChange: (value: string) => void;
   placeholder?: string;
+  errorText?: string;
   disabled?: boolean;
 }
 
@@ -34,6 +35,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
   currentItem,
   placeholder,
   disabled,
+  errorText,
   onChange,
 }) => {
   const selectRef = useRef<HTMLDivElement>(null);
@@ -135,6 +137,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
         )}
       </div>
 
+      {errorText && <div className="error-text">{errorText}</div>}
       {opened && renderSelectOptions()}
     </VariableSelectBoxWrapper>
   );

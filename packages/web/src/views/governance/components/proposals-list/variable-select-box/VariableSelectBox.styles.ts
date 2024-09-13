@@ -6,12 +6,24 @@ import { Z_INDEX } from "@styles/zIndex";
 
 export const VariableSelectBoxWrapper = styled.div`
   position: relative;
+  ${mixins.flexbox("column", "flex-start", "center")};
   cursor: pointer;
+  gap: 6px;
+
+  > .error-text {
+    color: ${({ theme }) => theme.color.red02};
+    ${fonts.p4}
+    ${media.mobile} {
+      ${fonts.p6}
+    }
+  }
+
   &.disabled {
     cursor: default;
 
     > .selected-item-wrapper {
       color: ${({ theme }) => theme.color.text04};
+      stroke: ${({ theme }) => theme.color.text04};
 
       > .icon-arrow {
         stroke: ${({ theme }) => theme.color.text04};

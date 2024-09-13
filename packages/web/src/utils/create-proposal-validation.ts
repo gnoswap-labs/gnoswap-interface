@@ -36,24 +36,101 @@ const variableSchema = {
   param: yup.string(),
 };
 
-export const getCreateProposalChangeParameterValidation = () =>
+export const getCreateProposalChangeParameterValidation = (
+  executableFunctions: {
+    pkgPath: string;
+    funcName: string;
+    paramNum: number;
+  }[],
+) =>
   yup
     .object()
     .shape({
       title: yup.string().trim().required("Title is required"),
       description: yup.string().trim().required("Description is required"),
-      variable: yup.array().of(yup.object().shape(variableSchema)).min(1, "At least one change is reqruied").test("check-valid", "Variable is not valid", value => {
-        if (
-          !value ||
-          value[0].pkgPath === undefined ||
-          value[0].pkgPath === "" ||
-          value[0].func === undefined ||
-          value[0].func === "" ||
-          value[0].param === undefined ||
-          value[0].param === ""
-        )
-          return false;
-        return value.every((item) => item.param !== undefined && item.param !== "");
-      }),
+      variable: yup
+        .array()
+        .min(1, "At least one change is reqruied")
+        .of(
+          yup
+            .object()
+            .shape(variableSchema)
+            .test("check-valid", "Variable is not valid", item => {
+              if (!item) return false;
+
+              return (
+                item.pkgPath !== undefined &&
+                item.pkgPath !== "" &&
+                item.func !== undefined &&
+                item.func !== "" &&
+                item.param !== undefined &&
+                item.param !== ""
+              );
+            })
+            .test("check-parameter", "Invalid parameters", item => {
+              if (!item.param) {
+                return false;
+              }
+
+              const currentFunction = executableFunctions.find(
+                func => func.pkgPath === item.pkgPath,
+              );
+              if (!currentFunction) {
+                return false;
+              }
+
+              return item.param.split(",").length === currentFunction.paramNum;
+            }),
+        ),
     })
+    .required();
+
+export const getCreateProposalParameterValidation = (
+  executableFunctions: {
+    pkgPath: string;
+    funcName: string;
+    paramNum: number;
+  }[],
+) =>
+  yup
+    .array()
+    .min(1, "At least one change is reqruied")
+    .of(
+      yup
+        .object()
+        .shape(variableSchema)
+        .test("check-valid", "Variable is not valid", item => {
+          if (!item) return true;
+          if (
+            (item.pkgPath === undefined || item.pkgPath === "") &&
+            (item.func === undefined || item.func === "") &&
+            (item.param === undefined || item.param === "")
+          ) {
+            return true;
+          }
+
+          return (
+            item.pkgPath !== undefined &&
+            item.pkgPath !== "" &&
+            item.func !== undefined &&
+            item.func !== "" &&
+            item.param !== undefined &&
+            item.param !== ""
+          );
+        })
+        .test("check-parameter", "Invalid parameters", item => {
+          if (!item.param) {
+            return true;
+          }
+
+          const currentFunction = executableFunctions.find(
+            func => func.pkgPath === item.pkgPath,
+          );
+          if (!currentFunction) {
+            return true;
+          }
+
+          return item.param.split(",").length === currentFunction.paramNum;
+        }),
+    )
     .required();
