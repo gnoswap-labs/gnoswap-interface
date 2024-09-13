@@ -125,10 +125,10 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       return getCreateProposalCommunityPoolSpendValidation();
     }
     if (type === ProposalOption[2]) {
-      return getCreateProposalChangeParameterValidation(executableFunctions);
+      return getCreateProposalChangeParameterValidation();
     }
     return getCreateProposalValidation();
-  }, [type, executableFunctions]);
+  }, [type]);
 
   const methods = useForm<FormValues>({
     mode: "onChange",
@@ -238,8 +238,21 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   );
 
   const isDisableSubmit = useMemo(() => {
-    return !isDirty || !isValid || myVotingWeight < proposalCreationThreshold;
-  }, [isDirty, isValid, proposalCreationThreshold, myVotingWeight]);
+    const isValidParameter =
+      Object.keys(paramErrors.variable || {}).length === 0;
+    return (
+      !isDirty ||
+      !isValid ||
+      !isValidParameter ||
+      myVotingWeight < proposalCreationThreshold
+    );
+  }, [
+    isDirty,
+    isValid,
+    paramErrors,
+    proposalCreationThreshold,
+    myVotingWeight,
+  ]);
 
   const getParameterPlaceholder = useCallback(
     (item: { pkgPath: string; func: string }): string => {

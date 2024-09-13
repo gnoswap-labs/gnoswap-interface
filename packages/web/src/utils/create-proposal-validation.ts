@@ -36,52 +36,12 @@ const variableSchema = {
   param: yup.string(),
 };
 
-export const getCreateProposalChangeParameterValidation = (
-  executableFunctions: {
-    pkgPath: string;
-    funcName: string;
-    paramNum: number;
-  }[],
-) =>
+export const getCreateProposalChangeParameterValidation = () =>
   yup
     .object()
     .shape({
       title: yup.string().trim().required("Title is required"),
       description: yup.string().trim().required("Description is required"),
-      variable: yup
-        .array()
-        .min(1, "At least one change is reqruied")
-        .of(
-          yup
-            .object()
-            .shape(variableSchema)
-            .test("check-valid", "Parameter is required", item => {
-              if (!item) return false;
-
-              return (
-                item.pkgPath !== undefined &&
-                item.pkgPath !== "" &&
-                item.func !== undefined &&
-                item.func !== "" &&
-                item.param !== undefined &&
-                item.param !== ""
-              );
-            })
-            .test("check-parameter", "Parameter is not valid", item => {
-              if (!item.param) {
-                return false;
-              }
-
-              const currentFunction = executableFunctions.find(
-                func => func.pkgPath === item.pkgPath,
-              );
-              if (!currentFunction) {
-                return false;
-              }
-
-              return item.param.split(",").length === currentFunction.paramNum;
-            }),
-        ),
     })
     .required();
 
