@@ -83,6 +83,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     [DexEvent.DELEGATE]: "Delegated",
     [DexEvent.UNDELEGATE]: "Unelegated",
     [DexEvent.COLLECT_UNDEL]: "Claimed",
+    [DexEvent.COLLECT_GOV_REWARD]: "Modal:notif.action.rewardsClaimed",
     [DexEvent.VOTE]: "Voted",
     [DexEvent.PROPOSE_TEXT]: "Created",
     [DexEvent.PROPOSE_COMM_POOL_SPEND]: "Created",
@@ -186,6 +187,18 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                 </span>
               </>
             );
+          case DexEvent.COLLECT_UNDEL:
+            return (
+              <span className="accent">
+                {` ${formatPoolPairAmount(tx?.tokenAAmount, {
+                  decimals: tx.tokenA.decimals,
+                  isKMB: false,
+                })} GNS `}
+              </span>
+            );
+          // TODO : implement COLLECT_GOV_REWARD
+          case DexEvent.COLLECT_GOV_REWARD:
+            return "-";
           case DexEvent.PROPOSE_TEXT:
           case DexEvent.PROPOSE_COMM_POOL_SPEND:
           case DexEvent.PROPOSE_PARAM_CHANGE:
