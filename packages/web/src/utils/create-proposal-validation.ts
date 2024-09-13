@@ -55,7 +55,7 @@ export const getCreateProposalChangeParameterValidation = (
           yup
             .object()
             .shape(variableSchema)
-            .test("check-valid", "Variable is not valid", item => {
+            .test("check-valid", "Parameter is required", item => {
               if (!item) return false;
 
               return (
@@ -67,7 +67,7 @@ export const getCreateProposalChangeParameterValidation = (
                 item.param !== ""
               );
             })
-            .test("check-parameter", "Invalid parameters", item => {
+            .test("check-parameter", "Parameter is not valid", item => {
               if (!item.param) {
                 return false;
               }
@@ -99,7 +99,7 @@ export const getCreateProposalParameterValidation = (
       yup
         .object()
         .shape(variableSchema)
-        .test("check-valid", "Variable is not valid", item => {
+        .test("check-valid", "Parameter is required", item => {
           if (!item) return true;
           if (
             (item.pkgPath === undefined || item.pkgPath === "") &&
@@ -118,7 +118,7 @@ export const getCreateProposalParameterValidation = (
             item.param !== ""
           );
         })
-        .test("check-parameter", "Invalid parameters", item => {
+        .test("check-parameter", "Parameter is not valid", item => {
           if (!item.param) {
             return true;
           }
