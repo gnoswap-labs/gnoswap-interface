@@ -21,6 +21,7 @@ export const useGetMyDelegation = (
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,
     refetchOnReconnect: true,
+    enabled: !!request.address,
     ...options,
   });
 };
