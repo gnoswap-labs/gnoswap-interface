@@ -36,6 +36,7 @@ interface MyDelegationDelegateModalProps {
   apy: number;
   delegatees: DelegateeInfo[];
   isWalletConnected: boolean;
+  connectWallet: () => void;
   onSubmit: (toName: string, toAddress: string, amount: string) => void;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -46,6 +47,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   apy,
   delegatees,
   isWalletConnected,
+  connectWallet,
   onSubmit,
   setIsOpen,
 }) => {
@@ -243,18 +245,27 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 
       <Button
         onClick={() => {
-          onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
+          if(isWalletConnected) {
+            onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
+          } else {
+            connectWallet();
+          }
           setIsOpen(false);
         }}
-        text={t("Governance:myDel.delModal.ctaBtn")}
+        text={t(
+          isWalletConnected
+            ? "Governance:myDel.delModal.ctaBtn"
+            : "common:btn.walletLogin",
+        )}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
         disabled={
-          gnsAmountInput.amount === "0" ||
-          Number(gnsAmountInput.amount) >
-            Number(gnsAmountInput.balance.replaceAll(",", ""))
+          isWalletConnected &&
+          (gnsAmountInput.amount === "0" ||
+            Number(gnsAmountInput.amount) >
+              Number(gnsAmountInput.balance.replaceAll(",", "")))
         }
         className="button-confirm"
       />

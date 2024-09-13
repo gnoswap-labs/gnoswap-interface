@@ -286,6 +286,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           apy={apy}
           delegatees={delegatees}
           isWalletConnected={isWalletConnected}
+          connectWallet={connectWallet}
           onSubmit={delegateGNS}
           setIsOpen={setIsOpenDelegateModal}
         />
