@@ -119,7 +119,7 @@ export const VariableSelectOptionsWrapper = styled.div<{
       }
 
       :hover {
-        background-color: ${({ theme }) => theme.color.backgroundOpacity2};
+        background-color: ${({ theme }) => theme.color.hover02};
       }
     }
   }
