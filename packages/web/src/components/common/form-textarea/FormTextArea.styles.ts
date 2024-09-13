@@ -24,11 +24,31 @@ export const FormTextAreaStyle = styled.textarea`
   color: ${({ theme }) => theme.color.text01};
   border: 1px solid ${({ theme }) => theme.color.border02};
   resize: none;
+  overflow-x: hidden;
+  overflow-y: scroll;
   &::placeholder {
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body9}
     ${media.mobile} {
       ${fonts.body11}
     }
+  }
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) =>
+      theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA"};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar {
+    display: block;
+    scrollbar-track-color: ${({ theme }) => theme.color.backgroundOpacity2};
   }
 `;

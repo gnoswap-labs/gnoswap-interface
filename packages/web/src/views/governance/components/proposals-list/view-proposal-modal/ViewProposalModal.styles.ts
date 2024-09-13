@@ -160,6 +160,9 @@ export const ProposalContentWrapper = styled.div`
         list-style: decimal;
         padding-left: 8px;
       }
+      p {
+        white-space: pre-line;
+      }
     }
   }
   ${media.mobile} {

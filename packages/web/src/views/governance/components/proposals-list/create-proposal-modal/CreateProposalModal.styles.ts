@@ -10,6 +10,7 @@ export const CreateProposalModalWrapper = styled.div`
   border-radius: 8px;
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   background-color: ${({ theme }) => theme.color.background06};
+  overflow: hidden;
 
   .btn-submit {
     position: fixed;
@@ -30,7 +31,8 @@ export const CreateProposalModalWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 24px 24px 73px 24px;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
     gap: 16px;
     height: 800px;
     max-height: calc(100lvh - 100px);
@@ -62,6 +64,24 @@ export const CreateProposalModalWrapper = styled.div`
     }
     ${media.mobile} {
       padding: 12px;
+    }
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: ${({ theme }) =>
+        theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA"};
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar {
+      display: block;
+      scrollbar-track-color: ${({ theme }) => theme.color.backgroundOpacity2};
     }
   }
 `;
