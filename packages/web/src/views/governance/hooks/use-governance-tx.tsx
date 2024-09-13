@@ -189,6 +189,7 @@ export const useGovernanceTx = () => {
     }
 
     const messageData = {
+      tokenAAmount: "0",
       tokenASymbol: "xGNS",
     };
 

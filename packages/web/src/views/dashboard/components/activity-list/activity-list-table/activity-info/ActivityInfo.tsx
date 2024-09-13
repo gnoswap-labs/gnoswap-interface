@@ -204,8 +204,10 @@ const formatActivity = (
   const actionText = (() => {
     const action = (() => {
       switch (res.actionType) {
+        // Swap
         case DexEvent.SWAP:
           return t("business:onchainActi.action.swap");
+        // Pool
         case DexEvent.ADD:
           return t("business:onchainActi.action.add");
         case DexEvent.REMOVE:
@@ -220,11 +222,20 @@ const formatActivity = (
           return t("business:onchainActi.action.claimFees");
         case DexEvent.ADD_INCENTIVE:
           return t("business:onchainActi.action.incentivize");
+        // Staking
         case DexEvent.STAKE:
           return t("business:onchainActi.action.stake");
         case DexEvent.UNSTAKE:
           return t("business:onchainActi.action.unstake");
         case DexEvent.CLAIM_REWARD:
+          return t("business:onchainActi.action.claimRewards");
+        // Governance
+        case DexEvent.DELEGATE:
+          return t("business:onchainActi.action.stake");
+        case DexEvent.UNDELEGATE:
+          return t("business:onchainActi.action.unstake");
+        case DexEvent.COLLECT_UNDEL:
+        case DexEvent.COLLECT_GOV_REWARD:
           return t("business:onchainActi.action.claimRewards");
       }
     })();
