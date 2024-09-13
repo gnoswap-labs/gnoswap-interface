@@ -309,9 +309,6 @@ const formatActivity = (
           return <span className="symbol-text">{` ${tokenASymbol}`}</span>;
         case DexEvent.COLLECT_UNDEL:
           return <span className="symbol-text">{` ${tokenASymbol}`}</span>;
-        // TODO : implement COLLECT_GOV_REWARD
-        case DexEvent.COLLECT_GOV_REWARD:
-          return "-";
         case DexEvent.PROPOSE_TEXT:
         case DexEvent.PROPOSE_COMM_POOL_SPEND:
         case DexEvent.PROPOSE_PARAM_CHANGE:
@@ -333,6 +330,7 @@ const formatActivity = (
       }
     };
 
+    // COLLECT_GOV_REWARD use getSwapRelatedMessage()
     return (
       <span>
         {action}

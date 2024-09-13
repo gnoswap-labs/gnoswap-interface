@@ -196,9 +196,6 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                 })} GNS `}
               </span>
             );
-          // TODO : implement COLLECT_GOV_REWARD
-          case DexEvent.COLLECT_GOV_REWARD:
-            return "-";
           case DexEvent.PROPOSE_TEXT:
           case DexEvent.PROPOSE_COMM_POOL_SPEND:
           case DexEvent.PROPOSE_PARAM_CHANGE:
@@ -231,6 +228,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         }
       };
 
+      // COLLECT_GOV_REWARD use getSwapRelatedMessage()
       return (
         <>
           {t(actionKeyMap[tx.actionType as DexEventType] || "Undefined Task")}
