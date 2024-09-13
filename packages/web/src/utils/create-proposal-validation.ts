@@ -124,7 +124,8 @@ export const getCreateProposalParameterValidation = (
           }
 
           const currentFunction = executableFunctions.find(
-            func => func.funcName === item.func,
+            func =>
+              func.pkgPath === item.pkgPath && func.funcName === item.func,
           );
           if (!currentFunction) {
             return true;

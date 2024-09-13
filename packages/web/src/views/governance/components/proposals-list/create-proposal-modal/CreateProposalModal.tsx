@@ -241,6 +241,29 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     return !isDirty || !isValid || myVotingWeight < proposalCreationThreshold;
   }, [isDirty, isValid, proposalCreationThreshold, myVotingWeight]);
 
+  const getParameterPlaceholder = useCallback(
+    (item: { pkgPath: string; func: string }): string => {
+      const defaultPlaceholder = t(
+        "Governance:createModal.setVariable.placeholder.param",
+      );
+
+      const currentFunction = executableFunctions.find(
+        func => func.pkgPath === item.pkgPath && func.funcName === item.func,
+      );
+      if (!currentFunction || currentFunction.paramNum > 3) {
+        return defaultPlaceholder;
+      }
+
+      return Array.from(
+        { length: currentFunction.paramNum },
+        (_, index) => index + 1,
+      )
+        .map(num => `arg${num}`)
+        .join(",");
+    },
+    [executableFunctions],
+  );
+
   const sendTx: SubmitHandler<FormValues> = data => {
     if (type === ProposalOption[0]) {
       proposeTextProposal(data.title, data.description);
@@ -410,9 +433,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                       disabled={!item.pkgPath}
                     />
                     <FormInput
-                      placeholder={t(
-                        "Governance:createModal.setVariable.placeholder.param",
-                      )}
+                      placeholder={getParameterPlaceholder(item)}
                       {...register(`variable.${index}.param`)}
                       onBlur={validateParams}
                     />
