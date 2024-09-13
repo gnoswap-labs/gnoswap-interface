@@ -124,11 +124,12 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
   }, [modalBodyRef, opened]);
 
   return (
-    <VariableSelectBoxWrapper
-      className={disabled ? "disabled" : ""}
-      ref={selectRef}
-    >
-      <div className="selected-item-wrapper" onClick={toggleOpenSelectBox}>
+    <VariableSelectBoxWrapper className={disabled ? "disabled" : ""}>
+      <div
+        className="selected-item-wrapper"
+        ref={selectRef}
+        onClick={toggleOpenSelectBox}
+      >
         <span className="display-text">{displayText}</span>
         {opened ? (
           <IconArrowUp className="icon-arrow" />
