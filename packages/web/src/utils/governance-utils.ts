@@ -11,7 +11,12 @@ export const makeProposalVariablesQuery = (
   variables: ProposalVariables[],
 ): string => {
   function makeMethodQuery(variable: ProposalVariables): string {
-    return [variable.pkgPath, variable.func, variable.param].join(
+    const params = variable.param
+      .split(",")
+      .map(p => p.trim())
+      .join(",");
+
+    return [variable.pkgPath, variable.func, params].join(
       queryArgumentSeparator,
     );
   }

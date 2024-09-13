@@ -1,24 +1,22 @@
-import { Dispatch, SetStateAction } from "react";
-
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconNewTab from "@components/common/icons/IconNewTab";
 import Switch from "@components/common/switch/Switch";
 
-import { ProposalHeaderWrapper } from "./ProposalHeader.styles";
-import { useTranslation } from "react-i18next";
 import { EXT_URL } from "@constants/external-url.contant";
+import { useTranslation } from "react-i18next";
+import { ProposalHeaderWrapper } from "./ProposalHeader.styles";
 
 export interface ProposalHeaderProps {
   isShowActiveOnly: boolean;
   toggleIsShowActiveOnly: () => void;
-  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+  onClickCreateProposal: () => void;
   isDisabledCreateButton: boolean;
 }
 
 const ProposalHeader: React.FC<ProposalHeaderProps> = ({
   isShowActiveOnly,
   toggleIsShowActiveOnly,
-  setIsOpenCreateModal,
+  onClickCreateProposal,
   isDisabledCreateButton,
 }) => {
   const { t } = useTranslation();
@@ -46,7 +44,7 @@ const ProposalHeader: React.FC<ProposalHeaderProps> = ({
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
           }}
-          onClick={() => setIsOpenCreateModal(true)}
+          onClick={onClickCreateProposal}
         />
       </div>
     </ProposalHeaderWrapper>

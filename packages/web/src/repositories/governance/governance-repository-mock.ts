@@ -2,11 +2,13 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 import { GovernanceRepository } from "./governance-repository";
 import GetDelegateesResponseMock from "./mock/get-delegatees-response.json";
+import GetExecutableFunctionsResponseMock from "./mock/get-executable-functions-response.json";
 import GetGovernanceSummaryResponseMock from "./mock/get-governance-summary-response.json";
 import GetMyDelegationResposneMock from "./mock/get-my-delegation-response.json";
 import GetProposalsResponseMock from "./mock/get-proposals-response.json";
 import {
   DelegateeInfo,
+  ExecutableFunctionInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
   ProposalsInfo,
@@ -85,6 +87,12 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     const result = res;
 
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
+
+  public getExecutableFunctions = async (): Promise<
+    ExecutableFunctionInfo[]
+  > => {
+    return GetExecutableFunctionsResponseMock;
   };
 
   public getDelegatees = async (): Promise<DelegateeInfo[]> => {

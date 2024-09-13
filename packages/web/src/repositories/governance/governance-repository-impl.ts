@@ -15,9 +15,9 @@ import {
 import { makeProposalVariablesQuery } from "@utils/governance-utils";
 
 import { GovernanceRepository } from "./governance-repository";
-import { GovernanceRepositoryMock } from "./governance-repository-mock";
 import {
   DelegateeInfo,
+  ExecutableFunctionInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
   nullDelegateeInfo,
@@ -46,10 +46,11 @@ import {
   GetProposalsResponse,
 } from "./response";
 
+import GetExecutableFunctionsResponseMock from "./mock/get-executable-functions-response.json";
+
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
-  private mockRepository: GovernanceRepositoryMock;
 
   constructor(
     networkClient: NetworkClient | null,
@@ -57,7 +58,6 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   ) {
     this.networkClient = networkClient;
     this.walletClient = walletClient;
-    this.mockRepository = new GovernanceRepositoryMock();
   }
 
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
@@ -131,6 +131,12 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const data: ProposalsInfo = response.data.data;
 
     return data;
+  };
+
+  public getExecutableFunctions = async (): Promise<
+    ExecutableFunctionInfo[]
+  > => {
+    return GetExecutableFunctionsResponseMock;
   };
 
   public getDelegatees = async (): Promise<DelegateeInfo[]> => {
@@ -250,7 +256,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
         packagePath: PACKAGE_GOVERNANCE_PATH,
         send: "",
         func: "ProposeParameterChange",
-        args: [title, description, variableQuery],
+        args: [title, description, variables.length.toString(), variableQuery],
         caller: address,
       }),
     );

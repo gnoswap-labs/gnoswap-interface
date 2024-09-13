@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -13,7 +13,6 @@ import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconRemove from "@components/common/icons/IconRemove";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import withLocalModal from "@components/hoc/with-local-modal";
 import { DEVICE_TYPE } from "@styles/media";
 import {
   getCreateProposalChangeParameterValidation,
@@ -23,6 +22,7 @@ import {
 
 import TokenChip from "../../token-chip/TokenChip";
 
+import VariableSelectBox from "../variable-select-box/VariableSelectBox";
 import {
   BoxItem,
   CreateProposalModalWrapper,
@@ -70,9 +70,14 @@ const BoxContent: React.FC<BoxContentProps> = ({
 
 interface CreateProposalModalProps {
   breakpoint: DEVICE_TYPE;
-  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+  setIsOpenCreateModal: (opened: boolean) => void;
   myVotingWeight: number;
   proposalCreationThreshold: number;
+  executableFunctions: {
+    packagePath: string;
+    functionName: string;
+    parameterNum: number;
+  }[];
   proposeTextProposal: (title: string, description: string) => void;
   proposeCommunityPoolSpendProposal: (
     title: string,
@@ -97,14 +102,11 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   setIsOpenCreateModal,
   myVotingWeight,
   proposalCreationThreshold,
+  executableFunctions,
   proposeTextProposal,
   proposeCommunityPoolSpendProposal,
   proposeParamChangeProposal,
 }) => {
-  const Modal = useMemo(
-    () => withLocalModal(CreateProposalModalWrapper, setIsOpenCreateModal),
-    [setIsOpenCreateModal],
-  );
   const { t } = useTranslation();
   const [type, setType] = useState<string>(ProposalOption[0]);
 
@@ -146,7 +148,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     control,
   } = methods;
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, update } = useFieldArray({
     control,
     name: "variable",
   });
@@ -162,6 +164,40 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       remove(index);
     }
   };
+
+  const executablePackagePaths: {
+    displayValue: string;
+    value: string;
+  }[] = useMemo(() => {
+    const packagePaths = [
+      ...new Set(executableFunctions.map(func => func.packagePath)),
+    ];
+    return packagePaths.map(packagePath => ({
+      displayValue: packagePath,
+      value: packagePath,
+    }));
+  }, [executableFunctions]);
+
+  const filterExecutableFunctions = useCallback(
+    (packagePath: string | null) => {
+      if (!packagePath) {
+        return [];
+      }
+
+      const functions = [
+        ...new Set(
+          executableFunctions
+            .filter(func => func.packagePath === packagePath)
+            .map(func => func.functionName),
+        ),
+      ];
+      return functions.map(func => ({
+        displayValue: func,
+        value: func,
+      }));
+    },
+    [executableFunctions],
+  );
 
   const isDisableSubmit = useMemo(() => {
     return !isDirty || !isValid || myVotingWeight < proposalCreationThreshold;
@@ -199,7 +235,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
 
   return (
     <FormProvider methods={methods} onSubmit={sendTx}>
-      <Modal>
+      <CreateProposalModalWrapper>
         <div className="modal-body">
           <div className="header">
             <h6>{t("Governance:createModal.title")}</h6>
@@ -277,8 +313,49 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
             <BoxContent label={t("Governance:createModal.setVariable.title")}>
               {fields.map((item, index) => (
                 <div className="multiple-variable" key={item.id}>
-                  <div>
-                    <FormInput
+                  <div className="variable-input-wrapper">
+                    <VariableSelectBox
+                      currentItem={
+                        item.pkgPath
+                          ? {
+                              displayValue: item.pkgPath,
+                              value: item.pkgPath,
+                            }
+                          : null
+                      }
+                      items={executablePackagePaths}
+                      onChange={value =>
+                        update(index, {
+                          ...item,
+                          pkgPath: value,
+                        })
+                      }
+                      placeholder={t(
+                        "Governance:createModal.setVariable.placeholder.pkgPath",
+                      )}
+                    />
+                    <VariableSelectBox
+                      currentItem={
+                        item.func
+                          ? {
+                              displayValue: item.func,
+                              value: item.func,
+                            }
+                          : null
+                      }
+                      items={filterExecutableFunctions(item.pkgPath || null)}
+                      onChange={value =>
+                        update(index, {
+                          ...item,
+                          func: value,
+                        })
+                      }
+                      placeholder={t(
+                        "Governance:createModal.setVariable.placeholder.func",
+                      )}
+                      disabled={!item.pkgPath}
+                    />
+                    {/* <FormInput
                       placeholder={t(
                         "Governance:createModal.setVariable.placeholder.pkgPath",
                       )}
@@ -290,14 +367,14 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                           : undefined
                       }
                       {...register(`variable.${index}.pkgPath`)}
-                    />
+                    /> */}
 
-                    <FormInput
+                    {/* <FormInput
                       placeholder={t(
                         "Governance:createModal.setVariable.placeholder.func",
                       )}
                       {...register(`variable.${index}.func`)}
-                    />
+                    /> */}
                     <FormInput
                       placeholder={t(
                         "Governance:createModal.setVariable.placeholder.param",
@@ -349,7 +426,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
             hierarchy: ButtonHierarchy.Primary,
           }}
         />
-      </Modal>
+      </CreateProposalModalWrapper>
     </FormProvider>
   );
 };

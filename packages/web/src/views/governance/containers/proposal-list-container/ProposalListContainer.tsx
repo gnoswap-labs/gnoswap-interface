@@ -9,6 +9,8 @@ import {
   useGetProposals,
 } from "@query/governance";
 
+import { useGetExecutableFunctions } from "@query/governance/use-get-executable-functions";
+import { useCreateProposalModal } from "@views/governance/hooks/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "../../hooks/use-governance-tx";
 
@@ -16,9 +18,9 @@ const ProposalListContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [isShowActiveOnly, setIsShowActiveOnly] = useState(false);
   const [selectedProposalId, setSelectedProposalId] = useState(0);
-  const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
   const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
+  const { openModal: openCreateProposalModal } = useCreateProposalModal();
 
   const {
     proposeCommunityPoolSpendProposal,
@@ -33,6 +35,11 @@ const ProposalListContainer: React.FC = () => {
     data: governanceSummaryInfo,
     isFetching: isFetchingGovernanceSummaryInfo,
   } = useGetGovernanceSummary();
+
+  const {
+    data: executableFunctions = [],
+    isFetching: isFetchingExecutableFunctions,
+  } = useGetExecutableFunctions();
   const { data: myDelegationInfo, isFetching: isFetchingMyDelegation } =
     useGetMyDelegation({
       address: account?.address || "",
@@ -59,6 +66,7 @@ const ProposalListContainer: React.FC = () => {
       isLoading={
         isFetchingProposalsInfo ||
         isFetchingGovernanceSummaryInfo ||
+        isFetchingExecutableFunctions ||
         isFetchingMyDelegation
       }
       isConnected={connected}
@@ -76,8 +84,8 @@ const ProposalListContainer: React.FC = () => {
       fetchMore={fetchNextItems}
       selectedProposalId={selectedProposalId}
       setSelectedProposalId={setSelectedProposalId}
-      isOpenCreateModal={isOpenCreateModal}
-      setIsOpenCreateModal={setIsOpenCreateModal}
+      openCreateProposalModal={openCreateProposalModal}
+      executableFunctions={executableFunctions}
       proposeTextProposal={(...params) =>
         proposeTextProposal(...params, async () => {
           await refetchProposals();

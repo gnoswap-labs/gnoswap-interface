@@ -5,21 +5,18 @@ import mixins from "@styles/mixins";
 
 export const CreateProposalModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  pointer-events: initial;
-  position: absolute;
-  overflow: hidden;
   width: 700px;
   max-height: 800px;
   border-radius: 8px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   background-color: ${({ theme }) => theme.color.background06};
+
   .btn-submit {
+    position: fixed;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     height: 57px;
+    bottom: 0;
   }
   ${media.mobile} {
     width: 328px;
@@ -33,7 +30,7 @@ export const CreateProposalModalWrapper = styled.div`
     border: 1px solid ${({ theme }) => theme.color.border02};
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    padding: 24px 24px 12px 24px;
+    padding: 24px 24px 73px 24px;
     overflow: scroll;
     gap: 16px;
     height: 800px;
@@ -79,19 +76,37 @@ export const BoxItem = styled.div`
   background-color: ${({ theme }) => theme.color.backgroundOpacity2};
   border: 1px solid ${({ theme }) => theme.color.border02};
   position: relative;
+
   .multiple-variable {
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
     width: 100%;
     gap: 12px;
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
-    div:first-of-type {
-      ${mixins.flexbox("row", "flex-start", "flex-start")};
+    .variable-input-wrapper {
+      ${mixins.flexbox("row", "center", "space-between")};
+      width: 100%;
       gap: 8px;
-      > div {
-        ${mixins.flexbox("column", "flex-start", "flex-start")};
-      }
+
       ${media.mobile} {
         width: 100%;
         ${mixins.flexbox("column", "flex-start", "flex-start")};
+      }
+
+      > * {
+        flex: 1;
+        display: flex;
+        max-width: 181px;
+
+        ${media.mobile} {
+          max-width: 100%;
+        }
+
+        .display-value {
+          max-width: 181px;
+
+          ${media.mobile} {
+            max-width: 100%;
+          }
+        }
       }
     }
     gap: 8px;

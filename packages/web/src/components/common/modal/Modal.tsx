@@ -9,9 +9,9 @@ interface ModalProps {
   leftArrowClick?: (e: React.MouseEvent<HTMLElement>) => void;
   leftText?: string;
   hasExit?: boolean;
-  exitClick?: (e: React.MouseEvent<HTMLElement>) => void;
   style?: ModalStyleProps;
   selector?: string;
+  exitClick?: (e: React.MouseEvent<HTMLElement>) => void;
   children: React.ReactNode;
 }
 
