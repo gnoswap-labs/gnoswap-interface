@@ -15,7 +15,10 @@ import WarningCard from "@components/common/warning-card/WarningCard";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
-import { DelegationItemInfo, nullDelegationItemInfo } from "@repositories/governance";
+import {
+  DelegationItemInfo,
+  nullDelegationItemInfo,
+} from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import UndelegateSelect from "./undelegate-selector/UndelegateSelect";
@@ -78,7 +81,7 @@ const MyDelegationUndelegateModal: React.FC<
 
   const [selectedDelegatedInfo, setSelectedDelegatedInfo] =
     useState<DelegationItemInfo>(
-      accumedDelegationInfo.sort((a, b) =>  b.amount - a.amount)[0] ||
+      accumedDelegationInfo.sort((a, b) => b.amount - a.amount)[0] ||
         nullDelegationItemInfo,
     );
 
@@ -222,7 +225,11 @@ const MyDelegationUndelegateModal: React.FC<
     </>
   );
 
-  return <Modal>{showDelegateInfo()}</Modal>;
+  return (
+    <Modal>
+      <div className="modal-wrapper">{showDelegateInfo()}</div>
+    </Modal>
+  );
 };
 
 export default MyDelegationUndelegateModal;

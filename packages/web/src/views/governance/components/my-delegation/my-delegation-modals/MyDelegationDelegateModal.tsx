@@ -1,6 +1,12 @@
 import { useTheme } from "@emotion/react";
 import BigNumber from "bignumber.js";
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
@@ -57,16 +63,29 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     [setIsOpen],
   );
   const { t } = useTranslation();
+  const selfDelegateName = t("Governance:myDel.delModal.selectDel.self.chip");
+  const defaultDelegateeInfo = { ...nullDelegateeInfo, name: selfDelegateName };
+
   const { getAccountUrl } = useGnoscanUrl();
   const theme = useTheme();
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
   const [stage, setStage] = useState<"MAIN" | "SELECT_DELEGATE">("MAIN");
-  const [delegatee, setDelegatee] = useState<DelegateeInfo>(nullDelegateeInfo);
-  const [tmpDelegatee, setTmpDelegatee] = useState<DelegateeInfo>(
-    delegatees[0] || nullDelegateeInfo,
-  );
+  const [delegatee, setDelegatee] =
+    useState<DelegateeInfo>(defaultDelegateeInfo);
+  const [tmpDelegatee, setTmpDelegatee] =
+    useState<DelegateeInfo>(defaultDelegateeInfo);
   const [selfAddress, setSelfAddress] = useState("");
-  const isSelfAddrValid = isValidAddress(selfAddress);
+
+  const isValidSelfAddress = useMemo(() => {
+    return isValidAddress(selfAddress);
+  }, [selfAddress]);
+
+  const selectDelegateeButtonText = useMemo(() => {
+    if (selfAddress !== "" && !isValidSelfAddress) {
+      return t("Wallet:assetSendModal.btn.invalidAddr");
+    }
+    return t("Governance:myDel.delModal.selectDel.selectBtn");
+  }, [isValidSelfAddress, selfAddress, t]);
 
   const availDelegateButton = useMemo(() => {
     if (!isWalletConnected) {
@@ -108,6 +127,29 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 
     onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
   };
+
+  const changeSelfDelegateeAddress = useCallback(
+    (address: string) => {
+      setSelfAddress(address);
+
+      const currentDelegatee = delegatees.find(
+        delegatee => delegatee.address === address,
+      );
+
+      if (currentDelegatee) {
+        setTmpDelegatee(prev => ({
+          ...currentDelegatee,
+          name: prev.name,
+        }));
+      } else {
+        setTmpDelegatee(prev => ({
+          ...nullDelegateeInfo,
+          name: prev.name,
+        }));
+      }
+    },
+    [delegatees],
+  );
 
   const showDelegateInfo = () => (
     <>
@@ -317,37 +359,37 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           showLogo={false}
           delegatee={{
             ...nullDelegateeInfo,
-            name: t("Governance:myDel.delModal.selectDel.self.chip"),
+            name: selfDelegateName,
           }}
-          selected={tmpDelegatee.address === ""}
-          onClick={() =>
+          selected={tmpDelegatee.name === selfDelegateName}
+          onClick={() => {
             setTmpDelegatee({
               ...nullDelegateeInfo,
-              name: t("Governance:myDel.delModal.selectDel.self.chip"),
-            })
-          }
+              name: selfDelegateName,
+            });
+            changeSelfDelegateeAddress(selfAddress);
+          }}
         />
         {delegatees.map((item: DelegateeInfo, index: number) => {
           return (
             <DelegateeChip
               key={index}
               delegatee={item}
-              selected={item.address === tmpDelegatee.address}
+              selected={item.name === tmpDelegatee.name}
               onClick={() => setTmpDelegatee(item)}
             />
           );
         })}
       </div>
 
-      {tmpDelegatee.name ===
-        t("Governance:myDel.delModal.selectDel.self.chip") && (
+      {tmpDelegatee.name === selfDelegateName && (
         <>
           <div className="self-address">
             <div className="withdraw-address">
               <input
                 className="address-input"
                 value={selfAddress}
-                onChange={e => setSelfAddress(e.target.value)}
+                onChange={e => changeSelfDelegateeAddress(e.target.value)}
                 placeholder={t(
                   "Governance:myDel.delModal.selectDel.self.placeholder",
                 )}
@@ -439,20 +481,22 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           }
           setStage("MAIN");
         }}
-        text={t("Governance:myDel.delModal.selectDel.selectBtn")}
+        text={selectDelegateeButtonText}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={tmpDelegatee.address === "" && !isSelfAddrValid}
+        disabled={tmpDelegatee.address === "" && !isValidSelfAddress}
         className="button-confirm"
       />
     </>
   );
 
   return (
-    <Modal className={stage === "MAIN" ? "" : "large-gap"}>
-      {stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}
+    <Modal className={stage === "MAIN" ? "" : "large-gap selector-box"}>
+      <div className="modal-wrapper">
+        {stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}
+      </div>
     </Modal>
   );
 };

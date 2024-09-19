@@ -5,28 +5,35 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const MyDelegationModalWrapper = styled.div`
-  width: 500px;
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  gap: 4px;
+  width: 500px;
+  overflow: visible;
 
-  overflow-y: scroll;
+  .modal-wrapper {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 100%;
+    gap: 4px;
 
-  color: ${({ theme }) => theme.color.text02};
-  background-color: ${({ theme }) => theme.color.background06};
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  box-shadow: ${({ theme }) => theme.color.shadow01};
-  padding: 23px;
-
-  &.large-gap {
-    gap: 24px;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.background06};
+    border-radius: 8px;
+    border: 1px solid ${({ theme }) => theme.color.border02};
+    box-shadow: ${({ theme }) => theme.color.shadow01};
+    padding: 23px;
+    overflow: auto;
   }
 
-  ${media.mobile} {
-    width: 100vw;
-    padding: 15px;
-    max-width: 500px;
-    gap: 4px;
+  &.selector-box {
+    height: 490px;
+    > .modal-wrapper {
+      overflow: visible;
+    }
+  }
+
+  &.large-gap {
+    > .modal-wrapper {
+      gap: 24px;
+    }
   }
 
   .modal-content-header {

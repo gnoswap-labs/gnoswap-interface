@@ -9,6 +9,7 @@ export async function getStaticProps({ locale }: { locale: string }) {
     props: {
       ...(await serverSideTranslations(locale, [
         "Governance",
+        "Wallet",
         ...DEFAULT_I18N_NS,
       ])),
     },
