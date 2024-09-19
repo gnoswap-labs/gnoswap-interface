@@ -18,6 +18,7 @@ export const useGetDelegatees = (
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,
     refetchOnReconnect: true,
+    keepPreviousData: true,
     ...options,
   });
 };

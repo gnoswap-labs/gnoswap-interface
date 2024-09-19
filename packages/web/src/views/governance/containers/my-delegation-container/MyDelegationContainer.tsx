@@ -9,8 +9,8 @@ import {
 } from "@query/governance";
 import { nullMyDelegationInfo } from "@repositories/governance";
 
-import MyDelegation from "../../components/my-delegation/MyDelegation";
 import { useGovernanceTx } from "@views/governance/hooks/use-governance-tx";
+import MyDelegation from "../../components/my-delegation/MyDelegation";
 
 const MyDelegationContainer: React.FC = () => {
   const { account, connected } = useWallet();
@@ -20,19 +20,19 @@ const MyDelegationContainer: React.FC = () => {
 
   const {
     data: governanceSummaryInfo,
-    isFetching: isFetchingGovernanceSummaryInfo,
+    isFetched: isFetchedGovernanceSummaryInfo,
     refetch: refetchSummary,
   } = useGetGovernanceSummary();
   const {
     data: myDelegationInfo,
-    isFetching: isFetchingMyDelegation,
+    isFetched: isFetchedMyDelegation,
     refetch: refetchMyDelegation,
   } = useGetMyDelegation({
     address: account?.address || "",
   });
   const {
     data: delegatees,
-    isFetching: isFetchingDelegatees,
+    isFetched: isFetchedDelegatees,
     refetch: refetchDelegatees,
   } = useGetDelegatees();
 
@@ -43,9 +43,9 @@ const MyDelegationContainer: React.FC = () => {
       myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
       delegatees={delegatees ?? []}
       isLoading={
-        (isFetchingGovernanceSummaryInfo ||
-          isFetchingMyDelegation ||
-          isFetchingDelegatees) &&
+        (!isFetchedGovernanceSummaryInfo ||
+          !isFetchedMyDelegation ||
+          !isFetchedDelegatees) &&
         (!governanceSummaryInfo || !myDelegationInfo || !delegatees)
       }
       isWalletConnected={connected}

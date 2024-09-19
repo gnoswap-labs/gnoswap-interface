@@ -6,12 +6,12 @@ import { nullGovernanceSummaryInfo } from "@repositories/governance";
 import GovernanceSummary from "../../components/governance-summary/GovernanceSummary";
 
 const GovernanceSummaryContainer: React.FC = () => {
-  const { data: governanceSummaryInfo, isFetching } = useGetGovernanceSummary();
+  const { data: governanceSummaryInfo, isFetched } = useGetGovernanceSummary();
 
   return (
     <GovernanceSummary
       governanceSummary={governanceSummaryInfo ?? nullGovernanceSummaryInfo}
-      isLoading={isFetching && !governanceSummaryInfo}
+      isLoading={!isFetched && !governanceSummaryInfo}
     />
   );
 };
