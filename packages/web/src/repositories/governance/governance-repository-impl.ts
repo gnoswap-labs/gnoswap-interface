@@ -87,11 +87,16 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    const response = await this.networkClient.get<{
-      data: GetMyDelegationResponse;
-    }>({
-      url: `governance/delegations?address=${request.address}`,
-    });
+    const response = await this.networkClient
+      .get<{
+        data: GetMyDelegationResponse;
+      }>({
+        url: `governance/delegations?address=${request.address}`,
+      })
+      .catch(e => {
+        console.error(e);
+        return null;
+      });
 
     if (!response?.data?.data) {
       return nullMyDelegationInfo;

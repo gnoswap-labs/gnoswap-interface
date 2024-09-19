@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import relative from "dayjs/plugin/relativeTime";
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -12,8 +12,8 @@ import StatusBadge from "../../status-badge/StatusBadge";
 import TypeBadge from "../../type-badge/TypeBadge";
 import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 
-import { ProposalDetailWrapper } from "./ProposalCard.styles";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { ProposalDetailWrapper } from "./ProposalCard.styles";
 
 dayjs.extend(relative);
 
@@ -34,6 +34,40 @@ const ProposalCard: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
+
+  const availExecutableButton = useMemo(() => {
+    if (!address) {
+      return false;
+    }
+
+    if (proposalDetail.status !== "PASSED") {
+      return false;
+    }
+
+    if (
+      !["PARAMETER_CHANGE", "COMMUNITY_POOL_SPEND"].includes(
+        proposalDetail.type,
+      )
+    ) {
+      return false;
+    }
+
+    if (!proposalDetail.executableTime || !proposalDetail.expiredTime) {
+      return false;
+    }
+
+    const executableTime = new Date(proposalDetail.executableTime).getTime();
+    const expiredTime = new Date(proposalDetail.executableTime).getTime();
+    const now = new Date().getTime();
+
+    return expiredTime > now && now >= executableTime;
+  }, [
+    address,
+    proposalDetail.executableTime,
+    proposalDetail.expiredTime,
+    proposalDetail.status,
+    proposalDetail.type,
+  ]);
 
   return (
     <ProposalDetailWrapper
@@ -87,22 +121,18 @@ const ProposalCard: React.FC<Props> = ({
               ].join("...")}
             <IconNewTab />
           </div>
-          {proposalDetail.status === "PASSED" &&
-            address !== "" &&
-            ["PARAMETER_CHANGE", "COMMUNITY_POOL_SPEND"].includes(
-              proposalDetail.type,
-            ) && (
-              <Button
-                text={t("Governance:proposalList.executeBtn")}
-                style={{
-                  hierarchy: ButtonHierarchy.Primary,
-                }}
-                onClick={e => {
-                  e.stopPropagation();
-                  executeProposal(proposalDetail.id);
-                }}
-              />
-            )}
+          {availExecutableButton && (
+            <Button
+              text={t("Governance:proposalList.executeBtn")}
+              style={{
+                hierarchy: ButtonHierarchy.Primary,
+              }}
+              onClick={e => {
+                e.stopPropagation();
+                executeProposal(proposalDetail.id);
+              }}
+            />
+          )}
           {proposalDetail.status === "UPCOMING" &&
             proposalDetail.proposer.address === address && (
               <Button
