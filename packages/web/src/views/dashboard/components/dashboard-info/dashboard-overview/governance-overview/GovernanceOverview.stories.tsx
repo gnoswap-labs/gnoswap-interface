@@ -1,7 +1,6 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import GovernanceOverview from "./GovernanceOverview";
 import { css, Theme } from "@emotion/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import GovernanceOverview from "./GovernanceOverview";
 
 export default {
   title: "dashboard/GovernanceOverview",
@@ -16,11 +15,11 @@ const Template: ComponentStory<typeof GovernanceOverview> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  governenceOverviewInfo: {
-    totalXgnosIssued: "59,144,225 xGNOS",
+  governanceOverviewInfo: {
+    totalDelegated: "59,144,225 xGNOS",
     holders: "14,072",
-    passedProposals: "125",
-    activeProposals: "2",
+    passedCount: "125",
+    activeCount: "2",
     communityPool: "2,412,148 GNOS",
   },
 };

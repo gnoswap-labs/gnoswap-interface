@@ -1,8 +1,8 @@
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { DEVICE_TYPE } from "@styles/media";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import DashboardOverview from "./DashboardOverview";
-import { DEVICE_TYPE } from "@styles/media";
 
 describe("DashboardOverview Component", () => {
   it("DashboardOverview render", () => {
@@ -14,14 +14,20 @@ describe("DashboardOverview Component", () => {
         dailyBlockEmissions: "580 GNOS",
         totalStaked: "152,412,148 GNOS",
         stakingRatio: "55.15%",
+        dailyBlockEmissionsInfo: {
+          liquidityStaking: "580 GNOS",
+          devOps: "580 GNOS",
+          community: "580 GNOS",
+        },
       },
-      governenceOverviewInfo: {
-        totalXgnosIssued: "59,144,225 xGNOS",
-        holders: "14,072",
-        passedProposals: "125",
-        activeProposals: "2",
-        communityPool: "2,412,148 GNOS",
+      governanceOverviewInfo: {
+        totalDelegated: "-",
+        holders: "-",
+        passedCount: "-",
+        activeCount: "-",
+        communityPool: "-",
       },
+      loading: false,
       breakpoint: DEVICE_TYPE.WEB,
     };
 

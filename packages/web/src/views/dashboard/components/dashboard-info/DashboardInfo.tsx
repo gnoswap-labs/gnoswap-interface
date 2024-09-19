@@ -5,7 +5,7 @@ import DashboardInfoTitle, {
   DashboardTokenInfo,
 } from "./dashboard-info-title/DashboardInfoTitle";
 import DashboardOverview from "./dashboard-overview/DashboardOverview";
-import { GovernenceOverviewInfo } from "./dashboard-overview/governance-overview/GovernanceOverview";
+import { GovernanceOverviewInfo } from "./dashboard-overview/governance-overview/GovernanceOverview";
 import { SupplyOverviewInfo } from "./dashboard-overview/supply-overview/SupplyOverview";
 
 import { DashboardInfoWrapper } from "./DashboardInfo.styles";
@@ -13,7 +13,7 @@ import { DashboardInfoWrapper } from "./DashboardInfo.styles";
 interface DashboardInfoProps {
   dashboardTokenInfo: DashboardTokenInfo;
   supplyOverviewInfo: SupplyOverviewInfo;
-  governenceOverviewInfo: GovernenceOverviewInfo;
+  governanceOverviewInfo: GovernanceOverviewInfo | null;
   breakpoint: DEVICE_TYPE;
   loading: boolean;
 }
@@ -21,7 +21,7 @@ interface DashboardInfoProps {
 const DashboardInfo: React.FC<DashboardInfoProps> = ({
   dashboardTokenInfo,
   supplyOverviewInfo,
-  governenceOverviewInfo,
+  governanceOverviewInfo,
   breakpoint,
   loading,
 }) => (
@@ -39,7 +39,7 @@ const DashboardInfo: React.FC<DashboardInfoProps> = ({
     )}
     <DashboardOverview
       supplyOverviewInfo={supplyOverviewInfo}
-      governenceOverviewInfo={governenceOverviewInfo}
+      governanceOverviewInfo={governanceOverviewInfo}
       breakpoint={breakpoint}
       loading={loading}
     />
