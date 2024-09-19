@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { addressValidationCheck } from "./validation-utils";
+import { isValidAddress } from "./validation-utils";
 
 export const getCreateProposalValidation = () =>
   yup
@@ -21,7 +21,7 @@ export const getCreateProposalCommunityPoolSpendValidation = () =>
         .trim()
         .required("Recipient is required")
         .test("is-valid", "Address is not valid", value =>
-          addressValidationCheck(value),
+          isValidAddress(value),
         ),
       amount: yup
         .number()

@@ -22,7 +22,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { capitalize } from "@utils/string-utils";
-import { addressValidationCheck } from "@utils/validation-utils";
+import { isValidAddress } from "@utils/validation-utils";
 
 import {
   AssetSendContent,
@@ -116,7 +116,7 @@ const AssetSendModal: React.FC<Props> = ({
     !Number(amount ?? 0) ||
     !address ||
     !withdrawInfo ||
-    !addressValidationCheck(address) ||
+    !isValidAddress(address) ||
     BigNumber(amount || "0").isGreaterThan(
       BigNumber(currentAvailableBalance || "0"),
     );
@@ -171,7 +171,7 @@ const AssetSendModal: React.FC<Props> = ({
       return t("common:btn.insuffiBal");
     }
     if (address === "") return t("Wallet:assetSendModal.btn.enterAddr");
-    if (!addressValidationCheck(address))
+    if (!isValidAddress(address))
       return t("Wallet:assetSendModal.btn.invalidAddr");
     return t("Wallet:assetSendModal.btn.send");
   }, [address, amount, currentAvailableBalance, withdrawInfo, t]);

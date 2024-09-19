@@ -7,14 +7,14 @@ import { usePositionData } from "@hooks/common/use-position-data";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetPoolDetailByPath } from "@query/pools";
-import { addressValidationCheck } from "@utils/validation-utils";
+import { isValidAddress } from "@utils/validation-utils";
 
 import MyLiquidityContainer from "./containers/my-liquidity-container/MyLiquidityContainer";
 import PoolPairInformationContainer from "./containers/pool-pair-information-container/PoolPairInformationContainer";
 import StakingContainer from "./containers/staking-container/StakingContainer";
 import PoolLayout from "./PoolLayout";
 
-const PoolDetail: React.FC =() => {
+const PoolDetail: React.FC = () => {
   const router = useCustomRouter();
   const { account } = useWallet();
   const poolPath = router.getPoolPath();
@@ -27,7 +27,7 @@ const PoolDetail: React.FC =() => {
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
-    if (!address || !addressValidationCheck(address)) {
+    if (!address || !isValidAddress(address)) {
       return undefined;
     }
     return address;
