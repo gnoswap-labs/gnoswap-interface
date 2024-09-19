@@ -1,4 +1,5 @@
 import { useTheme } from "@emotion/react";
+import BigNumber from "bignumber.js";
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -20,7 +21,7 @@ import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { DelegateeInfo, nullDelegateeInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { addressValidationCheck } from "@utils/validation-utils";
+import { isValidAddress } from "@utils/validation-utils";
 
 import DelegateeChip from "./delegatee-chip/DelegateeChip";
 
@@ -60,14 +61,53 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   const theme = useTheme();
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
   const [stage, setStage] = useState<"MAIN" | "SELECT_DELEGATE">("MAIN");
-  const [delegatee, setDelegatee] = useState<DelegateeInfo>(
-    nullDelegateeInfo,
-  );
+  const [delegatee, setDelegatee] = useState<DelegateeInfo>(nullDelegateeInfo);
   const [tmpDelegatee, setTmpDelegatee] = useState<DelegateeInfo>(
     delegatees[0] || nullDelegateeInfo,
   );
   const [selfAddress, setSelfAddress] = useState("");
-  const isSelfAddrValid = addressValidationCheck(selfAddress);
+  const isSelfAddrValid = isValidAddress(selfAddress);
+
+  const availDelegateButton = useMemo(() => {
+    if (!isWalletConnected) {
+      return true;
+    }
+
+    const amountBN = BigNumber(gnsAmountInput.amount);
+    if (amountBN.isZero()) {
+      return false;
+    }
+
+    if (amountBN.isGreaterThan(gnsAmountInput.balance.replaceAll(",", ""))) {
+      return false;
+    }
+
+    if (!delegatee.address || !isValidAddress(delegatee.address)) {
+      return false;
+    }
+
+    return true;
+  }, [
+    delegatee.address,
+    gnsAmountInput.amount,
+    gnsAmountInput.balance,
+    isWalletConnected,
+  ]);
+
+  const delegate = () => {
+    setIsOpen(false);
+
+    if (!isWalletConnected) {
+      connectWallet();
+      return;
+    }
+
+    if (!availDelegateButton) {
+      return;
+    }
+
+    onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
+  };
 
   const showDelegateInfo = () => (
     <>
@@ -244,14 +284,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       />
 
       <Button
-        onClick={() => {
-          if(isWalletConnected) {
-            onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
-          } else {
-            connectWallet();
-          }
-          setIsOpen(false);
-        }}
+        onClick={delegate}
         text={t(
           isWalletConnected
             ? "Governance:myDel.delModal.ctaBtn"
@@ -261,12 +294,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={
-          isWalletConnected &&
-          (gnsAmountInput.amount === "0" ||
-            Number(gnsAmountInput.amount) >
-              Number(gnsAmountInput.balance.replaceAll(",", "")))
-        }
+        disabled={!availDelegateButton}
         className="button-confirm"
       />
     </>
