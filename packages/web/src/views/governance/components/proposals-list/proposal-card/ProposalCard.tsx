@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import relative from "dayjs/plugin/relativeTime";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -34,8 +34,9 @@ const ProposalCard: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
+  const [currentTime, setCurrentTime] = useState(new Date().getTime());
 
-  const availExecutableButton = useMemo(() => {
+  const executable = useMemo(() => {
     if (!address) {
       return false;
     }
@@ -52,22 +53,44 @@ const ProposalCard: React.FC<Props> = ({
       return false;
     }
 
+    return true;
+  }, [address, proposalDetail.status, proposalDetail.type]);
+
+  const availExecutableButton = useMemo(() => {
+    if (!executable) {
+      return false;
+    }
+
     if (!proposalDetail.executableTime || !proposalDetail.expiredTime) {
       return false;
     }
 
     const executableTime = new Date(proposalDetail.executableTime).getTime();
     const expiredTime = new Date(proposalDetail.executableTime).getTime();
-    const now = new Date().getTime();
 
-    return expiredTime > now && now >= executableTime;
+    return expiredTime > currentTime && currentTime >= executableTime;
   }, [
-    address,
+    currentTime,
+    executable,
     proposalDetail.executableTime,
     proposalDetail.expiredTime,
-    proposalDetail.status,
-    proposalDetail.type,
   ]);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (executable) {
+      intervalId = setInterval(() => {
+        setCurrentTime(new Date().getTime());
+      }, 1000);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [executable, proposalDetail.status]);
 
   return (
     <ProposalDetailWrapper
