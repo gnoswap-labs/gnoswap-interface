@@ -54,7 +54,7 @@ const ProposalCard: React.FC<Props> = ({
     }
 
     return true;
-  }, [address, proposalDetail.status, proposalDetail.type]);
+  }, [address, proposalDetail]);
 
   const availExecutableButton = useMemo(() => {
     if (!executable) {
@@ -65,8 +65,12 @@ const ProposalCard: React.FC<Props> = ({
       return false;
     }
 
-    const executableTime = new Date(proposalDetail.executableTime).getTime();
-    const expiredTime = new Date(proposalDetail.executableTime).getTime();
+    const executableTime = new Date(
+      new Date(proposalDetail.executableTime).toUTCString(),
+    ).getTime();
+    const expiredTime = new Date(
+      new Date(proposalDetail.executableTime).toUTCString(),
+    ).getTime();
 
     return expiredTime > currentTime && currentTime >= executableTime;
   }, [
