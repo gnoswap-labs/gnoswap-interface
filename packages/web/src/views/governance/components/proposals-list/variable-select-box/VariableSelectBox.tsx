@@ -1,5 +1,4 @@
-import IconArrowDown from "@components/common/icons/IconArrowDown";
-import IconArrowUp from "@components/common/icons/IconArrowUp";
+
 import React, {
   useCallback,
   useEffect,
@@ -8,6 +7,10 @@ import React, {
   useState,
 } from "react";
 import ReactDOM from "react-dom";
+
+import IconArrowDown from "@components/common/icons/IconArrowDown";
+import IconArrowUp from "@components/common/icons/IconArrowUp";
+
 import {
   VariableSelectBoxWrapper,
   VariableSelectOptionsWrapper,

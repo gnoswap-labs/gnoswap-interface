@@ -399,7 +399,11 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                             }
                           : null
                       }
-                      errorText={paramErrors?.variable?.[index] || undefined}
+                      errorText={
+                        breakpoint !== DEVICE_TYPE.MOBILE
+                          ? paramErrors?.variable?.[index] || undefined
+                          : undefined
+                      }
                       items={executablePackagePaths}
                       {...register(`variable.${index}.pkgPath`)}
                       onChange={value => {
@@ -449,6 +453,11 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                       placeholder={getParameterPlaceholder(item)}
                       {...register(`variable.${index}.param`)}
                       onBlur={validateParams}
+                      errorText={
+                        breakpoint === DEVICE_TYPE.MOBILE
+                          ? paramErrors?.variable?.[index] || undefined
+                          : undefined
+                      }
                     />
                   </div>
                   <IconButton onClick={() => handleClickFormFieldArray(index)}>
@@ -491,7 +500,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
           style={{
             fullWidth: true,
             textColor: "text09",
-            fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
+            fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "p1",
             hierarchy: ButtonHierarchy.Primary,
           }}
         />

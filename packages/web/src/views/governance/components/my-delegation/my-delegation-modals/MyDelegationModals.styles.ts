@@ -6,7 +6,9 @@ import mixins from "@styles/mixins";
 
 export const MyDelegationModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  width: 500px;
+  min-width: 328px;
+  max-width: 500px;
+  width: 90vw;
   overflow: visible;
 
   .modal-wrapper {

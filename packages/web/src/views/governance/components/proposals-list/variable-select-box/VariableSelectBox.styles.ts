@@ -7,6 +7,7 @@ import { Z_INDEX } from "@styles/zIndex";
 export const VariableSelectBoxWrapper = styled.div`
   position: relative;
   ${mixins.flexbox("column", "flex-start", "center")};
+  width: 100%;
   cursor: pointer;
   gap: 6px;
 
@@ -83,17 +84,22 @@ export const VariableSelectOptionsWrapper = styled.div<{
   overflow: auto;
   max-height: 183px;
 
-  ${media.mobile} {
-    transition: max-height 1s ease;
-    position: fixed;
-    top: auto;
-    bottom: 0;
-    width: 100vw;
-    min-width: 360px;
-    left: 0;
-    z-index: ${Z_INDEX.fixed};
-    max-height: 0;
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) =>
+      theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA"};
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar {
     display: block;
+    scrollbar-track-color: ${({ theme }) => theme.color.backgroundOpacity2};
   }
 
   > .select-list {

@@ -5,8 +5,13 @@ import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
 export const ViewProposalModalWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
   overflow: scroll;
-  width: 700px;
+  min-width: 328px;
+  max-width: 700px;
+  width: 90vw;
+  max-height: 800px;
+  height: 85vh;
   border-radius: 8px;
   padding: 24px 0px;
   gap: 16px;
@@ -14,11 +19,10 @@ export const ViewProposalModalWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
   ${media.mobile} {
-    width: 328px;
-    height: 610px;
     padding: 16px 12px 0px 12px;
   }
   .modal-body {
+    flex: 1;
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 0px 24px;
@@ -91,10 +95,11 @@ export const ModalHeaderWrapper = styled.div`
 `;
 
 export const ProposalContentWrapper = styled.div`
+  flex: 1;
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   border: 1px solid ${({ theme }) => theme.color.border02};
-  height: 335px;
+  max-height: 500px;
   overflow: scroll;
   padding: 24px;
   gap: 12px;
@@ -119,6 +124,7 @@ export const ProposalContentWrapper = styled.div`
   }
 
   .content {
+    flex: 1;
     width: 100%;
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body12}

@@ -7,6 +7,7 @@ import { XGNS_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconClose from "@components/common/icons/IconCancel";
 import withLocalModal from "@components/hoc/with-local-modal";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -54,11 +55,14 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
     [setIsModalOpen],
   );
   const { t } = useTranslation();
+  const { isMobile } = useWindowSize();
   const [selectedVote, setSelectedVote] = useState(
     proposalDetail.myVote?.type || "",
   );
 
   if (!proposalDetail) return null;
+
+  const hasVoteButton = ["UPCOMING", "ACTIVE"].includes(proposalDetail.status);
 
   return (
     <Modal>
@@ -117,7 +121,17 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             />
           </div>
         </ModalHeaderWrapper>
-        <ProposalContentWrapper>
+        <ProposalContentWrapper
+          style={{
+            maxHeight: hasVoteButton
+              ? isMobile
+                ? "368px"
+                : "329px"
+              : isMobile
+              ? "499px"
+              : "486px",
+          }}
+        >
           <div className="content">
             {proposalDetail.type === "COMMUNITY_POOL_SPEND" && (
               <>
@@ -184,7 +198,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           selectedVote={selectedVote}
           setSelectedVote={setSelectedVote}
         />
-        {["UPCOMING", "ACTIVE"].includes(proposalDetail.status) && (
+        {hasVoteButton && (
           <>
             <VotingPowerWrapper>
               <span>{t("Governance:detailModal.votingWeight")}</span>

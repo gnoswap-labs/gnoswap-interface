@@ -5,8 +5,12 @@ import mixins from "@styles/mixins";
 
 export const CreateProposalModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  width: 700px;
+  min-width: 328px;
+  max-width: 700px;
+  width: 90vw;
   max-height: 800px;
+  height: 85vh;
+
   border-radius: 8px;
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   background-color: ${({ theme }) => theme.color.background06};
@@ -20,7 +24,6 @@ export const CreateProposalModalWrapper = styled.div`
     bottom: 0;
   }
   ${media.mobile} {
-    width: 328px;
     .btn-submit {
       height: 41px;
       border-top-left-radius: 0;
@@ -63,7 +66,7 @@ export const CreateProposalModalWrapper = styled.div`
       }
     }
     ${media.mobile} {
-      padding: 12px;
+      padding: 12px 12px 57px 12px;
     }
 
     &::-webkit-scrollbar {
@@ -106,7 +109,6 @@ export const BoxItem = styled.div`
       gap: 8px;
 
       ${media.mobile} {
-        width: 100%;
         ${mixins.flexbox("column", "flex-start", "flex-start")};
       }
 
