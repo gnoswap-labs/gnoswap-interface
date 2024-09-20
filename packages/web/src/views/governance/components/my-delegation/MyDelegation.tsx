@@ -249,7 +249,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   : undefined
               }
               valueButton={
-                showUndel
+                hasUndel && showUndel
                   ? {
                       text: t("Governance:myDel.undel.btn"),
                       onClick: collectUndelegated,
