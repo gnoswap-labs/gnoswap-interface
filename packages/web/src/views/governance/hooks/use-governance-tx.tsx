@@ -12,7 +12,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
-import { formatTokenAmount } from "@utils/new-number-utils";
+import BigNumber from "bignumber.js";
 
 export const useGovernanceTx = () => {
   const { t } = useTranslation();
@@ -200,9 +200,10 @@ export const useGovernanceTx = () => {
       messageData,
       response => {
         if (!response) return messageData;
-        const tokenAAmount = formatTokenAmount(response?.[0] || 0, {
-          decimals: GNS_TOKEN.decimals,
-        });
+        const tokenAAmount = (
+          BigNumber(response[0] || 0).toNumber() /
+          10 ** GNS_TOKEN.decimals
+        ).toLocaleString("en");
 
         return {
           ...messageData,
@@ -229,17 +230,7 @@ export const useGovernanceTx = () => {
       () => governanceRepository.sendCollectReward(),
       DexEvent.COLLECT_GOV_REWARD,
       messageData,
-      response => {
-        if (!response) return messageData;
-        const tokenAAmount = `${formatTokenAmount(response?.[0] || 0, {
-          decimals: GNS_TOKEN.decimals,
-        })} ${GNS_TOKEN.symbol}`;
-
-        return {
-          ...messageData,
-          tokenAAmount,
-        };
-      },
+      () => messageData,
       emitCallback,
     );
   };
