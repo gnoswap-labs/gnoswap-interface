@@ -38,7 +38,7 @@ export const ModalHeaderWrapper = styled.div`
   gap: 8px;
   width: 100%;
   ${media.mobile} {
-    gap: 12px;
+    gap: 16px;
   }
   .header {
     ${mixins.flexbox("row", "center", "space-between")};

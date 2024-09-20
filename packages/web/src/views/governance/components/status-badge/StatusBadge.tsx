@@ -15,9 +15,10 @@ dayjs.extend(relative);
 interface StatusBadgeProps {
   status: string;
   time: string;
+  twoline?: boolean;
 }
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time }) => {
+const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time, twoline }) => {
   const { t } = useTranslation();
 
   const getContent = () => {
@@ -87,10 +88,10 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time }) => {
   };
 
   return (
-    <StatusBadgeWrapper>
+    <StatusBadgeWrapper style={{ flexDirection: twoline ? "column" : "row"}}>
       {getContent()}
       <div className="time">
-        <IconOutlineClock className="status-icon" />
+        <IconOutlineClock className="time-icon" />
         {getTimeInfo()}
       </div>
     </StatusBadgeWrapper>

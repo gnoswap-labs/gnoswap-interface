@@ -57,7 +57,11 @@ export const StatusBadgeWrapper = styled.div`
     ${fonts.p4};
     line-height: 18px;
     color: ${({ theme }) => theme.color.text05};
-    * {
+    .time-icon {
+      ${mixins.flexbox("row", "center", "center")};
+      padding: 1px;
+      width: 16px;
+      height: 16px;
       fill: ${({ theme }) => theme.color.text05};
     }
   }

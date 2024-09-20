@@ -118,6 +118,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <StatusBadge
               status={proposalDetail.status}
               time={proposalDetail.time}
+              twoline={breakpoint === DEVICE_TYPE.MOBILE}
             />
           </div>
         </ModalHeaderWrapper>
