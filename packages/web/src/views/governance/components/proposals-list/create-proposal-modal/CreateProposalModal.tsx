@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -12,6 +13,7 @@ import IconAdd from "@components/common/icons/IconAdd";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconRemove from "@components/common/icons/IconRemove";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { DEVICE_TYPE } from "@styles/media";
 import {
@@ -20,17 +22,17 @@ import {
   getCreateProposalParameterValidation,
   getCreateProposalValidation,
 } from "@utils/create-proposal-validation";
+import { makeDisplayPackagePath } from "@utils/governance-utils";
+
 
 import TokenChip from "../../token-chip/TokenChip";
-
-import { useQuery } from "@tanstack/react-query";
-import { makeDisplayPackagePath } from "@utils/governance-utils";
 import VariableSelectBox from "../variable-select-box/VariableSelectBox";
+
 import {
   BoxItem,
   CreateProposalModalWrapper,
   IconButton,
-  ToolTipContentWrapper,
+  ToolTipContentWrapper
 } from "./CreateProposalModal.styles";
 
 interface BoxContentProps {
@@ -484,7 +486,16 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
               </div>
               <div className="value">
                 <span>{proposalCreationThreshold.toLocaleString("en")}</span>
-                <TokenChip tokenInfo={XGNS_TOKEN} />
+                {breakpoint !== DEVICE_TYPE.MOBILE ? (
+                  <TokenChip tokenInfo={XGNS_TOKEN} />
+                ) : (
+                  <MissingLogo
+                  className=""
+                    symbol={XGNS_TOKEN.symbol}
+                    width={24}
+                    url={XGNS_TOKEN.logoURI}
+                  />
+                )}
               </div>
             </div>
           </BoxContent>

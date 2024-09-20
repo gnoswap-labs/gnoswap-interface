@@ -165,6 +165,7 @@ export const BoxItem = styled.div`
       ${mixins.flexbox("row", "center", "center")};
       gap: 4px;
       color: ${({ theme }) => theme.color.text10};
+      line-height: 16px;
 
       svg {
         width: 16px;
@@ -179,6 +180,10 @@ export const BoxItem = styled.div`
       ${fonts.body7};
       ${mixins.flexbox("row", "center", "center")};
       color: ${({ theme }) => theme.color.text01};
+
+      ${media.mobile} {
+        gap: 8px;
+      }
     }
   }
   .suffix-wrapper {
