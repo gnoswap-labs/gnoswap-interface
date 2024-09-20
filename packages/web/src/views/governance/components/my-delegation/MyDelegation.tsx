@@ -26,7 +26,8 @@ interface MyDelegationProps {
   apy: number;
   myDelegationInfo: MyDelegationInfo;
   delegatees: DelegateeInfo[];
-  isLoading: boolean;
+  isLoadingCommon: boolean;
+  isLoadingMyDelegation: boolean;
   isWalletConnected: boolean;
   connectWallet: () => void;
   delegateGNS: (toName: string, toAddress: string, amount: string) => void;
@@ -44,7 +45,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   apy,
   myDelegationInfo,
   delegatees,
-  isLoading,
+  isLoadingCommon,
+  isLoadingMyDelegation,
   isWalletConnected,
   connectWallet,
   delegateGNS,
@@ -76,7 +78,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         <div className="delegate-buttons">
           <Button
             disabled={
-              isLoading || !isWalletConnected || votingWeightInfos.length === 0
+              isLoadingCommon ||
+              isLoadingMyDelegation ||
+              !isWalletConnected ||
+              votingWeightInfos.length === 0
             }
             style={{
               hierarchy: ButtonHierarchy.Primary,
@@ -84,20 +89,20 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
             }}
             text={t("Governance:myDel.undelegate")}
             onClick={
-              !isLoading && isWalletConnected
+              !isLoadingCommon && !isLoadingMyDelegation && isWalletConnected
                 ? () => setIsOpenUndelegateModal(true)
                 : undefined
             }
           />
           <Button
-            disabled={isLoading}
+            disabled={isLoadingCommon}
             style={{
               hierarchy: ButtonHierarchy.Primary,
               fontType: "p1",
             }}
             text={t("Governance:myDel.delegate")}
             onClick={
-              !isLoading ? () => setIsOpenDelegateModal(true) : undefined
+              !isLoadingCommon ? () => setIsOpenDelegateModal(true) : undefined
             }
           />
         </div>
@@ -117,7 +122,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 </>
               }
               tooltip={t("Governance:myDel.availBal.tooltip")}
-              isLoading={isLoading}
+              isLoading={isLoadingMyDelegation}
             />
             <InfoBox
               title={
@@ -251,7 +256,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                     }
                   : undefined
               }
-              isLoading={isLoading}
+              isLoading={isLoadingMyDelegation}
             />
             <InfoBox
               title={t("Governance:myDel.reward.title")}
@@ -277,7 +282,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                     }
                   : undefined
               }
-              isLoading={isLoading}
+              isLoading={isLoadingMyDelegation}
             />
           </>
         ) : (

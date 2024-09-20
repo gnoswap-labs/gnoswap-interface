@@ -42,12 +42,11 @@ const MyDelegationContainer: React.FC = () => {
       apy={governanceSummaryInfo?.apy || 0}
       myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
       delegatees={delegatees ?? []}
-      isLoading={
-        (!isFetchedGovernanceSummaryInfo ||
-          !isFetchedMyDelegation ||
-          !isFetchedDelegatees) &&
-        (!governanceSummaryInfo || !myDelegationInfo || !delegatees)
+      isLoadingCommon={
+        (!isFetchedGovernanceSummaryInfo || !isFetchedDelegatees) &&
+        (!governanceSummaryInfo || !delegatees)
       }
+      isLoadingMyDelegation={!isFetchedMyDelegation && !MyDelegation}
       isWalletConnected={connected}
       connectWallet={openModal}
       delegateGNS={(...params) =>
