@@ -9,6 +9,7 @@ export const MyDelegationModalWrapper = styled.div`
   min-width: 328px;
   max-width: 500px;
   width: 90vw;
+  max-height: 800px;
   overflow: visible;
 
   .modal-wrapper {
@@ -21,8 +22,11 @@ export const MyDelegationModalWrapper = styled.div`
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
     box-shadow: ${({ theme }) => theme.color.shadow01};
-    padding: 23px;
+    padding: 24px;
     overflow: auto;
+    ${media.mobile} {
+      padding: 24px 16px;
+    }
   }
 
   &.selector-box {
@@ -87,10 +91,6 @@ export const MyDelegationModalWrapper = styled.div`
       ${media.mobile} {
         position: relative;
       }
-    }
-    ${media.mobile} {
-      padding: 11px;
-      gap: 8px;
     }
     .section-title {
       ${mixins.flexbox("row", "center", "flex-start")};
@@ -175,20 +175,14 @@ export const MyDelegationModalWrapper = styled.div`
         justify-content: flex-start;
         min-width: 88px;
         color: ${({ theme }) => theme.color.text04};
-        ${fonts.body12}
-        ${media.mobile} {
-          ${fonts.p2}
-        }
+        ${fonts.body13}
       }
       .value {
         ${mixins.flexbox("row", "center", "center")};
         gap: 4px;
         text-align: end;
         color: ${({ theme }) => theme.color.text03};
-        ${fonts.body12}
-        ${media.mobile} {
-          ${fonts.p2}
-        }
+        ${fonts.body13}
       }
     }
 
@@ -206,9 +200,6 @@ export const MyDelegationModalWrapper = styled.div`
         min-width: 88px;
         color: ${({ theme }) => theme.color.text03};
         ${fonts.body13}
-        ${media.mobile} {
-          ${fonts.p2}
-        }
       }
       .value {
         ${mixins.flexbox("row", "center", "center")};
@@ -218,8 +209,9 @@ export const MyDelegationModalWrapper = styled.div`
         white-space: pre-line;
         color: ${({ theme }) => theme.color.text10};
         ${fonts.body13}
-        ${media.mobile} {
-          ${fonts.p2}
+
+        &.no-wrap {
+          text-wrap: nowrap;
         }
 
         span.sub {

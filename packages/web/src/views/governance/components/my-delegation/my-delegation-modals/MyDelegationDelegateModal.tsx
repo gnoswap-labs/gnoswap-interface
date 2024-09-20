@@ -405,7 +405,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="label">
             {t("Governance:myDel.delModal.selectDel.votingPower")}
           </div>
-          <div className="value">
+          <div className="value no-wrap">
             <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
             {formatOtherPrice(tmpDelegatee.votingPower, {
               isKMB: false,
