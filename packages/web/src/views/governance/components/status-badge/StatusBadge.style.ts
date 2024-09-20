@@ -13,6 +13,7 @@ export const StatusBadgeWrapper = styled.div`
   }
 
   .status {
+    flex-shrink: 0;
     ${mixins.flexbox("row", "center", "center")};
     gap: 6px;
     ${fonts.body11};

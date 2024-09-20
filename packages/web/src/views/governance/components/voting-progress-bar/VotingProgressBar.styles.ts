@@ -7,7 +7,6 @@ export const ProgressWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
   gap: 24px;
-  padding-top: 12px;
   .progress-value {
     ${mixins.flexbox("row", "center", "center")};
     flex-wrap: wrap;
@@ -72,6 +71,6 @@ export const ProgressBar = styled.div<progressBarProps>`
   ${media.mobile} {
     flex: unset;
     width: 100%;
-    height: 10px;
+    height: 8px;
   }
 `;

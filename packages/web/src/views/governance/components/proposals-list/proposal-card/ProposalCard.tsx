@@ -101,28 +101,30 @@ const ProposalCard: React.FC<Props> = ({
           <div className="title">
             {`#${proposalDetail.id} ${proposalDetail.title}`}
           </div>
-          <TypeBadge type={proposalDetail.type} />
-          {proposalDetail.status === "EXPIRED" && (
-            <Badge
-              className="proposal-badge"
-              type={BADGE_TYPE.DARK_DEFAULT}
-              text={t("Governance:proposal.status.expired")}
-            />
-          )}
-          {proposalDetail.status === "EXECUTED" && (
-            <Badge
-              className="proposal-badge"
-              type={BADGE_TYPE.DARK_DEFAULT}
-              text={t("Governance:proposal.status.executed")}
-            />
-          )}
-          {proposalDetail.myVote && proposalDetail.myVote.type !== "" && (
-            <Badge
-              className="proposal-badge"
-              type={BADGE_TYPE.DARK_DEFAULT}
-              text={t("Governance:detailModal.badge.voted")}
-            />
-          )}
+          <div className="badges">
+            <TypeBadge type={proposalDetail.type} />
+            {proposalDetail.status === "EXPIRED" && (
+              <Badge
+                className="proposal-badge"
+                type={BADGE_TYPE.DARK_DEFAULT}
+                text={t("Governance:proposal.status.expired")}
+              />
+            )}
+            {proposalDetail.status === "EXECUTED" && (
+              <Badge
+                className="proposal-badge"
+                type={BADGE_TYPE.DARK_DEFAULT}
+                text={t("Governance:proposal.status.executed")}
+              />
+            )}
+            {proposalDetail.myVote && proposalDetail.myVote.type !== "" && (
+              <Badge
+                className="proposal-badge"
+                type={BADGE_TYPE.DARK_DEFAULT}
+                text={t("Governance:detailModal.badge.voted")}
+              />
+            )}
+          </div>
         </div>
 
         <div className="right-section">

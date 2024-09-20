@@ -13,12 +13,13 @@ export const ProposalDetailWrapper = styled.div`
   gap: 8px;
   width: 100%;
   &:hover {
-    background-color: ${({ theme }) => theme.themeKey === "dark" ? theme.color.hover01 : theme.color.hover02};
+    background-color: ${({ theme }) =>
+      theme.themeKey === "dark" ? theme.color.hover01 : theme.color.hover02};
     border: 1px solid ${({ theme }) => theme.color.border02};
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   }
   .header {
-    ${mixins.flexbox("row", "center", "space-between")};
+    ${mixins.flexbox("row", "flex-start", "space-between")};
     flex-wrap: nowrap;
     width: 100%;
     gap: 20px;
@@ -26,6 +27,10 @@ export const ProposalDetailWrapper = styled.div`
     .left-section {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 8px;
+
+      @media (max-width: 500px) {
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+      }
 
       .title {
         ${fonts.body5};
@@ -36,13 +41,19 @@ export const ProposalDetailWrapper = styled.div`
         -webkit-line-clamp: 1;
       }
 
-      .proposal-badge {
+      .badges {
         flex-shrink: 0;
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 8px;
+        .proposal-badge {
+          flex-shrink: 0;
+        }
       }
     }
 
     .right-section {
       ${mixins.flexbox("row", "center", "center")};
+      height: 31px;
       flex-wrap: nowrap;
       gap: 12px;
       .proposer {
@@ -80,18 +91,25 @@ export const ProposalDetailWrapper = styled.div`
     padding: 12px;
     gap: 12px;
     .header {
-      .title {
-        ${fonts.body11};
+      .left-section {
+        .title {
+          ${fonts.body9};
+        }
+      }
+      .right-section {
+        height: 21px;
       }
     }
   }
 
   .active-wrapper {
-    gap: 12px;
     ${mixins.flexbox("row", "center", "center")};
+    gap: 12px;
+    margin-bottom: 12px;
     ${media.mobile} {
-      gap: 8px;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
+      gap: 8px;
+      margin-bottom: 0px;
     }
   }
 `;

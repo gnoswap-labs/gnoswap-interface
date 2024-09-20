@@ -173,6 +173,7 @@ export const ProposalContentWrapper = styled.div`
 
 export const ModalQuorum = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
   width: 100%;
   border: 1px solid ${({ theme }) => theme.color.border02};
   padding: 16px;
