@@ -15,11 +15,11 @@ import TokenChip from "../token-chip/TokenChip";
 import MyDelegationDelegateModal from "./my-delegation-modals/MyDelegationDelegateModal";
 import MyDelegationUndelegateModal from "./my-delegation-modals/MyDelegationUndelegateModal";
 
+import IconLinkOff from "@components/common/icons/IconLinkOff";
 import {
   MyDelegationTooltipContent,
   MyDelegationWrapper,
 } from "./MyDelegation.styles";
-import IconLinkOff from "@components/common/icons/IconLinkOff";
 
 interface MyDelegationProps {
   totalDelegatedAmount: number;
@@ -57,6 +57,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const [isOpenUndelegateModal, setIsOpenUndelegateModal] = useState(false);
 
   const [showUndel, setShowUndel] = useState(false);
+
+  const hasVotingWeight = myDelegationInfo.votingWeight > 0;
 
   const hasUndel = !!myDelegationInfo.undelegatedAmount;
 
@@ -125,6 +127,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               }
               value={
                 <Tooltip
+                  forcedClose={!hasVotingWeight}
                   FloatingContent={
                     <MyDelegationTooltipContent>
                       {(showUndel ? undelegationInfos : votingWeightInfos).map(
