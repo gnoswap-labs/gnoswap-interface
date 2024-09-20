@@ -200,10 +200,13 @@ export const useGovernanceTx = () => {
       messageData,
       response => {
         if (!response) return messageData;
-        // TODO : use tx data
+        const tokenAAmount = formatTokenAmount(response?.[0] || 0, {
+          decimals: GNS_TOKEN.decimals,
+        });
+
         return {
           ...messageData,
-          // tokenAAmount: response[0],
+          tokenAAmount,
         };
       },
       emitCallback,
