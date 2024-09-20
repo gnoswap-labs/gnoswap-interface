@@ -201,7 +201,13 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   placement="top"
                   scroll
                 >
-                  <div className="value-wrapper-for-hover">
+                  <div
+                    className={
+                      hasVotingWeight
+                        ? "value-wrapper-for-hover"
+                        : "value-wrapper"
+                    }
+                  >
                     {hasUndel && showUndel
                       ? formatOtherPrice(myDelegationInfo.undelegatedAmount, {
                           isKMB: false,
