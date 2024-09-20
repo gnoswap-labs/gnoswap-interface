@@ -5,13 +5,14 @@ import { useTranslation } from "react-i18next";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { EXT_URL } from "@constants/external-url.contant";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { GovernanceSummaryInfo } from "@repositories/governance";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
 
-import { GovernanceSummaryWrapper } from "./GovernanceSummary.styles";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { GovernanceSummaryWrapper } from "./GovernanceSummary.styles";
 
 interface GovernanceSummaryProps {
   governanceSummary: GovernanceSummaryInfo;
@@ -22,7 +23,8 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   governanceSummary,
   isLoading,
 }) => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
+  const { isMobile } = useWindowSize();
   
   return (
     <GovernanceSummaryWrapper>
@@ -68,13 +70,15 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
           isLoading={isLoading}
         />
       </div>
-      <div className="link-button">
-        <div>{t("Governance:summary.guide.guide")}</div>
-        <Link href={EXT_URL.DOCS.XGNS} target="_blank">
-          {t("Governance:summary.guide.link")}
-          <IconStrokeArrowRight className="link-icon" />
-        </Link>
-      </div>
+      {!isMobile && (
+        <div className="link-button">
+          <div>{t("Governance:summary.guide.guide")}</div>
+          <Link href={EXT_URL.DOCS.XGNS} target="_blank">
+            {t("common:learnMore")}
+            <IconStrokeArrowRight className="link-icon" />
+          </Link>
+        </div>
+      )}
     </GovernanceSummaryWrapper>
   );};
 
