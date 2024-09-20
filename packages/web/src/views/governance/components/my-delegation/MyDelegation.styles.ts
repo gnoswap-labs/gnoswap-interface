@@ -9,6 +9,10 @@ export const MyDelegationWrapper = styled.div`
   width: 100%;
   gap: 24px;
 
+  ${media.mobile} {
+    gap: 16px;
+  }
+
   > .header-wrapper {
     width: 100%;
     ${mixins.flexbox("row", "center", "space-between")};
@@ -28,6 +32,17 @@ export const MyDelegationWrapper = styled.div`
       button {
         flex-shrink: 0;
         padding: 10px 16px;
+      }
+    }
+
+    ${media.mobile} {
+      flex-direction: column;
+      gap: 16px;
+      > .delegate-buttons {
+        width: 100%;
+        button {
+          flex: 1;
+        }
       }
     }
   }
@@ -69,6 +84,13 @@ export const MyDelegationWrapper = styled.div`
       color: ${({ theme }) => theme.color.text22};
       text-align: center;
 
+      ${media.tablet} {
+        ${fonts.body10}
+      }
+      ${media.mobile} {
+        ${fonts.body12}
+      }
+
       .unconnected-icon {
         width: 50px;
         height: 50px;
@@ -88,6 +110,9 @@ export const MyDelegationWrapper = styled.div`
         width: 200px;
         height: 46px;
         ${media.mobile} {
+          > span {
+            ${fonts.body9}
+          }
           height: 41px;
           width: 100%;
         }
