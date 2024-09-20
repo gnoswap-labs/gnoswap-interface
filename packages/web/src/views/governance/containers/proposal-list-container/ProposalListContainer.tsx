@@ -35,10 +35,9 @@ const ProposalListContainer: React.FC = () => {
     isFetched: isFetchedGovernanceSummaryInfo,
   } = useGetGovernanceSummary();
 
-  const { data: myDelegationInfo, isFetched: isFetchedMyDelegation } =
-    useGetMyDelegation({
-      address: account?.address || "",
-    });
+  const { data: myDelegationInfo } = useGetMyDelegation({
+    address: account?.address || "",
+  });
 
   const {
     data: proposalsInfo,
@@ -75,11 +74,7 @@ const ProposalListContainer: React.FC = () => {
   return (
     <ProposalList
       breakpoint={breakpoint}
-      isLoading={
-        !isFetchedProposalsInfo ||
-        !isFetchedGovernanceSummaryInfo ||
-        !isFetchedMyDelegation
-      }
+      isLoading={!isFetchedProposalsInfo || !isFetchedGovernanceSummaryInfo}
       isConnected={connected}
       connectWallet={openModal}
       isSwitchNetwork={isSwitchNetwork}
