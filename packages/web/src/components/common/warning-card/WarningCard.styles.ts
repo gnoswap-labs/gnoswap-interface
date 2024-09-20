@@ -41,10 +41,13 @@ export const WarningCardWrapper = styled.div<{
 `;
 
 export const TitleWrapper = styled.div`
-  ${mixins.flexbox("row", "center")}
+  ${mixins.flexbox("row", "flex-start", "center")}
   ${fonts.body13}
   font-weight: 600;
   gap: 4px;
+  > svg {
+    margin-top: 1px;
+  }
 `;
 
 export const ContentWrapper = styled.div`
