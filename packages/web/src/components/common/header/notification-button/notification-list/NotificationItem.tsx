@@ -295,7 +295,8 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     </DoubleLogoLocal>
                   ) : (
                     <DoubleLogoLocal>
-                      {isGovernanceNoti(item.rawValue.actionType) ? (
+                      {isGovernanceNoti(item.rawValue.actionType) &&
+                      item.rawValue.actionType !== "DELEGATE" ? (
                         <MissingLogo
                           symbol={XGNS_TOKEN.symbol}
                           url={XGNS_TOKEN.logoURI}
@@ -365,7 +366,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
               </DoubleLogoDense>
             ) : (
               <DoubleLogoDense>
-                {isGovernanceNoti(item.rawValue.actionType) ? (
+                {isGovernanceNoti(item.rawValue.actionType) && item.rawValue.actionType !== "DELEGATE" ? (
                   <MissingLogo
                     symbol={XGNS_TOKEN.symbol}
                     url={XGNS_TOKEN.logoURI}
