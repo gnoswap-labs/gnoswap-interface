@@ -69,7 +69,7 @@ const ProposalCard: React.FC<Props> = ({
       new Date(proposalDetail.executableTime).toUTCString(),
     ).getTime();
     const expiredTime = new Date(
-      new Date(proposalDetail.executableTime).toUTCString(),
+      new Date(proposalDetail.expiredTime).toUTCString(),
     ).getTime();
 
     return expiredTime > currentTime && currentTime >= executableTime;
