@@ -23,7 +23,7 @@ export const GovernanceLayoutWrapper = styled.div`
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
       width: 100%;
       padding: 24px 16px 0px 16px;
-      gap: 12px;
+      gap: 24px;
     }
 
     .title-container {
@@ -80,7 +80,7 @@ export const GovernanceLayoutWrapper = styled.div`
       }
 
       ${media.mobile} {
-        padding: 12px 0px 24px 0px;
+        padding: 0px;
       }
     }
   }
