@@ -104,24 +104,8 @@ export const ProposalContentWrapper = styled.div`
   padding: 24px;
   gap: 12px;
   border-radius: 8px;
-  &::-webkit-scrollbar {
-    width: 8px;
-    display: block;
-    height: 0;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-    padding: 0;
-    height: 0;
-    display: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) => theme.color.background12};
-    border-radius: 8px;
-    padding: 0;
-  }
+  ${({ theme }) =>
+    mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
 
   .content {
     flex: 1;

@@ -3,8 +3,6 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { Z_INDEX } from "@styles/zIndex";
-
 
 interface Props {
   isDisabled?: boolean;
@@ -99,27 +97,20 @@ export const UndelegateSelectBox = styled.div`
     }
 
     .delegate-list-content {
-      max-height: 280px;
+      max-height: 230px;
       overflow-y: auto;
+
+      ${({ theme }) =>
+        mixins.useScrollStyle(
+          theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA",
+        )}
 
       & > div {
         padding: 16px 24px;
       }
     }
   }
-  // not speced mobile UI yet
-  // ${media.mobile} {
-  //   top: auto;
-  //   bottom: 0;
-  //   left: 0;
-  //   width: 100vw;
-  //   position: fixed;
-  //   min-width: 360px;
-  //   z-index: ${Z_INDEX.fixed};
-  //   max-height: 0;
-  //   transition: max-height 0.8s ease;
-  //   display: block;
-  // }
+
   &.open {
     display: block;
     ${media.mobile} {

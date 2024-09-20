@@ -69,23 +69,8 @@ export const CreateProposalModalWrapper = styled.div`
       padding: 12px 12px 57px 12px;
     }
 
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: ${({ theme }) =>
-        theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA"};
-      border-radius: 10px;
-    }
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar {
-      display: block;
-      scrollbar-track-color: ${({ theme }) => theme.color.backgroundOpacity2};
-    }
+    ${({ theme }) =>
+      mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
   }
 `;
 
