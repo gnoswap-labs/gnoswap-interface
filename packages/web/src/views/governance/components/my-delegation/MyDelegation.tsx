@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
@@ -60,16 +60,48 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
 
   const [showUndel, setShowUndel] = useState(false);
 
-  const hasVotingWeight = myDelegationInfo.votingWeight > 0;
+  const delegationInfo = useMemo(() => {
+    const votingWeightInfos = myDelegationInfo.delegations.filter(
+      item => !item.unlockDate || item.unlockDate === "",
+    );
+    const undelegationInfos = myDelegationInfo.delegations.filter(
+      item => !!item.unlockDate,
+    );
 
-  const hasUndel = !!myDelegationInfo.undelegatedAmount;
+    const hasVotingWeight = votingWeightInfos.length > 0;
+    const hasUndelgated = undelegationInfos.length > 0;
 
-  const votingWeightInfos = myDelegationInfo.delegations.filter(
-    item => !item.unlockDate,
-  );
-  const undelegationInfos = myDelegationInfo.delegations.filter(
-    item => item.unlockDate,
-  );
+    return {
+      votingWeightInfos,
+      undelegationInfos,
+      hasVotingWeight,
+      hasUndelgated,
+    };
+  }, [myDelegationInfo.delegations]);
+
+  const {
+    votingWeightInfos,
+    undelegationInfos,
+    hasVotingWeight,
+    hasUndelgated,
+  } = delegationInfo;
+
+  /**
+   * A delimiter showing voting weight information or undelegation information.
+   */
+  const activatedDelegateInfoTab = useMemo(() => {
+    if (undelegationInfos.length === 0) {
+      return true;
+    }
+    return !showUndel;
+  }, [showUndel, undelegationInfos.length]);
+
+  const visibleInfoTooltip = useMemo(() => {
+    if (activatedDelegateInfoTab) {
+      return hasVotingWeight;
+    }
+    return hasUndelgated;
+  }, [activatedDelegateInfoTab, hasUndelgated, hasVotingWeight]);
 
   return (
     <MyDelegationWrapper>
@@ -126,13 +158,13 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
             />
             <InfoBox
               title={
-                hasUndel && showUndel
-                  ? t("Governance:myDel.undel.title")
-                  : t("Governance:myDel.votingWeight.title")
+                activatedDelegateInfoTab
+                  ? t("Governance:myDel.votingWeight.title")
+                  : t("Governance:myDel.undel.title")
               }
               value={
                 <Tooltip
-                  forcedClose={!hasVotingWeight}
+                  forcedClose={!visibleInfoTooltip}
                   FloatingContent={
                     <MyDelegationTooltipContent>
                       {(showUndel ? undelegationInfos : votingWeightInfos).map(
@@ -197,8 +229,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           </div>
                         ),
                       )}
-                      {(showUndel ? undelegationInfos : votingWeightInfos)
-                        .length === 0 ? (
+                      {(activatedDelegateInfoTab
+                        ? votingWeightInfos
+                        : undelegationInfos
+                      ).length === 0 ? (
                         <div className="no-data">{t("common:noData")}</div>
                       ) : null}
                     </MyDelegationTooltipContent>
@@ -208,33 +242,35 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 >
                   <div
                     className={
-                      hasVotingWeight
+                      visibleInfoTooltip
                         ? "value-wrapper-for-hover"
                         : "value-wrapper"
                     }
                   >
-                    {hasUndel && showUndel
-                      ? formatOtherPrice(myDelegationInfo.undelegatedAmount, {
+                    {activatedDelegateInfoTab
+                      ? formatOtherPrice(myDelegationInfo.votingWeight, {
                           isKMB: false,
                           usd: false,
                         })
-                      : formatOtherPrice(myDelegationInfo.votingWeight, {
+                      : formatOtherPrice(myDelegationInfo.undelegatedAmount, {
                           isKMB: false,
                           usd: false,
                         })}
                     <TokenChip
-                      tokenInfo={hasUndel && showUndel ? GNS_TOKEN : XGNS_TOKEN}
+                      tokenInfo={
+                        activatedDelegateInfoTab ? XGNS_TOKEN : GNS_TOKEN
+                      }
                     />
                   </div>
                 </Tooltip>
               }
               tooltip={
-                hasUndel && showUndel
-                  ? t("Governance:myDel.undel.tooltip")
-                  : t("Governance:myDel.votingWeight.tooltip")
+                activatedDelegateInfoTab
+                  ? t("Governance:myDel.votingWeight.tooltip")
+                  : t("Governance:myDel.undel.tooltip")
               }
               titleButton={
-                hasUndel
+                hasUndelgated
                   ? {
                       text: (
                         <div className="del-undel-switch">
@@ -249,7 +285,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   : undefined
               }
               valueButton={
-                hasUndel && showUndel
+                !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
                       onClick: collectUndelegated,
