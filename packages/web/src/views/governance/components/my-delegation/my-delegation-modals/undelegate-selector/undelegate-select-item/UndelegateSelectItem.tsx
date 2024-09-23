@@ -53,7 +53,13 @@ const UndelegateSelectItem: React.FC<UndelegateSelectItemProps> = ({
           url={delegationItemInfo.logoUrl}
           symbol={delegationItemInfo.name}
         />
-        <span className="delegatee-name">{delegationItemInfo.name}</span>
+        <span className="delegatee-name">
+          {delegationItemInfo.name ||
+            [
+              delegationItemInfo.address.slice(0, 8),
+              delegationItemInfo.address.slice(32, 40),
+            ].join("...")}
+        </span>
       </div>
 
       {visibleAmount && (

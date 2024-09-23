@@ -1,13 +1,14 @@
-
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 import { GovernanceRepository } from "./governance-repository";
 import GetDelegateesResponseMock from "./mock/get-delegatees-response.json";
+import GetExecutableFunctionsResponseMock from "./mock/get-executable-functions-response.json";
 import GetGovernanceSummaryResponseMock from "./mock/get-governance-summary-response.json";
 import GetMyDelegationResposneMock from "./mock/get-my-delegation-response.json";
 import GetProposalsResponseMock from "./mock/get-proposals-response.json";
 import {
   DelegateeInfo,
+  ExecutableFunctionInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
   ProposalsInfo,
@@ -19,11 +20,11 @@ import {
   SendDelegateReqeust,
   SendExecuteReqeust,
   SendProposeCommunityPoolSpendReqeust,
-  SendProposeParameterChangeReqeust,
+  SendProposeParameterChangeRequest,
   SendProposeTextReqeust,
   SendRedelegateReqeust,
   SendUndelegateReqeust,
-  SendVoteReqeust
+  SendVoteReqeust,
 } from "./request";
 import {
   GetDelegateesResponse,
@@ -88,6 +89,12 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
   };
 
+  public getExecutableFunctions = async (): Promise<
+    ExecutableFunctionInfo[]
+  > => {
+    return GetExecutableFunctionsResponseMock;
+  };
+
   public getDelegatees = async (): Promise<DelegateeInfo[]> => {
     const res: GetDelegateesResponse = {
       delegatees: GetDelegateesResponseMock,
@@ -111,7 +118,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
   };
 
   public sendProposeParameterChange = async (
-    request: SendProposeParameterChangeReqeust,
+    request: SendProposeParameterChangeRequest,
   ): Promise<WalletResponse<{ hash: string }>> => {
     throw new Error(`Mock sendProposeParameterChange : ${request}`);
   };

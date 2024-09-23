@@ -5,11 +5,8 @@ import { StorageKeyType } from "@common/values";
 import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
 
 import { DashboardRepository } from "./dashboard-repository";
-import {
-  OnchainAccountRequest,
-  OnchainRequest,
-} from "./request";
-import { TvlResponse } from "./response";
+import { OnchainAccountRequest, OnchainRequest } from "./request";
+import { GovernanceOverviewResponse, TvlResponse } from "./response";
 import { DashboardTokenResponse } from "./response/token-response";
 import { IVolumeResponse } from "./response/volume-response";
 
@@ -57,6 +54,20 @@ export class DashboardRepositoryImpl implements DashboardRepository {
     });
     return data.data;
   };
+
+  public getDashboardGovernanceOverview =
+    async (): Promise<GovernanceOverviewResponse> => {
+      if (!this.networkClient) {
+        throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+      }
+
+      const { data } = await this.networkClient.get<{
+        data: GovernanceOverviewResponse;
+      }>({
+        url: "/dashboard/governance",
+      });
+      return data.data;
+    };
 
   public getDashboardOnchainActivity = async (
     request: OnchainRequest,

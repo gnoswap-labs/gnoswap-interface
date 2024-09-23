@@ -12,10 +12,12 @@ describe("ViewProposalModal Component", () => {
     const mockProps: ViewProposalModalProps = {
       breakpoint: DEVICE_TYPE.WEB,
       proposalDetail: GetProposalsResponseMock[0],
-      setSelectedProposalId: () => null,
+      setIsModalOpen: (isOpen: boolean) => {
+        console.log(isOpen);
+      },
       isConnected: true,
       isSwitchNetwork: false,
-      handleVote: () => null,
+      voteProposal: () => null,
       connectWallet: () => null,
       switchNetwork: () => null,
     };

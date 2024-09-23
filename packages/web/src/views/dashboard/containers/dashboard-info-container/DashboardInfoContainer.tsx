@@ -1,13 +1,16 @@
 import BigNumber from "bignumber.js";
 import React, { useMemo } from "react";
 
-
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useGetDashboardToken } from "@query/dashboard";
+import {
+  useGetDashboardGovernanceOverview,
+  useGetDashboardToken,
+} from "@query/dashboard";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
 
-import { nullGovernenceOverviewInfo } from "../../components/dashboard-info/dashboard-overview/governance-overview/GovernanceOverview";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
+import { numberToFormat } from "@utils/string-utils";
 import DashboardInfo from "../../components/dashboard-info/DashboardInfo";
 
 const formatDashboardPrice = (price?: string, unit?: string) => {
@@ -20,7 +23,20 @@ const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const { data: tokenData, isLoading } = useGetDashboardToken();
+  const { data: tokenData, isFetched: isFetchedDashboardToken } =
+    useGetDashboardToken();
+  const {
+    data: governanceOverview = null,
+    isFetched: isFetchedGovernanceOverview,
+  } = useGetDashboardGovernanceOverview();
+
+  const isLoading = useMemo(() => {
+    if (isLoadingCommon) {
+      return true;
+    }
+
+    return !isFetchedDashboardToken || !isFetchedGovernanceOverview;
+  }, [isFetchedDashboardToken, isFetchedGovernanceOverview, isLoadingCommon]);
 
   const progressBar = useMemo(() => {
     if (!tokenData) return "0%";
@@ -40,6 +56,24 @@ const DashboardInfoContainer: React.FC = () => {
     const ratio = ((totalStaked / circSupply) * 100).toFixed(3);
     return `${ratio}%`;
   }, [tokenData]);
+
+  const governanceOverviewInfo = useMemo(() => {
+    if (!governanceOverview) {
+      return null;
+    }
+
+    return {
+      totalDelegated: `${numberToFormat(governanceOverview.totalDelegated)} ${
+        XGNS_TOKEN.symbol
+      }`,
+      holders: `${numberToFormat(governanceOverview.holders)}`,
+      passedCount: `${numberToFormat(governanceOverview.passedCount)}`,
+      activeCount: `${numberToFormat(governanceOverview.activeCount)} `,
+      communityPool: `${numberToFormat(governanceOverview.totalDelegated)} ${
+        GNS_TOKEN.symbol
+      }`,
+    };
+  }, [governanceOverview]);
 
   return (
     <DashboardInfo
@@ -93,9 +127,9 @@ const DashboardInfoContainer: React.FC = () => {
           ),
         },
       }}
-      governenceOverviewInfo={nullGovernenceOverviewInfo}
+      governanceOverviewInfo={governanceOverviewInfo}
       breakpoint={breakpoint}
-      loading={isLoading || isLoadingCommon}
+      loading={isLoading}
     />
   );
 };

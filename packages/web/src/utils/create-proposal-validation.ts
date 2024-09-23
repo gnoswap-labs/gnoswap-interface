@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { addressValidationCheck } from "./validation-utils";
+import { isValidAddress } from "./validation-utils";
 
 export const getCreateProposalValidation = () =>
   yup
@@ -21,7 +21,7 @@ export const getCreateProposalCommunityPoolSpendValidation = () =>
         .trim()
         .required("Recipient is required")
         .test("is-valid", "Address is not valid", value =>
-          addressValidationCheck(value),
+          isValidAddress(value),
         ),
       amount: yup
         .number()
@@ -42,18 +42,56 @@ export const getCreateProposalChangeParameterValidation = () =>
     .shape({
       title: yup.string().trim().required("Title is required"),
       description: yup.string().trim().required("Description is required"),
-      variable: yup.array().of(yup.object().shape(variableSchema)).min(1, "At least one change is reqruied").test("check-valid", "Variable is not valid", value => {
-        if (
-          !value ||
-          value[0].pkgPath === undefined ||
-          value[0].pkgPath === "" ||
-          value[0].func === undefined ||
-          value[0].func === "" ||
-          value[0].param === undefined ||
-          value[0].param === ""
-        )
-          return false;
-        return value.every((item) => item.param !== undefined && item.param !== "");
-      }),
     })
+    .required();
+
+export const getCreateProposalParameterValidation = (
+  executableFunctions: {
+    pkgPath: string;
+    funcName: string;
+    paramNum: number;
+  }[],
+) =>
+  yup
+    .array()
+    .min(1, "At least one change is reqruied")
+    .of(
+      yup
+        .object()
+        .shape(variableSchema)
+        .test("check-valid", "Parameter is required", item => {
+          if (!item) return true;
+          if (
+            (item.pkgPath === undefined || item.pkgPath === "") &&
+            (item.func === undefined || item.func === "") &&
+            (item.param === undefined || item.param === "")
+          ) {
+            return true;
+          }
+
+          return (
+            item.pkgPath !== undefined &&
+            item.pkgPath !== "" &&
+            item.func !== undefined &&
+            item.func !== "" &&
+            item.param !== undefined &&
+            item.param !== ""
+          );
+        })
+        .test("check-parameter", "Parameter is not valid", item => {
+          if (!item.param) {
+            return true;
+          }
+
+          const currentFunction = executableFunctions.find(
+            func =>
+              func.pkgPath === item.pkgPath && func.funcName === item.func,
+          );
+          if (!currentFunction) {
+            return true;
+          }
+
+          return item.param.split(",").length === currentFunction.paramNum;
+        }),
+    )
     .required();

@@ -18,6 +18,7 @@ export const useGetGovernanceSummary = (
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,
     refetchOnReconnect: true,
+    keepPreviousData: true,
     ...options,
   });
 };

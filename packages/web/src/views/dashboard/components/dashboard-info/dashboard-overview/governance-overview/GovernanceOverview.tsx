@@ -1,33 +1,34 @@
 import { useTranslation } from "react-i18next";
 
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import {
-  GovernanceOverviewWrapper,
   GovernanceOverviewTitleWrapper,
+  GovernanceOverviewWrapper,
   GovernanceWrapper,
   LoadingTextWrapper,
 } from "./GovernanceOverview.styles";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
+import { useMemo } from "react";
 import DashboardLabel from "../dashboard-label/DashboardLabel";
 
-export interface GovernenceOverviewInfo {
-  totalXgnosIssued: string;
+export interface GovernanceOverviewInfo {
+  totalDelegated: string;
   holders: string;
-  passedProposals: string;
-  activeProposals: string;
+  passedCount: string;
+  activeCount: string;
   communityPool: string;
 }
 
-export const nullGovernenceOverviewInfo: GovernenceOverviewInfo = {
-  totalXgnosIssued: "-",
+export const nullGovernanceOverviewInfo: GovernanceOverviewInfo = {
+  totalDelegated: "-",
   holders: "-",
-  passedProposals: "-",
-  activeProposals: "-",
+  passedCount: "-",
+  activeCount: "-",
   communityPool: "-",
 };
 
 interface GovernanceOverviewProps {
-  governenceOverviewInfo: GovernenceOverviewInfo;
+  governanceOverviewInfo: GovernanceOverviewInfo | null;
   loading: boolean;
 }
 
@@ -40,10 +41,17 @@ const LoadingText = () => {
 };
 
 const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
-  governenceOverviewInfo,
+  governanceOverviewInfo,
   loading,
 }) => {
   const { t } = useTranslation();
+
+  const overViewInfo = useMemo(() => {
+    if (!governanceOverviewInfo) {
+      return nullGovernanceOverviewInfo;
+    }
+    return governanceOverviewInfo;
+  }, [governanceOverviewInfo]);
 
   return (
     <GovernanceOverviewWrapper>
@@ -59,9 +67,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
             />
           </div>
           {!loading ? (
-            <div className="value">
-              {governenceOverviewInfo.totalXgnosIssued}
-            </div>
+            <div className="value">{overViewInfo.totalDelegated}</div>
           ) : (
             <LoadingText />
           )}
@@ -72,7 +78,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
             <DashboardLabel tooltip={t("Dashboard:govOver.holders.tooltip")} />
           </div>
           {!loading ? (
-            <div className="value">{governenceOverviewInfo.holders}</div>
+            <div className="value">{overViewInfo.holders}</div>
           ) : (
             <LoadingText />
           )}
@@ -82,9 +88,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
             <div>{t("Dashboard:govOver.passedProp.label")}</div>
           </div>
           {!loading ? (
-            <div className="value">
-              {governenceOverviewInfo.passedProposals}
-            </div>
+            <div className="value">{overViewInfo.passedCount}</div>
           ) : (
             <LoadingText />
           )}
@@ -95,9 +99,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
           </div>
           <div className="active-proposals-emissions-tooltip">
             {!loading ? (
-              <div className="value">
-                {governenceOverviewInfo.activeProposals}
-              </div>
+              <div className="value">{overViewInfo.activeCount}</div>
             ) : (
               <LoadingText />
             )}
@@ -119,7 +121,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
             <DashboardLabel tooltip={t("Dashboard:govOver.comPool.tooltip")} />
           </div>
           {!loading ? (
-            <div className="value">{governenceOverviewInfo.communityPool}</div>
+            <div className="value">{overViewInfo.communityPool}</div>
           ) : (
             <LoadingText />
           )}

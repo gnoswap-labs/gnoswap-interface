@@ -1,18 +1,19 @@
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import GovernanceOverview from "./GovernanceOverview";
 
 describe("GovernanceOverview Component", () => {
   it("GovernanceOverview render", () => {
     const mockProps = {
-      governenceOverviewInfo: {
-        totalXgnosIssued: "59,144,225 xGNOS",
+      governanceOverviewInfo: {
+        totalDelegated: "59,144,225 xGNOS",
         holders: "14,072",
-        passedProposals: "125",
-        activeProposals: "2",
+        passedCount: "125",
+        activeCount: "2",
         communityPool: "2,412,148 GNOS",
       },
+      loading: false,
     };
 
     render(

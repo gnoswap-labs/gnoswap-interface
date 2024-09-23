@@ -22,3 +22,12 @@ export const nullMyDelegationInfo: MyDelegationInfo = {
   claimableRewardsUsd: 0,
   delegations: [],
 };
+
+export const nullDelegationItemInfo: DelegationItemInfo = {
+  name: "",
+  address: "",
+  logoUrl: "",
+  amount: 0,
+  updatedDate: "",
+  unlockDate: null,
+};

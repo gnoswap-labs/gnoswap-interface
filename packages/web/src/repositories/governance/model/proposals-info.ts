@@ -1,4 +1,3 @@
-
 export interface ProposalsInfo {
   proposals: ProposalItemInfo[];
   pageInfo: {
@@ -28,6 +27,8 @@ export type ProposalItemInfo = {
     address: string;
   };
   time: string;
+  executableTime?: string | null;
+  expiredTime?: string | null;
   myVote?: {
     type: string;
     weight: number;

@@ -2,5 +2,133 @@
   "totalDelegated": 59144225,
   "delegatedRatio": 55.12,
   "apy": 12.51,
-  "communityPool": 2412148.12
+  "communityPool": 2412148.12,
+  "creationThreshold": 1000,
+  "changeParamOptions": {
+    "packages": [
+      {
+        "pkgName": "common",
+        "pkgPath": "gno.land/r/gnoswap/v2/common"
+      },
+      {
+        "pkgName": "community_pool",
+        "pkgPath": "gno.land/r/gnoswap/v2/community_pool"
+      },
+      {
+        "pkgName": "emission",
+        "pkgPath": "gno.land/r/gnoswap/v2/emission"
+      },
+      {
+        "pkgName": "gns",
+        "pkgPath": "gno.land/r/gnoswap/v2/gns"
+      },
+      {
+        "pkgName": "governance",
+        "pkgPath": "gno.land/r/gnoswap/v2/gov/governance"
+      },
+      {
+        "pkgName": "pool",
+        "pkgPath": "gno.land/r/gnoswap/v2/pool"
+      },
+      {
+        "pkgName": "protocol_fee",
+        "pkgPath": "gno.land/r/gnoswap/v2/protocol_fee"
+      },
+      {
+        "pkgName": "router",
+        "pkgPath": "gno.land/r/gnoswap/v2/router"
+      },
+      {
+        "pkgName": "staker",
+        "pkgPath": "gno.land/r/gnoswap/v2/staker"
+      }
+    ],
+    "functions": [
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/common",
+        "funcName": "SetHalt",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/community_pool",
+        "funcName": "TransferToken",
+        "paramNum": 3
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/emission",
+        "funcName": "ChangeDistributionPct",
+        "paramNum": 8
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/gns",
+        "funcName": "SetAvgBlockTimeInMs",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/gov/governance",
+        "funcName": "Reconfigure",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/pool",
+        "funcName": "SetFeeProtocol",
+        "paramNum": 2
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/pool",
+        "funcName": "SetPoolCreationFee",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/pool",
+        "funcName": "SetWithdrawalFee",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/protocol_fee",
+        "funcName": "SetDevOpsPct",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/router",
+        "funcName": "SetSwapFee",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/staker",
+        "funcName": "ChangePoolTier",
+        "paramNum": 2
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/staker",
+        "funcName": "GnsSetAvgBlockTimeInMs",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/staker",
+        "funcName": "RemovePoolTier",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/staker",
+        "funcName": "SetDepositGnsAmount",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/staker",
+        "funcName": "SetPoolTier",
+        "paramNum": 2
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/staker",
+        "funcName": "SetUnstakingFee",
+        "paramNum": 1
+      },
+      {
+        "pkgPath": "gno.land/r/gnoswap/v2/staker",
+        "funcName": "SetWarmUp",
+        "paramNum": 2
+      }
+    ]
+  }
 }

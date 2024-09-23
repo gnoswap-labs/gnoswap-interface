@@ -152,7 +152,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
         />
       ) : (
         <Button
-          text={isLoading ? "" : t("HeaderFooter:walletLogin")}
+          text={isLoading ? "" : t("common:btn.walletLogin")}
           rightIcon={
             isLoading ? (
               <LoadingSpinner className="loading-button" />

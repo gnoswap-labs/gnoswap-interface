@@ -9,7 +9,8 @@ import { DEVICE_TYPE } from "@styles/media";
 import { VoteButtonsWrapper } from "./VoteButtons.styles";
 
 interface VoteButtonsWrapper {
-  isVoted: boolean;
+  isClickable: boolean;
+  votedType: string;
   yesCount: number;
   noCount: number;
   breakpoint?: DEVICE_TYPE;
@@ -18,8 +19,9 @@ interface VoteButtonsWrapper {
 }
 
 const VoteButtons : React.FC<VoteButtonsWrapper> = ({
+  isClickable,
   breakpoint,
-  isVoted,
+  votedType,
   yesCount,
   noCount,
   selectedVote,
@@ -44,24 +46,28 @@ const VoteButtons : React.FC<VoteButtonsWrapper> = ({
   return (
     <VoteButtonsWrapper>
       <div
-        className={`vote-button ${
-          selectedVote === "YES" ? "active-button" : ""
-        }`}
-        onClick={() => !isVoted && setSelectedVote("YES")}
+        className={[
+          "vote-button",
+          isClickable && selectedVote === "YES" ? "active-button" : "",
+          isClickable && votedType === "" ? "use-hover" : "",
+        ].join(" ")}
+        onClick={() => !votedType && setSelectedVote("YES")}
       >
         <span>{t("Governance:vote.yes")}</span>
-        <div>{yesCount.toLocaleString()}</div>
-        {isVoted && selectedVote === "YES" && votedBadge}
+        <div>{yesCount.toLocaleString("en", { maximumFractionDigits: 0 })}</div>
+        {votedType === "YES" && votedBadge}
       </div>
       <div
-        className={`vote-button ${
-          selectedVote === "NO" ? "active-button" : ""
-        }`}
-        onClick={() => !isVoted && setSelectedVote("NO")}
+        className={[
+          "vote-button",
+          isClickable && selectedVote === "NO" ? "active-button" : "",
+          isClickable && votedType === "" ? "use-hover" : "",
+        ].join(" ")}
+        onClick={() => !votedType && setSelectedVote("NO")}
       >
         <span>{t("Governance:vote.no")}</span>
-        <div>{noCount.toLocaleString()}</div>
-        {isVoted && selectedVote === "NO" && votedBadge}
+        <div>{noCount.toLocaleString("en", { maximumFractionDigits: 0 })}</div>
+        {votedType === "NO" && votedBadge}
       </div>
     </VoteButtonsWrapper>
   );

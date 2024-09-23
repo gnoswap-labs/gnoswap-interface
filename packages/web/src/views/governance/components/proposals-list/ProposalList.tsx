@@ -1,18 +1,23 @@
 import { Dispatch, SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
-import { nullProposalItemInfo, ProposalItemInfo } from "@repositories/governance";
+import {
+  nullProposalItemInfo,
+  ProposalItemInfo,
+} from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
-import CreateProposalModal from "./create-proposal-modal/CreateProposalModal";
 import ProposalCard from "./proposal-card/ProposalCard";
 import ProposalCardSkeleton from "./proposal-card/ProposalCardSekeleton";
 import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
+import { CreateProposalModalOpenOption } from "@views/governance/hooks/use-create-proposal-modal";
 import { ProposalListWrapper } from "./ProposalList.styles";
 
-interface ProposalListProps {
+export interface ProposalListProps {
+  breakpoint: DEVICE_TYPE;
   isLoading?: boolean;
   isConnected: boolean;
   connectWallet: () => void;
@@ -21,13 +26,22 @@ interface ProposalListProps {
   isShowActiveOnly: boolean;
   address: string;
   toggleIsShowActiveOnly: () => void;
+  myVotingWeight: number;
+  proposalCreationThreshold: number;
   proposalList: ProposalItemInfo[];
   fetchMore: () => void;
-  breakpoint: DEVICE_TYPE;
   selectedProposalId: number;
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
-  isOpenCreateModal: boolean;
-  setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>;
+  openCreateProposalModal: (options: CreateProposalModalOpenOption) => void;
+  executablePackages: {
+    pkgName: string;
+    pkgPath: string;
+  }[];
+  executableFunctions: {
+    pkgPath: string;
+    funcName: string;
+    paramNum: number;
+  }[];
   proposeTextProposal: (title: string, description: string) => void;
   proposeCommunityPoolSpendProposal: (
     title: string,
@@ -36,12 +50,14 @@ interface ProposalListProps {
     toAddress: string,
     amount: string,
   ) => void;
-  proposeParamChnageProposal: (
+  proposeParamChangeProposal: (
     title: string,
     description: string,
-    pkgPath: string,
-    functionName: string,
-    param: string,
+    variables: {
+      pkgPath: string;
+      func: string;
+      param: string;
+    }[],
   ) => void;
   voteProposal: (proposalId: number, voteYes: boolean) => void;
   executeProposal: (id: number) => void;
@@ -49,6 +65,7 @@ interface ProposalListProps {
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
+  breakpoint,
   isLoading,
   isConnected,
   connectWallet,
@@ -57,28 +74,44 @@ const ProposalList: React.FC<ProposalListProps> = ({
   address,
   isShowActiveOnly,
   toggleIsShowActiveOnly,
+  myVotingWeight,
+  proposalCreationThreshold,
   proposalList,
   fetchMore,
-  breakpoint,
   selectedProposalId,
   setSelectedProposalId,
-  isOpenCreateModal,
-  setIsOpenCreateModal,
+  executablePackages,
+  executableFunctions,
+  openCreateProposalModal,
   proposeTextProposal,
   proposeCommunityPoolSpendProposal,
-  proposeParamChnageProposal,
+  proposeParamChangeProposal,
   voteProposal,
   executeProposal,
   cancelProposal,
 }) => {
+  const { t } = useTranslation();
   const LastCard = withIntersection(ProposalCard, fetchMore);
+
+  const onClickCreateProposal = () => {
+    openCreateProposalModal({
+      breakpoint: breakpoint,
+      myVotingWeight: myVotingWeight,
+      proposalCreationThreshold: proposalCreationThreshold,
+      executablePackages: executablePackages,
+      executableFunctions: executableFunctions,
+      proposeTextProposal: proposeTextProposal,
+      proposeCommunityPoolSpendProposal: proposeCommunityPoolSpendProposal,
+      proposeParamChangeProposal: proposeParamChangeProposal,
+    });
+  };
 
   return (
     <ProposalListWrapper>
       <ProposalHeader
         isShowActiveOnly={isShowActiveOnly}
         toggleIsShowActiveOnly={toggleIsShowActiveOnly}
-        setIsOpenCreateModal={setIsOpenCreateModal}
+        onClickCreateProposal={onClickCreateProposal}
         isDisabledCreateButton={!isConnected || isSwitchNetwork}
       />
       {proposalList && proposalList.length > 0 && (
@@ -115,6 +148,9 @@ const ProposalList: React.FC<ProposalListProps> = ({
         Array.from({ length: 3 }).map((_, idx) => (
           <ProposalCardSkeleton key={`skeleton-${idx}`} />
         ))}
+      {!isLoading && (!proposalList || proposalList.length === 0) && (
+        <div className="no-data-found">{t("common:noDataFound")}</div>
+      )}
 
       {selectedProposalId !== 0 && (
         <ViewProposalModal
@@ -123,21 +159,14 @@ const ProposalList: React.FC<ProposalListProps> = ({
             proposalList.find(item => item.id === selectedProposalId) ||
             nullProposalItemInfo
           }
-          setSelectedProposalId={setSelectedProposalId}
+          setIsModalOpen={(isOpen: boolean) =>
+            setSelectedProposalId(isOpen ? selectedProposalId : 0)
+          }
           isConnected={isConnected}
           isSwitchNetwork={isSwitchNetwork}
           connectWallet={connectWallet}
           switchNetwork={switchNetwork}
           voteProposal={voteProposal}
-        />
-      )}
-      {isOpenCreateModal && (
-        <CreateProposalModal
-          breakpoint={breakpoint}
-          setIsOpenCreateModal={setIsOpenCreateModal}
-          proposeTextProposal={proposeTextProposal}
-          proposeCommunityPoolSpendProposal={proposeCommunityPoolSpendProposal}
-          proposeParamChnageProposal={proposeParamChnageProposal}
         />
       )}
     </ProposalListWrapper>

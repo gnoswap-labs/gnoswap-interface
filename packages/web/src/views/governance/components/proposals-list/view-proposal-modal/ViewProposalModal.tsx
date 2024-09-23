@@ -1,21 +1,23 @@
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { XGNS_TOKEN } from "@common/values/token-constant";
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconClose from "@components/common/icons/IconCancel";
 import withLocalModal from "@components/hoc/with-local-modal";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
 import StatusBadge from "../../status-badge/StatusBadge";
 import TokenChip from "../../token-chip/TokenChip";
+import TypeBadge from "../../type-badge/TypeBadge";
 import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 import VoteButtons from "./VoteButtons";
 import VoteCtaButton from "./VoteCtaButton";
 
-import TypeBadge from "../../type-badge/TypeBadge";
 import {
   ModalHeaderWrapper,
   ModalQuorum,
@@ -27,7 +29,7 @@ import {
 export interface ViewProposalModalProps {
   breakpoint: DEVICE_TYPE;
   proposalDetail: ProposalItemInfo;
-  setSelectedProposalId: Dispatch<SetStateAction<number>>;
+  setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
   isSwitchNetwork: boolean;
   connectWallet: () => void;
@@ -38,7 +40,7 @@ export interface ViewProposalModalProps {
 const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   breakpoint,
   proposalDetail,
-  setSelectedProposalId,
+  setIsModalOpen,
   isSwitchNetwork,
   isConnected,
   connectWallet,
@@ -48,16 +50,19 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   const Modal = useMemo(
     () =>
       withLocalModal(ViewProposalModalWrapper, (isOpen: boolean) => {
-        if (!isOpen) setSelectedProposalId(0);
+        if (!isOpen) setIsModalOpen(false);
       }),
-    [setSelectedProposalId],
+    [setIsModalOpen],
   );
   const { t } = useTranslation();
+  const { isMobile } = useWindowSize();
   const [selectedVote, setSelectedVote] = useState(
     proposalDetail.myVote?.type || "",
   );
 
   if (!proposalDetail) return null;
+
+  const hasVoteButton = ["UPCOMING", "ACTIVE"].includes(proposalDetail.status);
 
   return (
     <Modal>
@@ -67,27 +72,67 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <div className="title">
               <span>{`#${proposalDetail.id} ${proposalDetail.title}`}</span>
               {breakpoint !== DEVICE_TYPE.MOBILE && (
-                <TypeBadge type={proposalDetail.type} />
+                <>
+                  <TypeBadge type={proposalDetail.type} />
+                  {proposalDetail.status === "EXPIRED" && (
+                    <Badge
+                      className="proposal-badge"
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                      text={t("Governance:proposal.status.expired")}
+                    />
+                  )}
+                  {proposalDetail.status === "EXECUTED" && (
+                    <Badge
+                      className="proposal-badge"
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                      text={t("Governance:proposal.status.executed")}
+                    />
+                  )}
+                </>
               )}
             </div>
-            <div
-              className="close-wrap"
-              onClick={() => setSelectedProposalId(0)}
-            >
+            <div className="close-wrap" onClick={() => setIsModalOpen(false)}>
               <IconClose className="close-icon" />
             </div>
           </div>
           {breakpoint === DEVICE_TYPE.MOBILE && (
-            <TypeBadge type={proposalDetail.type} />
+            <div className="mobile-badges">
+              <TypeBadge type={proposalDetail.type} />
+              {proposalDetail.status === "EXPIRED" && (
+                <Badge
+                  className="proposal-badge"
+                  type={BADGE_TYPE.DARK_DEFAULT}
+                  text={t("Governance:proposal.status.expired")}
+                />
+              )}
+              {proposalDetail.status === "EXECUTED" && (
+                <Badge
+                  className="proposal-badge"
+                  type={BADGE_TYPE.DARK_DEFAULT}
+                  text={t("Governance:proposal.status.executed")}
+                />
+              )}
+            </div>
           )}
           <div className="active-wrapper">
             <StatusBadge
               status={proposalDetail.status}
               time={proposalDetail.time}
+              twoline={breakpoint === DEVICE_TYPE.MOBILE}
             />
           </div>
         </ModalHeaderWrapper>
-        <ProposalContentWrapper>
+        <ProposalContentWrapper
+          style={{
+            maxHeight: hasVoteButton
+              ? isMobile
+                ? "368px"
+                : "329px"
+              : isMobile
+              ? "499px"
+              : "486px",
+          }}
+        >
           <div className="content">
             {proposalDetail.type === "COMMUNITY_POOL_SPEND" && (
               <>
@@ -110,16 +155,18 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 <div className="variable-type">
                   {t("Governance:detailModal.content.change")}
                 </div>
-                {`Pkg Path: "${proposalDetail.content.parameters?.[0].pkgPath}"`}
-                <br />
-                {`Func: "${proposalDetail.content.parameters?.[0].func}"`}
-                <br />
-                {`Param: "${proposalDetail.content.parameters
-                  ?.map(item => item.param)
-                  .join(", ")}"`}
+                {proposalDetail.content.parameters?.map(item => (
+                  <>
+                    {`Pkg Path: "${item.pkgPath}", Func: "${item.func}", Params: "${item.param}"`}
+                    <br />
+                  </>
+                ))}
               </div>
             )}
-            <ReactMarkdown remarkPlugins={[remarkGfm]} className="markdown-style">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              className="markdown-style"
+            >
               {`${proposalDetail.content.description.replaceAll("\\n", "\n")}`}
             </ReactMarkdown>
           </div>
@@ -145,37 +192,41 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
         </ModalQuorum>
         <VoteButtons
           breakpoint={breakpoint}
-          isVoted={
-            proposalDetail.myVote ? proposalDetail.myVote.type !== "" : false
-          }
+          votedType={proposalDetail.myVote?.type || ""}
+          isClickable={proposalDetail.status === "ACTIVE"}
           yesCount={proposalDetail.votes.yes}
           noCount={proposalDetail.votes.no}
           selectedVote={selectedVote}
           setSelectedVote={setSelectedVote}
         />
-        <VotingPowerWrapper>
-          <span>{t("Governance:detailModal.votingWeight")}</span>
-          <div>
-            <div className="power-value">
-              {(proposalDetail.myVote?.weight || 0).toLocaleString()}
-            </div>
-            <TokenChip tokenInfo={XGNS_TOKEN} />
-          </div>
-        </VotingPowerWrapper>
-        <VoteCtaButton
-          breakpoint={breakpoint}
-          isWalletConnected={isConnected}
-          isSwitchNetwork={isSwitchNetwork}
-          voteType={proposalDetail.myVote?.type}
-          voteWeigth={proposalDetail.myVote?.weight}
-          status={proposalDetail.status}
-          selectedVote={selectedVote}
-          handleVote={() =>
-            voteProposal(proposalDetail.id, selectedVote === "YES")
-          }
-          connectWallet={connectWallet}
-          switchNetwork={switchNetwork}
-        />
+        {hasVoteButton && (
+          <>
+            <VotingPowerWrapper>
+              <span>{t("Governance:detailModal.votingWeight")}</span>
+              <div>
+                <div className="power-value">
+                  {(proposalDetail.myVote?.weight || 0).toLocaleString()}
+                </div>
+                <TokenChip tokenInfo={XGNS_TOKEN} />
+              </div>
+            </VotingPowerWrapper>
+            <VoteCtaButton
+              breakpoint={breakpoint}
+              isWalletConnected={isConnected}
+              isSwitchNetwork={isSwitchNetwork}
+              voteType={proposalDetail.myVote?.type}
+              voteWeigth={proposalDetail.myVote?.weight}
+              status={proposalDetail.status}
+              selectedVote={selectedVote}
+              handleVote={() => {
+                voteProposal(proposalDetail.id, selectedVote === "YES");
+                setIsModalOpen(false);
+              }}
+              connectWallet={connectWallet}
+              switchNetwork={switchNetwork}
+            />
+          </>
+        )}
       </div>
     </Modal>
   );

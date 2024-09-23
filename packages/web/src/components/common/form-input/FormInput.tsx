@@ -12,6 +12,8 @@ type Props = {
   errorText?: ReactNode;
   disabled?: boolean;
   parentProps?: ParentProps;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onBlur?: (e: any) => void;
 };
 
 const FormInput: FC<Props> = React.forwardRef<HTMLInputElement, Props>(
@@ -19,7 +21,12 @@ const FormInput: FC<Props> = React.forwardRef<HTMLInputElement, Props>(
     const { errorText, parentProps } = props;
     return (
       <FormInputWrapper {...parentProps}>
-        <FormInputStyle {...props} ref={ref}/>
+        <FormInputStyle
+          {...props}
+          ref={ref}
+          onBlur={props?.onBlur}
+          onWheel={event => (event.target as HTMLElement).blur()}
+        />
         {errorText && <div className="error-text">{errorText}</div>}
       </FormInputWrapper>
     );

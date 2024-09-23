@@ -5,24 +5,25 @@ import mixins from "@styles/mixins";
 
 export const CreateProposalModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  pointer-events: initial;
-  position: absolute;
-  overflow: hidden;
-  width: 700px;
+  min-width: 328px;
+  max-width: 700px;
+  width: 90vw;
   max-height: 800px;
+  height: 85vh;
+
   border-radius: 8px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   background-color: ${({ theme }) => theme.color.background06};
+  overflow: hidden;
+
   .btn-submit {
+    position: fixed;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     height: 57px;
+    bottom: 0;
   }
   ${media.mobile} {
-    width: 328px;
     .btn-submit {
       height: 41px;
       border-top-left-radius: 0;
@@ -30,11 +31,11 @@ export const CreateProposalModalWrapper = styled.div`
     }
   }
   .modal-body {
-    border: 1px solid ${({ theme }) => theme.color.border02};
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    padding: 24px 24px 12px 24px;
-    overflow: scroll;
+    padding: 24px 24px 73px 24px;
+    overflow-y: scroll;
+    overflow-x: hidden;
     gap: 16px;
     height: 800px;
     max-height: calc(100lvh - 100px);
@@ -65,8 +66,11 @@ export const CreateProposalModalWrapper = styled.div`
       }
     }
     ${media.mobile} {
-      padding: 12px;
+      padding: 12px 12px 57px 12px;
     }
+
+    ${({ theme }) =>
+      mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
   }
 `;
 
@@ -79,19 +83,37 @@ export const BoxItem = styled.div`
   background-color: ${({ theme }) => theme.color.backgroundOpacity2};
   border: 1px solid ${({ theme }) => theme.color.border02};
   position: relative;
+
   .multiple-variable {
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
     width: 100%;
     gap: 12px;
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
-    div:first-of-type {
-      ${mixins.flexbox("row", "flex-start", "flex-start")};
+    .variable-input-wrapper {
+      ${mixins.flexbox("row", "center", "space-between")};
+      width: 100%;
       gap: 8px;
-      > div {
+
+      ${media.mobile} {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
       }
-      ${media.mobile} {
-        width: 100%;
-        ${mixins.flexbox("column", "flex-start", "flex-start")};
+
+      > * {
+        flex: 1;
+        display: flex;
+        max-width: 179px;
+        align-self: flex-start;
+
+        ${media.mobile} {
+          max-width: 100%;
+        }
+
+        .display-value {
+          max-width: 179px;
+
+          ${media.mobile} {
+            max-width: 100%;
+          }
+        }
       }
     }
     gap: 8px;
@@ -142,14 +164,15 @@ export const BoxItem = styled.div`
       ${fonts.body13};
       ${mixins.flexbox("row", "center", "center")};
       gap: 4px;
-      color: ${({ theme }) => theme.color.text04};
+      color: ${({ theme }) => theme.color.text10};
+      line-height: 16px;
 
       svg {
         width: 16px;
         height: 16px;
       }
       svg * {
-        fill: ${({ theme }) => theme.color.icon03};
+        fill: ${({ theme }) => theme.color.icon15};
       }
     }
 
@@ -157,6 +180,10 @@ export const BoxItem = styled.div`
       ${fonts.body7};
       ${mixins.flexbox("row", "center", "center")};
       color: ${({ theme }) => theme.color.text01};
+
+      ${media.mobile} {
+        gap: 8px;
+      }
     }
   }
   .suffix-wrapper {

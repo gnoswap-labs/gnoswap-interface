@@ -74,7 +74,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
       case "INCREASE_LIQUIDITY":
         return t("IncreaseLiquidity:btn.increaseLiquidity");
       case "INSUFFICIENT_BALANCE":
-        return t("IncreaseLiquidity:btn.insufficientBalance");
+        return t("common:btn.insuffiBal");
       case "ENTER_AMOUNT":
       default:
         return t("IncreaseLiquidity:btn.enterAmount");

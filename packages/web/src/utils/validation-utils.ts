@@ -12,7 +12,7 @@ function fromBech32(
   };
 }
 
-export function addressValidationCheck(address: string): boolean {
+export function isValidAddress(address: string): boolean {
   try {
     const publicKey = fromBech32(address);
     return Boolean(publicKey?.prefix);
@@ -21,6 +21,7 @@ export function addressValidationCheck(address: string): boolean {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isErrorResponse(resposne: any): resposne is ErrorResponse {
   return resposne?.isError === true;
 }

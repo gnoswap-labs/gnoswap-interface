@@ -39,7 +39,7 @@ const VoteCtaButton: React.FC<VoteCtaButtonProps> = ({
     if (status === "UPCOMING")
       return {
         disabled: true,
-        text: t("Governance:proposal.status.upcomming"),
+        text: t("Governance:proposal.status.upcoming"),
         action: null,
       };
     if (status === "REJECTED")
@@ -63,7 +63,7 @@ const VoteCtaButton: React.FC<VoteCtaButtonProps> = ({
     if (!isWalletConnected)
       return {
         disabled: false,
-        text: t("Governance:detailModal.btn.login"),
+        text: t("common:btn.walletLogin"),
         action: connectWallet,
       };
     if (isSwitchNetwork)
@@ -122,11 +122,10 @@ const VoteCtaButton: React.FC<VoteCtaButtonProps> = ({
       text={btnStatus.text}
       style={{
         fullWidth: true,
-        height: breakpoint !== DEVICE_TYPE.MOBILE ? 57 : 41,
-        fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
+        height: breakpoint !== DEVICE_TYPE.MOBILE ? 57 : 36,
+        fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "p1",
         textColor: "text09",
         bgColor: "background17",
-        width: breakpoint !== DEVICE_TYPE.MOBILE ? undefined : "304px",
         hierarchy: btnStatus.disabled ? undefined : ButtonHierarchy.Primary,
       }}
       onClick={() => btnStatus.action && btnStatus.action()}

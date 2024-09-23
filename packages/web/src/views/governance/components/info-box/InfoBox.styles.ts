@@ -111,14 +111,14 @@ export const GovernanceDetailInfoWrapper = styled.div`
 
     .value {
       ${mixins.flexbox("row", "center", "flex-start")};
-      ${fonts.body2};
+      ${fonts.body1};
       color: ${({ theme }) => theme.color.text02};
 
       @media (max-width: 1180px) {
-        ${fonts.body6};
+        ${fonts.body5};
       }
       ${media.tablet} {
-        ${fonts.body4};
+        ${fonts.body3};
       }
       @media (max-width: 968px) {
         width: 100%;
@@ -126,7 +126,7 @@ export const GovernanceDetailInfoWrapper = styled.div`
       }
       ${media.mobile} {
         ${mixins.flexbox("row", "flex-end", "flex-start")};
-        ${fonts.body6};
+        ${fonts.body5};
       }
     }
 
@@ -139,7 +139,8 @@ export const GovernanceDetailInfoWrapper = styled.div`
 
 export const InfoBoxTooltipContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  width: calc(300px - 32px);
+  width: auto;
+  max-width: calc(300px - 32px);
   ${fonts.body12};
   background-color: ${({ theme }) => theme.color.background02};
   color: ${({ theme }) => theme.color.text02};

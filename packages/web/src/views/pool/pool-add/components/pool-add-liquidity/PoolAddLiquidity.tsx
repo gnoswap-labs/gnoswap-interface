@@ -211,13 +211,13 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
       case "ADD_LIQUIDITY":
         return t("AddPosition:btn.addLiquidity");
       case "CONNECT_WALLET":
-        return t("AddPosition:btn.walletLogin");
+        return t("common:btn.walletLogin");
       case "SWITCH_NETWORK":
         return t("AddPosition:btn.switch");
       case "INVALID_PAIR":
         return t("AddPosition:btn.invalidPair");
       case "INSUFFICIENT_BALANCE":
-        return t("AddPosition:btn.insuffiBal");
+        return t("common:btn.insuffiBal");
       case "INVALID_RANGE":
         return t("AddPosition:btn.invalidRange");
       case "AMOUNT_TOO_LOW":

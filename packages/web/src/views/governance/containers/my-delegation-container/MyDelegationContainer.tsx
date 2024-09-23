@@ -9,8 +9,8 @@ import {
 } from "@query/governance";
 import { nullMyDelegationInfo } from "@repositories/governance";
 
-import MyDelegation from "../../components/my-delegation/MyDelegation";
 import { useGovernanceTx } from "@views/governance/hooks/use-governance-tx";
+import MyDelegation from "../../components/my-delegation/MyDelegation";
 
 const MyDelegationContainer: React.FC = () => {
   const { account, connected } = useWallet();
@@ -20,32 +20,63 @@ const MyDelegationContainer: React.FC = () => {
 
   const {
     data: governanceSummaryInfo,
-    isFetching: isFetchingGovernanceSummaryInfo,
+    isFetched: isFetchedGovernanceSummaryInfo,
+    refetch: refetchSummary,
   } = useGetGovernanceSummary();
-  const { data: myDelegationInfo, isFetching: isFetchingMyDelegation } =
-    useGetMyDelegation({
-      address: account?.address || "",
-    });
-  const { data: delegatees, isFetching: isFetchingDelegatees } =
-    useGetDelegatees();
+  const {
+    data: myDelegationInfo,
+    isFetched: isFetchedMyDelegation,
+    refetch: refetchMyDelegation,
+  } = useGetMyDelegation({
+    address: account?.address || "",
+  });
+  const {
+    data: delegatees,
+    isFetched: isFetchedDelegatees,
+    refetch: refetchDelegatees,
+  } = useGetDelegatees();
 
   return (
     <MyDelegation
       totalDelegatedAmount={governanceSummaryInfo?.totalDelegated || 0}
+      apy={governanceSummaryInfo?.apy || 0}
       myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
       delegatees={delegatees ?? []}
-      isLoading={
-        (isFetchingGovernanceSummaryInfo ||
-          isFetchingMyDelegation ||
-          isFetchingDelegatees) &&
-        (!governanceSummaryInfo || !myDelegationInfo || !delegatees)
+      isLoadingCommon={
+        (!isFetchedGovernanceSummaryInfo || !isFetchedDelegatees) &&
+        (!governanceSummaryInfo || !delegatees)
       }
+      isLoadingMyDelegation={!isFetchedMyDelegation && !MyDelegation}
       isWalletConnected={connected}
       connectWallet={openModal}
-      delegateGNS={delegateGNS}
-      undelegateGNS={undelegateGNS}
-      collectUndelegated={collectUndelegated}
-      collectReward={collectReward}
+      delegateGNS={(...params) =>
+        delegateGNS(...params, async () => {
+          await refetchSummary();
+          await refetchMyDelegation();
+          await refetchDelegatees();
+        })
+      }
+      undelegateGNS={(...params) =>
+        undelegateGNS(...params, async () => {
+          await refetchSummary();
+          await refetchMyDelegation();
+          await refetchDelegatees();
+        })
+      }
+      collectUndelegated={() =>
+        collectUndelegated(async () => {
+          await refetchSummary();
+          await refetchDelegatees();
+          await refetchMyDelegation();
+        })
+      }
+      collectReward={(...params) =>
+        collectReward(...params, async () => {
+          await refetchSummary();
+          await refetchDelegatees();
+          await refetchMyDelegation();
+        })
+      }
     />
   );
 };

@@ -12,9 +12,10 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
+import BigNumber from "bignumber.js";
 
 export const useGovernanceTx = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { account } = useWallet();
   const { governanceRepository } = useGnoswapContext();
   const { getMessage } = useMessage();
@@ -55,7 +56,7 @@ export const useGovernanceTx = () => {
       target?: string;
       memo0?: string;
     },
-    updateCallback?: () => Promise<void>,
+    emitCallback?: () => Promise<void>,
   ) => {
     broadcastLoading(getMessage(eventType, "pending", messageData));
     openTransactionConfirmModal();
@@ -70,8 +71,9 @@ export const useGovernanceTx = () => {
             txHash: response?.data?.hash,
             action: eventType,
             formatData,
-            onUpdate: async () => {
-              if (updateCallback) await updateCallback();
+            visibleEmitResult: true,
+            onEmit: async () => {
+              if (emitCallback) await emitCallback();
             },
           });
         }
@@ -98,7 +100,12 @@ export const useGovernanceTx = () => {
       });
   };
 
-  const delegateGNS = (toName: string, toAddress: string, amount: string) => {
+  const delegateGNS = (
+    toName: string,
+    toAddress: string,
+    amount: string,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -131,10 +138,16 @@ export const useGovernanceTx = () => {
           // tokenAAmount: response[0],
         };
       },
+      emitCallback,
     );
   };
 
-  const undelegateGNS = (fromName: string, fromAddress: string, amount: string) => {
+  const undelegateGNS = (
+    fromName: string,
+    fromAddress: string,
+    amount: string,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -142,7 +155,9 @@ export const useGovernanceTx = () => {
     const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
 
     const messageData = {
-      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString("en"),
+      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString(
+        "en",
+      ),
       tokenASymbol: GNS_TOKEN.symbol,
       target: fromName,
     };
@@ -165,16 +180,18 @@ export const useGovernanceTx = () => {
           // tokenAAmount: response[0],
         };
       },
+      emitCallback,
     );
   };
 
-  const collectUndelegated = () => {
+  const collectUndelegated = (emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }
 
     const messageData = {
-      tokenASymbol: "xGNS",
+      tokenAAmount: "0",
+      tokenASymbol: "GNS",
     };
 
     processTx(
@@ -183,16 +200,24 @@ export const useGovernanceTx = () => {
       messageData,
       response => {
         if (!response) return messageData;
-        // TODO : use tx data
+        const tokenAAmount = (
+          BigNumber(response[0] || 0).toNumber() /
+          10 ** GNS_TOKEN.decimals
+        ).toLocaleString("en");
+
         return {
           ...messageData,
-          // tokenAAmount: response[0],
+          tokenAAmount,
         };
       },
+      emitCallback,
     );
   };
 
-  const collectReward = (usdValue: string) => {
+  const collectReward = (
+    usdValue: string,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -202,15 +227,19 @@ export const useGovernanceTx = () => {
     };
 
     processTx(
-      () =>
-        governanceRepository.sendCollectReward(),
+      () => governanceRepository.sendCollectReward(),
       DexEvent.COLLECT_GOV_REWARD,
       messageData,
       () => messageData,
+      emitCallback,
     );
   };
 
-  const proposeTextProposal = (title: string, description: string) => {
+  const proposeTextProposal = (
+    title: string,
+    description: string,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -228,6 +257,7 @@ export const useGovernanceTx = () => {
       DexEvent.PROPOSE_TEXT,
       messageData,
       () => messageData,
+      emitCallback,
     );
   };
 
@@ -237,6 +267,7 @@ export const useGovernanceTx = () => {
     tokenPath: string,
     toAddress: string,
     amount: string,
+    emitCallback: () => Promise<void>,
   ) => {
     if (!account) {
       return;
@@ -259,15 +290,19 @@ export const useGovernanceTx = () => {
       DexEvent.PROPOSE_COMM_POOL_SPEND,
       messageData,
       () => messageData,
+      emitCallback,
     );
   };
 
-  const proposeParamChnageProposal = (
+  const proposeParamChangeProposal = (
     title: string,
     description: string,
-    pkgPath: string,
-    functionName: string,
-    param: string,
+    variables: {
+      pkgPath: string;
+      func: string;
+      param: string;
+    }[],
+    emitCallback: () => Promise<void>,
   ) => {
     if (!account) {
       return;
@@ -282,17 +317,20 @@ export const useGovernanceTx = () => {
         governanceRepository.sendProposeParameterChange({
           title,
           description,
-          functionName,
-          param,
-          pkgPath,
+          variables,
         }),
       DexEvent.PROPOSE_PARAM_CHANGE,
       messageData,
       () => messageData,
+      emitCallback,
     );
   };
 
-  const voteProposal = (proposalId: number, voteYes: boolean) => {
+  const voteProposal = (
+    proposalId: number,
+    voteYes: boolean,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -311,10 +349,14 @@ export const useGovernanceTx = () => {
       DexEvent.VOTE,
       messageData,
       () => messageData,
+      emitCallback,
     );
   };
 
-  const executeProposal = (proposalId: number) => {
+  const executeProposal = (
+    proposalId: number,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -331,10 +373,14 @@ export const useGovernanceTx = () => {
       DexEvent.EXECUTE_PROPOSAL,
       messageData,
       () => messageData,
+      emitCallback,
     );
   };
 
-  const cancelProposal = (proposalId: number) => {
+  const cancelProposal = (
+    proposalId: number,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -348,9 +394,10 @@ export const useGovernanceTx = () => {
         governanceRepository.sendCancel({
           proposalId,
         }),
-      DexEvent.EXECUTE_PROPOSAL,
+      DexEvent.CANCEL_PROPOSAL,
       messageData,
       () => messageData,
+      emitCallback,
     );
   };
 
@@ -361,7 +408,7 @@ export const useGovernanceTx = () => {
     collectReward,
     proposeTextProposal,
     proposeCommunityPoolSpendProposal,
-    proposeParamChnageProposal,
+    proposeParamChangeProposal,
     voteProposal,
     executeProposal,
     cancelProposal,

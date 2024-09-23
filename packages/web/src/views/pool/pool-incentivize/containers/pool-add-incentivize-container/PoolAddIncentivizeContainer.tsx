@@ -131,7 +131,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
   const btnStatus: { text: string; disabled: boolean } = useMemo(() => {
     if (!connected) {
       return {
-        text: t("IncentivizePool:submitBtn.walletLoginBtn"),
+        text: t("common:btn.walletLogin"),
         disabled: true,
       };
     }
@@ -164,7 +164,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
       Number(tokenAmountInput.balance.replace(/,/g, ""))
     ) {
       return {
-        text: t("IncentivizePool:submitBtn.insuffi"),
+        text: t("common:btn.insuffiBal"),
         disabled: true,
       };
     }

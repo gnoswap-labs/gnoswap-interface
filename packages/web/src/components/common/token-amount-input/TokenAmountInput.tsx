@@ -14,6 +14,7 @@ export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
   changeToken: (token: TokenModel) => void;
   connected: boolean;
+  style?: React.CSSProperties;
 }
 
 const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
@@ -25,6 +26,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   changeToken,
   connected,
   amount,
+  style
 }) => {
   const { t } = useTranslation();
 
@@ -81,7 +83,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   };
 
   return (
-    <TokenAmountInputWrapper>
+    <TokenAmountInputWrapper style={style}>
       <div className="amount">
         <input
           value={amount}

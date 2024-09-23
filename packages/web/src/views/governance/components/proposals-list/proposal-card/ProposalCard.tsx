@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import relative from "dayjs/plugin/relativeTime";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -12,8 +12,8 @@ import StatusBadge from "../../status-badge/StatusBadge";
 import TypeBadge from "../../type-badge/TypeBadge";
 import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 
-import { ProposalDetailWrapper } from "./ProposalCard.styles";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { ProposalDetailWrapper } from "./ProposalCard.styles";
 
 dayjs.extend(relative);
 
@@ -34,6 +34,67 @@ const ProposalCard: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
+  const [currentTime, setCurrentTime] = useState(new Date().getTime());
+
+  const executable = useMemo(() => {
+    if (!address) {
+      return false;
+    }
+
+    if (proposalDetail.status !== "PASSED") {
+      return false;
+    }
+
+    if (
+      !["PARAMETER_CHANGE", "COMMUNITY_POOL_SPEND"].includes(
+        proposalDetail.type,
+      )
+    ) {
+      return false;
+    }
+
+    return true;
+  }, [address, proposalDetail]);
+
+  const availExecutableButton = useMemo(() => {
+    if (!executable) {
+      return false;
+    }
+
+    if (!proposalDetail.executableTime || !proposalDetail.expiredTime) {
+      return false;
+    }
+
+    const executableTime = new Date(
+      new Date(proposalDetail.executableTime).toUTCString(),
+    ).getTime();
+    const expiredTime = new Date(
+      new Date(proposalDetail.expiredTime).toUTCString(),
+    ).getTime();
+
+    return expiredTime > currentTime && currentTime >= executableTime;
+  }, [
+    currentTime,
+    executable,
+    proposalDetail.executableTime,
+    proposalDetail.expiredTime,
+  ]);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (executable) {
+      intervalId = setInterval(() => {
+        setCurrentTime(new Date().getTime());
+      }, 1000);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [executable, proposalDetail.status]);
 
   return (
     <ProposalDetailWrapper
@@ -44,21 +105,30 @@ const ProposalCard: React.FC<Props> = ({
           <div className="title">
             {`#${proposalDetail.id} ${proposalDetail.title}`}
           </div>
-          <TypeBadge type={proposalDetail.type} />
-          {proposalDetail.status === "EXECUTED" && (
-            <Badge
-              className="proposal-badge"
-              type={BADGE_TYPE.DARK_DEFAULT}
-              text={t("Governance:proposal.status.executed")}
-            />
-          )}
-          {proposalDetail.myVote && proposalDetail.myVote.type !== "" && (
-            <Badge
-              className="proposal-badge"
-              type={BADGE_TYPE.DARK_DEFAULT}
-              text={t("Governance:detailModal.badge.voted")}
-            />
-          )}
+          <div className="badges">
+            <TypeBadge type={proposalDetail.type} />
+            {proposalDetail.status === "EXPIRED" && (
+              <Badge
+                className="proposal-badge"
+                type={BADGE_TYPE.DARK_DEFAULT}
+                text={t("Governance:proposal.status.expired")}
+              />
+            )}
+            {proposalDetail.status === "EXECUTED" && (
+              <Badge
+                className="proposal-badge"
+                type={BADGE_TYPE.DARK_DEFAULT}
+                text={t("Governance:proposal.status.executed")}
+              />
+            )}
+            {proposalDetail.myVote && proposalDetail.myVote.type !== "" && (
+              <Badge
+                className="proposal-badge"
+                type={BADGE_TYPE.DARK_DEFAULT}
+                text={t("Governance:detailModal.badge.voted")}
+              />
+            )}
+          </div>
         </div>
 
         <div className="right-section">
@@ -80,19 +150,18 @@ const ProposalCard: React.FC<Props> = ({
               ].join("...")}
             <IconNewTab />
           </div>
-          {proposalDetail.status === "PASSED" &&
-            proposalDetail.type === "PARAMETER_CHANGE" && (
-              <Button
-                text={t("Governance:proposalList.executeBtn")}
-                style={{
-                  hierarchy: ButtonHierarchy.Primary,
-                }}
-                onClick={e => {
-                  e.stopPropagation();
-                  executeProposal(proposalDetail.id);
-                }}
-              />
-            )}
+          {availExecutableButton && (
+            <Button
+              text={t("Governance:proposalList.executeBtn")}
+              style={{
+                hierarchy: ButtonHierarchy.Primary,
+              }}
+              onClick={e => {
+                e.stopPropagation();
+                executeProposal(proposalDetail.id);
+              }}
+            />
+          )}
           {proposalDetail.status === "UPCOMING" &&
             proposalDetail.proposer.address === address && (
               <Button
@@ -116,8 +185,10 @@ const ProposalCard: React.FC<Props> = ({
       </div>
       <VotingProgressBar
         max={proposalDetail.votes.max}
-        yes={proposalDetail.votes.yes}
-        no={proposalDetail.votes.no}
+        yes={
+          proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.yes
+        }
+        no={proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.no}
       />
     </ProposalDetailWrapper>
   );

@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import { IconCircleExclamationMark } from "@components/common/icons/IconExclamationRound";
@@ -15,7 +15,10 @@ import WarningCard from "@components/common/warning-card/WarningCard";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
-import { DelegationItemInfo, nullMyDelegationInfo } from "@repositories/governance";
+import {
+  DelegationItemInfo,
+  nullDelegationItemInfo,
+} from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import UndelegateSelect from "./undelegate-selector/UndelegateSelect";
@@ -29,19 +32,19 @@ import {
 interface MyDelegationUndelegateModalProps {
   currentDelegatedAmount: number;
   totalDelegatedAmount: number;
+  apy: number;
   delegatedInfos: DelegationItemInfo[];
   isWalletConnected: boolean;
-  onSubmit: (
-    fromName: string,
-    fromAddress: string,
-    amount: string,
-  ) => void;
+  onSubmit: (fromName: string, fromAddress: string, amount: string) => void;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = ({
+const MyDelegationUndelegateModal: React.FC<
+  MyDelegationUndelegateModalProps
+> = ({
   currentDelegatedAmount,
   totalDelegatedAmount,
+  apy,
   delegatedInfos,
   isWalletConnected,
   onSubmit,
@@ -55,9 +58,32 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
   const { t } = useTranslation();
   const theme = useTheme();
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
-  const [selectedDelegatedInfo, setSelectedDelegatedInfo] = useState<DelegationItemInfo>(
-    delegatedInfos[0] || nullMyDelegationInfo,
-  );
+
+  const accumedDelegationInfo = useMemo(() => {
+    return delegatedInfos.reduce(
+      (acc: DelegationItemInfo[], item: DelegationItemInfo) => {
+        let accumed = false;
+        for (const accumedItem of acc) {
+          if (accumedItem.address === item.address) {
+            accumedItem.amount += item.amount;
+            accumed = true;
+            break;
+          }
+        }
+        if (!accumed) {
+          acc.push({ ...item });
+        }
+        return acc;
+      },
+      [],
+    );
+  }, [delegatedInfos]);
+
+  const [selectedDelegatedInfo, setSelectedDelegatedInfo] =
+    useState<DelegationItemInfo>(
+      accumedDelegationInfo.sort((a, b) => b.amount - a.amount)[0] ||
+        nullDelegationItemInfo,
+    );
 
   const showDelegateInfo = () => (
     <>
@@ -69,7 +95,7 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
       </div>
 
       <UndelegateSelect
-        delegatedInfos={delegatedInfos}
+        delegatedInfos={accumedDelegationInfo}
         select={setSelectedDelegatedInfo}
         selectedDelegationInfo={selectedDelegatedInfo}
       />
@@ -80,10 +106,12 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
         </div>
         <TokenAmountInput
           {...gnsAmountInput}
-          token={GNS_TOKEN}
+          token={XGNS_TOKEN}
           connected={isWalletConnected}
           changeAmount={gnsAmountInput.changeAmount}
+          balance={selectedDelegatedInfo.amount.toString()}
           changeToken={() => {}}
+          style={{ padding: "16px" }}
         />
       </article>
 
@@ -92,58 +120,67 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
           {t("Governance:myDel.undelModal.step3.title")}
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.undelModal.step3.remainXGns")}
-            </div>
-            <div className="value">
-              <MissingLogo symbol="xGNS" url={GNS_TOKEN.logoURI} width={24} />
-              {(
-                currentDelegatedAmount - Number(gnsAmountInput.amount)
-              ).toLocaleString("en")}
-              {" xGNS"}
-            </div>
+          <div className="label">
+            {t("Governance:myDel.undelModal.step3.remainXGns")}
+          </div>
+          <div className="value">
+            <MissingLogo
+              symbol={XGNS_TOKEN.symbol}
+              url={XGNS_TOKEN.logoURI}
+              width={24}
+            />
+            {formatOtherPrice(
+              currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
+                ? currentDelegatedAmount - Number(gnsAmountInput.amount)
+                : 0,
+              {
+                isKMB: false,
+                usd: false,
+              },
+            )}
+            {` ${XGNS_TOKEN.symbol}`}
           </div>
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.undelModal.step3.remainVotingWeight")}
-            </div>
-            <div className="value">
-              {`${formatOtherPrice(
-                (currentDelegatedAmount * 100) / totalDelegatedAmount,
-                {
-                  usd: false,
-                },
-              )}% -> ${formatOtherPrice(
-                ((currentDelegatedAmount - Number(gnsAmountInput.amount)) *
-                  100) /
-                  totalDelegatedAmount,
-                {
-                  usd: false,
-                },
-              )}%`}
-            </div>
+          <div className="label">
+            {t("Governance:myDel.undelModal.step3.remainVotingWeight")}
+          </div>
+          <div className="value">
+            {`${formatOtherPrice(
+              (currentDelegatedAmount * 100) / totalDelegatedAmount,
+              { usd: false },
+            )}% -> ${formatOtherPrice(
+              currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
+                ? ((currentDelegatedAmount - Number(gnsAmountInput.amount)) *
+                    100) /
+                    (totalDelegatedAmount - Number(gnsAmountInput.amount))
+                : 0,
+              { usd: false },
+            )}%`}
           </div>
         </div>
         <div className="info-rows">
-          <div>
-            <div className="label">
-              {t("Governance:myDel.undelModal.step3.aprChange")}
-              <Tooltip
-                placement="top"
-                FloatingContent={
-                  <ToolTipContentWrapper>
-                    {t("Governance:myDel.undelModal.step3.aprTooltip")}
-                  </ToolTipContentWrapper>
-                }
-              >
-                <IconInfo size={16} />
-              </Tooltip>
-            </div>
-            <div className="value">? %</div>
+          <div className="label">
+            {t("Governance:myDel.undelModal.step3.aprChange")}
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <ToolTipContentWrapper>
+                  {t("Governance:myDel.undelModal.step3.aprTooltip")}
+                </ToolTipContentWrapper>
+              }
+            >
+              <IconInfo size={16} />
+            </Tooltip>
           </div>
+          <div className="value">{`${formatOtherPrice(apy, {
+            isKMB: false,
+            usd: false,
+          })}% -> ${
+            currentDelegatedAmount <= Number(gnsAmountInput.amount)
+              ? 0
+              : formatOtherPrice(apy, { isKMB: false, usd: false })
+          }%`}</div>
         </div>
       </article>
 
@@ -166,13 +203,14 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
       />
 
       <Button
-        onClick={() =>
+        onClick={() => {
           onSubmit(
             selectedDelegatedInfo.name,
             selectedDelegatedInfo.address,
             gnsAmountInput.amount,
-          )
-        }
+          );
+          setIsOpen(false);
+        }}
         text={t("Governance:myDel.undelModal.ctaBtn")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
@@ -180,15 +218,18 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
         }}
         disabled={
           gnsAmountInput.amount === "0" ||
-          Number(gnsAmountInput.amount) >
-            Number(selectedDelegatedInfo.amount)
+          Number(gnsAmountInput.amount) > Number(selectedDelegatedInfo.amount)
         }
         className="button-confirm"
       />
     </>
   );
 
-  return <Modal>{showDelegateInfo()}</Modal>;
+  return (
+    <Modal>
+      <div className="modal-wrapper">{showDelegateInfo()}</div>
+    </Modal>
+  );
 };
 
 export default MyDelegationUndelegateModal;

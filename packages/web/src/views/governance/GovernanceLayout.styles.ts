@@ -23,11 +23,12 @@ export const GovernanceLayoutWrapper = styled.div`
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
       width: 100%;
       padding: 24px 16px 0px 16px;
-      gap: 12px;
+      gap: 24px;
     }
 
     .title-container {
       position: relative;
+      ${mixins.flexbox("row", "baseline", "flex-start")};
       max-width: ${ContainerWidth.WEB_CONTAINER};
       width: 100%;
       padding: 0px 40px 0px 40px;
@@ -50,6 +51,21 @@ export const GovernanceLayoutWrapper = styled.div`
           ${fonts.h5};
         }
       }
+
+      .learn-more {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+        ${fonts.body11};
+        color: ${({ theme }) => theme.color.text05};
+
+        svg {
+          width: 16px;
+
+          path {
+            fill: ${({ theme }) => theme.color.text05};
+          }
+        }
+      }
     }
 
     .summary-container {
@@ -59,12 +75,12 @@ export const GovernanceLayoutWrapper = styled.div`
       padding: 0px 40px;
       margin: 0 auto;
       gap: 40px;
-      @media (max-width: 1180px) {
-        gap: 16px;
+      @media (max-width: 768px) {
+        gap: 24px;
       }
 
       ${media.mobile} {
-        padding: 12px 0px 24px 0px;
+        padding: 0px;
       }
     }
   }

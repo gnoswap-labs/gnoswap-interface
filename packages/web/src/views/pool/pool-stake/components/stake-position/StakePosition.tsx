@@ -70,7 +70,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
         className="button-stake-position"
         text={
           !connected
-            ? t("business:walletLogin")
+            ? t("common:btn.walletLogin")
             : isEmptyCheckList
             ? t("StakePosition:btn.selectPosi")
             : t("StakePosition:btn.stake")

@@ -195,17 +195,38 @@ const formatActivity = (
   const tokenASymbol = res.tokenA.symbol;
   const tokenBSymbol = res.tokenB.symbol;
   const shouldShowTokenAAmount =
-    res.actionType !== DexEvent.CLAIM_FEE ||
-    (!!res.tokenAAmount && !!Number(res.tokenAAmount));
+    (res.actionType !== DexEvent.CLAIM_FEE ||
+      (!!res.tokenAAmount && !!Number(res.tokenAAmount))) &&
+    res.actionType !== DexEvent.PROPOSE_TEXT &&
+    res.actionType !== DexEvent.PROPOSE_COMM_POOL_SPEND &&
+    res.actionType !== DexEvent.PROPOSE_PARAM_CHANGE &&
+    res.actionType !== DexEvent.EXECUTE_PROPOSAL &&
+    res.actionType !== DexEvent.CANCEL_PROPOSAL;
   const shouldShowTokenBAmount =
     res.actionType !== DexEvent.CLAIM_FEE ||
     (!!res.tokenBAmount && !!Number(res.tokenBAmount));
 
+  const isGovernanceEvent = (actionType: string) => {
+    return (
+      actionType === DexEvent.DELEGATE ||
+      actionType === DexEvent.UNDELEGATE ||
+      actionType === DexEvent.COLLECT_UNDEL ||
+      actionType === DexEvent.VOTE ||
+      actionType === DexEvent.PROPOSE_TEXT ||
+      actionType === DexEvent.PROPOSE_COMM_POOL_SPEND ||
+      actionType === DexEvent.PROPOSE_PARAM_CHANGE ||
+      actionType === DexEvent.EXECUTE_PROPOSAL ||
+      actionType === DexEvent.CANCEL_PROPOSAL
+    );
+  };
+
   const actionText = (() => {
     const action = (() => {
       switch (res.actionType) {
+        // Swap
         case DexEvent.SWAP:
           return t("business:onchainActi.action.swap");
+        // Pool
         case DexEvent.ADD:
           return t("business:onchainActi.action.add");
         case DexEvent.REMOVE:
@@ -220,42 +241,102 @@ const formatActivity = (
           return t("business:onchainActi.action.claimFees");
         case DexEvent.ADD_INCENTIVE:
           return t("business:onchainActi.action.incentivize");
+        // Staking
         case DexEvent.STAKE:
           return t("business:onchainActi.action.stake");
         case DexEvent.UNSTAKE:
           return t("business:onchainActi.action.unstake");
         case DexEvent.CLAIM_REWARD:
           return t("business:onchainActi.action.claimRewards");
+        // Governance
+        case DexEvent.DELEGATE:
+          return "Delegate";
+        case DexEvent.UNDELEGATE:
+          return "Undelegate";
+        case DexEvent.COLLECT_UNDEL:
+          return "Claim";
+        case DexEvent.COLLECT_GOV_REWARD:
+          return t("business:onchainActi.action.claimRewards");
+        case DexEvent.PROPOSE_TEXT:
+        case DexEvent.PROPOSE_COMM_POOL_SPEND:
+        case DexEvent.PROPOSE_PARAM_CHANGE:
+          return "Create";
+        case DexEvent.VOTE:
+          return "Vote";
+        case DexEvent.EXECUTE_PROPOSAL:
+          return "Execute";
+        case DexEvent.CANCEL_PROPOSAL:
+          return "Cancel";
       }
     })();
 
-    const tokenAText =
-      shouldShowTokenAAmount && tokenASymbol ? " " + tokenASymbol : "";
-    const tokenBText =
-      shouldShowTokenBAmount && tokenBSymbol ? " " + tokenBSymbol : "";
+    const getSwapRelatedMessage = () => {
+      const tokenAText =
+        shouldShowTokenAAmount && tokenASymbol ? " " + tokenASymbol : "";
+      const tokenBText =
+        shouldShowTokenBAmount && tokenBSymbol ? " " + tokenBSymbol : "";
 
-    const relatedTokens = res.usedTokens || 0;
+      const relatedTokens = res.usedTokens || 0;
 
-    let conjunction = "";
-    if (relatedTokens === 2 && tokenAText && tokenBText) {
-      conjunction = ` ${
-        res.actionType === DexEvent.SWAP
-          ? t("common:conjunction.for")
-          : t("common:conjunction.and")
-      }`;
-    } else if (relatedTokens > 2) {
-      conjunction = ", ";
-    }
+      let conjunction = "";
+      if (relatedTokens === 2 && tokenAText && tokenBText) {
+        conjunction = ` ${
+          res.actionType === DexEvent.SWAP
+            ? t("common:conjunction.for")
+            : t("common:conjunction.and")
+        }`;
+      } else if (relatedTokens > 2) {
+        conjunction = ", ";
+      }
 
-    const tail = relatedTokens > 2 && ", ...";
+      const tail = relatedTokens > 2 && ", ...";
 
+      return (
+        <>
+          <span className="symbol-text">{tokenAText}</span>
+          {conjunction}
+          <span className="symbol-text">{tokenBText}</span>
+          {tail}
+        </>
+      );
+    };
+
+    const getGovernanceRelatedMessage = () => {
+      switch (res.actionType) {
+        case DexEvent.DELEGATE:
+          return <span className="symbol-text">{` ${tokenASymbol}`}</span>;
+        case DexEvent.UNDELEGATE:
+          return <span className="symbol-text">{` ${tokenASymbol}`}</span>;
+        case DexEvent.COLLECT_UNDEL:
+          return <span className="symbol-text">{` ${tokenASymbol}`}</span>;
+        case DexEvent.PROPOSE_TEXT:
+        case DexEvent.PROPOSE_COMM_POOL_SPEND:
+        case DexEvent.PROPOSE_PARAM_CHANGE:
+        case DexEvent.EXECUTE_PROPOSAL:
+        case DexEvent.CANCEL_PROPOSAL:
+          return (
+            <span className="symbol-text">{` #${res?.tokenAAmount} Proposal`}</span>
+          );
+        case DexEvent.VOTE:
+          return (
+            <span className="symbol-text">
+              {` ${res?.tokenBAmount
+                .slice(0, 1)
+                .toUpperCase()}${res?.tokenBAmount.slice(1)}`}
+            </span>
+          );
+        default:
+          return "-";
+      }
+    };
+
+    // COLLECT_GOV_REWARD use getSwapRelatedMessage()
     return (
       <span>
         {action}
-        <span className="symbol-text">{tokenAText}</span>
-        {conjunction}
-        <span className="symbol-text">{tokenBText}</span>
-        {tail}
+        {isGovernanceEvent(res.actionType)
+          ? getGovernanceRelatedMessage()
+          : getSwapRelatedMessage()}
       </span>
     );
   })();
