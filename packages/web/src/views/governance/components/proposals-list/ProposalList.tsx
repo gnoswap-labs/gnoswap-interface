@@ -149,7 +149,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
           <ProposalCardSkeleton key={`skeleton-${idx}`} />
         ))}
       {!isLoading && (!proposalList || proposalList.length === 0) && (
-        <div className="no-data-found">{t("common:noDataFound")}</div>
+        <div className="no-data-found">{t("common:noProposalFound")}</div>
       )}
 
       {selectedProposalId !== 0 && (
