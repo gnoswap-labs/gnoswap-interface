@@ -11,23 +11,23 @@ import {
   formatPoolPairAmount,
 } from "@utils/new-number-utils";
 
-import { StatTooltipContentWrapper } from "./StatTooltipContents.styles";
+import { RewardTooltipContentWrapper } from "./RewardTooltipContent.styles";
 
-export interface PositionRewardInfo {
+export interface PositionRewardForTooltip {
   rewardType: RewardType;
   token: TokenModel;
-  claimableAmount: number | null;
-  claimableUSD: number | null;
+  amount: number | null;
+  usd: number | null;
   accumulatedRewardOf1d: number | null;
   accumulatedRewardOf1dUsd: number | null;
 }
 
-export interface ClaimableRewardTooltipContentProps {
-  rewardInfo: { [key in RewardType]: PositionRewardInfo[] } | null;
+export interface RewardTooltipContentProps {
+  rewardInfo: { [key in RewardType]: PositionRewardForTooltip[] } | null;
 }
 
-export const ClaimableRewardTooltipContent: React.FC<
-  ClaimableRewardTooltipContentProps
+const RewardTooltipContent: React.FC<
+  RewardTooltipContentProps
 > = ({ rewardInfo }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
@@ -59,19 +59,19 @@ export const ClaimableRewardTooltipContent: React.FC<
     if (isEmpty) return "-";
 
     const sumUSD = swapFeeRewards?.reduce((accum: null | number, current) => {
-      if (accum === null && current.claimableUSD === null) {
+      if (accum === null && current.usd === null) {
         return null;
       }
 
       if (accum === null) {
-        return current.claimableUSD;
+        return current.usd;
       }
 
-      if (current.claimableUSD === null) {
+      if (current.usd === null) {
         return accum;
       }
 
-      return accum + current.claimableUSD;
+      return accum + current.usd;
     }, null);
     return formatOtherPrice(sumUSD, {
       isKMB: false,
@@ -84,19 +84,19 @@ export const ClaimableRewardTooltipContent: React.FC<
     if (isEmpty) return "-";
 
     const sumUSD = internalRewards.reduce((accum: null | number, current) => {
-      if (accum === null && current.claimableUSD === null) {
+      if (accum === null && current.usd === null) {
         return null;
       }
 
       if (accum === null) {
-        return current.claimableUSD;
+        return current.usd;
       }
 
-      if (current.claimableUSD === null) {
+      if (current.usd === null) {
         return accum;
       }
 
-      return accum + current.claimableUSD;
+      return accum + current.usd;
     }, null);
     return formatOtherPrice(sumUSD, {
       isKMB: false,
@@ -109,19 +109,19 @@ export const ClaimableRewardTooltipContent: React.FC<
     if (isEmpty) return "-";
 
     const sumUSD = externalRewards.reduce((accum: null | number, current) => {
-      if (accum === null && current.claimableUSD === null) {
+      if (accum === null && current.usd === null) {
         return null;
       }
 
       if (accum === null) {
-        return current.claimableUSD;
+        return current.usd;
       }
 
-      if (current.claimableUSD === null) {
+      if (current.usd === null) {
         return accum;
       }
 
-      return accum + current.claimableUSD;
+      return accum + current.usd;
     }, null);
     return formatOtherPrice(sumUSD, {
       isKMB: false,
@@ -129,7 +129,7 @@ export const ClaimableRewardTooltipContent: React.FC<
   }, [externalRewards]);
 
   return (
-    <StatTooltipContentWrapper>
+    <RewardTooltipContentWrapper>
       {swapFeeRewards && (
         <React.Fragment>
           <div className="list">
@@ -151,7 +151,7 @@ export const ClaimableRewardTooltipContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {formatPoolPairAmount(reward.claimableAmount, {
+                {formatPoolPairAmount(reward.amount, {
                   decimals: reward.token.decimals,
                   isKMB: false,
                 })}
@@ -182,7 +182,7 @@ export const ClaimableRewardTooltipContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {formatPoolPairAmount(reward.claimableAmount, {
+                {formatPoolPairAmount(reward.amount, {
                   decimals: reward.token.decimals,
                   isKMB: false,
                 })}
@@ -213,7 +213,7 @@ export const ClaimableRewardTooltipContent: React.FC<
                 </span>
               </div>
               <span className="position">
-                {formatPoolPairAmount(reward.claimableAmount, {
+                {formatPoolPairAmount(reward.amount, {
                   decimals: reward.token.decimals,
                   isKMB: false,
                 })}
@@ -222,6 +222,8 @@ export const ClaimableRewardTooltipContent: React.FC<
           ))}
         </React.Fragment>
       )}
-    </StatTooltipContentWrapper>
+    </RewardTooltipContentWrapper>
   );
 };
+
+export default RewardTooltipContent;
