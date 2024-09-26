@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { STATIC_TEXT } from "@common/values";
 import IconStar from "@components/common/icons/IconStar";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
@@ -285,7 +286,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
         <TvlSectionWrapper>
-          <h4>{t("Pool:poolInfo.section.tvl.title")}</h4>
+          <h4>{STATIC_TEXT.TVL}</h4>
           {tvlDisplay}
           <div className="section-info">
             {!loading && (
@@ -421,7 +422,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           </div>
         </VolumeSectionWrapper>
         <AprSectionWrapper>
-          <h4>{t("Pool:poolInfo.section.apr.title")}</h4>
+          <h4>{STATIC_TEXT.APR}</h4>
           {!loading && (
             <Tooltip
               placement="top"
