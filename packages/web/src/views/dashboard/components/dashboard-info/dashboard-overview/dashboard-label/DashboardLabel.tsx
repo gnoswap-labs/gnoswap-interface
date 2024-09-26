@@ -3,7 +3,7 @@ import React from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 
-import { WalletBalanceDetailInfoTooltipContent } from "./DashboardLabel.styles";
+import { DashboardLabelTooltipContent } from "./DashboardLabel.styles";
 
 interface WalletBalanceDetailInfoProps {
   tooltip: React.ReactNode;
@@ -13,9 +13,7 @@ const DashboardLabel: React.FC<WalletBalanceDetailInfoProps> = ({
   tooltip,
 }) => {
   const TooltipFloatingContent = (
-    <WalletBalanceDetailInfoTooltipContent>
-      {tooltip}
-    </WalletBalanceDetailInfoTooltipContent>
+    <DashboardLabelTooltipContent>{tooltip}</DashboardLabelTooltipContent>
   );
 
   return (

@@ -11,6 +11,7 @@ import { usePosition } from "@hooks/common/use-position";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -25,7 +26,6 @@ import { isEmptyObject } from "@utils/validation-utils";
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
 import useSendAsset from "../../hooks/useSendAsset";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();
@@ -283,6 +283,8 @@ const WalletBalanceContainer: React.FC = () => {
         breakpoint={breakpoint}
         isSwitchNetwork={isSwitchNetwork}
         loadngTransactionClaim={loadngTransactionClaim}
+        positions={positions}
+        tokenPrices={tokenPrices}
       />
       {isShowDepositModal && (
         <AssetReceiveModal
