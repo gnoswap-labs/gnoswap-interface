@@ -3,8 +3,6 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { Z_INDEX } from "@styles/zIndex";
-
 
 interface Props {
   isDisabled?: boolean;
@@ -14,23 +12,26 @@ export const UndelegateSelectWrapper = styled.div<Props>`
   position: relative;
   width: 100%;
   ${mixins.flexbox("column", "flex-start", "center")};
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.backgroundOpacity5};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   padding: 15px;
   gap: 16px;
 
   .section-title {
-    color: ${({ theme }) => theme.color.text05};
+    ${mixins.flexbox("row", "center", "flex-start")};
+    width: 100%;
+    gap: 4px;
+    color: ${({ theme }) => theme.color.text10};
     ${fonts.body12}
+
+    svg {
+      path {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+    }
   }
 
-  h5 {
-    color: ${({ isDisabled, theme }) => {
-      return isDisabled ? theme.color.text04 : theme.color.text10;
-    }};
-    ${fonts.body12}
-  }
   ${media.mobile} {
     gap: 8px;
   }
@@ -96,30 +97,30 @@ export const UndelegateSelectBox = styled.div`
     }
 
     .delegate-list-content {
-      max-height: 280px;
+      max-height: 230px;
       overflow-y: auto;
+
+      ${({ theme }) =>
+        mixins.useScrollStyle(
+          theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA",
+        )}
 
       & > div {
         padding: 16px 24px;
       }
     }
   }
-  ${media.mobile} {
-    top: auto;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
-    position: fixed;
-    min-width: 360px;
-    z-index: ${Z_INDEX.fixed};
-    max-height: 0;
-    transition: max-height 0.8s ease;
-    display: block;
-  }
+
   &.open {
     display: block;
     ${media.mobile} {
       max-height: 600px;
     }
   }
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

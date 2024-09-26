@@ -1,28 +1,38 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  UseInfiniteQueryOptions,
+} from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { GetProposalsReqeust, ProposalsInfo } from "@repositories/governance";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 100_000;
+const REFETCH_INTERVAL = 60_000;
 
 export const useGetProposals = (
-  request: GetProposalsReqeust,
-  options?: UseQueryOptions<ProposalsInfo, Error>,
+  request: Omit<GetProposalsReqeust, "page">,
+  options?: UseInfiniteQueryOptions<ProposalsInfo, Error>,
 ) => {
   const { governanceRepository } = useGnoswapContext();
 
-  return useQuery<ProposalsInfo, Error>({
+  return useInfiniteQuery<ProposalsInfo, Error>({
     queryKey: [
       QUERY_KEY.governanceProposals,
       request.isActive,
-      request.offset,
       request.address,
-      request.limit,
+      request.itemsPerPage,
     ],
-    queryFn: () => {
-      return governanceRepository.getProposals(request);
+    queryFn: ({ pageParam = 1 }) => {
+      return governanceRepository.getProposals({
+        ...request,
+        page: pageParam,
+      });
+    },
+    getNextPageParam: lastPage => {
+      if (lastPage.pageInfo.totalPages <= lastPage.pageInfo.currentPage)
+        return null;
+      return lastPage.pageInfo.currentPage + 1;
     },
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,

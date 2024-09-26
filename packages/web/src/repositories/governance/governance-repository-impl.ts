@@ -1,4 +1,3 @@
-
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
@@ -13,33 +12,45 @@ import {
   PACKAGE_GOVERNANCE_STAKER_ADDRESS,
   PACKAGE_GOVERNANCE_STAKER_PATH,
 } from "@constants/environment.constant";
+import { makeProposalVariablesQuery } from "@utils/governance-utils";
 
 import { GovernanceRepository } from "./governance-repository";
-import { GovernanceRepositoryMock } from "./governance-repository-mock";
 import {
   DelegateeInfo,
+  ExecutableFunctionInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
+  nullDelegateeInfo,
+  nullGovernanceSummaryInfo,
+  nullMyDelegationInfo,
+  nullProposalsInfo,
   ProposalsInfo,
 } from "./model";
 import {
-  GetMyDeligationRequest,
+  GetMyDelegationRequest,
   GetProposalsReqeust,
   SendCancelReqeust,
   SendDelegateReqeust,
   SendExecuteReqeust,
   SendProposeCommunityPoolSpendReqeust,
-  SendProposeParameterChangeReqeust,
+  SendProposeParameterChangeRequest,
   SendProposeTextReqeust,
   SendRedelegateReqeust,
   SendUndelegateReqeust,
   SendVoteReqeust,
 } from "./request";
+import {
+  GetDelegateesResponse,
+  GetGovernanceSummaryResponse,
+  GetMyDelegationResponse,
+  GetProposalsResponse,
+} from "./response";
+
+import GetExecutableFunctionsResponseMock from "./mock/get-executable-functions-response.json";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
-  private mockRepository: GovernanceRepositoryMock;
 
   constructor(
     networkClient: NetworkClient | null,
@@ -47,27 +58,110 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   ) {
     this.networkClient = networkClient;
     this.walletClient = walletClient;
-    this.mockRepository = new GovernanceRepositoryMock();
   }
 
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
-    return this.mockRepository.getGovernanceSummary();
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{
+      data: GetGovernanceSummaryResponse;
+    }>({
+      url: "governance/summary",
+    });
+
+    if (!response?.data?.data) {
+      return nullGovernanceSummaryInfo;
+    }
+
+    const data: GovernanceSummaryInfo = response.data.data;
+
+    return data;
   };
 
   public getMyDeligation = async (
-    request: GetMyDeligationRequest,
+    request: GetMyDelegationRequest,
   ): Promise<MyDelegationInfo> => {
-    return this.mockRepository.getMyDeligation(request);
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient
+      .get<{
+        data: GetMyDelegationResponse;
+      }>({
+        url: `governance/delegations?address=${request.address}`,
+      })
+      .catch(e => {
+        console.error(e);
+        return null;
+      });
+
+    if (!response?.data?.data) {
+      return nullMyDelegationInfo;
+    }
+
+    const data: MyDelegationInfo = response.data.data;
+
+    return data;
   };
 
   public getProposals = async (
     request: GetProposalsReqeust,
   ): Promise<ProposalsInfo> => {
-    return this.mockRepository.getProposals(request);
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const queries = [
+      request.isActive !== undefined ? `isActive=${request.isActive}` : "",
+      request.address !== undefined ? `address=${request.address}` : "",
+      request.page !== undefined ? `page=${request.page}` : "",
+      request.itemsPerPage !== undefined
+        ? `itemsPerPage=${request.itemsPerPage}`
+        : "",
+    ];
+
+    const response = await this.networkClient.get<{
+      data: GetProposalsResponse;
+    }>({
+      url: `governance/proposals?${queries.filter(item => !!item).join("&")}`,
+    });
+
+    if (!response?.data?.data) {
+      return nullProposalsInfo;
+    }
+
+    const data: ProposalsInfo = response.data.data;
+
+    return data;
+  };
+
+  public getExecutableFunctions = async (): Promise<
+    ExecutableFunctionInfo[]
+  > => {
+    return GetExecutableFunctionsResponseMock;
   };
 
   public getDelegatees = async (): Promise<DelegateeInfo[]> => {
-    return this.mockRepository.getDelegatees();
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{
+      data: GetDelegateesResponse;
+    }>({
+      url: "governance/delegatees",
+    });
+
+    if (!response?.data?.data) {
+      return [nullDelegateeInfo];
+    }
+
+    const data: DelegateeInfo[] = response.data.data.delegatees;
+
+    return data;
   };
 
   public sendProposeText = async (
@@ -147,7 +241,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   };
 
   public sendProposeParameterChange = async (
-    request: SendProposeParameterChangeReqeust,
+    request: SendProposeParameterChangeRequest,
   ): Promise<WalletResponse<{ hash: string }>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
@@ -158,7 +252,8 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const { address } = account.data;
-    const { title, description, pkgPath, functionName, param } = request;
+    const { title, description, variables } = request;
+    const variableQuery = makeProposalVariablesQuery(variables);
 
     const messages = [];
     messages.push(
@@ -166,7 +261,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
         packagePath: PACKAGE_GOVERNANCE_PATH,
         send: "",
         func: "ProposeParameterChange",
-        args: [title, description, pkgPath, functionName, param],
+        args: [title, description, variables.length.toString(), variableQuery],
         caller: address,
       }),
     );

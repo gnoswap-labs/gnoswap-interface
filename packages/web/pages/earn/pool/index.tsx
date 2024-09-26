@@ -8,11 +8,11 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import PoolDetail from "@views/pool/pool-detail/PoolDetail";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { formatAddress } from "@utils/string-utils";
 import { makeSwapFeeTier } from "@utils/swap-utils";
-import { addressValidationCheck } from "@utils/validation-utils";
+import { isValidAddress } from "@utils/validation-utils";
+import PoolDetail from "@views/pool/pool-detail/PoolDetail";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -39,7 +39,7 @@ export default function Page() {
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
-    if (!address || !addressValidationCheck(address)) {
+    if (!address || !isValidAddress(address)) {
       return undefined;
     }
     return address;

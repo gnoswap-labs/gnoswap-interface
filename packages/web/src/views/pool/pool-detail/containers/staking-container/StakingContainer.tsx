@@ -9,9 +9,12 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
+import {
+  useGetPoolDetailByPath,
+  useGetPoolStakingListByPoolPath,
+} from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
-import { addressValidationCheck } from "@utils/validation-utils";
+import { isValidAddress } from "@utils/validation-utils";
 
 import Staking from "../../components/staking/Staking";
 
@@ -32,7 +35,7 @@ const StakingContainer: React.FC = () => {
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
-    if (!address || !addressValidationCheck(address)) {
+    if (!address || !isValidAddress(address)) {
       return undefined;
     }
     return address;

@@ -1,32 +1,35 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
   DelegateeInfo,
+  ExecutableFunctionInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
   ProposalsInfo,
 } from "./model";
 import {
+  GetMyDelegationRequest,
   GetProposalsReqeust,
-  SendProposeCommunityPoolSpendReqeust,
-  SendProposeParameterChangeReqeust,
-  SendProposeTextReqeust,
-  SendVoteReqeust,
-  GetMyDeligationRequest,
   SendCancelReqeust,
-  SendExecuteReqeust,
   SendDelegateReqeust,
-  SendUndelegateReqeust,
+  SendExecuteReqeust,
+  SendProposeCommunityPoolSpendReqeust,
+  SendProposeParameterChangeRequest,
+  SendProposeTextReqeust,
   SendRedelegateReqeust,
+  SendUndelegateReqeust,
+  SendVoteReqeust,
 } from "./request";
 
 export interface GovernanceRepository {
   getGovernanceSummary: () => Promise<GovernanceSummaryInfo>;
 
   getMyDeligation: (
-    request: GetMyDeligationRequest,
+    request: GetMyDelegationRequest,
   ) => Promise<MyDelegationInfo>;
 
   getProposals: (request: GetProposalsReqeust) => Promise<ProposalsInfo>;
+
+  getExecutableFunctions: () => Promise<ExecutableFunctionInfo[]>;
 
   getDelegatees: () => Promise<DelegateeInfo[]>;
 
@@ -39,7 +42,7 @@ export interface GovernanceRepository {
   ) => Promise<WalletResponse<{ hash: string }>>;
 
   sendProposeParameterChange: (
-    request: SendProposeParameterChangeReqeust,
+    request: SendProposeParameterChangeRequest,
   ) => Promise<WalletResponse<{ hash: string }>>;
 
   sendVote: (

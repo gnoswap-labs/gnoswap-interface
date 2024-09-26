@@ -1,4 +1,4 @@
-export * from "./get-my-deligation-request";
+export * from "./get-my-delegation-request";
 export * from "./get-proposals-request";
 export * from "./send-cancel-request";
 export * from "./send-delegate-request";

@@ -6,9 +6,11 @@ export type MixinsKeyType =
   | "posTopCenterRight"
   | "posTopCenterLeft"
   | "posMoveToTopAndLeft"
-  | "posMoveToTopAndRight";
+  | "posMoveToTopAndRight"
+  | "useScrollStyle";
 
 export type MixinsType = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key in MixinsKeyType]: (...p: any[]) => SerializedStyles;
 };
 
@@ -51,6 +53,26 @@ const mixins: MixinsType = {
     position: absolute;
     top: ${top};
     right: ${right};
+  `,
+  useScrollStyle: (thumbBackground: string) => css`
+    &::-webkit-scrollbar {
+      width: 8px;
+      display: block;
+      height: 0;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+      padding: 0;
+      height: 0;
+      display: none;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: ${thumbBackground};
+      border-radius: 8px;
+      padding: 0;
+    }
   `,
 } as const;
 

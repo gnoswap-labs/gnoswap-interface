@@ -2,17 +2,17 @@ import {
   UMAMI_SCRIPT_URL,
   UMAMI_WEBSITE_ID,
 } from "@constants/environment.constant";
-import Document, { Html, Head, Main, NextScript } from "next/document";
-import i18nextConfig from "../next-i18next.config";
-import "dayjs/locale/en";
 import "dayjs/locale/de";
+import "dayjs/locale/en";
 import "dayjs/locale/es";
 import "dayjs/locale/fr";
+import "dayjs/locale/hi";
 import "dayjs/locale/ja";
 import "dayjs/locale/ko";
 import "dayjs/locale/ru";
 import "dayjs/locale/zh";
-import "dayjs/locale/hi";
+import Document, { Head, Html, Main, NextScript } from "next/document";
+import i18nextConfig from "../next-i18next.config";
 
 class MyDocument extends Document {
   render() {
@@ -44,6 +44,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <div id="portal-root" />
+          <div id="portal-dropdown" />
           <NextScript />
         </body>
       </Html>

@@ -246,7 +246,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
 
   const governanceRepository = useMemo(() => {
     return new GovernanceRepositoryImpl(gnoswapApiClient, walletClient);
-  }, []);
+  }, [gnoswapApiClient, walletClient]);
 
   const leaderboardRepository = useMemo(() => {
     return new LeaderboardRepositoryMock();

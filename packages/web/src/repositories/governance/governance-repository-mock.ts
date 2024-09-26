@@ -1,34 +1,35 @@
-
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 import { GovernanceRepository } from "./governance-repository";
 import GetDelegateesResponseMock from "./mock/get-delegatees-response.json";
+import GetExecutableFunctionsResponseMock from "./mock/get-executable-functions-response.json";
 import GetGovernanceSummaryResponseMock from "./mock/get-governance-summary-response.json";
 import GetMyDelegationResposneMock from "./mock/get-my-delegation-response.json";
 import GetProposalsResponseMock from "./mock/get-proposals-response.json";
 import {
   DelegateeInfo,
+  ExecutableFunctionInfo,
   GovernanceSummaryInfo,
   MyDelegationInfo,
   ProposalsInfo,
 } from "./model";
 import {
-  GetMyDeligationRequest,
+  GetMyDelegationRequest,
   GetProposalsReqeust,
   SendCancelReqeust,
   SendDelegateReqeust,
   SendExecuteReqeust,
   SendProposeCommunityPoolSpendReqeust,
-  SendProposeParameterChangeReqeust,
+  SendProposeParameterChangeRequest,
   SendProposeTextReqeust,
   SendRedelegateReqeust,
   SendUndelegateReqeust,
-  SendVoteReqeust
+  SendVoteReqeust,
 } from "./request";
 import {
   GetDelegateesResponse,
   GetGovernanceSummaryResponse,
-  GetMyDeligationResponse,
+  GetMyDelegationResponse,
   GetProposalsResponse,
   ProposalItemResponse,
 } from "./response";
@@ -43,10 +44,10 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
   };
 
   public getMyDeligation = async (
-    request: GetMyDeligationRequest,
+    request: GetMyDelegationRequest,
   ): Promise<MyDelegationInfo> => {
     console.log(request);
-    const res: GetMyDeligationResponse = GetMyDelegationResposneMock;
+    const res: GetMyDelegationResponse = GetMyDelegationResposneMock;
     const result = res;
 
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
@@ -59,7 +60,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     const mock: ProposalItemResponse[] = GetProposalsResponseMock.filter(
       item => {
         if (request.isActive)
-          return ["ACTIVE", "UPCOMMING"].includes(item.status);
+          return ["ACTIVE", "UPCOMING"].includes(item.status);
         return true;
       },
     );
@@ -70,20 +71,28 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
       });
     }
 
-    const startIndex = request.offset * request.limit;
+    const startIndex = (request.page - 1) * request.itemsPerPage;
     const res: GetProposalsResponse = {
       proposals: [...mock]
         .reverse()
-        .slice(startIndex, startIndex + request.limit),
+        .slice(startIndex, startIndex + request.itemsPerPage),
       pageInfo: {
         totalItems: mock.length,
-        totalPages: (mock.length + request.limit) % request.limit,
-        currentPage: request.offset,
+        totalPages: Math.floor(
+          (mock.length + request.itemsPerPage) / request.itemsPerPage,
+        ),
+        currentPage: request.page,
       },
     };
     const result = res;
 
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
+
+  public getExecutableFunctions = async (): Promise<
+    ExecutableFunctionInfo[]
+  > => {
+    return GetExecutableFunctionsResponseMock;
   };
 
   public getDelegatees = async (): Promise<DelegateeInfo[]> => {
@@ -109,7 +118,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
   };
 
   public sendProposeParameterChange = async (
-    request: SendProposeParameterChangeReqeust,
+    request: SendProposeParameterChangeRequest,
   ): Promise<WalletResponse<{ hash: string }>> => {
     throw new Error(`Mock sendProposeParameterChange : ${request}`);
   };

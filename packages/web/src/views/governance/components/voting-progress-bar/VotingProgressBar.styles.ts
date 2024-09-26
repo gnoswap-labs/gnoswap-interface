@@ -7,7 +7,6 @@ export const ProgressWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
   gap: 24px;
-  padding-top: 12px;
   .progress-value {
     ${mixins.flexbox("row", "center", "center")};
     flex-wrap: wrap;
@@ -39,7 +38,7 @@ export const ProgressBar = styled.div<progressBarProps>`
   min-width: calc(100% - 200px);
   height: 14px;
   border-radius: 99px;
-  background-color: ${({ theme }) => theme.color.background01};
+  background-color: ${({ theme }) => theme.color.background15};
   position: relative;
   .progress-bar-rate {
     position: absolute;
@@ -63,12 +62,15 @@ export const ProgressBar = styled.div<progressBarProps>`
     }};
     height: 100%;
     border-radius: 8px;
-    background-color: ${({ theme }) => theme.color.background12};
+    background-color: ${({ theme }) =>
+      theme.themeKey === "dark"
+        ? theme.color.background05
+        : theme.color.text08};
   }
 
   ${media.mobile} {
     flex: unset;
     width: 100%;
-    height: 10px;
+    height: 8px;
   }
 `;

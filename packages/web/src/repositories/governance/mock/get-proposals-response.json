@@ -2,28 +2,36 @@
   {
     "id": 1,
     "type": "TEXT",
-    "status": "PASSED",
+    "status": "REJECTED",
     "title": "Proposal Title",
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam."
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
-      "yes": 22000,
-      "no": 10500
+      "yes": 10500,
+      "no": 28000
     }
   },
   {
     "id": 2,
     "type": "TEXT",
     "status": "PASSED",
+    "executableTime": "2024-09-19T02:39:56Z",
+    "expiredTime": "2024-09-19T03:39:56Z",
     "title": "Proposal Title",
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam."
     },
-    "proponent": "GovDao",
+    "proposer": {
+      "name": "GovDao",
+      "address": "g13dmbtutu9khhfwc4nxmuhcpftf0pajdh3hcsj4"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -35,11 +43,16 @@
     "id": 3,
     "type": "TEXT",
     "status": "PASSED",
+    "executableTime": "2024-09-19T02:39:56Z",
+    "expiredTime": "2024-09-19T03:39:56Z",
     "title": "Proposal Title",
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam."
     },
-    "proponent": "GnoSwap Foundation",
+    "proposer": {
+      "name": "GnoSwap Foundation",
+      "address": "g139dn8glz9khhfwc4nxmuhcpftf0pajg8dzml8e"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -57,7 +70,10 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -75,7 +91,10 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -93,7 +112,10 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "GnoSwap Foundation",
+    "proposer": {
+      "name": "GnoSwap Foundation",
+      "address": "g139dn8glz9khhfwc4nxmuhcpftf0pajg8dzml8e"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -111,7 +133,10 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -123,13 +148,18 @@
     "id": 8,
     "type": "COMMUNITY_POOL_SPEND",
     "status": "PASSED",
+    "executableTime": "2024-09-19T02:39:56Z",
+    "expiredTime": "2024-09-19T03:39:56Z",
     "title": "Proposal Title",
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.",
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-21 11:13:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -142,7 +172,10 @@
     "type": "COMMUNITY_POOL_SPEND",
     "status": "REJECTED",
     "title": "Proposal Title",
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.",
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
@@ -160,7 +193,10 @@
     "type": "COMMUNITY_POOL_SPEND",
     "status": "CANCELLED",
     "title": "Proposal Title",
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.",
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
@@ -183,7 +219,10 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -201,11 +240,14 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "GnoSwap Foundation",
+    "proposer": {
+      "name": "GnoSwap Foundation",
+      "address": "g139dn8glz9khhfwc4nxmuhcpftf0pajg8dzml8e"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
-      "yes": 31340,
+      "yes": 29340,
       "no": 10500
     }
   },
@@ -219,8 +261,15 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "GovDao",
+    "proposer": {
+      "name": "GovDao",
+      "address": "g13dmbtutu9khhfwc4nxmuhcpftf0pajdh3hcsj4"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
+    "myVote": {
+      "type": "NO",
+      "weight": 0
+    },
     "votes": {
       "max": 40000,
       "yes": 20430,
@@ -231,11 +280,16 @@
     "id": 14,
     "type": "TEXT",
     "status": "PASSED",
+    "executableTime": "2024-09-19T02:39:56Z",
+    "expiredTime": "2024-09-19T03:39:56Z",
     "title": "Proposal Title",
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam."
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -247,11 +301,16 @@
     "id": 15,
     "type": "TEXT",
     "status": "PASSED",
+    "executableTime": "2024-09-19T02:39:56Z",
+    "expiredTime": "2024-09-19T03:39:56Z",
     "title": "Proposal Title",
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam."
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -263,11 +322,16 @@
     "id": 16,
     "type": "TEXT",
     "status": "PASSED",
+    "executableTime": "2024-09-19T02:39:56Z",
+    "expiredTime": "2024-09-19T03:39:56Z",
     "title": "Proposal Title",
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam."
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 40000,
@@ -279,11 +343,16 @@
     "id": 17,
     "type": "TEXT",
     "status": "PASSED",
+    "executableTime": "2024-09-19T02:39:56Z",
+    "expiredTime": "2024-09-19T03:39:56Z",
     "title": "Proposal Title",
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam."
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-20 10:10:2 UTC+9",
     "votes": {
       "max": 45000,
@@ -295,11 +364,16 @@
     "id": 18,
     "type": "TEXT",
     "status": "PASSED",
+    "executableTime": "2024-09-19T02:39:56Z",
+    "expiredTime": "2024-09-19T03:39:56Z",
     "title": "Proposal Title",
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam."
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-21 11:13:2 UTC+9",
     "votes": {
       "max": 40020,
@@ -317,7 +391,10 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2024-08-22 14:39:5 UTC+9",
     "votes": {
       "max": 40450,
@@ -330,7 +407,10 @@
     "type": "COMMUNITY_POOL_SPEND",
     "status": "CANCELLED",
     "title": "Proposal Title",
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.",
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
@@ -346,25 +426,32 @@
   {
     "id": 21,
     "type": "PARAMETER_CHANGE",
-    "status": "PASSED",
+    "status": "EXPIRED",
     "title": "Proposal Title",
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "content": {
       "description": "Short varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.",
       "parameters": [
         {
-          "subspace": "aa",
-          "key": "depositparams",
-          "value": "{\"min_deposit\": [{\"denom\": \"GNS\",\"amount\": \"500\"}]}"
+          "pkgPath": "Staker",
+          "func": "distribute",
+          "param": "g1abc12345abcde12345abcde12345abcde12345"
         },
         {
-          "subspace": "aa",
-          "key": "depositparams",
-          "value": "{\"min_deposit\": [{\"denom\": \"GNS\",\"amount\": \"1000\"}]}"
+          "pkgPath": "Staker",
+          "func": "distribute",
+          "param": "10000"
         }
       ]
     },
     "time": "2024-08-23 07:52:0 UTC+9",
+    "myVote": {
+      "type": "NO",
+      "weight": 0
+    },
     "votes": {
       "max": 40345,
       "yes": 24445.435433,
@@ -376,7 +463,10 @@
     "type": "COMMUNITY_POOL_SPEND",
     "status": "ACTIVE",
     "title": "Proposal Title",
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "content": {
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisiorci, ultrices sit amet mi eget, efficitur elementum tellus. Integeraugue purus, rutrum eu pretium sit amet, varius in quam.Lorem ipsumdolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.",
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
@@ -403,7 +493,10 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2025-01-27 17:00:0 UTC+9",
     "myVote": {
       "type": "YES",
@@ -425,8 +518,15 @@
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "Onbloc",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234"
+    },
     "time": "2025-01-27 17:00:0 UTC+9",
+    "myVote": {
+      "type": "",
+      "weight": 1000
+    },
     "votes": {
       "max": 40440,
       "yes": 2000,
@@ -436,14 +536,17 @@
   {
     "id": 25,
     "type": "COMMUNITY_POOL_SPEND",
-    "status": "UPCOMMING",
+    "status": "UPCOMING",
     "title": "Proposal Title",
     "content": {
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisiorci, ultrices sit amet mi eget, efficitur elementum tellus. Integeraugue purus, rutrum eu pretium sit amet, varius in quam.Lorem ipsumdolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.Lorem ipsum dolor sit amet, consecteturadipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget,efficitur elementum tellus. Integer augue purus, rutrum eu pretium sitamet, varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscingelit. Phasellus nisi orci, ultrices sit amet mi eget, efficiturelementum tellus. Integer augue purus, rutrum eu pretium sit amet,varius in quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementumtellus. Integer augue purus, rutrum eu pretium sit amet, varius inquam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellusnisi orci, ultrices sit amet mi eget, efficitur elementum tellus.Integer augue purus, rutrum eu pretium sit amet, varius in quam.Loremipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci,ultrices sit amet mi eget, efficitur elementum tellus. Integer auguepurus, rutrum eu pretium sit amet, varius in quam.Lorem ipsum dolor sitamet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sitamet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eupretium sit amet, varius in quam.",
+      "description": "# Title\n\n## Title2\n### Title3\n---\n* [ ] bullet\n* [x] bullet\n- bullet\n* dot\n  * dot\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisiorci, ultrices sit amet mi eget, efficitur elementum tellus.",
       "recipient": "g1abc12345abcde12345abcde12345abcde12345",
       "amount": 12312312
     },
-    "proponent": "Onbloc",
+    "proposer": {
+      "name": "",
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5"
+    },
     "time": "2025-02-27 10:00:0 UTC+9",
     "myVote": {
       "type": "",

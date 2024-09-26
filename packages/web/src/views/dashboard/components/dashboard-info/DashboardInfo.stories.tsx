@@ -1,8 +1,7 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import DashboardInfo from "./DashboardInfo";
 import { css, Theme } from "@emotion/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { DEVICE_TYPE } from "@styles/media";
+import DashboardInfo from "./DashboardInfo";
 
 export default {
   title: "dashboard/DashboardInfo",
@@ -34,12 +33,12 @@ Default.args = {
       community: "580 GNOS",
     },
   },
-  governenceOverviewInfo: {
-    totalXgnosIssued: "59,144,225 xGNOS",
-    holders: "14,072",
-    passedProposals: "125",
-    activeProposals: "2",
-    communityPool: "2,412,148 GNOS",
+  governanceOverviewInfo: {
+    totalDelegated: "-",
+    holders: "-",
+    passedCount: "-",
+    activeCount: "-",
+    communityPool: "-",
   },
   breakpoint: DEVICE_TYPE.WEB,
 };

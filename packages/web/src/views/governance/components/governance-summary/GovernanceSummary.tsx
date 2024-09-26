@@ -5,11 +5,13 @@ import { useTranslation } from "react-i18next";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { EXT_URL } from "@constants/external-url.contant";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { GovernanceSummaryInfo } from "@repositories/governance";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
 
+import { formatOtherPrice } from "@utils/new-number-utils";
 import { GovernanceSummaryWrapper } from "./GovernanceSummary.styles";
 
 interface GovernanceSummaryProps {
@@ -21,7 +23,8 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   governanceSummary,
   isLoading,
 }) => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
+  const { isMobile } = useWindowSize();
   
   return (
     <GovernanceSummaryWrapper>
@@ -30,7 +33,10 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
           title={t("Governance:summary.totalDel.title")}
           value={
             <>
-              {governanceSummary.totalDeligated.toLocaleString("en")}
+              {formatOtherPrice(governanceSummary.totalDelegated, {
+                isKMB: false,
+                usd: false,
+              })}
               <TokenChip tokenInfo={GNS_TOKEN} />
             </>
           }
@@ -39,30 +45,40 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         />
         <InfoBox
           title={t("Governance:summary.delRatio.title")}
-          value={`${governanceSummary.DeligatedRatio.toString()}%`}
+          value={`${formatOtherPrice(governanceSummary.delegatedRatio, {
+            isKMB: false,
+            usd: false,
+          })}%`}
           tooltip={t("Governance:summary.delRatio.tooltip")}
           isLoading={isLoading}
         />
         <InfoBox
           title={t("Governance:summary.apy.title")}
-          value={`${governanceSummary.apy.toString()}%`}
+          value={`${formatOtherPrice(governanceSummary.apy, {
+            isKMB: false,
+            usd: false,
+          })}%`}
           tooltip={t("Governance:summary.apy.tooltip")}
           isLoading={isLoading}
         />
         <InfoBox
           title={t("Governance:summary.commPool.title")}
-          value={`$${governanceSummary.communityPool.toLocaleString("en")}`}
+          value={formatOtherPrice(governanceSummary.communityPool, {
+            isKMB: false,
+          })}
           tooltip={t("Governance:summary.commPool.tooltip")}
           isLoading={isLoading}
         />
       </div>
-      <div className="link-button">
-        <div>{t("Governance:summary.guide.guide")}</div>
-        <Link href={EXT_URL.DOCS.GOVERNANCE} target="_blank">
-          {t("Governance:summary.guide.link")}
-          <IconStrokeArrowRight className="link-icon" />
-        </Link>
-      </div>
+      {!isMobile && (
+        <div className="link-button">
+          <div>{t("Governance:summary.guide.guide")}</div>
+          <Link href={EXT_URL.DOCS.XGNS} target="_blank">
+            {t("common:learnMore")}
+            <IconStrokeArrowRight className="link-icon" />
+          </Link>
+        </div>
+      )}
     </GovernanceSummaryWrapper>
   );};
 

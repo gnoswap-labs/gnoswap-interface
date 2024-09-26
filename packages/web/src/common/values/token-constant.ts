@@ -9,11 +9,25 @@ export const GNS_TOKEN: TokenModel = {
   path: GNS_TOKEN_PATH,
   decimals: 6,
   symbol: "GNS",
-  logoURI: "/gnos.svg",
+  logoURI: "/gns.svg",
   priceID: GNS_TOKEN_PATH,
   description: "GNS is a GRC20 token issued solely for testing purposes.",
   websiteURL: "https://beta.gnoswap.io",
   wrappedPath: GNS_TOKEN_PATH,
+};
+
+export const XGNS_TOKEN: TokenModel = {
+  type: "grc20",
+  chainId: "dev.gnoswap",
+  createdAt: "0001-01-01T00:00:00Z",
+  name: "GnoSwap",
+  path: "gno.land/r/gnoswap/xgns",
+  decimals: 6,
+  symbol: "xGNS",
+  logoURI: "/xgns.svg",
+  priceID: "gno.land/r/gnoswap/xgns",
+  description: "xGNS is a GRC20 token issued by delegating GNS.",
+  websiteURL: "https://beta.gnoswap.io/governance",
 };
 
 export const GNOT_TOKEN: TokenModel = {

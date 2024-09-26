@@ -2,39 +2,28 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { Z_INDEX } from "@styles/zIndex";
-export const CreateProposalModalBackground = styled.div`
-  position: fixed;
-  overflow: hidden;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: 100%;
-  height: 100lvh;
-  z-index: ${Z_INDEX.modal};
-  pointer-events: none;
-`;
 
 export const CreateProposalModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  pointer-events: initial;
-  position: absolute;
-  overflow: hidden;
-  width: 700px;
+  min-width: 328px;
+  max-width: 700px;
+  width: 90vw;
+  max-height: 800px;
+  height: 85vh;
+
   border-radius: 8px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   background-color: ${({ theme }) => theme.color.background06};
+  overflow: hidden;
+
   .btn-submit {
+    position: fixed;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     height: 57px;
+    bottom: 0;
   }
   ${media.mobile} {
-    width: 328px;
     .btn-submit {
       height: 41px;
       border-top-left-radius: 0;
@@ -42,11 +31,11 @@ export const CreateProposalModalWrapper = styled.div`
     }
   }
   .modal-body {
-    border: 1px solid ${({ theme }) => theme.color.border02};
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    padding: 24px 24px 5px 24px;
-    overflow: scroll;
+    padding: 24px 24px 73px 24px;
+    overflow-y: scroll;
+    overflow-x: hidden;
     gap: 16px;
     height: 800px;
     max-height: calc(100lvh - 100px);
@@ -77,8 +66,11 @@ export const CreateProposalModalWrapper = styled.div`
       }
     }
     ${media.mobile} {
-      padding: 12px;
+      padding: 12px 12px 57px 12px;
     }
+
+    ${({ theme }) =>
+      mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
   }
 `;
 
@@ -91,26 +83,44 @@ export const BoxItem = styled.div`
   background-color: ${({ theme }) => theme.color.backgroundOpacity2};
   border: 1px solid ${({ theme }) => theme.color.border02};
   position: relative;
+
   .multiple-variable {
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
     width: 100%;
     gap: 12px;
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
-    div:first-of-type {
-      ${mixins.flexbox("row", "flex-start", "flex-start")};
+    .variable-input-wrapper {
+      ${mixins.flexbox("row", "center", "space-between")};
+      width: 100%;
       gap: 8px;
-      > div {
+
+      ${media.mobile} {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
       }
-      ${media.mobile} {
-        width: 100%;
-        ${mixins.flexbox("column", "flex-start", "flex-start")};
+
+      > * {
+        flex: 1;
+        display: flex;
+        max-width: 179px;
+        align-self: flex-start;
+
+        ${media.mobile} {
+          max-width: 100%;
+        }
+
+        .display-value {
+          max-width: 179px;
+
+          ${media.mobile} {
+            max-width: 100%;
+          }
+        }
       }
     }
     gap: 8px;
   }
   .box-label {
     ${fonts.body12};
-    color: ${({ theme }) => theme.color.text03};
+    color: ${({ theme }) => theme.color.text10};
   }
   .type-tab {
     ${mixins.flexbox("row", "center", "center")};
@@ -124,14 +134,14 @@ export const BoxItem = styled.div`
       padding: 12px 8px 12px 8px;
       border-radius: 8px;
       text-align: center;
-      color: ${({ theme }) => theme.color.text02};
+      color: ${({ theme }) => theme.color.text01};
       &:hover {
-        background-color: ${({ theme }) => theme.color.background11};
+        background-color: ${({ theme }) => theme.color.background05Hover};
         border: 1px solid ${({ theme }) => theme.color.border03};
       }
     }
     .active-type-tab {
-      background-color: ${({ theme }) => theme.color.background11};
+      background-color: ${({ theme }) => theme.color.background05Hover};
       border: 1px solid ${({ theme }) => theme.color.border03};
     }
   }
@@ -145,27 +155,35 @@ export const BoxItem = styled.div`
       }
     }
   }
-  .deposit {
+  .minimum {
     ${mixins.flexbox("row", "center", "space-between")};
-    border: 1px solid ${({ theme }) => theme.color.border02};
-    border-radius: 8px;
-    padding: 16px;
     width: 100%;
-    > span {
+    border-radius: 8px;
+
+    > .title {
+      ${fonts.body13};
+      ${mixins.flexbox("row", "center", "center")};
+      gap: 4px;
+      color: ${({ theme }) => theme.color.text10};
+      line-height: 16px;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+      svg * {
+        fill: ${({ theme }) => theme.color.icon15};
+      }
+    }
+
+    > .value {
       ${fonts.body7};
-      color: ${({ theme }) => theme.color.text02};
-    }
-  }
-  .deposit-currency {
-    ${mixins.flexbox("row", "center", "space-between")};
-    gap: 8px;
-    span {
+      ${mixins.flexbox("row", "center", "center")};
       color: ${({ theme }) => theme.color.text01};
-      ${fonts.body9};
-    }
-    img {
-      height: 24px;
-      width: 24px;
+
+      ${media.mobile} {
+        gap: 8px;
+      }
     }
   }
   .suffix-wrapper {
@@ -176,7 +194,7 @@ export const BoxItem = styled.div`
       padding: 16px 110px 16px 24px;
       &::placeholder {
         ${fonts.body1};
-        color: ${({ theme }) => theme.color.text01};
+        color: ${({ theme }) => theme.color.text04};
       }
       ${media.mobile} {
         padding: 16px 110px 16px 16px;
@@ -208,4 +226,10 @@ export const IconButton = styled.div`
   * {
     fill: ${({ theme }) => theme.color.icon05};
   }
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

@@ -12,12 +12,16 @@ import {
 export interface UndelegateSelectItemProps {
   delegationItemInfo: DelegationItemInfo | null;
   visibleAmount: boolean;
+  onSelectedArea?: boolean;
   select: () => void;
 }
 
-const UndelegateSelectItem: React.FC<
-  UndelegateSelectItemProps
-> = ({ delegationItemInfo, visibleAmount, select }) => {
+const UndelegateSelectItem: React.FC<UndelegateSelectItemProps> = ({
+  delegationItemInfo,
+  visibleAmount,
+  onSelectedArea,
+  select,
+}) => {
   const { t } = useTranslation();
 
   const selected = delegationItemInfo !== null;
@@ -41,6 +45,7 @@ const UndelegateSelectItem: React.FC<
     <UndelegateSelectItemWrapper
       visibleAmount={visibleAmount}
       onClick={onClickItem}
+      onSelectedArea={onSelectedArea}
     >
       <div className="left-content-wrapper">
         <MissingLogo
@@ -48,7 +53,13 @@ const UndelegateSelectItem: React.FC<
           url={delegationItemInfo.logoUrl}
           symbol={delegationItemInfo.name}
         />
-        <span className="delegatee-name">{delegationItemInfo.name}</span>
+        <span className="delegatee-name">
+          {delegationItemInfo.name ||
+            [
+              delegationItemInfo.address.slice(0, 8),
+              delegationItemInfo.address.slice(32, 40),
+            ].join("...")}
+        </span>
       </div>
 
       {visibleAmount && (

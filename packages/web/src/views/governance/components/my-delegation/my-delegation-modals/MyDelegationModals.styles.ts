@@ -3,48 +3,43 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { Z_INDEX } from "@styles/zIndex";
-
-export const CreateProposalModalBackground = styled.div`
-  position: fixed;
-  overflow: hidden;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: 100%;
-  height: 100lvh;
-  z-index: ${Z_INDEX.modal};
-  pointer-events: none;
-`;
 
 export const MyDelegationModalWrapper = styled.div`
-  pointer-events: initial;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  gap: 4px;
+  min-width: 328px;
+  max-width: 500px;
+  width: 90vw;
+  max-height: 800px;
+  overflow: visible;
 
-  width: 500px;
-  color: ${({ theme }) => theme.color.text02};
-  background-color: ${({ theme }) => theme.color.background06};
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  box-shadow: ${({ theme }) => theme.color.shadow01};
-  padding: 23px;
-  margin: 0 auto;
+  .modal-wrapper {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 100%;
+    gap: 4px;
 
-  &.large-gap {
-    gap: 24px;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.background06};
+    border-radius: 8px;
+    border: 1px solid ${({ theme }) => theme.color.border02};
+    box-shadow: ${({ theme }) => theme.color.shadow01};
+    padding: 24px;
+    overflow: auto;
+    ${media.mobile} {
+      padding: 24px 16px;
+    }
   }
 
-  ${media.mobile} {
-    padding: 15px;
-    width: 100%;
-    max-width: 500px;
-    gap: 4px;
+  &.selector-box {
+    height: 490px;
+    > .modal-wrapper {
+      overflow: visible;
+    }
+  }
+
+  &.large-gap {
+    > .modal-wrapper {
+      gap: 24px;
+    }
   }
 
   .modal-content-header {
@@ -97,10 +92,6 @@ export const MyDelegationModalWrapper = styled.div`
         position: relative;
       }
     }
-    ${media.mobile} {
-      padding: 11px;
-      gap: 8px;
-    }
     .section-title {
       ${mixins.flexbox("row", "center", "flex-start")};
       width: 100%;
@@ -110,7 +101,7 @@ export const MyDelegationModalWrapper = styled.div`
 
       svg {
         path {
-          fill: ${({ theme }) => theme.color.text10};
+          fill: ${({ theme }) => theme.color.icon03};
         }
       }
     }
@@ -121,11 +112,17 @@ export const MyDelegationModalWrapper = styled.div`
       padding: 12px 16px;
       border-radius: 8px;
       border: 1px solid ${({ theme }) => theme.color.border02};
+      background-color: ${({ theme }) => theme.color.backgroundOpacity8};
       cursor: pointer;
+
+      .before-select {
+        color: ${({ theme }) => theme.color.text01};
+        ${fonts.body9}
+      }
 
       .selected-delegatee {
         ${mixins.flexbox("row", "center", "flex-start")};
-        color: ${({ theme }) => theme.color.text19};
+        color: ${({ theme }) => theme.color.text01};
         ${fonts.body13}
         gap: 5px;
 
@@ -133,12 +130,12 @@ export const MyDelegationModalWrapper = styled.div`
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 2px;
           ${fonts.p6}
-          color: ${({ theme }) => theme.color.text05};
+          color: ${({ theme }) => theme.color.text04};
 
           svg {
             width: 10px;
             path {
-              fill: ${({ theme }) => theme.color.text05};
+              fill: ${({ theme }) => theme.color.icon03};
             }
           }
         }
@@ -147,114 +144,97 @@ export const MyDelegationModalWrapper = styled.div`
       > .arrow {
         width: 16px;
         path {
-          fill: ${({ theme }) => theme.color.text19};
+          fill: ${({ theme }) => theme.color.icon11};
         }
+      }
+
+      &:hover {
+        background-color: ${({ theme }) => theme.color.hover02};
       }
     }
 
     .info-rows {
+      flex-shrink: 0;
       width: 100%;
-      ${mixins.flexbox("column", "flex-start", "flex-start")};
-      gap: 16px;
+      height: 24px;
+      ${mixins.flexbox("row", "center", "space-between")};
+      gap: 8px;
       > div {
-        width: 100%;
-        ${mixins.flexbox("row", "flex-start", "space-between")};
-        gap: 8px;
-        > div {
-          ${mixins.flexbox("row", "center", "center")};
-          gap: 4px;
-          svg {
-            width: 16px;
-            height: 16px;
-          }
-          svg * {
-            fill: ${({ theme }) => theme.color.icon03};
-          }
-          svg:hover * {
-            fill: ${({ theme }) => theme.color.icon07};
-          }
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+        svg {
+          width: 16px;
+          height: 16px;
         }
-        .label {
-          flex-shrink: 0;
-          justify-content: flex-start;
-          min-width: 88px;
-          color: ${({ theme }) => theme.color.text04};
-          ${fonts.body12}
-          ${media.mobile} {
-            ${fonts.p2}
-          }
-        }
-        .value {
-          ${mixins.flexbox("row", "center", "center")};
-          gap: 4px;
-          text-align: end;
-          color: ${({ theme }) => theme.color.text10};
-          ${fonts.body12}
-          ${media.mobile} {
-            ${fonts.p2}
-          }
+        svg * {
+          fill: ${({ theme }) => theme.color.icon03};
         }
       }
-      ${media.mobile} {
-        gap: 8px;
+      .label {
+        flex-shrink: 0;
+        justify-content: flex-start;
+        min-width: 88px;
+        color: ${({ theme }) => theme.color.text04};
+        ${fonts.body13}
+      }
+      .value {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+        text-align: end;
+        color: ${({ theme }) => theme.color.text03};
+        ${fonts.body13}
       }
     }
 
     .delegatee-info-rows {
+      flex-shrink: 0;
       width: 100%;
-      ${mixins.flexbox("column", "flex-start", "flex-start")};
-      gap: 16px;
-      > div {
-        width: 100%;
-        ${mixins.flexbox("row", "flex-start", "space-between")};
-        gap: 8px;
-        .label {
-          ${mixins.flexbox("row", "center", "center")};
-          gap: 4px;
-          flex-shrink: 0;
-          justify-content: flex-start;
-          min-width: 88px;
-          color: ${({ theme }) => theme.color.text03};
-          ${fonts.body13}
-          ${media.mobile} {
-            ${fonts.p2}
+      min-height: 24px;
+      ${mixins.flexbox("row", "flex-start", "space-between")};
+      gap: 8px;
+      .label {
+        flex-shrink: 0;
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 4px;
+        height: 24px;
+        min-width: 88px;
+        color: ${({ theme }) => theme.color.text03};
+        ${fonts.body13}
+      }
+      .value {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+        min-height: 24px;
+        text-align: end;
+        white-space: pre-line;
+        color: ${({ theme }) => theme.color.text10};
+        ${fonts.body13}
+
+        &.no-wrap {
+          text-wrap: nowrap;
+        }
+
+        span.sub {
+          color: ${({ theme }) => theme.color.text04};
+        }
+
+        svg {
+          width: 16px;
+          height: 16px;
+          path {
+            fill: ${({ theme }) => theme.color.icon03};
           }
         }
-        .value {
-          ${mixins.flexbox("row", "center", "center")};
-          gap: 4px;
-          text-align: end;
-          color: ${({ theme }) => theme.color.text05};
-          ${fonts.body13}
-          ${media.mobile} {
-            ${fonts.p2}
-          }
-
-          span.sub {
-            color: ${({ theme }) => theme.color.text04};
-          }
-
-          svg {
-            width: 16px;
-            height: 16px;
-            path {
-              fill: ${({ theme }) => theme.color.icon03};
-            }
-          }
-          &.clickable {
-            &:hover {
-              cursor: pointer;
-              svg {
-                path {
-                  fill: ${({ theme }) => theme.color.icon07};
-                }
+        &.clickable {
+          &:hover {
+            cursor: pointer;
+            svg {
+              path {
+                fill: ${({ theme }) => theme.color.icon07};
               }
             }
           }
         }
-      }
-      ${media.mobile} {
-        gap: 8px;
       }
     }
   }
@@ -302,6 +282,7 @@ export const MyDelegationModalWrapper = styled.div`
   }
 
   .button-confirm {
+    flex-shrink: 0;
     gap: 8px;
     margin-top: 16px;
     height: 57px;

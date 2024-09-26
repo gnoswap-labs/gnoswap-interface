@@ -19,5 +19,5 @@ export const Default = Template.bind({});
 Default.args = {
   breakpoint: DEVICE_TYPE.WEB,
   proposalDetail: GetProposalsResponseMock[0],
-  setSelectedProposalId: action("setSelectedProposalId"),
+  setIsModalOpen: action("setIsModalOpen"),
 };

@@ -24,6 +24,8 @@ export const FormTextAreaStyle = styled.textarea`
   color: ${({ theme }) => theme.color.text01};
   border: 1px solid ${({ theme }) => theme.color.border02};
   resize: none;
+  overflow-x: hidden;
+  overflow-y: scroll;
   &::placeholder {
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body9}
@@ -31,4 +33,7 @@ export const FormTextAreaStyle = styled.textarea`
       ${fonts.body11}
     }
   }
+
+  ${({ theme }) =>
+    mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
 `;

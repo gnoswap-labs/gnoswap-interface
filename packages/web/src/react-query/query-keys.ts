@@ -9,6 +9,7 @@ export enum QUERY_KEY {
   accountGnotTokenBalance = "accountGnotTokenBalance",
   // dashboard
   dashboardToken = "dashboardToken",
+  dashboardGovernanceOverview = "dashboardGovernanceOverview",
   dashboardTvl = "dashboardTvl",
   dashboardVolume = "dashboardVolume",
   dashboardActivities = "dashboardActivities",
@@ -17,6 +18,7 @@ export enum QUERY_KEY {
   governanceMyDelegation = "governanceMyDelegation",
   governanceProposals = "governanceProposals",
   governanceDelegatees = "governanceDelegatees",
+  governanceExecutableFunctions = "governanceExecutableFunctions",
   // leaderboard
   leaderboard = "leaderboard",
   leaderboardLeader = "leaderboardLeader",

@@ -13,6 +13,7 @@ export const ProposalHeaderWrapper = styled.div`
     gap: 24px;
   }
   > .header-title {
+    width: 100%;
     flex: 1;
     flex-shrink: 0;
     ${mixins.flexbox("row", "baseline", "flex-start")};
@@ -21,13 +22,11 @@ export const ProposalHeaderWrapper = styled.div`
     color: ${({ theme }) => theme.color.text02};
 
     .sub-title {
+      flex-shrink: 0;
       ${mixins.flexbox("row", "center", "flex-start", false)};
       gap: 4px;
       color: ${({ theme }) => theme.color.text04};
       ${fonts.body11};
-      left: 134.98px;
-      bottom: 1px;
-      top: 9px;
       svg {
         width: 16px;
         height: 16px;
@@ -44,19 +43,23 @@ export const ProposalHeaderWrapper = styled.div`
         }
       }
     }
-    ${media.tablet} {
-      .sub-title {
-        left: 126.98px;
-      }
-    }
+
     ${media.mobile} {
-      justify-content: space-between;
       ${fonts.h6}
-      .sub-title {
-        left: 96.24px;
-        width: max-content;
-        bottom: 0px;
-        top: 4px;
+      gap: 10px;
+    }
+
+    .left-items {
+      flex: 1;
+      ${mixins.flexbox("row", "center", "flex-end")};
+
+      @media (max-width: 500px) {
+        margin-top: auto;
+        > div {
+          > label {
+            display: none;
+          }
+        }
       }
     }
   }

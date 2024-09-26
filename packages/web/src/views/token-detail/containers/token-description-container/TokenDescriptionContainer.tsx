@@ -28,7 +28,7 @@ export const descriptionInit: DescriptionInfo = {
     pkg_path: "1",
     name: "Bitcoin",
     symbol: "BTC",
-    image: "/gnos.svg",
+    image: "/gns.svg",
     decimals: 1,
     description: "string",
     website_url: "string",
