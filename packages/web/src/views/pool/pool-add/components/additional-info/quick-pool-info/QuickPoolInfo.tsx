@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { STATIC_TEXT } from "@common/values";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStar from "@components/common/icons/IconStar";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
@@ -150,7 +151,7 @@ const QuickPoolInfo: React.FC<Props> = ({
     return (
       <div className="pool-info">
         <div>
-          <div className="label">{t("AddPosition:positionStat.label.tvl")}</div>
+          <div className="label">{STATIC_TEXT.TVL}</div>
           <div className="value">{liquidityValue}</div>
         </div>
         <div>
