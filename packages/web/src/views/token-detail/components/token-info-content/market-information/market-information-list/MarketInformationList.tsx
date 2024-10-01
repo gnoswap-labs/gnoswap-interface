@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
+import { STATIC_TEXT } from "@common/values";
 import { wrapper } from "./MarketInformationList.styles";
 
 export const marketInformationInit = {
@@ -29,7 +30,7 @@ const MarketInformationList: React.FC<MarketInformationListProps> = ({
 
   const TITLE_LIST = [
     t("TokenDetails:info.market.col.marketCap"),
-    t("TokenDetails:info.market.col.tvl"),
+    STATIC_TEXT.TVL,
     t("TokenDetails:info.market.col.volume"),
     t("TokenDetails:info.market.col.fee"),
   ];

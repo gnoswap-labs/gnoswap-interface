@@ -84,7 +84,7 @@ const UndelegateSelect: React.FC<UndelegateSelectProps> = ({
           <div className="delegate-list-wrapper">
             <div className="delegate-list-headrer">
               <span className="delegatee-info">
-                {t("Governance:myDel.undelModal.step1.select.delegate")}
+                {t("Governance:myDel.delegate")}
               </span>
               <span className="amount-info">
                 {t("Governance:myDel.undelModal.step1.select.amount")}

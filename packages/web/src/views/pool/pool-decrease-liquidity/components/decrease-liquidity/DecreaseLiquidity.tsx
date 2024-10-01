@@ -75,7 +75,7 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
       </article>
       <Button
         onClick={onSubmit}
-        text={t("DecreaseLiquidity:btn.decreaseLiqui")}
+        text={t("DecreaseLiquidity:title")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,

@@ -76,14 +76,12 @@ const StakePositionModal: React.FC<Props> = ({
             <div className="item-content">
               <div>
                 <div className="label">
-                  {t("StakePosition:confStakeModal.stakingReward.apr.label")}
+                  {t("StakePosition:overview.stakingApr.label")}
                   <Tooltip
                     placement="top"
                     FloatingContent={
                       <ToolTipContentWrapper>
-                        {t(
-                          "StakePosition:confStakeModal.stakingReward.apr.tooltip",
-                        )}
+                        {t("StakePosition:overview.stakingApr.tooltip")}
                       </ToolTipContentWrapper>
                     }
                   >
@@ -129,7 +127,7 @@ const StakePositionModal: React.FC<Props> = ({
             <div className="item-content">
               <div>
                 <div className="label-large">
-                  {t("StakePosition:confStakeModal.totalAmt")}
+                  {t("StakePosition:overview.totalAmt")}
                 </div>
                 <div className="value-large">{totalLiquidityUSD}</div>
               </div>
@@ -137,7 +135,7 @@ const StakePositionModal: React.FC<Props> = ({
           </div>
           <div>
             <Button
-              text={t("StakePosition:confStakeModal.btn")}
+              text={t("StakePosition:confStakeModal.title")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,

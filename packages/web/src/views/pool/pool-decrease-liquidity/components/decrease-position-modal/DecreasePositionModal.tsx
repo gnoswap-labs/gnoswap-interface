@@ -6,8 +6,8 @@ import IconClose from "@components/common/icons/IconCancel";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 
-import DecreasePoolInfo from "../decrease-pool-info/DecreasePoolInfo";
 import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
+import DecreasePoolInfo from "../decrease-pool-info/DecreasePoolInfo";
 import BalanceChange from "./balance-change/BalanceChange";
 import DecreaseMaxMin from "./decrease-max-min/DecreaseMaxMin";
 
@@ -78,7 +78,7 @@ const DecreasePositionModal: React.FC<Props> = ({
           <div>
             <Button
               onClick={confirm}
-              text={t("DecreaseLiquidity:confModal.btn")}
+              text={t("DecreaseLiquidity:confModal.title")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,

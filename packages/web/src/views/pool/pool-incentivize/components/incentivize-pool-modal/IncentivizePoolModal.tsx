@@ -88,7 +88,7 @@ const IncentivizePoolModal: React.FC<Props> = ({
               </div>
               <div>
                 <div className="label">
-                  {t("IncentivizePool:confirmModal.row.label.totalAmt")}
+                  {t("IncentivizePool:incenDetail.row.label.totalAmt")}
                 </div>
                 <div className="value-content">
                   <MissingLogo
@@ -104,7 +104,7 @@ const IncentivizePoolModal: React.FC<Props> = ({
               </div>
               <div>
                 <div className="label">
-                  {t("IncentivizePool:confirmModal.row.label.period")}
+                  {t("IncentivizePool:incenDetail.row.label.period")}
                 </div>
                 <div className="value-content value-content-column">
                   <DateTimeTooltip>

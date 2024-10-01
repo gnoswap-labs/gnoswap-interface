@@ -112,7 +112,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
 
 export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
   const { t } = useTranslation();
-  const {getTxUrl} = useGnoscanUrl();
+  const { getTxUrl } = useGnoscanUrl();
 
   const {
     action,
@@ -250,23 +250,23 @@ const formatActivity = (
           return t("business:onchainActi.action.claimRewards");
         // Governance
         case DexEvent.DELEGATE:
-          return "Delegate";
+          return t("business:onchainActi.action.delegate");
         case DexEvent.UNDELEGATE:
-          return "Undelegate";
+          return t("business:onchainActi.action.undelegate");
         case DexEvent.COLLECT_UNDEL:
-          return "Claim";
+          return t("business:onchainActi.action.claim");
         case DexEvent.COLLECT_GOV_REWARD:
           return t("business:onchainActi.action.claimRewards");
         case DexEvent.PROPOSE_TEXT:
         case DexEvent.PROPOSE_COMM_POOL_SPEND:
         case DexEvent.PROPOSE_PARAM_CHANGE:
-          return "Create";
+          return t("business:onchainActi.action.create");
         case DexEvent.VOTE:
-          return "Vote";
+          return t("business:onchainActi.action.vote");
         case DexEvent.EXECUTE_PROPOSAL:
-          return "Execute";
+          return t("business:onchainActi.action.execute");
         case DexEvent.CANCEL_PROPOSAL:
-          return "Cancel";
+          return t("business:onchainActi.action.cancel");
       }
     })();
 

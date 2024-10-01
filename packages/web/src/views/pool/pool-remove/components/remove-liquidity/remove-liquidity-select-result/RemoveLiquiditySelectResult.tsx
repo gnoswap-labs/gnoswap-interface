@@ -12,7 +12,7 @@ import { usePositionsRewards } from "../../../../common/hooks/use-positions-rewa
 
 import {
   GnotCollectSwitchWrapper,
-  RemoveLiquiditySelectResultWrapper
+  RemoveLiquiditySelectResultWrapper,
 } from "./RemoveLiquiditySelectResult.styles";
 
 interface RemoveLiquiditySelectResultProps {
@@ -76,9 +76,7 @@ const RemoveLiquiditySelectResult: React.FC<
                 width={24}
                 mobileWidth={24}
               />
-              <p>
-                {t("RemovePosition:overview.unclaimed")}
-              </p>
+              <p>{t("RemovePosition:overview.unclaimed")}</p>
               <strong>
                 {formatPoolPairAmount(pooledTokenInfo.amount, {
                   decimals: pooledTokenInfo.token.decimals,
@@ -99,7 +97,7 @@ const RemoveLiquiditySelectResult: React.FC<
         )}
       </ul>
       <div className="total-section">
-        <h5>{t("RemovePosition:overview.totalAmt")}</h5>
+        <h5>{t("RemovePosition:totalAmt")}</h5>
         <span className="total-value">{totalLiquidityUSD}</span>
       </div>
     </RemoveLiquiditySelectResultWrapper>

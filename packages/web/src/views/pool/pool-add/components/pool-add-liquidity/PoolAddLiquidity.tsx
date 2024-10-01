@@ -207,7 +207,7 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
   const submitButtonStr = useMemo(() => {
     switch (submitType) {
       case "CREATE_POOL":
-        return t("AddPosition:btn.addPosi");
+        return t("AddPosition:card.title");
       case "ADD_LIQUIDITY":
         return t("AddPosition:btn.addLiquidity");
       case "CONNECT_WALLET":
