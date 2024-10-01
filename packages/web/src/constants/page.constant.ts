@@ -7,6 +7,7 @@ export const PAGE_PATH = {
   LEADERBOARD: "/leaderboard",
   SWAP: "/swap",
   WALLET: "/wallet",
+  Launchpad: "/launchpad",
   POOL: "/earn/pool",
   POOL_ADD: "/earn/pool/add",
   POOL_REMOVE: "/earn/pool/remove",
