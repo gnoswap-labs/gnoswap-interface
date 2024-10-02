@@ -1,43 +1,53 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 import { getCanScrollUpId } from "@constants/common.constant";
 import { LaunchpadLayoutWrapper } from "./LaunchpadLayout.styles";
+import IconRightArrow from "@components/common/icons/IconRightArrow";
 
 interface LaunchpadLayoutProps {
   header: React.ReactNode;
+  icon: React.ReactNode;
   footer: React.ReactNode;
 }
 
 const LaunchpadLayout: React.FC<LaunchpadLayoutProps> = ({
   header,
-  footer,
+  icon,
+  // footer,
 }) => {
-  const { t } = useTranslation();
-
   return (
     <LaunchpadLayoutWrapper>
       {header}
-      <section className="dashboard-section">
-        <div className="dashboard-title-container">
-          <h3 className="title">{t("Dashboard:title")}</h3>
-        </div>
-        <div className="charts-container">
-          {/* {tvl}
-          {volume} */}
-        </div>
-        {/* <div className="dashboard-info-container">{info}</div> */}
-      </section>
+      <main>
+        <section className="launchpad-section">
+          <div className="launchpad-title-container">
+            <h3 className="title">GnoSwap Launchpad</h3>
+            <h4 className="sub-title">
+              Where Pioneers and Supporters Unite — Discover <br />
+              the Next Big Thing on gno.land, Powered by $GNS.
+            </h4>
+          </div>
+          <div className="launchpad-button-wrapper">
+            <button>
+              How to Participate
+              <IconRightArrow />
+            </button>
+            <button>
+              Submit a Project <IconRightArrow />
+            </button>
+          </div>
+        </section>
+        <div className="launchpad-image-wrapper">{icon}</div>
+      </main>
+
       <div
         className="background-wrapper"
         id={getCanScrollUpId("activities-list")}
       >
         <div className="background"></div>
-        <section className="activities-section">
-          {/* <div className="activities-container">{activities}</div> */}
-        </section>
+        <section className="activities-section"></section>
       </div>
-      {footer}
+      {/* {footer} */}
     </LaunchpadLayoutWrapper>
   );
 };
