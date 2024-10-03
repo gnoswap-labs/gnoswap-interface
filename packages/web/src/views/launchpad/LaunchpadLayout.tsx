@@ -3,6 +3,7 @@ import React from "react";
 import { getCanScrollUpId } from "@constants/common.constant";
 import { LaunchpadLayoutWrapper } from "./LaunchpadLayout.styles";
 import IconRightArrow from "@components/common/icons/IconRightArrow";
+import Button from "@components/common/button/Button";
 
 interface LaunchpadLayoutProps {
   header: React.ReactNode;
@@ -28,13 +29,16 @@ const LaunchpadLayout: React.FC<LaunchpadLayoutProps> = ({
             </h4>
           </div>
           <div className="launchpad-button-wrapper">
-            <button>
-              How to Participate
-              <IconRightArrow />
-            </button>
-            <button>
-              Submit a Project <IconRightArrow />
-            </button>
+            <Button
+              text={"How to Participate"}
+              style={{ textColor: "text32" }}
+              rightIcon={<IconRightArrow />}
+            />
+            <Button
+              text={"Submit a Project"}
+              style={{ textColor: "text32" }}
+              rightIcon={<IconRightArrow />}
+            />
           </div>
         </section>
         <div className="launchpad-image-wrapper">{icon}</div>
