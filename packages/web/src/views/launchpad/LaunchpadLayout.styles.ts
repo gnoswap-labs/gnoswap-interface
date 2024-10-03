@@ -99,6 +99,29 @@ export const LaunchpadLayoutWrapper = styled.div`
     }
   }
 
+  .launchpad-data-wrapper {
+    ${mixins.flexbox("row", "center", "space-between")};
+    gap: 16px;
+    width: 100%;
+    .launchpad-data-list {
+      ${mixins.flexbox("column", "flex-start", "center")};
+      gap: 6px;
+      color: var(--Global-Color-White, #fff);
+      .launchpad-data-key {
+        color: ${({ theme }) => theme.color.text04};
+      }
+      .launchpad-data-value {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 4px;
+        color: ${({ theme }) => theme.color.text03};
+        img {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+  }
+
   .launchpad-image-wrapper {
     padding: 0px 110px;
   }
