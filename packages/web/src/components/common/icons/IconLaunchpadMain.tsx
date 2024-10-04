@@ -1,12 +1,17 @@
+/**
+ * Todo: Delete This code.
+ */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 /* eslint-disable @next/next/no-img-element */
-// import { ThemeKeys } from "@styles/ThemeTypes";
+import { ThemeKeys } from "@styles/ThemeTypes";
 
 const IconLaunchpadMain = ({
   className,
-}: // themeKey = "dark",
-{
+  themeKey = "dark",
+}: {
   className?: string;
-  // themeKey?: ThemeKeys;
+  themeKey?: ThemeKeys;
 }) => {
   /**
    * TODO: The style object below is commented out but may be needed later.
