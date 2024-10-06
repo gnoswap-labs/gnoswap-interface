@@ -8,9 +8,10 @@ export const LaunchpadLayoutWrapper = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.color.background01};
   main {
-    ${mixins.flexbox("row", "center", "space-between")}
+    ${mixins.flexbox("column", "center", "center")}
     width: 100%;
     max-width: 1440px;
+    gap: 36px;
     flex-grow: 1;
     padding: 100px 40px 60px;
     margin: 0 auto;
@@ -21,6 +22,16 @@ export const LaunchpadLayoutWrapper = styled.div`
       padding: 48px 0;
       ${mixins.flexbox("column", "center", "center")}
     }
+  }
+
+  .launchpad-container {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    margin-bottom: 60px;
+  }
+
+  .launchpad-active-project {
+    width: 100%;
   }
 
   .icon-launchpad {

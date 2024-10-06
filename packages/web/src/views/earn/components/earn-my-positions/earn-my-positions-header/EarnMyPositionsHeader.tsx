@@ -8,7 +8,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import {
   HeaderTextWrapper,
-  PositionsWrapper
+  PositionsWrapper,
 } from "./EarnMyPositionsHeader.styles";
 
 export interface EarnMyPositionsHeaderProps {
