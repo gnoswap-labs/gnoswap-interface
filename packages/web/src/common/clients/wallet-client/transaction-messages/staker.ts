@@ -23,7 +23,8 @@ export function makeCollectRewardMessage(lpTokenId: string, caller: string) {
     packagePath: PACKAGE_STAKER_PATH,
     args: [
       lpTokenId.toString(),
-      "true", // unwrap wgnot, it's always true for now
+      // The parameter is incorrect for the current contract version.
+      // "true",
     ],
     caller,
   });
