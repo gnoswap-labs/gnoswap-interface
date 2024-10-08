@@ -56,6 +56,7 @@ export const useMessage = () => {
           };
         case DexEvent.CLAIM_FEE:
         case DexEvent.COLLECT_GOV_REWARD: // governance reward
+        case DexEvent.LAUNCHPAD_COLLECT_REWARD:
           return {
             pending: t("Modal:confirm.claim.status.pending", data),
             success: t("Modal:confirm.claim.status.success", data),
@@ -131,6 +132,12 @@ export const useMessage = () => {
             success: t("Modal:confirm.cancelProposal.status.success", data),
             error: t("Modal:confirm.cancelProposal.status.error", data),
           };
+        case DexEvent.LAUNCHPAD_DEPOSIT:
+          return {
+            pending: t("Modal:confirm.deposit.status.pending", data),
+            success: t("Modal:confirm.deposit.status.success", data),
+            error: t("Modal:confirm.deposit.status.error", data),
+          };
         default:
           return {
             pending: "Undefined task",
@@ -167,6 +174,7 @@ export const useMessage = () => {
           return t("Modal:confirm.remove.title");
         case DexEvent.CLAIM_FEE:
         case DexEvent.COLLECT_GOV_REWARD: // governance reward
+        case DexEvent.LAUNCHPAD_COLLECT_REWARD:
           return t("Modal:confirm.claim.title");
         case DexEvent.ADD_INCENTIVE:
           return t("Modal:confirm.addIncentive.title");
@@ -194,6 +202,8 @@ export const useMessage = () => {
           return t("Modal:confirm.executeProposal.title");
         case DexEvent.CANCEL_PROPOSAL:
           return t("Modal:confirm.cancelProposal.title");
+        case DexEvent.LAUNCHPAD_DEPOSIT:
+          return t("Modal:confirm.deposit.title");
         default:
           return "Undefined task";
       }
