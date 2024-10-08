@@ -1,4 +1,4 @@
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
@@ -16,6 +16,10 @@ export const useGetLastedBlockHeight = (
 
       return data;
     },
+    staleTime: Infinity,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    keepPreviousData: true,
     ...options,
   });
 };
