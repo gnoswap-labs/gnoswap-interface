@@ -90,11 +90,26 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     [DexEvent.PROPOSE_PARAM_CHANGE]: "Created",
     [DexEvent.EXECUTE_PROPOSAL]: "Excuted",
     [DexEvent.CANCEL_PROPOSAL]: "Cancelled",
+    // Launchpad
+    [DexEvent.LAUNCHPAD_COLLECT_REWARD]: "Modal:notif.action.rewardsClaimed",
+    [DexEvent.LAUNCHPAD_DEPOSIT]: "Modal:notif.action.deposited",
   };
 
   const getNotificationMessage = useCallback(
     (tx: ActivityData) => {
       const getSwapRelatedMessage = () => {
+        // Launchpad Deposit
+        if (tx.actionType === DexEvent.LAUNCHPAD_DEPOSIT) {
+          const tokenAAmount = formatPoolPairAmount(tx?.tokenAAmount, {
+            decimals: tx.tokenA.decimals,
+            isKMB: false,
+          });
+          const tokenASymbol = tx?.tokenA?.symbol;
+          return (
+            <span className="accent">{` ${tokenAAmount} ${tokenASymbol}`}</span>
+          );
+        }
+
         const token0Amount = formatPoolPairAmount(tx?.tokenAAmount, {
           decimals: tx.tokenA.decimals,
           isKMB: false,
@@ -366,7 +381,8 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
               </DoubleLogoDense>
             ) : (
               <DoubleLogoDense>
-                {isGovernanceNoti(item.rawValue.actionType) && item.rawValue.actionType !== "DELEGATE" ? (
+                {isGovernanceNoti(item.rawValue.actionType) &&
+                item.rawValue.actionType !== "DELEGATE" ? (
                   <MissingLogo
                     symbol={XGNS_TOKEN.symbol}
                     url={XGNS_TOKEN.logoURI}

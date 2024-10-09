@@ -30,6 +30,9 @@ export const DexEvent = {
   VOTE: "VOTE",
   EXECUTE_PROPOSAL: "EXECUTE_PROPOSAL",
   CANCEL_PROPOSAL: "CANCEL_PROPOSAL",
+  // launchpad
+  LAUNCHPAD_DEPOSIT: "LAUNCHPAD_DEPOSIT",
+  LAUNCHPAD_COLLECT_REWARD: "LAUNCHPAD_COLLECT_REWARD",
 } as const;
 
 export type DexEventType = ValuesType<typeof DexEvent>;

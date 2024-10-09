@@ -1,0 +1,84 @@
+{
+  "error": {},
+  "data": {
+    "project": {
+      "id": 1,
+      "projectId": "PROJECT01",
+      "status": "ONGOING",
+      "name": "GnoSwap Protocol",
+      "conditions": [
+        {
+          "tokenPath": "gnot",
+          "leastTokenAmount": 100
+        },
+        {
+          "tokenPath": "gno.land/r/gnoswap/v2/gns",
+          "leastTokenAmount": 1000
+        }
+      ],
+      "pools": [
+        {
+          "id": 1,
+          "projectPoolId": "POOL01",
+          "status": "ONGOING",
+          "poolTier": "TIER30",
+          "allocation": 50000000,
+          "participant": 17423,
+          "depositAmount": 9284916532177,
+          "distributedAmount": 50000000,
+          "apr": 150.794691,
+          "createTime": "2024-10-07T00:00:00Z",
+          "createBlockHeight": 100,
+          "startTime": "2024-10-07T00:00:00Z",
+          "startBlockHeight": 753586,
+          "endTime": "2024-10-09T05:44:20Z",
+          "endBlockHeight": 1164057,
+          "claimableThreshold": 100
+        },
+        {
+          "id": 2,
+          "projectPoolId": "POOL02",
+          "status": "ONGOING",
+          "poolTier": "TIER90",
+          "allocation": 70000000,
+          "participant": 17423,
+          "depositAmount": 9284916532177,
+          "distributedAmount": 50000000,
+          "apr": 1242.542,
+          "createTime": "2024-10-07T00:00:00Z",
+          "createBlockHeight": 100,
+          "startTime": "2024-10-07T00:00:00Z",
+          "startBlockHeight": 753586,
+          "endTime": "2024-10-30T05:44:20Z",
+          "endBlockHeight": 1164057,
+          "claimableThreshold": 100
+        },
+        {
+          "id": 3,
+          "projectPoolId": "POOL03",
+          "status": "ONGOING",
+          "poolTier": "TIER180",
+          "allocation": 90000000,
+          "participant": 17423,
+          "depositAmount": 9284916532177,
+          "distributedAmount": 50000000,
+          "apr": 120.41,
+          "createTime": "2024-10-07T00:00:00Z",
+          "createBlockHeight": 100,
+          "startTime": "2024-10-07T00:00:00Z",
+          "startBlockHeight": 753586,
+          "endTime": "2025-01-01T05:44:20Z",
+          "endBlockHeight": 1164057,
+          "claimableThreshold": 100
+        }
+      ],
+      "rewardTokenPath": "gno.land/r/onbloc/usdc",
+      "description": "The first Dex on Gnoland with Concentrated Liquidity.",
+      "descriptionDetails": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eu pretium sit amet, varius in quam. In auctor gravida pretium. Maecenas est ante, pulvinar id accumsan eget, aliquam ac turpis. Donec vulputate nunc tellus. In sit amet mattis nisl. Mauris libero quam, hendrerit dapibus scelerisque eu, fringilla sit amet sapien. Proin ut semper risus. Vivamus fringilla eget lectus ut faucibus. Proin vitae mollis massa. Sed bibendum tortor eget aliquam commodo. Etiam et eleifend augue. Donec molestie placerat elit.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eu pretium sit amet, varius in quam. In auctor gravida pretium. Maecenas est ante, pulvinar id accumsan eget, aliquam ac turpis. Donec vulputate nunc tellus. In sit amet mattis nisl. Mauris libero quam, hendrerit dapibus scelerisque eu...",
+      "websiteUrl": "https://docs.gnoswap.io/",
+      "twitterUrl": null,
+      "discordUrl": null,
+      "docsUrl": "https://docs.gnoswap.io/"
+    }
+  }
+}

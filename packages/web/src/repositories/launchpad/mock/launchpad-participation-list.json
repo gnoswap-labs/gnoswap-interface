@@ -1,0 +1,49 @@
+{
+  "error": {},
+  "data": {
+    "participationInfos": [
+      {
+        "id": 1,
+        "projectId": "PROJECT01",
+        "projectPoolId": "POOL01",
+        "depositId": "DEPOSIT01",
+        "poolTier": "TIER30",
+        "status": "ONGOING",
+        "depositAmount": 4000.12,
+        "rewardTokenPath": "gno.land/r/onbloc/usdc",
+        "createTime": "1970-01-01T00:01:40Z",
+        "createBlockHeight": 100,
+        "startTime": "1970-01-01T00:01:40Z",
+        "startBlockHeight": 753586,
+        "endTime": "2024-10-09T05:44:20Z",
+        "endBlockHeight": 763587,
+        "claimableTime": "2024-10-07T00:00:00Z",
+        "claimableBlockHeight": 300,
+        "claimableRewardAmount": 1249249,
+        "claimedRewardAmount": 200,
+        "depositAPR": 5399.7217246
+      },
+      {
+        "id": 1,
+        "projectId": "PROJECT01",
+        "projectPoolId": "POOL02",
+        "depositId": "DEPOSIT02",
+        "poolTier": "TIER90",
+        "status": "ONGOING",
+        "depositAmount": 4500.12,
+        "rewardTokenPath": "gno.land/r/onbloc/usdc",
+        "createTime": "1970-01-01T00:01:40Z",
+        "createBlockHeight": 100,
+        "startTime": "1970-01-01T00:01:40Z",
+        "startBlockHeight": 753586,
+        "endTime": "2024-10-09T05:44:20Z",
+        "endBlockHeight": 763587,
+        "claimableTime": "2024-10-20T00:00:00Z",
+        "claimableBlockHeight": 300,
+        "claimableRewardAmount": 1249249,
+        "claimedRewardAmount": 200,
+        "depositAPR": 5399.7217246
+      }
+    ]
+  }
+}

@@ -25,6 +25,8 @@ import {
   GovernanceRepository,
   GovernanceRepositoryImpl,
 } from "@repositories/governance";
+import { LaunchpadRepository } from "@repositories/launchpad";
+import { LaunchpadRepositoryMock } from "@repositories/launchpad/launchpad-repository-mock";
 import {
   LeaderboardRepository,
   LeaderboardRepositoryMock,
@@ -68,6 +70,7 @@ interface GnoswapContextProps {
   governanceRepository: GovernanceRepository;
   leaderboardRepository: LeaderboardRepository;
   statusRepository: StatusRepository;
+  launchpadRepository: LaunchpadRepository;
   localStorageClient: WebStorageClient;
 }
 
@@ -256,6 +259,12 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new StatusRepositoryImpl(gnoswapApiClient);
   }, [gnoswapApiClient]);
 
+  const launchpadRepository = useMemo(() => {
+    // TODO: It should be changed to the actual implementation.
+    // return new LaunchpadRepositoryImpl(gnoswapApiClient, walletClient);
+    return new LaunchpadRepositoryMock(walletClient);
+  }, [gnoswapApiClient, walletClient]);
+
   useEffect(() => {
     if (window) {
       setLocalStorageClient(WebStorageClient.createLocalStorageClient());
@@ -281,6 +290,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         governanceRepository,
         leaderboardRepository,
         statusRepository,
+        launchpadRepository,
         localStorageClient,
       }}
     >
