@@ -1,15 +1,19 @@
 import React from "react";
 
+import { LaunchpadProjectResponse } from "@repositories/launchpad/response";
+
 import LaunchpadActiveProjectsCardList from "./launchpad-active-projects-card-list/LaunchpadActiveProjectsCardList";
 
-/**
- * @yjin
- * The interface will be modified to reflect real data.
- */
-// export interface LaunchpadActiveProjectsContentProps {}
+export interface LaunchpadActiveProjectsContentProps {
+  activeProjectList: LaunchpadProjectResponse[];
+}
 
-const LaunchpadActiveProjectsContent: React.FC = () => {
-  return <LaunchpadActiveProjectsCardList />;
+const LaunchpadActiveProjectsContent: React.FC<
+  LaunchpadActiveProjectsContentProps
+> = ({ activeProjectList }) => {
+  return (
+    <LaunchpadActiveProjectsCardList activeProjectList={activeProjectList} />
+  );
 };
 
 export default LaunchpadActiveProjectsContent;

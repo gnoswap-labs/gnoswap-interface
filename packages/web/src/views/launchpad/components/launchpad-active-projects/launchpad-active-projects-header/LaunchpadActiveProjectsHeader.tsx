@@ -4,18 +4,18 @@ import {
   ActiveProjectsWrapper,
 } from "./LaunchpadActiveProjectsHeader.styles";
 
-/**
- * @yjin
- * The interface will be modified to reflect real data.
- */
-// export interface LaunchpadActiveProjectsHeaderProps {}
+export interface LaunchpadActiveProjectsHeaderProps {
+  count: number;
+}
 
-const LaunchpadActiveProjectsHeader: React.FC = () => {
+const LaunchpadActiveProjectsHeader: React.FC<
+  LaunchpadActiveProjectsHeaderProps
+> = ({ count }) => {
   const renderActiveProjectsTitle = () => {
     return (
       <>
         <span>Active Projects</span>
-        <span className="value">4</span>
+        <span className="value">{count}</span>
       </>
     );
   };

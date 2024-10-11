@@ -10,8 +10,9 @@ interface LaunchpadActiveProjectCardTimeChipProps {
 }
 
 export const PROJECT_STATUS_TYPE = {
-  UPCOMING: "Upcoming",
-  END: "End",
+  UPCOMING: "UPCOMING",
+  END: "ENDED",
+  ONGOING: "ONGOING",
 };
 export type PROJECT_STATUS_TYPE = ValuesType<typeof PROJECT_STATUS_TYPE>;
 

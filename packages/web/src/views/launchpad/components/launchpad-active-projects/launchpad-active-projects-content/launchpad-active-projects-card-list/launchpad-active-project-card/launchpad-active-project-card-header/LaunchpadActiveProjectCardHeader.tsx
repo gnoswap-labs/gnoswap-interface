@@ -8,12 +8,19 @@ import React from "react";
 
 import { ActiveProjectCardHeader } from "./LaunchpadActiveProjectCardHeader.styles";
 
-const LaunchpadActiveProjectCardHeader = () => {
+interface LaunchpadActiveProjectCardHeaderProps {
+  projectId: string;
+  name: string;
+}
+
+const LaunchpadActiveProjectCardHeader: React.FC<
+  LaunchpadActiveProjectCardHeaderProps
+> = ({ projectId, name }) => {
   return (
     <ActiveProjectCardHeader>
       <div className="header-title-wrapper">
-        <div className="title">GnoSwap ($GNS)</div>
-        <div className="text">GnoSwap ($GNS)</div>
+        <div className="title">{projectId}</div>
+        <div className="text">{name}</div>
       </div>
       <div className="image-wrapper">
         <img src="/gns.svg" alt="Token symbol image" />
