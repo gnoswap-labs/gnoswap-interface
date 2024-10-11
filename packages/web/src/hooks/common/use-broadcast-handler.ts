@@ -3,8 +3,13 @@ import { useCallback } from "react";
 
 import { CommonState } from "@states/index";
 
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { ERROR_VALUE } from "@common/errors/adena";
+import { DexEventType } from "@repositories/common";
+import { useMessage } from "./use-message";
 import { SnackbarContent, useSnackbar } from "./use-snackbar";
 import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
+import { useTransactionEventStore } from "./use-transaction-event-store";
 
 /**
  * PENDING
@@ -41,7 +46,9 @@ import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
 export const useBroadcastHandler = () => {
   const { enqueue, clear } = useSnackbar();
   const { openModal, closeModal } = useTransactionConfirmModal();
+  const { getMessage } = useMessage();
   const [, setTransactionModalData] = useAtom(CommonState.transactionModalData);
+  const { enqueueEvent } = useTransactionEventStore();
 
   const broadcastLoading = useCallback(
     (content?: SnackbarContent) => {
@@ -99,11 +106,83 @@ export const useBroadcastHandler = () => {
     closeModal();
   }, [clear]);
 
+  const processTx = (
+    func: () => Promise<
+      WalletResponse<{
+        hash: string;
+      }>
+    >,
+    eventType: DexEventType,
+    messageData: {
+      tokenASymbol?: string;
+      tokenBSymbol?: string;
+      tokenAAmount?: string;
+      tokenBAmount?: string;
+      target?: string;
+      memo0?: string;
+    },
+    formatData: (result: string[] | null) => {
+      tokenASymbol?: string;
+      tokenBSymbol?: string;
+      tokenAAmount?: string;
+      tokenBAmount?: string;
+      target?: string;
+      memo0?: string;
+    },
+    emitCallback?: () => Promise<void>,
+    updateCallback?: () => Promise<void>,
+  ) => {
+    broadcastLoading(getMessage(eventType, "pending", messageData));
+    openModal();
+
+    func()
+      .then(response => {
+        if (
+          response?.code === 0 ||
+          response?.code === ERROR_VALUE.TRANSACTION_FAILED.status
+        ) {
+          enqueueEvent({
+            txHash: response?.data?.hash,
+            action: eventType,
+            formatData,
+            visibleEmitResult: true,
+            onUpdate: async () => {
+              if (updateCallback) await updateCallback();
+            },
+            onEmit: async () => {
+              if (emitCallback) await emitCallback();
+            },
+          });
+        }
+
+        if (response?.code === 0) {
+          openModal();
+          broadcastSuccess(
+            getMessage(eventType, "success", messageData, response.data?.hash),
+          );
+        } else if (
+          response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+        ) {
+          broadcastRejected(getMessage(eventType, "error", messageData));
+          openModal();
+        } else {
+          broadcastError(
+            getMessage(eventType, "error", messageData, response?.data?.hash),
+          );
+          openModal();
+        }
+      })
+      .catch(e => {
+        console.warn(`Something wrong in ${eventType}: ${e}`);
+      });
+  };
+
   return {
     broadcastLoading,
     broadcastSuccess,
     broadcastError,
     clearBroadcast,
     broadcastRejected,
+    processTx,
   };
 };
