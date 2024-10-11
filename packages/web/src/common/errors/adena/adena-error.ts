@@ -1,4 +1,4 @@
-import {AccountInfo, WalletResponse} from "@common/clients/wallet-client/protocols";
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { BaseError } from "@common/errors";
 
 export const ERROR_VALUE = {
@@ -92,7 +92,7 @@ export class AdenaError extends BaseError {
     Object.setPrototypeOf(this, AdenaError.prototype);
   }
 
-  public static valdiate(response: WalletResponse<AccountInfo>) {
+  public static validate(response: WalletResponse<object>) {
     const errorType = Object.keys(ERROR_VALUE).find(
       errorType =>
         ERROR_VALUE[errorType as ErrorType].status === response.code &&
