@@ -4,6 +4,7 @@ import React from "react";
 import Button from "@components/common/button/Button";
 import IconRightArrow from "@components/common/icons/IconRightArrow";
 import { Divider } from "@components/common/divider/divider";
+import { useGetLaunchpadSummary } from "@query/launchpad/use-get-launchpad-summary";
 
 interface LaunchpadMainContainerProps {
   icon: React.ReactNode;
@@ -12,6 +13,7 @@ interface LaunchpadMainContainerProps {
 const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
   icon,
 }) => {
+  const { data: launchpadSummary } = useGetLaunchpadSummary();
   return (
     <>
       <section className="launchpad-section">
@@ -37,18 +39,22 @@ const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
         <Divider />
         <div className="launchpad-data-wrapper">
           <div className="launchpad-data-list">
-            <span className="launchpad-data-value">100,392,491</span>
+            <span className="launchpad-data-value">
+              {launchpadSummary?.totalParticipants.toLocaleString() || 0}
+            </span>
             <span className="launchpad-data-key">Total Participants</span>
           </div>
           <div className="launchpad-data-list">
             <span className="launchpad-data-value">
               <img src="/gns.svg" alt="GnoSwap logo" />
-              100,392,491
+              {launchpadSummary?.totalDepositedGNSAmount.toLocaleString() || 0}
             </span>
             <span className="launchpad-data-key">Total Deposited GNS</span>
           </div>
           <div className="launchpad-data-list">
-            <span className="launchpad-data-value">$100,392,491</span>
+            <span className="launchpad-data-value">
+              ${launchpadSummary?.totalDistributedAmount.toLocaleString() || 0}
+            </span>
             <span className="launchpad-data-key">Total Distributed Amount</span>
           </div>
         </div>

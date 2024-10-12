@@ -13,7 +13,7 @@ export const LaunchpadLayoutWrapper = styled.div`
     max-width: 1440px;
     gap: 36px;
     flex-grow: 1;
-    padding: 100px 40px 60px;
+    padding: 100px 40px;
     margin: 0 auto;
     ${media.tablet} {
       /* padding: 118px 40px; */
@@ -135,5 +135,56 @@ export const LaunchpadLayoutWrapper = styled.div`
 
   .launchpad-image-wrapper {
     padding: 0px 110px;
+  }
+
+  .background-wrapper {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(
+        180deg,
+        ${({ theme }) => theme.color.backgroundGradient2} 0%,
+        ${({ theme }) => theme.color.backgroundGradient3} 100%
+      );
+    }
+  }
+
+  .projects-section {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    position: relative;
+    max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
+    width: 100%;
+    padding: 100px 0px;
+    ${media.tablet} {
+      max-width: ${ContainerWidth.TABLET_CONTAINER};
+      padding: 60px 0px;
+    }
+    ${media.mobile} {
+      max-width: ${ContainerWidth.MOBILE_CONTAINER};
+      padding: 48px 0px;
+    }
+  }
+
+  .projects-container {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    max-width: ${ContainerWidth.WEB_CONTAINER};
+    width: 100%;
+    padding: 0px 40px;
+    gap: 24px;
+    ${media.mobile} {
+      padding: 0px 16px;
+    }
+  }
+
+  .project-list {
+    width: 100%;
   }
 `;

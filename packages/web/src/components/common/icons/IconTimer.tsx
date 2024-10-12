@@ -1,11 +1,13 @@
-import { PROJECT_STATUS_TYPE } from "@views/launchpad/components/launchpad-active-projects/launchpad-active-projects-content/launchpad-active-projects-card-list/launchpad-active-project-card/launchpad-active-project-card-time-chip/LaunchpadActiveProjectCardTimeChip";
+import { PROJECT_STATUS_TYPE } from "@common/values";
 
 const IconTimer = ({ type }: { type?: PROJECT_STATUS_TYPE }) => {
   const getFillColor = () => {
     switch (type) {
       case PROJECT_STATUS_TYPE.UPCOMING:
         return "#007AFF";
-      case PROJECT_STATUS_TYPE.END:
+      case PROJECT_STATUS_TYPE.ENDED:
+        return "#90A2C0";
+      case PROJECT_STATUS_TYPE.ONGOING:
         return "#16C78A";
     }
   };

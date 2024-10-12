@@ -9,18 +9,18 @@ import React from "react";
 import { ActiveProjectCardHeader } from "./LaunchpadActiveProjectCardHeader.styles";
 
 interface LaunchpadActiveProjectCardHeaderProps {
-  projectId: string;
   name: string;
+  description: string;
 }
 
 const LaunchpadActiveProjectCardHeader: React.FC<
   LaunchpadActiveProjectCardHeaderProps
-> = ({ projectId, name }) => {
+> = ({ name, description }) => {
   return (
     <ActiveProjectCardHeader>
       <div className="header-title-wrapper">
-        <div className="title">{projectId}</div>
-        <div className="text">{name}</div>
+        <div className="title">{name}</div>
+        <div className="text">{description}</div>
       </div>
       <div className="image-wrapper">
         <img src="/gns.svg" alt="Token symbol image" />

@@ -7,8 +7,8 @@ interface ChipStyle {
   type: PROJECT_STATUS_TYPE;
 }
 
-export const ActiveProjectCardTimeChip = styled.div<ChipStyle>`
-  ${mixins.flexbox("row", "center", "flex-start")};
+export const ChipWrapper = styled.div<ChipStyle>`
+  ${mixins.flexbox("row", "center", "center")}
   gap: 4px;
   padding: 4px 12px;
   border-radius: 36px;

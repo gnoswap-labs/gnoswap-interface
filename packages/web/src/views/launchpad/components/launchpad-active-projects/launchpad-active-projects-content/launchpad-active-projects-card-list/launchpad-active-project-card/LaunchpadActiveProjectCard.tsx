@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { LaunchpadProjectResponse } from "@repositories/launchpad/response";
 
@@ -16,15 +16,16 @@ interface LaunchpadActiveProjectCardProps {
 const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
   activeProjectDetail,
 }) => {
-  useEffect(() => {
-    console.log(activeProjectDetail, "detail");
-  }, []);
+  const { pools, status } = activeProjectDetail;
   return (
-    <ActiveProjectCardWrapper>
-      <LaunchpadActiveProjectCardTimeChip type={activeProjectDetail.status} />
+    <ActiveProjectCardWrapper type={status}>
+      <LaunchpadActiveProjectCardTimeChip
+        startTime={pools[0].startTime}
+        type={activeProjectDetail.status}
+      />
       <LaunchpadActiveProjectCardHeader
-        projectId={activeProjectDetail.projectId}
         name={activeProjectDetail.name}
+        description={activeProjectDetail.description || ""}
       />
       <Divider />
       <LaunchpadActiveProjectCardData

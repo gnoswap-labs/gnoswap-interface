@@ -6,20 +6,21 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
 
-import { getCanScrollUpId } from "@constants/common.constant";
 import { LaunchpadLayoutWrapper } from "./LaunchpadLayout.styles";
 
 interface LaunchpadLayoutProps {
   header: React.ReactNode;
   main: React.ReactNode;
-  projects: React.ReactNode;
+  activeProjects: React.ReactNode;
+  projectList: React.ReactNode;
   footer: React.ReactNode;
 }
 
 const LaunchpadLayout: React.FC<LaunchpadLayoutProps> = ({
   header,
   main,
-  projects,
+  activeProjects,
+  projectList,
   // footer,
 }) => {
   return (
@@ -27,15 +28,15 @@ const LaunchpadLayout: React.FC<LaunchpadLayoutProps> = ({
       {header}
       <main>
         <div className="launchpad-container">{main}</div>
-        <div className="launchpad-active-project">{projects}</div>
+        <div className="launchpad-active-project">{activeProjects}</div>
       </main>
-
-      <div
-        className="background-wrapper"
-        id={getCanScrollUpId("activities-list")}
-      >
-        <div className="background"></div>
-        <section className="activities-section"></section>
+      <div className="background-wrapper">
+        <div className="background" />
+        <section className="projects-section">
+          <div className="projects-container">
+            <div className="project-list">{projectList}</div>
+          </div>
+        </section>
       </div>
       {/* {footer} */}
     </LaunchpadLayoutWrapper>
