@@ -20,11 +20,17 @@ export const HEADER_NAV = [
     subPath: [],
   },
   {
-    title: "HeaderFooter:dashboard",
-    path: "/dashboard",
+    title: "HeaderFooter:launchpad",
+    path: "/launchpad",
     iconType: null,
     subPath: [],
   },
+  //   {
+  //     title: "HeaderFooter:dashboard",
+  //     path: "/dashboard",
+  //     iconType: null,
+  //     subPath: [],
+  //   },
 ];
 
 export const SIDE_MENU_NAV = [

@@ -21,7 +21,7 @@ const LaunchpadLayout: React.FC<LaunchpadLayoutProps> = ({
   main,
   activeProjects,
   projectList,
-  // footer,
+  footer,
 }) => {
   return (
     <LaunchpadLayoutWrapper>
@@ -38,7 +38,7 @@ const LaunchpadLayout: React.FC<LaunchpadLayoutProps> = ({
           </div>
         </section>
       </div>
-      {/* {footer} */}
+      {footer}
     </LaunchpadLayoutWrapper>
   );
 };
