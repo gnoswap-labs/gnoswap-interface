@@ -27,7 +27,6 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 
 export const ProjectInfoWrapper = styled.div`
   transition: background-color 0.3s ease;
-  cursor: pointer;
   min-width: 100%;
   height: 68px;
   ${mixins.flexbox("row", "center", "flex-start")};
@@ -47,15 +46,24 @@ export const ProjectInfoWrapper = styled.div`
     color: ${({ theme }) => theme.color.text04};
   }
 
-  .chart-wrapper {
-    width: 100px;
-    cursor: default;
-  }
   .icon-reward {
     width: 20px;
     height: 20px;
   }
   .apr {
     ${mixins.flexbox("row", "center", "center")}
+  }
+
+  .button-wrapper {
+    ${mixins.flexbox("row", "center", "center")}
+    gap: 4px;
+    color: ${({ theme }) => theme.color.text04};
+    cursor: pointer;
+    font-weight: 400;
+    .svg {
+      width: 16px;
+      height: 16px;
+      font-size: 0;
+    }
   }
 `;

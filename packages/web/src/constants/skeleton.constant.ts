@@ -315,6 +315,7 @@ export const TABLE_TITLE = {
   ACTIVITY_TABLE: "activity-table",
   LEADERBOARD_TABLE: "leaderboard-table",
   POSITION_HISTORY: "position-history-table",
+  LAUNCHPAD_TABLE: "launchpad-table",
 };
 export type TABLE_TITLE = ValuesType<typeof TABLE_TITLE>;
 
@@ -499,6 +500,202 @@ export const POOL_INFO_MOBILE = {
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       skeletonWidth: 160,
+    },
+  ],
+};
+
+export const PROJECT_INFO = {
+  title: TABLE_TITLE.LAUNCHPAD_TABLE,
+  total: 15,
+  list: [
+    {
+      width: 220,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      skeletonWidth: 141,
+    },
+    {
+      width: 160,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 110,
+    },
+    {
+      width: 160,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 110,
+    },
+    {
+      width: 200,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 161,
+    },
+    {
+      width: 220,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 181,
+    },
+    {
+      width: 200,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 161,
+    },
+    {
+      width: 200,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 161,
+    },
+  ],
+};
+
+export const PROJECT_INFO_SMALL_TABLET = {
+  title: TABLE_TITLE.LAUNCHPAD_TABLE,
+  total: 15,
+  list: [
+    {
+      width: 185,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      skeletonWidth: 185,
+    },
+    {
+      width: 110,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 110,
+    },
+    {
+      width: 110,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 110,
+    },
+    {
+      width: 140,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 140,
+    },
+    {
+      width: 160,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 160,
+    },
+    {
+      width: 140,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 140,
+    },
+    {
+      width: 140,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 140,
+    },
+  ],
+};
+
+export const PROJECT_INFO_TABLET = {
+  title: TABLE_TITLE.LAUNCHPAD_TABLE,
+  total: 15,
+  list: [
+    {
+      width: 199,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      skeletonWidth: 161,
+    },
+    {
+      width: 130,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 110,
+    },
+    {
+      width: 130,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 110,
+    },
+    {
+      width: 160,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 140,
+    },
+    {
+      width: 180,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 160,
+    },
+    {
+      width: 160,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 140,
+    },
+    {
+      width: 160,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 140,
+    },
+  ],
+};
+
+export const PROJECT_INFO_MOBILE = {
+  title: TABLE_TITLE.LAUNCHPAD_TABLE,
+  total: 15,
+  list: [
+    {
+      width: 180,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      skeletonWidth: 140,
+    },
+    {
+      width: 100,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 100,
+    },
+    {
+      width: 100,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 100,
+    },
+    {
+      width: 140,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 140,
+    },
+    {
+      width: 160,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 160,
+    },
+    {
+      width: 140,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 140,
+    },
+    {
+      width: 140,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      skeletonWidth: 140,
     },
   ],
 };
