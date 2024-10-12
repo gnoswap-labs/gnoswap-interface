@@ -8,6 +8,7 @@ import LaunchpadLayout from "./LaunchpadLayout";
 import LaunchpadActiveProjectContainer from "./containers/launchpad-active-project-container/LaunchpadActiveProjectContainer";
 import IconLaunchpadMain from "@components/common/icons/IconLaunchpadMain";
 import { ThemeState } from "@states/index";
+import LaunchpadMainContainer from "./containers/launchpad-main-container/LaunchpadMainContainer";
 
 const Launchpad: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -15,10 +16,14 @@ const Launchpad: React.FC = () => {
   return (
     <LaunchpadLayout
       header={<HeaderContainer />}
-      projects={<LaunchpadActiveProjectContainer />}
-      icon={
-        <IconLaunchpadMain themeKey={themeKey} className="icon-launchpad" />
+      main={
+        <LaunchpadMainContainer
+          icon={
+            <IconLaunchpadMain themeKey={themeKey} className="icon-launchpad" />
+          }
+        />
       }
+      projects={<LaunchpadActiveProjectContainer />}
       footer={<Footer />}
     />
   );
