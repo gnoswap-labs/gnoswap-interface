@@ -5,7 +5,7 @@ export const LaunchpadAboutProjectWrapper = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")}
   gap: 16px;
   width: 100%;
-  .main-section {
+  .main-contents {
     ${mixins.flexbox("column", "center", "flex-start")}
     gap: 24px;
     width: 100%;

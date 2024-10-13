@@ -14,7 +14,7 @@ const LaunchpadAboutProject: React.FC = () => {
         <h2>About Gnoswap Protocol</h2>
       </div>
 
-      <section className="main-section">
+      <section className="main-contents">
         <div className="contents">
           <div className="description">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
