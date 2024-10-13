@@ -9,6 +9,7 @@ export const CardWrapper = styled.div`
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   padding: 16px;
+  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
   .card-header {
     ${mixins.flexbox("row", "center", "flex-start")}
     gap: 8px;
