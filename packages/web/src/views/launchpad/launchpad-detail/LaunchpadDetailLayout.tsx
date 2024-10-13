@@ -1,5 +1,12 @@
-import IconTimer from "@components/common/icons/IconTimer";
+/**
+ * @yjin
+ * Todo: Delete This code.
+ * Change the image tag to a component.
+ */
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
+
+import IconTimer from "@components/common/icons/IconTimer";
 
 import { LaunchpadDetailLayoutWrapper } from "./LaunchpadDetailLayout.styles";
 
@@ -9,6 +16,7 @@ interface LaunchpadDetailLayoutProps {
   poolList: React.ReactNode;
   projectSummary: React.ReactNode;
   aboutProject: React.ReactNode;
+  participate: React.ReactNode;
 }
 
 const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
@@ -17,6 +25,7 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
   poolList,
   projectSummary,
   aboutProject,
+  participate,
 }) => {
   return (
     <LaunchpadDetailLayoutWrapper>
@@ -47,7 +56,7 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
               <div className="about-project">{aboutProject}</div>
             </div>
             <div className="right-section">
-              <div></div>
+              <div className="participate">{participate}</div>
             </div>
           </div>
         </section>

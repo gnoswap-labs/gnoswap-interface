@@ -8,6 +8,7 @@ import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsC
 import LaunchpadPoolListContainer from "./containers/launchpad-pool-list-container/LaunchpadPoolListContainer";
 import LaunchpadProjectSummaryContainer from "./containers/launchpad-project-summary-container/LaunchpadProjectSummaryContainer";
 import LaunchpadAboutProjectContainer from "./containers/launchpad-about-project-container/LaunchpadAboutProjectContainer";
+import LaunchpadParticipateContainer from "./containers/launchpad-participate-container/LaunchpadParticipateContainer";
 
 const LaunchpadDetail: React.FC = () => {
   const { isLoading } = useLoading();
@@ -36,6 +37,7 @@ const LaunchpadDetail: React.FC = () => {
       poolList={<LaunchpadPoolListContainer />}
       projectSummary={<LaunchpadProjectSummaryContainer />}
       aboutProject={<LaunchpadAboutProjectContainer />}
+      participate={<LaunchpadParticipateContainer />}
     />
   );
 };
