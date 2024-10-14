@@ -9,6 +9,7 @@ import LaunchpadPoolListContainer from "./containers/launchpad-pool-list-contain
 import LaunchpadProjectSummaryContainer from "./containers/launchpad-project-summary-container/LaunchpadProjectSummaryContainer";
 import LaunchpadAboutProjectContainer from "./containers/launchpad-about-project-container/LaunchpadAboutProjectContainer";
 import LaunchpadParticipateContainer from "./containers/launchpad-participate-container/LaunchpadParticipateContainer";
+import LaunchpadMyParticipationContainer from "./containers/launchpad-my-participation-container/LaunchpadMyParticipationContainer";
 
 const LaunchpadDetail: React.FC = () => {
   const { isLoading } = useLoading();
@@ -38,6 +39,7 @@ const LaunchpadDetail: React.FC = () => {
       projectSummary={<LaunchpadProjectSummaryContainer />}
       aboutProject={<LaunchpadAboutProjectContainer />}
       participate={<LaunchpadParticipateContainer />}
+      myParticipation={<LaunchpadMyParticipationContainer />}
     />
   );
 };

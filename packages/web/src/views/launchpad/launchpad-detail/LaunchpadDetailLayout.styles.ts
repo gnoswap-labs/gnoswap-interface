@@ -132,5 +132,13 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
       padding: 24px;
       box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
     }
+    .my-participation {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid ${({ theme }) => theme.color.border02};
+      background: ${({ theme }) => theme.color.background06};
+      padding: 24px;
+      box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
+    }
   }
 `;

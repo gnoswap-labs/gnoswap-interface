@@ -17,6 +17,7 @@ interface LaunchpadDetailLayoutProps {
   projectSummary: React.ReactNode;
   aboutProject: React.ReactNode;
   participate: React.ReactNode;
+  myParticipation: React.ReactNode;
 }
 
 const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
@@ -26,6 +27,7 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
   projectSummary,
   aboutProject,
   participate,
+  myParticipation,
 }) => {
   return (
     <LaunchpadDetailLayoutWrapper>
@@ -57,6 +59,7 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
             </div>
             <div className="right-section">
               <div className="participate">{participate}</div>
+              <div className="my-participation">{myParticipation}</div>
             </div>
           </div>
         </section>
