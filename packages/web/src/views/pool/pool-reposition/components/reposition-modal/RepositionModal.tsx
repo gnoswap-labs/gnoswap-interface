@@ -140,7 +140,7 @@ const RepositionModal: React.FC<Props> = ({
             <div className="confirm-area">
               <Button
                 onClick={onClickConfirm}
-                text={t("Reposition:confModal.btn")}
+                text={t("Reposition:confModal.title")}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                   fullWidth: true,

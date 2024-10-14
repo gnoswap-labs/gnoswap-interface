@@ -79,7 +79,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
         text={
           checkedList.length === 0
             ? t("UnstakePosition:btn.selectPosi")
-            : t("UnstakePosition:btn.unstake")
+            : t("UnstakePosition:title")
         }
         style={{
           hierarchy: ButtonHierarchy.Primary,

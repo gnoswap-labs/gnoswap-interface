@@ -176,7 +176,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                             {index !== 0 && <div className="divider" />}
                             <div className="info-row">
                               <div className="info-subject">
-                                {t("Governance:myDel.tooltip.delegatee")}
+                                {t("Governance:myDel.delegate")}
                               </div>
                               <div className="info-value">
                                 <MissingLogo

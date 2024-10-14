@@ -173,7 +173,7 @@ const AssetSendModal: React.FC<Props> = ({
     if (address === "") return t("Wallet:assetSendModal.btn.enterAddr");
     if (!isValidAddress(address))
       return t("Wallet:assetSendModal.btn.invalidAddr");
-    return t("Wallet:assetSendModal.btn.send");
+    return t("Wallet:assets.col.assetSend");
   }, [address, amount, currentAvailableBalance, withdrawInfo, t]);
 
   const estimatedPrice = useMemo(() => {
@@ -192,7 +192,7 @@ const AssetSendModal: React.FC<Props> = ({
         <AssetSendModalWrapper ref={modalRef}>
           <div className="modal-body">
             <div className="header">
-              <h6>{capitalize(t("Wallet:assetSendModal.title"))}</h6>
+              <h6>{capitalize(t("Wallet:assets.col.assetSend"))}</h6>
               <div className="close-wrap" onClick={close}>
                 <IconClose className="close-icon" />
               </div>

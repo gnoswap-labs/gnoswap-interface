@@ -80,12 +80,12 @@ const PoolAddConfirmPriceRangeInfo: React.FC<
 
       <div className="price-range-wrapper">
         <PoolAddConfirmPriceRangeInfoSection className="range-section">
-          <span>{t("AddPosition:confirmAddModal.info.label.minPrice")}</span>
+          <span>{t("AddPosition:form.priceRange.minPrice")}</span>
           <span className="amount">{minPrice}</span>
           <span className="label">{priceLabelMin}</span>
         </PoolAddConfirmPriceRangeInfoSection>
         <PoolAddConfirmPriceRangeInfoSection className="range-section">
-          <span>{t("AddPosition:confirmAddModal.info.label.maxPrice")}</span>
+          <span>{t("AddPosition:form.priceRange.maxPrice")}</span>
           <span className="amount">{maxPrice}</span>
           <span className="label">{priceLabelMax}</span>
         </PoolAddConfirmPriceRangeInfoSection>

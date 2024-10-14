@@ -237,18 +237,18 @@ export const PriceRangeTooltip: {
   [key in SwapFeeTierType]: { [key in PriceRangeType]: string | undefined };
 } = {
   FEE_10000: {
-    Active: "AddPosition:form.priceRange.item.tooltip.active.10000",
-    Passive: "AddPosition:form.priceRange.item.tooltip.passive.10000",
+    Active: "AddPosition:form.priceRange.item.tooltip.active.100",
+    Passive: "AddPosition:form.priceRange.item.tooltip.passive.100",
     Custom: undefined,
   },
   FEE_3000: {
-    Active: "AddPosition:form.priceRange.item.tooltip.active.3000",
-    Passive: "AddPosition:form.priceRange.item.tooltip.passive.3000",
+    Active: "AddPosition:form.priceRange.item.tooltip.active.100",
+    Passive: "AddPosition:form.priceRange.item.tooltip.passive.100",
     Custom: undefined,
   },
   FEE_500: {
-    Active: "AddPosition:form.priceRange.item.tooltip.active.500",
-    Passive: "AddPosition:form.priceRange.item.tooltip.passive.500",
+    Active: "AddPosition:form.priceRange.item.tooltip.active.100",
+    Passive: "AddPosition:form.priceRange.item.tooltip.passive.100",
     Custom: undefined,
   },
   FEE_100: {

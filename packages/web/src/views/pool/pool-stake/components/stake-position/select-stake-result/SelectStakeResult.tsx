@@ -65,9 +65,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
-          <h5 className="total-amount-title">
-            {t("StakePosition:overview.totalAmt")}
-          </h5>
+          <h5 className="total-amount-title">{t("StakePosition:totalAmt")}</h5>
           {!isHiddenBadge && (
             <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />
           )}

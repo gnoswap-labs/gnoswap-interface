@@ -16,7 +16,7 @@ import { useGetUnstakingFee } from "@query/pools";
 import {
   formatOtherPrice,
   formatPoolPairAmount,
-  formatRate
+  formatRate,
 } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
 
@@ -27,7 +27,7 @@ import {
   RewardLogoSymbolWrapper,
   ToolTipContentWrapper,
   UnstakePositionModalWrapper,
-  UnstakeWarningContentWrapper
+  UnstakeWarningContentWrapper,
 } from "./UnstakePositionModal.styles";
 
 interface Props {
@@ -42,13 +42,15 @@ const UnstakePositionModal: React.FC<Props> = ({
   onSubmit,
 }) => {
   const { t } = useTranslation();
-  const { unclaimedRewards, totalLiquidityUSD } = usePositionsRewards({ positions });
+  const { unclaimedRewards, totalLiquidityUSD } = usePositionsRewards({
+    positions,
+  });
   const { data: unstakingFee } = useGetUnstakingFee();
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
 
-  const {feeApr, totalApr} = useMemo(() => {
+  const { feeApr, totalApr } = useMemo(() => {
     const positionAprs = positions.map(position => {
       const aprs = position.reward.reduce(
         (accum, currentReward) => {
@@ -135,7 +137,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           </div>
           {unclaimedRewards.length > 0 && (
             <div className="box-item box-item-unclaim">
-              <h4>{t("UnstakePosition:confStakeModal.unclaimedReward")}</h4>
+              <h4>{t("UnstakePosition:unclaimedRewards")}</h4>
               <div className="item-content">
                 {unclaimedRewards.map((rewardInfo, index) => (
                   <div key={index} className="item-detail">
@@ -171,7 +173,9 @@ const UnstakePositionModal: React.FC<Props> = ({
                         placement="top"
                         FloatingContent={
                           <ToolTipContentWrapper width="251px">
-                            {t("UnstakePosition:confStakeModal.unstakingFee.tooltip")}
+                            {t(
+                              "UnstakePosition:confStakeModal.unstakingFee.tooltip",
+                            )}
                           </ToolTipContentWrapper>
                         }
                       >
@@ -191,7 +195,7 @@ const UnstakePositionModal: React.FC<Props> = ({
             <div className="item-content">
               <div>
                 <div className="label-large">
-                  {t("UnstakePosition:confStakeModal.totalAmt")}
+                  {t("UnstakePosition:overview.totalAmt")}
                 </div>
                 <div className="value-large">{totalLiquidityUSD}</div>
               </div>
@@ -216,7 +220,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           />
           <div>
             <Button
-              text={t("UnstakePosition:confStakeModal.btn")}
+              text={t("UnstakePosition:confStakeModal.title")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,

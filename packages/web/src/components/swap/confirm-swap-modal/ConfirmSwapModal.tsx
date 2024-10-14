@@ -13,7 +13,8 @@ import { useTheme } from "@emotion/react";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import {
-  swapDirectionToGuaranteedType, SwapSummaryInfo
+  swapDirectionToGuaranteedType,
+  SwapSummaryInfo,
 } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { formatOtherPrice } from "@utils/new-number-utils";
@@ -212,7 +213,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               <>
                 <div className="price-impact">
                   <span className="gray-text">
-                    {t("Swap:confirmSwapModal.info.priceImpact")}
+                    {t("Swap:swapInfo.priceImpact")}
                   </span>
                   <span className="white-text">
                     <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
@@ -228,7 +229,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                 </div>
                 <div className="slippage">
                   <span className="gray-text">
-                    {t("Swap:confirmSwapModal.info.slippageSet")}
+                    {t("Swap:swapInfo.slippageSet")}
                   </span>
                   <span className="white-text">{slippageStr}</span>
                 </div>
@@ -260,9 +261,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
             )}
 
             <div className="gas-fee">
-              <span className="gray-text">
-                {t("Swap:confirmSwapModal.info.gasFee")}
-              </span>
+              <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
               <span className="white-text">
                 {gasFeeStr}
                 <span className="gray-text">({gasFeeUSDStr})</span>

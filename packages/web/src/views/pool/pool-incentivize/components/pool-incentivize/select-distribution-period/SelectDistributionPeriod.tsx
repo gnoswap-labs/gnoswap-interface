@@ -43,9 +43,7 @@ const SelectDistributionPeriod: React.FC<SelectDistributionPeriodProps> = ({
         <div className="period">
           <SelectDistributionPeriodInput
             periods={periods}
-            title={t(
-              "IncentivizePool:incentiPool.form.period.field.disPeriod.label",
-            )}
+            title={t("IncentivizePool:incenDetail.row.label.period")}
             period={period}
             changePeriod={setPeriod}
           />

@@ -1,3 +1,4 @@
+import { STATIC_TEXT } from "@common/values";
 import { type Steps } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
@@ -25,7 +26,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
 
       const path_ = token.path;
 
-      if (isNativeToken(token)) return t("business:nativeCoin");
+      if (isNativeToken(token)) return STATIC_TEXT.NATIVE_COIN;
 
       const tokenPathArr = path_?.split("/") ?? [];
 

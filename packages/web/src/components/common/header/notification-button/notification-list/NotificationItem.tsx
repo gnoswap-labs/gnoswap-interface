@@ -80,18 +80,23 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     [DexEvent.ASSET_RECEIVE]: "Modal:notif.action.received",
     [DexEvent.ASSET_SEND]: "Modal:notif.action.sent",
     // Governance
-    [DexEvent.DELEGATE]: "Delegated",
-    [DexEvent.UNDELEGATE]: "Unelegated",
-    [DexEvent.COLLECT_UNDEL]: "Claimed",
+    [DexEvent.DELEGATE]: "Modal:notif.action.delegate.status.success",
+    [DexEvent.UNDELEGATE]: "Modal:notif.action.undelegate.status.success",
+    [DexEvent.COLLECT_UNDEL]: "Modal:notif.action.claimed",
     [DexEvent.COLLECT_GOV_REWARD]: "Modal:notif.action.rewardsClaimed",
-    [DexEvent.VOTE]: "Voted",
-    [DexEvent.PROPOSE_TEXT]: "Created",
-    [DexEvent.PROPOSE_COMM_POOL_SPEND]: "Created",
-    [DexEvent.PROPOSE_PARAM_CHANGE]: "Created",
-    [DexEvent.EXECUTE_PROPOSAL]: "Excuted",
-    [DexEvent.CANCEL_PROPOSAL]: "Cancelled",
+    [DexEvent.VOTE]: "Modal:notif.action.vote.status.success",
+    [DexEvent.PROPOSE_TEXT]: "Modal:notif.action.createproposal.status.success",
+    [DexEvent.PROPOSE_COMM_POOL_SPEND]:
+      "Modal:notif.action.createproposal.status.success",
+    [DexEvent.PROPOSE_PARAM_CHANGE]:
+      "Modal:notif.action.createproposal.status.success",
+    [DexEvent.EXECUTE_PROPOSAL]:
+      "Modal:notif.action.executeproposal.status.success",
+    [DexEvent.CANCEL_PROPOSAL]:
+      "Modal:notif.action.cancelproposal.status.success",
     // Launchpad
     [DexEvent.LAUNCHPAD_COLLECT_REWARD]: "Modal:notif.action.rewardsClaimed",
+    [DexEvent.LAUNCHPAD_COLLECT_DEPOSIT]: "Modal:notif.action.claimedDeposit",
     [DexEvent.LAUNCHPAD_DEPOSIT]: "Modal:notif.action.deposited",
   };
 
@@ -99,7 +104,11 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     (tx: ActivityData) => {
       const getSwapRelatedMessage = () => {
         // Launchpad Deposit
-        if (tx.actionType === DexEvent.LAUNCHPAD_DEPOSIT) {
+        if (
+          tx.actionType === DexEvent.LAUNCHPAD_COLLECT_REWARD ||
+          tx.actionType === DexEvent.LAUNCHPAD_COLLECT_DEPOSIT ||
+          tx.actionType === DexEvent.LAUNCHPAD_DEPOSIT
+        ) {
           const tokenAAmount = formatPoolPairAmount(tx?.tokenAAmount, {
             decimals: tx.tokenA.decimals,
             isKMB: false,
@@ -175,7 +184,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     isKMB: false,
                   })} GNS `}
                 </span>
-                for
+                {t("common:conjunction.for")}
                 <span className="accent">
                   {` ${formatPoolPairAmount(tx?.tokenAAmount, {
                     decimals: tx.tokenA.decimals,
@@ -193,7 +202,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     isKMB: false,
                   })} xGNS `}
                 </span>
-                for
+                {t("common:conjunction.for")}
                 <span className="accent">
                   {` ${formatPoolPairAmount(tx?.tokenAAmount, {
                     decimals: tx.tokenA.decimals,
@@ -219,7 +228,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
             return (
               <>
                 <span className="accent">{` #${tx?.tokenAAmount} `}</span>
-                Proposal
+                {t("Modal:notif.action.proposal")}
               </>
             );
           case DexEvent.VOTE:
@@ -232,7 +241,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     isKMB: false,
                   },
                 )} xGNS `}</span>
-                for
+                {t("common:conjunction.for")}
                 <span className="accent">{` ${tx?.tokenBAmount
                   .slice(0, 1)
                   .toUpperCase()}${tx?.tokenBAmount.slice(1)}`}</span>

@@ -15,7 +15,7 @@ import { useGetWithdrawalFee } from "@query/pools";
 import {
   formatOtherPrice,
   formatPoolPairAmount,
-  formatRate
+  formatRate,
 } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
@@ -24,7 +24,7 @@ import {
   Divider,
   RemovePositionModalWrapper,
   RemoveWarningContentWrapper,
-  ToolTipContentWrapper
+  ToolTipContentWrapper,
 } from "./RemovePositionModal.styles";
 
 interface Props {
@@ -79,7 +79,9 @@ const RemovePositionModal: React.FC<Props> = ({
       { fee: 0n, rewards: 0n, liquidity: 0n },
     );
 
-    return formatRate(Number((result.fee / result.liquidity).toString()) / 1000);
+    return formatRate(
+      Number((result.fee / result.liquidity).toString()) / 1000,
+    );
   }, [selectedPositions]);
 
   const hasFee = unclaimedFees.reduce((exist, current) => {
@@ -97,7 +99,7 @@ const RemovePositionModal: React.FC<Props> = ({
         </div>
         <div className="content">
           <div className="box-item">
-            <h4>{t("RemovePosition:confRemoveModal.positionLst")}</h4>
+            <h4>{t("RemovePosition:posi")}</h4>
             <div className="item-content">
               {selectedPositions.map((position, index) => (
                 <div key={index}>
@@ -186,7 +188,7 @@ const RemovePositionModal: React.FC<Props> = ({
               <div className="item-content">
                 <div>
                   <div className="label-large">
-                    {t("RemovePosition:confRemoveModal.totalAmt")}
+                    {t("RemovePosition:totalAmt")}
                   </div>
                   <div className="value-large">{totalLiquidityUSD}</div>
                 </div>
@@ -210,7 +212,7 @@ const RemovePositionModal: React.FC<Props> = ({
             />
             <div className="button-wrapper">
               <Button
-                text={t("RemovePosition:confRemoveModal.btn")}
+                text={t("RemovePosition:confRemoveModal.title")}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                   fullWidth: true,

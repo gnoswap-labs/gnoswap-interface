@@ -13,7 +13,6 @@ import {
 import IncreaseAmountPosition from "./increase-select-position/IncreaseAmount";
 import IncreaseSelectPosition from "./increase-select-position/IncreaseSelectPosition";
 
-
 import { IncreaseLiquidityWrapper } from "./IncreaseLiquidity.styles";
 
 interface IncreaseLiquidityProps {
@@ -72,7 +71,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
   const textButton = useMemo(() => {
     switch (buttonType) {
       case "INCREASE_LIQUIDITY":
-        return t("IncreaseLiquidity:btn.increaseLiquidity");
+        return t("IncreaseLiquidity:title");
       case "INSUFFICIENT_BALANCE":
         return t("common:btn.insuffiBal");
       case "ENTER_AMOUNT":
