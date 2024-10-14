@@ -140,5 +140,10 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
       padding: 24px;
       box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
     }
+    .click-here {
+      ${mixins.flexbox("row", "cetner", "center")};
+      gap: 4px;
+      width: 100%;
+    }
   }
 `;

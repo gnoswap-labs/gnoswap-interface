@@ -10,6 +10,7 @@ import LaunchpadProjectSummaryContainer from "./containers/launchpad-project-sum
 import LaunchpadAboutProjectContainer from "./containers/launchpad-about-project-container/LaunchpadAboutProjectContainer";
 import LaunchpadParticipateContainer from "./containers/launchpad-participate-container/LaunchpadParticipateContainer";
 import LaunchpadMyParticipationContainer from "./containers/launchpad-my-participation-container/LaunchpadMyParticipationContainer";
+import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
 
 const LaunchpadDetail: React.FC = () => {
   const { isLoading } = useLoading();
@@ -40,6 +41,7 @@ const LaunchpadDetail: React.FC = () => {
       aboutProject={<LaunchpadAboutProjectContainer />}
       participate={<LaunchpadParticipateContainer />}
       myParticipation={<LaunchpadMyParticipationContainer />}
+      clickHere={<LaunchpadDetailClickHereContainer />}
     />
   );
 };
