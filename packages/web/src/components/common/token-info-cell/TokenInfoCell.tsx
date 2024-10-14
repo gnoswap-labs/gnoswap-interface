@@ -7,6 +7,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
 
+import { STATIC_TEXT } from "@common/values";
 import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
 
 export interface TokenInfoCellProps {
@@ -68,7 +69,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
 
   const tokenPathDisplay = useMemo(() => {
     if (shortenPath) return "";
-    if (isNative) return t("business:nativeCoin");
+    if (isNative) return STATIC_TEXT.NATIVE_COIN;
 
     let replacedPath = path.replace("gno.land", "");
 
