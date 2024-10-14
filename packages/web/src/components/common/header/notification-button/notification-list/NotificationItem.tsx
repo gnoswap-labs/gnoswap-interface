@@ -184,7 +184,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     isKMB: false,
                   })} GNS `}
                 </span>
-                for
+                {t("common:conjunction.for")}
                 <span className="accent">
                   {` ${formatPoolPairAmount(tx?.tokenAAmount, {
                     decimals: tx.tokenA.decimals,
@@ -202,7 +202,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     isKMB: false,
                   })} xGNS `}
                 </span>
-                for
+                {t("common:conjunction.for")}
                 <span className="accent">
                   {` ${formatPoolPairAmount(tx?.tokenAAmount, {
                     decimals: tx.tokenA.decimals,
@@ -228,7 +228,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
             return (
               <>
                 <span className="accent">{` #${tx?.tokenAAmount} `}</span>
-                Proposal
+                {t("Modal:notif.action.proposal")}
               </>
             );
           case DexEvent.VOTE:
@@ -241,7 +241,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     isKMB: false,
                   },
                 )} xGNS `}</span>
-                for
+                {t("common:conjunction.for")}
                 <span className="accent">{` ${tx?.tokenBAmount
                   .slice(0, 1)
                   .toUpperCase()}${tx?.tokenBAmount.slice(1)}`}</span>

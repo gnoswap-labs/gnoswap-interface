@@ -49,7 +49,7 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
     return (
       <SwapButtonTooltipWrap>
         <div className="tooltip-list">
-          <span>{t("Swap:swapInfo.tooltip.priceImpact")}</span>
+          <span>{t("Swap:swapInfo.priceImpact")}</span>
           <span>{priceImpactStr}</span>
         </div>
         <div className="tooltip-list">

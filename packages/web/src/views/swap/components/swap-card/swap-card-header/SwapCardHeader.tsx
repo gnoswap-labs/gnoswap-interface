@@ -39,7 +39,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
 
   return (
     <SwapCardHeaderWrapper>
-      <h2>{t("swap:header")}</h2>
+      <h2>{t("Swap:header")}</h2>
       <div className="button-wrap">
         <div className="setting-wrap" onClick={copyURL}>
           <IconLink className="setting-icon" />
