@@ -8,7 +8,11 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "../../../../common/hooks/use-positions-rewards";
 
-import { Divider, GnotCollectSwitchWrapper, wrapper } from "./SelectUnstakeResult.styles";
+import {
+  Divider,
+  GnotCollectSwitchWrapper,
+  wrapper,
+} from "./SelectUnstakeResult.styles";
 
 interface SelectUnstakeResultProps {
   positions: PoolPositionModel[];
@@ -58,9 +62,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                   width={24}
                   mobileWidth={24}
                 />
-                <p>
-                  {t("UnstakePosition:overview.unclaimed")}
-                </p>
+                <p>{t("UnstakePosition:unclaimedRewards")}</p>
                 <strong>
                   {formatPoolPairAmount(pooledTokenInfo.amount, {
                     decimals: pooledTokenInfo.token.decimals,
@@ -84,7 +86,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
       <div className="result-section">
         <div className="total-amount-box">
           <h5 className="total-amount-title">
-            {t("UnstakePosition:overview.totalAmt")}
+            {t("UnstakePosition:totalAmt")}
           </h5>
           <span className="result-value">{totalLiquidityUSD}</span>
         </div>

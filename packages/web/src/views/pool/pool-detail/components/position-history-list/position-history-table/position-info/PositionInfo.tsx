@@ -8,7 +8,7 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import {
   MOBILE_POSITION_HISTORY_INFO,
   POSITION_HISTORY_INFO,
-  TABLET_POSITION_HISTORY_INFO
+  TABLET_POSITION_HISTORY_INFO,
 } from "@constants/skeleton.constant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
@@ -16,14 +16,14 @@ import { DexEvent } from "@repositories/common";
 import { DEVICE_TYPE } from "@styles/media";
 import {
   formatOtherPrice,
-  formatPoolPairAmount
+  formatPoolPairAmount,
 } from "@utils/new-number-utils";
 
 import {
   HoverSection,
   IconButton,
   PositionInfoWrapper,
-  TableColumn
+  TableColumn,
 } from "./PositionInfo.styles";
 
 dayjs.extend(relativeTime);
@@ -34,13 +34,19 @@ interface PositionInfoProps {
   breakpoint: DEVICE_TYPE;
 }
 
-const PositionInfo: React.FC<PositionInfoProps> = ({
-  item,
-  breakpoint,
-}) => {
+const PositionInfo: React.FC<PositionInfoProps> = ({ item, breakpoint }) => {
   const { getTxUrl } = useGnoscanUrl();
   const { t } = useTranslation();
-  const { time, type, usdValue, amountA, amountB, txHash, tokenASymbol, tokenBSymbol } = item;
+  const {
+    time,
+    type,
+    usdValue,
+    amountA,
+    amountB,
+    txHash,
+    tokenASymbol,
+    tokenBSymbol,
+  } = item;
   const tableInfo =
     breakpoint === DEVICE_TYPE.MOBILE
       ? MOBILE_POSITION_HISTORY_INFO
@@ -51,23 +57,23 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
   const typeKey = useMemo(() => {
     switch (type) {
       case DexEvent.ADD:
-        return "business:positionHistoryAction.create";
+        return "business:onchainActi.action.create";
       case DexEvent.DECREASE:
-        return "business:positionHistoryAction.decrease";
+        return "business:onchainActi.action.decrease";
       case DexEvent.INCREASE:
-        return "business:positionHistoryAction.increase";
+        return "business:onchainActi.action.increase";
       case DexEvent.REMOVE:
-        return "business:positionHistoryAction.remove";
+        return "business:onchainActi.action.remove";
       case DexEvent.REPOSITION:
-        return "business:positionHistoryAction.reposition";
+        return "business:onchainActi.action.reposition";
       case DexEvent.CLAIM_FEE:
-        return "business:positionHistoryAction.claimFees";
+        return "business:onchainActi.action.claimFees";
       case DexEvent.UNSTAKE:
-        return "business:positionHistoryAction.unstake";
+        return "business:onchainActi.action.unstake";
       case DexEvent.STAKE:
-        return "business:positionHistoryAction.stake";
+        return "business:onchainActi.action.stake";
       case DexEvent.CLAIM_REWARD:
-        return "business:positionHistoryAction.claimRewards";
+        return "business:onchainActi.action.claimRewards";
       default:
         return "undefined";
     }

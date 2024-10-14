@@ -1,20 +1,22 @@
+import { STATIC_TEXT } from "@common/values";
+import IconClose from "@components/common/icons/IconCancel";
+import IconSearch from "@components/common/icons/IconSearch";
+import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TokenState } from "@states/index";
+import { DEVICE_TYPE } from "@styles/media";
+import { removeDuplicatesByWrappedPath } from "@utils/common";
+import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
 import React, {
   useCallback,
-  useRef,
   useEffect,
-  useState,
   useMemo,
+  useRef,
+  useState,
 } from "react";
-import { useAtom } from "jotai";
-import IconSearch from "@components/common/icons/IconSearch";
-import IconClose from "@components/common/icons/IconCancel";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { removeDuplicatesByWrappedPath } from "@utils/common";
-import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
-import BigNumber from "bignumber.js";
-import { DEVICE_TYPE } from "@styles/media";
-import { TokenState } from "@states/index";
+import { useTranslation } from "react-i18next";
 import IconNewTab from "../icons/IconNewTab";
 import MissingLogo from "../missing-logo/MissingLogo";
 import {
@@ -22,7 +24,6 @@ import {
   SelectTokenWrapper,
   TokenInfoWrapper,
 } from "./SelectToken.styles";
-import { useTranslation } from "react-i18next";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -266,7 +267,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                     >
                       <div>
                         {isNativeToken(token)
-                          ? t("business:nativeCoin")
+                          ? STATIC_TEXT.NATIVE_COIN
                           : token.path}
                       </div>
                       <IconNewTab />

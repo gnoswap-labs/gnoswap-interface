@@ -21,7 +21,10 @@ import BalanceChange from "../balance-change/BalanceChange";
 import RepositionSelectPosition from "../reposition-select-position/RepositionSelectPosition";
 import RepositionSelectRange from "../reposition-select-range/RepositionSelectRange";
 
-import { RepositionContentWrapper, ToolTipContentWrapper } from "./RepositionContent.styles";
+import {
+  RepositionContentWrapper,
+  ToolTipContentWrapper,
+} from "./RepositionContent.styles";
 
 interface RepositionContentProps {
   tokenA: TokenModel | null;
@@ -80,7 +83,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
     if (buttonType === "NON_SELECTED_RANGE") {
       return t("Reposition:btn.selectRange");
     }
-    return t("Reposition:btn.reposition");
+    return t("Reposition:title");
   }, [buttonType, t]);
 
   const isSubmit = useMemo(() => {

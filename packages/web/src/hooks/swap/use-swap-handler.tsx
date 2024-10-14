@@ -33,9 +33,9 @@ import { matchInputNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
-import { useSwap } from "./use-swap";
-import { rawBySqrtX96 } from "@utils/swap-utils";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { rawBySqrtX96 } from "@utils/swap-utils";
+import { useSwap } from "./use-swap";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -619,13 +619,13 @@ export const useSwapHandler = () => {
         title={(() => {
           switch (swapButtonState) {
             case "SWAP":
-              return t("Swap:confirmSwapModal.confirmBtn.swap");
+              return t("Swap:confirmSwapModal.title");
             case "WRAP":
               return t("Swap:confirmSwapModal.confirmBtn.wrap");
             case "UNWRAP":
               return t("Swap:confirmSwapModal.confirmBtn.unwrap");
             case "HIGHT_PRICE_IMPACT":
-              return t("Swap:confirmSwapModal.confirmBtn.swapAnyway");
+              return t("Swap:swapButton.swapAnyway");
             default:
               return "";
           }
@@ -788,8 +788,7 @@ export const useSwapHandler = () => {
       }
       setSwapValue(prev => ({
         tokenA: prev.tokenB?.path === token.path ? prev.tokenB : token,
-        tokenB:
-          prev.tokenB?.path === token.path ? prev.tokenA : prev.tokenB,
+        tokenB: prev.tokenB?.path === token.path ? prev.tokenA : prev.tokenB,
         type: changedSwapDirection,
       }));
       if (!!Number(tokenAAmount)) {

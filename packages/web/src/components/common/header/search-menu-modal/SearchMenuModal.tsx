@@ -15,12 +15,13 @@ import IconSearch from "@components/common/icons/IconSearch";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { TokenInfo } from "@models/token/token-info";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
-import { TokenInfo } from "@models/token/token-info";
-import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
+import { STATIC_TEXT } from "@common/values";
 import {
   InputStyle,
   ModalContainer,
@@ -213,7 +214,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     (path: string, isNative?: boolean) => {
       const path_ = path;
 
-      if (isNative) return t("business:nativeCoin");
+      if (isNative) return STATIC_TEXT.NATIVE_COIN;
 
       const tokenPathArr = path_?.split("/") ?? [];
 

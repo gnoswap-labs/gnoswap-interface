@@ -67,7 +67,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
         text={t(
           disabledRemoveLiquidity
             ? "RemovePosition:btn.selectPosi"
-            : "RemovePosition:btn.remove",
+            : "RemovePosition:title",
         )}
         disabled={disabledRemoveLiquidity}
         style={{

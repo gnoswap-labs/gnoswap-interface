@@ -51,7 +51,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
               padding: "10px 16px",
               gap: "8px",
             }}
-            text={t("Wallet:overral.btn.assetReceive")}
+            text={t("Wallet:assets.col.assetReceive")}
             onClick={deposit}
             disabled={connected === false || isSwitchNetwork}
           />
@@ -64,7 +64,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
               padding: "10px 16px",
               gap: "8px",
             }}
-            text={t("Wallet:overral.btn.assetSend")}
+            text={t("Wallet:assets.col.assetSend")}
             onClick={withdraw}
             disabled={connected === false || isSwitchNetwork}
           />

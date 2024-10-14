@@ -73,7 +73,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
             ? t("common:btn.walletLogin")
             : isEmptyCheckList
             ? t("StakePosition:btn.selectPosi")
-            : t("StakePosition:btn.stake")
+            : t("StakePosition:title")
         }
         disabled={isEmptyCheckList}
         style={{

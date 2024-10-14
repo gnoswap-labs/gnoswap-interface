@@ -82,7 +82,7 @@ const IncreasePositionModal: React.FC<Props> = ({
           <div>
             <Button
               onClick={confirm}
-              text={t("IncreaseLiquidity:confirmIncreaseModal.btn")}
+              text={t("IncreaseLiquidity:confirmIncreaseModal.title")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
