@@ -1,7 +1,7 @@
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-import { TokenListResponse } from "@repositories/token";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { TokenListResponse } from "@repositories/token";
 
 import { QUERY_KEY } from "../query-keys";
 

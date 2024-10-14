@@ -1,9 +1,9 @@
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
-import { QUERY_KEY } from "../query-keys";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 10_000;
 
@@ -26,6 +26,8 @@ export const useGetAllTokenPrices = (
       return priceMap;
     },
     refetchInterval: REFETCH_INTERVAL,
+    staleTime: Infinity,
+    keepPreviousData: true,
     ...options,
   });
 };

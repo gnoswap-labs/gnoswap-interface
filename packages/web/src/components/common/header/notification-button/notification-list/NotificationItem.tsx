@@ -16,8 +16,8 @@ import { DEVICE_TYPE } from "@styles/media";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import {
-  DoubleLogoDense,
   DoubleLogo as DoubleLogoLocal,
+  DoubleLogoDense,
   TransactionItemsWrap,
   TxsDateAgoTitle,
   TxsListItem,
@@ -94,11 +94,26 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
       "Modal:notif.action.executeproposal.status.success",
     [DexEvent.CANCEL_PROPOSAL]:
       "Modal:notif.action.cancelproposal.status.success",
+    // Launchpad
+    [DexEvent.LAUNCHPAD_COLLECT_REWARD]: "Modal:notif.action.rewardsClaimed",
+    [DexEvent.LAUNCHPAD_DEPOSIT]: "Modal:notif.action.deposited",
   };
 
   const getNotificationMessage = useCallback(
     (tx: ActivityData) => {
       const getSwapRelatedMessage = () => {
+        // Launchpad Deposit
+        if (tx.actionType === DexEvent.LAUNCHPAD_DEPOSIT) {
+          const tokenAAmount = formatPoolPairAmount(tx?.tokenAAmount, {
+            decimals: tx.tokenA.decimals,
+            isKMB: false,
+          });
+          const tokenASymbol = tx?.tokenA?.symbol;
+          return (
+            <span className="accent">{` ${tokenAAmount} ${tokenASymbol}`}</span>
+          );
+        }
+
         const token0Amount = formatPoolPairAmount(tx?.tokenAAmount, {
           decimals: tx.tokenA.decimals,
           isKMB: false,

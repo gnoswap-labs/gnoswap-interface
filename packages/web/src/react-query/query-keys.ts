@@ -55,4 +55,11 @@ export enum QUERY_KEY {
   chain = "chain",
   tokenByPath = "token",
   tokenBalancesByAddress = "balances",
+
+  //launchpad
+  launchpadSummary = "launchpad_summary",
+  launchpadActiveProjects = "launchpad_active_projects",
+  launchpadProjects = "launchpad_projects",
+  launchpadProjectDetails = "launchpad_project_details",
+  launchpadParticipationInfos = "launchpad_participation_infos",
 }

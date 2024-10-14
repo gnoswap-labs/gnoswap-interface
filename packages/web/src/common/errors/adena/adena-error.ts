@@ -92,7 +92,7 @@ export class AdenaError extends BaseError {
     Object.setPrototypeOf(this, AdenaError.prototype);
   }
 
-  public static valdiate(response: WalletResponse) {
+  public static valdiate(response: WalletResponse<object>) {
     const errorType = Object.keys(ERROR_VALUE).find(
       errorType =>
         ERROR_VALUE[errorType as ErrorType].status === response.code &&
