@@ -1,11 +1,21 @@
 import React from "react";
 
+import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
+
 import { Divider } from "@components/common/divider/divider";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
 
 const LaunchpadParticipate: React.FC = () => {
+  const {
+    connectedWallet,
+    depositButtonText,
+    openConnectWallet,
+    isSwitchNetwork,
+    switchNetwork,
+  } = useLaunchpadHandler();
   return (
     <LaunchpadParticipateWrapper>
       <div className="participate-header">Participate</div>
@@ -48,8 +58,52 @@ const LaunchpadParticipate: React.FC = () => {
           <div className="participate-info-value">-</div>
         </div>
       </div>
+
+      <div className="participate-button-wrapper">
+        <DepositButton
+          isSwitchNetwork={isSwitchNetwork}
+          connectedWallet={connectedWallet}
+          text={depositButtonText}
+          openConnectWallet={openConnectWallet}
+          switchNetwork={switchNetwork}
+        />
+      </div>
     </LaunchpadParticipateWrapper>
   );
+};
+
+interface DepositButtonProps {
+  connectedWallet: boolean;
+  text: string;
+  isSwitchNetwork: boolean;
+
+  openConnectWallet: () => void;
+  switchNetwork: () => void;
+}
+
+const DepositButton: React.FC<DepositButtonProps> = ({
+  connectedWallet,
+  text,
+  openConnectWallet,
+  isSwitchNetwork,
+  switchNetwork,
+}) => {
+  const defaultStyle = {
+    fullWidth: true,
+    hierarchy: ButtonHierarchy.Primary,
+  };
+
+  if (!connectedWallet) {
+    return (
+      <Button text={text} style={defaultStyle} onClick={openConnectWallet} />
+    );
+  }
+
+  if (isSwitchNetwork) {
+    return <Button text={text} style={defaultStyle} onClick={switchNetwork} />;
+  }
+
+  return <Button text={text} style={defaultStyle} />;
 };
 
 export default LaunchpadParticipate;

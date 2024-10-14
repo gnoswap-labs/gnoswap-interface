@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -12,12 +12,23 @@ import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import { useTranslation } from "react-i18next";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+
+type DepositButtonStateType = "WALLET_LOGIN" | "SWITCH_NETWORK" | "DEPOSIT";
 
 export const useLaunchpadHandler = () => {
-  const { account } = useWallet();
+  const {
+    connected: connectedWallet,
+    account,
+    isSwitchNetwork,
+    switchNetwork,
+  } = useWallet();
   const { launchpadRepository } = useGnoswapContext();
   const { data: blockHeight } = useGetLastedBlockHeight();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
+  const { t } = useTranslation();
+  const { openModal } = useConnectWalletModal();
 
   const [openedConfirmModal] = useState(false);
   const { processTx } = useBroadcastHandler();
@@ -205,9 +216,41 @@ export const useLaunchpadHandler = () => {
     );
   };
 
+  const depositButtonState: DepositButtonStateType = useMemo(() => {
+    if (!connectedWallet) {
+      return "WALLET_LOGIN";
+    }
+    if (isSwitchNetwork) {
+      return "SWITCH_NETWORK";
+    }
+    return "DEPOSIT";
+  }, [connectedWallet, isSwitchNetwork]);
+
+  const depositButtonText = useMemo(() => {
+    switch (depositButtonState) {
+      case "WALLET_LOGIN":
+        return t("common:btn.walletLogin");
+      case "SWITCH_NETWORK":
+        return t("Swap:swapButton.switchNetwork");
+      case "DEPOSIT":
+      default:
+        return "Deposit Now";
+    }
+  }, [depositButtonState, t]);
+
+  const openConnectWallet = useCallback(() => {
+    openModal();
+  }, [openModal]);
+
   return {
     deposit,
     claim,
     claimAll,
+    connectedWallet,
+    depositButtonState,
+    depositButtonText,
+    openConnectWallet,
+    isSwitchNetwork,
+    switchNetwork,
   };
 };

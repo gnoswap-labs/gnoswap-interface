@@ -85,4 +85,21 @@ export const LaunchpadParticipateWrapper = styled.div`
       font-weight: 400;
     }
   }
+  .participate-button-wrapper {
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    position: relative;
+    width: 100%;
+    button {
+      height: 57px;
+    }
+    span {
+      ${fonts.body7}
+    }
+    ${media.mobile} {
+      height: 41px;
+      span {
+        ${fonts.body9}
+      }
+    }
+  }
 `;
