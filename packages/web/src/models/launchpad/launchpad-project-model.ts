@@ -11,6 +11,14 @@ export interface LaunchpadProjectModel {
 
   name: string;
 
+  rewardTokenPath: string;
+
+  rewardTokenSymbol: string;
+
+  rewardTokenDecimals: number;
+
+  rewardTokenLogoUrl: string | null;
+
   description: string | null;
 
   pools: LaunchpadPoolModel[];
@@ -30,6 +38,12 @@ export interface LaunchpadProjectDetailsModel {
   pools: LaunchpadPoolModel[];
 
   rewardTokenPath: string;
+
+  rewardTokenSymbol: string;
+
+  rewardTokenDecimals: number;
+
+  rewardTokenLogoUrl: string | null;
 
   description: string | null;
 

@@ -8,6 +8,10 @@
         "projectId": "PROJECT03",
         "status": "UPCOMING",
         "name": "GnoSwap",
+        "rewardTokenPath": "gno.land/r/onbloc/usdc",
+        "rewardTokenSymbol": "USDC",
+        "rewardTokenDecimals": 6,
+        "rewardTokenLogoUrl": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_onbloc_usdc.svg",
         "description": "The first Dex on Gnoland with Concentrated Liquidity.",
         "pools": [
           {
@@ -71,6 +75,10 @@
         "projectId": "PROJECT01",
         "status": "ONGOING",
         "name": "USDC Project",
+        "rewardTokenPath": "gno.land/r/onbloc/usdc",
+        "rewardTokenSymbol": "USDC",
+        "rewardTokenDecimals": 6,
+        "rewardTokenLogoUrl": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_onbloc_usdc.svg",
         "description": "The first Dex on Gnoland with Concentrated Liquidity.",
         "pools": [
           {
@@ -134,6 +142,10 @@
         "projectId": "PROJECT04",
         "status": "ENDED",
         "name": "GnoSwap",
+        "rewardTokenPath": "gno.land/r/gnoswap/v2/gns",
+        "rewardTokenSymbol": "GNS",
+        "rewardTokenDecimals": 6,
+        "rewardTokenLogoUrl": null,
         "description": "The first Dex on Gnoland with Concentrated Liquidity.",
         "pools": [
           {
