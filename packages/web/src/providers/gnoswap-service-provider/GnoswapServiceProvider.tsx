@@ -25,8 +25,10 @@ import {
   GovernanceRepository,
   GovernanceRepositoryImpl,
 } from "@repositories/governance";
-import { LaunchpadRepository } from "@repositories/launchpad";
-import { LaunchpadRepositoryMock } from "@repositories/launchpad/launchpad-repository-mock";
+import {
+  LaunchpadRepository,
+  LaunchpadRepositoryImpl,
+} from "@repositories/launchpad";
 import {
   LeaderboardRepository,
   LeaderboardRepositoryMock,
@@ -260,9 +262,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [gnoswapApiClient]);
 
   const launchpadRepository = useMemo(() => {
-    // TODO: It should be changed to the actual implementation.
-    // return new LaunchpadRepositoryImpl(gnoswapApiClient, walletClient);
-    return new LaunchpadRepositoryMock(walletClient);
+    return new LaunchpadRepositoryImpl(gnoswapApiClient, walletClient);
   }, [gnoswapApiClient, walletClient]);
 
   useEffect(() => {
