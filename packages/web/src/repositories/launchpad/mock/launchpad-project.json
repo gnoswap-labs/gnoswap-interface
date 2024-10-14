@@ -73,6 +73,9 @@
         }
       ],
       "rewardTokenPath": "gno.land/r/onbloc/usdc",
+      "rewardTokenSymbol": "USDC",
+      "rewardTokenDecimals": 6,
+      "rewardTokenLogoUrl": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_onbloc_usdc.svg",
       "description": "The first Dex on Gnoland with Concentrated Liquidity.",
       "descriptionDetails": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eu pretium sit amet, varius in quam. In auctor gravida pretium. Maecenas est ante, pulvinar id accumsan eget, aliquam ac turpis. Donec vulputate nunc tellus. In sit amet mattis nisl. Mauris libero quam, hendrerit dapibus scelerisque eu, fringilla sit amet sapien. Proin ut semper risus. Vivamus fringilla eget lectus ut faucibus. Proin vitae mollis massa. Sed bibendum tortor eget aliquam commodo. Etiam et eleifend augue. Donec molestie placerat elit.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eu pretium sit amet, varius in quam. In auctor gravida pretium. Maecenas est ante, pulvinar id accumsan eget, aliquam ac turpis. Donec vulputate nunc tellus. In sit amet mattis nisl. Mauris libero quam, hendrerit dapibus scelerisque eu...",
       "websiteUrl": "https://docs.gnoswap.io/",
