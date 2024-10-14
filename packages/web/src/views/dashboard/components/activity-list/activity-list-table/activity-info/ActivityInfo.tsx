@@ -267,6 +267,12 @@ const formatActivity = (
           return t("business:onchainActi.action.execute");
         case DexEvent.CANCEL_PROPOSAL:
           return t("business:onchainActi.action.cancel");
+        case DexEvent.LAUNCHPAD_COLLECT_REWARD:
+          return t("business:onchainActi.action.claimRewards");
+        case DexEvent.LAUNCHPAD_COLLECT_DEPOSIT:
+          return t("business:onchainActi.action.claimDeposit");
+        case DexEvent.LAUNCHPAD_DEPOSIT:
+          return t("business:onchainActi.action.deposit");
       }
     })();
 

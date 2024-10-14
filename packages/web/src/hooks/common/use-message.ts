@@ -174,7 +174,8 @@ export const useMessage = () => {
           return t("Modal:confirm.remove.title");
         case DexEvent.CLAIM_FEE:
         case DexEvent.COLLECT_GOV_REWARD: // governance reward
-        case DexEvent.LAUNCHPAD_COLLECT_REWARD:
+        case DexEvent.LAUNCHPAD_COLLECT_REWARD: // launchpad claim reward
+        case DexEvent.LAUNCHPAD_COLLECT_DEPOSIT: // launchpad claim deposit
           return t("Modal:confirm.claim.title");
         case DexEvent.ADD_INCENTIVE:
           return t("Modal:confirm.addIncentive.title");

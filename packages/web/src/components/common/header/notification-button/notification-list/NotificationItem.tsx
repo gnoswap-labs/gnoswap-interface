@@ -96,6 +96,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
       "Modal:notif.action.cancelproposal.status.success",
     // Launchpad
     [DexEvent.LAUNCHPAD_COLLECT_REWARD]: "Modal:notif.action.rewardsClaimed",
+    [DexEvent.LAUNCHPAD_COLLECT_DEPOSIT]: "Modal:notif.action.claimedDeposit",
     [DexEvent.LAUNCHPAD_DEPOSIT]: "Modal:notif.action.deposited",
   };
 
@@ -103,7 +104,11 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     (tx: ActivityData) => {
       const getSwapRelatedMessage = () => {
         // Launchpad Deposit
-        if (tx.actionType === DexEvent.LAUNCHPAD_DEPOSIT) {
+        if (
+          tx.actionType === DexEvent.LAUNCHPAD_COLLECT_REWARD ||
+          tx.actionType === DexEvent.LAUNCHPAD_COLLECT_DEPOSIT ||
+          tx.actionType === DexEvent.LAUNCHPAD_DEPOSIT
+        ) {
           const tokenAAmount = formatPoolPairAmount(tx?.tokenAAmount, {
             decimals: tx.tokenA.decimals,
             isKMB: false,
