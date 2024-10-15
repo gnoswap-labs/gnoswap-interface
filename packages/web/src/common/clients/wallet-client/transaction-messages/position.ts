@@ -1,16 +1,10 @@
-import { makeGNOTSendAmount, makeTransactionMessage } from "./common";
-import {
-  MAX_SLIPPAGE,
-  SwapFeeTierInfoMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
-import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
 import BigNumber from "bignumber.js";
-import {
-  PACKAGE_NFT_PATH,
-  PACKAGE_POSITION_PATH,
-  PACKAGE_STAKER_PATH,
-} from "@constants/environment.constant";
+
+import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
+import { PACKAGE_NFT_PATH, PACKAGE_POSITION_PATH, PACKAGE_STAKER_PATH } from "@constants/environment.constant";
+import { MAX_SLIPPAGE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+
+import { makeGNOTSendAmount, makeTransactionMessage } from "./common";
 
 export function makePositionMintMessage(
   tokenAPath: string,
@@ -46,6 +40,7 @@ export function makePositionMintMessage(
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
       deadline,
       caller, // LP Token Receiver
+      caller, // Replace OriginCaller
     ],
   });
 }
@@ -153,7 +148,7 @@ export function makePositionDecreaseLiquidityMessage(
   isGetWGNOT: boolean,
   caller: string,
 ) {
-  const slippageRatio = (100 - MAX_SLIPPAGE)/100;
+  const slippageRatio = (100 - MAX_SLIPPAGE) / 100;
 
   return makeTransactionMessage({
     send: "",
@@ -171,11 +166,7 @@ export function makePositionDecreaseLiquidityMessage(
   });
 }
 
-export function makePositionCollectFeeMessage(
-  lpTokenId: string,
-  isGetWGNOT: boolean,
-  caller: string,
-) {
+export function makePositionCollectFeeMessage(lpTokenId: string, isGetWGNOT: boolean, caller: string) {
   return makeTransactionMessage({
     send: "",
     func: "CollectFee",
