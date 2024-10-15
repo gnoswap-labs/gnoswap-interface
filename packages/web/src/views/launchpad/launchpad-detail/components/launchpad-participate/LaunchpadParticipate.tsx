@@ -5,8 +5,12 @@ import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
+import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
+
+const DEFAULT_DEPOSIT_GNOT = GNOT_TOKEN;
 
 const LaunchpadParticipate: React.FC = () => {
   const {
@@ -25,7 +29,11 @@ const LaunchpadParticipate: React.FC = () => {
         <div className="participate-input-amount">
           <input className="participate-amount-text" placeholder="0" />
           <div className="participate-token-selector">
-            {/* <SelectPairButton /> */}
+            <SelectPairButton
+              token={DEFAULT_DEPOSIT_GNOT}
+              isHiddenArrow
+              disabled
+            />
           </div>
         </div>
 
