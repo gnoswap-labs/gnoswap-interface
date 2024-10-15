@@ -1,14 +1,14 @@
 import React from "react";
 
-import { LaunchpadModalWrapper } from "./LaunchpadModal.styles";
-import IconClose from "../icons/IconCancel";
-import IconWarning from "../icons/IconWarning";
-import IconOpenLink from "../icons/IconOpenLink";
-import Button, { ButtonHierarchy } from "../button/Button";
+import { LaunchpadDepositModalWrapper } from "./LaunchpadDepositModal.styles";
+import IconClose from "@components/common/icons/IconCancel";
+import IconWarning from "../../icons/IconWarning";
+import IconOpenLink from "../../icons/IconOpenLink";
+import Button, { ButtonHierarchy } from "../../button/Button";
 
-const LaunchpadModal = () => {
+const LaunchpadDepositModal = () => {
   return (
-    <LaunchpadModalWrapper>
+    <LaunchpadDepositModalWrapper>
       <div className="modal-body">
         <div className="header">
           <h6>Confirm Deposit</h6>
@@ -75,7 +75,7 @@ const LaunchpadModal = () => {
           <ConfirmButton />
         </div>
       </div>
-    </LaunchpadModalWrapper>
+    </LaunchpadDepositModalWrapper>
   );
 };
 
@@ -87,4 +87,4 @@ const ConfirmButton = () => {
   return <Button text="Confirm" style={defaultStyle} />;
 };
 
-export default LaunchpadModal;
+export default LaunchpadDepositModal;

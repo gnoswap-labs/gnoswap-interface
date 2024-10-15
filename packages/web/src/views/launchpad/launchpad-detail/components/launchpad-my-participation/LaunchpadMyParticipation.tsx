@@ -1,17 +1,22 @@
 import React from "react";
 
+import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
+
 import { MyParticipationWrapper } from "./LaunchpadMyParticipation.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { Divider } from "@components/common/divider/divider";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 
 const LaunchpadMyParticipation = () => {
+  const { openLaunchpadClaimAllAction } = useLaunchpadHandler();
   return (
     <MyParticipationWrapper>
       <div className="my-participation-header">
         <h3 className="my-participation-title">My Participation</h3>
         <div className="claim-all-button-wrapper">
-          <ClaimAllButton />
+          <ClaimAllButton
+            openLaunchpadClaimAllAction={openLaunchpadClaimAllAction}
+          />
         </div>
       </div>
 
@@ -64,13 +69,25 @@ const LaunchpadMyParticipation = () => {
   );
 };
 
+interface ClaimAllButtonProps {
+  openLaunchpadClaimAllAction: () => void;
+}
+
 const claimDefaultStyle = {
   fullWidth: true,
   hierarchy: ButtonHierarchy.Primary,
 };
 
-const ClaimAllButton = () => {
-  return <Button text="Claim All" style={claimDefaultStyle} />;
+const ClaimAllButton: React.FC<ClaimAllButtonProps> = ({
+  openLaunchpadClaimAllAction,
+}) => {
+  return (
+    <Button
+      text="Claim All"
+      style={claimDefaultStyle}
+      onClick={openLaunchpadClaimAllAction}
+    />
+  );
 };
 
 const ClaimButton = () => {

@@ -2,18 +2,25 @@ import React from "react";
 import { useAtom } from "jotai";
 
 import { CommonState } from "@states/index";
-import LaunchpadModalContainer from "@containers/launchpad-modal-container/LaunchpadModalContainer";
+import LaunchpadDepositModalContainer from "@containers/launchpad-deposit-modal-container/LaunchpadDepositModalContainer";
+import LaunchpadClaimAllModalContainer from "@containers/launchpad-claim-all-modal-container/LaunchpadClaimAllModalContainer";
 
-export const useLaunchpadModal = () => {
+export const useLaunchpadDepositModal = () => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalcontent] = useAtom(CommonState.modalContent);
 
-  const openModal = React.useCallback(() => {
+  const openLaunchpadDepositModal = React.useCallback(() => {
     setOpenedModal(true);
-    setModalcontent(<LaunchpadModalContainer />);
+    setModalcontent(<LaunchpadDepositModalContainer />);
   }, [setOpenedModal, setModalcontent]);
 
+  const openLaunchpadClaimAllModal = React.useCallback(() => {
+    setOpenedModal(true);
+    setModalcontent(<LaunchpadClaimAllModalContainer />);
+  }, [[setOpenedModal, setModalcontent]]);
+
   return {
-    openModal,
+    openLaunchpadDepositModal,
+    openLaunchpadClaimAllModal,
   };
 };

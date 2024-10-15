@@ -3,7 +3,7 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 
-export const LaunchpadModalWrapper = styled.div`
+export const LaunchpadDepositModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 460px;
   gap: 16px;

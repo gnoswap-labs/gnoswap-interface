@@ -15,7 +15,7 @@ const LaunchpadParticipate: React.FC = () => {
     openConnectWallet,
     isSwitchNetwork,
     switchNetwork,
-    openLaunchpadAction,
+    openLaunchpadDepositAction,
   } = useLaunchpadHandler();
   return (
     <LaunchpadParticipateWrapper>
@@ -67,7 +67,7 @@ const LaunchpadParticipate: React.FC = () => {
           text={depositButtonText}
           openConnectWallet={openConnectWallet}
           switchNetwork={switchNetwork}
-          openLaunchpadAction={openLaunchpadAction}
+          openLaunchpadDepositAction={openLaunchpadDepositAction}
         />
       </div>
     </LaunchpadParticipateWrapper>
@@ -80,7 +80,7 @@ interface DepositButtonProps {
   isSwitchNetwork: boolean;
 
   openConnectWallet: () => void;
-  openLaunchpadAction: () => void;
+  openLaunchpadDepositAction: () => void;
   switchNetwork: () => void;
 }
 
@@ -90,7 +90,7 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   openConnectWallet,
   isSwitchNetwork,
   switchNetwork,
-  openLaunchpadAction,
+  openLaunchpadDepositAction,
 }) => {
   const defaultStyle = {
     fullWidth: true,
@@ -108,7 +108,11 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   }
 
   return (
-    <Button text={text} style={defaultStyle} onClick={openLaunchpadAction} />
+    <Button
+      text={text}
+      style={defaultStyle}
+      onClick={openLaunchpadDepositAction}
+    />
   );
 };
 
