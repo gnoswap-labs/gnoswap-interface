@@ -6,6 +6,8 @@ import LaunchpadActiveProjects from "@views/launchpad/components/launchpad-activ
 import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
 import { PROJECT_STATUS_TYPE } from "@common/values";
 import { LaunchpadState } from "@states/index";
+import useCustomRouter from "@hooks/common/use-custom-router";
+import { QUERY_PARAMETER } from "@constants/page.constant";
 
 /**
  * @yjin
@@ -14,6 +16,8 @@ import { LaunchpadState } from "@states/index";
 // interface LaunchpadActiveProjectContainerProps {}
 
 const LaunchpadActiveProjectContainer: React.FC = () => {
+  const router = useCustomRouter();
+
   const [isViewMoreActiveProjects, setIsViewMoreActiveProjects] = useAtom(
     LaunchpadState.isViewMoreActiveProjects,
   );
@@ -50,6 +54,13 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
     setIsViewMoreActiveProjects(prev => !prev);
   }, [isViewMoreActiveProjects]);
 
+  const moveProjectDetail = React.useCallback(
+    (projectId: string) => {
+      router.movePage("PROJECT", { [QUERY_PARAMETER.PROJECT_PATH]: projectId });
+    },
+    [router],
+  );
+
   return (
     <LaunchpadActiveProjects
       activeProjectList={dataMapping}
@@ -57,6 +68,7 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
       showLoadMore={showedProject.length > 4}
       loadMore={!isViewMoreActiveProjects}
       onClickLoadMore={handleClickLoadMore}
+      moveProjectDetail={moveProjectDetail}
     />
   );
 };

@@ -8,6 +8,7 @@ export const PAGE_PATH = {
   SWAP: "/swap",
   WALLET: "/wallet",
   LAUNCHPAD: "/launchpad",
+  PROJECT: "/launchpad/project",
   POOL: "/earn/pool",
   POOL_ADD: "/earn/pool/add",
   POOL_REMOVE: "/earn/pool/remove",
@@ -29,6 +30,7 @@ export const QUERY_PARAMETER = {
   POOL_PATH: "poolPath",
   POSITION_ID: "positionId",
   ADDRESS: "addr",
+  PROJECT_PATH: "projectPath",
 } as const;
 
 export type QUERY_PARAMETER_TYPE = keyof typeof QUERY_PARAMETER;

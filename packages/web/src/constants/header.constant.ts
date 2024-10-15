@@ -23,7 +23,7 @@ export const HEADER_NAV = [
     title: "HeaderFooter:launchpad",
     path: "/launchpad",
     iconType: null,
-    subPath: ["/pool"],
+    subPath: ["/project"],
   },
   //   {
   //     title: "HeaderFooter:dashboard",

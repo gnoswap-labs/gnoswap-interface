@@ -15,26 +15,32 @@ interface LaunchpadActiveProjectsCardListProps {
   loadMore: boolean;
 
   onClickLoadMore: () => void;
+  moveProjectDetail: (poolId: string) => void;
 }
 
 const LaunchpadActiveProjectsCardList: React.FC<
   LaunchpadActiveProjectsCardListProps
-> = ({ activeProjectList, showLoadMore, loadMore, onClickLoadMore }) => {
+> = ({
+  activeProjectList,
+  showLoadMore,
+  loadMore,
+  onClickLoadMore,
+  moveProjectDetail,
+}) => {
   return (
     <ActiveProjectsCardListWrapper>
       <ActiveProjectsGridWrapper>
         {activeProjectList && activeProjectList.length > 0 && (
           <>
-            {activeProjectList.map(
-              (activeProjectDetail: LaunchpadProjectResponse) => {
-                return (
-                  <LaunchpadActiveProjectCard
-                    key={activeProjectDetail.id}
-                    activeProjectDetail={activeProjectDetail}
-                  />
-                );
-              },
-            )}
+            {activeProjectList.map((project: LaunchpadProjectResponse) => {
+              return (
+                <LaunchpadActiveProjectCard
+                  key={project.id}
+                  project={project}
+                  moveProjectDetail={moveProjectDetail}
+                />
+              );
+            })}
           </>
         )}
       </ActiveProjectsGridWrapper>

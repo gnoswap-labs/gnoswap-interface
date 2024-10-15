@@ -10,28 +10,32 @@ import LaunchpadActiveProjectCardData from "./launchpad-active-project-card-data
 import { LaunchpadActiveProjectPool } from "@repositories/launchpad/response/get-launchpad-active-projects-response";
 
 interface LaunchpadActiveProjectCardProps {
-  activeProjectDetail: LaunchpadProjectResponse;
+  project: LaunchpadProjectResponse;
+
+  moveProjectDetail: (poolId: string) => void;
 }
 
 const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
-  activeProjectDetail,
+  project,
+  moveProjectDetail,
 }) => {
-  const { pools, status } = activeProjectDetail;
+  const { pools, status, projectId } = project;
   return (
-    <ActiveProjectCardWrapper type={status}>
+    <ActiveProjectCardWrapper
+      type={status}
+      onClick={() => moveProjectDetail(projectId)}
+    >
       <LaunchpadActiveProjectCardTimeChip
         startTime={pools[0].startTime}
-        type={activeProjectDetail.status}
+        type={project.status}
       />
       <LaunchpadActiveProjectCardHeader
-        name={activeProjectDetail.name}
-        description={activeProjectDetail.description || ""}
+        name={project.name}
+        description={project.description || ""}
       />
       <Divider />
       <LaunchpadActiveProjectCardData
-        pools={
-          (activeProjectDetail.pools as LaunchpadActiveProjectPool[]) || []
-        }
+        pools={(pools as LaunchpadActiveProjectPool[]) || []}
       />
     </ActiveProjectCardWrapper>
   );

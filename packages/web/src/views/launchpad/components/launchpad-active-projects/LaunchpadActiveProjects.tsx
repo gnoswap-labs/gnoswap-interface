@@ -13,6 +13,7 @@ export interface LaunchpadActiveProjectsProps {
   activeProjectListLength: number;
 
   onClickLoadMore: () => void;
+  moveProjectDetail: (poolId: string) => void;
 }
 
 const LaunchpadActiveProjects: React.FC<LaunchpadActiveProjectsProps> = ({
@@ -21,6 +22,7 @@ const LaunchpadActiveProjects: React.FC<LaunchpadActiveProjectsProps> = ({
   loadMore,
   activeProjectListLength,
   onClickLoadMore,
+  moveProjectDetail,
 }) => {
   return (
     <LaunchpadActiveProjectsWrapper>
@@ -30,6 +32,7 @@ const LaunchpadActiveProjects: React.FC<LaunchpadActiveProjectsProps> = ({
         showLoadMore={showLoadMore}
         loadMore={loadMore}
         onClickLoadMore={onClickLoadMore}
+        moveProjectDetail={moveProjectDetail}
       />
     </LaunchpadActiveProjectsWrapper>
   );

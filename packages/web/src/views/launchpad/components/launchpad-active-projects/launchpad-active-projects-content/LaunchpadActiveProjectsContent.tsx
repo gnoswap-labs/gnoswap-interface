@@ -10,11 +10,18 @@ export interface LaunchpadActiveProjectsContentProps {
   loadMore: boolean;
 
   onClickLoadMore: () => void;
+  moveProjectDetail: (poolId: string) => void;
 }
 
 const LaunchpadActiveProjectsContent: React.FC<
   LaunchpadActiveProjectsContentProps
-> = ({ activeProjectList, showLoadMore, loadMore, onClickLoadMore }) => {
+> = ({
+  activeProjectList,
+  showLoadMore,
+  loadMore,
+  onClickLoadMore,
+  moveProjectDetail,
+}) => {
   return (
     <>
       {activeProjectList.length > 0 ? (
@@ -23,6 +30,7 @@ const LaunchpadActiveProjectsContent: React.FC<
           showLoadMore={showLoadMore}
           loadMore={loadMore}
           onClickLoadMore={onClickLoadMore}
+          moveProjectDetail={moveProjectDetail}
         />
       ) : (
         <></>
