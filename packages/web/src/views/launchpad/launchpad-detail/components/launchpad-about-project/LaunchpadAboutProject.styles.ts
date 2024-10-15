@@ -50,17 +50,3 @@ export const LaunchpadAboutProjectWrapper = styled.div`
     }
   }
 `;
-
-export const LinkCard = styled.div`
-  ${mixins.flexbox("row", "center", "center")}
-  gap: 4px;
-  color: ${({ theme }) => theme.color.text05};
-  background: ${({ theme }) => theme.color.border02};
-  border-radius: 4px;
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  padding: 4px 8px;
-  .text {
-    font-size: 12px;
-    font-weight: 400;
-  }
-`;

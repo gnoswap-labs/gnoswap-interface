@@ -1,13 +1,17 @@
-import IconArrowDown from "@components/common/icons/IconArrowDown";
-import IconOpenLink from "@components/common/icons/IconOpenLink";
 import React from "react";
 
-import {
-  LaunchpadAboutProjectWrapper,
-  LinkCard,
-} from "./LaunchpadAboutProject.styles";
+// import IconArrowDown from "@components/common/icons/IconArrowDown";
+import LaunchpadAboutProjectLinks from "./laucnhpad-about-project-links/LaunchpadAboutProjectLinks";
 
-const LaunchpadAboutProject: React.FC = () => {
+import { LaunchpadAboutProjectWrapper } from "./LaunchpadAboutProject.styles";
+
+interface LaunchpadAboutProjectProps {
+  loading: boolean;
+}
+
+const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
+  loading,
+}) => {
   return (
     <LaunchpadAboutProjectWrapper>
       <div className="header">
@@ -35,38 +39,12 @@ const LaunchpadAboutProject: React.FC = () => {
             eget, aliquam ac turpis. Donec vulputate nunc tellus. In sit amet
             mattis nisl. Mauris libero quam, hendrerit dapibus scelerisque eu...
           </div>
-          <div className="show-more">
+          {/* <div className="show-more">
             show more <IconArrowDown fill="#596782" />
-          </div>
+          </div> */}
         </div>
 
-        <div className="link-wrapper">
-          <div className="key">Realm (Contract) Path</div>
-          <div className="links">
-            <LinkCard>
-              <div className="text">gno.land/r/demo/gnoswap</div>
-              <IconOpenLink size="16" />
-            </LinkCard>
-          </div>
-        </div>
-
-        <div className="link-wrapper">
-          <div className="key">Links</div>
-          <div className="links">
-            <LinkCard>
-              <div className="text">Website</div>
-              <IconOpenLink size="16" />
-            </LinkCard>
-            <LinkCard>
-              <div className="text">Gnoscan</div>
-              <IconOpenLink size="16" />
-            </LinkCard>
-            <LinkCard>
-              <div className="text">Twitter</div>
-              <IconOpenLink size="16" />
-            </LinkCard>
-          </div>
-        </div>
+        <LaunchpadAboutProjectLinks isLoading={loading} />
       </section>
     </LaunchpadAboutProjectWrapper>
   );
