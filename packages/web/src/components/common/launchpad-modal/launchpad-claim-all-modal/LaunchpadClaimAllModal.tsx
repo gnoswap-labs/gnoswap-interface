@@ -9,7 +9,7 @@ const LaunchpadClaimAllModal = () => {
     <LaunchpadClaimAllModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Confirm Deposit</h6>
+          <h6>Confirm Claim All</h6>
           <div className="close-wrap">
             <IconClose className="close-icon" />
           </div>
