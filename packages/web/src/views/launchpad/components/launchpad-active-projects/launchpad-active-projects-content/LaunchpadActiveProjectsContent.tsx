@@ -12,7 +12,15 @@ const LaunchpadActiveProjectsContent: React.FC<
   LaunchpadActiveProjectsContentProps
 > = ({ activeProjectList }) => {
   return (
-    <LaunchpadActiveProjectsCardList activeProjectList={activeProjectList} />
+    <>
+      {activeProjectList.length > 0 ? (
+        <LaunchpadActiveProjectsCardList
+          activeProjectList={activeProjectList}
+        />
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
 

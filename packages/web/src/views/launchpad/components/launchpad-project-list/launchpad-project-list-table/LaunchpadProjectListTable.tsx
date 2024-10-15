@@ -1,7 +1,11 @@
 import React from "react";
 import { cx } from "@emotion/css";
 
-import { TableColumn, TableWrapper } from "./LaunchpadProjectListTable.styles";
+import {
+  noDataText,
+  TableColumn,
+  TableWrapper,
+} from "./LaunchpadProjectListTable.styles";
 
 import { TABLE_HEAD } from "../types";
 import { LaunchpadProjectModel } from "@models/launchpad";
@@ -17,11 +21,13 @@ import {
 interface LaunchpadProjectListTableProps {
   breakpoint: DEVICE_TYPE;
   projects: LaunchpadProjectModel[];
+  isFetched: boolean;
 }
 
 const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
   breakpoint,
   projects,
+  isFetched,
 }) => {
   const isAlignLeft = (head: TABLE_HEAD) => {
     return head === TABLE_HEAD.PROJECT;
@@ -52,7 +58,11 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
         })}
       </div>
       <div className="project-list-body">
-        {projects.length > 0 &&
+        {isFetched && projects.length === 0 && (
+          <div css={noDataText}>No projects found</div>
+        )}
+        {isFetched &&
+          projects.length > 0 &&
           projects.map((project, idx) => (
             <LaunchpadProjectInfo
               key={idx}

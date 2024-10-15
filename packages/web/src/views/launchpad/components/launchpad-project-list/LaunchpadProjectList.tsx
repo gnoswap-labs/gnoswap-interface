@@ -9,16 +9,22 @@ import { DEVICE_TYPE } from "@styles/media";
 interface LaunchpadProjectListProps {
   breakpoint: DEVICE_TYPE;
   projects: LaunchpadProjectModel[];
+  isFetched: boolean;
 }
 
 const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
   breakpoint,
   projects,
+  isFetched,
 }) => {
   return (
     <ProjectListWrapper>
       <LaunchpadProjectListHeader />
-      <LaunchpadProjectListTable breakpoint={breakpoint} projects={projects} />
+      <LaunchpadProjectListTable
+        breakpoint={breakpoint}
+        projects={projects}
+        isFetched={isFetched}
+      />
     </ProjectListWrapper>
   );
 };

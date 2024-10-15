@@ -6,6 +6,7 @@ import { useGetPoolList } from "@query/pools";
 import { useGetChainInfo } from "@query/token";
 import { useGetPositionsByAddress } from "@query/positions";
 import { useAddress } from "@hooks/address/use-address";
+import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
 
 export const useLoading = () => {
   const { address } = useAddress();
@@ -26,6 +27,9 @@ export const useLoading = () => {
       enabled: false,
     },
   );
+
+  const { isFetched: isFetchedLaunchpadProjectList } =
+    useGetLaunchpadActiveProjects({ enabled: false });
 
   const isLoading = useMemo(() => {
     if (initialized) {
@@ -84,6 +88,13 @@ export const useLoading = () => {
     return !isFetchedPosition;
   }, [address, initialized, isFetchedPosition]);
 
+  const isLoadingLaunchpadProjectList = useMemo(() => {
+    if (!initialized) {
+      return true;
+    }
+    return !isFetchedLaunchpadProjectList;
+  }, [initialized, isFetchedLaunchpadProjectList]);
+
   return {
     isLoading,
     isLoadingTokens,
@@ -92,5 +103,6 @@ export const useLoading = () => {
     isLoadingHighestAPRPools,
     isLoadingDashboardStats,
     isLoadingPositions,
+    isLoadingLaunchpadProjectList,
   };
 };
