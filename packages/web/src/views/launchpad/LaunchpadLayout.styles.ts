@@ -104,7 +104,6 @@ export const LaunchpadLayoutWrapper = styled.div`
       ${mixins.flexbox("row", "flex-start", "center")};
       color: var(--Global-Color-White, #fff);
       gap: 8px;
-      background: var(--border2-dark_gray500Border2, #1c2230);
       border-radius: 8px;
       padding: 16px;
     }

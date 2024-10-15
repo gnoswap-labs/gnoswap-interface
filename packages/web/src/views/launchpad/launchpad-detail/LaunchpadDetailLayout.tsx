@@ -19,6 +19,7 @@ interface LaunchpadDetailLayoutProps {
   participate: React.ReactNode;
   myParticipation: React.ReactNode;
   clickHere: React.ReactNode;
+  footer: React.ReactNode;
 }
 
 const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
@@ -30,6 +31,7 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
   participate,
   myParticipation,
   clickHere,
+  footer,
 }) => {
   return (
     <LaunchpadDetailLayoutWrapper>
@@ -67,6 +69,7 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
           </div>
         </section>
       </main>
+      {footer}
     </LaunchpadDetailLayoutWrapper>
   );
 };

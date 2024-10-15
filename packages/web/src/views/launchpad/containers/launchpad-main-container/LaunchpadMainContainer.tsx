@@ -1,19 +1,30 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
 
+import { ThemeKeys } from "@styles/ThemeTypes";
 import Button from "@components/common/button/Button";
+import { ButtonStyleProps } from "@components/common/button/Button.styles";
 import IconRightArrow from "@components/common/icons/IconRightArrow";
 import { Divider } from "@components/common/divider/divider";
+
 import { useGetLaunchpadSummary } from "@query/launchpad/use-get-launchpad-summary";
 
 interface LaunchpadMainContainerProps {
+  themeKey: ThemeKeys;
   icon: React.ReactNode;
 }
 
 const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
+  themeKey,
   icon,
 }) => {
   const { data: launchpadSummary } = useGetLaunchpadSummary();
+
+  const defaultStyle: ButtonStyleProps = {
+    textColor: "text32",
+    bgColor: themeKey === "dark" ? "border02" : "background04",
+  };
+
   return (
     <>
       <section className="launchpad-section">
@@ -27,12 +38,12 @@ const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
         <div className="launchpad-button-wrapper">
           <Button
             text={"How to Participate"}
-            style={{ textColor: "text32" }}
+            style={defaultStyle}
             rightIcon={<IconRightArrow />}
           />
           <Button
             text={"Submit a Project"}
-            style={{ textColor: "text32" }}
+            style={defaultStyle}
             rightIcon={<IconRightArrow />}
           />
         </div>

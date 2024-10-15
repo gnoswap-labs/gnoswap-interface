@@ -130,7 +130,7 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
       border: 1px solid ${({ theme }) => theme.color.border02};
       background: ${({ theme }) => theme.color.background06};
       padding: 24px;
-      box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
+      box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
     }
     .my-participation {
       width: 100%;
@@ -138,7 +138,6 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
       border: 1px solid ${({ theme }) => theme.color.border02};
       background: ${({ theme }) => theme.color.background06};
       padding: 24px;
-      box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
     }
     .click-here {
       ${mixins.flexbox("row", "cetner", "center")};

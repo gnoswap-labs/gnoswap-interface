@@ -11,6 +11,7 @@ import LaunchpadAboutProjectContainer from "./containers/launchpad-about-project
 import LaunchpadParticipateContainer from "./containers/launchpad-participate-container/LaunchpadParticipateContainer";
 import LaunchpadMyParticipationContainer from "./containers/launchpad-my-participation-container/LaunchpadMyParticipationContainer";
 import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
+import Footer from "@components/common/footer/Footer";
 
 const LaunchpadDetail: React.FC = () => {
   const { isLoading } = useLoading();
@@ -42,6 +43,7 @@ const LaunchpadDetail: React.FC = () => {
       participate={<LaunchpadParticipateContainer />}
       myParticipation={<LaunchpadMyParticipationContainer />}
       clickHere={<LaunchpadDetailClickHereContainer />}
+      footer={<Footer />}
     />
   );
 };
