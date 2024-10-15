@@ -63,7 +63,7 @@ export interface LaunchpadPoolResponse {
 
   status: "NONE" | "UPCOMING" | "ENDED" | "ONGOING";
 
-  poolTier: "TIER30" | "TIER90" | "TIER180";
+  poolTier: "30" | "90" | "180";
 
   allocation: number;
 
@@ -99,7 +99,7 @@ export interface LaunchpadParticipationResponse {
 
   depositId: string;
 
-  poolTier: "TIER30" | "TIER90" | "TIER180";
+  poolTier: "30" | "90" | "180";
 
   status: string;
 
