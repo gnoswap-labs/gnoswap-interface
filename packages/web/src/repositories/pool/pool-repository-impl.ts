@@ -1,38 +1,15 @@
-import BigNumber from "bignumber.js";
 import { NetworkClient } from "@common/clients/network-client";
-import { PoolResponse, PoolListResponse, PoolRepository } from ".";
 import { WalletClient } from "@common/clients/wallet-client";
-import { CreatePoolRequest } from "./request/create-pool-request";
-import { TokenModel } from "@models/token/token-model";
-import {
-  SwapFeeTierInfoMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
 import {
   SendTransactionErrorResponse,
   SendTransactionResponse,
   SendTransactionSuccessResponse,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
-import { CommonError } from "@common/errors";
-import { GnoProvider } from "@gnolang/gno-js-client";
 import {
-  evaluateExpressionToNumber,
-  evaluateExpressionToObject,
-  makeABCIParams,
-} from "@utils/rpc-utils";
-import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
-import { PoolError } from "@common/errors/pool";
-import { PoolMapper } from "@models/pool/mapper/pool-mapper";
-import { PoolRPCResponse } from "./response/pool-rpc-response";
-import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
-import { AddLiquidityRequest } from "./request/add-liquidity-request";
-import { priceToTick } from "@utils/swap-utils";
-import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
-import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
+  makeApproveMessage,
+  TransactionMessage,
+} from "@common/clients/wallet-client/transaction-messages";
 import {
   makeCreateIncentiveMessage,
   makeRemoveIncentiveMessage,
@@ -43,6 +20,52 @@ import {
   makePositionMintMessage,
   makePositionMintWithStakeMessage,
 } from "@common/clients/wallet-client/transaction-messages/position";
+import { CommonError } from "@common/errors";
+import { PoolError } from "@common/errors/pool";
+import { GNOT_TOKEN } from "@common/values/token-constant";
+import {
+  GNS_TOKEN_PATH,
+  PACKAGE_POOL_ADDRESS,
+  PACKAGE_POOL_PATH,
+  PACKAGE_POSITION_ADDRESS,
+  PACKAGE_STAKER_PATH,
+  WRAPPED_GNOT_PATH,
+} from "@constants/environment.constant";
+import {
+  SwapFeeTierInfoMap,
+  SwapFeeTierType,
+} from "@constants/option.constant";
+import { GnoProvider } from "@gnolang/gno-js-client";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
+import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
+import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
+import { PoolStakingModel } from "@models/pool/pool-staking";
+import { TokenModel } from "@models/token/token-model";
+import {
+  checkGnotPath,
+  isGNOTPath,
+  isWrapped,
+  toNativePath,
+} from "@utils/common";
+import { tickToSqrtPriceX96 } from "@utils/math.utils";
+import { isOrderedTokenPaths } from "@utils/pool-utils";
+import {
+  evaluateExpressionToNumber,
+  evaluateExpressionToObject,
+  makeABCIParams,
+} from "@utils/rpc-utils";
+import { priceToTick } from "@utils/swap-utils";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import BigNumber from "bignumber.js";
+import { PoolListResponse, PoolRepository, PoolResponse } from ".";
+import { AddLiquidityRequest } from "./request/add-liquidity-request";
+import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
+import { CreatePoolRequest } from "./request/create-pool-request";
+import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import {
   AddLiquidityFailedResponse,
   AddLiquiditySuccessResponse,
@@ -51,30 +74,8 @@ import {
   CreatePoolFailedResponse,
   CreatePoolSuccessResponse,
 } from "./response/create-pool-response";
-import {
-  makeApproveMessage,
-  TransactionMessage,
-} from "@common/clients/wallet-client/transaction-messages";
-import {
-  PACKAGE_POOL_ADDRESS,
-  PACKAGE_POOL_PATH,
-  GNS_TOKEN_PATH,
-  PACKAGE_POSITION_ADDRESS,
-  WRAPPED_GNOT_PATH,
-  PACKAGE_STAKER_PATH,
-} from "@constants/environment.constant";
-import { tickToSqrtPriceX96 } from "@utils/math.utils";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
-import {
-  checkGnotPath,
-  isGNOTPath,
-  isWrapped,
-  toNativePath,
-} from "@utils/common";
-import { GNOT_TOKEN } from "@common/values/token-constant";
-import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolRPCResponse } from "./response/pool-rpc-response";
 import { PoolStakingResponse } from "./response/pool-staking-response";
-import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
 
 const POOL_PATH = PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
@@ -683,13 +684,32 @@ export class PoolRepositoryImpl implements PoolRepository {
     tokenA: TokenModel,
     tokenB: TokenModel,
     feeTier: SwapFeeTierType,
-    startPrice: string,
+    startPriceStr: string,
     caller: string,
   ) {
     const tokenAPath = tokenA.wrappedPath || tokenA.path;
     const tokenBPath = tokenB.wrappedPath || tokenB.path;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-    const startPriceSqrt = tickToSqrtPriceX96(priceToTick(Number(startPrice)));
+    const startPrice = BigNumber(startPriceStr).toNumber();
+
+    /**
+     * If the token path pairs are out of order, adjust the price and token order.
+     */
+    const isOrdered = isOrderedTokenPaths(tokenAPath, tokenBPath);
+    if (!isOrdered) {
+      const reverseStartPriceSqrt =
+        startPrice !== 0 ? tickToSqrtPriceX96(priceToTick(1 / startPrice)) : 0;
+
+      return {
+        caller,
+        send: "",
+        pkg_path: POOL_PATH,
+        func: "CreatePool",
+        args: [tokenBPath, tokenAPath, fee, reverseStartPriceSqrt.toString()],
+      };
+    }
+
+    const startPriceSqrt = tickToSqrtPriceX96(priceToTick(startPrice));
 
     return {
       caller,

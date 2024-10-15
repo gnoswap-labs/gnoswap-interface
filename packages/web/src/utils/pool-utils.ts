@@ -4,8 +4,8 @@ import {
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { tickToPriceStr } from "./swap-utils";
 import { TokenModel } from "@models/token/token-model";
+import { tickToPriceStr } from "./swap-utils";
 
 const maxTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(
   range => range.maxTick,
@@ -55,4 +55,11 @@ export function toMinPriceStr(tick: number) {
 
 export function checkPoolStakingRewards(type?: INCENTIVE_TYPE) {
   return ["INCENTIVIZED", "EXTERNAL"].includes(type || "");
+}
+
+export function isOrderedTokenPaths(
+  tokenAPath: string,
+  tokenBPath: string,
+): boolean {
+  return [tokenAPath, tokenBPath].sort()?.[0] === tokenAPath;
 }
