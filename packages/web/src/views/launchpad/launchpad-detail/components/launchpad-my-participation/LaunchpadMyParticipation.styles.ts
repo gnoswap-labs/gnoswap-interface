@@ -93,9 +93,25 @@ export const MyParticipationWrapper = styled.div`
     color: ${({ theme }) => theme.color.text05};
     font-size: 12px;
     font-weight: 400;
-    button {
+    cursor: pointer;
+    .title {
       ${mixins.flexbox("row", "center", "center")};
       gap: 4px;
+      .icon-wrapper {
+        ${mixins.flexbox("row", "center", "center")};
+        width: 16px;
+        height: 16px;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+      &:hover {
+        color: ${({ theme }) => theme.color.text03};
+
+        * {
+          fill: ${({ theme }) => theme.color.icon07};
+        }
+      }
     }
   }
 `;

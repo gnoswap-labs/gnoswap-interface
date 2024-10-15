@@ -6,12 +6,16 @@ import { MyParticipationWrapper } from "./LaunchpadMyParticipation.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { Divider } from "@components/common/divider/divider";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
+import IconArrowUp from "@components/common/icons/IconArrowUp";
 
 const LaunchpadMyParticipation = () => {
+  const [openedSelector, setOpenedSelector] = React.useState(false);
+
   const {
     openLaunchpadClaimAllAction,
     openLaunchpadWaitingConfirmationAction,
   } = useLaunchpadHandler();
+
   return (
     <MyParticipationWrapper>
       <div className="my-participation-header">
@@ -40,30 +44,41 @@ const LaunchpadMyParticipation = () => {
             <div className="participation-box-data-key">Claimable</div>
             <div className="participation-box-data-value">123</div>
           </div>
-          <div className="participation-box-data">
-            <div className="participation-box-data-key">Claimable Date</div>
-            <div className="participation-box-data-value">123</div>
-          </div>
-          <div className="participation-box-data">
-            <div className="participation-box-data-key">Claimed</div>
-            <div className="participation-box-data-value">123</div>
-          </div>
-          <div className="participation-box-data">
-            <div className="participation-box-data-key">End Date</div>
-            <div className="participation-box-data-value">123</div>
-          </div>
-        </div>
-
-        <div className="participation-box-button-wrapper">
-          <ClaimButton openModal={openLaunchpadWaitingConfirmationAction} />
+          {openedSelector && (
+            <>
+              <div className="participation-box-data">
+                <div className="participation-box-data-key">Claimable Date</div>
+                <div className="participation-box-data-value">123</div>
+              </div>
+              <div className="participation-box-data">
+                <div className="participation-box-data-key">Claimed</div>
+                <div className="participation-box-data-value">123</div>
+              </div>
+              <div className="participation-box-data">
+                <div className="participation-box-data-key">End Date</div>
+                <div className="participation-box-data-value">123</div>
+              </div>
+              <div className="participation-box-button-wrapper">
+                <ClaimButton
+                  openModal={openLaunchpadWaitingConfirmationAction}
+                />
+              </div>
+            </>
+          )}
         </div>
 
         <Divider />
 
-        <div className="box-accordion-button-wrapper">
-          <button>
-            Details <IconArrowDown fill="#90A2C0" />
-          </button>
+        <div
+          className="box-accordion-button-wrapper"
+          onClick={() => setOpenedSelector(prev => !prev)}
+        >
+          <div className="title">
+            <div>Details</div>
+            <div className="icon-wrapper">
+              {openedSelector ? <IconArrowUp /> : <IconArrowDown />}
+            </div>
+          </div>
         </div>
       </div>
     </MyParticipationWrapper>
