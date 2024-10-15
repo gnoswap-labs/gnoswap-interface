@@ -25,10 +25,14 @@ export const ActiveProjectCardDataWrapper = styled.div`
     font-weight: 400;
     padding: 2px 6px;
     border-radius: 4px;
-    border: 1px solid var(--Dark-Border-Gray400-Border-3, #596782);
-    background: var(
-      --global-opacity-gray-600-opacity-05,
-      rgba(20, 26, 41, 0.5)
-    );
+    border: 1px solid
+      ${({ theme }) =>
+        theme.themeKey === "dark"
+          ? theme.color.border03
+          : theme.color.border01};
+    background: ${({ theme }) =>
+      theme.themeKey === "dark"
+        ? "rgba(20, 26, 41, 0.50)"
+        : theme.color.background11};
   }
 `;

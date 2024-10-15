@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import mixins from "@styles/mixins";
 
 import { PROJECT_STATUS_TYPE } from "@common/values";
@@ -16,17 +15,12 @@ export const ActiveProjectCardWrapper = styled.div<ActiveProjectCardWrapperProps
   border-radius: 8px;
   padding: 36px;
   border: 1px solid ${({ theme }) => theme.color.border02};
-  ${({ type }) =>
-    type === PROJECT_STATUS_TYPE.UPCOMING
-      ? css`
-          cursor: default;
-          pointer-events: none;
-        `
-      : css`
-          cursor: pointer;
-          &:hover {
-            border: 1px solid var(--border-gradient, #869dff);
-            background: var(--Global-Gray-Gray600, #141a29);
-          }
-        `}
+  cursor: pointer;
+  &:hover {
+    border: 1px solid var(--border-gradient, #869dff);
+    background: ${({ theme }) =>
+      theme.themeKey === "dark"
+        ? theme.color.background06
+        : theme.color.hover01};
+  }
 `;

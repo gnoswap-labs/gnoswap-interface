@@ -33,7 +33,7 @@ const LaunchpadActiveProjectCardData: React.FC<
             const aprStr = poolDetail.apr ? (
               <>
                 {Number(poolDetail.apr) > 100 && <IconStar size={18} />}
-                {formatRate(poolDetail.apr)}
+                {formatRate(poolDetail.apr)} APR
               </>
             ) : (
               "-"
@@ -41,7 +41,7 @@ const LaunchpadActiveProjectCardData: React.FC<
             return (
               <div className="data-box" key={poolDetail.id}>
                 <span className="data-title">Pool {idx + 1}</span>
-                <span className="data">{aprStr} APR</span>
+                <span className="data">{aprStr}</span>
                 <span className="badge">
                   {getTierDuration(poolDetail.poolTier)}
                 </span>
