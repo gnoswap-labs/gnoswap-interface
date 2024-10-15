@@ -14,7 +14,7 @@ import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useTranslation } from "react-i18next";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
-import { useLaunchpadDepositModal } from "./use-launchpad-modal";
+import { useLaunchpadModal } from "./use-launchpad-modal";
 
 type DepositButtonStateType = "WALLET_LOGIN" | "SWITCH_NETWORK" | "DEPOSIT";
 
@@ -25,8 +25,11 @@ export const useLaunchpadHandler = () => {
     isSwitchNetwork,
     switchNetwork,
   } = useWallet();
-  const { openLaunchpadDepositModal, openLaunchpadClaimAllModal } =
-    useLaunchpadDepositModal();
+  const {
+    openLaunchpadDepositModal,
+    openLaunchpadClaimAllModal,
+    openLaunchpadWaitingConfirmationModal,
+  } = useLaunchpadModal();
   const { launchpadRepository } = useGnoswapContext();
   const { data: blockHeight } = useGetLastedBlockHeight();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
@@ -253,6 +256,10 @@ export const useLaunchpadHandler = () => {
     openLaunchpadClaimAllModal();
   }, [openLaunchpadClaimAllModal]);
 
+  const openLaunchpadWaitingConfirmationAction = useCallback(() => {
+    openLaunchpadWaitingConfirmationModal();
+  }, [openLaunchpadWaitingConfirmationModal]);
+
   return {
     deposit,
     claim,
@@ -265,5 +272,6 @@ export const useLaunchpadHandler = () => {
     switchNetwork,
     openLaunchpadDepositAction,
     openLaunchpadClaimAllAction,
+    openLaunchpadWaitingConfirmationAction,
   };
 };

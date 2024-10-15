@@ -8,15 +8,16 @@ import { Divider } from "@components/common/divider/divider";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 
 const LaunchpadMyParticipation = () => {
-  const { openLaunchpadClaimAllAction } = useLaunchpadHandler();
+  const {
+    openLaunchpadClaimAllAction,
+    openLaunchpadWaitingConfirmationAction,
+  } = useLaunchpadHandler();
   return (
     <MyParticipationWrapper>
       <div className="my-participation-header">
         <h3 className="my-participation-title">My Participation</h3>
         <div className="claim-all-button-wrapper">
-          <ClaimAllButton
-            openLaunchpadClaimAllAction={openLaunchpadClaimAllAction}
-          />
+          <ClaimAllButton openModal={openLaunchpadClaimAllAction} />
         </div>
       </div>
 
@@ -54,7 +55,7 @@ const LaunchpadMyParticipation = () => {
         </div>
 
         <div className="participation-box-button-wrapper">
-          <ClaimButton />
+          <ClaimButton openModal={openLaunchpadWaitingConfirmationAction} />
         </div>
 
         <Divider />
@@ -69,8 +70,8 @@ const LaunchpadMyParticipation = () => {
   );
 };
 
-interface ClaimAllButtonProps {
-  openLaunchpadClaimAllAction: () => void;
+interface ButtonProps {
+  openModal: () => void;
 }
 
 const claimDefaultStyle = {
@@ -78,20 +79,14 @@ const claimDefaultStyle = {
   hierarchy: ButtonHierarchy.Primary,
 };
 
-const ClaimAllButton: React.FC<ClaimAllButtonProps> = ({
-  openLaunchpadClaimAllAction,
-}) => {
+const ClaimAllButton: React.FC<ButtonProps> = ({ openModal }) => {
   return (
-    <Button
-      text="Claim All"
-      style={claimDefaultStyle}
-      onClick={openLaunchpadClaimAllAction}
-    />
+    <Button text="Claim All" style={claimDefaultStyle} onClick={openModal} />
   );
 };
 
-const ClaimButton = () => {
-  return <Button text="Claim" style={claimDefaultStyle} />;
+const ClaimButton: React.FC<ButtonProps> = ({ openModal }) => {
+  return <Button text="Claim" style={claimDefaultStyle} onClick={openModal} />;
 };
 
 export default LaunchpadMyParticipation;
