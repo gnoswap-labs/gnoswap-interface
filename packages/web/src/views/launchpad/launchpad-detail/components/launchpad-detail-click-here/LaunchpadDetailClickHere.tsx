@@ -1,14 +1,21 @@
-import IconArrowRight from "@components/common/icons/IconArrowRight";
 import React from "react";
-import { DetailClickHereWrapper } from "./LaunchpadDetailClickHere.styles";
+import Link from "next/link";
+
+import IconArrowRight from "@components/common/icons/IconArrowRight";
+import {
+  DetailClickHereWrapper,
+  LinkButton,
+} from "./LaunchpadDetailClickHere.styles";
 
 const LaunchpadDetailClickHere = () => {
   return (
     <DetailClickHereWrapper>
-      <div className="text">Swap GNS to participate in the launchpad.</div>
-      <button>
-        Click here <IconArrowRight />
-      </button>
+      <LinkButton>
+        <span>Swap GNS to participate in the launchpad.</span>
+        <Link href="/">
+          Click here <IconArrowRight />
+        </Link>
+      </LinkButton>
     </DetailClickHereWrapper>
   );
 };
