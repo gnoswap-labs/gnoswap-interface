@@ -7,14 +7,19 @@ import {
   ActiveProjectsCardListWrapper,
   ActiveProjectsGridWrapper,
 } from "./LaunchpadActiveProjectsCardList.styles";
+import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 
 interface LaunchpadActiveProjectsCardListProps {
   activeProjectList: LaunchpadProjectResponse[];
+  showLoadMore: boolean;
+  loadMore: boolean;
+
+  onClickLoadMore: () => void;
 }
 
 const LaunchpadActiveProjectsCardList: React.FC<
   LaunchpadActiveProjectsCardListProps
-> = ({ activeProjectList }) => {
+> = ({ activeProjectList, showLoadMore, loadMore, onClickLoadMore }) => {
   return (
     <ActiveProjectsCardListWrapper>
       <ActiveProjectsGridWrapper>
@@ -33,6 +38,9 @@ const LaunchpadActiveProjectsCardList: React.FC<
           </>
         )}
       </ActiveProjectsGridWrapper>
+      {showLoadMore && (
+        <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
+      )}
     </ActiveProjectsCardListWrapper>
   );
 };

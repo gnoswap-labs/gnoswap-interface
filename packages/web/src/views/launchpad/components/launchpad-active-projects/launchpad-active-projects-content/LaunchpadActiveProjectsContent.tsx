@@ -6,16 +6,23 @@ import LaunchpadActiveProjectsCardList from "./launchpad-active-projects-card-li
 
 export interface LaunchpadActiveProjectsContentProps {
   activeProjectList: LaunchpadProjectResponse[];
+  showLoadMore: boolean;
+  loadMore: boolean;
+
+  onClickLoadMore: () => void;
 }
 
 const LaunchpadActiveProjectsContent: React.FC<
   LaunchpadActiveProjectsContentProps
-> = ({ activeProjectList }) => {
+> = ({ activeProjectList, showLoadMore, loadMore, onClickLoadMore }) => {
   return (
     <>
       {activeProjectList.length > 0 ? (
         <LaunchpadActiveProjectsCardList
           activeProjectList={activeProjectList}
+          showLoadMore={showLoadMore}
+          loadMore={loadMore}
+          onClickLoadMore={onClickLoadMore}
         />
       ) : (
         <></>

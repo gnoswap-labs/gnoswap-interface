@@ -5,7 +5,7 @@ import {
 } from "./LaunchpadActiveProjectsHeader.styles";
 
 export interface LaunchpadActiveProjectsHeaderProps {
-  count: number;
+  count: number | "-";
 }
 
 const LaunchpadActiveProjectsHeader: React.FC<

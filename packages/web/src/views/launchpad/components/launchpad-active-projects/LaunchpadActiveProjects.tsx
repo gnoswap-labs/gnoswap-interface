@@ -8,16 +8,28 @@ import LaunchpadActiveProjectsContent from "./launchpad-active-projects-content/
 
 export interface LaunchpadActiveProjectsProps {
   activeProjectList: LaunchpadProjectResponse[];
+  showLoadMore: boolean;
+  loadMore: boolean;
+  activeProjectListLength: number;
+
+  onClickLoadMore: () => void;
 }
 
 const LaunchpadActiveProjects: React.FC<LaunchpadActiveProjectsProps> = ({
   activeProjectList,
+  showLoadMore,
+  loadMore,
+  activeProjectListLength,
+  onClickLoadMore,
 }) => {
   return (
     <LaunchpadActiveProjectsWrapper>
-      <LaunchpadActiveProjectsHeader count={activeProjectList.length || 0} />
+      <LaunchpadActiveProjectsHeader count={activeProjectListLength || "-"} />
       <LaunchpadActiveProjectsContent
         activeProjectList={activeProjectList || []}
+        showLoadMore={showLoadMore}
+        loadMore={loadMore}
+        onClickLoadMore={onClickLoadMore}
       />
     </LaunchpadActiveProjectsWrapper>
   );
