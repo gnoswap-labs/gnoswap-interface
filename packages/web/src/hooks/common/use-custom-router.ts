@@ -56,6 +56,10 @@ const useCustomRouter = () => {
     return getParameter(QUERY_PARAMETER["POSITION_ID"]);
   }
 
+  function getProjectPath(): string | null {
+    return getParameter(QUERY_PARAMETER["PROJECT_PATH"]);
+  }
+
   function pushByParams(
     url: string,
     params?: QueryParameter,
@@ -110,6 +114,7 @@ const useCustomRouter = () => {
     getTokenPath,
     getPoolPath,
     getPositionId,
+    getProjectPath,
     movePage,
     movePageWithTokenPath,
     movePageWithPoolPath,

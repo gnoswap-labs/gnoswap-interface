@@ -20,25 +20,7 @@ const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
 
       <section className="main-contents">
         <div className="contents">
-          <div className="description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-            nisi orci, ultrices sit amet mi eget, efficitur elementum tellus.
-            Integer augue purus, rutrum eu pretium sit amet, varius in quam. In
-            auctor gravida pretium. Maecenas est ante, pulvinar id accumsan
-            eget, aliquam ac turpis. Donec vulputate nunc tellus. In sit amet
-            mattis nisl. Mauris libero quam, hendrerit dapibus scelerisque eu,
-            fringilla sit amet sapien. Proin ut semper risus. Vivamus fringilla
-            eget lectus ut faucibus. Proin vitae mollis massa. Sed bibendum
-            tortor eget aliquam commodo. Etiam et eleifend augue. Donec molestie
-            placerat elit. <br />
-            <br />
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-            nisi orci, ultrices sit amet mi eget, efficitur elementum tellus.
-            Integer augue purus, rutrum eu pretium sit amet, varius in quam. In
-            auctor gravida pretium. Maecenas est ante, pulvinar id accumsan
-            eget, aliquam ac turpis. Donec vulputate nunc tellus. In sit amet
-            mattis nisl. Mauris libero quam, hendrerit dapibus scelerisque eu...
-          </div>
+          <div className="description"></div>
           {/* <div className="show-more">
             show more <IconArrowDown fill="#596782" />
           </div> */}

@@ -1,18 +1,11 @@
-/**
- * @yjin
- * Todo: Delete This code.
- * Change the image tag to a component.
- */
-/* eslint-disable @next/next/no-img-element */
 import React from "react";
-
-import IconTimer from "@components/common/icons/IconTimer";
 
 import { LaunchpadDetailLayoutWrapper } from "./LaunchpadDetailLayout.styles";
 
 interface LaunchpadDetailLayoutProps {
   header: React.ReactNode;
   breadcrumbs: React.ReactNode;
+  contentsHeader: React.ReactNode;
   poolList: React.ReactNode;
   projectSummary: React.ReactNode;
   aboutProject: React.ReactNode;
@@ -25,6 +18,7 @@ interface LaunchpadDetailLayoutProps {
 const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
   header,
   breadcrumbs,
+  contentsHeader,
   poolList,
   projectSummary,
   aboutProject,
@@ -45,16 +39,7 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
         </section>
 
         <section className="contents-section">
-          <div className="contents-header">
-            <div className="symbol-icon">
-              <img src="/gns.svg" alt="token symbol image" />
-            </div>
-            <div className="project-name">GnoSwap Protocol</div>
-            <div className="project-status">
-              <IconTimer type="ENDED" /> Ended
-            </div>
-          </div>
-
+          {contentsHeader}
           <div className="main-container">
             <div className="main-section">
               <div className="pool-list">{poolList}</div>
