@@ -15,12 +15,31 @@ import LaunchpadParticipateContainer from "./containers/launchpad-participate-co
 import LaunchpadMyParticipationContainer from "./containers/launchpad-my-participation-container/LaunchpadMyParticipationContainer";
 import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
 import Footer from "@components/common/footer/Footer";
+import { LaunchpadProjectDetailsModel } from "@models/launchpad";
 
 export interface ProjectSummaryDataModel {
   totalAllocation: number;
   totalParticipants: number;
   totalDeposited: number;
   totalDistributed: number;
+}
+type InputObject = {
+  [K in keyof LaunchpadProjectDetailsModel]: LaunchpadProjectDetailsModel[K];
+};
+
+interface OutputObject {
+  [key: string]: string;
+}
+
+export interface ProjectLinksObject {
+  [key: string]: string;
+}
+
+export interface ProjectDescriptionDataModel {
+  description: string;
+  descriptionDetails: string;
+  realmPath: string;
+  links: ProjectLinksObject;
 }
 
 const LaunchpadDetail: React.FC = () => {
@@ -73,6 +92,37 @@ const LaunchpadDetail: React.FC = () => {
     totalDistributed: 0,
   };
 
+  /**
+   * @dev Launchpad Project Description(about) section data
+   */
+  const [linksInfo, setLinksInfo] = React.useState({});
+
+  function transformUrls(input: InputObject): OutputObject {
+    const output: OutputObject = {};
+
+    for (const [key, value] of Object.entries(input)) {
+      if (key.endsWith("Url") && typeof value === "string") {
+        const newKey = key.slice(0, -3);
+        output[newKey] = value.trim();
+      }
+    }
+
+    return output;
+  }
+
+  React.useEffect(() => {
+    if (data) {
+      setLinksInfo(() => transformUrls(data));
+    }
+  }, [data]);
+
+  const projectDescriptionData: ProjectDescriptionDataModel = {
+    description: data?.description || "-",
+    descriptionDetails: data?.descriptionDetails || "-",
+    realmPath: projectPath || "-",
+    links: linksInfo,
+  };
+
   return (
     <LaunchpadDetailLayout
       header={<HeaderContainer />}
@@ -90,7 +140,9 @@ const LaunchpadDetail: React.FC = () => {
       projectSummary={
         <LaunchpadProjectSummaryContainer data={projectSummaryData} />
       }
-      aboutProject={<LaunchpadAboutProjectContainer />}
+      aboutProject={
+        <LaunchpadAboutProjectContainer data={projectDescriptionData} />
+      }
       participate={<LaunchpadParticipateContainer />}
       myParticipation={<LaunchpadMyParticipationContainer />}
       clickHere={<LaunchpadDetailClickHereContainer />}
