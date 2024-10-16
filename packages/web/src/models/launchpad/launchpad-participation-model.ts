@@ -9,7 +9,7 @@ export interface LaunchpadParticipationModel {
 
   depositId: string;
 
-  poolTier: "30" | "90" | "180";
+  poolTier: "TIER30" | "TIER90" | "TIER180";
 
   status: string;
 

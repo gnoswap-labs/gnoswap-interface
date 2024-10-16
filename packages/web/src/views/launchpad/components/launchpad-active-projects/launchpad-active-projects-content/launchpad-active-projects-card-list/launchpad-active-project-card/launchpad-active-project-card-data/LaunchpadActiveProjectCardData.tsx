@@ -6,7 +6,7 @@ import { ActiveProjectCardDataWrapper } from "./LaunchpadActiveProjectCardData.s
 import { formatRate } from "@utils/new-number-utils";
 import IconStar from "@components/common/icons/IconStar";
 
-type TierType = "30" | "90" | "180";
+type TierType = "TIER30" | "TIER90" | "TIER180";
 interface LaunchpadActiveProjectCardDataProps {
   pools: LaunchpadActiveProjectPool[];
 }
@@ -16,11 +16,11 @@ const LaunchpadActiveProjectCardData: React.FC<
 > = ({ pools }) => {
   const getTierDuration = (tier: TierType) => {
     switch (tier) {
-      case "30":
+      case "TIER30":
         return "1 Month";
-      case "90":
+      case "TIER90":
         return "3 Months";
-      case "180":
+      case "TIER180":
         return "6 Months";
     }
   };
