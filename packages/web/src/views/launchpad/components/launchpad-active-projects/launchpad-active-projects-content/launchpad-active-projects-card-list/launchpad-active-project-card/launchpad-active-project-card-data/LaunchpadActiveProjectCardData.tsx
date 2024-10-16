@@ -7,6 +7,7 @@ import { formatRate } from "@utils/new-number-utils";
 import IconStar from "@components/common/icons/IconStar";
 
 type TierType = "TIER30" | "TIER90" | "TIER180";
+
 interface LaunchpadActiveProjectCardDataProps {
   pools: LaunchpadActiveProjectPool[];
 }

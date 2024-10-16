@@ -1,20 +1,29 @@
+import React from "react";
+import { useAtomValue } from "jotai";
+
 import { Divider } from "@components/common/divider/divider";
 import { LaunchpadPoolModel } from "@models/launchpad";
-import React from "react";
-
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
+import { LaunchpadState } from "@states/index";
 
 interface LaunchpadPoolListCardProps {
   data: LaunchpadPoolModel;
   idx: number;
+
+  selectProjectPool: (poolId: number) => void;
 }
 
 const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
   data,
   idx,
+  selectProjectPool,
 }) => {
+  const currentPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
   return (
-    <CardWrapper>
+    <CardWrapper
+      className={currentPoolId === data.id ? "active" : ""}
+      onClick={() => selectProjectPool(data.id)}
+    >
       <div className="card-header">
         <span className="title">Pool {idx}</span>
         <span className="chip">1 Months</span>

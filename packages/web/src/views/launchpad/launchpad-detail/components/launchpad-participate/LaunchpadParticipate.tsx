@@ -1,21 +1,28 @@
 import React from "react";
+import BigNumber from "bignumber.js";
 
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { isAmount } from "@common/utils/data-check-util";
+import { LaunchpadPoolModel } from "@models/launchpad";
+import { GNS_TOKEN } from "@common/values/token-constant";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
-import { GNS_TOKEN } from "@common/values/token-constant";
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
 import { convertToKMB } from "@utils/stake-position-utils";
-import BigNumber from "bignumber.js";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
-const LaunchpadParticipate: React.FC = () => {
+interface LaunchpadParticipateProps {
+  poolInfo?: LaunchpadPoolModel;
+}
+
+const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
+  poolInfo,
+}) => {
   const {
     connectedWallet,
     depositButtonText,
@@ -41,9 +48,8 @@ const LaunchpadParticipate: React.FC = () => {
 
   const currentGnsBalance = React.useMemo(
     () => displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN?.path ?? ""] ?? null,
-    [displayBalanceMap, DEFAULT_DEPOSIT_TOKEN?.path],
+    [displayBalanceMap],
   );
-
   const estimatePrice = React.useMemo(
     () =>
       DEFAULT_DEPOSIT_TOKEN?.wrappedPath &&
@@ -63,7 +69,7 @@ const LaunchpadParticipate: React.FC = () => {
             },
           )
         : "-",
-    [participateAmount, tokenPrices, DEFAULT_DEPOSIT_TOKEN?.wrappedPath],
+    [participateAmount, tokenPrices],
   );
 
   return (
@@ -100,7 +106,9 @@ const LaunchpadParticipate: React.FC = () => {
       <div className="participate-info-wrapper">
         <div className="participate-info">
           <div className="participate-info-key">Pool Tier</div>
-          <div className="participate-info-value">-</div>
+          <div className="participate-info-value">
+            {poolInfo?.poolTier || "-"}
+          </div>
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
@@ -112,11 +120,13 @@ const LaunchpadParticipate: React.FC = () => {
           <div className="participate-info-key">
             End Date <IconInfo fill="#596782" size={16} />
           </div>
-          <div className="participate-info-value">-</div>
+          <div className="participate-info-value">{poolInfo?.endTime}</div>
         </div>
         <div className="participate-info">
           <div className="participate-info-key">Deposit Amount</div>
-          <div className="participate-info-value">-</div>
+          <div className="participate-info-value">
+            {participateAmount || "-"}
+          </div>
         </div>
       </div>
 

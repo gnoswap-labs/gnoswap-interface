@@ -1,4 +1,5 @@
 import React from "react";
+import { useAtom } from "jotai";
 
 import { useLoading } from "@hooks/common/use-loading";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -16,6 +17,7 @@ import LaunchpadMyParticipationContainer from "./containers/launchpad-my-partici
 import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
 import Footer from "@components/common/footer/Footer";
 import { LaunchpadProjectDetailsModel } from "@models/launchpad";
+import { LaunchpadState } from "@states/index";
 
 export interface ProjectSummaryDataModel {
   totalAllocation: number;
@@ -43,6 +45,9 @@ export interface ProjectDescriptionDataModel {
 }
 
 const LaunchpadDetail: React.FC = () => {
+  const [selectPoolId, setSelectPoolId] = useAtom(
+    LaunchpadState.selectLaunchpadPool,
+  );
   const router = useCustomRouter();
   const projectPath = router.getProjectPath();
   const { data } = useGetLaunchpadProjectDetails(projectPath);
@@ -123,6 +128,20 @@ const LaunchpadDetail: React.FC = () => {
     links: linksInfo,
   };
 
+  /**
+   * @dev
+   */
+  const selectProjectPool = React.useCallback(
+    (poolId: number) => {
+      setSelectPoolId(poolId);
+    },
+    [setSelectPoolId],
+  );
+
+  const currentSelectProjectPoolInfo = React.useMemo(() => {
+    return data?.pools.find(pool => pool.id === selectPoolId);
+  }, [selectPoolId, data?.pools]);
+
   return (
     <LaunchpadDetailLayout
       header={<HeaderContainer />}
@@ -136,7 +155,12 @@ const LaunchpadDetail: React.FC = () => {
       contentsHeader={
         <LaunchpadDetailContentsHeaderContainer data={contentsHeaderData} />
       }
-      poolList={<LaunchpadPoolListContainer pools={data?.pools || []} />}
+      poolList={
+        <LaunchpadPoolListContainer
+          pools={data?.pools || []}
+          selectProjectPool={selectProjectPool}
+        />
+      }
       projectSummary={
         <LaunchpadProjectSummaryContainer
           tokenSymbol={data?.rewardTokenSymbol || "-"}
@@ -146,7 +170,11 @@ const LaunchpadDetail: React.FC = () => {
       aboutProject={
         <LaunchpadAboutProjectContainer data={projectDescriptionData} />
       }
-      participate={<LaunchpadParticipateContainer />}
+      participate={
+        <LaunchpadParticipateContainer
+          poolInfo={currentSelectProjectPoolInfo}
+        />
+      }
       myParticipation={<LaunchpadMyParticipationContainer />}
       clickHere={<LaunchpadDetailClickHereContainer />}
       footer={<Footer />}
