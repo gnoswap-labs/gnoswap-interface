@@ -6,6 +6,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { isAmount } from "@common/utils/data-check-util";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";
+import { useLaunchpadDepositConfirmModal } from "../../hooks/use-launchpad-deposit-confirm-modal";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -18,10 +19,12 @@ const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
 interface LaunchpadParticipateProps {
   poolInfo?: LaunchpadPoolModel;
+  refetch: () => Promise<void>;
 }
 
 const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   poolInfo,
+  refetch,
 }) => {
   const {
     connectedWallet,
@@ -29,9 +32,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     openConnectWallet,
     isSwitchNetwork,
     switchNetwork,
-    openLaunchpadDepositAction,
   } = useLaunchpadHandler();
-
   const { tokenPrices, displayBalanceMap } = useTokenData();
 
   const [participateAmount, setParticipateAmount] = React.useState("");
@@ -45,6 +46,12 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     },
     [],
   );
+
+  const { openLaunchpadDepositModal } = useLaunchpadDepositConfirmModal({
+    participateAmount,
+    poolInfo,
+    refetch,
+  });
 
   const currentGnsBalance = React.useMemo(
     () => displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN?.path ?? ""] ?? null,
@@ -137,7 +144,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           text={depositButtonText}
           openConnectWallet={openConnectWallet}
           switchNetwork={switchNetwork}
-          openLaunchpadDepositAction={openLaunchpadDepositAction}
+          openLaunchpadDepositAction={openLaunchpadDepositModal}
         />
       </div>
     </LaunchpadParticipateWrapper>

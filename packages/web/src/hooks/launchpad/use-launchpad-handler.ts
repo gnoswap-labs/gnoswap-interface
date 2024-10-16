@@ -25,11 +25,8 @@ export const useLaunchpadHandler = () => {
     isSwitchNetwork,
     switchNetwork,
   } = useWallet();
-  const {
-    openLaunchpadDepositModal,
-    openLaunchpadClaimAllModal,
-    openLaunchpadWaitingConfirmationModal,
-  } = useLaunchpadModal();
+  const { openLaunchpadClaimAllModal, openLaunchpadWaitingConfirmationModal } =
+    useLaunchpadModal();
   const { launchpadRepository } = useGnoswapContext();
   const { data: blockHeight } = useGetLastedBlockHeight();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
@@ -248,10 +245,6 @@ export const useLaunchpadHandler = () => {
     openModal();
   }, [openModal]);
 
-  const openLaunchpadDepositAction = useCallback(() => {
-    openLaunchpadDepositModal();
-  }, [openLaunchpadDepositModal]);
-
   const openLaunchpadClaimAllAction = useCallback(() => {
     openLaunchpadClaimAllModal();
   }, [openLaunchpadClaimAllModal]);
@@ -270,7 +263,6 @@ export const useLaunchpadHandler = () => {
     openConnectWallet,
     isSwitchNetwork,
     switchNetwork,
-    openLaunchpadDepositAction,
     openLaunchpadClaimAllAction,
     openLaunchpadWaitingConfirmationAction,
   };

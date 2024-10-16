@@ -50,7 +50,11 @@ const LaunchpadDetail: React.FC = () => {
   );
   const router = useCustomRouter();
   const projectPath = router.getProjectPath();
-  const { data } = useGetLaunchpadProjectDetails(projectPath);
+  const { data, refetch: projectDetailRefetch } =
+    useGetLaunchpadProjectDetails(projectPath);
+  const refetchProjectDetail = async () => {
+    await projectDetailRefetch();
+  };
   const { isLoading } = useLoading();
   const breadcrumbsSteps = React.useMemo(() => {
     return [
@@ -173,6 +177,7 @@ const LaunchpadDetail: React.FC = () => {
       participate={
         <LaunchpadParticipateContainer
           poolInfo={currentSelectProjectPoolInfo}
+          refetch={refetchProjectDetail}
         />
       }
       myParticipation={<LaunchpadMyParticipationContainer />}

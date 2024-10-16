@@ -5,8 +5,28 @@ import IconClose from "@components/common/icons/IconCancel";
 import IconWarning from "../../icons/IconWarning";
 import IconOpenLink from "../../icons/IconOpenLink";
 import Button, { ButtonHierarchy } from "../../button/Button";
+import { LaunchpadPoolModel } from "@models/launchpad";
+import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 
-const LaunchpadDepositModal = () => {
+interface LaunchpadDepositModalProps {
+  depositAmount: string;
+  poolInfo?: LaunchpadPoolModel;
+  projectPath: string;
+
+  refetch: () => Promise<void>;
+}
+
+const LaunchpadDepositModal = ({
+  depositAmount,
+  poolInfo,
+  projectPath,
+  refetch,
+}: LaunchpadDepositModalProps) => {
+  const { deposit } = useLaunchpadHandler();
+
+  const confirm = React.useCallback(() => {
+    deposit(`${projectPath}:30`, depositAmount, refetch);
+  }, [projectPath, depositAmount, refetch]);
   return (
     <LaunchpadDepositModalWrapper>
       <div className="modal-body">
@@ -22,15 +42,15 @@ const LaunchpadDepositModal = () => {
             <div className="data-box">
               <div className="data-row">
                 <div className="key">Deposit Amount</div>
-                <div className="value">123</div>
+                <div className="value">{depositAmount}</div>
               </div>
               <div className="data-row">
                 <div className="key">Pool Tier</div>
-                <div className="value">123</div>
+                <div className="value">{poolInfo?.poolTier}</div>
               </div>
               <div className="data-row">
                 <div className="key">End Date</div>
-                <div className="value">123</div>
+                <div className="value">{poolInfo?.endTime}</div>
               </div>
             </div>
           </div>
@@ -39,7 +59,7 @@ const LaunchpadDepositModal = () => {
             <div className="data-box">
               <div className="data-row">
                 <div className="key">Rewards Token</div>
-                <div className="value">123</div>
+                <div className="value"></div>
               </div>
               <div className="data-row">
                 <div className="key">Network</div>
@@ -72,19 +92,19 @@ const LaunchpadDepositModal = () => {
           </div>
         </div>
         <div className="footer">
-          <ConfirmButton />
+          <ConfirmButton onClick={confirm} />
         </div>
       </div>
     </LaunchpadDepositModalWrapper>
   );
 };
 
-const ConfirmButton = () => {
+const ConfirmButton = ({ onClick }: { onClick: () => void }) => {
   const defaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,
   };
-  return <Button text="Confirm" style={defaultStyle} />;
+  return <Button text="Confirm" style={defaultStyle} onClick={onClick} />;
 };
 
 export default LaunchpadDepositModal;

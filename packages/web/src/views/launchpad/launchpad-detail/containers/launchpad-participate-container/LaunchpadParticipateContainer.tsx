@@ -5,12 +5,13 @@ import LaunchpadParticipate from "../../components/launchpad-participate/Launchp
 
 interface LaunchpadParticipateContainerProps {
   poolInfo?: LaunchpadPoolModel;
+  refetch: () => Promise<void>;
 }
 
 const LaunchpadParticipateContainer: React.FC<
   LaunchpadParticipateContainerProps
-> = ({ poolInfo }) => {
-  return <LaunchpadParticipate poolInfo={poolInfo} />;
+> = ({ poolInfo, refetch }) => {
+  return <LaunchpadParticipate poolInfo={poolInfo} refetch={refetch} />;
 };
 
 export default LaunchpadParticipateContainer;
