@@ -3,7 +3,11 @@ import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { makeTransactionMessage } from "@common/clients/wallet-client/transaction-messages";
 import { CommonError } from "@common/errors";
-import { PACKAGE_LAUNCHPAD_PATH } from "@constants/environment.constant";
+import {
+  GNS_TOKEN_PATH,
+  PACKAGE_LAUNCHPAD_ADDRESS,
+  PACKAGE_LAUNCHPAD_PATH,
+} from "@constants/environment.constant";
 import { makeQueryParameter } from "@utils/network.utils";
 import { LaunchpadRepository } from "./launchpad-repository";
 import { GetLaunchpadProjectsRequestParameters } from "./request";
@@ -103,9 +107,16 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
     const messages = [];
     messages.push(
       makeTransactionMessage({
+        packagePath: GNS_TOKEN_PATH,
+        send: "",
+        func: "Approve",
+        args: [PACKAGE_LAUNCHPAD_ADDRESS, gnsTokenAmount.toString()],
+        caller,
+      }),
+      makeTransactionMessage({
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
-        func: "CollectRewardByProjectId",
+        func: "DepositGns",
         args: [poolId, gnsTokenAmount.toString()],
         caller,
       }),
