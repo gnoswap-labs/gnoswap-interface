@@ -1,14 +1,17 @@
 import React from "react";
 
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { isAmount } from "@common/utils/data-check-util";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { GNS_TOKEN } from "@common/values/token-constant";
-
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
+import { convertToKMB } from "@utils/stake-position-utils";
+import BigNumber from "bignumber.js";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -22,13 +25,59 @@ const LaunchpadParticipate: React.FC = () => {
     openLaunchpadDepositAction,
   } = useLaunchpadHandler();
 
+  const { tokenPrices, displayBalanceMap } = useTokenData();
+
+  const [participateAmount, setParticipateAmount] = React.useState("");
+
+  const onChangeParticipateAmount = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+
+      if (value !== "" && !isAmount(value)) return;
+      setParticipateAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
+    },
+    [],
+  );
+
+  const currentGnsBalance = React.useMemo(
+    () => displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN?.path ?? ""] ?? null,
+    [displayBalanceMap, DEFAULT_DEPOSIT_TOKEN?.path],
+  );
+
+  const estimatePrice = React.useMemo(
+    () =>
+      DEFAULT_DEPOSIT_TOKEN?.wrappedPath &&
+      !!participateAmount &&
+      participateAmount !== "0"
+        ? "$" +
+          convertToKMB(
+            BigNumber(+participateAmount)
+              .multipliedBy(
+                Number(
+                  tokenPrices?.[DEFAULT_DEPOSIT_TOKEN?.wrappedPath]?.usd ?? "0",
+                ),
+              )
+              .toString(),
+            {
+              isIgnoreKFormat: true,
+            },
+          )
+        : "-",
+    [participateAmount, tokenPrices, DEFAULT_DEPOSIT_TOKEN?.wrappedPath],
+  );
+
   return (
     <LaunchpadParticipateWrapper>
       <div className="participate-header">Participate</div>
 
       <div className="participate-input-wrapper">
         <div className="participate-input-amount">
-          <input className="participate-amount-text" placeholder="0" />
+          <input
+            className="participate-amount-text"
+            placeholder="0"
+            value={participateAmount}
+            onChange={onChangeParticipateAmount}
+          />
           <div className="participate-token-selector">
             <SelectPairButton
               token={DEFAULT_DEPOSIT_TOKEN}
@@ -39,8 +88,10 @@ const LaunchpadParticipate: React.FC = () => {
         </div>
 
         <div className="participate-amount-info">
-          <span className="participate-price-text">-</span>
-          <span className="participate-balance-text">balance: -</span>
+          <span className="participate-price-text">{estimatePrice}</span>
+          <span className="participate-balance-text">
+            balance: {currentGnsBalance || "-"}
+          </span>
         </div>
       </div>
 
