@@ -65,7 +65,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    const encodedProjectId = encodeURI(projectId);
+    const encodedProjectId = encodeURIComponent(projectId);
 
     return this.networkClient
       .get<APIResponse<GetLaunchpadProjectDetailsResponse>>({
