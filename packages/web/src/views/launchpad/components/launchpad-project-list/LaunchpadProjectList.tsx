@@ -10,12 +10,15 @@ interface LaunchpadProjectListProps {
   breakpoint: DEVICE_TYPE;
   projects: LaunchpadProjectModel[];
   isFetched: boolean;
+
+  moveProjectDetail: (poolId: string) => void;
 }
 
 const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
   breakpoint,
   projects,
   isFetched,
+  moveProjectDetail,
 }) => {
   return (
     <ProjectListWrapper>
@@ -24,6 +27,7 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
         breakpoint={breakpoint}
         projects={projects}
         isFetched={isFetched}
+        moveProjectDetail={moveProjectDetail}
       />
     </ProjectListWrapper>
   );

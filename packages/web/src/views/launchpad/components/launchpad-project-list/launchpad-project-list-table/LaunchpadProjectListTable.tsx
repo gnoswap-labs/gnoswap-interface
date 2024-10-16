@@ -22,12 +22,15 @@ interface LaunchpadProjectListTableProps {
   breakpoint: DEVICE_TYPE;
   projects: LaunchpadProjectModel[];
   isFetched: boolean;
+
+  moveProjectDetail: (poolId: string) => void;
 }
 
 const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
   breakpoint,
   projects,
   isFetched,
+  moveProjectDetail,
 }) => {
   const isAlignLeft = (head: TABLE_HEAD) => {
     return head === TABLE_HEAD.PROJECT;
@@ -68,6 +71,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
               key={idx}
               breakpoint={breakpoint}
               project={project}
+              moveProjectDetail={moveProjectDetail}
             />
           ))}
       </div>

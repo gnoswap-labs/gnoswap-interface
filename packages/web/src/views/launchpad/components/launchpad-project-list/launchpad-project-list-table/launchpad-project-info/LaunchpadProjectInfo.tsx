@@ -16,13 +16,16 @@ import {
 interface LaunchpadProjectInfoProps {
   breakpoint: DEVICE_TYPE;
   project: LaunchpadProjectModel;
+
+  moveProjectDetail: (poolId: string) => void;
 }
 
 const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
   breakpoint,
   project,
+  moveProjectDetail,
 }) => {
-  const { status, name, pools } = project;
+  const { status, name, pools, projectId } = project;
 
   const highestAprPool = pools.reduce((max, current) => {
     if (!current.apr) return max;
@@ -73,7 +76,10 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
         <span>{highestAprPool?.depositAmount.toLocaleString() || 0}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[6].width}>
-        <div className="button-wrapper">
+        <div
+          className="button-wrapper"
+          onClick={() => moveProjectDetail(projectId)}
+        >
           <span>Swap</span>
           <span className="svg">
             <svg
