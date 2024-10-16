@@ -138,7 +138,10 @@ const LaunchpadDetail: React.FC = () => {
       }
       poolList={<LaunchpadPoolListContainer pools={data?.pools || []} />}
       projectSummary={
-        <LaunchpadProjectSummaryContainer data={projectSummaryData} />
+        <LaunchpadProjectSummaryContainer
+          tokenSymbol={data?.rewardTokenSymbol || "-"}
+          data={projectSummaryData}
+        />
       }
       aboutProject={
         <LaunchpadAboutProjectContainer data={projectDescriptionData} />

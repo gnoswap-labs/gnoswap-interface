@@ -5,12 +5,13 @@ import { ProjectSummaryDataModel } from "../../LaunchpadDetail";
 
 interface LaunchpadProjectSummaryContainerProps {
   data: ProjectSummaryDataModel;
+  tokenSymbol: string;
 }
 
 const LaunchpadProjectSummaryContainer: React.FC<
   LaunchpadProjectSummaryContainerProps
-> = ({ data }) => {
-  return <LaunchpadProjectSummary data={data} />;
+> = ({ data, tokenSymbol }) => {
+  return <LaunchpadProjectSummary data={data} tokenSymbol={tokenSymbol} />;
 };
 
 export default LaunchpadProjectSummaryContainer;

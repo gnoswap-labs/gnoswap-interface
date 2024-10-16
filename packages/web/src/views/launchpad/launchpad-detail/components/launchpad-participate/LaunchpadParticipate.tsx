@@ -6,11 +6,11 @@ import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
-import { GNOT_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN } from "@common/values/token-constant";
 
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
 
-const DEFAULT_DEPOSIT_GNOT = GNOT_TOKEN;
+const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
 const LaunchpadParticipate: React.FC = () => {
   const {
@@ -21,6 +21,7 @@ const LaunchpadParticipate: React.FC = () => {
     switchNetwork,
     openLaunchpadDepositAction,
   } = useLaunchpadHandler();
+
   return (
     <LaunchpadParticipateWrapper>
       <div className="participate-header">Participate</div>
@@ -30,7 +31,7 @@ const LaunchpadParticipate: React.FC = () => {
           <input className="participate-amount-text" placeholder="0" />
           <div className="participate-token-selector">
             <SelectPairButton
-              token={DEFAULT_DEPOSIT_GNOT}
+              token={DEFAULT_DEPOSIT_TOKEN}
               isHiddenArrow
               disabled
             />

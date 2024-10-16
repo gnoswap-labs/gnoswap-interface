@@ -7,10 +7,12 @@ import { LaunchpadProjectSummaryWrapper } from "./LaunchpadProjectSummary.styles
 
 interface LaunchpadProjectSummaryProps {
   data: ProjectSummaryDataModel;
+  tokenSymbol: string;
 }
 
 const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
   data,
+  tokenSymbol,
 }) => {
   return (
     <LaunchpadProjectSummaryWrapper>
@@ -26,15 +28,15 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
         <div className="key">
           Participants <IconInfo size={16} fill={"#596782"} />
         </div>
-        <div className="value">
-          {data.totalParticipants.toLocaleString()} USDC
-        </div>
+        <div className="value">{data.totalParticipants.toLocaleString()}</div>
       </div>
       <div className="card border">
         <div className="key">
           Total Deposited <IconInfo size={16} fill={"#596782"} />
         </div>
-        <div className="value">{data.totalDeposited.toLocaleString()} USDC</div>
+        <div className="value">
+          {data.totalDeposited.toLocaleString()} {tokenSymbol}
+        </div>
       </div>
       <div className="card">
         <div className="key">
