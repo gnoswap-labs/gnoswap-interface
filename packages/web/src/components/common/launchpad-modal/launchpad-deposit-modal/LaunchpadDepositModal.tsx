@@ -1,13 +1,15 @@
 import React from "react";
 
+import { LaunchpadPoolModel } from "@models/launchpad";
+import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
+import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+import { getTierNumber } from "@utils/launchpad-get-tier-number";
+
 import { LaunchpadDepositModalWrapper } from "./LaunchpadDepositModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import IconWarning from "../../icons/IconWarning";
 import IconOpenLink from "../../icons/IconOpenLink";
 import Button, { ButtonHierarchy } from "../../button/Button";
-import { LaunchpadPoolModel } from "@models/launchpad";
-import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
-import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 
 type LaunchpadPoolModelWithoutClaimableTime = Omit<
   LaunchpadPoolModel,
@@ -41,8 +43,10 @@ const LaunchpadDepositModal = ({
 
   const { deposit } = useLaunchpadHandler();
 
+  const poolDuration = getTierNumber(poolInfo?.poolTier);
+
   const confirm = React.useCallback(() => {
-    deposit(`${projectPath}:30`, depositAmount, refetch);
+    deposit(`${projectPath}:${poolDuration}`, depositAmount, refetch);
   }, [projectPath, depositAmount, refetch]);
   return (
     <LaunchpadDepositModalWrapper>

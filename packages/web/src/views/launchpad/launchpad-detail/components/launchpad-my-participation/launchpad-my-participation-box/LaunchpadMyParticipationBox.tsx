@@ -8,6 +8,7 @@ import IconArrowUp from "@components/common/icons/IconArrowUp";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { MyParticipationBoxWrapper } from "./LaunchpadMyParticipationBox.styles";
+import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 
 interface LaunchpadMyParticipationBoxProps {
   item: LaunchpadParticipationModel;
@@ -27,7 +28,7 @@ const LaunchpadMyParticipationBox = ({
     <MyParticipationBoxWrapper key={item.id}>
       <div className="my-participation-box-header">
         <div className="participation-box-index">#{idx}</div>
-        <div className="participation-box-chip">{item.poolTier}</div>
+        <LaunchpadPoolTierChip poolTier={item.poolTier} />
       </div>
 
       <div className="participation-box-data-wrapper">
