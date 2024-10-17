@@ -7,23 +7,27 @@ import { isAmount } from "@common/utils/data-check-util";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useLaunchpadDepositConfirmModal } from "../../hooks/use-launchpad-deposit-confirm-modal";
+import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
-import { convertToKMB } from "@utils/stake-position-utils";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
 interface LaunchpadParticipateProps {
   poolInfo?: LaunchpadPoolModel;
+  rewardInfo: ProjectRewardInfoModel;
+
   refetch: () => Promise<void>;
 }
 
 const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   poolInfo,
+  rewardInfo,
   refetch,
 }) => {
   const {
@@ -50,6 +54,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   const { openLaunchpadDepositModal } = useLaunchpadDepositConfirmModal({
     participateAmount,
     poolInfo,
+    rewardInfo,
     refetch,
   });
 

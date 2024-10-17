@@ -7,10 +7,21 @@ import IconOpenLink from "../../icons/IconOpenLink";
 import Button, { ButtonHierarchy } from "../../button/Button";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
+import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+
+type LaunchpadPoolModelWithoutClaimableTime = Omit<
+  LaunchpadPoolModel,
+  "claimableTime"
+>;
+
+interface ExtendedPoolInfo extends LaunchpadPoolModelWithoutClaimableTime {
+  claimableThreshold: number;
+}
 
 interface LaunchpadDepositModalProps {
   depositAmount: string;
-  poolInfo?: LaunchpadPoolModel;
+  poolInfo?: ExtendedPoolInfo;
+  rewardInfo: ProjectRewardInfoModel;
   projectPath: string;
 
   refetch: () => Promise<void>;
@@ -19,9 +30,15 @@ interface LaunchpadDepositModalProps {
 const LaunchpadDepositModal = ({
   depositAmount,
   poolInfo,
+  rewardInfo,
   projectPath,
   refetch,
 }: LaunchpadDepositModalProps) => {
+  const now = new Date();
+  const claimableTime = poolInfo?.claimableThreshold
+    ? new Date(now.getTime() + Number(poolInfo.claimableThreshold) * 1000)
+    : null;
+
   const { deposit } = useLaunchpadHandler();
 
   const confirm = React.useCallback(() => {
@@ -59,15 +76,15 @@ const LaunchpadDepositModal = ({
             <div className="data-box">
               <div className="data-row">
                 <div className="key">Rewards Token</div>
-                <div className="value"></div>
+                <div className="value">{rewardInfo.rewardTokenSymbol}</div>
               </div>
               <div className="data-row">
                 <div className="key">Network</div>
-                <div className="value">123</div>
+                <div className="value">Gnoland (GRC20)</div>
               </div>
               <div className="data-row">
                 <div className="key">Rewards Claimable On</div>
-                <div className="value">123</div>
+                <div className="value">{claimableTime?.toLocaleString()}</div>
               </div>
             </div>
           </div>

@@ -1,15 +1,17 @@
 import React from "react";
 import { useAtom } from "jotai";
 
+import useCustomRouter from "@hooks/common/use-custom-router";
+import { ProjectRewardInfoModel } from "../LaunchpadDetail";
 import { CommonState } from "@states/index";
 import { LaunchpadPoolModel } from "@models/launchpad";
 
 import LaunchpadDepositModalContainer from "@containers/launchpad-deposit-modal-container/LaunchpadDepositModalContainer";
-import useCustomRouter from "@hooks/common/use-custom-router";
 
 export interface LaunchpadDepositConfirmModalProps {
   participateAmount: string;
   poolInfo?: LaunchpadPoolModel;
+  rewardInfo: ProjectRewardInfoModel;
 
   refetch: () => Promise<void>;
 }
@@ -21,6 +23,7 @@ export interface SelectPoolDepositModalModel {
 export const useLaunchpadDepositConfirmModal = ({
   participateAmount,
   poolInfo,
+  rewardInfo,
   refetch,
 }: LaunchpadDepositConfirmModalProps): SelectPoolDepositModalModel => {
   const router = useCustomRouter();
@@ -33,11 +36,12 @@ export const useLaunchpadDepositConfirmModal = ({
       <LaunchpadDepositModalContainer
         depositAmount={participateAmount}
         poolInfo={poolInfo}
+        rewardInfo={rewardInfo}
         projectPath={projectPath || ""}
         refetch={refetch}
       />,
     );
-  }, [participateAmount, poolInfo, projectPath, refetch]);
+  }, [participateAmount, poolInfo, rewardInfo, projectPath, refetch]);
 
   // const close = React.useCallback(() => {
   //   setOpenedModal(false);

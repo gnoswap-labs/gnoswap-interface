@@ -1,10 +1,13 @@
 import React from "react";
 
-import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
 import { LaunchpadPoolModel } from "@models/launchpad";
+import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+
+import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
 interface LaunchpadDepositModalContainerProps {
   depositAmount: string;
   poolInfo?: LaunchpadPoolModel;
+  rewardInfo: ProjectRewardInfoModel;
   projectPath: string;
 
   refetch: () => Promise<void>;
@@ -13,6 +16,7 @@ interface LaunchpadDepositModalContainerProps {
 const LaunchpadDepositModalContainer = ({
   depositAmount,
   poolInfo,
+  rewardInfo,
   projectPath,
   refetch,
 }: LaunchpadDepositModalContainerProps) => {
@@ -20,6 +24,7 @@ const LaunchpadDepositModalContainer = ({
     <LaunchpadDepositModal
       depositAmount={depositAmount}
       poolInfo={poolInfo}
+      rewardInfo={rewardInfo}
       projectPath={projectPath}
       refetch={refetch}
     />

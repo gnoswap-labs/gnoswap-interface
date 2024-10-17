@@ -46,6 +46,13 @@ export interface ProjectDescriptionDataModel {
   links: ProjectLinksObject;
 }
 
+export interface ProjectRewardInfoModel {
+  rewardTokenPath: string;
+  rewardTokenDecimals: number;
+  rewardTokenSymbol: string;
+  rewardTokenLogoUrl: string;
+}
+
 const LaunchpadDetail: React.FC = () => {
   const [selectPoolId, setSelectPoolId] = useAtom(
     LaunchpadState.selectLaunchpadPool,
@@ -139,7 +146,7 @@ const LaunchpadDetail: React.FC = () => {
   };
 
   /**
-   * @dev
+   * @dev Launchpad Participate section data
    */
   const selectProjectPool = React.useCallback(
     (poolId: number) => {
@@ -151,6 +158,32 @@ const LaunchpadDetail: React.FC = () => {
   const currentSelectProjectPoolInfo = React.useMemo(() => {
     return projectDetailData?.pools.find(pool => pool.id === selectPoolId);
   }, [selectPoolId, projectDetailData?.pools]);
+
+  const projectRewardInfo: ProjectRewardInfoModel = React.useMemo(() => {
+    const initProjectRewardInfo = {
+      rewardTokenPath: "",
+      rewardTokenDecimals: 0,
+      rewardTokenSymbol: "",
+      rewardTokenLogoUrl: "",
+    };
+
+    if (!projectDetailData) return initProjectRewardInfo;
+
+    return {
+      rewardTokenPath:
+        projectDetailData.rewardTokenPath ??
+        initProjectRewardInfo.rewardTokenPath,
+      rewardTokenDecimals:
+        projectDetailData.rewardTokenDecimals ??
+        initProjectRewardInfo.rewardTokenDecimals,
+      rewardTokenSymbol:
+        projectDetailData.rewardTokenSymbol ??
+        initProjectRewardInfo.rewardTokenSymbol,
+      rewardTokenLogoUrl:
+        projectDetailData.rewardTokenLogoUrl ??
+        initProjectRewardInfo.rewardTokenLogoUrl,
+    };
+  }, [projectDetailData]);
 
   /**
    * @dev Launchpad My Participation section data
@@ -192,6 +225,7 @@ const LaunchpadDetail: React.FC = () => {
       participate={
         <LaunchpadParticipateContainer
           poolInfo={currentSelectProjectPoolInfo}
+          rewardInfo={projectRewardInfo}
           refetch={refetchProjectDetail}
         />
       }
