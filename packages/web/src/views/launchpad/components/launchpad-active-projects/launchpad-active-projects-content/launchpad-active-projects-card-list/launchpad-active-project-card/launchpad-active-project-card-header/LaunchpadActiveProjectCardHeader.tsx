@@ -11,11 +11,13 @@ import { ActiveProjectCardHeader } from "./LaunchpadActiveProjectCardHeader.styl
 interface LaunchpadActiveProjectCardHeaderProps {
   name: string;
   description: string;
+  rewardTokenSymbol: string;
+  rewardTokenUrl: string;
 }
 
 const LaunchpadActiveProjectCardHeader: React.FC<
   LaunchpadActiveProjectCardHeaderProps
-> = ({ name, description }) => {
+> = ({ name, description, rewardTokenSymbol, rewardTokenUrl }) => {
   return (
     <ActiveProjectCardHeader>
       <div className="header-title-wrapper">
@@ -23,7 +25,7 @@ const LaunchpadActiveProjectCardHeader: React.FC<
         <div className="text">{description}</div>
       </div>
       <div className="image-wrapper">
-        <img src="/gns.svg" alt="Token symbol image" />
+        <img src={rewardTokenUrl} alt={`${rewardTokenSymbol} symbol image`} />
       </div>
     </ActiveProjectCardHeader>
   );

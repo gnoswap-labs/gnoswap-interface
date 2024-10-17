@@ -26,11 +26,21 @@ const LaunchpadActiveProjectCardData: React.FC<
     }
   };
 
+  const getTierNumber = (tier: TierType): number => {
+    return parseInt(tier.replace("TIER", ""));
+  };
+
+  const sortedPools = React.useMemo(() => {
+    return [...pools].sort(
+      (a, b) => getTierNumber(b.poolTier) - getTierNumber(a.poolTier),
+    );
+  }, [pools]);
+
   return (
     <ActiveProjectCardDataWrapper>
-      {pools && pools.length > 0 && (
+      {sortedPools && sortedPools.length > 0 && (
         <>
-          {pools.map((poolDetail: LaunchpadActiveProjectPool, idx) => {
+          {sortedPools.map((poolDetail: LaunchpadActiveProjectPool, idx) => {
             const aprStr = poolDetail.apr ? (
               <>
                 {Number(poolDetail.apr) > 100 && <IconStar size={18} />}

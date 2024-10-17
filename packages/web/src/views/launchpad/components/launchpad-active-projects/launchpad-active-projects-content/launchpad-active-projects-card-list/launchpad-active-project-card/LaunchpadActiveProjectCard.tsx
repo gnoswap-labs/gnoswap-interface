@@ -19,7 +19,8 @@ const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
   project,
   moveProjectDetail,
 }) => {
-  const { pools, status, projectId } = project;
+  const { pools, status, projectId, rewardTokenSymbol, rewardTokenLogoUrl } =
+    project;
   return (
     <ActiveProjectCardWrapper
       type={status}
@@ -32,6 +33,8 @@ const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
       <LaunchpadActiveProjectCardHeader
         name={project.name}
         description={project.description || ""}
+        rewardTokenSymbol={rewardTokenSymbol || ""}
+        rewardTokenUrl={rewardTokenLogoUrl || ""}
       />
       <Divider />
       <LaunchpadActiveProjectCardData

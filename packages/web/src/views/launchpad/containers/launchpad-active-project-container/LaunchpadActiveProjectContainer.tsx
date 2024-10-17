@@ -1,19 +1,13 @@
 import React from "react";
 import { useAtom } from "jotai";
 
-import LaunchpadActiveProjects from "@views/launchpad/components/launchpad-active-projects/LaunchpadActiveProjects";
-
-import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
 import { PROJECT_STATUS_TYPE } from "@common/values";
 import { LaunchpadState } from "@states/index";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 
-/**
- * @yjin
- * The interface will be modified to reflect real data.
- */
-// interface LaunchpadActiveProjectContainerProps {}
+import LaunchpadActiveProjects from "@views/launchpad/components/launchpad-active-projects/LaunchpadActiveProjects";
+import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
 
 const LaunchpadActiveProjectContainer: React.FC = () => {
   const router = useCustomRouter();
