@@ -13,8 +13,28 @@ const LaunchpadProjectListContainer: React.FC = () => {
   const router = useCustomRouter();
   const [breakpoint] = useAtom(CommonState.breakpoint);
 
+  const [keyword, setKeyword] = React.useState("");
+
+  const search = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  }, []);
+
   const { isLoadingLaunchpadProjectList } = useLoading();
   const { data: projects } = useGetLaunchpadProjects({ keyword: "" });
+  const projectList = projects?.pages.flatMap(item => item.projects) || [];
+
+  const fixedProjects = React.useMemo(() => {
+    if (!projectList || projectList.length === 0) return [];
+
+    return projectList.filter(project => {
+      const lowerCaseKeyword = keyword.toLowerCase();
+
+      return project.name.toLowerCase().includes(lowerCaseKeyword);
+    });
+  }, [projects, keyword]);
+
+  // Todo : Search
+  // const filteredProjects = React.useMemo(() => {}, [])
 
   const moveProjectDetail = React.useCallback(
     (projectId: string) => {
@@ -26,8 +46,10 @@ const LaunchpadProjectListContainer: React.FC = () => {
     <LaunchpadProjectList
       isFetched={!isLoadingLaunchpadProjectList}
       breakpoint={breakpoint}
-      projects={projects?.pages.flatMap(item => item.projects) || []}
+      projects={[...fixedProjects]}
       moveProjectDetail={moveProjectDetail}
+      keyword={keyword}
+      search={search}
     />
   );
 };

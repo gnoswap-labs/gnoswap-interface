@@ -2,11 +2,11 @@ import React from "react";
 
 import { LaunchpadActiveProjectPool } from "@repositories/launchpad/response/get-launchpad-active-projects-response";
 import { getTierNumber } from "@utils/launchpad-get-tier-number";
-import { getTierDuration } from "@utils/launchpad-get-tier-number";
 
 import { ActiveProjectCardDataWrapper } from "./LaunchpadActiveProjectCardData.styles";
 import { formatRate } from "@utils/new-number-utils";
 import IconStar from "@components/common/icons/IconStar";
+import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 
 interface LaunchpadActiveProjectCardDataProps {
   pools: LaunchpadActiveProjectPool[];
@@ -38,9 +38,7 @@ const LaunchpadActiveProjectCardData: React.FC<
               <div className="data-box" key={poolDetail.id}>
                 <span className="data-title">Pool {idx + 1}</span>
                 <span className="data">{aprStr}</span>
-                <span className="badge">
-                  {getTierDuration(poolDetail.poolTier)}
-                </span>
+                <LaunchpadPoolTierChip poolTier={poolDetail.poolTier} />
               </div>
             );
           })}

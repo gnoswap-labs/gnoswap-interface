@@ -10,19 +10,23 @@ interface LaunchpadProjectListProps {
   breakpoint: DEVICE_TYPE;
   projects: LaunchpadProjectModel[];
   isFetched: boolean;
+  keyword: string;
 
   moveProjectDetail: (poolId: string) => void;
+  search: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
   breakpoint,
   projects,
   isFetched,
+  keyword,
   moveProjectDetail,
+  search,
 }) => {
   return (
     <ProjectListWrapper>
-      <LaunchpadProjectListHeader />
+      <LaunchpadProjectListHeader keyword={keyword} search={search} />
       <LaunchpadProjectListTable
         breakpoint={breakpoint}
         projects={projects}

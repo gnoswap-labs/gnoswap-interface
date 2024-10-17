@@ -3,12 +3,26 @@ import React from "react";
 
 import { ProjectListHeaderWrapper } from "./LaunchpadProjectListHeader.styles";
 
-const LaunchpadProjectListHeader: React.FC = () => {
+interface LaunchpadProjectListHeaderProps {
+  keyword: string;
+
+  search: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const LaunchpadProjectListHeader: React.FC<LaunchpadProjectListHeaderProps> = ({
+  keyword,
+  search,
+}) => {
   return (
     <ProjectListHeaderWrapper>
       <div className="title-container">
         <h2>Projects</h2>
-        <SearchInput width={300} height={48} />
+        <SearchInput
+          width={300}
+          height={48}
+          value={keyword}
+          onChange={search}
+        />
       </div>
     </ProjectListHeaderWrapper>
   );

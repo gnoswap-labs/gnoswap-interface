@@ -18,6 +18,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
+import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -55,7 +56,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
       if (value !== "" && !isAmount(value)) return;
       setParticipateAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [setParticipateAmount],
   );
 
   const { openLaunchpadDepositModal } = useLaunchpadDepositConfirmModal({
@@ -126,7 +127,9 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         <div className="participate-info">
           <div className="participate-info-key">Pool Tier</div>
           <div className="participate-info-value">
-            {poolInfo?.poolTier || "-"}
+            {poolInfo?.poolTier && (
+              <LaunchpadPoolTierChip poolTier={poolInfo.poolTier} />
+            )}
           </div>
         </div>
         <div className="participate-info">

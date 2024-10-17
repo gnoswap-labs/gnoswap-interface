@@ -33,9 +33,11 @@ const LaunchpadMyParticipation = ({ data }: LaunchpadMyParticipationProps) => {
     <MyParticipationWrapper>
       <div className="my-participation-header">
         <h3 className="my-participation-title">My Participation</h3>
-        <div className="claim-all-button-wrapper">
-          <ClaimAllButton onClick={handleClickClaimAll} />
-        </div>
+        {data.length > 0 && (
+          <div className="claim-all-button-wrapper">
+            <ClaimAllButton onClick={handleClickClaimAll} />
+          </div>
+        )}
       </div>
 
       {data?.map((item, idx) => {

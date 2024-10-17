@@ -10,6 +10,7 @@ import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/Launch
 
 import { Divider } from "@components/common/divider/divider";
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
+import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 
 interface LaunchpadPoolListCardProps {
   data: LaunchpadPoolModel;
@@ -40,7 +41,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
     >
       <div className="card-header">
         <span className="title">Pool {idx}</span>
-        <span className="chip">{getTierDuration(data.poolTier)}</span>
+        <LaunchpadPoolTierChip poolTier={data.poolTier} />
       </div>
 
       <div className="card-description">
