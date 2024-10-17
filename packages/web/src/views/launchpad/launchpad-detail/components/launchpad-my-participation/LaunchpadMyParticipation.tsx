@@ -42,11 +42,11 @@ const LaunchpadMyParticipation = ({ data }: LaunchpadMyParticipationProps) => {
         </div>
       </div>
 
-      {data?.map(item => {
+      {data?.map((item, idx) => {
         return (
           <div className="my-participation-box" key={item.id}>
             <div className="my-participation-box-header">
-              <div className="participation-box-index">#{item.id}</div>
+              <div className="participation-box-index">#{idx + 1}</div>
               <div className="participation-box-chip">{item.poolTier}</div>
             </div>
 
