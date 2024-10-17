@@ -15,6 +15,16 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   height: 100%;
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
+  gap: 8px;
+  .token-symbol-image {
+    width: 24px;
+    height: 24px;
+  }
+  .reward-token-symbol {
+    color: ${({ theme }) => theme.color.text05};
+    font-size: 14px;
+    font-weight: 400;
+  }
   .icon-reward {
     width: 20px;
     height: 20px;

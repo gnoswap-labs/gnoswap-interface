@@ -25,7 +25,14 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
   project,
   moveProjectDetail,
 }) => {
-  const { status, name, pools, projectId } = project;
+  const {
+    status,
+    name,
+    pools,
+    projectId,
+    rewardTokenLogoUrl,
+    rewardTokenSymbol,
+  } = project;
 
   const highestAprPool = pools.reduce((max, current) => {
     if (!current.apr) return max;
@@ -56,7 +63,13 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
   return (
     <ProjectInfoWrapper>
       <TableColumn className="left" tdWidth={cellWidths.list[0].width}>
+        <img
+          className="token-symbol-image"
+          src={rewardTokenLogoUrl || ""}
+          alt={`${rewardTokenLogoUrl} symbol image `}
+        />
         <span>{name}</span>
+        <span className="reward-token-symbol">{rewardTokenSymbol}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[1].width}>
         <span>
@@ -73,7 +86,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
         <span>{highestAprPool?.allocation.toLocaleString() || 0}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>
-        <span>{highestAprPool?.depositAmount.toLocaleString() || 0}</span>
+        <span>{highestAprPool?.depositAmount.toLocaleString() || 0} GNS</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[6].width}>
         <div
