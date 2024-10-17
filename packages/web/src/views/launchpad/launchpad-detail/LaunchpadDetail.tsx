@@ -205,13 +205,17 @@ const LaunchpadDetail: React.FC = () => {
         />
       }
       contentsHeader={
-        <LaunchpadDetailContentsHeaderContainer data={contentsHeaderData} />
+        <LaunchpadDetailContentsHeaderContainer
+          data={contentsHeaderData}
+          rewardInfo={projectRewardInfo}
+        />
       }
       poolList={
         <LaunchpadPoolListContainer
           pools={projectDetailData?.pools || []}
           selectProjectPool={selectProjectPool}
           status={projectDetailData?.status || ""}
+          rewardInfo={projectRewardInfo}
         />
       }
       projectSummary={

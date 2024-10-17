@@ -55,7 +55,14 @@ export const CardWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
     }
     .value {
+      ${mixins.flexbox("row", "flex-start", "center")};
+      gap: 4px;
       color: ${({ theme }) => theme.color.text03};
     }
+  }
+
+  .token-image {
+    width: 24px;
+    height: 24px;
   }
 `;

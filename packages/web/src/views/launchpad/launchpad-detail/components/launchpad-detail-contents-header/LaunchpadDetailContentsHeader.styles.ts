@@ -21,11 +21,21 @@ export const ContentsHeaderWrapper = styled.div`
   .project-status {
     ${mixins.flexbox("row", "center", "center")}
     gap: 4px;
-    color: ${({ theme }) => theme.color.text05};
     font-size: 12px;
     font-weight: 500;
     padding: 4px 12px;
     border-radius: 36px;
-    background: ${({ theme }) => theme.color.backgroundOpacity7};
+    &.upcoming {
+      background: rgba(0, 89, 255, 0.2);
+      color: var(--Light-Palette-Blue, #007aff);
+    }
+    &.ongoing {
+      background: rgba(22, 199, 138, 0.2);
+      color: var(--Green-text, #16c78a);
+    }
+    &.ended {
+      background: ${({ theme }) => theme.color.backgroundOpacity7};
+      color: ${({ theme }) => theme.color.text05};
+    }
   }
 `;

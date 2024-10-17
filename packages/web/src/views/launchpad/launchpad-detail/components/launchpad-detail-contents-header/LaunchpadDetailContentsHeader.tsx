@@ -5,29 +5,40 @@
  */
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
+import { cx } from "@emotion/css";
+
+import { capitalize } from "@utils/string-utils";
+import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 
 import IconTimer from "@components/common/icons/IconTimer";
 import { ContentsHeaderWrapper } from "./LaunchpadDetailContentsHeader.styles";
-import { capitalize } from "@utils/string-utils";
 
 interface LaunchpadDetailContentsHeaderProps {
-  projectName: string;
-  projectStatus: string | null;
+  data: { name: string; projectStatus: string | null };
+  rewardInfo: ProjectRewardInfoModel;
 }
 
 const LaunchpadDetailContentsHeader: React.FC<
   LaunchpadDetailContentsHeaderProps
-> = ({ projectName, projectStatus }) => {
+> = ({ data, rewardInfo }) => {
   return (
     <ContentsHeaderWrapper className="contents-header">
       <div className="symbol-icon">
-        <img src="/gns.svg" alt="token symbol image" />
+        <img
+          src={rewardInfo.rewardTokenLogoUrl}
+          alt={`${rewardInfo.rewardTokenSymbol} symbol image`}
+        />
       </div>
-      <div className="project-name">{projectName}</div>
-      <div className="project-status">
-        {projectStatus && (
+      <div className="project-name">{data.name}</div>
+      <div
+        className={cx("project-status", {
+          [(data.projectStatus as string)?.toLowerCase()]: !!data.projectStatus,
+        })}
+      >
+        {data.projectStatus && (
           <>
-            <IconTimer type={projectStatus} /> {capitalize(projectStatus)}
+            <IconTimer type={data.projectStatus} />{" "}
+            {capitalize(data.projectStatus)}
           </>
         )}
       </div>

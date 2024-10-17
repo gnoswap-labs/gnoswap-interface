@@ -1,16 +1,18 @@
 import React from "react";
 import { useAtom } from "jotai";
 
+import { LaunchpadState } from "@states/index";
+import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { getTierNumber } from "@utils/launchpad-get-tier-number";
 
 import { LaunchpadPoolListWrapper } from "./LaunchpadPoolList.styles";
 import LaunchpadPoolListCard from "./launchpad-pool-list-card/LaunchpadPoolListCard";
-import { LaunchpadState } from "@states/index";
 
 interface LaunchpadPoolListProps {
   pools: LaunchpadPoolModel[];
   status: string;
+  rewardInfo: ProjectRewardInfoModel;
 
   selectProjectPool: (poolId: number) => void;
 }
@@ -18,6 +20,7 @@ interface LaunchpadPoolListProps {
 const LaunchpadPoolList: React.FC<LaunchpadPoolListProps> = ({
   pools,
   status,
+  rewardInfo,
   selectProjectPool,
 }) => {
   const [, setSelectLaunchpadPool] = useAtom(
@@ -49,6 +52,7 @@ const LaunchpadPoolList: React.FC<LaunchpadPoolListProps> = ({
           <LaunchpadPoolListCard
             key={pool.id}
             idx={idx + 1}
+            rewardInfo={rewardInfo}
             data={pool}
             selectProjectPool={selectProjectPool}
           />
