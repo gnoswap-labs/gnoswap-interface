@@ -1,6 +1,7 @@
 import React from "react";
 
 import { LaunchpadActiveProjectPool } from "@repositories/launchpad/response/get-launchpad-active-projects-response";
+import { getTierNumber } from "@utils/launchpad-get-tier-number";
 
 import { ActiveProjectCardDataWrapper } from "./LaunchpadActiveProjectCardData.styles";
 import { formatRate } from "@utils/new-number-utils";
@@ -24,10 +25,6 @@ const LaunchpadActiveProjectCardData: React.FC<
       case "TIER180":
         return "6 Months";
     }
-  };
-
-  const getTierNumber = (tier: TierType): number => {
-    return parseInt(tier.replace("TIER", ""));
   };
 
   const sortedPools = React.useMemo(() => {

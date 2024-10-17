@@ -7,17 +7,19 @@ import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 interface LaunchpadParticipateContainerProps {
   poolInfo?: LaunchpadPoolModel;
   rewardInfo: ProjectRewardInfoModel;
+  status: string;
 
   refetch: () => Promise<void>;
 }
 
 const LaunchpadParticipateContainer: React.FC<
   LaunchpadParticipateContainerProps
-> = ({ poolInfo, rewardInfo, refetch }) => {
+> = ({ poolInfo, rewardInfo, status, refetch }) => {
   return (
     <LaunchpadParticipate
       poolInfo={poolInfo}
       rewardInfo={rewardInfo}
+      status={status}
       refetch={refetch}
     />
   );

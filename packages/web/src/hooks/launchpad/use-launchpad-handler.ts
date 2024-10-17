@@ -1,6 +1,8 @@
-import BigNumber from "bignumber.js";
 import { useCallback, useMemo, useState } from "react";
+import { useAtomValue } from "jotai";
+import BigNumber from "bignumber.js";
 
+import { LaunchpadState } from "@states/index";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -15,16 +17,26 @@ import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useTranslation } from "react-i18next";
 import { useLaunchpadModal } from "./use-launchpad-modal";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { formatPrice } from "@utils/new-number-utils";
 
-type DepositButtonStateType = "WALLET_LOGIN" | "SWITCH_NETWORK" | "DEPOSIT";
+type DepositButtonStateType =
+  | "WALLET_LOGIN"
+  | "SWITCH_NETWORK"
+  | "ENTER_AMOUNT"
+  | "INSUFFICIENT_BALANCE"
+  | "DEPOSIT";
 
 export const useLaunchpadHandler = () => {
+  const participateAmount = useAtomValue(LaunchpadState.participateAmount);
+
   const {
     connected: connectedWallet,
     account,
     isSwitchNetwork,
     switchNetwork,
   } = useWallet();
+  const { displayBalanceMap } = useTokenData();
   const { openLaunchpadClaimAllModal, openLaunchpadWaitingConfirmationModal } =
     useLaunchpadModal();
   const { launchpadRepository } = useGnoswapContext();
@@ -37,6 +49,30 @@ export const useLaunchpadHandler = () => {
   const { processTx } = useBroadcastHandler();
 
   usePreventScroll(openedConfirmModal);
+
+  const tokenGnsBalance = useMemo(() => {
+    if (isSwitchNetwork) return "-";
+
+    return formatPrice(displayBalanceMap?.[GNS_TOKEN.path], {
+      isKMB: false,
+      usd: false,
+    });
+  }, [isSwitchNetwork, displayBalanceMap]);
+
+  // Util function
+  function compareAmountFn(
+    amountA: string | number | bigint,
+    amountB: string | number | bigint,
+  ) {
+    const amountValueA = BigNumber(`${amountA}`.replace(/,/g, ""));
+    const amountValueB = BigNumber(`${amountB}`.replace(/,/g, ""));
+
+    if (amountValueA.isEqualTo(amountValueB)) {
+      return 0;
+    }
+
+    return amountValueA.isGreaterThan(amountValueB) ? 1 : -1;
+  }
 
   /**
    * Deposit GNS tokens to Launchpad.
@@ -240,8 +276,14 @@ export const useLaunchpadHandler = () => {
     if (isSwitchNetwork) {
       return "SWITCH_NETWORK";
     }
+    if (!Number(participateAmount)) {
+      return "ENTER_AMOUNT";
+    }
+    if (compareAmountFn(participateAmount, tokenGnsBalance) > 0) {
+      return "INSUFFICIENT_BALANCE";
+    }
     return "DEPOSIT";
-  }, [connectedWallet, isSwitchNetwork]);
+  }, [connectedWallet, participateAmount, isSwitchNetwork, tokenGnsBalance]);
 
   const depositButtonText = useMemo(() => {
     switch (depositButtonState) {
@@ -249,11 +291,19 @@ export const useLaunchpadHandler = () => {
         return t("common:btn.walletLogin");
       case "SWITCH_NETWORK":
         return t("Swap:swapButton.switchNetwork");
+      case "ENTER_AMOUNT":
+        return "Enter Amount";
+      case "INSUFFICIENT_BALANCE":
+        return "Insufficient Balance";
       case "DEPOSIT":
       default:
         return "Deposit Now";
     }
   }, [depositButtonState, t]);
+
+  const isAvailableDeposit = useMemo(() => {
+    return depositButtonState === "DEPOSIT";
+  }, [depositButtonState]);
 
   const openConnectWallet = useCallback(() => {
     openModal();
@@ -279,5 +329,6 @@ export const useLaunchpadHandler = () => {
     switchNetwork,
     openLaunchpadClaimAllAction,
     openLaunchpadWaitingConfirmationAction,
+    isAvailableDeposit,
   };
 };

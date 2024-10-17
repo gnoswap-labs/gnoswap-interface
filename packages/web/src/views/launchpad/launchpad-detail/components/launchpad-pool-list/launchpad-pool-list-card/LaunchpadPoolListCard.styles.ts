@@ -10,10 +10,13 @@ export const CardWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   padding: 16px;
   cursor: pointer;
-  &.active,
-  &:hover {
-    border: 1px solid var(--border-gradient, #869dff);
+  &.ongoing {
+    &.active,
+    &:hover {
+      border: 1px solid var(--border-gradient, #869dff);
+    }
   }
+
   .card-header {
     ${mixins.flexbox("row", "center", "flex-start")}
     gap: 8px;

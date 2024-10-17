@@ -1,4 +1,5 @@
 import React from "react";
+import { cx } from "@emotion/css";
 import { useAtomValue } from "jotai";
 
 import { Divider } from "@components/common/divider/divider";
@@ -21,8 +22,15 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
   const currentPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
   return (
     <CardWrapper
-      className={currentPoolId === data.id ? "active" : ""}
-      onClick={() => selectProjectPool(data.id)}
+      className={cx({
+        active: currentPoolId === data.id,
+        ongoing: data.status === "ONGOING",
+      })}
+      onClick={() => {
+        if (data.status === "ONGOING") {
+          selectProjectPool(data.id);
+        }
+      }}
     >
       <div className="card-header">
         <span className="title">Pool {idx}</span>

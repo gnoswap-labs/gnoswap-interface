@@ -1,6 +1,8 @@
 import React from "react";
 import BigNumber from "bignumber.js";
+import { useAtom } from "jotai";
 
+import { LaunchpadState } from "@states/index";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { isAmount } from "@common/utils/data-check-util";
@@ -9,6 +11,7 @@ import { GNS_TOKEN } from "@common/values/token-constant";
 import { useLaunchpadDepositConfirmModal } from "../../hooks/use-launchpad-deposit-confirm-modal";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import { convertToKMB } from "@utils/stake-position-utils";
+import { capitalize } from "@utils/string-utils";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -21,6 +24,7 @@ const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 interface LaunchpadParticipateProps {
   poolInfo?: LaunchpadPoolModel;
   rewardInfo: ProjectRewardInfoModel;
+  status: string;
 
   refetch: () => Promise<void>;
 }
@@ -28,18 +32,21 @@ interface LaunchpadParticipateProps {
 const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   poolInfo,
   rewardInfo,
+  status,
   refetch,
 }) => {
+  const [participateAmount, setParticipateAmount] = useAtom(
+    LaunchpadState.participateAmount,
+  );
   const {
     connectedWallet,
     depositButtonText,
     openConnectWallet,
     isSwitchNetwork,
     switchNetwork,
+    isAvailableDeposit,
   } = useLaunchpadHandler();
   const { tokenPrices, displayBalanceMap } = useTokenData();
-
-  const [participateAmount, setParticipateAmount] = React.useState("");
 
   const onChangeParticipateAmount = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,8 +151,10 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
       <div className="participate-button-wrapper">
         <DepositButton
+          isAvailableDeposit={isAvailableDeposit}
           isSwitchNetwork={isSwitchNetwork}
           connectedWallet={connectedWallet}
+          status={status}
           text={depositButtonText}
           openConnectWallet={openConnectWallet}
           switchNetwork={switchNetwork}
@@ -160,6 +169,8 @@ interface DepositButtonProps {
   connectedWallet: boolean;
   text: string;
   isSwitchNetwork: boolean;
+  isAvailableDeposit: boolean;
+  status: string;
 
   openConnectWallet: () => void;
   openLaunchpadDepositAction: () => void;
@@ -171,6 +182,8 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   text,
   openConnectWallet,
   isSwitchNetwork,
+  status,
+  isAvailableDeposit,
   switchNetwork,
   openLaunchpadDepositAction,
 }) => {
@@ -178,6 +191,15 @@ const DepositButton: React.FC<DepositButtonProps> = ({
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,
   };
+
+  if (status !== "ONGOING") {
+    return (
+      <Button
+        text={capitalize(status)}
+        style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
+      />
+    );
+  }
 
   if (!connectedWallet) {
     return (
@@ -189,8 +211,18 @@ const DepositButton: React.FC<DepositButtonProps> = ({
     return <Button text={text} style={defaultStyle} onClick={switchNetwork} />;
   }
 
+  if (!isAvailableDeposit) {
+    return (
+      <Button
+        text={text}
+        style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
+      />
+    );
+  }
+
   return (
     <Button
+      className="button-deposit"
       text={text}
       style={defaultStyle}
       onClick={openLaunchpadDepositAction}

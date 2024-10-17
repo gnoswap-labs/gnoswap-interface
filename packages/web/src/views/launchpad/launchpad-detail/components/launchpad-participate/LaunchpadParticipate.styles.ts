@@ -90,7 +90,11 @@ export const LaunchpadParticipateWrapper = styled.div`
     position: relative;
     width: 100%;
     button {
+      cursor: default;
       height: 57px;
+    }
+    .button-deposit {
+      cursor: pointer;
     }
     span {
       ${fonts.body7}

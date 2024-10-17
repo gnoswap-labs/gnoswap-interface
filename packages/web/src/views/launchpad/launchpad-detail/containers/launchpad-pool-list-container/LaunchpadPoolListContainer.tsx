@@ -5,16 +5,22 @@ import { LaunchpadPoolModel } from "@models/launchpad";
 
 interface LaunchpadPoolListContainerProps {
   pools: LaunchpadPoolModel[];
+  status: string;
 
   selectProjectPool: (poolId: number) => void;
 }
 
 const LaunchpadPoolListContainer: React.FC<LaunchpadPoolListContainerProps> = ({
   pools,
+  status,
   selectProjectPool,
 }) => {
   return (
-    <LaunchpadPoolList pools={pools} selectProjectPool={selectProjectPool} />
+    <LaunchpadPoolList
+      pools={pools}
+      status={status}
+      selectProjectPool={selectProjectPool}
+    />
   );
 };
 

@@ -211,6 +211,7 @@ const LaunchpadDetail: React.FC = () => {
         <LaunchpadPoolListContainer
           pools={projectDetailData?.pools || []}
           selectProjectPool={selectProjectPool}
+          status={projectDetailData?.status || ""}
         />
       }
       projectSummary={
@@ -227,6 +228,7 @@ const LaunchpadDetail: React.FC = () => {
           poolInfo={currentSelectProjectPoolInfo}
           rewardInfo={projectRewardInfo}
           refetch={refetchProjectDetail}
+          status={projectDetailData?.status || ""}
         />
       }
       myParticipation={
