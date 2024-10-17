@@ -4,6 +4,10 @@ import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGetLaunchpadProjectDetails } from "@query/launchpad/use-get-launchpad-project-details";
+import { useGetLaunchpadParticipationInfos } from "@query/launchpad/use-get-launchpad-participation-infos";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { LaunchpadProjectDetailsModel } from "@models/launchpad";
+import { LaunchpadState } from "@states/index";
 
 import LaunchpadDetailLayout from "./LaunchpadDetailLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
@@ -16,8 +20,6 @@ import LaunchpadParticipateContainer from "./containers/launchpad-participate-co
 import LaunchpadMyParticipationContainer from "./containers/launchpad-my-participation-container/LaunchpadMyParticipationContainer";
 import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
 import Footer from "@components/common/footer/Footer";
-import { LaunchpadProjectDetailsModel } from "@models/launchpad";
-import { LaunchpadState } from "@states/index";
 
 export interface ProjectSummaryDataModel {
   totalAllocation: number;
@@ -48,9 +50,12 @@ const LaunchpadDetail: React.FC = () => {
   const [selectPoolId, setSelectPoolId] = useAtom(
     LaunchpadState.selectLaunchpadPool,
   );
+
   const router = useCustomRouter();
   const projectPath = router.getProjectPath();
-  const { data, refetch: projectDetailRefetch } =
+  const { account } = useWallet();
+
+  const { data: projectDetailData, refetch: projectDetailRefetch } =
     useGetLaunchpadProjectDetails(projectPath);
   const refetchProjectDetail = async () => {
     await projectDetailRefetch();
@@ -63,43 +68,44 @@ const LaunchpadDetail: React.FC = () => {
         path: "/launchpad",
       },
       {
-        title: `${data?.name}` || "-",
+        title: `${projectDetailData?.name}` || "-",
         path: "",
       },
     ];
-  }, [data?.name]);
+  }, [projectDetailData?.name]);
 
   /**
    * @dev Launchpad Detail Contents-header section data
    */
   const contentsHeaderData = {
-    name: data?.name || "-",
-    projectStatus: data?.status || null,
+    name: projectDetailData?.name || "-",
+    projectStatus: projectDetailData?.status || null,
   };
 
   /**
    * @dev Launchpad Project Summary section data
    */
-  const projectSummaryData: ProjectSummaryDataModel = data?.pools?.reduce(
-    (acc, project) => {
-      acc.totalAllocation += project.allocation;
-      acc.totalParticipants += project.participant;
-      acc.totalDeposited += project.depositAmount;
-      acc.totalDistributed += project.distributedAmount;
-      return acc;
-    },
-    {
+  const projectSummaryData: ProjectSummaryDataModel =
+    projectDetailData?.pools?.reduce(
+      (acc, project) => {
+        acc.totalAllocation += project.allocation;
+        acc.totalParticipants += project.participant;
+        acc.totalDeposited += project.depositAmount;
+        acc.totalDistributed += project.distributedAmount;
+        return acc;
+      },
+      {
+        totalAllocation: 0,
+        totalParticipants: 0,
+        totalDeposited: 0,
+        totalDistributed: 0,
+      },
+    ) || {
       totalAllocation: 0,
       totalParticipants: 0,
       totalDeposited: 0,
       totalDistributed: 0,
-    },
-  ) || {
-    totalAllocation: 0,
-    totalParticipants: 0,
-    totalDeposited: 0,
-    totalDistributed: 0,
-  };
+    };
 
   /**
    * @dev Launchpad Project Description(about) section data
@@ -120,14 +126,14 @@ const LaunchpadDetail: React.FC = () => {
   }
 
   React.useEffect(() => {
-    if (data) {
-      setLinksInfo(() => transformUrls(data));
+    if (projectDetailData) {
+      setLinksInfo(() => transformUrls(projectDetailData));
     }
-  }, [data]);
+  }, [projectDetailData]);
 
   const projectDescriptionData: ProjectDescriptionDataModel = {
-    description: data?.description || "-",
-    descriptionDetails: data?.descriptionDetails || "-",
+    description: projectDetailData?.description || "-",
+    descriptionDetails: projectDetailData?.descriptionDetails || "-",
     realmPath: projectPath || "-",
     links: linksInfo,
   };
@@ -143,8 +149,17 @@ const LaunchpadDetail: React.FC = () => {
   );
 
   const currentSelectProjectPoolInfo = React.useMemo(() => {
-    return data?.pools.find(pool => pool.id === selectPoolId);
-  }, [selectPoolId, data?.pools]);
+    return projectDetailData?.pools.find(pool => pool.id === selectPoolId);
+  }, [selectPoolId, projectDetailData?.pools]);
+
+  /**
+   * @dev Launchpad My Participation section data
+   */
+  const { data: myParticipationData } = useGetLaunchpadParticipationInfos(
+    projectPath as string,
+    account?.address as string,
+    { enabled: !!projectPath && !!account?.address },
+  );
 
   return (
     <LaunchpadDetailLayout
@@ -161,13 +176,13 @@ const LaunchpadDetail: React.FC = () => {
       }
       poolList={
         <LaunchpadPoolListContainer
-          pools={data?.pools || []}
+          pools={projectDetailData?.pools || []}
           selectProjectPool={selectProjectPool}
         />
       }
       projectSummary={
         <LaunchpadProjectSummaryContainer
-          tokenSymbol={data?.rewardTokenSymbol || "-"}
+          tokenSymbol={projectDetailData?.rewardTokenSymbol || "-"}
           data={projectSummaryData}
         />
       }
@@ -180,7 +195,9 @@ const LaunchpadDetail: React.FC = () => {
           refetch={refetchProjectDetail}
         />
       }
-      myParticipation={<LaunchpadMyParticipationContainer />}
+      myParticipation={
+        <LaunchpadMyParticipationContainer data={myParticipationData || []} />
+      }
       clickHere={<LaunchpadDetailClickHereContainer />}
       footer={<Footer />}
     />
