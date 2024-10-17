@@ -16,13 +16,9 @@ interface LaunchpadMyParticipationProps {
 const LaunchpadMyParticipation = ({ data }: LaunchpadMyParticipationProps) => {
   const [openedSelector, setOpenedSelector] = React.useState(false);
 
-  const {
-    openLaunchpadClaimAllAction,
-    openLaunchpadWaitingConfirmationAction,
-    claim,
-  } = useLaunchpadHandler();
+  const { claim, claimAll } = useLaunchpadHandler();
 
-  const onClickClaim = React.useCallback(
+  const handleClickClaim = React.useCallback(
     (data: LaunchpadParticipationModel) => {
       claim(data, async () => {
         console.log("end");
@@ -31,12 +27,18 @@ const LaunchpadMyParticipation = ({ data }: LaunchpadMyParticipationProps) => {
     [data, claim],
   );
 
+  const handleClickClaimAll = React.useCallback(() => {
+    claimAll(data, async () => {
+      console.log("end Claim All");
+    });
+  }, [claimAll]);
+
   return (
     <MyParticipationWrapper>
       <div className="my-participation-header">
         <h3 className="my-participation-title">My Participation</h3>
         <div className="claim-all-button-wrapper">
-          <ClaimAllButton openModal={openLaunchpadClaimAllAction} />
+          <ClaimAllButton onClick={handleClickClaimAll} />
         </div>
       </div>
 
@@ -92,10 +94,7 @@ const LaunchpadMyParticipation = ({ data }: LaunchpadMyParticipationProps) => {
                     </div>
                   </div>
                   <div className="participation-box-button-wrapper">
-                    <ClaimButton
-                      openModal={openLaunchpadWaitingConfirmationAction}
-                      onClick={() => onClickClaim(item)}
-                    />
+                    <ClaimButton onClick={() => handleClickClaim(item)} />
                   </div>
                 </>
               )}
@@ -122,8 +121,7 @@ const LaunchpadMyParticipation = ({ data }: LaunchpadMyParticipationProps) => {
 };
 
 interface ButtonProps {
-  openModal: () => void;
-  onClick?: () => void;
+  onClick: () => void;
 }
 
 const claimDefaultStyle = {
@@ -131,9 +129,9 @@ const claimDefaultStyle = {
   hierarchy: ButtonHierarchy.Primary,
 };
 
-const ClaimAllButton: React.FC<ButtonProps> = ({ openModal }) => {
+const ClaimAllButton: React.FC<ButtonProps> = ({ onClick }) => {
   return (
-    <Button text="Claim All" style={claimDefaultStyle} onClick={openModal} />
+    <Button text="Claim All" style={claimDefaultStyle} onClick={onClick} />
   );
 };
 
