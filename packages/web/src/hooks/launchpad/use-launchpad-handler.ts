@@ -1,10 +1,11 @@
 import BigNumber from "bignumber.js";
-import { useState, useMemo, useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { useGetLastedBlockHeight } from "@query/pools";
@@ -13,7 +14,6 @@ import { DexEvent } from "@repositories/common";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useTranslation } from "react-i18next";
-import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useLaunchpadModal } from "./use-launchpad-modal";
 
 type DepositButtonStateType = "WALLET_LOGIN" | "SWITCH_NETWORK" | "DEPOSIT";
@@ -127,12 +127,19 @@ export const useLaunchpadHandler = () => {
       tokenAAmount: usdValue,
     };
 
-    const collectFn = isWithdraw
-      ? launchpadRepository.collectRewardWithDepositByDepositId
-      : launchpadRepository.collectRewardByDepositId;
-
     processTx(
-      () => collectFn(participationInfo.depositId, account.address),
+      () => {
+        if (isWithdraw) {
+          return launchpadRepository.collectRewardWithDepositByDepositId(
+            participationInfo.depositId,
+            account.address,
+          );
+        }
+        return launchpadRepository.collectRewardByDepositId(
+          participationInfo.depositId,
+          account.address,
+        );
+      },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
       messageData,
       response => {
@@ -168,10 +175,6 @@ export const useLaunchpadHandler = () => {
 
     const participationInfo = participationInfos[0];
 
-    const collectFn = isWithdraw
-      ? launchpadRepository.collectRewardWithDepositByProjectId
-      : launchpadRepository.collectRewardByProjectId;
-
     const gnsUSDPrice = tokenPriceMap?.[GNS_TOKEN.priceID]?.usd || 0;
     const rewardUSDPrice =
       tokenPriceMap?.[participationInfo.rewardToken?.priceID || "-"]?.usd || 0;
@@ -204,7 +207,18 @@ export const useLaunchpadHandler = () => {
     };
 
     processTx(
-      () => collectFn(participationInfo.projectId, account.address),
+      () => {
+        if (isWithdraw) {
+          return launchpadRepository.collectRewardWithDepositByProjectId(
+            participationInfo.projectId,
+            account.address,
+          );
+        }
+        return launchpadRepository.collectRewardByProjectId(
+          participationInfo.projectId,
+          account.address,
+        );
+      },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
       messageData,
       response => {
