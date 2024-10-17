@@ -83,7 +83,9 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
         <span>{highestAprPool?.participant.toLocaleString() || 0}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[4].width}>
-        <span>{highestAprPool?.allocation.toLocaleString() || 0}</span>
+        <span>
+          {highestAprPool?.allocation.toLocaleString() || 0} {rewardTokenSymbol}
+        </span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>
         <span>{highestAprPool?.depositAmount.toLocaleString() || 0} GNS</span>
