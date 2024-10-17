@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
+import Link from "next/link";
 
 import { ThemeKeys } from "@styles/ThemeTypes";
 import Button from "@components/common/button/Button";
@@ -36,16 +37,20 @@ const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
           </h4>
         </div>
         <div className="launchpad-button-wrapper">
-          <Button
-            text={"How to Participate"}
-            style={defaultStyle}
-            rightIcon={<IconRightArrow />}
-          />
-          <Button
-            text={"Submit a Project"}
-            style={defaultStyle}
-            rightIcon={<IconRightArrow />}
-          />
+          <Link href="https://docs.gnoswap.io" target="_blank">
+            <Button
+              text={"How to Participate"}
+              style={defaultStyle}
+              rightIcon={<IconRightArrow />}
+            />
+          </Link>
+          <Link href="https://docs.gnoswap.io" target="_blank">
+            <Button
+              text={"Submit a Project"}
+              style={defaultStyle}
+              rightIcon={<IconRightArrow />}
+            />
+          </Link>
         </div>
         <Divider />
         <div className="launchpad-data-wrapper">

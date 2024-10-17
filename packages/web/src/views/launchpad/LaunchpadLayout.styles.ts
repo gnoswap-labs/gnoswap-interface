@@ -106,6 +106,9 @@ export const LaunchpadLayoutWrapper = styled.div`
       gap: 8px;
       border-radius: 8px;
       padding: 16px;
+      &:hover {
+        background-color: ${({ theme }) => theme.color.backgroundGradient};
+      }
     }
   }
 
