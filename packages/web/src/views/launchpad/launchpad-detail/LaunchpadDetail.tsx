@@ -196,6 +196,7 @@ const LaunchpadDetail: React.FC = () => {
 
   return (
     <LaunchpadDetailLayout
+      status={projectDetailData?.status || ""}
       header={<HeaderContainer />}
       breadcrumbs={
         <BreadcrumbsContainer
