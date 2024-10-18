@@ -41,6 +41,7 @@ export const ProjectInfoWrapper = styled.div`
   height: 68px;
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};
+  cursor: pointer;
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
@@ -68,7 +69,6 @@ export const ProjectInfoWrapper = styled.div`
     ${mixins.flexbox("row", "center", "center")}
     gap: 4px;
     color: ${({ theme }) => theme.color.text04};
-    cursor: pointer;
     font-weight: 400;
     .svg {
       width: 16px;

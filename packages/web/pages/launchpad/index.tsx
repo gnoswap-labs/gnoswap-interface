@@ -11,6 +11,7 @@ export async function getStaticProps({ locale }: { locale: string }) {
       ...(await serverSideTranslations(locale, [
         ...DEFAULT_I18N_NS,
         "Launchpad",
+        "Earn",
       ])),
     },
   };

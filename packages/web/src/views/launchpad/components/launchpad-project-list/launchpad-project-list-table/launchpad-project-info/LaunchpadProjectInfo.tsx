@@ -1,9 +1,5 @@
 import React from "react";
 
-import { LaunchpadPoolModel, LaunchpadProjectModel } from "@models/launchpad";
-import { ProjectInfoWrapper, TableColumn } from "./LaunchpadProjectInfo.styles";
-import LaunchpadProjectInfoChip from "./launchpad-project-info-chip/LaunchpadProjectInfoChip";
-import IconStar from "@components/common/icons/IconStar";
 import { formatRate } from "@utils/new-number-utils";
 import { DEVICE_TYPE } from "@styles/media";
 import {
@@ -13,17 +9,24 @@ import {
   PROJECT_INFO_MOBILE,
 } from "@constants/skeleton.constant";
 
+import { LaunchpadPoolModel, LaunchpadProjectModel } from "@models/launchpad";
+import { ProjectInfoWrapper, TableColumn } from "./LaunchpadProjectInfo.styles";
+import LaunchpadProjectInfoChip from "./launchpad-project-info-chip/LaunchpadProjectInfoChip";
+import IconStar from "@components/common/icons/IconStar";
+
 interface LaunchpadProjectInfoProps {
   breakpoint: DEVICE_TYPE;
   project: LaunchpadProjectModel;
 
   moveProjectDetail: (poolId: string) => void;
+  moveRewardTokenSwapPage: (path: string) => void;
 }
 
 const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
   breakpoint,
   project,
   moveProjectDetail,
+  moveRewardTokenSwapPage,
 }) => {
   const {
     status,
@@ -32,6 +35,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
     projectId,
     rewardTokenLogoUrl,
     rewardTokenSymbol,
+    rewardTokenPath,
   } = project;
 
   const highestAprPool = pools.reduce((max, current) => {
@@ -61,7 +65,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
       : PROJECT_INFO;
 
   return (
-    <ProjectInfoWrapper>
+    <ProjectInfoWrapper onClick={() => moveProjectDetail(projectId)}>
       <TableColumn className="left" tdWidth={cellWidths.list[0].width}>
         <img
           className="token-symbol-image"
@@ -93,7 +97,12 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
       <TableColumn tdWidth={cellWidths.list[6].width}>
         <div
           className="button-wrapper"
-          onClick={() => moveProjectDetail(projectId)}
+          onClick={e => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            moveRewardTokenSwapPage(rewardTokenPath);
+          }}
         >
           <span>Swap</span>
           <span className="svg">

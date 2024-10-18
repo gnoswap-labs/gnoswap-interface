@@ -24,6 +24,7 @@ interface LaunchpadProjectListTableProps {
   isFetched: boolean;
 
   moveProjectDetail: (poolId: string) => void;
+  moveRewardTokenSwapPage: (path: string) => void;
 }
 
 const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
@@ -31,6 +32,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
   projects,
   isFetched,
   moveProjectDetail,
+  moveRewardTokenSwapPage,
 }) => {
   const isAlignLeft = (head: TABLE_HEAD) => {
     return head === TABLE_HEAD.PROJECT;
@@ -72,6 +74,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
               breakpoint={breakpoint}
               project={project}
               moveProjectDetail={moveProjectDetail}
+              moveRewardTokenSwapPage={moveRewardTokenSwapPage}
             />
           ))}
       </div>

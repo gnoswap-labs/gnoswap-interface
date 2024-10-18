@@ -11,6 +11,7 @@ import { QUERY_PARAMETER } from "@constants/page.constant";
 
 const LaunchpadProjectListContainer: React.FC = () => {
   const router = useCustomRouter();
+  const { moveRewardTokenSwapPage } = router;
   const [breakpoint] = useAtom(CommonState.breakpoint);
 
   const [keyword, setKeyword] = React.useState("");
@@ -48,6 +49,7 @@ const LaunchpadProjectListContainer: React.FC = () => {
       breakpoint={breakpoint}
       projects={[...fixedProjects]}
       moveProjectDetail={moveProjectDetail}
+      moveRewardTokenSwapPage={moveRewardTokenSwapPage}
       keyword={keyword}
       search={search}
     />

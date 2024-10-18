@@ -104,6 +104,10 @@ const useCustomRouter = () => {
     });
   }
 
+  function moveRewardTokenSwapPage(path: string) {
+    router.push(`swap?to=${path}`);
+  }
+
   return {
     toMain,
     back,
@@ -119,6 +123,7 @@ const useCustomRouter = () => {
     movePageWithTokenPath,
     movePageWithPoolPath,
     movePageWithPositionId,
+    moveRewardTokenSwapPage,
     query: router.query,
     asPath: router.asPath,
     pathname: router.pathname,

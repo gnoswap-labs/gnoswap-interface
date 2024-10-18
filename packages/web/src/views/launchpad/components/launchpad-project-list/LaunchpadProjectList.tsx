@@ -13,6 +13,7 @@ interface LaunchpadProjectListProps {
   keyword: string;
 
   moveProjectDetail: (poolId: string) => void;
+  moveRewardTokenSwapPage: (path: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -22,6 +23,7 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
   isFetched,
   keyword,
   moveProjectDetail,
+  moveRewardTokenSwapPage,
   search,
 }) => {
   return (
@@ -32,6 +34,7 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
         projects={projects}
         isFetched={isFetched}
         moveProjectDetail={moveProjectDetail}
+        moveRewardTokenSwapPage={moveRewardTokenSwapPage}
       />
     </ProjectListWrapper>
   );
