@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import BigNumber from "bignumber.js";
 
 import { LaunchpadState } from "@states/index";
@@ -19,16 +19,22 @@ import { useTranslation } from "react-i18next";
 import { useLaunchpadModal } from "./use-launchpad-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { formatPrice } from "@utils/new-number-utils";
+import { useGetMyDelegation } from "@query/governance";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
   | "SWITCH_NETWORK"
   | "ENTER_AMOUNT"
   | "INSUFFICIENT_BALANCE"
+  | "IS_NOT_DEPOSIT_ALLOWED"
   | "DEPOSIT";
 
 export const useLaunchpadHandler = () => {
   const participateAmount = useAtomValue(LaunchpadState.participateAmount);
+  const depositConditions = useAtomValue(LaunchpadState.depositConditions);
+  const [, setIsShowConditionTooltip] = useAtom(
+    LaunchpadState.isShowConditionTooltip,
+  );
 
   const {
     connected: connectedWallet,
@@ -37,6 +43,7 @@ export const useLaunchpadHandler = () => {
     switchNetwork,
   } = useWallet();
   const { displayBalanceMap } = useTokenData();
+
   const { openLaunchpadClaimAllModal, openLaunchpadWaitingConfirmationModal } =
     useLaunchpadModal();
   const { launchpadRepository } = useGnoswapContext();
@@ -44,6 +51,10 @@ export const useLaunchpadHandler = () => {
   const { data: tokenPriceMap } = useGetAllTokenPrices();
   const { t } = useTranslation();
   const { openModal } = useConnectWalletModal();
+  const { data: myDelegationInfo } = useGetMyDelegation({
+    address: account?.address || "",
+  });
+  const xGnsBalance = myDelegationInfo?.votingWeight;
 
   const [openedConfirmModal] = useState(false);
   const { processTx } = useBroadcastHandler();
@@ -73,6 +84,16 @@ export const useLaunchpadHandler = () => {
 
     return amountValueA.isGreaterThan(amountValueB) ? 1 : -1;
   }
+
+  // Variables to determine if conditions are met to make a deposit
+  const isDepositAllowed = depositConditions.every(condition => {
+    if (condition.tokenPath === "gno.land/r/gnoswap/v2/gov/xgns") {
+      return Number(xGnsBalance) >= condition.leastTokenAmount;
+    } else {
+      const balance = displayBalanceMap[condition.tokenPath] || 0;
+      return balance >= condition.leastTokenAmount;
+    }
+  });
 
   /**
    * Deposit GNS tokens to Launchpad.
@@ -282,6 +303,9 @@ export const useLaunchpadHandler = () => {
     if (compareAmountFn(participateAmount, tokenGnsBalance) > 0) {
       return "INSUFFICIENT_BALANCE";
     }
+    if (!isDepositAllowed) {
+      return "IS_NOT_DEPOSIT_ALLOWED";
+    }
     return "DEPOSIT";
   }, [connectedWallet, participateAmount, isSwitchNetwork, tokenGnsBalance]);
 
@@ -296,13 +320,14 @@ export const useLaunchpadHandler = () => {
       case "INSUFFICIENT_BALANCE":
         return "Insufficient Balance";
       case "DEPOSIT":
+      case "IS_NOT_DEPOSIT_ALLOWED":
       default:
         return "Deposit Now";
     }
   }, [depositButtonState, t]);
 
   const isAvailableDeposit = useMemo(() => {
-    return depositButtonState === "DEPOSIT";
+    return ["DEPOSIT", "IS_NOT_DEPOSIT_ALLOWED"].includes(depositButtonState);
   }, [depositButtonState]);
 
   const openConnectWallet = useCallback(() => {
@@ -317,6 +342,14 @@ export const useLaunchpadHandler = () => {
     openLaunchpadWaitingConfirmationModal();
   }, [openLaunchpadWaitingConfirmationModal]);
 
+  const showConditionTooltip = useCallback(() => {
+    setIsShowConditionTooltip(true);
+  }, []);
+
+  const hideConditionTooltip = useCallback(() => {
+    setIsShowConditionTooltip(false);
+  }, []);
+
   return {
     deposit,
     claim,
@@ -330,5 +363,8 @@ export const useLaunchpadHandler = () => {
     openLaunchpadClaimAllAction,
     openLaunchpadWaitingConfirmationAction,
     isAvailableDeposit,
+    isDepositAllowed,
+    showConditionTooltip,
+    hideConditionTooltip,
   };
 };

@@ -1,7 +1,7 @@
 export type TierType = "TIER30" | "TIER90" | "TIER180" | null | undefined;
 
-export const getTierNumber = (tier: TierType): number | null => {
-  if (!tier) return null;
+export const getTierNumber = (tier: TierType): number => {
+  if (!tier) return 0;
   return parseInt(tier.replace("TIER", ""));
 };
 

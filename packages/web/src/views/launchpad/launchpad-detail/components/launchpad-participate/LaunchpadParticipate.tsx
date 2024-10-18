@@ -1,6 +1,6 @@
 import React from "react";
 import BigNumber from "bignumber.js";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 import { LaunchpadState } from "@states/index";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
@@ -19,6 +19,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -39,6 +40,10 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   const [participateAmount, setParticipateAmount] = useAtom(
     LaunchpadState.participateAmount,
   );
+  const isShowConditionTooltip = useAtomValue(
+    LaunchpadState.isShowConditionTooltip,
+  );
+
   const {
     connectedWallet,
     depositButtonText,
@@ -46,6 +51,9 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     isSwitchNetwork,
     switchNetwork,
     isAvailableDeposit,
+    isDepositAllowed,
+    showConditionTooltip,
+    hideConditionTooltip,
   } = useLaunchpadHandler();
   const { tokenPrices, displayBalanceMap } = useTokenData();
 
@@ -92,9 +100,18 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     [participateAmount, tokenPrices],
   );
 
+  // Initialize Page State
+  React.useEffect(() => {
+    hideConditionTooltip();
+    setParticipateAmount("");
+  }, []);
+
   return (
     <LaunchpadParticipateWrapper>
-      <div className="participate-header">Participate</div>
+      <div className="participate-header">
+        <div>Participate</div>
+        {isShowConditionTooltip && <DepositConditionsTooltip />}
+      </div>
 
       <div className="participate-input-wrapper">
         <div className="participate-input-amount">
@@ -158,10 +175,12 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           isSwitchNetwork={isSwitchNetwork}
           connectedWallet={connectedWallet}
           status={status}
+          isDepositAllowed={isDepositAllowed}
           text={depositButtonText}
           openConnectWallet={openConnectWallet}
           switchNetwork={switchNetwork}
           openLaunchpadDepositAction={openLaunchpadDepositModal}
+          showConditionTooltip={showConditionTooltip}
         />
       </div>
     </LaunchpadParticipateWrapper>
@@ -174,10 +193,12 @@ interface DepositButtonProps {
   isSwitchNetwork: boolean;
   isAvailableDeposit: boolean;
   status: string;
+  isDepositAllowed: boolean;
 
   openConnectWallet: () => void;
   openLaunchpadDepositAction: () => void;
   switchNetwork: () => void;
+  showConditionTooltip: () => void;
 }
 
 const DepositButton: React.FC<DepositButtonProps> = ({
@@ -186,9 +207,11 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   openConnectWallet,
   isSwitchNetwork,
   status,
+  isDepositAllowed,
   isAvailableDeposit,
   switchNetwork,
   openLaunchpadDepositAction,
+  showConditionTooltip,
 }) => {
   const defaultStyle = {
     fullWidth: true,
@@ -223,6 +246,16 @@ const DepositButton: React.FC<DepositButtonProps> = ({
     );
   }
 
+  if (!isDepositAllowed) {
+    return (
+      <Button
+        className="button-deposit"
+        text={text}
+        style={defaultStyle}
+        onClick={showConditionTooltip}
+      />
+    );
+  }
   return (
     <Button
       className="button-deposit"

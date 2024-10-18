@@ -11,6 +11,7 @@ import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/Launch
 import { Divider } from "@components/common/divider/divider";
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 
 interface LaunchpadPoolListCardProps {
   data: LaunchpadPoolModel;
@@ -26,11 +27,19 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
   rewardInfo,
   selectProjectPool,
 }) => {
+  const isShowConditionTooltip = useAtomValue(
+    LaunchpadState.isShowConditionTooltip,
+  );
   const currentPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
+
+  const isActiveCard = React.useMemo(() => {
+    return currentPoolId === data.id;
+  }, [currentPoolId]);
+
   return (
     <CardWrapper
       className={cx({
-        active: currentPoolId === data.id,
+        active: isActiveCard,
         ongoing: data.status === "ONGOING",
       })}
       onClick={() => {
@@ -40,8 +49,11 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
       }}
     >
       <div className="card-header">
-        <span className="title">Pool {idx}</span>
-        <LaunchpadPoolTierChip poolTier={data.poolTier} />
+        <div className="card-header-title">
+          <span className="title">Pool {idx}</span>
+          <LaunchpadPoolTierChip poolTier={data.poolTier} />
+        </div>
+        {isActiveCard && isShowConditionTooltip && <DepositConditionsTooltip />}
       </div>
 
       <div className="card-description">

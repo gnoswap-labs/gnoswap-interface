@@ -8,6 +8,7 @@ export const LaunchpadParticipateWrapper = styled.div`
   gap: 16px;
   width: 100%;
   .participate-header {
+    ${mixins.flexbox("row", "center", "space-between")}
     color: ${({ theme }) => theme.color.text02};
     width: 100%;
     font-size: 18px;

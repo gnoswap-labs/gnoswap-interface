@@ -57,6 +57,7 @@ const LaunchpadDetail: React.FC = () => {
   const [selectPoolId, setSelectPoolId] = useAtom(
     LaunchpadState.selectLaunchpadPool,
   );
+  const [, setDepositConditions] = useAtom(LaunchpadState.depositConditions);
 
   const router = useCustomRouter();
   const projectPath = router.getProjectPath();
@@ -193,6 +194,15 @@ const LaunchpadDetail: React.FC = () => {
     account?.address as string,
     { enabled: !!projectPath && !!account?.address },
   );
+
+  React.useEffect(() => {
+    if (projectDetailData && projectDetailData.conditions.length === 0) {
+      setDepositConditions([]);
+    }
+    if (projectDetailData && projectDetailData.conditions.length > 0) {
+      setDepositConditions(projectDetailData.conditions);
+    }
+  }, [projectDetailData, projectPath]);
 
   return (
     <LaunchpadDetailLayout

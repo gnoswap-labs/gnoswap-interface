@@ -18,9 +18,13 @@ export const CardWrapper = styled.div`
   }
 
   .card-header {
-    ${mixins.flexbox("row", "center", "flex-start")}
-    gap: 8px;
+    ${mixins.flexbox("row", "center", "space-between")}
     width: 100%;
+    .card-header-title {
+      ${mixins.flexbox("row", "center", "flex-start")}
+      gap: 8px;
+      width: 100%;
+    }
     .title {
       color: ${({ theme }) => theme.color.text02};
       font-size: 22px;
