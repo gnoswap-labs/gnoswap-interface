@@ -3,9 +3,10 @@
  */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
+import Image from "next/image";
 
-/* eslint-disable @next/next/no-img-element */
 import { ThemeKeys } from "@styles/ThemeTypes";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface IconLaunchpadMainProps {
   className?: string;
@@ -24,12 +25,33 @@ const IconLaunchpadMain: React.FC<IconLaunchpadMainProps> = React.memo(
      * };
      */
 
+    const { breakpoint } = useWindowSize();
+
+    const getImageSize = () => {
+      switch (breakpoint) {
+        case "web":
+          return { width: 435, height: 600 };
+        case "tablet":
+          return { width: 334, height: 460 };
+        case "mobile":
+          return { width: 195, height: 268 };
+        default:
+          return { width: 334, height: 460 };
+      }
+    };
+
+    const { width, height } = getImageSize();
+
     return (
-      <img
-        src="/img-launchpad.png"
-        alt="launchpad-main-img"
-        className={className}
-        // style={styleObject}
+      <Image
+        src={"/img-launchpad.png"}
+        alt="launchpad-main-image"
+        width={width}
+        height={height}
+        style={{
+          objectFit: "cover",
+        }}
+        priority
       />
     );
   },
