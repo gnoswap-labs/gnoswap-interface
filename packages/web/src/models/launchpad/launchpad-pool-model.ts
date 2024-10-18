@@ -19,9 +19,15 @@ export interface LaunchpadPoolModel {
 
   createTime: string;
 
+  createBlockHeight: number;
+
   startTime: string;
+
+  startBlockHeight: number;
 
   endTime: string;
 
-  claimableTime: string;
+  endBlockHeight: number;
+
+  claimableThreshold: number;
 }

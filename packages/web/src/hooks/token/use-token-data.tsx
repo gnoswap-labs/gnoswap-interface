@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
-import { GNOT_TOKEN } from "@common/values/token-constant";
+import { GNOT_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -162,6 +162,22 @@ export const useTokenData = () => {
       .slice(0, 3);
   }, [tokenPrices, tokens]);
 
+  const getTokenSymbol = useCallback(
+    (tokenPath: string): string | null => {
+      if (tokenPath === XGNS_TOKEN.path) {
+        return XGNS_TOKEN.symbol;
+      }
+
+      const token = tokens.find(token => token.path === tokenPath);
+      if (token) {
+        return token.symbol;
+      }
+
+      return null;
+    },
+    [tokens],
+  );
+
   const getTokenUSDPrice = useCallback(
     (tokenAId: string, amount: bigint | string | number) => {
       const tokenUSDPrice = tokenPrices[tokenAId]?.usd || "0";
@@ -270,6 +286,7 @@ export const useTokenData = () => {
     balances,
     trendingTokens,
     recentlyAddedTokens,
+    getTokenSymbol,
     getTokenUSDPrice,
     getTokenPriceRate,
     updateTokens,

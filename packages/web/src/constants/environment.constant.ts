@@ -22,6 +22,7 @@ export const DEFAULT_CHAIN_SCANNER_URL =
 export const WRAPPED_GNOT_PATH =
   process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 export const GNS_TOKEN_PATH = process.env.NEXT_PUBLIC_GNS_TOKEN_PATH || "";
+export const XGNS_TOKEN_PATH = process.env.NEXT_PUBLIC_XGNS_TOKEN_PATH || "";
 
 export const PACKAGE_GNOSWAP_CONST_PATH =
   process.env.NEXT_PUBLIC_PACKAGE_GNOSWAP_CONST_PATH || "";

@@ -1,10 +1,13 @@
+import { useCallback, useMemo, useState } from "react";
+import { useAtom, useAtomValue } from "jotai";
 import BigNumber from "bignumber.js";
-import { useState } from "react";
 
+import { LaunchpadState } from "@states/index";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { useGetLastedBlockHeight } from "@query/pools";
@@ -12,17 +15,84 @@ import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import { useTranslation } from "react-i18next";
+import { useLaunchpadModal } from "./use-launchpad-modal";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { formatPrice } from "@utils/new-number-utils";
+import { useGetMyDelegation } from "@query/governance";
+
+type DepositButtonStateType =
+  | "WALLET_LOGIN"
+  | "SWITCH_NETWORK"
+  | "ENTER_AMOUNT"
+  | "INSUFFICIENT_BALANCE"
+  | "IS_NOT_DEPOSIT_ALLOWED"
+  | "DEPOSIT";
 
 export const useLaunchpadHandler = () => {
-  const { account } = useWallet();
+  const participateAmount = useAtomValue(LaunchpadState.participateAmount);
+  const depositConditions = useAtomValue(LaunchpadState.depositConditions);
+  const [, setIsShowConditionTooltip] = useAtom(
+    LaunchpadState.isShowConditionTooltip,
+  );
+
+  const {
+    connected: connectedWallet,
+    account,
+    isSwitchNetwork,
+    switchNetwork,
+  } = useWallet();
+  const { displayBalanceMap } = useTokenData();
+
+  const { openLaunchpadWaitingConfirmationModal } = useLaunchpadModal();
   const { launchpadRepository } = useGnoswapContext();
   const { data: blockHeight } = useGetLastedBlockHeight();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
+  const { t } = useTranslation();
+  const { openModal } = useConnectWalletModal();
+  const { data: myDelegationInfo } = useGetMyDelegation({
+    address: account?.address || "",
+  });
+  const xGnsBalance = myDelegationInfo?.votingWeight;
 
   const [openedConfirmModal] = useState(false);
   const { processTx } = useBroadcastHandler();
 
   usePreventScroll(openedConfirmModal);
+
+  const tokenGnsBalance = useMemo(() => {
+    if (isSwitchNetwork) return "-";
+
+    return formatPrice(displayBalanceMap?.[GNS_TOKEN.path], {
+      isKMB: false,
+      usd: false,
+    });
+  }, [isSwitchNetwork, displayBalanceMap]);
+
+  // Util function
+  function compareAmountFn(
+    amountA: string | number | bigint,
+    amountB: string | number | bigint,
+  ) {
+    const amountValueA = BigNumber(`${amountA}`.replace(/,/g, ""));
+    const amountValueB = BigNumber(`${amountB}`.replace(/,/g, ""));
+
+    if (amountValueA.isEqualTo(amountValueB)) {
+      return 0;
+    }
+
+    return amountValueA.isGreaterThan(amountValueB) ? 1 : -1;
+  }
+
+  // Variables to determine if conditions are met to make a deposit
+  const isDepositAllowed = depositConditions.every(condition => {
+    if (condition.tokenPath === "gno.land/r/gnoswap/v2/gov/xgns") {
+      return Number(xGnsBalance) >= condition.leastTokenAmount;
+    } else {
+      const balance = displayBalanceMap[condition.tokenPath] || 0;
+      return balance >= condition.leastTokenAmount;
+    }
+  });
 
   /**
    * Deposit GNS tokens to Launchpad.
@@ -113,12 +183,19 @@ export const useLaunchpadHandler = () => {
       tokenAAmount: usdValue,
     };
 
-    const collectFn = isWithdraw
-      ? launchpadRepository.collectRewardWithDepositByDepositId
-      : launchpadRepository.collectRewardByDepositId;
-
     processTx(
-      () => collectFn(participationInfo.depositId, account.address),
+      () => {
+        if (isWithdraw) {
+          return launchpadRepository.collectRewardWithDepositByDepositId(
+            participationInfo.depositId,
+            account.address,
+          );
+        }
+        return launchpadRepository.collectRewardByDepositId(
+          participationInfo.depositId,
+          account.address,
+        );
+      },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
       messageData,
       response => {
@@ -154,10 +231,6 @@ export const useLaunchpadHandler = () => {
 
     const participationInfo = participationInfos[0];
 
-    const collectFn = isWithdraw
-      ? launchpadRepository.collectRewardWithDepositByProjectId
-      : launchpadRepository.collectRewardByProjectId;
-
     const gnsUSDPrice = tokenPriceMap?.[GNS_TOKEN.priceID]?.usd || 0;
     const rewardUSDPrice =
       tokenPriceMap?.[participationInfo.rewardToken?.priceID || "-"]?.usd || 0;
@@ -190,7 +263,18 @@ export const useLaunchpadHandler = () => {
     };
 
     processTx(
-      () => collectFn(participationInfo.projectId, account.address),
+      () => {
+        if (isWithdraw) {
+          return launchpadRepository.collectRewardWithDepositByProjectId(
+            participationInfo.projectId,
+            account.address,
+          );
+        }
+        return launchpadRepository.collectRewardByProjectId(
+          participationInfo.projectId,
+          account.address,
+        );
+      },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
       messageData,
       response => {
@@ -205,9 +289,82 @@ export const useLaunchpadHandler = () => {
     );
   };
 
+  const depositButtonState: DepositButtonStateType = useMemo(() => {
+    if (!connectedWallet) {
+      return "WALLET_LOGIN";
+    }
+    if (isSwitchNetwork) {
+      return "SWITCH_NETWORK";
+    }
+    if (!Number(participateAmount)) {
+      return "ENTER_AMOUNT";
+    }
+    if (compareAmountFn(participateAmount, tokenGnsBalance) > 0) {
+      return "INSUFFICIENT_BALANCE";
+    }
+    if (!isDepositAllowed) {
+      return "IS_NOT_DEPOSIT_ALLOWED";
+    }
+    return "DEPOSIT";
+  }, [
+    connectedWallet,
+    participateAmount,
+    isSwitchNetwork,
+    isDepositAllowed,
+    tokenGnsBalance,
+  ]);
+
+  const depositButtonText = useMemo(() => {
+    switch (depositButtonState) {
+      case "WALLET_LOGIN":
+        return t("common:btn.walletLogin");
+      case "SWITCH_NETWORK":
+        return t("Swap:swapButton.switchNetwork");
+      case "ENTER_AMOUNT":
+        return "Enter Amount";
+      case "INSUFFICIENT_BALANCE":
+        return "Insufficient Balance";
+      case "DEPOSIT":
+      case "IS_NOT_DEPOSIT_ALLOWED":
+      default:
+        return "Deposit Now";
+    }
+  }, [depositButtonState, t]);
+
+  const isAvailableDeposit = useMemo(() => {
+    return ["DEPOSIT", "IS_NOT_DEPOSIT_ALLOWED"].includes(depositButtonState);
+  }, [depositButtonState]);
+
+  const openConnectWallet = useCallback(() => {
+    openModal();
+  }, [openModal]);
+
+  const openLaunchpadWaitingConfirmationAction = useCallback(() => {
+    openLaunchpadWaitingConfirmationModal();
+  }, [openLaunchpadWaitingConfirmationModal]);
+
+  const showConditionTooltip = useCallback(() => {
+    setIsShowConditionTooltip(true);
+  }, [setIsShowConditionTooltip]);
+
+  const hideConditionTooltip = useCallback(() => {
+    setIsShowConditionTooltip(false);
+  }, [setIsShowConditionTooltip]);
+
   return {
     deposit,
     claim,
     claimAll,
+    connectedWallet,
+    depositButtonState,
+    depositButtonText,
+    openConnectWallet,
+    isSwitchNetwork,
+    switchNetwork,
+    openLaunchpadWaitingConfirmationAction,
+    isAvailableDeposit,
+    isDepositAllowed,
+    showConditionTooltip,
+    hideConditionTooltip,
   };
 };
