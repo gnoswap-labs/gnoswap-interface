@@ -1,18 +1,34 @@
 import React from "react";
 
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
-import { LaunchpadParticipationModel } from "@models/launchpad";
+import {
+  LaunchpadParticipationModel,
+  LaunchpadPoolModel,
+} from "@models/launchpad";
 
 import { MyParticipationWrapper } from "./LaunchpadMyParticipation.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LaunchpadMyParticipationBox from "./launchpad-my-participation-box/LaunchpadMyParticipationBox";
+import { useLaunchpadClaimAllModal } from "../../hooks/use-launchpad-claim-all-modal";
 
 interface LaunchpadMyParticipationProps {
+  poolInfos: LaunchpadPoolModel[];
   data: LaunchpadParticipationModel[];
+
+  refetch: () => Promise<void>;
 }
 
-const LaunchpadMyParticipation = ({ data }: LaunchpadMyParticipationProps) => {
-  const { claim, claimAll } = useLaunchpadHandler();
+const LaunchpadMyParticipation = ({
+  poolInfos,
+  data,
+  refetch,
+}: LaunchpadMyParticipationProps) => {
+  const { claim } = useLaunchpadHandler();
+  const { openLaunchpadClaimAllModal } = useLaunchpadClaimAllModal({
+    data,
+    poolInfos,
+    refetch,
+  });
 
   const handleClickClaim = React.useCallback(
     (data: LaunchpadParticipationModel) => {
@@ -24,10 +40,8 @@ const LaunchpadMyParticipation = ({ data }: LaunchpadMyParticipationProps) => {
   );
 
   const handleClickClaimAll = React.useCallback(() => {
-    claimAll(data, async () => {
-      console.log("end Claim All");
-    });
-  }, [claimAll]);
+    openLaunchpadClaimAllModal();
+  }, [data, openLaunchpadClaimAllModal]);
 
   return (
     <MyParticipationWrapper>

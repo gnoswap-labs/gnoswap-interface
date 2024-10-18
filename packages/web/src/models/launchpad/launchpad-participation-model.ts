@@ -17,6 +17,8 @@ export interface LaunchpadParticipationModel {
 
   rewardToken: TokenModel | null;
 
+  rewardTokenPath: string;
+
   createTime: string;
 
   startTime: string;

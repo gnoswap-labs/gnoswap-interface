@@ -30,6 +30,12 @@ export const useLaunchpadDepositConfirmModal = ({
   const projectPath = router.getProjectPath();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
+
+  const close = React.useCallback(() => {
+    setOpenedModal(false);
+    setModalContent(null);
+  }, [setModalContent, setOpenedModal]);
+
   const openLaunchpadDepositModal = React.useCallback(() => {
     setOpenedModal(true);
     setModalContent(
@@ -39,14 +45,19 @@ export const useLaunchpadDepositConfirmModal = ({
         rewardInfo={rewardInfo}
         projectPath={projectPath || ""}
         refetch={refetch}
+        close={close}
       />,
     );
-  }, [participateAmount, poolInfo, rewardInfo, projectPath, refetch]);
-
-  // const close = React.useCallback(() => {
-  //   setOpenedModal(false);
-  //   setModalContent(null);
-  // }, [setModalContent, setOpenedModal]);
+  }, [
+    participateAmount,
+    poolInfo,
+    rewardInfo,
+    projectPath,
+    refetch,
+    close,
+    setModalContent,
+    setOpenedModal,
+  ]);
 
   return { openLaunchpadDepositModal };
 };

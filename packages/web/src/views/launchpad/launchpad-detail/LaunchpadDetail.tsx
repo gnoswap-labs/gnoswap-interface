@@ -202,7 +202,7 @@ const LaunchpadDetail: React.FC = () => {
     if (projectDetailData && projectDetailData.conditions.length > 0) {
       setDepositConditions(projectDetailData.conditions);
     }
-  }, [projectDetailData, projectPath]);
+  }, [projectDetailData, projectPath, setDepositConditions]);
 
   return (
     <LaunchpadDetailLayout
@@ -247,7 +247,11 @@ const LaunchpadDetail: React.FC = () => {
         />
       }
       myParticipation={
-        <LaunchpadMyParticipationContainer data={myParticipationData || []} />
+        <LaunchpadMyParticipationContainer
+          poolInfos={projectDetailData?.pools || []}
+          data={myParticipationData || []}
+          refetch={refetchProjectDetail}
+        />
       }
       clickHere={<LaunchpadDetailClickHereContainer />}
       footer={<Footer />}

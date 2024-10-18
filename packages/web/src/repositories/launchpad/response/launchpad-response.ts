@@ -113,6 +113,8 @@ export interface LaunchpadParticipationResponse {
 
   rewardToken: string;
 
+  rewardTokenPath: string;
+
   createTime: string;
 
   startTime: string;

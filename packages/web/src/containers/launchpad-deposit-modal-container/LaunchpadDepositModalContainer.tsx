@@ -11,6 +11,7 @@ interface LaunchpadDepositModalContainerProps {
   projectPath: string;
 
   refetch: () => Promise<void>;
+  close: () => void;
 }
 
 const LaunchpadDepositModalContainer = ({
@@ -19,6 +20,7 @@ const LaunchpadDepositModalContainer = ({
   rewardInfo,
   projectPath,
   refetch,
+  close,
 }: LaunchpadDepositModalContainerProps) => {
   return (
     <LaunchpadDepositModal
@@ -27,6 +29,7 @@ const LaunchpadDepositModalContainer = ({
       rewardInfo={rewardInfo}
       projectPath={projectPath}
       refetch={refetch}
+      close={close}
     />
   );
 };

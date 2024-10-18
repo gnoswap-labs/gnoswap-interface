@@ -44,8 +44,7 @@ export const useLaunchpadHandler = () => {
   } = useWallet();
   const { displayBalanceMap } = useTokenData();
 
-  const { openLaunchpadClaimAllModal, openLaunchpadWaitingConfirmationModal } =
-    useLaunchpadModal();
+  const { openLaunchpadWaitingConfirmationModal } = useLaunchpadModal();
   const { launchpadRepository } = useGnoswapContext();
   const { data: blockHeight } = useGetLastedBlockHeight();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
@@ -307,7 +306,13 @@ export const useLaunchpadHandler = () => {
       return "IS_NOT_DEPOSIT_ALLOWED";
     }
     return "DEPOSIT";
-  }, [connectedWallet, participateAmount, isSwitchNetwork, tokenGnsBalance]);
+  }, [
+    connectedWallet,
+    participateAmount,
+    isSwitchNetwork,
+    isDepositAllowed,
+    tokenGnsBalance,
+  ]);
 
   const depositButtonText = useMemo(() => {
     switch (depositButtonState) {
@@ -334,21 +339,17 @@ export const useLaunchpadHandler = () => {
     openModal();
   }, [openModal]);
 
-  const openLaunchpadClaimAllAction = useCallback(() => {
-    openLaunchpadClaimAllModal();
-  }, [openLaunchpadClaimAllModal]);
-
   const openLaunchpadWaitingConfirmationAction = useCallback(() => {
     openLaunchpadWaitingConfirmationModal();
   }, [openLaunchpadWaitingConfirmationModal]);
 
   const showConditionTooltip = useCallback(() => {
     setIsShowConditionTooltip(true);
-  }, []);
+  }, [setIsShowConditionTooltip]);
 
   const hideConditionTooltip = useCallback(() => {
     setIsShowConditionTooltip(false);
-  }, []);
+  }, [setIsShowConditionTooltip]);
 
   return {
     deposit,
@@ -360,7 +361,6 @@ export const useLaunchpadHandler = () => {
     openConnectWallet,
     isSwitchNetwork,
     switchNetwork,
-    openLaunchpadClaimAllAction,
     openLaunchpadWaitingConfirmationAction,
     isAvailableDeposit,
     isDepositAllowed,

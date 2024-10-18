@@ -27,6 +27,7 @@ interface LaunchpadDepositModalProps {
   projectPath: string;
 
   refetch: () => Promise<void>;
+  close: () => void;
 }
 
 const LaunchpadDepositModal = ({
@@ -35,6 +36,7 @@ const LaunchpadDepositModal = ({
   rewardInfo,
   projectPath,
   refetch,
+  close,
 }: LaunchpadDepositModalProps) => {
   const now = new Date();
   const claimableTime = poolInfo?.claimableThreshold
@@ -47,13 +49,14 @@ const LaunchpadDepositModal = ({
 
   const confirm = React.useCallback(() => {
     deposit(`${projectPath}:${poolDuration}`, depositAmount, refetch);
-  }, [projectPath, depositAmount, refetch]);
+  }, [projectPath, depositAmount, deposit, poolDuration, refetch]);
+
   return (
     <LaunchpadDepositModalWrapper>
       <div className="modal-body">
         <div className="header">
           <h6>Confirm Deposit</h6>
-          <div className="close-wrap">
+          <div className="close-wrap" onClick={close}>
             <IconClose className="close-icon" />
           </div>
         </div>
