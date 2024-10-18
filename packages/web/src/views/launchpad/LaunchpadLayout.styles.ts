@@ -105,9 +105,12 @@ export const LaunchpadLayoutWrapper = styled.div`
       color: var(--Global-Color-White, #fff);
       gap: 8px;
       border-radius: 8px;
-      padding: 16px;
+      padding: 16px 18.5px;
       &:hover {
-        background-color: ${({ theme }) => theme.color.backgroundGradient};
+        background-color: ${({ theme }) =>
+          theme.themeKey === "dark"
+            ? theme.color.backgroundGradient
+            : theme.color.background04Hover};
       }
     }
   }
