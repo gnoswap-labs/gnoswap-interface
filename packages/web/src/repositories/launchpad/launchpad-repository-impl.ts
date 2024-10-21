@@ -194,14 +194,14 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       makeTransactionMessage({
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
-        func: "CollectDepositGnsByProjectId",
+        func: "CollectRewardByProjectId",
         args: [projectId],
         caller,
       }),
       makeTransactionMessage({
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
-        func: "CollectRewardByProjectId",
+        func: "CollectDepositGnsByProjectId",
         args: [projectId],
         caller,
       }),
@@ -227,14 +227,14 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       makeTransactionMessage({
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
-        func: "CollectDepositGnsByDepositId",
+        func: "CollectRewardByDepositId",
         args: [depositId],
         caller,
       }),
       makeTransactionMessage({
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
-        func: "CollectRewardByDepositId",
+        func: "CollectDepositGnsByDepositId",
         args: [depositId],
         caller,
       }),
