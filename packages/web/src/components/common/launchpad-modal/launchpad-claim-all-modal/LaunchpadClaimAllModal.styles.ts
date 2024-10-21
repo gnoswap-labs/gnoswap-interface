@@ -62,7 +62,7 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
             theme.themeKey === "dark" ? theme.color.backgroundOpacity : ""};
           padding: 16px;
           .data-row {
-            ${mixins.flexbox("row", "center", "space-between")};
+            ${mixins.flexbox("row", "flex-start", "space-between")};
             width: 100%;
             font-size: 14px;
             font-weight: 400;

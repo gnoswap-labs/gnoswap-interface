@@ -1,5 +1,6 @@
 import React from "react";
 
+import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 import {
   LaunchpadParticipationModel,
   LaunchpadPoolModel,
@@ -10,6 +11,7 @@ import LaunchpadClaimAllModal from "@components/common/launchpad-modal/launchpad
 interface LaunchpadClaimAllModalContainerProps {
   poolInfos: LaunchpadPoolModel[];
   data: LaunchpadParticipationModel[];
+  rewardInfo: ProjectRewardInfoModel;
 
   refetch: () => Promise<void>;
   close: () => void;
@@ -18,6 +20,7 @@ interface LaunchpadClaimAllModalContainerProps {
 const LaunchpadClaimAllModalContainer = ({
   data,
   poolInfos,
+  rewardInfo,
   refetch,
   close,
 }: LaunchpadClaimAllModalContainerProps) => {
@@ -25,6 +28,7 @@ const LaunchpadClaimAllModalContainer = ({
     <LaunchpadClaimAllModal
       data={data}
       poolInfos={poolInfos}
+      rewardInfo={rewardInfo}
       refetch={refetch}
       close={close}
     />

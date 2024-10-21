@@ -5,6 +5,7 @@ import {
   LaunchpadParticipationModel,
   LaunchpadPoolModel,
 } from "@models/launchpad";
+import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 
 import { MyParticipationWrapper } from "./LaunchpadMyParticipation.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -14,6 +15,7 @@ import { useLaunchpadClaimAllModal } from "../../hooks/use-launchpad-claim-all-m
 interface LaunchpadMyParticipationProps {
   poolInfos: LaunchpadPoolModel[];
   data: LaunchpadParticipationModel[];
+  rewardInfo: ProjectRewardInfoModel;
 
   refetch: () => Promise<void>;
 }
@@ -21,12 +23,14 @@ interface LaunchpadMyParticipationProps {
 const LaunchpadMyParticipation = ({
   poolInfos,
   data,
+  rewardInfo,
   refetch,
 }: LaunchpadMyParticipationProps) => {
   const { claim } = useLaunchpadHandler();
   const { openLaunchpadClaimAllModal } = useLaunchpadClaimAllModal({
     data,
     poolInfos,
+    rewardInfo,
     refetch,
   });
 
@@ -41,7 +45,7 @@ const LaunchpadMyParticipation = ({
 
   const handleClickClaimAll = React.useCallback(() => {
     openLaunchpadClaimAllModal();
-  }, [data, openLaunchpadClaimAllModal]);
+  }, [openLaunchpadClaimAllModal]);
 
   return (
     <MyParticipationWrapper>

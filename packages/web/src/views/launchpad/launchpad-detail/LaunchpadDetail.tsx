@@ -251,6 +251,7 @@ const LaunchpadDetail: React.FC = () => {
           poolInfos={projectDetailData?.pools || []}
           data={myParticipationData || []}
           refetch={refetchProjectDetail}
+          rewardInfo={projectRewardInfo}
         />
       }
       clickHere={<LaunchpadDetailClickHereContainer />}

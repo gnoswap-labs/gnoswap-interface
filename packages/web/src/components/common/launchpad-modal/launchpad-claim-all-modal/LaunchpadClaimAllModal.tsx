@@ -4,7 +4,6 @@ import {
   LaunchpadParticipationModel,
   LaunchpadPoolModel,
 } from "@models/launchpad";
-import { useTokenData } from "@hooks/token/use-token-data";
 import { type TierType } from "@utils/launchpad-get-tier-number";
 
 import { LaunchpadClaimAllModalWrapper } from "./LaunchpadClaimAllModal.styles";
@@ -12,10 +11,13 @@ import IconClose from "@components/common/icons/IconCancel";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
+import LaunchpadClaimAmountField from "./launchpad-claim-amount-field/LaunchpadClaimAmountField";
+import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 
 interface LaunchpadClaimAllModalProps {
   data: LaunchpadParticipationModel[];
   poolInfos: LaunchpadPoolModel[];
+  rewardInfo: ProjectRewardInfoModel;
 
   refetch: () => Promise<void>;
   close: () => void;
@@ -24,20 +26,11 @@ interface LaunchpadClaimAllModalProps {
 const LaunchpadClaimAllModal = ({
   data,
   poolInfos,
+  rewardInfo,
   refetch,
   close,
 }: LaunchpadClaimAllModalProps) => {
   const { claimAll } = useLaunchpadHandler();
-  const { getTokenSymbol } = useTokenData();
-
-  const rewardTokenSymbol = React.useMemo(() => {
-    if (data.length === 0) return null;
-
-    const firstPool = data[0];
-    if (!firstPool.rewardTokenPath) return null;
-
-    return getTokenSymbol(firstPool.rewardTokenPath);
-  }, [data, poolInfos, getTokenSymbol]);
 
   const summaryData = React.useMemo(() => {
     const summary: {
@@ -73,7 +66,7 @@ const LaunchpadClaimAllModal = ({
     claimAll(data, async () => {
       refetch();
     });
-  }, [data]);
+  }, [data, claimAll, refetch]);
 
   return (
     <LaunchpadClaimAllModalWrapper>
@@ -86,30 +79,38 @@ const LaunchpadClaimAllModal = ({
         </div>
 
         <div className="content">
-          {Object.entries(summaryData).map(([poolTier, data]) => (
-            <div className="data" key={poolTier}>
-              <div className="data-box">
-                <div className="data-row">
-                  <div className="key">Pool</div>
-                  <div className="value">
-                    <LaunchpadPoolTierChip poolTier={poolTier as TierType} />
-                  </div>
-                </div>
-                <div className="data-row">
-                  <div className="key">Claimable</div>
-                  <div className="value">
-                    {data.claimable} {rewardTokenSymbol}
-                  </div>
-                </div>
-                {data.status === "ENDED" && (
+          {Object.entries(summaryData).map(([poolTier, data]) => {
+            return (
+              <div className="data" key={poolTier}>
+                <div className="data-box">
                   <div className="data-row">
-                    <div className="key">Deposit Amount</div>
-                    <div className="value">{data.depositAmount}</div>
+                    <div className="key">Pool</div>
+                    <div className="value">
+                      <LaunchpadPoolTierChip poolTier={poolTier as TierType} />
+                    </div>
                   </div>
-                )}
+                  <div className="data-row">
+                    <div className="key">Claimable</div>
+                    <LaunchpadClaimAmountField
+                      amount={data.claimable}
+                      rewardInfo={rewardInfo}
+                      type={"CLAIMABLE"}
+                    />
+                  </div>
+                  {data.status === "ENDED" && (
+                    <div className="data-row">
+                      <div className="key">Deposit Amount</div>
+                      <LaunchpadClaimAmountField
+                        amount={data.depositAmount}
+                        rewardInfo={rewardInfo}
+                        type={"DEPOSIT"}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="footer">
