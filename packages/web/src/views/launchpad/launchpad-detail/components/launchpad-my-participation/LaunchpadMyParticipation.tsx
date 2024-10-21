@@ -11,11 +11,15 @@ import { MyParticipationWrapper } from "./LaunchpadMyParticipation.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LaunchpadMyParticipationBox from "./launchpad-my-participation-box/LaunchpadMyParticipationBox";
 import { useLaunchpadClaimAllModal } from "../../hooks/use-launchpad-claim-all-modal";
+import LaunchpadMyParticipationUnconnected from "./launchpad-my-participation-unconnected/LaunchpadMyParticipationUnconnected";
+import LaunchpadMyParticipationNoData from "./launchpad-my-participation-no-data/LaunchpadMyParticipationNoData";
 
 interface LaunchpadMyParticipationProps {
   poolInfos: LaunchpadPoolModel[];
   data: LaunchpadParticipationModel[];
   rewardInfo: ProjectRewardInfoModel;
+  connected: boolean;
+  isSwitchNetwork: boolean;
 
   refetch: () => Promise<void>;
 }
@@ -24,6 +28,8 @@ const LaunchpadMyParticipation = ({
   poolInfos,
   data,
   rewardInfo,
+  connected,
+  isSwitchNetwork,
   refetch,
 }: LaunchpadMyParticipationProps) => {
   const { claim } = useLaunchpadHandler();
@@ -46,6 +52,37 @@ const LaunchpadMyParticipation = ({
   const handleClickClaimAll = React.useCallback(() => {
     openLaunchpadClaimAllModal();
   }, [openLaunchpadClaimAllModal]);
+
+  const highestApr = React.useMemo(() => {
+    return poolInfos.reduce((acc, current) => {
+      if (Number(current.apr) > acc) {
+        return Number(current.apr);
+      }
+      return acc;
+    }, Number(poolInfos?.[0]?.apr ?? 0));
+  }, [poolInfos]);
+
+  if (!connected || isSwitchNetwork) {
+    return (
+      <MyParticipationWrapper>
+        <div className="my-participation-header">
+          <h3 className="my-participation-title">My Participation</h3>
+        </div>
+        <LaunchpadMyParticipationUnconnected />
+      </MyParticipationWrapper>
+    );
+  }
+
+  if (connected && data.length === 0) {
+    return (
+      <MyParticipationWrapper>
+        <div className="my-participation-header">
+          <h3 className="my-participation-title">My Participation</h3>
+        </div>
+        <LaunchpadMyParticipationNoData highestApr={highestApr} />
+      </MyParticipationWrapper>
+    );
+  }
 
   return (
     <MyParticipationWrapper>

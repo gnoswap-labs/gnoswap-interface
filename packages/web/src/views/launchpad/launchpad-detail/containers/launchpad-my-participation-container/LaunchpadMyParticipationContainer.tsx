@@ -5,6 +5,7 @@ import {
   LaunchpadPoolModel,
 } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 import LaunchpadMyParticipation from "../../components/launchpad-my-participation/LaunchpadMyParticipation";
 
@@ -22,12 +23,16 @@ const LaunchpadMyParticipationContainer = ({
   rewardInfo,
   refetch,
 }: LaunchpadMyParticipationContainerProps) => {
+  const { connected, isSwitchNetwork } = useWallet();
+
   return (
     <LaunchpadMyParticipation
       poolInfos={poolInfos}
       data={data}
       rewardInfo={rewardInfo}
+      connected={connected}
       refetch={refetch}
+      isSwitchNetwork={isSwitchNetwork}
     />
   );
 };

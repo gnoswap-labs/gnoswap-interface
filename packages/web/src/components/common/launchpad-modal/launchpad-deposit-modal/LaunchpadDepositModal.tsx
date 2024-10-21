@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
@@ -110,9 +111,11 @@ const LaunchpadDepositModal = ({
                 launchpad will result in the loss of your funds.
               </li>
             </ul>
-            <div className="learn-more">
-              Learn More <IconOpenLink size="16" fill="#ff9f0a" />
-            </div>
+            <Link href="https://docs.gnoswap.io/" target="_blank">
+              <div className="learn-more">
+                Learn More <IconOpenLink size="16" fill="#ff9f0a" />
+              </div>
+            </Link>
           </div>
         </div>
         <div className="footer">
