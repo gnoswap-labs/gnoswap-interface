@@ -28,6 +28,7 @@ const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
     >
       <LaunchpadActiveProjectCardTimeChip
         startTime={pools[0].startTime}
+        endTime={pools[0].endTime}
         type={project.status}
       />
       <LaunchpadActiveProjectCardHeader
