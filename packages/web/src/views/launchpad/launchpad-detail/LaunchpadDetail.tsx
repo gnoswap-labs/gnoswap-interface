@@ -8,6 +8,7 @@ import { useGetLaunchpadParticipationInfos } from "@query/launchpad/use-get-laun
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { LaunchpadProjectDetailsModel } from "@models/launchpad";
 import { LaunchpadState } from "@states/index";
+import { useTokenData } from "@hooks/token/use-token-data";
 
 import LaunchpadDetailLayout from "./LaunchpadDetailLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
@@ -58,6 +59,7 @@ const LaunchpadDetail: React.FC = () => {
     LaunchpadState.selectLaunchpadPool,
   );
   const [, setDepositConditions] = useAtom(LaunchpadState.depositConditions);
+  const { updateBalances } = useTokenData();
 
   const router = useCustomRouter();
   const projectPath = router.getProjectPath();
@@ -67,6 +69,8 @@ const LaunchpadDetail: React.FC = () => {
     useGetLaunchpadProjectDetails(projectPath);
   const refetchProjectDetail = async () => {
     await projectDetailRefetch();
+    await myParticipationRefetch();
+    await updateBalances();
   };
   const { isLoading } = useLoading();
   const breadcrumbsSteps = React.useMemo(() => {
@@ -194,11 +198,12 @@ const LaunchpadDetail: React.FC = () => {
   /**
    * @dev Launchpad My Participation section data
    */
-  const { data: myParticipationData } = useGetLaunchpadParticipationInfos(
-    projectPath as string,
-    account?.address as string,
-    { enabled: !!projectPath && !!account?.address },
-  );
+  const { data: myParticipationData, refetch: myParticipationRefetch } =
+    useGetLaunchpadParticipationInfos(
+      projectPath as string,
+      account?.address as string,
+      { enabled: !!projectPath && !!account?.address },
+    );
 
   React.useEffect(() => {
     if (projectDetailData && projectDetailData.conditions.length === 0) {

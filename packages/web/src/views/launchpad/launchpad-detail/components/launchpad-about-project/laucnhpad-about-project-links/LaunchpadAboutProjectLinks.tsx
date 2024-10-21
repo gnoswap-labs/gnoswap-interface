@@ -20,17 +20,25 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
 }) => {
   const excludedLinks = ["rewardTokenLogo"];
 
+  const GNOSCAN_REALM_DETAIL_BASE_URL =
+    "https://gnoscan.io/realms/details?path";
+
   return (
     <div css={wrapper}>
       <div className="contract-path">
         <h3>Realm (Contract) Path</h3>
         {!isLoading && (
-          <button>
-            <span>{path}</span>
-            <div className="icon-wrapper">
-              <IconOpenLink className="link-icon" />
-            </div>
-          </button>
+          <Link
+            href={`${GNOSCAN_REALM_DETAIL_BASE_URL}=${path}`}
+            target="_blank"
+          >
+            <button>
+              <span>{path}</span>
+              <div className="icon-wrapper">
+                <IconOpenLink className="link-icon" />
+              </div>
+            </button>
+          </Link>
         )}
         {isLoading && <div css={pulseSkeletonStyle({ w: "150px", h: 20 })} />}
       </div>
