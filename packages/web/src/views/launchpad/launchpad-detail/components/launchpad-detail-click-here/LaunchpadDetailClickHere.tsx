@@ -12,7 +12,7 @@ const LaunchpadDetailClickHere = () => {
     <DetailClickHereWrapper>
       <LinkButton>
         <span>Swap GNS to participate in the launchpad.</span>
-        <Link href="/swap">
+        <Link href="/swap?to=gno.land/r/gnoswap/v2/gns">
           Click here <IconArrowRight />
         </Link>
       </LinkButton>
