@@ -7,6 +7,7 @@
 import React from "react";
 
 import { ActiveProjectCardHeader } from "./LaunchpadActiveProjectCardHeader.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface LaunchpadActiveProjectCardHeaderProps {
   name: string;
@@ -18,6 +19,7 @@ interface LaunchpadActiveProjectCardHeaderProps {
 const LaunchpadActiveProjectCardHeader: React.FC<
   LaunchpadActiveProjectCardHeaderProps
 > = ({ name, description, rewardTokenSymbol, rewardTokenUrl }) => {
+  console.log(rewardTokenSymbol, rewardTokenUrl, name, "asdasd");
   return (
     <ActiveProjectCardHeader>
       <div className="header-title-wrapper">
@@ -27,7 +29,11 @@ const LaunchpadActiveProjectCardHeader: React.FC<
         <div className="text">{description}</div>
       </div>
       <div className="image-wrapper">
-        <img src={rewardTokenUrl} alt={`${rewardTokenSymbol} symbol image`} />
+        <MissingLogo
+          symbol={rewardTokenSymbol}
+          url={rewardTokenUrl}
+          width={60}
+        />
       </div>
     </ActiveProjectCardHeader>
   );

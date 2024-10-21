@@ -12,6 +12,7 @@ import { Divider } from "@components/common/divider/divider";
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface LaunchpadPoolListCardProps {
   data: LaunchpadPoolModel;
@@ -34,7 +35,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
 
   const isActiveCard = React.useMemo(() => {
     return currentPoolId === data.id;
-  }, [currentPoolId]);
+  }, [currentPoolId, data.id]);
 
   return (
     <CardWrapper
@@ -80,17 +81,17 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
             src="/gns.svg"
             alt={"GNS symbol image"}
           />{" "}
-          {data.depositAmount || "-"}
+          {data.depositAmount || "-"} GNS
         </div>
       </div>
       <div className="data">
         <div className="key">Token Distributed</div>
         <div className="value">
-          <img
-            className="token-image"
-            src={rewardInfo.rewardTokenLogoUrl}
-            alt={`${rewardInfo.rewardTokenSymbol} symbol image`}
-          />{" "}
+          <MissingLogo
+            symbol={rewardInfo.rewardTokenSymbol}
+            width={24}
+            mobileWidth={24}
+          />
           {data.distributedAmount || "-"}
         </div>
       </div>

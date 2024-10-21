@@ -13,6 +13,7 @@ import { LaunchpadPoolModel, LaunchpadProjectModel } from "@models/launchpad";
 import { ProjectInfoWrapper, TableColumn } from "./LaunchpadProjectInfo.styles";
 import LaunchpadProjectInfoChip from "./launchpad-project-info-chip/LaunchpadProjectInfoChip";
 import IconStar from "@components/common/icons/IconStar";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface LaunchpadProjectInfoProps {
   breakpoint: DEVICE_TYPE;
@@ -37,6 +38,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
     rewardTokenSymbol,
     rewardTokenPath,
   } = project;
+  console.log(rewardTokenLogoUrl, "url");
 
   const highestAprPool = pools.reduce((max, current) => {
     if (!current.apr) return max;
@@ -67,10 +69,11 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
   return (
     <ProjectInfoWrapper onClick={() => moveProjectDetail(projectId)}>
       <TableColumn className="left" tdWidth={cellWidths.list[0].width}>
-        <img
-          className="token-symbol-image"
-          src={rewardTokenLogoUrl || ""}
-          alt={`${rewardTokenLogoUrl} symbol image `}
+        <MissingLogo
+          symbol={rewardTokenSymbol}
+          url={rewardTokenLogoUrl || undefined}
+          width={24}
+          mobileWidth={24}
         />
         <span>{name}</span>
         <span className="reward-token-symbol">{rewardTokenSymbol}</span>

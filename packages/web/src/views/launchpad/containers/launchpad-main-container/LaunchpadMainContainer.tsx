@@ -32,8 +32,8 @@ const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
         <div className="launchpad-title-container">
           <h3 className="title">GnoSwap Launchpad&nbsp;</h3>
           <h4 className="sub-title">
-            Where Pioneers and Supporters Unite — Discover <br />
-            the Next Big Thing on gno.land, Powered by $GNS.
+            Where Pioneers and Supporters Unite — Unveil Tomorrow&apos;s <br />
+            Breakthroughs on gno.land, Powered by $GNS.
           </h4>
         </div>
         <div className="launchpad-button-wrapper">

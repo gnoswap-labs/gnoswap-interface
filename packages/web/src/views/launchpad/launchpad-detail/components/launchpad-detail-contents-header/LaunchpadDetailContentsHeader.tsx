@@ -10,6 +10,7 @@ import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 
 import { ContentsHeaderWrapper } from "./LaunchpadDetailContentsHeader.styles";
 import LaunchpadStatusTimeChip from "../common/launchpad-status-time-chip/LaunchpadStatusTimeChip";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface LaunchpadDetailContentsHeaderProps {
   data: {
@@ -27,9 +28,11 @@ const LaunchpadDetailContentsHeader: React.FC<
   return (
     <ContentsHeaderWrapper className="contents-header">
       <div className="symbol-icon">
-        <img
-          src={rewardInfo.rewardTokenLogoUrl}
-          alt={`${rewardInfo.rewardTokenSymbol} symbol image`}
+        <MissingLogo
+          symbol={rewardInfo.rewardTokenSymbol}
+          url={rewardInfo.rewardTokenLogoUrl}
+          width={36}
+          mobileWidth={36}
         />
       </div>
       <div className="project-name">{data.name}</div>

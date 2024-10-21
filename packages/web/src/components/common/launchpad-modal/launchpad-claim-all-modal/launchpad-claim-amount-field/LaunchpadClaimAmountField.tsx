@@ -8,6 +8,7 @@ import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/Launch
 import { convertToKMB } from "@utils/stake-position-utils";
 
 import { ClaimAllFieldWrapper } from "./LaunchpadClaimAmountField.styled";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface LaunchpadClaimAmountFieldProps {
   amount: number;
@@ -80,11 +81,10 @@ const LaunchpadClaimAmountField = ({
     return (
       <ClaimAllFieldWrapper>
         <div className="value-token">
-          <Image
+          <MissingLogo
+            symbol={rewardInfo.rewardTokenSymbol}
+            url={rewardInfo?.rewardTokenLogoUrl}
             width={24}
-            height={24}
-            src={rewardInfo?.rewardTokenLogoUrl}
-            alt={`${rewardInfo.rewardTokenSymbol} token symbol image`}
           />
           {amount} {rewardInfo?.rewardTokenSymbol}
         </div>
