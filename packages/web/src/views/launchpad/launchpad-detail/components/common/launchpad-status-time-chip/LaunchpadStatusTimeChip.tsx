@@ -1,19 +1,22 @@
 import React from "react";
 
+import { PROJECT_STATUS_TYPE } from "@common/values";
+import { StatusTimeChipWrapper } from "./LaunchpadStatusTimeChip.styled";
 import IconTimer from "@components/common/icons/IconTimer";
 
-import { ActiveProjectCardTimeChip } from "./LaunchpadActiveProjectCardTimeChip.styles";
-import { PROJECT_STATUS_TYPE } from "@common/values";
-
-interface LaunchpadActiveProjectCardTimeChipProps {
-  type: PROJECT_STATUS_TYPE;
-  startTime: string;
-  endTime: string;
+interface LaunchpadStatusTimeChipProps {
+  startTime?: string;
+  endTime?: string;
+  status: PROJECT_STATUS_TYPE;
 }
 
-const LaunchpadActiveProjectCardTimeChip: React.FC<
-  LaunchpadActiveProjectCardTimeChipProps
-> = ({ type = PROJECT_STATUS_TYPE.UPCOMING, startTime, endTime }) => {
+const LaunchpadStatusTimeChip = ({
+  startTime,
+  endTime,
+  status,
+}: LaunchpadStatusTimeChipProps) => {
+  if (!startTime || !endTime) return <>-</>;
+
   const getStatusText = (type: PROJECT_STATUS_TYPE) => {
     const now = new Date();
     const start = new Date(startTime);
@@ -49,11 +52,11 @@ const LaunchpadActiveProjectCardTimeChip: React.FC<
     }
   };
   return (
-    <ActiveProjectCardTimeChip type={type}>
-      <IconTimer type={type} />
-      <div>{getStatusText(type)}</div>
-    </ActiveProjectCardTimeChip>
+    <StatusTimeChipWrapper type={status}>
+      <IconTimer type={status} />
+      <div>{getStatusText(status)}</div>
+    </StatusTimeChipWrapper>
   );
 };
 
-export default LaunchpadActiveProjectCardTimeChip;
+export default LaunchpadStatusTimeChip;

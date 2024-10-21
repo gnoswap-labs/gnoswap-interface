@@ -50,7 +50,7 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
             </div>
             <div className="right-section">
               <div className="participate">{participate}</div>
-              {status === "UPCOMING" && (
+              {status !== "UPCOMING" && (
                 <div className="my-participation">{myParticipation}</div>
               )}
               <div className="click-here">{clickHere}</div>

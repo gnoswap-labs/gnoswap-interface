@@ -4,10 +4,10 @@ import { LaunchpadProjectResponse } from "@repositories/launchpad/response";
 
 import { ActiveProjectCardWrapper } from "./LaunchpadActiveProjectCard.styles";
 import LaunchpadActiveProjectCardHeader from "./launchpad-active-project-card-header/LaunchpadActiveProjectCardHeader";
-import LaunchpadActiveProjectCardTimeChip from "./launchpad-active-project-card-time-chip/LaunchpadActiveProjectCardTimeChip";
 import { Divider } from "@components/common/divider/divider";
 import LaunchpadActiveProjectCardData from "./launchpad-active-project-card-data/LaunchpadActiveProjectCardData";
 import { LaunchpadActiveProjectPool } from "@repositories/launchpad/response/get-launchpad-active-projects-response";
+import LaunchpadStatusTimeChip from "@views/launchpad/launchpad-detail/components/common/launchpad-status-time-chip/LaunchpadStatusTimeChip";
 
 interface LaunchpadActiveProjectCardProps {
   project: LaunchpadProjectResponse;
@@ -21,15 +21,19 @@ const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
 }) => {
   const { pools, status, projectId, rewardTokenSymbol, rewardTokenLogoUrl } =
     project;
+
+  const firstPool = pools[0];
+  const lastPool = pools[2];
+
   return (
     <ActiveProjectCardWrapper
       type={status}
       onClick={() => moveProjectDetail(projectId)}
     >
-      <LaunchpadActiveProjectCardTimeChip
-        startTime={pools[0].startTime}
-        endTime={pools[0].endTime}
-        type={project.status}
+      <LaunchpadStatusTimeChip
+        startTime={firstPool.startTime}
+        endTime={lastPool.endTime}
+        status={project.status}
       />
       <LaunchpadActiveProjectCardHeader
         name={project.name}

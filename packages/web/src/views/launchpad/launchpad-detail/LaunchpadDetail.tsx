@@ -85,9 +85,14 @@ const LaunchpadDetail: React.FC = () => {
   /**
    * @dev Launchpad Detail Contents-header section data
    */
+  const projectStartTime = projectDetailData?.pools[0].startTime;
+  const projectEndTime = projectDetailData?.pools[2].endTime;
+
   const contentsHeaderData = {
     name: projectDetailData?.name || "-",
     projectStatus: projectDetailData?.status || null,
+    startTime: projectStartTime,
+    endTime: projectEndTime,
   };
 
   /**
