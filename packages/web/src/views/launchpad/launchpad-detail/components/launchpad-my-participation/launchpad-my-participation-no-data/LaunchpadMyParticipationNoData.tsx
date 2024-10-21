@@ -25,7 +25,7 @@ const LaunchpadMyParticipationNoData = ({
         </div>
         <div className="banner-text-description">now to earn up to</div>
         <div className="banner-text-description">
-          <span>{highestApr || 0} APR</span>
+          <span>{highestApr || 0}% APR</span>
         </div>
       </div>
     </ParticipationNoDataWrapper>
