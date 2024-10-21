@@ -15,11 +15,11 @@ import { capitalize } from "@utils/string-utils";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconInfo from "@components/common/icons/IconInfo";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
+import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -104,7 +104,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   React.useEffect(() => {
     hideConditionTooltip();
     setParticipateAmount("");
-  }, []);
+  }, [hideConditionTooltip, setParticipateAmount]);
 
   return (
     <LaunchpadParticipateWrapper>
@@ -151,13 +151,29 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
-            Rewards Claimable On <IconInfo fill="#596782" size={16} />
+            Rewards Claimable On{" "}
+            <LaunchpadTooltip
+              floatingContent={
+                <>
+                  Rewards will be claimable after this <br />
+                  time.
+                </>
+              }
+            />
           </div>
           <div className="participate-info-value">-</div>
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
-            End Date <IconInfo fill="#596782" size={16} />
+            End Date{" "}
+            <LaunchpadTooltip
+              floatingContent={
+                <>
+                  The launchpad program you selected <br />
+                  ends on this date.
+                </>
+              }
+            />
           </div>
           <div className="participate-info-value">{poolInfo?.endTime}</div>
         </div>

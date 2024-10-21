@@ -2,8 +2,8 @@ import React from "react";
 
 import { ProjectSummaryDataModel } from "../../LaunchpadDetail";
 
-import IconInfo from "@components/common/icons/IconInfo";
 import { LaunchpadProjectSummaryWrapper } from "./LaunchpadProjectSummary.styles";
+import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 
 interface LaunchpadProjectSummaryProps {
   data: ProjectSummaryDataModel;
@@ -18,7 +18,15 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
     <LaunchpadProjectSummaryWrapper>
       <div className="card border">
         <div className="key">
-          Total Allocation <IconInfo size={16} fill={"#596782"} />
+          Total Allocation
+          <LaunchpadTooltip
+            floatingContent={
+              <>
+                The total amount of project tokens <br />
+                allocated for the GnoSwap launchpad.
+              </>
+            }
+          />
         </div>
         <div className="value">
           {data.totalAllocation.toLocaleString()} USDC
@@ -26,13 +34,29 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
       </div>
       <div className="card border">
         <div className="key">
-          Participants <IconInfo size={16} fill={"#596782"} />
+          Participants{" "}
+          <LaunchpadTooltip
+            floatingContent={
+              <>
+                The total number of participants in this <br />
+                launchpad project.
+              </>
+            }
+          />
         </div>
         <div className="value">{data.totalParticipants.toLocaleString()}</div>
       </div>
       <div className="card border">
         <div className="key">
-          Total Deposited <IconInfo size={16} fill={"#596782"} />
+          Total Deposited
+          <LaunchpadTooltip
+            floatingContent={
+              <>
+                The total amount of GNS deposited into <br />
+                this launchpad project.
+              </>
+            }
+          />
         </div>
         <div className="value">
           {data.totalDeposited.toLocaleString()} {tokenSymbol}
@@ -40,7 +64,15 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
       </div>
       <div className="card">
         <div className="key">
-          Tokens Distributed <IconInfo size={16} fill={"#596782"} />
+          Tokens Distributed
+          <LaunchpadTooltip
+            floatingContent={
+              <>
+                The total amount of project tokens <br />
+                distributed to participants.
+              </>
+            }
+          />
         </div>
         <div className="value">
           {data.totalDistributed.toLocaleString()} USDC
