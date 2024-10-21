@@ -81,7 +81,9 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
             src="/gns.svg"
             alt={"GNS symbol image"}
           />{" "}
-          {data.depositAmount || "-"} GNS
+          {data.depositAmount
+            ? `${data.depositAmount.toLocaleString()} GNS`
+            : "-"}
         </div>
       </div>
       <div className="data">
@@ -89,10 +91,15 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
         <div className="value">
           <MissingLogo
             symbol={rewardInfo.rewardTokenSymbol}
+            url={rewardInfo.rewardTokenLogoUrl}
             width={24}
             mobileWidth={24}
           />
-          {data.distributedAmount || "-"}
+          {data.distributedAmount
+            ? `${data.distributedAmount.toLocaleString()} ${
+                rewardInfo.rewardTokenSymbol
+              }`
+            : "-"}
         </div>
       </div>
     </CardWrapper>
