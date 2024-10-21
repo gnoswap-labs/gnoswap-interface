@@ -23,7 +23,7 @@ const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
 
       <section className="main-contents">
         <div className="contents">
-          <div className="description">{data.descriptionDetails}</div>
+          <div className="description">{data.description}</div>
           {/* <div className="show-more">
             show more <IconArrowDown fill="#596782" />
           </div> */}

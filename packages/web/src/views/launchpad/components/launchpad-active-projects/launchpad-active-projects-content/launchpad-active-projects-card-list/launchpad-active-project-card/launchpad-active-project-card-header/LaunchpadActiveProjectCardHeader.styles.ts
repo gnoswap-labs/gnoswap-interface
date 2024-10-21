@@ -16,6 +16,11 @@ export const ActiveProjectCardHeader = styled.div`
       color: ${({ theme }) => theme.color.text05};
       font-size: 14px;
       font-weight: 400;
+      max-width: 480px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   .image-wrapper {
