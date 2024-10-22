@@ -85,7 +85,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
         </div>
         <div className="value">
           {data.totalDistributed
-            ? `${toNumberFormat(data.totalDeposited, 2)} ${tokenSymbol}`
+            ? `${toNumberFormat(data.totalDistributed, 2)} ${tokenSymbol}`
             : "-"}
         </div>
       </div>
