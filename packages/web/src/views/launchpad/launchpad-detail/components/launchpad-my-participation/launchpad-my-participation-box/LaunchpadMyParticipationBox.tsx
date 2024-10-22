@@ -7,6 +7,8 @@ import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import { toNumberFormat } from "@utils/number-utils";
+import { formatRate } from "@utils/new-number-utils";
+import { formatClaimableTime } from "@utils/launchpad-format-claimable-time";
 
 import { Divider } from "@components/common/divider/divider";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
@@ -15,7 +17,6 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { MyParticipationBoxWrapper } from "./LaunchpadMyParticipationBox.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { formatRate } from "@utils/new-number-utils";
 
 interface LaunchpadMyParticipationBoxProps {
   item: LaunchpadParticipationModel;
@@ -94,7 +95,7 @@ const LaunchpadMyParticipationBox = ({
             <div className="participation-box-data">
               <div className="participation-box-data-key">Claimable Date</div>
               <div className="participation-box-data-value">
-                {getDateUtcToLocal(item.claimableTime).value}
+                {formatClaimableTime(item.claimableTime)}
               </div>
             </div>
             <div className="participation-box-data">
