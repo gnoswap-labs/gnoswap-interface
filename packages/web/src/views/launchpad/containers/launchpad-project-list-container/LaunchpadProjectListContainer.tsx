@@ -30,7 +30,10 @@ const LaunchpadProjectListContainer: React.FC = () => {
     return projectList.filter(project => {
       const lowerCaseKeyword = keyword.toLowerCase();
 
-      return project.name.toLowerCase().includes(lowerCaseKeyword);
+      return (
+        project.name.toLowerCase().includes(lowerCaseKeyword) ||
+        project.rewardTokenSymbol.toLowerCase().includes(lowerCaseKeyword)
+      );
     });
   }, [projects, keyword]);
 
