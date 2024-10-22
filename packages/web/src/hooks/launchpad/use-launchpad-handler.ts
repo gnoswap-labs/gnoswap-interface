@@ -289,6 +289,9 @@ export const useLaunchpadHandler = () => {
       emitCallback,
     );
   };
+
+  const DEPOSIT_MIN_AMOUNT = 1;
+
   const depositButtonState: DepositButtonStateType = useMemo(() => {
     if (!connectedWallet) {
       return "WALLET_LOGIN";
@@ -299,11 +302,11 @@ export const useLaunchpadHandler = () => {
     if (!Number(participateAmount)) {
       return "ENTER_AMOUNT";
     }
-    if (Number(participateAmount) < 1) {
-      return "AMOUNT_TOO_LOW";
-    }
     if (compareAmountFn(participateAmount, tokenGnsBalance) > 0) {
       return "INSUFFICIENT_BALANCE";
+    }
+    if (Number(participateAmount) < DEPOSIT_MIN_AMOUNT) {
+      return "AMOUNT_TOO_LOW";
     }
     if (!isDepositAllowed) {
       return "IS_NOT_DEPOSIT_ALLOWED";

@@ -306,6 +306,7 @@ const DepositButton: React.FC<DepositButtonProps> = ({
       />
     );
   }
+
   return (
     <Button
       className="button-deposit"
