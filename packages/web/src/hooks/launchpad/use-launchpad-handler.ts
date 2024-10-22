@@ -25,6 +25,7 @@ type DepositButtonStateType =
   | "WALLET_LOGIN"
   | "SWITCH_NETWORK"
   | "ENTER_AMOUNT"
+  | "AMOUNT_TOO_LOW"
   | "INSUFFICIENT_BALANCE"
   | "IS_NOT_DEPOSIT_ALLOWED"
   | "DEPOSIT";
@@ -298,6 +299,9 @@ export const useLaunchpadHandler = () => {
     if (!Number(participateAmount)) {
       return "ENTER_AMOUNT";
     }
+    if (Number(participateAmount) < 1) {
+      return "AMOUNT_TOO_LOW";
+    }
     if (compareAmountFn(participateAmount, tokenGnsBalance) > 0) {
       return "INSUFFICIENT_BALANCE";
     }
@@ -321,6 +325,8 @@ export const useLaunchpadHandler = () => {
         return t("Swap:swapButton.switchNetwork");
       case "ENTER_AMOUNT":
         return "Enter Amount";
+      case "AMOUNT_TOO_LOW":
+        return "Amount Too Low";
       case "INSUFFICIENT_BALANCE":
         return "Insufficient Balance";
       case "IS_NOT_DEPOSIT_ALLOWED":
