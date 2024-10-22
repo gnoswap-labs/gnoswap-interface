@@ -2,6 +2,7 @@ import React from "react";
 
 import { ProjectSummaryDataModel } from "../../LaunchpadDetail";
 import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
+import { toNumberFormat } from "@utils/number-utils";
 
 import { LaunchpadProjectSummaryWrapper } from "./LaunchpadProjectSummary.styles";
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
@@ -30,7 +31,9 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           />
         </div>
         <div className="value">
-          {data.totalAllocation.toLocaleString()} {tokenSymbol}
+          {data.totalAllocation
+            ? `${toNumberFormat(data.totalAllocation, 2)} ${tokenSymbol}`
+            : "-"}
         </div>
       </div>
       <div className="card border">
@@ -45,7 +48,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             }
           />
         </div>
-        <div className="value">{data.totalParticipants.toLocaleString()}</div>
+        <div className="value">{data.totalParticipants || "-"}</div>
       </div>
       <div className="card border">
         <div className="key">
@@ -60,8 +63,12 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           />
         </div>
         <div className="value">
-          {data.totalDeposited.toLocaleString()}{" "}
-          {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
+          {data.totalDeposited
+            ? `${toNumberFormat(
+                data.totalDeposited,
+                2,
+              )} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}`
+            : "-"}
         </div>
       </div>
       <div className="card">
@@ -77,7 +84,9 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           />
         </div>
         <div className="value">
-          {data.totalDistributed.toLocaleString()} {tokenSymbol}
+          {data.totalDistributed
+            ? `${toNumberFormat(data.totalDeposited, 2)} ${tokenSymbol}`
+            : "-"}
         </div>
       </div>
     </LaunchpadProjectSummaryWrapper>

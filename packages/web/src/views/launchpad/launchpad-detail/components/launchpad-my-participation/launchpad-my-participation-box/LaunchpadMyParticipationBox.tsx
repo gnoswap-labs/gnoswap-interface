@@ -6,6 +6,7 @@ import { ParticipateButtonProps } from "../LaunchpadMyParticipation";
 import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 import { getDateUtcToLocal } from "@common/utils/date-util";
+import { toNumberFormat } from "@utils/number-utils";
 
 import { Divider } from "@components/common/divider/divider";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
@@ -14,6 +15,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { MyParticipationBoxWrapper } from "./LaunchpadMyParticipationBox.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { formatRate } from "@utils/new-number-utils";
 
 interface LaunchpadMyParticipationBoxProps {
   item: LaunchpadParticipationModel;
@@ -30,6 +32,23 @@ const LaunchpadMyParticipationBox = ({
   handleClickClaim,
 }: LaunchpadMyParticipationBoxProps) => {
   const [openedSelector, setOpenedSelector] = React.useState(false);
+
+  const aprStr = item?.depositAPR ? (
+    <>
+      {Number(item.depositAPR) > 100 && "✨"}
+      {formatRate(item.depositAPR)} APR
+    </>
+  ) : (
+    "-"
+  );
+
+  const isClaimable = React.useMemo(() => {
+    const currentTime = new Date();
+    const claimableTime = new Date(item.claimableTime);
+
+    return currentTime > claimableTime;
+  }, [item.claimableTime]);
+
   return (
     <MyParticipationBoxWrapper key={item.id}>
       <div className="my-participation-box-header">
@@ -47,14 +66,13 @@ const LaunchpadMyParticipationBox = ({
               height={24}
               alt="GNS symbol image"
             />
-            {item.depositAmount} {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
+            {toNumberFormat(item.depositAmount, 2)}{" "}
+            {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
           </div>
         </div>
         <div className="participation-box-data">
           <div className="participation-box-data-key">APR</div>
-          <div className="participation-box-data-value">
-            {item.depositAPR || "-"}
-          </div>
+          <div className="participation-box-data-value">{aprStr}</div>
         </div>
         <div className="participation-box-data">
           <div className="participation-box-data-key">Claimable</div>
@@ -66,7 +84,8 @@ const LaunchpadMyParticipationBox = ({
               mobileWidth={24}
             />
             <>
-              {item.claimableRewardAmount} {rewardInfo?.rewardTokenSymbol}
+              {toNumberFormat(item.claimableRewardAmount, 2)}{" "}
+              {rewardInfo?.rewardTokenSymbol}
             </>
           </div>
         </div>
@@ -88,7 +107,8 @@ const LaunchpadMyParticipationBox = ({
                   mobileWidth={24}
                 />
                 <>
-                  {item.claimedRewardAmount} {rewardInfo?.rewardTokenSymbol}
+                  {toNumberFormat(item.claimedRewardAmount, 2)}{" "}
+                  {rewardInfo?.rewardTokenSymbol}
                 </>
               </div>
             </div>
@@ -99,7 +119,10 @@ const LaunchpadMyParticipationBox = ({
               </div>
             </div>
             <div className="participation-box-button-wrapper">
-              <ClaimButton onClick={() => handleClickClaim(item)} />
+              <ClaimButton
+                onClick={() => isClaimable && handleClickClaim(item)}
+                disabled={!isClaimable}
+              />
             </div>
           </>
         )}
@@ -122,13 +145,23 @@ const LaunchpadMyParticipationBox = ({
   );
 };
 
-export const ClaimButton: React.FC<ParticipateButtonProps> = ({ onClick }) => {
+export const ClaimButton: React.FC<ParticipateButtonProps> = ({
+  onClick,
+  disabled,
+}) => {
   const claimDefaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,
   };
 
-  return <Button text="Claim" style={claimDefaultStyle} onClick={onClick} />;
+  return (
+    <Button
+      text="Claim"
+      style={claimDefaultStyle}
+      onClick={onClick}
+      disabled={disabled}
+    />
+  );
 };
 
 export default LaunchpadMyParticipationBox;

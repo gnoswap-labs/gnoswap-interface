@@ -1,9 +1,6 @@
 import React from "react";
 
-import {
-  LaunchpadParticipationModel,
-  LaunchpadPoolModel,
-} from "@models/launchpad";
+import { LaunchpadParticipationModel } from "@models/launchpad";
 import { type TierType } from "@utils/launchpad-get-tier-number";
 
 import { LaunchpadClaimAllModalWrapper } from "./LaunchpadClaimAllModal.styles";
@@ -16,7 +13,6 @@ import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/Launch
 
 interface LaunchpadClaimAllModalProps {
   data: LaunchpadParticipationModel[];
-  poolInfos: LaunchpadPoolModel[];
   rewardInfo: ProjectRewardInfoModel;
 
   refetch: () => Promise<void>;
@@ -25,42 +21,19 @@ interface LaunchpadClaimAllModalProps {
 
 const LaunchpadClaimAllModal = ({
   data,
-  poolInfos,
   rewardInfo,
   refetch,
   close,
 }: LaunchpadClaimAllModalProps) => {
   const { claimAll } = useLaunchpadHandler();
 
-  const summaryData = React.useMemo(() => {
-    const summary: {
-      [key: string]: {
-        claimable: number;
-        depositAmount: number;
-        status: string;
-      };
-    } = {};
-
-    data.forEach(participation => {
-      const poolInfo = poolInfos.find(
-        pool => pool.projectPoolId === participation.projectPoolId,
-      );
-      if (poolInfo) {
-        if (!summary[poolInfo.poolTier]) {
-          summary[poolInfo.poolTier] = {
-            claimable: 0,
-            depositAmount: 0,
-            status: participation.status,
-          };
-        }
-        summary[poolInfo.poolTier].claimable +=
-          participation.claimableRewardAmount;
-        summary[poolInfo.poolTier].depositAmount += participation.depositAmount;
-      }
+  const filteredClaimableData = React.useMemo(() => {
+    return data.filter(item => {
+      const currentTime = new Date();
+      const claimableTime = new Date(item.claimableTime);
+      return currentTime > claimableTime;
     });
-
-    return summary;
-  }, [data, poolInfos]);
+  }, [data]);
 
   const handleClickClaimAll = React.useCallback(() => {
     claimAll(data, async () => {
@@ -79,29 +52,32 @@ const LaunchpadClaimAllModal = ({
         </div>
 
         <div className="content">
-          {Object.entries(summaryData).map(([poolTier, data]) => {
+          {filteredClaimableData.map((item, idx) => {
             return (
-              <div className="data" key={poolTier}>
+              <div className="data" key={item.id}>
                 <div className="data-box">
                   <div className="data-row">
                     <div className="key">Pool</div>
                     <div className="value">
-                      <LaunchpadPoolTierChip poolTier={poolTier as TierType} />
+                      #{idx + 1}{" "}
+                      <LaunchpadPoolTierChip
+                        poolTier={item.poolTier as TierType}
+                      />
                     </div>
                   </div>
                   <div className="data-row">
                     <div className="key">Claimable</div>
                     <LaunchpadClaimAmountField
-                      amount={data.claimable}
+                      amount={item.claimableRewardAmount}
                       rewardInfo={rewardInfo}
                       type={"CLAIMABLE"}
                     />
                   </div>
-                  {data.status === "ENDED" && (
+                  {item.status === "ENDED" && (
                     <div className="data-row">
                       <div className="key">Deposit Amount</div>
                       <LaunchpadClaimAmountField
-                        amount={data.depositAmount}
+                        amount={item.depositAmount}
                         rewardInfo={rewardInfo}
                         type={"DEPOSIT"}
                       />

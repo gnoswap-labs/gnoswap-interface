@@ -58,6 +58,7 @@ const LaunchpadDetail: React.FC = () => {
   const [selectPoolId, setSelectPoolId] = useAtom(
     LaunchpadState.selectLaunchpadPool,
   );
+  const [, setParticipateAmount] = useAtom(LaunchpadState.participateAmount);
   const [, setDepositConditions] = useAtom(LaunchpadState.depositConditions);
   const { updateBalances } = useTokenData();
 
@@ -71,6 +72,7 @@ const LaunchpadDetail: React.FC = () => {
     await projectDetailRefetch();
     await myParticipationRefetch();
     await updateBalances();
+    setParticipateAmount("");
   };
   const { isLoading } = useLoading();
   const breadcrumbsSteps = React.useMemo(() => {

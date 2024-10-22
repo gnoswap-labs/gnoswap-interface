@@ -1,6 +1,7 @@
 import React from "react";
-import BigNumber from "bignumber.js";
+import Image from "next/image";
 import { useAtom, useAtomValue } from "jotai";
+import BigNumber from "bignumber.js";
 
 import { LaunchpadState } from "@states/index";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
@@ -10,8 +11,11 @@ import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useLaunchpadDepositConfirmModal } from "../../hooks/use-launchpad-deposit-confirm-modal";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
-import { convertToKMB } from "@utils/stake-position-utils";
 import { capitalize } from "@utils/string-utils";
+import { toNumberFormat } from "@utils/number-utils";
+import { formatPrice } from "@utils/new-number-utils";
+import { getClaimableTime } from "@utils/launchpad-get-claimable-time";
+import { getDateUtcToLocal } from "@common/utils/date-util";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -20,8 +24,6 @@ import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
-import { getClaimableTime } from "@utils/launchpad-get-claimable-time";
-import { getDateUtcToLocal } from "@common/utils/date-util";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -58,15 +60,16 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     hideConditionTooltip,
   } = useLaunchpadHandler();
   const { tokenPrices, displayBalanceMap } = useTokenData();
-
   const onChangeParticipateAmount = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
+      if (status !== "UPCOMING") {
+        const value = e.target.value;
 
-      if (value !== "" && !isAmount(value)) return;
-      setParticipateAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
+        if (value !== "" && !isAmount(value)) return;
+        setParticipateAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
+      }
     },
-    [setParticipateAmount],
+    [setParticipateAmount, status],
   );
 
   const { openLaunchpadDepositModal } = useLaunchpadDepositConfirmModal({
@@ -85,8 +88,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
       DEFAULT_DEPOSIT_TOKEN?.wrappedPath &&
       !!participateAmount &&
       participateAmount !== "0"
-        ? "$" +
-          convertToKMB(
+        ? formatPrice(
             BigNumber(+participateAmount)
               .multipliedBy(
                 Number(
@@ -95,7 +97,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
               )
               .toString(),
             {
-              isIgnoreKFormat: true,
+              usd: true,
+              isKMB: false,
             },
           )
         : "-",
@@ -140,7 +143,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         <div className="participate-amount-info">
           <span className="participate-price-text">{estimatePrice}</span>
           <span className="participate-balance-text">
-            balance: {currentGnsBalance || "-"}
+            balance:{" "}
+            {currentGnsBalance ? toNumberFormat(currentGnsBalance, 2) : "-"}
           </span>
         </div>
       </div>
@@ -185,13 +189,25 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
             />
           </div>
           <div className="participate-info-value">
-            {poolInfo?.endTime || "-"}
+            {poolInfo?.endTime
+              ? getDateUtcToLocal(poolInfo.endTime).value
+              : "-"}
           </div>
         </div>
         <div className="participate-info">
           <div className="participate-info-key">Deposit Amount</div>
           <div className="participate-info-value">
-            {participateAmount || "-"}
+            <Image
+              src="/gns.svg"
+              width={24}
+              height={24}
+              alt="GNS Symbol image"
+            />
+            {participateAmount
+              ? `${toNumberFormat(Number(participateAmount), 2)} ${
+                  DEFAULT_DEPOSIT_TOKEN.symbol
+                }`
+              : "-"}
           </div>
         </div>
       </div>

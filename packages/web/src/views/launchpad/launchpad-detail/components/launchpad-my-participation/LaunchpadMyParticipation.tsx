@@ -35,7 +35,6 @@ const LaunchpadMyParticipation = ({
   const { claim } = useLaunchpadHandler();
   const { openLaunchpadClaimAllModal } = useLaunchpadClaimAllModal({
     data,
-    poolInfos,
     rewardInfo,
     refetch,
   });
@@ -62,6 +61,15 @@ const LaunchpadMyParticipation = ({
     }, Number(poolInfos?.[0]?.apr ?? 0));
   }, [poolInfos]);
 
+  const isShowClaimAllButton = React.useMemo(() => {
+    const currentTime = new Date();
+    return data.some(item => {
+      const claimableTime = new Date(item.claimableTime);
+      return currentTime > claimableTime;
+    });
+  }, [data]);
+
+  // Conditional rendering
   if (!connected || isSwitchNetwork) {
     return (
       <MyParticipationWrapper>
@@ -88,7 +96,7 @@ const LaunchpadMyParticipation = ({
     <MyParticipationWrapper>
       <div className="my-participation-header">
         <h3 className="my-participation-title">My Participation</h3>
-        {data.length > 0 && (
+        {isShowClaimAllButton && (
           <div className="claim-all-button-wrapper">
             <ClaimAllButton onClick={handleClickClaimAll} />
           </div>
@@ -112,6 +120,7 @@ const LaunchpadMyParticipation = ({
 
 export interface ParticipateButtonProps {
   onClick: () => void;
+  disabled?: boolean;
 }
 
 const ClaimAllButton: React.FC<ParticipateButtonProps> = ({ onClick }) => {

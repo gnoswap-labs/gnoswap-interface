@@ -1,16 +1,22 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 import { getTierNumber } from "@utils/launchpad-get-tier-number";
+import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 import { LaunchpadDepositModalWrapper } from "./LaunchpadDepositModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import IconWarning from "../../icons/IconWarning";
 import IconOpenLink from "../../icons/IconOpenLink";
 import Button, { ButtonHierarchy } from "../../button/Button";
+import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import { getDateUtcToLocal } from "@common/utils/date-util";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 type LaunchpadPoolModelWithoutClaimableTime = Omit<
   LaunchpadPoolModel,
@@ -67,15 +73,33 @@ const LaunchpadDepositModal = ({
             <div className="data-box">
               <div className="data-row">
                 <div className="key">Deposit Amount</div>
-                <div className="value">{depositAmount}</div>
+                <div className="value">
+                  <Image
+                    src="/gns.svg"
+                    width={24}
+                    height={24}
+                    alt="GNS Token symbol"
+                  />
+                  {depositAmount} {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
+                </div>
               </div>
               <div className="data-row">
                 <div className="key">Pool Tier</div>
-                <div className="value">{poolInfo?.poolTier}</div>
+                <div className="value">
+                  {poolInfo?.poolTier ? (
+                    <LaunchpadPoolTierChip poolTier={poolInfo.poolTier} />
+                  ) : (
+                    "-"
+                  )}
+                </div>
               </div>
               <div className="data-row">
                 <div className="key">End Date</div>
-                <div className="value">{poolInfo?.endTime}</div>
+                <div className="value">
+                  {poolInfo?.endTime
+                    ? getDateUtcToLocal(poolInfo.endTime).value
+                    : ""}
+                </div>
               </div>
             </div>
           </div>
@@ -84,15 +108,33 @@ const LaunchpadDepositModal = ({
             <div className="data-box">
               <div className="data-row">
                 <div className="key">Rewards Token</div>
-                <div className="value">{rewardInfo.rewardTokenSymbol}</div>
+                <div className="value">
+                  <MissingLogo
+                    symbol={rewardInfo.rewardTokenSymbol}
+                    url={rewardInfo.rewardTokenLogoUrl}
+                    width={24}
+                    mobileWidth={24}
+                  />{" "}
+                  {rewardInfo.rewardTokenSymbol}
+                </div>
               </div>
               <div className="data-row">
                 <div className="key">Network</div>
-                <div className="value">Gnoland (GRC20)</div>
+                <div className="value">
+                  <Image
+                    src={GNOT_TOKEN.logoURI}
+                    width={24}
+                    height={24}
+                    alt="Gno.land Token symbol"
+                  />{" "}
+                  Gnoland (GRC20)
+                </div>
               </div>
               <div className="data-row">
                 <div className="key">Rewards Claimable On</div>
-                <div className="value">{claimableTime?.toLocaleString()}</div>
+                <div className="value">
+                  {claimableTime ? getDateUtcToLocal(claimableTime).value : "-"}
+                </div>
               </div>
             </div>
           </div>

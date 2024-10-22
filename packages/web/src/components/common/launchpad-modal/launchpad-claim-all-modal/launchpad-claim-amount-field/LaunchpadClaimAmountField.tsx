@@ -5,10 +5,11 @@ import BigNumber from "bignumber.js";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
-import { convertToKMB } from "@utils/stake-position-utils";
 
 import { ClaimAllFieldWrapper } from "./LaunchpadClaimAmountField.styled";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { toNumberFormat } from "@utils/number-utils";
+import { formatPrice } from "@utils/new-number-utils";
 
 interface LaunchpadClaimAmountFieldProps {
   amount: number;
@@ -28,35 +29,34 @@ const LaunchpadClaimAmountField = ({
   const estimatePrice = React.useMemo(() => {
     if (type === "DEPOSIT") {
       return DEFAULT_DEPOSIT_TOKEN?.wrappedPath && !!amount
-        ? "$" +
-            convertToKMB(
-              BigNumber(+amount)
-                .multipliedBy(
-                  Number(
-                    tokenPrices?.[DEFAULT_DEPOSIT_TOKEN?.wrappedPath]?.usd ??
-                      "0",
-                  ),
-                )
-                .toString(),
-              {
-                isIgnoreKFormat: true,
-              },
-            )
+        ? formatPrice(
+            BigNumber(+amount)
+              .multipliedBy(
+                Number(
+                  tokenPrices?.[DEFAULT_DEPOSIT_TOKEN?.wrappedPath]?.usd ?? "0",
+                ),
+              )
+              .toString(),
+            {
+              usd: true,
+              isKMB: false,
+            },
+          )
         : "-";
     }
 
     return rewardInfo?.rewardTokenPath && !!amount
-      ? "$" +
-          convertToKMB(
-            BigNumber(+amount)
-              .multipliedBy(
-                Number(tokenPrices?.[rewardInfo?.rewardTokenPath]?.usd ?? "0"),
-              )
-              .toString(),
-            {
-              isIgnoreKFormat: true,
-            },
-          )
+      ? formatPrice(
+          BigNumber(+amount)
+            .multipliedBy(
+              Number(tokenPrices?.[rewardInfo?.rewardTokenPath]?.usd ?? "0"),
+            )
+            .toString(),
+          {
+            usd: true,
+            isKMB: false,
+          },
+        )
       : "-";
   }, [type, amount, tokenPrices, rewardInfo]);
 
@@ -70,7 +70,7 @@ const LaunchpadClaimAmountField = ({
             src={DEFAULT_DEPOSIT_TOKEN?.logoURI}
             alt={`${DEFAULT_DEPOSIT_TOKEN?.symbol} token symbol image`}
           />
-          {amount} {DEFAULT_DEPOSIT_TOKEN?.symbol}
+          {toNumberFormat(amount, 2)} {DEFAULT_DEPOSIT_TOKEN?.symbol}
         </div>
         <div className="value-price">{estimatePrice}</div>
       </ClaimAllFieldWrapper>
@@ -86,7 +86,7 @@ const LaunchpadClaimAmountField = ({
             url={rewardInfo?.rewardTokenLogoUrl}
             width={24}
           />
-          {amount} {rewardInfo?.rewardTokenSymbol}
+          {toNumberFormat(amount, 2)} {rewardInfo?.rewardTokenSymbol}
         </div>
         <div className="value-price">{estimatePrice}</div>
       </ClaimAllFieldWrapper>

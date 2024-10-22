@@ -7,6 +7,7 @@ import { LaunchpadState } from "@states/index";
 import { getTierDuration } from "@utils/launchpad-get-tier-number";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+import { toNumberFormat } from "@utils/number-utils";
 
 import { Divider } from "@components/common/divider/divider";
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
@@ -14,6 +15,7 @@ import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-ti
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
+import { formatRate } from "@utils/new-number-utils";
 
 interface LaunchpadPoolListCardProps {
   data: LaunchpadPoolModel;
@@ -38,6 +40,28 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
     return currentPoolId === data.id;
   }, [currentPoolId, data.id]);
 
+  const getClaimableDays = (poolTier: string) => {
+    switch (poolTier) {
+      case "TIER180":
+        return 14;
+      case "TIER90":
+        return 7;
+      case "TIER30":
+        return 3;
+      default:
+        return 0;
+    }
+  };
+
+  const aprStr = data.apr ? (
+    <>
+      {Number(data.apr) > 100 && "✨"}
+      {formatRate(data.apr)} APR
+    </>
+  ) : (
+    "-"
+  );
+
   return (
     <CardWrapper
       className={cx({
@@ -61,7 +85,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
       <div className="card-description">
         Staking for {getTierDuration(data.poolTier)}. <br />
         Rewards claimable starting <br />
-        after 14 days.
+        after {getClaimableDays(data.poolTier)} days.
       </div>
 
       <Divider />
@@ -72,7 +96,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
       </div>
       <div className="data">
         <div className="key">APR</div>
-        <div className="value">{data.apr || "-"}</div>
+        <div className="value">{aprStr}</div>
       </div>
       <div className="data">
         <div className="key">Total Deposits</div>
@@ -81,9 +105,12 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
             className="token-image"
             src="/gns.svg"
             alt={"GNS symbol image"}
-          />{" "}
+          />
           {data.depositAmount
-            ? `${data.depositAmount.toLocaleString()} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}`
+            ? `${toNumberFormat(
+                data.depositAmount,
+                2,
+              )} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}`
             : "-"}
         </div>
       </div>
@@ -97,7 +124,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
             mobileWidth={24}
           />
           {data.distributedAmount
-            ? `${data.distributedAmount.toLocaleString()} ${
+            ? `${toNumberFormat(data.distributedAmount)} ${
                 rewardInfo.rewardTokenSymbol
               }`
             : "-"}
