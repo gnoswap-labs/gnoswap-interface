@@ -78,6 +78,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
         <div className="card-header-title">
           <span className="title">Pool {idx}</span>
           <LaunchpadPoolTierChip poolTier={data.poolTier} />
+          {data.status === "ENDED" && <div className="chip">Ended</div>}
         </div>
         {isActiveCard && isShowConditionTooltip && <DepositConditionsTooltip />}
       </div>
@@ -92,15 +93,19 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
 
       <div className="data">
         <div className="key">Participants</div>
-        <div className="value">{data.participant || "-"}</div>
+        <div className={cx("value", { ended: data.status === "ENDED" })}>
+          {data.participant || "-"}
+        </div>
       </div>
       <div className="data">
         <div className="key">APR</div>
-        <div className="value">{aprStr}</div>
+        <div className={cx("value", { ended: data.status === "ENDED" })}>
+          {aprStr}
+        </div>
       </div>
       <div className="data">
         <div className="key">Total Deposits</div>
-        <div className="value">
+        <div className={cx("value", { ended: data.status === "ENDED" })}>
           <img
             className="token-image"
             src="/gns.svg"
@@ -116,7 +121,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
       </div>
       <div className="data">
         <div className="key">Token Distributed</div>
-        <div className="value">
+        <div className={cx("value", { ended: data.status === "ENDED" })}>
           <MissingLogo
             symbol={rewardInfo.rewardTokenSymbol}
             url={rewardInfo.rewardTokenLogoUrl}
@@ -124,10 +129,9 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
             mobileWidth={24}
           />
           {data.distributedAmount
-            ? `${toNumberFormat(data.distributedAmount)} ${
-                rewardInfo.rewardTokenSymbol
-              }`
-            : "-"}
+            ? `${toNumberFormat(data.distributedAmount, 2)}`
+            : "-"}{" "}
+          / {data.allocation ? `${toNumberFormat(data.allocation, 2)}` : "-"}
         </div>
       </div>
     </CardWrapper>

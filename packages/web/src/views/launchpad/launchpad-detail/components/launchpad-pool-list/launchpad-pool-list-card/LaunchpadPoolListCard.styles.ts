@@ -51,7 +51,9 @@ export const CardWrapper = styled.div`
   }
 
   .card-description {
-    color: ${({ theme }) => theme.color.text03};
+    /* color: ${({ theme }) => theme.color.text03}; */
+    color: ${({ theme }) =>
+      theme.themeKey === "dark" ? "#596782" : theme.color.text03};
     width: 100%;
     font-size: 14px;
     font-weight: 500;
@@ -71,6 +73,10 @@ export const CardWrapper = styled.div`
       ${mixins.flexbox("row", "center", "center")};
       gap: 4px;
       color: ${({ theme }) => theme.color.text03};
+      &.ended {
+        color: ${({ theme }) =>
+          theme.themeKey === "dark" ? theme.color.text05 : "#C3D2EA"};
+      }
     }
   }
 
