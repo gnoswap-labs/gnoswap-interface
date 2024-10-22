@@ -13,6 +13,7 @@ import { CardWrapper } from "./LaunchpadPoolListCard.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
 
 interface LaunchpadPoolListCardProps {
   data: LaunchpadPoolModel;
@@ -82,7 +83,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
             alt={"GNS symbol image"}
           />{" "}
           {data.depositAmount
-            ? `${data.depositAmount.toLocaleString()} GNS`
+            ? `${data.depositAmount.toLocaleString()} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}`
             : "-"}
         </div>
       </div>

@@ -80,3 +80,5 @@ export const WUGNOT_TOKEN: TokenModel = {
   wrappedPath: "gno.land/r/demo/wugnot",
   createdAt: "0001-01-01T00:00:00Z",
 };
+
+export const LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN.symbol || "";

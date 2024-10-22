@@ -1,7 +1,11 @@
 import React from "react";
+import Image from "next/image";
 
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { ParticipateButtonProps } from "../LaunchpadMyParticipation";
+import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
+import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+import { getDateUtcToLocal } from "@common/utils/date-util";
 
 import { Divider } from "@components/common/divider/divider";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
@@ -9,10 +13,12 @@ import IconArrowDown from "@components/common/icons/IconArrowDown";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { MyParticipationBoxWrapper } from "./LaunchpadMyParticipationBox.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface LaunchpadMyParticipationBoxProps {
   item: LaunchpadParticipationModel;
   idx: number;
+  rewardInfo: ProjectRewardInfoModel;
 
   handleClickClaim: (data: LaunchpadParticipationModel) => void;
 }
@@ -20,10 +26,10 @@ interface LaunchpadMyParticipationBoxProps {
 const LaunchpadMyParticipationBox = ({
   item,
   idx,
+  rewardInfo,
   handleClickClaim,
 }: LaunchpadMyParticipationBoxProps) => {
   const [openedSelector, setOpenedSelector] = React.useState(false);
-
   return (
     <MyParticipationBoxWrapper key={item.id}>
       <div className="my-participation-box-header">
@@ -35,17 +41,33 @@ const LaunchpadMyParticipationBox = ({
         <div className="participation-box-data">
           <div className="participation-box-data-key">Deposit Amounts</div>
           <div className="participation-box-data-value">
-            {item.depositAmount}
+            <Image
+              src="/gns.svg"
+              width={24}
+              height={24}
+              alt="GNS symbol image"
+            />
+            {item.depositAmount} {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
           </div>
         </div>
         <div className="participation-box-data">
           <div className="participation-box-data-key">APR</div>
-          <div className="participation-box-data-value">{item.depositAPR}</div>
+          <div className="participation-box-data-value">
+            {item.depositAPR || "-"}
+          </div>
         </div>
         <div className="participation-box-data">
           <div className="participation-box-data-key">Claimable</div>
           <div className="participation-box-data-value">
-            {item.claimableRewardAmount}
+            <MissingLogo
+              url={rewardInfo?.rewardTokenLogoUrl}
+              symbol={rewardInfo?.rewardTokenSymbol}
+              width={24}
+              mobileWidth={24}
+            />
+            <>
+              {item.claimableRewardAmount} {rewardInfo?.rewardTokenSymbol}
+            </>
           </div>
         </div>
         {openedSelector && (
@@ -53,18 +75,28 @@ const LaunchpadMyParticipationBox = ({
             <div className="participation-box-data">
               <div className="participation-box-data-key">Claimable Date</div>
               <div className="participation-box-data-value">
-                {item.claimableTime}
+                {getDateUtcToLocal(item.claimableTime).value}
               </div>
             </div>
             <div className="participation-box-data">
               <div className="participation-box-data-key">Claimed</div>
               <div className="participation-box-data-value">
-                {item.claimedRewardAmount}
+                <MissingLogo
+                  url={rewardInfo?.rewardTokenLogoUrl}
+                  symbol={rewardInfo?.rewardTokenSymbol}
+                  width={24}
+                  mobileWidth={24}
+                />
+                <>
+                  {item.claimedRewardAmount} {rewardInfo?.rewardTokenSymbol}
+                </>
               </div>
             </div>
             <div className="participation-box-data">
               <div className="participation-box-data-key">End Date</div>
-              <div className="participation-box-data-value">{item.endTime}</div>
+              <div className="participation-box-data-value">
+                {getDateUtcToLocal(item.endTime).value}
+              </div>
             </div>
             <div className="participation-box-button-wrapper">
               <ClaimButton onClick={() => handleClickClaim(item)} />

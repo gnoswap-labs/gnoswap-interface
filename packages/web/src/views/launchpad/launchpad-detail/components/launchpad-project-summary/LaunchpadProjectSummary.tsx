@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ProjectSummaryDataModel } from "../../LaunchpadDetail";
+import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
 
 import { LaunchpadProjectSummaryWrapper } from "./LaunchpadProjectSummary.styles";
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
@@ -29,7 +30,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           />
         </div>
         <div className="value">
-          {data.totalAllocation.toLocaleString()} USDC
+          {data.totalAllocation.toLocaleString()} {tokenSymbol}
         </div>
       </div>
       <div className="card border">
@@ -59,7 +60,8 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           />
         </div>
         <div className="value">
-          {data.totalDeposited.toLocaleString()} {tokenSymbol}
+          {data.totalDeposited.toLocaleString()}{" "}
+          {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
         </div>
       </div>
       <div className="card">
@@ -75,7 +77,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           />
         </div>
         <div className="value">
-          {data.totalDistributed.toLocaleString()} USDC
+          {data.totalDistributed.toLocaleString()} {tokenSymbol}
         </div>
       </div>
     </LaunchpadProjectSummaryWrapper>

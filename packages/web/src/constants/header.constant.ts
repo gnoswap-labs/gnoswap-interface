@@ -25,15 +25,15 @@ export const HEADER_NAV = [
     iconType: null,
     subPath: ["/project"],
   },
-  //   {
-  //     title: "HeaderFooter:dashboard",
-  //     path: "/dashboard",
-  //     iconType: null,
-  //     subPath: [],
-  //   },
 ];
 
 export const SIDE_MENU_NAV = [
+  // {
+  //   title: "HeaderFooter:dashboard",
+  //   path: "/dashboard",
+  //   iconType: null,
+  //   subPath: [],
+  // },
   {
     title: "HeaderFooter:leaderboard",
     path: "/leaderboard",

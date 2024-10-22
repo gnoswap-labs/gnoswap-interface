@@ -20,6 +20,8 @@ import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
+import { getClaimableTime } from "@utils/launchpad-get-claimable-time";
+import { getDateUtcToLocal } from "@common/utils/date-util";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -100,6 +102,11 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     [participateAmount, tokenPrices],
   );
 
+  const claimableTimeStamp = getClaimableTime(poolInfo?.claimableThreshold);
+  const claimableTimeFormat = claimableTimeStamp
+    ? getDateUtcToLocal(claimableTimeStamp).value
+    : "-";
+
   // Initialize Page State
   React.useEffect(() => {
     hideConditionTooltip();
@@ -144,8 +151,10 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         <div className="participate-info">
           <div className="participate-info-key">Pool Tier</div>
           <div className="participate-info-value">
-            {poolInfo?.poolTier && (
+            {poolInfo?.poolTier ? (
               <LaunchpadPoolTierChip poolTier={poolInfo.poolTier} />
+            ) : (
+              "-"
             )}
           </div>
         </div>
@@ -161,7 +170,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
               }
             />
           </div>
-          <div className="participate-info-value">-</div>
+          <div className="participate-info-value">{claimableTimeFormat}</div>
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
@@ -175,7 +184,9 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
               }
             />
           </div>
-          <div className="participate-info-value">{poolInfo?.endTime}</div>
+          <div className="participate-info-value">
+            {poolInfo?.endTime || "-"}
+          </div>
         </div>
         <div className="participate-info">
           <div className="participate-info-key">Deposit Amount</div>

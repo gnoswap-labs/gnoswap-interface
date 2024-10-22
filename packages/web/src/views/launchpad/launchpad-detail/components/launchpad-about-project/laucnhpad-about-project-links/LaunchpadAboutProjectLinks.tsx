@@ -1,11 +1,13 @@
 import React from "react";
+import Link from "next/link";
+
+import { ProjectLinksObject } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+import { capitalize } from "@utils/string-utils";
+import { removePoolPathUrl } from "@utils/launchpad-remove-pool-path-url";
 
 import { wrapper } from "./LaunchpadAboutProjectLinks.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { ProjectLinksObject } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
-import { capitalize } from "@utils/string-utils";
-import Link from "next/link";
 
 interface LaunchpadAboutProjectLinksProps {
   isLoading: boolean;
@@ -29,7 +31,7 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
         <h3>Realm (Contract) Path</h3>
         {!isLoading && (
           <Link
-            href={`${GNOSCAN_REALM_DETAIL_BASE_URL}=${path}`}
+            href={`${GNOSCAN_REALM_DETAIL_BASE_URL}=${removePoolPathUrl(path)}`}
             target="_blank"
           >
             <button>

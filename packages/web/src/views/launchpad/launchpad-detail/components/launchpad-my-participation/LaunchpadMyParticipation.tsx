@@ -100,6 +100,7 @@ const LaunchpadMyParticipation = ({
           <LaunchpadMyParticipationBox
             key={item.id}
             item={item}
+            rewardInfo={rewardInfo}
             idx={idx + 1}
             handleClickClaim={handleClickClaim}
           />
