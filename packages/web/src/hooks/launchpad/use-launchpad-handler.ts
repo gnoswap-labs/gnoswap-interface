@@ -1,25 +1,25 @@
-import { useCallback, useMemo, useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
 import BigNumber from "bignumber.js";
+import { useAtom, useAtomValue } from "jotai";
+import { useCallback, useMemo, useState } from "react";
 
-import { LaunchpadState } from "@states/index";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { LaunchpadParticipationModel } from "@models/launchpad";
+import { useGetMyDelegation } from "@query/governance";
 import { useGetLastedBlockHeight } from "@query/pools";
 import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
+import { LaunchpadState } from "@states/index";
+import { formatPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useTranslation } from "react-i18next";
 import { useLaunchpadModal } from "./use-launchpad-modal";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { formatPrice } from "@utils/new-number-utils";
-import { useGetMyDelegation } from "@query/governance";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -162,7 +162,7 @@ export const useLaunchpadHandler = () => {
 
     const gnsUSDPrice = tokenPriceMap?.[GNS_TOKEN.priceID]?.usd || 0;
     const rewardUSDPrice =
-      tokenPriceMap?.[participationInfo.rewardToken?.priceID || "-"]?.usd || 0;
+      tokenPriceMap?.[participationInfo.rewardTokenPath]?.usd || 0;
 
     const depositUSDValue = isWithdraw
       ? BigNumber(participationInfo.depositAmount)
