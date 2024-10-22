@@ -38,7 +38,6 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
     rewardTokenSymbol,
     rewardTokenPath,
   } = project;
-  console.log(rewardTokenLogoUrl, "url");
 
   const highestAprPool = pools.reduce((max, current) => {
     if (!current.apr) return max;

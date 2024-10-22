@@ -14,6 +14,10 @@ export const LaunchpadProjectSummaryWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
       font-size: 14px;
       font-weight: 400;
+      * {
+        fill: ${({ theme }) =>
+          theme.themeKey === "dark" ? "#596782" : "#90A2C0"};
+      }
     }
     .value {
       color: ${({ theme }) => theme.color.text02};

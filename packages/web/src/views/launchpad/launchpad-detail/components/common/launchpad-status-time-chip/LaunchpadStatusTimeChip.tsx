@@ -22,6 +22,10 @@ const LaunchpadStatusTimeChip = ({
     const start = new Date(startTime);
     const end = new Date(endTime);
 
+    if (end < now) {
+      return "Ended";
+    }
+
     const getTimeDifference = (
       future: Date,
       now: Date,
@@ -51,10 +55,15 @@ const LaunchpadStatusTimeChip = ({
         return "Ended";
     }
   };
+
+  const now = new Date();
+  const end = new Date(endTime);
+  const displayStatus = end < now ? PROJECT_STATUS_TYPE.ENDED : status;
+
   return (
-    <StatusTimeChipWrapper type={status}>
-      <IconTimer type={status} />
-      <div>{getStatusText(status)}</div>
+    <StatusTimeChipWrapper type={displayStatus}>
+      <IconTimer type={displayStatus} />
+      <div>{getStatusText(displayStatus)}</div>
     </StatusTimeChipWrapper>
   );
 };

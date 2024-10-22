@@ -5,7 +5,12 @@ import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import LaunchpadDetailContentsHeader from "../../components/launchpad-detail-contents-header/LaunchpadDetailContentsHeader";
 
 interface LaunchpadDetailContentsHeaderContainerProps {
-  data: { name: string; projectStatus: string | null };
+  data: {
+    name: string;
+    projectStatus: string | null;
+    startTime?: string;
+    endTime?: string;
+  };
   rewardInfo: ProjectRewardInfoModel;
 }
 

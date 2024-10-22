@@ -19,7 +19,6 @@ interface LaunchpadActiveProjectCardHeaderProps {
 const LaunchpadActiveProjectCardHeader: React.FC<
   LaunchpadActiveProjectCardHeaderProps
 > = ({ name, description, rewardTokenSymbol, rewardTokenUrl }) => {
-  console.log(rewardTokenSymbol, rewardTokenUrl, name, "asdasd");
   return (
     <ActiveProjectCardHeader>
       <div className="header-title-wrapper">

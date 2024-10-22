@@ -79,6 +79,10 @@ export const LaunchpadParticipateWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
       font-size: 14px;
       font-weight: 400;
+      * {
+        fill: ${({ theme }) =>
+          theme.themeKey === "dark" ? "#596782" : "#90A2C0"};
+      }
     }
     .participate-info-value {
       ${mixins.flexbox("row", "center", "center")};

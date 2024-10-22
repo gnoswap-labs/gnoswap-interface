@@ -74,6 +74,10 @@ export const ProjectInfoWrapper = styled.div`
       width: 16px;
       height: 16px;
       font-size: 0;
+      * {
+        fill: ${({ theme }) =>
+          theme.themeKey === "dark" ? "#596782" : "#90A2C0"};
+      }
     }
   }
 `;

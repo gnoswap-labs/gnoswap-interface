@@ -143,7 +143,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         <div className="participate-amount-info">
           <span className="participate-price-text">{estimatePrice}</span>
           <span className="participate-balance-text">
-            balance:{" "}
+            Balance:{" "}
             {currentGnsBalance ? toNumberFormat(currentGnsBalance, 2) : "-"}
           </span>
         </div>
