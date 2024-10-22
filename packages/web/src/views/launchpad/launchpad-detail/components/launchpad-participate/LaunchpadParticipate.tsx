@@ -41,6 +41,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   status,
   refetch,
 }) => {
+  const depositConditions = useAtomValue(LaunchpadState.depositConditions);
+
   const [participateAmount, setParticipateAmount] = useAtom(
     LaunchpadState.participateAmount,
   );
@@ -112,9 +114,19 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
   // Initialize Page State
   React.useEffect(() => {
-    hideConditionTooltip();
+    if (depositConditions.length > 0) {
+      showConditionTooltip();
+    } else {
+      hideConditionTooltip();
+    }
+
     setParticipateAmount("");
-  }, [hideConditionTooltip, setParticipateAmount]);
+  }, [
+    showConditionTooltip,
+    hideConditionTooltip,
+    setParticipateAmount,
+    depositConditions.length,
+  ]);
 
   return (
     <LaunchpadParticipateWrapper>
@@ -223,7 +235,6 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           openConnectWallet={openConnectWallet}
           switchNetwork={switchNetwork}
           openLaunchpadDepositAction={openLaunchpadDepositModal}
-          showConditionTooltip={showConditionTooltip}
         />
       </div>
     </LaunchpadParticipateWrapper>
@@ -241,7 +252,6 @@ interface DepositButtonProps {
   openConnectWallet: () => void;
   openLaunchpadDepositAction: () => void;
   switchNetwork: () => void;
-  showConditionTooltip: () => void;
 }
 
 const DepositButton: React.FC<DepositButtonProps> = ({
@@ -254,7 +264,6 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   isAvailableDeposit,
   switchNetwork,
   openLaunchpadDepositAction,
-  showConditionTooltip,
 }) => {
   const defaultStyle = {
     fullWidth: true,
@@ -292,10 +301,8 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   if (!isDepositAllowed) {
     return (
       <Button
-        className="button-deposit"
         text={text}
-        style={defaultStyle}
-        onClick={showConditionTooltip}
+        style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
       />
     );
   }

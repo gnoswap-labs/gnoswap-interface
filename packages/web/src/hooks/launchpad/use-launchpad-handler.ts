@@ -288,7 +288,6 @@ export const useLaunchpadHandler = () => {
       emitCallback,
     );
   };
-
   const depositButtonState: DepositButtonStateType = useMemo(() => {
     if (!connectedWallet) {
       return "WALLET_LOGIN";
@@ -324,8 +323,9 @@ export const useLaunchpadHandler = () => {
         return "Enter Amount";
       case "INSUFFICIENT_BALANCE":
         return "Insufficient Balance";
-      case "DEPOSIT":
       case "IS_NOT_DEPOSIT_ALLOWED":
+        return "Conditions Aren't Met";
+      case "DEPOSIT":
       default:
         return "Deposit Now";
     }

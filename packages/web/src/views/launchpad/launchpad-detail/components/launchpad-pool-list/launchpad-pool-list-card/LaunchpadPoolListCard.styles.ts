@@ -11,8 +11,13 @@ export const CardWrapper = styled.div`
   padding: 16px;
   &.ongoing {
     cursor: pointer;
-    &.active,
     &:hover {
+      background: ${({ theme }) =>
+        theme.themeKey === "dark"
+          ? theme.color.background05Hover
+          : theme.color.hover01};
+    }
+    &.active {
       background: ${({ theme }) =>
         theme.themeKey === "dark"
           ? theme.color.background05Hover
