@@ -9,6 +9,7 @@ import IconRightArrow from "@components/common/icons/IconRightArrow";
 import { Divider } from "@components/common/divider/divider";
 
 import { useGetLaunchpadSummary } from "@query/launchpad/use-get-launchpad-summary";
+import { toNumberFormat } from "@utils/number-utils";
 
 interface LaunchpadMainContainerProps {
   themeKey: ThemeKeys;
@@ -56,20 +57,29 @@ const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
         <div className="launchpad-data-wrapper">
           <div className="launchpad-data-list">
             <span className="launchpad-data-value">
-              {launchpadSummary?.totalParticipants.toLocaleString() || 0}
+              {launchpadSummary?.totalParticipants
+                ? toNumberFormat(launchpadSummary.totalParticipants, 2)
+                : "-"}
             </span>
             <span className="launchpad-data-key">Total Participants</span>
           </div>
           <div className="launchpad-data-list">
             <span className="launchpad-data-value">
               <img src="/gns.svg" alt="GnoSwap logo" />
-              {launchpadSummary?.totalDepositedGNSAmount.toLocaleString() || 0}
+              {launchpadSummary?.totalDepositedGNSAmount
+                ? toNumberFormat(launchpadSummary.totalDepositedGNSAmount, 2)
+                : "-"}
             </span>
             <span className="launchpad-data-key">Total Deposited GNS</span>
           </div>
           <div className="launchpad-data-list">
             <span className="launchpad-data-value">
-              ${launchpadSummary?.totalDistributedAmount.toLocaleString() || 0}
+              {launchpadSummary?.totalDistributedAmount
+                ? `$${toNumberFormat(
+                    launchpadSummary.totalDistributedAmount,
+                    2,
+                  )}`
+                : "-"}
             </span>
             <span className="launchpad-data-key">Total Distributed Amount</span>
           </div>
