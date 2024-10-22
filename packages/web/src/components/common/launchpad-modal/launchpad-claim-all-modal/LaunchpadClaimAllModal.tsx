@@ -41,6 +41,13 @@ const LaunchpadClaimAllModal = ({
     });
   }, [data, claimAll, refetch]);
 
+  const isEndTime = (item: { endTime: string }): boolean => {
+    const now = new Date();
+    const endTime = new Date(item.endTime);
+
+    return endTime <= now;
+  };
+
   return (
     <LaunchpadClaimAllModalWrapper>
       <div className="modal-body">
@@ -53,6 +60,7 @@ const LaunchpadClaimAllModal = ({
 
         <div className="content">
           {filteredClaimableData.map((item, idx) => {
+            const endTimeReached = isEndTime(item);
             return (
               <div className="data" key={item.id}>
                 <div className="data-box">
@@ -73,7 +81,7 @@ const LaunchpadClaimAllModal = ({
                       type={"CLAIMABLE"}
                     />
                   </div>
-                  {item.status === "ENDED" && (
+                  {endTimeReached && (
                     <div className="data-row">
                       <div className="key">Deposit Amount</div>
                       <LaunchpadClaimAmountField
