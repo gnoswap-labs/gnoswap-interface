@@ -29,21 +29,21 @@ export const HEADER_NAV = [
 
 export const SIDE_MENU_NAV = [
   // {
-  //   title: "HeaderFooter:dashboard",
-  //   path: "/dashboard",
-  //   iconType: null,
+  //   title: "HeaderFooter:leaderboard",
+  //   path: "/leaderboard",
+  //   iconType: "PULSE",
   //   subPath: [],
   // },
-  {
-    title: "HeaderFooter:leaderboard",
-    path: "/leaderboard",
-    iconType: "PULSE",
-    subPath: [],
-  },
   {
     title: "HeaderFooter:governance",
     path: "/governance",
     iconType: "ACCOUNT_USER",
+    subPath: [],
+  },
+  {
+    title: "HeaderFooter:dashboard",
+    path: "/dashboard",
+    iconType: "PULSE",
     subPath: [],
   },
 ] as const;
