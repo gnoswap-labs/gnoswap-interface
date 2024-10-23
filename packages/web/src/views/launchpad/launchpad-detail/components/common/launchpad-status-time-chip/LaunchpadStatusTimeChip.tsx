@@ -41,11 +41,13 @@ const LaunchpadStatusTimeChip = ({
 
     const formatTime = (days: number, hours: number, minutes: number) => {
       if (days > 0) {
-        return `${days} days ${hours} hours`;
+        return `in ${days} days ${hours} hours`;
       } else if (hours > 0) {
-        return `${hours} hours ${minutes} minutes`;
+        return `in ${hours} hours ${minutes} minutes`;
+      } else if (minutes > 0) {
+        return `in ${minutes} minutes`;
       } else {
-        return `${minutes} minutes`;
+        return "";
       }
     };
 
@@ -56,7 +58,7 @@ const LaunchpadStatusTimeChip = ({
           hours: upcomingHours,
           minutes: upcomingMinutes,
         } = getTimeDifference(start, now);
-        return `Upcoming in ${formatTime(
+        return `Upcoming ${formatTime(
           upcomingDays,
           upcomingHours,
           upcomingMinutes,
@@ -67,11 +69,10 @@ const LaunchpadStatusTimeChip = ({
           hours: ongoingHours,
           minutes: ongoingMinutes,
         } = getTimeDifference(end, now);
-        return `Ends in ${formatTime(
-          ongoingDays,
-          ongoingHours,
-          ongoingMinutes,
-        )}`;
+        if (ongoingDays < 0 && ongoingHours < 0 && ongoingMinutes < 0) {
+          return "Ends in 1 minute";
+        }
+        return `Ends ${formatTime(ongoingDays, ongoingHours, ongoingMinutes)}`;
       case PROJECT_STATUS_TYPE.ENDED:
         return "Ended";
     }
