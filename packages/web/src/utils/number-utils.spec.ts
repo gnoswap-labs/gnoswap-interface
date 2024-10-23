@@ -23,12 +23,12 @@ describe("bignumber.js convert to format string", () => {
 describe("mathSybmolAbsFormat", () => {
   test("Truncates the number 12345.6789 to 2 decimal places and returns it with a percent notation.", () => {
     const num = 12345.6789;
-    expect(mathSybmolAbsFormat(num, 2, false, true).value).toBe("+12,345.68%");
+    expect(mathSybmolAbsFormat(num, 2, false, true).value).toBe("+12,345.67%");
   });
 
   test("Truncate the number -12345.6789 to 2 decimal places and return it with a dollar sign", () => {
     const num = -12345.6789;
-    expect(mathSybmolAbsFormat(num, 2, true, false).value).toBe("-$12,345.68");
+    expect(mathSybmolAbsFormat(num, 2, true, false).value).toBe("-$12,345.67");
   });
 });
 
@@ -60,7 +60,7 @@ describe("toMillionFormat returns Million or FormatNumber", () => {
     expect(toMillionFormat(num)).toBe("1.23m");
   });
 
-  test('"" to null', () => {
+  test("\"\" to null", () => {
     const num = "";
     expect(toMillionFormat(num)).toBe(null);
   });
