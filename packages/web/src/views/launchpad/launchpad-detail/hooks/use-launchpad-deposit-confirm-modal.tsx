@@ -18,6 +18,7 @@ export interface LaunchpadDepositConfirmModalProps {
 
 export interface SelectPoolDepositModalModel {
   openLaunchpadDepositModal: () => void;
+  closeLaunchpadDepositModal: () => void;
 }
 
 export const useLaunchpadDepositConfirmModal = ({
@@ -59,5 +60,5 @@ export const useLaunchpadDepositConfirmModal = ({
     setOpenedModal,
   ]);
 
-  return { openLaunchpadDepositModal };
+  return { openLaunchpadDepositModal, closeLaunchpadDepositModal: close };
 };

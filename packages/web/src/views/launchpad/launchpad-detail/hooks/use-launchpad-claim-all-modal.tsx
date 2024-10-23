@@ -40,5 +40,5 @@ export const useLaunchpadClaimAllModal = ({
     setModalContent(null);
   }, [setModalContent, setOpenedModal]);
 
-  return { openLaunchpadClaimAllModal };
+  return { openLaunchpadClaimAllModal, closeLaunchpadClaimAllModal: close };
 };

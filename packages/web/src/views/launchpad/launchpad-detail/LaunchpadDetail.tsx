@@ -68,12 +68,7 @@ const LaunchpadDetail: React.FC = () => {
 
   const { data: projectDetailData, refetch: projectDetailRefetch } =
     useGetLaunchpadProjectDetails(projectPath);
-  const refetchProjectDetail = async () => {
-    await setSelectPoolId(null);
-    await projectDetailRefetch();
-    await myParticipationRefetch();
-    await updateBalances();
-  };
+
   const { isLoading } = useLoading();
   const breadcrumbsSteps = React.useMemo(() => {
     return [
@@ -208,6 +203,21 @@ const LaunchpadDetail: React.FC = () => {
       { enabled: !!projectPath && !!account?.address },
     );
 
+  /**
+   * @dev Refetchs
+   */
+  const refetchProjectDetail = async () => {
+    await setSelectPoolId(null);
+    await projectDetailRefetch();
+    await myParticipationRefetch();
+    await updateBalances();
+  };
+  const refetchClaimAll = async () => {
+    await projectDetailRefetch();
+    await myParticipationRefetch();
+    await updateBalances();
+  };
+
   React.useEffect(() => {
     if (projectDetailData && projectDetailData.conditions.length === 0) {
       setDepositConditions([]);
@@ -263,7 +273,7 @@ const LaunchpadDetail: React.FC = () => {
         <LaunchpadMyParticipationContainer
           poolInfos={projectDetailData?.pools || []}
           data={myParticipationData || []}
-          refetch={refetchProjectDetail}
+          refetch={refetchClaimAll}
           rewardInfo={projectRewardInfo}
         />
       }

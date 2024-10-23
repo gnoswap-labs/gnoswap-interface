@@ -74,12 +74,16 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     [setParticipateAmount, status],
   );
 
-  const { openLaunchpadDepositModal } = useLaunchpadDepositConfirmModal({
-    participateAmount,
-    poolInfo,
-    rewardInfo,
-    refetch,
-  });
+  const { openLaunchpadDepositModal, closeLaunchpadDepositModal } =
+    useLaunchpadDepositConfirmModal({
+      participateAmount,
+      poolInfo,
+      rewardInfo,
+      refetch: async () => {
+        await refetch();
+        closeLaunchpadDepositModal();
+      },
+    });
 
   const currentGnsBalance = React.useMemo(
     () => displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN?.path ?? ""] ?? null,

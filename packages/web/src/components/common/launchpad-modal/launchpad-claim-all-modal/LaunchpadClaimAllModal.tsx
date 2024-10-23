@@ -39,8 +39,9 @@ const LaunchpadClaimAllModal = ({
   const handleClickClaimAll = React.useCallback(() => {
     claimAll(data, async () => {
       refetch();
+      close();
     });
-  }, [data, claimAll, refetch]);
+  }, [data, claimAll, refetch, close]);
 
   const isEndTime = (item: { endTime: string }): boolean => {
     const now = new Date();

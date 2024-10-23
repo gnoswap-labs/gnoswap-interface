@@ -13,6 +13,7 @@ import LaunchpadMyParticipationBox from "./launchpad-my-participation-box/Launch
 import { useLaunchpadClaimAllModal } from "../../hooks/use-launchpad-claim-all-modal";
 import LaunchpadMyParticipationUnconnected from "./launchpad-my-participation-unconnected/LaunchpadMyParticipationUnconnected";
 import LaunchpadMyParticipationNoData from "./launchpad-my-participation-no-data/LaunchpadMyParticipationNoData";
+import { toNumberFormat } from "@utils/number-utils";
 
 interface LaunchpadMyParticipationProps {
   poolInfos: LaunchpadPoolModel[];
@@ -42,10 +43,10 @@ const LaunchpadMyParticipation = ({
   const handleClickClaim = React.useCallback(
     (data: LaunchpadParticipationModel) => {
       claim(data, async () => {
-        console.log("end");
+        await refetch();
       });
     },
-    [claim],
+    [claim, refetch],
   );
 
   const handleClickClaimAll = React.useCallback(() => {
@@ -65,7 +66,15 @@ const LaunchpadMyParticipation = ({
     const currentTime = new Date();
     return data.some(item => {
       const claimableTime = new Date(item.claimableTime);
-      return currentTime > claimableTime;
+
+      if (currentTime <= claimableTime) return false;
+
+      const isClaimedReward =
+        Number(toNumberFormat(item.claimableRewardAmount, 2)) === 0;
+      const isClaimedDeposit = Number(toNumberFormat(item.depositAmount)) === 0;
+      const isClaimed = isClaimedReward && isClaimedDeposit;
+
+      return !isClaimed;
     });
   }, [data]);
 
