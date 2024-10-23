@@ -1,19 +1,26 @@
 import React from "react";
 
-// import IconArrowDown from "@components/common/icons/IconArrowDown";
 import LaunchpadAboutProjectLinks from "./laucnhpad-about-project-links/LaunchpadAboutProjectLinks";
 import { ProjectDescriptionDataModel } from "../../LaunchpadDetail";
 
 import { LaunchpadAboutProjectWrapper } from "./LaunchpadAboutProject.styles";
+import LaunchpadShowMoreButton from "../common/launchpad-show-more-button/LaunchpadShowMoreButton";
 
 interface LaunchpadAboutProjectProps {
   loading: boolean;
   data: ProjectDescriptionDataModel;
+  isShowMore: boolean;
+  showLoadMore: boolean;
+
+  onClickLoadMore: () => void;
 }
 
 const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
   loading,
   data,
+  isShowMore,
+  showLoadMore,
+  onClickLoadMore,
 }) => {
   return (
     <LaunchpadAboutProjectWrapper>
@@ -24,9 +31,12 @@ const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
       <section className="main-contents">
         <div className="contents">
           <div className="description">{data.description}</div>
-          {/* <div className="show-more">
-            show more <IconArrowDown fill="#596782" />
-          </div> */}
+          {showLoadMore && (
+            <LaunchpadShowMoreButton
+              show={isShowMore}
+              onClick={onClickLoadMore}
+            />
+          )}
         </div>
 
         <LaunchpadAboutProjectLinks
