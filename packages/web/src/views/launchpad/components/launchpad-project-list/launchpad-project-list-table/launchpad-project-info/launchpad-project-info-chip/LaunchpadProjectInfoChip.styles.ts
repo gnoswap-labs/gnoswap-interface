@@ -14,7 +14,7 @@ export const ChipWrapper = styled.div<ChipStyle>`
   border-radius: 36px;
   font-size: 12px;
   font-weight: 500;
-  ${({ type }) => {
+  ${({ type, theme }) => {
     if (type === PROJECT_STATUS_TYPE.UPCOMING)
       return css`
         background: rgba(0, 89, 255, 0.2);
@@ -27,11 +27,8 @@ export const ChipWrapper = styled.div<ChipStyle>`
       `;
     if (type === PROJECT_STATUS_TYPE.ENDED)
       return css`
-        background: var(
-          --background-opacity-7-global-gray-20-opacity-25,
-          rgba(195, 210, 234, 0.25)
-        );
-        color: var(--text-05-white-gray-300-text-1, #90a2c0);
+        background: rgba(89, 103, 130, 0.25);
+        color: ${theme.color.text05};
       `;
   }}
 `;
