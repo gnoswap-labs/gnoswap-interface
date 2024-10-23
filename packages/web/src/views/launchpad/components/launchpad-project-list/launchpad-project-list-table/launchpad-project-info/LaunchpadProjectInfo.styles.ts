@@ -82,5 +82,17 @@ export const ProjectInfoWrapper = styled.div`
           theme.themeKey === "dark" ? "#596782" : "#90A2C0"};
       }
     }
+
+    &,
+    svg * {
+      transition: all 0.3s ease;
+    }
+
+    &:hover {
+      color: ${({ theme }) => theme.color.text03};
+      svg * {
+        fill: ${({ theme }) => theme.color.icon07};
+      }
+    }
   }
 `;
