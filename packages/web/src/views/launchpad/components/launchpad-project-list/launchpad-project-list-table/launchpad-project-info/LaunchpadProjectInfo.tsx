@@ -8,6 +8,7 @@ import {
   PROJECT_INFO_TABLET,
   PROJECT_INFO_MOBILE,
 } from "@constants/skeleton.constant";
+import { toNumberFormat } from "@utils/number-utils";
 
 import { LaunchpadPoolModel, LaunchpadProjectModel } from "@models/launchpad";
 import { ProjectInfoWrapper, TableColumn } from "./LaunchpadProjectInfo.styles";
@@ -39,22 +40,44 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
     rewardTokenPath,
   } = project;
 
-  const highestAprPool = pools.reduce((max, current) => {
-    if (!current.apr) return max;
-    if (!max || !max.apr || current.apr > max.apr) return current;
-    return max;
-  }, undefined as LaunchpadPoolModel | undefined);
+  const highestApr = React.useMemo(() => {
+    return pools.reduce((acc, current) => {
+      if (Number(current.apr) > acc) {
+        return Number(current.apr);
+      }
+      return acc;
+    }, Number(pools?.[0].apr ?? 0));
+  }, [pools]);
 
   const aprStr = React.useMemo(() => {
-    if (!highestAprPool?.apr) return "-";
+    if (!highestApr) return "-";
 
     return (
       <>
-        {Number(highestAprPool?.apr) > 100 && <IconStar size={14} />}
-        {formatRate(highestAprPool?.apr)}
+        {Number(highestApr) > 100 && <IconStar size={14} />}
+        {formatRate(highestApr)}
       </>
     );
-  }, [highestAprPool?.apr]);
+  }, [highestApr]);
+
+  const calculateTotals = (pools: LaunchpadPoolModel[]) => {
+    return pools.reduce(
+      (totals, pool) => {
+        return {
+          totalParticipants: totals.totalParticipants + pool.participant,
+          totalAllocation: totals.totalAllocation + pool.allocation,
+          totalDeposit: totals.totalDeposit + pool.depositAmount,
+        };
+      },
+      {
+        totalParticipants: 0,
+        totalAllocation: 0,
+        totalDeposit: 0,
+      },
+    );
+  };
+
+  const totals = React.useMemo(() => calculateTotals(pools), [pools]);
 
   const cellWidths =
     breakpoint === DEVICE_TYPE.MOBILE
@@ -90,15 +113,15 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
         <span className="apr">{aprStr}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[3].width}>
-        <span>{highestAprPool?.participant.toLocaleString() || 0}</span>
+        <span>{toNumberFormat(totals.totalParticipants, 2) || 0}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[4].width}>
         <span>
-          {highestAprPool?.allocation.toLocaleString() || 0} {rewardTokenSymbol}
+          {toNumberFormat(totals.totalAllocation, 2) || 0} {rewardTokenSymbol}
         </span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>
-        <span>{highestAprPool?.depositAmount.toLocaleString() || 0} GNS</span>
+        <span>{toNumberFormat(totals.totalDeposit, 2) || 0} GNS</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[6].width}>
         <div
