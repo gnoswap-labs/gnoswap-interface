@@ -35,15 +35,17 @@ const LaunchpadPoolList: React.FC<LaunchpadPoolListProps> = ({
 
   const defaultSelectPool = React.useCallback(() => {
     if (sortedPools) {
-      setSelectLaunchpadPool(sortedPools[0]?.id);
+      if (sortedPools.length > 0) {
+        setSelectLaunchpadPool(sortedPools[0]?.id);
+      }
     }
-  }, [sortedPools, setSelectLaunchpadPool]);
+  }, [sortedPools.length, setSelectLaunchpadPool]);
 
   React.useEffect(() => {
     if (sortedPools && status === "ONGOING") {
       defaultSelectPool();
     }
-  }, [sortedPools, status, defaultSelectPool]);
+  }, [sortedPools.length, status, defaultSelectPool]);
 
   return (
     <LaunchpadPoolListWrapper>

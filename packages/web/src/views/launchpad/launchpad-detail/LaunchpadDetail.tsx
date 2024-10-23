@@ -68,6 +68,7 @@ const LaunchpadDetail: React.FC = () => {
   const { data: projectDetailData, refetch: projectDetailRefetch } =
     useGetLaunchpadProjectDetails(projectPath);
   const refetchProjectDetail = async () => {
+    await setSelectPoolId(null);
     await projectDetailRefetch();
     await myParticipationRefetch();
     await updateBalances();
@@ -254,6 +255,7 @@ const LaunchpadDetail: React.FC = () => {
           rewardInfo={projectRewardInfo}
           refetch={refetchProjectDetail}
           status={projectDetailData?.status || ""}
+          selectPoolId={selectPoolId}
         />
       }
       myParticipation={

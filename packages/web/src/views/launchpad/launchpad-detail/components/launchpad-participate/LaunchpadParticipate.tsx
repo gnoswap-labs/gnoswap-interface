@@ -31,6 +31,7 @@ interface LaunchpadParticipateProps {
   poolInfo?: LaunchpadPoolModel;
   rewardInfo: ProjectRewardInfoModel;
   status: string;
+  selectPoolId: number | null;
 
   refetch: () => Promise<void>;
 }
@@ -39,6 +40,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   poolInfo,
   rewardInfo,
   status,
+  selectPoolId,
   refetch,
 }) => {
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
@@ -235,6 +237,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           openConnectWallet={openConnectWallet}
           switchNetwork={switchNetwork}
           openLaunchpadDepositAction={openLaunchpadDepositModal}
+          disabled={selectPoolId === null}
         />
       </div>
     </LaunchpadParticipateWrapper>
@@ -248,6 +251,7 @@ interface DepositButtonProps {
   isAvailableDeposit: boolean;
   status: string;
   isDepositAllowed: boolean;
+  disabled: boolean;
 
   openConnectWallet: () => void;
   openLaunchpadDepositAction: () => void;
@@ -264,6 +268,7 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   isAvailableDeposit,
   switchNetwork,
   openLaunchpadDepositAction,
+  disabled,
 }) => {
   const defaultStyle = {
     fullWidth: true,
@@ -309,10 +314,13 @@ const DepositButton: React.FC<DepositButtonProps> = ({
 
   return (
     <Button
-      className="button-deposit"
+      className={!disabled ? "button-deposit" : ""}
       text={text}
       style={defaultStyle}
-      onClick={openLaunchpadDepositAction}
+      onClick={() => {
+        if (!disabled) openLaunchpadDepositAction();
+      }}
+      disabled={disabled}
     />
   );
 };
