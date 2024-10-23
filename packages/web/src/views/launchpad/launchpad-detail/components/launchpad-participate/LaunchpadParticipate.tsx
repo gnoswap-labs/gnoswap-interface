@@ -80,8 +80,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
       poolInfo,
       rewardInfo,
       refetch: async () => {
-        await refetch();
         closeLaunchpadDepositModal();
+        refetch();
       },
     });
 
