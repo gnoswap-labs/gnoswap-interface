@@ -38,8 +38,8 @@ const LaunchpadClaimAllModal = ({
 
   const handleClickClaimAll = React.useCallback(() => {
     claimAll(data, async () => {
-      refetch();
       close();
+      refetch();
     });
   }, [data, claimAll, refetch, close]);
 
