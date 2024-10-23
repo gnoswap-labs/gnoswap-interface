@@ -78,14 +78,10 @@ const LaunchpadStatusTimeChip = ({
     }
   };
 
-  const now = new Date();
-  const end = new Date(endTime);
-  const displayStatus = end < now ? PROJECT_STATUS_TYPE.ENDED : status;
-
   return (
-    <StatusTimeChipWrapper type={displayStatus}>
-      <IconTimer type={displayStatus} />
-      <div>{getStatusText(displayStatus)}</div>
+    <StatusTimeChipWrapper type={status}>
+      <IconTimer type={status} />
+      <div>{getStatusText(status)}</div>
     </StatusTimeChipWrapper>
   );
 };
