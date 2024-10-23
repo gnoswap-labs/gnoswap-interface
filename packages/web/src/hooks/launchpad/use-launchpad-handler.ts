@@ -30,6 +30,17 @@ type DepositButtonStateType =
   | "IS_NOT_DEPOSIT_ALLOWED"
   | "DEPOSIT";
 
+function calculateUSDValueBy(
+  amount: string | number | BigNumber,
+  usdPrice: string | number | undefined,
+): BigNumber | null {
+  if (!usdPrice) {
+    return null;
+  }
+
+  return BigNumber(amount).multipliedBy(usdPrice);
+}
+
 export const useLaunchpadHandler = () => {
   const participateAmount = useAtomValue(LaunchpadState.participateAmount);
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
@@ -47,7 +58,8 @@ export const useLaunchpadHandler = () => {
 
   const { openLaunchpadWaitingConfirmationModal } = useLaunchpadModal();
   const { launchpadRepository } = useGnoswapContext();
-  const { data: blockHeight } = useGetLastedBlockHeight();
+  const { data: blockHeight, refetch: refetchBlockHeight } =
+    useGetLastedBlockHeight();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
   const { t } = useTranslation();
   const { openModal } = useConnectWalletModal();
@@ -148,7 +160,7 @@ export const useLaunchpadHandler = () => {
    * @param participationInfo The data model of the participation.
    * @param emitCallback A callback function that runs when a transaction send event is successfully fired. You can proceed to update data with refetch.
    */
-  const claim = (
+  const claim = async (
     participationInfo: LaunchpadParticipationModel,
     emitCallback: () => Promise<void>,
   ) => {
@@ -156,37 +168,43 @@ export const useLaunchpadHandler = () => {
       return;
     }
 
-    const isWithdraw = BigNumber(blockHeight).isGreaterThan(
+    const result = await refetchBlockHeight();
+    const currentBlockHeight = result?.data || blockHeight;
+
+    const isWithdrawable = BigNumber(currentBlockHeight).isGreaterThan(
       participationInfo.endBlockHeight,
     );
 
-    const gnsUSDPrice = tokenPriceMap?.[GNS_TOKEN.priceID]?.usd || 0;
-    const rewardUSDPrice =
-      tokenPriceMap?.[participationInfo.rewardTokenPath]?.usd || 0;
+    // Calculate the USD value of the Deposited USD available for withdrawal.
+    const depositAmount = isWithdrawable ? participationInfo.depositAmount : 0;
+    const depositUSDValue = calculateUSDValueBy(
+      depositAmount,
+      tokenPriceMap?.[GNS_TOKEN.path]?.usd,
+    );
 
-    const depositUSDValue = isWithdraw
-      ? BigNumber(participationInfo.depositAmount)
-          .multipliedBy(gnsUSDPrice)
-          .shiftedBy(-1 * GNS_TOKEN.decimals)
-      : 0;
-    const rewardUSDValue = participationInfo.rewardToken
-      ? BigNumber(participationInfo.claimableRewardAmount)
-          .multipliedBy(rewardUSDPrice)
-          .shiftedBy(-1 * participationInfo.rewardToken.decimals)
-      : null;
+    // Calculate the USD value of the claimable reward.
+    const rewardAmount = participationInfo.claimableRewardAmount;
+    const rewardUSDValue = calculateUSDValueBy(
+      rewardAmount,
+      tokenPriceMap?.[participationInfo.rewardTokenPath]?.usd,
+    );
 
-    const usdValue =
-      rewardUSDValue !== null
-        ? toUnitFormat(BigNumber(depositUSDValue).plus(rewardUSDValue), true)
-        : "";
+    const hasUSDPrice =
+      !!depositUSDValue?.isGreaterThan(0) || !!rewardUSDValue?.isGreaterThan(0);
+    const usdValueStr = hasUSDPrice
+      ? toUnitFormat(
+          BigNumber(depositUSDValue || 0).plus(rewardUSDValue || 0),
+          true,
+        )
+      : "";
 
     const messageData = {
-      tokenAAmount: usdValue,
+      tokenAAmount: usdValueStr,
     };
 
     processTx(
       () => {
-        if (isWithdraw) {
+        if (isWithdrawable) {
           return launchpadRepository.collectRewardWithDepositByDepositId(
             participationInfo.depositId,
             account.address,
@@ -218,7 +236,7 @@ export const useLaunchpadHandler = () => {
    * @param participationInfos The data model list of the participation.
    * @param emitCallback A callback function that runs when a transaction send event is successfully fired. You can proceed to update data with refetch.
    */
-  const claimAll = (
+  const claimAll = async (
     participationInfos: LaunchpadParticipationModel[],
     emitCallback: () => Promise<void>,
   ) => {
@@ -226,46 +244,63 @@ export const useLaunchpadHandler = () => {
       return;
     }
 
-    const isWithdraw = participationInfos.some(participation =>
-      BigNumber(blockHeight).isGreaterThan(participation.endBlockHeight),
+    const result = await refetchBlockHeight();
+    const currentBlockHeight = result?.data || blockHeight;
+
+    const isWithdrawable = participationInfos.some(participation =>
+      BigNumber(currentBlockHeight).isGreaterThan(participation.endBlockHeight),
     );
 
     const participationInfo = participationInfos[0];
 
-    const gnsUSDPrice = tokenPriceMap?.[GNS_TOKEN.priceID]?.usd || 0;
-    const rewardUSDPrice =
-      tokenPriceMap?.[participationInfo.rewardToken?.priceID || "-"]?.usd || 0;
-
-    const depositUSDValue = participationInfos.reduce(
-      (accumulated, current) => {
-        if (BigNumber(blockHeight).isGreaterThan(current.endBlockHeight)) {
-          return accumulated;
-        }
-        return BigNumber(accumulated).plus(
-          current.depositAmount * Number(gnsUSDPrice),
-        );
-      },
-      BigNumber(0),
-    );
-
-    const rewardUSDValue = participationInfos.reduce((accumulated, current) => {
-      return BigNumber(accumulated).plus(
-        current.claimableRewardAmount * Number(rewardUSDPrice),
+    // Calculate the USD value of the Deposited USD available for withdrawal.
+    const depositAmount = participationInfos.reduce((accumulated, current) => {
+      const isWithdrawable = BigNumber(currentBlockHeight).isGreaterThan(
+        current.endBlockHeight,
       );
+      if (!isWithdrawable) {
+        return accumulated;
+      }
+      return BigNumber(accumulated).plus(current.depositAmount);
     }, BigNumber(0));
 
-    const usdValue =
-      rewardUSDValue !== null
-        ? toUnitFormat(BigNumber(depositUSDValue).plus(rewardUSDValue), true)
-        : "";
+    const depositUSDValue = calculateUSDValueBy(
+      depositAmount,
+      tokenPriceMap?.[GNS_TOKEN.path]?.usd,
+    );
+
+    // Calculate the USD value of the claimable reward.
+    const rewardAmount = participationInfos.reduce((accumulated, current) => {
+      const isClaimable = BigNumber(currentBlockHeight).isGreaterThan(
+        current.claimableBlockHeight,
+      );
+      if (!isClaimable) {
+        return accumulated;
+      }
+      return BigNumber(accumulated).plus(current.claimableRewardAmount);
+    }, BigNumber(0));
+
+    const rewardUSDValue = calculateUSDValueBy(
+      rewardAmount,
+      tokenPriceMap?.[participationInfo.rewardTokenPath]?.usd,
+    );
+
+    const hasUSDPrice =
+      !!depositUSDValue?.isGreaterThan(0) || !!rewardUSDValue?.isGreaterThan(0);
+    const usdValueStr = hasUSDPrice
+      ? toUnitFormat(
+          BigNumber(depositUSDValue || 0).plus(rewardUSDValue || 0),
+          true,
+        )
+      : "";
 
     const messageData = {
-      tokenAAmount: usdValue,
+      tokenAAmount: usdValueStr,
     };
 
     processTx(
       () => {
-        if (isWithdraw) {
+        if (isWithdrawable) {
           return launchpadRepository.collectRewardWithDepositByProjectId(
             participationInfo.projectId,
             account.address,
