@@ -66,8 +66,12 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
       : PROJECT_INFO;
 
   return (
-    <ProjectInfoWrapper onClick={() => moveProjectDetail(projectId)}>
-      <TableColumn className="left" tdWidth={cellWidths.list[0].width}>
+    <ProjectInfoWrapper>
+      <TableColumn
+        className="left clickable"
+        tdWidth={cellWidths.list[0].width}
+        onClick={() => moveProjectDetail(projectId)}
+      >
         <MissingLogo
           symbol={rewardTokenSymbol}
           url={rewardTokenLogoUrl || undefined}

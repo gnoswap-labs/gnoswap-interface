@@ -41,7 +41,6 @@ export const ProjectInfoWrapper = styled.div`
   height: 68px;
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};
-  cursor: pointer;
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
@@ -49,6 +48,9 @@ export const ProjectInfoWrapper = styled.div`
     background-color: ${({ theme }) => theme.color.hover04};
   }
 
+  .clickable {
+    cursor: pointer;
+  }
   .symbol-pair {
     margin: 0px 8px;
   }
@@ -70,6 +72,7 @@ export const ProjectInfoWrapper = styled.div`
     gap: 4px;
     color: ${({ theme }) => theme.color.text04};
     font-weight: 400;
+    cursor: pointer;
     .svg {
       width: 16px;
       height: 16px;
