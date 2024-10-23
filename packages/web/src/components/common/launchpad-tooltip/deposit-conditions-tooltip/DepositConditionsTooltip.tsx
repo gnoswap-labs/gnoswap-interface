@@ -21,26 +21,26 @@ const DepositConditionsTooltip = ({
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
 
   const renderConditions = () => {
-    return depositConditions.map((condition, index) => {
+    return depositConditions.map(condition => {
       const { tokenPath, leastTokenAmount } = condition;
       const tokenSymbol = tokenPath.split("/").pop();
 
       return (
-        <div key={index}>
+        <>
           {tokenPath === "gno.land/r/gnoswap/v2/gov/xgns" ? (
-            <div>
+            <li>
               At least {leastTokenAmount.toLocaleString()}
               {tokenSymbol} must be staked at <br />
               Governance.
-            </div>
+            </li>
           ) : (
-            <div>
+            <li>
               At least {leastTokenAmount.toLocaleString()} {tokenSymbol} token
               must be <br />
               available in wallet.
-            </div>
+            </li>
           )}
-        </div>
+        </>
       );
     });
   };
@@ -54,8 +54,10 @@ const DepositConditionsTooltip = ({
               <IconWarning />
               <div>Conditions for Participate</div>
             </div>
-            <div>Wallet address is not qualifiable.</div>
-            {renderConditions()}
+            <ul className="list-wrapper">
+              <li>Wallet address is not qualifiable.</li>
+              {renderConditions()}
+            </ul>
           </FloatingContentWrapper>
         }
         placement={placement ?? "top"}

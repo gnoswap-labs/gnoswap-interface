@@ -30,4 +30,14 @@ export const FloatingContentWrapper = styled.div`
     gap: 8px;
     width: 100%;
   }
+
+  .list-wrapper {
+    ${mixins.flexbox("column", "flex-start", "center")};
+    gap: 8px;
+    padding: 0 16px;
+    line-height: 130%;
+    li {
+      list-style: disc outside;
+    }
+  }
 `;
