@@ -41,6 +41,7 @@ export interface ProjectLinksObject {
 }
 
 export interface ProjectDescriptionDataModel {
+  name: string;
   description: string;
   descriptionDetails: string;
   realmPath: string;
@@ -150,6 +151,7 @@ const LaunchpadDetail: React.FC = () => {
   }, [projectDetailData]);
 
   const projectDescriptionData: ProjectDescriptionDataModel = {
+    name: projectDetailData?.name || "-",
     description: projectDetailData?.description || "-",
     descriptionDetails: projectDetailData?.descriptionDetails || "-",
     realmPath: projectPath || "-",
@@ -255,7 +257,6 @@ const LaunchpadDetail: React.FC = () => {
           rewardInfo={projectRewardInfo}
           refetch={refetchProjectDetail}
           status={projectDetailData?.status || ""}
-          selectPoolId={selectPoolId}
         />
       }
       myParticipation={

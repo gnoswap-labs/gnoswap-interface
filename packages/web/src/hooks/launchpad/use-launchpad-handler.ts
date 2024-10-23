@@ -27,6 +27,7 @@ type DepositButtonStateType =
   | "ENTER_AMOUNT"
   | "AMOUNT_TOO_LOW"
   | "INSUFFICIENT_BALANCE"
+  | "SELECT_POOL"
   | "IS_NOT_DEPOSIT_ALLOWED"
   | "DEPOSIT";
 
@@ -47,6 +48,7 @@ export const useLaunchpadHandler = () => {
   const [, setIsShowConditionTooltip] = useAtom(
     LaunchpadState.isShowConditionTooltip,
   );
+  const selectPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
 
   const {
     connected: connectedWallet,
@@ -340,6 +342,9 @@ export const useLaunchpadHandler = () => {
     if (compareAmountFn(participateAmount, tokenGnsBalance) > 0) {
       return "INSUFFICIENT_BALANCE";
     }
+    if (selectPoolId === null) {
+      return "SELECT_POOL";
+    }
     if (Number(participateAmount) < DEPOSIT_MIN_AMOUNT) {
       return "AMOUNT_TOO_LOW";
     }
@@ -348,6 +353,7 @@ export const useLaunchpadHandler = () => {
     }
     return "DEPOSIT";
   }, [
+    selectPoolId,
     connectedWallet,
     participateAmount,
     isSwitchNetwork,
@@ -367,6 +373,8 @@ export const useLaunchpadHandler = () => {
         return "Amount Too Low";
       case "INSUFFICIENT_BALANCE":
         return "Insufficient Balance";
+      case "SELECT_POOL":
+        return "Select Pool";
       case "IS_NOT_DEPOSIT_ALLOWED":
         return "Conditions Aren't Met";
       case "DEPOSIT":
