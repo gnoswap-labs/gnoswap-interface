@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtom } from "jotai";
-import { CommonState, EarnState, WalletState } from "@states/index";
+import {
+  CommonState,
+  EarnState,
+  LaunchpadState,
+  WalletState,
+} from "@states/index";
 import { useTokenData } from "@hooks/token/use-token-data";
 import useRouter from "@hooks/common/use-custom-router";
 import useScrollData from "./use-scroll-data";
@@ -15,6 +20,9 @@ export const useBackground = () => {
   const [sessionId] = useAtom(CommonState.sessionId);
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(
     EarnState.isViewMorePositions,
+  );
+  const [isViewMoreActiveProjects, setIsViewMoreActiveProjects] = useAtom(
+    LaunchpadState.isViewMoreActiveProjects,
   );
   const { updateBalances } = useTokenData();
   const { scrollTo, getScrollHeight } = useScrollData();
@@ -47,6 +55,10 @@ export const useBackground = () => {
           scrollTo(getScrollHeight(router.pathname));
           setMemorizedPath(null);
           break;
+        case "/launchpad/project":
+          scrollTo(getScrollHeight(router.pathname));
+          setMemorizedPath(null);
+          break;
         default:
           break;
       }
@@ -62,6 +74,9 @@ export const useBackground = () => {
   useEffect(() => {
     if (!router.pathname.startsWith("/earn") && isViewMorePositions) {
       setIsViewMorePositions(false);
+    }
+    if (!router.pathname.startsWith("/launchpad") && isViewMoreActiveProjects) {
+      setIsViewMoreActiveProjects(false);
     }
   }, [router.pathname]);
 

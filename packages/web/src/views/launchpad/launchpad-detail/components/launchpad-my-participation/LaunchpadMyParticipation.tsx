@@ -1,4 +1,5 @@
 import React from "react";
+import BigNumber from "bignumber.js";
 
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import {
@@ -6,6 +7,8 @@ import {
   LaunchpadPoolModel,
 } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
+import { useGetLastedBlockHeight } from "@query/pools";
+import { LAUNCHPAD_REFETCH_INTERVAL } from "@common/values";
 
 import { MyParticipationWrapper } from "./LaunchpadMyParticipation.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -64,19 +67,26 @@ const LaunchpadMyParticipation = ({
     }, Number(poolInfos?.[0]?.apr ?? 0));
   }, [poolInfos]);
 
-  const isShowClaimAllButton = React.useMemo(() => {
-    const currentTime = new Date();
-    return data.some(item => {
-      const claimableTime = new Date(item.claimableTime);
+  const { data: blockHeight } = useGetLastedBlockHeight({
+    refetchInterval: LAUNCHPAD_REFETCH_INTERVAL,
+  });
 
-      if (currentTime <= claimableTime) return false;
+  const isShowClaimAllButton = React.useMemo(() => {
+    if (!blockHeight) return;
+
+    const currentBlockHeight = blockHeight;
+
+    return data.some(item => {
+      const isClaimableBlockHeight = BigNumber(
+        currentBlockHeight,
+      ).isGreaterThan(item.claimableBlockHeight);
 
       const isClaimedReward =
         Number(toNumberFormat(item.claimableRewardAmount, 2)) === 0;
       const isClaimedDeposit = Number(toNumberFormat(item.depositAmount)) === 0;
       const isClaimed = isClaimedReward && isClaimedDeposit;
 
-      return !isClaimed;
+      return !isClaimed && isClaimableBlockHeight;
     });
   }, [data]);
 

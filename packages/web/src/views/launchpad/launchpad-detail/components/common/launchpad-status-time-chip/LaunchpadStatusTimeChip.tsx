@@ -43,21 +43,11 @@ const LaunchpadStatusTimeChip = ({
       if (days > 0) {
         return `${days} days ${hours} hours`;
       } else if (hours > 0) {
-        return `${days} days ${hours} hours`;
+        return `${hours} hours ${minutes} minutes`;
       } else {
         return `${minutes} minutes`;
       }
     };
-    // This is the code with improved notation.
-    // const formatTime = (days: number, hours: number, minutes: number) => {
-    //   if (days > 0) {
-    //     return `${days} days ${hours} hours`;
-    //   } else if (hours > 0) {
-    //     return `${hours} hours ${minutes} minutes`;
-    //   } else {
-    //     return `${minutes} minutes`;
-    //   }
-    // };
 
     switch (type) {
       case PROJECT_STATUS_TYPE.UPCOMING:

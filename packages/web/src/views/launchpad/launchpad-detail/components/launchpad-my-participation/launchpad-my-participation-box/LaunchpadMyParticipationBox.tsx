@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import BigNumber from "bignumber.js";
 
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { ParticipateButtonProps } from "../LaunchpadMyParticipation";
@@ -9,6 +10,8 @@ import { getDateUtcToLocal } from "@common/utils/date-util";
 import { toNumberFormat } from "@utils/number-utils";
 import { formatRate } from "@utils/new-number-utils";
 import { formatClaimableTime } from "@utils/launchpad-format-claimable-time";
+import { useGetLastedBlockHeight } from "@query/pools";
+import { LAUNCHPAD_REFETCH_INTERVAL } from "@common/values";
 
 import { Divider } from "@components/common/divider/divider";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
@@ -34,6 +37,10 @@ const LaunchpadMyParticipationBox = ({
 }: LaunchpadMyParticipationBoxProps) => {
   const [openedSelector, setOpenedSelector] = React.useState(false);
 
+  const { data: blockHeight } = useGetLastedBlockHeight({
+    refetchInterval: LAUNCHPAD_REFETCH_INTERVAL,
+  });
+
   const aprStr = item?.depositAPR ? (
     <>
       {Number(item.depositAPR) > 100 && "✨"}
@@ -44,11 +51,15 @@ const LaunchpadMyParticipationBox = ({
   );
 
   const isClaimable = React.useMemo(() => {
-    const currentTime = new Date();
-    const claimableTime = new Date(item.claimableTime);
+    if (!blockHeight) return;
 
-    return currentTime > claimableTime;
-  }, [item.claimableTime]);
+    const currentBlockHeight = blockHeight;
+
+    return BigNumber(currentBlockHeight).isGreaterThan(
+      item.claimableBlockHeight,
+    );
+  }, [item.claimableBlockHeight, blockHeight]);
+  console.log(isClaimable, "isClaimable");
 
   const isClaimed = React.useMemo(() => {
     const isClaimedReward =
