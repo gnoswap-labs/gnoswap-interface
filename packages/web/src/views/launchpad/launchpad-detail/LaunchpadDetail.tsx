@@ -66,8 +66,11 @@ const LaunchpadDetail: React.FC = () => {
   const projectPath = router.getProjectPath();
   const { account } = useWallet();
 
-  const { data: projectDetailData, refetch: projectDetailRefetch } =
-    useGetLaunchpadProjectDetails(projectPath);
+  const {
+    data: projectDetailData,
+    refetch: projectDetailRefetch,
+    isFetched: isFetchedProjectDetail,
+  } = useGetLaunchpadProjectDetails(projectPath);
 
   const { isLoading } = useLoading();
   const breadcrumbsSteps = React.useMemo(() => {
@@ -275,6 +278,7 @@ const LaunchpadDetail: React.FC = () => {
           data={myParticipationData || []}
           refetch={refetchClaimAll}
           rewardInfo={projectRewardInfo}
+          isFetched={isFetchedProjectDetail}
         />
       }
       clickHere={<LaunchpadDetailClickHereContainer />}

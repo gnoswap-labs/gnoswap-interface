@@ -21,6 +21,7 @@ interface LaunchpadMyParticipationProps {
   rewardInfo: ProjectRewardInfoModel;
   connected: boolean;
   isSwitchNetwork: boolean;
+  isFetched: boolean;
 
   refetch: () => Promise<void>;
 }
@@ -31,6 +32,7 @@ const LaunchpadMyParticipation = ({
   rewardInfo,
   connected,
   isSwitchNetwork,
+  isFetched,
   refetch,
 }: LaunchpadMyParticipationProps) => {
   const { claim } = useLaunchpadHandler();
@@ -90,7 +92,7 @@ const LaunchpadMyParticipation = ({
     );
   }
 
-  if (connected && data.length === 0) {
+  if (connected && isFetched && data.length === 0) {
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">

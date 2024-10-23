@@ -13,6 +13,7 @@ interface LaunchpadMyParticipationContainerProps {
   poolInfos: LaunchpadPoolModel[];
   data: LaunchpadParticipationModel[];
   rewardInfo: ProjectRewardInfoModel;
+  isFetched: boolean;
 
   refetch: () => Promise<void>;
 }
@@ -21,6 +22,7 @@ const LaunchpadMyParticipationContainer = ({
   poolInfos,
   data,
   rewardInfo,
+  isFetched,
   refetch,
 }: LaunchpadMyParticipationContainerProps) => {
   const { connected, isSwitchNetwork } = useWallet();
@@ -31,6 +33,7 @@ const LaunchpadMyParticipationContainer = ({
       data={data}
       rewardInfo={rewardInfo}
       connected={connected}
+      isFetched={isFetched}
       refetch={refetch}
       isSwitchNetwork={isSwitchNetwork}
     />
