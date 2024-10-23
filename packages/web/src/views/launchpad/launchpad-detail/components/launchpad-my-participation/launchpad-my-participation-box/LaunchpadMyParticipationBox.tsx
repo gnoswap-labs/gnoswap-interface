@@ -50,6 +50,23 @@ const LaunchpadMyParticipationBox = ({
     return currentTime > claimableTime;
   }, [item.claimableTime]);
 
+  const isClaimed = React.useMemo(() => {
+    const isClaimedReward =
+      Number(toNumberFormat(item.claimableRewardAmount, 2)) === 0;
+    const isClaimedDeposit =
+      Number(toNumberFormat(item.depositAmount, 2)) === 0;
+
+    return isClaimedReward && isClaimedDeposit;
+  }, [item]);
+
+  const formatClaimedRewardAmount = React.useCallback(
+    (amount: number, decimalPlaces = 6) => {
+      const formatted = toNumberFormat(amount, decimalPlaces);
+      return Number(formatted) < 0.01 ? "<0.01" : formatted.toString();
+    },
+    [],
+  );
+
   return (
     <MyParticipationBoxWrapper key={item.id}>
       <div className="my-participation-box-header">
@@ -85,7 +102,7 @@ const LaunchpadMyParticipationBox = ({
               mobileWidth={24}
             />
             <>
-              {toNumberFormat(item.claimableRewardAmount, 2)}{" "}
+              {formatClaimedRewardAmount(item.claimableRewardAmount, 6)}{" "}
               {rewardInfo?.rewardTokenSymbol}
             </>
           </div>
@@ -108,7 +125,7 @@ const LaunchpadMyParticipationBox = ({
                   mobileWidth={24}
                 />
                 <>
-                  {toNumberFormat(item.claimedRewardAmount, 2)}{" "}
+                  {toNumberFormat(item.claimedRewardAmount, 6)}{" "}
                   {rewardInfo?.rewardTokenSymbol}
                 </>
               </div>
@@ -122,7 +139,7 @@ const LaunchpadMyParticipationBox = ({
             <div className="participation-box-button-wrapper">
               <ClaimButton
                 onClick={() => isClaimable && handleClickClaim(item)}
-                disabled={!isClaimable}
+                disabled={!isClaimable || isClaimed}
               />
             </div>
           </>

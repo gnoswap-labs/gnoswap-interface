@@ -44,6 +44,13 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
       }
     }
 
+    .content-wrapper {
+      padding: 12px 0;
+      width: 100%;
+      max-height: calc(80vh - 200px);
+      overflow-y: auto;
+    }
+
     .content {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 2px;

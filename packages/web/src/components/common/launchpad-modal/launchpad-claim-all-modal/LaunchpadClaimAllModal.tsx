@@ -10,6 +10,7 @@ import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-ti
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import LaunchpadClaimAmountField from "./launchpad-claim-amount-field/LaunchpadClaimAmountField";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+import { toNumberFormat } from "@utils/number-utils";
 
 interface LaunchpadClaimAllModalProps {
   data: LaunchpadParticipationModel[];
@@ -58,43 +59,54 @@ const LaunchpadClaimAllModal = ({
           </div>
         </div>
 
-        <div className="content">
-          {filteredClaimableData.map((item, idx) => {
-            const endTimeReached = isEndTime(item);
-            return (
-              <div className="data" key={item.id}>
-                <div className="data-box">
-                  <div className="data-row">
-                    <div className="key">Pool</div>
-                    <div className="value">
-                      #{idx + 1}{" "}
-                      <LaunchpadPoolTierChip
-                        poolTier={item.poolTier as TierType}
-                      />
-                    </div>
-                  </div>
-                  <div className="data-row">
-                    <div className="key">Claimable</div>
-                    <LaunchpadClaimAmountField
-                      amount={item.claimableRewardAmount}
-                      rewardInfo={rewardInfo}
-                      type={"CLAIMABLE"}
-                    />
-                  </div>
-                  {endTimeReached && (
+        <div className="content-wrapper">
+          <div className="content">
+            {filteredClaimableData.map((item, idx) => {
+              const endTimeReached = isEndTime(item);
+
+              const isClaimedReward =
+                Number(toNumberFormat(item.claimableRewardAmount, 2)) === 0;
+              const isClaimedDeposit =
+                Number(toNumberFormat(item.depositAmount)) === 0;
+              const isClaimed = isClaimedReward && isClaimedDeposit;
+
+              if (isClaimed) return;
+
+              return (
+                <div className="data" key={item.id}>
+                  <div className="data-box">
                     <div className="data-row">
-                      <div className="key">Deposit Amount</div>
+                      <div className="key">Pool</div>
+                      <div className="value">
+                        #{idx + 1}{" "}
+                        <LaunchpadPoolTierChip
+                          poolTier={item.poolTier as TierType}
+                        />
+                      </div>
+                    </div>
+                    <div className="data-row">
+                      <div className="key">Claimable</div>
                       <LaunchpadClaimAmountField
-                        amount={item.depositAmount}
+                        amount={item.claimableRewardAmount}
                         rewardInfo={rewardInfo}
-                        type={"DEPOSIT"}
+                        type={"CLAIMABLE"}
                       />
                     </div>
-                  )}
+                    {endTimeReached && (
+                      <div className="data-row">
+                        <div className="key">Deposit Amount</div>
+                        <LaunchpadClaimAmountField
+                          amount={item.depositAmount}
+                          rewardInfo={rewardInfo}
+                          type={"DEPOSIT"}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         <div className="footer">
