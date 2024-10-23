@@ -27,38 +27,31 @@ const LaunchpadClaimAmountField = ({
   const { tokenPrices } = useTokenData();
 
   const estimatePrice = React.useMemo(() => {
+    const calculatePrice = (
+      tokenPath: string | undefined,
+      amountValue: number,
+    ) => {
+      if (!tokenPath || !amountValue) return "-";
+
+      const price = formatPrice(
+        BigNumber(amountValue)
+          .multipliedBy(Number(tokenPrices?.[tokenPath]?.usd ?? "0"))
+          .toString(),
+        {
+          usd: true,
+          isKMB: false,
+        },
+      );
+
+      return price === "$0" ? "-" : price;
+    };
+
     if (type === "DEPOSIT") {
-      return DEFAULT_DEPOSIT_TOKEN?.wrappedPath && !!amount
-        ? formatPrice(
-            BigNumber(+amount)
-              .multipliedBy(
-                Number(
-                  tokenPrices?.[DEFAULT_DEPOSIT_TOKEN?.wrappedPath]?.usd ?? "0",
-                ),
-              )
-              .toString(),
-            {
-              usd: true,
-              isKMB: false,
-            },
-          )
-        : "-";
+      return calculatePrice(DEFAULT_DEPOSIT_TOKEN?.wrappedPath, amount);
     }
 
-    return rewardInfo?.rewardTokenPath && !!amount
-      ? formatPrice(
-          BigNumber(+amount)
-            .multipliedBy(
-              Number(tokenPrices?.[rewardInfo?.rewardTokenPath]?.usd ?? "0"),
-            )
-            .toString(),
-          {
-            usd: true,
-            isKMB: false,
-          },
-        )
-      : "-";
-  }, [type, amount, tokenPrices, rewardInfo]);
+    return calculatePrice(rewardInfo?.rewardTokenPath, amount);
+  }, [type, amount, tokenPrices, rewardInfo, DEFAULT_DEPOSIT_TOKEN]);
 
   if (type === "DEPOSIT") {
     return (
@@ -70,7 +63,7 @@ const LaunchpadClaimAmountField = ({
             src={DEFAULT_DEPOSIT_TOKEN?.logoURI}
             alt={`${DEFAULT_DEPOSIT_TOKEN?.symbol} token symbol image`}
           />
-          {toNumberFormat(amount, 2)} {DEFAULT_DEPOSIT_TOKEN?.symbol}
+          {toNumberFormat(amount, 6)} {DEFAULT_DEPOSIT_TOKEN?.symbol}
         </div>
         <div className="value-price">{estimatePrice}</div>
       </ClaimAllFieldWrapper>
@@ -86,7 +79,7 @@ const LaunchpadClaimAmountField = ({
             url={rewardInfo?.rewardTokenLogoUrl}
             width={24}
           />
-          {toNumberFormat(amount, 2)} {rewardInfo?.rewardTokenSymbol}
+          {toNumberFormat(amount, 6)} {rewardInfo?.rewardTokenSymbol}
         </div>
         <div className="value-price">{estimatePrice}</div>
       </ClaimAllFieldWrapper>
