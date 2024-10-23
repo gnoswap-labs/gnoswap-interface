@@ -8,7 +8,7 @@ interface LaunchpadAboutProjectContainerProps {
   data: ProjectDescriptionDataModel;
 }
 
-const TEXT_TRUNCATION_THRESHOLD = 260;
+const TEXT_TRUNCATION_THRESHOLD = 1_260;
 
 const LaunchpadAboutProjectContainer: React.FC<
   LaunchpadAboutProjectContainerProps

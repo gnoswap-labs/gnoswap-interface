@@ -29,28 +29,59 @@ const LaunchpadStatusTimeChip = ({
     const getTimeDifference = (
       future: Date,
       now: Date,
-    ): { days: number; hours: number } => {
+    ): { days: number; hours: number; minutes: number } => {
       const diffMs = future.getTime() - now.getTime();
       const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
       const hours = Math.floor(
         (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
       );
-      return { days, hours };
+      const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      return { days, hours, minutes };
     };
+
+    const formatTime = (days: number, hours: number, minutes: number) => {
+      if (days > 0) {
+        return `${days} days ${hours} hours`;
+      } else if (hours > 0) {
+        return `${days} days ${hours} hours`;
+      } else {
+        return `${minutes} minutes`;
+      }
+    };
+    // This is the code with improved notation.
+    // const formatTime = (days: number, hours: number, minutes: number) => {
+    //   if (days > 0) {
+    //     return `${days} days ${hours} hours`;
+    //   } else if (hours > 0) {
+    //     return `${hours} hours ${minutes} minutes`;
+    //   } else {
+    //     return `${minutes} minutes`;
+    //   }
+    // };
 
     switch (type) {
       case PROJECT_STATUS_TYPE.UPCOMING:
-        const { days: upcomingDays, hours: upcomingHours } = getTimeDifference(
-          start,
-          now,
-        );
-        return `Upcoming in ${upcomingDays} days ${upcomingHours} hours`;
+        const {
+          days: upcomingDays,
+          hours: upcomingHours,
+          minutes: upcomingMinutes,
+        } = getTimeDifference(start, now);
+        return `Upcoming in ${formatTime(
+          upcomingDays,
+          upcomingHours,
+          upcomingMinutes,
+        )}`;
       case PROJECT_STATUS_TYPE.ONGOING:
-        const { days: ongoingDays, hours: ongoingHours } = getTimeDifference(
-          end,
-          now,
-        );
-        return `Ends in ${ongoingDays} days ${ongoingHours} hours`;
+        const {
+          days: ongoingDays,
+          hours: ongoingHours,
+          minutes: ongoingMinutes,
+        } = getTimeDifference(end, now);
+        return `Ends in ${formatTime(
+          ongoingDays,
+          ongoingHours,
+          ongoingMinutes,
+        )}`;
       case PROJECT_STATUS_TYPE.ENDED:
         return "Ended";
     }

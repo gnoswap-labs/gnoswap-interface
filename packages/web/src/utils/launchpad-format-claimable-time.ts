@@ -14,7 +14,8 @@ export const formatClaimableTime = (claimableTime: string) => {
     if (diffDays > 0 || diffHours > 0) {
       return `in ${diffDays} days ${diffHours} hours`;
     } else {
-      return "in 0 days 1 hours";
+      const diffMinutes = Math.floor(diffMs / (1000 * 60));
+      return `in ${diffMinutes} minutes`;
     }
   }
 };
