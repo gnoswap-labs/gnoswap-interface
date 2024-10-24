@@ -35,8 +35,7 @@ export const ActiveProjectsGridWrapper = styled.div`
 
   .card-skeleton {
     min-width: 322px;
-    height: 198px;
+    height: 317px;
     border-radius: 10px;
-    box-shadow: ${({ theme }) => theme.color.shadow02};
   }
 `;

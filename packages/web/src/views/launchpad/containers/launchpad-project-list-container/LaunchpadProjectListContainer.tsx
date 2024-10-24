@@ -1,7 +1,6 @@
 import React from "react";
 import { useAtom } from "jotai";
 
-import { useLoading } from "@hooks/common/use-loading";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGetLaunchpadProjects } from "@query/launchpad/use-get-launchpad-projects";
 import { LaunchpadProjectModel } from "@models/launchpad";
@@ -21,8 +20,8 @@ const LaunchpadProjectListContainer: React.FC = () => {
     setKeyword(e.target.value);
   }, []);
 
-  const { isLoadingLaunchpadProjectList } = useLoading();
-  const { data: projects } = useGetLaunchpadProjects({ keyword: "" });
+  const { data: projects, isFetched: isFetchedProjects } =
+    useGetLaunchpadProjects({ keyword: "" });
   const projectList = projects?.pages.flatMap(item => item.projects) || [];
 
   const STATUS_PRIORITY = {
@@ -54,7 +53,7 @@ const LaunchpadProjectListContainer: React.FC = () => {
       const bStartTime = new Date(b.pools[0]?.startTime || 0).getTime();
       return aStartTime - bStartTime;
     },
-    [],
+    [STATUS_PRIORITY],
   );
 
   const fixedProjects = React.useMemo(() => {
@@ -62,7 +61,7 @@ const LaunchpadProjectListContainer: React.FC = () => {
 
     const filteredProjects = filterProjectsByKeyword(projectList, keyword);
     return filteredProjects.sort(sortProjectsByStatus);
-  }, [projectList, keyword]);
+  }, [projectList, keyword, filterProjectsByKeyword, sortProjectsByStatus]);
 
   const moveProjectDetail = React.useCallback(
     (projectId: string) => {
@@ -72,7 +71,7 @@ const LaunchpadProjectListContainer: React.FC = () => {
   );
   return (
     <LaunchpadProjectList
-      isFetched={!isLoadingLaunchpadProjectList}
+      isFetched={isFetchedProjects}
       breakpoint={breakpoint}
       projects={[...fixedProjects]}
       moveProjectDetail={moveProjectDetail}

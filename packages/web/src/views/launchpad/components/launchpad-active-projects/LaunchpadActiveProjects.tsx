@@ -11,6 +11,8 @@ export interface LaunchpadActiveProjectsProps {
   showLoadMore: boolean;
   loadMore: boolean;
   activeProjectListLength: number;
+  isFetched: boolean;
+  isLoading: boolean;
 
   onClickLoadMore: () => void;
   moveProjectDetail: (poolId: string) => void;
@@ -21,6 +23,8 @@ const LaunchpadActiveProjects: React.FC<LaunchpadActiveProjectsProps> = ({
   showLoadMore,
   loadMore,
   activeProjectListLength,
+  isFetched,
+  isLoading,
   onClickLoadMore,
   moveProjectDetail,
 }) => {
@@ -31,6 +35,8 @@ const LaunchpadActiveProjects: React.FC<LaunchpadActiveProjectsProps> = ({
         activeProjectList={activeProjectList || []}
         showLoadMore={showLoadMore}
         loadMore={loadMore}
+        isFetched={isFetched}
+        isLoading={isLoading}
         onClickLoadMore={onClickLoadMore}
         moveProjectDetail={moveProjectDetail}
       />

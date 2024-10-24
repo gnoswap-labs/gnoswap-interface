@@ -17,6 +17,7 @@ import {
   PROJECT_INFO_TABLET,
   PROJECT_INFO_MOBILE,
 } from "@constants/skeleton.constant";
+import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 
 interface LaunchpadProjectListTableProps {
   breakpoint: DEVICE_TYPE;
@@ -77,6 +78,18 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
               moveRewardTokenSwapPage={moveRewardTokenSwapPage}
             />
           ))}
+        {!isFetched && (
+          <TableSkeleton
+            className="skeleton"
+            info={
+              breakpoint === DEVICE_TYPE.WEB
+                ? PROJECT_INFO
+                : breakpoint !== DEVICE_TYPE.MOBILE
+                ? PROJECT_INFO_TABLET
+                : PROJECT_INFO_MOBILE
+            }
+          />
+        )}
       </div>
     </TableWrapper>
   );

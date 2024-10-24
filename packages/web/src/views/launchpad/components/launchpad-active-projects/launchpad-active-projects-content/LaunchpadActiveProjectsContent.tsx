@@ -8,6 +8,8 @@ export interface LaunchpadActiveProjectsContentProps {
   activeProjectList: LaunchpadProjectResponse[];
   showLoadMore: boolean;
   loadMore: boolean;
+  isFetched: boolean;
+  isLoading: boolean;
 
   onClickLoadMore: () => void;
   moveProjectDetail: (poolId: string) => void;
@@ -19,23 +21,21 @@ const LaunchpadActiveProjectsContent: React.FC<
   activeProjectList,
   showLoadMore,
   loadMore,
+  isFetched,
+  isLoading,
   onClickLoadMore,
   moveProjectDetail,
 }) => {
   return (
-    <>
-      {activeProjectList.length > 0 ? (
-        <LaunchpadActiveProjectsCardList
-          activeProjectList={activeProjectList}
-          showLoadMore={showLoadMore}
-          loadMore={loadMore}
-          onClickLoadMore={onClickLoadMore}
-          moveProjectDetail={moveProjectDetail}
-        />
-      ) : (
-        <></>
-      )}
-    </>
+    <LaunchpadActiveProjectsCardList
+      activeProjectList={activeProjectList}
+      showLoadMore={showLoadMore}
+      loadMore={loadMore}
+      isFetched={isFetched}
+      isLoading={isLoading}
+      onClickLoadMore={onClickLoadMore}
+      moveProjectDetail={moveProjectDetail}
+    />
   );
 };
 

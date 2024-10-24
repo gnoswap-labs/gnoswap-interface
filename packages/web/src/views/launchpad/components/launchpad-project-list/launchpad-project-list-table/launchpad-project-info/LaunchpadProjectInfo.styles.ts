@@ -35,7 +35,6 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     height: 20px;
   }
   &.left {
-    padding: 16px 0 16px 16px;
     flex-shrink: 0;
     justify-content: flex-start;
   }

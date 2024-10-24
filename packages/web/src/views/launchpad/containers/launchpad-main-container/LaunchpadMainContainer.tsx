@@ -10,6 +10,7 @@ import { Divider } from "@components/common/divider/divider";
 
 import { useGetLaunchpadSummary } from "@query/launchpad/use-get-launchpad-summary";
 import { toNumberFormat } from "@utils/number-utils";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface LaunchpadMainContainerProps {
   themeKey: ThemeKeys;
@@ -20,7 +21,8 @@ const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
   themeKey,
   icon,
 }) => {
-  const { data: launchpadSummary } = useGetLaunchpadSummary();
+  const { data: launchpadSummary, isLoading: isLoadingSummary } =
+    useGetLaunchpadSummary();
 
   const defaultStyle: ButtonStyleProps = {
     textColor: "text32",
@@ -56,31 +58,52 @@ const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
         <Divider />
         <div className="launchpad-data-wrapper">
           <div className="launchpad-data-list">
-            <span className="launchpad-data-value">
-              {launchpadSummary?.totalParticipants
-                ? toNumberFormat(launchpadSummary.totalParticipants, 2)
-                : "-"}
-            </span>
+            {isLoadingSummary && (
+              <span className="launchpad-data-value">
+                <span css={pulseSkeletonStyle({ w: "120px", h: 18 })} />
+              </span>
+            )}
+            {!isLoadingSummary && (
+              <span className="launchpad-data-value">
+                {launchpadSummary?.totalParticipants
+                  ? toNumberFormat(launchpadSummary.totalParticipants, 2)
+                  : "-"}
+              </span>
+            )}
             <span className="launchpad-data-key">Total Participants</span>
           </div>
           <div className="launchpad-data-list">
-            <span className="launchpad-data-value">
-              <img src="/gns.svg" alt="GnoSwap logo" />
-              {launchpadSummary?.totalDepositedGNSAmount
-                ? toNumberFormat(launchpadSummary.totalDepositedGNSAmount, 2)
-                : "-"}
-            </span>
+            {isLoadingSummary && (
+              <span className="launchpad-data-value">
+                <span css={pulseSkeletonStyle({ w: "120px", h: 18 })} />
+              </span>
+            )}
+            {!isLoadingSummary && (
+              <span className="launchpad-data-value">
+                <img src="/gns.svg" alt="GnoSwap logo" />
+                {launchpadSummary?.totalDepositedGNSAmount
+                  ? toNumberFormat(launchpadSummary.totalDepositedGNSAmount, 2)
+                  : "-"}
+              </span>
+            )}
             <span className="launchpad-data-key">Total Deposited GNS</span>
           </div>
           <div className="launchpad-data-list">
-            <span className="launchpad-data-value">
-              {launchpadSummary?.totalDistributedAmount
-                ? `$${toNumberFormat(
-                    launchpadSummary.totalDistributedAmount,
-                    2,
-                  )}`
-                : "-"}
-            </span>
+            {isLoadingSummary && (
+              <span className="launchpad-data-value">
+                <span css={pulseSkeletonStyle({ w: "120px", h: 18 })} />
+              </span>
+            )}
+            {!isLoadingSummary && (
+              <span className="launchpad-data-value">
+                {launchpadSummary?.totalDistributedAmount
+                  ? `$${toNumberFormat(
+                      launchpadSummary.totalDistributedAmount,
+                      2,
+                    )}`
+                  : "-"}
+              </span>
+            )}
             <span className="launchpad-data-key">Total Distributed Amount</span>
           </div>
         </div>

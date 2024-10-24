@@ -16,7 +16,11 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
     LaunchpadState.isViewMoreActiveProjects,
   );
 
-  const { data: activeProjectList = [] } = useGetLaunchpadActiveProjects();
+  const {
+    data: activeProjectList = [],
+    isLoading: isLoadingProjects,
+    isFetched: isFetchedProjects,
+  } = useGetLaunchpadActiveProjects();
 
   const activeProject = React.useMemo(() => {
     return activeProjectList.filter(
@@ -46,7 +50,7 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
 
   const handleClickLoadMore = React.useCallback(() => {
     setIsViewMoreActiveProjects(prev => !prev);
-  }, [isViewMoreActiveProjects]);
+  }, [setIsViewMoreActiveProjects]);
 
   const moveProjectDetail = React.useCallback(
     (projectId: string) => {
@@ -63,6 +67,8 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
       loadMore={!isViewMoreActiveProjects}
       onClickLoadMore={handleClickLoadMore}
       moveProjectDetail={moveProjectDetail}
+      isFetched={isFetchedProjects}
+      isLoading={isLoadingProjects}
     />
   );
 };
