@@ -17,6 +17,7 @@ import { useLaunchpadClaimAllModal } from "../../hooks/use-launchpad-claim-all-m
 import LaunchpadMyParticipationUnconnected from "./launchpad-my-participation-unconnected/LaunchpadMyParticipationUnconnected";
 import LaunchpadMyParticipationNoData from "./launchpad-my-participation-no-data/LaunchpadMyParticipationNoData";
 import { toNumberFormat } from "@utils/number-utils";
+import LaunchpadMyParticipationSkeleton from "./launchpad-my-participation-skeleton/LaunchpadMyParticipationSkeleton";
 
 interface LaunchpadMyParticipationProps {
   poolInfos: LaunchpadPoolModel[];
@@ -25,6 +26,8 @@ interface LaunchpadMyParticipationProps {
   connected: boolean;
   isSwitchNetwork: boolean;
   isFetched: boolean;
+  isLoading: boolean;
+  status: string;
 
   refetch: () => Promise<void>;
 }
@@ -36,6 +39,8 @@ const LaunchpadMyParticipation = ({
   connected,
   isSwitchNetwork,
   isFetched,
+  isLoading,
+  status,
   refetch,
 }: LaunchpadMyParticipationProps) => {
   const { claim } = useLaunchpadHandler();
@@ -88,9 +93,24 @@ const LaunchpadMyParticipation = ({
 
       return !isClaimed && isClaimableBlockHeight;
     });
-  }, [data]);
+  }, [data, blockHeight]);
 
   // Conditional rendering
+  if (isLoading || !isFetched) {
+    return (
+      <MyParticipationWrapper>
+        <div className="my-participation-header">
+          <h3 className="my-participation-title">My Participation</h3>
+        </div>
+        <LaunchpadMyParticipationSkeleton />
+      </MyParticipationWrapper>
+    );
+  }
+
+  if (!isLoading && isFetched && status === "UPCOMING") {
+    return <></>;
+  }
+
   if (!connected || isSwitchNetwork) {
     return (
       <MyParticipationWrapper>

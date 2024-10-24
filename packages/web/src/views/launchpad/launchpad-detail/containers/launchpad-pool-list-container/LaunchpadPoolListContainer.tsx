@@ -9,6 +9,7 @@ interface LaunchpadPoolListContainerProps {
   pools: LaunchpadPoolModel[];
   status: string;
   rewardInfo: ProjectRewardInfoModel;
+  isLoading: boolean;
 
   selectProjectPool: (poolId: number) => void;
 }
@@ -17,6 +18,7 @@ const LaunchpadPoolListContainer: React.FC<LaunchpadPoolListContainerProps> = ({
   pools,
   status,
   rewardInfo,
+  isLoading,
   selectProjectPool,
 }) => {
   return (
@@ -24,6 +26,7 @@ const LaunchpadPoolListContainer: React.FC<LaunchpadPoolListContainerProps> = ({
       pools={pools}
       status={status}
       rewardInfo={rewardInfo}
+      isLoading={isLoading}
       selectProjectPool={selectProjectPool}
     />
   );

@@ -2,6 +2,11 @@ import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
 export const MyParticipationWrapper = styled.div`
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.color.border02};
+  background: ${({ theme }) => theme.color.background06};
+  padding: 24px;
   ${mixins.flexbox("column", "center", "center")};
   gap: 16px;
   width: 100%;

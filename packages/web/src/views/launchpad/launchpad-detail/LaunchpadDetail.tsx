@@ -1,7 +1,6 @@
 import React from "react";
 import { useAtom } from "jotai";
 
-import { useLoading } from "@hooks/common/use-loading";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGetLaunchpadProjectDetails } from "@query/launchpad/use-get-launchpad-project-details";
 import { useGetLaunchpadParticipationInfos } from "@query/launchpad/use-get-launchpad-participation-infos";
@@ -70,9 +69,9 @@ const LaunchpadDetail: React.FC = () => {
     data: projectDetailData,
     refetch: projectDetailRefetch,
     isFetched: isFetchedProjectDetail,
+    isLoading: isLoadingProjectDetail,
   } = useGetLaunchpadProjectDetails(projectPath);
 
-  const { isLoading } = useLoading();
   const breadcrumbsSteps = React.useMemo(() => {
     return [
       {
@@ -232,12 +231,11 @@ const LaunchpadDetail: React.FC = () => {
 
   return (
     <LaunchpadDetailLayout
-      status={projectDetailData?.status || ""}
       header={<HeaderContainer />}
       breadcrumbs={
         <BreadcrumbsContainer
           listBreadcrumb={breadcrumbsSteps}
-          isLoading={isLoading}
+          isLoading={isLoadingProjectDetail}
           w="102px"
         />
       }
@@ -245,6 +243,7 @@ const LaunchpadDetail: React.FC = () => {
         <LaunchpadDetailContentsHeaderContainer
           data={contentsHeaderData}
           rewardInfo={projectRewardInfo}
+          isLoading={isLoadingProjectDetail}
         />
       }
       poolList={
@@ -253,16 +252,21 @@ const LaunchpadDetail: React.FC = () => {
           selectProjectPool={selectProjectPool}
           status={projectDetailData?.status || ""}
           rewardInfo={projectRewardInfo}
+          isLoading={isLoadingProjectDetail}
         />
       }
       projectSummary={
         <LaunchpadProjectSummaryContainer
           tokenSymbol={projectDetailData?.rewardTokenSymbol || "-"}
           data={projectSummaryData}
+          isLoading={isLoadingProjectDetail}
         />
       }
       aboutProject={
-        <LaunchpadAboutProjectContainer data={projectDescriptionData} />
+        <LaunchpadAboutProjectContainer
+          data={projectDescriptionData}
+          isLoading={isLoadingProjectDetail}
+        />
       }
       participate={
         <LaunchpadParticipateContainer
@@ -270,14 +274,17 @@ const LaunchpadDetail: React.FC = () => {
           rewardInfo={projectRewardInfo}
           refetch={refetchProjectDetail}
           status={projectDetailData?.status || ""}
+          isLoading={isLoadingProjectDetail}
         />
       }
       myParticipation={
         <LaunchpadMyParticipationContainer
           poolInfos={projectDetailData?.pools || []}
+          status={projectDetailData?.status || ""}
           data={myParticipationData || []}
           refetch={refetchClaimAll}
           rewardInfo={projectRewardInfo}
+          isLoading={isLoadingProjectDetail}
           isFetched={isFetchedProjectDetail}
         />
       }

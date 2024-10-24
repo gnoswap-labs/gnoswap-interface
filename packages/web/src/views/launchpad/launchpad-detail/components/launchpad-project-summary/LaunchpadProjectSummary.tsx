@@ -6,15 +6,18 @@ import { toNumberFormat } from "@utils/number-utils";
 
 import { LaunchpadProjectSummaryWrapper } from "./LaunchpadProjectSummary.styles";
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface LaunchpadProjectSummaryProps {
   data: ProjectSummaryDataModel;
   tokenSymbol: string;
+  isLoading: boolean;
 }
 
 const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
   data,
   tokenSymbol,
+  isLoading,
 }) => {
   return (
     <LaunchpadProjectSummaryWrapper>
@@ -30,11 +33,14 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             }
           />
         </div>
-        <div className="value">
-          {data.totalAllocation
-            ? `${toNumberFormat(data.totalAllocation, 2)} ${tokenSymbol}`
-            : "-"}
-        </div>
+        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 20 })} />}
+        {!isLoading && (
+          <div className="value">
+            {data.totalAllocation
+              ? `${toNumberFormat(data.totalAllocation, 2)} ${tokenSymbol}`
+              : "-"}
+          </div>
+        )}
       </div>
       <div className="card border">
         <div className="key">
@@ -48,7 +54,10 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             }
           />
         </div>
-        <div className="value">{data.totalParticipants || "-"}</div>
+        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 20 })} />}
+        {!isLoading && (
+          <div className="value">{data.totalParticipants || "-"}</div>
+        )}
       </div>
       <div className="card border">
         <div className="key">
@@ -62,14 +71,17 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             }
           />
         </div>
-        <div className="value">
-          {data.totalDeposited
-            ? `${toNumberFormat(
-                data.totalDeposited,
-                2,
-              )} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}`
-            : "-"}
-        </div>
+        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 20 })} />}
+        {!isLoading && (
+          <div className="value">
+            {data.totalDeposited
+              ? `${toNumberFormat(
+                  data.totalDeposited,
+                  2,
+                )} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}`
+              : "-"}
+          </div>
+        )}
       </div>
       <div className="card">
         <div className="key">
@@ -83,11 +95,14 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             }
           />
         </div>
-        <div className="value">
-          {data.totalDistributed
-            ? `${toNumberFormat(data.totalDistributed, 2)} ${tokenSymbol}`
-            : "-"}
-        </div>
+        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 20 })} />}
+        {!isLoading && (
+          <div className="value">
+            {data.totalDistributed
+              ? `${toNumberFormat(data.totalDistributed, 2)} ${tokenSymbol}`
+              : "-"}
+          </div>
+        )}
       </div>
     </LaunchpadProjectSummaryWrapper>
   );

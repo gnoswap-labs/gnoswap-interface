@@ -11,13 +11,20 @@ interface LaunchpadDetailContentsHeaderContainerProps {
     startTime?: string;
     endTime?: string;
   };
+  isLoading: boolean;
   rewardInfo: ProjectRewardInfoModel;
 }
 
 const LaunchpadDetailContentsHeaderContainer: React.FC<
   LaunchpadDetailContentsHeaderContainerProps
-> = ({ data, rewardInfo }) => {
-  return <LaunchpadDetailContentsHeader data={data} rewardInfo={rewardInfo} />;
+> = ({ data, isLoading, rewardInfo }) => {
+  return (
+    <LaunchpadDetailContentsHeader
+      data={data}
+      isLoading={isLoading}
+      rewardInfo={rewardInfo}
+    />
+  );
 };
 
 export default LaunchpadDetailContentsHeaderContainer;

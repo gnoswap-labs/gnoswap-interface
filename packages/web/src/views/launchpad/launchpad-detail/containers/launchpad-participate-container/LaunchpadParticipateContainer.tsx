@@ -8,18 +8,20 @@ interface LaunchpadParticipateContainerProps {
   poolInfo?: LaunchpadPoolModel;
   rewardInfo: ProjectRewardInfoModel;
   status: string;
+  isLoading: boolean;
 
   refetch: () => Promise<void>;
 }
 
 const LaunchpadParticipateContainer: React.FC<
   LaunchpadParticipateContainerProps
-> = ({ poolInfo, rewardInfo, status, refetch }) => {
+> = ({ poolInfo, rewardInfo, status, isLoading, refetch }) => {
   return (
     <LaunchpadParticipate
       poolInfo={poolInfo}
       rewardInfo={rewardInfo}
       status={status}
+      isLoading={isLoading}
       refetch={refetch}
     />
   );

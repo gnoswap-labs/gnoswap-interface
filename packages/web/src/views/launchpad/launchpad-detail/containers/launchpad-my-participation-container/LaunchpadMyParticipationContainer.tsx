@@ -12,8 +12,10 @@ import LaunchpadMyParticipation from "../../components/launchpad-my-participatio
 interface LaunchpadMyParticipationContainerProps {
   poolInfos: LaunchpadPoolModel[];
   data: LaunchpadParticipationModel[];
+  status: string;
   rewardInfo: ProjectRewardInfoModel;
   isFetched: boolean;
+  isLoading: boolean;
 
   refetch: () => Promise<void>;
 }
@@ -23,6 +25,8 @@ const LaunchpadMyParticipationContainer = ({
   data,
   rewardInfo,
   isFetched,
+  status,
+  isLoading,
   refetch,
 }: LaunchpadMyParticipationContainerProps) => {
   const { connected, isSwitchNetwork } = useWallet();
@@ -34,6 +38,8 @@ const LaunchpadMyParticipationContainer = ({
       rewardInfo={rewardInfo}
       connected={connected}
       isFetched={isFetched}
+      isLoading={isLoading}
+      status={status}
       refetch={refetch}
       isSwitchNetwork={isSwitchNetwork}
     />

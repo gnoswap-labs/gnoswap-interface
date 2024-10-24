@@ -24,6 +24,7 @@ import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -31,6 +32,7 @@ interface LaunchpadParticipateProps {
   poolInfo?: LaunchpadPoolModel;
   rewardInfo: ProjectRewardInfoModel;
   status: string;
+  isLoading: boolean;
 
   refetch: () => Promise<void>;
 }
@@ -39,6 +41,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   poolInfo,
   rewardInfo,
   status,
+  isLoading,
   refetch,
 }) => {
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
@@ -170,13 +173,16 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
       <div className="participate-info-wrapper">
         <div className="participate-info">
           <div className="participate-info-key">Pool Tier</div>
-          <div className="participate-info-value">
-            {poolInfo?.poolTier ? (
-              <LaunchpadPoolTierChip poolTier={poolInfo.poolTier} />
-            ) : (
-              "-"
-            )}
-          </div>
+          {!isLoading && (
+            <div className="participate-info-value">
+              {poolInfo?.poolTier ? (
+                <LaunchpadPoolTierChip poolTier={poolInfo.poolTier} />
+              ) : (
+                "-"
+              )}
+            </div>
+          )}
+          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />}
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
@@ -190,7 +196,10 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
               }
             />
           </div>
-          <div className="participate-info-value">{claimableTimeFormat}</div>
+          {!isLoading && (
+            <div className="participate-info-value">{claimableTimeFormat}</div>
+          )}
+          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />}
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
@@ -204,43 +213,52 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
               }
             />
           </div>
-          <div className="participate-info-value">
-            {poolInfo?.endTime
-              ? getDateUtcToLocal(poolInfo.endTime).value
-              : "-"}
-          </div>
+          {!isLoading && (
+            <div className="participate-info-value">
+              {poolInfo?.endTime
+                ? getDateUtcToLocal(poolInfo.endTime).value
+                : "-"}
+            </div>
+          )}
+          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />}
         </div>
         <div className="participate-info">
           <div className="participate-info-key">Deposit Amount</div>
-          <div className="participate-info-value">
-            <Image
-              src="/gns.svg"
-              width={24}
-              height={24}
-              alt="GNS Symbol image"
-            />
-            {participateAmount
-              ? `${toNumberFormat(Number(participateAmount), 2)} ${
-                  DEFAULT_DEPOSIT_TOKEN.symbol
-                }`
-              : "-"}
-          </div>
+          {!isLoading && (
+            <div className="participate-info-value">
+              <Image
+                src="/gns.svg"
+                width={24}
+                height={24}
+                alt="GNS Symbol image"
+              />
+              {participateAmount
+                ? `${toNumberFormat(Number(participateAmount), 2)} ${
+                    DEFAULT_DEPOSIT_TOKEN.symbol
+                  }`
+                : "-"}
+            </div>
+          )}
+          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />}
         </div>
       </div>
 
-      <div className="participate-button-wrapper">
-        <DepositButton
-          isAvailableDeposit={isAvailableDeposit}
-          isSwitchNetwork={isSwitchNetwork}
-          connectedWallet={connectedWallet}
-          status={status}
-          isDepositAllowed={isDepositAllowed}
-          text={depositButtonText}
-          openConnectWallet={openConnectWallet}
-          switchNetwork={switchNetwork}
-          openLaunchpadDepositAction={openLaunchpadDepositModal}
-        />
-      </div>
+      {!isLoading && (
+        <div className="participate-button-wrapper">
+          <DepositButton
+            isAvailableDeposit={isAvailableDeposit}
+            isSwitchNetwork={isSwitchNetwork}
+            connectedWallet={connectedWallet}
+            status={status}
+            isDepositAllowed={isDepositAllowed}
+            text={depositButtonText}
+            openConnectWallet={openConnectWallet}
+            switchNetwork={switchNetwork}
+            openLaunchpadDepositAction={openLaunchpadDepositModal}
+          />
+        </div>
+      )}
+      {isLoading && <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />}
     </LaunchpadParticipateWrapper>
   );
 };

@@ -3,7 +3,6 @@ import React from "react";
 import { LaunchpadDetailLayoutWrapper } from "./LaunchpadDetailLayout.styles";
 
 interface LaunchpadDetailLayoutProps {
-  status: string;
   header: React.ReactNode;
   breadcrumbs: React.ReactNode;
   contentsHeader: React.ReactNode;
@@ -17,7 +16,6 @@ interface LaunchpadDetailLayoutProps {
 }
 
 const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
-  status,
   header,
   breadcrumbs,
   contentsHeader,
@@ -50,9 +48,7 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
             </div>
             <div className="right-section">
               <div className="participate">{participate}</div>
-              {status !== "UPCOMING" && (
-                <div className="my-participation">{myParticipation}</div>
-              )}
+              <div className="my-participation">{myParticipation}</div>
               <div className="click-here">{clickHere}</div>
             </div>
           </div>

@@ -11,6 +11,7 @@ import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import { ContentsHeaderWrapper } from "./LaunchpadDetailContentsHeader.styles";
 import LaunchpadStatusTimeChip from "../common/launchpad-status-time-chip/LaunchpadStatusTimeChip";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface LaunchpadDetailContentsHeaderProps {
   data: {
@@ -19,29 +20,35 @@ interface LaunchpadDetailContentsHeaderProps {
     startTime?: string;
     endTime?: string;
   };
+  isLoading: boolean;
   rewardInfo: ProjectRewardInfoModel;
 }
 
 const LaunchpadDetailContentsHeader: React.FC<
   LaunchpadDetailContentsHeaderProps
-> = ({ data, rewardInfo }) => {
+> = ({ data, isLoading, rewardInfo }) => {
   return (
     <ContentsHeaderWrapper className="contents-header">
-      <div className="symbol-icon">
-        <MissingLogo
-          symbol={rewardInfo.rewardTokenSymbol}
-          url={rewardInfo.rewardTokenLogoUrl}
-          width={36}
-          mobileWidth={36}
-        />
-      </div>
-      <div className="project-name">{data.name}</div>
-      {data.projectStatus && (
-        <LaunchpadStatusTimeChip
-          startTime={data.startTime}
-          endTime={data.endTime}
-          status={data.projectStatus}
-        />
+      {isLoading && <span css={pulseSkeletonStyle({ w: 200, h: 20 })}></span>}
+      {!isLoading && (
+        <>
+          <div className="symbol-icon">
+            <MissingLogo
+              symbol={rewardInfo.rewardTokenSymbol}
+              url={rewardInfo.rewardTokenLogoUrl}
+              width={36}
+              mobileWidth={36}
+            />
+          </div>
+          <div className="project-name">{data.name}</div>
+          {data.projectStatus && (
+            <LaunchpadStatusTimeChip
+              startTime={data.startTime}
+              endTime={data.endTime}
+              status={data.projectStatus}
+            />
+          )}
+        </>
       )}
     </ContentsHeaderWrapper>
   );

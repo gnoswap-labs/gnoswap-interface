@@ -42,7 +42,7 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
             </button>
           </Link>
         )}
-        {isLoading && <div css={pulseSkeletonStyle({ w: "150px", h: 20 })} />}
+        {isLoading && <div css={pulseSkeletonStyle({ w: 150, h: 20 })} />}
       </div>
 
       <div className="link">
@@ -63,7 +63,7 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
               })}
           </div>
         )}
-        {isLoading && <div css={pulseSkeletonStyle({ w: "150px", h: 20 })} />}
+        {isLoading && <div css={pulseSkeletonStyle({ w: 150, h: 20 })} />}
       </div>
     </div>
   );
