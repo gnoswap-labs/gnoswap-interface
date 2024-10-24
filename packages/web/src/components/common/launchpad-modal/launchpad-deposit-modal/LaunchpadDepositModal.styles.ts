@@ -105,15 +105,19 @@ export const LaunchpadDepositModalWrapper = styled.div`
           gap: 4px;
           width: 100%;
           .list {
+            position: relative;
             ${mixins.flexbox("row", "flex-start", "flex-start")};
             width: 100%;
             color: #ff9f0a;
             font-size: 14px;
             font-weight: 400;
             line-height: 18.2px;
-            /* list-style-type: disc; */
-            /* list-style-position: outside; */
-            /* padding-left: 20px; */
+            padding-left: 16px;
+            &::before {
+              content: "•";
+              position: absolute;
+              left: 0;
+            }
           }
         }
         .learn-more {
