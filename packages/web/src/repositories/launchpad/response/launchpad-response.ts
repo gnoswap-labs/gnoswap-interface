@@ -77,11 +77,17 @@ export interface LaunchpadPoolResponse {
 
   createTime: string;
 
+  createBlockHeight: number;
+
   startTime: string;
+
+  startBlockHeight: number;
 
   endTime: string;
 
-  claimableTime: string;
+  endBlockHeight: number;
+
+  claimableThreshold: number;
 }
 
 export interface LaunchpadProjectConditionResponse {
@@ -106,6 +112,8 @@ export interface LaunchpadParticipationResponse {
   depositAmount: number;
 
   rewardToken: string;
+
+  rewardTokenPath: string;
 
   createTime: string;
 

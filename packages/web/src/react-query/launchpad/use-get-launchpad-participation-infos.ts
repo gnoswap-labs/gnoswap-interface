@@ -38,7 +38,7 @@ export const useGetLaunchpadParticipationInfos = (
         .then(response =>
           response.participationInfos.map(responseInfo => ({
             ...responseInfo,
-            rewardToken: tokenMap[responseInfo.rewardToken] || null,
+            rewardToken: tokenMap[responseInfo.rewardTokenPath] || null,
           })),
         );
     },

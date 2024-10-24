@@ -5,3 +5,4 @@ export * as CommonState from "./common";
 export * as WalletState from "./wallet";
 export * as EarnState from "./earn";
 export * as IncreaseState from "./increase";
+export * as LaunchpadState from "./launchpad";

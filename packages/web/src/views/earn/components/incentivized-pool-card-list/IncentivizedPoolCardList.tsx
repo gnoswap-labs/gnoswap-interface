@@ -9,7 +9,7 @@ import IncentivizedPoolCard from "./incentivized-pool-card/IncentivizedPoolCard"
 import {
   BlankIncentivizedCard,
   IncentivizedWrapper,
-  PoolListWrapper
+  PoolListWrapper,
 } from "./IncentivizedPoolCardList.styles";
 
 export interface IncentivizedPoolCardListProps {

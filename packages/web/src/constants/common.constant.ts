@@ -44,7 +44,8 @@ export type PageKey =
   | "/governance"
   | "/leaderboard"
   | "/swap"
-  | "/wallet";
+  | "/wallet"
+  | "/launchpad";
 
 export type StringParamsArr = (string | undefined)[];
 
@@ -279,6 +280,11 @@ export const SEOInfo: Record<
   },
   "/wallet": {
     title: () => "Wallet | GnoSwap",
+    desc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+  },
+  "/launchpad": {
+    title: () => "Launchpad | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },

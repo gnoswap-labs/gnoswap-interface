@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import Footer from "@components/common/footer/Footer";
