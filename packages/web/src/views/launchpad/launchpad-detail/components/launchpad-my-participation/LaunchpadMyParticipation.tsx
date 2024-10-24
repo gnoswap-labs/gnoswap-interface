@@ -122,13 +122,29 @@ const LaunchpadMyParticipation = ({
     );
   }
 
-  if (connected && isFetched && data.length === 0) {
+  if (connected && isFetched && data.length > 0) {
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
           <h3 className="my-participation-title">My Participation</h3>
+          {isShowClaimAllButton && (
+            <div className="claim-all-button-wrapper">
+              <ClaimAllButton onClick={handleClickClaimAll} />
+            </div>
+          )}
         </div>
-        <LaunchpadMyParticipationNoData highestApr={highestApr} />
+
+        {data?.map((item, idx) => {
+          return (
+            <LaunchpadMyParticipationBox
+              key={item.id}
+              item={item}
+              rewardInfo={rewardInfo}
+              idx={idx + 1}
+              handleClickClaim={handleClickClaim}
+            />
+          );
+        })}
       </MyParticipationWrapper>
     );
   }
@@ -137,24 +153,8 @@ const LaunchpadMyParticipation = ({
     <MyParticipationWrapper>
       <div className="my-participation-header">
         <h3 className="my-participation-title">My Participation</h3>
-        {isShowClaimAllButton && (
-          <div className="claim-all-button-wrapper">
-            <ClaimAllButton onClick={handleClickClaimAll} />
-          </div>
-        )}
       </div>
-
-      {data?.map((item, idx) => {
-        return (
-          <LaunchpadMyParticipationBox
-            key={item.id}
-            item={item}
-            rewardInfo={rewardInfo}
-            idx={idx + 1}
-            handleClickClaim={handleClickClaim}
-          />
-        );
-      })}
+      <LaunchpadMyParticipationNoData highestApr={highestApr} />
     </MyParticipationWrapper>
   );
 };

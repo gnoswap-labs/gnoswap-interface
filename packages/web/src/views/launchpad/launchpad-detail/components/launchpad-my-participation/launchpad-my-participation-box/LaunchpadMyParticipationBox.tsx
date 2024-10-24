@@ -59,7 +59,6 @@ const LaunchpadMyParticipationBox = ({
       item.claimableBlockHeight,
     );
   }, [item.claimableBlockHeight, blockHeight]);
-  console.log(isClaimable, "isClaimable");
 
   const isClaimed = React.useMemo(() => {
     const isClaimedReward =
