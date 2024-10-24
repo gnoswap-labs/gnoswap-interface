@@ -6,6 +6,11 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
+  .ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
   &:first-of-type {
     padding: 16px 16px 16px 15px;
   }
@@ -30,6 +35,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     height: 20px;
   }
   &.left {
+    padding: 16px 0 16px 16px;
     flex-shrink: 0;
     justify-content: flex-start;
   }

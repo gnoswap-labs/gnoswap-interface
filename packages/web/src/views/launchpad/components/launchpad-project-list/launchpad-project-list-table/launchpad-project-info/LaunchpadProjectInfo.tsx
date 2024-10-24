@@ -101,7 +101,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
           width={24}
           mobileWidth={24}
         />
-        <span>{name}</span>
+        <span className="ellipsis">{name}</span>
         <span className="reward-token-symbol">{rewardTokenSymbol}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[1].width}>
