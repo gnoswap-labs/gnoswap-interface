@@ -58,11 +58,15 @@ export const LaunchpadParticipateWrapper = styled.div`
     align-self: stretch;
     .participate-price-text,
     .participate-balance-text {
+      cursor: pointer;
       ${fonts.body12};
       ${media.mobile} {
         ${fonts.p2};
       }
       color: ${({ theme }) => theme.color.text04};
+      &.upcoming {
+        cursor: default;
+      }
     }
   }
   .participate-info-wrapper {

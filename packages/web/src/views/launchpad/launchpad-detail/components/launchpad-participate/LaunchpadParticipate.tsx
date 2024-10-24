@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { useAtom, useAtomValue } from "jotai";
 import BigNumber from "bignumber.js";
+import { cx } from "@emotion/css";
 
 import { LaunchpadState } from "@states/index";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
@@ -119,6 +120,12 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     ? getDateUtcToLocal(claimableTimeStamp).value
     : "-";
 
+  const handleAutoFillMaxAmount = React.useCallback(() => {
+    if (connectedWallet && currentGnsBalance && status !== "UPCOMING") {
+      setParticipateAmount(toNumberFormat(currentGnsBalance, 2));
+    }
+  }, [currentGnsBalance, setParticipateAmount, status]);
+
   // Initialize Page State
   React.useEffect(() => {
     if (depositConditions.length > 0) {
@@ -161,7 +168,12 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
         <div className="participate-amount-info">
           <span className="participate-price-text">{estimatePrice}</span>
-          <span className="participate-balance-text">
+          <span
+            className={cx("participate-balance-text", {
+              upcoming: status === "UPCOMING",
+            })}
+            onClick={handleAutoFillMaxAmount}
+          >
             Balance:{" "}
             {currentGnsBalance ? toNumberFormat(currentGnsBalance, 2) : "-"}
           </span>
