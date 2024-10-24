@@ -66,7 +66,6 @@ const LaunchpadStatusTimeChip = ({
           minutes: ongoingMinutes,
         } = getTimeDifference(end, now);
         if (ongoingDays < 0 && ongoingHours < 0 && ongoingMinutes < 0) {
-          console.log(123);
           return "Ends in 1 minute";
         }
         return `Ends ${formatTime(ongoingDays, ongoingHours, ongoingMinutes)}`;

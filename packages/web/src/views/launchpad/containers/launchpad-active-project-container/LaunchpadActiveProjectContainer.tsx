@@ -25,9 +25,9 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
   }, [activeProjectList]);
 
   const upcomingProject = React.useMemo(() => {
-    return activeProject.filter(
-      item => item.status === PROJECT_STATUS_TYPE.UPCOMING,
-    );
+    return activeProject
+      .filter(item => item.status === PROJECT_STATUS_TYPE.UPCOMING)
+      .sort((a, b) => a.pools[0].startTime.localeCompare(b.pools[0].startTime));
   }, [activeProject]);
 
   const showedProject = React.useMemo(() => {

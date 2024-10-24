@@ -25,7 +25,7 @@ const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
   return (
     <LaunchpadAboutProjectWrapper>
       <div className="header">
-        <h2>{`about ${data.name}`}</h2>
+        <h2>{`About ${data.name}`}</h2>
       </div>
 
       <section className="main-contents">
