@@ -72,7 +72,9 @@ const LaunchpadMyParticipationBox = ({
   const formatClaimedRewardAmount = React.useCallback(
     (amount: number, decimalPlaces = 6) => {
       const formatted = toNumberFormat(amount, decimalPlaces);
-      return Number(formatted) < 0.01 ? "<0.01" : formatted.toString();
+      return Number(formatted.replace(/,/g, "")) < 0.01
+        ? "<0.01"
+        : formatted.toString();
     },
     [],
   );

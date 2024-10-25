@@ -87,8 +87,11 @@ const LaunchpadMyParticipation = ({
       ).isGreaterThan(item.claimableBlockHeight);
 
       const isClaimedReward =
-        Number(toNumberFormat(item.claimableRewardAmount, 2)) === 0;
-      const isClaimedDeposit = Number(toNumberFormat(item.depositAmount)) === 0;
+        Number(
+          toNumberFormat(item.claimableRewardAmount, 2).replace(/,/g, ""),
+        ) === 0;
+      const isClaimedDeposit =
+        Number(toNumberFormat(item.depositAmount).replace(/,/g, "")) === 0;
       const isClaimed = isClaimedReward && isClaimedDeposit;
 
       return !isClaimed && isClaimableBlockHeight;
