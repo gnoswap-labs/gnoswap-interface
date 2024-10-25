@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo, useState } from "react";
 
+import { XGNS_TOKEN_PATH } from "@constants/environment.constant";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -101,7 +102,7 @@ export const useLaunchpadHandler = () => {
 
   // Variables to determine if conditions are met to make a deposit
   const isDepositAllowed = depositConditions.every(condition => {
-    if (condition.tokenPath === "gno.land/r/gnoswap/v2/gov/xgns") {
+    if (condition.tokenPath === XGNS_TOKEN_PATH) {
       return Number(xGnsBalance) >= condition.leastTokenAmount;
     } else {
       const balance = displayBalanceMap[condition.tokenPath] || 0;

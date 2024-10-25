@@ -2,6 +2,7 @@ import React from "react";
 import { useAtomValue } from "jotai";
 import { Placement } from "@floating-ui/react";
 
+import { XGNS_TOKEN_PATH } from "@constants/environment.constant";
 import { LaunchpadState } from "@states/index";
 
 import IconWarning from "@components/common/icons/IconWarning";
@@ -27,7 +28,7 @@ const DepositConditionsTooltip = ({
 
       return (
         <>
-          {tokenPath === "gno.land/r/gnoswap/v2/gov/xgns" ? (
+          {tokenPath === XGNS_TOKEN_PATH ? (
             <li>
               At least {leastTokenAmount.toLocaleString()}
               {tokenSymbol} must be staked at <br />
