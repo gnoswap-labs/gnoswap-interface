@@ -8,6 +8,7 @@ import { LaunchpadProjectModel } from "@models/launchpad";
 import LaunchpadProjectList from "@views/launchpad/components/launchpad-project-list/LaunchpadProjectList";
 import { CommonState } from "@states/index";
 import { QUERY_PARAMETER } from "@constants/page.constant";
+import useClickOutside from "@hooks/common/use-click-outside";
 
 const LaunchpadProjectListContainer: React.FC = () => {
   const router = useCustomRouter();
@@ -15,6 +16,8 @@ const LaunchpadProjectListContainer: React.FC = () => {
   const [breakpoint] = useAtom(CommonState.breakpoint);
 
   const [keyword, setKeyword] = React.useState("");
+  const [isViewSearchIcon, setIsViewSearchIcon] = React.useState(false);
+  const [componentRef, isClickOutside, setIsInside] = useClickOutside();
 
   const search = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
@@ -22,14 +25,21 @@ const LaunchpadProjectListContainer: React.FC = () => {
 
   const { data: projects, isFetched: isFetchedProjects } =
     useGetLaunchpadProjects({ keyword: "" });
-  const projectList = projects?.pages.flatMap(item => item.projects) || [];
+  const projectList = React.useMemo(() => {
+    if (projects && projects.pages) {
+      return projects.pages.flatMap(item => item.projects);
+    }
+    return [];
+  }, [projects]);
 
-  const STATUS_PRIORITY = {
-    ONGOING: 0,
-    UPCOMING: 1,
-    ENDED: 2,
-    NONE: 3,
-  };
+  const STATUS_PRIORITY = React.useMemo(() => {
+    return {
+      ONGOING: 0,
+      UPCOMING: 1,
+      ENDED: 2,
+      NONE: 3,
+    };
+  }, []);
 
   const filterProjectsByKeyword = React.useCallback(
     (projects: LaunchpadProjectModel[], keyword: string) => {
@@ -69,6 +79,20 @@ const LaunchpadProjectListContainer: React.FC = () => {
     },
     [router],
   );
+
+  const onToggleSearch = React.useCallback(() => {
+    setIsViewSearchIcon(prev => !prev);
+    setIsInside(true);
+  }, [setIsInside]);
+
+  React.useEffect(() => {
+    if (!keyword) {
+      if (isClickOutside) {
+        setIsViewSearchIcon(false);
+      }
+    }
+  }, [isClickOutside, keyword]);
+
   return (
     <LaunchpadProjectList
       isFetched={isFetchedProjects}
@@ -78,6 +102,9 @@ const LaunchpadProjectListContainer: React.FC = () => {
       moveRewardTokenSwapPage={moveRewardTokenSwapPage}
       keyword={keyword}
       search={search}
+      isViewSearchIcon={isViewSearchIcon}
+      searchRef={componentRef}
+      onToggleSearch={onToggleSearch}
     />
   );
 };

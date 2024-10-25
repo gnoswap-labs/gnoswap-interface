@@ -37,8 +37,10 @@ const LaunchpadActiveProjectCardData: React.FC<
             return (
               <div className="data-box" key={poolDetail.id}>
                 <span className="data-title">Pool {idx + 1}</span>
-                <span className="data">{aprStr}</span>
-                <LaunchpadPoolTierChip poolTier={poolDetail.poolTier} />
+                <div className="flex-box">
+                  <span className="data">{aprStr}</span>
+                  <LaunchpadPoolTierChip poolTier={poolDetail.poolTier} />
+                </div>
               </div>
             );
           })}

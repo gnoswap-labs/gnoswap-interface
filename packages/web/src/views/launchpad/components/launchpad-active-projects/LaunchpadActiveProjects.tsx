@@ -13,7 +13,11 @@ export interface LaunchpadActiveProjectsProps {
   activeProjectListLength: number;
   isFetched: boolean;
   isLoading: boolean;
+  isMobile: boolean;
+  scrollRef: React.RefObject<HTMLDivElement>;
+  currentIndex: number;
 
+  onScroll: () => void;
   onClickLoadMore: () => void;
   moveProjectDetail: (poolId: string) => void;
 }
@@ -25,8 +29,12 @@ const LaunchpadActiveProjects: React.FC<LaunchpadActiveProjectsProps> = ({
   activeProjectListLength,
   isFetched,
   isLoading,
+  isMobile,
+  scrollRef,
+  onScroll,
   onClickLoadMore,
   moveProjectDetail,
+  currentIndex,
 }) => {
   return (
     <LaunchpadActiveProjectsWrapper>
@@ -37,6 +45,10 @@ const LaunchpadActiveProjects: React.FC<LaunchpadActiveProjectsProps> = ({
         loadMore={loadMore}
         isFetched={isFetched}
         isLoading={isLoading}
+        isMobile={isMobile}
+        scrollRef={scrollRef}
+        currentIndex={currentIndex}
+        onScroll={onScroll}
         onClickLoadMore={onClickLoadMore}
         moveProjectDetail={moveProjectDetail}
       />

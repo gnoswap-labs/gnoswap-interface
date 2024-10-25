@@ -8,13 +8,17 @@ import { QUERY_PARAMETER } from "@constants/page.constant";
 
 import LaunchpadActiveProjects from "@views/launchpad/components/launchpad-active-projects/LaunchpadActiveProjects";
 import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 const LaunchpadActiveProjectContainer: React.FC = () => {
   const router = useCustomRouter();
+  const { isMobile } = useWindowSize();
 
   const [isViewMoreActiveProjects, setIsViewMoreActiveProjects] = useAtom(
     LaunchpadState.isViewMoreActiveProjects,
   );
+  const [currentIndex, setCurrentIndex] = React.useState(1);
+  const scrollRef = React.useRef<HTMLDivElement | null>(null);
 
   const {
     data: activeProjectList = [],
@@ -59,6 +63,15 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
     [router],
   );
 
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const currentScrollX = scrollRef.current.scrollLeft;
+      setCurrentIndex(
+        Math.min(Math.floor(currentScrollX / 280) + 1, showedProject.length),
+      );
+    }
+  };
+
   return (
     <LaunchpadActiveProjects
       activeProjectList={dataMapping}
@@ -69,6 +82,10 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
       moveProjectDetail={moveProjectDetail}
       isFetched={isFetchedProjects}
       isLoading={isLoadingProjects}
+      isMobile={isMobile}
+      currentIndex={currentIndex}
+      scrollRef={scrollRef}
+      onScroll={handleScroll}
     />
   );
 };

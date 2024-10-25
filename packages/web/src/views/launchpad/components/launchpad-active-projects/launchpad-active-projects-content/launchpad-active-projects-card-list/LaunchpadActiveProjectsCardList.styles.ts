@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
+import { fonts } from "@constants/font.constant";
 
 export const ActiveProjectsCardListWrapper = styled.div`
   ${mixins.flexbox("column", "center", "start")};
@@ -9,6 +10,18 @@ export const ActiveProjectsCardListWrapper = styled.div`
   min-height: 240px;
   ${media.mobile} {
     gap: 16px;
+  }
+  .box-indicator {
+    ${mixins.flexbox("row", "center", "center")};
+    width: 100%;
+    gap: 4px;
+    span {
+      color: ${({ theme }) => theme.color.text04};
+      ${fonts.body12};
+    }
+    .current-page {
+      color: ${({ theme }) => theme.color.text05};
+    }
   }
 `;
 
@@ -26,11 +39,11 @@ export const ActiveProjectsGridWrapper = styled.div`
   ${media.tablet} {
     grid-template-columns: repeat(2, 1fr);
   }
-  @media (max-width: 920px) {
+  ${media.mobile} {
     grid-gap: 12px;
-    grid-template-columns: repeat(auto-fill, 322px);
+    grid-template-columns: repeat(auto-fill, 280px);
     grid-auto-flow: column;
-    grid-auto-columns: 322px;
+    grid-auto-columns: 280px;
   }
 
   .card-skeleton {

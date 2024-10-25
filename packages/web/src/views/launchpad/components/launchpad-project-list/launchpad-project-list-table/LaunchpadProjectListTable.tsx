@@ -81,6 +81,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
         {!isFetched && (
           <TableSkeleton
             className="skeleton"
+            breakpoint={breakpoint}
             info={
               breakpoint === DEVICE_TYPE.WEB
                 ? PROJECT_INFO

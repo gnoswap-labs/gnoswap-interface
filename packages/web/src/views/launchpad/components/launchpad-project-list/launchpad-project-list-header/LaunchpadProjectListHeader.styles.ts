@@ -33,4 +33,16 @@ export const ProjectListHeaderWrapper = styled.div`
     }
     color: ${({ theme }) => theme.color.text02};
   }
+  .search-icon {
+    width: 24px;
+    height: 24px;
+    * {
+      fill: ${({ theme }) => theme.color.icon08};
+    }
+  }
+  .search-icon:hover {
+    * {
+      fill: ${({ theme }) => theme.color.icon02};
+    }
+  }
 `;

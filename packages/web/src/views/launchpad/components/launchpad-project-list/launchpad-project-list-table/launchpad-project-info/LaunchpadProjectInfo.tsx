@@ -13,7 +13,6 @@ import { toNumberFormat } from "@utils/number-utils";
 import { LaunchpadPoolModel, LaunchpadProjectModel } from "@models/launchpad";
 import { ProjectInfoWrapper, TableColumn } from "./LaunchpadProjectInfo.styles";
 import LaunchpadProjectInfoChip from "./launchpad-project-info-chip/LaunchpadProjectInfoChip";
-import IconStar from "@components/common/icons/IconStar";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface LaunchpadProjectInfoProps {
@@ -54,7 +53,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
 
     return (
       <>
-        {Number(highestApr) > 100 && <IconStar size={14} />}
+        {Number(highestApr) > 100 && "✨"}
         {formatRate(highestApr)}
       </>
     );
@@ -110,18 +109,22 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
         </span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[2].width}>
-        <span className="apr">{aprStr}</span>
+        <span className="ellipsis">{aprStr}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[3].width}>
-        <span>{toNumberFormat(totals.totalParticipants, 2) || 0}</span>
+        <span className="ellipsis">
+          {toNumberFormat(totals.totalParticipants, 2) || 0}
+        </span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[4].width}>
-        <span>
+        <span className="ellipsis">
           {toNumberFormat(totals.totalAllocation, 2) || 0} {rewardTokenSymbol}
         </span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>
-        <span>{toNumberFormat(totals.totalDeposit, 2) || 0} GNS</span>
+        <span className="ellipsis">
+          {toNumberFormat(totals.totalDeposit, 2) || 0} GNS
+        </span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[6].width}>
         <div

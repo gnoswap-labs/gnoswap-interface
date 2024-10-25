@@ -10,11 +10,14 @@ interface LaunchpadProjectListProps {
   breakpoint: DEVICE_TYPE;
   projects: LaunchpadProjectModel[];
   isFetched: boolean;
+  isViewSearchIcon: boolean;
   keyword: string;
+  searchRef: React.RefObject<HTMLDivElement>;
 
   moveProjectDetail: (poolId: string) => void;
   moveRewardTokenSwapPage: (path: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onToggleSearch: () => void;
 }
 
 const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
@@ -22,13 +25,23 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
   projects,
   isFetched,
   keyword,
+  isViewSearchIcon,
   moveProjectDetail,
   moveRewardTokenSwapPage,
   search,
+  onToggleSearch,
+  searchRef,
 }) => {
   return (
     <ProjectListWrapper>
-      <LaunchpadProjectListHeader keyword={keyword} search={search} />
+      <LaunchpadProjectListHeader
+        keyword={keyword}
+        search={search}
+        breakpoint={breakpoint}
+        isViewSearchIcon={isViewSearchIcon}
+        onToggleSearch={onToggleSearch}
+        searchRef={searchRef}
+      />
       <LaunchpadProjectListTable
         breakpoint={breakpoint}
         projects={projects}

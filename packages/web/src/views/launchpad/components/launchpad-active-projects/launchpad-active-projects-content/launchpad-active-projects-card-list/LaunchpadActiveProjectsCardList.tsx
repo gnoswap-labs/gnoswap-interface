@@ -16,6 +16,10 @@ interface LaunchpadActiveProjectsCardListProps {
   loadMore: boolean;
   isFetched: boolean;
   isLoading: boolean;
+  isMobile: boolean;
+  currentIndex: number;
+  scrollRef: React.RefObject<HTMLDivElement>;
+  onScroll: () => void;
 
   onClickLoadMore: () => void;
   moveProjectDetail: (poolId: string) => void;
@@ -29,6 +33,10 @@ const LaunchpadActiveProjectsCardList: React.FC<
   loadMore,
   isFetched,
   isLoading,
+  isMobile,
+  scrollRef,
+  currentIndex,
+  onScroll,
   onClickLoadMore,
   moveProjectDetail,
 }) => {
@@ -37,7 +45,7 @@ const LaunchpadActiveProjectsCardList: React.FC<
 
   return (
     <ActiveProjectsCardListWrapper>
-      <ActiveProjectsGridWrapper>
+      <ActiveProjectsGridWrapper ref={scrollRef} onScroll={onScroll}>
         {hasData &&
           activeProjectList.map((project: LaunchpadProjectResponse) => {
             return (
@@ -60,6 +68,16 @@ const LaunchpadActiveProjectsCardList: React.FC<
       {showLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )}
+      {isMobile &&
+        isFetched &&
+        activeProjectList.length !== 0 &&
+        !isLoading && (
+          <div className="box-indicator">
+            <span className="current-page">{currentIndex}</span>
+            <span>/</span>
+            <span>{activeProjectList.length}</span>
+          </div>
+        )}
     </ActiveProjectsCardListWrapper>
   );
 };

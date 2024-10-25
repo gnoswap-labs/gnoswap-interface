@@ -68,9 +68,6 @@ export const ProjectInfoWrapper = styled.div`
     width: 20px;
     height: 20px;
   }
-  .apr {
-    ${mixins.flexbox("row", "center", "center")}
-  }
 
   .button-wrapper {
     ${mixins.flexbox("row", "center", "center")}

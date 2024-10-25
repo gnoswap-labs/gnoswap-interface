@@ -1,4 +1,3 @@
-import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { ContainerWidth, media } from "@styles/media";
 import mixins from "@styles/mixins";
@@ -15,11 +14,8 @@ export const LaunchpadLayoutWrapper = styled.div`
     flex-grow: 1;
     padding: 100px 40px;
     margin: 0 auto;
-    ${media.tablet} {
-      /* padding: 118px 40px; */
-    }
     ${media.mobile} {
-      padding: 48px 0;
+      padding: 48px 16px;
       ${mixins.flexbox("column", "center", "center")}
     }
   }
@@ -28,6 +24,10 @@ export const LaunchpadLayoutWrapper = styled.div`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     margin-bottom: 60px;
+    ${media.mobile} {
+      ${mixins.flexbox("column-reverse", "center", "space-between")};
+      margin-bottom: 0px;
+    }
   }
 
   .launchpad-active-project {
@@ -61,7 +61,7 @@ export const LaunchpadLayoutWrapper = styled.div`
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
       width: 100%;
-      padding: 24px 16px 48px 16px;
+      padding: 24px 16px;
       gap: 24px;
     }
   }
@@ -70,28 +70,46 @@ export const LaunchpadLayoutWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: ${ContainerWidth.WEB_CONTAINER};
     gap: 12px;
+    ${media.mobile} {
+      ${mixins.flexbox("column", "center", "center")};
+      gap: 8px;
+    }
 
     .title {
       ${mixins.flexbox("column", "flex-end", "center")};
-      font-size: 60px;
+      font-size: clamp(3rem, 1.8041rem + 1.6216vw, 3.75rem);
       font-weight: 700;
       line-height: 72px;
 
       color: ${({ theme }) => theme.color.text02};
+      ${media.tablet} {
+        font-size: clamp(2.25rem, 1.9207rem + 1.4634vw, 3rem);
+        font-weight: 600;
+      }
       ${media.mobile} {
-        ${fonts.h5};
+        font-size: 36px;
+        font-weight: 600;
+        line-height: normal;
       }
     }
 
     .sub-title {
       ${mixins.flexbox("column", "flex-end", "center")};
-      font-size: 24px;
+      font-size: clamp(1.125rem, 0.527rem + 0.8108vw, 1.5rem);
       font-weight: 400;
       line-height: 33.6px;
 
       color: ${({ theme }) => theme.color.text03};
+      ${media.tablet} {
+        font-size: clamp(1.125rem, 0.3665rem + 1.3636vw, 1.5rem);
+        font-weight: 500;
+        line-height: 25.2px;
+      }
       ${media.mobile} {
-        ${fonts.h5};
+        font-size: clamp(0.875rem, 0.6544rem + 0.9804vw, 1.125rem);
+        font-weight: 400;
+        line-height: 18.2px;
+        text-align: center;
       }
     }
   }
@@ -100,25 +118,45 @@ export const LaunchpadLayoutWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 16px;
     width: 100%;
-    button {
-      ${mixins.flexbox("row", "flex-start", "center")};
-      color: var(--Global-Color-White, #fff);
-      gap: 8px;
-      border-radius: 8px;
-      padding: 16px 18.5px;
-      &:hover {
-        background-color: ${({ theme }) =>
-          theme.themeKey === "dark"
-            ? theme.color.backgroundGradient
-            : theme.color.background04Hover};
+    ${media.mobile} {
+      ${mixins.flexbox("column", "center", "flex-start")};
+      gap: 24px;
+    }
+    a {
+      ${media.mobile} {
+        width: 100%;
+      }
+      button {
+        ${mixins.flexbox("row", "flex-start", "center")};
+        color: var(--Global-Color-White, #fff);
+        gap: 8px;
+        border-radius: 8px;
+        padding: 16px 18.5px;
+        &:hover {
+          background-color: ${({ theme }) =>
+            theme.themeKey === "dark"
+              ? theme.color.backgroundGradient
+              : theme.color.background04Hover};
+        }
+        ${media.mobile} {
+          width: 100%;
+          padding: 10px 16px;
+          font-size: 16px;
+          font-weight: 500;
+          line-height: 20.8px;
+        }
       }
     }
   }
 
   .launchpad-data-wrapper {
     ${mixins.flexbox("row", "center", "space-between")};
+    flex-wrap: wrap;
     gap: 16px;
     width: 100%;
+    ${media.mobile} {
+      gap: 24px;
+    }
     .launchpad-data-list {
       ${mixins.flexbox("column", "flex-start", "center")};
       gap: 6px;
@@ -140,6 +178,12 @@ export const LaunchpadLayoutWrapper = styled.div`
 
   .launchpad-image-wrapper {
     padding: 0px 110px;
+    ${media.tablet} {
+      padding: 0px 85px;
+    }
+    ${media.mobile} {
+      padding: 0px 50px;
+    }
   }
 
   .background-wrapper {

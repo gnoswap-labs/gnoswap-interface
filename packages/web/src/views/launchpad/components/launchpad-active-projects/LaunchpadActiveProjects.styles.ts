@@ -10,6 +10,6 @@ export const LaunchpadActiveProjectsWrapper = styled.div`
     align-items: flex-start;
   }
   ${media.mobile} {
-    gap: 16px;
+    font-weight: 600;
   }
 `;

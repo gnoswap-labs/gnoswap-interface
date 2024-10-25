@@ -656,13 +656,13 @@ export const PROJECT_INFO_MOBILE = {
   total: 15,
   list: [
     {
-      width: 180,
+      width: 200,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: true,
       skeletonWidth: 140,
     },
     {
-      width: 100,
+      width: 160,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
       skeletonWidth: 100,

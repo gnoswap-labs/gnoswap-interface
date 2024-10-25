@@ -14,4 +14,5 @@ export const PoolTierChipWrapper = styled.div`
   padding: 4px 6px;
   font-size: 12px;
   font-weight: 400;
+  white-space: nowrap;
 `;

@@ -10,7 +10,11 @@ export interface LaunchpadActiveProjectsContentProps {
   loadMore: boolean;
   isFetched: boolean;
   isLoading: boolean;
+  isMobile: boolean;
+  scrollRef: React.RefObject<HTMLDivElement>;
+  currentIndex: number;
 
+  onScroll: () => void;
   onClickLoadMore: () => void;
   moveProjectDetail: (poolId: string) => void;
 }
@@ -23,6 +27,10 @@ const LaunchpadActiveProjectsContent: React.FC<
   loadMore,
   isFetched,
   isLoading,
+  isMobile,
+  currentIndex,
+  scrollRef,
+  onScroll,
   onClickLoadMore,
   moveProjectDetail,
 }) => {
@@ -33,6 +41,10 @@ const LaunchpadActiveProjectsContent: React.FC<
       loadMore={loadMore}
       isFetched={isFetched}
       isLoading={isLoading}
+      isMobile={isMobile}
+      currentIndex={currentIndex}
+      scrollRef={scrollRef}
+      onScroll={onScroll}
       onClickLoadMore={onClickLoadMore}
       moveProjectDetail={moveProjectDetail}
     />
