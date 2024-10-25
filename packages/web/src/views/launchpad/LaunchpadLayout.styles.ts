@@ -86,11 +86,11 @@ export const LaunchpadLayoutWrapper = styled.div`
 
       color: ${({ theme }) => theme.color.text02};
       ${media.tablet} {
-        font-size: clamp(2.25rem, 1.9207rem + 1.4634vw, 3rem);
+        font-size: clamp(3rem, 1.8041rem + 1.6216vw, 3.75rem);
         font-weight: 600;
       }
       ${media.mobile} {
-        font-size: 36px;
+        font-size: clamp(2.25rem, 1.9207rem + 1.4634vw, 3rem);
         font-weight: 600;
         line-height: normal;
         text-align: center;
@@ -114,6 +114,7 @@ export const LaunchpadLayoutWrapper = styled.div`
         font-weight: 400;
         line-height: 18.2px;
         text-align: center;
+        white-space: normal;
       }
     }
   }
@@ -218,7 +219,7 @@ export const LaunchpadLayoutWrapper = styled.div`
     padding: 100px 0px;
     ${media.tablet} {
       max-width: ${ContainerWidth.TABLET_CONTAINER};
-      padding: 60px 0px;
+      padding: 50px 0px;
     }
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
