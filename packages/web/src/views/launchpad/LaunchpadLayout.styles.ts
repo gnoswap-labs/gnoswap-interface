@@ -14,6 +14,9 @@ export const LaunchpadLayoutWrapper = styled.div`
     flex-grow: 1;
     padding: 100px 40px;
     margin: 0 auto;
+    ${media.tablet} {
+      padding: 40px;
+    }
     ${media.mobile} {
       padding: 48px 16px;
       ${mixins.flexbox("column", "center", "center")}
@@ -99,7 +102,7 @@ export const LaunchpadLayoutWrapper = styled.div`
       font-size: clamp(1.125rem, 0.527rem + 0.8108vw, 1.5rem);
       font-weight: 400;
       line-height: 33.6px;
-
+      white-space: nowrap;
       color: ${({ theme }) => theme.color.text03};
       ${media.tablet} {
         font-size: clamp(1.125rem, 0.3665rem + 1.3636vw, 1.5rem);

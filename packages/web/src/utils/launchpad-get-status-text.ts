@@ -32,7 +32,7 @@ export const getStatusText = (
     } else if (minutes > 0) {
       return `in ${minutes} minutes`;
     } else {
-      return "";
+      return "in 1 minute";
     }
   };
 
