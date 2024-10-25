@@ -8,6 +8,7 @@ import { getTierDuration } from "@utils/launchpad-get-tier-number";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 import { toNumberFormat } from "@utils/number-utils";
+import { getClaimableDays } from "@utils/launchpad-get-claimable";
 
 import { Divider } from "@components/common/divider/divider";
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
@@ -39,19 +40,6 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
   const isActiveCard = React.useMemo(() => {
     return currentPoolId === data.id;
   }, [currentPoolId, data.id]);
-
-  const getClaimableDays = (poolTier: string) => {
-    switch (poolTier) {
-      case "TIER180":
-        return 14;
-      case "TIER90":
-        return 7;
-      case "TIER30":
-        return 3;
-      default:
-        return 0;
-    }
-  };
 
   const aprStr = data.apr ? (
     <>

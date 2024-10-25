@@ -15,7 +15,7 @@ import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import { capitalize } from "@utils/string-utils";
 import { toNumberFormat } from "@utils/number-utils";
 import { formatPrice } from "@utils/new-number-utils";
-import { getClaimableTime } from "@utils/launchpad-get-claimable-time";
+import { getClaimableTime } from "@utils/launchpad-get-claimable";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 
 import { Divider } from "@components/common/divider/divider";
@@ -78,16 +78,12 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     [setParticipateAmount, status],
   );
 
-  const { openLaunchpadDepositModal, closeLaunchpadDepositModal } =
-    useLaunchpadDepositConfirmModal({
-      participateAmount,
-      poolInfo,
-      rewardInfo,
-      refetch: async () => {
-        closeLaunchpadDepositModal();
-        refetch();
-      },
-    });
+  const { openLaunchpadDepositModal } = useLaunchpadDepositConfirmModal({
+    participateAmount,
+    poolInfo,
+    rewardInfo,
+    refetch,
+  });
 
   const currentGnsBalance = React.useMemo(
     () => displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN?.path ?? ""] ?? null,
@@ -122,9 +118,11 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
   const handleAutoFillMaxAmount = React.useCallback(() => {
     if (connectedWallet && currentGnsBalance && status !== "UPCOMING") {
-      setParticipateAmount(toNumberFormat(currentGnsBalance, 2));
+      setParticipateAmount(
+        toNumberFormat(currentGnsBalance, 2).replace(/,/g, ""),
+      );
     }
-  }, [currentGnsBalance, setParticipateAmount, status]);
+  }, [currentGnsBalance, setParticipateAmount, connectedWallet, status]);
 
   // Initialize Page State
   React.useEffect(() => {
@@ -266,7 +264,9 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
             text={depositButtonText}
             openConnectWallet={openConnectWallet}
             switchNetwork={switchNetwork}
-            openLaunchpadDepositAction={openLaunchpadDepositModal}
+            openLaunchpadDepositAction={() => {
+              openLaunchpadDepositModal();
+            }}
           />
         </div>
       )}

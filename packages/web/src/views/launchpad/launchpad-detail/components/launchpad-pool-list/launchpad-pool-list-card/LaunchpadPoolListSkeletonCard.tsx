@@ -1,4 +1,5 @@
 import { getTierDuration, TierType } from "@utils/launchpad-get-tier-number";
+import { getClaimableDays } from "@utils/launchpad-get-claimable";
 
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
 import { Divider } from "@components/common/select-token/SelectToken.styles";
@@ -11,19 +12,6 @@ export const LaunchpadPoolListSkeletonCard = ({ idx }: { idx: number }) => {
     { poolTier: "TIER90", status: "ONGOING", claimableDays: 7 },
     { poolTier: "TIER30", status: "ONGOING", claimableDays: 3 },
   ];
-
-  const getClaimableDays = (poolTier: string) => {
-    switch (poolTier) {
-      case "TIER180":
-        return 14;
-      case "TIER90":
-        return 7;
-      case "TIER30":
-        return 3;
-      default:
-        return 0;
-    }
-  };
 
   return (
     <CardWrapper>

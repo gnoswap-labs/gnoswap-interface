@@ -7,4 +7,11 @@ export const PROJECT_STATUS_TYPE = {
   ENDED: "ENDED",
   ONGOING: "ONGOING",
 };
+
+export const CLAIMABLE_DAYS = {
+  TIER180: 14,
+  TIER90: 7,
+  TIER30: 3,
+};
+
 export type PROJECT_STATUS_TYPE = ValuesType<typeof PROJECT_STATUS_TYPE>;
