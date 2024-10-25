@@ -8,6 +8,7 @@ import { removePoolPathUrl } from "@utils/launchpad-remove-pool-path-url";
 import { wrapper } from "./LaunchpadAboutProjectLinks.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 interface LaunchpadAboutProjectLinksProps {
   isLoading: boolean;
@@ -21,19 +22,15 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
   data,
 }) => {
   const excludedLinks = ["rewardTokenLogo"];
-
-  const GNOSCAN_REALM_DETAIL_BASE_URL =
-    "https://gnoscan.io/realms/details?path";
+  const { getRealmUrl } = useGnoscanUrl();
+  const poolPath = removePoolPathUrl(path);
 
   return (
     <div css={wrapper}>
       <div className="contract-path">
         <h3>Realm (Contract) Path</h3>
         {!isLoading && (
-          <Link
-            href={`${GNOSCAN_REALM_DETAIL_BASE_URL}=${removePoolPathUrl(path)}`}
-            target="_blank"
-          >
+          <Link href={getRealmUrl(poolPath)} target="_blank">
             <button>
               <span>{path}</span>
               <div className="icon-wrapper">
