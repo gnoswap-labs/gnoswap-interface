@@ -24,6 +24,9 @@ export const ActiveProjectsWrapper = styled.div`
     .value {
       color: ${({ theme }) => theme.color.text24};
     }
+    ${media.mobile} {
+      gap: 4px;
+    }
   }
 `;
 

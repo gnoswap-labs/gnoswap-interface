@@ -26,6 +26,7 @@ export const ActiveProjectCardHeader = styled.div`
         text-overflow: ellipsis;
       }
       ${media.mobile} {
+        font-size: 22px;
       }
     }
     .project-name {

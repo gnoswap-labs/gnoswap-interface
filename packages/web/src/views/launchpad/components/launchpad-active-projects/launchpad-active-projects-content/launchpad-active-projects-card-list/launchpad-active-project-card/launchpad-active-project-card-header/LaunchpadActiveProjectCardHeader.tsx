@@ -24,7 +24,7 @@ const LaunchpadActiveProjectCardHeader: React.FC<
       <div className="header-title-wrapper">
         <div className="title">
           <span className="project-name">{name}</span>
-          <span>(${rewardTokenSymbol})</span>
+          <span className="project-symbol">(${rewardTokenSymbol})</span>
         </div>
         <div className="text">{description}</div>
       </div>

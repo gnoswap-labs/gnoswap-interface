@@ -90,6 +90,7 @@ export const LaunchpadLayoutWrapper = styled.div`
         font-size: 36px;
         font-weight: 600;
         line-height: normal;
+        text-align: center;
       }
     }
 
