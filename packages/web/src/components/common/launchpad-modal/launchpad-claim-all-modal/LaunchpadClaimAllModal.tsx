@@ -1,4 +1,5 @@
 import React from "react";
+import BigNumber from "bignumber.js";
 
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { type TierType } from "@utils/launchpad-get-tier-number";
@@ -10,7 +11,6 @@ import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-ti
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import LaunchpadClaimAmountField from "./launchpad-claim-amount-field/LaunchpadClaimAmountField";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
-import { toNumberFormat } from "@utils/number-utils";
 
 interface LaunchpadClaimAllModalProps {
   data: LaunchpadParticipationModel[];
@@ -65,13 +65,15 @@ const LaunchpadClaimAllModal = ({
             {filteredClaimableData.map((item, idx) => {
               const endTimeReached = isEndTime(item);
 
-              const isClaimedReward =
-                Number(toNumberFormat(item.claimableRewardAmount, 2)) === 0;
-              const isClaimedDeposit =
-                Number(toNumberFormat(item.depositAmount)) === 0;
+              const isClaimedReward = BigNumber(
+                item.claimableRewardAmount,
+              ).isLessThan(0.01);
+              const isClaimedDeposit = BigNumber(
+                item.claimableRewardAmount,
+              ).isLessThan(0.01);
               const isClaimed = isClaimedReward && isClaimedDeposit;
 
-              if (isClaimed) return;
+              if (isClaimed) return <React.Fragment />;
 
               return (
                 <div className="data" key={item.id}>
