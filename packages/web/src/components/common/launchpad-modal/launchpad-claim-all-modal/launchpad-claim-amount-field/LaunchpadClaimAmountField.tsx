@@ -51,7 +51,7 @@ const LaunchpadClaimAmountField = ({
     }
 
     return calculatePrice(rewardInfo?.rewardTokenPath, amount);
-  }, [type, amount, tokenPrices, rewardInfo, DEFAULT_DEPOSIT_TOKEN]);
+  }, [type, amount, tokenPrices, rewardInfo]);
 
   if (type === "DEPOSIT") {
     return (
