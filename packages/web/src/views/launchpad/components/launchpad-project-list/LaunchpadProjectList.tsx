@@ -18,6 +18,7 @@ interface LaunchpadProjectListProps {
   moveRewardTokenSwapPage: (path: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onToggleSearch: () => void;
+  fetchMore: () => void;
 }
 
 const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
@@ -30,6 +31,7 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
   moveRewardTokenSwapPage,
   search,
   onToggleSearch,
+  fetchMore,
   searchRef,
 }) => {
   return (
@@ -48,6 +50,7 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
         isFetched={isFetched}
         moveProjectDetail={moveProjectDetail}
         moveRewardTokenSwapPage={moveRewardTokenSwapPage}
+        fetchMore={fetchMore}
       />
     </ProjectListWrapper>
   );

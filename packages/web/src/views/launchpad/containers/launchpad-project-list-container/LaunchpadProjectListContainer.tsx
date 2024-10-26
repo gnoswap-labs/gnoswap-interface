@@ -23,8 +23,12 @@ const LaunchpadProjectListContainer: React.FC = () => {
     setKeyword(e.target.value);
   }, []);
 
-  const { data: projects, isFetched: isFetchedProjects } =
-    useGetLaunchpadProjects({ keyword: "" });
+  const {
+    data: projects,
+    isFetched: isFetchedProjects,
+    hasNextPage,
+    fetchNextPage,
+  } = useGetLaunchpadProjects({ keyword: "" });
   const projectList = React.useMemo(() => {
     if (projects && projects.pages) {
       return projects.pages.flatMap(item => item.projects);
@@ -93,6 +97,10 @@ const LaunchpadProjectListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
+  const fetchNextItems = React.useCallback(() => {
+    if (hasNextPage) fetchNextPage();
+  }, [hasNextPage, fetchNextPage]);
+
   return (
     <LaunchpadProjectList
       isFetched={isFetchedProjects}
@@ -105,6 +113,7 @@ const LaunchpadProjectListContainer: React.FC = () => {
       isViewSearchIcon={isViewSearchIcon}
       searchRef={componentRef}
       onToggleSearch={onToggleSearch}
+      fetchMore={fetchNextItems}
     />
   );
 };
