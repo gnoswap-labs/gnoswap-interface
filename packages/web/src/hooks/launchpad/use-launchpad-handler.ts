@@ -20,7 +20,6 @@ import { formatPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useTranslation } from "react-i18next";
-import { useLaunchpadModal } from "./use-launchpad-modal";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -59,7 +58,6 @@ export const useLaunchpadHandler = () => {
   } = useWallet();
   const { displayBalanceMap } = useTokenData();
 
-  const { openLaunchpadWaitingConfirmationModal } = useLaunchpadModal();
   const { launchpadRepository } = useGnoswapContext();
   const { data: blockHeight, refetch: refetchBlockHeight } =
     useGetLastedBlockHeight();
@@ -392,10 +390,6 @@ export const useLaunchpadHandler = () => {
     openModal();
   }, [openModal]);
 
-  const openLaunchpadWaitingConfirmationAction = useCallback(() => {
-    openLaunchpadWaitingConfirmationModal();
-  }, [openLaunchpadWaitingConfirmationModal]);
-
   const showConditionTooltip = useCallback(() => {
     setIsShowConditionTooltip(true);
   }, [setIsShowConditionTooltip]);
@@ -414,7 +408,6 @@ export const useLaunchpadHandler = () => {
     openConnectWallet,
     isSwitchNetwork,
     switchNetwork,
-    openLaunchpadWaitingConfirmationAction,
     isAvailableDeposit,
     isDepositAllowed,
     showConditionTooltip,

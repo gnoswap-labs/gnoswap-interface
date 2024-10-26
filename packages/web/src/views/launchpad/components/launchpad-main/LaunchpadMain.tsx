@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 
 import { LaunchpadProjectSummaryModel } from "@models/launchpad";
+import { EXT_URL } from "@constants/external-url.contant";
 
 import Button from "@components/common/button/Button";
 import { ButtonStyleProps } from "@components/common/button/Button.styles";
@@ -42,14 +43,14 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
           </h4>
         </div>
         <div className="launchpad-button-wrapper">
-          <Link href="https://docs.gnoswap.io" target="_blank">
+          <Link href={EXT_URL.DOCS.ROOT} target="_blank">
             <Button
               text={"How to Participate"}
               style={defaultStyle}
               rightIcon={<IconRightArrow />}
             />
           </Link>
-          <Link href="https://docs.gnoswap.io" target="_blank">
+          <Link href={EXT_URL.DOCS.ROOT} target="_blank">
             <Button
               text={"Submit a Project"}
               style={defaultStyle}

@@ -38,7 +38,7 @@ const LaunchpadActiveProjects: React.FC<LaunchpadActiveProjectsProps> = ({
 }) => {
   return (
     <LaunchpadActiveProjectsWrapper>
-      <LaunchpadActiveProjectsHeader count={activeProjectListLength || "-"} />
+      <LaunchpadActiveProjectsHeader count={activeProjectListLength} />
       <LaunchpadActiveProjectsContent
         activeProjectList={activeProjectList || []}
         showLoadMore={showLoadMore}

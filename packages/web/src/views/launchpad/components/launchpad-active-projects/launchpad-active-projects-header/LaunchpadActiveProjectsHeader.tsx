@@ -5,26 +5,27 @@ import {
 } from "./LaunchpadActiveProjectsHeader.styles";
 
 export interface LaunchpadActiveProjectsHeaderProps {
-  count: number | "-";
+  count: number;
 }
 
 const LaunchpadActiveProjectsHeader: React.FC<
   LaunchpadActiveProjectsHeaderProps
 > = ({ count }) => {
-  const renderActiveProjectsTitle = () => {
-    return (
-      <>
-        <span>Active Projects</span>
-        <span className="value">{count}</span>
-      </>
-    );
-  };
+  const countStr = React.useMemo(() => {
+    if (count === null) {
+      return "-";
+    }
+
+    return count.toLocaleString();
+  }, [count]);
+
   return (
     <ActiveProjectsWrapper>
       <div className="header-content">
         <ActiveProjectsHeaderTextWrapper>
           <div className="launchpad-active-projects-title-wrapper">
-            {renderActiveProjectsTitle()}
+            <span>Active Projects</span>
+            <span className="value">{countStr}</span>
           </div>
         </ActiveProjectsHeaderTextWrapper>
       </div>
