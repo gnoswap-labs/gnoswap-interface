@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtom } from "jotai";
-import { CommonState, EarnState, WalletState } from "@states/index";
+import {
+  CommonState,
+  EarnState,
+  LaunchpadState,
+  WalletState,
+} from "@states/index";
 import { useTokenData } from "@hooks/token/use-token-data";
 import useRouter from "@hooks/common/use-custom-router";
 import useScrollData from "./use-scroll-data";
@@ -16,9 +21,13 @@ export const useBackground = () => {
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(
     EarnState.isViewMorePositions,
   );
+  const [isViewMoreActiveProjects, setIsViewMoreActiveProjects] = useAtom(
+    LaunchpadState.isViewMoreActiveProjects,
+  );
   const { updateBalances } = useTokenData();
   const { scrollTo, getScrollHeight } = useScrollData();
-  const { isLoadingTokens, isLoadingPools } = useLoading();
+  const { isLoadingTokens, isLoadingPools, isLoadingLaunchpadProjectList } =
+    useLoading();
   const [memorizedPath, setMemorizedPath] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,7 +37,7 @@ export const useBackground = () => {
     if (isLoadingPools || isLoadingTokens) {
       return;
     }
-    if (["/", "/earn"].includes(router.pathname)) {
+    if (["/", "/earn", "/launchpad"].includes(router.pathname)) {
       switch (router.pathname) {
         case "/":
           scrollTo(getScrollHeight(router.pathname));
@@ -42,20 +51,41 @@ export const useBackground = () => {
           scrollTo(getScrollHeight(router.pathname));
           setMemorizedPath(null);
           break;
+        case "/launchpad":
+          scrollTo(getScrollHeight(router.pathname));
+          setMemorizedPath(null);
+          break;
+        case "/launchpad/project":
+          scrollTo(getScrollHeight(router.pathname));
+          setMemorizedPath(null);
+          break;
         default:
           break;
       }
     }
-  }, [isLoadingPools, isLoadingTokens, memorizedPath, router.pathname]);
+  }, [
+    isLoadingPools,
+    isLoadingTokens,
+    isLoadingLaunchpadProjectList,
+    memorizedPath,
+    router.pathname,
+  ]);
 
   useEffect(() => {
     if (!router.pathname.startsWith("/earn") && isViewMorePositions) {
       setIsViewMorePositions(false);
     }
+    if (!router.pathname.startsWith("/launchpad") && isViewMoreActiveProjects) {
+      setIsViewMoreActiveProjects(false);
+    }
   }, [router.pathname]);
 
   const onPopPage = (): void => {
-    if (["/earn/add", "/earn/pool", "/token"].includes(router.pathname)) {
+    if (
+      ["/earn/add", "/earn/pool", "/token", "/launchpad/project"].includes(
+        router.pathname,
+      )
+    ) {
       setMemorizedPath(router.pathname);
     } else {
       setMemorizedPath(null);

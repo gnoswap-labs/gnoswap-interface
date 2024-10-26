@@ -1,4 +1,7 @@
-import { GNS_TOKEN_PATH } from "@constants/environment.constant";
+import {
+  GNS_TOKEN_PATH,
+  XGNS_TOKEN_PATH,
+} from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
 
 export const GNS_TOKEN: TokenModel = {
@@ -21,11 +24,11 @@ export const XGNS_TOKEN: TokenModel = {
   chainId: "dev.gnoswap",
   createdAt: "0001-01-01T00:00:00Z",
   name: "GnoSwap",
-  path: "gno.land/r/gnoswap/xgns",
+  path: XGNS_TOKEN_PATH,
   decimals: 6,
   symbol: "xGNS",
   logoURI: "/xgns.svg",
-  priceID: "gno.land/r/gnoswap/xgns",
+  priceID: XGNS_TOKEN_PATH,
   description: "xGNS is a GRC20 token issued by delegating GNS.",
   websiteURL: "https://beta.gnoswap.io/governance",
 };
@@ -77,3 +80,5 @@ export const WUGNOT_TOKEN: TokenModel = {
   wrappedPath: "gno.land/r/demo/wugnot",
   createdAt: "0001-01-01T00:00:00Z",
 };
+
+export const LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN.symbol || "";

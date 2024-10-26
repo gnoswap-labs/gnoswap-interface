@@ -10,7 +10,7 @@ import { GnoProvider } from "@gnolang/gno-js-client";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
 import {
   AccountHistoryModel,
-  TransactionModel
+  TransactionModel,
 } from "@models/account/account-history-model";
 import { AccountMapper } from "@models/account/mapper/account-mapper";
 import { GNOWSWAP_CONNECTED_KEY } from "@states/common";
@@ -57,7 +57,7 @@ export class AccountRepositoryImpl implements AccountRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
     const response = await this.walletClient.getAccount();
-    AdenaError.valdiate(response);
+    AdenaError.validate(response);
     return AccountMapper.fromResponse(response);
   };
 

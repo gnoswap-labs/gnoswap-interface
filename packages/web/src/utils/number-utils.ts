@@ -21,7 +21,9 @@ export const toNumberFormat = (
 ) => {
   const bigNumber = BigNumber(value);
   if (decimalPlaces) {
-    return bigNumber.decimalPlaces(decimalPlaces).toFormat();
+    return bigNumber
+      .decimalPlaces(decimalPlaces, BigNumber.ROUND_FLOOR)
+      .toFormat();
   }
   return bigNumber.toFormat();
 };
