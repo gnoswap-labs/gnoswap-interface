@@ -29,6 +29,7 @@ const LaunchpadPoolList: React.FC<LaunchpadPoolListProps> = ({
   const [, setSelectLaunchpadPool] = useAtom(
     LaunchpadState.selectLaunchpadPool,
   );
+  const isInitialMount = React.useRef(true);
 
   const sortedPools = React.useMemo(() => {
     return [...pools].sort(
@@ -45,8 +46,9 @@ const LaunchpadPoolList: React.FC<LaunchpadPoolListProps> = ({
   }, [sortedPools, sortedPools.length, setSelectLaunchpadPool]);
 
   React.useEffect(() => {
-    if (sortedPools && status === "ONGOING") {
+    if (sortedPools && status === "ONGOING" && isInitialMount.current) {
       defaultSelectPool();
+      isInitialMount.current = false;
     }
   }, [sortedPools, sortedPools.length, status, defaultSelectPool]);
 
