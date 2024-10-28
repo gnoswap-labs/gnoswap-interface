@@ -1,4 +1,5 @@
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -43,12 +44,15 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 export const ProjectInfoWrapper = styled.div`
   transition: background-color 0.3s ease;
   min-width: 100%;
-  height: 68px;
-  ${mixins.flexbox("row", "center", "flex-start")};
-  ${fonts.body11};
-  &:not(:first-of-type) {
+  height: 72px;
+  &.border-top {
     border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
+  ${media.mobile} {
+    height: 68px;
+  }
+  ${mixins.flexbox("row", "center", "flex-start")};
+  ${fonts.body11};
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
   }

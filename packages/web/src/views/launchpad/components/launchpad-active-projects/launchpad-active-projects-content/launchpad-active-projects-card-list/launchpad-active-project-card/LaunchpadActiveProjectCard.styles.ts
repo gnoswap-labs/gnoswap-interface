@@ -12,7 +12,6 @@ export const ActiveProjectCardWrapper = styled.div<ActiveProjectCardWrapperProps
   ${mixins.flexbox("column", "flex-start", "center")};
   gap: 24px;
   position: relative;
-  /* min-width: 322px; */
   border-radius: 8px;
   padding: 36px;
   border: 1px solid ${({ theme }) => theme.color.border02};
@@ -29,6 +28,6 @@ export const ActiveProjectCardWrapper = styled.div<ActiveProjectCardWrapperProps
     gap: 16px;
     padding: 16px;
     min-width: 0;
-    max-width: 280px;
+    max-width: 328px;
   }
 `;
