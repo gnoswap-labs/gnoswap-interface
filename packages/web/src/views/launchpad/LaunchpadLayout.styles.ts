@@ -136,7 +136,8 @@ export const LaunchpadLayoutWrapper = styled.div`
     }
     a {
       ${media.mobile} {
-        width: 100%;
+        width: 50%;
+        height: 36px;
       }
       button {
         ${mixins.flexbox("row", "flex-start", "center")};
@@ -209,7 +210,8 @@ export const LaunchpadLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       width: auto;
-      padding: 0px 50px;
+      padding: 0px 33px;
+      padding: 0px;
     }
   }
 
