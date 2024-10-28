@@ -114,7 +114,9 @@ const LaunchpadMyParticipationBox = ({
               mobileWidth={24}
             />
             <>
-              {formatClaimedRewardAmount(item.claimableRewardAmount, 6)}{" "}
+              {isClaimed
+                ? 0
+                : formatClaimedRewardAmount(item.claimableRewardAmount, 6)}{" "}
               {rewardInfo?.rewardTokenSymbol}
             </>
           </div>
