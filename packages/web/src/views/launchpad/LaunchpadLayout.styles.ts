@@ -27,7 +27,12 @@ export const LaunchpadLayoutWrapper = styled.div`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     margin-bottom: 60px;
+    height: 600px;
+    ${media.tablet} {
+      height: 460px;
+    }
     ${media.mobile} {
+      height: 100%;
       ${mixins.flexbox("column-reverse", "center", "space-between")};
       margin-bottom: 0px;
     }
@@ -57,6 +62,7 @@ export const LaunchpadLayoutWrapper = styled.div`
     max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
     gap: 48px;
     ${media.tablet} {
+      width: 50%;
       max-width: ${ContainerWidth.TABLET_CONTAINER};
       padding: 60px 0px 60px 0px;
       gap: 24px;
@@ -105,6 +111,7 @@ export const LaunchpadLayoutWrapper = styled.div`
       white-space: nowrap;
       color: ${({ theme }) => theme.color.text03};
       ${media.tablet} {
+        white-space: normal;
         font-size: clamp(1.125rem, 0.3665rem + 1.3636vw, 1.5rem);
         font-weight: 500;
         line-height: 25.2px;
@@ -184,9 +191,11 @@ export const LaunchpadLayoutWrapper = styled.div`
   .launchpad-image-wrapper {
     padding: 0px 110px;
     ${media.tablet} {
+      width: 50%;
       padding: 0px 85px;
     }
     ${media.mobile} {
+      width: auto;
       padding: 0px 50px;
     }
   }

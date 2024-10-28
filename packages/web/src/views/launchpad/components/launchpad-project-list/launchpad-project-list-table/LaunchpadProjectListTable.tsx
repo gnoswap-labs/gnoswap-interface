@@ -18,6 +18,7 @@ import {
   PROJECT_INFO_MOBILE,
 } from "@constants/skeleton.constant";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
+import withIntersection from "@components/hoc/with-intersection";
 
 interface LaunchpadProjectListTableProps {
   breakpoint: DEVICE_TYPE;
@@ -26,6 +27,7 @@ interface LaunchpadProjectListTableProps {
 
   moveProjectDetail: (poolId: string) => void;
   moveRewardTokenSwapPage: (path: string) => void;
+  fetchMore: () => void;
 }
 
 const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
@@ -34,7 +36,10 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
   isFetched,
   moveProjectDetail,
   moveRewardTokenSwapPage,
+  fetchMore,
 }) => {
+  const LastColumn = withIntersection(LaunchpadProjectInfo, fetchMore);
+
   const isAlignLeft = (head: TABLE_HEAD) => {
     return head === TABLE_HEAD.PROJECT;
   };
@@ -69,15 +74,28 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
         )}
         {isFetched &&
           projects.length > 0 &&
-          projects.map((project, idx) => (
-            <LaunchpadProjectInfo
-              key={idx}
-              breakpoint={breakpoint}
-              project={project}
-              moveProjectDetail={moveProjectDetail}
-              moveRewardTokenSwapPage={moveRewardTokenSwapPage}
-            />
-          ))}
+          projects.map((project, idx) => {
+            if (idx < projects.length - 1) {
+              return (
+                <LaunchpadProjectInfo
+                  key={idx}
+                  breakpoint={breakpoint}
+                  project={project}
+                  moveProjectDetail={moveProjectDetail}
+                  moveRewardTokenSwapPage={moveRewardTokenSwapPage}
+                />
+              );
+            }
+            return (
+              <LastColumn
+                key={idx}
+                breakpoint={breakpoint}
+                project={project}
+                moveProjectDetail={moveProjectDetail}
+                moveRewardTokenSwapPage={moveRewardTokenSwapPage}
+              />
+            );
+          })}
         {!isFetched && (
           <TableSkeleton
             className="skeleton"
