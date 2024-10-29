@@ -3,30 +3,35 @@ import BigNumber from "bignumber.js";
 
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { type TierType } from "@utils/launchpad-get-tier-number";
+import withLocalModal from "@components/hoc/with-local-modal";
 
 import { LaunchpadClaimAllModalWrapper } from "./LaunchpadClaimAllModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
-import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import LaunchpadClaimAmountField from "./launchpad-claim-amount-field/LaunchpadClaimAmountField";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 
 interface LaunchpadClaimAllModalProps {
   data: LaunchpadParticipationModel[];
   rewardInfo: ProjectRewardInfoModel;
+  isWalletConnected: boolean;
 
-  refetch: () => Promise<void>;
-  close: () => void;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onSubmit: (participationInfos: LaunchpadParticipationModel[]) => void;
 }
 
 const LaunchpadClaimAllModal = ({
   data,
   rewardInfo,
-  refetch,
-  close,
+  isWalletConnected,
+  onSubmit,
+  setIsOpen,
 }: LaunchpadClaimAllModalProps) => {
-  const { claimAll } = useLaunchpadHandler();
+  const Modal = React.useMemo(
+    () => withLocalModal(LaunchpadClaimAllModalWrapper, setIsOpen),
+    [setIsOpen],
+  );
 
   const filteredClaimableData = React.useMemo(() => {
     return data.filter(item => {
@@ -36,12 +41,15 @@ const LaunchpadClaimAllModal = ({
     });
   }, [data]);
 
-  const handleClickClaimAll = React.useCallback(() => {
-    claimAll(data, async () => {
-      close();
-      refetch();
-    });
-  }, [data, claimAll, refetch, close]);
+  const confirm = React.useCallback(() => {
+    setIsOpen(false);
+
+    if (!isWalletConnected) {
+      return;
+    }
+
+    onSubmit(data);
+  }, [data, isWalletConnected, setIsOpen]);
 
   const isEndTime = (item: { endTime: string }): boolean => {
     const now = new Date();
@@ -51,11 +59,11 @@ const LaunchpadClaimAllModal = ({
   };
 
   return (
-    <LaunchpadClaimAllModalWrapper>
+    <Modal>
       <div className="modal-body">
         <div className="header">
           <h6>Confirm Claim All</h6>
-          <div className="close-wrap" onClick={close}>
+          <div className="close-wrap" onClick={() => setIsOpen(false)}>
             <IconClose className="close-icon" />
           </div>
         </div>
@@ -113,10 +121,10 @@ const LaunchpadClaimAllModal = ({
         </div>
 
         <div className="footer">
-          <ConfirmButton onClick={handleClickClaimAll} />
+          <ConfirmButton onClick={confirm} />
         </div>
       </div>
-    </LaunchpadClaimAllModalWrapper>
+    </Modal>
   );
 };
 

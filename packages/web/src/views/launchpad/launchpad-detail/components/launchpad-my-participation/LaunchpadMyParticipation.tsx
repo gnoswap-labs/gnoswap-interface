@@ -13,22 +13,23 @@ import { LAUNCHPAD_REFETCH_INTERVAL } from "@common/values";
 import { MyParticipationWrapper } from "./LaunchpadMyParticipation.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LaunchpadMyParticipationBox from "./launchpad-my-participation-box/LaunchpadMyParticipationBox";
-import { useLaunchpadClaimAllModal } from "../../hooks/use-launchpad-claim-all-modal";
 import LaunchpadMyParticipationUnconnected from "./launchpad-my-participation-unconnected/LaunchpadMyParticipationUnconnected";
 import LaunchpadMyParticipationNoData from "./launchpad-my-participation-no-data/LaunchpadMyParticipationNoData";
 import { toNumberFormat } from "@utils/number-utils";
 import LaunchpadMyParticipationSkeleton from "./launchpad-my-participation-skeleton/LaunchpadMyParticipationSkeleton";
+import LaunchpadClaimAllModal from "@components/common/launchpad-modal/launchpad-claim-all-modal/LaunchpadClaimAllModal";
 
 interface LaunchpadMyParticipationProps {
   poolInfos: LaunchpadPoolModel[];
   data: LaunchpadParticipationModel[];
   rewardInfo: ProjectRewardInfoModel;
-  connected: boolean;
+  isWalletConnected: boolean;
   isSwitchNetwork: boolean;
   isFetched: boolean;
   isLoading: boolean;
   status: string;
 
+  claimAll: (participationInfos: LaunchpadParticipationModel[]) => void;
   refetch: () => Promise<void>;
 }
 
@@ -36,19 +37,18 @@ const LaunchpadMyParticipation = ({
   poolInfos,
   data,
   rewardInfo,
-  connected,
+  isWalletConnected,
   isSwitchNetwork,
   isFetched,
   isLoading,
   status,
+  claimAll,
   refetch,
 }: LaunchpadMyParticipationProps) => {
+  // Modal
+  const [isOpenClaimAllModal, setIsOpenClaimAllModal] = React.useState(false);
+
   const { claim } = useLaunchpadHandler();
-  const { openLaunchpadClaimAllModal } = useLaunchpadClaimAllModal({
-    data,
-    rewardInfo,
-    refetch,
-  });
 
   const handleClickClaim = React.useCallback(
     (data: LaunchpadParticipationModel) => {
@@ -58,10 +58,6 @@ const LaunchpadMyParticipation = ({
     },
     [claim, refetch],
   );
-
-  const handleClickClaimAll = React.useCallback(() => {
-    openLaunchpadClaimAllModal();
-  }, [openLaunchpadClaimAllModal]);
 
   const highestApr = React.useMemo(() => {
     return poolInfos.reduce((acc, current) => {
@@ -114,7 +110,7 @@ const LaunchpadMyParticipation = ({
     return <></>;
   }
 
-  if (!connected || isSwitchNetwork) {
+  if (!isWalletConnected || isSwitchNetwork) {
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
@@ -125,14 +121,18 @@ const LaunchpadMyParticipation = ({
     );
   }
 
-  if (connected && isFetched && data.length > 0) {
+  if (isWalletConnected && isFetched && data.length > 0) {
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
           <h3 className="my-participation-title">My Participation</h3>
           {isShowClaimAllButton && (
             <div className="claim-all-button-wrapper">
-              <ClaimAllButton onClick={handleClickClaimAll} />
+              <ClaimAllButton
+                onClick={() => {
+                  setIsOpenClaimAllModal(true);
+                }}
+              />
             </div>
           )}
         </div>
@@ -148,6 +148,15 @@ const LaunchpadMyParticipation = ({
             />
           );
         })}
+        {isOpenClaimAllModal && (
+          <LaunchpadClaimAllModal
+            data={data}
+            rewardInfo={rewardInfo}
+            isWalletConnected={isWalletConnected}
+            setIsOpen={setIsOpenClaimAllModal}
+            onSubmit={claimAll}
+          />
+        )}
       </MyParticipationWrapper>
     );
   }

@@ -141,6 +141,7 @@ export const LaunchpadLayoutWrapper = styled.div`
       }
       button {
         ${mixins.flexbox("row", "flex-start", "center")};
+        height: 100%;
         color: var(--Global-Color-White, #fff);
         gap: 8px;
         border-radius: 8px;
@@ -152,6 +153,7 @@ export const LaunchpadLayoutWrapper = styled.div`
               : theme.color.background04Hover};
         }
         ${media.mobile} {
+          ${mixins.flexbox("row", "center", "center")};
           width: 100%;
           padding: 10px 16px;
         }
