@@ -24,6 +24,9 @@ export const LaunchpadProjectSummaryWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
       font-size: 14px;
       font-weight: 400;
+      ${media.mobile} {
+        font-size: 13px;
+      }
       * {
         fill: ${({ theme }) =>
           theme.themeKey === "dark" ? "#596782" : "#90A2C0"};
@@ -33,6 +36,9 @@ export const LaunchpadProjectSummaryWrapper = styled.div`
       color: ${({ theme }) => theme.color.text02};
       font-size: 18px;
       font-weight: 400;
+      ${media.mobile} {
+        font-size: 16px;
+      }
     }
     ${media.tablet} {
       &:nth-of-type(1),
@@ -56,18 +62,19 @@ export const LaunchpadProjectSummaryWrapper = styled.div`
 
         &:not(:last-child) {
           border-bottom: 1px solid ${({ theme }) => theme.color.border02};
+        }
       }
     }
-  }
-  .border {
-    border-right: 1px solid ${({ theme }) => theme.color.border02};
-    ${media.tablet} {
-      border-right: none;
-      border-bottom: none;
-    }
-    ${media.mobile} {
-      border-right: none;
-      border-bottom: none;
+    .border {
+      border-right: 1px solid ${({ theme }) => theme.color.border02};
+      ${media.tablet} {
+        border-right: none;
+        border-bottom: none;
+      }
+      ${media.mobile} {
+        border-right: none;
+        border-bottom: none;
+      }
     }
   }
 `;
