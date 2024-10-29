@@ -96,7 +96,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
               />
             );
           })}
-        {!isFetched && (
+        {isFetched && (
           <TableSkeleton
             className="skeleton"
             breakpoint={breakpoint}
