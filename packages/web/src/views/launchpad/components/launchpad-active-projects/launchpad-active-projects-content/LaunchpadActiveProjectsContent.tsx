@@ -3,6 +3,7 @@ import React from "react";
 import { LaunchpadProjectResponse } from "@repositories/launchpad/response";
 
 import LaunchpadActiveProjectsCardList from "./launchpad-active-projects-card-list/LaunchpadActiveProjectsCardList";
+import LaunchpadActiveProjectNoData from "./launchpad-active-project-no-data/LaunchpadActiveProjectNoData";
 
 export interface LaunchpadActiveProjectsContentProps {
   activeProjectList: LaunchpadProjectResponse[];
@@ -34,6 +35,9 @@ const LaunchpadActiveProjectsContent: React.FC<
   onClickLoadMore,
   moveProjectDetail,
 }) => {
+  if (isFetched && activeProjectList.length === 0) {
+    return <LaunchpadActiveProjectNoData />;
+  }
   return (
     <LaunchpadActiveProjectsCardList
       activeProjectList={activeProjectList}
