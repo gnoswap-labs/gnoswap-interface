@@ -19,6 +19,10 @@ export const LaunchpadDepositModalWrapper = styled.div`
     width: 100%;
     gap: 16px;
     padding: 24px;
+    ${media.mobile} {
+      gap: 12px;
+      padding: 16px;
+    }
     .header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
@@ -55,6 +59,9 @@ export const LaunchpadDepositModalWrapper = styled.div`
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 16px;
       width: 100%;
+      ${media.mobile} {
+        gap: 12px;
+      }
       .data {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
         gap: 8px;
@@ -74,6 +81,9 @@ export const LaunchpadDepositModalWrapper = styled.div`
           background: ${({ theme }) =>
             theme.themeKey === "dark" ? theme.color.backgroundOpacity : ""};
           padding: 16px;
+          ${media.mobile} {
+            gap: 8px;
+          }
           .data-row {
             ${mixins.flexbox("row", "center", "space-between")};
             width: 100%;
@@ -142,9 +152,15 @@ export const LaunchpadDepositModalWrapper = styled.div`
       width: 100%;
       button {
         height: 57px;
+        ${media.mobile} {
+          height: 41px;
+        }
         span {
           font-size: 18px;
           font-weight: 500;
+          ${media.mobile} {
+            font-size: 16px;
+          }
         }
       }
     }

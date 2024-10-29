@@ -19,6 +19,10 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
     width: 100%;
     gap: 16px;
     padding: 24px;
+    ${media.mobile} {
+      gap: 8px;
+      padding: 12px;
+    }
     .header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
@@ -56,6 +60,9 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
       width: 100%;
       max-height: calc(80vh - 200px);
       overflow-y: auto;
+      ${media.mobile} {
+        padding: 0px;
+      }
     }
 
     .content {
@@ -101,9 +108,15 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
       width: 100%;
       button {
         height: 57px;
+        ${media.mobile} {
+          height: 41px;
+        }
         span {
           font-size: 18px;
           font-weight: 500;
+          ${media.mobile} {
+            font-size: 16px;
+          }
         }
       }
     }

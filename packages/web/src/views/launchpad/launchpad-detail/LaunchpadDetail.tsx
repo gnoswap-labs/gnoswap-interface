@@ -20,6 +20,7 @@ import LaunchpadParticipateContainer from "./containers/launchpad-participate-co
 import LaunchpadMyParticipationContainer from "./containers/launchpad-my-participation-container/LaunchpadMyParticipationContainer";
 import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
 import Footer from "@components/common/footer/Footer";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 export interface ProjectSummaryDataModel {
   totalAllocation: number;
@@ -61,6 +62,7 @@ const LaunchpadDetail: React.FC = () => {
   const [, setDepositConditions] = useAtom(LaunchpadState.depositConditions);
   const { updateBalances } = useTokenData();
 
+  const { breakpoint } = useWindowSize();
   const router = useCustomRouter();
   const projectPath = router.getProjectPath();
   const { account } = useWallet();
@@ -231,6 +233,7 @@ const LaunchpadDetail: React.FC = () => {
 
   return (
     <LaunchpadDetailLayout
+      breakpoint={breakpoint}
       header={<HeaderContainer />}
       breadcrumbs={
         <BreadcrumbsContainer

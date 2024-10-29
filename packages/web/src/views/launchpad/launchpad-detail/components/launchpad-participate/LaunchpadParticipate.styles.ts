@@ -100,9 +100,13 @@ export const LaunchpadParticipateWrapper = styled.div`
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     position: relative;
     width: 100%;
+    height: 57px;
+    ${media.mobile} {
+      height: 41px;
+    }
     button {
+      height: 100%;
       cursor: default;
-      height: 57px;
     }
     .button-deposit {
       cursor: pointer;
@@ -111,7 +115,6 @@ export const LaunchpadParticipateWrapper = styled.div`
       ${fonts.body7}
     }
     ${media.mobile} {
-      height: 41px;
       span {
         ${fonts.body9}
       }

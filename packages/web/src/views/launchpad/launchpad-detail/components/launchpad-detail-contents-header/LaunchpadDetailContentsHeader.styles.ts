@@ -1,10 +1,14 @@
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const ContentsHeaderWrapper = styled.div`
   width: 100%;
   ${mixins.flexbox("row", "center", "flex-start")};
   gap: 8px;
+  ${media.tablet} {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+  }
   .symbol-icon {
     width: 36px;
     height: 36px;
@@ -12,6 +16,10 @@ export const ContentsHeaderWrapper = styled.div`
       width: 100%;
       height: 100%;
     }
+  }
+  .project-header {
+    ${mixins.flexbox("row", "center", "center")};
+    gap: 8px;
   }
   .project-name {
     color: ${({ theme }) => theme.color.text02};
