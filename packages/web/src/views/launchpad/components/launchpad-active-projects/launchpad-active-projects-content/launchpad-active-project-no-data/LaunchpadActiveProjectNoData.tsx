@@ -2,6 +2,7 @@ import React from "react";
 import {
   ActiveProjectsCardListWrapper,
   ActiveProjectsGridWrapper,
+  BlankProjectCard,
 } from "../launchpad-active-projects-card-list/LaunchpadActiveProjectsCardList.styles";
 
 const LaunchpadActiveProjectNoData = () => {
@@ -9,7 +10,7 @@ const LaunchpadActiveProjectNoData = () => {
     <ActiveProjectsCardListWrapper>
       <ActiveProjectsGridWrapper>
         {Array.from({ length: 4 }).map((_, idx) => {
-          return <div key={idx} className="nodata-card" />;
+          return <BlankProjectCard key={idx} />;
         })}
       </ActiveProjectsGridWrapper>
     </ActiveProjectsCardListWrapper>
