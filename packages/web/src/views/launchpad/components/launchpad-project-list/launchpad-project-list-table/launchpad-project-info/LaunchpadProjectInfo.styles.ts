@@ -44,7 +44,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 export const ProjectInfoWrapper = styled.div`
   transition: background-color 0.3s ease;
   min-width: 100%;
-  height: 72px;
+  height: 68px;
   &.border-top {
     border-top: 1px solid ${({ theme }) => theme.color.border02};
   }

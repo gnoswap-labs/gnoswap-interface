@@ -72,7 +72,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
           <div className="launchpad-data-list">
             {isLoading && (
               <span className="launchpad-data-value">
-                <span css={pulseSkeletonStyle({ w: "120px", h: 18 })} />
+                <span css={pulseSkeletonStyle({ w: "120px", h: 19.5 })} />
               </span>
             )}
             {!isLoading && (
@@ -87,7 +87,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
           <div className="launchpad-data-list">
             {isLoading && (
               <span className="launchpad-data-value">
-                <span css={pulseSkeletonStyle({ w: "120px", h: 18 })} />
+                <span css={pulseSkeletonStyle({ w: "120px", h: 24 })} />
               </span>
             )}
             {!isLoading && (
@@ -103,7 +103,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
           <div className="launchpad-data-list">
             {isLoading && (
               <span className="launchpad-data-value">
-                <span css={pulseSkeletonStyle({ w: "120px", h: 18 })} />
+                <span css={pulseSkeletonStyle({ w: "120px", h: 19.5 })} />
               </span>
             )}
             {!isLoading && (

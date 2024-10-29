@@ -32,19 +32,19 @@ export const LaunchpadPoolListSkeletonCard = ({ idx }: { idx: number }) => {
 
       <div className="data">
         <div className="key">Participants</div>
-        <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />
+        <div css={pulseSkeletonStyle({ w: 103, h: 18 })} />
       </div>
       <div className="data">
         <div className="key">APR</div>
-        <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />
+        <div css={pulseSkeletonStyle({ w: 103, h: 18 })} />
       </div>
       <div className="data">
         <div className="key">Total Deposits</div>
-        <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />
+        <div css={pulseSkeletonStyle({ w: 103, h: 24 })} />
       </div>
       <div className="data">
         <div className="key">Token Distributed</div>
-        <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />
+        <div css={pulseSkeletonStyle({ w: 103, h: 24 })} />
       </div>
     </CardWrapper>
   );

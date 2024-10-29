@@ -78,6 +78,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
             if (idx < projects.length - 1) {
               return (
                 <LaunchpadProjectInfo
+                  border={idx !== 0}
                   key={idx}
                   breakpoint={breakpoint}
                   project={project}
@@ -88,6 +89,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
             }
             return (
               <LastColumn
+                border
                 key={idx}
                 breakpoint={breakpoint}
                 project={project}
@@ -96,7 +98,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
               />
             );
           })}
-        {isFetched && (
+        {!isFetched && (
           <TableSkeleton
             className="skeleton"
             breakpoint={breakpoint}
