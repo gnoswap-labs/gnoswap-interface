@@ -44,7 +44,7 @@ const LaunchpadClaimAllModal = ({
   const confirm = React.useCallback(() => {
     setIsOpen(false);
 
-    if (isWalletConnected) {
+    if (!isWalletConnected) {
       return;
     }
 
