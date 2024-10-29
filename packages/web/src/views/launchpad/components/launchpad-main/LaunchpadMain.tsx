@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { LaunchpadProjectSummaryModel } from "@models/launchpad";
 import { EXT_URL } from "@constants/external-url.contant";
+import { DEVICE_TYPE } from "@styles/media";
 
 import Button from "@components/common/button/Button";
 import { ButtonStyleProps } from "@components/common/button/Button.styles";
@@ -17,6 +18,7 @@ interface LaunchpadMainProps {
   data?: LaunchpadProjectSummaryModel;
   isLoading: boolean;
   isFetched: boolean;
+  breakpoint: DEVICE_TYPE;
   themeKey: ThemeKeys;
   icon: React.ReactNode;
 }
@@ -24,6 +26,7 @@ interface LaunchpadMainProps {
 const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
   data,
   isLoading,
+  breakpoint,
   themeKey,
   icon,
 }) => {
@@ -36,9 +39,11 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
     <>
       <section className="launchpad-section">
         <div className="launchpad-title-container">
-          <h3 className="title">GnoSwap Launchpad</h3>
+          {breakpoint !== DEVICE_TYPE.MOBILE && (
+            <h3 className="title">GnoSwap Launchpad</h3>
+          )}
           <h4 className="sub-title">
-            Where Pioneers and Supporters Unite — Unveil Tomorrow&apos;s <br />
+            Where Pioneers and Supporters United — Unveil Tomorrow&apos;s <br />
             Breakthroughs on gno.land, Powered by $GNS.
           </h4>
         </div>
@@ -47,14 +52,18 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
             <Button
               text={"How to Participate"}
               style={defaultStyle}
-              rightIcon={<IconRightArrow />}
+              rightIcon={
+                breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow />
+              }
             />
           </Link>
           <Link href={EXT_URL.DOCS.ROOT} target="_blank">
             <Button
               text={"Submit a Project"}
               style={defaultStyle}
-              rightIcon={<IconRightArrow />}
+              rightIcon={
+                breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow />
+              }
             />
           </Link>
         </div>
@@ -108,7 +117,14 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
           </div>
         </div>
       </section>
-      <div className="launchpad-image-wrapper">{icon}</div>
+      <div className="launchpad-image-wrapper">
+        {breakpoint === DEVICE_TYPE.MOBILE && (
+          <div className="launchpad-mobile-title-wrapper">
+            <h3 className="mobile-title">GnoSwap Launchpad</h3>
+          </div>
+        )}
+        {icon}
+      </div>
     </>
   );
 };

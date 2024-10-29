@@ -41,9 +41,9 @@ export const ActiveProjectsGridWrapper = styled.div`
   }
   ${media.mobile} {
     grid-gap: 12px;
-    grid-template-columns: repeat(auto-fill, 280px);
+    grid-template-columns: repeat(auto-fill, 328px);
     grid-auto-flow: column;
-    grid-auto-columns: 280px;
+    grid-auto-columns: 328px;
   }
 
   .card-skeleton {

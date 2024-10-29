@@ -16,6 +16,7 @@ import LaunchpadProjectInfoChip from "./launchpad-project-info-chip/LaunchpadPro
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface LaunchpadProjectInfoProps {
+  border?: boolean;
   breakpoint: DEVICE_TYPE;
   project: LaunchpadProjectModel;
 
@@ -24,6 +25,7 @@ interface LaunchpadProjectInfoProps {
 }
 
 const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
+  border,
   breakpoint,
   project,
   moveProjectDetail,
@@ -88,7 +90,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
       : PROJECT_INFO;
 
   return (
-    <ProjectInfoWrapper>
+    <ProjectInfoWrapper className={border ? "border-top" : ""}>
       <TableColumn
         className="left clickable"
         tdWidth={cellWidths.list[0].width}

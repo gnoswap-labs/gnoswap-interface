@@ -109,7 +109,8 @@ export const LaunchpadLayoutWrapper = styled.div`
       font-weight: 400;
       line-height: 33.6px;
       white-space: nowrap;
-      color: ${({ theme }) => theme.color.text03};
+      color: ${({ theme }) =>
+        theme.themeKey === "dark" ? theme.color.border07 : theme.color.text03};
       ${media.tablet} {
         white-space: normal;
         font-size: clamp(1.125rem, 0.3665rem + 1.3636vw, 1.5rem);
@@ -117,9 +118,9 @@ export const LaunchpadLayoutWrapper = styled.div`
         line-height: 25.2px;
       }
       ${media.mobile} {
-        font-size: clamp(0.875rem, 0.6544rem + 0.9804vw, 1.125rem);
+        font-size: clamp(1rem, 0.9451rem + 0.2439vw, 1.125rem);
         font-weight: 400;
-        line-height: 18.2px;
+        line-height: 20.8px;
         text-align: center;
         white-space: normal;
       }
@@ -131,12 +132,12 @@ export const LaunchpadLayoutWrapper = styled.div`
     gap: 16px;
     width: 100%;
     ${media.mobile} {
-      ${mixins.flexbox("column", "center", "flex-start")};
-      gap: 24px;
+      gap: 8px;
     }
     a {
       ${media.mobile} {
-        width: 100%;
+        width: 50%;
+        height: 36px;
       }
       button {
         ${mixins.flexbox("row", "flex-start", "center")};
@@ -153,9 +154,14 @@ export const LaunchpadLayoutWrapper = styled.div`
         ${media.mobile} {
           width: 100%;
           padding: 10px 16px;
+        }
+        span {
           font-size: 16px;
           font-weight: 500;
           line-height: 20.8px;
+          ${media.mobile} {
+            font-size: clamp(0.875rem, 0.8201rem + 0.2439vw, 1rem);
+          }
         }
       }
     }
@@ -175,11 +181,17 @@ export const LaunchpadLayoutWrapper = styled.div`
       color: var(--Global-Color-White, #fff);
       .launchpad-data-key {
         color: ${({ theme }) => theme.color.text04};
+        ${media.mobile} {
+          font-size: clamp(0.875rem, 0.8201rem + 0.2439vw, 1rem);
+        }
       }
       .launchpad-data-value {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 4px;
         color: ${({ theme }) => theme.color.text03};
+        ${media.mobile} {
+          font-size: clamp(0.875rem, 0.8201rem + 0.2439vw, 1rem);
+        }
         img {
           width: 24px;
           height: 24px;
@@ -189,6 +201,8 @@ export const LaunchpadLayoutWrapper = styled.div`
   }
 
   .launchpad-image-wrapper {
+    ${mixins.flexbox("column", "center", "center")};
+    gap: 24px;
     padding: 0px 110px;
     ${media.tablet} {
       width: 50%;
@@ -196,8 +210,21 @@ export const LaunchpadLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       width: auto;
-      padding: 0px 50px;
+      padding: 0px 33px;
+      padding: 0px;
     }
+  }
+
+  .launchpad-mobile-title-wrapper {
+    ${mixins.flexbox("row", "center", "center")};
+    width: 100%;
+    .mobile-title {
+      color: ${({ theme }) =>
+        theme.themeKey === "dark" ? theme.color.border07 : theme.color.text03};
+    }
+    font-size: clamp(1.9375rem, 1.471rem + 2.0732vw, 3rem);
+    font-weight: 600;
+    text-align: center;
   }
 
   .background-wrapper {
