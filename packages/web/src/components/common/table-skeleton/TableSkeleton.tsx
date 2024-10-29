@@ -7,16 +7,16 @@ import {
   emptyArrayInit,
   pulseSkeletonStyle,
   TableInfoType,
-  TABLE_TITLE
+  TABLE_TITLE,
 } from "@constants/skeleton.constant";
 import { DEVICE_TYPE } from "@styles/media";
 
 import {
   SkeletonItem,
   SkeletonWrapper,
-  UnLoadingItem
+  UnLoadingItem,
 } from "./TableSkeleton.styles";
-
+import SwapPageButton from "@components/launchpad/swap-page-button/SwapPageButton";
 
 interface TableSkeletonProps {
   info: TableInfoType;
@@ -31,20 +31,25 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({ info, className }) => {
     <>
       {emptyArrayInit(info.total).map((_, index) => (
         <SkeletonWrapper key={index} title={info.title} className={className}>
-          {info.list.filter(item => !item.hideSkeleton).map((item, idx) => (
-            <SkeletonItem
-              key={idx}
-              className={cx({
-                left: item.left,
-                [item.className as string]: true,
-              })}
-              tdWidth={info.list[idx].width}
-            >
-              <span
-                css={pulseSkeletonStyle({ w: item.skeletonWidth, type: item.type })}
-              />
-            </SkeletonItem>
-          ))}
+          {info.list
+            .filter(item => !item.hideSkeleton)
+            .map((item, idx) => (
+              <SkeletonItem
+                key={idx}
+                className={cx({
+                  left: item.left,
+                  [item.className as string]: true,
+                })}
+                tdWidth={info.list[idx].width}
+              >
+                <span
+                  css={pulseSkeletonStyle({
+                    w: item.skeletonWidth,
+                    type: item.type,
+                  })}
+                />
+              </SkeletonItem>
+            ))}
           {info.title === TABLE_TITLE.ASSET_TABLE && (
             <>
               <UnLoadingItem
@@ -60,6 +65,11 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({ info, className }) => {
                 <AssetSendButton onClick={() => false} disabled />
               </UnLoadingItem>
             </>
+          )}
+          {info.title === TABLE_TITLE.LAUNCHPAD_TABLE && (
+            <UnLoadingItem tdWidth={ASSET_TD[ASSET_TD.length - 1]}>
+              <SwapPageButton onClick={() => false} disabled />
+            </UnLoadingItem>
           )}
         </SkeletonWrapper>
       ))}
