@@ -93,7 +93,7 @@ export const LaunchpadLayoutWrapper = styled.div`
       color: ${({ theme }) => theme.color.text02};
       ${media.tablet} {
         font-size: clamp(3rem, 1.8041rem + 1.6216vw, 3.75rem);
-        font-weight: 600;
+        font-weight: 700;
       }
       ${media.mobile} {
         font-size: clamp(2.25rem, 1.9207rem + 1.4634vw, 3rem);
@@ -219,8 +219,7 @@ export const LaunchpadLayoutWrapper = styled.div`
     ${mixins.flexbox("row", "center", "center")};
     width: 100%;
     .mobile-title {
-      color: ${({ theme }) =>
-        theme.themeKey === "dark" ? theme.color.border07 : theme.color.text03};
+      color: ${({ theme }) => theme.color.text02};
     }
     font-size: clamp(1.9375rem, 1.471rem + 2.0732vw, 3rem);
     font-weight: 600;

@@ -17,7 +17,7 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
       padding: 60px 40px;
     }
     ${media.mobile} {
-      padding: 24px 16px;
+      padding: 24px 16px 48px;
     }
   }
   .header-section {
@@ -33,6 +33,10 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     width: 100%;
     gap: 20px;
+    ${media.tablet} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      gap: 8px;
+    }
     .title {
       color: ${({ theme }) => theme.color.text02};
       font-size: 36px;
@@ -60,6 +64,9 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
     ${media.tablet} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
     }
+    ${media.mobile} {
+      ${mixins.flexbox("column-reverse", "flex-start", "flex-start")}
+    }
   }
   .main-section {
     ${mixins.flexbox("column", "center", "space-between")};
@@ -85,6 +92,9 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
       border-radius: 8px;
       border: 1px solid ${({ theme }) => theme.color.border02};
       padding: 24px;
+      ${media.mobile} {
+        padding: 16px;
+      }
     }
   }
 
@@ -94,8 +104,11 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
     max-width: 430px;
     width: 100%;
     ${media.tablet} {
-      max-width: 100%;
       min-width: auto;
+      max-width: none;
+      width: 100%;
+    }
+    .pool-list {
       width: 100%;
     }
     .participate {
@@ -104,6 +117,9 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
       border: 1px solid ${({ theme }) => theme.color.border02};
       background: ${({ theme }) => theme.color.background06};
       padding: 24px;
+      ${media.mobile} {
+        padding: 16px;
+      }
     }
     .my-participation {
       width: 100%;
