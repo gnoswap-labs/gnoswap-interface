@@ -69,7 +69,6 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
           {data.status === "ENDED" && <div className="chip">Ended</div>}
         </div>
         {isActiveCard && isShowConditionTooltip && <DepositConditionsTooltip />}
-        <DepositConditionsTooltip />
       </div>
 
       <div className="card-description">
