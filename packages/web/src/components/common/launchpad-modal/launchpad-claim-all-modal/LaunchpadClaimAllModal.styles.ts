@@ -7,6 +7,9 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 460px;
   gap: 16px;
+  ${media.mobile} {
+    width: 328px;
+  }
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
@@ -80,6 +83,9 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
             width: 100%;
             font-size: 14px;
             font-weight: 400;
+            ${media.mobile} {
+              font-size: 13px;
+            }
             .key {
               color: ${({ theme }) => theme.color.text04};
             }
