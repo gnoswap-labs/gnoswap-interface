@@ -27,6 +27,7 @@ export const LinkButton = styled.div`
   font-weight: 500;
   gap: 4px;
   color: ${({ theme }) => theme.color.text04};
+  white-space: nowrap;
   ${media.mobile} {
     ${mixins.flexbox("column", "center", "center")};
   }

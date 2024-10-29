@@ -21,6 +21,9 @@ export const LaunchpadAboutProjectWrapper = styled.div`
     color: ${({ theme }) => theme.color.text02};
     font-size: 18px;
     font-weight: 500;
+    ${media.mobile} {
+      font-size: 16px;
+    }
   }
 
   .contents {
