@@ -209,7 +209,7 @@ const LaunchpadDetail: React.FC = () => {
    * @dev Refetchs
    */
   const refetchProjectDetail = async () => {
-    await setSelectPoolId(null);
+    setSelectPoolId(null);
     await projectDetailRefetch();
     await myParticipationRefetch();
     await updateBalances();
