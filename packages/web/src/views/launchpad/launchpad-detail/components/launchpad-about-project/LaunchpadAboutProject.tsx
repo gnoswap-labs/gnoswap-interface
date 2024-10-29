@@ -26,7 +26,7 @@ const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
   return (
     <LaunchpadAboutProjectWrapper>
       <div className="header">
-        {isLoading && <div css={pulseSkeletonStyle({ w: 215, h: 20 })} />}
+        {isLoading && <div css={pulseSkeletonStyle({ w: 215, h: 25 })} />}
         {!isLoading && <h2>{`About ${data.name}`}</h2>}
       </div>
 

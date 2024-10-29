@@ -29,7 +29,7 @@ const LaunchpadDetailContentsHeader: React.FC<
 > = ({ data, isLoading, rewardInfo }) => {
   return (
     <ContentsHeaderWrapper className="contents-header">
-      {isLoading && <span css={pulseSkeletonStyle({ w: 200, h: 20 })}></span>}
+      {isLoading && <span css={pulseSkeletonStyle({ w: 200, h: 36 })}></span>}
       {!isLoading && (
         <>
           <div className="project-header">

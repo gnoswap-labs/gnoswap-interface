@@ -33,7 +33,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             }
           />
         </div>
-        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 20 })} />}
+        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 22 })} />}
         {!isLoading && (
           <div className="value">
             {data.totalAllocation
@@ -54,7 +54,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             }
           />
         </div>
-        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 20 })} />}
+        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 22 })} />}
         {!isLoading && (
           <div className="value">{data.totalParticipants || "-"}</div>
         )}
@@ -71,7 +71,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             }
           />
         </div>
-        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 20 })} />}
+        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 22 })} />}
         {!isLoading && (
           <div className="value">
             {data.totalDeposited
@@ -95,7 +95,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             }
           />
         </div>
-        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 20 })} />}
+        {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 22 })} />}
         {!isLoading && (
           <div className="value">
             {data.totalDistributed
