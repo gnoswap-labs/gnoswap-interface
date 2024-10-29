@@ -12,17 +12,20 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
     width: 100%;
     max-width: 1440px;
     padding: 100px 40px;
+    ${media.tablet} {
+      gap: 24px;
+      padding: 60px 40px;
+    }
+    ${media.mobile} {
+      padding: 24px 16px;
+    }
   }
   .header-section {
     ${mixins.flexbox("column", "center", "center")}
     width: 100%;
     flex-grow: 1;
     margin: 0 auto;
-    ${media.tablet} {
-      /* padding: 118px 40px; */
-    }
     ${media.mobile} {
-      padding: 48px 0;
       ${mixins.flexbox("column", "center", "center")}
     }
   }
@@ -34,6 +37,12 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
       color: ${({ theme }) => theme.color.text02};
       font-size: 36px;
       font-weight: 600;
+      ${media.tablet} {
+        font-size: clamp(2rem, 1.6014rem + 0.5405vw, 2.25rem);
+      }
+      ${media.mobile} {
+        font-size: clamp(1.5rem, 1.2805rem + 0.9756vw, 2rem);
+      }
     }
   }
 
@@ -48,7 +57,7 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
 
     gap: 16px;
     width: 100%;
-    @media (max-width: 930px) {
+    ${media.tablet} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
     }
   }
@@ -58,14 +67,10 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
     flex: 1;
     max-width: 914px;
     min-width: 722px;
-    @media (max-width: 1180px) {
-      max-width: 734px;
-      min-width: 568px;
-    }
-    @media (max-width: 930px) {
-      max-width: 100%;
-      min-width: auto;
+    ${media.tablet} {
+      max-width: none;
       width: 100%;
+      min-width: auto;
     }
     .pool-list {
       width: 100%;
@@ -88,11 +93,7 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
     gap: 16px;
     max-width: 430px;
     width: 100%;
-    @media (max-width: 1180px) {
-      max-width: 360px;
-      min-width: 276px;
-    }
-    @media (max-width: 930px) {
+    ${media.tablet} {
       max-width: 100%;
       min-width: auto;
       width: 100%;
