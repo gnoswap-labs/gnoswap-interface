@@ -80,7 +80,7 @@ export const CardWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "center")};
     gap: 8px;
     width: 100%;
-    font-size: 16px;
+    font-size: clamp(0.875rem, 0.6757rem + 0.2703vw, 1rem);
     font-weight: 500;
     ${media.tablet} {
       font-size: clamp(0.875rem, 0.6757rem + 0.2703vw, 1rem);
@@ -89,8 +89,9 @@ export const CardWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
     }
     .value {
-      ${mixins.flexbox("row", "center", "center")};
+      ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
+      width: 100%;
       color: ${({ theme }) => theme.color.text03};
       &.ended {
         color: ${({ theme }) =>
