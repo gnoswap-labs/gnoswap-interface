@@ -10,7 +10,6 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { isAmount } from "@common/utils/data-check-util";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";
-import { useLaunchpadDepositConfirmModal } from "../../hooks/use-launchpad-deposit-confirm-modal";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import { capitalize } from "@utils/string-utils";
 import { toNumberFormat } from "@utils/number-utils";
@@ -26,6 +25,7 @@ import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-ti
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -33,8 +33,11 @@ interface LaunchpadParticipateProps {
   poolInfo?: LaunchpadPoolModel;
   rewardInfo: ProjectRewardInfoModel;
   status: string;
+  projectPath: string;
   isLoading: boolean;
+  isWalletConnected: boolean;
 
+  depositGNS: (projectPoolId: string, depositAmount: string) => void;
   refetch: () => Promise<void>;
 }
 
@@ -42,9 +45,13 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   poolInfo,
   rewardInfo,
   status,
+  projectPath,
   isLoading,
+  isWalletConnected,
+  depositGNS,
   refetch,
 }) => {
+  // Global State
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
 
   const [participateAmount, setParticipateAmount] = useAtom(
@@ -54,8 +61,11 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     LaunchpadState.isShowConditionTooltip,
   );
 
+  // Modal
+  const [isOpenDepositConfirmModal, setIsOpenDepositConfirmModal] =
+    React.useState(false);
+
   const {
-    connectedWallet,
     depositButtonText,
     openConnectWallet,
     isSwitchNetwork,
@@ -66,10 +76,11 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     hideConditionTooltip,
   } = useLaunchpadHandler();
   const { tokenPrices, displayBalanceMap } = useTokenData();
+
   const onChangeParticipateAmount = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (status !== "UPCOMING") {
-        const value = e.target.value;
+        const value = e.target.value.replace(/,/g, "");
 
         if (value !== "" && !isAmount(value)) return;
         setParticipateAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
@@ -77,13 +88,6 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     },
     [setParticipateAmount, status],
   );
-
-  const { openLaunchpadDepositModal } = useLaunchpadDepositConfirmModal({
-    participateAmount,
-    poolInfo,
-    rewardInfo,
-    refetch,
-  });
 
   const currentGnsBalance = React.useMemo(
     () => displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN?.path ?? ""] ?? null,
@@ -93,7 +97,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     () =>
       DEFAULT_DEPOSIT_TOKEN?.wrappedPath &&
       !!participateAmount &&
-      participateAmount !== "0"
+      participateAmount !== "0" &&
+      !!tokenPrices?.[DEFAULT_DEPOSIT_TOKEN?.wrappedPath]?.usd
         ? formatPrice(
             BigNumber(+participateAmount)
               .multipliedBy(
@@ -117,12 +122,12 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     : "-";
 
   const handleAutoFillMaxAmount = React.useCallback(() => {
-    if (connectedWallet && currentGnsBalance && status !== "UPCOMING") {
+    if (isWalletConnected && currentGnsBalance && status !== "UPCOMING") {
       setParticipateAmount(
         toNumberFormat(currentGnsBalance, 2).replace(/,/g, ""),
       );
     }
-  }, [currentGnsBalance, setParticipateAmount, connectedWallet, status]);
+  }, [currentGnsBalance, setParticipateAmount, isWalletConnected, status]);
 
   // Initialize Page State
   React.useEffect(() => {
@@ -258,25 +263,38 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           <DepositButton
             isAvailableDeposit={isAvailableDeposit}
             isSwitchNetwork={isSwitchNetwork}
-            connectedWallet={connectedWallet}
+            isWalletConnected={isWalletConnected}
             status={status}
             isDepositAllowed={isDepositAllowed}
             text={depositButtonText}
             openConnectWallet={openConnectWallet}
             switchNetwork={switchNetwork}
             openLaunchpadDepositAction={() => {
-              openLaunchpadDepositModal();
+              setIsOpenDepositConfirmModal(true);
             }}
           />
         </div>
       )}
       {isLoading && <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />}
+
+      {isOpenDepositConfirmModal && (
+        <LaunchpadDepositModal
+          depositAmount={participateAmount}
+          poolInfo={poolInfo}
+          rewardInfo={rewardInfo}
+          projectPath={projectPath}
+          isWalletConnected={isWalletConnected}
+          refetch={refetch}
+          onSubmit={depositGNS}
+          setIsOpen={setIsOpenDepositConfirmModal}
+        />
+      )}
     </LaunchpadParticipateWrapper>
   );
 };
 
 interface DepositButtonProps {
-  connectedWallet: boolean;
+  isWalletConnected: boolean;
   text: string;
   isSwitchNetwork: boolean;
   isAvailableDeposit: boolean;
@@ -289,7 +307,7 @@ interface DepositButtonProps {
 }
 
 const DepositButton: React.FC<DepositButtonProps> = ({
-  connectedWallet,
+  isWalletConnected,
   text,
   openConnectWallet,
   isSwitchNetwork,
@@ -313,7 +331,7 @@ const DepositButton: React.FC<DepositButtonProps> = ({
     );
   }
 
-  if (!connectedWallet) {
+  if (!isWalletConnected) {
     return (
       <Button text={text} style={defaultStyle} onClick={openConnectWallet} />
     );

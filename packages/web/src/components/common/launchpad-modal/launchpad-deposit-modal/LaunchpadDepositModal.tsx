@@ -3,11 +3,11 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { LaunchpadPoolModel } from "@models/launchpad";
-import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 import { getTierNumber } from "@utils/launchpad-get-tier-number";
 import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import withLocalModal from "@components/hoc/with-local-modal";
 
 import { LaunchpadDepositModalWrapper } from "./LaunchpadDepositModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
@@ -32,9 +32,10 @@ interface LaunchpadDepositModalProps {
   poolInfo?: ExtendedPoolInfo;
   rewardInfo: ProjectRewardInfoModel;
   projectPath: string;
-
+  isWalletConnected: boolean;
   refetch: () => Promise<void>;
-  close: () => void;
+  onSubmit: (projectPoolId: string, depositAmount: string) => void;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LaunchpadDepositModal = ({
@@ -42,28 +43,38 @@ const LaunchpadDepositModal = ({
   poolInfo,
   rewardInfo,
   projectPath,
-  refetch,
-  close,
+  isWalletConnected,
+  setIsOpen,
+  onSubmit,
 }: LaunchpadDepositModalProps) => {
+  const Modal = React.useMemo(
+    () => withLocalModal(LaunchpadDepositModalWrapper, setIsOpen),
+    [setIsOpen],
+  );
+
   const now = new Date();
   const claimableTime = poolInfo?.claimableThreshold
     ? new Date(now.getTime() + Number(poolInfo.claimableThreshold) * 1000)
     : null;
 
-  const { deposit } = useLaunchpadHandler();
-
   const poolDuration = getTierNumber(poolInfo?.poolTier);
 
   const confirm = React.useCallback(() => {
-    deposit(`${projectPath}:${poolDuration}`, depositAmount, refetch);
-  }, [projectPath, depositAmount, deposit, poolDuration, refetch]);
+    setIsOpen(false);
+
+    if (!isWalletConnected) {
+      return;
+    }
+
+    onSubmit(`${projectPath}:${poolDuration}`, depositAmount);
+  }, [projectPath, isWalletConnected, depositAmount, setIsOpen, poolDuration]);
 
   return (
-    <LaunchpadDepositModalWrapper>
+    <Modal>
       <div className="modal-body">
         <div className="header">
           <h6>Confirm Deposit</h6>
-          <div className="close-wrap" onClick={close}>
+          <div className="close-wrap" onClick={() => setIsOpen(false)}>
             <IconClose className="close-icon" />
           </div>
         </div>
@@ -161,19 +172,18 @@ const LaunchpadDepositModal = ({
           </div>
         </div>
         <div className="footer">
-          <ConfirmButton onClick={confirm} />
+          <Button
+            text="Confirm"
+            onClick={confirm}
+            style={{
+              fullWidth: true,
+              hierarchy: ButtonHierarchy.Primary,
+            }}
+          />
         </div>
       </div>
-    </LaunchpadDepositModalWrapper>
+    </Modal>
   );
-};
-
-const ConfirmButton = ({ onClick }: { onClick: () => void }) => {
-  const defaultStyle = {
-    fullWidth: true,
-    hierarchy: ButtonHierarchy.Primary,
-  };
-  return <Button text="Confirm" style={defaultStyle} onClick={onClick} />;
 };
 
 export default LaunchpadDepositModal;

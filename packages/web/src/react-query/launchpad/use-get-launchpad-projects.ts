@@ -49,6 +49,7 @@ export const useGetLaunchpadProjects = (
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,
     refetchOnReconnect: true,
+    keepPreviousData: true,
     ...options,
   });
 };

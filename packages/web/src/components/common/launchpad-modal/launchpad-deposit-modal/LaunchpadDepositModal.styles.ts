@@ -5,10 +5,17 @@ import { fonts } from "@constants/font.constant";
 
 export const LaunchpadDepositModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  width: 460px;
+  min-width: 328px;
+  max-width: 500px;
+  width: 90vw;
   gap: 16px;
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
+    background-color: ${({ theme }) => theme.color.background06};
+    border-radius: 8px;
+    border: 1px solid ${({ theme }) => theme.color.border02};
+    box-shadow: ${({ theme }) => theme.color.shadow01};
+    overflow: auto;
     width: 100%;
     gap: 16px;
     padding: 24px;
