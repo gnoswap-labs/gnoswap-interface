@@ -9,6 +9,9 @@ export const LaunchpadDepositModalWrapper = styled.div`
   max-width: 500px;
   width: 90vw;
   gap: 16px;
+  ${media.mobile} {
+    width: 328px;
+  }
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     background-color: ${({ theme }) => theme.color.background06};
@@ -82,6 +85,7 @@ export const LaunchpadDepositModalWrapper = styled.div`
             theme.themeKey === "dark" ? theme.color.backgroundOpacity : ""};
           padding: 16px;
           ${media.mobile} {
+            padding: 12px;
             gap: 8px;
           }
           .data-row {
@@ -89,8 +93,12 @@ export const LaunchpadDepositModalWrapper = styled.div`
             width: 100%;
             font-size: 14px;
             font-weight: 400;
+            ${media.mobile} {
+              font-size: 13px;
+            }
             .key {
               color: ${({ theme }) => theme.color.text04};
+              ${media}
             }
             .value {
               ${mixins.flexbox("row", "center", "center")};
@@ -109,6 +117,9 @@ export const LaunchpadDepositModalWrapper = styled.div`
         border: 1px solid rgba(255, 159, 10, 0.1);
         background: rgba(255, 159, 10, 0.08);
         padding: 16px;
+        ${media.mobile} {
+          padding: 12px;
+        }
         .header {
           ${mixins.flexbox("row", "center", "flex-start")}
           gap: 8px;

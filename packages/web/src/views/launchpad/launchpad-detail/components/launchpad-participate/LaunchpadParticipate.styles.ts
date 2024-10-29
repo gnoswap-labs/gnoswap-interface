@@ -83,6 +83,9 @@ export const LaunchpadParticipateWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
       font-size: 14px;
       font-weight: 400;
+      ${media.mobile} {
+        font-size: 13px;
+      }
       * {
         fill: ${({ theme }) =>
           theme.themeKey === "dark" ? "#596782" : "#90A2C0"};
@@ -94,6 +97,9 @@ export const LaunchpadParticipateWrapper = styled.div`
       color: ${({ theme }) => theme.color.text03};
       font-size: 14px;
       font-weight: 400;
+      ${media.mobile} {
+        font-size: 13px;
+      }
     }
   }
   .participate-button-wrapper {

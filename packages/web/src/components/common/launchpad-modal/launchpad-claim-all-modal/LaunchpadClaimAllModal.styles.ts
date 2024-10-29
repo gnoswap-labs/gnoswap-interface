@@ -9,6 +9,9 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
   max-width: 500px;
   width: 90vw;
   gap: 16px;
+  ${media.mobile} {
+    width: 328px;
+  }
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     background-color: ${({ theme }) => theme.color.background06};
@@ -87,6 +90,9 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
             width: 100%;
             font-size: 14px;
             font-weight: 400;
+            ${media.mobile} {
+              font-size: 13px;
+            }
             .key {
               color: ${({ theme }) => theme.color.text04};
             }
