@@ -180,7 +180,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
             })}
             onClick={handleAutoFillMaxAmount}
           >
-            Balance:{" "}
+            {t("Launchpad:participate.balance")}:{" "}
             {currentGnsBalance ? toNumberFormat(currentGnsBalance, 2) : "-"}
           </span>
         </div>

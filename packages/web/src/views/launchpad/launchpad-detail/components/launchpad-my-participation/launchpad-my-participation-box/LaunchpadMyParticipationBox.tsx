@@ -155,6 +155,7 @@ const LaunchpadMyParticipationBox = ({
             </div>
             <div className="participation-box-button-wrapper">
               <ClaimButton
+                text={t("Launchpad:common.button.claim")}
                 onClick={() => isClaimable && handleClickClaim(item)}
                 disabled={!isClaimable || isClaimed}
               />
@@ -170,7 +171,7 @@ const LaunchpadMyParticipationBox = ({
         onClick={() => setOpenedSelector(prev => !prev)}
       >
         <div className="title">
-          <div>Details</div>
+          <div>{t("Launchpad:common.button.details")}</div>
           <div className="icon-wrapper">
             {openedSelector ? <IconArrowUp /> : <IconArrowDown />}
           </div>
@@ -181,6 +182,7 @@ const LaunchpadMyParticipationBox = ({
 };
 
 export const ClaimButton: React.FC<ParticipateButtonProps> = ({
+  text,
   onClick,
   disabled,
 }) => {
@@ -191,7 +193,7 @@ export const ClaimButton: React.FC<ParticipateButtonProps> = ({
 
   return (
     <Button
-      text="Claim"
+      text={text}
       style={claimDefaultStyle}
       onClick={onClick}
       disabled={disabled}

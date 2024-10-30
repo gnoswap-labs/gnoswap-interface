@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
@@ -10,9 +11,15 @@ interface ShowMoreProps {
 }
 
 const LaunchpadShowMoreButton = ({ show, onClick }: ShowMoreProps) => {
+  const { t } = useTranslation();
+
   return (
     <ShowMoreWrapper onClick={onClick}>
-      <span>{show ? "Less more" : "Show more"}</span>
+      <span>
+        {show
+          ? t("Launchpad:common.button.showLess")
+          : t("Launchpad:common.button.showMore")}
+      </span>
       {show ? (
         <IconStrokeArrowUp className="icon-load" />
       ) : (

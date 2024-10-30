@@ -138,6 +138,7 @@ const LaunchpadMyParticipation = ({
           {isShowClaimAllButton && (
             <div className="claim-all-button-wrapper">
               <ClaimAllButton
+                text={t("Launchpad:common.button.claimAll")}
                 onClick={() => {
                   setIsOpenClaimAllModal(true);
                 }}
@@ -183,19 +184,22 @@ const LaunchpadMyParticipation = ({
 };
 
 export interface ParticipateButtonProps {
-  onClick: () => void;
+  text: string;
   disabled?: boolean;
+
+  onClick: () => void;
 }
 
-const ClaimAllButton: React.FC<ParticipateButtonProps> = ({ onClick }) => {
+const ClaimAllButton: React.FC<ParticipateButtonProps> = ({
+  onClick,
+  text,
+}) => {
   const claimDefaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,
   };
 
-  return (
-    <Button text="Claim All" style={claimDefaultStyle} onClick={onClick} />
-  );
+  return <Button text={text} style={claimDefaultStyle} onClick={onClick} />;
 };
 
 export default LaunchpadMyParticipation;
