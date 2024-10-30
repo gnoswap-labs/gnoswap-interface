@@ -74,7 +74,9 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
             {t("Launchpad:poolList.title", { idx: idx })}
           </span>
           <LaunchpadPoolTierChip poolTier={data.poolTier} />
-          {data.status === "ENDED" && <div className="chip">Ended</div>}
+          {data.status === "ENDED" && (
+            <div className="chip">{t("Launchpad:common.ended")}</div>
+          )}
         </div>
         {isActiveCard && isShowConditionTooltip && <DepositConditionsTooltip />}
       </div>

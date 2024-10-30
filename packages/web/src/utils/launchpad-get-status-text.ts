@@ -34,7 +34,7 @@ export const getStatusText = (
         minutes,
       });
     } else if (minutes > 0) {
-      return i18n?.t("Launchpad:common.time.inMinutes");
+      return i18n?.t("Launchpad:common.time.inMinutes", { minutes });
     } else {
       return i18n?.t("Launchpad:common.time.inOneMinute");
     }
