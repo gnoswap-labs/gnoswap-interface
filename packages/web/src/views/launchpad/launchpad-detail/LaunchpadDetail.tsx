@@ -238,6 +238,7 @@ const LaunchpadDetail: React.FC = () => {
     <LaunchpadDetailLayout
       breakpoint={breakpoint}
       header={<HeaderContainer />}
+      status={projectDetailData?.status || ""}
       breadcrumbs={
         <BreadcrumbsContainer
           listBreadcrumb={breadcrumbsSteps}

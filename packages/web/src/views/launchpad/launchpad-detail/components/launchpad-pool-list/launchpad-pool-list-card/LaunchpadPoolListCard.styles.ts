@@ -13,6 +13,9 @@ export const CardWrapper = styled.div`
   ${media.tablet} {
     min-width: 260px;
   }
+  ${media.mobile} {
+    min-width: 280px;
+  }
   &.ongoing {
     cursor: pointer;
     &:hover {
@@ -37,6 +40,10 @@ export const CardWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")}
       gap: 8px;
       width: 100%;
+      .flex-section {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+      }
     }
     .title {
       color: ${({ theme }) => theme.color.text02};

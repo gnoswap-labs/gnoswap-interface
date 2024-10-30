@@ -7,6 +7,7 @@ import { LaunchpadDetailLayoutWrapper } from "./LaunchpadDetailLayout.styles";
 
 interface LaunchpadDetailLayoutProps {
   breakpoint: DEVICE_TYPE;
+  status: string;
   header: React.ReactNode;
   breadcrumbs: React.ReactNode;
   contentsHeader: React.ReactNode;
@@ -21,6 +22,7 @@ interface LaunchpadDetailLayoutProps {
 
 const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
   breakpoint,
+  status,
   header,
   breadcrumbs,
   contentsHeader,
@@ -59,7 +61,9 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
                 <div className="pool-list">{poolList}</div>
               )}
               <div className="participate">{participate}</div>
-              <div className="my-participation">{myParticipation}</div>
+              {status !== "UPCOMING" && (
+                <div className="my-participation">{myParticipation}</div>
+              )}
               <div className="click-here">{clickHere}</div>
             </div>
           </div>

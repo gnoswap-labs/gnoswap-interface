@@ -24,7 +24,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
 
   return (
     <LaunchpadProjectSummaryWrapper>
-      <div className="card border">
+      <div className="card">
         <div className="key">
           {t("Launchpad:projectSummary.col.totalAllocation")}
           <LaunchpadTooltip
@@ -45,7 +45,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           </div>
         )}
       </div>
-      <div className="card border">
+      <div className="card">
         <div className="key">
           {t("Launchpad:projectSummary.col.participants")}{" "}
           <LaunchpadTooltip
@@ -62,7 +62,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           <div className="value">{data.totalParticipants || "-"}</div>
         )}
       </div>
-      <div className="card border">
+      <div className="card">
         <div className="key">
           {t("Launchpad:projectSummary.col.totalDeposited")}
           <LaunchpadTooltip

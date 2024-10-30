@@ -148,6 +148,50 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     depositConditions.length,
   ]);
 
+  const buttonRender = React.useCallback(() => {
+    if (status === "UPCOMING") {
+      return (
+        <div className="participate-button-wrapper">
+          <DepositButton
+            isAvailableDeposit={isAvailableDeposit}
+            isSwitchNetwork={isSwitchNetwork}
+            isWalletConnected={isWalletConnected}
+            status={status}
+            isDepositAllowed={isDepositAllowed}
+            text={depositButtonText}
+            openConnectWallet={openConnectWallet}
+            switchNetwork={switchNetwork}
+            openLaunchpadDepositAction={() => {
+              setIsOpenDepositConfirmModal(true);
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (isLoading) {
+      return <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />;
+    }
+
+    return (
+      <div className="participate-button-wrapper">
+        <DepositButton
+          isAvailableDeposit={isAvailableDeposit}
+          isSwitchNetwork={isSwitchNetwork}
+          isWalletConnected={isWalletConnected}
+          status={status}
+          isDepositAllowed={isDepositAllowed}
+          text={depositButtonText}
+          openConnectWallet={openConnectWallet}
+          switchNetwork={switchNetwork}
+          openLaunchpadDepositAction={() => {
+            setIsOpenDepositConfirmModal(true);
+          }}
+        />
+      </div>
+    );
+  }, [status, isLoading]);
+
   return (
     <LaunchpadParticipateWrapper>
       <div className="participate-header">
@@ -268,7 +312,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         </div>
       </div>
 
-      {!isLoading && (
+      {/* {!isLoading && (
         <div className="participate-button-wrapper">
           <DepositButton
             isAvailableDeposit={isAvailableDeposit}
@@ -285,7 +329,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           />
         </div>
       )}
-      {isLoading && <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />}
+      {isLoading && <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />} */}
+      {buttonRender()}
 
       {isOpenDepositConfirmModal && (
         <LaunchpadDepositModal
