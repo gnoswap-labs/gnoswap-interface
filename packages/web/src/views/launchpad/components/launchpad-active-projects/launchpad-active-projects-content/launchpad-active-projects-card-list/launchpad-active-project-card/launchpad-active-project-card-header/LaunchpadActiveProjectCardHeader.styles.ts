@@ -55,6 +55,7 @@ export const ActiveProjectCardHeader = styled.div`
     }
   }
   .image-wrapper {
+    align-self: flex-start;
     width: 60px;
     height: 60px;
     img {

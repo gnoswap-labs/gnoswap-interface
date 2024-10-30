@@ -44,13 +44,24 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
           {breakpoint !== DEVICE_TYPE.MOBILE && (
             <h3 className="title">{t("Launchpad:main.title")}</h3>
           )}
-          <h4 className="sub-title">
-            <Trans ns="Launchpad" i18nKey={"main.subTitle"}>
-              Where Pioneers and Supporters United — Unveil Tomorrow&apos;s
-              <br />
-              Breakthroughs on gno.land, Powered by $GNS.
-            </Trans>
-          </h4>
+          {breakpoint === DEVICE_TYPE.MOBILE ? (
+            <h4 className="sub-title">
+              <Trans ns="Launchpad" i18nKey={"main.subTitleMobile"}>
+                Where Pioneers and Supporters United —<br />
+                Unveil Tomorrow&apos;s Breakthroughs on
+                <br />
+                gno.land, Powered by $GNS.
+              </Trans>
+            </h4>
+          ) : (
+            <h4 className="sub-title">
+              <Trans ns="Launchpad" i18nKey={"main.subTitle"}>
+                Where Pioneers and Supporters United — Unveil Tomorrow&apos;s
+                <br />
+                Breakthroughs on gno.land, Powered by $GNS.
+              </Trans>
+            </h4>
+          )}
         </div>
         <div className="launchpad-button-wrapper">
           <Link href={EXT_URL.DOCS.ROOT} target="_blank">
@@ -58,7 +69,9 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
               text={t("Launchpad:main.button.howToParticipate")}
               style={defaultStyle}
               rightIcon={
-                breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow />
+                breakpoint !== DEVICE_TYPE.MOBILE && (
+                  <IconRightArrow className="icon-right-arrow" />
+                )
               }
             />
           </Link>
@@ -67,7 +80,9 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
               text={t("Launchpad:main.button.submitProject")}
               style={defaultStyle}
               rightIcon={
-                breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow />
+                breakpoint !== DEVICE_TYPE.MOBILE && (
+                  <IconRightArrow className="icon-right-arrow" />
+                )
               }
             />
           </Link>
