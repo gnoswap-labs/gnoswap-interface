@@ -9,6 +9,9 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
   max-width: 500px;
   width: 90vw;
   gap: 16px;
+  ${media.mobile} {
+    width: 328px;
+  }
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     background-color: ${({ theme }) => theme.color.background06};
@@ -19,6 +22,10 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
     width: 100%;
     gap: 16px;
     padding: 24px;
+    ${media.mobile} {
+      gap: 8px;
+      padding: 12px;
+    }
     .header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
@@ -56,6 +63,9 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
       width: 100%;
       max-height: calc(80vh - 200px);
       overflow-y: auto;
+      ${media.mobile} {
+        padding: 0px;
+      }
     }
 
     .content {
@@ -80,6 +90,9 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
             width: 100%;
             font-size: 14px;
             font-weight: 400;
+            ${media.mobile} {
+              font-size: 13px;
+            }
             .key {
               color: ${({ theme }) => theme.color.text04};
             }
@@ -101,9 +114,15 @@ export const LaunchpadClaimAllModalWrapper = styled.div`
       width: 100%;
       button {
         height: 57px;
+        ${media.mobile} {
+          height: 41px;
+        }
         span {
           font-size: 18px;
           font-weight: 500;
+          ${media.mobile} {
+            font-size: 16px;
+          }
         }
       }
     }

@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const MyParticipationWrapper = styled.div`
@@ -10,6 +11,9 @@ export const MyParticipationWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   gap: 16px;
   width: 100%;
+  ${media.mobile} {
+    padding: 16px;
+  }
   .my-participation-header {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
@@ -35,20 +39,21 @@ export const MyParticipationWrapper = styled.div`
     ${mixins.flexbox("column", "center", "flex-start")};
     gap: 16px;
     width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    ${media.mobile} {
+      font-size: clamp(0.8125rem, 0.7851rem + 0.122vw, 0.875rem);
+    }
     .participation-box-data {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
       .participation-box-data-key {
         color: ${({ theme }) => theme.color.text04};
-        font-size: 14px;
-        font-weight: 400;
       }
       .participation-box-data-value {
         ${mixins.flexbox("row", "center", "center")};
         gap: 4px;
         color: ${({ theme }) => theme.color.text03};
-        font-size: 14px;
-        font-weight: 400;
       }
     }
   }

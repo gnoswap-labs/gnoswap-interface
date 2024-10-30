@@ -52,3 +52,20 @@ export const ActiveProjectsGridWrapper = styled.div`
     border-radius: 10px;
   }
 `;
+
+export const BlankProjectCard = styled.div`
+  min-width: 322px;
+  width: 100%;
+  height: 317px;
+  border-radius: 10px;
+  border-radius: 10px;
+  background: ${({ theme }) =>
+    theme.themeKey === "dark" ? "rgba(20, 26, 41, 0.5);" : ""};
+  border: ${({ theme }) =>
+    theme.themeKey === "dark" ? "none" : `1px solid ${theme.color.border01}`};
+  box-shadow: ${({ theme }) =>
+    theme.themeKey === "dark" ? "4px 4px 20px 0px rgba(0, 0, 0, 0.05)" : ""};
+  ${media.tablet} {
+    height: 341px;
+  }
+`;

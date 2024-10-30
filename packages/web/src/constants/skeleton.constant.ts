@@ -548,7 +548,8 @@ export const PROJECT_INFO = {
       width: 200,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
       left: false,
-      skeletonWidth: 161,
+      skeletonWidth: 200,
+      hideSkeleton: true,
     },
   ],
 };

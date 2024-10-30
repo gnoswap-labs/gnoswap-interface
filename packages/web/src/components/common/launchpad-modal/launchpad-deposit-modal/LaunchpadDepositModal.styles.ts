@@ -9,6 +9,9 @@ export const LaunchpadDepositModalWrapper = styled.div`
   max-width: 500px;
   width: 90vw;
   gap: 16px;
+  ${media.mobile} {
+    width: 328px;
+  }
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     background-color: ${({ theme }) => theme.color.background06};
@@ -19,6 +22,10 @@ export const LaunchpadDepositModalWrapper = styled.div`
     width: 100%;
     gap: 16px;
     padding: 24px;
+    ${media.mobile} {
+      gap: 12px;
+      padding: 16px;
+    }
     .header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
@@ -55,6 +62,9 @@ export const LaunchpadDepositModalWrapper = styled.div`
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 16px;
       width: 100%;
+      ${media.mobile} {
+        gap: 12px;
+      }
       .data {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
         gap: 8px;
@@ -74,13 +84,21 @@ export const LaunchpadDepositModalWrapper = styled.div`
           background: ${({ theme }) =>
             theme.themeKey === "dark" ? theme.color.backgroundOpacity : ""};
           padding: 16px;
+          ${media.mobile} {
+            padding: 12px;
+            gap: 8px;
+          }
           .data-row {
             ${mixins.flexbox("row", "center", "space-between")};
             width: 100%;
             font-size: 14px;
             font-weight: 400;
+            ${media.mobile} {
+              font-size: 13px;
+            }
             .key {
               color: ${({ theme }) => theme.color.text04};
+              ${media}
             }
             .value {
               ${mixins.flexbox("row", "center", "center")};
@@ -99,6 +117,9 @@ export const LaunchpadDepositModalWrapper = styled.div`
         border: 1px solid rgba(255, 159, 10, 0.1);
         background: rgba(255, 159, 10, 0.08);
         padding: 16px;
+        ${media.mobile} {
+          padding: 12px;
+        }
         .header {
           ${mixins.flexbox("row", "center", "flex-start")}
           gap: 8px;
@@ -142,9 +163,15 @@ export const LaunchpadDepositModalWrapper = styled.div`
       width: 100%;
       button {
         height: 57px;
+        ${media.mobile} {
+          height: 41px;
+        }
         span {
           font-size: 18px;
           font-weight: 500;
+          ${media.mobile} {
+            font-size: 16px;
+          }
         }
       }
     }

@@ -6,6 +6,7 @@ import LaunchpadActiveProjectCard from "./launchpad-active-project-card/Launchpa
 import {
   ActiveProjectsCardListWrapper,
   ActiveProjectsGridWrapper,
+  BlankProjectCard,
 } from "./LaunchpadActiveProjectsCardList.styles";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
@@ -56,6 +57,13 @@ const LaunchpadActiveProjectsCardList: React.FC<
               />
             );
           })}
+        {isFetched &&
+          !isLoading &&
+          activeProjectList.length > 0 &&
+          activeProjectList.length < 4 &&
+          Array(4 - activeProjectList.length)
+            .fill(1)
+            .map((_, idx) => <BlankProjectCard key={idx} />)}
         {showLoading &&
           Array.from({ length: 4 }).map((_, index) => (
             <span

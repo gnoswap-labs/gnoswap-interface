@@ -29,18 +29,20 @@ const LaunchpadDetailContentsHeader: React.FC<
 > = ({ data, isLoading, rewardInfo }) => {
   return (
     <ContentsHeaderWrapper className="contents-header">
-      {isLoading && <span css={pulseSkeletonStyle({ w: 200, h: 20 })}></span>}
+      {isLoading && <span css={pulseSkeletonStyle({ w: 200, h: 36 })}></span>}
       {!isLoading && (
         <>
-          <div className="symbol-icon">
-            <MissingLogo
-              symbol={rewardInfo.rewardTokenSymbol}
-              url={rewardInfo.rewardTokenLogoUrl}
-              width={36}
-              mobileWidth={36}
-            />
+          <div className="project-header">
+            <div className="symbol-icon">
+              <MissingLogo
+                symbol={rewardInfo.rewardTokenSymbol}
+                url={rewardInfo.rewardTokenLogoUrl}
+                width={36}
+                mobileWidth={36}
+              />
+            </div>
+            <div className="project-name">{data.name}</div>
           </div>
-          <div className="project-name">{data.name}</div>
           {data.projectStatus && (
             <LaunchpadStatusTimeChip
               startTime={data.startTime}

@@ -197,7 +197,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
               )}
             </div>
           )}
-          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />}
+          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 17 })} />}
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
@@ -214,7 +214,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           {!isLoading && (
             <div className="participate-info-value">{claimableTimeFormat}</div>
           )}
-          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />}
+          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 17 })} />}
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
@@ -235,7 +235,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
                 : "-"}
             </div>
           )}
-          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />}
+          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 17 })} />}
         </div>
         <div className="participate-info">
           <div className="participate-info-key">Deposit Amount</div>
@@ -254,7 +254,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
                 : "-"}
             </div>
           )}
-          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 20 })} />}
+          {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 24 })} />}
         </div>
       </div>
 
