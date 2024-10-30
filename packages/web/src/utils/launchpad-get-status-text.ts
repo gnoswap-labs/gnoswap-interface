@@ -1,4 +1,5 @@
 import { PROJECT_STATUS_TYPE } from "@common/values";
+import { i18n } from "next-i18next";
 
 export const getStatusText = (
   type: PROJECT_STATUS_TYPE,
@@ -26,13 +27,16 @@ export const getStatusText = (
 
   const formatTime = (days: number, hours: number, minutes: number) => {
     if (days > 0) {
-      return `in ${days} days ${hours} hours`;
+      return i18n?.t("Launchpad:common.time.inDaysHours", { days, hours });
     } else if (hours > 0) {
-      return `in ${hours} hours ${minutes} minutes`;
+      return i18n?.t("Launchpad:common.time.inHoursMinutes", {
+        hours,
+        minutes,
+      });
     } else if (minutes > 0) {
-      return `in ${minutes} minutes`;
+      return i18n?.t("Launchpad:common.time.inMinutes");
     } else {
-      return "in 1 minute";
+      return i18n?.t("Launchpad:common.time.inOneMinute");
     }
   };
 
@@ -43,11 +47,9 @@ export const getStatusText = (
         hours: upcomingHours,
         minutes: upcomingMinutes,
       } = getTimeDifference(start, now);
-      return `Upcoming ${formatTime(
-        upcomingDays,
-        upcomingHours,
-        upcomingMinutes,
-      )}`;
+      return i18n?.t("Launchpad:common.status.upcoming", {
+        time: formatTime(upcomingDays, upcomingHours, upcomingMinutes),
+      });
     case PROJECT_STATUS_TYPE.ONGOING:
       const {
         days: ongoingDays,
@@ -57,8 +59,10 @@ export const getStatusText = (
       if (ongoingDays < 0 && ongoingHours < 0 && ongoingMinutes < 0) {
         return "Ends in 1 minute";
       }
-      return `Ends ${formatTime(ongoingDays, ongoingHours, ongoingMinutes)}`;
+      return i18n?.t("Launchpad:common.status.ongoing", {
+        time: formatTime(ongoingDays, ongoingHours, ongoingMinutes),
+      });
     case PROJECT_STATUS_TYPE.ENDED:
-      return "Ended";
+      return i18n?.t("Launchpad:common.status.ended");
   }
 };
