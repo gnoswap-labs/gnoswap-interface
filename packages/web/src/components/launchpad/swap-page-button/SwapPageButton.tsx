@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import IconChevronRight from "@components/common/icons/IconChevronRight";
 import { SwapPageButtonWrapper } from "./SwapPageButton.styles";
@@ -12,13 +13,15 @@ const SwapPageButton = ({
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
 }) => {
+  const { t } = useTranslation();
+
   return (
     <SwapPageButtonWrapper
       className={className ? className : ""}
       onClick={onClick}
       disabled={disabled}
     >
-      <span>Swap</span>
+      <span>{t("Launchpad:common.button.swapPage")}</span>
       <IconChevronRight />
     </SwapPageButtonWrapper>
   );
