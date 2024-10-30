@@ -12,11 +12,11 @@ import { isAmount } from "@common/utils/data-check-util";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
-import { capitalize } from "@utils/string-utils";
 import { toNumberFormat } from "@utils/number-utils";
 import { formatPrice } from "@utils/new-number-utils";
 import { getClaimableTime } from "@utils/launchpad-get-claimable";
 import { getDateUtcToLocal } from "@common/utils/date-util";
+import { PROJECT_STATUS_TYPE } from "@common/values";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -327,15 +327,25 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   switchNetwork,
   openLaunchpadDepositAction,
 }) => {
+  const { t } = useTranslation();
+
   const defaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,
   };
 
   if (status !== "ONGOING") {
+    const getProjectStatus = (type: PROJECT_STATUS_TYPE) => {
+      switch (type) {
+        case PROJECT_STATUS_TYPE.UPCOMING:
+          return t("Launchpad:common.upcoming");
+        case PROJECT_STATUS_TYPE.ENDED:
+          return t("Launchpad:common.ended");
+      }
+    };
     return (
       <Button
-        text={capitalize(status)}
+        text={getProjectStatus(status)}
         style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
       />
     );
