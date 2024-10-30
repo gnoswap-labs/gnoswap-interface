@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useAtom, useAtomValue } from "jotai";
 import BigNumber from "bignumber.js";
 import { cx } from "@emotion/css";
+import { useTranslation, Trans } from "react-i18next";
 
 import { LaunchpadState } from "@states/index";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
@@ -26,7 +27,6 @@ import DepositConditionsTooltip from "@components/common/launchpad-tooltip/depos
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
-import { useTranslation } from "react-i18next";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -209,10 +209,13 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
             {t("Launchpad:participate.col.rewardsClaimableOn")}{" "}
             <LaunchpadTooltip
               floatingContent={
-                <>
+                <Trans
+                  ns="Launchpad"
+                  i18nKey="common.tooltip.rewardsClaimableOn"
+                >
                   Rewards will be claimable after this <br />
                   time.
-                </>
+                </Trans>
               }
             />
           </div>
@@ -226,10 +229,10 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
             {t("Launchpad:participate.col.endDate")}{" "}
             <LaunchpadTooltip
               floatingContent={
-                <>
+                <Trans ns="Launchpad" i18nKey="common.tooltip.endDate">
                   The launchpad program you selected <br />
                   ends on this date.
-                </>
+                </Trans>
               }
             />
           </div>

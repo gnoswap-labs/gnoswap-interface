@@ -1,5 +1,5 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 
 import { ProjectSummaryDataModel } from "../../LaunchpadDetail";
 import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
@@ -29,10 +29,10 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           {t("Launchpad:projectSummary.col.totalAllocation")}
           <LaunchpadTooltip
             floatingContent={
-              <>
+              <Trans ns="Launchpad" i18nKey={"common.tooltip.totalAllocation"}>
                 The total amount of project tokens <br />
                 allocated for the GnoSwap launchpad.
-              </>
+              </Trans>
             }
           />
         </div>
@@ -50,10 +50,10 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           {t("Launchpad:projectSummary.col.participants")}{" "}
           <LaunchpadTooltip
             floatingContent={
-              <>
+              <Trans ns="Launchpad" i18nKey={"common.tooltip.participants"}>
                 The total number of participants in this <br />
                 launchpad project.
-              </>
+              </Trans>
             }
           />
         </div>
@@ -67,10 +67,10 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           {t("Launchpad:projectSummary.col.totalDeposited")}
           <LaunchpadTooltip
             floatingContent={
-              <>
+              <Trans ns="Launchpad" i18nKey={"common.tooltip.totalDeposited"}>
                 The total amount of GNS deposited into <br />
                 this launchpad project.
-              </>
+              </Trans>
             }
           />
         </div>
@@ -91,10 +91,13 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           {t("Launchpad:projectSummary.col.tokensDistributed")}
           <LaunchpadTooltip
             floatingContent={
-              <>
+              <Trans
+                ns="Launchpad"
+                i18nKey={"common.tooltip.tokensDistributed"}
+              >
                 The total amount of project tokens <br />
                 distributed to participants.
-              </>
+              </Trans>
             }
           />
         </div>

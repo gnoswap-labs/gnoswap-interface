@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Trans, useTranslation } from "react-i18next";
 
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
@@ -47,6 +48,8 @@ const LaunchpadDepositModal = ({
   setIsOpen,
   onSubmit,
 }: LaunchpadDepositModalProps) => {
+  const { t } = useTranslation();
+
   const Modal = React.useMemo(
     () => withLocalModal(LaunchpadDepositModalWrapper, setIsOpen),
     [setIsOpen],
@@ -67,23 +70,34 @@ const LaunchpadDepositModal = ({
     }
 
     onSubmit(`${projectPath}:${poolDuration}`, depositAmount);
-  }, [projectPath, isWalletConnected, depositAmount, setIsOpen, poolDuration]);
+  }, [
+    projectPath,
+    isWalletConnected,
+    depositAmount,
+    setIsOpen,
+    poolDuration,
+    onSubmit,
+  ]);
 
   return (
     <Modal>
       <div className="modal-body">
         <div className="header">
-          <h6>Confirm Deposit</h6>
+          <h6>{t("Launchpad:modal.deposit.title")}</h6>
           <div className="close-wrap" onClick={() => setIsOpen(false)}>
             <IconClose className="close-icon" />
           </div>
         </div>
         <div className="content">
           <div className="data">
-            <div className="data-header">Deposit Detail</div>
+            <div className="data-header">
+              {t("Launchpad:modal.deposit.deposit.title")}
+            </div>
             <div className="data-box">
               <div className="data-row">
-                <div className="key">Deposit Amount</div>
+                <div className="key">
+                  {t("Launchpad:modal.deposit.deposit.col.depositAmount")}
+                </div>
                 <div className="value">
                   <Image
                     src="/gns.svg"
@@ -95,7 +109,9 @@ const LaunchpadDepositModal = ({
                 </div>
               </div>
               <div className="data-row">
-                <div className="key">Pool Tier</div>
+                <div className="key">
+                  {t("Launchpad:modal.deposit.deposit.col.poolTier")}
+                </div>
                 <div className="value">
                   {poolInfo?.poolTier ? (
                     <LaunchpadPoolTierChip poolTier={poolInfo.poolTier} />
@@ -105,7 +121,9 @@ const LaunchpadDepositModal = ({
                 </div>
               </div>
               <div className="data-row">
-                <div className="key">End Date</div>
+                <div className="key">
+                  {t("Launchpad:modal.deposit.deposit.col.endDate")}
+                </div>
                 <div className="value">
                   {poolInfo?.endTime
                     ? getDateUtcToLocal(poolInfo.endTime).value
@@ -115,10 +133,14 @@ const LaunchpadDepositModal = ({
             </div>
           </div>
           <div className="data">
-            <div className="data-header">Rewards Detail</div>
+            <div className="data-header">
+              {t("Launchpad:modal.deposit.reward.title")}
+            </div>
             <div className="data-box">
               <div className="data-row">
-                <div className="key">Rewards Token</div>
+                <div className="key">
+                  {t("Launchpad:modal.deposit.reward.col.rewardsToken")}
+                </div>
                 <div className="value">
                   <MissingLogo
                     symbol={rewardInfo.rewardTokenSymbol}
@@ -130,7 +152,9 @@ const LaunchpadDepositModal = ({
                 </div>
               </div>
               <div className="data-row">
-                <div className="key">Network</div>
+                <div className="key">
+                  {t("Launchpad:modal.deposit.reward.col.network")}
+                </div>
                 <div className="value">
                   <Image
                     src={GNOT_TOKEN.logoURI}
@@ -142,7 +166,9 @@ const LaunchpadDepositModal = ({
                 </div>
               </div>
               <div className="data-row">
-                <div className="key">Rewards Claimable On</div>
+                <div className="key">
+                  {t("Launchpad:modal.deposit.reward.col.rewardsClaimableOn")}
+                </div>
                 <div className="value">
                   {claimableTime ? getDateUtcToLocal(claimableTime).value : "-"}
                 </div>
@@ -152,28 +178,31 @@ const LaunchpadDepositModal = ({
 
           <div className="note">
             <div className="header">
-              <IconWarning /> Important Notes
+              <IconWarning /> {t("Launchpad:modal.deposit.note.title")}
             </div>
             <ul className="contents">
               <li className="list">
-                Double-check to confirm that your deposit amount.
+                {t("Launchpad:modal.deposit.note.list1")}
               </li>
               <li className="list">
-                Only send supported tokens to this deposit address. <br />
-                Depositing any other cryptocurrencies to this <br />
-                launchpad will result in the loss of your funds.
+                <Trans ns="Launchpad" i18nKey={"modal.deposit.note.list2"}>
+                  Only send supported tokens to this deposit address. <br />
+                  Depositing any other cryptocurrencies to this <br />
+                  launchpad will result in the loss of your funds.
+                </Trans>
               </li>
             </ul>
             <Link href="https://docs.gnoswap.io/" target="_blank">
               <div className="learn-more">
-                Learn More <IconOpenLink size="16" fill="#ff9f0a" />
+                {t("Launchpad:modal.deposit.note.learnMore")}{" "}
+                <IconOpenLink size="16" fill="#ff9f0a" />
               </div>
             </Link>
           </div>
         </div>
         <div className="footer">
           <Button
-            text="Confirm"
+            text={t("Launchpad:modal.confirm.button")}
             onClick={confirm}
             style={{
               fullWidth: true,
