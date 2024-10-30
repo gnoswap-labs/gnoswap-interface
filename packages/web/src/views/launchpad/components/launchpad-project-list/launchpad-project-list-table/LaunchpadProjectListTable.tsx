@@ -73,7 +73,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
       </div>
       <div className="project-list-body">
         {isFetched && projects.length === 0 && (
-          <div css={noDataText}>No projects found</div>
+          <div css={noDataText}>{t("Launchpad:projects.noProjectsFound")}</div>
         )}
         {isFetched &&
           projects.length > 0 &&
