@@ -1,5 +1,6 @@
 import React from "react";
 import BigNumber from "bignumber.js";
+import { useTranslation } from "react-i18next";
 
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import {
@@ -45,6 +46,8 @@ const LaunchpadMyParticipation = ({
   claimAll,
   refetch,
 }: LaunchpadMyParticipationProps) => {
+  const { t } = useTranslation();
+
   // Modal
   const [isOpenClaimAllModal, setIsOpenClaimAllModal] = React.useState(false);
 
@@ -99,7 +102,9 @@ const LaunchpadMyParticipation = ({
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
-          <h3 className="my-participation-title">My Participation</h3>
+          <h3 className="my-participation-title">
+            {t("Launchpad:myParticipation.title")}
+          </h3>
         </div>
         <LaunchpadMyParticipationSkeleton />
       </MyParticipationWrapper>
@@ -114,7 +119,9 @@ const LaunchpadMyParticipation = ({
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
-          <h3 className="my-participation-title">My Participation</h3>
+          <h3 className="my-participation-title">
+            {t("Launchpad:myParticipation.title")}
+          </h3>
         </div>
         <LaunchpadMyParticipationUnconnected />
       </MyParticipationWrapper>
@@ -125,7 +132,9 @@ const LaunchpadMyParticipation = ({
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
-          <h3 className="my-participation-title">My Participation</h3>
+          <h3 className="my-participation-title">
+            {t("Launchpad:myParticipation.title")}
+          </h3>
           {isShowClaimAllButton && (
             <div className="claim-all-button-wrapper">
               <ClaimAllButton
@@ -164,7 +173,9 @@ const LaunchpadMyParticipation = ({
   return (
     <MyParticipationWrapper>
       <div className="my-participation-header">
-        <h3 className="my-participation-title">My Participation</h3>
+        <h3 className="my-participation-title">
+          {t("Launchpad:myParticipation.title")}
+        </h3>
       </div>
       <LaunchpadMyParticipationNoData highestApr={highestApr} />
     </MyParticipationWrapper>

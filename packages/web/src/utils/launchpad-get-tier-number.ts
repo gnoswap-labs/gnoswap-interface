@@ -15,3 +15,16 @@ export const getTierDuration = (tier: TierType) => {
       return "6 Months";
   }
 };
+
+export const getTierValue = (tier: TierType) => {
+  switch (tier) {
+    case "TIER30":
+      return 1;
+    case "TIER90":
+      return 3;
+    case "TIER180":
+      return 6;
+    default:
+      return 0;
+  }
+};

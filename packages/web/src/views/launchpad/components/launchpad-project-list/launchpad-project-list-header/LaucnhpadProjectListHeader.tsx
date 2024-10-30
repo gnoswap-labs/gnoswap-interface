@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -24,10 +25,12 @@ const LaunchpadProjectListHeader: React.FC<LaunchpadProjectListHeaderProps> = ({
   onToggleSearch,
   searchRef,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <ProjectListHeaderWrapper>
       <div className="title-container">
-        <h2>Projects</h2>
+        <h2>{t("Launchpad:projects.col.project")}</h2>
         {breakpoint !== DEVICE_TYPE.MOBILE ? (
           <SearchInput width={300} value={keyword} onChange={search} />
         ) : isViewSearchIcon ? (

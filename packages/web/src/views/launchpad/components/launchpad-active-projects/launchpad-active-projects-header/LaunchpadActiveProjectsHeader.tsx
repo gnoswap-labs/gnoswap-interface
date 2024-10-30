@@ -1,4 +1,6 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   ActiveProjectsHeaderTextWrapper,
   ActiveProjectsWrapper,
@@ -11,6 +13,8 @@ export interface LaunchpadActiveProjectsHeaderProps {
 const LaunchpadActiveProjectsHeader: React.FC<
   LaunchpadActiveProjectsHeaderProps
 > = ({ count }) => {
+  const { t } = useTranslation();
+
   const countStr = React.useMemo(() => {
     if (count === null) {
       return "-";
@@ -24,7 +28,7 @@ const LaunchpadActiveProjectsHeader: React.FC<
       <div className="header-content">
         <ActiveProjectsHeaderTextWrapper>
           <div className="launchpad-active-projects-title-wrapper">
-            <span>Active Projects</span>
+            <span>{t("Launchpad:main.activeProject.title")}</span>
             <span className="value">{countStr}</span>
           </div>
         </ActiveProjectsHeaderTextWrapper>

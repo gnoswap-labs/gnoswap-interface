@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import LaunchpadAboutProjectLinks from "./laucnhpad-about-project-links/LaunchpadAboutProjectLinks";
 import { ProjectDescriptionDataModel } from "../../LaunchpadDetail";
@@ -23,11 +24,17 @@ const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
   isLoading,
   onClickLoadMore,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <LaunchpadAboutProjectWrapper>
       <div className="header">
         {isLoading && <div css={pulseSkeletonStyle({ w: 215, h: 25 })} />}
-        {!isLoading && <h2>{`About ${data.name}`}</h2>}
+        {!isLoading && (
+          <h2>
+            {t("Launchpad:aboutProject.title", { project_name: data.name })}
+          </h2>
+        )}
       </div>
 
       <section className="main-contents">

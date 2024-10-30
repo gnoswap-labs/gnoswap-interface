@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import BigNumber from "bignumber.js";
+import { useTranslation } from "next-i18next";
 
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { ParticipateButtonProps } from "../LaunchpadMyParticipation";
@@ -35,6 +36,8 @@ const LaunchpadMyParticipationBox = ({
   rewardInfo,
   handleClickClaim,
 }: LaunchpadMyParticipationBoxProps) => {
+  const { t } = useTranslation();
+
   const [openedSelector, setOpenedSelector] = React.useState(false);
 
   const { data: blockHeight } = useGetLastedBlockHeight({
@@ -78,7 +81,9 @@ const LaunchpadMyParticipationBox = ({
 
       <div className="participation-box-data-wrapper">
         <div className="participation-box-data">
-          <div className="participation-box-data-key">Deposit Amounts</div>
+          <div className="participation-box-data-key">
+            {t("Launchpad:myParticipation.col.depositAmounts")}
+          </div>
           <div className="participation-box-data-value">
             <Image
               src="/gns.svg"
@@ -91,11 +96,15 @@ const LaunchpadMyParticipationBox = ({
           </div>
         </div>
         <div className="participation-box-data">
-          <div className="participation-box-data-key">APR</div>
+          <div className="participation-box-data-key">
+            {t("Launchpad:myParticipation.col.apr")}
+          </div>
           <div className="participation-box-data-value">{aprStr}</div>
         </div>
         <div className="participation-box-data">
-          <div className="participation-box-data-key">Claimable</div>
+          <div className="participation-box-data-key">
+            {t("Launchpad:myParticipation.col.claimableDate")}
+          </div>
           <div className="participation-box-data-value">
             <MissingLogo
               url={rewardInfo?.rewardTokenLogoUrl}
@@ -112,13 +121,17 @@ const LaunchpadMyParticipationBox = ({
         {openedSelector && (
           <>
             <div className="participation-box-data">
-              <div className="participation-box-data-key">Claimable Date</div>
+              <div className="participation-box-data-key">
+                {t("Launchpad:myParticipation.col.claimable")}
+              </div>
               <div className="participation-box-data-value">
                 {formatClaimableTime(item.claimableTime)}
               </div>
             </div>
             <div className="participation-box-data">
-              <div className="participation-box-data-key">Claimed</div>
+              <div className="participation-box-data-key">
+                {t("Launchpad:myParticipation.col.claimed")}
+              </div>
               <div className="participation-box-data-value">
                 <MissingLogo
                   url={rewardInfo?.rewardTokenLogoUrl}
@@ -133,7 +146,9 @@ const LaunchpadMyParticipationBox = ({
               </div>
             </div>
             <div className="participation-box-data">
-              <div className="participation-box-data-key">End Date</div>
+              <div className="participation-box-data-key">
+                {t("Launchpad:myParticipation.col.endDate")}
+              </div>
               <div className="participation-box-data-value">
                 {getDateUtcToLocal(item.endTime).value}
               </div>

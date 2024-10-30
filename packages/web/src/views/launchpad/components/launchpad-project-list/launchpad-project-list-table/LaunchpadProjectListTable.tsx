@@ -1,5 +1,6 @@
 import React from "react";
 import { cx } from "@emotion/css";
+import { useTranslation } from "react-i18next";
 
 import {
   noDataText,
@@ -38,6 +39,8 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
   moveRewardTokenSwapPage,
   fetchMore,
 }) => {
+  const { t } = useTranslation();
+
   const LastColumn = withIntersection(LaunchpadProjectInfo, fetchMore);
 
   const isAlignLeft = (head: TABLE_HEAD) => {
@@ -63,7 +66,7 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
               className={cx({ left: isAlignLeft(head) })}
               tdWidth={projectInfo.list[idx].width}
             >
-              <span>{head}</span>
+              <span>{t(head)}</span>
             </TableColumn>
           );
         })}

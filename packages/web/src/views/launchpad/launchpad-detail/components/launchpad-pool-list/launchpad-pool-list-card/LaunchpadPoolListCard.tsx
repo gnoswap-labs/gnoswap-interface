@@ -2,9 +2,13 @@
 import React from "react";
 import { cx } from "@emotion/css";
 import { useAtomValue } from "jotai";
+import { Trans, useTranslation } from "react-i18next";
 
 import { LaunchpadState } from "@states/index";
-import { getTierDuration } from "@utils/launchpad-get-tier-number";
+import {
+  getTierDuration,
+  getTierValue,
+} from "@utils/launchpad-get-tier-number";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 import { toNumberFormat } from "@utils/number-utils";
@@ -32,6 +36,8 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
   rewardInfo,
   selectProjectPool,
 }) => {
+  const { t } = useTranslation();
+
   const isShowConditionTooltip = useAtomValue(
     LaunchpadState.isShowConditionTooltip,
   );
@@ -64,7 +70,9 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
     >
       <div className="card-header">
         <div className="card-header-title">
-          <span className="title">Pool {idx}</span>
+          <span className="title">
+            {t("Launchpad:poolList.title", { idx: idx })}
+          </span>
           <LaunchpadPoolTierChip poolTier={data.poolTier} />
           {data.status === "ENDED" && <div className="chip">Ended</div>}
         </div>
@@ -72,27 +80,36 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
       </div>
 
       <div className="card-description">
-        Staking for {getTierDuration(data.poolTier)}. <br />
-        Rewards claimable starting <br />
-        after {getClaimableDays(data.poolTier)} days.
+        <Trans
+          ns="Launchpad"
+          i18nKey={"poolList.description"}
+          values={{
+            month: getTierValue(data.poolTier),
+            day: getClaimableDays(data.poolTier),
+          }}
+        >
+          Staking for {getTierDuration(data.poolTier)}. <br />
+          Rewards claimable starting <br />
+          after {getClaimableDays(data.poolTier)} days.
+        </Trans>
       </div>
 
       <Divider />
 
       <div className="data">
-        <div className="key">Participants</div>
+        <div className="key">{t("Launchpad:poolList.col.participants")}</div>
         <div className={cx("value", { ended: data.status === "ENDED" })}>
           {data.participant || "-"}
         </div>
       </div>
       <div className="data">
-        <div className="key">APR</div>
+        <div className="key">{t("Launchpad:poolList.col.apr")}</div>
         <div className={cx("value", { ended: data.status === "ENDED" })}>
           {aprStr}
         </div>
       </div>
       <div className="data">
-        <div className="key">Total Deposits</div>
+        <div className="key">{t("Launchpad:poolList.col.totalDeposits")}</div>
         <div className={cx("value", { ended: data.status === "ENDED" })}>
           <img
             className="token-image"
@@ -108,7 +125,9 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
         </div>
       </div>
       <div className="data">
-        <div className="key">Token Distributed</div>
+        <div className="key">
+          {t("Launchpad:poolList.col.tokensDistributed")}
+        </div>
         <div className={cx("value", { ended: data.status === "ENDED" })}>
           <MissingLogo
             symbol={rewardInfo.rewardTokenSymbol}

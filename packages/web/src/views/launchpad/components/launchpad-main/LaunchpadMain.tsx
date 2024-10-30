@@ -13,6 +13,7 @@ import { Divider } from "@components/common/divider/divider";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { ThemeKeys } from "@styles/ThemeTypes";
 import { toNumberFormat } from "@utils/number-utils";
+import { Trans, useTranslation } from "react-i18next";
 
 interface LaunchpadMainProps {
   data?: LaunchpadProjectSummaryModel;
@@ -30,6 +31,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
   themeKey,
   icon,
 }) => {
+  const { t } = useTranslation();
   const defaultStyle: ButtonStyleProps = {
     textColor: "text32",
     bgColor: themeKey === "dark" ? "border02" : "background04",
@@ -40,17 +42,20 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
       <section className="launchpad-section">
         <div className="launchpad-title-container">
           {breakpoint !== DEVICE_TYPE.MOBILE && (
-            <h3 className="title">GnoSwap Launchpad</h3>
+            <h3 className="title">{t("Launchpad:main.title")}</h3>
           )}
           <h4 className="sub-title">
-            Where Pioneers and Supporters United — Unveil Tomorrow&apos;s <br />
-            Breakthroughs on gno.land, Powered by $GNS.
+            <Trans ns="Launchpad" i18nKey={"main.subTitle"}>
+              Where Pioneers and Supporters United — Unveil Tomorrow&apos;s
+              <br />
+              Breakthroughs on gno.land, Powered by $GNS.
+            </Trans>
           </h4>
         </div>
         <div className="launchpad-button-wrapper">
           <Link href={EXT_URL.DOCS.ROOT} target="_blank">
             <Button
-              text={"How to Participate"}
+              text={t("Launchpad:main.button.howToParticipate")}
               style={defaultStyle}
               rightIcon={
                 breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow />
@@ -59,7 +64,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
           </Link>
           <Link href={EXT_URL.DOCS.ROOT} target="_blank">
             <Button
-              text={"Submit a Project"}
+              text={t("Launchpad:main.button.submitProject")}
               style={defaultStyle}
               rightIcon={
                 breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow />
@@ -82,7 +87,9 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
                   : "-"}
               </span>
             )}
-            <span className="launchpad-data-key">Total Participants</span>
+            <span className="launchpad-data-key">
+              {t("Launchpad:main.total.participants")}
+            </span>
           </div>
           <div className="launchpad-data-list">
             {isLoading && (
@@ -98,7 +105,9 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
                   : "-"}
               </span>
             )}
-            <span className="launchpad-data-key">Total Deposited GNS</span>
+            <span className="launchpad-data-key">
+              {t("Launchpad:main.total.deposited")}
+            </span>
           </div>
           <div className="launchpad-data-list">
             {isLoading && (
@@ -113,14 +122,16 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
                   : "-"}
               </span>
             )}
-            <span className="launchpad-data-key">Total Distributed Amount</span>
+            <span className="launchpad-data-key">
+              {t("Launchpad:main.total.distributed")}
+            </span>
           </div>
         </div>
       </section>
       <div className="launchpad-image-wrapper">
         {breakpoint === DEVICE_TYPE.MOBILE && (
           <div className="launchpad-mobile-title-wrapper">
-            <h3 className="mobile-title">GnoSwap Launchpad</h3>
+            <h3 className="mobile-title">{t("Launchpad:main.title")}</h3>
           </div>
         )}
         {icon}

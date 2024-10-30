@@ -1,5 +1,6 @@
 import React from "react";
 import { useAtom } from "jotai";
+import { useTranslation } from "react-i18next";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGetLaunchpadProjectDetails } from "@query/launchpad/use-get-launchpad-project-details";
@@ -56,6 +57,8 @@ export interface ProjectRewardInfoModel {
 }
 
 const LaunchpadDetail: React.FC = () => {
+  const { t } = useTranslation();
+
   const [selectPoolId, setSelectPoolId] = useAtom(
     LaunchpadState.selectLaunchpadPool,
   );
@@ -77,7 +80,7 @@ const LaunchpadDetail: React.FC = () => {
   const breadcrumbsSteps = React.useMemo(() => {
     return [
       {
-        title: "Launchpad",
+        title: t("Launchpad:launchpad"),
         path: "/launchpad",
       },
       {
@@ -85,7 +88,7 @@ const LaunchpadDetail: React.FC = () => {
         path: "",
       },
     ];
-  }, [projectDetailData?.name]);
+  }, [projectDetailData?.name, t]);
 
   /**
    * @dev Launchpad Detail Contents-header section data

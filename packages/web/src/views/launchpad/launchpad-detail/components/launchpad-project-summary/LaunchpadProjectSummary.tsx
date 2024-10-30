@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { ProjectSummaryDataModel } from "../../LaunchpadDetail";
 import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
@@ -19,11 +20,13 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
   tokenSymbol,
   isLoading,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <LaunchpadProjectSummaryWrapper>
       <div className="card border">
         <div className="key">
-          Total Allocation
+          {t("Launchpad:projectSummary.col.totalAllocation")}
           <LaunchpadTooltip
             floatingContent={
               <>
@@ -44,7 +47,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
       </div>
       <div className="card border">
         <div className="key">
-          Participants{" "}
+          {t("Launchpad:projectSummary.col.participants")}{" "}
           <LaunchpadTooltip
             floatingContent={
               <>
@@ -61,7 +64,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
       </div>
       <div className="card border">
         <div className="key">
-          Total Deposited
+          {t("Launchpad:projectSummary.col.totalDeposited")}
           <LaunchpadTooltip
             floatingContent={
               <>
@@ -85,7 +88,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
       </div>
       <div className="card">
         <div className="key">
-          Tokens Distributed
+          {t("Launchpad:projectSummary.col.tokensDistributed")}
           <LaunchpadTooltip
             floatingContent={
               <>

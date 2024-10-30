@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -31,13 +32,14 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
   clickHere,
   footer,
 }) => {
+  const { t } = useTranslation();
   return (
     <LaunchpadDetailLayoutWrapper>
       {header}
       <main>
         <section className="header-section">
           <div className="header">
-            <h3 className="title">Launchpad</h3>
+            <h3 className="title">{t("Launchpad:detail.title")}</h3>
             <div>{breadcrumbs}</div>
           </div>
         </section>

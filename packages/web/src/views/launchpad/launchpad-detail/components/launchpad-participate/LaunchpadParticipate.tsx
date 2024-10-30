@@ -26,6 +26,7 @@ import DepositConditionsTooltip from "@components/common/launchpad-tooltip/depos
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
+import { useTranslation } from "react-i18next";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -51,6 +52,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   depositGNS,
   refetch,
 }) => {
+  const { t } = useTranslation();
+
   // Global State
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
 
@@ -148,7 +151,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   return (
     <LaunchpadParticipateWrapper>
       <div className="participate-header">
-        <div>Participate</div>
+        <div>{t("Launchpad:participate.title")}</div>
         {isShowConditionTooltip && <DepositConditionsTooltip />}
       </div>
 
@@ -187,7 +190,9 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
       <div className="participate-info-wrapper">
         <div className="participate-info">
-          <div className="participate-info-key">Pool Tier</div>
+          <div className="participate-info-key">
+            {t("Launchpad:participate.col.poolTier")}
+          </div>
           {!isLoading && (
             <div className="participate-info-value">
               {poolInfo?.poolTier ? (
@@ -201,7 +206,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
-            Rewards Claimable On{" "}
+            {t("Launchpad:participate.col.rewardsClaimableOn")}{" "}
             <LaunchpadTooltip
               floatingContent={
                 <>
@@ -218,7 +223,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
-            End Date{" "}
+            {t("Launchpad:participate.col.endDate")}{" "}
             <LaunchpadTooltip
               floatingContent={
                 <>
@@ -238,7 +243,9 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 17 })} />}
         </div>
         <div className="participate-info">
-          <div className="participate-info-key">Deposit Amount</div>
+          <div className="participate-info-key">
+            {t("Launchpad:participate.col.depositAmount")}
+          </div>
           {!isLoading && (
             <div className="participate-info-value">
               <Image
