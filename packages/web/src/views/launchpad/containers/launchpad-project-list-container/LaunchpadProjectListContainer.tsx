@@ -38,15 +38,6 @@ const LaunchpadProjectListContainer: React.FC = () => {
     return [];
   }, [projects]);
 
-  const STATUS_PRIORITY = React.useMemo(() => {
-    return {
-      ONGOING: 0,
-      UPCOMING: 1,
-      ENDED: 2,
-      NONE: 3,
-    };
-  }, []);
-
   const filterProjectsByKeyword = React.useCallback(
     (projects: LaunchpadProjectModel[], keyword: string) => {
       const lowerCaseKeyword = keyword.toLowerCase();
@@ -59,25 +50,12 @@ const LaunchpadProjectListContainer: React.FC = () => {
     [],
   );
 
-  const sortProjectsByStatus = React.useCallback(
-    (a: LaunchpadProjectModel, b: LaunchpadProjectModel) => {
-      if (STATUS_PRIORITY[a.status] !== STATUS_PRIORITY[b.status]) {
-        return STATUS_PRIORITY[a.status] - STATUS_PRIORITY[b.status];
-      }
-
-      const aStartTime = new Date(a.pools[0]?.startTime || 0).getTime();
-      const bStartTime = new Date(b.pools[0]?.startTime || 0).getTime();
-      return aStartTime - bStartTime;
-    },
-    [STATUS_PRIORITY],
-  );
-
   const fixedProjects = React.useMemo(() => {
     if (!projectList || projectList.length === 0) return [];
 
     const filteredProjects = filterProjectsByKeyword(projectList, keyword);
-    return filteredProjects.sort(sortProjectsByStatus);
-  }, [projectList, keyword, filterProjectsByKeyword, sortProjectsByStatus]);
+    return filteredProjects;
+  }, [projectList, keyword, filterProjectsByKeyword]);
 
   const moveProjectDetail = React.useCallback(
     (projectId: string) => {
