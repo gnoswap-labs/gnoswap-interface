@@ -1,5 +1,3 @@
-import { i18n } from "next-i18next";
-
 export type TierType = "TIER30" | "TIER90" | "TIER180" | null | undefined;
 
 export const getTierNumber = (tier: TierType): number => {
@@ -7,14 +5,17 @@ export const getTierNumber = (tier: TierType): number => {
   return parseInt(tier.replace("TIER", ""));
 };
 
-export const getTierDuration = (tier: TierType) => {
+export const getTierDuration = (
+  tier: TierType,
+  format: (key: string, options?: { [key: string]: string | number }) => string,
+) => {
   switch (tier) {
     case "TIER30":
-      return i18n?.t("Launchpad:common.tierDuration.1month");
+      return format("Launchpad:common.tierDuration.1month");
     case "TIER90":
-      return i18n?.t("Launchpad:common.tierDuration.3months");
+      return format("Launchpad:common.tierDuration.3months");
     case "TIER180":
-      return i18n?.t("Launchpad:common.tierDuration.6months");
+      return format("Launchpad:common.tierDuration.6months");
   }
 };
 

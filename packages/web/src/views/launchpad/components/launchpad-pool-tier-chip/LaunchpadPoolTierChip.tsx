@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { TierType } from "@utils/launchpad-get-tier-number";
 import { getTierDuration } from "@utils/launchpad-get-tier-number";
@@ -10,7 +11,11 @@ interface LaunchpadPoolTierChipProps {
 }
 
 const LaunchpadPoolTierChip = ({ poolTier }: LaunchpadPoolTierChipProps) => {
-  return <PoolTierChipWrapper>{getTierDuration(poolTier)}</PoolTierChipWrapper>;
+  const { t } = useTranslation();
+
+  return (
+    <PoolTierChipWrapper>{getTierDuration(poolTier, t)}</PoolTierChipWrapper>
+  );
 };
 
 export default LaunchpadPoolTierChip;

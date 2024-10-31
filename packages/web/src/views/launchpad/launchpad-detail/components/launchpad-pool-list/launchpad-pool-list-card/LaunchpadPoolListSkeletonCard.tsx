@@ -1,5 +1,6 @@
 import { getTierDuration, TierType } from "@utils/launchpad-get-tier-number";
 import { getClaimableDays } from "@utils/launchpad-get-claimable";
+import { useTranslation } from "react-i18next";
 
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
 import { Divider } from "@components/common/select-token/SelectToken.styles";
@@ -7,6 +8,8 @@ import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-ti
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 export const LaunchpadPoolListSkeletonCard = ({ idx }: { idx: number }) => {
+  const { t } = useTranslation();
+
   const data = [
     { poolTier: "TIER180", status: "ONGOING", claimableDays: 14 },
     { poolTier: "TIER90", status: "ONGOING", claimableDays: 7 },
@@ -23,7 +26,7 @@ export const LaunchpadPoolListSkeletonCard = ({ idx }: { idx: number }) => {
       </div>
 
       <div className="card-description">
-        Staking for {getTierDuration(data[idx].poolTier as TierType)}. <br />
+        Staking for {getTierDuration(data[idx].poolTier as TierType, t)}. <br />
         Rewards claimable starting <br />
         after {getClaimableDays(data[idx].poolTier)} days.
       </div>

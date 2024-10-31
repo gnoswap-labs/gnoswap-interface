@@ -92,7 +92,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
             day: getClaimableDays(data.poolTier),
           }}
         >
-          Staking for {getTierDuration(data.poolTier)}. <br />
+          Staking for {getTierDuration(data.poolTier, t)}. <br />
           Rewards claimable starting <br />
           after {getClaimableDays(data.poolTier)} days.
         </Trans>
