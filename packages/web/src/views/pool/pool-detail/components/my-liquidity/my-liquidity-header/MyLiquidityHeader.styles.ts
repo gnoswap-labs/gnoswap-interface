@@ -88,6 +88,9 @@ export const HeaderWrapper = styled.div`
     }
     .full-width {
       width: 100%;
+      ${media.mobile} {
+        width: 50%;
+      }
     }
   }
 `;
