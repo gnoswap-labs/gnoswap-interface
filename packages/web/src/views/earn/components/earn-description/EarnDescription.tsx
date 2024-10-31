@@ -62,14 +62,14 @@ const EarnDescription: React.FC<EarnDescriptionProps> = ({
                 apr: `${BigNumber(highestAprInfo.apr).toFormat(0)}%`,
               }}
             />
+            <a
+              className="link-wrapper"
+              href={`/earn/pool?poolPath=${highestAprInfo.path}#staking`}
+            >
+              {t("Earn:earnInstruction.stake.goto")}
+              <IconArrowRight />
+            </a>
           </div>
-          <a
-            className="link-wrapper"
-            href={`/earn/pool?poolPath=${highestAprInfo.path}#staking`}
-          >
-            {t("Earn:earnInstruction.stake.goto")}
-            <IconArrowRight />
-          </a>
         </div>
       </div>
 
