@@ -34,8 +34,8 @@ export const LaunchpadDetailLayoutWrapper = styled.div`
     width: 100%;
     gap: 20px;
     ${media.tablet} {
-      ${mixins.flexbox("column", "flex-start", "flex-start")};
-      gap: 8px;
+      /* ${mixins.flexbox("column", "flex-start", "flex-start")}; */
+      gap: 10px;
     }
     .title {
       color: ${({ theme }) => theme.color.text02};

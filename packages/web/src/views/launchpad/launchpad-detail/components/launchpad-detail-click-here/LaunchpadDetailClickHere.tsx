@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 import IconArrowRight from "@components/common/icons/IconArrowRight";
 import {
@@ -8,12 +9,14 @@ import {
 } from "./LaunchpadDetailClickHere.styles";
 
 const LaunchpadDetailClickHere = () => {
+  const { t } = useTranslation();
+
   return (
     <DetailClickHereWrapper>
       <LinkButton>
-        <span>Swap GNS to participate in the launchpad.</span>
+        <span>{t("Launchpad:clickHere.text")}</span>
         <Link href="/swap?to=gno.land/r/gnoswap/v2/gns">
-          Click here <IconArrowRight />
+          {t("Launchpad:clickHere.button")} <IconArrowRight />
         </Link>
       </LinkButton>
     </DetailClickHereWrapper>

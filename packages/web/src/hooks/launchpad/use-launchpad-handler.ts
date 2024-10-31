@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { XGNS_TOKEN_PATH } from "@constants/environment.constant";
 import { GNS_TOKEN } from "@common/values/token-constant";
@@ -19,7 +20,6 @@ import { LaunchpadState } from "@states/index";
 import { formatPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
-import { useTranslation } from "react-i18next";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -367,18 +367,18 @@ export const useLaunchpadHandler = () => {
       case "SWITCH_NETWORK":
         return t("Swap:swapButton.switchNetwork");
       case "ENTER_AMOUNT":
-        return "Enter Amount";
+        return t("Launchpad:common.button.enterAmount");
       case "AMOUNT_TOO_LOW":
-        return "Amount Too Low";
+        return t("Launchpad:common.button.amountTooLow");
       case "INSUFFICIENT_BALANCE":
-        return "Insufficient Balance";
+        return t("Launchpad:common.button.insufficientBalance");
       case "SELECT_POOL":
-        return "Select Pool";
+        return t("Launchpad:common.button.selectPool");
       case "IS_NOT_DEPOSIT_ALLOWED":
-        return "Conditions Aren't Met";
+        return t("Launchpad:common.button.conditionsArentMet");
       case "DEPOSIT":
       default:
-        return "Deposit Now";
+        return t("Launchpad:common.button.deposit");
     }
   }, [depositButtonState, t]);
 

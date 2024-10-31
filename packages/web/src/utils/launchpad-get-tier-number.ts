@@ -5,13 +5,29 @@ export const getTierNumber = (tier: TierType): number => {
   return parseInt(tier.replace("TIER", ""));
 };
 
-export const getTierDuration = (tier: TierType) => {
+export const getTierDuration = (
+  tier: TierType,
+  format: (key: string, options?: { [key: string]: string | number }) => string,
+) => {
   switch (tier) {
     case "TIER30":
-      return "1 Month";
+      return format("Launchpad:common.tierDuration.1month");
     case "TIER90":
-      return "3 Months";
+      return format("Launchpad:common.tierDuration.3months");
     case "TIER180":
-      return "6 Months";
+      return format("Launchpad:common.tierDuration.6months");
+  }
+};
+
+export const getTierValue = (tier: TierType) => {
+  switch (tier) {
+    case "TIER30":
+      return 1;
+    case "TIER90":
+      return 3;
+    case "TIER180":
+      return 6;
+    default:
+      return 0;
   }
 };

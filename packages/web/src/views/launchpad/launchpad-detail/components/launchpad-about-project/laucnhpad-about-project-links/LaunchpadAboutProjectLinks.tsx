@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 import { ProjectLinksObject } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 import { capitalize } from "@utils/string-utils";
@@ -21,6 +22,8 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
   path,
   data,
 }) => {
+  const { t } = useTranslation();
+
   const excludedLinks = ["rewardTokenLogo"];
   const { getRealmUrl } = useGnoscanUrl();
   const poolPath = removePoolPathUrl(path);
@@ -28,7 +31,7 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
   return (
     <div css={wrapper}>
       <div className="contract-path">
-        <h3>Realm (Contract) Path</h3>
+        <h3>{t("Launchpad:aboutProject.realmPath")}</h3>
         {!isLoading && (
           <Link href={getRealmUrl(poolPath)} target="_blank">
             <button>
@@ -43,7 +46,7 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
       </div>
 
       <div className="link">
-        <h3>Links</h3>
+        <h3>{t("Launchpad:aboutProject.links")}</h3>
         {!isLoading && (
           <div className="group-button">
             {Object.entries(data)

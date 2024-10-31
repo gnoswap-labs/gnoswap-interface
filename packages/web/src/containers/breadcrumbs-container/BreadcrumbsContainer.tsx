@@ -7,7 +7,7 @@ import { ITokenResponse } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTranslation } from "react-i18next";
 
-export type BreadcrumbTypes = "TOKEN_SYMBOL" | "OTHERs";
+export type BreadcrumbTypes = "TOKEN_SYMBOL" | "LAUNCHPAD" | "OTHERs";
 export interface Steps {
   title: string;
   path?: string;

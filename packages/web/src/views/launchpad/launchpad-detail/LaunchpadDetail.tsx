@@ -1,5 +1,6 @@
 import React from "react";
 import { useAtom } from "jotai";
+import { useTranslation } from "react-i18next";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGetLaunchpadProjectDetails } from "@query/launchpad/use-get-launchpad-project-details";
@@ -11,7 +12,9 @@ import { useTokenData } from "@hooks/token/use-token-data";
 
 import LaunchpadDetailLayout from "./LaunchpadDetailLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
+import BreadcrumbsContainer, {
+  BreadcrumbTypes,
+} from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import LaunchpadDetailContentsHeaderContainer from "./containers/launchpad-detail-contents-header-container/LaunchpadDetailContentsHeaderContainer";
 import LaunchpadPoolListContainer from "./containers/launchpad-pool-list-container/LaunchpadPoolListContainer";
 import LaunchpadProjectSummaryContainer from "./containers/launchpad-project-summary-container/LaunchpadProjectSummaryContainer";
@@ -21,7 +24,6 @@ import LaunchpadMyParticipationContainer from "./containers/launchpad-my-partici
 import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
 import Footer from "@components/common/footer/Footer";
 import { useWindowSize } from "@hooks/common/use-window-size";
-
 export interface ProjectSummaryDataModel {
   totalAllocation: number;
   totalParticipants: number;
@@ -56,6 +58,8 @@ export interface ProjectRewardInfoModel {
 }
 
 const LaunchpadDetail: React.FC = () => {
+  const { t } = useTranslation();
+
   const [selectPoolId, setSelectPoolId] = useAtom(
     LaunchpadState.selectLaunchpadPool,
   );
@@ -77,15 +81,18 @@ const LaunchpadDetail: React.FC = () => {
   const breadcrumbsSteps = React.useMemo(() => {
     return [
       {
-        title: "Launchpad",
+        title: t("Launchpad:launchpad"),
         path: "/launchpad",
+        options: {
+          type: "LAUNCHPAD" as BreadcrumbTypes,
+        },
       },
       {
         title: `${projectDetailData?.name}` || "-",
         path: "",
       },
     ];
-  }, [projectDetailData?.name]);
+  }, [projectDetailData?.name, t]);
 
   /**
    * @dev Launchpad Detail Contents-header section data
@@ -211,7 +218,6 @@ const LaunchpadDetail: React.FC = () => {
    * @dev Refetchs
    */
   const refetchProjectDetail = async () => {
-    setSelectPoolId(null);
     await projectDetailRefetch();
     await myParticipationRefetch();
     await updateBalances();
@@ -235,6 +241,7 @@ const LaunchpadDetail: React.FC = () => {
     <LaunchpadDetailLayout
       breakpoint={breakpoint}
       header={<HeaderContainer />}
+      status={projectDetailData?.status || ""}
       breadcrumbs={
         <BreadcrumbsContainer
           listBreadcrumb={breadcrumbsSteps}

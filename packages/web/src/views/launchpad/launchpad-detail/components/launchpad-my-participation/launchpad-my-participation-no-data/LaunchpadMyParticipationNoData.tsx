@@ -1,5 +1,6 @@
-import Image from "next/image";
 import React from "react";
+import Image from "next/image";
+import { useTranslation, Trans } from "react-i18next";
 
 import { ParticipationNoDataWrapper } from "./LaunchpadMyParticipationNoData.styles";
 
@@ -10,6 +11,8 @@ interface LaunchpadMyParticipationNoDataProps {
 const LaunchpadMyParticipationNoData = ({
   highestApr,
 }: LaunchpadMyParticipationNoDataProps) => {
+  const { t } = useTranslation();
+
   return (
     <ParticipationNoDataWrapper>
       <Image
@@ -21,11 +24,21 @@ const LaunchpadMyParticipationNoData = ({
       />
       <div className="banner-text">
         <div className="banner-text-description">
-          Deposit <span>GNS</span>
+          <Trans
+            ns="Launchpad"
+            i18nKey="myParticipation.nodata.text1"
+            components={{ span: <span /> }}
+          />
         </div>
-        <div className="banner-text-description">now to earn up to</div>
         <div className="banner-text-description">
-          <span>{highestApr || 0}% APR</span>
+          {t("Launchpad:myParticipation.nodata.text2")}
+        </div>
+        <div className="banner-text-description">
+          <span>
+            {t("Launchpad:myParticipation.nodata.text3", {
+              apr: highestApr.toLocaleString() || 0,
+            })}
+          </span>
         </div>
       </div>
     </ParticipationNoDataWrapper>

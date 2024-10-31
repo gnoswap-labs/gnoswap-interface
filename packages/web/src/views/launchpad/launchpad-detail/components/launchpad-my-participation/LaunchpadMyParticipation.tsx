@@ -1,5 +1,6 @@
 import React from "react";
 import BigNumber from "bignumber.js";
+import { useTranslation } from "react-i18next";
 
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
 import {
@@ -45,6 +46,8 @@ const LaunchpadMyParticipation = ({
   claimAll,
   refetch,
 }: LaunchpadMyParticipationProps) => {
+  const { t } = useTranslation();
+
   // Modal
   const [isOpenClaimAllModal, setIsOpenClaimAllModal] = React.useState(false);
 
@@ -99,7 +102,9 @@ const LaunchpadMyParticipation = ({
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
-          <h3 className="my-participation-title">My Participation</h3>
+          <h3 className="my-participation-title">
+            {t("Launchpad:myParticipation.title")}
+          </h3>
         </div>
         <LaunchpadMyParticipationSkeleton />
       </MyParticipationWrapper>
@@ -114,7 +119,9 @@ const LaunchpadMyParticipation = ({
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
-          <h3 className="my-participation-title">My Participation</h3>
+          <h3 className="my-participation-title">
+            {t("Launchpad:myParticipation.title")}
+          </h3>
         </div>
         <LaunchpadMyParticipationUnconnected />
       </MyParticipationWrapper>
@@ -125,10 +132,13 @@ const LaunchpadMyParticipation = ({
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
-          <h3 className="my-participation-title">My Participation</h3>
+          <h3 className="my-participation-title">
+            {t("Launchpad:myParticipation.title")}
+          </h3>
           {isShowClaimAllButton && (
             <div className="claim-all-button-wrapper">
               <ClaimAllButton
+                text={t("Launchpad:common.button.claimAll")}
                 onClick={() => {
                   setIsOpenClaimAllModal(true);
                 }}
@@ -164,7 +174,9 @@ const LaunchpadMyParticipation = ({
   return (
     <MyParticipationWrapper>
       <div className="my-participation-header">
-        <h3 className="my-participation-title">My Participation</h3>
+        <h3 className="my-participation-title">
+          {t("Launchpad:myParticipation.title")}
+        </h3>
       </div>
       <LaunchpadMyParticipationNoData highestApr={highestApr} />
     </MyParticipationWrapper>
@@ -172,19 +184,22 @@ const LaunchpadMyParticipation = ({
 };
 
 export interface ParticipateButtonProps {
-  onClick: () => void;
+  text: string;
   disabled?: boolean;
+
+  onClick: () => void;
 }
 
-const ClaimAllButton: React.FC<ParticipateButtonProps> = ({ onClick }) => {
+const ClaimAllButton: React.FC<ParticipateButtonProps> = ({
+  onClick,
+  text,
+}) => {
   const claimDefaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,
   };
 
-  return (
-    <Button text="Claim All" style={claimDefaultStyle} onClick={onClick} />
-  );
+  return <Button text={text} style={claimDefaultStyle} onClick={onClick} />;
 };
 
 export default LaunchpadMyParticipation;

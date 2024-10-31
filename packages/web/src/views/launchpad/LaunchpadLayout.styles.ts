@@ -70,7 +70,7 @@ export const LaunchpadLayoutWrapper = styled.div`
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
       width: 100%;
-      padding: 24px 16px;
+      padding: 24px 0px;
       gap: 24px;
     }
   }
@@ -119,7 +119,7 @@ export const LaunchpadLayoutWrapper = styled.div`
       }
       ${media.mobile} {
         font-size: clamp(1rem, 0.9451rem + 0.2439vw, 1.125rem);
-        font-weight: 400;
+        font-weight: 500;
         line-height: 20.8px;
         text-align: center;
         white-space: normal;
@@ -142,7 +142,8 @@ export const LaunchpadLayoutWrapper = styled.div`
       button {
         ${mixins.flexbox("row", "flex-start", "center")};
         height: 100%;
-        color: var(--Global-Color-White, #fff);
+        color: ${({ theme }) =>
+          theme.themeKey === "dark" ? theme.color.text02 : "#FFF"};
         gap: 8px;
         border-radius: 8px;
         padding: 16px 18.5px;
@@ -165,6 +166,10 @@ export const LaunchpadLayoutWrapper = styled.div`
             font-size: clamp(0.875rem, 0.8201rem + 0.2439vw, 1rem);
           }
         }
+        * {
+          fill: ${({ theme }) =>
+            theme.themeKey === "dark" ? theme.color.text02 : "#FFF"};
+        }
       }
     }
   }
@@ -178,9 +183,13 @@ export const LaunchpadLayoutWrapper = styled.div`
       gap: 24px;
     }
     .launchpad-data-list {
-      ${mixins.flexbox("column", "flex-start", "center")};
+      ${mixins.flexbox("column", "flex-start", "space-between")};
       gap: 6px;
+      height: 51px;
       color: var(--Global-Color-White, #fff);
+      ${media.mobile} {
+        height: 44px;
+      }
       .launchpad-data-key {
         color: ${({ theme }) => theme.color.text04};
         ${media.mobile} {
@@ -190,7 +199,8 @@ export const LaunchpadLayoutWrapper = styled.div`
       .launchpad-data-value {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 4px;
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) =>
+          theme.themeKey === "dark" ? "#E0E8F4" : theme.color.text03};
         ${media.mobile} {
           font-size: clamp(0.875rem, 0.8201rem + 0.2439vw, 1rem);
         }
@@ -224,7 +234,7 @@ export const LaunchpadLayoutWrapper = styled.div`
       color: ${({ theme }) => theme.color.text02};
     }
     font-size: clamp(1.9375rem, 1.471rem + 2.0732vw, 3rem);
-    font-weight: 600;
+    font-weight: 700;
     text-align: center;
   }
 

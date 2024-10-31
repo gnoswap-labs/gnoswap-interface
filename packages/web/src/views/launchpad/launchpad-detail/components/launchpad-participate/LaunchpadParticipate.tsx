@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useAtom, useAtomValue } from "jotai";
 import BigNumber from "bignumber.js";
 import { cx } from "@emotion/css";
+import { useTranslation, Trans } from "react-i18next";
 
 import { LaunchpadState } from "@states/index";
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
@@ -11,11 +12,11 @@ import { isAmount } from "@common/utils/data-check-util";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
-import { capitalize } from "@utils/string-utils";
 import { toNumberFormat } from "@utils/number-utils";
 import { formatPrice } from "@utils/new-number-utils";
 import { getClaimableTime } from "@utils/launchpad-get-claimable";
 import { getDateUtcToLocal } from "@common/utils/date-util";
+import { PROJECT_STATUS_TYPE } from "@common/values";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -51,6 +52,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   depositGNS,
   refetch,
 }) => {
+  const { t } = useTranslation();
+
   // Global State
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
 
@@ -145,10 +148,54 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     depositConditions.length,
   ]);
 
+  const buttonRender = React.useCallback(() => {
+    if (status === "UPCOMING") {
+      return (
+        <div className="participate-button-wrapper">
+          <DepositButton
+            isAvailableDeposit={isAvailableDeposit}
+            isSwitchNetwork={isSwitchNetwork}
+            isWalletConnected={isWalletConnected}
+            status={status}
+            isDepositAllowed={isDepositAllowed}
+            text={depositButtonText}
+            openConnectWallet={openConnectWallet}
+            switchNetwork={switchNetwork}
+            openLaunchpadDepositAction={() => {
+              setIsOpenDepositConfirmModal(true);
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (isLoading) {
+      return <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />;
+    }
+
+    return (
+      <div className="participate-button-wrapper">
+        <DepositButton
+          isAvailableDeposit={isAvailableDeposit}
+          isSwitchNetwork={isSwitchNetwork}
+          isWalletConnected={isWalletConnected}
+          status={status}
+          isDepositAllowed={isDepositAllowed}
+          text={depositButtonText}
+          openConnectWallet={openConnectWallet}
+          switchNetwork={switchNetwork}
+          openLaunchpadDepositAction={() => {
+            setIsOpenDepositConfirmModal(true);
+          }}
+        />
+      </div>
+    );
+  }, [status, isLoading, depositButtonText]);
+
   return (
     <LaunchpadParticipateWrapper>
       <div className="participate-header">
-        <div>Participate</div>
+        <div>{t("Launchpad:participate.title")}</div>
         {isShowConditionTooltip && <DepositConditionsTooltip />}
       </div>
 
@@ -177,7 +224,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
             })}
             onClick={handleAutoFillMaxAmount}
           >
-            Balance:{" "}
+            {t("Launchpad:participate.balance")}:{" "}
             {currentGnsBalance ? toNumberFormat(currentGnsBalance, 2) : "-"}
           </span>
         </div>
@@ -187,7 +234,9 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
       <div className="participate-info-wrapper">
         <div className="participate-info">
-          <div className="participate-info-key">Pool Tier</div>
+          <div className="participate-info-key">
+            {t("Launchpad:participate.col.poolTier")}
+          </div>
           {!isLoading && (
             <div className="participate-info-value">
               {poolInfo?.poolTier ? (
@@ -201,13 +250,16 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
-            Rewards Claimable On{" "}
+            {t("Launchpad:participate.col.rewardsClaimableOn")}{" "}
             <LaunchpadTooltip
               floatingContent={
-                <>
+                <Trans
+                  ns="Launchpad"
+                  i18nKey="common.tooltip.rewardsClaimableOn"
+                >
                   Rewards will be claimable after this <br />
                   time.
-                </>
+                </Trans>
               }
             />
           </div>
@@ -218,13 +270,14 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         </div>
         <div className="participate-info">
           <div className="participate-info-key">
-            End Date{" "}
+            {t("Launchpad:participate.col.endDate")}{" "}
             <LaunchpadTooltip
               floatingContent={
-                <>
-                  The launchpad program you selected <br />
-                  ends on this date.
-                </>
+                <Trans
+                  ns="Launchpad"
+                  components={{ br: <br /> }}
+                  i18nKey="common.tooltip.endDate"
+                />
               }
             />
           </div>
@@ -238,7 +291,9 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 17 })} />}
         </div>
         <div className="participate-info">
-          <div className="participate-info-key">Deposit Amount</div>
+          <div className="participate-info-key">
+            {t("Launchpad:participate.col.depositAmount")}
+          </div>
           {!isLoading && (
             <div className="participate-info-value">
               <Image
@@ -258,24 +313,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         </div>
       </div>
 
-      {!isLoading && (
-        <div className="participate-button-wrapper">
-          <DepositButton
-            isAvailableDeposit={isAvailableDeposit}
-            isSwitchNetwork={isSwitchNetwork}
-            isWalletConnected={isWalletConnected}
-            status={status}
-            isDepositAllowed={isDepositAllowed}
-            text={depositButtonText}
-            openConnectWallet={openConnectWallet}
-            switchNetwork={switchNetwork}
-            openLaunchpadDepositAction={() => {
-              setIsOpenDepositConfirmModal(true);
-            }}
-          />
-        </div>
-      )}
-      {isLoading && <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />}
+      {buttonRender()}
 
       {isOpenDepositConfirmModal && (
         <LaunchpadDepositModal
@@ -317,15 +355,25 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   switchNetwork,
   openLaunchpadDepositAction,
 }) => {
+  const { t } = useTranslation();
+
   const defaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,
   };
 
   if (status !== "ONGOING") {
+    const getProjectStatus = (type: PROJECT_STATUS_TYPE) => {
+      switch (type) {
+        case PROJECT_STATUS_TYPE.UPCOMING:
+          return t("Launchpad:common.upcoming");
+        case PROJECT_STATUS_TYPE.ENDED:
+          return t("Launchpad:common.ended");
+      }
+    };
     return (
       <Button
-        text={capitalize(status)}
+        text={getProjectStatus(status)}
         style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
       />
     );

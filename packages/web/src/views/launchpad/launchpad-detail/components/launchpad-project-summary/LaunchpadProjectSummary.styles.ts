@@ -40,6 +40,9 @@ export const LaunchpadProjectSummaryWrapper = styled.div`
         font-size: 16px;
       }
     }
+    &:not(:last-child) {
+      border-right: 1px solid ${({ theme }) => theme.color.border02};
+    }
     ${media.tablet} {
       &:nth-of-type(1),
       &:nth-of-type(2) {
@@ -51,29 +54,16 @@ export const LaunchpadProjectSummaryWrapper = styled.div`
       }
     }
     ${media.mobile} {
-      ${media.mobile} {
-        &:nth-of-type(1),
-        &:nth-of-type(2),
-        &:nth-of-type(3),
-        &:nth-of-type(4) {
-          border-right: none;
-          border-bottom: none;
-        }
+      &:nth-of-type(1),
+      &:nth-of-type(2),
+      &:nth-of-type(3),
+      &:nth-of-type(4) {
+        border-right: none;
+        border-bottom: none;
+      }
 
-        &:not(:last-child) {
-          border-bottom: 1px solid ${({ theme }) => theme.color.border02};
-        }
-      }
-    }
-    .border {
-      border-right: 1px solid ${({ theme }) => theme.color.border02};
-      ${media.tablet} {
-        border-right: none;
-        border-bottom: none;
-      }
-      ${media.mobile} {
-        border-right: none;
-        border-bottom: none;
+      &:not(:last-child) {
+        border-bottom: 1px solid ${({ theme }) => theme.color.border02};
       }
     }
   }
