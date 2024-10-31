@@ -28,7 +28,7 @@ export const wrapper =
         ${fonts.body9};
         color: ${theme.color.text01};
         &.token-symbol {
-          /* height: 18px; */
+          font-size: 16px;
         }
       }
       .token-logo {
