@@ -26,7 +26,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   changeToken,
   connected,
   amount,
-  style
+  style,
 }) => {
   const { t } = useTranslation();
 

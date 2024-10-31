@@ -154,7 +154,7 @@ export const useTokenAmountInput = (
         return t("common:btn.amountTooLow");
       case "DELEGATE":
       default:
-        return t("Governance:myDel.delModal.ctaBtns");
+        return t("Governance:myDel.delModal.ctaBtn");
     }
   }, [delegateButtonState, t]);
 
