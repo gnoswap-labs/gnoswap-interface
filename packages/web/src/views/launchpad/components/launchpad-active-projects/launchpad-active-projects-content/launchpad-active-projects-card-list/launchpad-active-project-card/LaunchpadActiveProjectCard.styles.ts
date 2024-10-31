@@ -29,6 +29,6 @@ export const ActiveProjectCardWrapper = styled.div<ActiveProjectCardWrapperProps
     padding: 16px;
     min-width: 0;
     max-width: 328px;
-    height: 311px;
+    height: 297.5px;
   }
 `;
