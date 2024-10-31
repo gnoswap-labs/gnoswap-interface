@@ -17,6 +17,7 @@ import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 
 import { Divider, QuickPoolInfoWrapper } from "./QuickPoolInfo.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface Props {
   tokenPair: string[];
@@ -215,7 +216,12 @@ const QuickPoolInfo: React.FC<Props> = ({
             <div className="content" key={index}>
               <div className="label">
                 {!isLoadingPool && (
-                  <OverlapTokenLogo tokens={[tokenA, tokenB]} size={24} />
+                  <MissingLogo
+                    url={item.tokenUri}
+                    symbol={`ID #${item.id}`}
+                    width={24}
+                    mobileWidth={24}
+                  />
                 )}
                 ID #{item.id}
               </div>
@@ -249,7 +255,12 @@ const QuickPoolInfo: React.FC<Props> = ({
           {stakedPositions.map((item, index) => (
             <div className="content" key={index}>
               <div className="label">
-                <OverlapTokenLogo tokens={[tokenA, tokenB]} size={24} />
+                <MissingLogo
+                  url={item.tokenUri}
+                  symbol={`ID #${item.id}`}
+                  width={24}
+                  mobileWidth={24}
+                />
                 ID #{item.id}
               </div>
               <div className="value">
