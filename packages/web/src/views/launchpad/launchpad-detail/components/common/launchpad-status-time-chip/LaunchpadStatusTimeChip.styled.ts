@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import mixins from "@styles/mixins";
 import { PROJECT_STATUS_TYPE } from "@common/values";
+import { media } from "@styles/media";
 
 interface ChipStyle {
   type: PROJECT_STATUS_TYPE;
@@ -33,4 +34,7 @@ export const StatusTimeChipWrapper = styled.div<ChipStyle>`
         color: ${theme.color.text05};
       `;
   }}
+  ${media.mobile} {
+    font-size: 10px;
+  }
 `;

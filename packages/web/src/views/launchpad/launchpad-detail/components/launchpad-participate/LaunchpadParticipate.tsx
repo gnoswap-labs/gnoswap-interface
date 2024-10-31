@@ -190,7 +190,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         />
       </div>
     );
-  }, [status, isLoading]);
+  }, [status, isLoading, depositButtonText]);
 
   return (
     <LaunchpadParticipateWrapper>

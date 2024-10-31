@@ -12,7 +12,9 @@ import { useTokenData } from "@hooks/token/use-token-data";
 
 import LaunchpadDetailLayout from "./LaunchpadDetailLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
+import BreadcrumbsContainer, {
+  BreadcrumbTypes,
+} from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import LaunchpadDetailContentsHeaderContainer from "./containers/launchpad-detail-contents-header-container/LaunchpadDetailContentsHeaderContainer";
 import LaunchpadPoolListContainer from "./containers/launchpad-pool-list-container/LaunchpadPoolListContainer";
 import LaunchpadProjectSummaryContainer from "./containers/launchpad-project-summary-container/LaunchpadProjectSummaryContainer";
@@ -22,7 +24,6 @@ import LaunchpadMyParticipationContainer from "./containers/launchpad-my-partici
 import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
 import Footer from "@components/common/footer/Footer";
 import { useWindowSize } from "@hooks/common/use-window-size";
-
 export interface ProjectSummaryDataModel {
   totalAllocation: number;
   totalParticipants: number;
@@ -82,6 +83,9 @@ const LaunchpadDetail: React.FC = () => {
       {
         title: t("Launchpad:launchpad"),
         path: "/launchpad",
+        options: {
+          type: "LAUNCHPAD" as BreadcrumbTypes,
+        },
       },
       {
         title: `${projectDetailData?.name}` || "-",

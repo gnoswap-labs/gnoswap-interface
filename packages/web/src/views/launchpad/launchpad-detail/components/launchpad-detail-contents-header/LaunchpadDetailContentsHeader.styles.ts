@@ -19,12 +19,17 @@ export const ContentsHeaderWrapper = styled.div`
   }
   .project-header {
     ${mixins.flexbox("row", "center", "center")};
+    max-width: 100%;
     gap: 8px;
   }
   .project-name {
+    width: 100%;
     color: ${({ theme }) => theme.color.text02};
     font-size: 24px;
     font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .project-status {
     ${mixins.flexbox("row", "center", "center")}
