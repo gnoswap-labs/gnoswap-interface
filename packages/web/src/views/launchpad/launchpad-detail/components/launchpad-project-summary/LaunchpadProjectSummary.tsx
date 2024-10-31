@@ -93,11 +93,9 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
             floatingContent={
               <Trans
                 ns="Launchpad"
+                components={{ br: <br /> }}
                 i18nKey={"common.tooltip.tokensDistributed"}
-              >
-                The total amount of project tokens <br />
-                distributed to participants.
-              </Trans>
+              />
             }
           />
         </div>

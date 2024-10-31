@@ -185,11 +185,11 @@ const LaunchpadDepositModal = ({
                 {t("Launchpad:modal.deposit.note.list1")}
               </li>
               <li className="list">
-                <Trans ns="Launchpad" i18nKey={"modal.deposit.note.list2"}>
-                  Only send supported tokens to this deposit address. <br />
-                  Depositing any other cryptocurrencies to this <br />
-                  launchpad will result in the loss of your funds.
-                </Trans>
+                <Trans
+                  ns="Launchpad"
+                  components={{ br: <br /> }}
+                  i18nKey={"modal.deposit.note.list2"}
+                />
               </li>
             </ul>
             <Link href="https://docs.gnoswap.io/" target="_blank">

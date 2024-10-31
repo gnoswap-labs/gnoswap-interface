@@ -273,10 +273,11 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
             {t("Launchpad:participate.col.endDate")}{" "}
             <LaunchpadTooltip
               floatingContent={
-                <Trans ns="Launchpad" i18nKey="common.tooltip.endDate">
-                  The launchpad program you selected <br />
-                  ends on this date.
-                </Trans>
+                <Trans
+                  ns="Launchpad"
+                  components={{ br: <br /> }}
+                  i18nKey="common.tooltip.endDate"
+                />
               }
             />
           </div>
@@ -312,24 +313,6 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         </div>
       </div>
 
-      {/* {!isLoading && (
-        <div className="participate-button-wrapper">
-          <DepositButton
-            isAvailableDeposit={isAvailableDeposit}
-            isSwitchNetwork={isSwitchNetwork}
-            isWalletConnected={isWalletConnected}
-            status={status}
-            isDepositAllowed={isDepositAllowed}
-            text={depositButtonText}
-            openConnectWallet={openConnectWallet}
-            switchNetwork={switchNetwork}
-            openLaunchpadDepositAction={() => {
-              setIsOpenDepositConfirmModal(true);
-            }}
-          />
-        </div>
-      )}
-      {isLoading && <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />} */}
       {buttonRender()}
 
       {isOpenDepositConfirmModal && (

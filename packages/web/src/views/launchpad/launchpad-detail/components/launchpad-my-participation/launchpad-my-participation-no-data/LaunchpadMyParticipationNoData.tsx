@@ -28,9 +28,7 @@ const LaunchpadMyParticipationNoData = ({
             ns="Launchpad"
             i18nKey="myParticipation.nodata.text1"
             components={{ span: <span /> }}
-          >
-            Deposit <span>GNS</span>
-          </Trans>
+          />
         </div>
         <div className="banner-text-description">
           {t("Launchpad:myParticipation.nodata.text2")}

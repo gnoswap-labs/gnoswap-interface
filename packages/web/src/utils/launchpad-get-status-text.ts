@@ -1,10 +1,10 @@
 import { PROJECT_STATUS_TYPE } from "@common/values";
-import { i18n } from "next-i18next";
 
 export const getStatusText = (
   type: PROJECT_STATUS_TYPE,
   startTime?: string,
   endTime?: string,
+  format: (key: string, options?: { [key: string]: string | number }) => string,
 ) => {
   if (!startTime || !endTime) return "-";
 
@@ -27,16 +27,16 @@ export const getStatusText = (
 
   const formatTime = (days: number, hours: number, minutes: number) => {
     if (days > 0) {
-      return i18n?.t("Launchpad:common.time.inDaysHours", { days, hours });
+      return format("Launchpad:common.time.inDaysHours", { days, hours });
     } else if (hours > 0) {
-      return i18n?.t("Launchpad:common.time.inHoursMinutes", {
+      return format("Launchpad:common.time.inHoursMinutes", {
         hours,
         minutes,
       });
     } else if (minutes > 0) {
-      return i18n?.t("Launchpad:common.time.inMinutes", { minutes });
+      return format("Launchpad:common.time.inMinutes", { minutes });
     } else {
-      return i18n?.t("Launchpad:common.time.inOneMinute");
+      return format("Launchpad:common.time.inOneMinute");
     }
   };
 
@@ -47,7 +47,7 @@ export const getStatusText = (
         hours: upcomingHours,
         minutes: upcomingMinutes,
       } = getTimeDifference(start, now);
-      return i18n?.t("Launchpad:common.status.upcoming", {
+      return format("Launchpad:common.status.upcoming", {
         time: formatTime(upcomingDays, upcomingHours, upcomingMinutes),
       });
     case PROJECT_STATUS_TYPE.ONGOING:
@@ -59,10 +59,10 @@ export const getStatusText = (
       if (ongoingDays < 0 && ongoingHours < 0 && ongoingMinutes < 0) {
         return "Ends in 1 minute";
       }
-      return i18n?.t("Launchpad:common.status.ongoing", {
+      return format("Launchpad:common.status.ongoing", {
         time: formatTime(ongoingDays, ongoingHours, ongoingMinutes),
       });
     case PROJECT_STATUS_TYPE.ENDED:
-      return i18n?.t("Launchpad:common.status.ended");
+      return format("Launchpad:common.status.ended");
   }
 };

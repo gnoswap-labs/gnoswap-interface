@@ -5,6 +5,7 @@ import { getStatusText } from "@utils/launchpad-get-status-text";
 
 import { StatusTimeChipWrapper } from "./LaunchpadStatusTimeChip.styled";
 import IconTimer from "@components/common/icons/IconTimer";
+import { useTranslation } from "react-i18next";
 
 interface LaunchpadStatusTimeChipProps {
   startTime?: string;
@@ -17,10 +18,12 @@ const LaunchpadStatusTimeChip = ({
   endTime,
   status,
 }: LaunchpadStatusTimeChipProps) => {
+  const { t } = useTranslation();
+
   return (
     <StatusTimeChipWrapper type={status}>
       <IconTimer type={status} />
-      <div>{getStatusText(status, startTime, endTime)}</div>
+      <div>{getStatusText(status, startTime, endTime, t)}</div>
     </StatusTimeChipWrapper>
   );
 };
