@@ -8,8 +8,8 @@ import IconTimer from "@components/common/icons/IconTimer";
 import { useTranslation } from "react-i18next";
 
 interface LaunchpadStatusTimeChipProps {
-  startTime?: string;
-  endTime?: string;
+  startTime: string;
+  endTime: string;
   status: PROJECT_STATUS_TYPE;
 }
 

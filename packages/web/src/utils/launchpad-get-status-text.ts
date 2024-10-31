@@ -2,8 +2,8 @@ import { PROJECT_STATUS_TYPE } from "@common/values";
 
 export const getStatusText = (
   type: PROJECT_STATUS_TYPE,
-  startTime?: string,
-  endTime?: string,
+  startTime: string,
+  endTime: string,
   format: (key: string, options?: { [key: string]: string | number }) => string,
 ) => {
   if (!startTime || !endTime) return "-";

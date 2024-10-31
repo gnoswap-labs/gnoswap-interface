@@ -45,8 +45,8 @@ const LaunchpadDetailContentsHeader: React.FC<
           </div>
           {data.projectStatus && (
             <LaunchpadStatusTimeChip
-              startTime={data.startTime}
-              endTime={data.endTime}
+              startTime={data.startTime || ""}
+              endTime={data.endTime || ""}
               status={data.projectStatus}
             />
           )}
