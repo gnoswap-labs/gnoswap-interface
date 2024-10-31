@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { DistributionPeriodDate } from "@states/earn";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 import SelectDistributionDateInput from "./select-distribution-date-input/SelectDistributionDateInput";
 import SelectDistributionPeriodInput from "./select-distribution-period-input/SelectDistributionPeriodInput";
@@ -24,6 +25,7 @@ const SelectDistributionPeriod: React.FC<SelectDistributionPeriodProps> = ({
   setPeriod,
 }) => {
   const { t } = useTranslation();
+  const { isMobile } = useWindowSize();
 
   return (
     <SelectDistributionPeriodWrapper>
@@ -43,7 +45,11 @@ const SelectDistributionPeriod: React.FC<SelectDistributionPeriodProps> = ({
         <div className="period">
           <SelectDistributionPeriodInput
             periods={periods}
-            title={t("IncentivizePool:incenDetail.row.label.period")}
+            title={
+              isMobile
+                ? t("IncentivizePool:incenDetail.row.label.period")
+                : t("IncentivizePool:incenDetail.row.label.distributionPeriod")
+            }
             period={period}
             changePeriod={setPeriod}
           />
