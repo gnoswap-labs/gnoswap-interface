@@ -16,7 +16,7 @@ export const PoolAddConfirmFeeInfoWrapper = styled.div`
   }
 
   .title-wrapper {
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
 
     svg {
@@ -31,17 +31,18 @@ export const PoolAddConfirmFeeInfoWrapper = styled.div`
 
 export const PoolAddConfirmFeeInfoSection = styled(
   EarnAddConfirmContentSection,
-) <{ $hasError: boolean }>`
+)<{ $hasError: boolean }>`
   height: 60px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   color: ${({ theme }) => theme.color.text01};
   background: ${({ theme }) => theme.color.background20};
-  border: ${({ $hasError, theme }) => $hasError && `1px solid ${theme.color.red01}`};
+  border: ${({ $hasError, theme }) =>
+    $hasError && `1px solid ${theme.color.red01}`};
   ${fonts.body9}
   margin-top: 8px;
-  ${({ $hasError }) => $hasError ? "margin-bottom: 6px;" : ""};
+  ${({ $hasError }) => ($hasError ? "margin-bottom: 6px;" : "")};
 
   .token-info {
     display: flex;
