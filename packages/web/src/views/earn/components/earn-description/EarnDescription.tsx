@@ -63,7 +63,7 @@ const EarnDescription: React.FC<EarnDescriptionProps> = ({
               }}
             />
             <a
-              className="link-wrapper"
+              className="link-wrapper-no-flex"
               href={`/earn/pool?poolPath=${highestAprInfo.path}#staking`}
             >
               {t("Earn:earnInstruction.stake.goto")}
