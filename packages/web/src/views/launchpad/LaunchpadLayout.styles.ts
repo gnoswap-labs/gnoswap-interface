@@ -142,7 +142,8 @@ export const LaunchpadLayoutWrapper = styled.div`
       button {
         ${mixins.flexbox("row", "flex-start", "center")};
         height: 100%;
-        color: #e0e8f4;
+        color: ${({ theme }) =>
+          theme.themeKey === "dark" ? theme.color.text02 : "#FFF"};
         gap: 8px;
         border-radius: 8px;
         padding: 16px 18.5px;
@@ -166,7 +167,8 @@ export const LaunchpadLayoutWrapper = styled.div`
           }
         }
         * {
-          fill: #e0e8f4;
+          fill: ${({ theme }) =>
+            theme.themeKey === "dark" ? theme.color.text02 : "#FFF"};
         }
       }
     }
@@ -197,7 +199,8 @@ export const LaunchpadLayoutWrapper = styled.div`
       .launchpad-data-value {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 4px;
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) =>
+          theme.themeKey === "dark" ? "#E0E8F4" : theme.color.text03};
         ${media.mobile} {
           font-size: clamp(0.875rem, 0.8201rem + 0.2439vw, 1rem);
         }
