@@ -1,5 +1,4 @@
 import { useTheme } from "@emotion/react";
-import BigNumber from "bignumber.js";
 import React, {
   Dispatch,
   SetStateAction,
@@ -87,32 +86,6 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     return t("Governance:myDel.delModal.selectDel.selectBtn");
   }, [isValidSelfAddress, selfAddress, t]);
 
-  const availDelegateButton = useMemo(() => {
-    if (!isWalletConnected) {
-      return true;
-    }
-
-    const amountBN = BigNumber(gnsAmountInput.amount);
-    if (amountBN.isZero()) {
-      return false;
-    }
-
-    if (amountBN.isGreaterThan(gnsAmountInput.balance.replaceAll(",", ""))) {
-      return false;
-    }
-
-    if (!delegatee.address || !isValidAddress(delegatee.address)) {
-      return false;
-    }
-
-    return true;
-  }, [
-    delegatee.address,
-    gnsAmountInput.amount,
-    gnsAmountInput.balance,
-    isWalletConnected,
-  ]);
-
   const delegate = () => {
     setIsOpen(false);
 
@@ -121,7 +94,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       return;
     }
 
-    if (!availDelegateButton) {
+    if (!gnsAmountInput.isAvailableDelegate) {
       return;
     }
 
@@ -327,16 +300,12 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 
       <Button
         onClick={delegate}
-        text={t(
-          isWalletConnected
-            ? "Governance:myDel.delModal.ctaBtn"
-            : "common:btn.walletLogin",
-        )}
+        text={gnsAmountInput.delegateButtonText}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={!availDelegateButton}
+        disabled={!gnsAmountInput.isAvailableDelegate}
         className="button-confirm"
       />
     </>
