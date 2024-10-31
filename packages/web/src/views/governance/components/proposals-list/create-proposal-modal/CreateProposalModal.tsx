@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
 
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -24,7 +25,6 @@ import {
 } from "@utils/create-proposal-validation";
 import { makeDisplayPackagePath } from "@utils/governance-utils";
 
-
 import TokenChip from "../../token-chip/TokenChip";
 import VariableSelectBox from "../variable-select-box/VariableSelectBox";
 
@@ -32,7 +32,7 @@ import {
   BoxItem,
   CreateProposalModalWrapper,
   IconButton,
-  ToolTipContentWrapper
+  ToolTipContentWrapper,
 } from "./CreateProposalModal.styles";
 
 interface BoxContentProps {
@@ -308,10 +308,23 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     setIsOpenCreateModal(false);
   };
 
+  const [isScroll, setIsScroll] = useState(false);
+  const handleScroll = useCallback(() => {
+    setIsScroll(true);
+
+    setTimeout(() => {
+      setIsScroll(false);
+    }, 1000);
+  }, [setIsScroll]);
+
   return (
     <FormProvider methods={methods} onSubmit={sendTx}>
       <CreateProposalModalWrapper>
-        <div className="modal-body" ref={modalBodyRef}>
+        <div
+          className={cx("modal-body", { scroll: isScroll })}
+          ref={modalBodyRef}
+          onScroll={handleScroll}
+        >
           <div className="header">
             <h6>{t("Governance:createModal.title")}</h6>
             <div
@@ -490,7 +503,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                   <TokenChip tokenInfo={XGNS_TOKEN} />
                 ) : (
                   <MissingLogo
-                  className=""
+                    className=""
                     symbol={XGNS_TOKEN.symbol}
                     width={24}
                     url={XGNS_TOKEN.logoURI}
