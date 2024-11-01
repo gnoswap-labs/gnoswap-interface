@@ -104,6 +104,8 @@ export const ProposalContentWrapper = styled.div`
   padding: 24px;
   gap: 12px;
   border-radius: 8px;
+  background-color: ${({ theme }) =>
+    theme.themeKey === "dark" && "rgba(10, 14, 23, 0.7)"};
   ${({ theme }) =>
     mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
 
@@ -169,6 +171,8 @@ export const ModalQuorum = styled.div`
   padding: 16px;
   border-radius: 8px;
   ${media.mobile} {
+    background-color: ${({ theme }) =>
+      theme.themeKey === "dark" && "rgba(10, 14, 23, 0.7)"};
     padding: 12px;
     gap: 10px;
   }
@@ -208,6 +212,7 @@ export const VotingPowerWrapper = styled.div`
   padding: 16px;
   width: 100%;
   border-radius: 8px;
+  height: 55px;
   > span {
     ${fonts.body12}
     color: ${({ theme }) => theme.color.text10};
@@ -217,7 +222,9 @@ export const VotingPowerWrapper = styled.div`
     color: ${({ theme }) => theme.color.text01};
   }
   .power-value {
-    ${fonts.body3}
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 34px;
   }
   ${media.mobile} {
     padding: 12px;
