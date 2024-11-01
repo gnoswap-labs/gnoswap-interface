@@ -9,16 +9,23 @@ import IconInfo from "@components/common/icons/IconInfo";
 import IconOutlineClock from "@components/common/icons/IconOutlineClock";
 import IconPass from "@components/common/icons/IconPass";
 import { StatusBadgeWrapper } from "./StatusBadge.style";
+import { DEVICE_TYPE } from "@styles/media";
 
 dayjs.extend(relative);
 
 interface StatusBadgeProps {
+  breakpoint: DEVICE_TYPE;
   status: string;
   time: string;
   twoline?: boolean;
 }
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time, twoline }) => {
+const StatusBadge: React.FC<StatusBadgeProps> = ({
+  breakpoint,
+  status,
+  time,
+  twoline,
+}) => {
   const { t } = useTranslation();
 
   const getContent = () => {
@@ -65,7 +72,10 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time, twoline }) => {
   };
 
   const getTimeInfo = () => {
-    const timeString = dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
+    const timeString =
+      breakpoint === DEVICE_TYPE.MOBILE
+        ? dayjs(time).format("YYYY-MM-DD")
+        : dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
     switch (status) {
       case "UPCOMING":
         return `${t("Governance:proposal.time.start", {
@@ -88,7 +98,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time, twoline }) => {
   };
 
   return (
-    <StatusBadgeWrapper style={{ flexDirection: twoline ? "column" : "row"}}>
+    <StatusBadgeWrapper style={{ flexDirection: twoline ? "column" : "row" }}>
       {getContent()}
       <div className="time">
         <IconOutlineClock className="time-icon" />
@@ -99,4 +109,3 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time, twoline }) => {
 };
 
 export default StatusBadge;
-
