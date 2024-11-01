@@ -44,7 +44,7 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
         {!isLoading && (
           <Link href={getRealmUrl(poolPath)} target="_blank">
             <button>
-              <span>{path}</span>
+              <span>{path.replace(/:\d+/g, "")}</span>
               <div className="icon-wrapper">
                 <IconOpenLink className="link-icon" />
               </div>
