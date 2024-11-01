@@ -268,14 +268,16 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         return defaultPlaceholder;
       }
 
-      return Array.from(
-        { length: currentFunction.paramNum },
-        (_, index) => index + 1,
-      )
-        .map(num => `arg${num}`)
-        .join(",");
+      const placeholders = defaultPlaceholder
+        .replace("...", "")
+        .split(",")
+        .map((placeholder, index) => {
+          return placeholder.trim() || `arg${index + 1}`;
+        });
+
+      return placeholders.slice(0, currentFunction.paramNum).join(", ");
     },
-    [executableFunctions],
+    [executableFunctions, t],
   );
 
   const sendTx: SubmitHandler<FormValues> = data => {
