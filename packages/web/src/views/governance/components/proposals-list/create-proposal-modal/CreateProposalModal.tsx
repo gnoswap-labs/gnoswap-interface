@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { cx } from "@emotion/css";
 
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -216,7 +215,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       displayValue: pkg.pkgName,
       value: pkg.pkgPath,
     }));
-  }, [executableFunctions]);
+  }, [executableFunctions, executablePackages]);
 
   const filterExecutableFunctions = useCallback(
     (packagePath: string | null) => {
@@ -308,23 +307,10 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     setIsOpenCreateModal(false);
   };
 
-  const [isScroll, setIsScroll] = useState(false);
-  const handleScroll = useCallback(() => {
-    setIsScroll(true);
-
-    setTimeout(() => {
-      setIsScroll(false);
-    }, 1000);
-  }, [setIsScroll]);
-
   return (
     <FormProvider methods={methods} onSubmit={sendTx}>
       <CreateProposalModalWrapper>
-        <div
-          className={cx("modal-body", { scroll: isScroll })}
-          ref={modalBodyRef}
-          onScroll={handleScroll}
-        >
+        <div className={"modal-body"} ref={modalBodyRef}>
           <div className="header">
             <h6>{t("Governance:createModal.title")}</h6>
             <div

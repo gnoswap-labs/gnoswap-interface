@@ -129,6 +129,7 @@ export const ProposalContentWrapper = styled.div`
 
     .markdown-style {
       width: 100%;
+      white-space: pre-wrap;
       h1 {
         ${fonts.body5}
       }

@@ -37,16 +37,8 @@ export const CreateProposalModalWrapper = styled.div`
     overflow-y: scroll;
     overflow-x: hidden;
     gap: 16px;
-    /* height: 800px; */
+    height: 800px;
     max-height: calc(100lvh - 100px);
-    ::-webkit-scrollbar {
-      display: none;
-    }
-    &.scroll {
-      ::-webkit-scrollbar {
-        display: inline;
-      }
-    }
     .header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
