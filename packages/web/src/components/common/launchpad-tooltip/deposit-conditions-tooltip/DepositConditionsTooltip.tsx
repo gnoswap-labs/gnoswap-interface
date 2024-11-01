@@ -47,7 +47,7 @@ const DepositConditionsTooltip = ({
                 i18nKey={"common.tooltip.conditions.token"}
                 values={{
                   amount: leastTokenAmount.toLocaleString(),
-                  symbol: tokenSymbol,
+                  symbol: tokenSymbol?.toUpperCase(),
                 }}
                 components={{ br: <br /> }}
               />
