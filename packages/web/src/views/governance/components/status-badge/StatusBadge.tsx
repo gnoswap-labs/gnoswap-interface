@@ -30,22 +30,6 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const formatDuration = (date: dayjs.Dayjs | string | Date) => {
-    const now = dayjs();
-    const diff = dayjs.duration(now.diff(date));
-
-    const minutes = diff.asMinutes();
-    const hours = diff.asHours();
-
-    if (hours >= 1) {
-      return `${Math.floor(hours)}h`;
-    } else if (minutes >= 1) {
-      return `${Math.floor(minutes)}m`;
-    } else {
-      return "1m";
-    }
-  };
-
   const getContent = () => {
     switch (status) {
       case "UPCOMING":
@@ -94,19 +78,29 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       breakpoint === DEVICE_TYPE.MOBILE
         ? dayjs(time).format("YYYY-MM-DD")
         : dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
-    const relTime =
+
+    const now = dayjs();
+    const targetTime = dayjs(time);
+
+    const diff = targetTime.diff(now, "seconds");
+
+    const rel_time =
       breakpoint === DEVICE_TYPE.MOBILE
-        ? formatDuration(dayjs(time))
-        : dayjs(time).fromNow();
+        ? Math.ceil(diff / 60) >= 60
+          ? `${t("Governance:proposal.time.h", {
+              time: Math.floor(Math.ceil(diff / 60) / 60),
+            })}`
+          : `${t("Governance:proposal.time.m", { time: Math.ceil(diff / 60) })}`
+        : targetTime.from(now);
 
     switch (status) {
       case "UPCOMING":
         return `${t("Governance:proposal.time.start", {
-          rel_time: relTime,
+          rel_time,
         })} (${timeString})`;
       case "ACTIVE":
         return `${t("Governance:proposal.time.end", {
-          rel_time: relTime,
+          rel_time,
         })} (${timeString})`;
       case "EXECUTED":
       case "EXPIRED":
@@ -115,7 +109,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       case "CANCELLED":
       default:
         return `${t("Governance:proposal.time.ended", {
-          rel_time: relTime,
+          rel_time: "",
         })} (${timeString})`;
     }
   };
