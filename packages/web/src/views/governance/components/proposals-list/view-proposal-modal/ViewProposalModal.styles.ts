@@ -171,9 +171,9 @@ export const ModalQuorum = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   padding: 16px;
   border-radius: 8px;
+  background-color: ${({ theme }) =>
+    theme.themeKey === "dark" && "rgba(10, 14, 23, 0.7)"};
   ${media.mobile} {
-    background-color: ${({ theme }) =>
-      theme.themeKey === "dark" && "rgba(10, 14, 23, 0.7)"};
     padding: 12px;
     gap: 10px;
   }
