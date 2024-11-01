@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import relative from "dayjs/plugin/relativeTime";
+import duration from "dayjs/plugin/duration";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -12,6 +13,7 @@ import { StatusBadgeWrapper } from "./StatusBadge.style";
 import { DEVICE_TYPE } from "@styles/media";
 
 dayjs.extend(relative);
+dayjs.extend(duration);
 
 interface StatusBadgeProps {
   breakpoint: DEVICE_TYPE;
@@ -27,6 +29,22 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   twoline,
 }) => {
   const { t } = useTranslation();
+
+  const formatDuration = (date: dayjs.Dayjs | string | Date) => {
+    const now = dayjs();
+    const diff = dayjs.duration(now.diff(date));
+
+    const minutes = diff.asMinutes();
+    const hours = diff.asHours();
+
+    if (hours >= 1) {
+      return `${Math.floor(hours)}h`;
+    } else if (minutes >= 1) {
+      return `${Math.floor(minutes)}m`;
+    } else {
+      return "1m";
+    }
+  };
 
   const getContent = () => {
     switch (status) {
@@ -76,14 +94,19 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       breakpoint === DEVICE_TYPE.MOBILE
         ? dayjs(time).format("YYYY-MM-DD")
         : dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
+    const relTime =
+      breakpoint === DEVICE_TYPE.MOBILE
+        ? formatDuration(dayjs(time))
+        : dayjs(time).fromNow();
+
     switch (status) {
       case "UPCOMING":
         return `${t("Governance:proposal.time.start", {
-          rel_time: dayjs(time).fromNow(),
+          rel_time: relTime,
         })} (${timeString})`;
       case "ACTIVE":
         return `${t("Governance:proposal.time.end", {
-          rel_time: dayjs(time).fromNow(),
+          rel_time: relTime,
         })} (${timeString})`;
       case "EXECUTED":
       case "EXPIRED":
@@ -92,7 +115,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       case "CANCELLED":
       default:
         return `${t("Governance:proposal.time.ended", {
-          rel_time: "",
+          rel_time: relTime,
         })} (${timeString})`;
     }
   };
