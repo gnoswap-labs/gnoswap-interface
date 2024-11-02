@@ -125,7 +125,7 @@ const LaunchpadMyParticipationBox = ({
                 {t("Launchpad:myParticipation.col.claimableDate")}
               </div>
               <div className="participation-box-data-value">
-                {formatClaimableTime(item.claimableTime)}
+                {formatClaimableTime(item.claimableTime, t)}
               </div>
             </div>
             <div className="participation-box-data">
