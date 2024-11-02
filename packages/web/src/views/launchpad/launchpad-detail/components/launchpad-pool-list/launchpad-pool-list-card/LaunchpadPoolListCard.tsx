@@ -5,10 +5,7 @@ import { useAtomValue } from "jotai";
 import { Trans, useTranslation } from "react-i18next";
 
 import { LaunchpadState } from "@states/index";
-import {
-  getTierDuration,
-  getTierValue,
-} from "@utils/launchpad-get-tier-number";
+import { getTierDuration } from "@utils/launchpad-get-tier-number";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
 import { toNumberFormat } from "@utils/number-utils";
@@ -87,15 +84,12 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
         <Trans
           ns="Launchpad"
           i18nKey={"poolList.description"}
+          components={{ br: <br /> }}
           values={{
-            month: getTierValue(data.poolTier),
+            month: getTierDuration(data.poolTier, t, false),
             day: getClaimableDays(data.poolTier),
           }}
-        >
-          Staking for {getTierDuration(data.poolTier, t)}. <br />
-          Rewards claimable starting <br />
-          after {getClaimableDays(data.poolTier)} days.
-        </Trans>
+        />
       </div>
 
       <Divider />

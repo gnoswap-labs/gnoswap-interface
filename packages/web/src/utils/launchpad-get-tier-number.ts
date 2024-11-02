@@ -8,14 +8,26 @@ export const getTierNumber = (tier: TierType): number => {
 export const getTierDuration = (
   tier: TierType,
   format: (key: string, options?: { [key: string]: string | number }) => string,
+  isUpperCase?: boolean,
 ) => {
-  switch (tier) {
-    case "TIER30":
-      return format("Launchpad:common.tierDuration.1month");
-    case "TIER90":
-      return format("Launchpad:common.tierDuration.3months");
-    case "TIER180":
-      return format("Launchpad:common.tierDuration.6months");
+  if (isUpperCase) {
+    switch (tier) {
+      case "TIER30":
+        return format("Launchpad:common.time.monthUpperCase", { count: 1 });
+      case "TIER90":
+        return format("Launchpad:common.time.monthUpperCase", { count: 3 });
+      case "TIER180":
+        return format("Launchpad:common.time.monthUpperCase", { count: 6 });
+    }
+  } else {
+    switch (tier) {
+      case "TIER30":
+        return format("Launchpad:common.time.month", { count: 1 });
+      case "TIER90":
+        return format("Launchpad:common.time.month", { count: 3 });
+      case "TIER180":
+        return format("Launchpad:common.time.month", { count: 6 });
+    }
   }
 };
 
