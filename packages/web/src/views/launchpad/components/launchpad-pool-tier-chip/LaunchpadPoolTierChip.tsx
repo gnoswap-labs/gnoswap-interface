@@ -14,7 +14,9 @@ const LaunchpadPoolTierChip = ({ poolTier }: LaunchpadPoolTierChipProps) => {
   const { t } = useTranslation();
 
   return (
-    <PoolTierChipWrapper>{getTierDuration(poolTier, t)}</PoolTierChipWrapper>
+    <PoolTierChipWrapper>
+      {getTierDuration(poolTier, t, true)}
+    </PoolTierChipWrapper>
   );
 };
 
