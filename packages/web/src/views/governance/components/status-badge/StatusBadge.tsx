@@ -74,34 +74,24 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   };
 
   const getTimeInfo = () => {
-    const timeString =
-      breakpoint === DEVICE_TYPE.MOBILE
-        ? dayjs(time).format("YYYY-MM-DD")
-        : dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
-
-    const now = dayjs();
-    const targetTime = dayjs(time);
-
-    const diff = targetTime.diff(now, "seconds");
-
-    const rel_time =
-      breakpoint === DEVICE_TYPE.MOBILE
-        ? Math.ceil(diff / 60) >= 60
-          ? `${t("Governance:proposal.time.h", {
-              time: Math.floor(Math.ceil(diff / 60) / 60),
-            })}`
-          : `${t("Governance:proposal.time.m", { time: Math.ceil(diff / 60) })}`
-        : targetTime.from(now);
-
+    const timeString = dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
     switch (status) {
       case "UPCOMING":
-        return `${t("Governance:proposal.time.start", {
-          rel_time,
-        })} (${timeString})`;
+        return breakpoint === DEVICE_TYPE.MOBILE
+          ? `${t("Governance:proposal.time.start", {
+              rel_time: dayjs(time).fromNow(),
+            })}`
+          : `${t("Governance:proposal.time.start", {
+              rel_time: dayjs(time).fromNow(),
+            })} (${timeString})`;
       case "ACTIVE":
-        return `${t("Governance:proposal.time.end", {
-          rel_time,
-        })} (${timeString})`;
+        return breakpoint === DEVICE_TYPE.MOBILE
+          ? `${t("Governance:proposal.time.end", {
+              rel_time: dayjs(time).fromNow(),
+            })}`
+          : `${t("Governance:proposal.time.end", {
+              rel_time: dayjs(time).fromNow(),
+            })} (${timeString})`;
       case "EXECUTED":
       case "EXPIRED":
       case "PASSED":
