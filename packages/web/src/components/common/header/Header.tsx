@@ -15,6 +15,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
 import { DeviceSize, DEVICE_TYPE } from "@styles/media";
+import useScrollData from "@hooks/common/use-scroll-data";
 
 import NotificationButton from "./notification-button/NotificationButton";
 import SearchMenuModal, { Token } from "./search-menu-modal/SearchMenuModal";
@@ -100,6 +101,7 @@ const Header: React.FC<HeaderProps> = ({
   const router = useCustomRouter();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const { t } = useTranslation();
+  const { saveCurrentScrollHeight } = useScrollData();
 
   const navigationItems = useMemo(() => {
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
@@ -135,22 +137,30 @@ const Header: React.FC<HeaderProps> = ({
                 <React.Fragment>
                   <ul>
                     {navigationItems.map(item => (
-                      <li
-                        key={t(item.title)}
-                        className={
-                          pathname === item.path ||
-                          (item?.subPath || []).some(_ => pathname.includes(_))
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        <span
-                          className="link"
-                          onClick={() => router.push(item.path)}
+                      <Link href={item.path} key={item.title}>
+                        <li
+                          key={t(item.title)}
+                          className={
+                            pathname === item.path ||
+                            (item?.subPath || []).some(_ =>
+                              pathname.includes(_),
+                            )
+                              ? "selected"
+                              : ""
+                          }
                         >
-                          {t(item.title)}
-                        </span>
-                      </li>
+                          <span
+                            className="link"
+                            onClick={() =>
+                              saveCurrentScrollHeight(
+                                window?.location?.pathname,
+                              )
+                            }
+                          >
+                            {t(item.title)}
+                          </span>
+                        </li>
+                      </Link>
                     ))}
                   </ul>
                   <SubMenuButton
