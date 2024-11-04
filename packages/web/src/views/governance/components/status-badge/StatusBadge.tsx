@@ -98,9 +98,13 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       case "REJECTED":
       case "CANCELLED":
       default:
-        return `${t("Governance:proposal.time.ended", {
-          rel_time: "",
-        })} (${timeString})`;
+        return breakpoint === DEVICE_TYPE.MOBILE
+          ? `${t("Governance:proposal.time.ended", {
+              rel_time: "",
+            })}`
+          : `${t("Governance:proposal.time.ended", {
+              rel_time: "",
+            })} (${timeString})`;
     }
   };
 
