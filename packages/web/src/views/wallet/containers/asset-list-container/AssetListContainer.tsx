@@ -109,6 +109,8 @@ const AssetListContainer: React.FC = () => {
     isClosed: false,
   });
 
+  const [sendAssetAmount, setSendAssetAmount] = useState("");
+
   const isLoadingPosition = useMemo(
     () => connected && loadingPositions,
     [connected, loadingPositions],
@@ -461,6 +463,7 @@ const AssetListContainer: React.FC = () => {
 
   const closeWithdraw = () => {
     setIsShowWithDrawModal(false);
+    setSendAssetAmount("");
   };
 
   const callbackDeposit = (value: boolean) => {
@@ -473,11 +476,7 @@ const AssetListContainer: React.FC = () => {
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
 
-  const {
-    isConfirm,
-    setIsConfirm,
-    onSubmit: handleSubmit,
-  } = useSendAsset();
+  const { isConfirm, setIsConfirm, onSubmit: handleSubmit } = useSendAsset();
 
   const moveTokenPage = useCallback((tokenPath: string) => {
     router.movePageWithTokenPath("TOKEN", tokenPath);
@@ -539,6 +538,8 @@ const AssetListContainer: React.FC = () => {
       )}
       {isShowWithdrawModal && (
         <AssetSendModal
+          amount={sendAssetAmount}
+          setAmount={setSendAssetAmount}
           breakpoint={breakpoint}
           close={closeWithdraw}
           withdrawInfo={withdrawInfo}
