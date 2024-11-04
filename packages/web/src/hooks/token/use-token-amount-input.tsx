@@ -99,10 +99,6 @@ export const useTokenAmountInput = (
 
   const changeAmount = useCallback(
     (value: string) => {
-      if (!token) {
-        return;
-      }
-
       if (/^0\.0(?:0*)$/.test(value)) {
         setAmount(value);
         return;

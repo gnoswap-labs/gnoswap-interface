@@ -35,16 +35,19 @@ import {
 const DEFAULT_WITHDRAW_GNOT = GNOT_TOKEN;
 
 interface Props {
-  close: () => void;
+  amount: string;
+  setAmount: React.Dispatch<React.SetStateAction<string>>;
+  isConfirm: boolean;
   breakpoint: DEVICE_TYPE;
   withdrawInfo?: TokenModel;
   avgBlockTime: number;
   connected: boolean;
+
+  close: () => void;
   changeToken: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
   handleSubmit: (amount: string, address: string) => void;
   setIsConfirm: () => void;
-  isConfirm: boolean;
 }
 
 function isAmount(str: string) {
@@ -53,6 +56,8 @@ function isAmount(str: string) {
 }
 
 const AssetSendModal: React.FC<Props> = ({
+  amount,
+  setAmount,
   close,
   breakpoint,
   withdrawInfo,
@@ -67,7 +72,6 @@ const AssetSendModal: React.FC<Props> = ({
   const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
-  const [amount, setAmount] = useState("");
   const [address, setAddress] = useState("");
 
   const { account } = useWallet();
@@ -84,7 +88,7 @@ const AssetSendModal: React.FC<Props> = ({
       if (value !== "" && !isAmount(value)) return;
       setAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [setAmount],
   );
 
   const onChangeAddress = useCallback(
