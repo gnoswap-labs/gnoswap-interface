@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useRouter } from "next/router";
 
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
@@ -14,8 +15,11 @@ import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "../../hooks/use-governance-tx";
 
 const ProposalListContainer: React.FC = () => {
+  const router = useRouter();
+  const { active } = router.query;
+
   const { breakpoint } = useWindowSize();
-  const [isShowActiveOnly, setIsShowActiveOnly] = useState(false);
+  const [isShowActiveOnly, setIsShowActiveOnly] = useState(active === "true");
   const [selectedProposalId, setSelectedProposalId] = useState(0);
   const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
@@ -71,6 +75,23 @@ const ProposalListContainer: React.FC = () => {
     if (hasNextPage) fetchNextPage();
   };
 
+  const toggleIsShowActiveOnly = React.useCallback(() => {
+    setIsShowActiveOnly(prev => {
+      const newActiveState = !prev;
+
+      router.query.active = newActiveState ? "true" : "false";
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: router.query,
+        },
+        undefined,
+        { scroll: false },
+      );
+      return newActiveState;
+    });
+  }, [router, setIsShowActiveOnly]);
+
   return (
     <ProposalList
       breakpoint={breakpoint}
@@ -81,7 +102,7 @@ const ProposalListContainer: React.FC = () => {
       address={account?.address || ""}
       switchNetwork={switchNetwork}
       isShowActiveOnly={isShowActiveOnly}
-      toggleIsShowActiveOnly={() => setIsShowActiveOnly(a => !a)}
+      toggleIsShowActiveOnly={toggleIsShowActiveOnly}
       myVotingWeight={myDelegationInfo?.votingWeight || 0}
       proposalCreationThreshold={
         governanceSummaryInfo?.creationThreshold || 1000
