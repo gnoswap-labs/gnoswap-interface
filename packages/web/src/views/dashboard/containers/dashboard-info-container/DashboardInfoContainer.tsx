@@ -69,7 +69,7 @@ const DashboardInfoContainer: React.FC = () => {
       holders: `${numberToFormat(governanceOverview.holders)}`,
       passedCount: `${numberToFormat(governanceOverview.passedCount)}`,
       activeCount: `${numberToFormat(governanceOverview.activeCount)} `,
-      communityPool: `${numberToFormat(governanceOverview.totalDelegated)} ${
+      communityPool: `${numberToFormat(governanceOverview.communityPool)} ${
         GNS_TOKEN.symbol
       }`,
     };
