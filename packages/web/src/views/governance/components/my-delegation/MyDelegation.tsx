@@ -64,9 +64,15 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     const votingWeightInfos = myDelegationInfo.delegations.filter(
       item => !item.unlockDate || item.unlockDate === "",
     );
-    const undelegationInfos = myDelegationInfo.delegations.filter(
-      item => !!item.unlockDate,
-    );
+    const undelegationInfos = myDelegationInfo.delegations
+      .filter(item => !!item.unlockDate)
+      .sort((a, b) => {
+        if (b.amount !== a.amount) {
+          return b.amount - a.amount;
+        }
+
+        return a.updatedDate.localeCompare(b.updatedDate);
+      });
 
     const hasVotingWeight = votingWeightInfos.length > 0;
     const hasUndelgated = undelegationInfos.length > 0;
