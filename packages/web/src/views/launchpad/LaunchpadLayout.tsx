@@ -6,6 +6,8 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
 
+import { getCanScrollUpId } from "@constants/common.constant";
+
 import { LaunchpadLayoutWrapper } from "./LaunchpadLayout.styles";
 
 interface LaunchpadLayoutProps {
@@ -28,7 +30,12 @@ const LaunchpadLayout: React.FC<LaunchpadLayoutProps> = ({
       {header}
       <main>
         <div className="launchpad-container">{main}</div>
-        <div className="launchpad-active-project">{activeProjects}</div>
+        <div
+          className="launchpad-active-project"
+          id={getCanScrollUpId("active-project-list")}
+        >
+          {activeProjects}
+        </div>
       </main>
       <div className="background-wrapper">
         <div className="background" />
