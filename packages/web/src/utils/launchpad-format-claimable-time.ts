@@ -36,6 +36,14 @@ export const formatClaimableTime = (
         return format("Launchpad:common.time.inTime", {
           time: `${hourString} ${minuteString}`,
         });
+      } else if (minutes > 0) {
+        const minuteString = format("Launchpad:common.time.minutes", {
+          count: minutes,
+        });
+
+        return format("Launchpad:common.time.inTime", {
+          time: `${minuteString}`,
+        });
       } else {
         return format("Launchpad:common.time.inOneMinute");
       }
