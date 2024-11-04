@@ -9,7 +9,7 @@ import {
 } from "@query/dashboard";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
 
-import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
+import { XGNS_TOKEN } from "@common/values/token-constant";
 import { numberToFormat } from "@utils/string-utils";
 import DashboardInfo from "../../components/dashboard-info/DashboardInfo";
 
@@ -69,9 +69,9 @@ const DashboardInfoContainer: React.FC = () => {
       holders: `${numberToFormat(governanceOverview.holders)}`,
       passedCount: `${numberToFormat(governanceOverview.passedCount)}`,
       activeCount: `${numberToFormat(governanceOverview.activeCount)} `,
-      communityPool: `${numberToFormat(governanceOverview.communityPool)} ${
-        GNS_TOKEN.symbol
-      }`,
+      communityPool: `${formatOtherPrice(governanceOverview.communityPool, {
+        isKMB: false,
+      })}`,
     };
   }, [governanceOverview]);
 
