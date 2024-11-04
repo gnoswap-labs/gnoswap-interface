@@ -78,6 +78,13 @@ export const ContentWrapper = styled.div`
       }
       color: ${({ theme }) => theme.color.text04};
     }
+    .price-text {
+      flex-shrink: 0;
+      max-width: 60%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
     .balance-text-disabled {
       cursor: pointer;
     }

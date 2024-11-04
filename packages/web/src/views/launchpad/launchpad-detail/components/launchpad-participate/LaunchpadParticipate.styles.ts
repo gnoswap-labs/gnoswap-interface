@@ -68,6 +68,15 @@ export const LaunchpadParticipateWrapper = styled.div`
         cursor: default;
       }
     }
+    .participate-price-text {
+      max-width: 60%;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .participate-balance-text {
+      flex-shrink: 0;
+    }
   }
   .participate-info-wrapper {
     ${mixins.flexbox("column", "center", "center")};

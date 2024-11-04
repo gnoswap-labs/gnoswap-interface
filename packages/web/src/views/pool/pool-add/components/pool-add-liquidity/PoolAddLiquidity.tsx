@@ -329,7 +329,6 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
             />
           )}
         </article>
-
         <article className="selector-wrapper selector-wrapper-fee-tier">
           <div
             className={`header-wrapper ${
@@ -362,7 +361,6 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
             openedFeeTier={openedFeeTier}
           />
         </article>
-
         <article
           className={`selector-wrapper ${
             !openedPriceRange ? "selector-wrapper-price-range" : ""
@@ -419,7 +417,6 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
             </OutOfRangeWrapper>
           )}
         </article>
-
         <article className="selector-wrapper amount-input-wrapper">
           <div className="header-wrapper default-cursor">
             <h5>{t("AddPosition:form.amount.label")}</h5>
