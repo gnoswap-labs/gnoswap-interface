@@ -25,7 +25,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
 }) => {
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
-  
+
   return (
     <GovernanceSummaryWrapper>
       <div className="info-wrapper">
@@ -53,7 +53,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
           isLoading={isLoading}
         />
         <InfoBox
-          title={t("Governance:summary.apy.title")}
+          title={t("Governance:summary.apr.title")}
           value={`${formatOtherPrice(governanceSummary.apy, {
             isKMB: false,
             usd: false,
@@ -80,6 +80,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         </div>
       )}
     </GovernanceSummaryWrapper>
-  );};
+  );
+};
 
 export default GovernanceSummary;
