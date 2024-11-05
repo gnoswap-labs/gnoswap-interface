@@ -75,10 +75,17 @@ const WalletPositionCardListContainer: React.FC = () => {
 
   const handleScroll = () => {
     if (divRef.current) {
-      const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(
-        Math.min(Math.floor(currentScrollX / 322) + 1, positions.length),
-      );
+      const container = divRef.current;
+      const currentScrollX = container.scrollLeft;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+
+      if (currentScrollX >= maxScroll - 1) {
+        setCurrentIndex(positions.length);
+      } else {
+        setCurrentIndex(
+          Math.min(Math.floor(currentScrollX / 322) + 1, positions.length),
+        );
+      }
     }
   };
 
