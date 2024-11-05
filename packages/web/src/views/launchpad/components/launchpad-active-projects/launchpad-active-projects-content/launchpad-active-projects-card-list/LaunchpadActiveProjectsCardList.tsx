@@ -73,7 +73,7 @@ const LaunchpadActiveProjectsCardList: React.FC<
             />
           ))}
       </ActiveProjectsGridWrapper>
-      {showLoadMore && (
+      {!isMobile && showLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )}
       {isMobile &&

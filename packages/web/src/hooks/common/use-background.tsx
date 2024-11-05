@@ -41,10 +41,6 @@ export const useBackground = () => {
             scrollTo(getScrollHeight(router.pathname));
             setMemorizedPath(null);
             break;
-          case "/launchpad/project":
-            scrollTo(getScrollHeight(router.pathname));
-            setMemorizedPath(null);
-            break;
         }
       }
 

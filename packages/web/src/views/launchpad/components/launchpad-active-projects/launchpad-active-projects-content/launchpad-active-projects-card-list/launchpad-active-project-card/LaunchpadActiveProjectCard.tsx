@@ -22,8 +22,8 @@ const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
   const { pools, status, projectId, rewardTokenSymbol, rewardTokenLogoUrl } =
     project;
 
-  const firstPool = pools[0];
-  const lastPool = pools[2];
+  const FIRST_POOL = pools[0];
+  const LAST_POOL = pools[2];
 
   return (
     <ActiveProjectCardWrapper
@@ -31,8 +31,8 @@ const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
       onClick={() => moveProjectDetail(projectId)}
     >
       <LaunchpadStatusTimeChip
-        startTime={firstPool.startTime}
-        endTime={lastPool.endTime}
+        startTime={FIRST_POOL.startTime}
+        endTime={LAST_POOL.endTime}
         status={project.status}
       />
       <LaunchpadActiveProjectCardHeader
