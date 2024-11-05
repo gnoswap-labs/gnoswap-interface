@@ -27,7 +27,6 @@ import DepositConditionsTooltip from "@components/common/launchpad-tooltip/depos
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -177,15 +176,13 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
     if (isLoading) {
       return (
-        <LoadingSpinner size="SMALL" />
-        // <div className="participate-button-wrapper">
-        //   <Button
-        //     style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
-        //     text={<LoadingSpinner size="SMALL" />}
-        //   />
-        // </div>
+        <div className="participate-button-wrapper">
+          <Button
+            style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
+            text={t("Launchpad:common.upcoming")}
+          />
+        </div>
       );
-      return <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />;
     }
 
     return (
