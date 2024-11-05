@@ -132,9 +132,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
               url={tokenA?.logoURI}
               width={24}
             />
-            <p>
-              {t("DecreaseLiquidity:form.unclaimed")}
-            </p>
+            <p>{t("DecreaseLiquidity:form.unclaimed")}</p>
           </div>
           <p>{unclaimedPoolAAMount}</p>
         </div>

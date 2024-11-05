@@ -86,7 +86,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
       <div className="result-section">
         <div className="total-amount-box">
           <h5 className="total-amount-title">
-            {t("UnstakePosition:totalAmt")}
+            {t("UnstakePosition:overview.totalAmt")}
           </h5>
           <span className="result-value">{totalLiquidityUSD}</span>
         </div>
