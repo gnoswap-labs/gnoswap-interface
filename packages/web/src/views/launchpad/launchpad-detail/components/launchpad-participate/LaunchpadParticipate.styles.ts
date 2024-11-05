@@ -106,8 +106,14 @@ export const LaunchpadParticipateWrapper = styled.div`
       color: ${({ theme }) => theme.color.text03};
       font-size: 14px;
       font-weight: 400;
+      max-width: 50%;
       ${media.mobile} {
         font-size: 13px;
+      }
+      span {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
   }

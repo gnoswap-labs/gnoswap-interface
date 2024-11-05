@@ -302,11 +302,13 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
                 height={24}
                 alt="GNS Symbol image"
               />
-              {participateAmount
-                ? `${toNumberFormat(Number(participateAmount), 2)} ${
-                    DEFAULT_DEPOSIT_TOKEN.symbol
-                  }`
-                : "-"}
+              <span>
+                {participateAmount
+                  ? `${toNumberFormat(Number(participateAmount), 2)} ${
+                      DEFAULT_DEPOSIT_TOKEN.symbol
+                    }`
+                  : "-"}
+              </span>
             </div>
           )}
           {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 24 })} />}
