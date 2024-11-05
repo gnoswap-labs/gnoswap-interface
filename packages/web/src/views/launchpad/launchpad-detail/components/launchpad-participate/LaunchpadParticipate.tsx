@@ -27,6 +27,7 @@ import DepositConditionsTooltip from "@components/common/launchpad-tooltip/depos
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -41,6 +42,11 @@ interface LaunchpadParticipateProps {
   depositGNS: (projectPoolId: string, depositAmount: string) => void;
   refetch: () => Promise<void>;
 }
+
+const defaultStyle = {
+  fullWidth: true,
+  hierarchy: ButtonHierarchy.Primary,
+};
 
 const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   poolInfo,
@@ -170,6 +176,15 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     }
 
     if (isLoading) {
+      return (
+        <LoadingSpinner size="SMALL" />
+        // <div className="participate-button-wrapper">
+        //   <Button
+        //     style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
+        //     text={<LoadingSpinner size="SMALL" />}
+        //   />
+        // </div>
+      );
       return <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />;
     }
 
@@ -358,11 +373,6 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   openLaunchpadDepositAction,
 }) => {
   const { t } = useTranslation();
-
-  const defaultStyle = {
-    fullWidth: true,
-    hierarchy: ButtonHierarchy.Primary,
-  };
 
   if (status !== "ONGOING") {
     const getProjectStatus = (type: PROJECT_STATUS_TYPE) => {
