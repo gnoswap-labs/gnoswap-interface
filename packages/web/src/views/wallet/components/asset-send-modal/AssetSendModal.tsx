@@ -20,7 +20,6 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
-import { convertToKMB } from "@utils/stake-position-utils";
 import { capitalize } from "@utils/string-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
@@ -137,15 +136,15 @@ const AssetSendModal: React.FC<Props> = ({
   const estimatePrice = useMemo(
     () =>
       withdrawInfo?.wrappedPath && !!amount && amount !== "0"
-        ? "$" +
-          convertToKMB(
+        ? formatPrice(
             BigNumber(+amount)
               .multipliedBy(
                 Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
               )
               .toString(),
             {
-              isIgnoreKFormat: true,
+              usd: true,
+              isKMB: false,
             },
           )
         : "-",
@@ -227,7 +226,7 @@ const AssetSendModal: React.FC<Props> = ({
                   <span
                     className="balance-text"
                     onClick={handleEnterAllBalanceAvailable}
-                  >{`${t("common:available")}: ${
+                  >{`${t("common:action.balance")}: ${
                     currentAvailableBalance
                       ? formatPrice(currentAvailableBalance, {
                           isKMB: false,

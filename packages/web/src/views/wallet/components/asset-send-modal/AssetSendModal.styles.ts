@@ -249,11 +249,17 @@ export const AssetSendContent = styled.div`
 
   .price-text,
   .balance-text {
-    ${fonts.body12};
+    ${fonts.p2};
     color: ${({ theme }) => theme.color.text04};
     ${media.mobile} {
       ${fonts.p2}
     }
+  }
+  .price-text {
+    max-width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .balance-text {

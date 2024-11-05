@@ -80,5 +80,4 @@ const TokenDetail: React.FC = () => {
   );
 };
 
-
 export default TokenDetail;

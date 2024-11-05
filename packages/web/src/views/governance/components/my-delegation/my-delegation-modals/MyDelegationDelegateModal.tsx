@@ -225,11 +225,14 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               url={XGNS_TOKEN.logoURI}
               width={24}
             />
-            {formatOtherPrice(gnsAmountInput.amount, {
-              isKMB: false,
-              usd: false,
-            })}
-            {` ${XGNS_TOKEN.symbol}`}
+
+            <span>
+              {formatOtherPrice(gnsAmountInput.amount, {
+                isKMB: false,
+                usd: false,
+              })}
+              {` ${XGNS_TOKEN.symbol}`}
+            </span>
           </div>
         </div>
         <div className="info-rows">
