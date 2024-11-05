@@ -35,9 +35,22 @@ export const useBackground = () => {
       return;
     }
     if (isLoadingPools || isLoadingTokens) {
+      if (["/launchpad"].includes(router.pathname)) {
+        switch (router.pathname) {
+          case "/launchpad":
+            scrollTo(getScrollHeight(router.pathname));
+            setMemorizedPath(null);
+            break;
+          case "/launchpad/project":
+            scrollTo(getScrollHeight(router.pathname));
+            setMemorizedPath(null);
+            break;
+        }
+      }
+
       return;
     }
-    if (["/", "/earn", "/launchpad"].includes(router.pathname)) {
+    if (["/", "/earn"].includes(router.pathname)) {
       switch (router.pathname) {
         case "/":
           scrollTo(getScrollHeight(router.pathname));
@@ -48,14 +61,6 @@ export const useBackground = () => {
           setMemorizedPath(null);
           break;
         case "/earn/[pool-path]":
-          scrollTo(getScrollHeight(router.pathname));
-          setMemorizedPath(null);
-          break;
-        case "/launchpad":
-          scrollTo(getScrollHeight(router.pathname));
-          setMemorizedPath(null);
-          break;
-        case "/launchpad/project":
           scrollTo(getScrollHeight(router.pathname));
           setMemorizedPath(null);
           break;
