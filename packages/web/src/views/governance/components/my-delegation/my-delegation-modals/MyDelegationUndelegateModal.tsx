@@ -209,7 +209,12 @@ const MyDelegationUndelegateModal: React.FC<
             selectedDelegatedInfo.address,
             gnsAmountInput.amount,
           );
-          setIsOpen(false);
+
+          const timeoutId = setTimeout(() => {
+            setIsOpen(false);
+          }, 20);
+
+          return () => clearTimeout(timeoutId);
         }}
         text={t("Governance:myDel.undelModal.ctaBtn")}
         style={{

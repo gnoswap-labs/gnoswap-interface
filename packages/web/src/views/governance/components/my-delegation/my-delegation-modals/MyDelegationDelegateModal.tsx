@@ -87,18 +87,35 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   }, [isValidSelfAddress, selfAddress, t]);
 
   const delegate = () => {
-    setIsOpen(false);
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    const closeModal = () => {
+      timeoutId = setTimeout(() => {
+        setIsOpen(false);
+      }, 30);
+    };
 
     if (!isWalletConnected) {
       connectWallet();
-      return;
+      closeModal();
+      return () => {
+        if (timeoutId) clearTimeout(timeoutId);
+      };
     }
 
     if (!gnsAmountInput.isAvailableDelegate) {
-      return;
+      closeModal();
+      return () => {
+        if (timeoutId) clearTimeout(timeoutId);
+      };
     }
 
     onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
+    closeModal();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   };
 
   const changeSelfDelegateeAddress = useCallback(
