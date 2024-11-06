@@ -17,6 +17,7 @@ import {
   useGetPoolList,
   useRefetchGetPoolDetailByPath,
 } from "@query/pools";
+import { useGetPoolStakingListByAddress } from "@query/pools/use-get-pool-staking-list-by-address";
 import { DexEvent } from "@repositories/common";
 import { EarnState } from "@states/index";
 
@@ -56,6 +57,9 @@ const IncentivizePoolModalContainer: React.FC<
   const { refetch: refetchIncentivizePools } = useGetIncentivizePoolList();
   const { refetch: refetchPoolDetails } =
     useRefetchGetPoolDetailByPath(poolPath);
+  const { refetch: refetchStakingList } = useGetPoolStakingListByAddress(
+    address || "",
+  );
 
   const { getMessage } = useMessage();
 
@@ -130,6 +134,7 @@ const IncentivizePoolModalContainer: React.FC<
                 refetchPositions();
                 refetchIncentivizePools();
                 refetchPoolDetails();
+                refetchStakingList();
               },
             });
           }
