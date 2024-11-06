@@ -8,8 +8,6 @@ export const CreateProposalModalWrapper = styled.div`
   min-width: 328px;
   max-width: 700px;
   width: 90vw;
-  /* max-height: 800px; */
-  /* height: 85vh; */
 
   border-radius: 8px;
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);

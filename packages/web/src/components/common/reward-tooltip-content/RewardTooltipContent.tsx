@@ -135,8 +135,13 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
   ]
     .filter(({ rewards }) => rewards)
     .sort((a, b) => {
-      const totalA = parseFloat(a.totalUSD.replace(/[$, ]/g, ""));
-      const totalB = parseFloat(b.totalUSD.replace(/[$, ]/g, ""));
+      const parseAmount = (value: string) => {
+        const number = parseFloat(value.replace(/[$, ]/g, ""));
+        return isNaN(number) ? 0 : number;
+      };
+
+      const totalA = parseAmount(a.totalUSD);
+      const totalB = parseAmount(b.totalUSD);
       return totalB - totalA;
     });
 
