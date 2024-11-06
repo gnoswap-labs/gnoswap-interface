@@ -148,6 +148,23 @@ export class PoolRepositoryImpl implements PoolRepository {
     return pools;
   };
 
+  getPoolStakingListByAddress = async (
+    address: string,
+  ): Promise<PoolStakingModel[]> => {
+    if (!this.networkClient) {
+      return [];
+    }
+    const response = await this.networkClient.get<{
+      data: PoolStakingResponse[];
+    }>({
+      url: `/staking/?provider=${address}`,
+    });
+    const pools = response?.data?.data
+      ? response.data.data.map(PoolStakingMapper.fromResponse)
+      : [];
+    return pools;
+  };
+
   getWithdrawalFee = async (): Promise<number> => {
     try {
       if (!PACKAGE_POOL_PATH || !this.rpcProvider) {
