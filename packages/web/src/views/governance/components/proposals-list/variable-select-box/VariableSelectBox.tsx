@@ -1,4 +1,3 @@
-
 import React, {
   useCallback,
   useEffect,
@@ -15,6 +14,18 @@ import {
   VariableSelectBoxWrapper,
   VariableSelectOptionsWrapper,
 } from "./VariableSelectBox.styles";
+
+function makeClassNameWithSmallFont(
+  className: string,
+  target: string,
+  limitLength = 11,
+) {
+  const additionalClassName = "small-font";
+  if (target.length > limitLength) {
+    return `${className} ${additionalClassName}`;
+  }
+  return className;
+}
 
 export interface VariableSelectBoxProps {
   modalBodyRef?: React.RefObject<HTMLDivElement>;
@@ -90,7 +101,10 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
           {items.map((item, index) => (
             <span
               key={index}
-              className="display-value"
+              className={makeClassNameWithSmallFont(
+                "display-value",
+                item.displayValue,
+              )}
               onClick={() => selectItem(item.value)}
             >
               {item.displayValue}
@@ -133,7 +147,15 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
         ref={selectRef}
         onClick={toggleOpenSelectBox}
       >
-        <span className="display-text">{displayText}</span>
+        <span
+          className={makeClassNameWithSmallFont(
+            "display-text",
+            displayText,
+            12,
+          )}
+        >
+          {displayText}
+        </span>
         {opened ? (
           <IconArrowUp className="icon-arrow" />
         ) : (
