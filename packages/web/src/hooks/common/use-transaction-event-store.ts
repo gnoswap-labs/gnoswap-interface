@@ -85,7 +85,7 @@ export const useTransactionEventStore = () => {
         if (visibleEmitResult && event.status === "SUCCESS") {
           wait<boolean>(async () => true, TX_RESULT_SNACKBAR_TIMEOUT).then(
             () => {
-              enqueue(undefined, updatingSnackbarConfig);
+              enqueue({ txHash: message.txHash }, updatingSnackbarConfig);
 
               if (alreadyEmitted) {
                 change(updatingSnackbarConfig.id, "updating-done");
