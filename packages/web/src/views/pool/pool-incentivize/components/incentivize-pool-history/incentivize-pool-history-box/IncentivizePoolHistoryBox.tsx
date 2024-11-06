@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation, Trans } from "react-i18next";
 
 import { IncentivizePoolHistoryBoxWrapper } from "./IncentivizePoolHistoryBox.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -8,11 +9,15 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 // import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
 const IncentivizePoolHistoryBox = () => {
+  const { t } = useTranslation();
+
   const renderDataMapping = () => {
     return (
       <>
         <div className="row">
-          <div className="label">Token</div>
+          <div className="label">
+            {t("IncentivizePool:incentiPool.history.label.token")}
+          </div>
           <div className="value">
             {/* <OverlapTokenLogo tokens={<div></div>} size={24} /> */}
             <span>GNS External</span>
@@ -20,7 +25,9 @@ const IncentivizePoolHistoryBox = () => {
           </div>
         </div>
         <div className="row">
-          <div className="label">Pool</div>
+          <div className="label">
+            {t("IncentivizePool:incentiPool.history.label.pool")}
+          </div>
           <div className="value">
             <DoubleLogo left="" right="" size={24} />
             <span>GNS External</span>
@@ -28,19 +35,27 @@ const IncentivizePoolHistoryBox = () => {
           </div>
         </div>
         <div className="row">
-          <div className="label">Start Date</div>
-          <div className="value">GNS External</div>
-        </div>
-        <div className="row">
-          <div className="label">End Date</div>
+          <div className="label">
+            {t("IncentivizePool:incentiPool.history.label.startDate")}
+          </div>
           <div className="value">GNS External</div>
         </div>
         <div className="row">
           <div className="label">
-            Incentivized Amount
+            {t("IncentivizePool:incentiPool.history.label.endDate")}
+          </div>
+          <div className="value">GNS External</div>
+        </div>
+        <div className="row">
+          <div className="label">
+            {t("IncentivizePool:incentiPool.history.label.incentivizedAmount")}
             <Tooltip
               FloatingContent={
-                <>The amount of tokens incentivized to the pool.</>
+                <Trans
+                  ns="IncentivizePool"
+                  components={{ br: <br /> }}
+                  i18nKey={"incentiPool.history.tooltip.incentivizedAmount"}
+                />
               }
               placement="top"
             >
@@ -51,26 +66,14 @@ const IncentivizePoolHistoryBox = () => {
         </div>
         <div className="row">
           <div className="label">
-            Remaining Amount
-            <Tooltip
-              FloatingContent={<>The amount of tokens remaining in the pool.</>}
-              placement="top"
-            >
-              <IconInfo size={16} />
-            </Tooltip>
-          </div>
-          <div className="value">GNS External</div>
-        </div>
-        <div className="row">
-          <div className="label">
-            Unvested Amount
+            {t("IncentivizePool:incentiPool.history.label.remainingAmount")}
             <Tooltip
               FloatingContent={
-                <>
-                  The amount of tokens unvested due to warm-up period . This
-                  amount will be claimable by the provider address upon the
-                  completion of the incentivization.
-                </>
+                <Trans
+                  ns="IncentivizePool"
+                  components={{ br: <br /> }}
+                  i18nKey={"incentiPool.history.tooltip.remainingAmount"}
+                />
               }
               placement="top"
             >
@@ -81,14 +84,32 @@ const IncentivizePoolHistoryBox = () => {
         </div>
         <div className="row">
           <div className="label">
-            Deposit Amount
+            {t("IncentivizePool:incentiPool.history.label.unvestedAmount")}
             <Tooltip
               FloatingContent={
-                <>
-                  The amount of tokens deposited when this incentivization was
-                  created. It’s fully refundable upon the completion of the
-                  incentivization.
-                </>
+                <Trans
+                  ns="IncentivizePool"
+                  components={{ br: <br /> }}
+                  i18nKey={"incentiPool.history.tooltip.unvestedAmount"}
+                />
+              }
+              placement="top"
+            >
+              <IconInfo size={16} />
+            </Tooltip>
+          </div>
+          <div className="value">GNS External</div>
+        </div>
+        <div className="row">
+          <div className="label">
+            {t("IncentivizePool:incentiPool.history.label.depositAmount")}
+            <Tooltip
+              FloatingContent={
+                <Trans
+                  ns="IncentivizePool"
+                  components={{ br: <br /> }}
+                  i18nKey={"incentiPool.history.tooltip.depositAmount"}
+                />
               }
               placement="top"
             >
