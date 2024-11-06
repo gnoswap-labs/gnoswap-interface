@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation, Trans } from "react-i18next";
+import { css } from "@emotion/react";
 
 import { ExtendedPoolStakingModel } from "@models/pool/pool-staking";
 import { capitalize } from "@utils/string-utils";
@@ -59,7 +60,7 @@ const IncentivizePoolHistoryBox = ({
 
   const formatAmount = (amount: string | null) => {
     if (!amount) return "-";
-    return toNumberFormat(Number(makeDisplayTokenAmount(GNS_TOKEN, amount)), 2);
+    return toNumberFormat(Number(makeDisplayTokenAmount(GNS_TOKEN, amount)), 6);
   };
 
   const isClaimable = React.useMemo(() => {
@@ -118,11 +119,13 @@ const IncentivizePoolHistoryBox = ({
             {t("IncentivizePool:incentiPool.history.label.incentivizedAmount")}
             <Tooltip
               FloatingContent={
-                <Trans
-                  ns="IncentivizePool"
-                  components={{ br: <br /> }}
-                  i18nKey={"incentiPool.history.tooltip.incentivizedAmount"}
-                />
+                <span css={tooltipConent}>
+                  <Trans
+                    ns="IncentivizePool"
+                    components={{ br: <br /> }}
+                    i18nKey={"incentiPool.history.tooltip.incentivizedAmount"}
+                  />
+                </span>
               }
               placement="top"
             >
@@ -130,7 +133,8 @@ const IncentivizePoolHistoryBox = ({
             </Tooltip>
           </div>
           <div className="value">
-            {toNumberFormat(stakingData.incentivizedAmount, 2)}
+            {toNumberFormat(stakingData.incentivizedAmount, 6)}{" "}
+            {rewardToken.symbol}
           </div>
         </div>
         <div className="row">
@@ -138,11 +142,13 @@ const IncentivizePoolHistoryBox = ({
             {t("IncentivizePool:incentiPool.history.label.remainingAmount")}
             <Tooltip
               FloatingContent={
-                <Trans
-                  ns="IncentivizePool"
-                  components={{ br: <br /> }}
-                  i18nKey={"incentiPool.history.tooltip.remainingAmount"}
-                />
+                <span css={tooltipConent}>
+                  <Trans
+                    ns="IncentivizePool"
+                    components={{ br: <br /> }}
+                    i18nKey={"incentiPool.history.tooltip.remainingAmount"}
+                  />
+                </span>
               }
               placement="top"
             >
@@ -150,7 +156,8 @@ const IncentivizePoolHistoryBox = ({
             </Tooltip>
           </div>
           <div className="value">
-            {toNumberFormat(stakingData.remainingAmount, 2)}
+            {toNumberFormat(stakingData.remainingAmount, 6)}{" "}
+            {rewardToken.symbol}
           </div>
         </div>
         <div className="row">
@@ -158,11 +165,13 @@ const IncentivizePoolHistoryBox = ({
             {t("IncentivizePool:incentiPool.history.label.unvestedAmount")}
             <Tooltip
               FloatingContent={
-                <Trans
-                  ns="IncentivizePool"
-                  components={{ br: <br /> }}
-                  i18nKey={"incentiPool.history.tooltip.unvestedAmount"}
-                />
+                <span css={tooltipConent}>
+                  <Trans
+                    ns="IncentivizePool"
+                    components={{ br: <br /> }}
+                    i18nKey={"incentiPool.history.tooltip.unvestedAmount"}
+                  />
+                </span>
               }
               placement="top"
             >
@@ -176,11 +185,13 @@ const IncentivizePoolHistoryBox = ({
             {t("IncentivizePool:incentiPool.history.label.depositAmount")}
             <Tooltip
               FloatingContent={
-                <Trans
-                  ns="IncentivizePool"
-                  components={{ br: <br /> }}
-                  i18nKey={"incentiPool.history.tooltip.depositAmount"}
-                />
+                <span css={tooltipConent}>
+                  <Trans
+                    ns="IncentivizePool"
+                    components={{ br: <br /> }}
+                    i18nKey={"incentiPool.history.tooltip.depositAmount"}
+                  />
+                </span>
               }
               placement="top"
             >
@@ -188,7 +199,7 @@ const IncentivizePoolHistoryBox = ({
             </Tooltip>
           </div>
           <div className="value">
-            {formatAmount(stakingData.depositGnsAmount)}
+            {formatAmount(stakingData.depositGnsAmount)} {GNS_TOKEN.symbol}
           </div>
         </div>
 
@@ -210,6 +221,10 @@ const IncentivizePoolHistoryBox = ({
     </IncentivizePoolHistoryBoxWrapper>
   );
 };
+
+const tooltipConent = css`
+  font-size: 14px;
+`;
 
 interface ChipProps {
   text: string;

@@ -53,7 +53,7 @@ export const IncentivizePoolHistoryBoxWrapper = styled.div`
     align-items: center;
     justify-content: center;
     color: ${({ theme }) =>
-      theme.themeKey === "dark" ? theme.color.text06 : theme.color.text04};
+      theme.themeKey === "dark" ? "#C3D2EA" : theme.color.text04};
     background: ${({ theme }) =>
       theme.themeKey === "dark"
         ? theme.color.background03
