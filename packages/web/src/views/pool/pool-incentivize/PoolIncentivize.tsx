@@ -17,6 +17,7 @@ import { makeRouteUrl } from "@utils/page.utils";
 import PoolAddIncentivizeContainer from "./containers/pool-add-incentivize-container/PoolAddIncentivizeContainer";
 import PoolIncentivizeContainer from "./containers/pool-incentivize-container/PoolIncentivizeContainer";
 import PoolIncentivizeLayout from "./PoolIncentivizeLayout";
+import IncentivizePoolHistoryContainer from "./containers/incentivize-pool-history-container/IncentivizePoolHistoryContainer";
 
 const PoolIncentivize: React.FC = () => {
   const { t } = useTranslation();
@@ -80,6 +81,7 @@ const PoolIncentivize: React.FC = () => {
           <PoolIncentivizeContainer />
         )
       }
+      history={<IncentivizePoolHistoryContainer />}
       footer={<Footer />}
     />
   );
