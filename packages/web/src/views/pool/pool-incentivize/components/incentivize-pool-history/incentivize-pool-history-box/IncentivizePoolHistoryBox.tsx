@@ -166,39 +166,38 @@ const IncentivizePoolHistoryBox = ({
             {rewardToken.symbol}
           </div>
         </div>
-        {isClaimableTime && (
-          <div className="row">
-            <div className="label">
-              {t("IncentivizePool:incentiPool.history.label.unvestedAmount")}
-              <Tooltip
-                FloatingContent={
-                  <span css={historyTooltipContent}>
-                    <Trans
-                      className="test"
-                      ns="IncentivizePool"
-                      components={{
-                        br: <br />,
-                        link: (
-                          <Link
-                            href="https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods"
-                            target="_blank"
-                          >
-                            <IconOpenLink />
-                          </Link>
-                        ),
-                      }}
-                      i18nKey={"incentiPool.history.tooltip.unvestedAmount"}
-                    />
-                  </span>
-                }
-                placement="top"
-              >
-                <IconInfo size={16} />
-              </Tooltip>
-            </div>
-            <div className="value">-</div>
+        <div className="row">
+          <div className="label">
+            {t("IncentivizePool:incentiPool.history.label.unvestedAmount")}
+            <Tooltip
+              FloatingContent={
+                <span css={historyTooltipContent}>
+                  <Trans
+                    className="test"
+                    ns="IncentivizePool"
+                    components={{
+                      br: <br />,
+                      link: (
+                        <Link
+                          href="https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods"
+                          target="_blank"
+                        >
+                          <IconOpenLink />
+                        </Link>
+                      ),
+                    }}
+                    i18nKey={"incentiPool.history.tooltip.unvestedAmount"}
+                  />
+                </span>
+              }
+              placement="top"
+            >
+              <IconInfo size={16} />
+            </Tooltip>
           </div>
-        )}
+          <div className="value">-</div>
+        </div>
+
         <div className="row">
           <div className="label">
             {t("IncentivizePool:incentiPool.history.label.depositAmount")}
