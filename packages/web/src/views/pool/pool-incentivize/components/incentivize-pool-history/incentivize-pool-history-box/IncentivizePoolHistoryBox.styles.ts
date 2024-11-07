@@ -1,4 +1,5 @@
 import { fonts } from "@constants/font.constant";
+import { css, type Theme } from "@emotion/react";
 import styled from "@emotion/styled";
 
 export const IncentivizePoolHistoryBoxWrapper = styled.div`
@@ -67,5 +68,14 @@ export const IncentivizePoolHistoryBoxWrapper = styled.div`
     padding: 0 6px;
     font-size: 12px;
     font-weight: 400;
+  }
+`;
+
+export const historyTooltipContent = (theme: Theme) => css`
+  font-size: 14px;
+  a:hover {
+    * {
+      fill: ${theme.color.text10};
+    }
   }
 `;

@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { useTranslation, Trans } from "react-i18next";
 import { css } from "@emotion/react";
 
@@ -17,6 +18,8 @@ import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
+import { historyTooltipContent } from "./IncentivizePoolHistoryBox.styles";
 
 interface IncentivizePoolHistoryBoxProps {
   stakingData: ExtendedPoolStakingModel;
@@ -60,7 +63,10 @@ const IncentivizePoolHistoryBox = ({
 
   const formatAmount = (amount: string | null) => {
     if (!amount) return "-";
-    return toNumberFormat(Number(makeDisplayTokenAmount(GNS_TOKEN, amount)), 6);
+    return toNumberFormat(
+      Number(makeDisplayTokenAmount(GNS_TOKEN, amount)),
+      GNS_TOKEN.decimals,
+    );
   };
 
   const isClaimable = React.useMemo(() => {
@@ -165,10 +171,21 @@ const IncentivizePoolHistoryBox = ({
             {t("IncentivizePool:incentiPool.history.label.unvestedAmount")}
             <Tooltip
               FloatingContent={
-                <span css={tooltipConent}>
+                <span css={historyTooltipContent}>
                   <Trans
+                    className="test"
                     ns="IncentivizePool"
-                    components={{ br: <br /> }}
+                    components={{
+                      br: <br />,
+                      link: (
+                        <Link
+                          href="https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods"
+                          target="_blank"
+                        >
+                          <IconOpenLink />
+                        </Link>
+                      ),
+                    }}
                     i18nKey={"incentiPool.history.tooltip.unvestedAmount"}
                   />
                 </span>

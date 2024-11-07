@@ -14,12 +14,17 @@ const IncentivizePoolHistoryContainer = () => {
       enabled: !!account?.address,
     });
 
-  const poolStakingList: ExtendedPoolStakingModel[] = rawPoolStakingList.map(
-    item => ({
+  const poolStakingList: ExtendedPoolStakingModel[] = rawPoolStakingList
+    .map(item => ({
       ...item,
       depositGnsAmount: (item as ExtendedPoolStakingModel).depositGnsAmount,
-    }),
-  );
+    }))
+    .sort((a, b) => {
+      const dateA = new Date(a.startTimestamp);
+      const dateB = new Date(b.startTimestamp);
+
+      return dateA.getTime() - dateB.getTime();
+    });
 
   return isFetchedStakingList && poolStakingList.length > 0 ? (
     <IncentivizePoolHistory stakingList={poolStakingList} />
