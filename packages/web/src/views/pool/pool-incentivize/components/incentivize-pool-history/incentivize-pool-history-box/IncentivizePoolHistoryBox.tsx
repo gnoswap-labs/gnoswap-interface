@@ -69,7 +69,7 @@ const IncentivizePoolHistoryBox = ({
     );
   };
 
-  const isClaimable = React.useMemo(() => {
+  const isClaimableTime = React.useMemo(() => {
     const endDate = new Date(stakingData.endTimestamp);
     const now = new Date();
     return now > endDate;
@@ -166,37 +166,39 @@ const IncentivizePoolHistoryBox = ({
             {rewardToken.symbol}
           </div>
         </div>
-        <div className="row">
-          <div className="label">
-            {t("IncentivizePool:incentiPool.history.label.unvestedAmount")}
-            <Tooltip
-              FloatingContent={
-                <span css={historyTooltipContent}>
-                  <Trans
-                    className="test"
-                    ns="IncentivizePool"
-                    components={{
-                      br: <br />,
-                      link: (
-                        <Link
-                          href="https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods"
-                          target="_blank"
-                        >
-                          <IconOpenLink />
-                        </Link>
-                      ),
-                    }}
-                    i18nKey={"incentiPool.history.tooltip.unvestedAmount"}
-                  />
-                </span>
-              }
-              placement="top"
-            >
-              <IconInfo size={16} />
-            </Tooltip>
+        {isClaimableTime && (
+          <div className="row">
+            <div className="label">
+              {t("IncentivizePool:incentiPool.history.label.unvestedAmount")}
+              <Tooltip
+                FloatingContent={
+                  <span css={historyTooltipContent}>
+                    <Trans
+                      className="test"
+                      ns="IncentivizePool"
+                      components={{
+                        br: <br />,
+                        link: (
+                          <Link
+                            href="https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods"
+                            target="_blank"
+                          >
+                            <IconOpenLink />
+                          </Link>
+                        ),
+                      }}
+                      i18nKey={"incentiPool.history.tooltip.unvestedAmount"}
+                    />
+                  </span>
+                }
+                placement="top"
+              >
+                <IconInfo size={16} />
+              </Tooltip>
+            </div>
+            <div className="value">-</div>
           </div>
-          <div className="value">-</div>
-        </div>
+        )}
         <div className="row">
           <div className="label">
             {t("IncentivizePool:incentiPool.history.label.depositAmount")}
@@ -220,7 +222,7 @@ const IncentivizePoolHistoryBox = ({
           </div>
         </div>
 
-        {isClaimable && (
+        {isClaimableTime && (
           <div className="button-wrapper">
             <Button
               text={"Claim"}
