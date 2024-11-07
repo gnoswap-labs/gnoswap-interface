@@ -5,10 +5,7 @@ import IconAccountUser from "@components/common/icons/IconAccountUser";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconPulse from "@components/common/icons/IconPulse";
 import { BLOCKED_PAGES } from "@constants/environment.constant";
-import {
-  SIDE_EXTRA_MENU_NAV,
-  SIDE_MENU_NAV
-} from "@constants/header.constant";
+import { SIDE_EXTRA_MENU_NAV, SIDE_MENU_NAV } from "@constants/header.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 
 import {
@@ -20,14 +17,13 @@ import {
   RightIconMenu,
   SubMenuWrapper,
 } from "./SubMenu.styles";
+import Link from "next/link";
 
 interface HeaderSideMenuModalProps {
   onSideMenuToggle: () => void;
 }
 
-const SubMenu: React.FC<HeaderSideMenuModalProps> = ({
-  onSideMenuToggle,
-}) => {
+const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ onSideMenuToggle }) => {
   const router = useCustomRouter();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
@@ -68,22 +64,21 @@ const SubMenu: React.FC<HeaderSideMenuModalProps> = ({
         <ul>
           {navigationItems.length > 0 &&
             navigationItems.map((item, index) => (
-              <li
-                key={index}
-                className="header-side-menu-item"
-                onClick={() => {
-                  if (item.path.startsWith("/")) router.push(item.path);
-                  else window.open(item.path);
-                  onSideMenuToggle();
-                }}
-              >
-                <div>
-                  <LeftIconMenu>
-                    <LeftIcon>{getIcon(item.iconType)}</LeftIcon>
-                    {t(item.title)}
-                  </LeftIconMenu>
-                </div>
-              </li>
+              <Link href={`/${item.path}`} key={index}>
+                <li
+                  className="header-side-menu-item"
+                  onClick={() => {
+                    onSideMenuToggle();
+                  }}
+                >
+                  <div>
+                    <LeftIconMenu>
+                      <LeftIcon>{getIcon(item.iconType)}</LeftIcon>
+                      {t(item.title)}
+                    </LeftIconMenu>
+                  </div>
+                </li>
+              </Link>
             ))}
           <MenuDivider />
           {extraNavigationItems.map((item, index) => (
