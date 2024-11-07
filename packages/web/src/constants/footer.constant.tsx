@@ -139,12 +139,12 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "HeaderFooter:policySection.item.terms",
-        path: "/",
+        path: "/terms",
         newTab: true,
       },
       {
         title: "HeaderFooter:policySection.item.privacyPolicy",
-        path: "/",
+        path: "/privacy",
         newTab: true,
       },
     ],
