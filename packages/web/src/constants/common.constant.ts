@@ -46,7 +46,9 @@ export type PageKey =
   | "/swap"
   | "/wallet"
   | "/launchpad"
-  | "/launchpad/project";
+  | "/launchpad/project"
+  | "/privacy"
+  | "/terms";
 
 export type StringParamsArr = (string | undefined)[];
 
@@ -291,6 +293,16 @@ export const SEOInfo: Record<
   },
   "/launchpad/project": {
     title: () => "Launchpad | GnoSwap",
+    desc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+  },
+  "/privacy": {
+    title: () => "Privacy Policy | GnoSwap",
+    desc: () =>
+      "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
+  },
+  "/terms": {
+    title: () => "Terms of Service | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
