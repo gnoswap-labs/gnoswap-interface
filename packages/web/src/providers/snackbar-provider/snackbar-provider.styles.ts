@@ -17,7 +17,9 @@ export const SnackbarList = styled.div`
   }
   ${media.mobile} {
     width: 328px;
-    right: 16px;
-    top: -16px;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
   }
 `;
