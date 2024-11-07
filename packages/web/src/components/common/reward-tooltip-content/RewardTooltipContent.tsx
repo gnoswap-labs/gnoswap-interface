@@ -36,21 +36,27 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
     if (!rewardInfo || rewardInfo.SWAP_FEE.length === 0) {
       return null;
     }
-    return rewardInfo.SWAP_FEE.sort((a, b) => (b.usd || 0) - (a.usd || 0));
+    return rewardInfo.SWAP_FEE.sort(
+      (a, b) => (b.usd || 0) * (b.amount || 0) - (a.usd || 0) * (a.amount || 0),
+    );
   }, [rewardInfo]);
 
   const internalRewards = useMemo(() => {
     if (!rewardInfo || rewardInfo.INTERNAL.length === 0) {
       return null;
     }
-    return rewardInfo.INTERNAL.sort((a, b) => (b.usd || 0) - (a.usd || 0));
+    return rewardInfo.INTERNAL.sort(
+      (a, b) => (b.usd || 0) * (b.amount || 0) - (a.usd || 0) * (a.amount || 0),
+    );
   }, [rewardInfo]);
 
   const externalRewards = useMemo(() => {
     if (!rewardInfo || rewardInfo.EXTERNAL.length === 0) {
       return null;
     }
-    return rewardInfo.EXTERNAL.sort((a, b) => (b.usd || 0) - (a.usd || 0));
+    return rewardInfo.EXTERNAL.sort(
+      (a, b) => (b.usd || 0) * (b.amount || 0) - (a.usd || 0) * (a.amount || 0),
+    );
   }, [rewardInfo]);
 
   const swapFeeRewardUSD = useMemo(() => {
@@ -129,21 +135,10 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
   }, [externalRewards]);
 
   const rewardsData = [
-    { type: "SWAP_FEE", rewards: swapFeeRewards, totalUSD: swapFeeRewardUSD },
     { type: "INTERNAL", rewards: internalRewards, totalUSD: internalRewardUSD },
     { type: "EXTERNAL", rewards: externalRewards, totalUSD: externalRewardUSD },
-  ]
-    .filter(({ rewards }) => rewards)
-    .sort((a, b) => {
-      const parseAmount = (value: string) => {
-        const number = parseFloat(value.replace(/[$, ]/g, ""));
-        return isNaN(number) ? 0 : number;
-      };
-
-      const totalA = parseAmount(a.totalUSD);
-      const totalB = parseAmount(b.totalUSD);
-      return totalB - totalA;
-    });
+    { type: "SWAP_FEE", rewards: swapFeeRewards, totalUSD: swapFeeRewardUSD },
+  ].filter(({ rewards }) => rewards);
 
   return (
     <RewardTooltipContentWrapper>
