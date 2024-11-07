@@ -86,8 +86,8 @@ export const PoolGraphTooltipContainer = styled.div`
       }
 
       ${media.mobile} {
-        min-width: 24px;
-        width: 24px;
+        min-width: 20px;
+        width: 20px;
         .symbol {
           display: none;
         }
@@ -127,7 +127,7 @@ export const PoolGraphTooltipContainer = styled.div`
 
       ${media.mobile} {
         &.total-amount {
-          width: 85px;
+          width: fit-content;
           gap: 8px;
         }
 

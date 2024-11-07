@@ -68,6 +68,15 @@ export const LaunchpadParticipateWrapper = styled.div`
         cursor: default;
       }
     }
+    .participate-price-text {
+      max-width: 60%;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .participate-balance-text {
+      flex-shrink: 0;
+    }
   }
   .participate-info-wrapper {
     ${mixins.flexbox("column", "center", "center")};
@@ -97,8 +106,14 @@ export const LaunchpadParticipateWrapper = styled.div`
       color: ${({ theme }) => theme.color.text03};
       font-size: 14px;
       font-weight: 400;
+      max-width: 50%;
       ${media.mobile} {
         font-size: 13px;
+      }
+      span {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
   }

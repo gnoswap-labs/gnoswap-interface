@@ -1,5 +1,4 @@
 import { useTheme } from "@emotion/react";
-import BigNumber from "bignumber.js";
 import React, {
   Dispatch,
   SetStateAction,
@@ -87,45 +86,36 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     return t("Governance:myDel.delModal.selectDel.selectBtn");
   }, [isValidSelfAddress, selfAddress, t]);
 
-  const availDelegateButton = useMemo(() => {
-    if (!isWalletConnected) {
-      return true;
-    }
-
-    const amountBN = BigNumber(gnsAmountInput.amount);
-    if (amountBN.isZero()) {
-      return false;
-    }
-
-    if (amountBN.isGreaterThan(gnsAmountInput.balance.replaceAll(",", ""))) {
-      return false;
-    }
-
-    if (!delegatee.address || !isValidAddress(delegatee.address)) {
-      return false;
-    }
-
-    return true;
-  }, [
-    delegatee.address,
-    gnsAmountInput.amount,
-    gnsAmountInput.balance,
-    isWalletConnected,
-  ]);
-
   const delegate = () => {
-    setIsOpen(false);
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    const closeModal = () => {
+      timeoutId = setTimeout(() => {
+        setIsOpen(false);
+      }, 30);
+    };
 
     if (!isWalletConnected) {
       connectWallet();
-      return;
+      closeModal();
+      return () => {
+        if (timeoutId) clearTimeout(timeoutId);
+      };
     }
 
-    if (!availDelegateButton) {
-      return;
+    if (!gnsAmountInput.isAvailableDelegate) {
+      closeModal();
+      return () => {
+        if (timeoutId) clearTimeout(timeoutId);
+      };
     }
 
     onSubmit(delegatee.name, delegatee.address, gnsAmountInput.amount);
+    closeModal();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   };
 
   const changeSelfDelegateeAddress = useCallback(
@@ -252,11 +242,14 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               url={XGNS_TOKEN.logoURI}
               width={24}
             />
-            {formatOtherPrice(gnsAmountInput.amount, {
-              isKMB: false,
-              usd: false,
-            })}
-            {` ${XGNS_TOKEN.symbol}`}
+
+            <span>
+              {formatOtherPrice(gnsAmountInput.amount, {
+                isKMB: false,
+                usd: false,
+              })}
+              {` ${XGNS_TOKEN.symbol}`}
+            </span>
           </div>
         </div>
         <div className="info-rows">
@@ -327,16 +320,12 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 
       <Button
         onClick={delegate}
-        text={t(
-          isWalletConnected
-            ? "Governance:myDel.delModal.ctaBtn"
-            : "common:btn.walletLogin",
-        )}
+        text={gnsAmountInput.delegateButtonText}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={!availDelegateButton}
+        disabled={!gnsAmountInput.isAvailableDelegate}
         className="button-confirm"
       />
     </>

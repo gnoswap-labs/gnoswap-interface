@@ -8,7 +8,9 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { RewardType } from "@constants/option.constant";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import RewardTooltipContent, { PositionRewardForTooltip } from "@components/common/reward-tooltip-content/RewardTooltipContent";
+import RewardTooltipContent, {
+  PositionRewardForTooltip,
+} from "@components/common/reward-tooltip-content/RewardTooltipContent";
 
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
 
@@ -49,8 +51,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   const { t } = useTranslation();
 
   const stakedPositions = useMemo(() => {
-    if (!positions || positions.length === 0)
-      return [];
+    if (!positions || positions.length === 0) return [];
 
     return positions
       .filter(item => item.staked === true)
@@ -62,7 +63,6 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         stakedDate: item.stakedAt,
       }));
   }, [positions]);
-
 
   const { claimedRewardInfo, claimableRewardInfo } = useMemo((): {
     claimedRewardInfo: { [key in RewardType]: PositionRewardForTooltip[] };
@@ -196,7 +196,9 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     };
   }, [positions, tokenPrices]);
 
-  const hasInfo = (data: {[key in RewardType]: PositionRewardForTooltip[]}): boolean => {
+  const hasInfo = (data: {
+    [key in RewardType]: PositionRewardForTooltip[];
+  }): boolean => {
     if (
       data.SWAP_FEE.length === 0 &&
       data.INTERNAL.length === 0 &&
@@ -221,7 +223,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         value={balanceDetailInfo.stakedLP}
         tooltip={t("Wallet:overral.stakedPosi.tooltip")}
         valueTooltip={
-          stakedPositions.length> 0 ? (
+          stakedPositions.length > 0 ? (
             <StakedPostionsTooltipContent poolStakings={stakedPositions} />
           ) : undefined
         }

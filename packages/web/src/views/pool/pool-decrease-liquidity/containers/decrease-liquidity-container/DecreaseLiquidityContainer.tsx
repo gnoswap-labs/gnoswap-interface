@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { SwapFeeTierType } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useSlippage } from "@hooks/common/use-slippage";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 import DecreaseLiquidity from "../../components/decrease-liquidity/DecreaseLiquidity";
 import DecreaseLiquidityLoading from "../../components/decrease-liquidity/DecreaseLiquidityLoading";
@@ -48,6 +49,13 @@ const DecreaseLiquidityContainer: React.FC = () => {
     },
   });
 
+  const showWGNOTToggle = React.useMemo(() => {
+    if (!tokenA || !tokenB) return false;
+    return (
+      tokenA.symbol === GNOT_TOKEN.symbol || tokenB.symbol === GNOT_TOKEN.symbol
+    );
+  }, [tokenA, tokenB]);
+
   if (!tokenA || !tokenB || loading) return <DecreaseLiquidityLoading />;
 
   return (
@@ -66,6 +74,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
       pooledTokenInfos={pooledTokenInfos}
       isGetWGNOT={isGetWGNOT}
       setIsGetWGNOT={() => setIsGetWGNOT(prev => !prev)}
+      showWGNOTToggle={showWGNOTToggle}
     />
   );
 };

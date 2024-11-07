@@ -54,6 +54,9 @@ export const VariableSelectBoxWrapper = styled.div`
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      &.small-font {
+        font-size: 10px;
+      }
     }
 
     > .icon-arrow {
@@ -102,6 +105,9 @@ export const VariableSelectOptionsWrapper = styled.div<{
       text-overflow: ellipsis;
       color: ${({ theme }) => theme.color.text01};
       cursor: pointer;
+      &.small-font {
+        font-size: 13px;
+      }
 
       /* fonts */
       ${fonts.body9}

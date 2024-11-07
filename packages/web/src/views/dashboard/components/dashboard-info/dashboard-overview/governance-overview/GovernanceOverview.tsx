@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import {
@@ -8,8 +10,8 @@ import {
   LoadingTextWrapper,
 } from "./GovernanceOverview.styles";
 
-import { useMemo } from "react";
 import DashboardLabel from "../dashboard-label/DashboardLabel";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
 
 export interface GovernanceOverviewInfo {
   totalDelegated: string;
@@ -57,6 +59,9 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
     <GovernanceOverviewWrapper>
       <GovernanceOverviewTitleWrapper>
         <div>{t("Dashboard:govOver.title")}</div>
+        <Link href={"/governance"}>
+          <IconOpenLink />
+        </Link>
       </GovernanceOverviewTitleWrapper>
       <GovernanceWrapper>
         <div className="total-issued">
@@ -99,7 +104,12 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
           </div>
           <div className="active-proposals-emissions-tooltip">
             {!loading ? (
-              <div className="value">{overViewInfo.activeCount}</div>
+              <div className="value">
+                {overViewInfo.activeCount}
+                <Link href={"/governance?active=true"}>
+                  <IconOpenLink />
+                </Link>
+              </div>
             ) : (
               <LoadingText />
             )}

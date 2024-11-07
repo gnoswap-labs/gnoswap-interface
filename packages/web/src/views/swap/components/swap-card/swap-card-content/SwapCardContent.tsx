@@ -18,7 +18,7 @@ import {
   ContentWrapper,
   PriceImpactWrapper,
   PriceInfoWrapper,
-  SwapDetailSectionWrapper
+  SwapDetailSectionWrapper,
 } from "./SwapCardContent.styles";
 
 interface ContentProps {

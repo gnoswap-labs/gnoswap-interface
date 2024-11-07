@@ -36,6 +36,7 @@ const WalletBalanceContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
+  const [sendAssetAmount, setSendAssetAmount] = useState("");
 
   const { data: blockTimeData } = useGetAvgBlockTime();
   const {
@@ -230,6 +231,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   const closeWithdraw = () => {
     setIsShowWithDrawModal(false);
+    setSendAssetAmount("");
   };
 
   const callbackDeposit = (value: boolean) => {
@@ -298,6 +300,8 @@ const WalletBalanceContainer: React.FC = () => {
       )}
       {isShowWithdrawModal && (
         <AssetSendModal
+          amount={sendAssetAmount}
+          setAmount={setSendAssetAmount}
           breakpoint={breakpoint}
           close={closeWithdraw}
           withdrawInfo={withdrawInfo}

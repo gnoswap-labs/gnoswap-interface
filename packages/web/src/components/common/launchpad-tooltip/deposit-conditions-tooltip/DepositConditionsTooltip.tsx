@@ -11,6 +11,7 @@ import {
   DepositConditionsTooltipWrapper,
   FloatingContentWrapper,
 } from "./DepositConditionsTooltip.styles";
+import { Trans, useTranslation } from "react-i18next";
 
 interface DepositConditionsTooltipProps {
   placement?: Placement;
@@ -19,6 +20,8 @@ interface DepositConditionsTooltipProps {
 const DepositConditionsTooltip = ({
   placement,
 }: DepositConditionsTooltipProps) => {
+  const { t } = useTranslation();
+
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
 
   const renderConditions = () => {
@@ -30,15 +33,24 @@ const DepositConditionsTooltip = ({
         <>
           {tokenPath === XGNS_TOKEN_PATH ? (
             <li>
-              At least {leastTokenAmount.toLocaleString()}
-              {tokenSymbol} must be staked at <br />
-              Governance.
+              <Trans
+                ns="Launchpad"
+                i18nKey={"common.tooltip.conditions.xGNS"}
+                values={{ amount: leastTokenAmount.toLocaleString() }}
+                components={{ br: <br /> }}
+              />
             </li>
           ) : (
             <li>
-              At least {leastTokenAmount.toLocaleString()} {tokenSymbol} token
-              must be <br />
-              available in wallet.
+              <Trans
+                ns="Launchpad"
+                i18nKey={"common.tooltip.conditions.token"}
+                values={{
+                  amount: leastTokenAmount.toLocaleString(),
+                  symbol: tokenSymbol?.toUpperCase(),
+                }}
+                components={{ br: <br /> }}
+              />
             </li>
           )}
         </>
@@ -53,10 +65,10 @@ const DepositConditionsTooltip = ({
           <FloatingContentWrapper>
             <div className="contents-header">
               <IconWarning />
-              <div>Conditions for Participate</div>
+              <div>{t("Launchpad:common.tooltip.conditions.title")}</div>
             </div>
             <ul className="list-wrapper">
-              <li>Wallet address is not qualifiable.</li>
+              <li>{t("Launchpad:common.tooltip.conditions.address")}</li>
               {renderConditions()}
             </ul>
           </FloatingContentWrapper>

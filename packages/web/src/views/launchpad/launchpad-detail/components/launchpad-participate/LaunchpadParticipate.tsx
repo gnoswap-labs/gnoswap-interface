@@ -42,6 +42,11 @@ interface LaunchpadParticipateProps {
   refetch: () => Promise<void>;
 }
 
+const defaultStyle = {
+  fullWidth: true,
+  hierarchy: ButtonHierarchy.Primary,
+};
+
 const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   poolInfo,
   rewardInfo,
@@ -170,7 +175,14 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     }
 
     if (isLoading) {
-      return <div css={pulseSkeletonStyle({ w: "100%", h: 57 })} />;
+      return (
+        <div className="participate-button-wrapper">
+          <Button
+            style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
+            text={t("Launchpad:common.upcoming")}
+          />
+        </div>
+      );
     }
 
     return (
@@ -302,11 +314,13 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
                 height={24}
                 alt="GNS Symbol image"
               />
-              {participateAmount
-                ? `${toNumberFormat(Number(participateAmount), 2)} ${
-                    DEFAULT_DEPOSIT_TOKEN.symbol
-                  }`
-                : "-"}
+              <span>
+                {participateAmount
+                  ? `${toNumberFormat(Number(participateAmount), 2)} ${
+                      DEFAULT_DEPOSIT_TOKEN.symbol
+                    }`
+                  : "-"}
+              </span>
             </div>
           )}
           {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 24 })} />}
@@ -356,11 +370,6 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   openLaunchpadDepositAction,
 }) => {
   const { t } = useTranslation();
-
-  const defaultStyle = {
-    fullWidth: true,
-    hierarchy: ButtonHierarchy.Primary,
-  };
 
   if (status !== "ONGOING") {
     const getProjectStatus = (type: PROJECT_STATUS_TYPE) => {

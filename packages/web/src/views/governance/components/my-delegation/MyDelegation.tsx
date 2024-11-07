@@ -61,12 +61,25 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const [showUndel, setShowUndel] = useState(false);
 
   const delegationInfo = useMemo(() => {
-    const votingWeightInfos = myDelegationInfo.delegations.filter(
-      item => !item.unlockDate || item.unlockDate === "",
-    );
-    const undelegationInfos = myDelegationInfo.delegations.filter(
-      item => !!item.unlockDate,
-    );
+    const votingWeightInfos = myDelegationInfo.delegations
+      .filter(item => !item.unlockDate || item.unlockDate === "")
+      .sort((a, b) => {
+        if (b.amount !== a.amount) {
+          return b.amount - a.amount;
+        }
+
+        return a.updatedDate.localeCompare(b.updatedDate);
+      });
+
+    const undelegationInfos = myDelegationInfo.delegations
+      .filter(item => !!item.unlockDate)
+      .sort((a, b) => {
+        if (b.amount !== a.amount) {
+          return b.amount - a.amount;
+        }
+
+        return a.updatedDate.localeCompare(b.updatedDate);
+      });
 
     const hasVotingWeight = votingWeightInfos.length > 0;
     const hasUndelgated = undelegationInfos.length > 0;

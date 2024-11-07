@@ -27,7 +27,15 @@ export const wrapper = (theme: Theme) => css`
     }
     .section-info {
       ${mixins.flexbox("row", "center", "center")};
+      overflow: hidden;
       gap: 5px;
+      max-width: 40%;
+      overflow: hidden;
+      .total-amount-value {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
   }
 

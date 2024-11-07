@@ -5,10 +5,10 @@ import { PROJECT_STATUS_TYPE } from "@common/values";
 import { LaunchpadState } from "@states/index";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { QUERY_PARAMETER } from "@constants/page.constant";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 import LaunchpadActiveProjects from "@views/launchpad/components/launchpad-active-projects/LaunchpadActiveProjects";
 import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
-import { useWindowSize } from "@hooks/common/use-window-size";
 
 const LaunchpadActiveProjectContainer: React.FC = () => {
   const router = useCustomRouter();
@@ -47,10 +47,12 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
 
   const dataMapping = React.useMemo(() => {
     if (!isViewMoreActiveProjects) {
-      return showedProject.slice(0, 4);
+      if (!isMobile) {
+        return showedProject.slice(0, 4);
+      }
     }
     return showedProject;
-  }, [showedProject, isViewMoreActiveProjects]);
+  }, [showedProject, isViewMoreActiveProjects, isMobile]);
 
   const handleClickLoadMore = React.useCallback(() => {
     setIsViewMoreActiveProjects(prev => !prev);
@@ -65,10 +67,17 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
 
   const handleScroll = () => {
     if (scrollRef.current) {
-      const currentScrollX = scrollRef.current.scrollLeft;
-      setCurrentIndex(
-        Math.min(Math.floor(currentScrollX / 280) + 1, showedProject.length),
-      );
+      const container = scrollRef.current;
+      const currentScrollX = container.scrollLeft;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+
+      if (currentScrollX >= maxScroll - 1) {
+        setCurrentIndex(showedProject.length);
+      } else {
+        setCurrentIndex(
+          Math.min(Math.floor(currentScrollX / 280) + 1, showedProject.length),
+        );
+      }
     }
   };
 

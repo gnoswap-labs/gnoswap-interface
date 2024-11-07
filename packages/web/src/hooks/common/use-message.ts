@@ -202,7 +202,7 @@ export const useMessage = () => {
         case DexEvent.EXECUTE_PROPOSAL:
           return t("Modal:confirm.executeProposal.title");
         case DexEvent.CANCEL_PROPOSAL:
-          return t("Modal:confirm.cancelProposal.title");
+          return t("Modal:confirm.cancelProposal.status.success");
         case DexEvent.LAUNCHPAD_DEPOSIT:
           return t("Modal:confirm.deposit.title");
         default:

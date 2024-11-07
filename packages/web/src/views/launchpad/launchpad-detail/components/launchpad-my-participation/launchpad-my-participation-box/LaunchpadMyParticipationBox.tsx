@@ -103,7 +103,7 @@ const LaunchpadMyParticipationBox = ({
         </div>
         <div className="participation-box-data">
           <div className="participation-box-data-key">
-            {t("Launchpad:myParticipation.col.claimableDate")}
+            {t("Launchpad:myParticipation.col.claimable")}
           </div>
           <div className="participation-box-data-value">
             <MissingLogo
@@ -122,10 +122,10 @@ const LaunchpadMyParticipationBox = ({
           <>
             <div className="participation-box-data">
               <div className="participation-box-data-key">
-                {t("Launchpad:myParticipation.col.claimable")}
+                {t("Launchpad:myParticipation.col.claimableDate")}
               </div>
               <div className="participation-box-data-value">
-                {formatClaimableTime(item.claimableTime)}
+                {formatClaimableTime(item.claimableTime, t)}
               </div>
             </div>
             <div className="participation-box-data">

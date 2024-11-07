@@ -183,6 +183,12 @@ export const MyDelegationModalWrapper = styled.div`
         text-align: end;
         color: ${({ theme }) => theme.color.text03};
         ${fonts.body13}
+        max-width: 60%;
+        span {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
       }
     }
 

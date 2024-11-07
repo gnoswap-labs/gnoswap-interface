@@ -36,7 +36,7 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
     height: 100%;
     position: relative;
-    
+
     .from,
     .to {
       ${mixins.flexbox("row", "center", "space-between")};
@@ -94,6 +94,13 @@ export const wrapper = (theme: Theme) => css`
     .balance-text {
       ${fonts.p1};
       color: ${theme.color.text04};
+    }
+    .price-text {
+      flex-shrink: 0;
+      max-width: 60%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     .balance-text-disabled {
       cursor: pointer;

@@ -2,6 +2,8 @@ import Link from "next/link";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { getCanScrollUpId } from "@constants/common.constant";
+
 import IconNote from "@components/common/icons/IconNote";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -23,7 +25,7 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
   list,
   footer,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { isMobile } = useWindowSize();
 
   return (
@@ -48,7 +50,10 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
           {myDelegation}
         </div>
       </section>
-      <div className="proposal-list-wrapper">
+      <div
+        className="proposal-list-wrapper"
+        id={getCanScrollUpId("proposal-list")}
+      >
         <div className="background" />
         <div className="proposal-list-container">{list}</div>
       </div>

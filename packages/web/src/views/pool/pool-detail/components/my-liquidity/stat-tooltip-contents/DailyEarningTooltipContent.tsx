@@ -53,7 +53,7 @@ export const DailyEarningTooltipContent: React.FC<
       {swapFeeRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">{t("business:rewardType.swapFee")}</span>
+            <span className="title">{t("business:rewardType.swap_fee")}</span>
           </div>
           {swapFeeRewards.map((reward, index) => (
             <div key={index} className="list">

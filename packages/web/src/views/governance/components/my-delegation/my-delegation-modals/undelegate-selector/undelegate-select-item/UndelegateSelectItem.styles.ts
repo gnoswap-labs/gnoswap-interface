@@ -23,7 +23,7 @@ export const UndelegateSelectItemWrapper = styled.div<Props>`
     flex-direction: row;
     width: 100%;
     height: auto;
-    gap: 5px;
+    gap: 8px;
     align-items: center;
 
     .delegatee-name {

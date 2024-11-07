@@ -113,6 +113,13 @@ export const wrapper = (theme: Theme) => css`
       ${fonts.p2};
       color: ${theme.color.text04};
     }
+    .price-text {
+      flex-shrink: 0;
+      max-width: 60%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
     .balance-text-disabled {
       cursor: pointer;
     }

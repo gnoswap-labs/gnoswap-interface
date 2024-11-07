@@ -123,6 +123,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
                   <ProposalCard
                     key={proposalDetail.id}
                     address={address}
+                    breakpoint={breakpoint}
                     proposalDetail={proposalDetail}
                     onClickCard={() => setSelectedProposalId(proposalDetail.id)}
                     executeProposal={executeProposal}
@@ -134,6 +135,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
                 <LastCard
                   key={proposalDetail.id}
                   address={address}
+                  breakpoint={breakpoint}
                   proposalDetail={proposalDetail}
                   onClickCard={() => setSelectedProposalId(proposalDetail.id)}
                   executeProposal={executeProposal}
@@ -151,7 +153,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
       {!isLoading && (!proposalList || proposalList.length === 0) && (
         <div className="no-data-found">{t("common:noProposalFound")}</div>
       )}
-
       {selectedProposalId !== 0 && (
         <ViewProposalModal
           breakpoint={breakpoint}

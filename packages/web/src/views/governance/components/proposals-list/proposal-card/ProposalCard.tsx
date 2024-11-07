@@ -14,11 +14,13 @@ import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { ProposalDetailWrapper } from "./ProposalCard.styles";
+import { DEVICE_TYPE } from "@styles/media";
 
 dayjs.extend(relative);
 
 interface Props {
   address: string;
+  breakpoint: DEVICE_TYPE;
   proposalDetail: ProposalItemInfo;
   onClickCard: (id: string) => void;
   executeProposal: (id: number) => void;
@@ -27,6 +29,7 @@ interface Props {
 
 const ProposalCard: React.FC<Props> = ({
   address,
+  breakpoint,
   proposalDetail,
   onClickCard,
   executeProposal,
@@ -162,7 +165,8 @@ const ProposalCard: React.FC<Props> = ({
               }}
             />
           )}
-          {proposalDetail.status === "UPCOMING" &&
+          {breakpoint !== DEVICE_TYPE.MOBILE &&
+            proposalDetail.status === "UPCOMING" &&
             proposalDetail.proposer.address === address && (
               <Button
                 text={t("Governance:proposalList.cancelBtn")}
@@ -177,8 +181,26 @@ const ProposalCard: React.FC<Props> = ({
             )}
         </div>
       </div>
+      {breakpoint === DEVICE_TYPE.MOBILE &&
+        proposalDetail.status === "UPCOMING" &&
+        proposalDetail.proposer.address === address && (
+          <Button
+            text={t("Governance:proposalList.cancelBtn")}
+            style={{
+              width: "100%",
+              height: "36px",
+              fontType: "p1",
+              hierarchy: ButtonHierarchy.Primary,
+            }}
+            onClick={e => {
+              e.stopPropagation();
+              cancelProposal(proposalDetail.id);
+            }}
+          />
+        )}
       <div className="active-wrapper">
         <StatusBadge
+          breakpoint={breakpoint}
           status={proposalDetail.status}
           time={proposalDetail.time}
         />

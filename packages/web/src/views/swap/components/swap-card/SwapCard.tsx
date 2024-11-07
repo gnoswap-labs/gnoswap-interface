@@ -18,7 +18,7 @@ import SwapCardHeader from "./swap-card-header/SwapCardHeader";
 import {
   HighPriceWarningContentWrapper,
   SwapCardWrapper,
-  SwapWarningSection
+  SwapWarningSection,
 } from "./SwapCard.styles";
 
 interface SwapCardProps {

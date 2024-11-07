@@ -20,7 +20,6 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
-import { convertToKMB } from "@utils/stake-position-utils";
 import { capitalize } from "@utils/string-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
@@ -35,16 +34,19 @@ import {
 const DEFAULT_WITHDRAW_GNOT = GNOT_TOKEN;
 
 interface Props {
-  close: () => void;
+  amount: string;
+  setAmount: React.Dispatch<React.SetStateAction<string>>;
+  isConfirm: boolean;
   breakpoint: DEVICE_TYPE;
   withdrawInfo?: TokenModel;
   avgBlockTime: number;
   connected: boolean;
+
+  close: () => void;
   changeToken: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
   handleSubmit: (amount: string, address: string) => void;
   setIsConfirm: () => void;
-  isConfirm: boolean;
 }
 
 function isAmount(str: string) {
@@ -53,6 +55,8 @@ function isAmount(str: string) {
 }
 
 const AssetSendModal: React.FC<Props> = ({
+  amount,
+  setAmount,
   close,
   breakpoint,
   withdrawInfo,
@@ -67,7 +71,6 @@ const AssetSendModal: React.FC<Props> = ({
   const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
-  const [amount, setAmount] = useState("");
   const [address, setAddress] = useState("");
 
   const { account } = useWallet();
@@ -84,7 +87,7 @@ const AssetSendModal: React.FC<Props> = ({
       if (value !== "" && !isAmount(value)) return;
       setAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [setAmount],
   );
 
   const onChangeAddress = useCallback(
@@ -133,15 +136,15 @@ const AssetSendModal: React.FC<Props> = ({
   const estimatePrice = useMemo(
     () =>
       withdrawInfo?.wrappedPath && !!amount && amount !== "0"
-        ? "$" +
-          convertToKMB(
+        ? formatPrice(
             BigNumber(+amount)
               .multipliedBy(
                 Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
               )
               .toString(),
             {
-              isIgnoreKFormat: true,
+              usd: true,
+              isKMB: false,
             },
           )
         : "-",
@@ -223,7 +226,7 @@ const AssetSendModal: React.FC<Props> = ({
                   <span
                     className="balance-text"
                     onClick={handleEnterAllBalanceAvailable}
-                  >{`${t("common:available")}: ${
+                  >{`${t("common:action.balance")}: ${
                     currentAvailableBalance
                       ? formatPrice(currentAvailableBalance, {
                           isKMB: false,

@@ -28,6 +28,15 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
   const { getRealmUrl } = useGnoscanUrl();
   const poolPath = removePoolPathUrl(path);
 
+  const renderLinkButton = (link: string, value: string) => (
+    <Link key={link} href={value} target="_blank">
+      <button>
+        <span>{link === "twitter" ? "X" : capitalize(link)}</span>
+        <IconOpenLink className="link-icon" />
+      </button>
+    </Link>
+  );
+
   return (
     <div css={wrapper}>
       <div className="contract-path">
@@ -35,7 +44,7 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
         {!isLoading && (
           <Link href={getRealmUrl(poolPath)} target="_blank">
             <button>
-              <span>{path}</span>
+              <span>{path.replace(/:\d+/g, "")}</span>
               <div className="icon-wrapper">
                 <IconOpenLink className="link-icon" />
               </div>
@@ -51,16 +60,7 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
           <div className="group-button">
             {Object.entries(data)
               .filter(([link]) => !excludedLinks.includes(link))
-              .map(([link, value], idx) => {
-                return (
-                  <Link key={idx} href={value as string} target="_blank">
-                    <button>
-                      <span>{capitalize(link)}</span>
-                      <IconOpenLink className="link-icon" />
-                    </button>
-                  </Link>
-                );
-              })}
+              .map(([link, value]) => renderLinkButton(link, value as string))}
           </div>
         )}
         {isLoading && <div css={pulseSkeletonStyle({ w: 150, h: 20 })} />}

@@ -99,7 +99,8 @@ export const CardWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
       width: 100%;
-      color: ${({ theme }) => theme.color.text03};
+      color: ${({ theme }) =>
+        theme.themeKey === "dark" ? "#e0e8f4" : "#1C2230"};
       &.ended {
         color: ${({ theme }) =>
           theme.themeKey === "dark" ? theme.color.text05 : "#C3D2EA"};

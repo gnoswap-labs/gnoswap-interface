@@ -11,7 +11,7 @@ import WalletPositionCardListContainer from "./containers/wallet-position-card-l
 
 import WalletLayout from "./WalletLayout";
 
-const Wallet: React.FC =()=> {
+const Wallet: React.FC = () => {
   return (
     <WalletLayout
       header={<HeaderContainer />}

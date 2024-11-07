@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import relative from "dayjs/plugin/relativeTime";
+import duration from "dayjs/plugin/duration";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,16 +10,24 @@ import IconInfo from "@components/common/icons/IconInfo";
 import IconOutlineClock from "@components/common/icons/IconOutlineClock";
 import IconPass from "@components/common/icons/IconPass";
 import { StatusBadgeWrapper } from "./StatusBadge.style";
+import { DEVICE_TYPE } from "@styles/media";
 
 dayjs.extend(relative);
+dayjs.extend(duration);
 
 interface StatusBadgeProps {
+  breakpoint: DEVICE_TYPE;
   status: string;
   time: string;
   twoline?: boolean;
 }
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time, twoline }) => {
+const StatusBadge: React.FC<StatusBadgeProps> = ({
+  breakpoint,
+  status,
+  time,
+  twoline,
+}) => {
   const { t } = useTranslation();
 
   const getContent = () => {
@@ -68,27 +77,39 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time, twoline }) => {
     const timeString = dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
     switch (status) {
       case "UPCOMING":
-        return `${t("Governance:proposal.time.start", {
-          rel_time: dayjs(time).fromNow(),
-        })} (${timeString})`;
+        return breakpoint === DEVICE_TYPE.MOBILE
+          ? `${t("Governance:proposal.time.start", {
+              rel_time: dayjs(time).fromNow(),
+            })}`
+          : `${t("Governance:proposal.time.start", {
+              rel_time: dayjs(time).fromNow(),
+            })} (${timeString})`;
       case "ACTIVE":
-        return `${t("Governance:proposal.time.end", {
-          rel_time: dayjs(time).fromNow(),
-        })} (${timeString})`;
+        return breakpoint === DEVICE_TYPE.MOBILE
+          ? `${t("Governance:proposal.time.end", {
+              rel_time: dayjs(time).fromNow(),
+            })}`
+          : `${t("Governance:proposal.time.end", {
+              rel_time: dayjs(time).fromNow(),
+            })} (${timeString})`;
       case "EXECUTED":
       case "EXPIRED":
       case "PASSED":
       case "REJECTED":
       case "CANCELLED":
       default:
-        return `${t("Governance:proposal.time.ended", {
-          rel_time: "",
-        })} (${timeString})`;
+        return breakpoint === DEVICE_TYPE.MOBILE
+          ? `${t("Governance:proposal.time.ended", {
+              rel_time: "",
+            })}`
+          : `${t("Governance:proposal.time.ended", {
+              rel_time: "",
+            })} (${timeString})`;
     }
   };
 
   return (
-    <StatusBadgeWrapper style={{ flexDirection: twoline ? "column" : "row"}}>
+    <StatusBadgeWrapper style={{ flexDirection: twoline ? "column" : "row" }}>
       {getContent()}
       <div className="time">
         <IconOutlineClock className="time-icon" />
@@ -99,4 +120,3 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, time, twoline }) => {
 };
 
 export default StatusBadge;
-

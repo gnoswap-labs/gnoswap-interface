@@ -26,9 +26,9 @@ export interface RewardTooltipContentProps {
   rewardInfo: { [key in RewardType]: PositionRewardForTooltip[] } | null;
 }
 
-const RewardTooltipContent: React.FC<
-  RewardTooltipContentProps
-> = ({ rewardInfo }) => {
+const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
+  rewardInfo,
+}) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
@@ -36,21 +36,21 @@ const RewardTooltipContent: React.FC<
     if (!rewardInfo || rewardInfo.SWAP_FEE.length === 0) {
       return null;
     }
-    return rewardInfo.SWAP_FEE;
+    return rewardInfo.SWAP_FEE.sort((a, b) => (b.usd || 0) - (a.usd || 0));
   }, [rewardInfo]);
 
   const internalRewards = useMemo(() => {
     if (!rewardInfo || rewardInfo.INTERNAL.length === 0) {
       return null;
     }
-    return rewardInfo.INTERNAL;
+    return rewardInfo.INTERNAL.sort((a, b) => (b.usd || 0) - (a.usd || 0));
   }, [rewardInfo]);
 
   const externalRewards = useMemo(() => {
     if (!rewardInfo || rewardInfo.EXTERNAL.length === 0) {
       return null;
     }
-    return rewardInfo.EXTERNAL;
+    return rewardInfo.EXTERNAL.sort((a, b) => (b.usd || 0) - (a.usd || 0));
   }, [rewardInfo]);
 
   const swapFeeRewardUSD = useMemo(() => {
@@ -128,100 +128,62 @@ const RewardTooltipContent: React.FC<
     });
   }, [externalRewards]);
 
+  const rewardsData = [
+    { type: "SWAP_FEE", rewards: swapFeeRewards, totalUSD: swapFeeRewardUSD },
+    { type: "INTERNAL", rewards: internalRewards, totalUSD: internalRewardUSD },
+    { type: "EXTERNAL", rewards: externalRewards, totalUSD: externalRewardUSD },
+  ]
+    .filter(({ rewards }) => rewards)
+    .sort((a, b) => {
+      const parseAmount = (value: string) => {
+        const number = parseFloat(value.replace(/[$, ]/g, ""));
+        return isNaN(number) ? 0 : number;
+      };
+
+      const totalA = parseAmount(a.totalUSD);
+      const totalB = parseAmount(b.totalUSD);
+      return totalB - totalA;
+    });
+
   return (
     <RewardTooltipContentWrapper>
-      {swapFeeRewards && (
-        <React.Fragment>
-          <div className="list">
-            <span className="title">{t("business:rewardType.swapFee")}</span>
-            <span className="title">{swapFeeRewardUSD}</span>
-          </div>
-          {swapFeeRewards.map((reward, index) => (
-            <div key={index} className="list">
-              <div className="coin-info">
-                <MissingLogo
-                  symbol={getGnotPath(reward.token).symbol}
-                  url={getGnotPath(reward.token).logoURI}
-                  className="token-logo"
-                  width={20}
-                  mobileWidth={20}
-                />
-                <span className="position">
-                  {getGnotPath(reward.token).symbol}
+      {rewardsData.map(({ type, rewards, totalUSD }) => (
+        <React.Fragment key={type}>
+          {rewards && (
+            <>
+              <div className="list">
+                <span className="title">
+                  {t(`business:rewardType.${type.toLowerCase()}`)}
                 </span>
+                <span className="title">{totalUSD}</span>
               </div>
-              <span className="position">
-                {formatPoolPairAmount(reward.amount, {
-                  decimals: reward.token.decimals,
-                  isKMB: false,
-                })}
-              </span>
-            </div>
-          ))}
+              {rewards.map((reward, index) => (
+                <div key={index} className="list">
+                  <div className="coin-info">
+                    <MissingLogo
+                      symbol={getGnotPath(reward.token).symbol}
+                      url={getGnotPath(reward.token).logoURI}
+                      className="token-logo"
+                      width={20}
+                      mobileWidth={20}
+                    />
+                    <span className="position">
+                      {getGnotPath(reward.token).symbol}
+                    </span>
+                  </div>
+                  <span className="position">
+                    {formatPoolPairAmount(reward.amount, {
+                      decimals: reward.token.decimals,
+                      isKMB: false,
+                    })}
+                  </span>
+                </div>
+              ))}
+              <div className="divider" />
+            </>
+          )}
         </React.Fragment>
-      )}
-      {internalRewards && <div className="divider" />}
-      {internalRewards && (
-        <React.Fragment>
-          <div className="list">
-            <span className="title">{t("business:rewardType.internal")}</span>
-            <span className="title">{internalRewardUSD}</span>
-          </div>
-          {internalRewards.map((reward, index) => (
-            <div key={index} className="list">
-              <div className="coin-info">
-                <MissingLogo
-                  symbol={getGnotPath(reward.token).symbol}
-                  url={getGnotPath(reward.token).logoURI}
-                  className="token-logo"
-                  width={20}
-                  mobileWidth={20}
-                />
-                <span className="position">
-                  {getGnotPath(reward.token).symbol}
-                </span>
-              </div>
-              <span className="position">
-                {formatPoolPairAmount(reward.amount, {
-                  decimals: reward.token.decimals,
-                  isKMB: false,
-                })}
-              </span>
-            </div>
-          ))}
-        </React.Fragment>
-      )}
-      {externalRewards && <div className="divider" />}
-      {externalRewards && (
-        <React.Fragment>
-          <div className="list">
-            <span className="title">{t("business:rewardType.external")}</span>
-            <span className="title">{externalRewardUSD}</span>
-          </div>
-          {externalRewards.map((reward, index) => (
-            <div key={index} className="list">
-              <div className="coin-info">
-                <MissingLogo
-                  symbol={getGnotPath(reward.token).symbol}
-                  url={getGnotPath(reward.token).logoURI}
-                  className="token-logo"
-                  width={20}
-                  mobileWidth={20}
-                />
-                <span className="position">
-                  {getGnotPath(reward.token).symbol}
-                </span>
-              </div>
-              <span className="position">
-                {formatPoolPairAmount(reward.amount, {
-                  decimals: reward.token.decimals,
-                  isKMB: false,
-                })}
-              </span>
-            </div>
-          ))}
-        </React.Fragment>
-      )}
+      ))}
     </RewardTooltipContentWrapper>
   );
 };

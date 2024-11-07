@@ -27,14 +27,32 @@ export const getStatusText = (
 
   const formatTime = (days: number, hours: number, minutes: number) => {
     if (days > 0) {
-      return format("Launchpad:common.time.inDaysHours", { days, hours });
+      const dayString = format("Launchpad:common.time.days", { count: days });
+      const hourString = format("Launchpad:common.time.hours", {
+        count: hours,
+      });
+      return format("Launchpad:common.time.daysHoursOrHoursMinutes", {
+        time1: dayString,
+        time2: hourString,
+      });
     } else if (hours > 0) {
-      return format("Launchpad:common.time.inHoursMinutes", {
-        hours,
-        minutes,
+      const hourString = format("Launchpad:common.time.hours", {
+        count: hours,
+      });
+      const minuteString = format("Launchpad:common.time.minutes", {
+        count: minutes,
+      });
+      return format("Launchpad:common.time.daysHoursOrHoursMinutes", {
+        time1: hourString,
+        time2: minuteString,
       });
     } else if (minutes > 0) {
-      return format("Launchpad:common.time.inMinutes", { minutes });
+      const minuteString = format("Launchpad:common.time.minutes", {
+        count: minutes,
+      });
+      return format("Launchpad:common.time.minutesOnly", {
+        time: minuteString,
+      });
     } else {
       return format("Launchpad:common.time.inOneMinute");
     }
@@ -56,9 +74,6 @@ export const getStatusText = (
         hours: ongoingHours,
         minutes: ongoingMinutes,
       } = getTimeDifference(end, now);
-      if (ongoingDays < 0 && ongoingHours < 0 && ongoingMinutes < 0) {
-        return "Ends in 1 minute";
-      }
       return format("Launchpad:common.status.ongoing", {
         time: formatTime(ongoingDays, ongoingHours, ongoingMinutes),
       });

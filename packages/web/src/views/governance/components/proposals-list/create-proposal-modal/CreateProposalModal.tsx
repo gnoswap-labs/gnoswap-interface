@@ -24,7 +24,6 @@ import {
 } from "@utils/create-proposal-validation";
 import { makeDisplayPackagePath } from "@utils/governance-utils";
 
-
 import TokenChip from "../../token-chip/TokenChip";
 import VariableSelectBox from "../variable-select-box/VariableSelectBox";
 
@@ -32,7 +31,7 @@ import {
   BoxItem,
   CreateProposalModalWrapper,
   IconButton,
-  ToolTipContentWrapper
+  ToolTipContentWrapper,
 } from "./CreateProposalModal.styles";
 
 interface BoxContentProps {
@@ -216,7 +215,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       displayValue: pkg.pkgName,
       value: pkg.pkgPath,
     }));
-  }, [executableFunctions]);
+  }, [executableFunctions, executablePackages]);
 
   const filterExecutableFunctions = useCallback(
     (packagePath: string | null) => {
@@ -269,14 +268,16 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         return defaultPlaceholder;
       }
 
-      return Array.from(
-        { length: currentFunction.paramNum },
-        (_, index) => index + 1,
-      )
-        .map(num => `arg${num}`)
-        .join(",");
+      const placeholders = defaultPlaceholder
+        .replace("...", "")
+        .split(",")
+        .map((placeholder, index) => {
+          return placeholder.trim() || `arg${index + 1}`;
+        });
+
+      return placeholders.slice(0, currentFunction.paramNum).join(", ");
     },
-    [executableFunctions],
+    [executableFunctions, t],
   );
 
   const sendTx: SubmitHandler<FormValues> = data => {
@@ -311,7 +312,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   return (
     <FormProvider methods={methods} onSubmit={sendTx}>
       <CreateProposalModalWrapper>
-        <div className="modal-body" ref={modalBodyRef}>
+        <div className={"modal-body"} ref={modalBodyRef}>
           <div className="header">
             <h6>{t("Governance:createModal.title")}</h6>
             <div
@@ -490,7 +491,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                   <TokenChip tokenInfo={XGNS_TOKEN} />
                 ) : (
                   <MissingLogo
-                  className=""
+                    className=""
                     symbol={XGNS_TOKEN.symbol}
                     width={24}
                     url={XGNS_TOKEN.logoURI}

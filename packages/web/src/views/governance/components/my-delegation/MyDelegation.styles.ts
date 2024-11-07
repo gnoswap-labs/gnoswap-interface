@@ -105,7 +105,7 @@ export const MyDelegationWrapper = styled.div`
 
       button {
         > span {
-          ${fonts.body7}
+          ${fonts.body9}
         }
         width: 200px;
         height: 46px;

@@ -19,7 +19,14 @@ export const GovernanceOverviewTitleWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   color: ${({ theme }) => theme.color.text02};
   ${fonts.body7};
-  gap: 6px;
+  gap: 4px;
+  a {
+    &:hover {
+      * {
+        fill: #90a2c0;
+      }
+    }
+  }
 
   ${media.mobile} {
     gap: 4px;
@@ -99,7 +106,17 @@ export const GovernanceWrapper = styled.div`
     }
   }
   .value {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     ${fonts.body7}
+    a {
+      &:hover {
+        * {
+          fill: #90a2c0;
+        }
+      }
+    }
     ${media.mobile} {
       ${fonts.body11};
     }

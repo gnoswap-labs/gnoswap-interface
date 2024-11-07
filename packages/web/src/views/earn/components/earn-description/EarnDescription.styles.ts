@@ -90,5 +90,37 @@ export const EarnDescriptionWrapper = styled.div`
       padding: 12px 12px 12px 16px;
       min-width: 322px;
     }
+
+    .link-wrapper-no-flex {
+      color: ${({ theme }) => theme.color.text08};
+      display: inline-flex;
+      align-items: center;
+      margin-left: 5px;
+      ${fonts.p1}
+      cursor: pointer;
+      svg * {
+        fill: ${({ theme }) => theme.color.text08};
+      }
+      &:hover {
+        color: ${({ theme }) => theme.color.text07};
+        svg * {
+          fill: ${({ theme }) => theme.color.text07};
+        }
+      }
+    }
+    ${media.tablet} {
+      min-width: 356px;
+      .description-wrapper {
+        white-space: normal;
+        ${fonts.p2}
+      }
+      .link-wrapper {
+        ${fonts.p3}
+      }
+    }
+    ${media.mobile} {
+      padding: 12px 12px 12px 16px;
+      min-width: 322px;
+    }
   }
 `;
