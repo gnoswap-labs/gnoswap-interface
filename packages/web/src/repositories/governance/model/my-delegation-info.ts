@@ -3,7 +3,13 @@ export interface MyDelegationInfo {
   votingWeight: number;
   undelegatedAmount: number;
   claimableRewardsUsd: number;
+  claimableRewards: ClaimableRewards[];
   delegations: DelegationItemInfo[];
+}
+
+export interface ClaimableRewards {
+  amount: string;
+  tokenPath: string;
 }
 
 export interface DelegationItemInfo {
@@ -20,6 +26,7 @@ export const nullMyDelegationInfo: MyDelegationInfo = {
   votingWeight: 0,
   undelegatedAmount: 0,
   claimableRewardsUsd: 0,
+  claimableRewards: [],
   delegations: [],
 };
 

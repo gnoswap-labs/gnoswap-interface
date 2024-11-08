@@ -161,3 +161,37 @@ export const MyDelegationTooltipContent = styled.div`
     color: ${({ theme }) => theme.color.text04};
   }
 `;
+
+export const MyDelegationRewardTooltipContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 300px;
+  ${fonts.body12};
+  gap: 8px;
+  .reward-info-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    color: ${({ theme }) => theme.color.text04};
+  }
+  .tooltip-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 14px;
+      font-weight: 400;
+      .info-subject {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+  }
+`;
