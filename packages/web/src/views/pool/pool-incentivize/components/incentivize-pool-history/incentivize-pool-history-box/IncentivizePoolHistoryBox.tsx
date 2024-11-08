@@ -62,7 +62,8 @@ const IncentivizePoolHistoryBox = ({
   }, [currentPool]);
 
   const formatAmount = (amount: string | null) => {
-    if (!amount) return "-";
+    if (amount == null || amount === "") return "-";
+
     return toNumberFormat(
       Number(makeDisplayTokenAmount(GNS_TOKEN, amount)),
       GNS_TOKEN.decimals,
