@@ -65,4 +65,6 @@ export interface PoolRepository {
   ) => Promise<string | null>;
 
   getPoolStakingList: (poolPath: string) => Promise<PoolStakingModel[]>;
+
+  getPoolStakingListByAddress: (address: string) => Promise<PoolStakingModel[]>;
 }

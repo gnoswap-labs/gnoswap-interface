@@ -11,3 +11,7 @@ export interface PoolStakingModel {
   startTimestamp: string;
   endTimestamp: string;
 }
+
+export interface ExtendedPoolStakingModel extends PoolStakingModel {
+  depositGnsAmount: string;
+}

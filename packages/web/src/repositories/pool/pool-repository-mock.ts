@@ -19,6 +19,7 @@ import {
 } from "@common/clients/wallet-client/protocols";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolRPCResponse } from "./response/pool-rpc-response";
 export class PoolRepositoryMock implements PoolRepository {
   getWithdrawalFee = async (): Promise<number> => {
     return 0;
@@ -34,10 +35,16 @@ export class PoolRepositoryMock implements PoolRepository {
   };
 
   getRPCPools = async (): Promise<PoolRPCModel[]> => {
-    return rpcPools.map(pool => PoolRPCMapper.from(pool as any));
+    return rpcPools.map((pool: unknown) =>
+      PoolRPCMapper.from(pool as PoolRPCResponse),
+    );
   };
 
   getPoolStakingList = async (): Promise<PoolStakingModel[]> => {
+    return [];
+  };
+
+  getPoolStakingListByAddress = async (): Promise<PoolStakingModel[]> => {
     return [];
   };
 
@@ -54,7 +61,7 @@ export class PoolRepositoryMock implements PoolRepository {
   };
 
   getPoolDetailByPoolPath = async (): Promise<PoolDetailModel> => {
-    return PoolDetailData.pool as any;
+    return PoolDetailData.pool as PoolDetailModel;
   };
 
   getBinsOfPoolByPath = async (): Promise<PoolBinModel[]> => {

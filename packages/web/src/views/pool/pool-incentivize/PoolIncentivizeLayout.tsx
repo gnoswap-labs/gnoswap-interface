@@ -6,6 +6,7 @@ interface PoolIncentivizeLayoutProps {
   header: React.ReactNode;
   breadcrumbs: React.ReactNode;
   poolIncentivize: React.ReactNode;
+  history: React.ReactNode;
   footer: React.ReactNode;
 }
 
@@ -13,6 +14,7 @@ const PoolIncentivizeLayout: React.FC<PoolIncentivizeLayoutProps> = ({
   header,
   breadcrumbs,
   poolIncentivize,
+  history,
   footer,
 }) => {
   const { t } = useTranslation();
@@ -25,7 +27,10 @@ const PoolIncentivizeLayout: React.FC<PoolIncentivizeLayoutProps> = ({
           <h3 className="title">{t("business:pageHeader.earn")}</h3>
           <div className="breadcrumbs">{breadcrumbs}</div>
         </div>
-        <div className="pool-incentivize-section">{poolIncentivize}</div>
+        <div className="right-container">
+          <div className="pool-incentivize-section">{poolIncentivize}</div>
+          <div className="pool-incentivize-history">{history}</div>
+        </div>
       </main>
       {footer}
     </div>
