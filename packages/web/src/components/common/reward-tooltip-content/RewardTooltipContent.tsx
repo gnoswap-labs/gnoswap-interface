@@ -136,7 +136,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
 
   return (
     <RewardTooltipContentWrapper>
-      {rewardsData.map(({ type, rewards, totalUSD }) => (
+      {rewardsData.map(({ type, rewards, totalUSD }, idx) => (
         <React.Fragment key={type}>
           {rewards && (
             <>
@@ -168,7 +168,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
                   </span>
                 </div>
               ))}
-              <div className="divider" />
+              {idx < rewardsData.length - 1 && <div className="divider" />}
             </>
           )}
         </React.Fragment>
