@@ -15,9 +15,11 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import {
   GovernanceSummaryWrapper,
-  TotalDelegatedTooltipContent,
+  GovernanceSummaryTooltipContent,
 } from "./GovernanceSummary.styles";
 import { Divider } from "@components/common/divider/divider";
+import { toNumberFormat } from "@utils/number-utils";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface GovernanceSummaryProps {
   governanceSummary: GovernanceSummaryInfo;
@@ -31,8 +33,19 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
 
+  /**
+   * A delimiter showing total delegated information.
+   * @returns {boolean} A boolean value indicating whether to show the total delegated information.
+   */
   const visibleTotalDelegateTooltip = React.useMemo(() => {
     return governanceSummary.totalDelegated > 0;
+  }, [governanceSummary]);
+  /**
+   * A delimiter showing community pool information.
+   * @returns {boolean} A boolean value indicating whether to show the community pool information.
+   */
+  const visibleCommunityPoolTooltip = React.useMemo(() => {
+    return governanceSummary.communityPool > 0;
   }, [governanceSummary]);
 
   return (
@@ -45,7 +58,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
               forcedClose={!visibleTotalDelegateTooltip}
               placement="top"
               FloatingContent={
-                <TotalDelegatedTooltipContent>
+                <GovernanceSummaryTooltipContent>
                   <div className="row">
                     <div className="label">
                       <span>
@@ -86,7 +99,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                       <div className="amount"></div>
                     </div>
                   </div>
-                </TotalDelegatedTooltipContent>
+                </GovernanceSummaryTooltipContent>
               }
             >
               <div
@@ -127,9 +140,52 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         />
         <InfoBox
           title={t("Governance:summary.commPool.title")}
-          value={formatOtherPrice(governanceSummary.communityPool, {
-            isKMB: false,
-          })}
+          value={
+            <Tooltip
+              forcedClose={!visibleCommunityPoolTooltip}
+              placement="top"
+              FloatingContent={
+                <GovernanceSummaryTooltipContent>
+                  <div className="row">
+                    <div className="label">
+                      <span>
+                        {t("Governance:summary.tooltip.communityPool.title")}
+                      </span>
+                      <span>
+                        ${toNumberFormat(governanceSummary.communityPool, 2)}
+                      </span>
+                    </div>
+                    <div className="value">
+                      <div className="key">
+                        <MissingLogo symbol="EXA" width={20} />
+                        <span>tokenSymbol</span>
+                      </div>
+                      <div className="amount"></div>
+                    </div>
+                    <div className="value">
+                      <div className="key">
+                        <MissingLogo symbol="EXA" width={20} />
+                        <span>tokenSymbol</span>
+                      </div>
+                      <div className="amount"></div>
+                    </div>
+                  </div>
+                </GovernanceSummaryTooltipContent>
+              }
+            >
+              <div
+                className={
+                  visibleCommunityPoolTooltip
+                    ? "value-wrapper-for-hover"
+                    : "value-wrapper"
+                }
+              >
+                {formatOtherPrice(governanceSummary.communityPool, {
+                  isKMB: false,
+                })}
+              </div>
+            </Tooltip>
+          }
           tooltip={t("Governance:summary.commPool.tooltip")}
           isLoading={isLoading}
         />

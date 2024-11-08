@@ -71,7 +71,7 @@ export const GovernanceSummaryWrapper = styled.div`
   }
 `;
 
-export const TotalDelegatedTooltipContent = styled.div`
+export const GovernanceSummaryTooltipContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 300px;
   ${fonts.body12};
@@ -94,6 +94,10 @@ export const TotalDelegatedTooltipContent = styled.div`
     .value {
       width: 100%;
       padding: 4px 0;
+      .key {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 8px;
+      }
     }
   }
   .divider {
