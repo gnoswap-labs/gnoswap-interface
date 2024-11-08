@@ -302,7 +302,7 @@ export const SEOInfo: Record<
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/terms": {
-    title: () => "Terms of Service | GnoSwap",
+    title: () => "Terms of Use | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },

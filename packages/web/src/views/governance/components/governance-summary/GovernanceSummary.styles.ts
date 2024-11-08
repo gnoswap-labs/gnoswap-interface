@@ -101,6 +101,6 @@ export const GovernanceSummaryTooltipContent = styled.div`
     }
   }
   .divider {
-    border-top: 1px solid #141a29;
+    border-top: 1px solid ${({ theme }) => theme.color.border01};
   }
 `;

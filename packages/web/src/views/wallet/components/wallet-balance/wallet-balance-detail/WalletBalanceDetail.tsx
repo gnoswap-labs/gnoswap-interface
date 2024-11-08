@@ -1,3 +1,5 @@
+// Todo: Delete this code
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -229,14 +231,15 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         }
         breakpoint={breakpoint}
       />
+      {/* Todo: Change to claimableRewardInfo -> claimedRewardInfo */}
       <WalletBalanceDetailInfo
         loading={balanceDetailInfo.loadingPositions}
         title={t("Wallet:overral.totalClaimed.label")}
         value={balanceDetailInfo.totalClaimedRewards}
         tooltip={t("Wallet:overral.totalClaimed.tooltip")}
         valueTooltip={
-          hasInfo(claimedRewardInfo) ? (
-            <RewardTooltipContent rewardInfo={claimedRewardInfo} />
+          hasInfo(claimableRewardInfo) ? (
+            <RewardTooltipContent rewardInfo={claimableRewardInfo} />
           ) : undefined
         }
         breakpoint={breakpoint}
