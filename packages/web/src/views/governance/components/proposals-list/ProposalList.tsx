@@ -113,16 +113,28 @@ const ProposalList: React.FC<ProposalListProps> = ({
     );
   }, [proposalList, selectedProposalId]);
 
-  const getTooltipTextI18nKey = React.useCallback((status: string) => {
-    switch (status) {
-      case "PASSED":
-        return "proposal.tooltip.passed";
-      case "REJECTED":
-        return "proposal.tooltip.rejected";
-      default:
+  const getTooltipTextI18nKey = React.useCallback(
+    (status: string, isMajorityVoted: boolean) => {
+      if (!isMajorityVoted) {
         return "proposal.tooltip.executed";
-    }
-  }, []);
+      }
+
+      switch (status) {
+        case "PASSED":
+          return "proposal.tooltip.passed";
+        case "REJECTED":
+          return "proposal.tooltip.rejected";
+        default:
+          return "proposal.tooltip.executed";
+      }
+    },
+    [],
+  );
+
+  const calculateIsMajorityVoted = (proposalDetail: ProposalItemInfo) => {
+    const totalVotes = proposalDetail.votes.yes + proposalDetail.votes.no;
+    return totalVotes >= proposalDetail.votes.max / 2;
+  };
 
   return (
     <ProposalListWrapper>
@@ -136,23 +148,11 @@ const ProposalList: React.FC<ProposalListProps> = ({
         <>
           {proposalList.map(
             (proposalDetail: ProposalItemInfo, index: number) => {
-              if (index < proposalList.length - 1) {
-                return (
-                  <ProposalCard
-                    key={proposalDetail.id}
-                    address={address}
-                    breakpoint={breakpoint}
-                    proposalDetail={proposalDetail}
-                    onClickCard={() => setSelectedProposalId(proposalDetail.id)}
-                    executeProposal={executeProposal}
-                    cancelProposal={cancelProposal}
-                    isPassed={proposalDetail.status === "PASSED"}
-                    getTooltipTextI18nKey={getTooltipTextI18nKey}
-                  />
-                );
-              }
+              const Card =
+                index < proposalList.length - 1 ? ProposalCard : LastCard;
+              const isMajorityVoted = calculateIsMajorityVoted(proposalDetail);
               return (
-                <LastCard
+                <Card
                   key={proposalDetail.id}
                   address={address}
                   breakpoint={breakpoint}
@@ -160,8 +160,8 @@ const ProposalList: React.FC<ProposalListProps> = ({
                   onClickCard={() => setSelectedProposalId(proposalDetail.id)}
                   executeProposal={executeProposal}
                   cancelProposal={cancelProposal}
-                  isPassed={proposalDetail.status === "PASSED"}
                   getTooltipTextI18nKey={getTooltipTextI18nKey}
+                  isMajorityVoted={isMajorityVoted}
                 />
               );
             },
@@ -187,7 +187,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
           connectWallet={connectWallet}
           switchNetwork={switchNetwork}
           voteProposal={voteProposal}
-          isPassed={selectedProposalDetail.status === "PASSED"}
           getTooltipTextI18nKey={getTooltipTextI18nKey}
         />
       )}

@@ -15,18 +15,18 @@ interface VotingProgressBarProps {
   max: number;
   yes: number;
   no: number;
+  isMajorityVoted: boolean;
   hideNumber?: boolean;
   tooltipTextI18nKey?: string;
-  isPassed: boolean;
 }
 
 const VotingProgressBar: React.FC<VotingProgressBarProps> = ({
   max,
   yes,
   no,
+  isMajorityVoted,
   hideNumber,
   tooltipTextI18nKey,
-  isPassed,
 }) => {
   const { t } = useTranslation();
 
@@ -79,8 +79,8 @@ const VotingProgressBar: React.FC<VotingProgressBarProps> = ({
               </ProposalTooltipContent>
             }
           >
-            <span className={isPassed ? "passed" : ""}>
-              {isPassed && <IconPassed />}
+            <span className={isMajorityVoted ? "passed" : ""}>
+              {isMajorityVoted && <IconPassed />}
               {(yes + no).toLocaleString()}
             </span>
           </Tooltip>

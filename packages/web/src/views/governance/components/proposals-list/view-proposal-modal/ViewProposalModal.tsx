@@ -35,8 +35,7 @@ export interface ViewProposalModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
   isSwitchNetwork: boolean;
-  isPassed: boolean;
-  getTooltipTextI18nKey: (status: string) => string;
+  getTooltipTextI18nKey: (status: string, isMajorityVoted: boolean) => string;
   connectWallet: () => void;
   switchNetwork: () => void;
   voteProposal: (proposalId: number, voteYes: boolean) => void;
@@ -48,7 +47,6 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   setIsModalOpen,
   isSwitchNetwork,
   isConnected,
-  isPassed,
   getTooltipTextI18nKey,
   connectWallet,
   switchNetwork,
@@ -67,8 +65,15 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
     proposalDetail.myVote?.type || "",
   );
 
+  const isMajorityVoted = useMemo(() => {
+    return (
+      proposalDetail.votes.yes + proposalDetail.votes.no >=
+      proposalDetail.votes.max / 2
+    );
+  }, [proposalDetail.votes]);
+
   const tooltipTextI18nKey = React.useMemo(() => {
-    return getTooltipTextI18nKey(proposalDetail.status);
+    return getTooltipTextI18nKey(proposalDetail.status, isMajorityVoted);
   }, [proposalDetail.status, getTooltipTextI18nKey]);
 
   if (!proposalDetail) return null;
@@ -199,8 +204,8 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                   </ProposalTooltipContent>
                 }
               >
-                <span className={isPassed ? "passed" : ""}>
-                  {isPassed && <IconPassed />}
+                <span className={isMajorityVoted ? "passed" : ""}>
+                  {isMajorityVoted && <IconPassed />}
                   {(
                     proposalDetail.votes.yes + proposalDetail.votes.no
                   ).toLocaleString()}
@@ -213,8 +218,8 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             yes={proposalDetail.votes.yes}
             no={proposalDetail.votes.no}
             max={proposalDetail.votes.max}
+            isMajorityVoted={isMajorityVoted}
             hideNumber
-            isPassed={isPassed}
           />
         </ModalQuorum>
         <VoteButtons
