@@ -21,6 +21,17 @@ export const GovernanceSummaryWrapper = styled.div`
     ${media.mobile} {
       flex-direction: column;
     }
+    .value-wrapper,
+    .value-wrapper-for-hover {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 0px;
+    }
+    .value-wrapper-for-hover {
+      &:hover {
+        color: ${({ theme }) => theme.color.text07};
+        cursor: default;
+      }
+    }
   }
 
   > .link-button {
@@ -57,5 +68,35 @@ export const GovernanceSummaryWrapper = styled.div`
       margin-bottom: 8px;
       flex-wrap: wrap;
     }
+  }
+`;
+
+export const TotalDelegatedTooltipContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 300px;
+  ${fonts.body12};
+  gap: 8px;
+  .row {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    gap: 8px;
+    width: 100%;
+    .label,
+    .value {
+      ${mixins.flexbox("row", "center", "space-between")};
+    }
+    .label {
+      ${mixins.flexbox("row", "center", "space-between")};
+      width: 100%;
+      font-size: 14px;
+      font-weight: 400;
+      color: ${({ theme }) => theme.color.text04};
+    }
+    .value {
+      width: 100%;
+      padding: 4px 0;
+    }
+  }
+  .divider {
+    border-top: 1px solid #141a29;
   }
 `;

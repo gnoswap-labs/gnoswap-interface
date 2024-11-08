@@ -1,5 +1,5 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
@@ -10,9 +10,14 @@ import { GovernanceSummaryInfo } from "@repositories/governance";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
+import Tooltip from "@components/common/tooltip/Tooltip";
 
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { GovernanceSummaryWrapper } from "./GovernanceSummary.styles";
+import {
+  GovernanceSummaryWrapper,
+  TotalDelegatedTooltipContent,
+} from "./GovernanceSummary.styles";
+import { Divider } from "@components/common/divider/divider";
 
 interface GovernanceSummaryProps {
   governanceSummary: GovernanceSummaryInfo;
@@ -26,19 +31,78 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
 
+  const visibleTotalDelegateTooltip = React.useMemo(() => {
+    return governanceSummary.totalDelegated > 0;
+  }, [governanceSummary]);
+
   return (
     <GovernanceSummaryWrapper>
       <div className="info-wrapper">
         <InfoBox
           title={t("Governance:summary.totalDel.title")}
           value={
-            <>
-              {formatOtherPrice(governanceSummary.totalDelegated, {
-                isKMB: false,
-                usd: false,
-              })}
-              <TokenChip tokenInfo={GNS_TOKEN} />
-            </>
+            <Tooltip
+              forcedClose={!visibleTotalDelegateTooltip}
+              placement="top"
+              FloatingContent={
+                <TotalDelegatedTooltipContent>
+                  <div className="row">
+                    <div className="label">
+                      <span>
+                        {t(
+                          "Governance:summary.tooltip.totalDelegated.governanceSupply",
+                        )}
+                      </span>
+                    </div>
+                    <div className="value">
+                      <div className="key">
+                        {t(
+                          "Governance:summary.tooltip.totalDelegated.delegatedGNS",
+                        )}
+                      </div>
+                      <div className="amount"></div>
+                    </div>
+                  </div>
+                  <Divider className="divider" />
+                  <div className="row">
+                    <div className="label">
+                      <span>
+                        {t(
+                          "Governance:summary.tooltip.totalDelegated.launchpadSupply",
+                        )}
+                      </span>
+                      <span>
+                        {t(
+                          "Governance:summary.tooltip.totalDelegated.nonVotable",
+                        )}
+                      </span>
+                    </div>
+                    <div className="value">
+                      <div className="key">
+                        {t(
+                          "Governance:summary.tooltip.totalDelegated.participatedGNS",
+                        )}
+                      </div>
+                      <div className="amount"></div>
+                    </div>
+                  </div>
+                </TotalDelegatedTooltipContent>
+              }
+            >
+              <div
+                className={
+                  visibleTotalDelegateTooltip
+                    ? "value-wrapper-for-hover"
+                    : "value-wrapper"
+                }
+              >
+                {formatOtherPrice(governanceSummary.totalDelegated, {
+                  isKMB: false,
+                  usd: false,
+                })}
+                <TokenChip tokenInfo={GNS_TOKEN} />
+              </div>
+            </Tooltip>
           }
           tooltip={t("Governance:summary.totalDel.tooltip")}
           isLoading={isLoading}
