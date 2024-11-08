@@ -147,6 +147,16 @@ export const FOOTER_RIGHT_NAV = [
         path: "/privacy",
         newTab: true,
       },
+      {
+        title: "HeaderFooter:policySection.item.disclaimer",
+        path: "https://docs.gnoswap.io/notice/disclaimer",
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:policySection.item.risk",
+        path: "https://docs.gnoswap.io/notice/risk",
+        newTab: true,
+      },
     ],
   },
 ];
