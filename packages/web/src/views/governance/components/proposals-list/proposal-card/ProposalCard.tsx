@@ -22,6 +22,8 @@ interface Props {
   address: string;
   breakpoint: DEVICE_TYPE;
   proposalDetail: ProposalItemInfo;
+  isPassed: boolean;
+  getTooltipTextI18nKey: (status: string) => string;
   onClickCard: (id: string) => void;
   executeProposal: (id: number) => void;
   cancelProposal: (id: number) => void;
@@ -31,6 +33,8 @@ const ProposalCard: React.FC<Props> = ({
   address,
   breakpoint,
   proposalDetail,
+  isPassed,
+  getTooltipTextI18nKey,
   onClickCard,
   executeProposal,
   cancelProposal,
@@ -98,6 +102,10 @@ const ProposalCard: React.FC<Props> = ({
       }
     };
   }, [executable, proposalDetail.status]);
+
+  const tooltipTextI18nKey = React.useMemo(() => {
+    return getTooltipTextI18nKey(proposalDetail.status);
+  }, [proposalDetail.status]);
 
   return (
     <ProposalDetailWrapper
@@ -211,6 +219,8 @@ const ProposalCard: React.FC<Props> = ({
           proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.yes
         }
         no={proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.no}
+        tooltipTextI18nKey={tooltipTextI18nKey}
+        isPassed={isPassed}
       />
     </ProposalDetailWrapper>
   );

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
@@ -106,6 +106,24 @@ const ProposalList: React.FC<ProposalListProps> = ({
     });
   };
 
+  const selectedProposalDetail = React.useMemo(() => {
+    return (
+      proposalList.find(item => item.id === selectedProposalId) ||
+      nullProposalItemInfo
+    );
+  }, [proposalList, selectedProposalId]);
+
+  const getTooltipTextI18nKey = React.useCallback((status: string) => {
+    switch (status) {
+      case "PASSED":
+        return "proposal.tooltip.passed";
+      case "REJECTED":
+        return "proposal.tooltip.rejected";
+      default:
+        return "proposal.tooltip.executed";
+    }
+  }, []);
+
   return (
     <ProposalListWrapper>
       <ProposalHeader
@@ -128,6 +146,8 @@ const ProposalList: React.FC<ProposalListProps> = ({
                     onClickCard={() => setSelectedProposalId(proposalDetail.id)}
                     executeProposal={executeProposal}
                     cancelProposal={cancelProposal}
+                    isPassed={proposalDetail.status === "PASSED"}
+                    getTooltipTextI18nKey={getTooltipTextI18nKey}
                   />
                 );
               }
@@ -140,6 +160,8 @@ const ProposalList: React.FC<ProposalListProps> = ({
                   onClickCard={() => setSelectedProposalId(proposalDetail.id)}
                   executeProposal={executeProposal}
                   cancelProposal={cancelProposal}
+                  isPassed={proposalDetail.status === "PASSED"}
+                  getTooltipTextI18nKey={getTooltipTextI18nKey}
                 />
               );
             },
@@ -156,10 +178,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
       {selectedProposalId !== 0 && (
         <ViewProposalModal
           breakpoint={breakpoint}
-          proposalDetail={
-            proposalList.find(item => item.id === selectedProposalId) ||
-            nullProposalItemInfo
-          }
+          proposalDetail={selectedProposalDetail}
           setIsModalOpen={(isOpen: boolean) =>
             setSelectedProposalId(isOpen ? selectedProposalId : 0)
           }
@@ -168,6 +187,8 @@ const ProposalList: React.FC<ProposalListProps> = ({
           connectWallet={connectWallet}
           switchNetwork={switchNetwork}
           voteProposal={voteProposal}
+          isPassed={selectedProposalDetail.status === "PASSED"}
+          getTooltipTextI18nKey={getTooltipTextI18nKey}
         />
       )}
     </ProposalListWrapper>

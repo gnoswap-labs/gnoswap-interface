@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -17,6 +17,8 @@ import TypeBadge from "../../type-badge/TypeBadge";
 import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 import VoteButtons from "./VoteButtons";
 import VoteCtaButton from "./VoteCtaButton";
+import IconPassed from "@components/common/icons/IconPassed";
+import { ProposalTooltipContent } from "../../voting-progress-bar/VotingProgressBar.styles";
 
 import {
   ModalHeaderWrapper,
@@ -25,6 +27,7 @@ import {
   ViewProposalModalWrapper,
   VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
+import Tooltip from "@components/common/tooltip/Tooltip";
 
 export interface ViewProposalModalProps {
   breakpoint: DEVICE_TYPE;
@@ -32,6 +35,8 @@ export interface ViewProposalModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
   isSwitchNetwork: boolean;
+  isPassed: boolean;
+  getTooltipTextI18nKey: (status: string) => string;
   connectWallet: () => void;
   switchNetwork: () => void;
   voteProposal: (proposalId: number, voteYes: boolean) => void;
@@ -43,6 +48,8 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   setIsModalOpen,
   isSwitchNetwork,
   isConnected,
+  isPassed,
+  getTooltipTextI18nKey,
   connectWallet,
   switchNetwork,
   voteProposal,
@@ -59,6 +66,10 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   const [selectedVote, setSelectedVote] = useState(
     proposalDetail.myVote?.type || "",
   );
+
+  const tooltipTextI18nKey = React.useMemo(() => {
+    return getTooltipTextI18nKey(proposalDetail.status);
+  }, [proposalDetail.status, getTooltipTextI18nKey]);
 
   if (!proposalDetail) return null;
 
@@ -176,11 +187,25 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           <div className="quorum-header">
             <span>{t("Governance:detailModal.quorum")}</span>
             <div className="progress-value">
-              <span>
-                {(
-                  proposalDetail.votes.yes + proposalDetail.votes.no
-                ).toLocaleString()}
-              </span>
+              <Tooltip
+                placement="top"
+                FloatingContent={
+                  <ProposalTooltipContent>
+                    <Trans
+                      ns="Governance"
+                      components={{ br: <br /> }}
+                      i18nKey={tooltipTextI18nKey}
+                    />
+                  </ProposalTooltipContent>
+                }
+              >
+                <span className={isPassed ? "passed" : ""}>
+                  {isPassed && <IconPassed />}
+                  {(
+                    proposalDetail.votes.yes + proposalDetail.votes.no
+                  ).toLocaleString()}
+                </span>
+              </Tooltip>
               /<div>{proposalDetail.votes.max.toLocaleString()}</div>
             </div>
           </div>
@@ -189,6 +214,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             no={proposalDetail.votes.no}
             max={proposalDetail.votes.max}
             hideNumber
+            isPassed={isPassed}
           />
         </ModalQuorum>
         <VoteButtons
