@@ -345,7 +345,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           $
                           {toNumberFormat(
                             myDelegationInfo.claimableRewardsUsd,
-                            6,
+                            2,
                           )}
                         </span>
                       </div>
