@@ -39,7 +39,7 @@ interface MyDelegationProps {
     fromAddress: string,
     amount: string,
   ) => void;
-  collectUndelegated: () => void;
+  collectUndelegated: (amount: string) => void;
   collectReward: (usdValue: string) => void;
 }
 
@@ -114,7 +114,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         };
       })
       .sort((a, b) => b.usdValue - a.usdValue);
-  }, [myDelegationInfo.claimableRewards, getTokenUSDPrice]);
+  }, [myDelegationInfo.claimableRewards, getTokenUSDPrice, tokens]);
   /**
    * A delimiter showing voting weight information or undelegation information.
    */
@@ -324,7 +324,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
-                      onClick: collectUndelegated,
+                      onClick: () =>
+                        collectUndelegated(
+                          toNumberFormat(myDelegationInfo.undelegatedAmount, 2),
+                        ),
                     }
                   : undefined
               }

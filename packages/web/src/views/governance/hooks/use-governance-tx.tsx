@@ -12,7 +12,6 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
-import BigNumber from "bignumber.js";
 
 export const useGovernanceTx = () => {
   const { t } = useTranslation();
@@ -184,14 +183,17 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const collectUndelegated = (emitCallback: () => Promise<void>) => {
+  const collectUndelegated = (
+    amount: string,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
 
     const messageData = {
-      tokenAAmount: "0",
-      tokenASymbol: "GNS",
+      tokenAAmount: amount,
+      tokenASymbol: GNS_TOKEN.symbol,
     };
 
     processTx(
@@ -200,15 +202,7 @@ export const useGovernanceTx = () => {
       messageData,
       response => {
         if (!response) return messageData;
-        const tokenAAmount = (
-          BigNumber(response[0] || 0).toNumber() /
-          10 ** GNS_TOKEN.decimals
-        ).toLocaleString("en");
-
-        return {
-          ...messageData,
-          tokenAAmount,
-        };
+        return messageData;
       },
       emitCallback,
     );
