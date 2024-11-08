@@ -79,9 +79,10 @@ const LaunchpadDetail: React.FC = () => {
   } = useGetLaunchpadProjectDetails(projectPath);
 
   const breadcrumbsSteps = React.useMemo(() => {
+    const title = breakpoint === "mobile" ? "..." : t("Launchpad:launchpad");
     return [
       {
-        title: t("Launchpad:launchpad"),
+        title: title,
         path: "/launchpad",
         options: {
           type: "LAUNCHPAD" as BreadcrumbTypes,
@@ -92,7 +93,7 @@ const LaunchpadDetail: React.FC = () => {
         path: "",
       },
     ];
-  }, [projectDetailData?.name, t]);
+  }, [projectDetailData?.name, t, breakpoint]);
 
   /**
    * @dev Launchpad Detail Contents-header section data
