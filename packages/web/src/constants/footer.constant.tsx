@@ -149,12 +149,12 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "HeaderFooter:policySection.item.disclaimer",
-        path: "https://docs.gnoswap.io/notice/disclaimer",
+        path: EXT_URL.DOCS.DISCLAIMER,
         newTab: true,
       },
       {
         title: "HeaderFooter:policySection.item.risk",
-        path: "https://docs.gnoswap.io/notice/risk",
+        path: EXT_URL.DOCS.RISK,
         newTab: true,
       },
     ],
