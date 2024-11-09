@@ -262,25 +262,30 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     return true;
   }, [address, closedPosition.length, connected]);
 
+  const getMappedData = (): PoolPositionModel[] => {
+    if (isViewMorePositions) {
+      return showedPosition;
+    }
+
+    const breakpoints = [
+      { width: 1180, displayCount: 4 },
+      { width: 920, displayCount: 3 },
+    ];
+
+    for (const breakpoint of breakpoints) {
+      if (width > breakpoint.width) {
+        return showedPosition.slice(0, breakpoint.displayCount);
+      }
+    }
+
+    return showedPosition;
+  };
+
   const updateDataMapping = useCallback(() => {
     setIsDataMappingLoading(true);
-
-    requestAnimationFrame(() => {
-      let newMappedData: PoolPositionModel[];
-      if (!isViewMorePositions) {
-        if (width > 1180) {
-          newMappedData = showedPosition.slice(0, 4);
-        } else if (width > 920) {
-          newMappedData = showedPosition.slice(0, 3);
-        } else {
-          newMappedData = showedPosition;
-        }
-      } else {
-        newMappedData = showedPosition;
-      }
-      setMappedData(newMappedData);
-      setIsDataMappingLoading(false);
-    });
+    const newMappedData = getMappedData();
+    setMappedData(newMappedData);
+    setIsDataMappingLoading(false);
   }, [isViewMorePositions, width, showedPosition]);
 
   useEffect(() => {

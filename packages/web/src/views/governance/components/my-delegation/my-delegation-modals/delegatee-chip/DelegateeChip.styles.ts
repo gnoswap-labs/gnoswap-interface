@@ -11,8 +11,8 @@ export const DelegateeChipWrapper = styled.div`
   border-radius: 36px;
   border: ${({ theme }) =>
     theme.themeKey === "dark"
-      ? `1px solid ${theme.color.border12}`
-      : "1px solid transparent"};
+      ? "1px solid transparent"
+      : `1px solid ${theme.color.border12}`};
   background-color: ${({ theme }) => theme.color.background02};
   ${fonts.body9};
   color: ${({ theme }) => theme.color.text01};
