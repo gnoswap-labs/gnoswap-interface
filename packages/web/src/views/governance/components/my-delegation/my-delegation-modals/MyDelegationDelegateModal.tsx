@@ -363,7 +363,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               ...nullDelegateeInfo,
               name: selfDelegateName,
             });
-            changeSelfDelegateeAddress(selfAddress);
+            changeSelfDelegateeAddress(account?.address || "");
             handleClickSelfDelegateeAddress(account?.address || "");
           }}
         />
