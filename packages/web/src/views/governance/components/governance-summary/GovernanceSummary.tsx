@@ -73,7 +73,16 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                           "Governance:summary.tooltip.totalDelegated.delegatedGNS",
                         )}
                       </div>
-                      <div className="amount"></div>
+                      <div className="amount">
+                        {formatOtherPrice(
+                          governanceSummary.governanceDelegated,
+                          {
+                            isKMB: false,
+                            usd: false,
+                            decimals: 0,
+                          },
+                        )}
+                      </div>
                     </div>
                   </div>
                   <Divider className="divider" />
@@ -96,7 +105,12 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                           "Governance:summary.tooltip.totalDelegated.participatedGNS",
                         )}
                       </div>
-                      <div className="amount"></div>
+                      <div className="amount">
+                        {formatOtherPrice(
+                          governanceSummary.launchpadDelegated,
+                          { isKMB: false, usd: false, decimals: 0 },
+                        )}
+                      </div>
                     </div>
                   </div>
                 </GovernanceSummaryTooltipContent>
@@ -112,6 +126,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                 {formatOtherPrice(governanceSummary.totalDelegated, {
                   isKMB: false,
                   usd: false,
+                  decimals: 0,
                 })}
                 <TokenChip tokenInfo={GNS_TOKEN} />
               </div>

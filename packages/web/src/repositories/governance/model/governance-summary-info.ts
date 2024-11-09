@@ -15,6 +15,8 @@ export interface GovernanceSummaryInfo {
       paramNum: number;
     }[];
   };
+  governanceDelegated: string;
+  launchpadDelegated: string;
 }
 
 export const nullGovernanceSummaryInfo: GovernanceSummaryInfo = {
@@ -27,4 +29,6 @@ export const nullGovernanceSummaryInfo: GovernanceSummaryInfo = {
     packages: [],
     functions: [],
   },
+  governanceDelegated: "0",
+  launchpadDelegated: "0",
 };
