@@ -98,6 +98,10 @@ export const GovernanceSummaryTooltipContent = styled.div`
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;
       }
+      .amount {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 4px;
+      }
     }
   }
   .divider {

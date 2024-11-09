@@ -74,6 +74,11 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                         )}
                       </div>
                       <div className="amount">
+                        <MissingLogo
+                          symbol={GNS_TOKEN.symbol}
+                          width={20}
+                          url={GNS_TOKEN.logoURI}
+                        />
                         {formatOtherPrice(
                           governanceSummary.governanceDelegated,
                           {
@@ -106,6 +111,11 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                         )}
                       </div>
                       <div className="amount">
+                        <MissingLogo
+                          symbol={GNS_TOKEN.symbol}
+                          width={20}
+                          url={GNS_TOKEN.logoURI}
+                        />
                         {formatOtherPrice(
                           governanceSummary.launchpadDelegated,
                           { isKMB: false, usd: false, decimals: 0 },
