@@ -130,5 +130,7 @@
         "paramNum": 2
       }
     ]
-  }
+  },
+  "governanceDelegated": "0",
+  "launchpadDelegated": "0"
 }
