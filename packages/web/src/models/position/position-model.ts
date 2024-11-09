@@ -1,4 +1,4 @@
-import { RewardModel } from "./reward-model";
+import { ClaimedRewardModel, RewardModel } from "./reward-model";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
 
@@ -34,6 +34,8 @@ export interface PositionModel {
   stakedAt: string;
 
   reward: RewardModel[];
+
+  claimedRewards: ClaimedRewardModel[];
 
   bins40: PoolBinModel[];
 
