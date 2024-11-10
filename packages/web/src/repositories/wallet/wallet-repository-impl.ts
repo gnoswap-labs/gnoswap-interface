@@ -7,8 +7,8 @@ import { TransferGRC20TokenRequest } from "./request/transfer-grc20-token-reques
 import { TransferNativeTokenRequest } from "./request/transfer-native-token-request";
 import { TransferGRC20TokenResponse } from "./response/transfer-grc20-token-response";
 import { TransferNativeTokenResponse } from "./response/transfer-native-token-response";
-import { makeTransferGNOTTokenMessages, makeTransferGRC20TokenMessages } from "./transaction-message";
 import { WalletRepository } from "./wallet-repository";
+import { makeTransferGNOTTokenMessages, makeTransferGRC20TokenMessages } from "./wallet.message";
 
 export class WalletRepositoryImpl implements WalletRepository {
   private walletClient: WalletClient | null;

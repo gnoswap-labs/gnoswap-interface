@@ -23,7 +23,7 @@ import {
   makeSwapRouteMessageWithApproves,
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
-} from "./transaction-message";
+} from "./swap-router.message";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
