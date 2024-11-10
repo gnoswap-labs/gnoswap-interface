@@ -1,21 +1,20 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface ComponentSize {
   width: number;
   height: number;
 }
 
-function useComponentSize(dependency?: any): [React.RefObject<HTMLDivElement>, ComponentSize] {
+function useComponentSize(dependency?: never): [React.RefObject<HTMLDivElement>, ComponentSize] {
   const [size, setSize] = useState<ComponentSize>({ width: 0, height: 0 });
   const componentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleResize = () => {
-      const { width, height } =
-        componentRef.current?.getBoundingClientRect() ?? {
-          width: 0,
-          height: 0,
-        };
+      const { width, height } = componentRef.current?.getBoundingClientRect() ?? {
+        width: 0,
+        height: 0,
+      };
       setSize({ width, height });
     };
 

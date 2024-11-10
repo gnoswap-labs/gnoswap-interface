@@ -1,25 +1,24 @@
 import { PoolRepository } from ".";
 
-import PoolDetailData from "./mock/pool-detail.json";
-import { PoolRPCModel } from "@models/pool/pool-rpc-model";
+import {
+  SendTransactionResponse,
+  WalletResponse,
+} from "@common/clients/wallet-client/protocols";
 import { PoolError } from "@common/errors/pool";
-import rpcPools from "./mock/rpc-pools.json";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import {
   IncentivizePoolModel,
   IPoolDetailResponse,
   PoolModel,
 } from "@models/pool/pool-model";
-import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import {
-  SendTransactionResponse,
-  WalletResponse,
-} from "@common/clients/wallet-client/protocols";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
-import { PoolRPCResponse } from "./response/pool-rpc-response";
+import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
+import PoolDetailData from "./mock/pool-detail.json";
+import rpcPools from "./mock/rpc-pools.json";
 export class PoolRepositoryMock implements PoolRepository {
   getWithdrawalFee = async (): Promise<number> => {
     return 0;
@@ -35,9 +34,7 @@ export class PoolRepositoryMock implements PoolRepository {
   };
 
   getRPCPools = async (): Promise<PoolRPCModel[]> => {
-    return rpcPools.map((pool: unknown) =>
-      PoolRPCMapper.from(pool as PoolRPCResponse),
-    );
+    return rpcPools.map(pool => PoolRPCMapper.from(pool as never));
   };
 
   getPoolStakingList = async (): Promise<PoolStakingModel[]> => {
@@ -61,7 +58,7 @@ export class PoolRepositoryMock implements PoolRepository {
   };
 
   getPoolDetailByPoolPath = async (): Promise<PoolDetailModel> => {
-    return PoolDetailData.pool as PoolDetailModel;
+    return PoolDetailData.pool as never;
   };
 
   getBinsOfPoolByPath = async (): Promise<PoolBinModel[]> => {
