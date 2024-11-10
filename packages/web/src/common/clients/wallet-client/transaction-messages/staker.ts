@@ -3,15 +3,16 @@ import {
   PACKAGE_STAKER_ADDRESS,
   PACKAGE_STAKER_PATH,
 } from "@constants/environment.constant";
-import { makeApproveMessage, makeTransactionMessage } from "./common";
+import { makeNFTApproveMessage, makeTransactionMessage } from "./common";
 
-export function makeApporveStakeTokenMessage(
+export function makeApproveStakeTokenMessage(
   lpTokenId: string,
   caller: string,
 ) {
-  return makeApproveMessage(
+  return makeNFTApproveMessage(
     PACKAGE_NFT_PATH,
-    [PACKAGE_STAKER_ADDRESS, lpTokenId.toString()],
+    PACKAGE_STAKER_ADDRESS,
+    lpTokenId,
     caller,
   );
 }

@@ -1,9 +1,9 @@
 import {
-  WalletStatusMethod,
-  WalletTransactionMethod,
   WalletAccountMethod,
   WalletEventMethod,
   WalletNetworkMethod,
+  WalletStatusMethod,
+  WalletTransactionMethod,
 } from "./protocols";
 
 export interface WalletClient
@@ -11,4 +11,6 @@ export interface WalletClient
     WalletTransactionMethod,
     WalletAccountMethod,
     WalletNetworkMethod,
-    WalletEventMethod {}
+    WalletEventMethod {
+  getAddress: () => Promise<string | null>;
+}

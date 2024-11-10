@@ -1,15 +1,17 @@
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import { makeTransactionMessage } from "@common/clients/wallet-client/transaction-messages";
 import { CommonError } from "@common/errors";
-import {
-  GNS_TOKEN_PATH,
-  PACKAGE_LAUNCHPAD_ADDRESS,
-  PACKAGE_LAUNCHPAD_PATH,
-} from "@constants/environment.constant";
+import { DEFAULT_GAS_FEE } from "@common/values";
 import { makeQueryParameter } from "@utils/network.utils";
 import { LaunchpadRepository } from "./launchpad-repository";
+import {
+  makeCollectRewardByDepositIdMessage,
+  makeCollectRewardByProjectIdMessage,
+  makeCollectRewardWithDepositByDepositIdMessage,
+  makeCollectRewardWithDepositByProjectIdMessage,
+  makeDepositGNSMessageWithApproves,
+} from "./launchpad.message";
 import { GetLaunchpadProjectsRequestParameters } from "./request";
 import {
   GetLaunchpadParticipationInfosResponse,
@@ -26,10 +28,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
 
-  constructor(
-    networkClient: NetworkClient | null,
-    walletClient: WalletClient | null,
-  ) {
+  constructor(networkClient: NetworkClient | null, walletClient: WalletClient | null) {
     this.networkClient = networkClient;
     this.walletClient = walletClient;
   }
@@ -46,9 +45,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       .then(result => result.data?.data);
   }
 
-  getLaunchpadProjects(
-    params: GetLaunchpadProjectsRequestParameters,
-  ): Promise<GetLaunchpadProjectsResponse> {
+  getLaunchpadProjects(params: GetLaunchpadProjectsRequestParameters): Promise<GetLaunchpadProjectsResponse> {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -62,9 +59,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       .then(result => result.data?.data);
   }
 
-  getLaunchpadProjectDetails(
-    projectId: string,
-  ): Promise<GetLaunchpadProjectDetailsResponse> {
+  getLaunchpadProjectDetails(projectId: string): Promise<GetLaunchpadProjectDetailsResponse> {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -78,10 +73,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       .then(result => result.data?.data);
   }
 
-  getLaunchpadParticipationInfos(
-    projectId: string,
-    address: string,
-  ): Promise<GetLaunchpadParticipationInfosResponse> {
+  getLaunchpadParticipationInfos(projectId: string, address: string): Promise<GetLaunchpadParticipationInfosResponse> {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -104,145 +96,67 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: GNS_TOKEN_PATH,
-        send: "",
-        func: "Approve",
-        args: [PACKAGE_LAUNCHPAD_ADDRESS, gnsTokenAmount.toString()],
-        caller,
-      }),
-      makeTransactionMessage({
-        packagePath: PACKAGE_LAUNCHPAD_PATH,
-        send: "",
-        func: "DepositGns",
-        args: [poolId, gnsTokenAmount.toString()],
-        caller,
-      }),
-    );
+    const messages = makeDepositGNSMessageWithApproves({ poolId, gnsTokenAmount, caller });
 
     return this.walletClient.sendTransaction({
       messages,
-      gasFee: 1,
+      gasFee: DEFAULT_GAS_FEE,
       memo: "",
     });
   }
 
-  async collectRewardByProjectId(
-    projectId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>> {
+  async collectRewardByProjectId(projectId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_LAUNCHPAD_PATH,
-        send: "",
-        func: "CollectRewardByProjectId",
-        args: [projectId],
-        caller,
-      }),
-    );
+    const messages = makeCollectRewardByProjectIdMessage({ projectId, caller });
 
     return this.walletClient.sendTransaction({
       messages,
-      gasFee: 1,
+      gasFee: DEFAULT_GAS_FEE,
       memo: "",
     });
   }
 
-  async collectRewardByDepositId(
-    depositId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>> {
+  async collectRewardByDepositId(depositId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_LAUNCHPAD_PATH,
-        send: "",
-        func: "CollectRewardByDepositId",
-        args: [depositId],
-        caller,
-      }),
-    );
+    const messages = makeCollectRewardByDepositIdMessage({ depositId, caller });
 
     return this.walletClient.sendTransaction({
       messages,
-      gasFee: 1,
+      gasFee: DEFAULT_GAS_FEE,
       memo: "",
     });
   }
 
-  collectRewardWithDepositByProjectId(
-    projectId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>> {
+  collectRewardWithDepositByProjectId(projectId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_LAUNCHPAD_PATH,
-        send: "",
-        func: "CollectRewardByProjectId",
-        args: [projectId],
-        caller,
-      }),
-      makeTransactionMessage({
-        packagePath: PACKAGE_LAUNCHPAD_PATH,
-        send: "",
-        func: "CollectDepositGnsByProjectId",
-        args: [projectId],
-        caller,
-      }),
-    );
+    const messages = makeCollectRewardWithDepositByProjectIdMessage({ projectId, caller });
 
     return this.walletClient.sendTransaction({
       messages,
-      gasFee: 1,
+      gasFee: DEFAULT_GAS_FEE,
       memo: "",
     });
   }
 
-  collectRewardWithDepositByDepositId(
-    depositId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>> {
+  collectRewardWithDepositByDepositId(depositId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_LAUNCHPAD_PATH,
-        send: "",
-        func: "CollectRewardByDepositId",
-        args: [depositId],
-        caller,
-      }),
-      makeTransactionMessage({
-        packagePath: PACKAGE_LAUNCHPAD_PATH,
-        send: "",
-        func: "CollectDepositGnsByDepositId",
-        args: [depositId],
-        caller,
-      }),
-    );
+    const messages = makeCollectRewardWithDepositByDepositIdMessage({ depositId, caller });
 
     return this.walletClient.sendTransaction({
       messages,
-      gasFee: 1,
+      gasFee: DEFAULT_GAS_FEE,
       memo: "",
     });
   }

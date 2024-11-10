@@ -1,39 +1,6 @@
-import {
-  PACKAGE_POOL_ADDRESS,
-  PACKAGE_ROUTER_ADDRESS,
-  PACKAGE_STAKER_ADDRESS,
-  PACKAGE_STAKER_PATH,
-} from "@constants/environment.constant";
+import { PACKAGE_STAKER_PATH } from "@constants/environment.constant";
 import { toNativePath } from "@utils/common";
-import {
-  makeApproveMessage,
-  makeGNOTSendAmount,
-  makeTransactionMessage,
-} from "./common";
-
-export function makePoolTokenApproveMessage(
-  packagePath: string,
-  amount: string,
-  caller: string,
-) {
-  return makeApproveMessage(
-    packagePath,
-    [PACKAGE_POOL_ADDRESS, amount],
-    caller,
-  );
-}
-
-export function makeRouterTokenApproveMessage(
-  packagePath: string,
-  amount: string,
-  caller: string,
-) {
-  return makeApproveMessage(
-    packagePath,
-    [PACKAGE_ROUTER_ADDRESS, amount],
-    caller,
-  );
-}
+import { makeGNOTSendAmount, makeTransactionMessage } from "./common";
 
 export function makeCreateIncentiveMessage(
   poolPath: string,
@@ -68,16 +35,4 @@ export function makeRemoveIncentiveMessage(
     args: [caller, poolPath, rewardTokenPath],
     caller,
   });
-}
-
-export function makeStakerApproveMessage(
-  tokenPath: string,
-  amount: string,
-  caller: string,
-) {
-  return makeApproveMessage(
-    tokenPath,
-    [PACKAGE_STAKER_ADDRESS, amount],
-    caller,
-  );
 }

@@ -14,6 +14,13 @@ export interface TransactionMessage {
   args: string[] | null;
 }
 
+export interface TokenApproveMessageInfo {
+  tokenPath: string;
+  targetAddress: string;
+  amount: string | bigint | number;
+  caller: string;
+}
+
 export function makeBankSendGNOTMessage({
   from,
   to,
@@ -54,18 +61,49 @@ export function makeTransactionMessage({
   };
 }
 
-export function makeApproveMessage(
-  packagePath: string,
-  args: string[],
+export function makeTokenApproveMessage(
+  tokenPath: string,
+  targetAddress: string,
+  amount: string | bigint | number,
   caller: string,
-) {
+): TransactionMessage {
   return makeTransactionMessage({
     caller,
     send: "",
-    packagePath,
+    packagePath: tokenPath,
     func: "Approve",
-    args,
+    args: [targetAddress, amount.toString()],
   });
+}
+
+export function makeNFTApproveMessage(
+  nftPath: string,
+  targetAddress: string,
+  lpTokenId: string | bigint | number,
+  caller: string,
+): TransactionMessage {
+  return makeTransactionMessage({
+    caller,
+    send: "",
+    packagePath: nftPath,
+    func: "Approve",
+    args: [targetAddress, lpTokenId.toString()],
+  });
+}
+
+export function makeTransactionMessagesWithApproves(
+  transactionMessages: TransactionMessage[],
+  approveInfos: TokenApproveMessageInfo[],
+): TransactionMessage[] {
+  const approveMessages = approveInfos.map(approveInfo =>
+    makeTokenApproveMessage(approveInfo.tokenPath, approveInfo.targetAddress, approveInfo.amount, approveInfo.caller),
+  );
+
+  const approveResetMessages = approveInfos.map(approveInfo =>
+    makeTokenApproveMessage(approveInfo.tokenPath, approveInfo.targetAddress, 0, approveInfo.caller),
+  );
+
+  return [...approveMessages, ...transactionMessages, ...approveResetMessages];
 }
 
 export function makeGNOTSendAmount(amount: string | number | null): string {

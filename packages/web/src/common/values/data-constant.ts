@@ -26,3 +26,5 @@ export const DEFAULT_GAS_FEE = 1 as const;
 export const DEFAULT_GAS_WANTED = 100_000_000 as const;
 
 export const MINIMUM_GNOT_SWAP_AMOUNT = 0.001;
+
+export const GNS_DEPOSIT_AMOUNT = 1_000_000_000 as const;
