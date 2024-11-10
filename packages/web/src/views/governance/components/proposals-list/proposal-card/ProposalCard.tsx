@@ -129,7 +129,13 @@ const ProposalCard: React.FC<Props> = ({
       yesVotes,
       noVotes,
     );
-  }, [proposalDetail.status, isMajorityVoted, yesVotes, noVotes]);
+  }, [
+    proposalDetail.status,
+    getTooltipTextI18nKey,
+    isMajorityVoted,
+    yesVotes,
+    noVotes,
+  ]);
 
   return (
     <ProposalDetailWrapper
