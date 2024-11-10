@@ -54,7 +54,7 @@ export const VariableSelectBoxWrapper = styled.div`
       white-space: nowrap;
       text-align: left;
       font-size: calc(14px * var(--scale-factor, 1));
-      transition: font-size 0s;
+      transition: font-size 0.2s ease;
       ${media.mobile} {
         font-size: 14px;
       }
@@ -106,7 +106,7 @@ export const VariableSelectOptionsWrapper = styled.div<{
       white-space: nowrap;
       text-align: left;
       font-size: calc(14px * var(--scale-factor, 1));
-      transition: font-size 0s;
+      transition: font-size 0.2s ease;
       ${media.mobile} {
         font-size: calc(14px * var(--scale-factor, 1));
       }
