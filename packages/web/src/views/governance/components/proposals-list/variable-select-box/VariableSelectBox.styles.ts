@@ -52,10 +52,11 @@ export const VariableSelectBoxWrapper = styled.div`
     > .display-text {
       flex-grow: 1;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      &.small-font {
-        font-size: 10px;
+      text-align: left;
+      font-size: calc(14px * var(--scale-factor, 1));
+      transition: font-size 0.2s ease;
+      ${media.mobile} {
+        font-size: 14px;
       }
     }
 
@@ -97,22 +98,18 @@ export const VariableSelectOptionsWrapper = styled.div<{
 
     > .display-value {
       display: block;
-      width: 100%;
-      padding: 16px 24px;
-      flex-grow: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       color: ${({ theme }) => theme.color.text01};
       cursor: pointer;
-      &.small-font {
-        font-size: 13px;
-      }
+      width: 100%;
+      padding: 16px;
+      flex-grow: 1;
+      white-space: nowrap;
+      text-align: left;
+      font-size: calc(14px * var(--scale-factor, 1));
+      transition: font-size 0.2s ease;
 
-      /* fonts */
-      ${fonts.body9}
       ${media.mobile} {
-        ${fonts.body11}
+        font-size: calc(12px * var(--scale-factor, 1));
       }
 
       :hover {

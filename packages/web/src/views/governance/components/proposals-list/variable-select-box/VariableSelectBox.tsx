@@ -15,18 +15,6 @@ import {
   VariableSelectOptionsWrapper,
 } from "./VariableSelectBox.styles";
 
-function makeClassNameWithSmallFont(
-  className: string,
-  target: string,
-  limitLength = 11,
-) {
-  const additionalClassName = "small-font";
-  if (target.length > limitLength) {
-    return `${className} ${additionalClassName}`;
-  }
-  return className;
-}
-
 export interface VariableSelectBoxProps {
   modalBodyRef?: React.RefObject<HTMLDivElement>;
   items: {
@@ -53,7 +41,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
   onChange,
 }) => {
   const selectRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [opened, setOpened] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({
     width: 0,
@@ -84,6 +72,55 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
     [onChange],
   );
 
+  const adjustTextSize = useCallback(
+    (element: HTMLElement, container: HTMLElement, padding: number) => {
+      const maxWidth = container.offsetWidth - padding;
+      const scaleFactor = maxWidth / element.scrollWidth;
+
+      if (scaleFactor < 1) {
+        element.style.setProperty("--scale-factor", scaleFactor.toString());
+      } else {
+        element.style.setProperty("--scale-factor", "1");
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (selectRef.current) {
+      const textElement = selectRef.current.querySelector(".display-text");
+      if (textElement instanceof HTMLElement) {
+        adjustTextSize(textElement, selectRef.current, 40);
+      }
+    }
+  }, [adjustTextSize, displayText, selectRef.current]);
+
+  useEffect(() => {
+    if (opened && dropdownRef.current) {
+      const options =
+        dropdownRef.current.querySelectorAll<HTMLElement>(".display-value");
+
+      options.forEach((option: HTMLElement) => {
+        const clone = option.cloneNode(true) as HTMLElement;
+        clone.style.visibility = "hidden";
+        clone.style.position = "absolute";
+        clone.style.width = `${dropdownPosition.width - 20}px`;
+        clone.style.setProperty("--scale-factor", "1");
+        document.body.appendChild(clone);
+
+        const scaleFactor = (dropdownPosition.width - 20) / clone.scrollWidth;
+
+        document.body.removeChild(clone);
+
+        if (scaleFactor < 1) {
+          option.style.setProperty("--scale-factor", scaleFactor.toString());
+        } else {
+          option.style.removeProperty("--scale-factor");
+        }
+      });
+    }
+  }, [adjustTextSize, opened, items, dropdownPosition.width]);
+
   const renderSelectOptions = () => {
     const portalElement = document?.getElementById("portal-dropdown");
     if (!portalElement) {
@@ -101,10 +138,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
           {items.map((item, index) => (
             <span
               key={index}
-              className={makeClassNameWithSmallFont(
-                "display-value",
-                item.displayValue,
-              )}
+              className={"display-value"}
               onClick={() => selectItem(item.value)}
             >
               {item.displayValue}
@@ -147,15 +181,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
         ref={selectRef}
         onClick={toggleOpenSelectBox}
       >
-        <span
-          className={makeClassNameWithSmallFont(
-            "display-text",
-            displayText,
-            12,
-          )}
-        >
-          {displayText}
-        </span>
+        <span className={"display-text"}>{displayText}</span>
         {opened ? (
           <IconArrowUp className="icon-arrow" />
         ) : (
