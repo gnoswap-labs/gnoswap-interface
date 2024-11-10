@@ -35,7 +35,12 @@ export interface ViewProposalModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
   isSwitchNetwork: boolean;
-  getTooltipTextI18nKey: (status: string, isMajorityVoted: boolean) => string;
+  getTooltipTextI18nKey: (
+    status: string,
+    isMajorityVoted: boolean,
+    yesVotes: number,
+    noVotes: number,
+  ) => string;
   connectWallet: () => void;
   switchNetwork: () => void;
   voteProposal: (proposalId: number, voteYes: boolean) => void;
@@ -72,9 +77,34 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
     );
   }, [proposalDetail.votes]);
 
+  const { yesVotes, noVotes } = useMemo(() => {
+    if (proposalDetail.status === "CANCELLED") {
+      return { yesVotes: 0, noVotes: 0 };
+    }
+    return {
+      yesVotes: proposalDetail.votes.yes,
+      noVotes: proposalDetail.votes.no,
+    };
+  }, [
+    proposalDetail.status,
+    proposalDetail.votes.yes,
+    proposalDetail.votes.no,
+  ]);
+
   const tooltipTextI18nKey = React.useMemo(() => {
-    return getTooltipTextI18nKey(proposalDetail.status, isMajorityVoted);
-  }, [proposalDetail.status, getTooltipTextI18nKey]);
+    return getTooltipTextI18nKey(
+      proposalDetail.status,
+      isMajorityVoted,
+      yesVotes,
+      noVotes,
+    );
+  }, [
+    proposalDetail.status,
+    getTooltipTextI18nKey,
+    isMajorityVoted,
+    yesVotes,
+    noVotes,
+  ]);
 
   if (!proposalDetail) return null;
 
