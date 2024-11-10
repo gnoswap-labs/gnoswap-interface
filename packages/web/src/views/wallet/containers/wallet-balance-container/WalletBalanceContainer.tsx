@@ -57,8 +57,12 @@ const WalletBalanceContainer: React.FC = () => {
   );
 
   const { claimAll } = usePosition(positions);
-  const { broadcastSuccess, broadcastError, broadcastRejected } =
-    useBroadcastHandler();
+  const {
+    broadcastSuccess,
+    broadcastError,
+    broadcastRejected,
+    broadcastLoading,
+  } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
@@ -93,9 +97,13 @@ const WalletBalanceContainer: React.FC = () => {
     const amount = positions
       .flatMap(item => item.reward)
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
-    const data = {
+
+    const messageData = {
       tokenAAmount: toUnitFormat(amount, true, true),
     };
+
+    broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
+
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
       if (response) {
@@ -106,7 +114,7 @@ const WalletBalanceContainer: React.FC = () => {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: DexEvent.CLAIM_FEE,
-            formatData: () => data,
+            formatData: () => messageData,
             onUpdate: async () => {
               await updateBalances();
             },
@@ -121,7 +129,7 @@ const WalletBalanceContainer: React.FC = () => {
             getMessage(
               DexEvent.CLAIM_FEE,
               "success",
-              data,
+              messageData,
               response?.data?.hash,
             ),
           );
@@ -130,7 +138,7 @@ const WalletBalanceContainer: React.FC = () => {
           response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
           broadcastRejected(
-            getMessage(DexEvent.CLAIM_FEE, "error", data),
+            getMessage(DexEvent.CLAIM_FEE, "error", messageData),
             () => {},
           );
           setLoadingTransactionClaim(false);
@@ -138,7 +146,12 @@ const WalletBalanceContainer: React.FC = () => {
         } else {
           openModal();
           broadcastError(
-            getMessage(DexEvent.CLAIM_FEE, "error", data, response?.data?.hash),
+            getMessage(
+              DexEvent.CLAIM_FEE,
+              "error",
+              messageData,
+              response?.data?.hash,
+            ),
           );
           setLoadingTransactionClaim(false);
         }

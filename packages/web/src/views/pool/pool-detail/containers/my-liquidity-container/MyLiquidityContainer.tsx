@@ -52,8 +52,12 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
 
   const { getMessage } = useMessage();
 
-  const { broadcastSuccess, broadcastError, broadcastRejected } =
-    useBroadcastHandler();
+  const {
+    broadcastSuccess,
+    broadcastError,
+    broadcastRejected,
+    broadcastLoading,
+  } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
   const isOtherPosition = useMemo(() => {
@@ -110,9 +114,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       .flatMap(item => item.reward)
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
 
-    const data = {
+    const messageData = {
       tokenAAmount: formatOtherPrice(amount, { isKMB: false }),
     };
+
+    broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
 
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
@@ -126,7 +132,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
             action: DexEvent.CLAIM_FEE,
             visibleEmitResult: true,
             formatData: () => {
-              return data;
+              return messageData;
             },
             onUpdate: async () => {
               await updateBalances();
@@ -142,7 +148,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
             getMessage(
               DexEvent.CLAIM_FEE,
               "success",
-              data,
+              messageData,
               response?.data?.hash,
             ),
           );
@@ -150,7 +156,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
           openModal();
         } else if (response.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
           broadcastRejected(
-            getMessage(DexEvent.CLAIM_FEE, "error", data),
+            getMessage(DexEvent.CLAIM_FEE, "error", messageData),
             () => {},
           );
           setLoadingTransactionClaim(false);
@@ -158,7 +164,12 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         } else {
           openModal();
           broadcastError(
-            getMessage(DexEvent.CLAIM_FEE, "error", data, response?.data?.hash),
+            getMessage(
+              DexEvent.CLAIM_FEE,
+              "error",
+              messageData,
+              response?.data?.hash,
+            ),
           );
           setLoadingTransactionClaim(false);
         }
