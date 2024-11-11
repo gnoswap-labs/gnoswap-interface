@@ -124,7 +124,7 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "HeaderFooter:developersSection.item.github",
-        path: EXT_URL.GITHUB.INTERFACE,
+        path: EXT_URL.GITHUB.CONTRACTS,
         newTab: true,
       },
       {
@@ -139,7 +139,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "HeaderFooter:developersSection.item.bugBounty",
-        path: EXT_URL.GITHUB.INTERFACE,
+        path: EXT_URL.GITHUB.CONTRACTS,
         newTab: true,
       },
     ],
