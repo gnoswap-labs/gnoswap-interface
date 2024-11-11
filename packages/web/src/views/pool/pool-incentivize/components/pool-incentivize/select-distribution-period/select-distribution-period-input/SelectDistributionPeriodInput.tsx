@@ -9,7 +9,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import {
   DistributionPeriodTooltipContentWrapper,
   PoolIncentivizeSelectPeriodBoxItem,
-  SelectDistributionPeriodInputWrapper
+  SelectDistributionPeriodInputWrapper,
 } from "./SelectDistributionPeriodInput.styles";
 
 export interface SelectDistributionPeriodInputProps {
