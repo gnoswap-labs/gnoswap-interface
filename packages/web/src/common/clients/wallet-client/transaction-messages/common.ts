@@ -1,3 +1,4 @@
+import { TransactionMessageError } from "@common/errors";
 import { PACKAGE_NFT_PATH } from "@constants/environment.constant";
 import { MAX_UINT64 } from "@utils/math.utils";
 import BigNumber from "bignumber.js";
@@ -98,12 +99,29 @@ export function makeTransactionMessagesWithApproves(
   transactionMessages: TransactionMessage[],
   approveInfos: TokenApproveMessageInfo[],
 ): TransactionMessage[] {
+  if (!Array.isArray(transactionMessages)) {
+    throw new TransactionMessageError("FAILED_PARSE_APPROVE_MESSAGE", transactionMessages);
+  }
+
+  if (!Array.isArray(approveInfos)) {
+    throw new TransactionMessageError("FAILED_PARSE_APPROVE_MESSAGE", approveInfos);
+  }
   /**
    * Remove duplicates of acknowledgment messages by package and destination address.
    * If the package path and destination address are the same, add the authorization quantity.
    * If it is greater than the maximum of the UINT64 value, adjust it to the maximum of the UINT64 quantity.
    */
   const approveMessageMap = approveInfos.reduce<SumApproveMessageType>((accumulated, current) => {
+    if (
+      !current ||
+      !current.targetAddress ||
+      !current.caller ||
+      current.amount === null ||
+      current.amount === undefined
+    ) {
+      throw new TransactionMessageError("FAILED_PARSE_APPROVE_MESSAGE", approveInfos);
+    }
+
     if (BigNumber(current.amount.toString()).isZero()) {
       return accumulated;
     }
