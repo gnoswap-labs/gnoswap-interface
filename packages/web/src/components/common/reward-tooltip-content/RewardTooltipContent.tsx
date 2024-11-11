@@ -129,9 +129,9 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
   }, [externalRewards]);
 
   const rewardsData = [
+    { type: "SWAP_FEE", rewards: swapFeeRewards, totalUSD: swapFeeRewardUSD },
     { type: "INTERNAL", rewards: internalRewards, totalUSD: internalRewardUSD },
     { type: "EXTERNAL", rewards: externalRewards, totalUSD: externalRewardUSD },
-    { type: "SWAP_FEE", rewards: swapFeeRewards, totalUSD: swapFeeRewardUSD },
   ].filter(({ rewards }) => rewards);
 
   return (

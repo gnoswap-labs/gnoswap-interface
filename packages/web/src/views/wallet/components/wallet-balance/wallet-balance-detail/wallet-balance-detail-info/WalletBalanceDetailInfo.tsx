@@ -10,7 +10,7 @@ import { numberToFormat } from "@utils/string-utils";
 
 import {
   WalletBalanceDetailInfoTooltipContent,
-  WalletBalanceDetailInfoWrapper
+  WalletBalanceDetailInfoWrapper,
 } from "./WalletBalanceDetailInfo.styles";
 
 interface WalletBalanceDetailInfoProps {

@@ -936,9 +936,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           <span className="content-value">{usd}</span>
         </Tooltip>
       ) : (
-        !loading && (
-          <span className="content-value disabled">{usd}</span>
-        )
+        !loading && <span className="content-value disabled">{usd}</span>
       );
 
     return (
