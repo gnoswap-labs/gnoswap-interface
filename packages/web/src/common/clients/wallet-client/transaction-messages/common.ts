@@ -1,4 +1,5 @@
 import { PACKAGE_NFT_PATH } from "@constants/environment.constant";
+import { MAX_UINT64 } from "@utils/math.utils";
 import BigNumber from "bignumber.js";
 
 export interface TransactionBankMessage {
@@ -91,15 +92,61 @@ export function makeNFTApproveMessage(
   });
 }
 
+type SumApproveMessageType = { [key in string]: { [key in string]: { amount: string; caller: string } } };
+
 export function makeTransactionMessagesWithApproves(
   transactionMessages: TransactionMessage[],
   approveInfos: TokenApproveMessageInfo[],
 ): TransactionMessage[] {
-  const approveMessages = approveInfos.map(approveInfo =>
+  /**
+   * Remove duplicates of acknowledgment messages by package and destination address.
+   * If the package path and destination address are the same, add the authorization quantity.
+   * If it is greater than the maximum of the UINT64 value, adjust it to the maximum of the UINT64 quantity.
+   */
+  const approveMessageMap = approveInfos.reduce<SumApproveMessageType>((accumulated, current) => {
+    if (BigNumber(current.amount.toString()).isZero()) {
+      return accumulated;
+    }
+
+    if (!accumulated[current.tokenPath]) {
+      accumulated[current.tokenPath] = {};
+    }
+
+    if (!accumulated[current.tokenPath][current.targetAddress]) {
+      accumulated[current.tokenPath][current.targetAddress] = {
+        amount: "0",
+        caller: current.caller,
+      };
+    }
+
+    const previousAmount = accumulated[current.tokenPath][current.targetAddress].amount || "0";
+    const sumAmountBN = BigNumber(previousAmount).plus(current.amount.toString());
+    if (sumAmountBN.isGreaterThan(MAX_UINT64.toString())) {
+      accumulated[current.tokenPath][current.targetAddress].amount = MAX_UINT64.toString();
+    } else {
+      accumulated[current.tokenPath][current.targetAddress].amount = sumAmountBN.toString();
+    }
+
+    return accumulated;
+  }, {});
+
+  const combinedApproveMessageInfos: TokenApproveMessageInfo[] = Object.entries(approveMessageMap).flatMap(
+    ([tokenPath, approveMessageByTargetAddress]) =>
+      Object.entries(approveMessageByTargetAddress).map(([targetAddress, messageInfo]) => ({
+        tokenPath,
+        targetAddress,
+        amount: messageInfo.amount,
+        caller: messageInfo.caller,
+      })),
+  );
+
+  console.log("combinedApproveMessageInfos", combinedApproveMessageInfos);
+
+  const approveMessages = combinedApproveMessageInfos.map(approveInfo =>
     makeTokenApproveMessage(approveInfo.tokenPath, approveInfo.targetAddress, approveInfo.amount, approveInfo.caller),
   );
 
-  const approveResetMessages = approveInfos.map(approveInfo =>
+  const approveResetMessages = combinedApproveMessageInfos.map(approveInfo =>
     makeTokenApproveMessage(approveInfo.tokenPath, approveInfo.targetAddress, 0, approveInfo.caller),
   );
 

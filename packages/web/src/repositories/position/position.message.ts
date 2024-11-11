@@ -39,12 +39,12 @@ export function makeClaimAllMessageWithApproves({
   positions: PositionModel[];
   caller: string;
 }): TransactionMessage[] {
+  const approveMessageInfos: TokenApproveMessageInfo[] = [];
   const messages: TransactionMessage[] = positions.flatMap(position => {
     let hasFee = false;
     let hasStakingReward = false;
     let isGnotApproved = false;
 
-    const approveMessageInfos: TokenApproveMessageInfo[] = [];
     const collectMessages: TransactionMessage[] = [];
 
     position.reward.forEach(reward => {
@@ -109,10 +109,10 @@ export function makeClaimAllMessageWithApproves({
       );
     }
 
-    return makeTransactionMessagesWithApproves(collectMessages, approveMessageInfos);
+    return collectMessages;
   });
 
-  return messages;
+  return makeTransactionMessagesWithApproves(messages, approveMessageInfos);
 }
 
 export function makeStakePositionsMessagesWithApproves({
