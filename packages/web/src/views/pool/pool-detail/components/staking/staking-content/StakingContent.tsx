@@ -177,7 +177,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
           >
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
-                floatClassName="forced-top-position"
                 FloatingContent={
                   <IncentivizeTokenDetailTooltipContent
                     poolStakings={poolStakings}
