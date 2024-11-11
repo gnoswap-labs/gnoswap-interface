@@ -86,6 +86,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      z-index: 1081;
     }
   }
   .staking-wrap {
