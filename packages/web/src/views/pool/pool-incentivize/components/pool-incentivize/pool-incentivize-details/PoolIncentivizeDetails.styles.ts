@@ -29,7 +29,7 @@ export const wrapper = (theme: Theme) => css`
       ${mixins.flexbox("row", "center", "center")};
       overflow: hidden;
       gap: 5px;
-      max-width: 40%;
+      max-width: 50%;
       overflow: hidden;
       .total-amount-value {
         overflow: hidden;

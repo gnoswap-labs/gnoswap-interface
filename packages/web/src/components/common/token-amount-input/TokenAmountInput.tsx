@@ -69,7 +69,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   }, [connected, balance, token, changeAmount]);
 
   const balanceADisplay = useMemo(() => {
-    if (!connected) {
+    if (!connected || balance === "0") {
       return "-";
     }
 
