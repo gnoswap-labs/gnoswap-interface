@@ -289,6 +289,8 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={t("Wallet:overral.claimableReward.label")}
         tooltip={t("Wallet:overral.claimableReward.tooltip")}
         value={balanceDetailInfo.claimableRewards}
+        connected={connected}
+        isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
           hasInfo(claimableRewardInfo) ? (
             <RewardTooltipContent rewardInfo={claimableRewardInfo} />
