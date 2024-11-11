@@ -62,6 +62,36 @@ export const FOOTER_RIGHT_NAV = [
         path: "/earn/incentivize",
         newTab: false,
       },
+      {
+        title: "HeaderFooter:featuresSection.item.launchpad",
+        path: "/launchpad",
+        newTab: false,
+      },
+    ],
+  },
+  {
+    content: "HeaderFooter:governanceSection.title",
+    menu: [
+      {
+        title: "HeaderFooter:governanceSection.item.xgns",
+        path: EXT_URL.DOCS.XGNS,
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:governanceSection.item.proposals",
+        path: "/governance#proposal-list",
+        newTab: false,
+      },
+      {
+        title: "HeaderFooter:governanceSection.item.forum",
+        path: EXT_URL.SOCIAL.DISCORD,
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:governanceSection.item.dashboard",
+        path: "/dashboard",
+        newTab: true,
+      },
     ],
   },
   {
@@ -69,22 +99,22 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "HeaderFooter:helpSection.item.aboutUs",
-        path: EXT_URL.DOCS.WELCOME,
+        path: EXT_URL.DOCS.ROOT,
         newTab: true,
       },
       {
-        title: "FAQ",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "HeaderFooter:helpSection.item.twitter",
-        path: EXT_URL.SOCIAL.TWITTER,
+        title: "User Guide",
+        path: EXT_URL.DOCS.USER_GUIDE.ROOT,
         newTab: true,
       },
       {
         title: "HeaderFooter:helpSection.item.projectOnboarding",
         path: EXT_URL.DOCS.ONBOARDING,
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:helpSection.item.faq",
+        path: EXT_URL.DOCS.FAQ,
         newTab: true,
       },
     ],
@@ -94,7 +124,7 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "HeaderFooter:developersSection.item.github",
-        path: EXT_URL.GITHUB.CONTRACTS,
+        path: EXT_URL.GITHUB.INTERFACE,
         newTab: true,
       },
       {
@@ -104,32 +134,12 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "HeaderFooter:developersSection.item.audit",
-        path: "/",
+        path: EXT_URL.AUDIT,
         newTab: true,
       },
       {
         title: "HeaderFooter:developersSection.item.bugBounty",
-        path: "/",
-        newTab: true,
-      },
-    ],
-  },
-  {
-    content: "HeaderFooter:governanceSection.title",
-    menu: [
-      {
-        title: "HeaderFooter:governanceSection.item.forum",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "HeaderFooter:governanceSection.item.proposals",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "HeaderFooter:governanceSection.item.vote",
-        path: "/",
+        path: EXT_URL.GITHUB.INTERFACE,
         newTab: true,
       },
     ],
