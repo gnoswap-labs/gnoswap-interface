@@ -10,6 +10,7 @@ export const MyDelegationModalWrapper = styled.div`
   max-width: 500px;
   width: 90vw;
   max-height: 800px;
+  height: 85dvh;
   overflow: visible;
 
   .modal-wrapper {

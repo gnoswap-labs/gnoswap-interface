@@ -11,7 +11,7 @@ export const ViewProposalModalWrapper = styled.div`
   max-width: 700px;
   width: 90vw;
   max-height: 800px;
-  height: 85vh;
+  height: 85dvh;
   border-radius: 8px;
   padding: 24px 0px;
   gap: 16px;

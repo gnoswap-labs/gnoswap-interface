@@ -22,7 +22,7 @@ export const LocalModalBackground = styled.div`
     transform: translate(-50%, -50%);
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: 100%;
-    max-height: calc(100lvh - 32px);
+    max-height: calc(100dvh - 32px);
     margin: 0 auto;
 
     pointer-events: initial;
