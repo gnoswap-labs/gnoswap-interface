@@ -266,16 +266,16 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="value">
             {`${formatOtherPrice(
               totalDelegatedAmount
-                ? (currentDelegatedAmount * 100) / totalDelegatedAmount
+                ? (currentDelegatedAmount / totalDelegatedAmount) * 100
                 : 0,
               {
                 usd: false,
               },
             )}% -> ${formatOtherPrice(
               totalDelegatedAmount + Number(gnsAmountInput.amount)
-                ? ((currentDelegatedAmount + Number(gnsAmountInput.amount)) *
-                    100) /
-                    (totalDelegatedAmount + Number(gnsAmountInput.amount))
+                ? ((currentDelegatedAmount + Number(gnsAmountInput.amount)) /
+                    totalDelegatedAmount) *
+                    100
                 : 0,
               {
                 usd: false,

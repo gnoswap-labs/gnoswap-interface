@@ -99,7 +99,7 @@ const WalletBalanceContainer: React.FC = () => {
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
 
     const messageData = {
-      tokenAAmount: toUnitFormat(amount, true, true),
+      tokenAAmount: toUnitFormat(amount, true, false),
     };
 
     broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
