@@ -20,6 +20,7 @@ describe("ViewProposalModal Component", () => {
       voteProposal: () => null,
       connectWallet: () => null,
       switchNetwork: () => null,
+      getTooltipTextI18nKey: () => "proposal.tooltip.passed",
     };
 
     render(
