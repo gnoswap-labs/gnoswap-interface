@@ -58,6 +58,12 @@ export function makeClaimAllMessageWithApproves({
           amount: MAX_UINT64,
           caller,
         });
+        approveMessageInfos.push({
+          tokenPath: reward.rewardToken.path,
+          targetAddress: PACKAGE_POSITION_ADDRESS,
+          amount: MAX_UINT64,
+          caller,
+        });
       }
       // Reward token approve to Staker(When GNOT token)
       else {
