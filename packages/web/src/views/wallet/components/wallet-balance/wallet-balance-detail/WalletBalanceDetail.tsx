@@ -257,6 +257,8 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={t("Wallet:overral.availBal.label")}
         value={balanceDetailInfo.availableBalance}
         tooltip={t("Wallet:overral.availBal.tooltip")}
+        connected={connected}
+        isSwitchNetwork={isSwitchNetwork}
         breakpoint={breakpoint}
       />
       <WalletBalanceDetailInfo
@@ -264,6 +266,8 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={t("Wallet:overral.stakedPosi.label")}
         value={balanceDetailInfo.stakedLP}
         tooltip={t("Wallet:overral.stakedPosi.tooltip")}
+        connected={connected}
+        isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
           stakedPositions.length > 0 ? (
             <StakedPostionsTooltipContent poolStakings={stakedPositions} />
@@ -277,6 +281,8 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={t("Wallet:overral.totalClaimed.label")}
         value={balanceDetailInfo.totalClaimedRewards}
         tooltip={t("Wallet:overral.totalClaimed.tooltip")}
+        connected={connected}
+        isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
           hasInfo(claimedRewardInfo) ? (
             <RewardTooltipContent rewardInfo={claimedRewardInfo} />
