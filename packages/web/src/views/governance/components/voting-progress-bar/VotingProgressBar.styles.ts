@@ -35,7 +35,7 @@ export const ProgressWrapper = styled.div`
     ${mixins.flexbox("column", "start", "start")};
     gap: 8px;
     .progress-value {
-      ${fonts.p6};
+      ${fonts.p4};
     }
   }
 `;

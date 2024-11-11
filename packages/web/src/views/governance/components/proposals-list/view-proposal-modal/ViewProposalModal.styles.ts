@@ -214,7 +214,7 @@ export const ModalQuorum = styled.div`
     ${media.mobile} {
       gap: 8px;
       .progress-value {
-        ${fonts.p6};
+        ${fonts.p4};
       }
     }
   }
