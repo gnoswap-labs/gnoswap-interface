@@ -57,7 +57,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   poolStakings,
 }) => {
   const { getGnotPath } = useGnotToGnot();
-  const [, setForceShowAprGuide] = useState(true);
+  const [forcedShowAprGuide, setForceShowAprGuide] = useState(true);
   const { t } = useTranslation();
 
   const { ref } = useIntersectionObserver();
@@ -72,7 +72,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
     };
   };
 
-  const [, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
   const scrollTimeoutRef = useRef<number | null>(null);
 
   const handleScroll = debounce(() => {
@@ -189,7 +189,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 onChangeOpen={(open: boolean) => setForceShowAprGuide(!open)}
               >
                 <Tooltip
-                  forcedOpen
+                  forcedOpen={isVisible && forcedShowAprGuide}
                   placement="top"
                   FloatingContent={
                     <span>{t("Pool:staking.tooltip.hoverGuide")}</span>
