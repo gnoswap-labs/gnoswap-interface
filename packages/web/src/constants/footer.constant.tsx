@@ -90,7 +90,7 @@ export const FOOTER_RIGHT_NAV = [
       {
         title: "HeaderFooter:governanceSection.item.dashboard",
         path: "/dashboard",
-        newTab: true,
+        newTab: false,
       },
     ],
   },
