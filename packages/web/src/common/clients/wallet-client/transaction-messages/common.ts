@@ -1,3 +1,4 @@
+import { PACKAGE_NFT_PATH } from "@constants/environment.constant";
 import BigNumber from "bignumber.js";
 
 export interface TransactionBankMessage {
@@ -77,7 +78,6 @@ export function makeTokenApproveMessage(
 }
 
 export function makeNFTApproveMessage(
-  nftPath: string,
   targetAddress: string,
   lpTokenId: string | bigint | number,
   caller: string,
@@ -85,7 +85,7 @@ export function makeNFTApproveMessage(
   return makeTransactionMessage({
     caller,
     send: "",
-    packagePath: nftPath,
+    packagePath: PACKAGE_NFT_PATH,
     func: "Approve",
     args: [targetAddress, lpTokenId.toString()],
   });
