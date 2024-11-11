@@ -165,7 +165,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               breakpoint={breakpoint}
               status={proposalDetail.status}
               time={proposalDetail.time}
-              twoline={breakpoint === DEVICE_TYPE.MOBILE}
+              twoline={false}
             />
           </div>
         </ModalHeaderWrapper>
