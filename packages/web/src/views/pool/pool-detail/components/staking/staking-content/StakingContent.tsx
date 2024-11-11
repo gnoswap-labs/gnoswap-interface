@@ -190,6 +190,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               >
                 <Tooltip
                   forcedOpen={isVisible && forcedShowAprGuide}
+                  forcedClose={!forcedShowAprGuide}
                   placement="top"
                   FloatingContent={
                     <span>{t("Pool:staking.tooltip.hoverGuide")}</span>
