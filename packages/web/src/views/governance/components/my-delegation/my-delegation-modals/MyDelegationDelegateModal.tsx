@@ -64,7 +64,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
   const { t } = useTranslation();
   const selfDelegateName = t("Governance:myDel.delModal.selectDel.self.chip");
-  const defaultDelegateeInfo = { ...nullDelegateeInfo, name: selfDelegateName };
+  const defaultDelegateeInfo = { ...nullDelegateeInfo };
 
   const { account } = useWallet();
   const { getAccountUrl } = useGnoscanUrl();
