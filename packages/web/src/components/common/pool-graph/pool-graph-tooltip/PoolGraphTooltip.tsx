@@ -113,8 +113,8 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               {tooltipInfo.tokenA.symbol} {t("common:price")}
             </span>
           </span>
-          <span className={makeClassNameWithSmallFont("token-amount-value price-range", displayTooltipInfo.tokenAPriceRange)}>
-            {displayTooltipInfo.tokenAPriceRange}
+          <span className={"token-amount-value price"}>
+            {displayTooltipInfo.tokenAPrice}
           </span>
         </div>
 
@@ -131,8 +131,8 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               {tooltipInfo.tokenB.symbol} {t("common:price")}
             </span>
           </span>
-          <span className={makeClassNameWithSmallFont("token-amount-value price-range", displayTooltipInfo.tokenBPriceRange)}>
-            {displayTooltipInfo.tokenBPriceRange}
+          <span className={"token-amount-value price"}>
+            {displayTooltipInfo.tokenBPrice}
           </span>
         </div>
       </div>
