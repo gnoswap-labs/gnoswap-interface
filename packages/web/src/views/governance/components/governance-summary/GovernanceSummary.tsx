@@ -45,7 +45,10 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
    * @returns {boolean} A boolean value indicating whether to show the community pool information.
    */
   const visibleCommunityPoolTooltip = React.useMemo(() => {
-    return governanceSummary.communityPool > 0;
+    // return governanceSummary.communityPool > 0;
+
+    // Todo: API is not returning community pool information.
+    return false;
   }, [governanceSummary]);
 
   return (

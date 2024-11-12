@@ -76,7 +76,9 @@ const AssetReceiveModal: React.FC<Props> = ({
             <DepositLabel>
               <div className="title">
                 <label>{t("Modal:assetReceive.supToken.label")}</label>
-                <DepositTooltip tooltip={t("Modal:assetReceive.supToken.tooltip")} />
+                <DepositTooltip
+                  tooltip={t("Modal:assetReceive.supToken.tooltip")}
+                />
               </div>
 
               <DepositBoxContent>
@@ -106,7 +108,9 @@ const AssetReceiveModal: React.FC<Props> = ({
             <DepositLabel>
               <div className="title">
                 <label>{t("Modal:assetReceive.network.label")}</label>
-                <DepositTooltip tooltip={t("Modal:assetReceive.network.tooltip")} />
+                <DepositTooltip
+                  tooltip={t("Modal:assetReceive.network.tooltip")}
+                />
               </div>
 
               <DepositBoxContent>
@@ -134,7 +138,9 @@ const AssetReceiveModal: React.FC<Props> = ({
             <DepositLabel>
               <div className="title">
                 <label>{t("Modal:assetReceive.addr.label")}</label>
-                <DepositTooltip tooltip={t("Modal:assetReceive.addr.tooltip")} />
+                <DepositTooltip
+                  tooltip={t("Modal:assetReceive.addr.tooltip")}
+                />
               </div>
 
               <DepositBoxContent>
