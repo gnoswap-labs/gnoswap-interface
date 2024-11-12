@@ -38,7 +38,7 @@ export class PositionMapper {
       lpTokenId: position.lpTokenId,
       poolPath: position.poolPath,
       staked: position.staked,
-      operator: position.operator,
+      owner: position.owner,
       tickLower: Number(position.tickLower),
       tickUpper: Number(position.tickUpper),
       liquidity: BigInt(position.liquidity),
