@@ -155,6 +155,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
               padding: "10px 16px",
               fontType: "p1",
             }}
+            className="full-width"
           />
         )}
         <Button

@@ -132,22 +132,11 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
     { type: "SWAP_FEE", rewards: swapFeeRewards, totalUSD: swapFeeRewardUSD },
     { type: "INTERNAL", rewards: internalRewards, totalUSD: internalRewardUSD },
     { type: "EXTERNAL", rewards: externalRewards, totalUSD: externalRewardUSD },
-  ]
-    .filter(({ rewards }) => rewards)
-    .sort((a, b) => {
-      const parseAmount = (value: string) => {
-        const number = parseFloat(value.replace(/[$, ]/g, ""));
-        return isNaN(number) ? 0 : number;
-      };
-
-      const totalA = parseAmount(a.totalUSD);
-      const totalB = parseAmount(b.totalUSD);
-      return totalB - totalA;
-    });
+  ].filter(({ rewards }) => rewards);
 
   return (
     <RewardTooltipContentWrapper>
-      {rewardsData.map(({ type, rewards, totalUSD }) => (
+      {rewardsData.map(({ type, rewards, totalUSD }, idx) => (
         <React.Fragment key={type}>
           {rewards && (
             <>
@@ -179,7 +168,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
                   </span>
                 </div>
               ))}
-              <div className="divider" />
+              {idx < rewardsData.length - 1 && <div className="divider" />}
             </>
           )}
         </React.Fragment>

@@ -118,6 +118,11 @@ export const DepositBoxContent = styled.div`
       font-size: 16px;
       font-style: normal;
       font-weight: 500;
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
     }
 
     .approximately {
@@ -163,7 +168,7 @@ export const DepositLabel = styled.div`
   .title {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
-    
+
     label {
       font-size: 14px;
       font-style: normal;

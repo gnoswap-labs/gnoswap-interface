@@ -1,3 +1,5 @@
+// Todo: Delete this code
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -113,6 +115,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       return cached.accumulatedRewardOf1d + current.accumulatedRewardOf1d;
     };
 
+    // Claimable rewards
     positions
       .flatMap(position => position.reward)
       .map(reward => ({
@@ -182,6 +185,45 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         }
       });
 
+    // Claimed rewards
+    positions
+      .flatMap(position => position.claimedRewards)
+      .forEach(claimed => {
+        const tokenPrice = tokenPrices[claimed.rewardToken.priceID]?.usd
+          ? Number(tokenPrices[claimed.rewardToken.priceID].usd)
+          : null;
+
+        const claimedAmount = Number(claimed.claimedAmount);
+        const claimedUsd = tokenPrice ? claimedAmount * tokenPrice : null;
+
+        const existingClaimed =
+          claimedMap[claimed.rewardType]?.[claimed.rewardToken.priceID];
+
+        if (existingClaimed) {
+          claimedMap[claimed.rewardType][claimed.rewardToken.priceID] = {
+            ...existingClaimed,
+            amount: (existingClaimed.amount || 0) + claimedAmount,
+            usd:
+              existingClaimed.usd !== null && claimedUsd !== null
+                ? existingClaimed.usd + claimedUsd
+                : claimedUsd,
+            token: claimed.rewardToken,
+            rewardType: claimed.rewardType,
+            accumulatedRewardOf1d: null,
+            accumulatedRewardOf1dUsd: null,
+          };
+        } else {
+          claimedMap[claimed.rewardType][claimed.rewardToken.priceID] = {
+            token: claimed.rewardToken,
+            rewardType: claimed.rewardType,
+            amount: claimedAmount,
+            usd: claimedUsd,
+            accumulatedRewardOf1d: null,
+            accumulatedRewardOf1dUsd: null,
+          };
+        }
+      });
+
     return {
       claimedRewardInfo: {
         SWAP_FEE: Object.values(claimedMap["SWAP_FEE"]),
@@ -215,6 +257,8 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={t("Wallet:overral.availBal.label")}
         value={balanceDetailInfo.availableBalance}
         tooltip={t("Wallet:overral.availBal.tooltip")}
+        connected={connected}
+        isSwitchNetwork={isSwitchNetwork}
         breakpoint={breakpoint}
       />
       <WalletBalanceDetailInfo
@@ -222,6 +266,8 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={t("Wallet:overral.stakedPosi.label")}
         value={balanceDetailInfo.stakedLP}
         tooltip={t("Wallet:overral.stakedPosi.tooltip")}
+        connected={connected}
+        isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
           stakedPositions.length > 0 ? (
             <StakedPostionsTooltipContent poolStakings={stakedPositions} />
@@ -229,11 +275,14 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         }
         breakpoint={breakpoint}
       />
+      {/* Todo: Change to claimableRewardInfo -> claimedRewardInfo */}
       <WalletBalanceDetailInfo
         loading={balanceDetailInfo.loadingPositions}
         title={t("Wallet:overral.totalClaimed.label")}
         value={balanceDetailInfo.totalClaimedRewards}
         tooltip={t("Wallet:overral.totalClaimed.tooltip")}
+        connected={connected}
+        isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
           hasInfo(claimedRewardInfo) ? (
             <RewardTooltipContent rewardInfo={claimedRewardInfo} />
@@ -246,6 +295,8 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={t("Wallet:overral.claimableReward.label")}
         tooltip={t("Wallet:overral.claimableReward.tooltip")}
         value={balanceDetailInfo.claimableRewards}
+        connected={connected}
+        isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
           hasInfo(claimableRewardInfo) ? (
             <RewardTooltipContent rewardInfo={claimableRewardInfo} />

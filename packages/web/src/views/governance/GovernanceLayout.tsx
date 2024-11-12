@@ -54,7 +54,7 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
         className="proposal-list-wrapper"
         id={getCanScrollUpId("proposal-list")}
       >
-        <div className="background" />
+        <div className="background" id="proposal-list" />
         <div className="proposal-list-container">{list}</div>
       </div>
       {footer}

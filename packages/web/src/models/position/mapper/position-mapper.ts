@@ -38,7 +38,7 @@ export class PositionMapper {
       lpTokenId: position.lpTokenId,
       poolPath: position.poolPath,
       staked: position.staked,
-      operator: position.operator,
+      owner: position.owner,
       tickLower: Number(position.tickLower),
       tickUpper: Number(position.tickUpper),
       liquidity: BigInt(position.liquidity),
@@ -51,6 +51,7 @@ export class PositionMapper {
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsd || "",
       reward: position.reward?.map(PositionMapper.rewardFromResponse) || [],
+      claimedRewards: position.claimedRewards || [],
       closed: position.closed,
       totalDailyRewardsUsd: toUnitFormat(
         position.totalDailyRewardsUsd,

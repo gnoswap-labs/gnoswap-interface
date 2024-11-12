@@ -15,4 +15,6 @@ export interface GetGovernanceSummaryResponse {
       paramNum: number;
     }[];
   };
+  governanceDelegated: string;
+  launchpadDelegated: string;
 }

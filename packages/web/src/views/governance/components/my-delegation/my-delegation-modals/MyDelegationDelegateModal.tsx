@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
@@ -63,8 +64,9 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
   const { t } = useTranslation();
   const selfDelegateName = t("Governance:myDel.delModal.selectDel.self.chip");
-  const defaultDelegateeInfo = { ...nullDelegateeInfo, name: selfDelegateName };
+  const defaultDelegateeInfo = { ...nullDelegateeInfo };
 
+  const { account } = useWallet();
   const { getAccountUrl } = useGnoscanUrl();
   const theme = useTheme();
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
@@ -85,6 +87,11 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     }
     return t("Governance:myDel.delModal.selectDel.selectBtn");
   }, [isValidSelfAddress, selfAddress, t]);
+
+  const handleClickSelfDelegateeAddress = useCallback(
+    (address: string) => setSelfAddress(address),
+    [delegatees],
+  );
 
   const delegate = () => {
     let timeoutId: NodeJS.Timeout | null = null;
@@ -259,16 +266,16 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="value">
             {`${formatOtherPrice(
               totalDelegatedAmount
-                ? (currentDelegatedAmount * 100) / totalDelegatedAmount
+                ? (currentDelegatedAmount / totalDelegatedAmount) * 100
                 : 0,
               {
                 usd: false,
               },
             )}% -> ${formatOtherPrice(
               totalDelegatedAmount + Number(gnsAmountInput.amount)
-                ? ((currentDelegatedAmount + Number(gnsAmountInput.amount)) *
-                    100) /
-                    (totalDelegatedAmount + Number(gnsAmountInput.amount))
+                ? ((currentDelegatedAmount + Number(gnsAmountInput.amount)) /
+                    totalDelegatedAmount) *
+                    100
                 : 0,
               {
                 usd: false,
@@ -356,7 +363,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               ...nullDelegateeInfo,
               name: selfDelegateName,
             });
-            changeSelfDelegateeAddress(selfAddress);
+            changeSelfDelegateeAddress(account?.address || "");
+            handleClickSelfDelegateeAddress(account?.address || "");
           }}
         />
         {delegatees.map((item: DelegateeInfo, index: number) => {

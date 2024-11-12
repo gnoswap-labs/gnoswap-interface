@@ -72,6 +72,7 @@ export const ContentWrapper = styled.div`
     align-self: stretch;
     .price-text,
     .balance-text {
+      flex-shrink: 0;
       ${fonts.body12};
       ${media.mobile} {
         ${fonts.p2};
@@ -84,6 +85,9 @@ export const ContentWrapper = styled.div`
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+    }
+    .second-price-text {
+      max-width: 100%;
     }
     .balance-text-disabled {
       cursor: pointer;
@@ -172,7 +176,9 @@ export const SelectPairButton = styled.div`
 `;
 
 export const PriceInfoWrapper = styled.div`
-  ${mixins.flexbox("row", "center", "flex-start")}
+  ${mixins.flexbox("row", "center", "flex-start")};
+  width: 100%;
+  overflow: hidden;
 `;
 
 export const PriceImpactWrapper = styled.div<{

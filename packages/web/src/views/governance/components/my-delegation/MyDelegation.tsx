@@ -9,6 +9,8 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { DelegateeInfo, MyDelegationInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { toNumberFormat } from "@utils/number-utils";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
@@ -17,6 +19,7 @@ import MyDelegationUndelegateModal from "./my-delegation-modals/MyDelegationUnde
 
 import IconLinkOff from "@components/common/icons/IconLinkOff";
 import {
+  MyDelegationRewardTooltipContent,
   MyDelegationTooltipContent,
   MyDelegationWrapper,
 } from "./MyDelegation.styles";
@@ -36,7 +39,7 @@ interface MyDelegationProps {
     fromAddress: string,
     amount: string,
   ) => void;
-  collectUndelegated: () => void;
+  collectUndelegated: (amount: string) => void;
   collectReward: (usdValue: string) => void;
 }
 
@@ -57,7 +60,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const { t } = useTranslation();
   const [isOpenDelegateModal, setIsOpenDelegateModal] = useState(false);
   const [isOpenUndelegateModal, setIsOpenUndelegateModal] = useState(false);
-
+  const { getTokenUSDPrice, tokens } = useTokenData();
   const [showUndel, setShowUndel] = useState(false);
 
   const delegationInfo = useMemo(() => {
@@ -99,6 +102,19 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     hasUndelgated,
   } = delegationInfo;
 
+  const rewardInfo = useMemo(() => {
+    return myDelegationInfo.claimableRewards
+      .map(reward => {
+        const usdValue = getTokenUSDPrice(reward.tokenPath, reward.amount) || 0;
+        const tokenInfo = tokens.find(token => token.path === reward.tokenPath);
+        return {
+          ...reward,
+          usdValue,
+          tokenInfo,
+        };
+      })
+      .sort((a, b) => b.usdValue - a.usdValue);
+  }, [myDelegationInfo.claimableRewards, getTokenUSDPrice, tokens]);
   /**
    * A delimiter showing voting weight information or undelegation information.
    */
@@ -115,6 +131,13 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     }
     return hasUndelgated;
   }, [activatedDelegateInfoTab, hasUndelgated, hasVotingWeight]);
+
+  /**
+   * A delimiter showing reward information.
+   */
+  const visibleRewardInfoTooltip = useMemo(() => {
+    return rewardInfo.length > 0;
+  }, [rewardInfo]);
 
   return (
     <MyDelegationWrapper>
@@ -301,7 +324,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
-                      onClick: collectUndelegated,
+                      onClick: () =>
+                        collectUndelegated(
+                          toNumberFormat(myDelegationInfo.undelegatedAmount, 2),
+                        ),
                     }
                   : undefined
               }
@@ -309,9 +335,69 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
             />
             <InfoBox
               title={t("Governance:myDel.reward.title")}
-              value={formatOtherPrice(myDelegationInfo.claimableRewardsUsd, {
-                isKMB: false,
-              })}
+              value={
+                <Tooltip
+                  forcedClose={!visibleRewardInfoTooltip}
+                  FloatingContent={
+                    <MyDelegationRewardTooltipContent>
+                      <div className="reward-info-total">
+                        <span className="label">
+                          {t("Governance:myDel.reward.title")}
+                        </span>
+                        <span className="value">
+                          $
+                          {toNumberFormat(
+                            myDelegationInfo.claimableRewardsUsd,
+                            2,
+                          )}
+                        </span>
+                      </div>
+                      {rewardInfo.map((reward, index) => {
+                        const { tokenInfo } = reward;
+                        return (
+                          <div
+                            key={`reward-item-${reward.tokenPath}-${index}`}
+                            className="tooltip-container"
+                          >
+                            <div className="info-row">
+                              <div className="info-subject">
+                                <MissingLogo
+                                  width={20}
+                                  symbol={tokenInfo?.symbol || ""}
+                                  url={tokenInfo?.logoURI}
+                                />
+                                {tokenInfo?.symbol}
+                              </div>
+                              <div className="info-value">
+                                {toNumberFormat(
+                                  reward.amount,
+                                  tokenInfo?.decimals,
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {rewardInfo.length === 0 && (
+                        <div className="no-data">{t("common:noData")}</div>
+                      )}
+                    </MyDelegationRewardTooltipContent>
+                  }
+                  placement="top"
+                >
+                  <div
+                    className={
+                      visibleRewardInfoTooltip
+                        ? "value-wrapper-for-hover"
+                        : "value-wrapper"
+                    }
+                  >
+                    {formatOtherPrice(myDelegationInfo.claimableRewardsUsd, {
+                      isKMB: false,
+                    })}
+                  </div>
+                </Tooltip>
+              }
               tooltip={t("Governance:myDel.reward.tooltip")}
               valueButton={
                 myDelegationInfo.claimableRewardsUsd

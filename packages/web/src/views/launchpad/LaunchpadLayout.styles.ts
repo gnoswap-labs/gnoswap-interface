@@ -205,8 +205,8 @@ export const LaunchpadLayoutWrapper = styled.div`
           font-size: clamp(0.875rem, 0.8201rem + 0.2439vw, 1rem);
         }
         img {
-          width: 24px;
-          height: 24px;
+          width: 20px;
+          height: 20px;
         }
       }
     }

@@ -69,6 +69,6 @@ export const BlankProjectCard = styled.div`
     height: 341px;
   }
   ${media.mobile} {
-    height: 311px;
+    height: 297.5px;
   }
 `;

@@ -10,7 +10,7 @@ import { numberToFormat } from "@utils/string-utils";
 
 import {
   WalletBalanceDetailInfoTooltipContent,
-  WalletBalanceDetailInfoWrapper
+  WalletBalanceDetailInfoWrapper,
 } from "./WalletBalanceDetailInfo.styles";
 
 interface WalletBalanceDetailInfoProps {
@@ -22,6 +22,8 @@ interface WalletBalanceDetailInfoProps {
   loading: boolean;
   className?: string;
   breakpoint: DEVICE_TYPE;
+  connected: boolean;
+  isSwitchNetwork: boolean;
 }
 
 const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
@@ -33,6 +35,8 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   loading,
   className,
   breakpoint,
+  connected,
+  isSwitchNetwork,
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const valueRef = useRef<HTMLDivElement | null>(null);
@@ -64,6 +68,10 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
     return `$${numberToFormat(value, { decimals: 2, forceDecimals: true })}`;
   }, [value]);
 
+  const isClaimableAll = useMemo(() => {
+    return value !== "0" && value !== "-" && !isSwitchNetwork && connected;
+  }, [value, isSwitchNetwork, connected]);
+
   return (
     <WalletBalanceDetailInfoWrapper className={className}>
       <div className="wallet-detail-left-side">
@@ -93,7 +101,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
               </span>
             </Tooltip>
           )}
-          {breakpoint !== DEVICE_TYPE.MOBILE && button && (
+          {breakpoint !== DEVICE_TYPE.MOBILE && button && isClaimableAll && (
             <div className="button-wrapper">{button}</div>
           )}
           {isClaim && (

@@ -1,9 +1,11 @@
+import { ClaimableRewards } from "../model";
 
 export interface GetMyDelegationResponse {
   availableBalance: number;
   votingWeight: number;
   undelegatedAmount: number;
   claimableRewardsUsd: number;
+  claimableRewards: ClaimableRewards[];
   delegations: DelegationItemResponse[];
 }
 

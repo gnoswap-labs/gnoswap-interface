@@ -59,26 +59,22 @@ export const getCreateProposalParameterValidation = (
       yup
         .object()
         .shape(variableSchema)
-        .test("check-valid", "Parameter is required", item => {
+        .test("check-valid", "Argument is required", item => {
           if (!item) return true;
+
           if (
-            (item.pkgPath === undefined || item.pkgPath === "") &&
-            (item.func === undefined || item.func === "") &&
-            (item.param === undefined || item.param === "")
+            item.pkgPath &&
+            item.pkgPath.trim() !== "" &&
+            item.func &&
+            item.func.trim() !== "" &&
+            (!item.param || item.param.trim() === "")
           ) {
-            return true;
+            return false;
           }
 
-          return (
-            item.pkgPath !== undefined &&
-            item.pkgPath !== "" &&
-            item.func !== undefined &&
-            item.func !== "" &&
-            item.param !== undefined &&
-            item.param !== ""
-          );
+          return true;
         })
-        .test("check-parameter", "Parameter is not valid", item => {
+        .test("check-parameter", "Argument is not valid", item => {
           if (!item.param) {
             return true;
           }

@@ -1,4 +1,5 @@
 import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { ClaimedRewardModel } from "@models/position/reward-model";
 import { RewardResponse } from "./reward-response";
 
 export type PositionListResponse = PositionResponse[];
@@ -10,7 +11,7 @@ export interface PositionResponse {
 
   staked: boolean;
 
-  operator: string;
+  owner: string;
 
   tickLower: string;
 
@@ -33,6 +34,8 @@ export interface PositionResponse {
   stakedAt?: string;
 
   reward?: RewardResponse[];
+
+  claimedRewards?: ClaimedRewardModel[];
 
   bins40: PoolBinModel[];
 

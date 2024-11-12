@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button from "@components/common/button/Button";
-import IconPolygon from "@components/common/icons/IconPolygon";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -14,7 +13,6 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
-import { themeKey } from "@states/theme";
 import { DEVICE_TYPE } from "@styles/media";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
@@ -25,7 +23,6 @@ import StakingContentCard, {
 import {
   AprNumberContainer,
   AprStakingHeader,
-  NoticeAprToolTip,
   StakingContentWrapper,
 } from "./StakingContent.styles";
 
@@ -60,10 +57,10 @@ const StakingContent: React.FC<StakingContentProps> = ({
   poolStakings,
 }) => {
   const { getGnotPath } = useGnotToGnot();
-  const [forceShowAprGuide, setForceShowAprGuide] = useState(true);
+  const [forcedShowAprGuide, setForceShowAprGuide] = useState(true);
   const { t } = useTranslation();
 
-  const { ref, entry } = useIntersectionObserver();
+  const { ref } = useIntersectionObserver();
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   const debounce = (func: Function, delay: number) => {
@@ -79,16 +76,16 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const scrollTimeoutRef = useRef<number | null>(null);
 
   const handleScroll = debounce(() => {
-    setIsVisible(false); 
+    setIsVisible(false);
 
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
 
     scrollTimeoutRef.current = window.setTimeout(() => {
-      setIsVisible(true); 
-    }, 500); 
-  }, 10); 
+      setIsVisible(true);
+    }, 500);
+  }, 10);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -99,7 +96,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, []);
+  }, [handleScroll]);
 
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
@@ -178,19 +175,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
               document.getElementsByClassName("apr-text")?.[0]?.clientWidth
             }
           >
-            <div className="placeholder">
-              {entry?.isIntersecting &&
-                (entry?.boundingClientRect.top || 20) > 20 &&
-                isVisible &&
-                forceShowAprGuide && (
-                  <NoticeAprToolTip>
-                    <div className={`box ${themeKey}-shadow`}>
-                      <span>{t("Pool:staking.tooltip.hoverGuide")}</span>
-                    </div>
-                    <IconPolygon className="polygon-icon" />
-                  </NoticeAprToolTip>
-                )}
-            </div>
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
                 FloatingContent={
@@ -203,9 +187,18 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 scroll
                 onChangeOpen={(open: boolean) => setForceShowAprGuide(!open)}
               >
-                <span id={"apr-text"}>
-                  {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
-                </span>
+                <Tooltip
+                  forcedOpen={isVisible && forcedShowAprGuide}
+                  forcedClose={!forcedShowAprGuide}
+                  placement="top"
+                  FloatingContent={
+                    <span>{t("Pool:staking.tooltip.hoverGuide")}</span>
+                  }
+                >
+                  <span id={"apr-text"}>
+                    {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
+                  </span>
+                </Tooltip>
               </Tooltip>
               <div
                 className="coin-info"

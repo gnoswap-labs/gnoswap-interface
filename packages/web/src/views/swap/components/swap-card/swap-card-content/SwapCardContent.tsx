@@ -197,7 +197,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-info">
           <PriceInfoWrapper>
             <span
-              className={`price-text ${
+              className={`price-text second-price-text ${
                 isLoading && direction === "EXACT_IN" ? "text-opacity" : ""
               }`}
             >

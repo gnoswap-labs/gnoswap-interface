@@ -35,5 +35,5 @@ export const IncentiveCreationDepositWrapper = styled.div(
 export const IncentiveCreationDepositTooltipContent = styled.div`
   ${fonts.body12}
   width: 305px;
-  color: ${({ theme }) => theme.color.text11};
+  color: ${({ theme }) => theme.color.text02};
 `;

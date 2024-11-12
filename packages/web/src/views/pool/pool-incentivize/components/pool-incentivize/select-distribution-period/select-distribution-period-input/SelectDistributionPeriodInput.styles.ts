@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-
 import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 
@@ -74,5 +73,5 @@ export const PoolIncentivizeSelectPeriodBoxItem = styled.div`
 export const DistributionPeriodTooltipContentWrapper = styled.div`
   ${fonts.body12}
   width: 350px;
-  color: ${({ theme }) => theme.color.text11};
+  color: ${({ theme }) => theme.color.text02};
 `;

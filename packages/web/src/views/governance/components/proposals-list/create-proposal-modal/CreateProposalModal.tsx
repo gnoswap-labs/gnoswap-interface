@@ -455,7 +455,11 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                     <FormInput
                       placeholder={getParameterPlaceholder(item)}
                       {...register(`variable.${index}.param`)}
-                      onBlur={validateParams}
+                      onBlur={() => {
+                        if (item.pkgPath && item.func) {
+                          validateParams();
+                        }
+                      }}
                       errorText={
                         breakpoint === DEVICE_TYPE.MOBILE
                           ? paramErrors?.variable?.[index] || undefined

@@ -18,6 +18,7 @@ import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
 import { EarnState, ThemeState } from "@states/index";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
 
@@ -58,6 +59,9 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   const [currentIndex, setCurrentIndex] = useState(1);
   const [mobile, setMobile] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
+
+  const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
+  const [isDataMappingLoading, setIsDataMappingLoading] = useState(true);
 
   const divRef = useRef<HTMLDivElement | null>(null);
 
@@ -132,18 +136,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   const showedPosition = useMemo(() => {
     return [...openPosition, ...(isClosed ? closedPosition : [])];
   }, [closedPosition, isClosed, openPosition]);
-
-  const dataMapping = useMemo(() => {
-    if (!isViewMorePositions) {
-      if (width > 1180) {
-        return showedPosition.slice(0, 4);
-      }
-      if (width > 920) {
-        return showedPosition.slice(0, 3);
-      }
-    }
-    return showedPosition;
-  }, [isViewMorePositions, width, showedPosition]);
 
   const handleScroll = useCallback(() => {
     if (divRef.current) {
@@ -270,6 +262,36 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     return true;
   }, [address, closedPosition.length, connected]);
 
+  const getMappedData = (): PoolPositionModel[] => {
+    if (isViewMorePositions) {
+      return showedPosition;
+    }
+
+    const breakpoints = [
+      { width: 1180, displayCount: 4 },
+      { width: 920, displayCount: 3 },
+    ];
+
+    for (const breakpoint of breakpoints) {
+      if (width > breakpoint.width) {
+        return showedPosition.slice(0, breakpoint.displayCount);
+      }
+    }
+
+    return showedPosition;
+  };
+
+  const updateDataMapping = useCallback(() => {
+    setIsDataMappingLoading(true);
+    const newMappedData = getMappedData();
+    setMappedData(newMappedData);
+    setIsDataMappingLoading(false);
+  }, [isViewMorePositions, width, showedPosition]);
+
+  useEffect(() => {
+    updateDataMapping();
+  }, [updateDataMapping]);
+
   const highestApr = useMemo(() => {
     return pools.reduce((acc, current) => {
       if (Number(current.totalApr) > acc) {
@@ -291,11 +313,12 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       connect={connect}
       loading={
         isLoadingPool ||
-        (connected ? isLoadingPosition || !isFetchedPosition : false)
+        (connected ? isLoadingPosition || !isFetchedPosition : false) ||
+        isDataMappingLoading
       }
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}
-      positions={dataMapping}
+      positions={mappedData}
       moveEarnAdd={moveEarnAdd}
       movePoolDetail={movePoolDetail}
       moveEarnStake={moveEarnStake}

@@ -13,6 +13,7 @@ describe("ProposalCard Component", () => {
       onClickCard: (id: string) => {
         console.log(id);
       },
+      getTooltipTextI18nKey: () => "proposal.tooltip.passed",
     };
 
     render(
@@ -20,7 +21,7 @@ describe("ProposalCard Component", () => {
         <GnoswapThemeProvider>
           <ProposalCard {...mockProps} />
         </GnoswapThemeProvider>
-      </JotaiProvider>
+      </JotaiProvider>,
     );
   });
 });

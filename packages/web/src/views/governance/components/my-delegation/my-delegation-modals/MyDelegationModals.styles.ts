@@ -10,6 +10,7 @@ export const MyDelegationModalWrapper = styled.div`
   max-width: 500px;
   width: 90vw;
   max-height: 800px;
+  height: 85dvh;
   overflow: visible;
 
   .modal-wrapper {
@@ -123,13 +124,13 @@ export const MyDelegationModalWrapper = styled.div`
       .selected-delegatee {
         ${mixins.flexbox("row", "center", "flex-start")};
         color: ${({ theme }) => theme.color.text01};
-        ${fonts.body13}
-        gap: 5px;
+        ${fonts.body10}
+        gap: 8px;
 
         > .addr {
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 2px;
-          ${fonts.p6}
+          ${fonts.p4}
           color: ${({ theme }) => theme.color.text04};
 
           svg {
@@ -174,7 +175,7 @@ export const MyDelegationModalWrapper = styled.div`
         flex-shrink: 0;
         justify-content: flex-start;
         min-width: 88px;
-        color: ${({ theme }) => theme.color.text04};
+        color: ${({ theme }) => theme.color.text03};
         ${fonts.body13}
       }
       .value {
@@ -204,7 +205,7 @@ export const MyDelegationModalWrapper = styled.div`
         gap: 4px;
         height: 24px;
         min-width: 88px;
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => theme.color.text04};
         ${fonts.body13}
       }
       .value {
@@ -233,6 +234,10 @@ export const MyDelegationModalWrapper = styled.div`
         }
         &.clickable {
           &:hover {
+            color: ${({ theme }) =>
+              theme.themeKey === "dark"
+                ? theme.color.text03
+                : theme.color.icon07};
             cursor: pointer;
             svg {
               path {

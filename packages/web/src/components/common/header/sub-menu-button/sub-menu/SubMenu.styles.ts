@@ -53,6 +53,9 @@ export const Navigation = styled.nav`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     gap: 4px;
+    a {
+      width: 100%;
+    }
     &:last-of-type {
       li {
         padding: 10px 16px;

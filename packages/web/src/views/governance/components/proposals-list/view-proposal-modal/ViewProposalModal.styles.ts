@@ -11,7 +11,7 @@ export const ViewProposalModalWrapper = styled.div`
   max-width: 700px;
   width: 90vw;
   max-height: 800px;
-  height: 85vh;
+  height: 85dvh;
   border-radius: 8px;
   padding: 24px 0px;
   gap: 16px;
@@ -185,6 +185,10 @@ export const ModalQuorum = styled.div`
       ${fonts.p4};
     }
     span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
       color: ${({ theme }) => theme.color.text04};
     }
     .progress-value {
@@ -196,11 +200,21 @@ export const ModalQuorum = styled.div`
       span {
         color: ${({ theme }) => theme.color.text10};
       }
+      .passed {
+        background: var(
+          --Boost,
+          linear-gradient(270deg, #536cd7 -2.39%, #233dbd 103.33%)
+        );
+        color: transparent;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
     }
     ${media.mobile} {
       gap: 8px;
       .progress-value {
-        ${fonts.p6};
+        ${fonts.p4};
       }
     }
   }

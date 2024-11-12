@@ -22,6 +22,13 @@ interface Props {
   address: string;
   breakpoint: DEVICE_TYPE;
   proposalDetail: ProposalItemInfo;
+  isMajorityVoted: boolean;
+  getTooltipTextI18nKey: (
+    status: string,
+    isMajorityVoted: boolean,
+    yesVotes: number,
+    noVotes: number,
+  ) => string;
   onClickCard: (id: string) => void;
   executeProposal: (id: number) => void;
   cancelProposal: (id: number) => void;
@@ -31,6 +38,8 @@ const ProposalCard: React.FC<Props> = ({
   address,
   breakpoint,
   proposalDetail,
+  isMajorityVoted,
+  getTooltipTextI18nKey,
   onClickCard,
   executeProposal,
   cancelProposal,
@@ -98,6 +107,35 @@ const ProposalCard: React.FC<Props> = ({
       }
     };
   }, [executable, proposalDetail.status]);
+
+  const { yesVotes, noVotes } = useMemo(() => {
+    if (proposalDetail.status === "CANCELLED") {
+      return { yesVotes: 0, noVotes: 0 };
+    }
+    return {
+      yesVotes: proposalDetail.votes.yes,
+      noVotes: proposalDetail.votes.no,
+    };
+  }, [
+    proposalDetail.status,
+    proposalDetail.votes.yes,
+    proposalDetail.votes.no,
+  ]);
+
+  const tooltipTextI18nKey = React.useMemo(() => {
+    return getTooltipTextI18nKey(
+      proposalDetail.status,
+      isMajorityVoted,
+      yesVotes,
+      noVotes,
+    );
+  }, [
+    proposalDetail.status,
+    getTooltipTextI18nKey,
+    isMajorityVoted,
+    yesVotes,
+    noVotes,
+  ]);
 
   return (
     <ProposalDetailWrapper
@@ -211,6 +249,8 @@ const ProposalCard: React.FC<Props> = ({
           proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.yes
         }
         no={proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.no}
+        tooltipTextI18nKey={tooltipTextI18nKey}
+        isMajorityVoted={isMajorityVoted}
       />
     </ProposalDetailWrapper>
   );

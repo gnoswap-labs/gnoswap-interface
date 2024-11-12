@@ -25,15 +25,15 @@ export const IconTriangleWarningOutlined = ({
         d="M8 6.66797V9.33464"
         stroke={stroke || "#EA3943"}
         stroke-width="1.2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M2.29825 12.0681L6.8075 3.04955C7.2989 2.06681 8.7013 2.06682 9.1927 3.04955L13.702 12.0681C14.1452 12.9547 13.5006 13.9977 12.5094 13.9977H3.49082C2.49964 13.9977 1.85498 12.9547 2.29825 12.0681Z"
         stroke={stroke || "#EA3943"}
         stroke-width="1.2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

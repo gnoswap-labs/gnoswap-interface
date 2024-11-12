@@ -14,14 +14,28 @@ export const ProgressWrapper = styled.div`
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body12};
     span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
       color: ${({ theme }) => theme.color.text10};
+    }
+    .passed {
+      background: var(
+        --Boost,
+        linear-gradient(270deg, #536cd7 -2.39%, #233dbd 103.33%)
+      );
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "start", "start")};
     gap: 8px;
     .progress-value {
-      ${fonts.p6};
+      ${fonts.p4};
     }
   }
 `;
@@ -73,4 +87,8 @@ export const ProgressBar = styled.div<progressBarProps>`
     width: 100%;
     height: 8px;
   }
+`;
+
+export const ProposalTooltipContent = styled.div`
+  font-size: 14px;
 `;

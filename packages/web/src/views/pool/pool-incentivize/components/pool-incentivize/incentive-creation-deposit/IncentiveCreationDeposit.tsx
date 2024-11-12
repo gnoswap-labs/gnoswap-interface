@@ -6,7 +6,10 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { useTokenData } from "@hooks/token/use-token-data";
 
-import { IncentiveCreationDepositTooltipContent, IncentiveCreationDepositWrapper } from "./IncentiveCreationDeposit.styles";
+import {
+  IncentiveCreationDepositTooltipContent,
+  IncentiveCreationDepositWrapper,
+} from "./IncentiveCreationDeposit.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 
@@ -14,7 +17,7 @@ export const GNS_DEPOSIT_AMOUNT = 1_000;
 
 const IncentiveCreationDeposit: React.FC = () => {
   const { t } = useTranslation();
-  const {tokens} = useTokenData();
+  const { tokens } = useTokenData();
   const theme = useTheme();
 
   const gnsInfo = tokens.find(item => item.path === GNS_TOKEN_PATH);

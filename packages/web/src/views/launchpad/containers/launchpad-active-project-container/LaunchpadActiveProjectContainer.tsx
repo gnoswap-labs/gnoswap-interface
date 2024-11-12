@@ -71,7 +71,9 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
       const currentScrollX = container.scrollLeft;
       const maxScroll = container.scrollWidth - container.clientWidth;
 
-      if (currentScrollX >= maxScroll - 1) {
+      if (currentScrollX <= 0) {
+        setCurrentIndex(1);
+      } else if (currentScrollX >= maxScroll - 1) {
         setCurrentIndex(showedProject.length);
       } else {
         setCurrentIndex(

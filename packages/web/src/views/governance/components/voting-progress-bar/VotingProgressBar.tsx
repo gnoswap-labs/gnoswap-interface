@@ -1,22 +1,32 @@
 import { css, Global, Theme } from "@emotion/react";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
 
-import { ProgressBar, ProgressWrapper } from "./VotingProgressBar.styles";
+import {
+  ProgressBar,
+  ProgressWrapper,
+  ProposalTooltipContent,
+} from "./VotingProgressBar.styles";
+import IconPassed from "@components/common/icons/IconPassed";
+import Tooltip from "@components/common/tooltip/Tooltip";
 interface VotingProgressBarProps {
   max: number;
   yes: number;
   no: number;
+  isMajorityVoted: boolean;
   hideNumber?: boolean;
+  tooltipTextI18nKey?: string;
 }
 
 const VotingProgressBar: React.FC<VotingProgressBarProps> = ({
   max,
   yes,
   no,
+  isMajorityVoted,
   hideNumber,
+  tooltipTextI18nKey,
 }) => {
   const { t } = useTranslation();
 
@@ -56,8 +66,25 @@ const VotingProgressBar: React.FC<VotingProgressBarProps> = ({
       </ProgressBar>
       {!hideNumber && (
         <div className="progress-value">
-          <span>{(yes + no).toLocaleString()}</span>/
-          <div> {max.toLocaleString()}</div>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <ProposalTooltipContent>
+                <Trans
+                  components={{ br: <br /> }}
+                  ns="Governance"
+                  i18nKey={tooltipTextI18nKey}
+                  className="tooltip-contents"
+                />
+              </ProposalTooltipContent>
+            }
+          >
+            <span className={isMajorityVoted ? "passed" : ""}>
+              {isMajorityVoted && <IconPassed />}
+              {(yes + no).toLocaleString()}
+            </span>
+          </Tooltip>
+          /<div> {max.toLocaleString()}</div>
         </div>
       )}
       <ToolTipGlobalStyle />
