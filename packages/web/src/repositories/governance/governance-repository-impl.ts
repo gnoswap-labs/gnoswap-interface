@@ -1,18 +1,8 @@
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import {
-  makeApproveMessage,
-  makeTransactionMessage,
-} from "@common/clients/wallet-client/transaction-messages";
 import { CommonError } from "@common/errors";
-import { GNS_TOKEN } from "@common/values/token-constant";
-import {
-  PACKAGE_GOVERNANCE_PATH,
-  PACKAGE_GOVERNANCE_STAKER_ADDRESS,
-  PACKAGE_GOVERNANCE_STAKER_PATH,
-} from "@constants/environment.constant";
-import { makeProposalVariablesQuery } from "@utils/governance-utils";
+import { PACKAGE_GOVERNANCE_STAKER_PATH } from "@constants/environment.constant";
 
 import { GovernanceRepository } from "./governance-repository";
 import {
@@ -46,18 +36,33 @@ import {
   GetProposalsResponse,
 } from "./response";
 
+import { getGRC20Allowance } from "@common/clients/gno-provider";
+import { DEFAULT_GAS_FEE } from "@common/values";
+import { GnoProvider } from "@gnolang/gno-js-client";
+import {
+  makeCancelMessages,
+  makeCollectRewardMessages,
+  makeCollectUnDelegatedGNSMessages,
+  makeDelegateMessagesWithApproves,
+  makeExecuteMessages,
+  makeProposalTextMessages,
+  makeProposeCommunityPoolSpendMessages,
+  makeProposeParameterChangeMessages,
+  makeReDelegateMessagesWithApproves,
+  makeUnDelegateMessages,
+  makeVoteMessages,
+} from "./governance.message";
 import GetExecutableFunctionsResponseMock from "./mock/get-executable-functions-response.json";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
+  private gnoProvider: GnoProvider | null;
 
-  constructor(
-    networkClient: NetworkClient | null,
-    walletClient: WalletClient | null,
-  ) {
+  constructor(networkClient: NetworkClient | null, walletClient: WalletClient | null, gnoProvider: GnoProvider | null) {
     this.networkClient = networkClient;
     this.walletClient = walletClient;
+    this.gnoProvider = gnoProvider;
   }
 
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
@@ -80,9 +85,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     return data;
   };
 
-  public getMyDeligation = async (
-    request: GetMyDelegationRequest,
-  ): Promise<MyDelegationInfo> => {
+  public getMyDeligation = async (request: GetMyDelegationRequest): Promise<MyDelegationInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -107,9 +110,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     return data;
   };
 
-  public getProposals = async (
-    request: GetProposalsReqeust,
-  ): Promise<ProposalsInfo> => {
+  public getProposals = async (request: GetProposalsReqeust): Promise<ProposalsInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -118,9 +119,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
       request.isActive !== undefined ? `isActive=${request.isActive}` : "",
       request.address !== undefined ? `address=${request.address}` : "",
       request.page !== undefined ? `page=${request.page}` : "",
-      request.itemsPerPage !== undefined
-        ? `itemsPerPage=${request.itemsPerPage}`
-        : "",
+      request.itemsPerPage !== undefined ? `itemsPerPage=${request.itemsPerPage}` : "",
     ];
 
     const response = await this.networkClient.get<{
@@ -138,9 +137,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     return data;
   };
 
-  public getExecutableFunctions = async (): Promise<
-    ExecutableFunctionInfo[]
-  > => {
+  public getExecutableFunctions = async (): Promise<ExecutableFunctionInfo[]> => {
     return GetExecutableFunctionsResponseMock;
   };
 
@@ -164,431 +161,153 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     return data;
   };
 
-  public sendProposeText = async (
-    request: SendProposeTextReqeust,
-  ): Promise<WalletResponse<{ hash: string }>> => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
+  public sendProposeText = async (request: SendProposeTextReqeust): Promise<WalletResponse<{ hash: string }>> => {
+    const caller = await this.getAddress();
+    const messages = makeProposalTextMessages({ ...request, caller });
 
-    const { address } = account.data;
-    const { title, description } = request;
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_PATH,
-        send: "",
-        func: "ProposeText",
-        args: [title, description],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
+    return this.walletClient!.sendTransaction({
       messages,
-      gasFee: 1,
+      gasFee: DEFAULT_GAS_FEE,
       memo: "",
     });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
   };
 
   public sendProposeCommunityPoolSpend = async (
     request: SendProposeCommunityPoolSpendReqeust,
   ): Promise<WalletResponse<{ hash: string }>> => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
+    const caller = await this.getAddress();
+    const messages = makeProposeCommunityPoolSpendMessages({ ...request, caller });
 
-    const { address } = account.data;
-    const { title, description, to, tokenPath, amount } = request;
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_PATH,
-        send: "",
-        func: "ProposeCommunityPoolSpend",
-        args: [title, description, to, tokenPath, amount],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
+    return this.walletClient!.sendTransaction({
       messages,
-      gasFee: 1,
+      gasFee: DEFAULT_GAS_FEE,
       memo: "",
     });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
   };
 
   public sendProposeParameterChange = async (
     request: SendProposeParameterChangeRequest,
   ): Promise<WalletResponse<{ hash: string }>> => {
+    const caller = await this.getAddress();
+    const messages = makeProposeParameterChangeMessages({ ...request, caller });
+
+    return this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendVote = async (request: SendVoteReqeust): Promise<WalletResponse<{ hash: string }>> => {
+    const caller = await this.getAddress();
+    const messages = makeVoteMessages({ ...request, caller });
+
+    return this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendCancel = async (request: SendCancelReqeust): Promise<WalletResponse<{ hash: string }>> => {
+    const caller = await this.getAddress();
+    const messages = makeCancelMessages({ ...request, caller });
+
+    return this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendExecute = async (request: SendExecuteReqeust): Promise<WalletResponse<{ hash: string }>> => {
+    const caller = await this.getAddress();
+    const messages = makeExecuteMessages({ ...request, caller });
+
+    return this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendDelegate = async (request: SendDelegateReqeust): Promise<WalletResponse<{ hash: string }>> => {
+    if (!this.gnoProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const caller = await this.getAddress();
+    const messages = await makeDelegateMessagesWithApproves({ ...request, caller }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
+    );
+
+    return this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendUndelegate = async (request: SendUndelegateReqeust): Promise<WalletResponse<{ hash: string }>> => {
+    const caller = await this.getAddress();
+    const messages = makeUnDelegateMessages({ ...request, caller });
+
+    return this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendRedelegate = async (request: SendRedelegateReqeust): Promise<WalletResponse<{ hash: string }>> => {
+    if (!this.gnoProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const caller = await this.getAddress();
+    const messages = await makeReDelegateMessagesWithApproves({ ...request, caller }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
+    );
+
+    return this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendCollectUndelegated = async (): Promise<WalletResponse<{ hash: string }>> => {
+    const caller = await this.getAddress();
+    const messages = makeCollectUnDelegatedGNSMessages({ caller });
+
+    return this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendCollectReward = async (): Promise<WalletResponse<{ hash: string }>> => {
+    const caller = await this.getAddress();
+    const messages = makeCollectRewardMessages({ caller });
+
+    return this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  private async getAddress(): Promise<string> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_PATH) {
+
+    const address = await this.walletClient.getAddress();
+    if (!address || !PACKAGE_GOVERNANCE_STAKER_PATH) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    const { address } = account.data;
-    const { title, description, variables } = request;
-    const variableQuery = makeProposalVariablesQuery(variables);
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_PATH,
-        send: "",
-        func: "ProposeParameterChange",
-        args: [title, description, variables.length.toString(), variableQuery],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
-  };
-
-  public sendVote = async (
-    request: SendVoteReqeust,
-  ): Promise<WalletResponse<{ hash: string }>> => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-
-    const { address } = account.data;
-    const { proposalId, voteYes } = request;
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_PATH,
-        send: "",
-        func: "Vote",
-        args: [proposalId.toString(), `${voteYes}`],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
-  };
-
-  public sendCancel = async (
-    request: SendCancelReqeust,
-  ): Promise<WalletResponse<{ hash: string }>> => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-
-    const { address } = account.data;
-    const { proposalId } = request;
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_PATH,
-        send: "",
-        func: "Cancel",
-        args: [proposalId.toString()],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
-  };
-
-  public sendExecute = async (
-    request: SendExecuteReqeust,
-  ): Promise<WalletResponse<{ hash: string }>> => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-
-    const { address } = account.data;
-    const { proposalId } = request;
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_PATH,
-        send: "",
-        func: "Execute",
-        args: [proposalId.toString()],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
-  };
-
-  public sendDelegate = async (
-    request: SendDelegateReqeust,
-  ): Promise<WalletResponse<{ hash: string }>> => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (
-      !account.data ||
-      !PACKAGE_GOVERNANCE_STAKER_PATH ||
-      !PACKAGE_GOVERNANCE_STAKER_ADDRESS
-    ) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-
-    const { address } = account.data;
-    const { to, amount } = request;
-
-    const messages = [];
-    messages.push(
-      makeApproveMessage(
-        GNS_TOKEN.path,
-        [PACKAGE_GOVERNANCE_STAKER_ADDRESS, amount],
-        address,
-      ),
-    );
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
-        send: "",
-        func: "Delegate",
-        args: [to, amount],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
-  };
-
-  public sendUndelegate = async (
-    request: SendUndelegateReqeust,
-  ): Promise<WalletResponse<{ hash: string }>> => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_STAKER_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-
-    const { address } = account.data;
-    const { to, amount } = request;
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
-        send: "",
-        func: "Undelegate",
-        args: [to, amount],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
-  };
-
-  public sendRedelegate = async (
-    request: SendRedelegateReqeust,
-  ): Promise<WalletResponse<{ hash: string }>> => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_STAKER_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-
-    const { address } = account.data;
-    const { from, to, amount } = request;
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
-        send: "",
-        func: "Redelegate",
-        args: [from, to, amount],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
-  };
-
-  public sendCollectUndelegated = async (): Promise<
-    WalletResponse<{ hash: string }>
-  > => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_STAKER_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-
-    const { address } = account.data;
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
-        send: "",
-        func: "CollectUndelegated",
-        args: [],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
-  };
-
-  public sendCollectReward = async (): Promise<
-    WalletResponse<{ hash: string }>
-  > => {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const account = await this.walletClient.getAccount();
-    if (!account.data || !PACKAGE_GOVERNANCE_STAKER_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-
-    const { address } = account.data;
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
-        send: "",
-        func: "CollectReward",
-        args: [],
-        caller: address,
-      }),
-    );
-    const response = await this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-
-    return {
-      ...response,
-      data: {
-        hash: response.data?.hash || "",
-      },
-    };
-  };
+    return address;
+  }
 }
