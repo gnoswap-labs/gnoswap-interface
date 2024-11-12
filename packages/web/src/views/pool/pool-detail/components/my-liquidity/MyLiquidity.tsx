@@ -29,6 +29,7 @@ interface MyLiquidityProps {
   onScroll: () => void;
   currentIndex: number;
   claimAll: () => void;
+  claim: (position: PoolPositionModel) => void;
   isStakable: boolean;
   isShowRemovePositionButton: boolean;
   loading: boolean;
@@ -54,6 +55,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   onScroll,
   currentIndex,
   claimAll,
+  claim,
   isStakable,
   isShowRemovePositionButton,
   loading,
@@ -119,6 +121,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                   isHiddenAddPosition={isHiddenAddPosition}
                   connected={connected}
                   tokenPrices={tokenPrices}
+                  claim={claim}
                 />
               ),
             )}
@@ -143,6 +146,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                       isHiddenAddPosition={isHiddenAddPosition}
                       connected={connected}
                       tokenPrices={tokenPrices}
+                      claim={claim}
                     />
                   ),
                 )}

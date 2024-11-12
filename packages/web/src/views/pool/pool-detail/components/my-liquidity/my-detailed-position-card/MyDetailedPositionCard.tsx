@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import Button from "@components/common/button/Button";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
 import IconPolygon from "@components/common/icons/IconPolygon";
@@ -65,6 +65,8 @@ interface MyDetailedPositionCardProps {
   isHiddenAddPosition: boolean;
   connected: boolean;
   tokenPrices: Record<string, TokenPriceModel>;
+
+  claim: (position: PoolPositionModel) => void;
 }
 
 const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
@@ -76,6 +78,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   isHiddenAddPosition,
   connected,
   tokenPrices,
+  claim,
 }) => {
   const router = useRouter();
   const { width } = useWindowSize();
@@ -328,6 +331,19 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     }, null);
 
     return formatOtherPrice(usdValue, { isKMB: false });
+  }, [isDisplay, position.reward]);
+
+  const isClaimable = useMemo(() => {
+    if (!isDisplay || position.reward.length === 0) {
+      return false;
+    }
+
+    const totalClaimableUsd = position.reward.reduce((acc, current) => {
+      const claimableUsd = Number(current.claimableUsd || 0);
+      return acc + claimableUsd;
+    }, 0);
+
+    return totalClaimableUsd > 0;
   }, [isDisplay, position.reward]);
 
   const totalDailyEarning = useMemo(() => {
@@ -674,7 +690,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return (!isSwap ? maxTickRate : -minTickRate) > 0 ? "positive" : "negative";
   }, [maxTickRate, isSwap, minTickRate]);
 
-
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = poolBin.every(
       item =>
@@ -948,18 +963,23 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           {t("Pool:position.card.claimableReward.title")}
         </span>
         {!isClosed && !loading && isShowTotalRewardInfo ? (
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <div>
-                {totalRewardInfo && (
-                  <RewardTooltipContent rewardInfo={totalRewardInfo} />
-                )}
-              </div>
-            }
-          >
-            <span className="content-text">{totalRewardUSD}</span>
-          </Tooltip>
+          <div className="info-box-flex">
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <div>
+                  {totalRewardInfo && (
+                    <RewardTooltipContent rewardInfo={totalRewardInfo} />
+                  )}
+                </div>
+              }
+            >
+              <span className="content-text">{totalRewardUSD}</span>
+            </Tooltip>
+            {isClaimable && (
+              <ClaimButton text={"Claim"} onClick={() => claim(position)} />
+            )}
+          </div>
         ) : (
           !loading && (
             <span className="content-text disabled">{totalRewardUSD}</span>
@@ -1110,6 +1130,20 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       </MyPositionCardWrapper>
     </>
   );
+};
+
+interface ClaimButtonProps {
+  text: string;
+  onClick: () => void;
+}
+
+const ClaimButton = ({ text, onClick }: ClaimButtonProps) => {
+  const defaultStyle = {
+    fullWidth: false,
+    hierarchy: ButtonHierarchy.Primary,
+  };
+
+  return <Button text={text} style={defaultStyle} onClick={onClick} />;
 };
 
 export default MyDetailedPositionCard;
