@@ -17,11 +17,7 @@ import PoolDetail from "@views/pool/pool-detail/PoolDetail";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        ...DEFAULT_I18N_NS,
-        "Earn",
-        "Pool",
-      ])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Earn", "Pool"])),
     },
   };
 }
@@ -52,22 +48,16 @@ export default function Page() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(data.fee)]?.rateStr;
   }, [data?.fee]);
 
-  const seoInfo = useMemo(
-    () => SEOInfo[address ? "/earn/pool?address" : "/earn/pool"],
-    [address],
-  );
+  const seoInfo = useMemo(() => SEOInfo[address ? "/earn/pool?address" : "/earn/pool"], [address]);
 
   const title = useMemo(() => {
     const tokenA = getGnotPath(data?.tokenA);
     const tokenB = getGnotPath(data?.tokenB);
 
     return seoInfo.title(
-      [
-        address ? formatAddress(address) : undefined,
-        tokenA?.symbol,
-        tokenB?.symbol,
-        feeStr,
-      ].filter(item => item) as string[],
+      [address ? formatAddress(address) : undefined, tokenA?.symbol, tokenB?.symbol, feeStr].filter(
+        item => item,
+      ) as string[],
     );
   }, [getGnotPath, data?.tokenA, data?.tokenB, seoInfo, address, feeStr]);
 

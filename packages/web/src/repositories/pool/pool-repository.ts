@@ -5,18 +5,9 @@ import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
-import {
-  AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse,
-} from "./response/add-liquidity-response";
-import {
-  CreatePoolFailedResponse,
-  CreatePoolSuccessResponse,
-} from "./response/create-pool-response";
-import {
-  SendTransactionResponse,
-  WalletResponse,
-} from "@common/clients/wallet-client/protocols";
+import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./response/add-liquidity-response";
+import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
+import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 
@@ -31,28 +22,19 @@ export interface PoolRepository {
 
   getLatestBlockHeight: () => Promise<string>;
 
-  getPoolDetailRPCByPoolPath: (
-    poolPath: string,
-  ) => Promise<PoolDetailRPCModel | null>;
+  getPoolDetailRPCByPoolPath: (poolPath: string) => Promise<PoolDetailRPCModel | null>;
 
   getPoolDetailByPoolPath: (poolPath: string) => Promise<PoolDetailModel>;
 
-  getBinsOfPoolByPath: (
-    poolPath: string,
-    count?: number,
-  ) => Promise<PoolBinModel[]>;
+  getBinsOfPoolByPath: (poolPath: string, count?: number) => Promise<PoolBinModel[]>;
 
   createPool: (
     request: CreatePoolRequest,
-  ) => Promise<
-    WalletResponse<CreatePoolSuccessResponse | CreatePoolFailedResponse>
-  >;
+  ) => Promise<WalletResponse<CreatePoolSuccessResponse | CreatePoolFailedResponse>>;
 
   addLiquidity: (
     request: AddLiquidityRequest,
-  ) => Promise<
-    WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>
-  >;
+  ) => Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>>;
 
   getIncentivizePools: () => Promise<IncentivizePoolModel[]>;
 
@@ -60,9 +42,7 @@ export interface PoolRepository {
     request: CreateExternalIncentiveRequest,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null>;
 
-  removeExternalIncentive: (
-    request: RemoveExternalIncentiveRequest,
-  ) => Promise<string | null>;
+  removeExternalIncentive: (request: RemoveExternalIncentiveRequest) => Promise<string | null>;
 
   getPoolStakingList: (poolPath: string) => Promise<PoolStakingModel[]>;
 

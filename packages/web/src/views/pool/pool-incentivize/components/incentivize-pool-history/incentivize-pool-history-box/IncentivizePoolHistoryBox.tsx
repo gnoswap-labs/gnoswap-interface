@@ -20,23 +20,23 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { historyTooltipContent } from "./IncentivizePoolHistoryBox.styles";
+import { useRemoveExternalIncentive } from "@query/pools/use-remove-external-incentive";
 
 interface IncentivizePoolHistoryBoxProps {
   stakingData: ExtendedPoolStakingModel;
   poolPath: string;
 }
 
-const IncentivizePoolHistoryBox = ({
-  stakingData,
-  poolPath,
-}: IncentivizePoolHistoryBoxProps) => {
+const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHistoryBoxProps) => {
   const { t } = useTranslation();
 
-  const { rewardToken } = stakingData;
+  const { rewardToken, startTimestamp, endTimestamp } = stakingData;
 
   const { data: pool = null } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
   });
+
+  const { removeExternalIncentive } = useRemoveExternalIncentive(poolPath, rewardToken, startTimestamp, endTimestamp);
 
   const currentPool = React.useMemo(() => {
     const temp = pool ? PoolMapper.toPoolSelectItemInfo(pool) : null;
@@ -64,10 +64,7 @@ const IncentivizePoolHistoryBox = ({
   const formatAmount = (amount: string | null) => {
     if (amount == null || amount === "") return "-";
 
-    return toNumberFormat(
-      Number(makeDisplayTokenAmount(GNS_TOKEN, amount)),
-      GNS_TOKEN.decimals,
-    );
+    return toNumberFormat(Number(makeDisplayTokenAmount(GNS_TOKEN, amount)), GNS_TOKEN.decimals);
   };
 
   const isClaimableTime = React.useMemo(() => {
@@ -80,23 +77,15 @@ const IncentivizePoolHistoryBox = ({
     return (
       <>
         <div className="row">
-          <div className="label">
-            {t("IncentivizePool:incentiPool.history.label.token")}
-          </div>
+          <div className="label">{t("IncentivizePool:incentiPool.history.label.token")}</div>
           <div className="value">
-            <MissingLogo
-              symbol={rewardToken.symbol}
-              width={24}
-              url={rewardToken.logoURI}
-            />
+            <MissingLogo symbol={rewardToken.symbol} width={24} url={rewardToken.logoURI} />
             <span>{rewardToken.symbol}</span>
             <Chip text={capitalize(stakingData.incentiveType)} />
           </div>
         </div>
         <div className="row">
-          <div className="label">
-            {t("IncentivizePool:incentiPool.history.label.pool")}
-          </div>
+          <div className="label">{t("IncentivizePool:incentiPool.history.label.pool")}</div>
           <div className="value">
             <DoubleLogo {...doubleLogos} size={24} />
             <span>
@@ -106,20 +95,12 @@ const IncentivizePoolHistoryBox = ({
           </div>
         </div>
         <div className="row">
-          <div className="label">
-            {t("IncentivizePool:incentiPool.history.label.startDate")}
-          </div>
-          <div className="value">
-            {getDateUtcToLocal(stakingData.startTimestamp).value}
-          </div>
+          <div className="label">{t("IncentivizePool:incentiPool.history.label.startDate")}</div>
+          <div className="value">{getDateUtcToLocal(stakingData.startTimestamp).value}</div>
         </div>
         <div className="row">
-          <div className="label">
-            {t("IncentivizePool:incentiPool.history.label.endDate")}
-          </div>
-          <div className="value">
-            {getDateUtcToLocal(stakingData.endTimestamp).value}
-          </div>
+          <div className="label">{t("IncentivizePool:incentiPool.history.label.endDate")}</div>
+          <div className="value">{getDateUtcToLocal(stakingData.endTimestamp).value}</div>
         </div>
         <div className="row">
           <div className="label">
@@ -140,8 +121,7 @@ const IncentivizePoolHistoryBox = ({
             </Tooltip>
           </div>
           <div className="value">
-            {toNumberFormat(stakingData.incentivizedAmount, 6)}{" "}
-            {rewardToken.symbol}
+            {toNumberFormat(stakingData.incentivizedAmount, 6)} {rewardToken.symbol}
           </div>
         </div>
         <div className="row">
@@ -163,8 +143,7 @@ const IncentivizePoolHistoryBox = ({
             </Tooltip>
           </div>
           <div className="value">
-            {toNumberFormat(stakingData.remainingAmount, 6)}{" "}
-            {rewardToken.symbol}
+            {toNumberFormat(stakingData.remainingAmount, 6)} {rewardToken.symbol}
           </div>
         </div>
         <div className="row">
@@ -227,6 +206,7 @@ const IncentivizePoolHistoryBox = ({
             <Button
               text={"Claim"}
               style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
+              onClick={removeExternalIncentive}
             />
           </div>
         )}
@@ -234,11 +214,7 @@ const IncentivizePoolHistoryBox = ({
     );
   };
 
-  return (
-    <IncentivizePoolHistoryBoxWrapper>
-      {renderDataMapping()}
-    </IncentivizePoolHistoryBoxWrapper>
-  );
+  return <IncentivizePoolHistoryBoxWrapper>{renderDataMapping()}</IncentivizePoolHistoryBoxWrapper>;
 };
 
 const tooltipConent = css`

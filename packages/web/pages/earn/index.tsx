@@ -19,19 +19,12 @@ export default function Page() {
   const router = useCustomRouter();
   const addr = router.getAddress();
 
-  const seoInfo = useMemo(
-    () => SEOInfo[addr ? "/earn?address" : "/earn"],
-    [addr],
-  );
+  const seoInfo = useMemo(() => SEOInfo[addr ? "/earn?address" : "/earn"], [addr]);
 
   return (
     <>
       <SEOHeader
-        title={seoInfo.title(
-          [addr ? formatAddress(addr) : undefined].filter(
-            item => item,
-          ) as string[],
-        )}
+        title={seoInfo.title([addr ? formatAddress(addr) : undefined].filter(item => item) as string[])}
         pageDescription={seoInfo.desc()}
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}

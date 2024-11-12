@@ -10,6 +10,8 @@ export interface PoolStakingModel {
   remainingAmount: string;
   startTimestamp: string;
   endTimestamp: string;
+  unvestedAmount: string;
+  createdBlockHeight: string;
 }
 
 export interface ExtendedPoolStakingModel extends PoolStakingModel {
