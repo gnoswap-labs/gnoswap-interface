@@ -61,16 +61,16 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         inputTokenPath: string;
         outputTokenPath: string;
         exactType: string;
-        amount: number;
+        amount: string;
       },
       GetRoutesResponse
     >({
-      url: "routes",
+      url: "v1/api/route",
       body: {
         inputTokenPath,
         outputTokenPath,
         exactType,
-        amount: Number(tokenAmountRaw || 0),
+        amount: String(tokenAmountRaw || 0),
       },
     });
 
