@@ -35,7 +35,7 @@ export const TermsLayoutWrapper = styled.div`
     }
 
     .article-section {
-      color: white;
+      color: ${({ theme }) => theme.color.text02};
       font-size: 16px;
       font-weight: 400;
       a {

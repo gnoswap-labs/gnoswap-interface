@@ -12,6 +12,7 @@ import {
   RepositionLiquidityRequest,
 } from "./request";
 import { ClaimAllRequest } from "./request/claim-all-request";
+import { ClaimRequest } from "./request/claim-request";
 import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
 import { UnstakePositionsRequest } from "./request/unstake-positions-request";
@@ -36,6 +37,10 @@ export interface PositionRepository {
   ) => Promise<PositionBinModel[]>;
 
   getPositionById: (lpTokenId: string) => Promise<PositionModel>;
+
+  sendClaim: (
+    request: ClaimRequest,
+  ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
   sendClaimAll: (
     request: ClaimAllRequest,

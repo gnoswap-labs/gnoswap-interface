@@ -242,10 +242,14 @@ export function makeRemoveExternalIncentiveMessageWithApproves(
   {
     poolPath,
     rewardToken,
+    startTimestamp,
+    endTimestamp,
     caller,
   }: {
     poolPath: string;
     rewardToken: TokenModel;
+    startTimestamp: string;
+    endTimestamp: string;
     caller: string;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
@@ -263,7 +267,13 @@ export function makeRemoveExternalIncentiveMessageWithApproves(
     });
   }
 
-  const removeExternalIncentiveMessage = makeRemoveIncentiveMessage(poolPath, tokenPath, caller);
+  const removeExternalIncentiveMessage = makeRemoveIncentiveMessage(
+    poolPath,
+    tokenPath,
+    startTimestamp,
+    endTimestamp,
+    caller,
+  );
 
   return makeTransactionMessagesWithApproves([removeExternalIncentiveMessage], approveMessageInfos, fetchAllowance);
 }
@@ -365,12 +375,18 @@ function makePositionMintWithStakeMessage(
   });
 }
 
-function makeRemoveIncentiveMessage(poolPath: string, rewardTokenPath: string, caller: string) {
+function makeRemoveIncentiveMessage(
+  poolPath: string,
+  rewardTokenPath: string,
+  startTimestamp: string,
+  endTimestamp: string,
+  caller: string,
+) {
   return makeTransactionMessage({
     send: "",
     func: PoolTransactionMessageFunctionType.EndExternalIncentive,
     packagePath: PACKAGE_STAKER_PATH,
-    args: [caller, poolPath, rewardTokenPath],
+    args: [caller, poolPath, rewardTokenPath, startTimestamp, endTimestamp],
     caller,
   });
 }

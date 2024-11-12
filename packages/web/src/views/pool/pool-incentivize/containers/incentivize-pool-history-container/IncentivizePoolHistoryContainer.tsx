@@ -9,10 +9,12 @@ import IncentivizePoolHistory from "../../components/incentivize-pool-history/In
 const IncentivizePoolHistoryContainer = () => {
   const { account } = useWallet();
 
-  const { data: rawPoolStakingList = [], isFetched: isFetchedStakingList } =
-    useGetPoolStakingListByAddress(account?.address || "", {
+  const { data: rawPoolStakingList = [], isFetched: isFetchedStakingList } = useGetPoolStakingListByAddress(
+    account?.address || "",
+    {
       enabled: !!account?.address,
-    });
+    },
+  );
 
   const poolStakingList: ExtendedPoolStakingModel[] = rawPoolStakingList
     .map(item => ({

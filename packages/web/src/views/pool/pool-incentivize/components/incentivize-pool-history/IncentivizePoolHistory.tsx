@@ -10,9 +10,7 @@ interface IncentivizePoolHistoryProps {
   stakingList: ExtendedPoolStakingModel[];
 }
 
-const IncentivizePoolHistory = ({
-  stakingList,
-}: IncentivizePoolHistoryProps) => {
+const IncentivizePoolHistory = ({ stakingList }: IncentivizePoolHistoryProps) => {
   return (
     <IncentivizePoolHistoryWrapper>
       <div className="box-header">
@@ -22,10 +20,7 @@ const IncentivizePoolHistory = ({
         {stakingList.map((item, idx) => {
           return (
             <React.Fragment key={idx}>
-              <IncentivizePoolHistoryBox
-                stakingData={item}
-                poolPath={item.poolPath}
-              />
+              <IncentivizePoolHistoryBox stakingData={item} poolPath={item.poolPath} />
               {idx < stakingList.length - 1 && <Divider />}
             </React.Fragment>
           );

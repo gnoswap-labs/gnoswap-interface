@@ -1,11 +1,5 @@
 import { useTheme } from "@emotion/react";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -58,10 +52,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   onSubmit,
   setIsOpen,
 }) => {
-  const Modal = useMemo(
-    () => withLocalModal(MyDelegationModalWrapper, setIsOpen),
-    [setIsOpen],
-  );
+  const Modal = useMemo(() => withLocalModal(MyDelegationModalWrapper, setIsOpen), [setIsOpen]);
   const { t } = useTranslation();
   const selfDelegateName = t("Governance:myDel.delModal.selectDel.self.chip");
   const defaultDelegateeInfo = { ...nullDelegateeInfo };
@@ -71,10 +62,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   const theme = useTheme();
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
   const [stage, setStage] = useState<"MAIN" | "SELECT_DELEGATE">("MAIN");
-  const [delegatee, setDelegatee] =
-    useState<DelegateeInfo>(defaultDelegateeInfo);
-  const [tmpDelegatee, setTmpDelegatee] =
-    useState<DelegateeInfo>(defaultDelegateeInfo);
+  const [delegatee, setDelegatee] = useState<DelegateeInfo>(defaultDelegateeInfo);
+  const [tmpDelegatee, setTmpDelegatee] = useState<DelegateeInfo>(defaultDelegateeInfo);
   const [selfAddress, setSelfAddress] = useState("");
 
   const isValidSelfAddress = useMemo(() => {
@@ -88,10 +77,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     return t("Governance:myDel.delModal.selectDel.selectBtn");
   }, [isValidSelfAddress, selfAddress, t]);
 
-  const handleClickSelfDelegateeAddress = useCallback(
-    (address: string) => setSelfAddress(address),
-    [delegatees],
-  );
+  const handleClickSelfDelegateeAddress = useCallback((address: string) => setSelfAddress(address), [delegatees]);
 
   const delegate = () => {
     let timeoutId: NodeJS.Timeout | null = null;
@@ -129,9 +115,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     (address: string) => {
       setSelfAddress(address);
 
-      const currentDelegatee = delegatees.find(
-        delegatee => delegatee.address === address,
-      );
+      const currentDelegatee = delegatees.find(delegatee => delegatee.address === address);
 
       if (currentDelegatee) {
         setTmpDelegatee(prev => ({
@@ -163,27 +147,18 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <Tooltip
             placement="top"
             FloatingContent={
-              <ToolTipContentWrapper>
-                {t("Governance:myDel.delModal.step1.tooltip")}
-              </ToolTipContentWrapper>
+              <ToolTipContentWrapper>{t("Governance:myDel.delModal.step1.tooltip")}</ToolTipContentWrapper>
             }
           >
             <IconInfo size={16} />
           </Tooltip>
         </div>
-        <div
-          className="delegatee-select-btn"
-          onClick={() => setStage("SELECT_DELEGATE")}
-        >
+        <div className="delegatee-select-btn" onClick={() => setStage("SELECT_DELEGATE")}>
           {delegatee.address === "" ? (
             <div className="before-select">Select</div>
           ) : (
             <div className="selected-delegatee">
-              <MissingLogo
-                url={delegatee.logoUrl}
-                symbol={delegatee.name}
-                width={24}
-              />
+              <MissingLogo url={delegatee.logoUrl} symbol={delegatee.name} width={24} />
               {delegatee.name}
               <div
                 className="addr"
@@ -192,10 +167,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
                   window.open(getAccountUrl(delegatee.address));
                 }}
               >
-                {[
-                  delegatee.address.slice(0, 8),
-                  delegatee.address.slice(32, 40),
-                ].join("...")}
+                {[delegatee.address.slice(0, 8), delegatee.address.slice(32, 40)].join("...")}
                 <IconNewTab />
               </div>
             </div>
@@ -205,9 +177,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       </article>
 
       <article>
-        <div className="section-title">
-          {t("Governance:myDel.delModal.step2.title")}
-        </div>
+        <div className="section-title">{t("Governance:myDel.delModal.step2.title")}</div>
         <TokenAmountInput
           {...gnsAmountInput}
           token={GNS_TOKEN}
@@ -219,19 +189,11 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       </article>
 
       <article>
-        <div className="section-title">
-          {t("Governance:myDel.delModal.step3.title")}
-        </div>
+        <div className="section-title">{t("Governance:myDel.delModal.step3.title")}</div>
         <div className="info-rows">
-          <div className="label">
-            {t("Governance:myDel.delModal.step3.currentlyDel")}
-          </div>
+          <div className="label">{t("Governance:myDel.delModal.step3.currentlyDel")}</div>
           <div className="value">
-            <MissingLogo
-              symbol={XGNS_TOKEN.symbol}
-              url={XGNS_TOKEN.logoURI}
-              width={24}
-            />
+            <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} />
             {formatOtherPrice(currentDelegatedAmount, {
               isKMB: false,
               usd: false,
@@ -240,15 +202,9 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           </div>
         </div>
         <div className="info-rows">
-          <div className="label">
-            {t("Governance:myDel.delModal.step3.newlyDel")}
-          </div>
+          <div className="label">{t("Governance:myDel.delModal.step3.newlyDel")}</div>
           <div className="value">
-            <MissingLogo
-              symbol={XGNS_TOKEN.symbol}
-              url={XGNS_TOKEN.logoURI}
-              width={24}
-            />
+            <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} />
 
             <span>
               {formatOtherPrice(gnsAmountInput.amount, {
@@ -260,22 +216,13 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           </div>
         </div>
         <div className="info-rows">
-          <div className="label">
-            {t("Governance:myDel.delModal.step3.votingPowerShare")}
-          </div>
+          <div className="label">{t("Governance:myDel.delModal.step3.votingPowerShare")}</div>
           <div className="value">
-            {`${formatOtherPrice(
-              totalDelegatedAmount
-                ? (currentDelegatedAmount / totalDelegatedAmount) * 100
-                : 0,
-              {
-                usd: false,
-              },
-            )}% -> ${formatOtherPrice(
+            {`${formatOtherPrice(totalDelegatedAmount ? (currentDelegatedAmount / totalDelegatedAmount) * 100 : 0, {
+              usd: false,
+            })}% -> ${formatOtherPrice(
               totalDelegatedAmount + Number(gnsAmountInput.amount)
-                ? ((currentDelegatedAmount + Number(gnsAmountInput.amount)) /
-                    totalDelegatedAmount) *
-                    100
+                ? Math.min(((currentDelegatedAmount + Number(gnsAmountInput.amount)) / totalDelegatedAmount) * 100, 100)
                 : 0,
               {
                 usd: false,
@@ -289,9 +236,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("Governance:myDel.delModal.step3.aprTooltip")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("Governance:myDel.delModal.step3.aprTooltip")}</ToolTipContentWrapper>
               }
             >
               <IconInfo size={16} />
@@ -313,11 +258,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         content={
           <MyDelWarningContentWrapper>
             {t("Governance:myDel.delModal.warning.description")}
-            <a
-              href={EXT_URL.DOCS.XGNS}
-              target="_blank"
-              className="learn-more-box"
-            >
+            <a href={EXT_URL.DOCS.XGNS} target="_blank" className="learn-more-box">
               <p>{t("common:learnMore")}</p>
               <IconNewTab color={theme.color.icon21} />
             </a>
@@ -387,9 +328,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
                 className="address-input"
                 value={selfAddress}
                 onChange={e => changeSelfDelegateeAddress(e.target.value)}
-                placeholder={t(
-                  "Governance:myDel.delModal.selectDel.self.placeholder",
-                )}
+                placeholder={t("Governance:myDel.delModal.selectDel.self.placeholder")}
               />
             </div>
           </div>
@@ -399,9 +338,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 
       <article>
         <div className="delegatee-info-rows">
-          <div className="label">
-            {t("Governance:myDel.delModal.selectDel.votingPower")}
-          </div>
+          <div className="label">{t("Governance:myDel.delModal.selectDel.votingPower")}</div>
           <div className="value no-wrap">
             <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
             {formatOtherPrice(tmpDelegatee.votingPower, {
@@ -411,9 +348,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
             {XGNS_TOKEN.symbol}
             <span className="sub">
               {` (${formatOtherPrice(
-                totalDelegatedAmount
-                  ? (tmpDelegatee.votingPower * 100) / totalDelegatedAmount
-                  : 0,
+                totalDelegatedAmount ? (tmpDelegatee.votingPower * 100) / totalDelegatedAmount : 0,
                 {
                   usd: false,
                 },
@@ -422,9 +357,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           </div>
         </div>
         <div className="delegatee-info-rows">
-          <div className="label">
-            {t("Governance:myDel.delModal.selectDel.address")}
-          </div>
+          <div className="label">{t("Governance:myDel.delModal.selectDel.address")}</div>
           {tmpDelegatee.address !== "" ? (
             <div
               className="value clickable"
@@ -433,10 +366,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
                 window.open(getAccountUrl(tmpDelegatee.address));
               }}
             >
-              {[
-                tmpDelegatee.address.slice(0, 8),
-                tmpDelegatee.address.slice(32, 40),
-              ].join("...")}
+              {[tmpDelegatee.address.slice(0, 8), tmpDelegatee.address.slice(32, 40)].join("...")}
               <IconNewTab />
             </div>
           ) : (
@@ -444,15 +374,11 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           )}
         </div>
         <div className="delegatee-info-rows">
-          <div className="label">
-            {t("Governance:myDel.delModal.selectDel.description")}
-          </div>
+          <div className="label">{t("Governance:myDel.delModal.selectDel.description")}</div>
           <div className="value">{tmpDelegatee.description || "-"}</div>
         </div>
         <div className="delegatee-info-rows">
-          <div className="label">
-            {t("Governance:myDel.delModal.selectDel.website")}
-          </div>
+          <div className="label">{t("Governance:myDel.delModal.selectDel.website")}</div>
           {tmpDelegatee.website !== "" ? (
             <div
               className="value clickable"
@@ -491,9 +417,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 
   return (
     <Modal className={stage === "MAIN" ? "" : "large-gap selector-box"}>
-      <div className="modal-wrapper">
-        {stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}
-      </div>
+      <div className="modal-wrapper">{stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}</div>
     </Modal>
   );
 };

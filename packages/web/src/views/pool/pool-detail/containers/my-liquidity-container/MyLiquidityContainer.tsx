@@ -16,6 +16,7 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -44,7 +45,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     },
   });
 
-  const { claimAll } = usePosition(positions.filter(item => !item.closed));
+  const { claimAll, claim } = usePosition(
+    positions.filter(item => !item.closed),
+  );
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
@@ -107,6 +110,82 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         ) ?? []
     );
   }, [positions]);
+
+  const claimReward = useCallback(
+    async (position: PoolPositionModel) => {
+      if (!position) return;
+
+      const amount = position.reward.reduce(
+        (acc, item) => acc + Number(item.claimableUsd || 0),
+        0,
+      );
+
+      const messageData = {
+        tokenAAmount: formatOtherPrice(amount, { isKMB: false }),
+      };
+
+      broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
+
+      setLoadingTransactionClaim(true);
+      claim(position).then(response => {
+        if (response) {
+          if (
+            response.code === 0 ||
+            response.code === ERROR_VALUE.TRANSACTION_FAILED.status
+          ) {
+            enqueueEvent({
+              txHash: response?.data?.hash,
+              action: DexEvent.CLAIM_FEE,
+              visibleEmitResult: true,
+              formatData: () => {
+                return messageData;
+              },
+              onUpdate: async () => {
+                await updateBalances();
+              },
+              onEmit: async () => {
+                await refetchPositions();
+              },
+            });
+          }
+
+          if (response.code === 0) {
+            broadcastSuccess(
+              getMessage(
+                DexEvent.CLAIM_FEE,
+                "success",
+                messageData,
+                response?.data?.hash,
+              ),
+            );
+            setLoadingTransactionClaim(false);
+            openModal();
+          } else if (
+            response.code === ERROR_VALUE.TRANSACTION_REJECTED.status
+          ) {
+            broadcastRejected(
+              getMessage(DexEvent.CLAIM_FEE, "error", messageData),
+              () => {},
+            );
+            setLoadingTransactionClaim(false);
+            openModal();
+          } else {
+            openModal();
+            broadcastError(
+              getMessage(
+                DexEvent.CLAIM_FEE,
+                "error",
+                messageData,
+                response?.data?.hash,
+              ),
+            );
+            setLoadingTransactionClaim(false);
+          }
+        }
+      });
+    },
+    [claim, router, setLoadingTransactionClaim, openedPosition, openModal],
+  );
 
   const claimAllReward = useCallback(() => {
     const amount = openedPosition
@@ -230,6 +309,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       onScroll={handleScroll}
       currentIndex={currentIndex}
       claimAll={claimAllReward}
+      claim={claimReward}
       isStakable={isStakable}
       isShowRemovePositionButton={isShowRemovePositionButton}
       loading={isLoadingPosition}
