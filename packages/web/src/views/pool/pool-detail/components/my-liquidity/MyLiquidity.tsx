@@ -8,11 +8,7 @@ import MyDetailedPositionCard from "./my-detailed-position-card/MyDetailedPositi
 import MyLiquidityContent from "./my-liquidity-content/MyLiquidityContent";
 import MyLiquidityHeader from "./my-liquidity-header/MyLiquidityHeader";
 
-import {
-  MyLiquidityWrapper,
-  MyLiquidityWrapperAnchor,
-  PoolDivider,
-} from "./MyLiquidity.styles";
+import { MyLiquidityWrapper, MyLiquidityWrapperAnchor, PoolDivider } from "./MyLiquidity.styles";
 
 interface MyLiquidityProps {
   address: string | null;
@@ -65,10 +61,13 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   tokenPrices,
   closedPosition,
 }) => {
-  const showedPosition = useMemo(
-    () => [...openedPosition, ...(isShowClosePosition ? closedPosition : [])],
-    [closedPosition, isShowClosePosition, openedPosition],
-  );
+  const showedPositions = useMemo(() => {
+    if (!isShowClosePosition) {
+      return openedPosition;
+    }
+
+    return [...openedPosition, ...closedPosition];
+  }, [closedPosition, isShowClosePosition, openedPosition]);
 
   return (
     <MyLiquidityWrapper>
@@ -80,7 +79,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           isSwitchNetwork={isSwitchNetwork}
           address={address}
           addressName={addressName}
-          positionLength={showedPosition.length}
+          positionLength={showedPositions.length}
           isShowRemovePositionButton={isShowRemovePositionButton}
           handleClickAddPosition={handleClickAddPosition}
           handleClickRemovePosition={handleClickRemovePosition}
@@ -107,52 +106,44 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
       {((connected && !isSwitchNetwork) || isOtherPosition) &&
         (breakpoint !== DEVICE_TYPE.MOBILE ? (
           <>
-            {showedPosition.map(
-              (position: PoolPositionModel, index: number) => (
-                <MyDetailedPositionCard
-                  key={index.toString() + position.id}
-                  position={position}
-                  isStakable={isStakable}
-                  breakpoint={breakpoint}
-                  loading={loading}
-                  address={address || ""}
-                  isHiddenAddPosition={isHiddenAddPosition}
-                  connected={connected}
-                  tokenPrices={tokenPrices}
-                />
-              ),
-            )}
+            {showedPositions.map((position: PoolPositionModel, index: number) => (
+              <MyDetailedPositionCard
+                key={index.toString() + position.id}
+                position={position}
+                isStakable={isStakable}
+                breakpoint={breakpoint}
+                loading={loading}
+                address={address || ""}
+                isHiddenAddPosition={isHiddenAddPosition}
+                connected={connected}
+                tokenPrices={tokenPrices}
+              />
+            ))}
           </>
         ) : (
           <>
-            <div
-              className="slider-wrap clearfix"
-              ref={divRef}
-              onScroll={onScroll}
-            >
+            <div className="slider-wrap clearfix" ref={divRef} onScroll={onScroll}>
               <div className={"box-slider full-width"}>
-                {showedPosition.map(
-                  (position: PoolPositionModel, index: number) => (
-                    <MyDetailedPositionCard
-                      key={index.toString() + position.id}
-                      position={position}
-                      isStakable={isStakable}
-                      breakpoint={breakpoint}
-                      loading={loading}
-                      address={address || ""}
-                      isHiddenAddPosition={isHiddenAddPosition}
-                      connected={connected}
-                      tokenPrices={tokenPrices}
-                    />
-                  ),
-                )}
+                {showedPositions.map((position: PoolPositionModel, index: number) => (
+                  <MyDetailedPositionCard
+                    key={index.toString() + position.id}
+                    position={position}
+                    isStakable={isStakable}
+                    breakpoint={breakpoint}
+                    loading={loading}
+                    address={address || ""}
+                    isHiddenAddPosition={isHiddenAddPosition}
+                    connected={connected}
+                    tokenPrices={tokenPrices}
+                  />
+                ))}
               </div>
             </div>
-            {showedPosition.length > 1 && (
+            {showedPositions.length > 1 && (
               <div className="box-indicator">
                 <span className="current-page">{currentIndex}</span>
                 <span>/</span>
-                <span>{showedPosition.length}</span>
+                <span>{showedPositions.length}</span>
               </div>
             )}
           </>

@@ -21,17 +21,15 @@ const PoolDetail: React.FC = () => {
   const jumpFlagRef = useRef(false);
   const { data } = useGetPoolDetailByPath(poolPath);
 
-  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
-    addr: account?.address,
-  });
+  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({ addr: undefined });
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
     if (!address || !isValidAddress(address)) {
-      return undefined;
+      return account?.address;
     }
     return address;
-  }, [initializedData]);
+  }, [initializedData, account]);
 
   const { isFetchedPosition, loading, positions } = usePositionData({
     address,
@@ -68,13 +66,7 @@ const PoolDetail: React.FC = () => {
       return;
     }
 
-    if (
-      address &&
-      isFetchedPosition &&
-      !loading &&
-      poolPath &&
-      !jumpFlagRef.current
-    ) {
+    if (address && isFetchedPosition && !loading && poolPath && !jumpFlagRef.current) {
       if (hash && hash !== "staking") {
         const position = positions.find(item => item.id.toString() === hash);
         const isClosedPosition = !position || position?.closed;
@@ -82,8 +74,7 @@ const PoolDetail: React.FC = () => {
         jumpFlagRef.current = true;
         setTimeout(() => {
           if (isClosedPosition) {
-            const positionContainerElement =
-              document.getElementById("liquidity-wrapper");
+            const positionContainerElement = document.getElementById("liquidity-wrapper");
             const topPosition = positionContainerElement?.offsetTop;
             if (!topPosition) {
               return;
@@ -107,8 +98,7 @@ const PoolDetail: React.FC = () => {
 
       jumpFlagRef.current = true;
       setTimeout(() => {
-        const positionContainerElement =
-          document.getElementById("liquidity-wrapper");
+        const positionContainerElement = document.getElementById("liquidity-wrapper");
         const topPosition = positionContainerElement?.offsetTop;
         if (!topPosition) {
           return;
@@ -120,22 +110,14 @@ const PoolDetail: React.FC = () => {
       return;
     }
 
-    if (
-      hash &&
-      hash !== "staking" &&
-      isFetchedPosition &&
-      !loading &&
-      poolPath &&
-      !jumpFlagRef.current
-    ) {
+    if (hash && hash !== "staking" && isFetchedPosition && !loading && poolPath && !jumpFlagRef.current) {
       const position = positions.find(item => item.id.toString() === hash);
       const isClosedPosition = !position || position?.closed;
 
       jumpFlagRef.current = true;
       setTimeout(() => {
         if (isClosedPosition) {
-          const positionContainerElement =
-            document.getElementById("liquidity-wrapper");
+          const positionContainerElement = document.getElementById("liquidity-wrapper");
           const topPosition = positionContainerElement?.offsetTop;
           if (!topPosition) {
             return;
@@ -156,24 +138,13 @@ const PoolDetail: React.FC = () => {
       });
       return;
     }
-  }, [
-    isFetchedPosition,
-    hash,
-    address,
-    loading,
-    isStakable,
-    poolPath,
-    positions,
-    router,
-  ]);
+  }, [isFetchedPosition, hash, address, loading, isStakable, poolPath, positions, router]);
 
   return (
     <PoolLayout
       header={<HeaderContainer />}
       poolPairInformation={<PoolPairInformationContainer />}
-      liquidity={
-        <MyLiquidityContainer address={address} isStakable={isStakable} />
-      }
+      liquidity={<MyLiquidityContainer address={address} isStakable={isStakable} />}
       staking={isStakable ? <StakingContainer /> : null}
       footer={<Footer />}
       isStaking={isStakable}
