@@ -24,6 +24,11 @@ export const PoolGraphTooltipContainer = styled.div`
         flex-direction: row;
         align-items: center;
 
+        &.price {
+          width: 100%;
+          justify-content: flex-end;
+        }
+
         &.price-range {
           justify-content: flex-end;
         }
