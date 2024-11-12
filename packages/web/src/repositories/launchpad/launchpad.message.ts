@@ -5,6 +5,7 @@ import {
   TokenApproveMessageInfo,
 } from "@common/clients/wallet-client/transaction-messages";
 import { GNS_TOKEN_PATH, PACKAGE_LAUNCHPAD_ADDRESS, PACKAGE_LAUNCHPAD_PATH } from "@constants/environment.constant";
+import { MAX_INT64 } from "@utils/math.utils";
 
 enum TransactionMessageFunctionType {
   DepositGns = "DepositGns",
@@ -14,15 +15,18 @@ enum TransactionMessageFunctionType {
   CollectDepositGnsByDepositId = "CollectDepositGnsByDepositId",
 }
 
-export function makeDepositGNSMessageWithApproves({
-  poolId,
-  gnsTokenAmount,
-  caller,
-}: {
-  poolId: string;
-  gnsTokenAmount: bigint;
-  caller: string;
-}): TransactionMessage[] {
+export function makeDepositGNSMessageWithApproves(
+  {
+    poolId,
+    gnsTokenAmount,
+    caller,
+  }: {
+    poolId: string;
+    gnsTokenAmount: bigint;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const depositGNSMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
@@ -35,12 +39,12 @@ export function makeDepositGNSMessageWithApproves({
     {
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_LAUNCHPAD_ADDRESS,
-      amount: gnsTokenAmount.toString(),
+      amount: MAX_INT64,
       caller,
     },
   ];
 
-  return makeTransactionMessagesWithApproves([depositGNSMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([depositGNSMessage], approveMessageInfos, fetchAllowance);
 }
 
 export function makeCollectRewardByProjectIdMessage({

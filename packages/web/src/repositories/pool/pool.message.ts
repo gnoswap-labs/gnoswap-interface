@@ -7,7 +7,7 @@ import {
   makeTransactionMessage,
   makeTransactionMessagesWithApproves,
 } from "@common/clients/wallet-client/transaction-messages";
-import { DEFAULT_TRANSACTION_DEADLINE, GNS_DEPOSIT_AMOUNT } from "@common/values";
+import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
 import {
   GNS_TOKEN_PATH,
   PACKAGE_POOL_ADDRESS,
@@ -34,21 +34,24 @@ enum PoolTransactionMessageFunctionType {
   EndExternalIncentive = "EndExternalIncentive",
 }
 
-export function makeCreatePoolMessageWithApproves({
-  tokenA,
-  tokenB,
-  feeTier,
-  startPrice,
-  createPoolFee,
-  caller,
-}: {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
-  feeTier: SwapFeeTierType;
-  startPrice: string;
-  createPoolFee: number;
-  caller: string;
-}): TransactionMessage[] {
+export function makeCreatePoolMessageWithApproves(
+  {
+    tokenA,
+    tokenB,
+    feeTier,
+    startPrice,
+    createPoolFee,
+    caller,
+  }: {
+    tokenA: TokenModel;
+    tokenB: TokenModel;
+    feeTier: SwapFeeTierType;
+    startPrice: string;
+    createPoolFee: number;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const tokenAPath = tokenA.wrappedPath || tokenA.path;
   const tokenBPath = tokenB.wrappedPath || tokenB.path;
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
@@ -60,7 +63,7 @@ export function makeCreatePoolMessageWithApproves({
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: createPoolFee,
+      amount: MAX_INT64,
       caller,
     });
   }
@@ -82,32 +85,35 @@ export function makeCreatePoolMessageWithApproves({
     args: [orderedPoolAPath, orderedPoolBPath, fee, startPriceSqrt.toString()],
   });
 
-  return makeTransactionMessagesWithApproves([createPoolMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([createPoolMessage], approveMessageInfos, fetchAllowance);
 }
 
-export function makePositionMintMessageWithApproves({
-  tokenA,
-  tokenB,
-  feeTier,
-  tokenAAmount,
-  tokenBAmount,
-  minTick,
-  maxTick,
-  slippage,
-  caller,
-  withStaking,
-}: {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
-  feeTier: SwapFeeTierType;
-  tokenAAmount: string;
-  tokenBAmount: string;
-  minTick: number;
-  maxTick: number;
-  slippage: number;
-  caller: string;
-  withStaking?: boolean;
-}): TransactionMessage[] {
+export function makePositionMintMessageWithApproves(
+  {
+    tokenA,
+    tokenB,
+    feeTier,
+    tokenAAmount,
+    tokenBAmount,
+    minTick,
+    maxTick,
+    slippage,
+    caller,
+    withStaking,
+  }: {
+    tokenA: TokenModel;
+    tokenB: TokenModel;
+    feeTier: SwapFeeTierType;
+    tokenAAmount: string;
+    tokenBAmount: string;
+    minTick: number;
+    maxTick: number;
+    slippage: number;
+    caller: string;
+    withStaking?: boolean;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
@@ -130,7 +136,7 @@ export function makePositionMintMessageWithApproves({
     approveMessageInfos.push({
       tokenPath: tokenAWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenAAmountRaw,
+      amount: MAX_INT64,
       caller,
     });
   }
@@ -139,7 +145,7 @@ export function makePositionMintMessageWithApproves({
     approveMessageInfos.push({
       tokenPath: tokenBWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenBAmountRaw,
+      amount: MAX_INT64,
       caller,
     });
   }
@@ -148,7 +154,7 @@ export function makePositionMintMessageWithApproves({
     approveMessageInfos.push({
       tokenPath: WRAPPED_GNOT_PATH,
       targetAddress: PACKAGE_POSITION_ADDRESS,
-      amount: wrappedAmount || 0,
+      amount: MAX_INT64,
       caller,
     });
   }
@@ -169,24 +175,27 @@ export function makePositionMintMessageWithApproves({
     wrappedAmount,
   );
 
-  return makeTransactionMessagesWithApproves([mintMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([mintMessage], approveMessageInfos, fetchAllowance);
 }
 
-export function makeCreateExternalIncentiveMessageWithApproves({
-  poolPath,
-  rewardToken,
-  rewardAmount,
-  startTime,
-  endTime,
-  caller,
-}: {
-  poolPath: string;
-  rewardToken: TokenModel;
-  rewardAmount: string;
-  startTime: number;
-  endTime: number;
-  caller: string;
-}): TransactionMessage[] {
+export function makeCreateExternalIncentiveMessageWithApproves(
+  {
+    poolPath,
+    rewardToken,
+    rewardAmount,
+    startTime,
+    endTime,
+    caller,
+  }: {
+    poolPath: string;
+    rewardToken: TokenModel;
+    rewardAmount: string;
+    startTime: number;
+    endTime: number;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const rewardTokenPath = checkGnotPath(rewardToken.path);
   const rewardAmountRaw = makeRawTokenAmount(rewardToken, rewardAmount) || "0";
   const isGNOT = isGNOTPath(rewardTokenPath);
@@ -195,25 +204,23 @@ export function makeCreateExternalIncentiveMessageWithApproves({
 
   const isIncentivizeGNSToken = rewardTokenPath === GNS_TOKEN_PATH;
   if (isIncentivizeGNSToken) {
-    const gnsApproveAmount = BigNumber(rewardAmountRaw).plus(GNS_DEPOSIT_AMOUNT).toString();
-
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_STAKER_ADDRESS,
-      amount: gnsApproveAmount,
+      amount: MAX_INT64,
       caller,
     });
   } else {
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_STAKER_ADDRESS,
-      amount: GNS_DEPOSIT_AMOUNT,
+      amount: MAX_INT64,
       caller,
     });
     approveMessageInfos.push({
       tokenPath: rewardTokenPath,
       targetAddress: PACKAGE_STAKER_ADDRESS,
-      amount: rewardAmountRaw,
+      amount: MAX_INT64,
       caller,
     });
   }
@@ -228,18 +235,21 @@ export function makeCreateExternalIncentiveMessageWithApproves({
     isGNOT,
   );
 
-  return makeTransactionMessagesWithApproves([createIncentiveMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([createIncentiveMessage], approveMessageInfos, fetchAllowance);
 }
 
-export function makeRemoveExternalIncentiveMessageWithApproves({
-  poolPath,
-  rewardToken,
-  caller,
-}: {
-  poolPath: string;
-  rewardToken: TokenModel;
-  caller: string;
-}): TransactionMessage[] {
+export function makeRemoveExternalIncentiveMessageWithApproves(
+  {
+    poolPath,
+    rewardToken,
+    caller,
+  }: {
+    poolPath: string;
+    rewardToken: TokenModel;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const tokenPath = wrapNativeTokenPath(rewardToken.path);
 
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
@@ -255,7 +265,7 @@ export function makeRemoveExternalIncentiveMessageWithApproves({
 
   const removeExternalIncentiveMessage = makeRemoveIncentiveMessage(poolPath, tokenPath, caller);
 
-  return makeTransactionMessagesWithApproves([removeExternalIncentiveMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([removeExternalIncentiveMessage], approveMessageInfos, fetchAllowance);
 }
 
 function makeCreateIncentiveMessage(

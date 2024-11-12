@@ -6,12 +6,13 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
 import { PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
-import { GnoProvider } from "@gnolang/gno-js-client";
 import { checkGnotPath } from "@utils/common";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 
+import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { DEFAULT_GAS_FEE } from "@common/values";
+import { GnoProvider } from "@gnolang/gno-js-client";
 import { GetRoutesRequest } from "./request/get-routes-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
@@ -83,9 +84,16 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public sendSwapRoute = async (
     request: SwapRouteRequest,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
     const address = await this.getAddress();
 
-    const messages = makeSwapRouteMessageWithApproves({ ...request, caller: address });
+    const messages = await makeSwapRouteMessageWithApproves(
+      { ...request, caller: address },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     return await this.walletClient!.sendTransaction({
       messages,

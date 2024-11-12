@@ -1,8 +1,10 @@
+import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE } from "@common/values";
+import { GnoProvider } from "@gnolang/gno-js-client";
 import { makeQueryParameter } from "@utils/network.utils";
 import { LaunchpadRepository } from "./launchpad-repository";
 import {
@@ -27,10 +29,12 @@ interface APIResponse<T> {
 export class LaunchpadRepositoryImpl implements LaunchpadRepository {
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
+  private gnoProvider: GnoProvider | null;
 
-  constructor(networkClient: NetworkClient | null, walletClient: WalletClient | null) {
+  constructor(networkClient: NetworkClient | null, walletClient: WalletClient | null, gnoProvider: GnoProvider | null) {
     this.networkClient = networkClient;
     this.walletClient = walletClient;
+    this.gnoProvider = gnoProvider;
   }
 
   getLaunchpadSummary(): Promise<GetLaunchpadSummaryResponse> {
@@ -96,7 +100,14 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = makeDepositGNSMessageWithApproves({ poolId, gnsTokenAmount, caller });
+    if (this.gnoProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const messages = await makeDepositGNSMessageWithApproves(
+      { poolId, gnsTokenAmount, caller },
+      (packagePath, owner, spender) => getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
+    );
 
     return this.walletClient.sendTransaction({
       messages,

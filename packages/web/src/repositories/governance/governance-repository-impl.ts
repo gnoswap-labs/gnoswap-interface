@@ -36,7 +36,9 @@ import {
   GetProposalsResponse,
 } from "./response";
 
+import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { DEFAULT_GAS_FEE } from "@common/values";
+import { GnoProvider } from "@gnolang/gno-js-client";
 import {
   makeCancelMessages,
   makeCollectRewardMessages,
@@ -55,10 +57,12 @@ import GetExecutableFunctionsResponseMock from "./mock/get-executable-functions-
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
+  private gnoProvider: GnoProvider | null;
 
-  constructor(networkClient: NetworkClient | null, walletClient: WalletClient | null) {
+  constructor(networkClient: NetworkClient | null, walletClient: WalletClient | null, gnoProvider: GnoProvider | null) {
     this.networkClient = networkClient;
     this.walletClient = walletClient;
+    this.gnoProvider = gnoProvider;
   }
 
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
@@ -228,8 +232,14 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   };
 
   public sendDelegate = async (request: SendDelegateReqeust): Promise<WalletResponse<{ hash: string }>> => {
+    if (!this.gnoProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
     const caller = await this.getAddress();
-    const messages = makeDelegateMessagesWithApproves({ ...request, caller });
+    const messages = await makeDelegateMessagesWithApproves({ ...request, caller }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
+    );
 
     return this.walletClient!.sendTransaction({
       messages,
@@ -250,8 +260,14 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   };
 
   public sendRedelegate = async (request: SendRedelegateReqeust): Promise<WalletResponse<{ hash: string }>> => {
+    if (!this.gnoProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
     const caller = await this.getAddress();
-    const messages = makeReDelegateMessagesWithApproves({ ...request, caller });
+    const messages = await makeReDelegateMessagesWithApproves({ ...request, caller }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
+    );
 
     return this.walletClient!.sendTransaction({
       messages,

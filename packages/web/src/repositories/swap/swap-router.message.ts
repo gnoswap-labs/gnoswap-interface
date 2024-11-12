@@ -10,7 +10,7 @@ import { PACKAGE_POOL_ADDRESS, PACKAGE_ROUTER_ADDRESS, PACKAGE_ROUTER_PATH } fro
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
-import { MAX_UINT64 } from "@utils/math.utils";
+import { MAX_INT64 } from "@utils/math.utils";
 import { makeRoutesQuery } from "@utils/swap-route-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 
@@ -20,23 +20,26 @@ enum TransactionMessageFunctionType {
   Unwrap = "Unwrap",
 }
 
-export function makeSwapRouteMessageWithApproves({
-  inputToken,
-  outputToken,
-  tokenAmount,
-  exactType,
-  estimatedRoutes,
-  tokenAmountLimit,
-  caller,
-}: {
-  inputToken: TokenModel;
-  outputToken: TokenModel;
-  tokenAmount: number;
-  exactType: "EXACT_IN" | "EXACT_OUT";
-  estimatedRoutes: EstimatedRoute[];
-  tokenAmountLimit: number;
-  caller: string;
-}): TransactionMessage[] {
+export function makeSwapRouteMessageWithApproves(
+  {
+    inputToken,
+    outputToken,
+    tokenAmount,
+    exactType,
+    estimatedRoutes,
+    tokenAmountLimit,
+    caller,
+  }: {
+    inputToken: TokenModel;
+    outputToken: TokenModel;
+    tokenAmount: number;
+    exactType: "EXACT_IN" | "EXACT_OUT";
+    estimatedRoutes: EstimatedRoute[];
+    tokenAmountLimit: number;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const targetToken = exactType === "EXACT_IN" ? inputToken : outputToken;
   const resultToken = exactType === "EXACT_IN" ? outputToken : inputToken;
   const tokenAmountRaw = makeRawTokenAmount(targetToken, tokenAmount) || "0";
@@ -70,24 +73,24 @@ export function makeSwapRouteMessageWithApproves({
     {
       tokenPath: inputTokenWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_UINT64.toString(),
+      amount: MAX_INT64,
       caller,
     },
     {
       tokenPath: inputTokenWrappedPath,
       targetAddress: PACKAGE_ROUTER_ADDRESS,
-      amount: MAX_UINT64.toString(),
+      amount: MAX_INT64,
       caller,
     },
     {
       tokenPath: outputTokenWrappedPath,
       targetAddress: PACKAGE_ROUTER_ADDRESS,
-      amount: MAX_UINT64.toString(),
+      amount: MAX_INT64,
       caller,
     },
   ];
 
-  return makeTransactionMessagesWithApproves([swapMessage], approveInfos);
+  return makeTransactionMessagesWithApproves([swapMessage], approveInfos, fetchAllowance);
 }
 
 export function makeWrapTokenMessages({

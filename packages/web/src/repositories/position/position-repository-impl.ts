@@ -4,7 +4,6 @@ import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { PACKAGE_STAKER_PATH } from "@constants/environment.constant";
-import { GnoProvider } from "@gnolang/gno-js-client";
 import { PositionBinMapper } from "@models/position/mapper/position-bin-mapper";
 import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
@@ -14,6 +13,8 @@ import { PositionModel } from "@models/position/position-model";
 import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 
+import { getGRC20Allowance } from "@common/clients/gno-provider";
+import { GnoProvider } from "@gnolang/gno-js-client";
 import { PositionRepository } from "./position-repository";
 import {
   makeClaimAllMessageWithApproves,
@@ -121,8 +122,16 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
+
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
     const { positions, recipient } = request;
-    const messages = makeClaimAllMessageWithApproves({ positions, caller: recipient });
+    const messages = await makeClaimAllMessageWithApproves(
+      { positions, caller: recipient },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     return this.walletClient.sendTransaction({
       messages,
@@ -154,7 +163,13 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = makeUnStakePositionsMessagesWithApproves({ ...request });
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const messages = await makeUnStakePositionsMessagesWithApproves({ ...request }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     return this.walletClient.sendTransaction({
       messages,
@@ -170,7 +185,13 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = makeIncreaseLiquidityMessagesWithApproves({ ...request });
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const messages = await makeIncreaseLiquidityMessagesWithApproves({ ...request }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     return this.walletClient.sendTransaction({
       messages,
@@ -186,7 +207,13 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = makeDecreaseLiquidityMessagesWithApproves({ ...request });
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const messages = await makeDecreaseLiquidityMessagesWithApproves({ ...request }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     return this.walletClient.sendTransaction({
       messages,
@@ -202,7 +229,13 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = makeRepositionLiquidityMessagesWithApproves({ ...request });
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const messages = await makeRepositionLiquidityMessagesWithApproves({ ...request }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     return this.walletClient.sendTransaction({
       messages,
@@ -218,7 +251,13 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = makeRemoveLiquidityMessagesWithApproves({ ...request });
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const messages = await makeRemoveLiquidityMessagesWithApproves({ ...request }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     return this.walletClient.sendTransaction({
       messages,

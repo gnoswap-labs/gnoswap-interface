@@ -11,6 +11,7 @@ import {
   PACKAGE_GOVERNANCE_STAKER_PATH,
 } from "@constants/environment.constant";
 import { makeProposalVariablesQuery } from "@utils/governance-utils";
+import { MAX_INT64 } from "@utils/math.utils";
 
 enum TransactionMessageFunctionType {
   ProposeText = "ProposeText",
@@ -155,15 +156,18 @@ export function makeExecuteMessages({
   return [message];
 }
 
-export function makeDelegateMessagesWithApproves({
-  to,
-  amount,
-  caller,
-}: {
-  to: string;
-  amount: string;
-  caller: string;
-}): TransactionMessage[] {
+export function makeDelegateMessagesWithApproves(
+  {
+    to,
+    amount,
+    caller,
+  }: {
+    to: string;
+    amount: string;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const delegateTransactionMessage = makeTransactionMessage({
     packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
     send: "",
@@ -176,12 +180,12 @@ export function makeDelegateMessagesWithApproves({
     {
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_GOVERNANCE_STAKER_ADDRESS,
-      amount: amount,
+      amount: MAX_INT64,
       caller,
     },
   ];
 
-  return makeTransactionMessagesWithApproves([delegateTransactionMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([delegateTransactionMessage], approveMessageInfos, fetchAllowance);
 }
 
 export function makeUnDelegateMessages({
@@ -204,17 +208,20 @@ export function makeUnDelegateMessages({
   return [delegateTransactionMessage];
 }
 
-export function makeReDelegateMessagesWithApproves({
-  from,
-  to,
-  amount,
-  caller,
-}: {
-  from: string;
-  to: string;
-  amount: string;
-  caller: string;
-}): TransactionMessage[] {
+export function makeReDelegateMessagesWithApproves(
+  {
+    from,
+    to,
+    amount,
+    caller,
+  }: {
+    from: string;
+    to: string;
+    amount: string;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const redelegateTransactionMessage = makeTransactionMessage({
     packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
     send: "",
@@ -227,12 +234,12 @@ export function makeReDelegateMessagesWithApproves({
     {
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_GOVERNANCE_STAKER_ADDRESS,
-      amount: amount,
+      amount: MAX_INT64,
       caller,
     },
   ];
 
-  return makeTransactionMessagesWithApproves([redelegateTransactionMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([redelegateTransactionMessage], approveMessageInfos, fetchAllowance);
 }
 
 export function makeCollectUnDelegatedGNSMessages({ caller }: { caller: string }): TransactionMessage[] {

@@ -18,7 +18,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath, isGNOTPath, wrapNativeTokenPath } from "@utils/common";
-import { MAX_INT64, MAX_UINT64 } from "@utils/math.utils";
+import { MAX_INT64 } from "@utils/math.utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 
@@ -32,13 +32,16 @@ enum TransactionMessageFunctionType {
   Reposition = "Reposition",
 }
 
-export function makeClaimAllMessageWithApproves({
-  positions,
-  caller,
-}: {
-  positions: PositionModel[];
-  caller: string;
-}): TransactionMessage[] {
+export function makeClaimAllMessageWithApproves(
+  {
+    positions,
+    caller,
+  }: {
+    positions: PositionModel[];
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
   const messages: TransactionMessage[] = positions.flatMap(position => {
     let hasFee = false;
@@ -55,13 +58,13 @@ export function makeClaimAllMessageWithApproves({
         approveMessageInfos.push({
           tokenPath: reward.rewardToken.path,
           targetAddress: PACKAGE_POOL_ADDRESS,
-          amount: MAX_UINT64,
+          amount: MAX_INT64,
           caller,
         });
         approveMessageInfos.push({
           tokenPath: reward.rewardToken.path,
           targetAddress: PACKAGE_POSITION_ADDRESS,
-          amount: MAX_UINT64,
+          amount: MAX_INT64,
           caller,
         });
       }
@@ -72,7 +75,7 @@ export function makeClaimAllMessageWithApproves({
           approveMessageInfos.push({
             tokenPath: WRAPPED_GNOT_PATH,
             targetAddress: PACKAGE_STAKER_ADDRESS,
-            amount: MAX_UINT64,
+            amount: MAX_INT64,
             caller,
           });
           isGnotApproved = true;
@@ -112,7 +115,7 @@ export function makeClaimAllMessageWithApproves({
     return collectMessages;
   });
 
-  return makeTransactionMessagesWithApproves(messages, approveMessageInfos);
+  return makeTransactionMessagesWithApproves(messages, approveMessageInfos, fetchAllowance);
 }
 
 export function makeStakePositionsMessagesWithApproves({
@@ -136,15 +139,18 @@ export function makeStakePositionsMessagesWithApproves({
   return messages;
 }
 
-export function makeUnStakePositionsMessagesWithApproves({
-  positions,
-  isGetWGNOT,
-  caller,
-}: {
-  positions: PoolPositionModel[];
-  isGetWGNOT: boolean;
-  caller: string;
-}): TransactionMessage[] {
+export function makeUnStakePositionsMessagesWithApproves(
+  {
+    positions,
+    isGetWGNOT,
+    caller,
+  }: {
+    positions: PoolPositionModel[];
+    isGetWGNOT: boolean;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
   // Reward token approve to Pool and Staker(When GNOT token)
@@ -155,7 +161,7 @@ export function makeUnStakePositionsMessagesWithApproves({
       messages.push({
         tokenPath: WRAPPED_GNOT_PATH,
         targetAddress: PACKAGE_POOL_ADDRESS,
-        amount: MAX_UINT64,
+        amount: MAX_INT64,
         caller,
       });
 
@@ -163,7 +169,7 @@ export function makeUnStakePositionsMessagesWithApproves({
         messages.push({
           tokenPath: WRAPPED_GNOT_PATH,
           targetAddress: PACKAGE_STAKER_ADDRESS,
-          amount: MAX_UINT64,
+          amount: MAX_INT64,
           caller,
         });
       }
@@ -187,28 +193,31 @@ export function makeUnStakePositionsMessagesWithApproves({
     }),
   );
 
-  return makeTransactionMessagesWithApproves(unstakeMessages, approveMessageInfos);
+  return makeTransactionMessagesWithApproves(unstakeMessages, approveMessageInfos, fetchAllowance);
 }
 
-export function makeIncreaseLiquidityMessagesWithApproves({
-  lpTokenId,
-  tokenA,
-  tokenB,
-  tokenAAmount,
-  tokenBAmount,
-  caller,
-  slippage,
-  deadline = "9999999999",
-}: {
-  lpTokenId: string;
-  tokenA: TokenModel;
-  tokenB: TokenModel;
-  tokenAAmount: number;
-  tokenBAmount: number;
-  caller: string;
-  slippage: number;
-  deadline?: string;
-}): TransactionMessage[] {
+export function makeIncreaseLiquidityMessagesWithApproves(
+  {
+    lpTokenId,
+    tokenA,
+    tokenB,
+    tokenAAmount,
+    tokenBAmount,
+    caller,
+    slippage,
+    deadline = "9999999999",
+  }: {
+    lpTokenId: string;
+    tokenA: TokenModel;
+    tokenB: TokenModel;
+    tokenAAmount: number;
+    tokenBAmount: number;
+    caller: string;
+    slippage: number;
+    deadline?: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const tokenAWrappedPath = tokenA.wrappedPath || wrapNativeTokenPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || wrapNativeTokenPath(tokenB.path);
 
@@ -223,13 +232,13 @@ export function makeIncreaseLiquidityMessagesWithApproves({
     {
       tokenPath: tokenAWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenAAmountRaw,
+      amount: MAX_INT64,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenBAmountRaw,
+      amount: MAX_INT64,
       caller,
     },
   ];
@@ -252,32 +261,35 @@ export function makeIncreaseLiquidityMessagesWithApproves({
     caller,
   });
 
-  return makeTransactionMessagesWithApproves([increaseLiquidityMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([increaseLiquidityMessage], approveMessageInfos, fetchAllowance);
 }
 
-export function makeDecreaseLiquidityMessagesWithApproves({
-  lpTokenId,
-  decreaseRatio,
-  tokenA,
-  tokenB,
-  tokenAAmount,
-  tokenBAmount,
-  slippage,
-  caller,
-  isGetWGNOT,
-  deadline = "9999999999",
-}: {
-  lpTokenId: string;
-  decreaseRatio: number;
-  tokenA: TokenModel;
-  tokenB: TokenModel;
-  tokenAAmount: number;
-  tokenBAmount: number;
-  slippage: number;
-  deadline?: string;
-  caller: string;
-  isGetWGNOT: boolean;
-}): TransactionMessage[] {
+export function makeDecreaseLiquidityMessagesWithApproves(
+  {
+    lpTokenId,
+    decreaseRatio,
+    tokenA,
+    tokenB,
+    tokenAAmount,
+    tokenBAmount,
+    slippage,
+    caller,
+    isGetWGNOT,
+    deadline = "9999999999",
+  }: {
+    lpTokenId: string;
+    decreaseRatio: number;
+    tokenA: TokenModel;
+    tokenB: TokenModel;
+    tokenAAmount: number;
+    tokenBAmount: number;
+    slippage: number;
+    deadline?: string;
+    caller: string;
+    isGetWGNOT: boolean;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
 
@@ -327,31 +339,34 @@ export function makeDecreaseLiquidityMessagesWithApproves({
     caller,
   });
 
-  return makeTransactionMessagesWithApproves([decreaseLiquidityMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([decreaseLiquidityMessage], approveMessageInfos, fetchAllowance);
 }
 
-export function makeRepositionLiquidityMessagesWithApproves({
-  lpTokenId,
-  tokenA,
-  tokenB,
-  tokenAAmount,
-  tokenBAmount,
-  minTick,
-  maxTick,
-  slippage,
-  caller,
-}: {
-  lpTokenId: string;
-  tokenA: TokenModel;
-  tokenB: TokenModel;
-  tokenAAmount: string;
-  tokenBAmount: string;
-  minTick: number;
-  maxTick: number;
-  slippage: number;
-  caller: string;
-  withStaking?: boolean;
-}): TransactionMessage[] {
+export function makeRepositionLiquidityMessagesWithApproves(
+  {
+    lpTokenId,
+    tokenA,
+    tokenB,
+    tokenAAmount,
+    tokenBAmount,
+    minTick,
+    maxTick,
+    slippage,
+    caller,
+  }: {
+    lpTokenId: string;
+    tokenA: TokenModel;
+    tokenB: TokenModel;
+    tokenAAmount: string;
+    tokenBAmount: string;
+    minTick: number;
+    maxTick: number;
+    slippage: number;
+    caller: string;
+    withStaking?: boolean;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
 
@@ -363,13 +378,13 @@ export function makeRepositionLiquidityMessagesWithApproves({
     {
       tokenPath: tokenAWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenAAmount,
+      amount: MAX_INT64,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenBAmount,
+      amount: MAX_INT64,
       caller,
     },
   ];
@@ -396,20 +411,23 @@ export function makeRepositionLiquidityMessagesWithApproves({
     caller,
   });
 
-  return makeTransactionMessagesWithApproves([repositionLiquidityMessage], approveMessageInfos);
+  return makeTransactionMessagesWithApproves([repositionLiquidityMessage], approveMessageInfos, fetchAllowance);
 }
 
-export function makeRemoveLiquidityMessagesWithApproves({
-  lpTokenIds,
-  tokenPaths,
-  caller,
-  isGetWGNOT,
-}: {
-  lpTokenIds: string[];
-  tokenPaths: string[];
-  caller: string;
-  isGetWGNOT: boolean;
-}): TransactionMessage[] {
+export function makeRemoveLiquidityMessagesWithApproves(
+  {
+    lpTokenIds,
+    tokenPaths,
+    caller,
+    isGetWGNOT,
+  }: {
+    lpTokenIds: string[];
+    tokenPaths: string[];
+    caller: string;
+    isGetWGNOT: boolean;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
   const decreaseLiquidityRatio = 100;
 
   // Make Approve messages that can be managed by a Pool package of tokens.
@@ -447,5 +465,5 @@ export function makeRemoveLiquidityMessagesWithApproves({
     }),
   );
 
-  return makeTransactionMessagesWithApproves(removeLiquidityMessages, approveMessageInfos);
+  return makeTransactionMessagesWithApproves(removeLiquidityMessages, approveMessageInfos, fetchAllowance);
 }

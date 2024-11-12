@@ -1,3 +1,4 @@
+import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import {
@@ -91,9 +92,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     return pools;
   };
 
-  getPoolStakingListByAddress = async (
-    address: string,
-  ): Promise<PoolStakingModel[]> => {
+  getPoolStakingListByAddress = async (address: string): Promise<PoolStakingModel[]> => {
     if (!this.networkClient) {
       return [];
     }
@@ -102,9 +101,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     }>({
       url: `/staking/?provider=${address}`,
     });
-    const pools = response?.data?.data
-      ? response.data.data.map(PoolStakingMapper.fromResponse)
-      : [];
+    const pools = response?.data?.data ? response.data.data.map(PoolStakingMapper.fromResponse) : [];
     return pools;
   };
 
@@ -226,18 +223,26 @@ export class PoolRepositoryImpl implements PoolRepository {
   createPool = async (
     request: CreatePoolRequest,
   ): Promise<WalletResponse<CreatePoolSuccessResponse | CreatePoolFailedResponse>> => {
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
     const { caller } = request;
 
     /**
      * Create GNS Token Approve for pool create fee
      * Add Create Pool message
      */
-    const createPoolMessages = makeCreatePoolMessageWithApproves(request);
+    const createPoolMessages = await makeCreatePoolMessageWithApproves(request, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     /**
      * Add Position Mint message
      */
-    const mintMessages = makePositionMintMessageWithApproves(request);
+    const mintMessages = await makePositionMintMessageWithApproves(request, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     const nftSetUriMessage = makeNFTSetTokenUri(caller);
 
@@ -252,12 +257,18 @@ export class PoolRepositoryImpl implements PoolRepository {
   addLiquidity = async (
     request: AddLiquidityRequest,
   ): Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>> => {
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
     const { caller } = request;
 
     /**
      * Add Position Mint message
      */
-    const mintMessages = makePositionMintMessageWithApproves(request);
+    const mintMessages = await makePositionMintMessageWithApproves(request, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     const nftSetUriMessage = makeNFTSetTokenUri(caller);
 
@@ -272,12 +283,19 @@ export class PoolRepositoryImpl implements PoolRepository {
   createExternalIncentive = async (
     request: CreateExternalIncentiveRequest,
   ): Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null> => {
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
     const address = await this.getAddress();
 
     /**
      * Add create external incentive message
      */
-    const messages = makeCreateExternalIncentiveMessageWithApproves({ ...request, caller: address });
+    const messages = await makeCreateExternalIncentiveMessageWithApproves(
+      { ...request, caller: address },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     const response = await this.walletClient!.sendTransaction({
       messages,
@@ -288,15 +306,22 @@ export class PoolRepositoryImpl implements PoolRepository {
   };
 
   removeExternalIncentive = async (request: RemoveExternalIncentiveRequest): Promise<string | null> => {
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
     const address = await this.getAddress();
 
     /**
      * Add remove external incentive message
      */
-    const messages = makeRemoveExternalIncentiveMessageWithApproves({
-      ...request,
-      caller: address,
-    });
+    const messages = await makeRemoveExternalIncentiveMessageWithApproves(
+      {
+        ...request,
+        caller: address,
+      },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
 
     const response = await this.walletClient!.sendTransaction({
       messages,

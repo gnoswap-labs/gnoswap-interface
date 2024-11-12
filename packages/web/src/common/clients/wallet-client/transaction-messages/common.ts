@@ -1,4 +1,5 @@
 import { TransactionMessageError } from "@common/errors";
+import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
 import { PACKAGE_NFT_PATH } from "@constants/environment.constant";
 import { MAX_UINT64 } from "@utils/math.utils";
 import BigNumber from "bignumber.js";
@@ -95,10 +96,13 @@ export function makeNFTApproveMessage(
 
 type SumApproveMessageType = { [key in string]: { [key in string]: { amount: string; caller: string } } };
 
-export function makeTransactionMessagesWithApproves(
+export async function makeTransactionMessagesWithApproves(
   transactionMessages: TransactionMessage[],
   approveInfos: TokenApproveMessageInfo[],
-): TransactionMessage[] {
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  allowanceLimit: number = DEFAULT_ALLOWANCE_LIMIT,
+  withReset: boolean = false,
+): Promise<TransactionMessage[]> {
   if (!Array.isArray(transactionMessages)) {
     throw new TransactionMessageError("FAILED_PARSE_APPROVE_MESSAGE", transactionMessages);
   }
@@ -158,11 +162,34 @@ export function makeTransactionMessagesWithApproves(
       })),
   );
 
-  console.log("combinedApproveMessageInfos", combinedApproveMessageInfos);
+  const allowanceApproveMessageInfos: TokenApproveMessageInfo[] = await Promise.all(
+    combinedApproveMessageInfos.map(messageInfo =>
+      fetchAllowance(messageInfo.tokenPath, messageInfo.caller, messageInfo.targetAddress)
+        .then(allowance => ({
+          tokenPath: messageInfo.tokenPath,
+          targetAddress: messageInfo.targetAddress,
+          amount: messageInfo.amount,
+          caller: messageInfo.caller,
+          allowance,
+        }))
+        .catch(e => {
+          console.log(e);
+          return null;
+        }),
+    ),
+  ).then(allowancesInfos => {
+    return allowancesInfos.filter(
+      allowancesInfo => allowancesInfo !== null && allowancesInfo.allowance <= allowanceLimit,
+    ) as TokenApproveMessageInfo[];
+  });
 
-  const approveMessages = combinedApproveMessageInfos.map(approveInfo =>
+  const approveMessages = allowanceApproveMessageInfos.map(approveInfo =>
     makeTokenApproveMessage(approveInfo.tokenPath, approveInfo.targetAddress, approveInfo.amount, approveInfo.caller),
   );
+
+  if (!withReset) {
+    return [...approveMessages, ...transactionMessages];
+  }
 
   const approveResetMessages = combinedApproveMessageInfos.map(approveInfo =>
     makeTokenApproveMessage(approveInfo.tokenPath, approveInfo.targetAddress, 0, approveInfo.caller),
