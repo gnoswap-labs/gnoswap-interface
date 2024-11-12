@@ -12,33 +12,22 @@ import { useMessage } from "@hooks/common/use-message";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import {
-  useGetIncentivizePoolList,
-  useGetPoolList,
-  useRefetchGetPoolDetailByPath,
-} from "@query/pools";
+import { useGetIncentivizePoolList, useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { useGetPoolStakingListByAddress } from "@query/pools/use-get-pool-staking-list-by-address";
 import { DexEvent } from "@repositories/common";
 import { EarnState } from "@states/index";
 
 import IncentivizePoolModal from "../../components/incentivize-pool-modal/IncentivizePoolModal";
 
-const DAY_TIME = 24 * 60 * 60;
+const DAY_TIME = 60;
 const MILLISECONDS = 1000;
 
 interface IncentivizePoolModalContainerProps {
   poolPath?: string;
 }
 
-const IncentivizePoolModalContainer: React.FC<
-  IncentivizePoolModalContainerProps
-> = ({ poolPath }) => {
-  const {
-    broadcastSuccess,
-    broadcastError,
-    broadcastRejected,
-    broadcastLoading,
-  } = useBroadcastHandler();
+const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps> = ({ poolPath }) => {
+  const { broadcastSuccess, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
   const router = useRouter();
   const clearModal = useClearModal();
@@ -55,11 +44,8 @@ const IncentivizePoolModalContainer: React.FC<
 
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchIncentivizePools } = useGetIncentivizePoolList();
-  const { refetch: refetchPoolDetails } =
-    useRefetchGetPoolDetailByPath(poolPath);
-  const { refetch: refetchStakingList } = useGetPoolStakingListByAddress(
-    address || "",
-  );
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(poolPath);
+  const { refetch: refetchStakingList } = useGetPoolStakingListByAddress(address || "");
 
   const { getMessage } = useMessage();
 
@@ -74,25 +60,15 @@ const IncentivizePoolModalContainer: React.FC<
     }
   }, [clearModal, router]);
 
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
-    {
-      closeCallback: onCloseConfirmTransactionModal,
-    },
-  );
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    closeCallback: onCloseConfirmTransactionModal,
+  });
 
   const onSubmit = useCallback(() => {
     if (!pool || !dataModal?.token) {
       return null;
     }
-    const startUTCDate = Date.UTC(
-      startDate.year,
-      startDate.month - 1,
-      startDate.date,
-      0,
-      0,
-      0,
-      0,
-    );
+    const startUTCDate = Date.UTC(startDate.year, startDate.month - 1, startDate.date, 0, 0, 0, 0);
     // `startTime` is current UTC time to Unix timestamp
     const startTime = new Date(startUTCDate).getTime() / MILLISECONDS;
     // `endTime` adds the period time to the start unix time.
@@ -117,10 +93,7 @@ const IncentivizePoolModalContainer: React.FC<
       })
       .then(response => {
         if (response) {
-          if (
-            response.code === 0 ||
-            response.code === ERROR_VALUE.TRANSACTION_FAILED.status
-          ) {
+          if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
             enqueueEvent({
               txHash: response.data?.hash,
               action: DexEvent.ADD_INCENTIVE,
@@ -182,16 +155,7 @@ const IncentivizePoolModalContainer: React.FC<
         console.log(e);
         return null;
       });
-  }, [
-    poolRepository,
-    dataModal,
-    period,
-    pool,
-    router,
-    startDate.date,
-    startDate.month,
-    startDate.year,
-  ]);
+  }, [poolRepository, dataModal, period, pool, router, startDate.date, startDate.month, startDate.year]);
 
   return (
     <IncentivizePoolModal
