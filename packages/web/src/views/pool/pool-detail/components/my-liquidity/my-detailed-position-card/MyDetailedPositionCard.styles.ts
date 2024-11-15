@@ -204,6 +204,20 @@ export const MyPositionCardWrapper = styled.div<Props>`
       width: 100%;
       padding: 16px;
       gap: 16px;
+      .info-box-flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        button {
+          height: 36px;
+          padding: 10px 16px;
+          span {
+            font-size: 13px;
+            font-weight: 500;
+          }
+        }
+      }
       &:not(:first-of-type) {
         border-left: 1px solid ${({ theme }) => theme.color.border02};
       }

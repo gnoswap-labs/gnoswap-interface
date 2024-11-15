@@ -20,12 +20,7 @@ const Earn: React.FC = () => {
   return (
     <EarnLayout
       header={<HeaderContainer />}
-      positions={
-        <EarnMyPositionContainer
-          isOtherPosition={isOtherPosition}
-          address={(addr || "") as string}
-        />
-      }
+      positions={<EarnMyPositionContainer isOtherPosition={isOtherPosition} address={(addr || "") as string} />}
       incentivizedPools={
         <IncentivizedPoolsContainer
           isOtherPosition={isOtherPosition}

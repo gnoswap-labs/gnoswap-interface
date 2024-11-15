@@ -32,6 +32,88 @@ enum TransactionMessageFunctionType {
   Reposition = "Reposition",
 }
 
+export function makeClaimMessageWithApproves(
+  {
+    position,
+    caller,
+  }: {
+    position: PositionModel;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
+  const approveMessageInfos: TokenApproveMessageInfo[] = [];
+  const messages: TransactionMessage[] = [];
+
+  let hasFee = false;
+  let hasStakingReward = false;
+  let isGnotApproved = false;
+
+  position.reward.forEach(reward => {
+    const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
+    // Reward token approve to Pool
+    if (reward.rewardType === "SWAP_FEE") {
+      hasFee = true;
+      approveMessageInfos.push({
+        tokenPath: reward.rewardToken.path,
+        targetAddress: PACKAGE_POOL_ADDRESS,
+        amount: MAX_INT64,
+        caller,
+      });
+      approveMessageInfos.push({
+        tokenPath: reward.rewardToken.path,
+        targetAddress: PACKAGE_POSITION_ADDRESS,
+        amount: MAX_INT64,
+        caller,
+      });
+    }
+    // Reward token approve to Staker(When GNOT token)
+    else {
+      hasStakingReward = true;
+      if (rewardTokenWrappedPath === WRAPPED_GNOT_PATH && !isGnotApproved) {
+        approveMessageInfos.push({
+          tokenPath: WRAPPED_GNOT_PATH,
+          targetAddress: PACKAGE_STAKER_ADDRESS,
+          amount: MAX_INT64,
+          caller,
+        });
+        isGnotApproved = true;
+      }
+    }
+  });
+
+  if (hasFee) {
+    messages.push(
+      makeTransactionMessage({
+        send: "",
+        func: TransactionMessageFunctionType.CollectFee,
+        packagePath: PACKAGE_POSITION_PATH,
+        args: [
+          position.lpTokenId.toString(),
+          "false", // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
+        ],
+        caller,
+      }),
+    );
+  }
+  if (hasStakingReward) {
+    messages.push(
+      makeTransactionMessage({
+        send: "",
+        func: TransactionMessageFunctionType.CollectReward,
+        packagePath: PACKAGE_STAKER_PATH,
+        args: [
+          position.lpTokenId.toString(),
+          "true", // unwrap wgnot, it's always true for now
+        ],
+        caller,
+      }),
+    );
+  }
+
+  return makeTransactionMessagesWithApproves(messages, approveMessageInfos, fetchAllowance);
+}
+
 export function makeClaimAllMessageWithApproves(
   {
     positions,

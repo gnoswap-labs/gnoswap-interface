@@ -36,6 +36,7 @@ export enum QUERY_KEY {
   unstakingFee = "unstaking_fee",
   poolStakingList = "pool_staking_list",
   lastedBlockHeight = "lasted_block_height",
+  removeExternalIncentive = "remove_external_incentive",
   // positions
   positions = "positions",
   positionHistory = "positionHistory",

@@ -1,4 +1,5 @@
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
 import BigNumber from "bignumber.js";
 import { useCallback } from "react";
@@ -33,7 +34,23 @@ export const usePosition = (positions: PositionModel[]) => {
       .catch(() => null);
   }, [account?.address, positionRepository, positions]);
 
+  const claim = useCallback(
+    async (position: PoolPositionModel) => {
+      const address = account?.address;
+      if (!address) {
+        return null;
+      }
+
+      return positionRepository.sendClaim({
+        position: position,
+        recipient: address,
+      });
+    },
+    [account?.address, positionRepository],
+  );
+
   return {
     claimAll,
+    claim,
   };
 };

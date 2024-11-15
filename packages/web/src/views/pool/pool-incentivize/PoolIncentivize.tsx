@@ -36,23 +36,12 @@ const PoolIncentivize: React.FC = () => {
     const base = [{ title: t("business:pageHeader.earn"), path: "/earn" }];
 
     if (hasDedicatedPool) {
-      const tokenA = getGnotPath(
-        tokenAPath
-          ? tokens.find(item => item.path === checkGnotPath(tokenAPath))
-          : undefined,
-      );
-      const tokenB = getGnotPath(
-        tokenBPath
-          ? tokens.find(item => item.path === checkGnotPath(tokenBPath))
-          : undefined,
-      );
+      const tokenA = getGnotPath(tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined);
+      const tokenB = getGnotPath(tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined);
       base.push({
         title:
-          breakpoint === DEVICE_TYPE.WEB ||
-          breakpoint === DEVICE_TYPE.MEDIUM_WEB
-            ? `${getGnotPath(tokenA).symbol}/${getGnotPath(tokenB).symbol} (${
-                Number(fee) / 10000
-              }%)`
+          breakpoint === DEVICE_TYPE.WEB || breakpoint === DEVICE_TYPE.MEDIUM_WEB
+            ? `${getGnotPath(tokenA).symbol}/${getGnotPath(tokenB).symbol} (${Number(fee) / 10000}%)`
             : "...",
         path: makeRouteUrl(PAGE_PATH.POOL, {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,
@@ -68,19 +57,8 @@ const PoolIncentivize: React.FC = () => {
   return (
     <PoolIncentivizeLayout
       header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoading}
-        />
-      }
-      poolIncentivize={
-        hasDedicatedPool ? (
-          <PoolAddIncentivizeContainer />
-        ) : (
-          <PoolIncentivizeContainer />
-        )
-      }
+      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoading} />}
+      poolIncentivize={hasDedicatedPool ? <PoolAddIncentivizeContainer /> : <PoolIncentivizeContainer />}
       history={<IncentivizePoolHistoryContainer />}
       footer={<Footer />}
     />

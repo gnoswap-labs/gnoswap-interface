@@ -41,7 +41,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
     },
   });
 
-  const { claimAll } = usePosition(positions.filter(item => !item.closed));
+  const { claimAll, claim } = usePosition(
+    positions.filter(item => !item.closed),
+  );
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
@@ -203,6 +205,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
       onScroll={handleScroll}
       currentIndex={currentIndex}
       claimAll={claimAllReward}
+      claim={claimReward}
       isStakable={isStakable}
       isShowRemovePositionButton={isShowRemovePositionButton}
       loading={isLoadingPosition}

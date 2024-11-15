@@ -7,8 +7,8 @@ export function makeABCIParams(functionName: string, args: (string | number | bo
 
 export function evaluateExpressionToNumber(evaluateExpression: string) {
   try {
-    const result = matchValues(evaluateExpression);
-    const parsedValue = result[0];
+    const result = matchNumberValues(evaluateExpression);
+    const parsedValue = parseABCIValue(result[0]);
     return BigNumber(parsedValue).toNumber();
   } catch {
     console.error("Parse Error: " + evaluateExpression);
@@ -18,31 +18,20 @@ export function evaluateExpressionToNumber(evaluateExpression: string) {
 
 export function evaluateExpressionToObject<T extends object>(evaluateExpression: string): T | null {
   try {
-    const result = matchValues(evaluateExpression);
+    const result = matchStringValues(evaluateExpression);
     if (result.length === 0) {
       return null;
     }
 
-    const objectStr = result[0];
+    const objectStr = parseABCIValue(result[0]);
     const object = JSON.parse(JSON.parse(objectStr), (_, value) => value as T);
     return object;
   } catch {
-    console.error("Parse Error: " + evaluateExpression);
     return null;
   }
 }
 
-export function evaluateExpressionToValues(evaluateExpression: string): string[] {
-  try {
-    const result = matchValues(evaluateExpression);
-    return result;
-  } catch {
-    console.error("Parse Error: " + evaluateExpression);
-    return [];
-  }
-}
-
-function matchValues(str: string): string[] {
+function matchNumberValues(str: string): string[] {
   const regex = /\((?:"([^"]+)"|(\d+))\s+\w+\)/g;
   const results: string[] = [];
   let match: RegExpExecArray | null;
@@ -56,4 +45,18 @@ function matchValues(str: string): string[] {
   }
 
   return results;
+}
+
+function matchStringValues(str: string): string[] {
+  const regexp = /\((.*)\)/g;
+  const result = str.match(regexp);
+  if (result === null || result.length < 1) {
+    return [];
+  }
+  return result;
+}
+
+function parseABCIValue(str: string): string {
+  const regexp = /\s.*$/;
+  return str.replace(regexp, "").slice(1);
 }

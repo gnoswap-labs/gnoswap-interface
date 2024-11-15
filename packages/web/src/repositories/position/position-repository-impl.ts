@@ -18,6 +18,7 @@ import { GnoProvider } from "@gnolang/gno-js-client";
 import { PositionRepository } from "./position-repository";
 import {
   makeClaimAllMessageWithApproves,
+  makeClaimMessageWithApproves,
   makeDecreaseLiquidityMessagesWithApproves,
   makeIncreaseLiquidityMessagesWithApproves,
   makeRemoveLiquidityMessagesWithApproves,
@@ -41,6 +42,7 @@ import {
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
+import { ClaimRequest } from "./request/claim-request";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient | null;
@@ -114,6 +116,28 @@ export class PositionRepositoryImpl implements PositionRepository {
       return [];
     }
     return PositionMapper.fromList(response.data.data);
+  };
+
+  sendClaim = async (request: ClaimRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const { position, recipient } = request;
+    const messages = await makeClaimMessageWithApproves(
+      { position, caller: recipient },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
+
+    return this.walletClient.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
   };
 
   sendClaimAll = async (

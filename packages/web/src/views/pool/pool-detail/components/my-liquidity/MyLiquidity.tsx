@@ -25,6 +25,7 @@ interface MyLiquidityProps {
   onScroll: () => void;
   currentIndex: number;
   claimAll: () => void;
+  claim: (position: PoolPositionModel) => void;
   isStakable: boolean;
   isShowRemovePositionButton: boolean;
   loading: boolean;
@@ -50,6 +51,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   onScroll,
   currentIndex,
   claimAll,
+  claim,
   isStakable,
   isShowRemovePositionButton,
   loading,
