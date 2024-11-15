@@ -21,17 +21,15 @@ const PoolDetail: React.FC = () => {
   const jumpFlagRef = useRef(false);
   const { data } = useGetPoolDetailByPath(poolPath);
 
-  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
-    addr: account?.address,
-  });
+  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({ addr: undefined });
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
     if (!address || !isValidAddress(address)) {
-      return undefined;
+      return account?.address;
     }
     return address;
-  }, [initializedData]);
+  }, [initializedData, account]);
 
   const { isFetchedPosition, loading, positions } = usePositionData({
     address,
