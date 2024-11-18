@@ -62,7 +62,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
       return [];
     }
 
-    return positions.filter(position => position.owner === address && position.poolPath === poolPath);
+    return positions.filter(position => position.poolPath === poolPath);
   }, [address, poolPath, positions]);
 
   const visiblePositions = useMemo(() => {
