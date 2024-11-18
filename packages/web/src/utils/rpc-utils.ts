@@ -8,7 +8,7 @@ export function makeABCIParams(functionName: string, args: (string | number | bo
 export function evaluateExpressionToNumber(evaluateExpression: string) {
   try {
     const result = matchNumberValues(evaluateExpression);
-    const parsedValue = parseABCIValue(result[0]);
+    const parsedValue = result.length > 0 ? result[0] : 0;
     return BigNumber(parsedValue).toNumber();
   } catch {
     console.error("Parse Error: " + evaluateExpression);
