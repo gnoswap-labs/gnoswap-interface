@@ -119,6 +119,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                 isHiddenAddPosition={isHiddenAddPosition}
                 connected={connected}
                 tokenPrices={tokenPrices}
+                claim={claim}
               />
             ))}
           </>
@@ -137,6 +138,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                     isHiddenAddPosition={isHiddenAddPosition}
                     connected={connected}
                     tokenPrices={tokenPrices}
+                    claim={claim}
                   />
                 ))}
               </div>
