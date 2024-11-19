@@ -72,6 +72,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   mostLiquidity,
   popularTokens,
   recents,
+  tokens,
 }) => {
   const { t } = useTranslation();
 
@@ -99,15 +100,17 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
     setRecentsData(
       JSON.stringify(
-        current.filter((_item, index) => {
-          const _value = JSON.stringify(_item);
-          return (
-            index ===
-            current.findIndex(obj => {
-              return JSON.stringify(obj) === _value;
-            })
-          );
-        }),
+        current
+          .filter((_item, index) => {
+            const _value = JSON.stringify(_item);
+            return (
+              index ===
+              current.findIndex(obj => {
+                return JSON.stringify(obj) === _value;
+              })
+            );
+          })
+          .filter(recentToken => tokens.some(token => token.path === recentToken.path)),
       ),
     );
     onSearchMenuToggle();
