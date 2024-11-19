@@ -311,7 +311,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               }
               tooltip={t("Governance:myDel.reward.tooltip")}
               valueButton={
-                myDelegationInfo.claimableRewardsUsd
+                visibleRewardInfoTooltip
                   ? {
                       text: t("Governance:myDel.reward.btn"),
                       onClick: () => {
@@ -321,7 +321,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           }),
                         );
                       },
-                      disabled: !myDelegationInfo.claimableRewardsUsd,
+                      disabled: !visibleRewardInfoTooltip,
                     }
                   : undefined
               }
