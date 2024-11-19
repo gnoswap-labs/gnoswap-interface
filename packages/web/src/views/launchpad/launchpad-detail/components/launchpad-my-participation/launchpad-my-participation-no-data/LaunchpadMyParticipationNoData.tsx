@@ -8,9 +8,7 @@ interface LaunchpadMyParticipationNoDataProps {
   highestApr: number;
 }
 
-const LaunchpadMyParticipationNoData = ({
-  highestApr,
-}: LaunchpadMyParticipationNoDataProps) => {
+const LaunchpadMyParticipationNoData = ({ highestApr }: LaunchpadMyParticipationNoDataProps) => {
   const { t } = useTranslation();
 
   return (
@@ -24,15 +22,9 @@ const LaunchpadMyParticipationNoData = ({
       />
       <div className="banner-text">
         <div className="banner-text-description">
-          <Trans
-            ns="Launchpad"
-            i18nKey="myParticipation.nodata.text1"
-            components={{ span: <span /> }}
-          />
+          <Trans ns="Launchpad" i18nKey="myParticipation.nodata.text1" components={{ span: <span /> }} />
         </div>
-        <div className="banner-text-description">
-          {t("Launchpad:myParticipation.nodata.text2")}
-        </div>
+        <div className="banner-text-description">{t("Launchpad:myParticipation.nodata.text2")}</div>
         <div className="banner-text-description">
           <span>
             {t("Launchpad:myParticipation.nodata.text3", {

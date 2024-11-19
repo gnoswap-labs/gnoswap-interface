@@ -6,10 +6,7 @@ import Switch from "@components/common/switch/Switch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
-import {
-  HeaderTextWrapper,
-  PositionsWrapper,
-} from "./EarnMyPositionsHeader.styles";
+import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 
 export interface EarnMyPositionsHeaderProps {
   address?: string | null;
@@ -69,8 +66,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
         </>
       );
 
-    if (connected)
-      return <span>{`${t("Earn:positions.title")} (${positionLength})`}</span>;
+    if (connected) return <span>{`${t("Earn:positions.title")} (${positionLength})`}</span>;
 
     return <span>{t("Earn:positions.title")}</span>;
   };

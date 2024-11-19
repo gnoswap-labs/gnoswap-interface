@@ -3,10 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import {
-  swapDirectionToGuaranteedType,
-  SwapSummaryInfo,
-} from "@models/swap/swap-summary-info";
+import { swapDirectionToGuaranteedType, SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { toNumberFormat } from "@utils/number-utils";
 
 import { IconWrap, SwapButtonTooltipWrap } from "./SwapButtonTooltip.styles";
@@ -15,9 +12,7 @@ interface WalletBalanceDetailInfoProps {
   swapSummaryInfo: SwapSummaryInfo;
 }
 
-const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
-  swapSummaryInfo,
-}) => {
+const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({ swapSummaryInfo }) => {
   const { t } = useTranslation();
 
   const priceImpactStr = useMemo(() => {

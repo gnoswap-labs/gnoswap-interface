@@ -38,17 +38,14 @@ const LaunchpadProjectListContainer: React.FC = () => {
     return [];
   }, [projects]);
 
-  const filterProjectsByKeyword = React.useCallback(
-    (projects: LaunchpadProjectModel[], keyword: string) => {
-      const lowerCaseKeyword = keyword.toLowerCase();
-      return projects.filter(
-        project =>
-          project.name.toLowerCase().includes(lowerCaseKeyword) ||
-          project.rewardTokenSymbol.toLowerCase().includes(lowerCaseKeyword),
-      );
-    },
-    [],
-  );
+  const filterProjectsByKeyword = React.useCallback((projects: LaunchpadProjectModel[], keyword: string) => {
+    const lowerCaseKeyword = keyword.toLowerCase();
+    return projects.filter(
+      project =>
+        project.name.toLowerCase().includes(lowerCaseKeyword) ||
+        project.rewardTokenSymbol.toLowerCase().includes(lowerCaseKeyword),
+    );
+  }, []);
 
   const fixedProjects = React.useMemo(() => {
     if (!projectList || projectList.length === 0) return [];

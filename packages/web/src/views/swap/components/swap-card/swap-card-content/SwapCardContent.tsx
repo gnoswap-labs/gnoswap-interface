@@ -87,37 +87,27 @@ const SwapCardContent: React.FC<ContentProps> = ({
 
   const handleAutoFillTokenA = useCallback(() => {
     if (connectedWallet) {
-      const formatValue = parseFloat(
-        swapTokenInfo.tokenABalance.replace(/,/g, ""),
-      ).toString();
+      const formatValue = parseFloat(swapTokenInfo.tokenABalance.replace(/,/g, "")).toString();
       changeTokenAAmount(formatValue);
     }
   }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
 
   const handleAutoFillTokenB = useCallback(() => {
     if (connectedWallet) {
-      const formatValue = parseFloat(
-        swapTokenInfo.tokenBBalance.replace(/,/g, ""),
-      ).toString();
+      const formatValue = parseFloat(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
       changeTokenBAmount(formatValue);
     }
   }, [changeTokenBAmount, connectedWallet, swapTokenInfo]);
 
   const isShowInfoSection = useMemo(() => {
     return (
-      !!(
-        swapSummaryInfo &&
-        !!Number(swapTokenInfo.tokenAAmount) &&
-        !!Number(swapTokenInfo.tokenBAmount)
-      ) || isLoading
+      !!(swapSummaryInfo && !!Number(swapTokenInfo.tokenAAmount) && !!Number(swapTokenInfo.tokenBAmount)) || isLoading
     );
   }, [swapSummaryInfo, swapTokenInfo, isLoading]);
 
   const tokenAAmount = useMemo(() => {
     if (swapTokenInfo.tokenAAmount.includes("e")) {
-      return BigNumber(swapTokenInfo.tokenAAmount).toFixed(
-        tokenA?.decimals ?? 0,
-      );
+      return BigNumber(swapTokenInfo.tokenAAmount).toFixed(tokenA?.decimals ?? 0);
     }
 
     return swapTokenInfo.tokenAAmount;
@@ -125,17 +115,14 @@ const SwapCardContent: React.FC<ContentProps> = ({
 
   const tokenBAmount = useMemo(() => {
     if (swapTokenInfo.tokenBAmount.includes("e")) {
-      return BigNumber(swapTokenInfo.tokenBAmount).toFixed(
-        tokenB?.decimals ?? 0,
-      );
+      return BigNumber(swapTokenInfo.tokenBAmount).toFixed(tokenB?.decimals ?? 0);
     }
 
     return swapTokenInfo.tokenBAmount;
   }, [swapTokenInfo.tokenBAmount, tokenB?.decimals]);
 
   const showPriceImpact = useMemo(
-    () =>
-      !isLoading && !!swapSummaryInfo?.priceImpact && swapRouteInfos.length > 0,
+    () => !isLoading && !!swapSummaryInfo?.priceImpact && swapRouteInfos.length > 0,
     [isLoading, swapRouteInfos.length, swapSummaryInfo?.priceImpact],
   );
 
@@ -145,9 +132,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-container">
           <input
             id={tokenA?.priceID}
-            className={`amount-text ${
-              isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""
-            }`}
+            className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
             value={tokenAAmount}
             onChange={onChangeTokenAAmount}
             placeholder="0"
@@ -157,17 +142,11 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </div>
         </div>
         <div className="amount-info">
-          <span
-            className={`price-text ${
-              isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""
-            }`}
-          >
+          <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>
             {swapTokenInfo.tokenAUSDStr}
           </span>
           <span
-            className={`balance-text ${
-              tokenA && connectedWallet && "balance-text-disabled"
-            }`}
+            className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"}`}
             onClick={handleAutoFillTokenA}
           >
             {t("business:balance")}: {swapTokenInfo.tokenABalance}
@@ -183,9 +162,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-container">
           <input
             id={tokenB?.priceID}
-            className={`amount-text ${
-              isLoading && direction === "EXACT_IN" ? "text-opacity" : ""
-            }`}
+            className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
             value={tokenBAmount}
             onChange={onChangeTokenBAmount}
             placeholder="0"
@@ -197,17 +174,13 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-info">
           <PriceInfoWrapper>
             <span
-              className={`price-text second-price-text ${
-                isLoading && direction === "EXACT_IN" ? "text-opacity" : ""
-              }`}
+              className={`price-text second-price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
             >
               {swapTokenInfo.tokenBUSDStr}
             </span>
             {showPriceImpact && (
               <PriceImpactWrapper priceImpact={priceImpactStatus}>
-                {priceImpactStatus === "HIGH" && (
-                  <IconTriangleWarningOutlined stroke={theme.color.red01} />
-                )}
+                {priceImpactStatus === "HIGH" && <IconTriangleWarningOutlined stroke={theme.color.red01} />}
                 {"("}
                 {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
                 {swapSummaryInfo?.priceImpact}
@@ -216,9 +189,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             )}
           </PriceInfoWrapper>
           <span
-            className={`balance-text ${
-              tokenB && connectedWallet && "balance-text-disabled"
-            }`}
+            className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`}
             onClick={handleAutoFillTokenB}
           >
             {t("business:balance")}: {swapTokenInfo.tokenBBalance}

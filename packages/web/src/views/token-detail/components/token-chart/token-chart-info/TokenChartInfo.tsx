@@ -26,12 +26,7 @@ export interface TokenChartInfoProps {
   loading: boolean;
 }
 
-const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
-  token,
-  priceInfo,
-  loading,
-  isEmpty,
-}) => {
+const TokenChartInfo: React.FC<TokenChartInfoProps> = ({ token, priceInfo, loading, isEmpty }) => {
   const rateClass = useMemo(() => {
     if (isEmpty) return "";
 
@@ -46,7 +41,6 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
     }
   }, [isEmpty, priceInfo.amount.status]);
 
-
   const statusIcon = useMemo(() => {
     switch (priceInfo.amount.status) {
       case MATH_NEGATIVE_TYPE.POSITIVE:
@@ -58,13 +52,9 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
     }
   }, [priceInfo.amount.status]);
 
-
   const displayPrice = useMemo(() => {
-    return (!priceInfo.amount.value || loading)
-      ? "-"
-      : priceInfo.amount.value;
-  },
-    [loading, priceInfo.amount.value]);
+    return !priceInfo.amount.value || loading ? "-" : priceInfo.amount.value;
+  }, [loading, priceInfo.amount.value]);
 
   const displayRate = useMemo(() => {
     if (isEmpty) {
@@ -79,18 +69,26 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
       <div className="token-info-wrapper">
         <div className="token-info">
           {loading && <div css={pulseSkeletonStyle({ w: "207px", h: 20 })} className="loading-skeleton" />}
-          {!loading && <MissingLogo symbol={token.symbol} url={token.image} className="token-image" width={36} mobileWidth={36} />}
-          {!loading && <div>
-            <span className="token-name">{token.name}</span>
-            <span className="token-symbol">{token.symbol}</span>
-          </div>}
+          {!loading && (
+            <MissingLogo symbol={token.symbol} url={token.image} className="token-image" width={36} mobileWidth={36} />
+          )}
+          {!loading && (
+            <div>
+              <span className="token-name">{token.name}</span>
+              <span className="token-symbol">{token.symbol}</span>
+            </div>
+          )}
         </div>
         <div className="price-info">
           {<span className="price">{displayPrice}</span>}
-          {(priceInfo.amount.value && !loading) ? <div className={`change-rate-wrapper ${rateClass}`}>
-            {statusIcon}
-            <span>{displayRate}</span>
-          </div> : <></>}
+          {priceInfo.amount.value && !loading ? (
+            <div className={`change-rate-wrapper ${rateClass}`}>
+              {statusIcon}
+              <span>{displayRate}</span>
+            </div>
+          ) : (
+            <></>
+          )}
           {(loading || !priceInfo.amount.value) && <div className="change-rate-wrapper">&nbsp;</div>}
         </div>
       </div>

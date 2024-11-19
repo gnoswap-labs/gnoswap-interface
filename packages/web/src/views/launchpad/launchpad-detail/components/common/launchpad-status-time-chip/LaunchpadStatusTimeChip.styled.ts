@@ -28,9 +28,7 @@ export const StatusTimeChipWrapper = styled.div<ChipStyle>`
       `;
     if (type === PROJECT_STATUS_TYPE.ENDED)
       return css`
-        background: ${theme.themeKey === "dark"
-          ? "rgba(89, 103, 130, 0.25)"
-          : "rgba(195, 210, 234, 0.25)"};
+        background: ${theme.themeKey === "dark" ? "rgba(89, 103, 130, 0.25)" : "rgba(195, 210, 234, 0.25)"};
         color: ${theme.color.text05};
       `;
   }}

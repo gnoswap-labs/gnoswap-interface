@@ -3,15 +3,12 @@ import { Meta, StoryObj } from "@storybook/react";
 
 import { TokenModel } from "@models/token/token-model";
 
-import PoolAddConfirmModal, {
-  type PoolAddConfirmModalProps,
-} from "./PoolAddConfirmModal";
+import PoolAddConfirmModal, { type PoolAddConfirmModalProps } from "./PoolAddConfirmModal";
 
 export default {
   title: "pool/pool-add/PoolAddConfirmModal",
   component: PoolAddConfirmModal,
 } as Meta<typeof PoolAddConfirmModal>;
-
 
 const tokenA: {
   info: TokenModel;
@@ -28,7 +25,7 @@ const tokenA: {
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
-    address: ""
+    address: "",
   },
   amount: "12,211",
   usdPrice: "$12.3",
@@ -49,7 +46,7 @@ const tokenB: {
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
-    address: ""
+    address: "",
   },
   amount: "12,211",
   usdPrice: "$12.3",
@@ -62,7 +59,7 @@ const amountInfo = {
   tokenB: tokenB,
   tokenBAmount: "123",
   tokenBUSDPrice: "1234",
-  feeRate: "0.30%"
+  feeRate: "0.30%",
 };
 
 const priceRangeInfo = {

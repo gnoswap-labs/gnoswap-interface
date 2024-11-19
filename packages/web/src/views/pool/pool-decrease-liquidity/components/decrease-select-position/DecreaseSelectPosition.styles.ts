@@ -34,8 +34,8 @@ export const DecreaseSelectPositionWrapper = styled.div<Props>`
   }
   h5 {
     color: ${({ isDisabled, theme }) => {
-    return isDisabled ? theme.color.text04 : theme.color.text10;
-  }};
+      return isDisabled ? theme.color.text04 : theme.color.text10;
+    }};
     ${fonts.body12}
   }
 

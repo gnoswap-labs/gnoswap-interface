@@ -16,10 +16,7 @@ export const returnNullWithNotification = (error?: Error) => {
   return null;
 };
 
-export const returnErrorResponse = <T = any>(
-  error: Error,
-  data?: T,
-): ErrorResponse<T> => {
+export const returnErrorResponse = <T = unknown>(error: Error, data?: T): ErrorResponse<T> => {
   if (error && error instanceof BaseError) {
     return createErrorResponse<T>(error, data);
   }
@@ -28,10 +25,7 @@ export const returnErrorResponse = <T = any>(
   throw new Error("Unknown Error.");
 };
 
-const createErrorResponse = <T = any>(
-  error: BaseError,
-  data?: T,
-): ErrorResponse<T> => {
+const createErrorResponse = <T = unknown>(error: BaseError, data?: T): ErrorResponse<T> => {
   return {
     isError: true,
     status: error.getStatus(),

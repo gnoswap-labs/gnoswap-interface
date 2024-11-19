@@ -8,9 +8,7 @@ export default {
   component: BestPools,
 } as ComponentMeta<typeof BestPools>;
 
-const Template: ComponentStory<typeof BestPools> = args => (
-  <BestPools {...args} />
-);
+const Template: ComponentStory<typeof BestPools> = args => <BestPools {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -13,11 +13,7 @@ interface LaunchpadPoolTierChipProps {
 const LaunchpadPoolTierChip = ({ poolTier }: LaunchpadPoolTierChipProps) => {
   const { t } = useTranslation();
 
-  return (
-    <PoolTierChipWrapper>
-      {getTierDuration(poolTier, t, true)}
-    </PoolTierChipWrapper>
-  );
+  return <PoolTierChipWrapper>{getTierDuration(poolTier, t, true)}</PoolTierChipWrapper>;
 };
 
 export default LaunchpadPoolTierChip;

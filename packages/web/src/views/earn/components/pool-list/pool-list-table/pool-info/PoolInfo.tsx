@@ -4,12 +4,7 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import {
-  POOL_INFO,
-  POOL_INFO_MOBILE,
-  POOL_INFO_SMALL_TABLET,
-  POOL_INFO_TABLET
-} from "@constants/skeleton.constant";
+import { POOL_INFO, POOL_INFO_MOBILE, POOL_INFO_SMALL_TABLET, POOL_INFO_TABLET } from "@constants/skeleton.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { TokenModel } from "@models/token/token-model";
@@ -28,23 +23,11 @@ interface PoolInfoProps {
 }
 
 const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
-  const {
-    poolId,
-    tokenA,
-    tokenB,
-    feeTier,
-    apr,
-    volume24h,
-    fees24h,
-    rewardTokens,
-    tvl,
-  } = pool;
+  const { poolId, tokenA, tokenB, feeTier, apr, volume24h, fees24h, rewardTokens, tvl } = pool;
   const { getGnotPath } = useGnotToGnot();
   const rewardTokenLogos = useMemo(() => {
     const tokenData = rewardTokens.reduce((acc, current) => {
-      const existToken = acc.some(
-        item => item.path === getGnotPath(current).path,
-      );
+      const existToken = acc.some(item => item.path === getGnotPath(current).path);
 
       if (!existToken) {
         acc.push({
@@ -109,18 +92,10 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
       <TableColumn tdWidth={cellWidths.list[4].width}>
         <span className="apr">{aprDisplay}</span>
       </TableColumn>
-      <TableColumn tdWidth={cellWidths.list[5].width}>
-        {rewardTokenLogos}
-      </TableColumn>
-      <TableColumn
-        tdWidth={cellWidths.list[6].width}
-        onClick={e => e.stopPropagation()}
-      >
+      <TableColumn tdWidth={cellWidths.list[5].width}>{rewardTokenLogos}</TableColumn>
+      <TableColumn tdWidth={cellWidths.list[6].width} onClick={e => e.stopPropagation()}>
         <div className="chart-wrapper">
-          <PoolInfoLazyChart
-            pool={pool}
-            width={cellWidths.list[6].skeletonWidth}
-          />
+          <PoolInfoLazyChart pool={pool} width={cellWidths.list[6].skeletonWidth} />
         </div>
       </TableColumn>
     </PoolInfoWrapper>

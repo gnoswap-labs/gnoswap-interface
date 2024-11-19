@@ -13,9 +13,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   const [isGetWGNOT, setIsGetWGNOT] = useState(false);
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
-  const [checkedList, setCheckedList] = useState<number[]>(
-    positionId ? [Number(positionId)] : [],
-  );
+  const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
   const {
     positions,
     loading: isLoadingPositions,

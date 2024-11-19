@@ -15,11 +15,7 @@ interface LaunchpadProjectSummaryProps {
   isLoading: boolean;
 }
 
-const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
-  data,
-  tokenSymbol,
-  isLoading,
-}) => {
+const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({ data, tokenSymbol, isLoading }) => {
   const { t } = useTranslation();
 
   return (
@@ -39,9 +35,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
         {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 22 })} />}
         {!isLoading && (
           <div className="value">
-            {data.totalAllocation
-              ? `${toNumberFormat(data.totalAllocation, 2)} ${tokenSymbol}`
-              : "-"}
+            {data.totalAllocation ? `${toNumberFormat(data.totalAllocation, 2)} ${tokenSymbol}` : "-"}
           </div>
         )}
       </div>
@@ -58,9 +52,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           />
         </div>
         {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 22 })} />}
-        {!isLoading && (
-          <div className="value">{data.totalParticipants || "-"}</div>
-        )}
+        {!isLoading && <div className="value">{data.totalParticipants || "-"}</div>}
       </div>
       <div className="card">
         <div className="key">
@@ -77,12 +69,7 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
         {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 22 })} />}
         {!isLoading && (
           <div className="value">
-            {data.totalDeposited
-              ? `${toNumberFormat(
-                  data.totalDeposited,
-                  2,
-                )} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}`
-              : "-"}
+            {data.totalDeposited ? `${toNumberFormat(data.totalDeposited, 2)} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}` : "-"}
           </div>
         )}
       </div>
@@ -91,20 +78,14 @@ const LaunchpadProjectSummary: React.FC<LaunchpadProjectSummaryProps> = ({
           {t("Launchpad:projectSummary.col.tokensDistributed")}
           <LaunchpadTooltip
             floatingContent={
-              <Trans
-                ns="Launchpad"
-                components={{ br: <br /> }}
-                i18nKey={"common.tooltip.tokensDistributed"}
-              />
+              <Trans ns="Launchpad" components={{ br: <br /> }} i18nKey={"common.tooltip.tokensDistributed"} />
             }
           />
         </div>
         {isLoading && <div css={pulseSkeletonStyle({ w: 160, h: 22 })} />}
         {!isLoading && (
           <div className="value">
-            {data.totalDistributed
-              ? `${toNumberFormat(data.totalDistributed, 2)} ${tokenSymbol}`
-              : "-"}
+            {data.totalDistributed ? `${toNumberFormat(data.totalDistributed, 2)} ${tokenSymbol}` : "-"}
           </div>
         )}
       </div>

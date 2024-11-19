@@ -8,12 +8,7 @@ interface PoolRemoveLayoutProps {
   footer: React.ReactNode;
 }
 
-const PoolRemoveLayout: React.FC<PoolRemoveLayoutProps> = ({
-  header,
-  breadcrumbs,
-  removeLiquidity,
-  footer,
-}) => {
+const PoolRemoveLayout: React.FC<PoolRemoveLayoutProps> = ({ header, breadcrumbs, removeLiquidity, footer }) => {
   return (
     <div css={wrapper}>
       {header}

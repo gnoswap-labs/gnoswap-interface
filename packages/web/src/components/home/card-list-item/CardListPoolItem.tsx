@@ -14,11 +14,7 @@ interface CardListPoolItemProps {
   onClickItem: (tokenPath: string) => void;
 }
 
-const CardListPoolItem: React.FC<CardListPoolItemProps> = ({
-  index,
-  item,
-  onClickItem,
-}) => {
+const CardListPoolItem: React.FC<CardListPoolItemProps> = ({ index, item, onClickItem }) => {
   const pairName = useMemo(() => {
     const pool = item.pool;
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
@@ -26,10 +22,7 @@ const CardListPoolItem: React.FC<CardListPoolItemProps> = ({
 
   const poolFeeRate = useMemo(() => {
     const pool = item.pool;
-    const feeRate =
-      Object.values(SwapFeeTierInfoMap).find(
-        model => `${model.fee}` === pool.fee,
-      )?.rateStr || "-";
+    const feeRate = Object.values(SwapFeeTierInfoMap).find(model => `${model.fee}` === pool.fee)?.rateStr || "-";
     return feeRate;
   }, [item]);
 

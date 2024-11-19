@@ -14,14 +14,13 @@ interface PoolPairInformationContainerProps {
   address?: string | undefined;
 }
 
-const PoolPairInformationContainer: React.FC<
-  PoolPairInformationContainerProps
-> = ({ address }) => {
+const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({ address }) => {
   const router = useCustomRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.getPoolPath();
-  const { data = initialDetailPool, isLoading: loading } =
-    useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { data = initialDetailPool, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
   const { loading: loadingPosition } = usePositionData({
     address,
     poolPath,
@@ -29,13 +28,9 @@ const PoolPairInformationContainer: React.FC<
       enabled: !!poolPath,
     },
   });
-  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(
-    poolPath as string,
-    40,
-    {
-      enabled: !!poolPath,
-    },
-  );
+  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(poolPath as string, 40, {
+    enabled: !!poolPath,
+  });
 
   const onClickPath = (path: string) => {
     router.push(path);

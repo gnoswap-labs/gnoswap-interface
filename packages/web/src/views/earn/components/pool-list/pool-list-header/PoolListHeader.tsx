@@ -44,20 +44,10 @@ const PoolListHeader: React.FC<PoolListHeaderProps> = ({
       <div className="title-container">
         <h2>{t("Earn:poolList.title")}</h2>
         {breakpoint !== DEVICE_TYPE.MOBILE ? (
-          <SelectTab
-            selectType={poolType}
-            list={Object.values(POOL_TYPE)}
-            onClick={changePoolType}
-          />
+          <SelectTab selectType={poolType} list={Object.values(POOL_TYPE)} onClick={changePoolType} />
         ) : searchIcon ? (
           <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
-            <SearchInput
-              width={200}
-              height={40}
-              value={keyword}
-              onChange={search}
-              className="tokens-search"
-            />
+            <SearchInput width={200} height={40} value={keyword} onChange={search} className="tokens-search" />
           </div>
         ) : (
           <div className="icon-wrap" onClick={onTogleSearch}>
@@ -66,18 +56,9 @@ const PoolListHeader: React.FC<PoolListHeaderProps> = ({
         )}
       </div>
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
-        <SearchInput
-          width={searchInputWidth}
-          value={keyword}
-          onChange={search}
-          className="pools-search"
-        />
+        <SearchInput width={searchInputWidth} value={keyword} onChange={search} className="pools-search" />
       ) : (
-        <SelectTab
-          selectType={poolType}
-          list={Object.values(POOL_TYPE)}
-          onClick={changePoolType}
-        />
+        <SelectTab selectType={poolType} list={Object.values(POOL_TYPE)} onClick={changePoolType} />
       )}
     </PoolHeaderWrapper>
   );

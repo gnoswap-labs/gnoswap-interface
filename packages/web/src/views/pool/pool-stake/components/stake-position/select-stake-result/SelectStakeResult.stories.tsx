@@ -7,9 +7,7 @@ export default {
   component: SelectStakeResult,
 } as ComponentMeta<typeof SelectStakeResult>;
 
-const Template: ComponentStory<typeof SelectStakeResult> = args => (
-  <SelectStakeResult {...args} />
-);
+const Template: ComponentStory<typeof SelectStakeResult> = args => <SelectStakeResult {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {};

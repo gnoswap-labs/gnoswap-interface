@@ -5,18 +5,14 @@ import { action } from "@storybook/addon-actions";
 import { DEVICE_TYPE } from "@styles/media";
 
 import PoolList from "./PoolList";
-import {
-  POOL_TYPE,
-} from "./types";
+import { POOL_TYPE } from "./types";
 
 export default {
   title: "earn/PoolList",
   component: PoolList,
 } as ComponentMeta<typeof PoolList>;
 
-const Template: ComponentStory<typeof PoolList> = args => (
-  <PoolList {...args} />
-);
+const Template: ComponentStory<typeof PoolList> = args => <PoolList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -9,12 +9,10 @@ export default {
   component: EarnMyPositionsHeader,
 } as ComponentMeta<typeof EarnMyPositionsHeader>;
 
-const Template: ComponentStory<typeof EarnMyPositionsHeader> = args => (
-  <EarnMyPositionsHeader {...args} />
-);
+const Template: ComponentStory<typeof EarnMyPositionsHeader> = args => <EarnMyPositionsHeader {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
   connected: true,
-  moveEarnAdd: action("moveEarnAdd")
+  moveEarnAdd: action("moveEarnAdd"),
 };

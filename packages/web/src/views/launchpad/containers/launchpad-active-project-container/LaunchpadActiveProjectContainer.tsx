@@ -14,9 +14,7 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
   const router = useCustomRouter();
   const { isMobile } = useWindowSize();
 
-  const [isViewMoreActiveProjects, setIsViewMoreActiveProjects] = useAtom(
-    LaunchpadState.isViewMoreActiveProjects,
-  );
+  const [isViewMoreActiveProjects, setIsViewMoreActiveProjects] = useAtom(LaunchpadState.isViewMoreActiveProjects);
   const [currentIndex, setCurrentIndex] = React.useState(1);
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -27,9 +25,7 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
   } = useGetLaunchpadActiveProjects();
 
   const activeProject = React.useMemo(() => {
-    return activeProjectList.filter(
-      item => item.status !== PROJECT_STATUS_TYPE.ENDED,
-    );
+    return activeProjectList.filter(item => item.status !== PROJECT_STATUS_TYPE.ENDED);
   }, [activeProjectList]);
 
   const upcomingProject = React.useMemo(() => {
@@ -39,10 +35,7 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
   }, [activeProject]);
 
   const showedProject = React.useMemo(() => {
-    return [
-      ...upcomingProject,
-      ...activeProject.filter(item => !upcomingProject.includes(item)),
-    ];
+    return [...upcomingProject, ...activeProject.filter(item => !upcomingProject.includes(item))];
   }, [upcomingProject, activeProject]);
 
   const dataMapping = React.useMemo(() => {
@@ -76,9 +69,7 @@ const LaunchpadActiveProjectContainer: React.FC = () => {
       } else if (currentScrollX >= maxScroll - 1) {
         setCurrentIndex(showedProject.length);
       } else {
-        setCurrentIndex(
-          Math.min(Math.floor(currentScrollX / 280) + 1, showedProject.length),
-        );
+        setCurrentIndex(Math.min(Math.floor(currentScrollX / 280) + 1, showedProject.length));
       }
     }
   };

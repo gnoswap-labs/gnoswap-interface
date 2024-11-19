@@ -37,9 +37,8 @@ export const DecreaseLiquidityWrapper = styled.div`
     .title {
       margin-bottom: 8px;
     }
-
   }
-  
+
   article {
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;

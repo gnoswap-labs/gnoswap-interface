@@ -10,10 +10,7 @@ import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 
 const REFETCH_INTERVAL = 60_000;
 
-export const useGetPoolDetailByPath = (
-  path: string | null,
-  options?: UseQueryOptions<PoolDetailModel, Error>,
-) => {
+export const useGetPoolDetailByPath = (path: string | null, options?: UseQueryOptions<PoolDetailModel, Error>) => {
   const { poolRepository } = useGnoswapContext();
   const router = useCustomRouter();
 
@@ -39,9 +36,7 @@ export const useGetPoolDetailByPath = (
   });
 };
 
-export const useRefetchGetPoolDetailByPath = (
-  poolPath: string | null | undefined,
-) => {
+export const useRefetchGetPoolDetailByPath = (poolPath: string | null | undefined) => {
   const refetchFn = useForceRefetchQuery();
 
   const refetchPoolDetails = async () => {

@@ -6,7 +6,6 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import TrendingCryptoCardList from "./TrendingCryptoCardList";
 import { TrendingCryptoInfo } from "./trending-crypto-card/TrendingCryptoCard";
 
-
 const trendingCryptoInit: TrendingCryptoInfo[] = [
   {
     path: "1",
@@ -34,20 +33,14 @@ const trendingCryptoInit: TrendingCryptoInfo[] = [
   },
 ];
 
-export const trendingCryptoListInit = [
-  ...trendingCryptoInit,
-  ...trendingCryptoInit,
-  trendingCryptoInit[0],
-];
+export const trendingCryptoListInit = [...trendingCryptoInit, ...trendingCryptoInit, trendingCryptoInit[0]];
 
 export default {
   title: "token/TrendingCryptoCardList",
   component: TrendingCryptoCardList,
 } as ComponentMeta<typeof TrendingCryptoCardList>;
 
-const Template: ComponentStory<typeof TrendingCryptoCardList> = args => (
-  <TrendingCryptoCardList {...args} />
-);
+const Template: ComponentStory<typeof TrendingCryptoCardList> = args => <TrendingCryptoCardList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

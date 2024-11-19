@@ -3,7 +3,6 @@ export interface TokenExchangeRateGraphResponse {
   last7d: TokenExchangeRateData[];
   last1m: TokenExchangeRateData[];
   all: TokenExchangeRateData[];
-  
 }
 
 export interface TokenExchangeRateData {

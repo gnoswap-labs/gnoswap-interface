@@ -10,9 +10,7 @@ export default {
   component: TokenSwap,
 } as ComponentMeta<typeof TokenSwap>;
 
-const Template: ComponentStory<typeof TokenSwap> = args => (
-  <TokenSwap {...args} />
-);
+const Template: ComponentStory<typeof TokenSwap> = args => <TokenSwap {...args} />;
 
 const TOKEN_A: TokenModel = {
   chainId: "dev",

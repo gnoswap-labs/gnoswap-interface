@@ -32,19 +32,12 @@ const UnstakePositionModalContainer = ({
   const { positionRepository } = useGnoswapContext();
   const router = useRouter();
   const clearModal = useClearModal();
-  const {
-    broadcastRejected,
-    broadcastSuccess,
-    broadcastError,
-    broadcastLoading,
-  } = useBroadcastHandler();
+  const { broadcastRejected, broadcastSuccess, broadcastError, broadcastLoading } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
-    positions?.[0]?.poolPath,
-  );
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(positions?.[0]?.poolPath);
 
   const { pooledTokenInfos } = usePositionsRewards({ positions });
   const { openModal } = useTransactionConfirmModal({
@@ -88,10 +81,7 @@ const UnstakePositionModalContainer = ({
       })
       .catch(() => null);
     if (result) {
-      if (
-        result.code === 0 ||
-        result.code === ERROR_VALUE.TRANSACTION_FAILED.status
-      ) {
+      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
         enqueueEvent({
           txHash: result.data?.hash,
           action: DexEvent.UNSTAKE,
@@ -180,13 +170,7 @@ const UnstakePositionModalContainer = ({
     return result;
   }, [account?.address, positionRepository, positions, router]);
 
-  return (
-    <UnstakePositionModal
-      positions={positions}
-      close={close}
-      onSubmit={unstakeOnSubmit}
-    />
-  );
+  return <UnstakePositionModal positions={positions} close={close} onSubmit={unstakeOnSubmit} />;
 };
 
 export default UnstakePositionModalContainer;

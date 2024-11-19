@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react";
 
-import {
-  SwapFeeTierInfoMap,
-  SwapFeeTierType
-} from "@constants/option.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -19,12 +16,7 @@ interface Props {
   isReverted?: boolean;
 }
 
-export const usePool = ({
-  compareToken,
-  tokenA,
-  tokenB,
-  isReverted = false,
-}: Props) => {
+export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Props) => {
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
   const { pools, updatePools, isFetchedPools, loading } = usePoolData();
@@ -34,12 +26,8 @@ export const usePool = ({
     if (!tokenA || !tokenB) {
       return [];
     }
-    const tokenATokenPath = checkGnotPath(tokenA.path)
-      ? tokenA.wrappedPath
-      : tokenA.path;
-    const tokenBTokenPath = checkGnotPath(tokenB.path)
-      ? tokenB.wrappedPath
-      : tokenB.path;
+    const tokenATokenPath = checkGnotPath(tokenA.path) ? tokenA.wrappedPath : tokenA.path;
+    const tokenBTokenPath = checkGnotPath(tokenB.path) ? tokenB.wrappedPath : tokenB.path;
 
     const tokenPair = [tokenATokenPath, tokenBTokenPath].sort();
 
@@ -51,59 +39,38 @@ export const usePool = ({
     ].map(feeInfo => `${tokenPair[0]}:${tokenPair[1]}:${feeInfo.fee}`);
   }, [tokenA, tokenB]);
 
-  const {
-    data: rpcPools,
-    isLoading: isLoadingRPCPools,
-    refetch: refetchRPCPools,
-  } = useGetRPCPoolsBy(allPoolPaths);
+  const { data: rpcPools, isLoading: isLoadingRPCPools, refetch: refetchRPCPools } = useGetRPCPoolsBy(allPoolPaths);
 
-  const feetierOfLiquidityMap: { [key in string]: number } | null =
-    useMemo(() => {
-      if (!rpcPools) {
-        return null;
-      }
-      const feetierOfLiquidityMap: { [key in string]: number } = {};
+  const feetierOfLiquidityMap: { [key in string]: number } | null = useMemo(() => {
+    if (!rpcPools) {
+      return null;
+    }
+    const feetierOfLiquidityMap: { [key in string]: number } = {};
 
-      const totalLiquidities = rpcPools
-        .map(info => info.liquidity)
-        .reduce((total, cur) => total + cur, 0n);
-      for (const info of rpcPools) {
-        const liquidityRate =
-          totalLiquidities === 0n
-            ? 0
-            : (Number(info.liquidity) * 100) / Number(totalLiquidities);
-        const feeTier = info.fee;
-        if (feeTier) {
-          feetierOfLiquidityMap[`${feeTier}`] = liquidityRate;
-        }
+    const totalLiquidities = rpcPools.map(info => info.liquidity).reduce((total, cur) => total + cur, 0n);
+    for (const info of rpcPools) {
+      const liquidityRate = totalLiquidities === 0n ? 0 : (Number(info.liquidity) * 100) / Number(totalLiquidities);
+      const feeTier = info.fee;
+      if (feeTier) {
+        feetierOfLiquidityMap[`${feeTier}`] = liquidityRate;
       }
-      return feetierOfLiquidityMap;
-    }, [rpcPools]);
+    }
+    return feetierOfLiquidityMap;
+  }, [rpcPools]);
 
   const currentPools: PoolModel[] = useMemo(() => {
     if (!tokenA || !tokenB) {
       return [];
     }
 
-    const tokenATokenPath = checkGnotPath(tokenA.path)
-      ? tokenA.wrappedPath
-      : tokenA.path;
-    const tokenBTokenPath = checkGnotPath(tokenB.path)
-      ? tokenB.wrappedPath
-      : tokenB.path;
+    const tokenATokenPath = checkGnotPath(tokenA.path) ? tokenA.wrappedPath : tokenA.path;
+    const tokenBTokenPath = checkGnotPath(tokenB.path) ? tokenB.wrappedPath : tokenB.path;
 
     const tokenPairOfPaths = [tokenATokenPath, tokenBTokenPath];
     return pools?.filter(pool => {
-      const currentTokenATokenPath = isNativeToken(pool.tokenA)
-        ? pool.tokenA.wrappedPath
-        : pool.tokenA.path;
-      const currentTokenBTokenPath = isNativeToken(pool.tokenB)
-        ? pool.tokenB.wrappedPath
-        : pool.tokenB.path;
-      return (
-        tokenPairOfPaths.includes(currentTokenATokenPath) &&
-        tokenPairOfPaths.includes(currentTokenBTokenPath)
-      );
+      const currentTokenATokenPath = isNativeToken(pool.tokenA) ? pool.tokenA.wrappedPath : pool.tokenA.path;
+      const currentTokenBTokenPath = isNativeToken(pool.tokenB) ? pool.tokenB.wrappedPath : pool.tokenB.path;
+      return tokenPairOfPaths.includes(currentTokenATokenPath) && tokenPairOfPaths.includes(currentTokenBTokenPath);
     });
   }, [pools, tokenA, tokenB]);
 
@@ -154,10 +121,7 @@ export const usePool = ({
       if (!tokenA || !tokenB || !account || createPoolFee === undefined) {
         return null;
       }
-      const currentTokenData = getCurrentTokenPairAmount(
-        tokenAAmount,
-        tokenBAmount,
-      );
+      const currentTokenData = getCurrentTokenPairAmount(tokenAAmount, tokenBAmount);
       if (!currentTokenData) {
         return null;
       }
@@ -205,10 +169,7 @@ export const usePool = ({
       if (!tokenA || !tokenB || !account) {
         return null;
       }
-      const currentTokenData = getCurrentTokenPairAmount(
-        tokenAAmount,
-        tokenBAmount,
-      );
+      const currentTokenData = getCurrentTokenPairAmount(tokenAAmount, tokenBAmount);
       if (!currentTokenData) {
         return null;
       }

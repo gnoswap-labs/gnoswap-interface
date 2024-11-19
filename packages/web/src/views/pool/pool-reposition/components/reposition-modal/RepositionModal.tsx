@@ -6,14 +6,8 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
-import {
-  RepositionLiquidityFailedResponse,
-  RepositionLiquiditySuccessResponse,
-} from "@repositories/position/response";
-import {
-  SwapRouteFailedResponse,
-  SwapRouteSuccessResponse,
-} from "@repositories/swap/response/swap-route-response";
+import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
+import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 
 import IncreaseMaxMin from "../../../common/components/increase-max-min/IncreaseMaxMin";
 import { IPriceRange } from "../../hooks/use-reposition-handle";
@@ -46,15 +40,11 @@ interface Props {
   currentAmounts: { amountA: string; amountB: string } | null;
   repositionAmounts: { amountA: string | null; amountB: string | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
-  swapRemainToken: () => Promise<WalletResponse<
-    SwapRouteSuccessResponse | SwapRouteFailedResponse
-  > | null>;
+  swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null>;
   reposition: (
     swapToken: TokenModel | null,
     swapAmount: string | null,
-  ) => Promise<WalletResponse<
-    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
-  > | null>;
+  ) => Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null>;
   isSkipSwap: boolean;
   refetchPositions: () => Promise<void>;
 }
@@ -128,11 +118,7 @@ const RepositionModal: React.FC<Props> = ({
                 closeModal={close}
                 tokenA={amountInfo.tokenA.info}
                 tokenB={amountInfo.tokenB.info}
-                swapAtoB={
-                  Number(currentAmounts?.amountA) -
-                    Number(repositionAmounts?.amountA) >
-                  0
-                }
+                swapAtoB={Number(currentAmounts?.amountA) - Number(repositionAmounts?.amountA) > 0}
                 isSkipSwap={isSkipSwap}
               />
             </React.Fragment>

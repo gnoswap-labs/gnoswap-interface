@@ -2,11 +2,7 @@ import React from "react";
 
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import {
-  useGetDelegatees,
-  useGetGovernanceSummary,
-  useGetMyDelegation,
-} from "@query/governance";
+import { useGetDelegatees, useGetGovernanceSummary, useGetMyDelegation } from "@query/governance";
 import { nullMyDelegationInfo } from "@repositories/governance";
 
 import { useGovernanceTx } from "@views/governance/hooks/use-governance-tx";
@@ -15,8 +11,7 @@ import MyDelegation from "../../components/my-delegation/MyDelegation";
 const MyDelegationContainer: React.FC = () => {
   const { account, connected } = useWallet();
   const { openModal } = useConnectWalletModal();
-  const { delegateGNS, undelegateGNS, collectUndelegated, collectReward } =
-    useGovernanceTx();
+  const { delegateGNS, undelegateGNS, collectUndelegated, collectReward } = useGovernanceTx();
 
   const {
     data: governanceSummaryInfo,
@@ -30,11 +25,7 @@ const MyDelegationContainer: React.FC = () => {
   } = useGetMyDelegation({
     address: account?.address || "",
   });
-  const {
-    data: delegatees,
-    isFetched: isFetchedDelegatees,
-    refetch: refetchDelegatees,
-  } = useGetDelegatees();
+  const { data: delegatees, isFetched: isFetchedDelegatees, refetch: refetchDelegatees } = useGetDelegatees();
 
   return (
     <MyDelegation
@@ -43,8 +34,7 @@ const MyDelegationContainer: React.FC = () => {
       myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
       delegatees={delegatees ?? []}
       isLoadingCommon={
-        (!isFetchedGovernanceSummaryInfo || !isFetchedDelegatees) &&
-        (!governanceSummaryInfo || !delegatees)
+        (!isFetchedGovernanceSummaryInfo || !isFetchedDelegatees) && (!governanceSummaryInfo || !delegatees)
       }
       isLoadingMyDelegation={!isFetchedMyDelegation && !MyDelegation}
       isWalletConnected={connected}

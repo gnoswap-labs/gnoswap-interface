@@ -6,8 +6,7 @@ export const UnconnectedWrapper = styled.div`
   gap: 8px;
   width: 100%;
   padding: 16px;
-  background-color: ${({ theme }) =>
-    theme.themeKey === "dark" ? theme.color.background09 : ""};
+  background-color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background09 : "")};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   .unconnected-icon {

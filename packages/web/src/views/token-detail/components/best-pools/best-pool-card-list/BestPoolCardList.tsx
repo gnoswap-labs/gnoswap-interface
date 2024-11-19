@@ -5,10 +5,7 @@ import { useTranslation } from "react-i18next";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStar from "@components/common/icons/IconStar";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import {
-  SwapFeeTierInfoMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
@@ -32,10 +29,7 @@ interface BestPoolCardListProps {
   loading: boolean;
 }
 
-const BestPoolCardList: React.FC<BestPoolCardListProps> = ({
-  list,
-  loading,
-}) => {
+const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) => {
   const { t } = useTranslation();
 
   const LIST_HEADER_INFO = [
@@ -81,12 +75,8 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({
                     leftSymbol={info.tokenPair.tokenA.symbol}
                     rightSymbol={info.tokenPair.tokenB.symbol}
                   />
-                  <span className="symbol">
-                    {tokenPairSymbolToOneCharacter(info.tokenPair)}
-                  </span>
-                  <span className="fee-rate">
-                    {SwapFeeTierInfoMap[info.feeRate].rateStr}
-                  </span>
+                  <span className="symbol">{tokenPairSymbolToOneCharacter(info.tokenPair)}</span>
+                  <span className="fee-rate">{SwapFeeTierInfoMap[info.feeRate].rateStr}</span>
                 </div>
                 <span className="tvl">{info.tvl}</span>
                 <span className="apr">

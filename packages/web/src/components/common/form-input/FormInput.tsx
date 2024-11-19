@@ -16,22 +16,20 @@ type Props = {
   onBlur?: (e: any) => void;
 };
 
-const FormInput: FC<Props> = React.forwardRef<HTMLInputElement, Props>(
-  (props, ref) => {
-    const { errorText, parentProps } = props;
-    return (
-      <FormInputWrapper {...parentProps}>
-        <FormInputStyle
-          {...props}
-          ref={ref}
-          onBlur={props?.onBlur}
-          onWheel={event => (event.target as HTMLElement).blur()}
-        />
-        {errorText && <div className="error-text">{errorText}</div>}
-      </FormInputWrapper>
-    );
-  },
-);
+const FormInput: FC<Props> = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
+  const { errorText, parentProps } = props;
+  return (
+    <FormInputWrapper {...parentProps}>
+      <FormInputStyle
+        {...props}
+        ref={ref}
+        onBlur={props?.onBlur}
+        onWheel={event => (event.target as HTMLElement).blur()}
+      />
+      {errorText && <div className="error-text">{errorText}</div>}
+    </FormInputWrapper>
+  );
+});
 
 FormInput.displayName = "FormInput";
 

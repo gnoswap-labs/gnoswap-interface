@@ -11,11 +11,7 @@ interface BestPoolsProps {
   loading: boolean;
 }
 
-const BestPools: React.FC<BestPoolsProps> = ({
-  titleSymbol,
-  cardList,
-  loading,
-}) => {
+const BestPools: React.FC<BestPoolsProps> = ({ titleSymbol, cardList, loading }) => {
   const { t } = useTranslation();
 
   return (

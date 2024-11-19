@@ -3,10 +3,7 @@ import useRouter from "./use-custom-router";
 
 export const useRouterBack = () => {
   const initLocation = window.location.pathname;
-  const targetLocation = initLocation.substring(
-    0,
-    initLocation.lastIndexOf("/"),
-  );
+  const targetLocation = initLocation.substring(0, initLocation.lastIndexOf("/"));
 
   const router = useRouter();
 

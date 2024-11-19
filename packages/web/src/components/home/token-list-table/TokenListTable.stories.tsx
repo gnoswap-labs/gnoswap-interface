@@ -9,9 +9,7 @@ export default {
   component: TokenListTable,
 } as ComponentMeta<typeof TokenListTable>;
 
-const Template: ComponentStory<typeof TokenListTable> = args => (
-  <TokenListTable {...args} />
-);
+const Template: ComponentStory<typeof TokenListTable> = args => <TokenListTable {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

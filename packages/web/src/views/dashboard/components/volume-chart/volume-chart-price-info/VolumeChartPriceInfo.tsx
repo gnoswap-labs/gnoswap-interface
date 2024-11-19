@@ -1,10 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import {
-  FeeInfoWrapper,
-  VolumeChartPriceInfoWrapper,
-} from "./VolumeChartPriceInfo.styles";
+import { FeeInfoWrapper, VolumeChartPriceInfoWrapper } from "./VolumeChartPriceInfo.styles";
 
 export interface VolumePriceInfo {
   amount: string;
@@ -15,9 +12,7 @@ interface VolumeChartPriceInfoProps {
   volumePriceInfo: VolumePriceInfo;
 }
 
-const VolumeChartPriceInfo: React.FC<VolumeChartPriceInfoProps> = ({
-  volumePriceInfo,
-}) => {
+const VolumeChartPriceInfo: React.FC<VolumeChartPriceInfoProps> = ({ volumePriceInfo }) => {
   const { t } = useTranslation();
 
   return (

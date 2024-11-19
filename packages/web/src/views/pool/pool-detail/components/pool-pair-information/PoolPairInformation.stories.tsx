@@ -6,7 +6,7 @@ import { action } from "@storybook/addon-actions";
 import { PoolRepositoryMock } from "@repositories/pool";
 
 const poolRepository = new PoolRepositoryMock();
-const pool = (await poolRepository.getPoolDetailByPoolPath());
+const pool = await poolRepository.getPoolDetailByPoolPath();
 
 export default {
   title: "pool/PoolPairInformation",

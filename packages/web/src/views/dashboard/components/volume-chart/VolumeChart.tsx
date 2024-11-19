@@ -7,11 +7,7 @@ import VolumeChartGraph from "./volume-chart-graph/VolumeChartGraph";
 import VolumeChartPriceInfo, { VolumePriceInfo } from "./volume-chart-price-info/VolumeChartPriceInfo";
 import VolumeChartSelectTab from "./volume-chart-select-tab/VolumeChartSelectTab";
 
-import {
-  ChartWrapper,
-  LoadingVolumnChart,
-  VolumeChartWrapper,
-} from "./VolumeChart.styles";
+import { ChartWrapper, LoadingVolumnChart, VolumeChartWrapper } from "./VolumeChart.styles";
 
 export interface VolumeChartInfo {
   datas: string[];
@@ -22,13 +18,7 @@ export interface VolumeChartInfo {
 
 interface VolumeChartItemProps {
   volumeChartType: CHART_TYPE;
-  changeVolumeChartType: ({
-    display,
-    key,
-  }: {
-    display: string;
-    key: string;
-  }) => void;
+  changeVolumeChartType: ({ display, key }: { display: string; key: string }) => void;
   volumePriceInfo: VolumePriceInfo;
   volumeChartInfo: VolumeChartInfo;
   loading: boolean;
@@ -44,10 +34,7 @@ const VolumeChart: React.FC<VolumeChartItemProps> = ({
   <VolumeChartWrapper>
     <VolumeChartPriceInfo volumePriceInfo={volumePriceInfo} />
     <ChartWrapper>
-      <VolumeChartSelectTab
-        volumeChartType={volumeChartType}
-        changeVolumeChartType={changeVolumeChartType}
-      />
+      <VolumeChartSelectTab volumeChartType={volumeChartType} changeVolumeChartType={changeVolumeChartType} />
       {!loading && (
         <VolumeChartGraph
           xAxisLabels={volumeChartInfo.xAxisLabels}

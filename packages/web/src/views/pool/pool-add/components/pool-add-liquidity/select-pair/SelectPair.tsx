@@ -11,18 +11,21 @@ interface SelectPairProps {
   disabled?: boolean;
 }
 
-const SelectPair: React.FC<SelectPairProps> = ({
-  tokenA,
-  tokenB,
-  changeTokenA,
-  changeTokenB,
-  disabled,
-}) => {
-
+const SelectPair: React.FC<SelectPairProps> = ({ tokenA, tokenB, changeTokenA, changeTokenB, disabled }) => {
   return (
     <SelectPairWrapper isTokenA={!!tokenA} isTokenB={!!tokenB}>
-      <SelectPairButton className={tokenA ? "change-select-pair-A" : ""} disabled={disabled} token={tokenA} changeToken={changeTokenA} />
-      <SelectPairButton className={tokenB ? "change-select-pair-B" : ""} disabled={disabled} token={tokenB} changeToken={changeTokenB} />
+      <SelectPairButton
+        className={tokenA ? "change-select-pair-A" : ""}
+        disabled={disabled}
+        token={tokenA}
+        changeToken={changeTokenA}
+      />
+      <SelectPairButton
+        className={tokenB ? "change-select-pair-B" : ""}
+        disabled={disabled}
+        token={tokenB}
+        changeToken={changeTokenB}
+      />
     </SelectPairWrapper>
   );
 };

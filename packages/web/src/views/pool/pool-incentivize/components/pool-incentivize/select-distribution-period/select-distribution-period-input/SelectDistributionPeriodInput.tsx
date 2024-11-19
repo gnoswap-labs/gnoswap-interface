@@ -19,9 +19,12 @@ export interface SelectDistributionPeriodInputProps {
   changePeriod: (period: number) => void;
 }
 
-const SelectDistributionPeriodInput: React.FC<
-  SelectDistributionPeriodInputProps
-> = ({ title, period, periods, changePeriod }) => {
+const SelectDistributionPeriodInput: React.FC<SelectDistributionPeriodInputProps> = ({
+  title,
+  period,
+  periods,
+  changePeriod,
+}) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -39,9 +42,7 @@ const SelectDistributionPeriodInput: React.FC<
           placement="top"
           FloatingContent={
             <DistributionPeriodTooltipContentWrapper>
-              {t(
-                "IncentivizePool:incentiPool.form.period.field.disPeriod.tootlip",
-              )}
+              {t("IncentivizePool:incentiPool.form.period.field.disPeriod.tootlip")}
             </DistributionPeriodTooltipContentWrapper>
           }
         >
@@ -65,9 +66,7 @@ interface SelectDistributionPeriodItemProps {
   period: number;
 }
 
-const SelectDistributionPeriodItem: React.FC<
-  SelectDistributionPeriodItemProps
-> = ({ period }) => {
+const SelectDistributionPeriodItem: React.FC<SelectDistributionPeriodItemProps> = ({ period }) => {
   const { t } = useTranslation();
 
   const periodText = useMemo(() => {
@@ -76,9 +75,5 @@ const SelectDistributionPeriodItem: React.FC<
     });
   }, [period, t]);
 
-  return (
-    <PoolIncentivizeSelectPeriodBoxItem>
-      {periodText}
-    </PoolIncentivizeSelectPeriodBoxItem>
-  );
+  return <PoolIncentivizeSelectPeriodBoxItem>{periodText}</PoolIncentivizeSelectPeriodBoxItem>;
 };

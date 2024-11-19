@@ -19,8 +19,7 @@ export const useScrollUp = () => {
       setScrollStarted(true);
       if (anyElement) {
         const SCROLL_THRESHOLD = breakpoint === DEVICE_TYPE.MOBILE ? 100 : 300;
-        const reachedTop =
-          anyElement.getBoundingClientRect().top < SCROLL_THRESHOLD;
+        const reachedTop = anyElement.getBoundingClientRect().top < SCROLL_THRESHOLD;
 
         if (reachedTop) {
           setCanScrollUp(true);

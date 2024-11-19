@@ -53,7 +53,6 @@ export const PriceStepsWrapper = styled.div`
       svg * {
         fill: ${({ theme }) => theme.color.icon05};
       }
-
     }
 
     .value-wrapper {

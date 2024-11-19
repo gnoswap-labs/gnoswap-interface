@@ -15,16 +15,8 @@ const LOADING_SIZE_MAP = {
   },
 } as const;
 
-const LoadingSpinner = ({
-  className,
-  size = "DEFAULT",
-}: {
-  className?: string;
-  size?: "DEFAULT" | "SMALL";
-}) => {
-  return (
-    <LoadingSpinnerWrapper className={className} {...LOADING_SIZE_MAP[size]} />
-  );
+const LoadingSpinner = ({ className, size = "DEFAULT" }: { className?: string; size?: "DEFAULT" | "SMALL" }) => {
+  return <LoadingSpinnerWrapper className={className} {...LOADING_SIZE_MAP[size]} />;
 };
 
 export default LoadingSpinner;

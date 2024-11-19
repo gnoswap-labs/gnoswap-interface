@@ -19,14 +19,12 @@ export interface BalanceTooltipContentProps {
   balances: PositionBalanceInfo[];
 }
 
-export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({
-  balances,
-}) => {
+export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({ balances }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
   return (
-    <BalanceTooltipContentWrapper >
+    <BalanceTooltipContentWrapper>
       <span className="title">{t("business:balance")}</span>
       {balances.map((balance, index) => (
         <div key={index} className="list">

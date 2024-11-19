@@ -8,11 +8,7 @@ export default {
 } as ComponentMeta<typeof SelectLiquidity>;
 
 const Template: ComponentStory<typeof SelectLiquidity> = args => {
-  return (
-    <SelectLiquidity
-      {...args}
-    />
-  );
+  return <SelectLiquidity {...args} />;
 };
 
 export const Default = Template.bind({});

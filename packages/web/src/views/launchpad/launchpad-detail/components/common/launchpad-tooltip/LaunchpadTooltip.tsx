@@ -8,14 +8,9 @@ interface LaunchpadProjectSummaryTooltipProps {
   floatingContent: React.ReactNode | string;
 }
 
-const LaunchpadTooltip = ({
-  floatingContent,
-}: LaunchpadProjectSummaryTooltipProps) => {
+const LaunchpadTooltip = ({ floatingContent }: LaunchpadProjectSummaryTooltipProps) => {
   return (
-    <Tooltip
-      FloatingContent={<div css={tooltipContent}>{floatingContent}</div>}
-      placement="top"
-    >
+    <Tooltip FloatingContent={<div css={tooltipContent}>{floatingContent}</div>} placement="top">
       <IconInfo size={16} fill={"#596782"} />
     </Tooltip>
   );

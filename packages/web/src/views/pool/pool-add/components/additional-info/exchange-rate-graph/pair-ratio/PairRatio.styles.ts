@@ -12,7 +12,7 @@ export const PairRatioWrapper = styled.div`
     ${mixins.flexbox("row", "center", "center")};
   }
   .ratio-value {
-    word-break: break-all; 
+    word-break: break-all;
   }
   svg {
     cursor: pointer;

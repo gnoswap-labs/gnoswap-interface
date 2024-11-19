@@ -7,9 +7,7 @@ export default {
   component: TvlChartPriceInfo,
 } as ComponentMeta<typeof TvlChartPriceInfo>;
 
-const Template: ComponentStory<typeof TvlChartPriceInfo> = args => (
-  <TvlChartPriceInfo {...args} />
-);
+const Template: ComponentStory<typeof TvlChartPriceInfo> = args => <TvlChartPriceInfo {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

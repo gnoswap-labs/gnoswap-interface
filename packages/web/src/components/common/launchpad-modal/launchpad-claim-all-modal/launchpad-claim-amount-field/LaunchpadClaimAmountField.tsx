@@ -19,18 +19,11 @@ interface LaunchpadClaimAmountFieldProps {
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
-const LaunchpadClaimAmountField = ({
-  amount,
-  rewardInfo,
-  type,
-}: LaunchpadClaimAmountFieldProps) => {
+const LaunchpadClaimAmountField = ({ amount, rewardInfo, type }: LaunchpadClaimAmountFieldProps) => {
   const { tokenPrices } = useTokenData();
 
   const estimatePrice = React.useMemo(() => {
-    const calculatePrice = (
-      tokenPath: string | undefined,
-      amountValue: number,
-    ) => {
+    const calculatePrice = (tokenPath: string | undefined, amountValue: number) => {
       if (!tokenPath || !amountValue) return "-";
 
       const price = formatPrice(
@@ -74,11 +67,7 @@ const LaunchpadClaimAmountField = ({
     return (
       <ClaimAllFieldWrapper>
         <div className="value-token">
-          <MissingLogo
-            symbol={rewardInfo.rewardTokenSymbol}
-            url={rewardInfo?.rewardTokenLogoUrl}
-            width={24}
-          />
+          <MissingLogo symbol={rewardInfo.rewardTokenSymbol} url={rewardInfo?.rewardTokenLogoUrl} width={24} />
           {toNumberFormat(amount, 6)} {rewardInfo?.rewardTokenSymbol}
         </div>
         <div className="value-price">{estimatePrice}</div>

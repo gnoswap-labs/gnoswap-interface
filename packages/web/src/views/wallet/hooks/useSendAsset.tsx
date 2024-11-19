@@ -6,10 +6,7 @@ import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { DexEvent } from "@repositories/common";
-import {
-  TransferGRC20TokenRequest,
-  TransferNativeTokenRequest,
-} from "@repositories/wallet/request";
+import { TransferGRC20TokenRequest, TransferNativeTokenRequest } from "@repositories/wallet/request";
 import { CommonState } from "@states/index";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -25,12 +22,7 @@ export type WithdrawResponse = {
 
 const useSendAsset = () => {
   const { walletRepository } = useGnoswapContext();
-  const {
-    broadcastLoading,
-    broadcastSuccess,
-    broadcastError,
-    broadcastRejected,
-  } = useBroadcastHandler();
+  const { broadcastLoading, broadcastSuccess, broadcastError, broadcastRejected } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
@@ -47,14 +39,11 @@ const useSendAsset = () => {
     setLoading(true);
 
     const callAction =
-      type === "native"
-        ? walletRepository.transferGNOTToken(request)
-        : walletRepository.transferGRC20Token(request);
+      type === "native" ? walletRepository.transferGNOTToken(request) : walletRepository.transferGRC20Token(request);
 
     const tokenSymbol = request?.token?.symbol || "";
     const tokenAmount = formatPoolPairAmount(
-      makeDisplayTokenAmount(request.token, request.tokenAmount)?.toString() ||
-        "0",
+      makeDisplayTokenAmount(request.token, request.tokenAmount)?.toString() || "0",
       {
         decimals: request.token.decimals,
         isKMB: false,
@@ -70,10 +59,7 @@ const useSendAsset = () => {
 
     callAction
       .then(response => {
-        if (
-          response.code === 0 ||
-          response.code === ERROR_VALUE.TRANSACTION_FAILED.status
-        ) {
+        if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({
             txHash: response.data?.hash,
             action: DexEvent.ASSET_SEND,

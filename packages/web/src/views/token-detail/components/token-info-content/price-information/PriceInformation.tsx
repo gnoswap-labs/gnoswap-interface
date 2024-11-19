@@ -14,10 +14,7 @@ interface PriceInformationProps {
   loading: boolean;
 }
 
-const PriceInformation: React.FC<PriceInformationProps> = ({
-  info,
-  loading,
-}) => {
+const PriceInformation: React.FC<PriceInformationProps> = ({ info, loading }) => {
   const { t } = useTranslation();
 
   return (

@@ -1,19 +1,10 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 
-import {
-  VariableSelectBoxWrapper,
-  VariableSelectOptionsWrapper,
-} from "./VariableSelectBox.styles";
+import { VariableSelectBoxWrapper, VariableSelectOptionsWrapper } from "./VariableSelectBox.styles";
 
 export interface VariableSelectBoxProps {
   modalBodyRef?: React.RefObject<HTMLDivElement>;
@@ -72,19 +63,16 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
     [onChange],
   );
 
-  const adjustTextSize = useCallback(
-    (element: HTMLElement, container: HTMLElement, padding: number) => {
-      const maxWidth = container.offsetWidth - padding;
-      const scaleFactor = maxWidth / element.scrollWidth;
+  const adjustTextSize = useCallback((element: HTMLElement, container: HTMLElement, padding: number) => {
+    const maxWidth = container.offsetWidth - padding;
+    const scaleFactor = maxWidth / element.scrollWidth;
 
-      if (scaleFactor < 1) {
-        element.style.setProperty("--scale-factor", scaleFactor.toString());
-      } else {
-        element.style.setProperty("--scale-factor", "1");
-      }
-    },
-    [],
-  );
+    if (scaleFactor < 1) {
+      element.style.setProperty("--scale-factor", scaleFactor.toString());
+    } else {
+      element.style.setProperty("--scale-factor", "1");
+    }
+  }, []);
 
   useEffect(() => {
     if (selectRef.current) {
@@ -97,8 +85,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
 
   useEffect(() => {
     if (opened && dropdownRef.current) {
-      const options =
-        dropdownRef.current.querySelectorAll<HTMLElement>(".display-value");
+      const options = dropdownRef.current.querySelectorAll<HTMLElement>(".display-value");
 
       options.forEach((option: HTMLElement) => {
         const clone = option.cloneNode(true) as HTMLElement;
@@ -136,11 +123,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
       >
         <div className="select-list">
           {items.map((item, index) => (
-            <span
-              key={index}
-              className={"display-value"}
-              onClick={() => selectItem(item.value)}
-            >
+            <span key={index} className={"display-value"} onClick={() => selectItem(item.value)}>
               {item.displayValue}
             </span>
           ))}
@@ -176,17 +159,9 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
 
   return (
     <VariableSelectBoxWrapper className={disabled ? "disabled" : ""}>
-      <div
-        className="selected-item-wrapper"
-        ref={selectRef}
-        onClick={toggleOpenSelectBox}
-      >
+      <div className="selected-item-wrapper" ref={selectRef} onClick={toggleOpenSelectBox}>
         <span className={"display-text"}>{displayText}</span>
-        {opened ? (
-          <IconArrowUp className="icon-arrow" />
-        ) : (
-          <IconArrowDown className="icon-arrow" />
-        )}
+        {opened ? <IconArrowUp className="icon-arrow" /> : <IconArrowDown className="icon-arrow" />}
       </div>
 
       {errorText && <div className="error-text">{errorText}</div>}

@@ -9,19 +9,10 @@ export interface TokenChartGraphTabProps {
   currentTab: string;
   changeTab: (tab: string) => void;
 }
-const TokenChartGraphTab: React.FC<TokenChartGraphTabProps> = ({
-  tabs,
-  currentTab,
-  changeTab
-}) => {
+const TokenChartGraphTab: React.FC<TokenChartGraphTabProps> = ({ tabs, currentTab, changeTab }) => {
   return (
     <TokenChartGraphTabWrapper>
-      <SelectTab
-        selectType={currentTab}
-        list={[...tabs]}
-        onClick={changeTab}
-        buttonClassName={"chart-select-button"}
-      />
+      <SelectTab selectType={currentTab} list={[...tabs]} onClick={changeTab} buttonClassName={"chart-select-button"} />
     </TokenChartGraphTabWrapper>
   );
 };

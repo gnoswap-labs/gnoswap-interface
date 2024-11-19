@@ -8,9 +8,7 @@ export default {
   component: EarnMyPositionNoLiquidity,
 } as ComponentMeta<typeof EarnMyPositionNoLiquidity>;
 
-const Template: ComponentStory<typeof EarnMyPositionNoLiquidity> = args => (
-  <EarnMyPositionNoLiquidity {...args} />
-);
+const Template: ComponentStory<typeof EarnMyPositionNoLiquidity> = args => <EarnMyPositionNoLiquidity {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

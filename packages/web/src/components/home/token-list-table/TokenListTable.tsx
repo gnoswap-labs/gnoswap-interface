@@ -8,18 +8,8 @@ import React, { useCallback } from "react";
 import TokenInfo from "@components/home/token-info/TokenInfo";
 import { cx } from "@emotion/css";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
-import {
-  noDataText,
-  TableHeader,
-  MobileTableHeader,
-  TableWrapper,
-} from "./TokenListTable.styles";
-import {
-  TOKEN_INFO,
-  MOBILE_TOKEN_INFO,
-  TOKEN_TD_WIDTH,
-  MOBILE_TOKEN_TD_WIDTH,
-} from "@constants/skeleton.constant";
+import { noDataText, TableHeader, MobileTableHeader, TableWrapper } from "./TokenListTable.styles";
+import { TOKEN_INFO, MOBILE_TOKEN_INFO, TOKEN_TD_WIDTH, MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { DEVICE_TYPE } from "@styles/media";
@@ -47,22 +37,14 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
 
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
-      return (
-        sortOption?.key === head &&
-        sortOption.direction === "asc" &&
-        !sortOption.firstActive
-      );
+      return sortOption?.key === head && sortOption.direction === "asc" && !sortOption.firstActive;
     },
     [sortOption],
   );
 
   const isDescendingOption = useCallback(
     (head: TABLE_HEAD) => {
-      return (
-        sortOption?.key === head &&
-        sortOption.direction === "desc" &&
-        !sortOption.firstActive
-      );
+      return sortOption?.key === head && sortOption.direction === "desc" && !sortOption.firstActive;
     },
     [sortOption],
   );
@@ -86,13 +68,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
             <TableHeader
               key={idx}
               className={cx(
-                idx >= 7
-                  ? "right-padding-12"
-                  : idx >= 2
-                  ? "right-padding-16"
-                  : idx === 1
-                  ? "left-padding"
-                  : "",
+                idx >= 7 ? "right-padding-12" : idx >= 2 ? "right-padding-16" : idx === 1 ? "left-padding" : "",
                 {
                   left: isAlignLeft(head),
                   sort: isSortOption(head),
@@ -100,30 +76,19 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
               )}
               tdWidth={TOKEN_TD_WIDTH[idx]}
             >
-              <span
-                className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
-                onClick={() => onClickTableHead(head)}
-              >
-                {isAscendingOption(head) && (
-                  <IconTriangleArrowUp className="icon asc" />
-                )}
-                {isDescendingOption(head) && (
-                  <IconTriangleArrowDown className="icon desc" />
-                )}
+              <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()} onClick={() => onClickTableHead(head)}>
+                {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
+                {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
                 {t(head)}
               </span>
             </TableHeader>
           ))}
         </div>
         <div className="token-list-body">
-          {isFetched && tokens.length === 0 && (
-            <div css={noDataText}>{t("Main:tokenList.emptyText")}</div>
-          )}
+          {isFetched && tokens.length === 0 && <div css={noDataText}>{t("Main:tokenList.emptyText")}</div>}
           {isFetched &&
             tokens.length > 0 &&
-            tokens.map((item, idx) => (
-              <TokenInfo item={item} idx={idx + 1} key={idx} />
-            ))}
+            tokens.map((item, idx) => <TokenInfo item={item} idx={idx + 1} key={idx} />)}
           {!isFetched && <TableSkeleton info={TOKEN_INFO} />}
         </div>
       </div>
@@ -145,26 +110,18 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
                 className={Object.keys(TABLE_HEAD_MOBILE)[idx].toLowerCase()}
                 onClick={() => onClickTableHead(head)}
               >
-                {isAscendingOption(head) && (
-                  <IconTriangleArrowUp className="icon asc" />
-                )}
-                {isDescendingOption(head) && (
-                  <IconTriangleArrowDown className="icon desc" />
-                )}
+                {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
+                {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
                 {t(head)}
               </span>
             </MobileTableHeader>
           ))}
         </div>
         <div className="token-list-body">
-          {isFetched && tokens.length === 0 && (
-            <div css={noDataText}>{t("Main:tokenList.emptyText")}</div>
-          )}
+          {isFetched && tokens.length === 0 && <div css={noDataText}>{t("Main:tokenList.emptyText")}</div>}
           {isFetched &&
             tokens.length > 0 &&
-            tokens.map((item, idx) => (
-              <MobileTokenInfo item={item} idx={item.idx + 1} key={idx} />
-            ))}
+            tokens.map((item, idx) => <MobileTokenInfo item={item} idx={item.idx + 1} key={idx} />)}
           {!isFetched && <TableSkeleton info={MOBILE_TOKEN_INFO} />}
         </div>
       </div>

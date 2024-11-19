@@ -67,8 +67,7 @@ export const CreateProposalModalWrapper = styled.div`
       padding: 12px 12px 57px 12px;
     }
 
-    ${({ theme }) =>
-      mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
+    ${({ theme }) => mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
   }
 `;
 

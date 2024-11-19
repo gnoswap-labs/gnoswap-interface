@@ -5,11 +5,7 @@ import { TransferGRC20TokenResponse } from "./response/transfer-grc20-token-resp
 import { TransferNativeTokenResponse } from "./response/transfer-native-token-response";
 
 export interface WalletRepository {
-  transferGNOTToken: (
-    request: TransferNativeTokenRequest,
-  ) => Promise<WalletResponse<TransferNativeTokenResponse>>;
+  transferGNOTToken: (request: TransferNativeTokenRequest) => Promise<WalletResponse<TransferNativeTokenResponse>>;
 
-  transferGRC20Token: (
-    request: TransferGRC20TokenRequest,
-  ) => Promise<WalletResponse<TransferGRC20TokenResponse>>;
+  transferGRC20Token: (request: TransferGRC20TokenRequest) => Promise<WalletResponse<TransferGRC20TokenResponse>>;
 }

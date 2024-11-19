@@ -13,11 +13,7 @@ interface Props {
   loadingConnect: string;
 }
 
-const ConnectWalletModal: React.FC<Props> = ({
-  close,
-  connect,
-  loadingConnect,
-}) => {
+const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect }) => {
   const { t } = useTranslation();
 
   const onClickClose = useCallback(() => {
@@ -36,11 +32,7 @@ const ConnectWalletModal: React.FC<Props> = ({
         <div className="content">
           <div>
             <Button
-              text={
-                loadingConnect === "loading" || loadingConnect === "done"
-                  ? ""
-                  : "Adena"
-              }
+              text={loadingConnect === "loading" || loadingConnect === "done" ? "" : "Adena"}
               leftIcon={
                 loadingConnect === "loading" || loadingConnect === "done" ? (
                   <LoadingSpinner className="loading-button" />

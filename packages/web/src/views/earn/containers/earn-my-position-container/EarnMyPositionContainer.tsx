@@ -1,11 +1,5 @@
 import { useAtom, useAtomValue } from "jotai";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { DEFAULT_POOL_PATH } from "@constants/common.constant";
 import { QUERY_PARAMETER } from "@constants/page.constant";
@@ -28,18 +22,9 @@ interface EarnMyPositionContainerProps {
   isOtherPosition?: boolean;
 }
 
-const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
-  address,
-  isOtherPosition,
-}) => {
+const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({ address, isOtherPosition }) => {
   const router = useCustomRouter();
-  const {
-    connected,
-    connectAdenaClient,
-    isSwitchNetwork,
-    switchNetwork,
-    account,
-  } = useWallet();
+  const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
   const { tokenPrices = {}, updateTokenPrices } = useTokenData();
   const { isFetchedPools, loading: isLoadingPool, pools } = usePoolData();
   const { width } = useWindowSize();
@@ -51,9 +36,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     loading: isLoadingPosition,
     positions,
   } = usePositionData({ address });
-  const [isViewMorePositions, setIsViewMorePositions] = useAtom(
-    EarnState.isViewMorePositions,
-  );
+  const [isViewMorePositions, setIsViewMorePositions] = useAtom(EarnState.isViewMorePositions);
 
   const themeKey = useAtomValue(ThemeState.themeKey);
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -93,13 +76,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     } else {
       switchNetwork();
     }
-  }, [
-    connectAdenaClient,
-    isSwitchNetwork,
-    switchNetwork,
-    openModal,
-    connected,
-  ]);
+  }, [connectAdenaClient, isSwitchNetwork, switchNetwork, openModal, connected]);
 
   const moveEarnAdd = useCallback(() => {
     router.movePage("EARN_ADD");
@@ -151,8 +128,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       const maxScrollWidth = totalItemWidth + totalGapWidth - parentWidth;
       const currentScrollX = divRef.current.scrollLeft;
 
-      const maybeNextDisplayIndex =
-        Math.floor(currentScrollX / (listChildWidth + itemGap)) + 2;
+      const maybeNextDisplayIndex = Math.floor(currentScrollX / (listChildWidth + itemGap)) + 2;
 
       const centerScreenX = document.body.clientWidth / 2;
 
@@ -166,15 +142,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
         return;
       }
 
-      const getLengthFromElementCenterToScreenCenter = (
-        element: Element | null,
-      ) => {
-        if (element)
-          return Math.abs(
-            element?.getBoundingClientRect().x +
-              listChildWidth / 2 -
-              centerScreenX,
-          );
+      const getLengthFromElementCenterToScreenCenter = (element: Element | null) => {
+        if (element) return Math.abs(element?.getBoundingClientRect().x + listChildWidth / 2 - centerScreenX);
 
         return -1;
       };
@@ -193,12 +162,9 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
         const currentElement = checkValidElement(maybeNextIndex);
         const next1Element = checkValidElement(maybeNextIndex + 1);
 
-        const previousElementCenterXToScreenCenterX =
-          getLengthFromElementCenterToScreenCenter(previous1Element);
-        const currentElementCenterXToScreenCenterX =
-          getLengthFromElementCenterToScreenCenter(currentElement);
-        const nextElementCenterXToScreenCenterX =
-          getLengthFromElementCenterToScreenCenter(next1Element);
+        const previousElementCenterXToScreenCenterX = getLengthFromElementCenterToScreenCenter(previous1Element);
+        const currentElementCenterXToScreenCenterX = getLengthFromElementCenterToScreenCenter(currentElement);
+        const nextElementCenterXToScreenCenterX = getLengthFromElementCenterToScreenCenter(next1Element);
 
         const minLength = Math.min(
           ...[
@@ -311,11 +277,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       connected={connected}
       availableStake={availableStake}
       connect={connect}
-      loading={
-        isLoadingPool ||
-        (connected ? isLoadingPosition || !isFetchedPosition : false) ||
-        isDataMappingLoading
-      }
+      loading={isLoadingPool || (connected ? isLoadingPosition || !isFetchedPosition : false) || isDataMappingLoading}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}
       positions={mappedData}

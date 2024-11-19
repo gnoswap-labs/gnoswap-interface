@@ -4,11 +4,7 @@ export interface IconGasFilledProps {
   className?: string;
 }
 
-export const IconGasFilled = ({
-  width,
-  height,
-  className,
-}: IconGasFilledProps) => {
+export const IconGasFilled = ({ width, height, className }: IconGasFilledProps) => {
   return (
     <svg
       width={width ?? "16"}

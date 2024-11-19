@@ -3,10 +3,7 @@ import React, { useMemo } from "react";
 
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import {
-  useGetDashboardGovernanceOverview,
-  useGetDashboardToken,
-} from "@query/dashboard";
+import { useGetDashboardGovernanceOverview, useGetDashboardToken } from "@query/dashboard";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
 
 import { XGNS_TOKEN } from "@common/values/token-constant";
@@ -23,12 +20,9 @@ const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const { data: tokenData, isFetched: isFetchedDashboardToken } =
-    useGetDashboardToken();
-  const {
-    data: governanceOverview = null,
-    isFetched: isFetchedGovernanceOverview,
-  } = useGetDashboardGovernanceOverview();
+  const { data: tokenData, isFetched: isFetchedDashboardToken } = useGetDashboardToken();
+  const { data: governanceOverview = null, isFetched: isFetchedGovernanceOverview } =
+    useGetDashboardGovernanceOverview();
 
   const isLoading = useMemo(() => {
     if (isLoadingCommon) {
@@ -63,9 +57,7 @@ const DashboardInfoContainer: React.FC = () => {
     }
 
     return {
-      totalDelegated: `${numberToFormat(governanceOverview.totalDelegated)} ${
-        XGNS_TOKEN.symbol
-      }`,
+      totalDelegated: `${numberToFormat(governanceOverview.totalDelegated)} ${XGNS_TOKEN.symbol}`,
       holders: `${numberToFormat(governanceOverview.holders)}`,
       passedCount: `${numberToFormat(governanceOverview.passedCount)}`,
       activeCount: `${numberToFormat(governanceOverview.activeCount)} `,
@@ -86,10 +78,7 @@ const DashboardInfoContainer: React.FC = () => {
         }),
       }}
       supplyOverviewInfo={{
-        circulatingSupply: formatDashboardPrice(
-          tokenData?.gnsCirculatingSupply || "-",
-          "GNS",
-        ),
+        circulatingSupply: formatDashboardPrice(tokenData?.gnsCirculatingSupply || "-", "GNS"),
         dailyBlockEmissions:
           formatOtherPrice(tokenData?.gnsDailyBlockEmissions, {
             isKMB: false,
@@ -104,27 +93,18 @@ const DashboardInfoContainer: React.FC = () => {
         progressBar: progressBar,
         stakingRatio: stakingRatio,
         dailyBlockEmissionsInfo: {
-          liquidityStaking: formatOtherPrice(
-            Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 75) / 100,
-            {
-              isKMB: false,
-              usd: false,
-            },
-          ),
-          devOps: formatOtherPrice(
-            Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 20) / 100,
-            {
-              isKMB: false,
-              usd: false,
-            },
-          ),
-          community: formatOtherPrice(
-            Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 5) / 100,
-            {
-              isKMB: false,
-              usd: false,
-            },
-          ),
+          liquidityStaking: formatOtherPrice(Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 75) / 100, {
+            isKMB: false,
+            usd: false,
+          }),
+          devOps: formatOtherPrice(Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 20) / 100, {
+            isKMB: false,
+            usd: false,
+          }),
+          community: formatOtherPrice(Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 5) / 100, {
+            isKMB: false,
+            usd: false,
+          }),
         },
       }}
       governanceOverviewInfo={governanceOverviewInfo}

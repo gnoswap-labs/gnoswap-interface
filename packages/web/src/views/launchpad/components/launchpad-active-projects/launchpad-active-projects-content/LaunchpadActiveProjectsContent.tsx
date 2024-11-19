@@ -20,9 +20,7 @@ export interface LaunchpadActiveProjectsContentProps {
   moveProjectDetail: (poolId: string) => void;
 }
 
-const LaunchpadActiveProjectsContent: React.FC<
-  LaunchpadActiveProjectsContentProps
-> = ({
+const LaunchpadActiveProjectsContent: React.FC<LaunchpadActiveProjectsContentProps> = ({
   activeProjectList,
   showLoadMore,
   loadMore,

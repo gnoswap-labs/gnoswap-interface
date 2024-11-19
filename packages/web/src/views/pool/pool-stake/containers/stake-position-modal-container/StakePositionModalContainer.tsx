@@ -10,11 +10,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import {
-  useGetPoolDetailByPath,
-  useGetPoolList,
-  useRefetchGetPoolDetailByPath,
-} from "@query/pools";
+import { useGetPoolDetailByPath, useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
@@ -26,24 +22,14 @@ interface StakePositionModalContainerProps {
   refetchPositions: () => Promise<void>;
 }
 
-const StakePositionModalContainer = ({
-  positions,
-  refetchPositions,
-}: StakePositionModalContainerProps) => {
+const StakePositionModalContainer = ({ positions, refetchPositions }: StakePositionModalContainerProps) => {
   const { account } = useWallet();
-  const {
-    broadcastRejected,
-    broadcastSuccess,
-    broadcastLoading,
-    broadcastError,
-  } = useBroadcastHandler();
+  const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
-    positions?.[0]?.poolPath,
-  );
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(positions?.[0]?.poolPath);
 
   const { positionRepository } = useGnoswapContext();
   const router = useCustomRouter();
@@ -66,11 +52,9 @@ const StakePositionModalContainer = ({
     }
   }, [clearModal, router]);
 
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
-    {
-      confirmCallback: onCloseConfirmTransactionModal,
-    },
-  );
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    confirmCallback: onCloseConfirmTransactionModal,
+  });
 
   const pooledTokenInfos = useMemo(() => {
     if (positions.length === 0) {
@@ -78,14 +62,8 @@ const StakePositionModalContainer = ({
     }
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
-    const pooledTokenAAmount = positions.reduce(
-      (accum, position) => accum + Number(position.tokenABalance),
-      0,
-    );
-    const pooledTokenBAmount = positions.reduce(
-      (accum, position) => accum + Number(position.tokenBBalance),
-      0,
-    );
+    const pooledTokenAAmount = positions.reduce((accum, position) => accum + Number(position.tokenABalance), 0);
+    const pooledTokenBAmount = positions.reduce((accum, position) => accum + Number(position.tokenBBalance), 0);
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
     return [
@@ -130,10 +108,7 @@ const StakePositionModalContainer = ({
       .catch(() => null);
 
     if (result) {
-      if (
-        result.code === 0 ||
-        result.code === ERROR_VALUE.TRANSACTION_FAILED.status
-      ) {
+      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
         enqueueEvent({
           txHash: result.data?.hash,
           action: DexEvent.STAKE,
@@ -219,14 +194,7 @@ const StakePositionModalContainer = ({
     return result;
   }, [account?.address, positionRepository, positions, router]);
 
-  return (
-    <StakePositionModal
-      positions={positions}
-      close={clearModal}
-      onSubmit={onSubmit}
-      pool={pool}
-    />
-  );
+  return <StakePositionModal positions={positions} close={clearModal} onSubmit={onSubmit} pool={pool} />;
 };
 
 export default StakePositionModalContainer;

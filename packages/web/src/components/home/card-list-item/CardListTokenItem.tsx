@@ -12,12 +12,7 @@ interface CardListTokenItemProps {
   isHiddenIndex?: boolean;
 }
 
-const CardListTokenItem: React.FC<CardListTokenItemProps> = ({
-  index,
-  item,
-  onClickItem,
-  isHiddenIndex = false,
-}) => {
+const CardListTokenItem: React.FC<CardListTokenItemProps> = ({ index, item, onClickItem, isHiddenIndex = false }) => {
   const visibleUp = useMemo(() => {
     return item.upDown === "up";
   }, [item.upDown]);

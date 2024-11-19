@@ -34,7 +34,7 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
     if (compareToken?.path === null || tokenAInput?.token?.path === null) {
       return null;
     }
-    return (compareToken?.path !== tokenAInput.token?.path);
+    return compareToken?.path !== tokenAInput.token?.path;
   }, [compareToken?.path, tokenAInput.token]);
 
   const visibleTokenA = useMemo(() => {
@@ -53,28 +53,48 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
 
   return (
     <LiquidityEnterAmountsWrapper>
-      {
-        (depositRatio === 0 || depositRatio === 100) ? (
-          <React.Fragment>
-            {visibleTokenA && (
-              <TokenAmountInput {...tokenAInput} connected={connected} changeToken={changeTokenA} changeAmount={changeTokenAAmount} />
-            )}
-            {visibleTokenB && (
-              <TokenAmountInput {...tokenBInput} connected={connected} changeToken={changeTokenB} changeAmount={changeTokenBAmount} />
-            )}
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <TokenAmountInput key={tokenAInput.token?.path} {...tokenAInput} connected={connected} changeToken={changeTokenA} changeAmount={changeTokenAAmount} />
-            <TokenAmountInput key={tokenBInput.token?.path}  {...tokenBInput} connected={connected} changeToken={changeTokenB} changeAmount={changeTokenBAmount} />
-            <div className="arrow">
-              <div className="shape">
-                <IconAdd className="add-icon" />
-              </div>
+      {depositRatio === 0 || depositRatio === 100 ? (
+        <React.Fragment>
+          {visibleTokenA && (
+            <TokenAmountInput
+              {...tokenAInput}
+              connected={connected}
+              changeToken={changeTokenA}
+              changeAmount={changeTokenAAmount}
+            />
+          )}
+          {visibleTokenB && (
+            <TokenAmountInput
+              {...tokenBInput}
+              connected={connected}
+              changeToken={changeTokenB}
+              changeAmount={changeTokenBAmount}
+            />
+          )}
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <TokenAmountInput
+            key={tokenAInput.token?.path}
+            {...tokenAInput}
+            connected={connected}
+            changeToken={changeTokenA}
+            changeAmount={changeTokenAAmount}
+          />
+          <TokenAmountInput
+            key={tokenBInput.token?.path}
+            {...tokenBInput}
+            connected={connected}
+            changeToken={changeTokenB}
+            changeAmount={changeTokenBAmount}
+          />
+          <div className="arrow">
+            <div className="shape">
+              <IconAdd className="add-icon" />
             </div>
-          </React.Fragment>
-        )
-      }
+          </div>
+        </React.Fragment>
+      )}
     </LiquidityEnterAmountsWrapper>
   );
 };

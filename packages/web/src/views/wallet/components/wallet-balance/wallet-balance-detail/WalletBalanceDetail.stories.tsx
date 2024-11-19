@@ -9,9 +9,7 @@ export default {
   component: WalletBalanceDetail,
 } as ComponentMeta<typeof WalletBalanceDetail>;
 
-const Template: ComponentStory<typeof WalletBalanceDetail> = args => (
-  <WalletBalanceDetail {...args} />
-);
+const Template: ComponentStory<typeof WalletBalanceDetail> = args => <WalletBalanceDetail {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
@@ -22,7 +20,7 @@ Default.args = {
     claimableRewards: "$1.40",
     loadingBalance: false,
     loadingPositions: false,
-    totalClaimedRewards: "$1.50"
+    totalClaimedRewards: "$1.50",
   },
   connected: true,
   claimAll: action("claimAll"),

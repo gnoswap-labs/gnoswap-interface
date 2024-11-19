@@ -30,12 +30,7 @@ interface LaunchpadMyParticipationBoxProps {
   handleClickClaim: (data: LaunchpadParticipationModel) => void;
 }
 
-const LaunchpadMyParticipationBox = ({
-  item,
-  idx,
-  rewardInfo,
-  handleClickClaim,
-}: LaunchpadMyParticipationBoxProps) => {
+const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }: LaunchpadMyParticipationBoxProps) => {
   const { t } = useTranslation();
 
   const [openedSelector, setOpenedSelector] = React.useState(false);
@@ -58,16 +53,12 @@ const LaunchpadMyParticipationBox = ({
 
     const currentBlockHeight = blockHeight;
 
-    return BigNumber(currentBlockHeight).isGreaterThan(
-      item.claimableBlockHeight,
-    );
+    return BigNumber(currentBlockHeight).isGreaterThan(item.claimableBlockHeight);
   }, [item.claimableBlockHeight, blockHeight]);
 
   const isClaimed = React.useMemo(() => {
-    const isClaimedReward =
-      Number(toNumberFormat(item.claimableRewardAmount, 2)) === 0;
-    const isClaimedDeposit =
-      Number(toNumberFormat(item.depositAmount, 2)) === 0;
+    const isClaimedReward = Number(toNumberFormat(item.claimableRewardAmount, 2)) === 0;
+    const isClaimedDeposit = Number(toNumberFormat(item.depositAmount, 2)) === 0;
 
     return isClaimedReward && isClaimedDeposit;
   }, [item]);
@@ -81,30 +72,18 @@ const LaunchpadMyParticipationBox = ({
 
       <div className="participation-box-data-wrapper">
         <div className="participation-box-data">
-          <div className="participation-box-data-key">
-            {t("Launchpad:myParticipation.col.depositAmounts")}
-          </div>
+          <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.depositAmounts")}</div>
           <div className="participation-box-data-value">
-            <Image
-              src="/gns.svg"
-              width={24}
-              height={24}
-              alt="GNS symbol image"
-            />
-            {toNumberFormat(item.depositAmount, 2)}{" "}
-            {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
+            <Image src="/gns.svg" width={24} height={24} alt="GNS symbol image" />
+            {toNumberFormat(item.depositAmount, 2)} {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
           </div>
         </div>
         <div className="participation-box-data">
-          <div className="participation-box-data-key">
-            {t("Launchpad:myParticipation.col.apr")}
-          </div>
+          <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.apr")}</div>
           <div className="participation-box-data-value">{aprStr}</div>
         </div>
         <div className="participation-box-data">
-          <div className="participation-box-data-key">
-            {t("Launchpad:myParticipation.col.claimable")}
-          </div>
+          <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.claimable")}</div>
           <div className="participation-box-data-value">
             <MissingLogo
               url={rewardInfo?.rewardTokenLogoUrl}
@@ -113,25 +92,18 @@ const LaunchpadMyParticipationBox = ({
               mobileWidth={24}
             />
             <>
-              {isClaimed ? 0 : toNumberFormat(item.claimableRewardAmount, 6)}{" "}
-              {rewardInfo?.rewardTokenSymbol}
+              {isClaimed ? 0 : toNumberFormat(item.claimableRewardAmount, 6)} {rewardInfo?.rewardTokenSymbol}
             </>
           </div>
         </div>
         {openedSelector && (
           <>
             <div className="participation-box-data">
-              <div className="participation-box-data-key">
-                {t("Launchpad:myParticipation.col.claimableDate")}
-              </div>
-              <div className="participation-box-data-value">
-                {formatClaimableTime(item.claimableTime, t)}
-              </div>
+              <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.claimableDate")}</div>
+              <div className="participation-box-data-value">{formatClaimableTime(item.claimableTime, t)}</div>
             </div>
             <div className="participation-box-data">
-              <div className="participation-box-data-key">
-                {t("Launchpad:myParticipation.col.claimed")}
-              </div>
+              <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.claimed")}</div>
               <div className="participation-box-data-value">
                 <MissingLogo
                   url={rewardInfo?.rewardTokenLogoUrl}
@@ -140,18 +112,13 @@ const LaunchpadMyParticipationBox = ({
                   mobileWidth={24}
                 />
                 <>
-                  {toNumberFormat(item.claimedRewardAmount, 6)}{" "}
-                  {rewardInfo?.rewardTokenSymbol}
+                  {toNumberFormat(item.claimedRewardAmount, 6)} {rewardInfo?.rewardTokenSymbol}
                 </>
               </div>
             </div>
             <div className="participation-box-data">
-              <div className="participation-box-data-key">
-                {t("Launchpad:myParticipation.col.endDate")}
-              </div>
-              <div className="participation-box-data-value">
-                {getDateUtcToLocal(item.endTime).value}
-              </div>
+              <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.endDate")}</div>
+              <div className="participation-box-data-value">{getDateUtcToLocal(item.endTime).value}</div>
             </div>
             <div className="participation-box-button-wrapper">
               <ClaimButton
@@ -166,39 +133,23 @@ const LaunchpadMyParticipationBox = ({
 
       <Divider />
 
-      <div
-        className="box-accordion-button-wrapper"
-        onClick={() => setOpenedSelector(prev => !prev)}
-      >
+      <div className="box-accordion-button-wrapper" onClick={() => setOpenedSelector(prev => !prev)}>
         <div className="title">
           <div>{t("Launchpad:common.button.details")}</div>
-          <div className="icon-wrapper">
-            {openedSelector ? <IconArrowUp /> : <IconArrowDown />}
-          </div>
+          <div className="icon-wrapper">{openedSelector ? <IconArrowUp /> : <IconArrowDown />}</div>
         </div>
       </div>
     </MyParticipationBoxWrapper>
   );
 };
 
-export const ClaimButton: React.FC<ParticipateButtonProps> = ({
-  text,
-  onClick,
-  disabled,
-}) => {
+export const ClaimButton: React.FC<ParticipateButtonProps> = ({ text, onClick, disabled }) => {
   const claimDefaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,
   };
 
-  return (
-    <Button
-      text={text}
-      style={claimDefaultStyle}
-      onClick={onClick}
-      disabled={disabled}
-    />
-  );
+  return <Button text={text} style={claimDefaultStyle} onClick={onClick} disabled={disabled} />;
 };
 
 export default LaunchpadMyParticipationBox;

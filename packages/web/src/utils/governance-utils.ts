@@ -11,18 +11,14 @@ export const makeDisplayPackagePath = (packagePath: string): string => {
   return packagePath.replace("gno.land/r/gnoswap", "");
 };
 
-export const makeProposalVariablesQuery = (
-  variables: ProposalVariables[],
-): string => {
+export const makeProposalVariablesQuery = (variables: ProposalVariables[]): string => {
   function makeMethodQuery(variable: ProposalVariables): string {
     const params = variable.param
       .split(",")
       .map(p => p.trim())
       .join(",");
 
-    return [variable.pkgPath, variable.func, params].join(
-      queryArgumentSeparator,
-    );
+    return [variable.pkgPath, variable.func, params].join(queryArgumentSeparator);
   }
 
   const methodQueries = variables.map(makeMethodQuery);

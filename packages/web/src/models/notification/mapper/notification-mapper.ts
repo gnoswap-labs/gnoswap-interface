@@ -3,9 +3,7 @@ import dayjs from "dayjs";
 import { TransactionGroupsLabel, TransactionGroupsType } from "..";
 
 export class NotificationMapper {
-  static notificationGroupFromTransaction(
-    transactions: TransactionModel[],
-  ): TransactionGroupsType[] {
+  static notificationGroupFromTransaction(transactions: TransactionModel[]): TransactionGroupsType[] {
     const today = dayjs();
     const todayTransactions: TransactionModel[] = [];
     const pastWeekTransactions: TransactionModel[] = [];

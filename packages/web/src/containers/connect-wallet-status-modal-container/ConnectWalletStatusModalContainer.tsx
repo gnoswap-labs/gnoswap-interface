@@ -10,7 +10,7 @@ const ConnectWalletStatusModalContainer = () => {
   const close = useCallback(() => {
     clearModal();
   }, [clearModal]);
-  
+
   useEffect(() => {
     if (loadingConnect === "done") {
       close();
@@ -24,7 +24,7 @@ const ConnectWalletStatusModalContainer = () => {
       connectAdenaClient();
     }
   }, [connectAdenaClient, close, walletClient]);
-  
+
   return <ConnectWalletStatusModal close={close} connect={connect} />;
 };
 

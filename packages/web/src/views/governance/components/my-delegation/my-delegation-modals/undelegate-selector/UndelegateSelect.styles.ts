@@ -100,10 +100,7 @@ export const UndelegateSelectBox = styled.div`
       max-height: 230px;
       overflow-y: auto;
 
-      ${({ theme }) =>
-        mixins.useScrollStyle(
-          theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA",
-        )}
+      ${({ theme }) => mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
 
       & > div {
         padding: 16px 24px;

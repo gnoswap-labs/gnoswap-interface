@@ -1,10 +1,5 @@
 import BigNumber from "bignumber.js";
-import {
-  mathSybmolAbsFormat,
-  toMillionFormat,
-  toNumberFormat,
-  toUnitFormat,
-} from "./number-utils";
+import { mathSybmolAbsFormat, toMillionFormat, toNumberFormat, toUnitFormat } from "./number-utils";
 
 describe("bignumber.js convert to format string", () => {
   test("123123123.123123123 to 123,123,123.123123123", () => {

@@ -14,7 +14,7 @@ const token: TokenModel = {
   symbol: "GNS",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
   type: "grc20",
-  priceID: "gno.land/r/gns"
+  priceID: "gno.land/r/gns",
 };
 
 describe("TokenAmountInput Component", () => {
@@ -26,8 +26,12 @@ describe("TokenAmountInput Component", () => {
       balance: "12,211",
       usdValue: "12.3",
       changable: true,
-      changeAmount: () => { return; },
-      changeToken: () => { return; },
+      changeAmount: () => {
+        return;
+      },
+      changeToken: () => {
+        return;
+      },
     };
 
     render(

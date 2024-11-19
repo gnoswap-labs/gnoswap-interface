@@ -1,12 +1,5 @@
 const IconInbox = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="64"
-    height="64"
-    fill="none"
-    viewBox="0 0 64 64"
-    className={className}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 64 64" className={className}>
     <path
       stroke="#596782"
       strokeLinecap="round"

@@ -54,12 +54,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
       if (token && isNativeToken(token)) {
         const nativeFullBalance = BigNumber(formatValue)
-          .minus(
-            makeDisplayTokenAmount(
-              token,
-              DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE,
-            ) || 0,
-          )
+          .minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0)
           .toString();
         changeAmount(nativeFullBalance);
       } else {
@@ -104,10 +99,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       </div>
       <div className="info">
         <span className="price-text disable-pointer ">{usdValue}</span>
-        <span
-          className={`balance-text ${!connected ? "disable-pointer" : ""}`}
-          onClick={handleFillBalance}
-        >
+        <span className={`balance-text ${!connected ? "disable-pointer" : ""}`} onClick={handleFillBalance}>
           {t("business:balance")}: {balanceADisplay}
         </span>
       </div>

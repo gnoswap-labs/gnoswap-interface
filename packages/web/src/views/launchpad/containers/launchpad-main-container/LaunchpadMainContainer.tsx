@@ -11,15 +11,8 @@ interface LaunchpadMainContainerProps {
   icon: React.ReactNode;
 }
 
-const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({
-  themeKey,
-  icon,
-}) => {
-  const {
-    data: launchpadSummary,
-    isLoading: isLoadingSummary,
-    isFetched: isFetchedSummary,
-  } = useGetLaunchpadSummary();
+const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({ themeKey, icon }) => {
+  const { data: launchpadSummary, isLoading: isLoadingSummary, isFetched: isFetchedSummary } = useGetLaunchpadSummary();
 
   const { breakpoint } = useWindowSize();
 

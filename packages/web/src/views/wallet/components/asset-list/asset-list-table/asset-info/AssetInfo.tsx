@@ -3,11 +3,7 @@ import { useCallback, useMemo } from "react";
 import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
 import { AssetReceiveButton } from "@components/wallet/asset-button/AssetReceiveButton";
 import { AssetSendButton } from "@components/wallet/asset-button/AssetSendButton";
-import {
-  ASSET_INFO,
-  ASSET_INFO_MOBILE,
-  ASSET_INFO_TABLET,
-} from "@constants/skeleton.constant";
+import { ASSET_INFO, ASSET_INFO_MOBILE, ASSET_INFO_TABLET } from "@constants/skeleton.constant";
 import { isNativeToken } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -23,13 +19,7 @@ export interface AssetInfoProps {
   breakpoint: DEVICE_TYPE;
 }
 
-const AssetInfo: React.FC<AssetInfoProps> = ({
-  asset,
-  deposit,
-  withdraw,
-  moveTokenPage,
-  breakpoint,
-}) => {
+const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTokenPage, breakpoint }) => {
   const { balance, type, path, price } = asset;
 
   const onClickItem = useCallback((path: string) => {
@@ -45,13 +35,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   }, [withdraw, asset]);
 
   const tokenInfoCell = useMemo(
-    () => (
-      <TokenInfoCell
-        token={asset}
-        isNative={isNativeToken(asset)}
-        breakpoint={breakpoint}
-      />
-    ),
+    () => <TokenInfoCell token={asset} isNative={isNativeToken(asset)} breakpoint={breakpoint} />,
     [asset, breakpoint],
   );
 
@@ -66,9 +50,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         {tokenInfoCell}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO.list?.[1].width}>
-        <span className="chain">
-          {type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}
-        </span>
+        <span className="chain">{type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO.list?.[2].width}>
         <span className="balance">{balance}</span>
@@ -93,9 +75,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         {tokenInfoCell}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[1].width}>
-        <span className="chain">
-          {type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}
-        </span>
+        <span className="chain">{type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[2].width}>
         <span className="balance">{balance}</span>
@@ -120,9 +100,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         {tokenInfoCell}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[1].width}>
-        <span className="chain">
-          {type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}
-        </span>
+        <span className="chain">{type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[2].width}>
         <span className="balance">{balance}</span>

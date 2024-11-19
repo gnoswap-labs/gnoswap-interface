@@ -4,13 +4,7 @@ import IconUpload from "@components/common/icons/IconUpload";
 
 import { LoadButton } from "./AssetButton.styles";
 
-export const AssetSendButton = ({
-  onClick,
-  disabled = false,
-}: {
-  onClick: () => void;
-  disabled?: boolean;
-}) => {
+export const AssetSendButton = ({ onClick, disabled = false }: { onClick: () => void; disabled?: boolean }) => {
   const { t } = useTranslation();
 
   return (

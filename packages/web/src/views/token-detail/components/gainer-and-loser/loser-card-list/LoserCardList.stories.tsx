@@ -5,7 +5,6 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
 import GainerCardList from "./LoserCardList";
 
-
 export const losersInit = [
   {
     path: "1",
@@ -49,9 +48,7 @@ export default {
   component: GainerCardList,
 } as ComponentMeta<typeof GainerCardList>;
 
-const Template: ComponentStory<typeof GainerCardList> = args => (
-  <GainerCardList {...args} />
-);
+const Template: ComponentStory<typeof GainerCardList> = args => <GainerCardList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

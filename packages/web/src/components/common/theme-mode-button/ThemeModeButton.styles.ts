@@ -16,13 +16,11 @@ export const ThemeModeButtonWrapper = styled.div<{ darkMode: boolean }>`
     z-index: 1;
     &.dark-icon * {
       transition: all 0.3s ease;
-      fill: ${({ darkMode, theme }) =>
-        darkMode ? theme.color.icon02 : theme.color.icon03};
+      fill: ${({ darkMode, theme }) => (darkMode ? theme.color.icon02 : theme.color.icon03)};
     }
     &.light-icon * {
       transition: all 0.3s ease;
-      fill: ${({ darkMode, theme }) =>
-        darkMode ? theme.color.icon03 : theme.color.icon07};
+      fill: ${({ darkMode, theme }) => (darkMode ? theme.color.icon03 : theme.color.icon07)};
     }
   }
 `;

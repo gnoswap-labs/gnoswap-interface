@@ -26,7 +26,7 @@ describe("WalletBalanceDetail Component", () => {
       isSwitchNetwork: false,
       loadngTransactionClaim: false,
       positions: [],
-      tokenPrices: {}
+      tokenPrices: {},
     };
 
     render(

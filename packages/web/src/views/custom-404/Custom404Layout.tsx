@@ -12,13 +12,7 @@ interface Custom404LayoutProps {
   themeKey: "dark" | "light";
 }
 
-const Custom404Layout: React.FC<Custom404LayoutProps> = ({
-  header,
-  icon404,
-  goBackClick,
-  footer,
-  themeKey,
-}) => {
+const Custom404Layout: React.FC<Custom404LayoutProps> = ({ header, icon404, goBackClick, footer, themeKey }) => {
   const { t } = useTranslation();
 
   return (

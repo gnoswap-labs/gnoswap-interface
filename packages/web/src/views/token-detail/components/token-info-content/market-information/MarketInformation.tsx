@@ -14,10 +14,7 @@ interface MarketInformationProps {
   loading: boolean;
 }
 
-const MarketInformation: React.FC<MarketInformationProps> = ({
-  info,
-  loading,
-}) => {
+const MarketInformation: React.FC<MarketInformationProps> = ({ info, loading }) => {
   const { t } = useTranslation();
 
   return (

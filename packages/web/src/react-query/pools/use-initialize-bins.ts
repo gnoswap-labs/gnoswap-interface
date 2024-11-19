@@ -22,9 +22,7 @@ export const useInitializeBins = (
       const maxBinTick = priceToTick(price * 4);
 
       const center = initializeCount / 2;
-      const tickGap = Math.round(
-        (maxBinTick - currentTick) / (initializeCount / 2),
-      );
+      const tickGap = Math.round((maxBinTick - currentTick) / (initializeCount / 2));
 
       const bins = Array.from({ length: initializeCount / 2 })
         .flatMap((_, index) => {

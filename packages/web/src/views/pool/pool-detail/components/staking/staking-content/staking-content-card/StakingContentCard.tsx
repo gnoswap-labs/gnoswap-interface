@@ -11,10 +11,7 @@ import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import {
-  StakingPeriodType,
-  STAKING_PERIOD_INFO,
-} from "@constants/option.constant";
+import { StakingPeriodType, STAKING_PERIOD_INFO } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -43,13 +40,7 @@ interface StakingContentCardProps {
 }
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
-const PriceTooltipContent = ({
-  positions,
-  period,
-}: {
-  positions: PoolPositionModel[];
-  period: number;
-}) => {
+const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionModel[]; period: number }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
@@ -57,10 +48,8 @@ const PriceTooltipContent = ({
 
   const isAnyPriceEmpty = useCallback(
     (position: PoolPositionModel) => {
-      const tokenAEmpty =
-        !tokenPrices[checkGnotPath(position.pool.tokenA.priceID)].usd;
-      const tokenBEmpty =
-        !tokenPrices[checkGnotPath(position.pool.tokenB.priceID)].usd;
+      const tokenAEmpty = !tokenPrices[checkGnotPath(position.pool.tokenA.priceID)].usd;
+      const tokenBEmpty = !tokenPrices[checkGnotPath(position.pool.tokenB.priceID)].usd;
 
       return tokenAEmpty || tokenBEmpty;
     },
@@ -100,30 +89,18 @@ const PriceTooltipContent = ({
               <span className="title">ID #{position.lpTokenId}</span>
             </div>
             <div className="list">
-              <span className="label">
-                {t("Pool:staking.period.stakedTooltip.totalValue")}
-              </span>
+              <span className="label">{t("Pool:staking.period.stakedTooltip.totalValue")}</span>
               <span className="content">
-                {!isAnyPriceEmpty(position)
-                  ? formatOtherPrice(position.usdValue, { hasMinLimit: false })
-                  : "-"}
+                {!isAnyPriceEmpty(position) ? formatOtherPrice(position.usdValue, { hasMinLimit: false }) : "-"}
               </span>
             </div>
             <div className="list">
-              <span className="label">
-                {t("Pool:staking.period.stakedTooltip.stakedDate")}
-              </span>
-              <span className="content">
-                {timeToDateStr(new Date(position.stakedAt).getTime())}
-              </span>
+              <span className="label">{t("Pool:staking.period.stakedTooltip.stakedDate")}</span>
+              <span className="content">{timeToDateStr(new Date(position.stakedAt).getTime())}</span>
             </div>
             <div className="list">
-              <span className="label">
-                {t("Pool:staking.period.stakedTooltip.nextTier")}
-              </span>
-              <span className="content">
-                {period === -1 ? "-" : `in ${getRemainTime(position)}`}
-              </span>
+              <span className="label">{t("Pool:staking.period.stakedTooltip.nextTier")}</span>
+              <span className="content">{period === -1 ? "-" : `in ${getRemainTime(position)}`}</span>
             </div>
             {index < positions.length - 1 && <TooltipDivider />}
           </React.Fragment>
@@ -190,10 +167,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () =>
-      stakingApr
-        ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate)
-        : null,
+    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate) : null),
     [period, stakingApr],
   );
 
@@ -209,30 +183,15 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
     <StakingContentCardWrapper nonTotal={!hasPosition}>
       <div className="left">
         <div className="mobile-wrap">
-          <div
-            className={`check-wrap ${
-              !checkedStep ? "check-wrap-not-active" : ""
-            }`}
-          >
+          <div className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""}`}>
             {checkedStep && <IconCheck />}
 
-            {breakpoint === DEVICE_TYPE.MOBILE ||
-            breakpoint === DEVICE_TYPE.TABLET_M ? (
+            {breakpoint === DEVICE_TYPE.MOBILE || breakpoint === DEVICE_TYPE.TABLET_M ? (
               <div className="check-line-long">
-                {checkedStep ? (
-                  <IconLineLong />
-                ) : (
-                  <div className="border-not-active" />
-                )}
+                {checkedStep ? <IconLineLong /> : <div className="border-not-active" />}
               </div>
             ) : (
-              <div className="check-line">
-                {checkedStep ? (
-                  <IconLine />
-                ) : (
-                  <div className="border-not-active" />
-                )}
-              </div>
+              <div className="check-line">{checkedStep ? <IconLine /> : <div className="border-not-active" />}</div>
             )}
           </div>
           <div className="name-wrap">
@@ -284,28 +243,16 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                   placement="top"
                   FloatingContent={
                     <div>
-                      <PriceTooltipContent
-                        positions={positions}
-                        period={periodInfo.period}
-                      />
+                      <PriceTooltipContent positions={positions} period={periodInfo.period} />
                     </div>
                   }
                 >
                   <span>{totalUSD}</span>
-                  {positions.length > 0 &&
-                    checkedStep &&
-                    totalStakedRewardUSD !== "$0" &&
-                    "+ "}
-                  {positions.length > 0 &&
-                    checkedStep &&
-                    totalStakedRewardUSD !== "$0" && (
-                      <span className="price-gd-text">
-                        {totalStakedRewardUSD}
-                      </span>
-                    )}
-                  {positions.length > 0 && (
-                    <div className="badge">{positions.length} LP</div>
+                  {positions.length > 0 && checkedStep && totalStakedRewardUSD !== "$0" && "+ "}
+                  {positions.length > 0 && checkedStep && totalStakedRewardUSD !== "$0" && (
+                    <span className="price-gd-text">{totalStakedRewardUSD}</span>
                   )}
+                  {positions.length > 0 && <div className="badge">{positions.length} LP</div>}
                 </Tooltip>
               </span>
             </div>
@@ -343,13 +290,7 @@ interface SummuryAprProps {
   breakpoint: DEVICE_TYPE;
 }
 
-export const SummuryApr: React.FC<SummuryAprProps> = ({
-  period,
-  checkPoints,
-  positions,
-  stakingApr,
-  loading,
-}) => {
+export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, positions, stakingApr, loading }) => {
   const { t } = useTranslation();
   const { tokenPrices } = useTokenData();
 
@@ -386,24 +327,18 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [positions]);
 
   const totalStakedRewardUSD = useMemo(() => {
-    const tempTotalStakedRewardUSD = positionRewards.reduce(
-      (accum, current) => {
-        if (current.rewardType !== "INTERNAL") {
-          return accum;
-        }
-        const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
-        return Number(current.totalAmount) * Number(tokenUSD) + accum;
-      },
-      0,
-    );
+    const tempTotalStakedRewardUSD = positionRewards.reduce((accum, current) => {
+      if (current.rewardType !== "INTERNAL") {
+        return accum;
+      }
+      const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
+      return Number(current.totalAmount) * Number(tokenUSD) + accum;
+    }, 0);
     return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () =>
-      stakingApr
-        ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate)
-        : null,
+    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate) : null),
     [period, stakingApr],
   );
 
@@ -419,11 +354,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
     <StakingContentCardWrapper nonTotal={!hasPosition}>
       <div className="left">
         <div className="mobile-wrap">
-          <div
-            className={`check-wrap ${
-              !checkedStep ? "check-wrap-not-active" : ""
-            }`}
-          >
+          <div className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""}`}>
             {checkedStep && <IconCheck />}
           </div>
           <div className="name-wrap">
@@ -478,28 +409,16 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
                   placement="top"
                   FloatingContent={
                     <div>
-                      <PriceTooltipContent
-                        positions={positions}
-                        period={periodInfo.period}
-                      />
+                      <PriceTooltipContent positions={positions} period={periodInfo.period} />
                     </div>
                   }
                 >
                   <span>{totalUSD}</span>
-                  {checkedStep &&
-                    positions.length > 0 &&
-                    totalStakedRewardUSD !== "$0" &&
-                    "+ "}
-                  {positions.length > 0 &&
-                    totalStakedRewardUSD !== "$0" &&
-                    checkedStep && (
-                      <span className="price-gd-text">
-                        {totalStakedRewardUSD}
-                      </span>
-                    )}
-                  {positions.length > 0 && (
-                    <div className="badge">{positions.length} LP</div>
+                  {checkedStep && positions.length > 0 && totalStakedRewardUSD !== "$0" && "+ "}
+                  {positions.length > 0 && totalStakedRewardUSD !== "$0" && checkedStep && (
+                    <span className="price-gd-text">{totalStakedRewardUSD}</span>
                   )}
+                  {positions.length > 0 && <div className="badge">{positions.length} LP</div>}
                 </Tooltip>
               </span>
             </div>

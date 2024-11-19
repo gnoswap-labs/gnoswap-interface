@@ -34,13 +34,15 @@ const TokenWarningModalContainer: React.FC<TokenWarningModalContainerProps> = ({
     clearModal();
   }, [clearModal, onClose]);
 
-  return <TokenWarningModal
-    close={close}
-    onClickConfirm={onClickConfirm}
-    handleChecked={handleChecked}
-    checked={checked}
-    token={token}
-  />;
+  return (
+    <TokenWarningModal
+      close={close}
+      onClickConfirm={onClickConfirm}
+      handleChecked={handleChecked}
+      checked={checked}
+      token={token}
+    />
+  );
 };
 
 export default TokenWarningModalContainer;

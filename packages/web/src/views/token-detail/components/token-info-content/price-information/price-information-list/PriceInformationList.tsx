@@ -35,10 +35,7 @@ interface PriceInformationListProps {
   loading: boolean;
 }
 
-const PriceInformationList: React.FC<PriceInformationListProps> = ({
-  list,
-  loading,
-}) => {
+const PriceInformationList: React.FC<PriceInformationListProps> = ({ list, loading }) => {
   const { t } = useTranslation();
 
   const TITLE_LIST = [

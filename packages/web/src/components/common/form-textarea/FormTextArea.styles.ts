@@ -34,6 +34,5 @@ export const FormTextAreaStyle = styled.textarea`
     }
   }
 
-  ${({ theme }) =>
-    mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
+  ${({ theme }) => mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
 `;

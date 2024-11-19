@@ -12,14 +12,7 @@ interface DashboradLayoutProps {
   footer: React.ReactNode;
 }
 
-const DashboardLayout: React.FC<DashboradLayoutProps> = ({
-  header,
-  tvl,
-  volume,
-  info,
-  activities,
-  footer,
-}) => {
+const DashboardLayout: React.FC<DashboradLayoutProps> = ({ header, tvl, volume, info, activities, footer }) => {
   const { t } = useTranslation();
 
   return (
@@ -35,10 +28,7 @@ const DashboardLayout: React.FC<DashboradLayoutProps> = ({
         </div>
         <div className="dashboard-info-container">{info}</div>
       </section>
-      <div
-        className="background-wrapper"
-        id={getCanScrollUpId("activities-list")}
-      >
+      <div className="background-wrapper" id={getCanScrollUpId("activities-list")}>
         <div className="background"></div>
         <section className="activities-section">
           <div className="activities-container">{activities}</div>

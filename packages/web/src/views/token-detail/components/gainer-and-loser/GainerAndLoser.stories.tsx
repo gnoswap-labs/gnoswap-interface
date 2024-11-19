@@ -10,9 +10,7 @@ export default {
   component: GainerAndLoser,
 } as ComponentMeta<typeof GainerAndLoser>;
 
-const Template: ComponentStory<typeof GainerAndLoser> = args => (
-  <GainerAndLoser {...args} />
-);
+const Template: ComponentStory<typeof GainerAndLoser> = args => <GainerAndLoser {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

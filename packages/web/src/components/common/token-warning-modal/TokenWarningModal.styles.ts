@@ -71,7 +71,7 @@ export const TokenTradingModalWrapper = styled.div`
             > div {
               color: ${({ theme }) => theme.color.hover06};
             }
-            .new-tab *{
+            .new-tab * {
               fill: ${({ theme }) => theme.color.hover06};
             }
           }
@@ -82,13 +82,12 @@ export const TokenTradingModalWrapper = styled.div`
             text-overflow: ellipsis;
             ${fonts.body12}
             color: ${({ theme }) => theme.color.text10};
-            
           }
           ${media.mobile} {
             max-width: 100%;
           }
         }
-        
+
         svg {
           width: 14px;
           height: 14px;
@@ -130,42 +129,39 @@ export const TokenTradingModalWrapper = styled.div`
             }
           }
         }
-        
       }
     }
-
   }
   ${media.mobile} {
     padding: 15px 12px;
     width: 328px;
     .modal-body {
-        .content {
-            .failed-logo {
-              width: 60px;
-            }
-            h5 {
+      .content {
+        .failed-logo {
+          width: 60px;
+        }
+        h5 {
+          ${fonts.body9}
+        }
+        .des {
+          ${fonts.p2}
+        }
+        .link {
+          max-width: 100%;
+          .url-wrapper > div {
+            width: calc(100% - 22px);
+          }
+        }
+        > div {
+          .button-confirm {
+            margin-bottom: 12px;
+            height: 41px;
+            span {
               ${fonts.body9}
             }
-            .des {
-              ${fonts.p2}
-            }
-            .link {
-              max-width: 100%;
-              .url-wrapper  > div {
-                width: calc(100% - 22px);
-              }
-            }
-            > div {
-              .button-confirm {
-                margin-bottom: 12px;
-                height: 41px;
-                span {
-                  ${fonts.body9}
-                }
-              }
-            }
           }
+        }
+      }
     }
   }
-  
 `;

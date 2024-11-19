@@ -10,6 +10,6 @@ export default {
 export const Default: StoryObj<TokenChartGraphTabProps> = {
   args: {
     currentTab: "1D",
-    changeTab: () => action("changeTab")
+    changeTab: () => action("changeTab"),
   },
 };

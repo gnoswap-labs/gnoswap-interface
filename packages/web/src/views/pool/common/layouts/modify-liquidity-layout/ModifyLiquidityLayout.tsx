@@ -9,12 +9,7 @@ interface PoolAddLayoutProps {
   footer: React.ReactNode;
 }
 
-const ModifyLiquidityLayout: React.FC<PoolAddLayoutProps> = ({
-  header,
-  breadcrumbs,
-  increaseLiquidity,
-  footer,
-}) => {
+const ModifyLiquidityLayout: React.FC<PoolAddLayoutProps> = ({ header, breadcrumbs, increaseLiquidity, footer }) => {
   const { t } = useTranslation();
 
   return (

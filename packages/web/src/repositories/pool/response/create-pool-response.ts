@@ -9,5 +9,5 @@ export interface CreatePoolSuccessResponse {
 }
 
 export interface CreatePoolFailedResponse {
-  hash: string
+  hash: string;
 }

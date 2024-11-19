@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 
 type UseLockedBodyOutput = [boolean, (locked: boolean) => void];
 
-export function useLockedBody(
-  initialLocked = false,
-  rootId = "__next",
-): UseLockedBodyOutput {
+export function useLockedBody(initialLocked = false, rootId = "__next"): UseLockedBodyOutput {
   const [locked, setLocked] = useState(initialLocked);
 
   // Do the side effect before render
@@ -37,7 +34,7 @@ export function useLockedBody(
         document.body.style.paddingRight = originalPaddingRight;
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locked]);
 
   // Update state if initialValue changes

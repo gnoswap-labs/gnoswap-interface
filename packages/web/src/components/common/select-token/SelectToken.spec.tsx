@@ -13,9 +13,15 @@ describe("SelectToken Component", () => {
       defaultTokens: [],
       tokens: [],
       tokenPrices: {},
-      changeKeyword: () => { return; },
-      changeToken: () => { return; },
-      close: () => { return; },
+      changeKeyword: () => {
+        return;
+      },
+      changeToken: () => {
+        return;
+      },
+      close: () => {
+        return;
+      },
       themeKey: "dark",
       modalRef,
       breakpoint: DEVICE_TYPE.WEB,

@@ -35,12 +35,7 @@ export interface ViewProposalModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
   isSwitchNetwork: boolean;
-  getTooltipTextI18nKey: (
-    status: string,
-    isMajorityVoted: boolean,
-    yesVotes: number,
-    noVotes: number,
-  ) => string;
+  getTooltipTextI18nKey: (status: string, isMajorityVoted: boolean, yesVotes: number, noVotes: number) => string;
   connectWallet: () => void;
   switchNetwork: () => void;
   voteProposal: (proposalId: number, voteYes: boolean) => void;
@@ -66,15 +61,10 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   );
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
-  const [selectedVote, setSelectedVote] = useState(
-    proposalDetail.myVote?.type || "",
-  );
+  const [selectedVote, setSelectedVote] = useState(proposalDetail.myVote?.type || "");
 
   const isMajorityVoted = useMemo(() => {
-    return (
-      proposalDetail.votes.yes + proposalDetail.votes.no >=
-      proposalDetail.votes.max / 2
-    );
+    return proposalDetail.votes.yes + proposalDetail.votes.no >= proposalDetail.votes.max / 2;
   }, [proposalDetail.votes]);
 
   const { yesVotes, noVotes } = useMemo(() => {
@@ -85,26 +75,11 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
       yesVotes: proposalDetail.votes.yes,
       noVotes: proposalDetail.votes.no,
     };
-  }, [
-    proposalDetail.status,
-    proposalDetail.votes.yes,
-    proposalDetail.votes.no,
-  ]);
+  }, [proposalDetail.status, proposalDetail.votes.yes, proposalDetail.votes.no]);
 
   const tooltipTextI18nKey = React.useMemo(() => {
-    return getTooltipTextI18nKey(
-      proposalDetail.status,
-      isMajorityVoted,
-      yesVotes,
-      noVotes,
-    );
-  }, [
-    proposalDetail.status,
-    getTooltipTextI18nKey,
-    isMajorityVoted,
-    yesVotes,
-    noVotes,
-  ]);
+    return getTooltipTextI18nKey(proposalDetail.status, isMajorityVoted, yesVotes, noVotes);
+  }, [proposalDetail.status, getTooltipTextI18nKey, isMajorityVoted, yesVotes, noVotes]);
 
   if (!proposalDetail) return null;
 
@@ -171,37 +146,25 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
         </ModalHeaderWrapper>
         <ProposalContentWrapper
           style={{
-            maxHeight: hasVoteButton
-              ? isMobile
-                ? "368px"
-                : "329px"
-              : isMobile
-              ? "499px"
-              : "486px",
+            maxHeight: hasVoteButton ? (isMobile ? "368px" : "329px") : isMobile ? "499px" : "486px",
           }}
         >
           <div className="content">
             {proposalDetail.type === "COMMUNITY_POOL_SPEND" && (
               <>
                 <div className="variable">
-                  <div className="variable-type">
-                    {t("Governance:detailModal.content.recipient")}
-                  </div>
+                  <div className="variable-type">{t("Governance:detailModal.content.recipient")}</div>
                   {proposalDetail.content.recipient}
                 </div>
                 <div className="variable">
-                  <div className="variable-type">
-                    {t("Governance:detailModal.content.amount")}
-                  </div>
+                  <div className="variable-type">{t("Governance:detailModal.content.amount")}</div>
                   {proposalDetail.content.amount}
                 </div>
               </>
             )}
             {proposalDetail.type === "PARAMETER_CHANGE" && (
               <div className="variable">
-                <div className="variable-type">
-                  {t("Governance:detailModal.content.change")}
-                </div>
+                <div className="variable-type">{t("Governance:detailModal.content.change")}</div>
                 {proposalDetail.content.parameters?.map(item => (
                   <>
                     {`Pkg Path: "${item.pkgPath}", Func: "${item.func}", Params: "${item.param}"`}
@@ -210,10 +173,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 ))}
               </div>
             )}
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              className="markdown-style"
-            >
+            <ReactMarkdown remarkPlugins={[remarkGfm]} className="markdown-style">
               {`${proposalDetail.content.description.replaceAll("\\n", "\n")}`}
             </ReactMarkdown>
           </div>
@@ -226,19 +186,13 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 placement="top"
                 FloatingContent={
                   <ProposalTooltipContent>
-                    <Trans
-                      ns="Governance"
-                      components={{ br: <br /> }}
-                      i18nKey={tooltipTextI18nKey}
-                    />
+                    <Trans ns="Governance" components={{ br: <br /> }} i18nKey={tooltipTextI18nKey} />
                   </ProposalTooltipContent>
                 }
               >
                 <span className={isMajorityVoted ? "passed" : ""}>
                   {isMajorityVoted && <IconPassed />}
-                  {(
-                    proposalDetail.votes.yes + proposalDetail.votes.no
-                  ).toLocaleString()}
+                  {(proposalDetail.votes.yes + proposalDetail.votes.no).toLocaleString()}
                 </span>
               </Tooltip>
               /<div>{proposalDetail.votes.max.toLocaleString()}</div>
@@ -266,9 +220,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <VotingPowerWrapper>
               <span>{t("Governance:detailModal.votingWeight")}</span>
               <div>
-                <div className="power-value">
-                  {(proposalDetail.myVote?.weight || 0).toLocaleString()}
-                </div>
+                <div className="power-value">{(proposalDetail.myVote?.weight || 0).toLocaleString()}</div>
                 <TokenChip tokenInfo={XGNS_TOKEN} />
               </div>
             </VotingPowerWrapper>

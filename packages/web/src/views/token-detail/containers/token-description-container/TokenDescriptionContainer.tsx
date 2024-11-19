@@ -41,8 +41,7 @@ export const descriptionInit: DescriptionInfo = {
 
 const TokenDescriptionContainer: React.FC = () => {
   const { getTokenUrl } = useGnoscanUrl();
-  const [descriptionInfo, setDescriptionInfo] =
-    useState<DescriptionInfo>(descriptionInit);
+  const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
   const [copied, setCopied] = useState(false);
   const router = useCustomRouter();
   const path = router.getTokenPath();

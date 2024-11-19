@@ -1,12 +1,5 @@
 const IconBronzeMedal = ({ className }: { className?: string }) => (
-  <svg
-    width="22"
-    height="24"
-    viewBox="0 0 22 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-  >
+  <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path
       d="M17.7116 1.32422C18.0111 1.32422 18.2539 1.56703 18.2539 1.86656L18.2539 5.12058C18.2539 5.42011 18.0111 5.66292 17.7116 5.66292L4.15313 5.66292C3.8536 5.66292 3.61079 5.42011 3.61079 5.12058L3.61079 1.86656C3.61079 1.56703 3.8536 1.32422 4.15313 1.32422L17.7116 1.32422Z"
       fill="#0355B6"

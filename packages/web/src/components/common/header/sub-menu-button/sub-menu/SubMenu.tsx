@@ -31,18 +31,14 @@ const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ onSideMenuToggle }) => {
   const navigationItems = useMemo(() => {
     // Make path by page name
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
-    const allPaths = SIDE_MENU_NAV.filter(
-      item => !blockedPaths.includes(item.path),
-    );
+    const allPaths = SIDE_MENU_NAV.filter(item => !blockedPaths.includes(item.path));
     return allPaths;
   }, []);
 
   const extraNavigationItems = useMemo(() => {
     // Make path by page name
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
-    return SIDE_EXTRA_MENU_NAV.filter(
-      item => !blockedPaths.includes(item.path),
-    );
+    return SIDE_EXTRA_MENU_NAV.filter(item => !blockedPaths.includes(item.path));
   }, []);
 
   const getIcon = useCallback((iconType: string | null) => {

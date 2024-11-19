@@ -60,14 +60,8 @@ const DecreasePositionModal: React.FC<Props> = ({
             rangeStatus={rangeStatus}
           />
           <div>
-            <p className="label">
-              {t("DecreaseLiquidity:confModal.decreasingAmount")}
-            </p>
-            <DecreasePoolInfo
-              {...amountInfo}
-              isShowProtocolFee
-              pooledTokenInfos={pooledTokenInfos}
-            />
+            <p className="label">{t("DecreaseLiquidity:confModal.decreasingAmount")}</p>
+            <DecreasePoolInfo {...amountInfo} isShowProtocolFee pooledTokenInfos={pooledTokenInfos} />
           </div>
 
           <BalanceChange

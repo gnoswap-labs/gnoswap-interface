@@ -1,12 +1,4 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import IconAdd from "@components/common/icons/IconAdd";
@@ -36,9 +28,7 @@ import { priceToTick, tickToPrice } from "@utils/swap-utils";
 import PriceSteps from "./price-steps/PriceSteps";
 import StartingPrice from "./starting-price/StartingPrice";
 
-import {
-  SelectPriceRangeCustomWrapper
-} from "./SelectPriceRangeCustom.styles";
+import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -61,10 +51,7 @@ export interface SelectPriceRangeCustomHandle {
   resetRange: (priceRangeType?: PriceRangeType | null) => void;
 }
 
-const SelectPriceRangeCustom = forwardRef<
-  SelectPriceRangeCustomHandle,
-  SelectPriceRangeCustomProps
->(
+const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPriceRangeCustomProps>(
   (
     {
       tokenA,
@@ -91,10 +78,8 @@ const SelectPriceRangeCustom = forwardRef<
     const GRAPH_WIDTH = 388;
     const GRAPH_HEIGHT = 160;
     const [startingPriceValue, setStartingPriceValue] = useState<string>("");
-    const minPriceRangeCustomRef =
-      useRef<React.ElementRef<typeof PriceSteps>>(null);
-    const maxPriceRangeCustomRef =
-      useRef<React.ElementRef<typeof PriceSteps>>(null);
+    const minPriceRangeCustomRef = useRef<React.ElementRef<typeof PriceSteps>>(null);
+    const maxPriceRangeCustomRef = useRef<React.ElementRef<typeof PriceSteps>>(null);
 
     const isCustom = true;
 
@@ -103,23 +88,12 @@ const SelectPriceRangeCustom = forwardRef<
       [selectPool.renderState, isLoadingSelectPriceRange],
     );
 
-    const availSelect =
-      Array.isArray(selectPool.liquidityOfTickPoints) &&
-      selectPool.renderState() === "DONE";
+    const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState() === "DONE";
 
     const flip = useMemo(() => {
-      const compareTokenPaths = [
-        checkGnotPath(tokenA.path),
-        checkGnotPath(tokenB.path),
-      ].sort();
-      return (
-        compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken?.path || "")
-      );
-    }, [
-      selectPool.compareToken,
-      tokenA.path,
-      tokenB.path,
-    ]);
+      const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort();
+      return compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken?.path || "");
+    }, [selectPool.compareToken, tokenA.path, tokenB.path]);
 
     const currentPriceStr = useMemo(() => {
       if (!selectPool.currentPrice) {
@@ -128,16 +102,10 @@ const SelectPriceRangeCustom = forwardRef<
 
       const currentPrice = (() => {
         if (selectPool.compareToken?.path === tokenA.path) {
-          return (
-            10 ** ((tokenB.decimals || 0) - (tokenA.decimals || 0)) *
-            selectPool.currentPrice
-          );
+          return 10 ** ((tokenB.decimals || 0) - (tokenA.decimals || 0)) * selectPool.currentPrice;
         }
 
-        return (
-          10 ** ((tokenA.decimals || 0) - (tokenB.decimals || 0)) *
-          selectPool.currentPrice
-        );
+        return 10 ** ((tokenA.decimals || 0) - (tokenB.decimals || 0)) * selectPool.currentPrice;
       })();
 
       return (
@@ -188,12 +156,9 @@ const SelectPriceRangeCustom = forwardRef<
 
     function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
       const currentPriceRangeType = inputPriceRangeType || priceRangeType;
-      const currentPrice = selectPool.isCreate
-        ? selectPool.startPrice
-        : selectPool.currentPrice;
+      const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;
       const { tickLower, tickUpper } = defaultTicks ?? {};
-      const { minPrice, maxPrice } =
-        SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
+      const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
 
       if (inputPriceRangeType === "Custom" && tickLower && tickUpper) {
         selectPool.setMinPosition(tickLower < minPrice ? minPrice : tickLower);
@@ -202,26 +167,19 @@ const SelectPriceRangeCustom = forwardRef<
       }
 
       if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
-        const priceRange =
-          SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
+        const priceRange = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
 
         const getPriceWithTickSpacing = (range: number) => {
           const rangeDiffAmount = currentPrice * (range / 100);
           const currentTick = priceToTick(currentPrice + rangeDiffAmount);
-          const nearTick =
-            Math.round(currentTick / selectPool.tickSpacing) *
-            selectPool.tickSpacing;
+          const nearTick = Math.round(currentTick / selectPool.tickSpacing) * selectPool.tickSpacing;
           return tickToPrice(nearTick);
         };
 
         const priceLower = getPriceWithTickSpacing(priceRange.min);
         const priceUpper = getPriceWithTickSpacing(priceRange.max);
-        selectPool.setMinPosition(
-          priceLower < minPrice ? minPrice : priceLower,
-        );
-        selectPool.setMaxPosition(
-          priceUpper > maxPrice ? maxPrice : priceUpper,
-        );
+        selectPool.setMinPosition(priceLower < minPrice ? minPrice : priceLower);
+        selectPool.setMaxPosition(priceUpper > maxPrice ? maxPrice : priceUpper);
         return;
       }
     }
@@ -321,11 +279,7 @@ const SelectPriceRangeCustom = forwardRef<
         minPriceRangeCustomRef.current?.formatData();
         maxPriceRangeCustomRef.current?.formatData();
       }
-    }, [
-      selectPool.selectedFullRange,
-      selectPool.minPrice,
-      selectPool.maxPrice,
-    ]);
+    }, [selectPool.selectedFullRange, selectPool.minPrice, selectPool.maxPrice]);
 
     const selectTokenPair = useMemo(() => {
       if (!isKeepToken) {
@@ -335,10 +289,7 @@ const SelectPriceRangeCustom = forwardRef<
       return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
     }, [tokenA, tokenB, isKeepToken]);
 
-    const decimalsRatio = useMemo(
-      () => tokenB.decimals - tokenA.decimals || 0,
-      [tokenA.decimals, tokenB.decimals],
-    );
+    const decimalsRatio = useMemo(() => tokenB.decimals - tokenA.decimals || 0, [tokenA.decimals, tokenB.decimals]);
 
     if (selectPool.renderState() === "NONE") {
       return <></>;
@@ -367,9 +318,7 @@ const SelectPriceRangeCustom = forwardRef<
               {(availSelect || showDim) && (
                 <div className="option-wrapper">
                   <SelectTab
-                    selectType={
-                      getGnotPath(selectPool.compareToken)?.symbol || ""
-                    }
+                    selectType={getGnotPath(selectPool.compareToken)?.symbol || ""}
                     list={selectTokenPair}
                     onClick={onClickTabItem}
                   />
@@ -377,9 +326,7 @@ const SelectPriceRangeCustom = forwardRef<
                     <div className="graph-option-wrapper">
                       <span
                         className={`graph-option-item decrease ${
-                          isLoading || showDim || !availMoveLeft
-                            ? "disabled-option"
-                            : ""
+                          isLoading || showDim || !availMoveLeft ? "disabled-option" : ""
                         }`}
                         onClick={moveLeft}
                       >
@@ -387,9 +334,7 @@ const SelectPriceRangeCustom = forwardRef<
                       </span>
                       <span
                         className={`graph-option-item increase ${
-                          isLoading || showDim || !availMoveRight
-                            ? "disabled-option"
-                            : ""
+                          isLoading || showDim || !availMoveRight ? "disabled-option" : ""
                         }`}
                         onClick={moveRight}
                       >
@@ -399,9 +344,7 @@ const SelectPriceRangeCustom = forwardRef<
                     <div className="graph-option-wrapper">
                       <span
                         className={`graph-option-item decrease ${
-                          isLoading || showDim || !availZoomOut
-                            ? "disabled-option"
-                            : ""
+                          isLoading || showDim || !availZoomOut ? "disabled-option" : ""
                         }`}
                         onClick={zoomOut}
                       >
@@ -409,9 +352,7 @@ const SelectPriceRangeCustom = forwardRef<
                       </span>
                       <span
                         className={`graph-option-item increase ${
-                          isLoading || showDim || !availZoomIn
-                            ? "disabled-option"
-                            : ""
+                          isLoading || showDim || !availZoomIn ? "disabled-option" : ""
                         }`}
                         onClick={zoomIn}
                       >
@@ -433,11 +374,7 @@ const SelectPriceRangeCustom = forwardRef<
                   {!showDim && (
                     <div className="current-price-wrapper">
                       <span>{t("business:currentPrice")}</span>
-                      <span
-                        style={{ wordBreak: "break-all", textAlign: "center" }}
-                      >
-                        {currentPriceStr}
-                      </span>
+                      <span style={{ wordBreak: "break-all", textAlign: "center" }}>{currentPriceStr}</span>
                     </div>
                   )}
                   {showDim && (
@@ -522,14 +459,9 @@ const SelectPriceRangeCustom = forwardRef<
                         <IconRefresh />
                         <span>{t("common:reset")}</span>
                       </div>
-                      <div
-                        className="icon-button full"
-                        onClick={selectFullRange}
-                      >
+                      <div className="icon-button full" onClick={selectFullRange}>
                         <IconSwap />
-                        <span>
-                          {t("AddPosition:form.priceRange.fullPrice")}
-                        </span>
+                        <span>{t("AddPosition:form.priceRange.fullPrice")}</span>
                       </div>
                     </div>
                     {showDim && <div className="dim-content-3" />}

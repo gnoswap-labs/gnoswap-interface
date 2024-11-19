@@ -5,12 +5,7 @@ import { useTranslation } from "react-i18next";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
-import {
-  POOL_INFO,
-  POOL_INFO_MOBILE,
-  POOL_INFO_SMALL_TABLET,
-  POOL_INFO_TABLET,
-} from "@constants/skeleton.constant";
+import { POOL_INFO, POOL_INFO_MOBILE, POOL_INFO_SMALL_TABLET, POOL_INFO_TABLET } from "@constants/skeleton.constant";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -98,12 +93,8 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
               >
                 {canSort && (
                   <>
-                    {isAscendingOption(head) && (
-                      <IconTriangleArrowUp className="icon asc" />
-                    )}
-                    {isDescendingOption(head) && (
-                      <IconTriangleArrowDown className="icon desc" />
-                    )}
+                    {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
+                    {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
                   </>
                 )}
                 {t(head)}
@@ -113,19 +104,11 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
         })}
       </div>
       <div className="pool-list-body">
-        {isFetched && pools.length === 0 && (
-          <div css={noDataText}>{t("Earn:poolList.noPool")}</div>
-        )}
+        {isFetched && pools.length === 0 && <div css={noDataText}>{t("Earn:poolList.noPool")}</div>}
         {isFetched &&
           pools.length > 0 &&
           pools.map((pool, idx) => (
-            <PoolInfo
-              pool={pool}
-              key={idx}
-              routeItem={routeItem}
-              themeKey={themeKey}
-              breakpoint={breakpoint}
-            />
+            <PoolInfo pool={pool} key={idx} routeItem={routeItem} themeKey={themeKey} breakpoint={breakpoint} />
           ))}
         {!isFetched && <TableSkeleton info={poolInfo} />}
       </div>

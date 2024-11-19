@@ -4,11 +4,7 @@ export interface IconTriangleWarningOutlinedProps {
   stroke?: string;
 }
 
-export const IconTriangleWarningOutlined = ({
-  width,
-  height,
-  stroke,
-}: IconTriangleWarningOutlinedProps) => {
+export const IconTriangleWarningOutlined = ({ width, height, stroke }: IconTriangleWarningOutlinedProps) => {
   return (
     <svg
       width={width || "16"}

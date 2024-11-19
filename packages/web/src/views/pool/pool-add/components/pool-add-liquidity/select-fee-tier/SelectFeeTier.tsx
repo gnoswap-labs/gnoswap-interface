@@ -2,16 +2,10 @@ import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import {
-  SwapFeeTierInfoMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { PoolModel } from "@models/pool/pool-model";
 
-import {
-  SelectFeeTierItemWrapper,
-  SelectFeeTierWrapper,
-} from "./SelectFeeTier.styles";
+import { SelectFeeTierItemWrapper, SelectFeeTierWrapper } from "./SelectFeeTier.styles";
 
 interface SelectFeeTierProps {
   feetierOfLiquidityMap: { [key in string]: number };
@@ -39,10 +33,7 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
   );
 
   return (
-    <SelectFeeTierWrapper
-      id={"select-fee-tier-comp"}
-      className={openedFeeTier ? "open" : ""}
-    >
+    <SelectFeeTierWrapper id={"select-fee-tier-comp"} className={openedFeeTier ? "open" : ""}>
       {feeTiers.map((item, index) => (
         <SelectFeeTierItem
           key={index}
@@ -92,17 +83,12 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
   }, [feeTier, t]);
 
   return (
-    <SelectFeeTierItemWrapper
-      className={selected ? "selected" : ""}
-      onClick={onClick}
-    >
+    <SelectFeeTierItemWrapper className={selected ? "selected" : ""} onClick={onClick}>
       <div>
         <strong className="fee-rate">{feeRateStr}</strong>
         <p className="desc">{description}</p>
       </div>
-      <span className="selected-fee-rate">
-        {fetching ? <LoadingSpinner /> : rangeStr}
-      </span>
+      <span className="selected-fee-rate">{fetching ? <LoadingSpinner /> : rangeStr}</span>
     </SelectFeeTierItemWrapper>
   );
 };

@@ -109,8 +109,7 @@ export const LaunchpadLayoutWrapper = styled.div`
       font-weight: 400;
       line-height: 33.6px;
       white-space: nowrap;
-      color: ${({ theme }) =>
-        theme.themeKey === "dark" ? theme.color.border07 : theme.color.text03};
+      color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.border07 : theme.color.text03)};
       ${media.tablet} {
         white-space: normal;
         font-size: clamp(1.125rem, 0.3665rem + 1.3636vw, 1.5rem);
@@ -142,16 +141,13 @@ export const LaunchpadLayoutWrapper = styled.div`
       button {
         ${mixins.flexbox("row", "flex-start", "center")};
         height: 100%;
-        color: ${({ theme }) =>
-          theme.themeKey === "dark" ? theme.color.text02 : "#FFF"};
+        color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text02 : "#FFF")};
         gap: 8px;
         border-radius: 8px;
         padding: 16px 18.5px;
         &:hover {
           background-color: ${({ theme }) =>
-            theme.themeKey === "dark"
-              ? theme.color.backgroundGradient
-              : theme.color.background04Hover};
+            theme.themeKey === "dark" ? theme.color.backgroundGradient : theme.color.background04Hover};
         }
         ${media.mobile} {
           ${mixins.flexbox("row", "center", "center")};
@@ -167,8 +163,7 @@ export const LaunchpadLayoutWrapper = styled.div`
           }
         }
         * {
-          fill: ${({ theme }) =>
-            theme.themeKey === "dark" ? theme.color.text02 : "#FFF"};
+          fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text02 : "#FFF")};
         }
       }
     }
@@ -199,8 +194,7 @@ export const LaunchpadLayoutWrapper = styled.div`
       .launchpad-data-value {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 4px;
-        color: ${({ theme }) =>
-          theme.themeKey === "dark" ? "#E0E8F4" : theme.color.text03};
+        color: ${({ theme }) => (theme.themeKey === "dark" ? "#E0E8F4" : theme.color.text03)};
         ${media.mobile} {
           font-size: clamp(0.875rem, 0.8201rem + 0.2439vw, 1rem);
         }

@@ -34,9 +34,7 @@ const Snackbar: FC<SnackbarProps> = ({
   onClose,
 }) => {
   const isClosed = useRef(false);
-  const [typeAnimation, setTypeAnimation] = useState<
-    "toast-item" | "closing" | ""
-  >("toast-item");
+  const [typeAnimation, setTypeAnimation] = useState<"toast-item" | "closing" | "">("toast-item");
 
   const handleClose = useCallback(() => {
     setTypeAnimation("closing");

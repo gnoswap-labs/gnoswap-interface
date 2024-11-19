@@ -16,7 +16,7 @@ const swapTokenInfo: SwapTokenInfo = {
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
-    address: ""
+    address: "",
   },
   tokenAAmount: "",
   tokenABalance: "",
@@ -32,14 +32,14 @@ const swapTokenInfo: SwapTokenInfo = {
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
-    address: ""
+    address: "",
   },
   tokenBAmount: "",
   tokenBBalance: "",
   tokenBUSD: 0,
   tokenBUSDStr: "0",
   direction: "EXACT_IN",
-  slippage: 10
+  slippage: 10,
 };
 
 describe("SwapCardContent Component", () => {

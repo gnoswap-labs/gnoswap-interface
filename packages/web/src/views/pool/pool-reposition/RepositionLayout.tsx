@@ -10,12 +10,7 @@ interface PoolAddLayoutProps {
   footer: React.ReactNode;
 }
 
-const RepositionLayout: React.FC<PoolAddLayoutProps> = ({
-  header,
-  breadcrumbs,
-  reposition,
-  footer,
-}) => {
+const RepositionLayout: React.FC<PoolAddLayoutProps> = ({ header, breadcrumbs, reposition, footer }) => {
   const { t } = useTranslation();
 
   return (

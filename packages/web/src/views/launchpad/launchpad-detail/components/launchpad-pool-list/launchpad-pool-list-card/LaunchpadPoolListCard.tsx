@@ -27,17 +27,10 @@ interface LaunchpadPoolListCardProps {
   selectProjectPool: (poolId: number) => void;
 }
 
-const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
-  data,
-  idx,
-  rewardInfo,
-  selectProjectPool,
-}) => {
+const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({ data, idx, rewardInfo, selectProjectPool }) => {
   const { t } = useTranslation();
 
-  const isShowConditionTooltip = useAtomValue(
-    LaunchpadState.isShowConditionTooltip,
-  );
+  const isShowConditionTooltip = useAtomValue(LaunchpadState.isShowConditionTooltip);
   const currentPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
 
   const isActiveCard = React.useMemo(() => {
@@ -67,14 +60,10 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
     >
       <div className="card-header">
         <div className="card-header-title">
-          <span className="title">
-            {t("Launchpad:poolList.title", { idx: idx })}
-          </span>
+          <span className="title">{t("Launchpad:poolList.title", { idx: idx })}</span>
           <div className="flex-section">
             <LaunchpadPoolTierChip poolTier={data.poolTier} />
-            {data.status === "ENDED" && (
-              <div className="chip">{t("Launchpad:common.ended")}</div>
-            )}
+            {data.status === "ENDED" && <div className="chip">{t("Launchpad:common.ended")}</div>}
           </div>
         </div>
         {isActiveCard && isShowConditionTooltip && <DepositConditionsTooltip />}
@@ -96,36 +85,21 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
 
       <div className="data">
         <div className="key">{t("Launchpad:poolList.col.participants")}</div>
-        <div className={cx("value", { ended: data.status === "ENDED" })}>
-          {data.participant || "-"}
-        </div>
+        <div className={cx("value", { ended: data.status === "ENDED" })}>{data.participant || "-"}</div>
       </div>
       <div className="data">
         <div className="key">{t("Launchpad:poolList.col.apr")}</div>
-        <div className={cx("value", { ended: data.status === "ENDED" })}>
-          {aprStr}
-        </div>
+        <div className={cx("value", { ended: data.status === "ENDED" })}>{aprStr}</div>
       </div>
       <div className="data">
         <div className="key">{t("Launchpad:poolList.col.totalDeposits")}</div>
         <div className={cx("value", { ended: data.status === "ENDED" })}>
-          <img
-            className="token-image"
-            src="/gns.svg"
-            alt={"GNS symbol image"}
-          />
-          {data.depositAmount
-            ? `${toNumberFormat(
-                data.depositAmount,
-                2,
-              )} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}`
-            : "-"}
+          <img className="token-image" src="/gns.svg" alt={"GNS symbol image"} />
+          {data.depositAmount ? `${toNumberFormat(data.depositAmount, 2)} ${LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}` : "-"}
         </div>
       </div>
       <div className="data">
-        <div className="key">
-          {t("Launchpad:poolList.col.tokensDistributed")}
-        </div>
+        <div className="key">{t("Launchpad:poolList.col.tokensDistributed")}</div>
         <div className={cx("value", { ended: data.status === "ENDED" })}>
           <MissingLogo
             symbol={rewardInfo.rewardTokenSymbol}
@@ -133,10 +107,8 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({
             width={24}
             mobileWidth={24}
           />
-          {data.distributedAmount
-            ? `${toNumberFormat(data.distributedAmount, 2)}`
-            : "-"}{" "}
-          / {data.allocation ? `${toNumberFormat(data.allocation, 2)}` : "-"}
+          {data.distributedAmount ? `${toNumberFormat(data.distributedAmount, 2)}` : "-"} /{" "}
+          {data.allocation ? `${toNumberFormat(data.allocation, 2)}` : "-"}
         </div>
       </div>
     </CardWrapper>

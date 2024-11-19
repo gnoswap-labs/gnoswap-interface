@@ -40,17 +40,11 @@ export const customSort = (a: TokenModel, b: TokenModel) => {
   return indexA - indexB;
 };
 
-
 const handleSort = (list: SortedProps[]) => {
   const gnot = list.find(a => a.path === GNOT_TOKEN.path);
   const gns = list.find(a => a.path === GNS_TOKEN.path);
   const valueOfBalance = list
-    .filter(
-      a =>
-        a.price !== "-" &&
-        a.path !== GNOT_TOKEN.path &&
-        a.path !== GNS_TOKEN.path,
-    )
+    .filter(a => a.price !== "-" && a.path !== GNOT_TOKEN.path && a.path !== GNS_TOKEN.path)
     .sort((a, b) => {
       const priceA = parseFloat(a.price.replace(/,/g, ""));
       const priceB = parseFloat(b.price.replace(/,/g, ""));
@@ -81,18 +75,9 @@ const handleSort = (list: SortedProps[]) => {
   return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
 };
 
-const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
-  changeToken,
-  callback,
-  modalRef,
-}) => {
+const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken, callback, modalRef }) => {
   const { breakpoint } = useWindowSize();
-  const {
-    tokens,
-    balances,
-    tokenPrices,
-    displayBalanceMap,
-  } = useTokenData();
+  const { tokens, balances, tokenPrices, displayBalanceMap } = useTokenData();
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -154,18 +139,16 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     );
   }, [keyword, tokens, balances, tokenPrices]);
 
-
-
   const selectToken = useCallback(
     (token: TokenModel) => {
       if (!changeToken) {
         return;
       }
       if (token.path && token.logoURI) {
-      changeToken(token);
+        changeToken(token);
         close();
       } else {
-      openWarningModal(token);
+        openWarningModal(token);
       }
     },
     [changeToken, close, openWarningModal],
@@ -174,7 +157,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const changeKeyword = useCallback((keyword: string) => {
     setKeyword(keyword);
   }, []);
-
 
   return (
     <SelectToken

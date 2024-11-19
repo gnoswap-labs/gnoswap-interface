@@ -9,29 +9,16 @@ interface GovernanceDetailProps {
   delegatee: DelegateeInfo;
   selected: boolean;
   onClick: () => void;
-  showLogo? : boolean;
+  showLogo?: boolean;
 }
 
-const DelegateeChip: React.FC<GovernanceDetailProps> = ({
-  delegatee,
-  selected,
-  onClick,
-  showLogo = true,
-}) => {
+const DelegateeChip: React.FC<GovernanceDetailProps> = ({ delegatee, selected, onClick, showLogo = true }) => {
   return (
     <DelegateeChipWrapper
-      className={[selected ? "selected" : "", showLogo ? "" : "no-logo"].join(
-        " ",
-      )}
+      className={[selected ? "selected" : "", showLogo ? "" : "no-logo"].join(" ")}
       onClick={onClick}
     >
-      {showLogo && (
-        <MissingLogo
-          symbol={delegatee.name}
-          url={delegatee.logoUrl}
-          width={24}
-        />
-      )}
+      {showLogo && <MissingLogo symbol={delegatee.name} url={delegatee.logoUrl} width={24} />}
       {delegatee.name}
     </DelegateeChipWrapper>
   );

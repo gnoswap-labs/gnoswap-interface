@@ -102,9 +102,7 @@ export const SwapLiquidityWrapper = styled.div`
       .apr {
         flex: 1 0 0;
         text-align: right;
-        
       }
-
     }
     .inacitve-liquidity {
       cursor: default;
@@ -155,7 +153,6 @@ export const SwapLiquidityWrapper = styled.div`
       }
       .apr {
         ${mixins.flexbox("row", "center", "flex-end")};
-
       }
     }
   }

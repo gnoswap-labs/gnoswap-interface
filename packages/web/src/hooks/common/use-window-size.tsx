@@ -26,15 +26,9 @@ export const useWindowSize = () => {
 
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
 
-  const isWeb = [DEVICE_TYPE.WEB, DEVICE_TYPE.MEDIUM_WEB].some(
-    v => v === breakpoint,
-  );
+  const isWeb = [DEVICE_TYPE.WEB, DEVICE_TYPE.MEDIUM_WEB].some(v => v === breakpoint);
 
-  const isTablet = [
-    DEVICE_TYPE.TABLET,
-    DEVICE_TYPE.TABLET_M,
-    DEVICE_TYPE.TABLET_S,
-  ].some(v => v === breakpoint);
+  const isTablet = [DEVICE_TYPE.TABLET, DEVICE_TYPE.TABLET_M, DEVICE_TYPE.TABLET_S].some(v => v === breakpoint);
 
   return {
     breakpoint,

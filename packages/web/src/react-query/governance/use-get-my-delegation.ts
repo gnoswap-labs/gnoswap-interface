@@ -1,10 +1,7 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import {
-  GetMyDelegationRequest,
-  MyDelegationInfo,
-} from "@repositories/governance";
+import { GetMyDelegationRequest, MyDelegationInfo } from "@repositories/governance";
 
 import { QUERY_KEY } from "../query-keys";
 

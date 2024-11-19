@@ -14,9 +14,7 @@ export default {
   },
 } as ComponentMeta<typeof RangeBadge>;
 
-const Template: ComponentStory<typeof RangeBadge> = args => (
-  <RangeBadge {...args} />
-);
+const Template: ComponentStory<typeof RangeBadge> = args => <RangeBadge {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

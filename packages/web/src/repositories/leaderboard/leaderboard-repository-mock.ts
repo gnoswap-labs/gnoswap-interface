@@ -17,9 +17,7 @@ import {
 } from "./response";
 
 export class LeaderboardRepositoryMock implements LeaderboardRepository {
-  public getLeaders = async (
-    request: GetLeadersRequest,
-  ): Promise<GetLeadersResponse> => {
+  public getLeaders = async (request: GetLeadersRequest): Promise<GetLeadersResponse> => {
     console.log(`request.page : ${request.page}`);
 
     let index = request.page === 0 ? 1 : request.page * 100;
@@ -55,9 +53,7 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     };
   };
 
-  public getLeaderByAddress = async (
-    request: GetLeaderByAddressRequest,
-  ): Promise<GetLeaderByAddressResponse> => {
+  public getLeaderByAddress = async (request: GetLeaderByAddressRequest): Promise<GetLeaderByAddressResponse> => {
     console.log(`request.address : ${request.address}`);
 
     return {
@@ -91,15 +87,11 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     };
   };
 
-  public getNextUpdateTime = async (
-    request: GetNextUpdateTimeRequest,
-  ): Promise<GetNextUpdateTimeResponse> => {
+  public getNextUpdateTime = async (request: GetNextUpdateTimeRequest): Promise<GetNextUpdateTimeResponse> => {
     console.log(`request : ${request}`);
 
     return {
-      nextUpdateTime: dayjs(new Date(Date.now() + 1000 * 60 * 10)).format(
-        "YYYY-MM-DD HH:mm:ss",
-      ),
+      nextUpdateTime: dayjs(new Date(Date.now() + 1000 * 60 * 10)).format("YYYY-MM-DD HH:mm:ss"),
     };
   };
 }

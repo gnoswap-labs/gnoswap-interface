@@ -5,14 +5,11 @@ export const EXT_URL = {
     CONTRACTS: "https://docs.gnoswap.io/contracts",
     ONBOARDING: "https://docs.gnoswap.io/references/onboarding-guide",
     FAQ: "https://docs.gnoswap.io/references/faq",
-    WARMUP:
-      "https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods",
+    WARMUP: "https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods",
     USER_GUIDE: {
       ROOT: "https://docs.gnoswap.io/user-guide/getting-started",
-      STAKE_POSITIONS:
-        "https://docs.gnoswap.io/user-guide/staking/stake-positions",
-      PROVIDING_LIQUIDITY:
-        "https://docs.gnoswap.io/user-guide/providing-liquidity/create-a-position",
+      STAKE_POSITIONS: "https://docs.gnoswap.io/user-guide/staking/stake-positions",
+      PROVIDING_LIQUIDITY: "https://docs.gnoswap.io/user-guide/providing-liquidity/create-a-position",
     },
     GOVERNANCE: "https://docs.gnoswap.io/core-concepts/governance",
     XGNS: "https://docs.gnoswap.io/gnoswap-token/xgns",

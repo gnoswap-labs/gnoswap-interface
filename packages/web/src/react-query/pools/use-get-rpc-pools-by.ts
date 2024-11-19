@@ -5,10 +5,7 @@ import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetRPCPoolsBy = (
-  poolPaths: string[],
-  options?: UseQueryOptions<PoolDetailRPCModel[], Error>,
-) => {
+export const useGetRPCPoolsBy = (poolPaths: string[], options?: UseQueryOptions<PoolDetailRPCModel[], Error>) => {
   const { poolRepository } = useGnoswapContext();
 
   return useQuery<PoolDetailRPCModel[], Error>({
@@ -16,9 +13,7 @@ export const useGetRPCPoolsBy = (
     queryFn: async () => {
       const pools: PoolDetailRPCModel[] = [];
       for (const poolPath of poolPaths) {
-        const pool = await poolRepository
-          .getPoolDetailRPCByPoolPath(poolPath)
-          .catch(() => null);
+        const pool = await poolRepository.getPoolDetailRPCByPoolPath(poolPath).catch(() => null);
         if (pool) {
           pools.push(pool);
         }

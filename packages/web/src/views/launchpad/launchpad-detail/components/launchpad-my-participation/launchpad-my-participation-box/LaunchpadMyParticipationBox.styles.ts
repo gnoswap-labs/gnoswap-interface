@@ -7,8 +7,7 @@ export const MyParticipationBoxWrapper = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
-  background: ${({ theme }) =>
-    theme.themeKey === "dark" ? theme.color.backgroundOpacity : ""};
+  background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.backgroundOpacity : "")};
   padding: 16px;
   .my-participation-box-header {
     ${mixins.flexbox("row", "center", "flex-start")};

@@ -45,28 +45,16 @@ const TokenWarningModal: React.FC<TokenWarningModalProps> = ({
           <div className="detail">
             <h5>{t("Modal:tokenTradingWarn.title")}</h5>
             <div className="des">
-              <Trans
-                ns="Modal"
-                i18nKey={"tokenTradingWarn.subtitle"}
-                components={{ br: <br /> }}
-              />
+              <Trans ns="Modal" i18nKey={"tokenTradingWarn.subtitle"} components={{ br: <br /> }} />
             </div>
           </div>
           <div className="link">
-            <a
-              className="url-wrapper"
-              href={getTokenUrl(token.path)}
-              target="_blank"
-            >
+            <a className="url-wrapper" href={getTokenUrl(token.path)} target="_blank">
               <div>{getTokenUrl(token.path)}</div>
               <IconNewTab className="new-tab" />
             </a>
             <div className="icon-wrapper" onClick={handleChecked}>
-              {checked ? (
-                <IconCheck className="icon-copy" />
-              ) : (
-                <IconCopy className="icon-copy" />
-              )}
+              {checked ? <IconCheck className="icon-copy" /> : <IconCopy className="icon-copy" />}
             </div>
           </div>
           <div>

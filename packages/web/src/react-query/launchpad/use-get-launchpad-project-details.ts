@@ -20,9 +20,7 @@ export const useGetLaunchpadProjectDetails = (
       if (!projectId) {
         throw new LaunchpadError("NOT_FOUND_PROJECT");
       }
-      return launchpadRepository
-        .getLaunchpadProjectDetails(projectId)
-        .then(data => data.project);
+      return launchpadRepository.getLaunchpadProjectDetails(projectId).then(data => data.project);
     },
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,

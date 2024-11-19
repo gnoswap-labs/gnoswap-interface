@@ -50,9 +50,7 @@ const QuickPoolInfo: React.FC<Props> = ({
           }
         : ({
             ...tokens.find(item => item.path === checkGnotPath(tokenPair[0])),
-            ...getGnotPath(
-              tokens.find(item => item.path === checkGnotPath(tokenPair[0])),
-            ),
+            ...getGnotPath(tokens.find(item => item.path === checkGnotPath(tokenPair[0]))),
           } as TokenModel),
     [pool.tokenA, getGnotPath, tokens, tokenPair],
   );
@@ -66,9 +64,7 @@ const QuickPoolInfo: React.FC<Props> = ({
           }
         : ({
             ...tokens.find(item => item.path === checkGnotPath(tokenPair[1])),
-            ...getGnotPath(
-              tokens.find(item => item.path === checkGnotPath(tokenPair[1])),
-            ),
+            ...getGnotPath(tokens.find(item => item.path === checkGnotPath(tokenPair[1]))),
           } as TokenModel),
     [pool.tokenB, getGnotPath, tokens, tokenPair],
   );
@@ -84,21 +80,13 @@ const QuickPoolInfo: React.FC<Props> = ({
   const liquidityValue = useMemo((): string => {
     if (isLoadingPool || !pool.tvl) return "-";
 
-    return formatUsdNumber(
-      Math.round(Number(pool.tvl)).toString(),
-      undefined,
-      true,
-    );
+    return formatUsdNumber(Math.round(Number(pool.tvl)).toString(), undefined, true);
   }, [isLoadingPool, pool.tvl]);
 
   const volumeValue = useMemo((): string => {
     if (isLoadingPool || !pool.volume24h) return "-";
 
-    return formatUsdNumber(
-      Math.round(Number(pool.volume24h)).toString(),
-      undefined,
-      true,
-    );
+    return formatUsdNumber(Math.round(Number(pool.volume24h)).toString(), undefined, true);
   }, [isLoadingPool, pool.volume24h]);
 
   const feeChangedStr = useMemo((): string => {
@@ -109,9 +97,7 @@ const QuickPoolInfo: React.FC<Props> = ({
 
   const rewardTokens = useMemo(() => {
     return pool?.rewardTokens.reduce((acc, current) => {
-      const existToken = acc.some(
-        item => item.path === getGnotPath(current).path,
-      );
+      const existToken = acc.some(item => item.path === getGnotPath(current).path);
 
       if (!existToken) {
         acc.push({
@@ -142,8 +128,7 @@ const QuickPoolInfo: React.FC<Props> = ({
 
     return (
       <>
-        {Number(pool.stakingApr) > 100 && <IconStar size={20} />}{" "}
-        {formatRate(pool.stakingApr)}
+        {Number(pool.stakingApr) > 100 && <IconStar size={20} />} {formatRate(pool.stakingApr)}
       </>
     );
   }, [isLoadingPool, pool.stakingApr]);
@@ -160,15 +145,11 @@ const QuickPoolInfo: React.FC<Props> = ({
           <div className="value">{volumeValue}</div>
         </div>
         <div>
-          <div className="label">
-            {t("AddPosition:positionStat.label.fee24")}
-          </div>
+          <div className="label">{t("AddPosition:positionStat.label.fee24")}</div>
           <div className="value">{feeChangedStr}</div>
         </div>
         <div>
-          <div className="label">
-            {t("AddPosition:positionStat.label.feeApr")}
-          </div>
+          <div className="label">{t("AddPosition:positionStat.label.feeApr")}</div>
           <div className="value">
             {!isLoadingPool && (
               <DoubleLogo
@@ -183,9 +164,7 @@ const QuickPoolInfo: React.FC<Props> = ({
           </div>
         </div>
         <div>
-          <div className="label">
-            {t("AddPosition:positionStat.label.stakingApr")}
-          </div>
+          <div className="label">{t("AddPosition:positionStat.label.stakingApr")}</div>
           <div className="value">
             <OverlapTokenLogo tokens={rewardTokens} size={24} />
             <span className="staking-apr-value">{stakingApr}</span>
@@ -201,33 +180,20 @@ const QuickPoolInfo: React.FC<Props> = ({
       !isLoadingPool && (
         <div className="unstake-info">
           <div className="title">
-            <div className="label">
-              {t("AddPosition:positionStat.unstaked.title")}
-            </div>
-            <div
-              className="value"
-              onClick={() => handleClickGotoStaking("POOL_STAKE")}
-            >
-              {t("AddPosition:positionStat.unstaked.btn")}{" "}
-              <IconStrokeArrowRight />
+            <div className="label">{t("AddPosition:positionStat.unstaked.title")}</div>
+            <div className="value" onClick={() => handleClickGotoStaking("POOL_STAKE")}>
+              {t("AddPosition:positionStat.unstaked.btn")} <IconStrokeArrowRight />
             </div>
           </div>
           {unstakedPositions.map((item, index) => (
             <div className="content" key={index}>
               <div className="label">
                 {!isLoadingPool && (
-                  <MissingLogo
-                    url={item.tokenUri}
-                    symbol={`ID #${item.id}`}
-                    width={24}
-                    mobileWidth={24}
-                  />
+                  <MissingLogo url={item.tokenUri} symbol={`ID #${item.id}`} width={24} mobileWidth={24} />
                 )}
                 ID #{item.id}
               </div>
-              <div className="value">
-                {formatOtherPrice(item.positionUsdValue)}
-              </div>
+              <div className="value">{formatOtherPrice(item.positionUsdValue)}</div>
             </div>
           ))}
         </div>
@@ -241,31 +207,18 @@ const QuickPoolInfo: React.FC<Props> = ({
       !isLoadingPool && (
         <div className="stake-info">
           <div className="title">
-            <div className="label">
-              {t("AddPosition:positionStat.staked.title")}
-            </div>
-            <div
-              className="value"
-              onClick={() => handleClickGotoStaking("POOL_UNSTAKE")}
-            >
-              {t("AddPosition:positionStat.staked.btn")}{" "}
-              <IconStrokeArrowRight />
+            <div className="label">{t("AddPosition:positionStat.staked.title")}</div>
+            <div className="value" onClick={() => handleClickGotoStaking("POOL_UNSTAKE")}>
+              {t("AddPosition:positionStat.staked.btn")} <IconStrokeArrowRight />
             </div>
           </div>
           {stakedPositions.map((item, index) => (
             <div className="content" key={index}>
               <div className="label">
-                <MissingLogo
-                  url={item.tokenUri}
-                  symbol={`ID #${item.id}`}
-                  width={24}
-                  mobileWidth={24}
-                />
+                <MissingLogo url={item.tokenUri} symbol={`ID #${item.id}`} width={24} mobileWidth={24} />
                 ID #{item.id}
               </div>
-              <div className="value">
-                {formatOtherPrice(item.positionUsdValue)}
-              </div>
+              <div className="value">{formatOtherPrice(item.positionUsdValue)}</div>
             </div>
           ))}
         </div>

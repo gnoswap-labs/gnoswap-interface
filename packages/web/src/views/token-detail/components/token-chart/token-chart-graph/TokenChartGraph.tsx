@@ -6,11 +6,7 @@ import LineGraph from "@components/common/line-graph/LineGraph";
 import { ComponentSize } from "@hooks/common/use-component-size";
 import { DEVICE_TYPE } from "@styles/media";
 
-import {
-  TokenChartGraphWrapper,
-  TokenChartGraphXLabel,
-  YAxisLabelWrapper
-} from "./TokenChartGraph.styles";
+import { TokenChartGraphWrapper, TokenChartGraphXLabel, YAxisLabelWrapper } from "./TokenChartGraph.styles";
 
 export interface TokenChartGraphProps {
   datas: {
@@ -137,9 +133,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
 
     // Find the maximum number of labels and time intervals for each graph container size.
     const maxLabelCount = Math.floor((size.width - 24) / formatInfo.textLength);
-    const spacingCount = Math.ceil(
-      Math.ceil((maxX - minX) / formatInfo.minimumSpacing) / maxLabelCount,
-    );
+    const spacingCount = Math.ceil(Math.ceil((maxX - minX) / formatInfo.minimumSpacing) / maxLabelCount);
 
     // Get the time data for the first label and generate a list of labels.
     const timeDiff = formatInfo.minimumSpacing * spacingCount;
@@ -176,11 +170,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     const formatInfo = makeTimePeriodFormatInfo(currentTab);
     const minimumXAxis = formatInfo.textLength / 2; // text size and padding
 
-    return xAxisLabels.filter(
-      label =>
-        label.position > minimumXAxis &&
-        label.position < size.width - minimumXAxis,
-    );
+    return xAxisLabels.filter(label => label.position > minimumXAxis && label.position < size.width - minimumXAxis);
   }, [currentTab, size.width, xAxisLabels]);
 
   return (
@@ -190,11 +180,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           cursor
           className="graph"
           width={size?.width || 0}
-          height={
-            (size?.height || 0) -
-            (breakpoint !== DEVICE_TYPE.MOBILE ? 40 : 30) -
-            customData.height
-          }
+          height={(size?.height || 0) - (breakpoint !== DEVICE_TYPE.MOBILE ? 40 : 30) - customData.height}
           color="#192EA2"
           strokeWidth={1}
           datas={datas.map(data => ({
@@ -205,11 +191,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           customData={customData}
           displayLastDayAsNow
         />
-        <div
-          className={`xaxis-wrapper ${
-            xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""
-          }`}
-        >
+        <div className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""}`}>
           {displayXAxisLabels.map((value, index) => (
             <TokenChartGraphXLabel key={index} x={value.position}>
               {value.text}

@@ -9,21 +9,11 @@ import { DEVICE_TYPE } from "@styles/media";
 import { removeDuplicatesByWrappedPath } from "@utils/common";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import IconNewTab from "../icons/IconNewTab";
 import MissingLogo from "../missing-logo/MissingLogo";
-import {
-  Divider,
-  SelectTokenWrapper,
-  TokenInfoWrapper,
-} from "./SelectToken.styles";
+import { Divider, SelectTokenWrapper, TokenInfoWrapper } from "./SelectToken.styles";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -57,16 +47,10 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const { t } = useTranslation();
 
   const myElementRef = useRef<HTMLDivElement | null>(null);
-  const priceRefs = useRef(
-    tokens.map(() => React.createRef<HTMLSpanElement>()),
-  );
-  const tokenNameRef = useRef(
-    tokens.map(() => React.createRef<HTMLSpanElement>()),
-  );
+  const priceRefs = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
+  const tokenNameRef = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
   const [widthList, setWidthList] = useState<number[]>(tokens.map(() => 0));
-  const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(
-    tokens.map(() => 0),
-  );
+  const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => 0));
   const [positionTop, setPositionTop] = useState(0);
   const [, setRecentsData] = useAtom(TokenState.selectRecents);
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
@@ -74,12 +58,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const getTokenPrice = useCallback(
     (token: TokenModel) => {
       const tokenPrice = tokenPrices[token.path];
-      if (
-        !tokenPrice ||
-        tokenPrice === null ||
-        Number.isNaN(tokenPrice) ||
-        isSwitchNetwork
-      ) {
+      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice) || isSwitchNetwork) {
         return "-";
       }
 
@@ -93,9 +72,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   const onClickToken = useCallback(
     (token: TokenModel) => {
-      const current = [...recents, token].filter(
-        item => !ORDER.includes(item.symbol),
-      );
+      const current = [...recents, token].filter(item => !ORDER.includes(item.symbol));
       const filterData = current.filter((_item, index) => {
         const _value = JSON.stringify(_item);
         return (
@@ -105,14 +82,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
           })
         );
       });
-      setRecentsData(
-        JSON.stringify(
-          filterData.slice(
-            filterData.length <= 4 ? 0 : 1,
-            filterData.length <= 4 ? 4 : 5,
-          ),
-        ),
-      );
+      setRecentsData(JSON.stringify(filterData.slice(filterData.length <= 4 ? 0 : 1, filterData.length <= 4 ? 4 : 5)));
       changeToken(token);
     },
     [changeToken, close, recents],
@@ -180,10 +150,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
   }, [breakpoint]);
 
-  const getTokensRecent = removeDuplicatesByWrappedPath([
-    ...defaultTokens,
-    ...recents,
-  ]);
+  const getTokensRecent = removeDuplicatesByWrappedPath([...defaultTokens, ...recents]);
 
   return (
     <SelectTokenWrapper ref={myElementRef}>
@@ -206,9 +173,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         <div className="token-select">
           {getTokensRecent.map((token, index) => (
             <div
-              className={`token-button ${
-                themeKey === "dark" && "border-button-none"
-              }`}
+              className={`token-button ${themeKey === "dark" && "border-button-none"}`}
               key={index}
               onClick={() => onClickToken(token)}
             >
@@ -225,18 +190,10 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         </div>
       </div>
       <Divider />
-      <div
-        className={`token-list-wrapper ${
-          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
-        }`}
-      >
+      <div className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""}`}>
         {tokens.length > 0 &&
           tokens.map((token, index) => (
-            <div
-              className="list"
-              key={index}
-              onClick={() => onClickToken(token)}
-            >
+            <div className="list" key={index} onClick={() => onClickToken(token)}>
               <div className="token-info">
                 <MissingLogo
                   symbol={token.symbol}
@@ -251,25 +208,14 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                   tokenNameWidthList={tokenNameWidthList[index]}
                 >
                   <div>
-                    <span
-                      className="token-name"
-                      ref={tokenNameRef.current[index]}
-                    >
-                      {token.name.length > length
-                        ? `${token.name.slice(0, length)}...`
-                        : token.name}
+                    <span className="token-name" ref={tokenNameRef.current[index]}>
+                      {token.name.length > length ? `${token.name.slice(0, length)}...` : token.name}
                     </span>
                     <div
                       className="token-path"
-                      onClick={(
-                        e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-                      ) => onClickPath(e, token.path)}
+                      onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, token.path)}
                     >
-                      <div>
-                        {isNativeToken(token)
-                          ? STATIC_TEXT.NATIVE_COIN
-                          : token.path}
-                      </div>
+                      <div>{isNativeToken(token) ? STATIC_TEXT.NATIVE_COIN : token.path}</div>
                       <IconNewTab />
                     </div>
                   </div>
@@ -281,11 +227,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
               </span>
             </div>
           ))}
-        {tokens.length === 0 && (
-          <div className="no-data-found">
-            {t("common:selectPairBtn.modal.noData")}
-          </div>
-        )}
+        {tokens.length === 0 && <div className="no-data-found">{t("common:selectPairBtn.modal.noData")}</div>}
       </div>
     </SelectTokenWrapper>
   );

@@ -1,8 +1,5 @@
 import { SendTransactionResponse, WalletResponse } from "../protocols";
-import {
-  AdenaSendTransactionResponse,
-  AdenaSendTransactionSuccessResponse,
-} from "./adena";
+import { AdenaSendTransactionResponse, AdenaSendTransactionSuccessResponse } from "./adena";
 import {} from "@utils/rpc-utils";
 
 function matchValues(str: string): string[] {
@@ -40,8 +37,7 @@ export function parseTransactionResponse(
   }
 
   let data: string | string[] | null = null;
-  const encodedData =
-    walletResponse?.data?.deliver_tx?.ResponseBase?.Data || null;
+  const encodedData = walletResponse?.data?.deliver_tx?.ResponseBase?.Data || null;
   if (encodedData) {
     const decodedData = window.atob(encodedData);
     try {

@@ -53,10 +53,7 @@ function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
     return myDate?.date;
   })();
 
-  const utcDate = dayjs(Date.parse(`${myDate?.year}-${month}-${day}`)).add(
-    days || 0,
-    "day",
-  );
+  const utcDate = dayjs(Date.parse(`${myDate?.year}-${month}-${day}`)).add(days || 0, "day");
 
   const formattedDate = getDateUtcToLocal(utcDate.toDate());
   return formattedDate.value;
@@ -76,9 +73,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   return (
     <div css={wrapper}>
       <section>
-        <h5 className="section-title">
-          {t("IncentivizePool:incenDetail.row.label.pool")}
-        </h5>
+        <h5 className="section-title">{t("IncentivizePool:incenDetail.row.label.pool")}</h5>
         {details ? (
           <div className="section-info">
             <DoubleLogo
@@ -89,26 +84,17 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
               size={24}
             />
             <span className="pair-symbol">{makePairName(details)}</span>
-            <Badge
-              text={`${(Number(details.fee) ?? 0) / 10000}%`}
-              type={BADGE_TYPE.DARK_DEFAULT}
-            />
+            <Badge text={`${(Number(details.fee) ?? 0) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
           </div>
         ) : (
           <div className="section-info">-</div>
         )}
       </section>
       <section>
-        <h5 className="section-title">
-          {t("IncentivizePool:incenDetail.row.label.totalAmt")}
-        </h5>
+        <h5 className="section-title">{t("IncentivizePool:incenDetail.row.label.totalAmt")}</h5>
         {amount && token ? (
           <div className="section-info">
-            <MissingLogo
-              symbol={getGnotPath(token)?.symbol}
-              width={24}
-              url={getGnotPath(token)?.logoURI || ""}
-            />
+            <MissingLogo symbol={getGnotPath(token)?.symbol} width={24} url={getGnotPath(token)?.logoURI || ""} />
             <span className="total-amount-value">
               {Number(amount).toLocaleString()} {token.symbol}
             </span>
@@ -118,9 +104,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
         )}
       </section>
       <section className="period-section">
-        <h5 className="section-title">
-          {t("IncentivizePool:incenDetail.row.label.period")}
-        </h5>
+        <h5 className="section-title">{t("IncentivizePool:incenDetail.row.label.period")}</h5>
         <div className="section-info">
           {/* <Tooltip
             placement="top"

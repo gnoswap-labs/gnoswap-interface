@@ -1,8 +1,4 @@
-import {
-  CardListKeyStats,
-  CardListPoolInfo,
-  CardListTokenInfo,
-} from "@models/common/card-list-item-info";
+import { CardListKeyStats, CardListPoolInfo, CardListTokenInfo } from "@models/common/card-list-item-info";
 import CardListItem from "../card-list-item/CardListItem";
 import { CardListWrapper } from "./CardList.styles";
 
@@ -12,11 +8,7 @@ interface CardListProps {
   isHiddenIndex?: boolean;
 }
 
-const CardList: React.FC<CardListProps> = ({
-  list,
-  onClickItem,
-  isHiddenIndex = false,
-}) => {
+const CardList: React.FC<CardListProps> = ({ list, onClickItem, isHiddenIndex = false }) => {
   return (
     <CardListWrapper>
       {list.map((item, index) => (

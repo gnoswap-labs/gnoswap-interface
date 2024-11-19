@@ -21,14 +21,8 @@ export const useGovernanceTx = () => {
 
   const [openedConfirmModal] = useState(false);
   const { enqueueEvent } = useTransactionEventStore();
-  const { openModal: openTransactionConfirmModal } =
-    useTransactionConfirmModal();
-  const {
-    broadcastSuccess,
-    broadcastLoading,
-    broadcastError,
-    broadcastRejected,
-  } = useBroadcastHandler();
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal();
+  const { broadcastSuccess, broadcastLoading, broadcastError, broadcastRejected } = useBroadcastHandler();
 
   usePreventScroll(openedConfirmModal);
 
@@ -62,10 +56,7 @@ export const useGovernanceTx = () => {
 
     func()
       .then(response => {
-        if (
-          response?.code === 0 ||
-          response?.code === ERROR_VALUE.TRANSACTION_FAILED.status
-        ) {
+        if (response?.code === 0 || response?.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: eventType,
@@ -79,18 +70,14 @@ export const useGovernanceTx = () => {
 
         if (response?.code === 0) {
           openTransactionConfirmModal();
-          broadcastSuccess(
-            getMessage(eventType, "success", messageData, response.data?.hash),
-          );
+          broadcastSuccess(getMessage(eventType, "success", messageData, response.data?.hash));
         } else if (
           response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
           broadcastRejected(getMessage(eventType, "error", messageData));
           openTransactionConfirmModal();
         } else {
-          broadcastError(
-            getMessage(eventType, "error", messageData, response?.data?.hash),
-          );
+          broadcastError(getMessage(eventType, "error", messageData, response?.data?.hash));
           openTransactionConfirmModal();
         }
       })
@@ -99,12 +86,7 @@ export const useGovernanceTx = () => {
       });
   };
 
-  const delegateGNS = (
-    toName: string,
-    toAddress: string,
-    amount: string,
-    emitCallback: () => Promise<void>,
-  ) => {
+  const delegateGNS = (toName: string, toAddress: string, amount: string, emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }
@@ -112,9 +94,7 @@ export const useGovernanceTx = () => {
     const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
 
     const messageData = {
-      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString(
-        "en",
-      ),
+      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString("en"),
       tokenASymbol: GNS_TOKEN.symbol,
       target: toName,
     };
@@ -141,12 +121,7 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const undelegateGNS = (
-    fromName: string,
-    fromAddress: string,
-    amount: string,
-    emitCallback: () => Promise<void>,
-  ) => {
+  const undelegateGNS = (fromName: string, fromAddress: string, amount: string, emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }
@@ -154,9 +129,7 @@ export const useGovernanceTx = () => {
     const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
 
     const messageData = {
-      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString(
-        "en",
-      ),
+      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString("en"),
       tokenASymbol: GNS_TOKEN.symbol,
       target: fromName,
     };
@@ -183,10 +156,7 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const collectUndelegated = (
-    amount: string,
-    emitCallback: () => Promise<void>,
-  ) => {
+  const collectUndelegated = (amount: string, emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }
@@ -208,10 +178,7 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const collectReward = (
-    usdValue: string,
-    emitCallback: () => Promise<void>,
-  ) => {
+  const collectReward = (usdValue: string, emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }
@@ -229,11 +196,7 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const proposeTextProposal = (
-    title: string,
-    description: string,
-    emitCallback: () => Promise<void>,
-  ) => {
+  const proposeTextProposal = (title: string, description: string, emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }
@@ -320,11 +283,7 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const voteProposal = (
-    proposalId: number,
-    voteYes: boolean,
-    emitCallback: () => Promise<void>,
-  ) => {
+  const voteProposal = (proposalId: number, voteYes: boolean, emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }
@@ -347,10 +306,7 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const executeProposal = (
-    proposalId: number,
-    emitCallback: () => Promise<void>,
-  ) => {
+  const executeProposal = (proposalId: number, emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }
@@ -371,10 +327,7 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const cancelProposal = (
-    proposalId: number,
-    emitCallback: () => Promise<void>,
-  ) => {
+  const cancelProposal = (proposalId: number, emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }

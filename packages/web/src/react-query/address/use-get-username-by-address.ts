@@ -5,10 +5,7 @@ import { formatAddress } from "@utils/string-utils";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetUsernameByAddress = (
-  address: string,
-  options?: UseQueryOptions<string, Error>,
-) => {
+export const useGetUsernameByAddress = (address: string, options?: UseQueryOptions<string, Error>) => {
   const { accountRepository } = useGnoswapContext();
 
   return useQuery<string, Error>({

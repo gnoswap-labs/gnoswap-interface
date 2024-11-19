@@ -13,9 +13,7 @@ export default {
   component: ActivityListTable,
 } as ComponentMeta<typeof ActivityListTable>;
 
-const Template: ComponentStory<typeof ActivityListTable> = args => (
-  <ActivityListTable {...args} />
-);
+const Template: ComponentStory<typeof ActivityListTable> = args => <ActivityListTable {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

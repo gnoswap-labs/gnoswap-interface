@@ -6,21 +6,13 @@ import { ValuesType } from "utility-types";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
-import {
-  ACTIVITY_INFO,
-  MOBILE_ACTIVITY_INFO,
-} from "@constants/skeleton.constant";
+import { ACTIVITY_INFO, MOBILE_ACTIVITY_INFO } from "@constants/skeleton.constant";
 import { DEVICE_TYPE } from "@styles/media";
 import { ActivityData } from "@repositories/activity/responses/activity-responses";
 
 import ActivityInfo, { MobileActivityInfo } from "./activity-info/ActivityInfo";
 
-import {
-  MobileTableHeader,
-  noDataText,
-  TableHeader,
-  TableWrapper,
-} from "./ActivityListTable.styles";
+import { MobileTableHeader, noDataText, TableHeader, TableWrapper } from "./ActivityListTable.styles";
 
 export interface SortOption {
   key: ACTIVITY_TABLE_HEAD;
@@ -98,29 +90,19 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
                 className={Object.keys(ACTIVITY_TABLE_HEAD)[idx].toLowerCase()}
                 onClick={() => onClickTableHead(head)}
               >
-                {isAscendingOption(head) && (
-                  <IconTriangleArrowUp className="icon asc" />
-                )}
-                {isDescendingOption(head) && (
-                  <IconTriangleArrowDown className="icon desc" />
-                )}
+                {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
+                {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
                 {t(head)}
               </span>
             </TableHeader>
           ))}
         </div>
         <div className="activity-list-body">
-          {isFetched && activities.length === 0 && (
-            <div css={noDataText}>{t("Dashboard:onchainActi.data.empty")}</div>
-          )}
+          {isFetched && activities.length === 0 && <div css={noDataText}>{t("Dashboard:onchainActi.data.empty")}</div>}
           {isFetched &&
             activities.length > 0 &&
-            activities.map((item, idx) => (
-              <ActivityInfo item={item} idx={idx + 1} key={idx} />
-            ))}
-          {!isFetched && (
-            <TableSkeleton info={ACTIVITY_INFO} className="activity-table" />
-          )}
+            activities.map((item, idx) => <ActivityInfo item={item} idx={idx + 1} key={idx} />)}
+          {!isFetched && <TableSkeleton info={ACTIVITY_INFO} className="activity-table" />}
         </div>
       </div>
     </TableWrapper>
@@ -141,32 +123,19 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
                 className={Object.keys(ACTIVITY_TABLE_HEAD)[idx].toLowerCase()}
                 onClick={() => onClickTableHead(head)}
               >
-                {isAscendingOption(head) && (
-                  <IconTriangleArrowUp className="icon asc" />
-                )}
-                {isDescendingOption(head) && (
-                  <IconTriangleArrowDown className="icon desc" />
-                )}
+                {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
+                {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
                 {t(head)}
               </span>
             </MobileTableHeader>
           ))}
         </div>
         <div className="activity-list-body">
-          {isFetched && activities.length === 0 && (
-            <div css={noDataText}>{t("Dashboard:onchainActi.data.empty")}</div>
-          )}
+          {isFetched && activities.length === 0 && <div css={noDataText}>{t("Dashboard:onchainActi.data.empty")}</div>}
           {isFetched &&
             activities.length > 0 &&
-            activities.map((item, idx) => (
-              <MobileActivityInfo item={item} idx={idx + 1} key={idx} />
-            ))}
-          {!isFetched && (
-            <TableSkeleton
-              info={MOBILE_ACTIVITY_INFO}
-              className="activity-table"
-            />
-          )}
+            activities.map((item, idx) => <MobileActivityInfo item={item} idx={idx + 1} key={idx} />)}
+          {!isFetched && <TableSkeleton info={MOBILE_ACTIVITY_INFO} className="activity-table" />}
         </div>
       </div>
     </TableWrapper>

@@ -16,11 +16,7 @@ interface EarnIncentivizedPoolsProps {
   };
 }
 
-const EarnIncentivizedPools: React.FC<EarnIncentivizedPoolsProps> = ({
-  cardList,
-  isOtherPosition,
-  highestAprInfo,
-}) => {
+const EarnIncentivizedPools: React.FC<EarnIncentivizedPoolsProps> = ({ cardList, isOtherPosition, highestAprInfo }) => {
   const { t } = useTranslation();
   const router = useRouter();
 

@@ -12,9 +12,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 
 import LaunchpadDetailLayout from "./LaunchpadDetailLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import BreadcrumbsContainer, {
-  BreadcrumbTypes,
-} from "@containers/breadcrumbs-container/BreadcrumbsContainer";
+import BreadcrumbsContainer, { BreadcrumbTypes } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import LaunchpadDetailContentsHeaderContainer from "./containers/launchpad-detail-contents-header-container/LaunchpadDetailContentsHeaderContainer";
 import LaunchpadPoolListContainer from "./containers/launchpad-pool-list-container/LaunchpadPoolListContainer";
 import LaunchpadProjectSummaryContainer from "./containers/launchpad-project-summary-container/LaunchpadProjectSummaryContainer";
@@ -60,9 +58,7 @@ export interface ProjectRewardInfoModel {
 const LaunchpadDetail: React.FC = () => {
   const { t } = useTranslation();
 
-  const [selectPoolId, setSelectPoolId] = useAtom(
-    LaunchpadState.selectLaunchpadPool,
-  );
+  const [selectPoolId, setSelectPoolId] = useAtom(LaunchpadState.selectLaunchpadPool);
   const [, setDepositConditions] = useAtom(LaunchpadState.depositConditions);
   const { updateBalances } = useTokenData();
 
@@ -111,27 +107,26 @@ const LaunchpadDetail: React.FC = () => {
   /**
    * @dev Launchpad Project Summary section data
    */
-  const projectSummaryData: ProjectSummaryDataModel =
-    projectDetailData?.pools?.reduce(
-      (acc, project) => {
-        acc.totalAllocation += project.allocation;
-        acc.totalParticipants += project.participant;
-        acc.totalDeposited += project.depositAmount;
-        acc.totalDistributed += project.distributedAmount;
-        return acc;
-      },
-      {
-        totalAllocation: 0,
-        totalParticipants: 0,
-        totalDeposited: 0,
-        totalDistributed: 0,
-      },
-    ) || {
+  const projectSummaryData: ProjectSummaryDataModel = projectDetailData?.pools?.reduce(
+    (acc, project) => {
+      acc.totalAllocation += project.allocation;
+      acc.totalParticipants += project.participant;
+      acc.totalDeposited += project.depositAmount;
+      acc.totalDistributed += project.distributedAmount;
+      return acc;
+    },
+    {
       totalAllocation: 0,
       totalParticipants: 0,
       totalDeposited: 0,
       totalDistributed: 0,
-    };
+    },
+  ) || {
+    totalAllocation: 0,
+    totalParticipants: 0,
+    totalDeposited: 0,
+    totalDistributed: 0,
+  };
 
   /**
    * @dev Launchpad Project Description(about) section data
@@ -190,30 +185,21 @@ const LaunchpadDetail: React.FC = () => {
     if (!projectDetailData) return initProjectRewardInfo;
 
     return {
-      rewardTokenPath:
-        projectDetailData.rewardTokenPath ??
-        initProjectRewardInfo.rewardTokenPath,
-      rewardTokenDecimals:
-        projectDetailData.rewardTokenDecimals ??
-        initProjectRewardInfo.rewardTokenDecimals,
-      rewardTokenSymbol:
-        projectDetailData.rewardTokenSymbol ??
-        initProjectRewardInfo.rewardTokenSymbol,
-      rewardTokenLogoUrl:
-        projectDetailData.rewardTokenLogoUrl ??
-        initProjectRewardInfo.rewardTokenLogoUrl,
+      rewardTokenPath: projectDetailData.rewardTokenPath ?? initProjectRewardInfo.rewardTokenPath,
+      rewardTokenDecimals: projectDetailData.rewardTokenDecimals ?? initProjectRewardInfo.rewardTokenDecimals,
+      rewardTokenSymbol: projectDetailData.rewardTokenSymbol ?? initProjectRewardInfo.rewardTokenSymbol,
+      rewardTokenLogoUrl: projectDetailData.rewardTokenLogoUrl ?? initProjectRewardInfo.rewardTokenLogoUrl,
     };
   }, [projectDetailData]);
 
   /**
    * @dev Launchpad My Participation section data
    */
-  const { data: myParticipationData, refetch: myParticipationRefetch } =
-    useGetLaunchpadParticipationInfos(
-      projectPath as string,
-      account?.address as string,
-      { enabled: !!projectPath && !!account?.address },
-    );
+  const { data: myParticipationData, refetch: myParticipationRefetch } = useGetLaunchpadParticipationInfos(
+    projectPath as string,
+    account?.address as string,
+    { enabled: !!projectPath && !!account?.address },
+  );
 
   /**
    * @dev Refetchs
@@ -244,11 +230,7 @@ const LaunchpadDetail: React.FC = () => {
       header={<HeaderContainer />}
       status={projectDetailData?.status || ""}
       breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={breadcrumbsSteps}
-          isLoading={isLoadingProjectDetail}
-          w="102px"
-        />
+        <BreadcrumbsContainer listBreadcrumb={breadcrumbsSteps} isLoading={isLoadingProjectDetail} w="102px" />
       }
       contentsHeader={
         <LaunchpadDetailContentsHeaderContainer
@@ -273,12 +255,7 @@ const LaunchpadDetail: React.FC = () => {
           isLoading={isLoadingProjectDetail}
         />
       }
-      aboutProject={
-        <LaunchpadAboutProjectContainer
-          data={projectDescriptionData}
-          isLoading={isLoadingProjectDetail}
-        />
-      }
+      aboutProject={<LaunchpadAboutProjectContainer data={projectDescriptionData} isLoading={isLoadingProjectDetail} />}
       participate={
         <LaunchpadParticipateContainer
           poolInfo={currentSelectProjectPoolInfo}

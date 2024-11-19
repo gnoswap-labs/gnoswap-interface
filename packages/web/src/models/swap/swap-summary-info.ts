@@ -29,9 +29,7 @@ export interface SwapSummaryInfo {
   protocolFee: string;
 }
 
-export function swapDirectionToGuaranteedType(
-  swapDirection: SwapDirectionType,
-) {
+export function swapDirectionToGuaranteedType(swapDirection: SwapDirectionType) {
   if (swapDirection === "EXACT_IN") {
     return "Swap:swapInfo.minReceived";
   }
@@ -43,8 +41,5 @@ export function getMinReceivedBy(swapSummaryInfo: SwapSummaryInfo) {
   if (swapDirection === "EXACT_OUT") {
     return "-";
   }
-  return `${makeDisplayTokenAmount(
-    swapSummaryInfo.tokenB,
-    guaranteedAmount.amount,
-  )} ${guaranteedAmount.currency}`;
+  return `${makeDisplayTokenAmount(swapSummaryInfo.tokenB, guaranteedAmount.amount)} ${guaranteedAmount.currency}`;
 }

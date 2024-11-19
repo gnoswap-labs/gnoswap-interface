@@ -19,7 +19,7 @@ describe("ProposalHeader Component", () => {
         <GnoswapThemeProvider>
           <ProposalHeader {...mockProps} />
         </GnoswapThemeProvider>
-      </JotaiProvider>
+      </JotaiProvider>,
     );
   });
 });

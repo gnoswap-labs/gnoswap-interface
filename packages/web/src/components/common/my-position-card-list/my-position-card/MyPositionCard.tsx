@@ -1,22 +1,11 @@
 import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
-import {
-  RANGE_STATUS_OPTION,
-  SwapFeeTierInfoMap,
-} from "@constants/option.constant";
+import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
-import {
-  MyPositionCardWrapper,
-  MyPositionCardWrapperBorder,
-} from "./MyPositionCard.styles";
+import { MyPositionCardWrapper, MyPositionCardWrapperBorder } from "./MyPositionCard.styles";
 import BarAreaGraph from "../../bar-area-graph/BarAreaGraph";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import {
-  isEndTickBy,
-  makeSwapFeeTierByTickSpacing,
-  tickToPrice,
-  tickToPriceStr,
-} from "@utils/swap-utils";
+import { isEndTickBy, makeSwapFeeTierByTickSpacing, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../../icons/IconStrokeArrowDown";
@@ -62,13 +51,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isMouseoverGraph, setIsMouseoverGraph] = useState(false);
   const [shortenInRange, setShortenInRange] = useState(false);
 
-  const { data: bins40, isFetched: isFetchedBins } = useGetPositionBins(
-    position.lpTokenId,
-    40,
-    {
-      enabled: isMouseoverGraph,
-    },
-  );
+  const { data: bins40, isFetched: isFetchedBins } = useGetPositionBins(position.lpTokenId, 40, {
+    enabled: isMouseoverGraph,
+  });
 
   const onMouseoverViewMyRange = useCallback(() => {
     setIsMouseoverGraph(true);
@@ -103,27 +88,16 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   // fake close
   const inRange: boolean | null = useMemo(() => {
     if (position.closed === true) return null;
-    return (
-      pool.currentTick <= position.tickUpper &&
-      pool.currentTick >= position.tickLower
-    );
-  }, [
-    pool.currentTick,
-    position.tickLower,
-    position.tickUpper,
-    position.closed,
-  ]);
+    return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
+  }, [pool.currentTick, position.tickLower, position.tickUpper, position.closed]);
 
   const feeRateStr = useMemo(() => {
-    const rateStr =
-      SwapFeeTierInfoMap[makeSwapFeeTierByTickSpacing(pool.tickSpacing)]
-        .rateStr;
+    const rateStr = SwapFeeTierInfoMap[makeSwapFeeTierByTickSpacing(pool.tickSpacing)].rateStr;
     return `${rateStr}`;
   }, [pool.tickSpacing]);
 
   const positionUsdValueStr = useMemo(() => {
-    if (!position.positionUsdValue || position.positionUsdValue === "0")
-      return "-";
+    if (!position.positionUsdValue || position.positionUsdValue === "0") return "-";
 
     return formatOtherPrice(position.positionUsdValue);
   }, [position.positionUsdValue]);
@@ -162,9 +136,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return minTickRate * -1 > 1000
       ? ">999%"
       : `${minTickRate < 0 ? "+" : ""}${
-          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-            ? "<1"
-            : Math.round(minTickRate * -1)
+          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1 ? "<1" : Math.round(minTickRate * -1)
         }%`;
   }, [minTickRate]);
 
@@ -194,15 +166,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return 0;
     }
     if (position.tickLower < currentTick) {
-      return (
-        ((position.tickLower - min) / (currentTick - min)) * (GRAPH_WIDTH / 2)
-      );
+      return ((position.tickLower - min) / (currentTick - min)) * (GRAPH_WIDTH / 2);
     }
-    return (
-      ((position.tickLower - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
-      GRAPH_WIDTH / 2
-    );
+    return ((position.tickLower - currentTick) / (max - currentTick)) * (GRAPH_WIDTH / 2) + GRAPH_WIDTH / 2;
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
 
   const maxTickPosition = useMemo(() => {
@@ -212,15 +178,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return 0;
     }
     if (position.tickUpper < currentTick) {
-      return (
-        ((position.tickUpper - min) / (currentTick - min)) * (GRAPH_WIDTH / 2)
-      );
+      return ((position.tickUpper - min) / (currentTick - min)) * (GRAPH_WIDTH / 2);
     }
-    return (
-      ((position.tickUpper - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
-      GRAPH_WIDTH / 2
-    );
+    return ((position.tickUpper - currentTick) / (max - currentTick)) * (GRAPH_WIDTH / 2) + GRAPH_WIDTH / 2;
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
 
   const isFullRange = useMemo(() => {
@@ -374,12 +334,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         >
           <div className="title-wrapper">
             <div id={boxHeaderId} className="box-header">
-              <MissingLogo
-                symbol={`ID #${position.id}`}
-                url={position.tokenUri}
-                width={24}
-                showTooltip
-              />
+              <MissingLogo symbol={`ID #${position.id}`} url={position.tokenUri} width={24} showTooltip />
               <span>{`${tokenA.symbol}/${tokenB.symbol}`}</span>
               <div className="badge-group">
                 <Badge type={BADGE_TYPE.DARK_DEFAULT} text={feeRateStr} />
@@ -390,19 +345,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               className={inRange === null ? "disabled-range" : ""}
               isShorten={shortenInRange}
               status={
-                inRange === null
-                  ? RANGE_STATUS_OPTION.NONE
-                  : inRange
-                  ? RANGE_STATUS_OPTION.IN
-                  : RANGE_STATUS_OPTION.OUT
+                inRange === null ? RANGE_STATUS_OPTION.NONE : inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>
           <div className="list-wrapper">
             <div className="list-header">
-              <span className="label-text">
-                {t("Earn:positions.card.value")}
-              </span>
+              <span className="label-text">{t("Earn:positions.card.value")}</span>
               <span className="label-text">APR</span>
             </div>
             <div className="list-content">
@@ -410,32 +359,22 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <span className="apr-value">{aprStr}</span>
             </div>
             <div className="list-header mt-4">
-              <span className="label-text">
-                {t("Earn:positions.card.dailyEarn")}
-              </span>
-              <span className="label-text">
-                {t("Earn:positions.card.claimRewards")}
-              </span>
+              <span className="label-text">{t("Earn:positions.card.dailyEarn")}</span>
+              <span className="label-text">{t("Earn:positions.card.claimRewards")}</span>
             </div>
             <div className="list-content">
               <span>{dailyEarning}</span>
               {claimableUSD}
             </div>
           </div>
-          <div
-            className="view-my-range"
-            onMouseOver={onMouseoverViewMyRange}
-            onMouseOut={onMouseoutViewMyRange}
-          >
+          <div className="view-my-range" onMouseOver={onMouseoverViewMyRange} onMouseOut={onMouseoutViewMyRange}>
             <span onClick={onClickViewRange}>
               {t("Earn:positions.card.viewRange")} <IconStrokeArrowUp />
             </span>
           </div>
           <div
             className={`pool-price-graph ${viewMyRange ? "open" : ""}`}
-            onClick={(e: React.MouseEvent<HTMLDivElement>) =>
-              e.stopPropagation()
-            }
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
           >
             <div className="view-my-range">
               <span onClick={onClickViewRange}>

@@ -18,7 +18,7 @@ describe("AssetInfo Component", () => {
           "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
         balance: "0.000000",
         priceID: "gno.land/r/onbloc/gns",
-        createdAt : ""
+        createdAt: "",
       },
       deposit: () => null,
       withdraw: () => null,

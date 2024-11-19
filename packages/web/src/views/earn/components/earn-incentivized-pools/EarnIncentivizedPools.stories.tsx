@@ -18,11 +18,7 @@ export default {
   component: EarnIncentivizedPools,
 } as ComponentMeta<typeof EarnIncentivizedPools>;
 
-const Template: ComponentStory<typeof EarnIncentivizedPools> = args => (
-  <EarnIncentivizedPools
-    {...args}
-  />
-);
+const Template: ComponentStory<typeof EarnIncentivizedPools> = args => <EarnIncentivizedPools {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

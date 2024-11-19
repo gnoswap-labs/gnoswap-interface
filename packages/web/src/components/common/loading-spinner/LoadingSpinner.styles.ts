@@ -23,11 +23,7 @@ export const LoadingSpinnerWrapper = styled.div<{
   height: ${({ container }) => `${container}px`};
   border-radius: 100%;
   animation: ${spin} 1s linear infinite;
-  background: conic-gradient(
-    from 0deg at 50% 50.63%,
-    ${({ theme }) => theme.color.bgLoading} 0deg,
-    #233dbd 360deg
-  );
+  background: conic-gradient(from 0deg at 50% 50.63%, ${({ theme }) => theme.color.bgLoading} 0deg, #233dbd 360deg);
 
   &::before {
     ${mixins.positionCenter()};

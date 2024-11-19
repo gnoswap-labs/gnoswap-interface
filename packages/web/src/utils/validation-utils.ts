@@ -1,10 +1,7 @@
 import { ErrorResponse } from "@common/errors/response";
 import { bech32 } from "bech32";
 
-function fromBech32(
-  address: string,
-  limit = Infinity,
-): { readonly prefix: string; readonly data: Uint8Array } {
+function fromBech32(address: string, limit = Infinity): { readonly prefix: string; readonly data: Uint8Array } {
   const decodedAddress = bech32.decode(address, limit);
   return {
     prefix: decodedAddress.prefix,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import LoadMoreButton, { TEXT_TYPE } from "./LoadMoreButton";
@@ -9,9 +9,7 @@ export default {
   component: LoadMoreButton,
 } as ComponentMeta<typeof LoadMoreButton>;
 
-const Template: ComponentStory<typeof LoadMoreButton> = args => (
-  <LoadMoreButton {...args} />
-);
+const Template: ComponentStory<typeof LoadMoreButton> = args => <LoadMoreButton {...args} />;
 
 export const LoadType = Template.bind({});
 LoadType.args = {

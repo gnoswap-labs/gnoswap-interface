@@ -6,10 +6,7 @@ import IconRouter from "@components/common/icons/IconRouter";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
-import {
-  swapDirectionToGuaranteedType,
-  SwapSummaryInfo,
-} from "@models/swap/swap-summary-info";
+import { swapDirectionToGuaranteedType, SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { toNumberFormat } from "@utils/number-utils";
 
@@ -28,12 +25,7 @@ interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
 }
 
-const SwapCardFeeInfo: React.FC<ContentProps> = ({
-  swapSummaryInfo,
-  isLoading,
-  priceImpactStatus,
-  swapTokenInfo,
-}) => {
+const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, priceImpactStatus, swapTokenInfo }) => {
   const { t } = useTranslation();
 
   const priceImpactStr = useMemo(() => {
@@ -127,11 +119,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
           <span className="">{t("business:protocolFee.txt")}</span>
           <Tooltip
             placement="top"
-            FloatingContent={
-              <ToolTipContentWrapper>
-                {t("Swap:swapInfo.tooltip.swapFee")}
-              </ToolTipContentWrapper>
-            }
+            FloatingContent={<ToolTipContentWrapper>{t("Swap:swapInfo.tooltip.swapFee")}</ToolTipContentWrapper>}
           >
             <IconInfo />
           </Tooltip>

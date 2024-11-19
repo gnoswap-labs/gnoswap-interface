@@ -22,12 +22,7 @@ interface StatusBadgeProps {
   twoline?: boolean;
 }
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({
-  breakpoint,
-  status,
-  time,
-  twoline,
-}) => {
+const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, twoline }) => {
   const { t } = useTranslation();
 
   const getContent = () => {

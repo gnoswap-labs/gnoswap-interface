@@ -6,7 +6,7 @@ import SwapCardAutoRouter from "./SwapCardAutoRouter";
 describe("SwapCard Component", () => {
   it("SwapCard render", () => {
     const mockProps = {
-      swapRouteInfos: []
+      swapRouteInfos: [],
     };
 
     render(

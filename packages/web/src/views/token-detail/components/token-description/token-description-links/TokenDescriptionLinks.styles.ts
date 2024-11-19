@@ -14,7 +14,6 @@ export const wrapper = (theme: Theme) => css`
     }
   }
   .contract-path {
-
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     margin-bottom: 24px;
     gap: 12px;

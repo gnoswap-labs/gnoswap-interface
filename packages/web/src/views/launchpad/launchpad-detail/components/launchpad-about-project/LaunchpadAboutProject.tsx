@@ -30,11 +30,7 @@ const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
     <LaunchpadAboutProjectWrapper>
       <div className="header">
         {isLoading && <div css={pulseSkeletonStyle({ w: 215, h: 25 })} />}
-        {!isLoading && (
-          <h2>
-            {t("Launchpad:aboutProject.title", { project_name: data.name })}
-          </h2>
-        )}
+        {!isLoading && <h2>{t("Launchpad:aboutProject.title", { project_name: data.name })}</h2>}
       </div>
 
       <section className="main-contents">
@@ -42,12 +38,7 @@ const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
           {!isLoading && (
             <>
               <div className="description">{data.description}</div>
-              {showLoadMore && (
-                <LaunchpadShowMoreButton
-                  show={isShowMore}
-                  onClick={onClickLoadMore}
-                />
-              )}
+              {showLoadMore && <LaunchpadShowMoreButton show={isShowMore} onClick={onClickLoadMore} />}
             </>
           )}
           {isLoading && (
@@ -58,11 +49,7 @@ const LaunchpadAboutProject: React.FC<LaunchpadAboutProjectProps> = ({
           )}
         </div>
 
-        <LaunchpadAboutProjectLinks
-          isLoading={isLoading}
-          path={data.realmPath}
-          data={data.links}
-        />
+        <LaunchpadAboutProjectLinks isLoading={isLoading} path={data.realmPath} data={data.links} />
       </section>
     </LaunchpadAboutProjectWrapper>
   );

@@ -8,7 +8,6 @@ export default {
 } as ComponentMeta<typeof SelectLiquidityList>;
 
 const Template: ComponentStory<typeof SelectLiquidityList> = args => {
-
   const [checkedList, setCheckedList] = useState<number[]>([]);
   const [checkedAll] = useState(false);
 
@@ -25,15 +24,9 @@ const Template: ComponentStory<typeof SelectLiquidityList> = args => {
   );
 
   return (
-    <SelectLiquidityList
-      {...args}
-      checkedList={checkedList}
-      onCheckedItem={onCheckedItem}
-      checkedAll={checkedAll}
-    />
+    <SelectLiquidityList {...args} checkedList={checkedList} onCheckedItem={onCheckedItem} checkedAll={checkedAll} />
   );
 };
 
 export const Default = Template.bind({});
-Default.args = {
-};
+Default.args = {};

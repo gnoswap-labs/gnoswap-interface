@@ -15,26 +15,15 @@ interface LaunchpadActiveProjectCardProps {
   moveProjectDetail: (poolId: string) => void;
 }
 
-const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
-  project,
-  moveProjectDetail,
-}) => {
-  const { pools, status, projectId, rewardTokenSymbol, rewardTokenLogoUrl } =
-    project;
+const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({ project, moveProjectDetail }) => {
+  const { pools, status, projectId, rewardTokenSymbol, rewardTokenLogoUrl } = project;
 
   const FIRST_POOL = pools[0];
   const LAST_POOL = pools[2];
 
   return (
-    <ActiveProjectCardWrapper
-      type={status}
-      onClick={() => moveProjectDetail(projectId)}
-    >
-      <LaunchpadStatusTimeChip
-        startTime={FIRST_POOL.startTime}
-        endTime={LAST_POOL.endTime}
-        status={project.status}
-      />
+    <ActiveProjectCardWrapper type={status} onClick={() => moveProjectDetail(projectId)}>
+      <LaunchpadStatusTimeChip startTime={FIRST_POOL.startTime} endTime={LAST_POOL.endTime} status={project.status} />
       <LaunchpadActiveProjectCardHeader
         name={project.name}
         description={project.description || ""}
@@ -42,9 +31,7 @@ const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
         rewardTokenUrl={rewardTokenLogoUrl || ""}
       />
       <Divider />
-      <LaunchpadActiveProjectCardData
-        pools={(pools as LaunchpadActiveProjectPool[]) || []}
-      />
+      <LaunchpadActiveProjectCardData pools={(pools as LaunchpadActiveProjectPool[]) || []} />
     </ActiveProjectCardWrapper>
   );
 };

@@ -26,10 +26,7 @@ export const ParticipationNoDataWrapper = styled.div`
     color: ${({ theme }) => theme.color.text31};
     font-weight: 400;
     span {
-      background: var(
-        --Gradient,
-        linear-gradient(268deg, #536cd7 -9.74%, #a7b9f8 110.99%)
-      );
+      background: var(--Gradient, linear-gradient(268deg, #536cd7 -9.74%, #a7b9f8 110.99%));
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;

@@ -18,10 +18,7 @@ const Wallet: React.FC = () => {
       balance={<WalletBalanceContainer />}
       assets={<AssetListContainer />}
       positions={
-        <WalletMyPositions
-          header={<WalletMyPositionsHeader />}
-          cardList={<WalletPositionCardListContainer />}
-        />
+        <WalletMyPositions header={<WalletMyPositionsHeader />} cardList={<WalletPositionCardListContainer />} />
       }
       footer={<Footer />}
     />

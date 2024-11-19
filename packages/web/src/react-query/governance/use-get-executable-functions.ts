@@ -5,9 +5,7 @@ import { ExecutableFunctionInfo } from "@repositories/governance";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetExecutableFunctions = (
-  options?: UseQueryOptions<ExecutableFunctionInfo[], Error>,
-) => {
+export const useGetExecutableFunctions = (options?: UseQueryOptions<ExecutableFunctionInfo[], Error>) => {
   const { governanceRepository } = useGnoswapContext();
 
   return useQuery<ExecutableFunctionInfo[], Error>({

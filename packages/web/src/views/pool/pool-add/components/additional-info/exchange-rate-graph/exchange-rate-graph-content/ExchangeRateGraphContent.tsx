@@ -11,10 +11,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLocalizeTime, parseDate } from "@utils/chart";
 
-import {
-  ExchangeRateGraphContentWrapper,
-  ExchangeRateGraphXAxisWrapper,
-} from "./ExchangeRateGraphContent.styles";
+import { ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "./ExchangeRateGraphContent.styles";
 
 interface LineGraphData {
   value: string;
@@ -65,21 +62,15 @@ export function ExchangeRateGraphContent({
 
   const dataMemo = useMemo(() => {
     const lastTime =
-      sortedRawDataByType.length >= 1
-        ? new Date(sortedRawDataByType[sortedRawDataByType.length - 1]?.date)
-        : undefined;
+      sortedRawDataByType.length >= 1 ? new Date(sortedRawDataByType[sortedRawDataByType.length - 1]?.date) : undefined;
     const last2Time =
-      sortedRawDataByType.length >= 2
-        ? new Date(sortedRawDataByType[sortedRawDataByType.length - 2]?.date)
-        : undefined;
+      sortedRawDataByType.length >= 2 ? new Date(sortedRawDataByType[sortedRawDataByType.length - 2]?.date) : undefined;
     const latestTimeGap = (() => {
-      if (lastTime && last2Time)
-        return lastTime.getTime() - last2Time.getTime();
+      if (lastTime && last2Time) return lastTime.getTime() - last2Time.getTime();
     })();
 
     const fakeLastTime = (() => {
-      if (lastTime && latestTimeGap)
-        return new Date(lastTime.getTime() + latestTimeGap);
+      if (lastTime && latestTimeGap) return new Date(lastTime.getTime() + latestTimeGap);
 
       return new Date();
     })();
@@ -98,9 +89,7 @@ export function ExchangeRateGraphContent({
 
         if (index === dataByType.length - 1) return item.ratio.toString();
 
-        return isReversed
-          ? (1 / Number(item.ratio)).toString()
-          : item.ratio.toString();
+        return isReversed ? (1 / Number(item.ratio)).toString() : item.ratio.toString();
       })();
 
       return {
@@ -111,9 +100,7 @@ export function ExchangeRateGraphContent({
   }, [isReversed, poolData.price, sortedRawDataByType]);
 
   const xAxisLabels = useMemo(() => {
-    return sortedRawDataByType?.map(item =>
-      parseDate(item.date, LANGUAGE_CODE_MAP[i18n.language]),
-    );
+    return sortedRawDataByType?.map(item => parseDate(item.date, LANGUAGE_CODE_MAP[i18n.language]));
   }, [sortedRawDataByType, i18n.language]);
 
   const hasSingleData = useMemo(() => dataMemo?.length === 1, [dataMemo]);
@@ -121,8 +108,7 @@ export function ExchangeRateGraphContent({
   const countXAxis = useMemo(() => {
     if (hasSingleData) return 1;
 
-    if (breakpoint !== DEVICE_TYPE.MOBILE)
-      return Math.floor(((size.width || 0) + 20 - 25) / 100);
+    if (breakpoint !== DEVICE_TYPE.MOBILE) return Math.floor(((size.width || 0) + 20 - 25) / 100);
     return Math.floor(((size.width || 0) + 20 - 8) / 80);
   }, [hasSingleData, breakpoint, size.width]);
 
@@ -131,26 +117,16 @@ export function ExchangeRateGraphContent({
 
     const spacing = ((xAxisLabels?.length ?? 0) - 1) / (countXAxis - 1);
 
-    return Array.from({ length: countXAxis }, (_, index) =>
-      Math.floor(spacing * index),
-    );
+    return Array.from({ length: countXAxis }, (_, index) => Math.floor(spacing * index));
   }, [countXAxis, hasSingleData, xAxisLabels]);
 
   const renderXAxis = useCallback(
     (baseLineNumberWidth: number) => {
       return (
         <ExchangeRateGraphXAxisWrapper
-          innerWidth={
-            baseLineNumberWidth !== 0
-              ? `calc(100% - ${baseLineNumberWidth}px)`
-              : "100%"
-          }
+          innerWidth={baseLineNumberWidth !== 0 ? `calc(100% - ${baseLineNumberWidth}px)` : "100%"}
         >
-          <div
-            className={`exchange-rate-graph-xaxis ${
-              hasSingleData ? "single-point" : ""
-            }`}
-          >
+          <div className={`exchange-rate-graph-xaxis ${hasSingleData ? "single-point" : ""}`}>
             {labelIndicesToShow?.map((x, i) => (
               <span key={i}>{xAxisLabels?.[x]}</span>
             ))}

@@ -1,12 +1,5 @@
 const IconLogoPrimary = ({ className }: { className?: string }) => (
-  <svg
-    width="43"
-    height="48"
-    viewBox="0 0 43 48"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-  >
+  <svg width="43" height="48" viewBox="0 0 43 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path
       fillRule="evenodd"
       clipRule="evenodd"

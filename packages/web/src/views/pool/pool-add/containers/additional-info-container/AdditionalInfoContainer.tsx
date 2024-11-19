@@ -21,9 +21,7 @@ const AdditionalInfoContainer: React.FC = () => {
   const router = useCustomRouter();
   const { account, connected } = useWallet();
   const [compareToken] = useAtom(EarnState.currentCompareToken);
-  const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(
-    EarnState.poolInfoQuery,
-  );
+  const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
   const { poolPath, tokenPair } = usePoolAddSearchParams();
   const { tokens } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
@@ -32,9 +30,7 @@ const AdditionalInfoContainer: React.FC = () => {
     () =>
       ({
         ...tokens.find(item => item.path === checkGnotPath(tokenPair[0])),
-        ...getGnotPath(
-          tokens.find(item => item.path === checkGnotPath(tokenPair[0])),
-        ),
+        ...getGnotPath(tokens.find(item => item.path === checkGnotPath(tokenPair[0]))),
       } as TokenModel),
     [getGnotPath, tokens, tokenPair],
   );
@@ -43,9 +39,7 @@ const AdditionalInfoContainer: React.FC = () => {
     () =>
       ({
         ...tokens.find(item => item.path === checkGnotPath(tokenPair[1])),
-        ...getGnotPath(
-          tokens.find(item => item.path === checkGnotPath(tokenPair[1])),
-        ),
+        ...getGnotPath(tokens.find(item => item.path === checkGnotPath(tokenPair[1]))),
       } as TokenModel),
     [getGnotPath, tokens, tokenPair],
   );
@@ -68,31 +62,28 @@ const AdditionalInfoContainer: React.FC = () => {
     },
   });
 
-  const { data = initialDetailPool, isLoading: isLoadingPoolInfo } =
-    useGetPoolDetailByPath(poolPath, {
-      enabled: !!poolPath && shouldFetchPool,
-    });
+  const { data = initialDetailPool, isLoading: isLoadingPoolInfo } = useGetPoolDetailByPath(poolPath, {
+    enabled: !!poolPath && shouldFetchPool,
+  });
 
   const biggestPoolPath = useMemo(() => {
-    if (!feetierOfLiquidityMap || feetierOfLiquidityMap.length === 0)
-      return null;
+    if (!feetierOfLiquidityMap || feetierOfLiquidityMap.length === 0) return null;
     let biggestFeeTier = "";
-    Object.keys(feetierOfLiquidityMap).forEach((feeTier) => {
-      if(biggestFeeTier === "") biggestFeeTier = feeTier;
+    Object.keys(feetierOfLiquidityMap).forEach(feeTier => {
+      if (biggestFeeTier === "") biggestFeeTier = feeTier;
       else {
-        if (feetierOfLiquidityMap[biggestFeeTier] < feetierOfLiquidityMap[feeTier] )
-          biggestFeeTier = feeTier;
+        if (feetierOfLiquidityMap[biggestFeeTier] < feetierOfLiquidityMap[feeTier]) biggestFeeTier = feeTier;
       }
     });
     return [...tokenPair, biggestFeeTier].join(":");
   }, [tokenPair, feetierOfLiquidityMap]);
 
-  const {
-    data: biggestPool = initialDetailPool,
-    isLoading: isLoadingBiggestPoolInfo,
-  } = useGetPoolDetailByPath(biggestPoolPath, {
-    enabled: !!biggestPoolPath && shouldFetchPool,
-  });
+  const { data: biggestPool = initialDetailPool, isLoading: isLoadingBiggestPoolInfo } = useGetPoolDetailByPath(
+    biggestPoolPath,
+    {
+      enabled: !!biggestPoolPath && shouldFetchPool,
+    },
+  );
 
   const handleClickGotoStaking = useCallback(
     (type: PAGE_PATH_TYPE) => {
@@ -134,12 +125,7 @@ const AdditionalInfoContainer: React.FC = () => {
       handleClickGotoStaking={handleClickGotoStaking}
       pool={data}
       biggestPool={biggestPool}
-      isLoadingPool={
-        isLoadingRPCPoolInfo ||
-        isFetchingFeetierOfLiquidityMap ||
-        isLoadingPoolInfo ||
-        isLoadingPosition
-      }
+      isLoadingPool={isLoadingRPCPoolInfo || isFetchingFeetierOfLiquidityMap || isLoadingPoolInfo || isLoadingPosition}
       isLoadingGraph={isLoadingBiggestPoolInfo}
       isReversed={isReversed}
     />

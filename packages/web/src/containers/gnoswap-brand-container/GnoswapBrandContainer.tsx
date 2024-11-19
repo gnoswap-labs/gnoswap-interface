@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import GnoswapBrand, {
-  SNS_TYPE,
-} from "@components/home/gnoswap-brand/GnoswapBrand";
+import GnoswapBrand, { SNS_TYPE } from "@components/home/gnoswap-brand/GnoswapBrand";
 import { EXT_URL } from "@constants/external-url.contant";
 
 const SNS_URL: {

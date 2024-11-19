@@ -24,13 +24,7 @@ interface LaunchpadMainProps {
   icon: React.ReactNode;
 }
 
-const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
-  data,
-  isLoading,
-  breakpoint,
-  themeKey,
-  icon,
-}) => {
+const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoint, themeKey, icon }) => {
   const { t } = useTranslation();
   const defaultStyle: ButtonStyleProps = {
     textColor: "text32",
@@ -41,9 +35,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
     <>
       <section className="launchpad-section">
         <div className="launchpad-title-container">
-          {breakpoint !== DEVICE_TYPE.MOBILE && (
-            <h3 className="title">{t("Launchpad:main.title")}</h3>
-          )}
+          {breakpoint !== DEVICE_TYPE.MOBILE && <h3 className="title">{t("Launchpad:main.title")}</h3>}
           {breakpoint === DEVICE_TYPE.MOBILE ? (
             <h4 className="sub-title">
               <Trans ns="Launchpad" i18nKey={"main.subTitleMobile"}>
@@ -68,22 +60,14 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
             <Button
               text={t("Launchpad:main.button.howToParticipate")}
               style={defaultStyle}
-              rightIcon={
-                breakpoint !== DEVICE_TYPE.MOBILE && (
-                  <IconRightArrow className="icon-right-arrow" />
-                )
-              }
+              rightIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow className="icon-right-arrow" />}
             />
           </Link>
           <Link href={EXT_URL.DOCS.ROOT} target="_blank">
             <Button
               text={t("Launchpad:main.button.submitProject")}
               style={defaultStyle}
-              rightIcon={
-                breakpoint !== DEVICE_TYPE.MOBILE && (
-                  <IconRightArrow className="icon-right-arrow" />
-                )
-              }
+              rightIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow className="icon-right-arrow" />}
             />
           </Link>
         </div>
@@ -97,14 +81,10 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
             )}
             {!isLoading && (
               <span className="launchpad-data-value">
-                {data?.totalParticipants
-                  ? toNumberFormat(data.totalParticipants, 2)
-                  : "-"}
+                {data?.totalParticipants ? toNumberFormat(data.totalParticipants, 2) : "-"}
               </span>
             )}
-            <span className="launchpad-data-key">
-              {t("Launchpad:main.total.participants")}
-            </span>
+            <span className="launchpad-data-key">{t("Launchpad:main.total.participants")}</span>
           </div>
           <div className="launchpad-data-list">
             {isLoading && (
@@ -115,14 +95,10 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
             {!isLoading && (
               <span className="launchpad-data-value">
                 <img src="/gns.svg" alt="GnoSwap logo" />
-                {data?.totalDepositedGNSAmount
-                  ? toNumberFormat(data.totalDepositedGNSAmount, 2)
-                  : "-"}
+                {data?.totalDepositedGNSAmount ? toNumberFormat(data.totalDepositedGNSAmount, 2) : "-"}
               </span>
             )}
-            <span className="launchpad-data-key">
-              {t("Launchpad:main.total.deposited")}
-            </span>
+            <span className="launchpad-data-key">{t("Launchpad:main.total.deposited")}</span>
           </div>
           <div className="launchpad-data-list">
             {isLoading && (
@@ -132,14 +108,10 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({
             )}
             {!isLoading && (
               <span className="launchpad-data-value">
-                {data?.totalDistributedAmount
-                  ? `$${toNumberFormat(data.totalDistributedAmount, 2)}`
-                  : "-"}
+                {data?.totalDistributedAmount ? `$${toNumberFormat(data.totalDistributedAmount, 2)}` : "-"}
               </span>
             )}
-            <span className="launchpad-data-key">
-              {t("Launchpad:main.total.distributed")}
-            </span>
+            <span className="launchpad-data-key">{t("Launchpad:main.total.distributed")}</span>
           </div>
         </div>
       </section>

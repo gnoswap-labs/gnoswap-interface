@@ -7,9 +7,7 @@ export interface TvlPriceInfo {
 interface TvlChartPriceInfoProps {
   tvlPriceInfo: TvlPriceInfo;
 }
-const TvlChartPriceInfo: React.FC<TvlChartPriceInfoProps> = ({
-  tvlPriceInfo,
-}) => (
+const TvlChartPriceInfo: React.FC<TvlChartPriceInfoProps> = ({ tvlPriceInfo }) => (
   <TvlChartPriceInfoWrapper>
     <div className="label">TVL</div>
     <div className="price">{tvlPriceInfo.amount}</div>

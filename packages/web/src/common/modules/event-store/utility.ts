@@ -30,10 +30,7 @@ export function parseABCIValue(str: string): string[] {
 
     return results;
   } catch (error) {
-    if (
-      error instanceof DOMException &&
-      error.name === "InvalidCharacterError"
-    ) {
+    if (error instanceof DOMException && error.name === "InvalidCharacterError") {
       console.error("Invalid Base64 string:", str);
     } else {
       console.error("Failed to parse ABCI value:", error);

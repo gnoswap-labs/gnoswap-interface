@@ -20,7 +20,7 @@ export const ToolTipAPRWrapper = styled.div`
 
     .value {
       ${mixins.flexbox("row", "center", "flex-end")};
-        gap: 8px;
+      gap: 8px;
     }
   }
 `;

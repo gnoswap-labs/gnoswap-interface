@@ -7,9 +7,7 @@ import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 60_000;
 
-export const useGetGovernanceSummary = (
-  options?: UseQueryOptions<GovernanceSummaryInfo, Error>,
-) => {
+export const useGetGovernanceSummary = (options?: UseQueryOptions<GovernanceSummaryInfo, Error>) => {
   const { governanceRepository } = useGnoswapContext();
 
   return useQuery<GovernanceSummaryInfo, Error>({

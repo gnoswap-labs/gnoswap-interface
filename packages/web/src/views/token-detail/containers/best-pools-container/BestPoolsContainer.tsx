@@ -6,12 +6,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
 import { useGetPoolList } from "@query/pools";
-import {
-  useGetChainInfo,
-  useGetToken,
-  useGetTokenDetails,
-  useGetTokens
-} from "@query/token";
+import { useGetChainInfo, useGetToken, useGetTokenDetails, useGetTokens } from "@query/token";
 import { IBestPoolResponse } from "@repositories/token";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
@@ -22,12 +17,10 @@ const BestPoolsContainer: React.FC = () => {
   const { wugnotPath, getGnotPath } = useGnotToGnot();
   const router = useCustomRouter();
   const path = router.getTokenPath();
-  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetails(
-    path === "gnot" ? wugnotPath : path,
-    { enabled: !!path },
-  );
-  const { data: pools = [], isLoading: isLoadingGetPoolList } =
-    useGetPoolList();
+  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetails(path === "gnot" ? wugnotPath : path, {
+    enabled: !!path,
+  });
+  const { data: pools = [], isLoading: isLoadingGetPoolList } = useGetPoolList();
   const { data: tokenB } = useGetToken(path, { enabled: !!path });
   const { isLoading: isLoadingChainList } = useGetChainInfo();
   const { isLoading: isLoadingListToken } = useGetTokens();
@@ -35,10 +28,7 @@ const BestPoolsContainer: React.FC = () => {
 
   const bestPoolList: BestPool[] = useMemo(() => {
     return (bestPools ?? []).map((item: IBestPoolResponse) => {
-      const temp =
-        pools.filter(
-          (_item: PoolModel) => _item.poolPath === item.poolPath,
-        )?.[0] || {};
+      const temp = pools.filter((_item: PoolModel) => _item.poolPath === item.poolPath)?.[0] || {};
 
       return {
         tokenPair: {
@@ -68,13 +58,7 @@ const BestPoolsContainer: React.FC = () => {
     <BestPools
       titleSymbol={tokenB?.symbol || ""}
       cardList={bestPoolList}
-      loading={
-        isLoading ||
-        isLoadingGetPoolList ||
-        isLoadingChainList ||
-        isLoadingListToken ||
-        isLoadingCommon
-      }
+      loading={isLoading || isLoadingGetPoolList || isLoadingChainList || isLoadingListToken || isLoadingCommon}
     />
   );
 };

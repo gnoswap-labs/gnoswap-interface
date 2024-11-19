@@ -14,10 +14,7 @@ export class DashboardRepositoryImpl implements DashboardRepository {
   private networkClient: NetworkClient | null;
   private localStorageClient: StorageClient<StorageKeyType>;
 
-  constructor(
-    networkClient: NetworkClient | null,
-    localStorageClient: StorageClient<StorageKeyType>,
-  ) {
+  constructor(networkClient: NetworkClient | null, localStorageClient: StorageClient<StorageKeyType>) {
     this.networkClient = networkClient;
     this.localStorageClient = localStorageClient;
   }
@@ -55,23 +52,20 @@ export class DashboardRepositoryImpl implements DashboardRepository {
     return data.data;
   };
 
-  public getDashboardGovernanceOverview =
-    async (): Promise<GovernanceOverviewResponse> => {
-      if (!this.networkClient) {
-        throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-      }
+  public getDashboardGovernanceOverview = async (): Promise<GovernanceOverviewResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
 
-      const { data } = await this.networkClient.get<{
-        data: GovernanceOverviewResponse;
-      }>({
-        url: "/dashboard/governance",
-      });
-      return data.data;
-    };
+    const { data } = await this.networkClient.get<{
+      data: GovernanceOverviewResponse;
+    }>({
+      url: "/dashboard/governance",
+    });
+    return data.data;
+  };
 
-  public getDashboardOnchainActivity = async (
-    request: OnchainRequest,
-  ): Promise<ActivityResponse> => {
+  public getDashboardOnchainActivity = async (request: OnchainRequest): Promise<ActivityResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -88,9 +82,7 @@ export class DashboardRepositoryImpl implements DashboardRepository {
     return response.data.data;
   };
 
-  public getAccountOnchainActivity = async (
-    request: OnchainAccountRequest,
-  ): Promise<ActivityResponse> => {
+  public getAccountOnchainActivity = async (request: OnchainAccountRequest): Promise<ActivityResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }

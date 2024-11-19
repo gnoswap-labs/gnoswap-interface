@@ -15,11 +15,7 @@ import { TokenModel } from "@models/token/token-model";
 import SwapCardContent from "./swap-card-content/SwapCardContent";
 import SwapCardHeader from "./swap-card-header/SwapCardHeader";
 
-import {
-  HighPriceWarningContentWrapper,
-  SwapCardWrapper,
-  SwapWarningSection,
-} from "./SwapCard.styles";
+import { HighPriceWarningContentWrapper, SwapCardWrapper, SwapWarningSection } from "./SwapCard.styles";
 
 interface SwapCardProps {
   connectedWallet: boolean;
@@ -83,11 +79,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   const { t } = useTranslation();
 
   const shouldShowPriceImpactWarning = useMemo(
-    () =>
-      !isSameToken &&
-      !isLoading &&
-      priceImpactStatus === "HIGH" &&
-      swapRouteInfos.length > 0,
+    () => !isSameToken && !isLoading && priceImpactStatus === "HIGH" && swapRouteInfos.length > 0,
     [isSameToken, isLoading, priceImpactStatus, swapRouteInfos.length],
   );
 
@@ -123,11 +115,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
             hasBorder={false}
             content={
               <HighPriceWarningContentWrapper>
-                <IconTriangleWarningOutlined
-                  stroke={theme.color.red01}
-                  width={"20"}
-                  height={"20"}
-                />
+                <IconTriangleWarningOutlined stroke={theme.color.red01} width={"20"} height={"20"} />
                 <p>{t("Swap:priceImpactWarn")}</p>
               </HighPriceWarningContentWrapper>
             }

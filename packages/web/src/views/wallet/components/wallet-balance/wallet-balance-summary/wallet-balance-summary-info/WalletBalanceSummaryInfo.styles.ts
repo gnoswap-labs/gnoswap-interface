@@ -13,7 +13,7 @@ export const WalletBalanceSummaryInfoWrapper = styled.div`
     }
     gap: 8px;
   }
-  
+
   .amount {
     ${fonts.h3};
     font-weight: 500 !important;
