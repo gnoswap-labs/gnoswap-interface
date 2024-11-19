@@ -48,14 +48,20 @@ const HomeSwapContainer: React.FC = () => {
     if (!Number(tokenAAmount) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]) {
       return null;
     }
-    return BigNumber(tokenAAmount).multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd).toNumber();
+    const calculateValue = BigNumber(tokenAAmount)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
+      .toNumber();
+    return isNaN(calculateValue) ? null : calculateValue;
   }, [tokenA, tokenAAmount, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
     if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]) {
       return null;
     }
-    return BigNumber(tokenBAmount).multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd).toNumber();
+    const calculateValue = BigNumber(tokenBAmount)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd)
+      .toNumber();
+    return isNaN(calculateValue) ? null : calculateValue;
   }, [tokenB, tokenBAmount, tokenPrices]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
