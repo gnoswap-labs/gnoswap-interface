@@ -73,10 +73,7 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
     try {
       await event.onEmit(event);
     } catch (error) {
-      console.error(
-        `Error executing callback for event ${transactionHash}:`,
-        error,
-      );
+      console.error(`Error executing callback for event ${transactionHash}:`, error);
     }
 
     this.events.delete(transactionHash);
@@ -109,9 +106,7 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
   }
 
   async updatePendingEvents(): Promise<Event<ResponseDataType>[]> {
-    const pendingEvents = Array.from(this.events.values()).filter(
-      event => event.status === "PENDING",
-    );
+    const pendingEvents = Array.from(this.events.values()).filter(event => event.status === "PENDING");
 
     const updatedEvents = await Promise.all(
       pendingEvents.map(event =>
@@ -140,9 +135,7 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
       }
     }
 
-    return updatedEvents.filter(
-      event => event !== null,
-    ) as Event<ResponseDataType>[];
+    return updatedEvents.filter(event => event !== null) as Event<ResponseDataType>[];
   }
 
   /**
@@ -197,9 +190,7 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
     hasError: boolean;
     data: ResponseDataType;
   } | null> {
-    const result = await this.networkClient.get(
-      "/tx?hash=" + makeHexByBase64(transactionHash),
-    );
+    const result = await this.networkClient.get("/tx?hash=" + makeHexByBase64(transactionHash));
 
     const height = Number(result.data?.result?.height || 0);
     if (!height) {

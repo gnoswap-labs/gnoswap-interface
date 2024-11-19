@@ -118,76 +118,38 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
 
           <div className="table-balance-change">
             <p className="value">
-              <MissingLogo
-                symbol={tokenA?.symbol || ""}
-                url={tokenA?.logoURI}
-                width={24}
-              />{" "}
-              {tokenA?.symbol}
+              <MissingLogo symbol={tokenA?.symbol || ""} url={tokenA?.logoURI} width={24} /> {tokenA?.symbol}
             </p>
-            <p className="value right dimmed">
-              {withLoading(currentTokenAAmount)}
-            </p>
+            <p className="value right dimmed">{withLoading(currentTokenAAmount)}</p>
           </div>
           <div className="table-balance-change">
             <p className="value">
-              <MissingLogo
-                symbol={tokenB?.symbol || ""}
-                url={tokenB?.logoURI}
-                width={24}
-              />{" "}
-              {tokenB?.symbol}
+              <MissingLogo symbol={tokenB?.symbol || ""} url={tokenB?.logoURI} width={24} /> {tokenB?.symbol}
             </p>
-            <p className="value right dimmed">
-              {withLoading(currentTokenBAmount)}
-            </p>
+            <p className="value right dimmed">{withLoading(currentTokenBAmount)}</p>
           </div>
         </div>
       )}
       <div className="select-position common-bg">
         <div className="table-balance-change">
           <p className="label">{t("business:token")}</p>
-          {!isMobile && (
-            <p className="label">{t("common:balanceChange.currentBalance")}</p>
-          )}
+          {!isMobile && <p className="label">{t("common:balanceChange.currentBalance")}</p>}
           <p className="label">{t("common:balanceChange.newBalance")}</p>
         </div>
 
         <div className="table-balance-change">
           <p className="value">
-            <MissingLogo
-              symbol={tokenA?.symbol || ""}
-              url={tokenA?.logoURI}
-              width={24}
-            />{" "}
-            {tokenA?.symbol}
+            <MissingLogo symbol={tokenA?.symbol || ""} url={tokenA?.logoURI} width={24} /> {tokenA?.symbol}
           </p>
-          {!isMobile && (
-            <p className="value right dimmed">
-              {withLoading(currentTokenAAmount)}
-            </p>
-          )}
-          <p className="value right">
-            {withLoading(repositionTokenAAmount ?? "-")}
-          </p>
+          {!isMobile && <p className="value right dimmed">{withLoading(currentTokenAAmount)}</p>}
+          <p className="value right">{withLoading(repositionTokenAAmount ?? "-")}</p>
         </div>
         <div className="table-balance-change">
           <p className="value">
-            <MissingLogo
-              symbol={tokenB?.symbol || ""}
-              url={tokenB?.logoURI}
-              width={24}
-            />{" "}
-            {tokenB?.symbol}
+            <MissingLogo symbol={tokenB?.symbol || ""} url={tokenB?.logoURI} width={24} /> {tokenB?.symbol}
           </p>
-          {!isMobile && (
-            <p className="value right dimmed">
-              {withLoading(currentTokenBAmount)}
-            </p>
-          )}
-          <p className="value right">
-            {withLoading(repositionTokenBAmount ?? "-")}
-          </p>
+          {!isMobile && <p className="value right dimmed">{withLoading(currentTokenBAmount)}</p>}
+          <p className="value right">{withLoading(repositionTokenBAmount ?? "-")}</p>
         </div>
       </div>
     </BalanceChangeWrapper>

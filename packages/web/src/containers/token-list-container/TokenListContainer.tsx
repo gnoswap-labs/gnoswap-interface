@@ -1,10 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import TokenList from "@components/home/token-list/TokenList";
-import {
-  MATH_NEGATIVE_TYPE,
-  SwapFeeTierInfoMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { MATH_NEGATIVE_TYPE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { type TokenInfo } from "@models/token/token-info";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { ValuesType } from "utility-types";
@@ -128,9 +124,7 @@ export const createDummyTokenList = (): Token[] => [
       },
       feeRate: "0.05%",
     },
-    last7days: Array.from({ length: 40 }, () =>
-      Math.round(Math.random() * 100),
-    ),
+    last7days: Array.from({ length: 40 }, () => Math.round(Math.random() * 100)),
     idx: 1,
     graphStatus: MATH_NEGATIVE_TYPE.POSITIVE,
     isNative: false,
@@ -189,10 +183,7 @@ const TokenListContainer: React.FC = () => {
   }, []);
 
   const isSortOption = useCallback((head: TABLE_HEAD) => {
-    const disableItems = [
-      TABLE_HEAD.MOST_LIQUID_POOL.toString(),
-      TABLE_HEAD.LAST_7_DAYS.toString(),
-    ];
+    const disableItems = [TABLE_HEAD.MOST_LIQUID_POOL.toString(), TABLE_HEAD.LAST_7_DAYS.toString()];
 
     return !disableItems.includes(head);
   }, []);
@@ -200,12 +191,7 @@ const TokenListContainer: React.FC = () => {
   const sort = useCallback(
     (item: TABLE_HEAD) => {
       const key = item;
-      const direction =
-        sortOption?.key !== item
-          ? "desc"
-          : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+      const direction = sortOption?.key !== item ? "desc" : sortOption.direction === "asc" ? "desc" : "asc";
 
       setSortOption({
         key,
@@ -223,41 +209,23 @@ const TokenListContainer: React.FC = () => {
       .filter((token: TokenModel) => token.path !== wugnotPath)
       .map((item: TokenModel) => {
         const isGnot = item.path === "gnot";
-        const tempTokenPrice: TokenPriceModel =
-          tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
+        const tempTokenPrice: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
         const transferData = isGnot ? tempWuGnot : tempTokenPrice;
-        const splitMostLiquidity: string[] =
-          tempTokenPrice?.mostLiquidityPool?.split(":") || [];
-        const swapFeeType: SwapFeeTierType =
-          `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
-        const tempTokenA = tokens.filter(
-          (_item: TokenModel) => _item.path === splitMostLiquidity[0],
-        );
-        const tempTokenB = tokens.filter(
-          (_item: TokenModel) => _item.path === splitMostLiquidity[1],
-        );
+        const splitMostLiquidity: string[] = tempTokenPrice?.mostLiquidityPool?.split(":") || [];
+        const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
+        const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
+        const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
 
-        const data1day = checkPositivePrice(
-          transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.price1d,
-        );
+        const data1day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price1d);
 
-        const data7day = checkPositivePrice(
-          transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.price7d,
-        );
+        const data7day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price7d);
         const graphStatus = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
-          tempTokenPrice.last7d?.sort(
-            (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-          )?.[0].price,
+          tempTokenPrice.last7d?.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())?.[0].price,
         ).status;
 
-        const data30D = checkPositivePrice(
-          transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.price30d,
-        );
+        const data30D = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price30d);
 
         return {
           ...transferData,
@@ -284,30 +252,18 @@ const TokenListContainer: React.FC = () => {
                     logoURI: getGnotPath(tempTokenB?.[0]).logoURI,
                   },
                 },
-                feeRate:
-                  splitMostLiquidity.length > 1
-                    ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}`
-                    : "0.02%",
+                feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
               }
             : undefined,
           last7days: [
             ...(transferData?.last7d
-              ?.sort(
-                (a, b) =>
-                  new Date(a.time).getTime() - new Date(b.time).getTime(),
-              )
+              ?.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
               .map(item => Number(item.price || 0)) || []),
-            ...(transferData?.pricesBefore?.latestPrice
-              ? [Number(transferData?.pricesBefore?.latestPrice)]
-              : []),
+            ...(transferData?.pricesBefore?.latestPrice ? [Number(transferData?.pricesBefore?.latestPrice)] : []),
           ],
           marketCap: transferData.marketCap
             ? `$${Math.floor(
-                Number(
-                  (isGnot
-                    ? 1000000000 * Number(transferData.usd)
-                    : transferData.marketCap) || 0,
-                ),
+                Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0),
               ).toLocaleString()}`
             : "-",
           liquidity: formatOtherPrice(transferData.lockedTokensUsd, {
@@ -318,41 +274,27 @@ const TokenListContainer: React.FC = () => {
             decimals: 0,
             isKMB: false,
           }),
-          price: transferData.usd
-            ? formatPrice(transferData.usd, { isKMB: false })
-            : "--",
+          price: transferData.usd ? formatPrice(transferData.usd, { isKMB: false }) : "--",
           priceOf1d: {
             status: data1day.status,
             value:
-              data1day.percentDisplay !== "-"
-                ? data1day.percentDisplay.replace(/[+-]/g, "")
-                : data1day.percentDisplay,
+              data1day.percentDisplay !== "-" ? data1day.percentDisplay.replace(/[+-]/g, "") : data1day.percentDisplay,
             realValue:
-              data1day.percentDisplay === "-"
-                ? -100000000000
-                : Number(data1day.percentDisplay.replace(/[%]/g, "")),
+              data1day.percentDisplay === "-" ? -100000000000 : Number(data1day.percentDisplay.replace(/[%]/g, "")),
           },
           priceOf7d: {
             status: data7day.status,
             value:
-              data7day.percentDisplay !== "-"
-                ? data7day.percentDisplay.replace(/[+-]/g, "")
-                : data7day.percentDisplay,
+              data7day.percentDisplay !== "-" ? data7day.percentDisplay.replace(/[+-]/g, "") : data7day.percentDisplay,
             realValue:
-              data7day.percentDisplay === "-"
-                ? -100000000000
-                : Number(data7day.percentDisplay.replace(/[%]/g, "")),
+              data7day.percentDisplay === "-" ? -100000000000 : Number(data7day.percentDisplay.replace(/[%]/g, "")),
           },
           priceOf30d: {
             status: data30D.status,
             value:
-              data30D.percentDisplay !== "-"
-                ? data30D.percentDisplay.replace(/[+-]/g, "")
-                : data30D.percentDisplay,
+              data30D.percentDisplay !== "-" ? data30D.percentDisplay.replace(/[+-]/g, "") : data30D.percentDisplay,
             realValue:
-              data30D.percentDisplay === "-"
-                ? -100000000000
-                : Number(data30D.percentDisplay.replace(/[%]/g, "")),
+              data30D.percentDisplay === "-" ? -100000000000 : Number(data30D.percentDisplay.replace(/[%]/g, "")),
           },
           idx: 1,
           graphStatus,
@@ -362,14 +304,11 @@ const TokenListContainer: React.FC = () => {
 
     temp.sort((a: Token, b: Token) => {
       const volumeCompare =
-        Number(b.volume24h.replace(/,/g, "").slice(1)) -
-        Number(a.volume24h.replace(/,/g, "").slice(1));
+        Number(b.volume24h.replace(/,/g, "").slice(1)) - Number(a.volume24h.replace(/,/g, "").slice(1));
       const marketCapCompare =
-        Number(b.marketCap.replace(/,/g, "").slice(1)) -
-        Number(a.marketCap.replace(/,/g, "").slice(1));
+        Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1));
       const liquidityCompare =
-        Number(b.liquidity.replace(/,/g, "").slice(1)) -
-        Number(a.liquidity.replace(/,/g, "").slice(1));
+        Number(b.liquidity.replace(/,/g, "").slice(1)) - Number(a.liquidity.replace(/,/g, "").slice(1));
       const alphabeticalCompare = a.token.name.localeCompare(b.token.name);
 
       if (volumeCompare !== 0) {
@@ -388,9 +327,7 @@ const TokenListContainer: React.FC = () => {
 
   const sortedData = useMemo(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
-    const temp = firstData.filter((item: Token) =>
-      item.token.path.includes(grc20),
-    );
+    const temp = firstData.filter((item: Token) => item.token.path.includes(grc20));
     if (keyword) {
       return temp.filter(
         (item: Token) =>
@@ -401,88 +338,56 @@ const TokenListContainer: React.FC = () => {
     if (sortOption) {
       if (sortOption.key === TABLE_HEAD.NAME) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: Token, b: Token) =>
-            b.token.name.localeCompare(a.token.name),
-          );
+          temp.sort((a: Token, b: Token) => b.token.name.localeCompare(a.token.name));
         } else {
-          temp.sort((a: Token, b: Token) =>
-            a.token.name.localeCompare(b.token.name),
-          );
+          temp.sort((a: Token, b: Token) => a.token.name.localeCompare(b.token.name));
         }
       } else if (sortOption.key === TABLE_HEAD.PRICE) {
         if (sortOption.direction === "asc") {
-          temp.sort(
-            (a: Token, b: Token) =>
-              Number(a.price.slice(1)) - Number(b.price.slice(1)),
-          );
+          temp.sort((a: Token, b: Token) => Number(a.price.slice(1)) - Number(b.price.slice(1)));
         } else {
-          temp.sort(
-            (a: Token, b: Token) =>
-              -Number(a.price.slice(1)) + Number(b.price.slice(1)),
-          );
+          temp.sort((a: Token, b: Token) => -Number(a.price.slice(1)) + Number(b.price.slice(1)));
         }
       } else if (sortOption.key === TABLE_HEAD.PRICE_OF_1D) {
         if (sortOption.direction === "asc") {
-          temp.sort(
-            (a: Token, b: Token) =>
-              a.priceOf1d.realValue - b.priceOf1d.realValue,
-          );
+          temp.sort((a: Token, b: Token) => a.priceOf1d.realValue - b.priceOf1d.realValue);
         } else {
-          temp.sort(
-            (a: Token, b: Token) =>
-              -a.priceOf1d.realValue + b.priceOf1d.realValue,
-          );
+          temp.sort((a: Token, b: Token) => -a.priceOf1d.realValue + b.priceOf1d.realValue);
         }
       } else if (sortOption.key === TABLE_HEAD.PRICE_OF_30D) {
         if (sortOption.direction === "asc") {
-          temp.sort(
-            (a: Token, b: Token) =>
-              a.priceOf30d.realValue - b.priceOf30d.realValue,
-          );
+          temp.sort((a: Token, b: Token) => a.priceOf30d.realValue - b.priceOf30d.realValue);
         } else {
-          temp.sort(
-            (a: Token, b: Token) =>
-              -a.priceOf30d.realValue + b.priceOf30d.realValue,
-          );
+          temp.sort((a: Token, b: Token) => -a.priceOf30d.realValue + b.priceOf30d.realValue);
         }
       } else if (sortOption.key === TABLE_HEAD.PRICE_OF_7D) {
         if (sortOption.direction === "asc") {
-          temp.sort(
-            (a: Token, b: Token) =>
-              a.priceOf7d.realValue - b.priceOf7d.realValue,
-          );
+          temp.sort((a: Token, b: Token) => a.priceOf7d.realValue - b.priceOf7d.realValue);
         } else {
-          temp.sort(
-            (a: Token, b: Token) =>
-              -a.priceOf7d.realValue + b.priceOf7d.realValue,
-          );
+          temp.sort((a: Token, b: Token) => -a.priceOf7d.realValue + b.priceOf7d.realValue);
         }
       } else if (sortOption.key === TABLE_HEAD.MARKET_CAP) {
         if (sortOption.direction === "asc") {
           temp.sort(
             (a: Token, b: Token) =>
-              Number(a.marketCap.replace(/,/g, "").slice(1)) -
-              Number(b.marketCap.replace(/,/g, "").slice(1)),
+              Number(a.marketCap.replace(/,/g, "").slice(1)) - Number(b.marketCap.replace(/,/g, "").slice(1)),
           );
         } else {
           temp.sort(
             (a: Token, b: Token) =>
-              -Number(a.marketCap.replace(/,/g, "").slice(1)) +
-              Number(b.marketCap.replace(/,/g, "").slice(1)),
+              -Number(a.marketCap.replace(/,/g, "").slice(1)) + Number(b.marketCap.replace(/,/g, "").slice(1)),
           );
         }
       } else if (sortOption.key === TABLE_HEAD.VOLUME) {
         if (sortOption.direction === "asc") {
           temp.sort(
             (a: Token, b: Token) =>
-              Number(a.volume24h.replace(/,/g, "").slice(1)) -
-              Number(b.volume24h.replace(/,/g, "").slice(1)),
+              Number(a.volume24h.replace(/,/g, "").slice(1)) - Number(b.volume24h.replace(/,/g, "").slice(1)),
           );
         } else {
           temp.sort(
             (a: Token, b: Token) =>
-              -Number(a.volume24h.replace(/,/g, "").slice(1)) +
-              Number(b.volume24h.replace(/,/g, "").slice(1)),
+              -Number(a.volume24h.replace(/,/g, "").slice(1)) + Number(b.volume24h.replace(/,/g, "").slice(1)),
           );
         }
       } else if (sortOption.key === TABLE_HEAD.INDEX) {
@@ -495,28 +400,22 @@ const TokenListContainer: React.FC = () => {
         if (sortOption.direction === "asc") {
           temp.sort(
             (a: Token, b: Token) =>
-              Number(a.liquidity.replace(/,/g, "").slice(1)) -
-              Number(b.liquidity.replace(/,/g, "").slice(1)),
+              Number(a.liquidity.replace(/,/g, "").slice(1)) - Number(b.liquidity.replace(/,/g, "").slice(1)),
           );
         } else {
           temp.sort(
             (a: Token, b: Token) =>
-              -Number(a.liquidity.replace(/,/g, "").slice(1)) +
-              Number(b.liquidity.replace(/,/g, "").slice(1)),
+              -Number(a.liquidity.replace(/,/g, "").slice(1)) + Number(b.liquidity.replace(/,/g, "").slice(1)),
           );
         }
       } else {
         temp.sort(
           (a: Token, b: Token) =>
-            -Number(a.volume24h.replace(/,/g, "").slice(1)) +
-            Number(b.volume24h.replace(/,/g, "").slice(1)),
+            -Number(a.volume24h.replace(/,/g, "").slice(1)) + Number(b.volume24h.replace(/,/g, "").slice(1)),
         );
       }
     }
-    return temp.slice(
-      page * MAIN_TOKEN_LIST_SIZE,
-      (page + 1) * MAIN_TOKEN_LIST_SIZE,
-    );
+    return temp.slice(page * MAIN_TOKEN_LIST_SIZE, (page + 1) * MAIN_TOKEN_LIST_SIZE);
   }, [keyword, tokenType, sortOption, firstData, page]);
 
   return (

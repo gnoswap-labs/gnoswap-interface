@@ -11,9 +11,7 @@ export default {
   component: ActivityListHeader,
 } as ComponentMeta<typeof ActivityListHeader>;
 
-const Template: ComponentStory<typeof ActivityListHeader> = args => (
-  <ActivityListHeader {...args} />
-);
+const Template: ComponentStory<typeof ActivityListHeader> = args => <ActivityListHeader {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

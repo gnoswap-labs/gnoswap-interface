@@ -8,19 +8,10 @@ import { VolumeChartSelectTabWrapper } from "./VolumeChartSelectTab.styles";
 
 interface VolumeChartSelectTabProps {
   volumeChartType: CHART_TYPE;
-  changeVolumeChartType: ({
-    display,
-    key,
-  }: {
-    display: string;
-    key: string;
-  }) => void;
+  changeVolumeChartType: ({ display, key }: { display: string; key: string }) => void;
 }
 
-const VolumeChartSelectTab: React.FC<VolumeChartSelectTabProps> = ({
-  volumeChartType,
-  changeVolumeChartType,
-}) => {
+const VolumeChartSelectTab: React.FC<VolumeChartSelectTabProps> = ({ volumeChartType, changeVolumeChartType }) => {
   const { t } = useTranslation();
 
   return (

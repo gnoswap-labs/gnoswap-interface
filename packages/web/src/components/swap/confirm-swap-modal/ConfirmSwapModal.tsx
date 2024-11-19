@@ -12,10 +12,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTheme } from "@emotion/react";
 import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import {
-  swapDirectionToGuaranteedType,
-  SwapSummaryInfo,
-} from "@models/swap/swap-summary-info";
+import { swapDirectionToGuaranteedType, SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { toNumberFormat } from "@utils/number-utils";
@@ -108,10 +105,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     return `$${toNumberFormat(gasFeeUSD)}`;
   }, [swapSummaryInfo.gasFeeUSD]);
 
-  const showPriceImpact = useMemo(
-    () => !!swapSummaryInfo?.priceImpact,
-    [swapSummaryInfo?.priceImpact],
-  );
+  const showPriceImpact = useMemo(() => !!swapSummaryInfo?.priceImpact, [swapSummaryInfo?.priceImpact]);
 
   const priceImpactStatusDisplay = useMemo(() => {
     switch (priceImpactStatus) {
@@ -133,11 +127,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     <ConfirmModal>
       <div
         className={`modal-body ${
-          swapResult === null && submitted
-            ? "modal-body-loading"
-            : submitted
-            ? "submitted-modal"
-            : ""
+          swapResult === null && submitted ? "modal-body-loading" : submitted ? "submitted-modal" : ""
         }`}
       >
         <div className="modal-header">
@@ -190,9 +180,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                 <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
                 {showPriceImpact && (
                   <PriceImpactWrapper priceImpact={priceImpactStatus}>
-                    {priceImpactStatus === "HIGH" && (
-                      <IconTriangleWarningOutlined stroke={theme.color.red01} />
-                    )}
+                    {priceImpactStatus === "HIGH" && <IconTriangleWarningOutlined stroke={theme.color.red01} />}
                     {"("}
                     {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
                     {swapSummaryInfo?.priceImpact}
@@ -212,9 +200,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
             {!isWrapOrUnwrap && (
               <>
                 <div className="price-impact">
-                  <span className="gray-text">
-                    {t("Swap:swapInfo.priceImpact")}
-                  </span>
+                  <span className="gray-text">{t("Swap:swapInfo.priceImpact")}</span>
                   <span className="white-text">
                     <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
                       {priceImpactStatusDisplay}
@@ -228,9 +214,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </span>
                 </div>
                 <div className="slippage">
-                  <span className="gray-text">
-                    {t("Swap:swapInfo.slippageSet")}
-                  </span>
+                  <span className="gray-text">{t("Swap:swapInfo.slippageSet")}</span>
                   <span className="white-text">{slippageStr}</span>
                 </div>
                 <div className="received">
@@ -244,17 +228,13 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <Tooltip
                         placement="top"
                         FloatingContent={
-                          <ToolTipContentWrapper>
-                            {t("Swap:swapInfo.tooltip.swapFee")}
-                          </ToolTipContentWrapper>
+                          <ToolTipContentWrapper>{t("Swap:swapInfo.tooltip.swapFee")}</ToolTipContentWrapper>
                         }
                       >
                         <IconInfo />
                       </Tooltip>
                     </div>
-                    <span className="white-text">
-                      {swapSummaryInfo.protocolFee}
-                    </span>
+                    <span className="white-text">{swapSummaryInfo.protocolFee}</span>
                   </div>
                 </div>
               </>

@@ -26,7 +26,7 @@ const ProposalHeader: React.FC<ProposalHeaderProps> = ({
   return (
     <ProposalHeaderWrapper>
       <div className="header-title">
-          {t("Governance:proposalList.header.title")}
+        {t("Governance:proposalList.header.title")}
         <a href={EXT_URL.SOCIAL.DISCORD} target="_blank" className="sub-title">
           {t("Governance:proposalList.header.link")}
           <IconNewTab />

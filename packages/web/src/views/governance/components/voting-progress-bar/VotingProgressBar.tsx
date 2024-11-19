@@ -4,11 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 
 import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
 
-import {
-  ProgressBar,
-  ProgressWrapper,
-  ProposalTooltipContent,
-} from "./VotingProgressBar.styles";
+import { ProgressBar, ProgressWrapper, ProposalTooltipContent } from "./VotingProgressBar.styles";
 import IconPassed from "@components/common/icons/IconPassed";
 import Tooltip from "@components/common/tooltip/Tooltip";
 interface VotingProgressBarProps {
@@ -35,31 +31,22 @@ const VotingProgressBar: React.FC<VotingProgressBarProps> = ({
 
   return (
     <ProgressWrapper>
-      <ProgressBar
-        rateWidth={`${yesRate}%`}
-        noOfQuorumWidth={`${Number(yesRate) + Number(noRate)}%`}
-      >
+      <ProgressBar rateWidth={`${yesRate}%`} noOfQuorumWidth={`${Number(yesRate) + Number(noRate)}%`}>
         <FloatingTooltip
           className="float-progress"
           position="top"
-          content={`${t("Governance:vote.yes")} ${yesRate.toLocaleString(
-            undefined,
-            {
-              maximumFractionDigits: 2,
-            },
-          )}%`}
+          content={`${t("Governance:vote.yes")} ${yesRate.toLocaleString(undefined, {
+            maximumFractionDigits: 2,
+          })}%`}
         >
           <div className="progress-bar-yes-of-quorum progress-bar-rate" />
         </FloatingTooltip>
         <FloatingTooltip
           className="float-progress"
           position="top"
-          content={`${t("Governance:vote.no")} ${noRate.toLocaleString(
-            undefined,
-            {
-              maximumFractionDigits: 2,
-            },
-          )}%`}
+          content={`${t("Governance:vote.no")} ${noRate.toLocaleString(undefined, {
+            maximumFractionDigits: 2,
+          })}%`}
         >
           <div className="progress-bar-no-of-quorum progress-bar-rate" />
         </FloatingTooltip>

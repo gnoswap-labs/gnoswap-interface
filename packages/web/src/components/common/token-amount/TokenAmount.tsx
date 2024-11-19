@@ -9,11 +9,7 @@ export interface TokenAmountProps {
   amount: string;
 }
 
-const TokenAmount: React.FC<TokenAmountProps> = ({
-  token,
-  usdPrice,
-  amount,
-}) => {
+const TokenAmount: React.FC<TokenAmountProps> = ({ token, usdPrice, amount }) => {
   return (
     <TokenAmountWrapper>
       <div className="amount">

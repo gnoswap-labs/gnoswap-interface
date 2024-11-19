@@ -1,10 +1,6 @@
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
-import {
-  PAGE_PATH,
-  PAGE_PATH_TYPE,
-  QUERY_PARAMETER,
-} from "@constants/page.constant";
+import { PAGE_PATH, PAGE_PATH_TYPE, QUERY_PARAMETER } from "@constants/page.constant";
 import useScrollData from "./use-scroll-data";
 import { makeRouteUrl } from "@utils/page.utils";
 
@@ -60,44 +56,24 @@ const useCustomRouter = () => {
     return getParameter(QUERY_PARAMETER["PROJECT_PATH"]);
   }
 
-  function pushByParams(
-    url: string,
-    params?: QueryParameter,
-    hash?: string | number,
-  ) {
+  function pushByParams(url: string, params?: QueryParameter, hash?: string | number) {
     return push(makeRouteUrl(url, params, hash));
   }
 
-  function movePage(
-    pathType: PAGE_PATH_TYPE,
-    params?: QueryParameter,
-    hash?: string | number,
-  ) {
+  function movePage(pathType: PAGE_PATH_TYPE, params?: QueryParameter, hash?: string | number) {
     const path = PAGE_PATH[pathType];
     return pushByParams(path, params, hash);
   }
 
-  function movePageWithTokenPath(
-    path: PAGE_PATH_TYPE,
-    tokenPath: string,
-    hash?: string | number,
-  ) {
+  function movePageWithTokenPath(path: PAGE_PATH_TYPE, tokenPath: string, hash?: string | number) {
     return movePage(path, { [QUERY_PARAMETER.TOKEN_PATH]: tokenPath }, hash);
   }
 
-  function movePageWithPoolPath(
-    path: PAGE_PATH_TYPE,
-    poolPath: string,
-    hash?: string | number,
-  ) {
+  function movePageWithPoolPath(path: PAGE_PATH_TYPE, poolPath: string, hash?: string | number) {
     return movePage(path, { [QUERY_PARAMETER.POOL_PATH]: poolPath }, hash);
   }
 
-  function movePageWithPositionId(
-    path: PAGE_PATH_TYPE,
-    poolPath: string,
-    positionId: string | number,
-  ) {
+  function movePageWithPositionId(path: PAGE_PATH_TYPE, poolPath: string, positionId: string | number) {
     return movePage(path, {
       [QUERY_PARAMETER.POOL_PATH]: poolPath,
       [QUERY_PARAMETER.POSITION_ID]: positionId,

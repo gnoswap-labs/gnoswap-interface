@@ -14,20 +14,10 @@ interface IPositionHistoryList {
   isLoading: boolean;
 }
 
-const PositionHistoryList: React.FC<IPositionHistoryList> = ({
-  list,
-  isFetched,
-  breakpoint,
-  isLoading,
-}) => {
+const PositionHistoryList: React.FC<IPositionHistoryList> = ({ list, isFetched, breakpoint, isLoading }) => {
   return (
     <PositionHistoryListWrapper>
-      <PositionHistoryTable
-        list={list}
-        isFetched={isFetched}
-        breakpoint={breakpoint}
-        isLoading={isLoading}
-      />
+      <PositionHistoryTable list={list} isFetched={isFetched} breakpoint={breakpoint} isLoading={isLoading} />
     </PositionHistoryListWrapper>
   );
 };

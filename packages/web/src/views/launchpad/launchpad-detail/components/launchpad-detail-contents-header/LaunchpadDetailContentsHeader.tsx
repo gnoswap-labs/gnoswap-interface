@@ -24,9 +24,11 @@ interface LaunchpadDetailContentsHeaderProps {
   rewardInfo: ProjectRewardInfoModel;
 }
 
-const LaunchpadDetailContentsHeader: React.FC<
-  LaunchpadDetailContentsHeaderProps
-> = ({ data, isLoading, rewardInfo }) => {
+const LaunchpadDetailContentsHeader: React.FC<LaunchpadDetailContentsHeaderProps> = ({
+  data,
+  isLoading,
+  rewardInfo,
+}) => {
   return (
     <ContentsHeaderWrapper className="contents-header">
       {isLoading && <span css={pulseSkeletonStyle({ w: 200, h: 36 })}></span>}

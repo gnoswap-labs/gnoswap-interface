@@ -8,7 +8,7 @@ describe("VolumeChart Component", () => {
   it("VolumeChart render", () => {
     const mockProps = {
       volumeChartType: CHART_TYPE["7D"],
-      changeVolumeChartType: () => { },
+      changeVolumeChartType: () => {},
       volumePriceInfo: { amount: "$100,450,000", fee: "$12,231" },
       volumeChartInfo: { xAxisLabels: [], datas: [] },
     };

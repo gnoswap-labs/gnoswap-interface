@@ -7,19 +7,14 @@ import { LaunchpadState } from "@states/index";
 
 import IconWarning from "@components/common/icons/IconWarning";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import {
-  DepositConditionsTooltipWrapper,
-  FloatingContentWrapper,
-} from "./DepositConditionsTooltip.styles";
+import { DepositConditionsTooltipWrapper, FloatingContentWrapper } from "./DepositConditionsTooltip.styles";
 import { Trans, useTranslation } from "react-i18next";
 
 interface DepositConditionsTooltipProps {
   placement?: Placement;
 }
 
-const DepositConditionsTooltip = ({
-  placement,
-}: DepositConditionsTooltipProps) => {
+const DepositConditionsTooltip = ({ placement }: DepositConditionsTooltipProps) => {
   const { t } = useTranslation();
 
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);

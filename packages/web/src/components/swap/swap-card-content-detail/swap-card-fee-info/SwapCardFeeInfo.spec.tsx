@@ -15,8 +15,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     path: "gno.land/r/foo",
     decimals: 4,
     symbol: "FOO",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
     address: "",
   },
@@ -28,8 +27,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     path: "gno.land/r/foo",
     decimals: 4,
     symbol: "FOO",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
     address: "",
   },
@@ -48,7 +46,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   gasFeeUSD: 0.1,
   swapRate1USD: 0,
   swapRateAction: "ATOB",
-  protocolFee: ""
+  protocolFee: "",
 };
 
 const swapTokenInfo: SwapTokenInfo = {
@@ -60,8 +58,7 @@ const swapTokenInfo: SwapTokenInfo = {
     path: "gno.land/r/foo",
     decimals: 4,
     symbol: "FOO",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     type: "grc20",
     priceID: "gno.land/r/foo",
   },
@@ -77,8 +74,7 @@ const swapTokenInfo: SwapTokenInfo = {
     path: "gno.land/r/foo",
     decimals: 4,
     symbol: "FOO",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     type: "grc20",
     priceID: "gno.land/r/foo",
   },

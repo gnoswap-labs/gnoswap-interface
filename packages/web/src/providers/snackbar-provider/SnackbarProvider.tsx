@@ -6,10 +6,7 @@ import { SnackbarOptions } from "./type";
 import { SnackbarList } from "./snackbar-provider.styles";
 
 interface SnackbarContenxtProps {
-  enqueue: (
-    content: SnackbarContent | undefined,
-    options: SnackbarOptions,
-  ) => void;
+  enqueue: (content: SnackbarContent | undefined, options: SnackbarOptions) => void;
   change: (id: number, type: SnackbarType) => void;
   dequeue: (id: number) => void;
   clear: () => void;

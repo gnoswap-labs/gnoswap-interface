@@ -198,7 +198,7 @@ export const ConfirmModal = styled.div`
             }
             color: ${({ theme }) => theme.color.text10};
             & > div {
-              display: inline-block
+              display: inline-block;
             }
           }
           .exchange-price {
@@ -288,7 +288,6 @@ export const ConfirmModal = styled.div`
           height: 54px;
         }
       }
-
     }
     .transaction-state {
       ${mixins.flexbox("column", "center", "flex-start")};
@@ -411,7 +410,7 @@ export const PriceImpactWrapper = styled.div<{ priceImpact?: PriceImpactStatus }
 export const PriceImpactStatusWrapper = styled.span<{
   priceImpact: PriceImpactStatus;
 }>`
-   ${({ priceImpact, theme }) => {
+  ${({ priceImpact, theme }) => {
     switch (priceImpact) {
       case "HIGH":
         return `color: ${theme.color.red01};`;

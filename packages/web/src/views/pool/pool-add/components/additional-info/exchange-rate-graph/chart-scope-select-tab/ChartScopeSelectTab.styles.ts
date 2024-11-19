@@ -12,23 +12,23 @@ interface ChartScopeSelectTabWrapperProps {
 export const ChartScopeSelectTabWrapper = styled.div<ChartScopeSelectTabWrapperProps>`
   ${mixins.flexbox("row", "center", "center")};
 
-  ${(props) =>
-          props.$hasBorder ? ({ theme }) => theme.color.border01 : ""}
-  .tab-button {}
+  ${props => (props.$hasBorder ? ({ theme }) => theme.color.border01 : "")}
+  .tab-button {
+  }
   .tab-button {
     ${fonts.p6};
-    width: ${(props) => {
+    width: ${props => {
       switch (props.size) {
-        case "SMALL": 
+        case "SMALL":
           return "50px";
         case "MEDIUM":
         default:
           return "60px";
       }
     }};
-    height: ${(props) => {
+    height: ${props => {
       switch (props.size) {
-        case "SMALL": 
+        case "SMALL":
           return "21px";
         case "MEDIUM":
         default:

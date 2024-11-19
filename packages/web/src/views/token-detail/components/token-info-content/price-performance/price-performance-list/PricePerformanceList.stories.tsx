@@ -8,9 +8,7 @@ export default {
   component: PricePerformanceList,
 } as ComponentMeta<typeof PricePerformanceList>;
 
-const Template: ComponentStory<typeof PricePerformanceList> = args => (
-  <PricePerformanceList {...args} />
-);
+const Template: ComponentStory<typeof PricePerformanceList> = args => <PricePerformanceList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

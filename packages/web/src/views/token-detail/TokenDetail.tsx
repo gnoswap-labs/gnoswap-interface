@@ -3,9 +3,7 @@ import React, { useMemo } from "react";
 
 import { TokenError } from "@common/errors/token";
 import Footer from "@components/common/footer/Footer";
-import BreadcrumbsContainer, {
-  BreadcrumbTypes,
-} from "@containers/breadcrumbs-container/BreadcrumbsContainer";
+import BreadcrumbsContainer, { BreadcrumbTypes } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
@@ -59,21 +57,13 @@ const TokenDetail: React.FC = () => {
   return (
     <TokenLayout
       header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={steps}
-          isLoading={isLoading}
-          w="102px"
-        />
-      }
+      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={steps} isLoading={isLoading} w="102px" />}
       chart={<TokenChartContainer />}
       info={<TokenInfoContentContainer />}
       description={<TokenDescriptionContainer />}
       swap={<TokenSwapContainer />}
       bestPools={<BestPoolsContainer />}
-      trending={
-        <TrendingCryptos cardList={<TrendingCryptoCardListContainer />} />
-      }
+      trending={<TrendingCryptos cardList={<TrendingCryptoCardListContainer />} />}
       gainersAndLosers={<GainerAndLoserContainer />}
       footer={<Footer />}
     />

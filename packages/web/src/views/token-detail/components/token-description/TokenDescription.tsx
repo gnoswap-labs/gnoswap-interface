@@ -40,12 +40,7 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
           })}
         </h2>
       )}
-      {loading && (
-        <span
-          className="loading-value"
-          css={pulseSkeletonStyle({ h: 25, w: 195 })}
-        />
-      )}
+      {loading && <span className="loading-value" css={pulseSkeletonStyle({ h: 25, w: 195 })} />}
       {!loading && <TokenDescriptionContent content={content} />}
       {loading && (
         <>
@@ -54,13 +49,7 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
         </>
       )}
 
-      <TokenDescriptionLinks
-        links={links}
-        copyClick={copyClick}
-        copied={copied}
-        path={path}
-        isLoading={loading}
-      />
+      <TokenDescriptionLinks links={links} copyClick={copyClick} copied={copied} path={path} isLoading={loading} />
     </div>
   );
 };

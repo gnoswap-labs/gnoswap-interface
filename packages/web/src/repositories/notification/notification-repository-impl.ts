@@ -15,24 +15,17 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   private networkClient: NetworkClient | null;
   private storage: StorageClient<StorageKeyType>;
 
-  constructor(
-    networkClient: NetworkClient | null,
-    localStorageClient: StorageClient<StorageKeyType>,
-  ) {
+  constructor(networkClient: NetworkClient | null, localStorageClient: StorageClient<StorageKeyType>) {
     this.networkClient = networkClient;
     this.storage = localStorageClient;
   }
 
   private getRemovedTx = (): string[] => {
-    return JSON.parse(
-      this.storage.get("notification-removed-tx") ?? "[]",
-    ) as string[];
+    return JSON.parse(this.storage.get("notification-removed-tx") ?? "[]") as string[];
   };
 
   private getSeenTx = (): string[] => {
-    return JSON.parse(
-      this.storage.get("notification-seen-tx") ?? "[]",
-    ) as string[];
+    return JSON.parse(this.storage.get("notification-seen-tx") ?? "[]") as string[];
   };
 
   public setRemovedTx = (txs: string[]): void => {
@@ -50,10 +43,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     /**
      * Use set to make it don't have duplicate tx ( reduce storage size )
      */
-    this.storage.set(
-      "notification-removed-tx",
-      JSON.stringify([...new Set(oldTx)]),
-    );
+    this.storage.set("notification-removed-tx", JSON.stringify([...new Set(oldTx)]));
   };
 
   public appendSeenTx = (txs: string[]) => {
@@ -62,15 +52,10 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     /**
      * Use set to make it don't have duplicate tx ( reduce storage size )
      */
-    this.storage.set(
-      "notification-seen-tx",
-      JSON.stringify([...new Set(oldTx)]),
-    );
+    this.storage.set("notification-seen-tx", JSON.stringify([...new Set(oldTx)]));
   };
 
-  public getAccountOnchainActivity = async (
-    request: AccountActivityRequest,
-  ): Promise<ActivityResponse> => {
+  public getAccountOnchainActivity = async (request: AccountActivityRequest): Promise<ActivityResponse> => {
     if (!this.networkClient) {
       return [];
     }
@@ -92,9 +77,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     }
   };
 
-  public getGroupedNotification = async (
-    request: AccountActivityRequest,
-  ): Promise<TransactionGroupsType[]> => {
+  public getGroupedNotification = async (request: AccountActivityRequest): Promise<TransactionGroupsType[]> => {
     const data = await this.getAccountOnchainActivity(request);
     const removedTxs = this.getRemovedTx();
     const seenTxs = this.getSeenTx();
@@ -127,14 +110,10 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       if (tx.tokenA) transactionResult.push(txModel);
     }
 
-    return NotificationMapper.notificationGroupFromTransaction(
-      transactionResult,
-    );
+    return NotificationMapper.notificationGroupFromTransaction(transactionResult);
   };
 
-  public clearNotification = async (
-    request: DeleteAccountActivityRequest,
-  ): Promise<void> => {
+  public clearNotification = async (request: DeleteAccountActivityRequest): Promise<void> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }

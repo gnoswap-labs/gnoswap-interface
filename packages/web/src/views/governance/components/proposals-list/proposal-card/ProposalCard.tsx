@@ -23,12 +23,7 @@ interface Props {
   breakpoint: DEVICE_TYPE;
   proposalDetail: ProposalItemInfo;
   isMajorityVoted: boolean;
-  getTooltipTextI18nKey: (
-    status: string,
-    isMajorityVoted: boolean,
-    yesVotes: number,
-    noVotes: number,
-  ) => string;
+  getTooltipTextI18nKey: (status: string, isMajorityVoted: boolean, yesVotes: number, noVotes: number) => string;
   onClickCard: (id: string) => void;
   executeProposal: (id: number) => void;
   cancelProposal: (id: number) => void;
@@ -57,11 +52,7 @@ const ProposalCard: React.FC<Props> = ({
       return false;
     }
 
-    if (
-      !["PARAMETER_CHANGE", "COMMUNITY_POOL_SPEND"].includes(
-        proposalDetail.type,
-      )
-    ) {
+    if (!["PARAMETER_CHANGE", "COMMUNITY_POOL_SPEND"].includes(proposalDetail.type)) {
       return false;
     }
 
@@ -77,20 +68,11 @@ const ProposalCard: React.FC<Props> = ({
       return false;
     }
 
-    const executableTime = new Date(
-      new Date(proposalDetail.executableTime).toUTCString(),
-    ).getTime();
-    const expiredTime = new Date(
-      new Date(proposalDetail.expiredTime).toUTCString(),
-    ).getTime();
+    const executableTime = new Date(new Date(proposalDetail.executableTime).toUTCString()).getTime();
+    const expiredTime = new Date(new Date(proposalDetail.expiredTime).toUTCString()).getTime();
 
     return expiredTime > currentTime && currentTime >= executableTime;
-  }, [
-    currentTime,
-    executable,
-    proposalDetail.executableTime,
-    proposalDetail.expiredTime,
-  ]);
+  }, [currentTime, executable, proposalDetail.executableTime, proposalDetail.expiredTime]);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -116,36 +98,17 @@ const ProposalCard: React.FC<Props> = ({
       yesVotes: proposalDetail.votes.yes,
       noVotes: proposalDetail.votes.no,
     };
-  }, [
-    proposalDetail.status,
-    proposalDetail.votes.yes,
-    proposalDetail.votes.no,
-  ]);
+  }, [proposalDetail.status, proposalDetail.votes.yes, proposalDetail.votes.no]);
 
   const tooltipTextI18nKey = React.useMemo(() => {
-    return getTooltipTextI18nKey(
-      proposalDetail.status,
-      isMajorityVoted,
-      yesVotes,
-      noVotes,
-    );
-  }, [
-    proposalDetail.status,
-    getTooltipTextI18nKey,
-    isMajorityVoted,
-    yesVotes,
-    noVotes,
-  ]);
+    return getTooltipTextI18nKey(proposalDetail.status, isMajorityVoted, yesVotes, noVotes);
+  }, [proposalDetail.status, getTooltipTextI18nKey, isMajorityVoted, yesVotes, noVotes]);
 
   return (
-    <ProposalDetailWrapper
-      onClick={() => onClickCard(proposalDetail.id.toString())}
-    >
+    <ProposalDetailWrapper onClick={() => onClickCard(proposalDetail.id.toString())}>
       <div className="header">
         <div className="left-section">
-          <div className="title">
-            {`#${proposalDetail.id} ${proposalDetail.title}`}
-          </div>
+          <div className="title">{`#${proposalDetail.id} ${proposalDetail.title}`}</div>
           <div className="badges">
             <TypeBadge type={proposalDetail.type} />
             {proposalDetail.status === "EXPIRED" && (
@@ -177,18 +140,12 @@ const ProposalCard: React.FC<Props> = ({
             className="proposer"
             onClick={e => {
               e.stopPropagation();
-              window.open(
-                getAccountUrl(proposalDetail.proposer.address),
-                "_blank",
-              );
+              window.open(getAccountUrl(proposalDetail.proposer.address), "_blank");
             }}
           >
             By{" "}
             {proposalDetail.proposer.name ||
-              [
-                proposalDetail.proposer.address.slice(0, 8),
-                proposalDetail.proposer.address.slice(32, 40),
-              ].join("...")}
+              [proposalDetail.proposer.address.slice(0, 8), proposalDetail.proposer.address.slice(32, 40)].join("...")}
             <IconNewTab />
           </div>
           {availExecutableButton && (
@@ -237,17 +194,11 @@ const ProposalCard: React.FC<Props> = ({
           />
         )}
       <div className="active-wrapper">
-        <StatusBadge
-          breakpoint={breakpoint}
-          status={proposalDetail.status}
-          time={proposalDetail.time}
-        />
+        <StatusBadge breakpoint={breakpoint} status={proposalDetail.status} time={proposalDetail.time} />
       </div>
       <VotingProgressBar
         max={proposalDetail.votes.max}
-        yes={
-          proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.yes
-        }
+        yes={proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.yes}
         no={proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.no}
         tooltipTextI18nKey={tooltipTextI18nKey}
         isMajorityVoted={isMajorityVoted}

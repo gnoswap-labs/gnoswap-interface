@@ -20,9 +20,7 @@ const Launchpad: React.FC = () => {
       main={
         <LaunchpadMainContainer
           themeKey={themeKey}
-          icon={
-            <IconLaunchpadMain themeKey={themeKey} className="icon-launchpad" />
-          }
+          icon={<IconLaunchpadMain themeKey={themeKey} className="icon-launchpad" />}
         />
       }
       activeProjects={<LaunchpadActiveProjectContainer />}

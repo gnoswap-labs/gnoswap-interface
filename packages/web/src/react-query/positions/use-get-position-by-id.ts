@@ -5,10 +5,7 @@ import { PositionModel } from "@models/position/position-model";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetPositionById = (
-  lpTokenId: string,
-  options?: UseQueryOptions<PositionModel, Error>,
-) => {
+export const useGetPositionById = (lpTokenId: string, options?: UseQueryOptions<PositionModel, Error>) => {
   const { positionRepository } = useGnoswapContext();
 
   return useQuery<PositionModel, Error>({

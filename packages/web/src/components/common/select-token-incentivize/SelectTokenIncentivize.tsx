@@ -16,12 +16,7 @@ export interface SelectTokenIncentivizeProps {
   themeKey: "dark" | "light";
 }
 
-const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
-  tokens,
-  tokenPrices,
-  changeToken,
-  close,
-}) => {
+const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({ tokens, tokenPrices, changeToken, close }) => {
   const { t } = useTranslation();
 
   const getTokenPrice = useCallback(
@@ -59,18 +54,10 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
           </div>
         </div>
       </div>
-      <div
-        className={`token-list-wrapper ${
-          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
-        }`}
-      >
+      <div className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""}`}>
         {tokens.length > 0 &&
           tokens.map((token, index) => (
-            <div
-              className="list"
-              key={index}
-              onClick={() => onClickToken(token)}
-            >
+            <div className="list" key={index} onClick={() => onClickToken(token)}>
               <div className="token-info">
                 <MissingLogo
                   symbol={token.symbol}
@@ -85,11 +72,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
               <span className="token-balance">{getTokenPrice(token)}</span>
             </div>
           ))}
-        {tokens.length === 0 && (
-          <div className="no-data-found">
-            {t("common:selectPairBtn.modal.noData")}
-          </div>
-        )}
+        {tokens.length === 0 && <div className="no-data-found">{t("common:selectPairBtn.modal.noData")}</div>}
       </div>
     </SelectTokenIncentivizeWrapper>
   );

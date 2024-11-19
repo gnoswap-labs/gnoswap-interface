@@ -12,32 +12,21 @@ interface Props {
   stakeLogo: TokenModel[];
 }
 
-const TooltipAPR: React.FC<Props> = ({
-  feeAPR,
-  stakingAPR,
-  feeLogo,
-  stakeLogo,
-}) => {
+const TooltipAPR: React.FC<Props> = ({ feeAPR, stakingAPR, feeLogo, stakeLogo }) => {
   const { t } = useTranslation();
 
   return (
     <ToolTipAPRWrapper>
-      <div className="title">
-        {t("Pool:poolInfo.section.apr.tooltip.title")}
-      </div>
+      <div className="title">{t("Pool:poolInfo.section.apr.tooltip.title")}</div>
       <div className="item">
-        <div className="label">
-          {t("Pool:poolInfo.section.apr.tooltip.feeApr")}
-        </div>
+        <div className="label">{t("Pool:poolInfo.section.apr.tooltip.feeApr")}</div>
         <div className="value">
           <OverlapTokenLogo tokens={feeLogo} size={20} />
           <div>{formatRate(feeAPR)}</div>
         </div>
       </div>
       <div className="item">
-        <div className="label">
-          {t("Pool:poolInfo.section.apr.tooltip.stakingApr")}
-        </div>
+        <div className="label">{t("Pool:poolInfo.section.apr.tooltip.stakingApr")}</div>
         <div className="value">
           <OverlapTokenLogo tokens={stakeLogo} size={20} />
           <div>{formatRate(stakingAPR)}</div>

@@ -1,13 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ThemeKeys } from "@styles/ThemeTypes";
 
-const IconGnoswap404 = ({
-  className,
-  themeKey = "dark",
-}: {
-  className?: string;
-  themeKey?: ThemeKeys;
-}) => (
+const IconGnoswap404 = ({ className, themeKey = "dark" }: { className?: string; themeKey?: ThemeKeys }) => (
   <img
     src="/img-404.png"
     alt="404-img"

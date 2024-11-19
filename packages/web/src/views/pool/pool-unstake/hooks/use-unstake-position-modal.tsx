@@ -13,12 +13,7 @@ interface Props {
   refetchPositions: () => Promise<void>;
 }
 
-export const useUnstakePositionModal = ({
-  positions,
-  selectedIds,
-  isGetWGNOT,
-  refetchPositions,
-}: Props) => {
+export const useUnstakePositionModal = ({ positions, selectedIds, isGetWGNOT, refetchPositions }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -35,13 +30,7 @@ export const useUnstakePositionModal = ({
         refetchPositions={refetchPositions}
       />,
     );
-  }, [
-    setModalContent,
-    setOpenedModal,
-    refetchPositions,
-    selectedPositions,
-    isGetWGNOT,
-  ]);
+  }, [setModalContent, setOpenedModal, refetchPositions, selectedPositions, isGetWGNOT]);
 
   return {
     openModal,

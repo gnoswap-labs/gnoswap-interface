@@ -60,12 +60,7 @@ const DecreaseSelectPosition: React.FC<DecreaseSelectPositionProps> = ({
           <p className="value">{minPriceStr}</p>
           <p className="convert-value">
             {isMobile ? (
-              <MissingLogo
-                symbol={tokenA?.symbol}
-                url={tokenA?.logoURI}
-                className="token-logo"
-                width={18}
-              />
+              <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} className="token-logo" width={18} />
             ) : (
               `1 ${tokenA?.symbol}`
             )}{" "}
@@ -77,12 +72,7 @@ const DecreaseSelectPosition: React.FC<DecreaseSelectPositionProps> = ({
           <p className="value">{maxPriceStr}</p>
           <p className="convert-value">
             {isMobile ? (
-              <MissingLogo
-                symbol={tokenA?.symbol}
-                url={tokenA?.logoURI}
-                className="token-logo"
-                width={18}
-              />
+              <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} className="token-logo" width={18} />
             ) : (
               `1 ${tokenA?.symbol}`
             )}{" "}

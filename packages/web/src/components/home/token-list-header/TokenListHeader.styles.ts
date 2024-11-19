@@ -6,7 +6,7 @@ import { media } from "@styles/media";
 export const TokenListHeaderwrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
-  
+
   .tokens-search {
     min-width: 300px;
   }

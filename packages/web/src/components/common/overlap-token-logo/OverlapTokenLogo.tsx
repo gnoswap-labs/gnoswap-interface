@@ -22,11 +22,7 @@ const OverlapTokenLogo = ({
   return (
     <OverlapTokenLogoWrapper size={size}>
       {tokens.map((token, index) => (
-        <OverlapTokenLogoImageWrapper
-          key={index}
-          overlap={index > 0 ? size / 3 : 0}
-          size={size}
-        >
+        <OverlapTokenLogoImageWrapper key={index} overlap={index > 0 ? size / 3 : 0} size={size}>
           <MissingLogo
             showTooltip={true}
             className={tokenTooltipClassName}

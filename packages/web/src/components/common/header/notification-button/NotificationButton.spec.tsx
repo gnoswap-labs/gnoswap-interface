@@ -36,8 +36,9 @@ describe("NotificationButton Component", () => {
               </GnoswapThemeProvider>
             </GnoswapServiceProvider>
           </JotaiProvider>
-        </QueryClientProvider>,
-      </AppRouterContext.Provider>
+        </QueryClientProvider>
+        ,
+      </AppRouterContext.Provider>,
     );
   });
 });

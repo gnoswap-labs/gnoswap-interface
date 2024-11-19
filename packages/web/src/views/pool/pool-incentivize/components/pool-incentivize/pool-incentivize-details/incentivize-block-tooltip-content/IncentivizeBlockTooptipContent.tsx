@@ -27,12 +27,9 @@ function IncentivizeBlockTooltipContent({ latestBlockHeight, period }: Props) {
     tmrDate.setSeconds(0);
     tmrDate.setMilliseconds(0);
 
-    const secondUntilTmr =
-      (tmrDate.getTime() - now.getTime()) / MILLISEC_PER_SEC;
+    const secondUntilTmr = (tmrDate.getTime() - now.getTime()) / MILLISEC_PER_SEC;
 
-    const start = Math.floor(
-      Number(latestBlockHeight) + secondUntilTmr / SECOND_PER_BLOCK,
-    );
+    const start = Math.floor(Number(latestBlockHeight) + secondUntilTmr / SECOND_PER_BLOCK);
 
     return {
       start: start,

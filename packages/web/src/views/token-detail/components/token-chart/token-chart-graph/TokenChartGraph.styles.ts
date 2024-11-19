@@ -60,52 +60,50 @@ export const TokenChartGraphWrapper = styled.div`
       justify-content: center;
     }
   }
-
-  
 `;
 
 export const YAxisLabelWrapper = styled.div<{ width: number }>`
+  text-align: center;
+  display: flex;
+  flex-direction: column-reverse;
+  min-width: ${({ width }) => width};
+  padding: 8px 0;
+  justify-content: space-between;
+  margin: 0 4px;
+  margin-bottom: 40px;
+  span {
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text04};
     text-align: center;
-    display: flex;
-    flex-direction: column-reverse;
-    min-width: ${({ width }) => width};
-    padding: 8px 0;
-    justify-content: space-between;
-    margin: 0 4px;
-    margin-bottom: 40px;
+  }
+  .large-text {
+    ${fonts.body12};
+  }
+  .medium-text {
+    ${fonts.p4}
+  }
+  .small-text {
+    ${fonts.p6}
+    font-size: 11px;
+  }
+  ${media.mobile} {
+    ${fonts.p7};
+    margin-bottom: 30px;
+    min-width: 40px;
+    padding: 4px 0;
     span {
-      ${fonts.body12};
-      color: ${({ theme }) => theme.color.text04};
-      text-align: center;
+      ${fonts.p7};
     }
     .large-text {
-      ${fonts.body12};
+      ${fonts.p4};
     }
     .medium-text {
-      ${fonts.p4}
+      ${fonts.p6}
     }
     .small-text {
-      ${fonts.p6}
-      font-size: 11px;
+      ${fonts.p7}
     }
-    ${media.mobile} {
-      ${fonts.p7};
-      margin-bottom: 30px;
-      min-width: 40px;
-      padding: 4px 0;
-      span {
-        ${fonts.p7};
-      }
-      .large-text {
-        ${fonts.p4};
-      }
-      .medium-text {
-        ${fonts.p6}
-      }
-      .small-text {
-        ${fonts.p7}
-      }
-    }
+  }
 `;
 
 export const TokenChartGraphXLabel = styled.span<{

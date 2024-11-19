@@ -36,19 +36,14 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   useEffect(() => {
     const element = document.getElementById(elementId);
 
-    if (
-      (element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_MOBILE &&
-      breakpoint === DEVICE_TYPE.MOBILE
-    ) {
+    if ((element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_MOBILE && breakpoint === DEVICE_TYPE.MOBILE) {
       setShortenPath(true);
       return;
     }
 
     if (
       (element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_TABLET &&
-      (breakpoint === DEVICE_TYPE.TABLET ||
-        breakpoint === DEVICE_TYPE.TABLET_M ||
-        breakpoint === DEVICE_TYPE.TABLET_S)
+      (breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M || breakpoint === DEVICE_TYPE.TABLET_S)
     ) {
       setShortenPath(true);
       return;
@@ -93,28 +88,15 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
 
   return (
     <TokenInfoCellWrapper>
-      <MissingLogo
-        symbol={symbol}
-        url={logoURI}
-        className="token-logo"
-        width={28}
-        mobileWidth={28}
-      />
-      <div
-        className={`token-name-symbol-path ${
-          breakpoint === DEVICE_TYPE.MOBILE ? "mobile" : ""
-        }`}
-      >
+      <MissingLogo symbol={symbol} url={logoURI} className="token-logo" width={28} mobileWidth={28} />
+      <div className={`token-name-symbol-path ${breakpoint === DEVICE_TYPE.MOBILE ? "mobile" : ""}`}>
         <div className="token-name-path">
           <strong className="token-name" id={elementId}>
             {name}
           </strong>
           <div className="token-link" onClick={onClickPath}>
             {tokenPathDisplay}
-            <IconOpenLink
-              fill={theme.color.text04}
-              className="path-link-icon"
-            />
+            <IconOpenLink fill={theme.color.text04} className="path-link-icon" />
           </div>
         </div>
         <span className="token-symbol">{symbol}</span>

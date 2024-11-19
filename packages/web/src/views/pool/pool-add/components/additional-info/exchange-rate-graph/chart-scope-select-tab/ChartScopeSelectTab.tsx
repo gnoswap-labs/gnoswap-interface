@@ -9,7 +9,7 @@ export type TAB_SIZE = "MEDIUM" | "SMALL";
 interface ChartScopeSelectTabProps<T> {
   selected: T;
   onChange: (newType: T) => void;
-  list: T[]
+  list: T[];
   size: TAB_SIZE;
 }
 
@@ -23,7 +23,7 @@ const ChartScopeSelectTab = <T extends string>({
     <SelectTab
       selectType={selected}
       list={list}
-      onClick={(value) => onChange(value as T)}
+      onClick={value => onChange(value as T)}
       buttonClassName={"tab-button"}
     />
   </ChartScopeSelectTabWrapper>

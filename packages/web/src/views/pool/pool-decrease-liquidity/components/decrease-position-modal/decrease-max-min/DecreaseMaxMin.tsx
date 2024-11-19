@@ -9,10 +9,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 
-import {
-  DecreaseMaxMinSection,
-  DecreaseMaxMinWrapper
-} from "./DecreaseMaxMin.styles";
+import { DecreaseMaxMinSection, DecreaseMaxMinWrapper } from "./DecreaseMaxMin.styles";
 
 export interface DecreaseMaxMinProps {
   minPriceStr: string;
@@ -48,9 +45,7 @@ const DecreaseMaxMin: React.FC<DecreaseMaxMinProps> = ({
             leftSymbol={tokenA?.symbol || ""}
             rightSymbol={tokenB?.symbol || ""}
           />
-          {breakpoint === DEVICE_TYPE.MOBILE
-            ? ""
-            : `${tokenA?.symbol}/${tokenB?.symbol}`}
+          {breakpoint === DEVICE_TYPE.MOBILE ? "" : `${tokenA?.symbol}/${tokenB?.symbol}`}
           <Badge text={feeRate} type={BADGE_TYPE.DARK_DEFAULT} />
         </div>
         <RangeBadge status={rangeStatus} />

@@ -7,9 +7,7 @@ import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 60_000;
 
-export const useGetLaunchpadSummary = (
-  options?: UseQueryOptions<LaunchpadProjectSummaryModel, Error>,
-) => {
+export const useGetLaunchpadSummary = (options?: UseQueryOptions<LaunchpadProjectSummaryModel, Error>) => {
   const { launchpadRepository } = useGnoswapContext();
 
   return useQuery<LaunchpadProjectSummaryModel, Error>({

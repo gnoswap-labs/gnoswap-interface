@@ -29,15 +29,11 @@ const SelectDistributionPeriod: React.FC<SelectDistributionPeriodProps> = ({
 
   return (
     <SelectDistributionPeriodWrapper>
-      <h5 className="section-title">
-        {t("IncentivizePool:incentiPool.form.period.label")}
-      </h5>
+      <h5 className="section-title">{t("IncentivizePool:incentiPool.form.period.label")}</h5>
       <div className="select-date-wrap">
         <div className="start-date">
           <SelectDistributionDateInput
-            title={t(
-              "IncentivizePool:incentiPool.form.period.field.startDate.label",
-            )}
+            title={t("IncentivizePool:incentiPool.form.period.field.startDate.label")}
             date={startDate}
             setDate={setStartDate}
           />

@@ -6,9 +6,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useGetDashboardVolume } from "@query/dashboard";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
-import VolumeChart, {
-  VolumeChartInfo,
-} from "../../components/volume-chart/VolumeChart";
+import VolumeChart, { VolumeChartInfo } from "../../components/volume-chart/VolumeChart";
 
 const parseDate = (dateString: string) => {
   const date = dayjs(dateString);
@@ -18,27 +16,15 @@ const parseDate = (dateString: string) => {
 const VolumeChartContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const [volumeChartType, setVolumeChartType] = useState<CHART_TYPE>(
-    CHART_TYPE["7D"],
-  );
+  const [volumeChartType, setVolumeChartType] = useState<CHART_TYPE>(CHART_TYPE["7D"]);
 
   const { data: volumeEntity, isLoading } = useGetDashboardVolume();
 
-  const {
-    volume: volumeData,
-    allTimeVolumeUsd,
-    allTimeFeeUsd,
-    fee,
-  } = volumeEntity || {};
-  const changeVolumeChartType = useCallback(
-    ({ key: newType }: { display: string; key: string }) => {
-      const volumeChartType =
-        Object.values(CHART_TYPE).find(type => type === newType) ||
-        CHART_TYPE["7D"];
-      setVolumeChartType(volumeChartType);
-    },
-    [],
-  );
+  const { volume: volumeData, allTimeVolumeUsd, allTimeFeeUsd, fee } = volumeEntity || {};
+  const changeVolumeChartType = useCallback(({ key: newType }: { display: string; key: string }) => {
+    const volumeChartType = Object.values(CHART_TYPE).find(type => type === newType) || CHART_TYPE["7D"];
+    setVolumeChartType(volumeChartType);
+  }, []);
   const chartData = useMemo(() => {
     if (!volumeData?.all)
       return {

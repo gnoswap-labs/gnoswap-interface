@@ -25,13 +25,7 @@ const TypeBadge: React.FC<VoteButtonsWrapper> = ({ type }) => {
     }
   }, [t, type]);
 
-  return (
-    <TypeBadgeWrapper
-      className="proposal-badge"
-      type={BADGE_TYPE.DARK_DEFAULT}
-      text={badgeText}
-    />
-  );
+  return <TypeBadgeWrapper className="proposal-badge" type={BADGE_TYPE.DARK_DEFAULT} text={badgeText} />;
 };
 
 export default TypeBadge;

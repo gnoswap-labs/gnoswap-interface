@@ -10,11 +10,7 @@ import { DelegationItemInfo } from "@repositories/governance";
 
 import UndelegateSelectItem from "./undelegate-select-item/UndelegateSelectItem";
 
-import {
-  ToolTipContentWrapper,
-  UndelegateSelectBox,
-  UndelegateSelectWrapper,
-} from "./UndelegateSelect.styles";
+import { ToolTipContentWrapper, UndelegateSelectBox, UndelegateSelectWrapper } from "./UndelegateSelect.styles";
 
 export interface UndelegateSelectProps {
   selectedDelegationInfo: DelegationItemInfo | null;
@@ -51,9 +47,7 @@ const UndelegateSelect: React.FC<UndelegateSelectProps> = ({
         <Tooltip
           placement="top"
           FloatingContent={
-            <ToolTipContentWrapper>
-              {t("Governance:myDel.delModal.step1.tooltip")}
-            </ToolTipContentWrapper>
+            <ToolTipContentWrapper>{t("Governance:myDel.delModal.step1.tooltip")}</ToolTipContentWrapper>
           }
         >
           <IconInfo size={16} />
@@ -68,27 +62,15 @@ const UndelegateSelect: React.FC<UndelegateSelectProps> = ({
         />
         {!isDisabled && (
           <div className="icon-wrapper">
-            {openedSelector ? (
-              <IconArrowUp className="icon-arrow" />
-            ) : (
-              <IconArrowDown className="icon-arrow" />
-            )}
+            {openedSelector ? <IconArrowUp className="icon-arrow" /> : <IconArrowDown className="icon-arrow" />}
           </div>
         )}
 
-        <UndelegateSelectBox
-          ref={modalRef}
-          className={openedSelector ? "open" : ""}
-          onClick={e => e.stopPropagation()}
-        >
+        <UndelegateSelectBox ref={modalRef} className={openedSelector ? "open" : ""} onClick={e => e.stopPropagation()}>
           <div className="delegate-list-wrapper">
             <div className="delegate-list-headrer">
-              <span className="delegatee-info">
-                {t("Governance:myDel.delegate")}
-              </span>
-              <span className="amount-info">
-                {t("Governance:myDel.undelModal.step1.select.amount")}
-              </span>
+              <span className="delegatee-info">{t("Governance:myDel.delegate")}</span>
+              <span className="amount-info">{t("Governance:myDel.undelModal.step1.select.amount")}</span>
             </div>
             <div className="delegate-list-content">
               {delegatedInfos.map((item, index) => (

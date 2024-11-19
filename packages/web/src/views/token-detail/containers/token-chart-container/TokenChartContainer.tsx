@@ -11,19 +11,11 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenWarningModal } from "@hooks/token/use-token-warning-modal";
-import {
-  useGetToken,
-  useGetTokenDetails,
-  useGetTokenPrices,
-} from "@query/token";
+import { useGetToken, useGetTokenDetails, useGetTokenPrices } from "@query/token";
 import { IPriceResponse, IPrices1d } from "@repositories/token";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
-import {
-  getLabelChartV2,
-  getLocalizeTime,
-  getNumberOfAxis,
-} from "@utils/chart";
+import { getLabelChartV2, getLocalizeTime, getNumberOfAxis } from "@utils/chart";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 
@@ -45,10 +37,7 @@ const getXaxis1Day = (data: Date[]): string[] => {
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   };
   for (const entry of data) {
-    const data = new Date(entry).toLocaleTimeString(
-      currentLocale,
-      formatOptions,
-    );
+    const data = new Date(entry).toLocaleTimeString(currentLocale, formatOptions);
     rs.push(data);
   }
   return rs;
@@ -82,10 +71,7 @@ function createXAxisDatas(
   space: number,
 ) {
   const setData = chartData.slice(space).map(entry => entry.time.split(" ")[0]);
-  const labelX = getLabelChartV2(
-    setData,
-    Math.round((setData.length - space) / (numberAxis - 1)),
-  );
+  const labelX = getLabelChartV2(setData, Math.round((setData.length - space) / (numberAxis - 1)));
 
   switch (currentTab) {
     case "1D":
@@ -123,9 +109,7 @@ const TokenChartContainer: React.FC = () => {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
   const [currentTab, setCurrentTab] = useState<TokenChartGraphPeriodType>("1D");
   const router = useCustomRouter();
-  const [fromSelectToken, setFromSelectToken] = useAtom(
-    TokenState.fromSelectToken,
-  );
+  const [fromSelectToken, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
   const clearModal = useClearModal();
   const { breakpoint } = useWindowSize();
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
@@ -144,32 +128,27 @@ const TokenChartContainer: React.FC = () => {
   const { data: tokenB } = useGetToken(path, {
     enabled: !!path,
   });
-  const {
-    data: { prices1d = [], prices7d = [], prices1m = [], prices1y = [] } = {},
-    isLoading,
-  } = useGetTokenDetails(path === "gnot" ? wugnotPath : path, {
-    enabled: !!path,
-  });
-
-  const {
-    data: { usd: currentPrice, pricesBefore = priceChangeDetailInit } = {},
-  } = useGetTokenPrices(path === "gnot" ? wugnotPath : path, {
-    enabled: !!path,
-  });
-
-  const [componentRef, size] = useComponentSize(
-    isLoading || isLoadingCommon || path,
+  const { data: { prices1d = [], prices7d = [], prices1m = [], prices1y = [] } = {}, isLoading } = useGetTokenDetails(
+    path === "gnot" ? wugnotPath : path,
+    {
+      enabled: !!path,
+    },
   );
+
+  const { data: { usd: currentPrice, pricesBefore = priceChangeDetailInit } = {} } = useGetTokenPrices(
+    path === "gnot" ? wugnotPath : path,
+    {
+      enabled: !!path,
+    },
+  );
+
+  const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon || path);
 
   useEffect(() => {
     if (tokenB) {
-      const dataToday = checkPositivePrice(
-        pricesBefore.latestPrice,
-        pricesBefore.priceToday,
-        {
-          displayStatusSign: false,
-        },
-      );
+      const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, {
+        displayStatusSign: false,
+      });
       setTokenInfo(() => ({
         token: {
           name: getGnotPath(tokenB).name,
@@ -193,33 +172,18 @@ const TokenChartContainer: React.FC = () => {
         openWarningModal(tokenB);
       }
     }
-  }, [
-    router.query,
-    pricesBefore.latestPrice,
-    currentPrice,
-    tokenB,
-    gnot,
-    pricesBefore.priceToday,
-    fromSelectToken,
-  ]);
+  }, [router.query, pricesBefore.latestPrice, currentPrice, tokenB, gnot, pricesBefore.priceToday, fromSelectToken]);
 
   const changeTab = useCallback((tab: string) => {
-    const currentTab =
-      TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";
+    const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";
     setCurrentTab(currentTab);
   }, []);
 
   const countXAxis = useMemo(() => {
     if (breakpoint === DEVICE_TYPE.MOBILE)
-      return Math.floor(
-        ((size.width || 0) + 20 - 25) /
-          (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
-      );
+      return Math.floor(((size.width || 0) + 20 - 25) / (currentTab === TokenChartGraphPeriods[0] ? 80 : 100));
 
-    return Math.floor(
-      ((size.width || 0) + 20 - 8) /
-        (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
-    );
+    return Math.floor(((size.width || 0) + 20 - 8) / (currentTab === TokenChartGraphPeriods[0] ? 70 : 90));
   }, [size.width, breakpoint, currentTab]);
 
   const chartData = useMemo(() => {
@@ -263,18 +227,11 @@ const TokenChartContainer: React.FC = () => {
       countXAxis > 2 ? Math.floor(24 / Math.min(countXAxis, 7)) : 3,
     );
 
-    const labelWidth =
-      breakpoint === DEVICE_TYPE.MOBILE
-        ? DEFAULT_X_LABEL_WIDTH_MOBILE
-        : DEFAULT_X_LABEL_WIDTH;
+    const labelWidth = breakpoint === DEVICE_TYPE.MOBILE ? DEFAULT_X_LABEL_WIDTH_MOBILE : DEFAULT_X_LABEL_WIDTH;
     const spaceBetweenLeftYAxisWithFirstLabel = Math.round(
       (labelWidth / 2 + DEFAULT_PADDING) / (size.width / chartData.length),
     );
-    const numberOfAxis = getNumberOfAxis(
-      chartData.length - DEFAULT_PADDING * 2 - labelWidth,
-      countXAxis,
-      3,
-    );
+    const numberOfAxis = getNumberOfAxis(chartData.length - DEFAULT_PADDING * 2 - labelWidth, countXAxis, 3);
     const xAxisLabels = createXAxisDatas(
       currentTab,
       chartData,
@@ -300,9 +257,7 @@ const TokenChartContainer: React.FC = () => {
       })),
     ].reverse();
 
-    const yAxisLabels = getYAxisLabels(
-      datas.map(item => BigNumber(item.amount.value).toFormat(6)),
-    );
+    const yAxisLabels = getYAxisLabels(datas.map(item => BigNumber(item.amount.value).toFormat(6)));
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
@@ -342,11 +297,7 @@ const TokenChartContainer: React.FC = () => {
         usd: false,
       }),
     ];
-    for (
-      let i = minPoint.plus(space);
-      i.isLessThan(maxPoint);
-      i = i.plus(space)
-    ) {
+    for (let i = minPoint.plus(space); i.isLessThan(maxPoint); i = i.plus(space)) {
       temp.push(
         `${formatPrice(i, {
           usd: false,

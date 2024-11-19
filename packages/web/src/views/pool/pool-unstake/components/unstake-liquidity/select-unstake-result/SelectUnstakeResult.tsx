@@ -8,11 +8,7 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "../../../../common/hooks/use-positions-rewards";
 
-import {
-  Divider,
-  GnotCollectSwitchWrapper,
-  wrapper,
-} from "./SelectUnstakeResult.styles";
+import { Divider, GnotCollectSwitchWrapper, wrapper } from "./SelectUnstakeResult.styles";
 
 interface SelectUnstakeResultProps {
   positions: PoolPositionModel[];
@@ -20,14 +16,9 @@ interface SelectUnstakeResultProps {
   setIsGetWGNOT: () => void;
 }
 
-const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
-  positions,
-  isGetWGNOT,
-  setIsGetWGNOT,
-}) => {
+const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({ positions, isGetWGNOT, setIsGetWGNOT }) => {
   const { t } = useTranslation();
-  const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } =
-    usePositionsRewards({ positions });
+  const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } = usePositionsRewards({ positions });
 
   if (positions.length === 0) return <></>;
   return (
@@ -43,8 +34,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 mobileWidth={24}
               />
               <p>
-                {t("UnstakePosition:overview.pooled")}{" "}
-                {pooledTokenInfo.token.symbol}
+                {t("UnstakePosition:overview.pooled")} {pooledTokenInfo.token.symbol}
               </p>
               <strong>{pooledTokenInfo.amount}</strong>
             </div>
@@ -85,9 +75,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
-          <h5 className="total-amount-title">
-            {t("UnstakePosition:overview.totalAmt")}
-          </h5>
+          <h5 className="total-amount-title">{t("UnstakePosition:overview.totalAmt")}</h5>
           <span className="result-value">{totalLiquidityUSD}</span>
         </div>
       </div>

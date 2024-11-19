@@ -9,9 +9,7 @@ export default {
   component: AssetSendModal,
 } as ComponentMeta<typeof AssetSendModal>;
 
-const Template: ComponentStory<typeof AssetSendModal> = args => (
-  <AssetSendModal {...args} />
-);
+const Template: ComponentStory<typeof AssetSendModal> = args => <AssetSendModal {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
@@ -24,8 +22,7 @@ Default.args = {
     path: "gno.land/r/gns",
     decimals: 4,
     symbol: "GNOT",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     type: "grc20",
     priceID: "gno.land/r/gns",
   },

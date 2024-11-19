@@ -1,10 +1,15 @@
 import Tooltip from "../tooltip/Tooltip";
-import { OverlapLogoImageWrapper, OverlapLogoStyleProps, OverlapLogoWrapper, TokenSymbolWrapper } from "./OverlapLogo.styles";
+import {
+  OverlapLogoImageWrapper,
+  OverlapLogoStyleProps,
+  OverlapLogoWrapper,
+  TokenSymbolWrapper,
+} from "./OverlapLogo.styles";
 
 export interface ILogoData {
-  src: string,
-  symbol: string,
-  tooltipContent?: string
+  src: string;
+  symbol: string;
+  tooltipContent?: string;
 }
 
 export interface OverlapLogoProps extends OverlapLogoStyleProps {
@@ -14,17 +19,15 @@ export interface OverlapLogoProps extends OverlapLogoStyleProps {
 const OverlapLogo = ({ logos, size = 36 }: OverlapLogoProps) => {
   return (
     <OverlapLogoWrapper size={size}>
-      {logos.map((logo, index) =>
+      {logos.map((logo, index) => (
         <Tooltip
           key={`${index}${logo.src}`}
           placement="top"
-          FloatingContent={logo.tooltipContent ? <TokenSymbolWrapper>{logo.tooltipContent}</TokenSymbolWrapper> : undefined}
+          FloatingContent={
+            logo.tooltipContent ? <TokenSymbolWrapper>{logo.tooltipContent}</TokenSymbolWrapper> : undefined
+          }
         >
-          <OverlapLogoImageWrapper
-            overlap={index > 0 ? (size / 3) : 0}
-            size={size}
-            className="overlap-logo-wrapper"
-          >
+          <OverlapLogoImageWrapper overlap={index > 0 ? size / 3 : 0} size={size} className="overlap-logo-wrapper">
             {logo.src ? (
               <img src={logo.src} alt="logo-image" />
             ) : (
@@ -32,9 +35,8 @@ const OverlapLogo = ({ logos, size = 36 }: OverlapLogoProps) => {
             )}
           </OverlapLogoImageWrapper>
         </Tooltip>
-      )
-      }
-    </OverlapLogoWrapper >
+      ))}
+    </OverlapLogoWrapper>
   );
 };
 

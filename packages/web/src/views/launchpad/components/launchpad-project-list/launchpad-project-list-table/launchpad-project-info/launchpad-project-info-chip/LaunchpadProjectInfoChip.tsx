@@ -10,9 +10,7 @@ interface LaunchpadProjectInfoChipProps {
   type: PROJECT_STATUS_TYPE;
 }
 
-const LaunchpadProjectInfoChip: React.FC<LaunchpadProjectInfoChipProps> = ({
-  type,
-}) => {
+const LaunchpadProjectInfoChip: React.FC<LaunchpadProjectInfoChipProps> = ({ type }) => {
   const { t } = useTranslation();
 
   const getProjectStatus = (type: PROJECT_STATUS_TYPE) => {

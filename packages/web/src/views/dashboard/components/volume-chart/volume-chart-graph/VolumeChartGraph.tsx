@@ -42,12 +42,7 @@ const calculateMiddleIndices = (totalLabels = 0, countXAxis = 0) => {
   return Array.from(indices).sort((a, b) => a - b);
 };
 
-const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
-  datas,
-  xAxisLabels,
-  times,
-  fees,
-}) => {
+const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({ datas, xAxisLabels, times, fees }) => {
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
@@ -58,8 +53,7 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
   const countXAxis = useMemo(() => {
     if (currentData.length === 1) return 1;
 
-    if (breakpoint !== DEVICE_TYPE.MOBILE)
-      return Math.floor(((size.width || 0) + 20 - 25) / 100);
+    if (breakpoint !== DEVICE_TYPE.MOBILE) return Math.floor(((size.width || 0) + 20 - 25) / 100);
     return Math.floor(((size.width || 0) + 20 - 8) / 80);
   }, [currentData.length, breakpoint, size.width]);
 

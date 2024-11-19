@@ -9,16 +9,12 @@ interface LaunchpadProjectSummaryContainerProps {
   isLoading: boolean;
 }
 
-const LaunchpadProjectSummaryContainer: React.FC<
-  LaunchpadProjectSummaryContainerProps
-> = ({ data, tokenSymbol, isLoading }) => {
-  return (
-    <LaunchpadProjectSummary
-      data={data}
-      tokenSymbol={tokenSymbol}
-      isLoading={isLoading}
-    />
-  );
+const LaunchpadProjectSummaryContainer: React.FC<LaunchpadProjectSummaryContainerProps> = ({
+  data,
+  tokenSymbol,
+  isLoading,
+}) => {
+  return <LaunchpadProjectSummary data={data} tokenSymbol={tokenSymbol} isLoading={isLoading} />;
 };
 
 export default LaunchpadProjectSummaryContainer;

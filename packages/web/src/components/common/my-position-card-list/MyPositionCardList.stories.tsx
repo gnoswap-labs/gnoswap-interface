@@ -14,9 +14,7 @@ export default {
   },
 } as ComponentMeta<typeof MyPositionCardList>;
 
-const Template: ComponentStory<typeof MyPositionCardList> = args => (
-  <MyPositionCardList {...args} positions={[]} />
-);
+const Template: ComponentStory<typeof MyPositionCardList> = args => <MyPositionCardList {...args} positions={[]} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -16,9 +16,7 @@ export interface SendTransactionRequestParam {
 /**
  * Transaction Request Message
  */
-export type TransactionMessage =
-  | TransactionMessageOfBankMsgSend
-  | TransactionMessageOfContract;
+export type TransactionMessage = TransactionMessageOfBankMsgSend | TransactionMessageOfContract;
 
 export interface TransactionMessageOfBankMsgSend {
   from_address: string;
@@ -37,9 +35,7 @@ export interface TransactionMessageOfContract {
 /**
  * Send Transaction Response
  */
-export type SendTransactionResponse<T = unknown> =
-  | SendTransactionSuccessResponse<T>
-  | SendTransactionErrorResponse;
+export type SendTransactionResponse<T = unknown> = SendTransactionSuccessResponse<T> | SendTransactionErrorResponse;
 
 export interface SendTransactionSuccessResponse<T = unknown> {
   hash: string;

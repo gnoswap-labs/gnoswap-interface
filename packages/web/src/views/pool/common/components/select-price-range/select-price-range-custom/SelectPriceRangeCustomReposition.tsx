@@ -11,11 +11,7 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import PoolSelectionGraph from "@components/common/pool-selection-graph/PoolSelectionGraph";
 import SelectTab from "@components/common/select-tab/SelectTab";
 import { ZOOL_VALUES } from "@constants/graph.constant";
-import {
-  PriceRangeMeta,
-  PriceRangeType,
-  SwapFeeTierPriceRange,
-} from "@constants/option.constant";
+import { PriceRangeMeta, PriceRangeType, SwapFeeTierPriceRange } from "@constants/option.constant";
 import { MAX_TICK } from "@constants/swap.constant";
 import { useLoading } from "@hooks/common/use-loading";
 import { SelectPool } from "@hooks/pool/use-select-pool";
@@ -44,9 +40,7 @@ export interface SelectPriceRangeCustomRepositionProps {
   isKeepToken: boolean;
 }
 
-const SelectPriceRangeCustomReposition: React.FC<
-  SelectPriceRangeCustomRepositionProps
-> = ({
+const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositionProps> = ({
   tokenA,
   tokenB,
   priceRangeType,
@@ -72,9 +66,7 @@ const SelectPriceRangeCustomReposition: React.FC<
   );
 
   const availSelect = useMemo(
-    () =>
-      Array.isArray(selectPool.liquidityOfTickPoints) &&
-      selectPool.renderState() === "DONE",
+    () => Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState() === "DONE",
     [selectPool],
   );
 
@@ -86,17 +78,9 @@ const SelectPriceRangeCustomReposition: React.FC<
       return false;
     }
 
-    const compareTokenPaths = [
-      checkGnotPath(tokenA.path),
-      checkGnotPath(tokenB.path),
-    ].sort();
+    const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort();
     return compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path);
-  }, [
-    selectPool.compareToken,
-    selectPool.startPrice,
-    tokenA.path,
-    tokenB.path,
-  ]);
+  }, [selectPool.compareToken, selectPool.startPrice, tokenA.path, tokenB.path]);
 
   const currentTokenA = useMemo(() => {
     return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
@@ -132,14 +116,10 @@ const SelectPriceRangeCustomReposition: React.FC<
 
     const priceWithDecimal = (() => {
       if (selectPool.compareToken?.path === tokenA.path) {
-        return (
-          10 ** ((tokenB.decimals || 0) - (tokenA.decimals || 0)) * currentPrice
-        );
+        return 10 ** ((tokenB.decimals || 0) - (tokenA.decimals || 0)) * currentPrice;
       }
 
-      return (
-        10 ** ((tokenA.decimals || 0) - (tokenB.decimals || 0)) * currentPrice
-      );
+      return 10 ** ((tokenA.decimals || 0) - (tokenB.decimals || 0)) * currentPrice;
     })();
 
     return (
@@ -219,8 +199,7 @@ const SelectPriceRangeCustomReposition: React.FC<
 
   const onClickTabItem = useCallback(
     (symbol: string) => {
-      const compareToken =
-        getGnotPath(tokenA).symbol === symbol ? tokenA : tokenB;
+      const compareToken = getGnotPath(tokenA).symbol === symbol ? tokenA : tokenB;
       selectPool.setCompareToken(compareToken);
       const { minPosition, maxPosition } = selectPool;
       if (minPosition !== null) {
@@ -244,15 +223,12 @@ const SelectPriceRangeCustomReposition: React.FC<
     const currentPriceRangeType = inputPriceRangeType || priceRangeType;
 
     if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
-      const priceRange =
-        SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
+      const priceRange = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
 
       const getPriceWithTickSpacing = (range: number) => {
         const rangeDiffAmount = currentPrice * (range / 100);
         const currentTick = priceToTick(currentPrice + rangeDiffAmount);
-        const nearTick =
-          Math.round(currentTick / selectPool.tickSpacing) *
-          selectPool.tickSpacing;
+        const nearTick = Math.round(currentTick / selectPool.tickSpacing) * selectPool.tickSpacing;
         return tickToPrice(nearTick);
       };
 
@@ -314,9 +290,7 @@ const SelectPriceRangeCustomReposition: React.FC<
             {(availSelect || showDim) && (
               <div className="option-wrapper">
                 <SelectTab
-                  selectType={
-                    getGnotPath(selectPool.compareToken)?.symbol || ""
-                  }
+                  selectType={getGnotPath(selectPool.compareToken)?.symbol || ""}
                   list={selectTokenPair}
                   onClick={onClickTabItem}
                 />
@@ -324,9 +298,7 @@ const SelectPriceRangeCustomReposition: React.FC<
                   <div className="graph-option-wrapper">
                     <span
                       className={`graph-option-item decrease ${
-                        isLoading || showDim || !availMoveLeft
-                          ? "disabled-option"
-                          : ""
+                        isLoading || showDim || !availMoveLeft ? "disabled-option" : ""
                       }`}
                       onClick={moveLeft}
                     >
@@ -334,9 +306,7 @@ const SelectPriceRangeCustomReposition: React.FC<
                     </span>
                     <span
                       className={`graph-option-item increase ${
-                        isLoading || showDim || !availMoveRight
-                          ? "disabled-option"
-                          : ""
+                        isLoading || showDim || !availMoveRight ? "disabled-option" : ""
                       }`}
                       onClick={moveRight}
                     >
@@ -346,9 +316,7 @@ const SelectPriceRangeCustomReposition: React.FC<
                   <div className="graph-option-wrapper">
                     <span
                       className={`graph-option-item decrease ${
-                        isLoading || showDim || !availZoomOut
-                          ? "disabled-option"
-                          : ""
+                        isLoading || showDim || !availZoomOut ? "disabled-option" : ""
                       }`}
                       onClick={zoomOut}
                     >
@@ -356,9 +324,7 @@ const SelectPriceRangeCustomReposition: React.FC<
                     </span>
                     <span
                       className={`graph-option-item increase ${
-                        isLoading || showDim || !availZoomIn
-                          ? "disabled-option"
-                          : ""
+                        isLoading || showDim || !availZoomIn ? "disabled-option" : ""
                       }`}
                       onClick={zoomIn}
                     >
@@ -387,9 +353,7 @@ const SelectPriceRangeCustomReposition: React.FC<
                   <div className="pool-initialization">
                     <span>{t("Reposition:form.selectRange.dim.title")}</span>
                     <div>
-                      <Trans>
-                        {t("Reposition:form.selectRange.dim.content")}
-                      </Trans>
+                      <Trans>{t("Reposition:form.selectRange.dim.content")}</Trans>
                     </div>
                   </div>
                 )}
@@ -450,10 +414,7 @@ const SelectPriceRangeCustomReposition: React.FC<
                     />
                   </div>
                   <div className="extra-wrapper">
-                    <div
-                      className="icon-button reset"
-                      onClick={() => onResetRange()}
-                    >
+                    <div className="icon-button reset" onClick={() => onResetRange()}>
                       <IconRefresh />
                       <span>{t("Reposition:form.selectRange.resetRange")}</span>
                       <span>{t("common:reset")}</span>

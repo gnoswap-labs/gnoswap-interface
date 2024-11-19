@@ -7,38 +7,24 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGetDashboardActivities } from "@query/dashboard/use-get-dashboard-activities";
 import { ActivityType } from "@repositories/dashboard";
 
-import {
-  ACTIVITY_TABLE_HEAD,
-  SortOption,
-} from "../../components/activity-list/activity-list-table/ActivityListTable";
+import { ACTIVITY_TABLE_HEAD, SortOption } from "../../components/activity-list/activity-list-table/ActivityListTable";
 import ActivityList from "../../components/activity-list/ActivityList";
 
 dayjs.extend(relativeTime);
 
 const DashboardActivitiesContainer: React.FC = () => {
-  const [activityType, setActivityType] = useState<ActivityType>(
-    ActivityType.ALL,
-  );
+  const [activityType, setActivityType] = useState<ActivityType>(ActivityType.ALL);
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState<SortOption>();
   const { breakpoint } = useWindowSize();
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const {
-    isFetched,
-    error,
-    data: activities = [],
-  } = useGetDashboardActivities(activityType);
+  const { isFetched, error, data: activities = [] } = useGetDashboardActivities(activityType);
 
-  const changeActivityType = useCallback(
-    ({ key: newType }: { display: string; key: string }) => {
-      const activityType =
-        Object.values(ActivityType).find(type => type === newType) ||
-        ActivityType.ALL;
-      setActivityType(activityType);
-    },
-    [],
-  );
+  const changeActivityType = useCallback(({ key: newType }: { display: string; key: string }) => {
+    const activityType = Object.values(ActivityType).find(type => type === newType) || ActivityType.ALL;
+    setActivityType(activityType);
+  }, []);
   const movePage = useCallback((newPage: number) => {
     setPage(newPage);
   }, []);
@@ -58,12 +44,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   const sort = useCallback(
     (item: ACTIVITY_TABLE_HEAD) => {
       const key = item;
-      const direction =
-        sortOption?.key !== item
-          ? "desc"
-          : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+      const direction = sortOption?.key !== item ? "desc" : sortOption.direction === "asc" ? "desc" : "asc";
 
       setSortOption({
         key,
@@ -75,11 +56,7 @@ const DashboardActivitiesContainer: React.FC = () => {
 
   return (
     <ActivityList
-      activities={
-        activities.filter(
-          item => Number(item.tokenAAmount) || Number(item.tokenBAmount),
-        ) ?? []
-      }
+      activities={activities.filter(item => Number(item.tokenAAmount) || Number(item.tokenBAmount)) ?? []}
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

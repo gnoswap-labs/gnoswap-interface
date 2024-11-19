@@ -8,9 +8,7 @@ export default {
   component: OverlapTokenLogo,
 } as ComponentMeta<typeof OverlapTokenLogo>;
 
-const Template: ComponentStory<typeof OverlapTokenLogo> = args => (
-  <OverlapTokenLogo {...args} />
-);
+const Template: ComponentStory<typeof OverlapTokenLogo> = args => <OverlapTokenLogo {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

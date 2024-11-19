@@ -38,19 +38,12 @@ const RemovePositionModalContainer = ({
 
   const router = useRouter();
   const clearModal = useClearModal();
-  const {
-    broadcastRejected,
-    broadcastSuccess,
-    broadcastLoading,
-    broadcastError,
-  } = useBroadcastHandler();
+  const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
-    selectedPositions?.[0]?.poolPath,
-  );
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(selectedPositions?.[0]?.poolPath);
   const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
     positions: selectedPositions,
   });
@@ -60,20 +53,16 @@ const RemovePositionModalContainer = ({
     router.push(router.asPath.replace("/remove", ""));
   }, [clearModal, router]);
 
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
-    {
-      closeCallback: onCloseConfirmTransactionModal,
-    },
-  );
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    closeCallback: onCloseConfirmTransactionModal,
+  });
 
   const { getMessage } = useMessage();
 
   const gnotToken = useMemo(
     () =>
-      selectedPositions.find(item => item.pool.tokenA.path === GNOT_TOKEN.path)
-        ?.pool.tokenA ||
-      selectedPositions.find(item => item.pool.tokenB.path === GNOT_TOKEN.path)
-        ?.pool.tokenB,
+      selectedPositions.find(item => item.pool.tokenA.path === GNOT_TOKEN.path)?.pool.tokenA ||
+      selectedPositions.find(item => item.pool.tokenB.path === GNOT_TOKEN.path)?.pool.tokenB,
     [selectedPositions],
   );
 
@@ -81,19 +70,12 @@ const RemovePositionModalContainer = ({
     const pooledGnotTokenAmount = pooledTokenInfos
       .find(item => item.token.path === gnotToken?.path)
       ?.amount.replaceAll(",", "");
-    const unclaimedGnotTokenAmount = unclaimedFees.find(
-      item => item.token.path === gnotToken?.path,
-    )?.amount;
+    const unclaimedGnotTokenAmount = unclaimedFees.find(item => item.token.path === gnotToken?.path)?.amount;
 
-    return (
-      Number(pooledGnotTokenAmount || 0) + Number(unclaimedGnotTokenAmount || 0)
-    );
+    return Number(pooledGnotTokenAmount || 0) + Number(unclaimedGnotTokenAmount || 0);
   }, [gnotToken?.path, pooledTokenInfos, unclaimedFees]);
 
-  const willWrap = useMemo(
-    () => isGetWGNOT && !!gnotToken && !!gnotAmount,
-    [gnotAmount, gnotToken, isGetWGNOT],
-  );
+  const willWrap = useMemo(() => isGetWGNOT && !!gnotToken && !!gnotAmount, [gnotAmount, gnotToken, isGetWGNOT]);
 
   const tokenTransform = useCallback(
     (token: TokenModel) => {
@@ -113,16 +95,12 @@ const RemovePositionModalContainer = ({
     if (!address) {
       return null;
     }
-    const lpTokenIds = selectedPositions.map(position =>
-      position.id.toString(),
-    );
+    const lpTokenIds = selectedPositions.map(position => position.id.toString());
     const approveTokenPaths = [
       ...new Set(
         selectedPositions.flatMap(position => [
-          position.pool.tokenA.wrappedPath ||
-            checkGnotPath(position.pool.tokenA.path),
-          position.pool.tokenB.wrappedPath ||
-            checkGnotPath(position.pool.tokenB.path),
+          position.pool.tokenA.wrappedPath || checkGnotPath(position.pool.tokenA.path),
+          position.pool.tokenB.wrappedPath || checkGnotPath(position.pool.tokenB.path),
         ]),
       ),
     ];
@@ -153,10 +131,7 @@ const RemovePositionModalContainer = ({
       .catch(() => null);
 
     if (result) {
-      if (
-        result.code === 0 ||
-        result.code === ERROR_VALUE.TRANSACTION_FAILED.status
-      ) {
+      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
         enqueueEvent({
           txHash: result.data?.hash,
           action: DexEvent.REMOVE,
@@ -176,32 +151,16 @@ const RemovePositionModalContainer = ({
       }
       if (result.code === 0) {
         setTimeout(async () => {
-          broadcastSuccess(
-            getMessage(
-              DexEvent.REMOVE,
-              "success",
-              { ...messageData },
-              result.data?.hash,
-            ),
-          );
+          broadcastSuccess(getMessage(DexEvent.REMOVE, "success", { ...messageData }, result.data?.hash));
           openTransactionConfirmModal();
         }, 1000);
       } else if (
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
-        broadcastError(
-          getMessage(DexEvent.REMOVE, "error", { ...messageData }),
-        );
+        broadcastError(getMessage(DexEvent.REMOVE, "error", { ...messageData }));
         clearModal();
       } else {
-        broadcastRejected(
-          getMessage(
-            DexEvent.REMOVE,
-            "error",
-            { ...messageData },
-            result?.data?.hash,
-          ),
-        );
+        broadcastRejected(getMessage(DexEvent.REMOVE, "error", { ...messageData }, result?.data?.hash));
       }
     }
   }, [

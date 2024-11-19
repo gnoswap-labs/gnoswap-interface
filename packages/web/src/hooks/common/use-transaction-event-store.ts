@@ -10,10 +10,7 @@ const DEFAULT_SNACKBAR_TIMEOUT = 3_000;
 const TX_RESULT_SNACKBAR_TIMEOUT = 4_000;
 const UPDATING_SNACKBAR_TIMEOUT = 60_000;
 
-function makeSnackbarConfig(
-  type: SnackbarType,
-  timeout = DEFAULT_SNACKBAR_TIMEOUT,
-): SnackbarOptions {
+function makeSnackbarConfig(type: SnackbarType, timeout = DEFAULT_SNACKBAR_TIMEOUT): SnackbarOptions {
   return {
     id: makeRandomId(),
     type,
@@ -59,10 +56,7 @@ export const useTransactionEventStore = () => {
 
     enqueue(undefined, makeSnackbarConfig("pending"));
 
-    const updatingSnackbarConfig = makeSnackbarConfig(
-      "updating",
-      UPDATING_SNACKBAR_TIMEOUT,
-    );
+    const updatingSnackbarConfig = makeSnackbarConfig("updating", UPDATING_SNACKBAR_TIMEOUT);
 
     let alreadyEmitted = false;
 
@@ -70,32 +64,22 @@ export const useTransactionEventStore = () => {
       txHash,
       async event => {
         const messageType = event.status === "SUCCESS" ? "success" : "error";
-        const message = getMessage(
-          action,
-          messageType,
-          formatData(event.data),
-          txHash,
-        );
-        enqueue(
-          message,
-          makeSnackbarConfig(messageType, TX_RESULT_SNACKBAR_TIMEOUT),
-        );
+        const message = getMessage(action, messageType, formatData(event.data), txHash);
+        enqueue(message, makeSnackbarConfig(messageType, TX_RESULT_SNACKBAR_TIMEOUT));
         onUpdate();
 
         if (visibleEmitResult && event.status === "SUCCESS") {
-          wait<boolean>(async () => true, TX_RESULT_SNACKBAR_TIMEOUT).then(
-            () => {
-              enqueue({ txHash: message.txHash }, updatingSnackbarConfig);
+          wait<boolean>(async () => true, TX_RESULT_SNACKBAR_TIMEOUT).then(() => {
+            enqueue({ txHash: message.txHash }, updatingSnackbarConfig);
 
-              if (alreadyEmitted) {
-                change(updatingSnackbarConfig.id, "updating-done");
+            if (alreadyEmitted) {
+              change(updatingSnackbarConfig.id, "updating-done");
 
-                wait<boolean>(async () => true, 3_000).then(() => {
-                  dequeue(updatingSnackbarConfig.id);
-                });
-              }
-            },
-          );
+              wait<boolean>(async () => true, 3_000).then(() => {
+                dequeue(updatingSnackbarConfig.id);
+              });
+            }
+          });
         }
       },
       async () => {

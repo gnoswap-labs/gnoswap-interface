@@ -8,22 +8,13 @@ import { convertToKMB, formatTokenExchangeRate } from "./stake-position-utils";
 export const isNumber = (value: BigNumber | string | number): boolean => {
   const reg = /^-?\d+\.?\d*$/;
   const target = value?.toString();
-  return (
-    reg.test(target) &&
-    !isNaN(parseFloat(target)) &&
-    isFinite(parseFloat(target))
-  );
+  return reg.test(target) && !isNaN(parseFloat(target)) && isFinite(parseFloat(target));
 };
 
-export const toNumberFormat = (
-  value: BigNumber | string | number,
-  decimalPlaces?: number,
-) => {
+export const toNumberFormat = (value: BigNumber | string | number, decimalPlaces?: number) => {
   const bigNumber = BigNumber(value);
   if (decimalPlaces) {
-    return bigNumber
-      .decimalPlaces(decimalPlaces, BigNumber.ROUND_FLOOR)
-      .toFormat();
+    return bigNumber.decimalPlaces(decimalPlaces, BigNumber.ROUND_FLOOR).toFormat();
   }
   return bigNumber.toFormat();
 };
@@ -47,10 +38,7 @@ export const mathSybmolAbsFormat = (
   return {
     status: isNegative ? "NEGATIVE" : "POSITIVE",
     value:
-      (isNegative ? "-" : "+") +
-      (usd ? "$" : "") +
-      toNumberFormat(bigNumber.abs(), decimal) +
-      (percent ? "%" : ""),
+      (isNegative ? "-" : "+") + (usd ? "$" : "") + toNumberFormat(bigNumber.abs(), decimal) + (percent ? "%" : ""),
   };
 };
 
@@ -75,17 +63,9 @@ export const toUnitFormat = (
   const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
 
   if (wholeNumberLength >= 10 && isFormat)
-    return (
-      (usd ? "$" : "") +
-      bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
-      unitsUpperCase.billion
-    );
+    return (usd ? "$" : "") + bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) + unitsUpperCase.billion;
   if (wholeNumberLength >= 7 && isFormat)
-    return (
-      (usd ? "$" : "") +
-      bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
-      unitsUpperCase.million
-    );
+    return (usd ? "$" : "") + bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) + unitsUpperCase.million;
   if (isKMB) {
     if (wholeNumberLength >= 4 && isFormat) {
       return (
@@ -105,13 +85,7 @@ export const toUnitFormat = (
   if (Number(bigNumber) === 0) {
     return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed();
   }
-  return (
-    (usd ? "$" : "") +
-    bigNumber
-      .decimalPlaces(2)
-      .toNumber()
-      .toLocaleString("en", { minimumFractionDigits: 2 })
-  );
+  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });
 };
 
 export const toKMBFormat = (
@@ -190,10 +164,7 @@ export function floorNumber(val: number, decimal: number = 3): number {
   return result;
 }
 
-export const formatUSDWallet = (
-  value: BigNumber | string | number,
-  usd = false,
-): string => {
+export const formatUSDWallet = (value: BigNumber | string | number, usd = false): string => {
   if (!isNumber(value)) {
     // TODO : Error Check
     return usd ? "$0" : "0";
@@ -229,9 +200,7 @@ const getSubcriptChars = (number: string) => {
 
   for (let index = 0; index < numberOfZeroString.length; index++) {
     const currentChar = Number(numberOfZeroString[index]);
-    const singleSubscriptNumber = String.fromCharCode(
-      subscriptZeroCharCode + Number(currentChar),
-    );
+    const singleSubscriptNumber = String.fromCharCode(subscriptZeroCharCode + Number(currentChar));
     temp += singleSubscriptNumber;
   }
 
@@ -247,9 +216,7 @@ export function subscriptFormat(
 ) {
   const numberStr = BigNumber(number).toFixed();
   const numberOfZero = countZeros(numberStr);
-  const zeroCountOffset = options?.subscriptOffset
-    ? options?.subscriptOffset + 1
-    : 5;
+  const zeroCountOffset = options?.subscriptOffset ? options?.subscriptOffset + 1 : 5;
 
   if (numberOfZero <= zeroCountOffset) {
     return formatTokenExchangeRate(number, { maxSignificantDigits: 6 });
@@ -257,9 +224,7 @@ export function subscriptFormat(
 
   const subscriptChars = getSubcriptChars(numberStr);
 
-  const result = `0.0${subscriptChars}${removeTrailingZeros(
-    numberStr.slice(numberOfZero + 1, numberOfZero + 6),
-  )}`;
+  const result = `0.0${subscriptChars}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
   return result;
 }
 

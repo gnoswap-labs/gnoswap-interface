@@ -9,9 +9,7 @@ export default {
   component: GnoswapBrand,
 } as ComponentMeta<typeof GnoswapBrand>;
 
-const Template: ComponentStory<typeof GnoswapBrand> = args => (
-  <GnoswapBrand {...args} />
-);
+const Template: ComponentStory<typeof GnoswapBrand> = args => <GnoswapBrand {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

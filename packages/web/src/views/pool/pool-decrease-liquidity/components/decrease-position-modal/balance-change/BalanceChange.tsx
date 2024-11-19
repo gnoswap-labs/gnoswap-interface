@@ -36,35 +36,17 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
 
         <div className="table-balance-change">
           <p className="value">
-            <MissingLogo
-              symbol={tokenA?.symbol}
-              url={tokenA?.logoURI}
-              width={24}
-            />{" "}
-            {tokenA?.symbol}
+            <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} /> {tokenA?.symbol}
           </p>
-          <p className="label">
-            {BigNumber(pooledTokenInfos?.tokenABalance ?? 0).toFormat()}
-          </p>
-          <p className="label new-balance">
-            {BigNumber(pooledTokenInfos?.tokenARemainingAmount ?? 0).toFormat()}
-          </p>
+          <p className="label">{BigNumber(pooledTokenInfos?.tokenABalance ?? 0).toFormat()}</p>
+          <p className="label new-balance">{BigNumber(pooledTokenInfos?.tokenARemainingAmount ?? 0).toFormat()}</p>
         </div>
         <div className="table-balance-change">
           <p className="value">
-            <MissingLogo
-              symbol={tokenB?.symbol}
-              url={tokenB?.logoURI}
-              width={24}
-            />{" "}
-            {tokenB?.symbol}
+            <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} /> {tokenB?.symbol}
           </p>
-          <p className="label">
-            {BigNumber(pooledTokenInfos?.tokenBBalance ?? 0).toFormat()}
-          </p>
-          <p className="label new-balance">
-            {BigNumber(pooledTokenInfos?.tokenBRemainingAmount ?? 0).toFormat()}
-          </p>
+          <p className="label">{BigNumber(pooledTokenInfos?.tokenBBalance ?? 0).toFormat()}</p>
+          <p className="label new-balance">{BigNumber(pooledTokenInfos?.tokenBRemainingAmount ?? 0).toFormat()}</p>
         </div>
       </div>
     </BalanceChangeWrapper>

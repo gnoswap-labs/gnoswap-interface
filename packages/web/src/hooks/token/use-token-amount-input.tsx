@@ -48,10 +48,7 @@ function handleAmount(changed: string, token: TokenModel | null) {
   return value;
 }
 
-function compareAmountFn(
-  amountA: string | number | bigint,
-  amountB: string | number | bigint,
-) {
+function compareAmountFn(amountA: string | number | bigint, amountB: string | number | bigint) {
   const amountValueA = BigNumber(`${amountA}`.replace(/,/g, ""));
   const amountValueB = BigNumber(`${amountB}`.replace(/,/g, ""));
 
@@ -62,9 +59,7 @@ function compareAmountFn(
   return amountValueA.isGreaterThan(amountValueB) ? 1 : -1;
 }
 
-export const useTokenAmountInput = (
-  token: TokenModel | null,
-): TokenAmountInputModel => {
+export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputModel => {
   const { t } = useTranslation();
   const { connected: isConnectedWallet, isSwitchNetwork } = useWallet();
 

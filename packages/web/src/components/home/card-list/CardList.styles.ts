@@ -12,7 +12,6 @@ export const CardListWrapper = styled.ul`
   min-height: 120px;
 `;
 
-
 export const SkeletonItem = styled.div<SkeletonStyleProps>`
   width: ${({ tdWidth }) => `${tdWidth}`};
   height: 100%;

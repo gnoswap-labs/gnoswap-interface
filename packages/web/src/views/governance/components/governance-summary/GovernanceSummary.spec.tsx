@@ -20,7 +20,7 @@ describe("GovernanceSummary Component", () => {
         <GnoswapThemeProvider>
           <GovernanceSummary {...mockProps} />
         </GnoswapThemeProvider>
-      </JotaiProvider>
+      </JotaiProvider>,
     );
   });
 });

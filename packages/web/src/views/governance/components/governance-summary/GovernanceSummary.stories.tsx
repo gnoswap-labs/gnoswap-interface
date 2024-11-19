@@ -9,9 +9,7 @@ export default {
   component: GovernanceSummary,
 } as ComponentMeta<typeof GovernanceSummary>;
 
-const Template: ComponentStory<typeof GovernanceSummary> = (args) => (
-  <GovernanceSummary {...args} />
-);
+const Template: ComponentStory<typeof GovernanceSummary> = args => <GovernanceSummary {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

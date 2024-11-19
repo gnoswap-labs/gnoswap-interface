@@ -46,10 +46,7 @@ interface List {
   hideSkeleton?: boolean;
 }
 
-const getPulseBackground = (
-  tone: PulseSkeletonParams["tone"],
-  theme: Theme,
-) => {
+const getPulseBackground = (tone: PulseSkeletonParams["tone"], theme: Theme) => {
   switch (tone) {
     case "200":
       return theme.color.skeleton02;
@@ -92,8 +89,7 @@ export const pulseSkeletonStyle =
         width: 100%;
         height: 100%;
         background: ${getPulseBackground(tone, theme)};
-        animation: 1.5s ease-in-out 0.5s infinite normal none running
-          ${pulseAnim};
+        animation: 1.5s ease-in-out 0.5s infinite normal none running ${pulseAnim};
       }
 
       ${media.tablet} {
@@ -106,55 +102,38 @@ export const pulseSkeletonStyle =
       }
       ${media.mobile} {
         width: ${w};
-        width: ${typeof mobileWidth === "number"
-          ? `${mobileWidth}px`
-          : mobileWidth};
+        width: ${typeof mobileWidth === "number" ? `${mobileWidth}px` : mobileWidth};
         height: ${typeof height === "number" && height === 22 ? "22px" : h};
       }
     `;
   };
 
-export const skeletonStyle =
-  (skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES) =>
-  (theme: Theme) =>
-    css`
-      position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
-      height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
-      background: ${theme.color.background01};
-      overflow: hidden;
-      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-      &::after {
-        content: "";
-        position: absolute;
-        left: 0%;
-        top: 0;
-        transform: translateX(-50%);
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          0,
-          ${theme.color.backgroundGradient} 0%,
-          ${theme.color.backgroundGradient} 100%
-        );
-        animation: ${skeletonAni} 2s ease infinite;
-      }
-    `;
+export const skeletonStyle = (skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES) => (theme: Theme) =>
+  css`
+    position: relative;
+    width: ${typeof skeletonWidth === "number" ? `${skeletonWidth}px` : skeletonWidth};
+    height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
+    background: ${theme.color.background01};
+    overflow: hidden;
+    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0%;
+      top: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(0, ${theme.color.backgroundGradient} 0%, ${theme.color.backgroundGradient} 100%);
+      animation: ${skeletonAni} 2s ease infinite;
+    }
+  `;
 
 export const skeletonTrendingStyle =
-  (
-    skeletonWidth: CSSProperties["width"],
-    type: SHAPE_TYPES,
-    seconds?: number,
-  ) =>
-  (theme: Theme) =>
+  (skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) => (theme: Theme) =>
     css`
       position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
+      width: ${typeof skeletonWidth === "number" ? `${skeletonWidth}px` : skeletonWidth};
       height: 25px;
       background: ${theme.color.background23};
       overflow: hidden;
@@ -167,11 +146,7 @@ export const skeletonTrendingStyle =
         transform: translateX(-100%);
         width: 100%;
         height: 100%;
-        background: linear-gradient(
-          0,
-          ${theme.color.backgroundGradient} 0%,
-          ${theme.color.backgroundGradient} 100%
-        );
+        background: linear-gradient(0, ${theme.color.backgroundGradient} 0%, ${theme.color.backgroundGradient} 100%);
         animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
       }
     `;
@@ -187,9 +162,7 @@ export const skeletonTokenDetail =
   (theme: Theme) =>
     css`
       position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
+      width: ${typeof skeletonWidth === "number" ? `${skeletonWidth}px` : skeletonWidth};
       height: 22px;
       overflow: hidden;
       border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
@@ -220,25 +193,16 @@ export const skeletonTokenDetail =
           : skeletonWidth};
       }
       ${media.mobile} {
-        width: ${typeof skeletonWidth === "number"
-          ? `${skeletonWidth}px`
-          : skeletonWidth};
+        width: ${typeof skeletonWidth === "number" ? `${skeletonWidth}px` : skeletonWidth};
         height: 18px;
       }
     `;
 
 export const skeletonTotalBalance =
-  (
-    skeletonWidth: CSSProperties["width"],
-    type: SHAPE_TYPES,
-    seconds?: number,
-  ) =>
-  (theme: Theme) =>
+  (skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) => (theme: Theme) =>
     css`
       position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
+      width: ${typeof skeletonWidth === "number" ? `${skeletonWidth}px` : skeletonWidth};
       height: 20px;
       overflow: hidden;
       border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
@@ -260,17 +224,10 @@ export const skeletonTotalBalance =
     `;
 
 export const skeletonBalanceDetail =
-  (
-    skeletonWidth: CSSProperties["width"],
-    type: SHAPE_TYPES,
-    seconds?: number,
-  ) =>
-  (theme: Theme) =>
+  (skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) => (theme: Theme) =>
     css`
       position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
+      width: ${typeof skeletonWidth === "number" ? `${skeletonWidth}px` : skeletonWidth};
       height: 20px;
       overflow: hidden;
       border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
@@ -292,9 +249,7 @@ export const skeletonBalanceDetail =
     `;
 
 export const TOKEN_SEARCH_WIDTH = [400];
-export const TOKEN_TD_WIDTH = [
-  56, 199, 105, 85, 85, 85, 140, 140, 138, 201, 124,
-];
+export const TOKEN_TD_WIDTH = [56, 199, 105, 85, 85, 85, 140, 140, 138, 201, 124];
 export const MOBILE_TOKEN_TD_WIDTH = [160, 160];
 
 export const LEADERBOARD_TD_WIDTH = [120, 400, 200, 200, 200, 240];

@@ -23,9 +23,8 @@ const packages = [
   },
 ];
 
-
 describe("make address from package path", () => {
-  packages.forEach((pacakgeInfo) => {
+  packages.forEach(pacakgeInfo => {
     test(`${pacakgeInfo.path} -> ${pacakgeInfo.address}`, () => {
       const result = getAddressByPackagePath(pacakgeInfo.path);
       expect(result).toBe(pacakgeInfo.address);

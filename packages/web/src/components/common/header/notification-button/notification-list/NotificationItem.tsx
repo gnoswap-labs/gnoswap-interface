@@ -86,14 +86,10 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     [DexEvent.COLLECT_GOV_REWARD]: "Modal:notif.action.rewardsClaimed",
     [DexEvent.VOTE]: "Modal:notif.action.vote.status.success",
     [DexEvent.PROPOSE_TEXT]: "Modal:notif.action.createproposal.status.success",
-    [DexEvent.PROPOSE_COMM_POOL_SPEND]:
-      "Modal:notif.action.createproposal.status.success",
-    [DexEvent.PROPOSE_PARAM_CHANGE]:
-      "Modal:notif.action.createproposal.status.success",
-    [DexEvent.EXECUTE_PROPOSAL]:
-      "Modal:notif.action.executeproposal.status.success",
-    [DexEvent.CANCEL_PROPOSAL]:
-      "Modal:notif.action.cancelproposal.status.success",
+    [DexEvent.PROPOSE_COMM_POOL_SPEND]: "Modal:notif.action.createproposal.status.success",
+    [DexEvent.PROPOSE_PARAM_CHANGE]: "Modal:notif.action.createproposal.status.success",
+    [DexEvent.EXECUTE_PROPOSAL]: "Modal:notif.action.executeproposal.status.success",
+    [DexEvent.CANCEL_PROPOSAL]: "Modal:notif.action.cancelproposal.status.success",
     // Launchpad
     [DexEvent.LAUNCHPAD_COLLECT_REWARD]: "Modal:notif.action.rewardsClaimed",
     [DexEvent.LAUNCHPAD_COLLECT_DEPOSIT]: "Modal:notif.action.claimedDeposit",
@@ -114,9 +110,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
             isKMB: false,
           });
           const tokenASymbol = tx?.tokenA?.symbol;
-          return (
-            <span className="accent">{` ${tokenAAmount} ${tokenASymbol}`}</span>
-          );
+          return <span className="accent">{` ${tokenAAmount} ${tokenASymbol}`}</span>;
         }
 
         const token0Amount = formatPoolPairAmount(tx?.tokenAAmount, {
@@ -148,9 +142,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         let conjunction = "";
         if (relatedTokens === 2 && token0Display && token1Display) {
           conjunction = ` ${
-            tx.actionType === DexEvent.SWAP
-              ? t("common:conjunction.for")
-              : t("common:conjunction.and")
+            tx.actionType === DexEvent.SWAP ? t("common:conjunction.for") : t("common:conjunction.and")
           }`;
         } else if (relatedTokens > 2) {
           conjunction = ", ";
@@ -234,17 +226,14 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
           case DexEvent.VOTE:
             return (
               <>
-                <span className="accent">{` ${formatPoolPairAmount(
-                  tx?.tokenAAmount,
-                  {
-                    decimals: tx.tokenA.decimals,
-                    isKMB: false,
-                  },
-                )} xGNS `}</span>
+                <span className="accent">{` ${formatPoolPairAmount(tx?.tokenAAmount, {
+                  decimals: tx.tokenA.decimals,
+                  isKMB: false,
+                })} xGNS `}</span>
                 {t("common:conjunction.for")}
-                <span className="accent">{` ${tx?.tokenBAmount
-                  .slice(0, 1)
-                  .toUpperCase()}${tx?.tokenBAmount.slice(1)}`}</span>
+                <span className="accent">{` ${tx?.tokenBAmount.slice(0, 1).toUpperCase()}${tx?.tokenBAmount.slice(
+                  1,
+                )}`}</span>
               </>
             );
           default:
@@ -256,9 +245,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
       return (
         <>
           {t(actionKeyMap[tx.actionType as DexEventType] || "Undefined Task")}
-          {isGovernanceNoti(tx.actionType)
-            ? getGovernanceRelatedMessage()
-            : getSwapRelatedMessage()}
+          {isGovernanceNoti(tx.actionType) ? getGovernanceRelatedMessage() : getSwapRelatedMessage()}
         </>
       );
     },
@@ -270,20 +257,13 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
       <TxsDateAgoTitle>{groupLabel}</TxsDateAgoTitle>
       {txs.map((item: TransactionModel, idx: number) => {
         const shouldShowTokenALogo =
-          !!item.rawValue &&
-          !!item.rawValue.tokenAAmount &&
-          !!Number(item.rawValue.tokenAAmount);
+          !!item.rawValue && !!item.rawValue.tokenAAmount && !!Number(item.rawValue.tokenAAmount);
         const shouldShowTokenBLogo =
-          !!item.rawValue &&
-          !!item.rawValue.tokenBAmount &&
-          !!Number(item.rawValue.tokenBAmount);
+          !!item.rawValue && !!item.rawValue.tokenBAmount && !!Number(item.rawValue.tokenBAmount);
 
         if (breakpoint === DEVICE_TYPE.MOBILE) {
           return (
-            <TransactionItemsWrap
-              onClick={() => window.open(getTxUrl(item.txHash), "_blank")}
-              key={idx}
-            >
+            <TransactionItemsWrap onClick={() => window.open(getTxUrl(item.txHash), "_blank")} key={idx}>
               <div className="list">
                 <div className="coin-info">
                   {item.txType === NotificationType.CreatePool ? (
@@ -302,31 +282,18 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                           url={item?.tokenInfo?.tokenB?.logoURI}
                           width={24}
                           mobileWidth={24}
-                          className={
-                            shouldShowTokenALogo ? "right-logo" : undefined
-                          }
-                          missingLogoClassName={
-                            shouldShowTokenALogo ? "right-logo" : undefined
-                          }
+                          className={shouldShowTokenALogo ? "right-logo" : undefined}
+                          missingLogoClassName={shouldShowTokenALogo ? "right-logo" : undefined}
                         />
                       )}
-                      {item.rawValue.usedTokens &&
-                        item.rawValue.usedTokens > 2 && (
-                          <div className="more-token">
-                            +{item.rawValue.usedTokens - 2}
-                          </div>
-                        )}
+                      {item.rawValue.usedTokens && item.rawValue.usedTokens > 2 && (
+                        <div className="more-token">+{item.rawValue.usedTokens - 2}</div>
+                      )}
                     </DoubleLogoLocal>
                   ) : (
                     <DoubleLogoLocal>
-                      {isGovernanceNoti(item.rawValue.actionType) &&
-                      item.rawValue.actionType !== "DELEGATE" ? (
-                        <MissingLogo
-                          symbol={XGNS_TOKEN.symbol}
-                          url={XGNS_TOKEN.logoURI}
-                          width={24}
-                          mobileWidth={24}
-                        />
+                      {isGovernanceNoti(item.rawValue.actionType) && item.rawValue.actionType !== "DELEGATE" ? (
+                        <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} mobileWidth={24} />
                       ) : (
                         <MissingLogo
                           symbol={item?.tokenInfo?.tokenA?.symbol}
@@ -337,9 +304,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                       )}
                     </DoubleLogoLocal>
                   )}
-                  <div className="content-wrap">
-                    {getNotificationMessage(item.rawValue)}
-                  </div>
+                  <div className="content-wrap">{getNotificationMessage(item.rawValue)}</div>
                 </div>
               </div>
               {item.status === "SUCCESS" ? (
@@ -347,19 +312,14 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
               ) : item.status === "FAILED" ? (
                 <IconCircleInCancel className="failed-icon status-icon" />
               ) : (
-                item.status === "PENDING" && (
-                  <IconCircleInMore className="pending-icon status-icon" />
-                )
+                item.status === "PENDING" && <IconCircleInMore className="pending-icon status-icon" />
               )}
             </TransactionItemsWrap>
           );
         }
 
         return (
-          <TxsSummaryItem
-            onClick={() => window.open(getTxUrl(item.txHash), "_blank")}
-            key={idx}
-          >
+          <TxsSummaryItem onClick={() => window.open(getTxUrl(item.txHash), "_blank")} key={idx}>
             {item.txType === NotificationType.CreatePool ? (
               <DoubleLogoDense>
                 {shouldShowTokenALogo && (
@@ -377,27 +337,17 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     width={24}
                     mobileWidth={24}
                     className={shouldShowTokenALogo ? "right-logo" : undefined}
-                    missingLogoClassName={
-                      shouldShowTokenALogo ? "right-logo" : undefined
-                    }
+                    missingLogoClassName={shouldShowTokenALogo ? "right-logo" : undefined}
                   />
                 )}
                 {item.rawValue.usedTokens && item.rawValue.usedTokens > 2 && (
-                  <div className="more-token">
-                    +{item.rawValue.usedTokens - 2}
-                  </div>
+                  <div className="more-token">+{item.rawValue.usedTokens - 2}</div>
                 )}
               </DoubleLogoDense>
             ) : (
               <DoubleLogoDense>
-                {isGovernanceNoti(item.rawValue.actionType) &&
-                item.rawValue.actionType !== "DELEGATE" ? (
-                  <MissingLogo
-                    symbol={XGNS_TOKEN.symbol}
-                    url={XGNS_TOKEN.logoURI}
-                    width={24}
-                    mobileWidth={24}
-                  />
+                {isGovernanceNoti(item.rawValue.actionType) && item.rawValue.actionType !== "DELEGATE" ? (
+                  <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} mobileWidth={24} />
                 ) : (
                   <MissingLogo
                     symbol={item?.tokenInfo?.tokenA?.symbol}
@@ -408,17 +358,13 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                 )}
               </DoubleLogoDense>
             )}
-            <div className="summary-content">
-              {getNotificationMessage(item.rawValue)}
-            </div>
+            <div className="summary-content">{getNotificationMessage(item.rawValue)}</div>
             {item.status === "SUCCESS" ? (
               <IconCircleInCheck className="success-icon status-icon" />
             ) : item.status === "FAILED" ? (
               <IconCircleInCancel className="failed-icon status-icon" />
             ) : (
-              item.status === "PENDING" && (
-                <IconCircleInMore className="pending-icon status-icon" />
-              )
+              item.status === "PENDING" && <IconCircleInMore className="pending-icon status-icon" />
             )}
           </TxsSummaryItem>
         );

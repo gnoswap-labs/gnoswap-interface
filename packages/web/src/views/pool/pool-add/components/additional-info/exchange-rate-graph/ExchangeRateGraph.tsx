@@ -31,20 +31,13 @@ interface ExchangeRateGraphProps {
   defaultScope?: CHART_DAY_SCOPE_TYPE;
 }
 
-const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
-  poolData,
-  isReversed,
-  isLoading,
-  defaultScope,
-}) => {
+const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({ poolData, isReversed, isLoading, defaultScope }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
 
   const [currentPoint, setCurrentPoint] = useState<string | null>();
   const [active, setActive] = useState<boolean>(false);
-  const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(
-    defaultScope ?? CHART_DAY_SCOPE_TYPE["7D"],
-  );
+  const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(defaultScope ?? CHART_DAY_SCOPE_TYPE["7D"]);
 
   const changedPoolInfo = useMemo(() => {
     return isReversed === false
@@ -73,15 +66,10 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
         };
   }, [getGnotPath, poolData, isReversed]);
 
-  const hasData =
-    changedPoolInfo.tokenA.name !== undefined &&
-    changedPoolInfo.tokenA.name !== "";
+  const hasData = changedPoolInfo.tokenA.name !== undefined && changedPoolInfo.tokenA.name !== "";
 
   const showChart = () => {
-    if (!hasData)
-      return (
-        <ExchangeChartNotFound>{t("common:noData")}</ExchangeChartNotFound>
-      );
+    if (!hasData) return <ExchangeChartNotFound>{t("common:noData")}</ExchangeChartNotFound>;
     return (
       <ExchangeRateGraphContent
         poolData={changedPoolInfo}
@@ -105,11 +93,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
           <div className="tooltip-wrap">
             <Tooltip
               placement="top"
-              FloatingContent={
-                <TooltipContentWrapper>
-                  {t("AddPosition:rateGraph.tooltip")}
-                </TooltipContentWrapper>
-              }
+              FloatingContent={<TooltipContentWrapper>{t("AddPosition:rateGraph.tooltip")}</TooltipContentWrapper>}
             >
               <IconInfo className="tooltip-icon" />
             </Tooltip>

@@ -24,8 +24,7 @@ export const DoubleTokenLogoWrapper = styled.div<DoubleTokenLogoStyleProps>`
   }
   .right-logo {
     margin-left: ${({ overlap }) => {
-      if (overlap)
-        return typeof overlap === "number" ? `-${overlap}px` : `-${overlap}`;
+      if (overlap) return typeof overlap === "number" ? `-${overlap}px` : `-${overlap}`;
       return "-6px";
     }};
   }

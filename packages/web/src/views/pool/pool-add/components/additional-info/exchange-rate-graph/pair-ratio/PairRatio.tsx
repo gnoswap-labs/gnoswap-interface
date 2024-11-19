@@ -3,10 +3,7 @@ import { useMemo } from "react";
 import IconSwap from "@components/common/icons/IconSwap";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
-import {
-  SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolModel } from "@models/pool/pool-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -35,10 +32,8 @@ export function PairRatio({
   pool,
   overrideValue,
 }: PairRatioProps) {
-
   const displayTokenSymbol = useMemo(
-    () =>
-      replaceGnotSymbol(!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
+    () => replaceGnotSymbol(!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
     [isSwap, pool.tokenA?.symbol, pool.tokenB?.symbol],
   );
   const secondTokenSymbol = useMemo(
@@ -46,15 +41,10 @@ export function PairRatio({
     [isSwap, pool.tokenA?.symbol, pool.tokenB?.symbol],
   );
 
-  function formatExchangeRate(
-    value: number,
-    options?: { feeTier?: SwapFeeTierType },
-  ) {
+  function formatExchangeRate(value: number, options?: { feeTier?: SwapFeeTierType }) {
     const valueStr = value.toString();
 
-    const range = options?.feeTier
-      ? SwapFeeTierMaxPriceRangeMap[options?.feeTier]
-      : null;
+    const range = options?.feeTier ? SwapFeeTierMaxPriceRangeMap[options?.feeTier] : null;
 
     const currentValue = Number(valueStr);
 

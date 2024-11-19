@@ -15,10 +15,7 @@ import WarningCard from "@components/common/warning-card/WarningCard";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
-import {
-  DelegationItemInfo,
-  nullDelegationItemInfo,
-} from "@repositories/governance";
+import { DelegationItemInfo, nullDelegationItemInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import UndelegateSelect from "./undelegate-selector/UndelegateSelect";
@@ -39,9 +36,7 @@ interface MyDelegationUndelegateModalProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const MyDelegationUndelegateModal: React.FC<
-  MyDelegationUndelegateModalProps
-> = ({
+const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = ({
   currentDelegatedAmount,
   totalDelegatedAmount,
   apy,
@@ -50,40 +45,32 @@ const MyDelegationUndelegateModal: React.FC<
   onSubmit,
   setIsOpen,
 }) => {
-  const Modal = useMemo(
-    () => withLocalModal(MyDelegationModalWrapper, setIsOpen),
-    [setIsOpen],
-  );
+  const Modal = useMemo(() => withLocalModal(MyDelegationModalWrapper, setIsOpen), [setIsOpen]);
 
   const { t } = useTranslation();
   const theme = useTheme();
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
 
   const accumedDelegationInfo = useMemo(() => {
-    return delegatedInfos.reduce(
-      (acc: DelegationItemInfo[], item: DelegationItemInfo) => {
-        let accumed = false;
-        for (const accumedItem of acc) {
-          if (accumedItem.address === item.address) {
-            accumedItem.amount += item.amount;
-            accumed = true;
-            break;
-          }
+    return delegatedInfos.reduce((acc: DelegationItemInfo[], item: DelegationItemInfo) => {
+      let accumed = false;
+      for (const accumedItem of acc) {
+        if (accumedItem.address === item.address) {
+          accumedItem.amount += item.amount;
+          accumed = true;
+          break;
         }
-        if (!accumed) {
-          acc.push({ ...item });
-        }
-        return acc;
-      },
-      [],
-    );
+      }
+      if (!accumed) {
+        acc.push({ ...item });
+      }
+      return acc;
+    }, []);
   }, [delegatedInfos]);
 
-  const [selectedDelegatedInfo, setSelectedDelegatedInfo] =
-    useState<DelegationItemInfo>(
-      accumedDelegationInfo.sort((a, b) => b.amount - a.amount)[0] ||
-        nullDelegationItemInfo,
-    );
+  const [selectedDelegatedInfo, setSelectedDelegatedInfo] = useState<DelegationItemInfo>(
+    accumedDelegationInfo.sort((a, b) => b.amount - a.amount)[0] || nullDelegationItemInfo,
+  );
 
   const showDelegateInfo = () => (
     <>
@@ -101,9 +88,7 @@ const MyDelegationUndelegateModal: React.FC<
       />
 
       <article>
-        <div className="section-title">
-          {t("Governance:myDel.undelModal.step2.title")}
-        </div>
+        <div className="section-title">{t("Governance:myDel.undelModal.step2.title")}</div>
         <TokenAmountInput
           {...gnsAmountInput}
           token={XGNS_TOKEN}
@@ -116,19 +101,11 @@ const MyDelegationUndelegateModal: React.FC<
       </article>
 
       <article>
-        <div className="section-title">
-          {t("Governance:myDel.undelModal.step3.title")}
-        </div>
+        <div className="section-title">{t("Governance:myDel.undelModal.step3.title")}</div>
         <div className="info-rows">
-          <div className="label">
-            {t("Governance:myDel.undelModal.step3.remainXGns")}
-          </div>
+          <div className="label">{t("Governance:myDel.undelModal.step3.remainXGns")}</div>
           <div className="value">
-            <MissingLogo
-              symbol={XGNS_TOKEN.symbol}
-              url={XGNS_TOKEN.logoURI}
-              width={24}
-            />
+            <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} />
             {formatOtherPrice(
               currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
                 ? currentDelegatedAmount - Number(gnsAmountInput.amount)
@@ -142,17 +119,13 @@ const MyDelegationUndelegateModal: React.FC<
           </div>
         </div>
         <div className="info-rows">
-          <div className="label">
-            {t("Governance:myDel.undelModal.step3.remainVotingWeight")}
-          </div>
+          <div className="label">{t("Governance:myDel.undelModal.step3.remainVotingWeight")}</div>
           <div className="value">
-            {`${formatOtherPrice(
-              (currentDelegatedAmount * 100) / totalDelegatedAmount,
-              { usd: false },
-            )}% -> ${formatOtherPrice(
+            {`${formatOtherPrice((currentDelegatedAmount * 100) / totalDelegatedAmount, {
+              usd: false,
+            })}% -> ${formatOtherPrice(
               currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
-                ? ((currentDelegatedAmount - Number(gnsAmountInput.amount)) *
-                    100) /
+                ? ((currentDelegatedAmount - Number(gnsAmountInput.amount)) * 100) /
                     (totalDelegatedAmount - Number(gnsAmountInput.amount))
                 : 0,
               { usd: false },
@@ -165,9 +138,7 @@ const MyDelegationUndelegateModal: React.FC<
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("Governance:myDel.undelModal.step3.aprTooltip")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("Governance:myDel.undelModal.step3.aprTooltip")}</ToolTipContentWrapper>
               }
             >
               <IconInfo size={16} />
@@ -190,11 +161,7 @@ const MyDelegationUndelegateModal: React.FC<
         content={
           <MyDelWarningContentWrapper>
             {t("Governance:myDel.undelModal.warning.description")}
-            <a
-              href={EXT_URL.DOCS.XGNS}
-              target="_blank"
-              className="learn-more-box"
-            >
+            <a href={EXT_URL.DOCS.XGNS} target="_blank" className="learn-more-box">
               <p>{t("common:learnMore")}</p>
               <IconNewTab color={theme.color.icon21} />
             </a>
@@ -204,11 +171,7 @@ const MyDelegationUndelegateModal: React.FC<
 
       <Button
         onClick={() => {
-          onSubmit(
-            selectedDelegatedInfo.name,
-            selectedDelegatedInfo.address,
-            gnsAmountInput.amount,
-          );
+          onSubmit(selectedDelegatedInfo.name, selectedDelegatedInfo.address, gnsAmountInput.amount);
 
           const timeoutId = setTimeout(() => {
             setIsOpen(false);
@@ -221,10 +184,7 @@ const MyDelegationUndelegateModal: React.FC<
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={
-          gnsAmountInput.amount === "0" ||
-          Number(gnsAmountInput.amount) > Number(selectedDelegatedInfo.amount)
-        }
+        disabled={gnsAmountInput.amount === "0" || Number(gnsAmountInput.amount) > Number(selectedDelegatedInfo.amount)}
         className="button-confirm"
       />
     </>

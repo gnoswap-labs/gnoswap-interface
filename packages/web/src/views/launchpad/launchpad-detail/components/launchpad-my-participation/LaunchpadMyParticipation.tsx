@@ -3,10 +3,7 @@ import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 
 import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
-import {
-  LaunchpadParticipationModel,
-  LaunchpadPoolModel,
-} from "@models/launchpad";
+import { LaunchpadParticipationModel, LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import { useGetLastedBlockHeight } from "@query/pools";
 import { LAUNCHPAD_REFETCH_INTERVAL } from "@common/values";
@@ -81,16 +78,10 @@ const LaunchpadMyParticipation = ({
     const currentBlockHeight = blockHeight;
 
     return data.some(item => {
-      const isClaimableBlockHeight = BigNumber(
-        currentBlockHeight,
-      ).isGreaterThan(item.claimableBlockHeight);
+      const isClaimableBlockHeight = BigNumber(currentBlockHeight).isGreaterThan(item.claimableBlockHeight);
 
-      const isClaimedReward =
-        Number(
-          toNumberFormat(item.claimableRewardAmount, 2).replace(/,/g, ""),
-        ) === 0;
-      const isClaimedDeposit =
-        Number(toNumberFormat(item.depositAmount).replace(/,/g, "")) === 0;
+      const isClaimedReward = Number(toNumberFormat(item.claimableRewardAmount, 2).replace(/,/g, "")) === 0;
+      const isClaimedDeposit = Number(toNumberFormat(item.depositAmount).replace(/,/g, "")) === 0;
       const isClaimed = isClaimedReward && isClaimedDeposit;
 
       return !isClaimed && isClaimableBlockHeight;
@@ -102,9 +93,7 @@ const LaunchpadMyParticipation = ({
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
-          <h3 className="my-participation-title">
-            {t("Launchpad:myParticipation.title")}
-          </h3>
+          <h3 className="my-participation-title">{t("Launchpad:myParticipation.title")}</h3>
         </div>
         <LaunchpadMyParticipationSkeleton />
       </MyParticipationWrapper>
@@ -119,9 +108,7 @@ const LaunchpadMyParticipation = ({
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
-          <h3 className="my-participation-title">
-            {t("Launchpad:myParticipation.title")}
-          </h3>
+          <h3 className="my-participation-title">{t("Launchpad:myParticipation.title")}</h3>
         </div>
         <LaunchpadMyParticipationUnconnected />
       </MyParticipationWrapper>
@@ -132,9 +119,7 @@ const LaunchpadMyParticipation = ({
     return (
       <MyParticipationWrapper>
         <div className="my-participation-header">
-          <h3 className="my-participation-title">
-            {t("Launchpad:myParticipation.title")}
-          </h3>
+          <h3 className="my-participation-title">{t("Launchpad:myParticipation.title")}</h3>
           {isShowClaimAllButton && (
             <div className="claim-all-button-wrapper">
               <ClaimAllButton
@@ -174,9 +159,7 @@ const LaunchpadMyParticipation = ({
   return (
     <MyParticipationWrapper>
       <div className="my-participation-header">
-        <h3 className="my-participation-title">
-          {t("Launchpad:myParticipation.title")}
-        </h3>
+        <h3 className="my-participation-title">{t("Launchpad:myParticipation.title")}</h3>
       </div>
       <LaunchpadMyParticipationNoData highestApr={highestApr} />
     </MyParticipationWrapper>
@@ -190,10 +173,7 @@ export interface ParticipateButtonProps {
   onClick: () => void;
 }
 
-const ClaimAllButton: React.FC<ParticipateButtonProps> = ({
-  onClick,
-  text,
-}) => {
+const ClaimAllButton: React.FC<ParticipateButtonProps> = ({ onClick, text }) => {
   const claimDefaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,

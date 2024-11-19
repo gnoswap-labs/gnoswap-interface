@@ -103,7 +103,7 @@ export const wrapper = (theme: Theme) => css`
       .swap-tablet {
         display: none;
       }
-      @media (max-width: 930px ) and (min-width: 769px){
+      @media (max-width: 930px) and (min-width: 769px) {
         .swap-tablet {
           position: relative;
           display: initial;
@@ -144,7 +144,6 @@ export const wrapper = (theme: Theme) => css`
           }
         }
       }
-      
     }
 
     .right-section {

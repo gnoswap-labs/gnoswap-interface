@@ -84,8 +84,7 @@ export const ProjectInfoWrapper = styled.div`
       height: 16px;
       font-size: 0;
       * {
-        fill: ${({ theme }) =>
-          theme.themeKey === "dark" ? "#596782" : "#90A2C0"};
+        fill: ${({ theme }) => (theme.themeKey === "dark" ? "#596782" : "#90A2C0")};
       }
     }
 

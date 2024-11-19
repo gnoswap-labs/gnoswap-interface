@@ -15,20 +15,13 @@ export type TvlChartGraphPeriodType = (typeof TvlChartGraphPeriods)[number];
 const TvlChartContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const [tvlChartType, setTvlChartType] = useState<CHART_TYPE>(
-    CHART_TYPE["7D"],
-  );
+  const [tvlChartType, setTvlChartType] = useState<CHART_TYPE>(CHART_TYPE["7D"]);
 
   const { data: tvlData, isLoading } = useGetDashboardTVL();
-  const changeTvlChartType = useCallback(
-    ({ key: newType }: { display: string; key: string }) => {
-      const tvlChartType =
-        Object.values(CHART_TYPE).find(type => type === newType) ||
-        CHART_TYPE["7D"];
-      setTvlChartType(tvlChartType);
-    },
-    [],
-  );
+  const changeTvlChartType = useCallback(({ key: newType }: { display: string; key: string }) => {
+    const tvlChartType = Object.values(CHART_TYPE).find(type => type === newType) || CHART_TYPE["7D"];
+    setTvlChartType(tvlChartType);
+  }, []);
   const chartData = useMemo(() => {
     if (!tvlData?.all) return [];
     let currentChartData = tvlData?.last7d;
@@ -49,21 +42,18 @@ const TvlChartContainer: React.FC = () => {
         break;
     }
 
-    return currentChartData?.reduce<TvlChartData>(
-      (accum: TvlChartData, current: TvlData) => {
-        return [
-          ...accum,
-          {
-            amount: {
-              value: current.tvlUsd || "0",
-              denom: "USD",
-            },
-            time: getLocalizeTime(current.date),
+    return currentChartData?.reduce<TvlChartData>((accum: TvlChartData, current: TvlData) => {
+      return [
+        ...accum,
+        {
+          amount: {
+            value: current.tvlUsd || "0",
+            denom: "USD",
           },
-        ];
-      },
-      [],
-    );
+          time: getLocalizeTime(current.date),
+        },
+      ];
+    }, []);
   }, [tvlChartType, tvlData]);
 
   return (

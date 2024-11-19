@@ -15,11 +15,7 @@ import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import PoolList from "../../components/pool-list/PoolList";
-import {
-  PoolSortOption,
-  POOL_TYPE,
-  TABLE_HEAD,
-} from "../../components/pool-list/types";
+import { PoolSortOption, POOL_TYPE, TABLE_HEAD } from "../../components/pool-list/types";
 
 const PoolListContainer: React.FC = () => {
   const [poolType, setPoolType] = useState<POOL_TYPE>(POOL_TYPE.ALL);
@@ -41,8 +37,7 @@ const PoolListContainer: React.FC = () => {
 
   const anyEmptyPrice = useCallback(
     (tokenA: TokenModel, tokenB: TokenModel) =>
-      !tokenPrices?.[checkGnotPath(tokenA.priceID)]?.usd ||
-      !tokenPrices?.[checkGnotPath(tokenB.priceID)]?.usd,
+      !tokenPrices?.[checkGnotPath(tokenA.priceID)]?.usd || !tokenPrices?.[checkGnotPath(tokenB.priceID)]?.usd,
     [tokenPrices],
   );
 
@@ -64,20 +59,17 @@ const PoolListContainer: React.FC = () => {
     return Number(value);
   };
 
-  const filteredPoolType = useCallback(
-    (poolType: POOL_TYPE, incentivizedType: INCENTIVE_TYPE) => {
-      switch (poolType) {
-        case POOL_TYPE.INCENTIVIZED:
-          return incentivizedType !== "NONE_INCENTIVIZED";
-        case POOL_TYPE.NONE_INCENTIVIZED:
-          return incentivizedType === "NONE_INCENTIVIZED";
-        default:
-          break;
-      }
-      return true;
-    },
-    [],
-  );
+  const filteredPoolType = useCallback((poolType: POOL_TYPE, incentivizedType: INCENTIVE_TYPE) => {
+    switch (poolType) {
+      case POOL_TYPE.INCENTIVIZED:
+        return incentivizedType !== "NONE_INCENTIVIZED";
+      case POOL_TYPE.NONE_INCENTIVIZED:
+        return incentivizedType === "NONE_INCENTIVIZED";
+      default:
+        break;
+    }
+    return true;
+  }, []);
 
   const sortedPoolListInfos = useMemo(() => {
     const temp = poolListInfos.filter(info => {
@@ -94,69 +86,45 @@ const PoolListContainer: React.FC = () => {
     if (sortOption) {
       if (sortOption.key === TABLE_HEAD.POOL_NAME) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) =>
-            b.tokenA.name.localeCompare(a.tokenA.name),
-          );
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => b.tokenA.name.localeCompare(a.tokenA.name));
         } else {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) =>
-            a.tokenA.name.localeCompare(b.tokenA.name),
-          );
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => a.tokenA.name.localeCompare(b.tokenA.name));
         }
       } else if (sortOption.key === TABLE_HEAD.TVL) {
         if (sortOption.direction === "asc") {
-          temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) =>
-              sortValueTransform(a.tvl) - sortValueTransform(b.tvl),
-          );
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.tvl) - sortValueTransform(b.tvl));
         } else {
-          temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) =>
-              -sortValueTransform(a.tvl) + sortValueTransform(b.tvl),
-          );
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
         }
       } else if (sortOption.key === TABLE_HEAD.VOLUME) {
         if (sortOption.direction === "asc") {
           temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) =>
-              sortValueTransform(a.volume24h) - sortValueTransform(b.volume24h),
+            (a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.volume24h) - sortValueTransform(b.volume24h),
           );
         } else {
           temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) =>
-              -sortValueTransform(a.volume24h) +
-              sortValueTransform(b.volume24h),
+            (a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.volume24h) + sortValueTransform(b.volume24h),
           );
         }
       } else if (sortOption.key === TABLE_HEAD.FEES) {
         if (sortOption.direction === "asc") {
           temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) =>
-              sortValueTransform(a.fees24h) - sortValueTransform(b.fees24h),
+            (a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.fees24h) - sortValueTransform(b.fees24h),
           );
         } else {
           temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) =>
-              -sortValueTransform(a.fees24h) + sortValueTransform(b.fees24h),
+            (a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.fees24h) + sortValueTransform(b.fees24h),
           );
         }
       } else if (sortOption.key === TABLE_HEAD.APR) {
         if (sortOption.direction === "asc") {
-          temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) =>
-              sortValueTransform(a.apr) - sortValueTransform(b.apr),
-          );
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.apr) - sortValueTransform(b.apr));
         } else {
-          temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) =>
-              -sortValueTransform(a.apr) + sortValueTransform(b.apr),
-          );
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.apr) + sortValueTransform(b.apr));
         }
       }
     } else {
-      temp.sort(
-        (a: PoolListInfo, b: PoolListInfo) =>
-          -sortValueTransform(a.tvl) + sortValueTransform(b.tvl),
-      );
+      temp.sort((a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
     }
     return temp
       .filter(info => filteredPoolType(poolType, info.incentiveType))
@@ -188,14 +156,7 @@ const PoolListContainer: React.FC = () => {
           : "-",
         apr: !anyEmptyPrice(item.tokenA, item.tokenB) ? item.apr : "",
       }));
-  }, [
-    poolListInfos,
-    sortOption,
-    keyword,
-    filteredPoolType,
-    poolType,
-    anyEmptyPrice,
-  ]);
+  }, [poolListInfos, sortOption, keyword, filteredPoolType, poolType, anyEmptyPrice]);
 
   const totalPage = useMemo(() => {
     return Math.ceil(sortedPoolListInfos.length / EARN_POOL_LIST_SIZE);
@@ -238,12 +199,7 @@ const PoolListContainer: React.FC = () => {
   const sort = useCallback(
     (item: TABLE_HEAD) => {
       const key = item;
-      const direction =
-        sortOption?.key !== item
-          ? "desc"
-          : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+      const direction = sortOption?.key !== item ? "desc" : sortOption.direction === "asc" ? "desc" : "asc";
 
       setTokenSortOption({
         key,
@@ -254,19 +210,13 @@ const PoolListContainer: React.FC = () => {
   );
 
   const isSortOption = useCallback((head: TABLE_HEAD) => {
-    const disableItems = [
-      "Earn:poolList.col.incentive",
-      "Earn:poolList.col.liquidityPlot",
-    ];
+    const disableItems = ["Earn:poolList.col.incentive", "Earn:poolList.col.liquidityPlot"];
     return !disableItems.includes(head);
   }, []);
 
   return (
     <PoolList
-      pools={sortedPoolListInfos.slice(
-        page * EARN_POOL_LIST_SIZE,
-        (page + 1) * EARN_POOL_LIST_SIZE,
-      )}
+      pools={sortedPoolListInfos.slice(page * EARN_POOL_LIST_SIZE, (page + 1) * EARN_POOL_LIST_SIZE)}
       isFetched={!isLoadingPools}
       poolType={poolType}
       changePoolType={changePoolType}

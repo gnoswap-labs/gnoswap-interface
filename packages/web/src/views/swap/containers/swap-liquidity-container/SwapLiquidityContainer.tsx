@@ -8,9 +8,7 @@ import { useGetPoolList } from "@query/pools";
 import { SwapState } from "@states/index";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
-import SwapLiquidity, {
-  dummyLiquidityList,
-} from "../../components/swap-liquidity/SwapLiquidity";
+import SwapLiquidity, { dummyLiquidityList } from "../../components/swap-liquidity/SwapLiquidity";
 
 const SwapLiquidityContainer: React.FC = () => {
   const [swapValue] = useAtom(SwapState.swap);
@@ -40,9 +38,7 @@ const SwapLiquidityContainer: React.FC = () => {
   const liquidityListRandom = useMemo(() => {
     let count = 0;
     const formattedPoolData = dummyLiquidityList.map(_ => {
-      const poolItem = poolDetail.find(
-        (item: PoolModel) => Number(item.fee) === Number(_.feeTier) * 10000,
-      );
+      const poolItem = poolDetail.find((item: PoolModel) => Number(item.fee) === Number(_.feeTier) * 10000);
       if (poolItem) {
         count++;
         return {
@@ -91,12 +87,7 @@ const SwapLiquidityContainer: React.FC = () => {
   if (!tokenAData || !tokenBData || isLoading || checkDoubleGnot) return null;
 
   return (
-    <SwapLiquidity
-      liquiditys={liquidityListRandom}
-      tokenA={tokenAData}
-      tokenB={tokenBData}
-      createPool={createPool}
-    />
+    <SwapLiquidity liquiditys={liquidityListRandom} tokenA={tokenAData} tokenB={tokenBData} createPool={createPool} />
   );
 };
 

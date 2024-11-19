@@ -18,13 +18,7 @@ interface GovernanceLayoutProps {
   list: React.ReactNode;
 }
 
-const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
-  header,
-  summary,
-  myDelegation,
-  list,
-  footer,
-}) => {
+const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({ header, summary, myDelegation, list, footer }) => {
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
 
@@ -35,11 +29,7 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
         <div className="title-container">
           <h3 className="title">{t("Governance:header")}</h3>
           {isMobile && (
-            <Link
-              className="learn-more"
-              href={EXT_URL.DOCS.XGNS}
-              target="_blank"
-            >
+            <Link className="learn-more" href={EXT_URL.DOCS.XGNS} target="_blank">
               {t("common:learnMore")}
               <IconNote />
             </Link>
@@ -50,10 +40,7 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
           {myDelegation}
         </div>
       </section>
-      <div
-        className="proposal-list-wrapper"
-        id={getCanScrollUpId("proposal-list")}
-      >
+      <div className="proposal-list-wrapper" id={getCanScrollUpId("proposal-list")}>
         <div className="background" id="proposal-list" />
         <div className="proposal-list-container">{list}</div>
       </div>

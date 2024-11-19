@@ -1,7 +1,4 @@
-import {
-  PulseSkeletonParams,
-  pulseSkeletonStyle,
-} from "@constants/skeleton.constant";
+import { PulseSkeletonParams, pulseSkeletonStyle } from "@constants/skeleton.constant";
 import React, { FC, PropsWithChildren } from "react";
 import { SkeletonWrapper } from "./PulseSkeleton.styles";
 import useDelayLoading from "@hooks/common/use-delay-loading";
@@ -28,10 +25,7 @@ const PulseSkeleton: FC<PropsWithChildren<Props>> = ({
 
   if (!loading) return <>{children}</>;
   return (
-    <SkeletonWrapper
-      className={"skeleton " + className}
-      css={pulseSkeletonStyle({ w, h, type, ...props })}
-    >
+    <SkeletonWrapper className={"skeleton " + className} css={pulseSkeletonStyle({ w, h, type, ...props })}>
       {children}
     </SkeletonWrapper>
   );

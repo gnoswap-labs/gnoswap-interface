@@ -8,9 +8,7 @@ export default {
   component: MarketInformationList,
 } as ComponentMeta<typeof MarketInformationList>;
 
-const Template: ComponentStory<typeof MarketInformationList> = args => (
-  <MarketInformationList {...args} />
-);
+const Template: ComponentStory<typeof MarketInformationList> = args => <MarketInformationList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

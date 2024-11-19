@@ -75,10 +75,7 @@ const TITLE_LIST = [
   "TokenDetails:info.performance.col.header.change",
 ];
 
-const PricePerformanceList: React.FC<PricePerformanceListProps> = ({
-  list,
-  loading,
-}) => {
+const PricePerformanceList: React.FC<PricePerformanceListProps> = ({ list, loading }) => {
   const { t } = useTranslation();
 
   return (

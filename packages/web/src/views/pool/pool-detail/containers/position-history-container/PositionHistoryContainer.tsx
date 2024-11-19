@@ -26,17 +26,10 @@ interface PositionHistoryContainerProps {
   position: PoolPositionModel;
 }
 
-const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({
-  position,
-}) => {
+const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({ position }) => {
   const { breakpoint } = useWindowSize();
   const { isLoading: isLoadingCommon } = useLoading();
-  const {
-    data: historyList = [],
-    refetch,
-    isFetched,
-    isLoading,
-  } = useGetPositionHistory(position?.lpTokenId);
+  const { data: historyList = [], refetch, isFetched, isLoading } = useGetPositionHistory(position?.lpTokenId);
 
   useEffect(() => {
     refetch();

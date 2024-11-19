@@ -11,10 +11,7 @@ import { formatRate } from "@utils/new-number-utils";
 
 import { IPriceRange } from "../../hooks/use-reposition-handle";
 
-import {
-  RepositionInfoWrapper,
-  ToolTipContentWrapper,
-} from "./RepositionInfo.styles";
+import { RepositionInfoWrapper, ToolTipContentWrapper } from "./RepositionInfo.styles";
 
 export interface RepositionInfoProps {
   tokenA: TokenModel;
@@ -23,12 +20,7 @@ export interface RepositionInfoProps {
   priceRangeSummary: IPriceRange;
 }
 
-const RepositionInfo: React.FC<RepositionInfoProps> = ({
-  tokenA,
-  tokenB,
-  aprFee,
-  priceRangeSummary,
-}) => {
+const RepositionInfo: React.FC<RepositionInfoProps> = ({ tokenA, tokenB, aprFee, priceRangeSummary }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
@@ -38,15 +30,11 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
       <div className="deposit-ratio common-bg">
         <div>
           <div>
-            <p className="label">
-              {t("business:positionPriceRangeInfo.depositR.label")}
-            </p>
+            <p className="label">{t("business:positionPriceRangeInfo.depositR.label")}</p>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.depositR.desc")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.depositR.desc")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />
@@ -56,24 +44,14 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
             {priceRangeSummary.tokenARatioStr}
             {"% "}
             {isMobile ? (
-              <MissingLogo
-                symbol={tokenA?.symbol}
-                url={tokenA?.logoURI}
-                className="token-logo"
-                width={18}
-              />
+              <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} className="token-logo" width={18} />
             ) : (
               `${tokenA?.symbol}`
             )}{" "}
             / {priceRangeSummary.tokenBRatioStr}
             {"% "}
             {isMobile ? (
-              <MissingLogo
-                symbol={tokenB?.symbol}
-                url={tokenB?.logoURI}
-                className="token-logo"
-                width={18}
-              />
+              <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} className="token-logo" width={18} />
             ) : (
               `${tokenB?.symbol}`
             )}
@@ -81,15 +59,11 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
         </div>
         <div>
           <div>
-            <p className="label">
-              {t("business:positionPriceRangeInfo.capEff.label")}
-            </p>
+            <p className="label">{t("business:positionPriceRangeInfo.capEff.label")}</p>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.capEff.desc")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.capEff.desc")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />
@@ -99,15 +73,11 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
         </div>
         <div>
           <div>
-            <p className="label">
-              {t("business:positionPriceRangeInfo.feeApr.label")}
-            </p>
+            <p className="label">{t("business:positionPriceRangeInfo.feeApr.label")}</p>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.feeApr.desc")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.feeApr.desc")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />

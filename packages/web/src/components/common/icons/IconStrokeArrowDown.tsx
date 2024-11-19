@@ -10,7 +10,7 @@ const IconStrokeArrowDown = ({
   onClick?: () => void;
   svgProps?: SVGProps<SVGPathElement> & {
     css?: Interpolation<Theme>;
-  }
+  };
 }) => (
   <svg
     width="24"

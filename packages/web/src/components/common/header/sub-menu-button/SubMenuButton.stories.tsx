@@ -21,9 +21,7 @@ export default {
   ],
 } as ComponentMeta<typeof SubMenuButton>;
 
-const Template: ComponentStory<typeof SubMenuButton> = args => (
-  <SubMenuButton {...args} />
-);
+const Template: ComponentStory<typeof SubMenuButton> = args => <SubMenuButton {...args} />;
 
 export const Disconnected = Template.bind({});
 Disconnected.args = {

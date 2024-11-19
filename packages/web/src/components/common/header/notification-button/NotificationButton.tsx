@@ -18,9 +18,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const { notificationRepository } = useGnoswapContext();
   const { account } = useWallet();
-  const [notificationHash, setNotificationHash] = useAtom(
-    CommonState.notificationHash,
-  );
+  const [notificationHash, setNotificationHash] = useAtom(CommonState.notificationHash);
   const handleESC = () => {
     setToggle(prev => {
       if (prev.notification) {
@@ -70,9 +68,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
         }}
       >
         <IconAlert className="notification-icon" />
-        {showIcon && isFetched && transactionGroups?.length !== 0 ? (
-          <div className="point-unread" />
-        ) : null}
+        {showIcon && isFetched && transactionGroups?.length !== 0 ? <div className="point-unread" /> : null}
       </AlertButton>
       {toggle.notification && (
         <NotificationList

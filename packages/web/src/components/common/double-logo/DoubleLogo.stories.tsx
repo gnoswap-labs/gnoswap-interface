@@ -8,9 +8,7 @@ export default {
   component: DoubleLogo,
 } as ComponentMeta<typeof DoubleLogo>;
 
-const Template: ComponentStory<typeof DoubleLogo> = args => (
-  <DoubleLogo {...args} />
-);
+const Template: ComponentStory<typeof DoubleLogo> = args => <DoubleLogo {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

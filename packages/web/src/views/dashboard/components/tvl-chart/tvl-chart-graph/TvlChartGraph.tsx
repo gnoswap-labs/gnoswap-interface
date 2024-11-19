@@ -7,10 +7,7 @@ import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
-import {
-  TokenChartGraphXLabel,
-  TvlChartGraphWrapper
-} from "./TvlChartGraph.styles";
+import { TokenChartGraphXLabel, TvlChartGraphWrapper } from "./TvlChartGraph.styles";
 
 export interface TvlChartGraphProps {
   datas: {
@@ -88,9 +85,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({ datas }) => {
     // Find the maximum number of labels and time intervals for each graph container size.
     const maxLabelCount = Math.floor((size.width - 24) / formatInfo.textLength);
 
-    const spacingCount = Math.ceil(
-      Math.ceil((maxX - minX) / formatInfo.minimumSpacing) / maxLabelCount,
-    );
+    const spacingCount = Math.ceil(Math.ceil((maxX - minX) / formatInfo.minimumSpacing) / maxLabelCount);
 
     // Get the time data for the first label and generate a list of labels.
     const timeDiff = formatInfo.minimumSpacing * spacingCount;
@@ -132,9 +127,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({ datas }) => {
     const minimumXAxis = formatInfo.textLength / 2; // text size and padding
 
     const result = xAxisLabels.filter(
-      label =>
-        label.position > minimumXAxis &&
-        label.position < size.width - minimumXAxis,
+      label => label.position > minimumXAxis && label.position < size.width - minimumXAxis,
     );
     if (result.length === 1) {
       return [
@@ -149,10 +142,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({ datas }) => {
     return result;
   }, [datas, size.width, xAxisLabels]);
 
-  const hasOnlyOneLabel = useMemo(
-    () => displayXAxisLabels.length === 1,
-    [displayXAxisLabels.length],
-  );
+  const hasOnlyOneLabel = useMemo(() => displayXAxisLabels.length === 1, [displayXAxisLabels.length]);
 
   return (
     <TvlChartGraphWrapper>

@@ -1,11 +1,7 @@
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  RangeDot,
-  RangeBadgeText,
-  RangeBadgeWrapper,
-} from "./RangeBadge.styles";
+import { RangeDot, RangeBadgeText, RangeBadgeWrapper } from "./RangeBadge.styles";
 
 export interface RangeBadgeProps {
   status: RANGE_STATUS_OPTION;
@@ -14,12 +10,7 @@ export interface RangeBadgeProps {
   isClosed?: boolean;
 }
 
-const RangeBadge: React.FC<RangeBadgeProps> = ({
-  status,
-  className,
-  isShorten,
-  isClosed,
-}) => {
+const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isShorten, isClosed }) => {
   const { t } = useTranslation();
 
   const statusText = useMemo(() => {

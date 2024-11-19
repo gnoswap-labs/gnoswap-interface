@@ -24,9 +24,7 @@ interface PoolSelectionGraphBinTooptipProps {
   tooltipInfo: TooltipInfo | null;
 }
 
-export const PoolSelectionGraphBinTooptip: React.FC<
-  PoolSelectionGraphBinTooptipProps
-> = ({ tooltipInfo }) => {
+export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptipProps> = ({ tooltipInfo }) => {
   const { t } = useTranslation();
 
   const tokenAPriceString = useMemo(() => {
@@ -116,12 +114,8 @@ export const PoolSelectionGraphBinTooptip: React.FC<
       <div className="header mt-8">
         <div className="row">
           <span className="token token-title">{t("business:token")}</span>
-          <span className="amount total-amount">
-            {t("common:poolGraph.tooltip.totalAmt")}
-          </span>
-          <span className="price-range">
-            {t("common:poolGraph.tooltip.priceRange")}
-          </span>
+          <span className="amount total-amount">{t("common:poolGraph.tooltip.totalAmt")}</span>
+          <span className="price-range">{t("common:poolGraph.tooltip.priceRange")}</span>
         </div>
       </div>
       <div className="content">
@@ -144,21 +138,11 @@ export const PoolSelectionGraphBinTooptip: React.FC<
               width={20}
               mobileWidth={20}
             />
-            <span
-              className={`hidden ${
-                (tooltipInfo.tokenAAmount || "0").length > 21
-                  ? "small-font"
-                  : ""
-              }`}
-            >
+            <span className={`hidden ${(tooltipInfo.tokenAAmount || "0").length > 21 ? "small-font" : ""}`}>
               {tooltipInfo.tokenAAmount || "0"}
             </span>
           </span>
-          <span
-            className={`price-range ${
-              (tokenAPriceRangeStr.length || 0) > 21 ? "small-font" : ""
-            }`}
-          >
+          <span className={`price-range ${(tokenAPriceRangeStr.length || 0) > 21 ? "small-font" : ""}`}>
             {tokenAPriceRangeStr}
           </span>
         </div>
@@ -181,21 +165,11 @@ export const PoolSelectionGraphBinTooptip: React.FC<
               width={20}
               mobileWidth={20}
             />
-            <span
-              className={`hidden ${
-                (tooltipInfo.tokenBAmount || "0").length > 21
-                  ? "small-font"
-                  : ""
-              }`}
-            >
+            <span className={`hidden ${(tooltipInfo.tokenBAmount || "0").length > 21 ? "small-font" : ""}`}>
               {tooltipInfo.tokenBAmount || "0"}
             </span>
           </span>
-          <span
-            className={`price-range ${
-              (tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""
-            }`}
-          >
+          <span className={`price-range ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""}`}>
             {tokenBPriceRangeStr}
           </span>
         </div>

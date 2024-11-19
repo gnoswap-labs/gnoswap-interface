@@ -1,9 +1,6 @@
 import React, { useMemo } from "react";
 import CardList from "@components/home/card-list/CardList";
-import {
-  SkeletonItem,
-  TrendingCardListWrapper,
-} from "./TrendingCardList.styles";
+import { SkeletonItem, TrendingCardListWrapper } from "./TrendingCardList.styles";
 import IconFlame from "@components/common/icons/IconFlame";
 import { DEVICE_TYPE } from "@styles/media";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
@@ -17,12 +14,7 @@ interface TrendingCardListProps {
   loading: boolean;
 }
 
-const TrendingCardList: React.FC<TrendingCardListProps> = ({
-  list,
-  device,
-  onClickItem,
-  loading,
-}) => {
+const TrendingCardList: React.FC<TrendingCardListProps> = ({ list, device, onClickItem, loading }) => {
   const { t } = useTranslation();
 
   const visible = useMemo(() => {
@@ -30,9 +22,7 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
   }, [device]);
 
   return visible ? (
-    <TrendingCardListWrapper
-      className={cx("loading", { "empty-status": loading })}
-    >
+    <TrendingCardListWrapper className={cx("loading", { "empty-status": loading })}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />

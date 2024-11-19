@@ -45,11 +45,7 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
     return (
       <TokenValueWrapper>
         <div className="value">
-          <MissingLogo
-            url={getGnotPath(token).logoURI}
-            symbol={getGnotPath(token).symbol}
-            width={20}
-          />
+          <MissingLogo url={getGnotPath(token).logoURI} symbol={getGnotPath(token).symbol} width={20} />
           {token.symbol}
         </div>
         <div className="value">{tokenBalanceByTokenDecimal}</div>
@@ -60,26 +56,23 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
   return (
     <TooltipWrapperContent>
       <TokenTitleWrapper>
-        <div className="title">
-          {t("RemovePosition:positionList.item.tooltip.tokenID")}
-        </div>
+        <div className="title">{t("RemovePosition:positionList.item.tooltip.tokenID")}</div>
         <div className="title">#{position.id}</div>
       </TokenTitleWrapper>
       {renderTokenValue(position.pool.tokenA, position.tokenABalance)}
       {renderTokenValue(position.pool.tokenB, position.tokenBBalance)}
       {position && disabled && <div className="divider"></div>}
-      {disabled && (
-        <div className="unstake-description">
-          {t("RemovePosition:positionList.item.disabled")}
-        </div>
-      )}
+      {disabled && <div className="unstake-description">{t("RemovePosition:positionList.item.disabled")}</div>}
     </TooltipWrapperContent>
   );
 };
 
-const RemoveLiquiditySelectListItem: React.FC<
-  RemoveLiquiditySelectListItemProps
-> = ({ position, checkedList, onCheckedItem, disabled = false }) => {
+const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps> = ({
+  position,
+  checkedList,
+  onCheckedItem,
+  disabled = false,
+}) => {
   const { width } = useWindowSize();
   const checked = useMemo(() => {
     return checkedList.includes(position.id);
@@ -120,12 +113,7 @@ const RemoveLiquiditySelectListItem: React.FC<
     <RemoveLiquiditySelectListItemWrapper selected={checked}>
       <div className="left-content">
         {!disabled && Checkbox}
-        <Tooltip
-          placement="top"
-          FloatingContent={
-            <TooltipContent position={position} disabled={disabled} />
-          }
-        >
+        <Tooltip placement="top" FloatingContent={<TooltipContent position={position} disabled={disabled} />}>
           {disabled && Checkbox}
           <div className="logo-wrapper">
             <DoubleLogo
@@ -135,9 +123,7 @@ const RemoveLiquiditySelectListItem: React.FC<
               leftSymbol={tokenA.symbol}
               rightSymbol={tokenB.symbol}
             />
-            {width > 768 && (
-              <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
-            )}
+            {width > 768 && <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>}
             <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
           </div>
         </Tooltip>

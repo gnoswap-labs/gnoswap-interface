@@ -11,10 +11,7 @@ import { QUERY_KEY } from "@query/query-keys";
 
 import PoolIncentivizeSelectPoolItem from "./pool-incentivize-select-pool-item/PoolIncentivizeSelectPoolItem";
 
-import {
-  PoolIncentivizeSelectPoolBox,
-  PoolIncentivizeSelectPoolWrapper,
-} from "./PoolIncentivizeSelectPool.styles";
+import { PoolIncentivizeSelectPoolBox, PoolIncentivizeSelectPoolWrapper } from "./PoolIncentivizeSelectPool.styles";
 
 export interface PoolIncentivizeSelectPoolProps {
   selectedPool: PoolSelectItemInfo | null;
@@ -82,29 +79,18 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
     [select],
   );
 
-  const onChangeKeyword = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchKeyword(event.target.value);
-    },
-    [],
-  );
+  const onChangeKeyword = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyword(event.target.value);
+  }, []);
 
   return (
     <PoolIncentivizeSelectPoolWrapper isDisabled={isDisabled}>
       <h5>{t("IncentivizePool:incentiPool.form.pool.label")}</h5>
       <div className="pool-select-wrapper" onClick={toggleSelector}>
-        <PoolIncentivizeSelectPoolItem
-          poolSelectItem={selectedPool}
-          visibleLiquidity={false}
-          select={toggleSelector}
-        />
+        <PoolIncentivizeSelectPoolItem poolSelectItem={selectedPool} visibleLiquidity={false} select={toggleSelector} />
         {!isDisabled && (
           <div className="icon-wrapper">
-            {openedSelector ? (
-              <IconArrowUp className="icon-arrow" />
-            ) : (
-              <IconArrowDown className="icon-arrow" />
-            )}
+            {openedSelector ? <IconArrowUp className="icon-arrow" /> : <IconArrowDown className="icon-arrow" />}
           </div>
         )}
 
@@ -116,20 +102,13 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
           <div className="search-wrapper" onClick={e => e.stopPropagation()}>
             <SearchInput
               onChange={onChangeKeyword}
-              placeholder={t(
-                "IncentivizePool:incentiPool.form.pool.searchPlaceHolder",
-              )}
+              placeholder={t("IncentivizePool:incentiPool.form.pool.searchPlaceHolder")}
             />
           </div>
           <div className="pool-list-wrapper">
             <div className="pool-list-headrer">
-              <span className="total-info">
-                {t("IncentivizePool:incentiPool.form.pool.col.pools")}
-              </span>
-              <span className="liquidity-info">
-                {" "}
-                {t("IncentivizePool:incentiPool.form.pool.col.liqui")}
-              </span>
+              <span className="total-info">{t("IncentivizePool:incentiPool.form.pool.col.pools")}</span>
+              <span className="liquidity-info"> {t("IncentivizePool:incentiPool.form.pool.col.liqui")}</span>
             </div>
             <div className="pool-list-content">
               {filteredPools.map((pool, index) => (

@@ -31,36 +31,18 @@ interface GnoswapBrandProps {
   windowSize: number;
 }
 
-const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
-  onClickSns,
-  windowSize,
-}) => {
+const GnoswapBrand: React.FC<GnoswapBrandProps> = ({ onClickSns, windowSize }) => {
   const { t } = useTranslation();
 
-  const onClickGithub = useCallback(
-    () => onClickSns(SNS_TYPE.GITHUB),
-    [onClickSns],
-  );
+  const onClickGithub = useCallback(() => onClickSns(SNS_TYPE.GITHUB), [onClickSns]);
 
-  const onClickGitbook = useCallback(
-    () => onClickSns(SNS_TYPE.GITBOOK),
-    [onClickSns],
-  );
+  const onClickGitbook = useCallback(() => onClickSns(SNS_TYPE.GITBOOK), [onClickSns]);
 
-  const onClickDiscord = useCallback(
-    () => onClickSns(SNS_TYPE.DISCORD),
-    [onClickSns],
-  );
+  const onClickDiscord = useCallback(() => onClickSns(SNS_TYPE.DISCORD), [onClickSns]);
 
-  const onClickMedium = useCallback(
-    () => onClickSns(SNS_TYPE.MEDIUM),
-    [onClickSns],
-  );
+  const onClickMedium = useCallback(() => onClickSns(SNS_TYPE.MEDIUM), [onClickSns]);
 
-  const onClickTwitter = useCallback(
-    () => onClickSns(SNS_TYPE.TWITTER),
-    [onClickSns],
-  );
+  const onClickTwitter = useCallback(() => onClickSns(SNS_TYPE.TWITTER), [onClickSns]);
 
   return (
     <GnoswapBrandWrapper>

@@ -38,13 +38,13 @@ export const SelectTokenBalanceWrapper = styled.div`
       justify-content: flex-start;
       align-items: center;
       gap: 8px;
-      
+
       span {
         height: 20px;
         ${fonts.body8}
         color: ${({ theme }) => theme.color.text02};
       }
-      
+
       span.symbol {
         color: ${({ theme }) => theme.color.text04};
       }
@@ -112,18 +112,18 @@ export const SelectTokenBalanceItemWrapper = styled.div`
       width: 24px;
       height: 24px;
     }
-      
+
     span {
       height: 20px;
       ${fonts.body8}
       color: ${({ theme }) => theme.color.text02};
     }
-    
+
     span.symbol {
       color: ${({ theme }) => theme.color.text04};
     }
   }
-  
+
   .balance-wrapper {
     display: flex;
     justify-content: flex-start;

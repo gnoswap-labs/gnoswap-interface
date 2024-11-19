@@ -31,10 +31,7 @@ const LaunchpadClaimAllModal = ({
 }: LaunchpadClaimAllModalProps) => {
   const { t } = useTranslation();
 
-  const Modal = React.useMemo(
-    () => withLocalModal(LaunchpadClaimAllModalWrapper, setIsOpen),
-    [setIsOpen],
-  );
+  const Modal = React.useMemo(() => withLocalModal(LaunchpadClaimAllModalWrapper, setIsOpen), [setIsOpen]);
 
   const filteredClaimableData = React.useMemo(() => {
     return data.filter(item => {
@@ -76,12 +73,8 @@ const LaunchpadClaimAllModal = ({
             {filteredClaimableData.map((item, idx) => {
               const endTimeReached = isEndTime(item);
 
-              const isClaimedReward = BigNumber(
-                item.claimableRewardAmount,
-              ).isLessThan(0.01);
-              const isClaimedDeposit = BigNumber(
-                item.claimableRewardAmount,
-              ).isLessThan(0.01);
+              const isClaimedReward = BigNumber(item.claimableRewardAmount).isLessThan(0.01);
+              const isClaimedDeposit = BigNumber(item.claimableRewardAmount).isLessThan(0.01);
               const isClaimed = isClaimedReward && isClaimedDeposit;
 
               if (isClaimed) return <React.Fragment />;
@@ -90,20 +83,13 @@ const LaunchpadClaimAllModal = ({
                 <div className="data" key={item.id}>
                   <div className="data-box">
                     <div className="data-row">
-                      <div className="key">
-                        {t("Launchpad:modal.claimAll.col.pool")}
-                      </div>
+                      <div className="key">{t("Launchpad:modal.claimAll.col.pool")}</div>
                       <div className="value">
-                        #{idx + 1}{" "}
-                        <LaunchpadPoolTierChip
-                          poolTier={item.poolTier as TierType}
-                        />
+                        #{idx + 1} <LaunchpadPoolTierChip poolTier={item.poolTier as TierType} />
                       </div>
                     </div>
                     <div className="data-row">
-                      <div className="key">
-                        {t("Launchpad:modal.claimAll.col.claimable")}
-                      </div>
+                      <div className="key">{t("Launchpad:modal.claimAll.col.claimable")}</div>
                       <LaunchpadClaimAmountField
                         amount={item.claimableRewardAmount}
                         rewardInfo={rewardInfo}
@@ -112,9 +98,7 @@ const LaunchpadClaimAllModal = ({
                     </div>
                     {endTimeReached && (
                       <div className="data-row">
-                        <div className="key">
-                          {t("Launchpad:modal.claimAll.col.depositAmount")}
-                        </div>
+                        <div className="key">{t("Launchpad:modal.claimAll.col.depositAmount")}</div>
                         <LaunchpadClaimAmountField
                           amount={item.depositAmount}
                           rewardInfo={rewardInfo}
@@ -130,23 +114,14 @@ const LaunchpadClaimAllModal = ({
         </div>
 
         <div className="footer">
-          <ConfirmButton
-            text={t("Launchpad:modal.confirm.button")}
-            onClick={confirm}
-          />
+          <ConfirmButton text={t("Launchpad:modal.confirm.button")} onClick={confirm} />
         </div>
       </div>
     </Modal>
   );
 };
 
-const ConfirmButton = ({
-  text,
-  onClick,
-}: {
-  text: string;
-  onClick: () => void;
-}) => {
+const ConfirmButton = ({ text, onClick }: { text: string; onClick: () => void }) => {
   const defaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,

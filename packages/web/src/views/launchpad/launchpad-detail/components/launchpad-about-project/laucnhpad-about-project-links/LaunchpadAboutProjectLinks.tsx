@@ -17,11 +17,7 @@ interface LaunchpadAboutProjectLinksProps {
   data: ProjectLinksObject;
 }
 
-const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
-  isLoading,
-  path,
-  data,
-}) => {
+const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({ isLoading, path, data }) => {
   const { t } = useTranslation();
 
   const excludedLinks = ["rewardTokenLogo"];

@@ -2,11 +2,7 @@ import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 
 import Header from "@components/common/header/Header";
-import {
-  MATH_NEGATIVE_TYPE,
-  SwapFeeTierInfoMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { MATH_NEGATIVE_TYPE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
@@ -49,11 +45,7 @@ const HeaderContainer: React.FC = () => {
   const { data: poolList = [] } = useGetPoolList({
     enabled: !!searchMenuToggle,
   });
-  const {
-    data: { tokens: listTokens = [] } = {},
-    isFetched,
-    error,
-  } = useGetTokens({ enabled: !!searchMenuToggle });
+  const { data: { tokens: listTokens = [] } = {}, isFetched, error } = useGetTokens({ enabled: !!searchMenuToggle });
   const { data: tokenPrices = {} } = useGetAllTokenPrices({
     enabled: !!searchMenuToggle,
   });
@@ -77,28 +69,19 @@ const HeaderContainer: React.FC = () => {
           price: price,
           priceOf1d: {
             status: dataToday.status,
-            value:
-              dataToday.percentDisplay !== "-"
-                ? dataToday.percentDisplay.replace(/[+-]/g, "")
-                : "0.00%",
+            value: dataToday.percentDisplay !== "-" ? dataToday.percentDisplay.replace(/[+-]/g, "") : "0.00%",
           },
         };
       } else {
         const item_ = poolList.filter(
-          _ =>
-            _.tokenA.symbol === item.token.symbol &&
-            _.tokenB.symbol === item.tokenB.symbol,
+          _ => _.tokenA.symbol === item.token.symbol && _.tokenB.symbol === item.tokenB.symbol,
         )?.[0];
         if (!item_) return item;
         const price = formatPrice(item_?.tvl);
         return {
           ...item,
           apr: `${
-            !item_.apr
-              ? "-"
-              : Number(item_.apr) > 10
-              ? `${item_.apr}% APR`
-              : `${Number(item_.apr).toFixed(2)}% APR`
+            !item_.apr ? "-" : Number(item_.apr) > 10 ? `${item_.apr}% APR` : `${Number(item_.apr).toFixed(2)}% APR`
           }`,
           price: price,
         };
@@ -188,10 +171,7 @@ const HeaderContainer: React.FC = () => {
           price: price,
           priceOf1d: {
             status: dataToday.status,
-            value:
-              dataToday.percentDisplay !== "-"
-                ? dataToday.percentDisplay.replace(/[+-]/g, "")
-                : "0.00%",
+            value: dataToday.percentDisplay !== "-" ? dataToday.percentDisplay.replace(/[+-]/g, "") : "0.00%",
           },
           tokenB: {
             path: "",

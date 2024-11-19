@@ -14,4 +14,3 @@ export const SubMenuButtonWrapper = styled.div`
     color: ${({ theme }) => theme.color.text04};
   }
 `;
-

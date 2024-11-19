@@ -33,6 +33,5 @@ export const NoLiquidityWrapper = styled.div`
   }
   ${media.mobile} {
     padding: 57px 12px 57px 12px;
-
   }
 `;

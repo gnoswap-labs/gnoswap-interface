@@ -4,10 +4,7 @@ import BigNumber from "bignumber.js";
 export const generateBarAreaDatas = () => {
   return Array.from(
     { length: 40 },
-    (_, index) =>
-      `${
-        100 - Math.trunc(Math.abs(20 - index) / 3) * (Math.random() * 10 + 10)
-      }`,
+    (_, index) => `${100 - Math.trunc(Math.abs(20 - index) / 3) * (Math.random() * 10 + 10)}`,
   );
 };
 
@@ -75,11 +72,7 @@ export const generateNumber = (minNumber: number, maxNumber: number) => {
 };
 
 export const generateTime = () => {
-  const times = faker.date.betweens(
-    "2020-01-01T00:00:00.000Z",
-    "2030-01-01T00:00:00.000Z",
-    1,
-  );
+  const times = faker.date.betweens("2020-01-01T00:00:00.000Z", "2030-01-01T00:00:00.000Z", 1);
   return times[0];
 };
 

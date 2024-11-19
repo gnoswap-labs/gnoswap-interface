@@ -32,8 +32,7 @@ const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
   isLoadingGraph,
   isReversed,
 }) => {
-  if (!tokenPair || tokenPair.length < 2 || !tokenPair[0] || !tokenPair[1])
-    return <AdditionalInfoDummy />;
+  if (!tokenPair || tokenPair.length < 2 || !tokenPair[0] || !tokenPair[1]) return <AdditionalInfoDummy />;
 
   const isAnyPoolExist = !!biggestPool.tokenA.path;
 
@@ -48,11 +47,7 @@ const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
         isLoadingPool={isLoadingPool}
       />
       {isAnyPoolExist && (
-        <ExchangeRateGraph
-          poolData={biggestPool}
-          isLoading={isLoadingGraph}
-          isReversed={isReversed}
-        />
+        <ExchangeRateGraph poolData={biggestPool} isLoading={isLoadingGraph} isReversed={isReversed} />
       )}
     </AdditionalInfoWrapper>
   );

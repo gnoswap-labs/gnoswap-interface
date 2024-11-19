@@ -18,22 +18,13 @@ interface LaunchpadLayoutProps {
   footer: React.ReactNode;
 }
 
-const LaunchpadLayout: React.FC<LaunchpadLayoutProps> = ({
-  header,
-  main,
-  activeProjects,
-  projectList,
-  footer,
-}) => {
+const LaunchpadLayout: React.FC<LaunchpadLayoutProps> = ({ header, main, activeProjects, projectList, footer }) => {
   return (
     <LaunchpadLayoutWrapper>
       {header}
       <main>
         <div className="launchpad-container">{main}</div>
-        <div
-          className="launchpad-active-project"
-          id={getCanScrollUpId("active-project-list")}
-        >
+        <div className="launchpad-active-project" id={getCanScrollUpId("active-project-list")}>
           {activeProjects}
         </div>
       </main>

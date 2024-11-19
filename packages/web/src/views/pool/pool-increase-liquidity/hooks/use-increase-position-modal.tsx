@@ -2,11 +2,7 @@ import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
-import {
-  RANGE_STATUS_OPTION,
-  SwapFeeTierInfoMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { useAddress } from "@hooks/address/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
@@ -59,12 +55,7 @@ export const useIncreasePositionModal = ({
   isDepositTokenB,
   refetchPositions,
 }: IncreasePositionModal): Props => {
-  const {
-    broadcastRejected,
-    broadcastSuccess,
-    broadcastLoading,
-    broadcastError,
-  } = useBroadcastHandler();
+  const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
   const router = useRouter();
@@ -75,19 +66,15 @@ export const useIncreasePositionModal = ({
 
   // Refetch functions
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(
-    selectedPosition?.poolPath,
-  );
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(selectedPosition?.poolPath);
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     router.back();
   }, [router]);
 
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
-    {
-      closeCallback: onCloseConfirmTransactionModal,
-    },
-  );
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    closeCallback: onCloseConfirmTransactionModal,
+  });
 
   const { getMessage } = useMessage();
 
@@ -144,21 +131,14 @@ export const useIncreasePositionModal = ({
       .catch(() => null);
 
     if (result) {
-      if (
-        result.code === 0 ||
-        result.code === ERROR_VALUE.TRANSACTION_FAILED.status
-      ) {
+      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
         enqueueEvent({
           txHash: result.data?.hash,
           action: DexEvent.ADD,
           visibleEmitResult: true,
           formatData: response => {
-            const tokenAAmount = response
-              ? makeDisplayTokenAmount(tokenA, response[2])
-              : tokenAAmountInput.amount;
-            const tokenBAmount = response
-              ? makeDisplayTokenAmount(tokenA, response[3])
-              : tokenBAmountInput.amount;
+            const tokenAAmount = response ? makeDisplayTokenAmount(tokenA, response[2]) : tokenAAmountInput.amount;
+            const tokenBAmount = response ? makeDisplayTokenAmount(tokenA, response[3]) : tokenBAmountInput.amount;
             return {
               tokenASymbol: tokenA.symbol,
               tokenBSymbol: tokenB.symbol,
@@ -181,12 +161,12 @@ export const useIncreasePositionModal = ({
       if (result.code === 0) {
         openTransactionConfirmModal();
         // Make display token amount
-        const tokenAAmount = (
-          makeDisplayTokenAmount(tokenA, tokenAAmountInput.amount) || 0
-        ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
-        const tokenBAmount = (
-          makeDisplayTokenAmount(tokenB, tokenBAmountInput.amount) || 0
-        ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
+        const tokenAAmount = (makeDisplayTokenAmount(tokenA, tokenAAmountInput.amount) || 0).toLocaleString("en-US", {
+          maximumFractionDigits: tokenA.decimals,
+        });
+        const tokenBAmount = (makeDisplayTokenAmount(tokenB, tokenBAmountInput.amount) || 0).toLocaleString("en-US", {
+          maximumFractionDigits: tokenB.decimals,
+        });
 
         broadcastSuccess(
           getMessage(
@@ -196,7 +176,7 @@ export const useIncreasePositionModal = ({
               tokenASymbol: tokenA.symbol,
               tokenBSymbol: tokenB.symbol,
               tokenAAmount,
-              tokenBAmount, 
+              tokenBAmount,
             },
             result.data?.hash,
           ),
@@ -208,14 +188,12 @@ export const useIncreasePositionModal = ({
           getMessage(DexEvent.ADD, "error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
-            tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
-              "en-US",
-              { maximumFractionDigits: tokenA.decimals },
-            ),
-            tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
-              "en-US",
-              { maximumFractionDigits: tokenB.decimals },
-            ),
+            tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString("en-US", {
+              maximumFractionDigits: tokenA.decimals,
+            }),
+            tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString("en-US", {
+              maximumFractionDigits: tokenB.decimals,
+            }),
           }),
         );
       } else {
@@ -226,14 +204,12 @@ export const useIncreasePositionModal = ({
             {
               tokenASymbol: tokenA.symbol,
               tokenBSymbol: tokenB.symbol,
-              tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
-                "en-US",
-                { maximumFractionDigits: tokenA.decimals },
-              ),
-              tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
-                "en-US",
-                { maximumFractionDigits: tokenB.decimals },
-              ),
+              tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString("en-US", {
+                maximumFractionDigits: tokenA.decimals,
+              }),
+              tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString("en-US", {
+                maximumFractionDigits: tokenB.decimals,
+              }),
             },
             result?.data?.hash,
           ),

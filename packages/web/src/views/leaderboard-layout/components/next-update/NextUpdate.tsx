@@ -2,13 +2,7 @@ import { getTimeDiffInSeconds, secondsToTime } from "@common/utils/date-util";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useNextUpdateTime } from "@query/leaderboard";
 import { useEffect, useState } from "react";
-import {
-  Flex,
-  FontSize16,
-  Hover,
-  P,
-  TooltipContent,
-} from "../common/common.styles";
+import { Flex, FontSize16, Hover, P, TooltipContent } from "../common/common.styles";
 import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
 import { Height24, TextWrapper } from "./NextUpdate.styles";
 
@@ -36,11 +30,7 @@ export default function NextUpdate() {
       <Flex>
         <Tooltip
           placement="top"
-          FloatingContent={
-            <TooltipContent>
-              The leaderboard is updated on an hourly basis.
-            </TooltipContent>
-          }
+          FloatingContent={<TooltipContent>The leaderboard is updated on an hourly basis.</TooltipContent>}
         >
           <Hover>
             <Flex>

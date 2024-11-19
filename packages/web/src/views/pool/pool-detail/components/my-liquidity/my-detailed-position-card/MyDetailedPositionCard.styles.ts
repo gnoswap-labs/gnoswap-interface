@@ -28,8 +28,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
   gap: 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border01};
-  background-color: ${({ theme, type }) =>
-    type === "closed" ? theme.color.background29 : theme.color.background03};
+  background-color: ${({ theme, type }) => (type === "closed" ? theme.color.background29 : theme.color.background03)};
   ${media.tablet} {
     padding: 24px 24px 0 24px;
     border-radius: 10px;
@@ -110,8 +109,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         ${media.mobile} {
           ${fonts.body7};
         }
-        color: ${({ theme, type }) =>
-          type !== "closed" ? theme.color.text02 : theme.color.text10};
+        color: ${({ theme, type }) => (type !== "closed" ? theme.color.text02 : theme.color.text10)};
       }
       .flex-button {
         ${mixins.flexbox("row", "center", "center")};
@@ -258,8 +256,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         &:hover {
           color: ${({ theme }) => theme.color.text07};
         }
-        color: ${({ theme, type }) =>
-          type !== "closed" ? theme.color.text02 : theme.color.text10};
+        color: ${({ theme, type }) => (type !== "closed" ? theme.color.text02 : theme.color.text10)};
         &.disabled {
           pointer-events: none;
         }

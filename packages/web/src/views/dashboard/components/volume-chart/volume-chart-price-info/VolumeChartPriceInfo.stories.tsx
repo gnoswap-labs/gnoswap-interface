@@ -7,9 +7,7 @@ export default {
   component: VolumeChartPriceInfo,
 } as ComponentMeta<typeof VolumeChartPriceInfo>;
 
-const Template: ComponentStory<typeof VolumeChartPriceInfo> = args => (
-  <VolumeChartPriceInfo {...args} />
-);
+const Template: ComponentStory<typeof VolumeChartPriceInfo> = args => <VolumeChartPriceInfo {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

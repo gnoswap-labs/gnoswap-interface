@@ -10,9 +10,7 @@ export default {
   component: TrendingCryptoCard,
 } as ComponentMeta<typeof TrendingCryptoCard>;
 
-const Template: ComponentStory<typeof TrendingCryptoCard> = args => (
-  <TrendingCryptoCard {...args} />
-);
+const Template: ComponentStory<typeof TrendingCryptoCard> = args => <TrendingCryptoCard {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

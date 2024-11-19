@@ -35,12 +35,7 @@ const LaunchpadProjectListHeader: React.FC<LaunchpadProjectListHeaderProps> = ({
           <SearchInput width={300} value={keyword} onChange={search} />
         ) : isViewSearchIcon ? (
           <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
-            <SearchInput
-              width={200}
-              height={40}
-              value={keyword}
-              onChange={search}
-            />
+            <SearchInput width={200} height={40} value={keyword} onChange={search} />
           </div>
         ) : (
           <div onClick={onToggleSearch}>

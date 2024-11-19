@@ -4,9 +4,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetWithdrawalFee = (
-  options?: UseQueryOptions<number, Error>,
-) => {
+export const useGetWithdrawalFee = (options?: UseQueryOptions<number, Error>) => {
   const { poolRepository } = useGnoswapContext();
 
   return useQuery<number, Error>({

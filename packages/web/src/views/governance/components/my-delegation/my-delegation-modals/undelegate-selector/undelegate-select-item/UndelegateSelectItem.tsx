@@ -4,10 +4,7 @@ import { useTranslation } from "react-i18next";
 import { DelegationItemInfo } from "@repositories/governance";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
-import {
-  UndelegateSelectItemDefaultWrapper,
-  UndelegateSelectItemWrapper
-} from "./UndelegateSelectItem.styles";
+import { UndelegateSelectItemDefaultWrapper, UndelegateSelectItemWrapper } from "./UndelegateSelectItem.styles";
 
 export interface UndelegateSelectItemProps {
   delegationItemInfo: DelegationItemInfo | null;
@@ -34,39 +31,22 @@ const UndelegateSelectItem: React.FC<UndelegateSelectItemProps> = ({
   }, [select, delegationItemInfo]);
 
   if (!selected) {
-    return (
-      <UndelegateSelectItemDefaultWrapper>
-        {t("common:select")}
-      </UndelegateSelectItemDefaultWrapper>
-    );
+    return <UndelegateSelectItemDefaultWrapper>{t("common:select")}</UndelegateSelectItemDefaultWrapper>;
   }
 
   return (
-    <UndelegateSelectItemWrapper
-      visibleAmount={visibleAmount}
-      onClick={onClickItem}
-      onSelectedArea={onSelectedArea}
-    >
+    <UndelegateSelectItemWrapper visibleAmount={visibleAmount} onClick={onClickItem} onSelectedArea={onSelectedArea}>
       <div className="left-content-wrapper">
-        <MissingLogo
-          width={24}
-          url={delegationItemInfo.logoUrl}
-          symbol={delegationItemInfo.name}
-        />
+        <MissingLogo width={24} url={delegationItemInfo.logoUrl} symbol={delegationItemInfo.name} />
         <span className="delegatee-name">
           {delegationItemInfo.name ||
-            [
-              delegationItemInfo.address.slice(0, 8),
-              delegationItemInfo.address.slice(32, 40),
-            ].join("...")}
+            [delegationItemInfo.address.slice(0, 8), delegationItemInfo.address.slice(32, 40)].join("...")}
         </span>
       </div>
 
       {visibleAmount && (
         <div className="right-content-wrapper">
-          <span className="delegated-amount">
-            {delegationItemInfo.amount.toLocaleString("en")}
-          </span>
+          <span className="delegated-amount">{delegationItemInfo.amount.toLocaleString("en")}</span>
         </div>
       )}
     </UndelegateSelectItemWrapper>

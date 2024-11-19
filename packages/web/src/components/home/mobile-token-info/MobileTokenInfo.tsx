@@ -10,12 +10,7 @@ import { type Token } from "@containers/token-list-container/TokenListContainer"
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { DEVICE_TYPE } from "@styles/media";
 
-import {
-  HoverSection,
-  PriceValueWrapper,
-  TableColumn,
-  TokenInfoWrapper
-} from "./MobileTokenInfo.styles";
+import { HoverSection, PriceValueWrapper, TableColumn, TokenInfoWrapper } from "./MobileTokenInfo.styles";
 
 interface TokenInfoProps {
   item: Token;
@@ -44,22 +39,11 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
   return (
     <TokenInfoWrapper>
       <HoverSection onClick={() => onClickItem(token.path)}>
-        <TableColumn
-          className="name-col left"
-          tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}
-        >
-          <TokenInfoCell
-            token={token}
-            isNative={item.isNative}
-            breakpoint={DEVICE_TYPE.MOBILE}
-          />
+        <TableColumn className="name-col left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
+          <TokenInfoCell token={token} isNative={item.isNative} breakpoint={DEVICE_TYPE.MOBILE} />
         </TableColumn>
         <TableColumn className="price-col" tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
-          {price === "--" ? (
-            <PriceValueWrapper>{price}</PriceValueWrapper>
-          ) : (
-            price
-          )}
+          {price === "--" ? <PriceValueWrapper>{price}</PriceValueWrapper> : price}
           <div className={cx(priceOf1d.status.toLowerCase())}>
             {renderToNegativeType(priceOf1d.status, priceOf1d.value)}
           </div>

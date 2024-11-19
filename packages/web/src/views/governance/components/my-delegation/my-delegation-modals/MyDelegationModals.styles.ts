@@ -234,10 +234,7 @@ export const MyDelegationModalWrapper = styled.div`
         }
         &.clickable {
           &:hover {
-            color: ${({ theme }) =>
-              theme.themeKey === "dark"
-                ? theme.color.text03
-                : theme.color.icon07};
+            color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text03 : theme.color.icon07)};
             cursor: pointer;
             svg {
               path {

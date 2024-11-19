@@ -13,10 +13,7 @@ import TokenChip from "../token-chip/TokenChip";
 import Tooltip from "@components/common/tooltip/Tooltip";
 
 import { formatOtherPrice } from "@utils/new-number-utils";
-import {
-  GovernanceSummaryWrapper,
-  GovernanceSummaryTooltipContent,
-} from "./GovernanceSummary.styles";
+import { GovernanceSummaryWrapper, GovernanceSummaryTooltipContent } from "./GovernanceSummary.styles";
 import { Divider } from "@components/common/divider/divider";
 import { toNumberFormat } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -26,10 +23,7 @@ interface GovernanceSummaryProps {
   isLoading: boolean;
 }
 
-const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
-  governanceSummary,
-  isLoading,
-}) => {
+const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary, isLoading }) => {
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
 
@@ -64,78 +58,42 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                 <GovernanceSummaryTooltipContent>
                   <div className="row">
                     <div className="label">
-                      <span>
-                        {t(
-                          "Governance:summary.tooltip.totalDelegated.governanceSupply",
-                        )}
-                      </span>
+                      <span>{t("Governance:summary.tooltip.totalDelegated.governanceSupply")}</span>
                     </div>
                     <div className="value">
-                      <div className="key">
-                        {t(
-                          "Governance:summary.tooltip.totalDelegated.delegatedGNS",
-                        )}
-                      </div>
+                      <div className="key">{t("Governance:summary.tooltip.totalDelegated.delegatedGNS")}</div>
                       <div className="amount">
-                        <MissingLogo
-                          symbol={GNS_TOKEN.symbol}
-                          width={20}
-                          url={GNS_TOKEN.logoURI}
-                        />
-                        {formatOtherPrice(
-                          governanceSummary.governanceDelegated,
-                          {
-                            isKMB: false,
-                            usd: false,
-                            decimals: 0,
-                          },
-                        )}
+                        <MissingLogo symbol={GNS_TOKEN.symbol} width={20} url={GNS_TOKEN.logoURI} />
+                        {formatOtherPrice(governanceSummary.governanceDelegated, {
+                          isKMB: false,
+                          usd: false,
+                          decimals: 0,
+                        })}
                       </div>
                     </div>
                   </div>
                   <Divider className="divider" />
                   <div className="row">
                     <div className="label">
-                      <span>
-                        {t(
-                          "Governance:summary.tooltip.totalDelegated.launchpadSupply",
-                        )}
-                      </span>
-                      <span>
-                        {t(
-                          "Governance:summary.tooltip.totalDelegated.nonVotable",
-                        )}
-                      </span>
+                      <span>{t("Governance:summary.tooltip.totalDelegated.launchpadSupply")}</span>
+                      <span>{t("Governance:summary.tooltip.totalDelegated.nonVotable")}</span>
                     </div>
                     <div className="value">
-                      <div className="key">
-                        {t(
-                          "Governance:summary.tooltip.totalDelegated.participatedGNS",
-                        )}
-                      </div>
+                      <div className="key">{t("Governance:summary.tooltip.totalDelegated.participatedGNS")}</div>
                       <div className="amount">
-                        <MissingLogo
-                          symbol={GNS_TOKEN.symbol}
-                          width={20}
-                          url={GNS_TOKEN.logoURI}
-                        />
-                        {formatOtherPrice(
-                          governanceSummary.launchpadDelegated,
-                          { isKMB: false, usd: false, decimals: 0 },
-                        )}
+                        <MissingLogo symbol={GNS_TOKEN.symbol} width={20} url={GNS_TOKEN.logoURI} />
+                        {formatOtherPrice(governanceSummary.launchpadDelegated, {
+                          isKMB: false,
+                          usd: false,
+                          decimals: 0,
+                        })}
                       </div>
                     </div>
                   </div>
                 </GovernanceSummaryTooltipContent>
               }
             >
-              <div
-                className={
-                  visibleTotalDelegateTooltip
-                    ? "value-wrapper-for-hover"
-                    : "value-wrapper"
-                }
-              >
+              <div className={visibleTotalDelegateTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
                 {formatOtherPrice(governanceSummary.totalDelegated, {
                   isKMB: false,
                   usd: false,
@@ -176,12 +134,8 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                 <GovernanceSummaryTooltipContent>
                   <div className="row">
                     <div className="label">
-                      <span>
-                        {t("Governance:summary.tooltip.communityPool.title")}
-                      </span>
-                      <span>
-                        ${toNumberFormat(governanceSummary.communityPool, 2)}
-                      </span>
+                      <span>{t("Governance:summary.tooltip.communityPool.title")}</span>
+                      <span>${toNumberFormat(governanceSummary.communityPool, 2)}</span>
                     </div>
                     <div className="value">
                       <div className="key">
@@ -201,13 +155,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                 </GovernanceSummaryTooltipContent>
               }
             >
-              <div
-                className={
-                  visibleCommunityPoolTooltip
-                    ? "value-wrapper-for-hover"
-                    : "value-wrapper"
-                }
-              >
+              <div className={visibleCommunityPoolTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
                 {formatOtherPrice(governanceSummary.communityPool, {
                   isKMB: false,
                 })}

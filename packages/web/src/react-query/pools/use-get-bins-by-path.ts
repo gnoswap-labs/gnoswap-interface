@@ -5,11 +5,7 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetBinsByPath = (
-  path: string,
-  count?: number,
-  options?: UseQueryOptions<PoolBinModel[], Error>,
-) => {
+export const useGetBinsByPath = (path: string, count?: number, options?: UseQueryOptions<PoolBinModel[], Error>) => {
   const { poolRepository } = useGnoswapContext();
   return useQuery<PoolBinModel[], Error>({
     queryKey: [QUERY_KEY.bins, path],

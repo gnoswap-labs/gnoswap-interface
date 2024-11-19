@@ -15,8 +15,8 @@ export const CardListWrapper = styled.ul`
   min-height: 120px;
 `;
 
-export const ListItem = styled.li<{ upDown: UpDownType, disabled?: boolean }>`
-  cursor: ${({ disabled }) => disabled ? "default" : "pointer"};
+export const ListItem = styled.li<{ upDown: UpDownType; disabled?: boolean }>`
+  cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};
   width: 100%;
@@ -71,10 +71,10 @@ export const ListItem = styled.li<{ upDown: UpDownType, disabled?: boolean }>`
     }
     font-weight: 700;
     color: ${({ theme, upDown }) => {
-    if (upDown === "up") return theme.color.green01;
-    if (upDown === "down") return theme.color.red01;
-    return theme.color.text01;
-  }};
+      if (upDown === "up") return theme.color.green01;
+      if (upDown === "down") return theme.color.red01;
+      return theme.color.text01;
+    }};
   }
 `;
 

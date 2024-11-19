@@ -39,9 +39,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
   const { t } = useTranslation();
 
   const selectedPositions = useMemo(() => {
-    return stakedPositions.filter(position =>
-      checkedList.includes(position.id),
-    );
+    return stakedPositions.filter(position => checkedList.includes(position.id));
   }, [checkedList, stakedPositions]);
 
   return (
@@ -55,11 +53,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
         checkedAll={checkedAll}
         isLoading={isLoading}
       />
-      <SelectUnstakeResult
-        positions={selectedPositions}
-        isGetWGNOT={isGetWGNOT}
-        setIsGetWGNOT={setIsGetWGNOT}
-      />
+      <SelectUnstakeResult positions={selectedPositions} isGetWGNOT={isGetWGNOT} setIsGetWGNOT={setIsGetWGNOT} />
       {selectedPositions.length > 0 && (
         <WarningCard
           title={t("UnstakePosition:warning.title")}
@@ -76,11 +70,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
         />
       )}
       <Button
-        text={
-          checkedList.length === 0
-            ? t("UnstakePosition:btn.selectPosi")
-            : t("UnstakePosition:title")
-        }
+        text={checkedList.length === 0 ? t("UnstakePosition:btn.selectPosi") : t("UnstakePosition:title")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,

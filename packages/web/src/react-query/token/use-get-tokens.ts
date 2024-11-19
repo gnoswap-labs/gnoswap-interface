@@ -5,9 +5,7 @@ import { TokenListResponse } from "@repositories/token";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetTokens = (
-  options?: UseQueryOptions<TokenListResponse, Error>,
-) => {
+export const useGetTokens = (options?: UseQueryOptions<TokenListResponse, Error>) => {
   const { tokenRepository } = useGnoswapContext();
 
   return useQuery<TokenListResponse, Error>({

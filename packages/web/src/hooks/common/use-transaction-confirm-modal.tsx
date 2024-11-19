@@ -26,9 +26,7 @@ export const useTransactionConfirmModal = (
 ): TransactionConfirmModalResponse => {
   const [, setOpenedModal] = useAtom(CommonState.openedTransactionModal);
   const [, setModalContent] = useAtom(CommonState.transactionModalContent);
-  const [transactionModalData, setTransactionModalData] = useAtom(
-    CommonState.transactionModalData,
-  );
+  const [transactionModalData, setTransactionModalData] = useAtom(CommonState.transactionModalData);
   const { account } = useWallet();
 
   const closeModal = useCallback(

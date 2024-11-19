@@ -6,11 +6,7 @@ import RepositionContent from "../../components/reposition-content/RepositionCon
 import { useRepositionHandle } from "../../hooks/use-reposition-handle";
 import { useRepositionModalContainer } from "../../hooks/use-reposition-position-modal";
 
-const PRICE_RANGES: PriceRangeMeta[] = [
-  { type: "Active" },
-  { type: "Passive" },
-  { type: "Custom" },
-];
+const PRICE_RANGES: PriceRangeMeta[] = [{ type: "Active" }, { type: "Passive" }, { type: "Custom" }];
 
 const RepositionContainer: React.FC = () => {
   const {
@@ -73,10 +69,7 @@ const RepositionContainer: React.FC = () => {
   });
 
   const onSubmit = () => {
-    if (
-      buttonType === "REPOSITION" ||
-      (buttonType === "LOADING" && isSkipSwap)
-    ) {
+    if (buttonType === "REPOSITION" || (buttonType === "LOADING" && isSkipSwap)) {
       openModal();
     }
   };

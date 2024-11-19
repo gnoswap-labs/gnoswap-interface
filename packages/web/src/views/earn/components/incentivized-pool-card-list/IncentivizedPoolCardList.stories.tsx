@@ -12,7 +12,6 @@ const pool = POOLS.pools[0] as unknown as IncentivizePoolModel;
 
 const cardInfo = PoolMapper.toCardInfo(pool);
 
-
 export default {
   title: "earn/IncentivizedPoolCardList",
   component: IncentivizedPoolCardList,

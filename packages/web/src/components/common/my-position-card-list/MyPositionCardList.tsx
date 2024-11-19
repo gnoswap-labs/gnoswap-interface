@@ -7,11 +7,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 
 import MyPositionCard from "./my-position-card/MyPositionCard";
 
-import {
-  BlankPositionCard,
-  CardListWrapper,
-  GridWrapper,
-} from "./MyPositionCardList.styles";
+import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
 
 interface MyPositionCardListProps {
   loadMore: boolean;
@@ -71,15 +67,9 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           .fill(1)
           .map((_, index) => <BlankPositionCard key={index} />)}
       {(!isFetched && positions.length === 0) || isLoading
-        ? Array.from({ length: width <= 1180 && width >= 768 ? 3 : 4 }).map(
-            (_, idx) => (
-              <span
-                key={idx}
-                className="card-skeleton"
-                css={pulseSkeletonStyle({ w: "100%", tone: "600" })}
-              />
-            ),
-          )
+        ? Array.from({ length: width <= 1180 && width >= 768 ? 3 : 4 }).map((_, idx) => (
+            <span key={idx} className="card-skeleton" css={pulseSkeletonStyle({ w: "100%", tone: "600" })} />
+          ))
         : null}
     </GridWrapper>
     {!mobile && !isLoading && showLoadMore && onClickLoadMore && (

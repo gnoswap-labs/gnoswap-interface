@@ -42,5 +42,4 @@ export const SelectPairWrapper = styled.div<Props>`
       return isTokenB ? "5px 10px 5px 6px" : "0px 10px 0px 12px";
     }};
   }
-
 `;

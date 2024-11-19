@@ -5,7 +5,12 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import DashboardLabel from "../dashboard-label/DashboardLabel";
 
 import {
-  BlockEmissionsWrapper, LoadingProgressWrapper, LoadingTextWrapper, ProgressBar, SupplyInfoWrapper, SupplyOverviewWrapper
+  BlockEmissionsWrapper,
+  LoadingProgressWrapper,
+  LoadingTextWrapper,
+  ProgressBar,
+  SupplyInfoWrapper,
+  SupplyOverviewWrapper,
 } from "./SupplyOverview.styles";
 
 export interface DailyBlockEmissionsInfo {
@@ -51,19 +56,13 @@ export interface BlockEmissionsProps {
   community: string;
 }
 
-const BlockEmissions = ({
-  liquidityStaking,
-  devOps,
-  community,
-}: BlockEmissionsProps) => {
+const BlockEmissions = ({ liquidityStaking, devOps, community }: BlockEmissionsProps) => {
   const { t } = useTranslation();
   return (
     <BlockEmissionsWrapper>
       <h5>{t("Dashboard:supOver.dailyBlock.label")}</h5>
       <div className="content">
-        <div className="label">
-          {t("Dashboard:supOver.blocEmiss.tooltip.liquiStaking")}{" "}
-        </div>
+        <div className="label">{t("Dashboard:supOver.blocEmiss.tooltip.liquiStaking")} </div>
         <div className="value">
           <img src="/gns.svg" alt="logo" />
           <div>
@@ -72,9 +71,7 @@ const BlockEmissions = ({
         </div>
       </div>
       <div className="content">
-        <div className="label">
-          {t("Dashboard:supOver.blocEmiss.tooltip.devOps")}{" "}
-        </div>
+        <div className="label">{t("Dashboard:supOver.blocEmiss.tooltip.devOps")} </div>
         <div className="value">
           <img src="/gns.svg" alt="logo" />
           <div>
@@ -83,9 +80,7 @@ const BlockEmissions = ({
         </div>
       </div>
       <div className="content">
-        <div className="label">
-          {t("Dashboard:supOver.blocEmiss.tooltip.community")}{" "}
-        </div>
+        <div className="label">{t("Dashboard:supOver.blocEmiss.tooltip.community")} </div>
         <div className="value">
           <img src="/gns.svg" alt="logo" />
           <div>
@@ -97,10 +92,7 @@ const BlockEmissions = ({
   );
 };
 
-const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
-  supplyOverviewInfo,
-  loading,
-}) => {
+const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({ supplyOverviewInfo, loading }) => {
   const { t } = useTranslation();
 
   return (
@@ -121,27 +113,15 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
               }
             />
           </div>
-          {!loading ? (
-            <div className="supply-value">{supplyOverviewInfo.totalSupply}</div>
-          ) : (
-            <LoadingText />
-          )}
+          {!loading ? <div className="supply-value">{supplyOverviewInfo.totalSupply}</div> : <LoadingText />}
         </div>
         <div className="circulating-supply">
           <div className="circulating-info">
             <div className="label-title">
               <div>{t("Dashboard:supOver.circulSup.label")}</div>
-              <DashboardLabel
-                tooltip={t("Dashboard:supOver.circulSup.tooltip")}
-              />
+              <DashboardLabel tooltip={t("Dashboard:supOver.circulSup.tooltip")} />
             </div>
-            {!loading ? (
-              <div className="supply-value">
-                {supplyOverviewInfo.circulatingSupply}
-              </div>
-            ) : (
-              <LoadingText />
-            )}
+            {!loading ? <div className="supply-value">{supplyOverviewInfo.circulatingSupply}</div> : <LoadingText />}
           </div>
           {!loading ? (
             <ProgressBar width={supplyOverviewInfo.progressBar}>
@@ -155,26 +135,12 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         <div className="daily-block-emissions">
           <div className="label-title">
             <div>{t("Dashboard:supOver.dailyBlock.label")}</div>
-            <DashboardLabel
-              tooltip={t("Dashboard:supOver.dailyBlock.tooltip")}
-            />
+            <DashboardLabel tooltip={t("Dashboard:supOver.dailyBlock.tooltip")} />
           </div>
           <div className="daily-block-emissions-tooltip">
-            {!loading ? (
-              <div className="supply-value">
-                {supplyOverviewInfo.dailyBlockEmissions}
-              </div>
-            ) : (
-              <LoadingText />
-            )}
+            {!loading ? <div className="supply-value">{supplyOverviewInfo.dailyBlockEmissions}</div> : <LoadingText />}
             {!loading && (
-              <DashboardLabel
-                tooltip={
-                  <BlockEmissions
-                    {...supplyOverviewInfo.dailyBlockEmissionsInfo}
-                  />
-                }
-              />
+              <DashboardLabel tooltip={<BlockEmissions {...supplyOverviewInfo.dailyBlockEmissionsInfo} />} />
             )}
           </div>
         </div>
@@ -182,22 +148,17 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         <div className="total-staked">
           <div className="label-title">
             <div>{t("Dashboard:supOver.totalStaked.label")}</div>
-            <DashboardLabel
-              tooltip={t("Dashboard:supOver.totalStaked.tooltip")}
-            />
+            <DashboardLabel tooltip={t("Dashboard:supOver.totalStaked.tooltip")} />
           </div>
           <div className="staked-info">
             {!loading ? (
-              <div className="supply-value">
-                {supplyOverviewInfo.totalStaked}
-              </div>
+              <div className="supply-value">{supplyOverviewInfo.totalStaked}</div>
             ) : (
               <LoadingText className="loading-staked-info" />
             )}
             {!loading ? (
               <div className="staked-ratio-title">
-                {t("Dashboard:supOver.totalStaked.stakeRatio")}:{" "}
-                {supplyOverviewInfo.stakingRatio}
+                {t("Dashboard:supOver.totalStaked.stakeRatio")}: {supplyOverviewInfo.stakingRatio}
               </div>
             ) : (
               <LoadingText className="loading-staked-ratio" />

@@ -6,21 +6,13 @@ import { ValuesType } from "utility-types";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
-import {
-  ASSET_INFO,
-  ASSET_INFO_MOBILE,
-  ASSET_INFO_TABLET,
-} from "@constants/skeleton.constant";
+import { ASSET_INFO, ASSET_INFO_MOBILE, ASSET_INFO_TABLET } from "@constants/skeleton.constant";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 
 import AssetInfo from "./asset-info/AssetInfo";
 
-import {
-  AssetListTableWrapper,
-  noDataText,
-  TableColumn,
-} from "./AssetListTable.styles";
+import { AssetListTableWrapper, noDataText, TableColumn } from "./AssetListTable.styles";
 
 export const ASSET_HEAD = {
   ASSET: "Wallet:assets.col.asset",
@@ -108,25 +100,16 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
             })}
             tdWidth={tdWidth.list?.[idx]?.width}
           >
-            <span
-              className={Object.keys(ASSET_HEAD)[idx].toLowerCase()}
-              onClick={() => onClickTableHead(head)}
-            >
-              {isAscendingOption(head) && (
-                <IconTriangleArrowUp className="icon asc" />
-              )}
-              {isDescendingOption(head) && (
-                <IconTriangleArrowDown className="icon desc" />
-              )}
+            <span className={Object.keys(ASSET_HEAD)[idx].toLowerCase()} onClick={() => onClickTableHead(head)}>
+              {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
+              {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
               {t(head)}
             </span>
           </TableColumn>
         ))}
       </div>
       <div className="asset-list-body">
-        {isFetched && assets.length === 0 && (
-          <div css={noDataText}>{t("Wallet:assets.empty")}</div>
-        )}
+        {isFetched && assets.length === 0 && <div css={noDataText}>{t("Wallet:assets.empty")}</div>}
         {isFetched &&
           assets.length > 0 &&
           assets.map((asset, idx) => (

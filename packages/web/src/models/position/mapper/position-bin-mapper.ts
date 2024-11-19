@@ -4,7 +4,7 @@ import { PositionBinModel } from "../position-bin-model";
 export class PositionBinMapper {
   public static from(res: PositionBinResponse): PositionBinModel {
     return {
-      ...res
+      ...res,
     };
   }
 

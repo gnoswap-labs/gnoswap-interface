@@ -20,15 +20,10 @@ const UnstakeLiquidityContainer: React.FC = () => {
       enabled: !!poolPath,
     },
   });
-  const [checkedList, setCheckedList] = useState<number[]>(
-    positionId ? [Number(positionId)] : [],
-  );
+  const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
   const [isGetWGNOT, setIsGetWGNOT] = useState(false);
 
-  const stakedPositions = useMemo(
-    () => allPosition.filter(item => item.staked),
-    [allPosition],
-  );
+  const stakedPositions = useMemo(() => allPosition.filter(item => item.staked), [allPosition]);
 
   const { openModal } = useUnstakePositionModal({
     positions: stakedPositions,
@@ -63,9 +58,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
       setCheckedList([]);
       return;
     }
-    const checkedList = stakedPositions.map(
-      stakedPosition => stakedPosition.id,
-    );
+    const checkedList = stakedPositions.map(stakedPosition => stakedPosition.id);
     setCheckedList(checkedList);
   }, [checkedAll, stakedPositions]);
 

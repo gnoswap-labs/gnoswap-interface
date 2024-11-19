@@ -5,11 +5,7 @@ import TvlChartGraph from "./tvl-chart-graph/TvlChartGraph";
 import TvlChartPriceInfo, { TvlPriceInfo } from "./tvl-chart-price-info/TvlChartPriceInfo";
 import TvlChartSelectTab from "./tvl-chart-select-tab/TvlChartSelectTab";
 
-import {
-  ChartWrapper,
-  LoadingTVLChart,
-  TvlChartWrapper,
-} from "./TvlChart.styles";
+import { ChartWrapper, LoadingTVLChart, TvlChartWrapper } from "./TvlChart.styles";
 
 export type TvlChartData = {
   amount: {
@@ -24,13 +20,7 @@ export interface TvlChartItemProps {
   tvlPriceInfo: TvlPriceInfo;
   tvlChartDatas: TvlChartData;
   loading: boolean;
-  changeTvlChartType: ({
-    display,
-    key,
-  }: {
-    display: string;
-    key: string;
-  }) => void;
+  changeTvlChartType: ({ display, key }: { display: string; key: string }) => void;
 }
 
 const TvlChart: React.FC<TvlChartItemProps> = ({
@@ -44,13 +34,8 @@ const TvlChart: React.FC<TvlChartItemProps> = ({
     <TvlChartWrapper>
       <TvlChartPriceInfo tvlPriceInfo={tvlPriceInfo} />
       <ChartWrapper>
-        <TvlChartSelectTab
-          tvlChartType={tvlChartType}
-          changeTvlChartType={changeTvlChartType}
-        />
-        {!loading && (
-          <TvlChartGraph datas={tvlChartDatas} tvlChartType={tvlChartType} />
-        )}
+        <TvlChartSelectTab tvlChartType={tvlChartType} changeTvlChartType={changeTvlChartType} />
+        {!loading && <TvlChartGraph datas={tvlChartDatas} tvlChartType={tvlChartType} />}
         {loading && (
           <LoadingTVLChart>
             <LoadingSpinner />

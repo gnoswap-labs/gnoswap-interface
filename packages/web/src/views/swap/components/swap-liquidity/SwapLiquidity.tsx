@@ -85,12 +85,7 @@ const getPathname = (liquidity: LiquidityInfo) => {
   };
 };
 
-const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
-  liquiditys,
-  tokenA,
-  tokenB,
-  createPool,
-}) => {
+const SwapLiquidity: React.FC<SwapLiquidityProps> = ({ liquiditys, tokenA, tokenB, createPool }) => {
   const { t } = useTranslation();
 
   return (
@@ -140,10 +135,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
         <div className="liquidity-list">
           <div className="th">
             {Object.values(LIQUIDITY_HEAD).map((head, idx) => (
-              <span
-                key={idx}
-                className={Object.keys(LIQUIDITY_HEAD)[idx].toLowerCase()}
-              >
+              <span key={idx} className={Object.keys(LIQUIDITY_HEAD)[idx].toLowerCase()}>
                 {t(head)}
               </span>
             ))}
@@ -159,11 +151,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
                 key={idx}
                 className={`${!liquidity.active ? "inacitve-liquidity" : ""}`}
               >
-                <div
-                  className={`fee-info ${
-                    !liquidity.active ? "inacitve-liquidity" : ""
-                  }`}
-                >
+                <div className={`fee-info ${!liquidity.active ? "inacitve-liquidity" : ""}`}>
                   <span className="badge-wrap">
                     <div className="badge">{liquidity.feeTier}%</div>
                   </span>

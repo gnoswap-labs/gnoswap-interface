@@ -21,21 +21,10 @@ const Switch: React.FC<SwitchProps> = ({
       {hasLabel ? (
         <SwitchWrapper className="switch-button">
           <SwitchLabel htmlFor="switch">{labelText}</SwitchLabel>
-          <SwitchInput
-            type="checkbox"
-            id="switch"
-            checked={checked}
-            onChange={onChange}
-            disabled={disabled}
-          />
+          <SwitchInput type="checkbox" id="switch" checked={checked} onChange={onChange} disabled={disabled} />
         </SwitchWrapper>
       ) : (
-        <SwitchInput
-          type="checkbox"
-          checked={checked}
-          onChange={onChange}
-          disabled={disabled}
-        />
+        <SwitchInput type="checkbox" checked={checked} onChange={onChange} disabled={disabled} />
       )}
     </>
   );

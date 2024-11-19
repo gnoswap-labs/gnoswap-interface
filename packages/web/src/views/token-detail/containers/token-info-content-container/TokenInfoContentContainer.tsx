@@ -35,24 +35,13 @@ const TokenInfoContentContainer: React.FC = () => {
     data: { market = marketInformationInit } = {},
     isLoading,
     isStale: isStaleTokenDetails,
-  } = useGetTokenDetails(
-    path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
-    {
-      enabled: !!path,
-    },
-  );
+  } = useGetTokenDetails(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), {
+    enabled: !!path,
+  });
   const {
-    data: {
-      usd: currentPrice = "0",
-      feeUsd24h,
-      pricesBefore = priceChangeDetailInit,
-      marketCap,
-    } = {},
+    data: { usd: currentPrice = "0", feeUsd24h, pricesBefore = priceChangeDetailInit, marketCap } = {},
     isStale: isStaleTokenPrices,
-  } = useGetTokenPrices(
-    path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
-    { enabled: !!path },
-  );
+  } = useGetTokenPrices(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
   const { isLoading: isLoadingCommon } = useLoading();
   const { t } = useTranslation();
 
@@ -60,21 +49,12 @@ const TokenInfoContentContainer: React.FC = () => {
     const isGnot = path === "gnot";
 
     return {
-      popularity: formatOtherPrice(
-        isGnot ? 1_000_000_000 * Number(currentPrice) : marketCap,
-      ),
+      popularity: formatOtherPrice(isGnot ? 1_000_000_000 * Number(currentPrice) : marketCap),
       lockedTokensUsd: formatOtherPrice(market.lockedTokensUsd),
       volumeUsd24h: formatOtherPrice(market.volumeUsd24h),
       feesUsd24h: formatOtherPrice(feeUsd24h),
     };
-  }, [
-    path,
-    currentPrice,
-    marketCap,
-    market.lockedTokensUsd,
-    market.volumeUsd24h,
-    feeUsd24h,
-  ]);
+  }, [path, currentPrice, marketCap, market.lockedTokensUsd, market.volumeUsd24h, feeUsd24h]);
 
   const priceInfomation = useMemo(() => {
     const data1H = checkPositivePrice(currentPrice, pricesBefore.price1h);
@@ -100,13 +80,7 @@ const TokenInfoContentContainer: React.FC = () => {
         value: data30D.percentDisplay,
       },
     };
-  }, [
-    currentPrice,
-    pricesBefore.price1d,
-    pricesBefore.price1h,
-    pricesBefore.price30d,
-    pricesBefore.price7d,
-  ]);
+  }, [currentPrice, pricesBefore.price1d, pricesBefore.price1h, pricesBefore.price30d, pricesBefore.price7d]);
 
   const pricePerformance = useMemo(() => {
     const dataToday = checkPositivePrice(currentPrice, pricesBefore.priceToday);
@@ -166,14 +140,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
       },
     ];
-  }, [
-    currentPrice,
-    pricesBefore.price30d,
-    pricesBefore.price60d,
-    pricesBefore.price90d,
-    pricesBefore.priceToday,
-    t,
-  ]);
+  }, [currentPrice, pricesBefore.price30d, pricesBefore.price60d, pricesBefore.price90d, pricesBefore.priceToday, t]);
 
   useEffect(() => {
     if (isStaleTokenDetails) {

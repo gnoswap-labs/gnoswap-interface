@@ -14,7 +14,7 @@ const poolRepository = new PoolRepositoryMock();
 
 describe("PoolPairInfoHeader Component", () => {
   it("PoolPairInfoHeader render", async () => {
-    const pool = (await poolRepository.getPoolDetailByPoolPath());
+    const pool = await poolRepository.getPoolDetailByPoolPath();
     const mockProps = {
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,
@@ -44,7 +44,7 @@ describe("PoolPairInfoHeader Component", () => {
             </GnoswapServiceProvider>
           </JotaiProvider>
         </QueryClientProvider>
-      </AppRouterContext.Provider>
+      </AppRouterContext.Provider>,
     );
   });
 });

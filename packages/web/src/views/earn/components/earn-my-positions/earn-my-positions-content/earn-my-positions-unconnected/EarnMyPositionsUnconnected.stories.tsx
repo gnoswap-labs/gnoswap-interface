@@ -8,11 +8,9 @@ export default {
   component: EarnMyPositionsUnconnected,
 } as ComponentMeta<typeof EarnMyPositionsUnconnected>;
 
-const Template: ComponentStory<typeof EarnMyPositionsUnconnected> = args => (
-  <EarnMyPositionsUnconnected {...args} />
-);
+const Template: ComponentStory<typeof EarnMyPositionsUnconnected> = args => <EarnMyPositionsUnconnected {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  connect: action("connect")
+  connect: action("connect"),
 };

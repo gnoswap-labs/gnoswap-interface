@@ -13,11 +13,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetUnstakingFee } from "@query/pools";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-  formatRate,
-} from "@utils/new-number-utils";
+import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
 
 import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
@@ -36,11 +32,7 @@ interface Props {
   onSubmit: () => void;
 }
 
-const UnstakePositionModal: React.FC<Props> = ({
-  positions,
-  close,
-  onSubmit,
-}) => {
+const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
   const { t } = useTranslation();
   const { unclaimedRewards, totalLiquidityUSD } = usePositionsRewards({
     positions,
@@ -68,12 +60,8 @@ const UnstakePositionModal: React.FC<Props> = ({
 
     const result = positionAprs.reduce(
       (accum, currentPostionApr) => {
-        accum.fee +=
-          BigInt((currentPostionApr.aprs.fee * 1000).toFixed(0)) *
-          currentPostionApr.liquidity;
-        accum.rewards +=
-          BigInt((currentPostionApr.aprs.rewards * 1000).toFixed(0)) *
-          currentPostionApr.liquidity;
+        accum.fee += BigInt((currentPostionApr.aprs.fee * 1000).toFixed(0)) * currentPostionApr.liquidity;
+        accum.rewards += BigInt((currentPostionApr.aprs.rewards * 1000).toFixed(0)) * currentPostionApr.liquidity;
         accum.liquidity += currentPostionApr.liquidity;
         return accum;
       },
@@ -81,19 +69,12 @@ const UnstakePositionModal: React.FC<Props> = ({
     );
 
     return {
-      feeApr: formatRate(
-        Number((result.fee / result.liquidity).toString()) / 1000,
-      ),
-      totalApr: formatRate(
-        Number((result.rewards / result.liquidity).toString()) / 1000,
-      ),
+      feeApr: formatRate(Number((result.fee / result.liquidity).toString()) / 1000),
+      totalApr: formatRate(Number((result.rewards / result.liquidity).toString()) / 1000),
     };
   }, [positions]);
 
-  const inRange = useCallback(
-    (position: PoolPositionModel) => isInRangePosition(position),
-    [],
-  );
+  const inRange = useCallback((position: PoolPositionModel) => isInRangePosition(position), []);
 
   return (
     <UnstakePositionModalWrapper>
@@ -150,9 +131,7 @@ const UnstakePositionModal: React.FC<Props> = ({
                           width={24}
                           mobileWidth={24}
                         />
-                        <RewardLogoSymbolWrapper>
-                          {rewardInfo.token.symbol}
-                        </RewardLogoSymbolWrapper>
+                        <RewardLogoSymbolWrapper>{rewardInfo.token.symbol}</RewardLogoSymbolWrapper>
                       </div>
                       <div className="value">
                         {formatPoolPairAmount(rewardInfo.amount, {
@@ -173,18 +152,14 @@ const UnstakePositionModal: React.FC<Props> = ({
                         placement="top"
                         FloatingContent={
                           <ToolTipContentWrapper width="251px">
-                            {t(
-                              "UnstakePosition:confStakeModal.unstakingFee.tooltip",
-                            )}
+                            {t("UnstakePosition:confStakeModal.unstakingFee.tooltip")}
                           </ToolTipContentWrapper>
                         }
                       >
                         <IconInfo />
                       </Tooltip>
                     </div>
-                    <span className="white-text">
-                      {unstakingFee ? `${(unstakingFee || 0) / 100}%` : "-"}
-                    </span>
+                    <span className="white-text">{unstakingFee ? `${(unstakingFee || 0) / 100}%` : "-"}</span>
                   </div>
                 </div>
               </div>
@@ -194,9 +169,7 @@ const UnstakePositionModal: React.FC<Props> = ({
           <div className="box-item">
             <div className="item-content">
               <div>
-                <div className="label-large">
-                  {t("UnstakePosition:overview.totalAmt")}
-                </div>
+                <div className="label-large">{t("UnstakePosition:overview.totalAmt")}</div>
                 <div className="value-large">{totalLiquidityUSD}</div>
               </div>
             </div>

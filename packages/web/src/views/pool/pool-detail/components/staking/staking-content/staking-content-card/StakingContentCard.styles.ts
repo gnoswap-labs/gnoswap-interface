@@ -46,7 +46,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
         right: 9px;
         bottom: -49px;
         stroke-width: 1px;
-        stroke: var(--point-global-point, #233DBD);
+        stroke: var(--point-global-point, #233dbd);
       }
       .check-line-long {
         height: 456px;
@@ -54,7 +54,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
         left: 9px;
         top: 20px;
         stroke-width: 1px;
-        stroke: var(--point-global-point, #233DBD);
+        stroke: var(--point-global-point, #233dbd);
       }
       .border-not-active {
         width: 1px;
@@ -157,11 +157,10 @@ export const StakingContentCardWrapper = styled.div<Props>`
           color: ${({ theme }) => theme.color.text02};
           span {
             color: ${({ theme }) => theme.color.text02};
-            
           }
           pointer-events: ${({ nonTotal }) => {
-    return nonTotal ? "none" : "initial";
-  }};
+            return nonTotal ? "none" : "initial";
+          }};
           &:hover {
             span {
               color: ${({ theme }) => theme.color.text07};
@@ -227,7 +226,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
         align-items: center;
         gap: 8px;
       }
-     
+
       .apr-text {
         cursor: default;
         color: ${({ theme }) => theme.color.text03};

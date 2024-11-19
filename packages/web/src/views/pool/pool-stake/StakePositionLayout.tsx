@@ -9,12 +9,7 @@ interface StakePositionLayoutProps {
   footer: React.ReactNode;
 }
 
-const StakePositionLayout: React.FC<StakePositionLayoutProps> = ({
-  header,
-  breadcrumbs,
-  stakeLiquidity,
-  footer,
-}) => {
+const StakePositionLayout: React.FC<StakePositionLayoutProps> = ({ header, breadcrumbs, stakeLiquidity, footer }) => {
   const { t } = useTranslation();
 
   return (

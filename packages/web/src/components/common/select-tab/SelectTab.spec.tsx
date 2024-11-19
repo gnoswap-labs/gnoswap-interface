@@ -8,11 +8,7 @@ describe("SelectTab Component", () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <SelectTab
-            selectType={"7D"}
-            list={["All", "Incentivized", "Non-Incentivized"]}
-            onClick={() => {}}
-          />
+          <SelectTab selectType={"7D"} list={["All", "Incentivized", "Non-Incentivized"]} onClick={() => {}} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

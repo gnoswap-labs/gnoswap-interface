@@ -1,12 +1,6 @@
 const IconPassed = () => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="12"
-      height="10"
-      viewBox="0 0 12 10"
-      fill="none"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="10" viewBox="0 0 12 10" fill="none">
       <path
         d="M10.59 0.289062L4 6.87906L1.41 4.29906L0 5.70906L4 9.70906L12 1.70906L10.59 0.289062Z"
         fill="url(#paint0_linear_23660_497745)"

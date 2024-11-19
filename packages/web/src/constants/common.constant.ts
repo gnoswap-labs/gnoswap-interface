@@ -5,17 +5,9 @@ export const DEFAULT_NETWORK_ID = "portal-loop";
 export const PATH = ["/earn"];
 // 10SECOND/60SECOND is the specific time for data refetching cycles. `useGetPositionsByAddress` will refetch after these specific time
 export const PATH_10SECOND = ["/token"];
-export const PATH_60SECOND = [
-  "/wallet",
-  "/earn/pool/stake",
-  "/earn/pool/unstake",
-  "/earn/pool",
-  "/earn/pool/remove",
-];
+export const PATH_60SECOND = ["/wallet", "/earn/pool/stake", "/earn/pool/unstake", "/earn/pool", "/earn/pool/remove"];
 
-export const HTTP_5XX_ERROR = [
-  500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511,
-];
+export const HTTP_5XX_ERROR = [500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511];
 
 export const CAN_SCROLL_UP_ID = "CAN_SCROLL_UP_ID";
 
@@ -86,8 +78,7 @@ export const SEOInfo: Record<
       }
       return "Earn | GnoSwap";
     },
-    desc: () =>
-      "Create your own positions and provide liquidity to earn trading fees.",
+    desc: () => "Create your own positions and provide liquidity to earn trading fees.",
   },
   "/earn/add": {
     title: (params = []) => {
@@ -97,8 +88,7 @@ export const SEOInfo: Record<
       }
       return "Add Position to GnoSwap Pools";
     },
-    desc: () =>
-      "Create your own positions and provide liquidity to earn trading fees.",
+    desc: () => "Create your own positions and provide liquidity to earn trading fees.",
   },
   "/earn/incentivize": {
     title: (params = []) => {
@@ -108,8 +98,7 @@ export const SEOInfo: Record<
       }
       return "Incentivize GnoSwap Pools";
     },
-    desc: () =>
-      "Add incentives to pools for liquidity providers to bootstrap liquidity.",
+    desc: () => "Add incentives to pools for liquidity providers to bootstrap liquidity.",
   },
   "/earn/pool": {
     title: (params = []) => {
@@ -130,8 +119,7 @@ export const SEOInfo: Record<
       }
       return DefaultTitle;
     },
-    desc: () =>
-      "Create your own positions and provide liquidity to earn trading fees.",
+    desc: () => "Create your own positions and provide liquidity to earn trading fees.",
   },
   "/earn/pool/add": {
     title: (params = []) => {
@@ -173,8 +161,7 @@ export const SEOInfo: Record<
       }
       return "Stake Position to GnoSwap Pools";
     },
-    desc: () =>
-      "Create your own positions and provide liquidity to earn staking rewards.",
+    desc: () => "Create your own positions and provide liquidity to earn staking rewards.",
   },
   "/earn/pool/unstake": {
     title: (params = []) => {
@@ -223,9 +210,7 @@ export const SEOInfo: Record<
       const [tokenPrice, tokenName, tokenSymbol] = params;
       const tokenSymbolDisplay = tokenSymbol ? `(${tokenSymbol})` : "";
       const tokenNameDisplay = `${tokenName}${tokenSymbolDisplay}`;
-      const titleDisplay = [tokenPrice, tokenNameDisplay]
-        .filter(item => item)
-        .join(" | ");
+      const titleDisplay = [tokenPrice, tokenNameDisplay].filter(item => item).join(" | ");
 
       if (tokenName && tokenSymbol && tokenPrice) return titleDisplay;
 
@@ -324,9 +309,7 @@ export const DEFAULT_POOL_ADD_URI = `/earn/add?tokenA=gnot&tokenB=${GNS_TOKEN_PA
 
 export const DEFAULT_TOKEN_PAIR = [WRAPPED_GNOT_PATH, GNS_TOKEN_PATH];
 
-export const DEFAULT_POOL_PATH = [...DEFAULT_TOKEN_PAIR.sort(), "3000"].join(
-  ":",
-);
+export const DEFAULT_POOL_PATH = [...DEFAULT_TOKEN_PAIR.sort(), "3000"].join(":");
 
 export const LANGUAGE_CODE_MAP: Record<string, string> = {
   en: "en-US",
@@ -344,10 +327,4 @@ export const getLangCode = (code: string) => {
   return LANGUAGE_CODE_MAP[code];
 };
 
-export const DEFAULT_I18N_NS = [
-  "HeaderFooter",
-  "common",
-  "business",
-  "Modal",
-  "Error",
-];
+export const DEFAULT_I18N_NS = ["HeaderFooter", "common", "business", "Modal", "Error"];

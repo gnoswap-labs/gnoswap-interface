@@ -70,9 +70,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   const { getGnotPath } = useGnotToGnot();
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
-    const temp = selectedPool
-      ? PoolMapper.toPoolSelectItemInfo(selectedPool)
-      : null;
+    const temp = selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
     return temp;
   }, [selectedPool]);
 
@@ -122,15 +120,8 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
       </article>
 
       <article className="token-amount-input">
-        <h5 className="section-title">
-          {t("IncentivizePool:incentiPool.form.rewaAmt.label")}
-        </h5>
-        <TokenAmountInput
-          changeToken={changeToken}
-          connected={connected}
-          {...tokenAmountInput}
-          changable={true}
-        />
+        <h5 className="section-title">{t("IncentivizePool:incentiPool.form.rewaAmt.label")}</h5>
+        <TokenAmountInput changeToken={changeToken} connected={connected} {...tokenAmountInput} changable={true} />
       </article>
       <PoolIncentivizeDetails
         amount={tokenAmountInput.amount}

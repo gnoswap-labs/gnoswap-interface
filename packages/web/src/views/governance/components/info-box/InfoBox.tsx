@@ -5,10 +5,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
-import {
-  InfoBoxTooltipContent,
-  GovernanceDetailInfoWrapper
-} from "./InfoBox.styles";
+import { InfoBoxTooltipContent, GovernanceDetailInfoWrapper } from "./InfoBox.styles";
 
 interface GovernanceDetailInfoProps {
   title: string;
@@ -40,14 +37,7 @@ const InfoBox: React.FC<GovernanceDetailInfoProps> = ({
         <span className="title">
           {title}
           {tooltip !== undefined && (
-            <Tooltip
-              placement="top"
-              FloatingContent={
-                <InfoBoxTooltipContent>
-                  {tooltip}
-                </InfoBoxTooltipContent>
-              }
-            >
+            <Tooltip placement="top" FloatingContent={<InfoBoxTooltipContent>{tooltip}</InfoBoxTooltipContent>}>
               <IconInfo />
             </Tooltip>
           )}
@@ -82,6 +72,5 @@ const InfoBox: React.FC<GovernanceDetailInfoProps> = ({
     </GovernanceDetailInfoWrapper>
   );
 };
-
 
 export default InfoBox;

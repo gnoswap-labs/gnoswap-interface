@@ -1,7 +1,4 @@
-import {
-  useInfiniteQuery,
-  UseInfiniteQueryOptions,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 

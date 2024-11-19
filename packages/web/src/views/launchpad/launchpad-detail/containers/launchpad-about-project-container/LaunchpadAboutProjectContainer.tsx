@@ -10,9 +10,7 @@ interface LaunchpadAboutProjectContainerProps {
 
 const TEXT_TRUNCATION_THRESHOLD = 1_260;
 
-const LaunchpadAboutProjectContainer: React.FC<
-  LaunchpadAboutProjectContainerProps
-> = ({ data, isLoading }) => {
+const LaunchpadAboutProjectContainer: React.FC<LaunchpadAboutProjectContainerProps> = ({ data, isLoading }) => {
   const [isShowMore, setIsShowMore] = React.useState(false);
 
   const showDescription = React.useMemo(() => {

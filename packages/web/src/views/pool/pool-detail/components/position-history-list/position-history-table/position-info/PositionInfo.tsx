@@ -14,17 +14,9 @@ import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { DexEvent } from "@repositories/common";
 import { DEVICE_TYPE } from "@styles/media";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-} from "@utils/new-number-utils";
+import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 
-import {
-  HoverSection,
-  IconButton,
-  PositionInfoWrapper,
-  TableColumn,
-} from "./PositionInfo.styles";
+import { HoverSection, IconButton, PositionInfoWrapper, TableColumn } from "./PositionInfo.styles";
 
 dayjs.extend(relativeTime);
 
@@ -37,16 +29,7 @@ interface PositionInfoProps {
 const PositionInfo: React.FC<PositionInfoProps> = ({ item, breakpoint }) => {
   const { getTxUrl } = useGnoscanUrl();
   const { t } = useTranslation();
-  const {
-    time,
-    type,
-    usdValue,
-    amountA,
-    amountB,
-    txHash,
-    tokenASymbol,
-    tokenBSymbol,
-  } = item;
+  const { time, type, usdValue, amountA, amountB, txHash, tokenASymbol, tokenBSymbol } = item;
   const tableInfo =
     breakpoint === DEVICE_TYPE.MOBILE
       ? MOBILE_POSITION_HISTORY_INFO

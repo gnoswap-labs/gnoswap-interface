@@ -6,11 +6,7 @@ import IconPolygon from "@components/common/icons/IconPolygon";
 import IconSettings from "@components/common/icons/IconSettings";
 import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
 
-import {
-  CopyTooltip,
-  SettingMenuButton,
-  SwapCardHeaderWrapper,
-} from "./SwapCardHeader.styles";
+import { CopyTooltip, SettingMenuButton, SwapCardHeaderWrapper } from "./SwapCardHeader.styles";
 
 interface SwapCardHeaderProps {
   copied: boolean;
@@ -19,13 +15,7 @@ interface SwapCardHeaderProps {
   changeSlippage: (value: number) => void;
   themeKey: "dark" | "light";
 }
-const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
-  copied,
-  copyURL,
-  slippage,
-  changeSlippage,
-  themeKey,
-}) => {
+const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({ copied, copyURL, slippage, changeSlippage, themeKey }) => {
   const { t } = useTranslation();
   const [openedSetting, setOpenedSetting] = useState(false);
 
@@ -57,11 +47,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
             <IconSettings className="setting-icon" />
           </div>
           {openedSetting && (
-            <SettingMenuModal
-              slippage={slippage}
-              changeSlippage={changeSlippage}
-              close={closeSetting}
-            />
+            <SettingMenuModal slippage={slippage} changeSlippage={changeSlippage} close={closeSetting} />
           )}
         </SettingMenuButton>
       </div>

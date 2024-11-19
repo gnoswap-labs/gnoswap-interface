@@ -1,4 +1,6 @@
-import SelectDistributionPeriodInput, { type SelectDistributionPeriodInputProps } from "./SelectDistributionPeriodInput";
+import SelectDistributionPeriodInput, {
+  type SelectDistributionPeriodInputProps,
+} from "./SelectDistributionPeriodInput";
 import { Meta, StoryObj } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 
@@ -14,6 +16,6 @@ export const Default: StoryObj<SelectDistributionPeriodInputProps> = {
     title: "Distribution Period",
     period: 90,
     periods,
-    changePeriod: action("changePeriod")
+    changePeriod: action("changePeriod"),
   },
 };

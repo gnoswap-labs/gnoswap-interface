@@ -33,11 +33,7 @@ export const network = atom<NetworkModel>(NetworkData[0]);
 
 export const slippage = atom<number>(DEFAULT_SLIPPAGE);
 
-export type TransactionConfirmStatus =
-  | "loading"
-  | "rejected"
-  | "success"
-  | "error";
+export type TransactionConfirmStatus = "loading" | "rejected" | "success" | "error";
 
 export const transactionModalData = atom<{
   status: TransactionConfirmStatus;

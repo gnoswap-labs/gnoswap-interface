@@ -10,9 +10,7 @@ export default {
   component: ChartScopeSelectTab,
 } as ComponentMeta<typeof ChartScopeSelectTab>;
 
-const Template: ComponentStory<typeof ChartScopeSelectTab> = args => (
-  <ChartScopeSelectTab {...args} />
-);
+const Template: ComponentStory<typeof ChartScopeSelectTab> = args => <ChartScopeSelectTab {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

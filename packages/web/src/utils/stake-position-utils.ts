@@ -62,19 +62,9 @@ export const formatTokenExchangeRate = (
 
   if (isInfinite) return "∞";
 
-  if (
-    inputNumber === null ||
-    inputNumber === undefined ||
-    Number.isNaN(inputNumber)
-  )
-    return "-";
+  if (inputNumber === null || inputNumber === undefined || Number.isNaN(inputNumber)) return "-";
 
-  if (
-    minLimit &&
-    inputAsNumber.isLessThan(minLimit) &&
-    inputAsNumber.isGreaterThan(0)
-  )
-    return `<${minLimit}`;
+  if (minLimit && inputAsNumber.isLessThan(minLimit) && inputAsNumber.isGreaterThan(0)) return `<${minLimit}`;
 
   if (!isIgnoreKMBFormat) {
     const kmbNumber = toKMBFormat(inputAsNumber.toFixed(), {
@@ -84,18 +74,13 @@ export const formatTokenExchangeRate = (
     if (kmbNumber) return kmbNumber;
   }
 
-  const numberWithSignificantPlus = inputAsNumber
-    .toNumber()
-    .toLocaleString("en-US", {
-      minimumSignificantDigits: maxSignificantDigits + 1,
-      maximumSignificantDigits: maxSignificantDigits + 1,
-    });
+  const numberWithSignificantPlus = inputAsNumber.toNumber().toLocaleString("en-US", {
+    minimumSignificantDigits: maxSignificantDigits + 1,
+    maximumSignificantDigits: maxSignificantDigits + 1,
+  });
 
   if (fixedDecimalDigits) {
-    return BigNumber(inputAsNumber).toFormat(
-      fixedDecimalDigits,
-      BigNumber.ROUND_DOWN,
-    );
+    return BigNumber(inputAsNumber).toFormat(fixedDecimalDigits, BigNumber.ROUND_DOWN);
   }
 
   const [, decimalPart] = numberWithSignificantPlus.split(".");
@@ -110,27 +95,17 @@ export const formatTokenExchangeRate = (
     decimalPart.length > maxSignificantDigits &&
     significantNumberLength > maxSignificantDigits
   ) {
-    if (
-      decimalPart?.length > maxSignificantDigits &&
-      significantNumberLength > maxSignificantDigits
-    ) {
-      return BigNumber(
-        numberWithSignificantPlus.substring(
-          0,
-          numberWithSignificantPlus.length - 1,
-        ),
-      ).toFormat();
+    if (decimalPart?.length > maxSignificantDigits && significantNumberLength > maxSignificantDigits) {
+      return BigNumber(numberWithSignificantPlus.substring(0, numberWithSignificantPlus.length - 1)).toFormat();
     }
 
     return BigNumber(inputAsNumber).toFormat();
   }
 
-  const numberWithSignificant = inputAsNumber
-    .toNumber()
-    .toLocaleString("en-US", {
-      minimumSignificantDigits: maxSignificantDigits,
-      maximumSignificantDigits: maxSignificantDigits,
-    });
+  const numberWithSignificant = inputAsNumber.toNumber().toLocaleString("en-US", {
+    minimumSignificantDigits: maxSignificantDigits,
+    maximumSignificantDigits: maxSignificantDigits,
+  });
 
   return BigNumber(numberWithSignificant.replace(/,/g, "")).toFormat();
 };
@@ -156,11 +131,9 @@ export const convertToKMB = (
   const negativeSymbol = isNegative ? "-" : "";
 
   const defaultMaximumSignificantDigits = 5;
-  const isDefaultSignificantDigits =
-    !options?.maximumFractionDigits && !options?.minimumFractionDigits;
+  const isDefaultSignificantDigits = !options?.maximumFractionDigits && !options?.minimumFractionDigits;
   const maximumSignificantDigits =
-    options?.maximumSignificantDigits ||
-    (isDefaultSignificantDigits ? defaultMaximumSignificantDigits : undefined);
+    options?.maximumSignificantDigits || (isDefaultSignificantDigits ? defaultMaximumSignificantDigits : undefined);
 
   if (Number(numberPriceAbs) < 1000) {
     if (Number.isInteger(numberPrice))
@@ -168,17 +141,11 @@ export const convertToKMB = (
         maximumFractionDigits: 0,
         minimumFractionDigits: 0,
       });
-    if (
-      !(options?.ignoreSmallValueFormat ?? false) &&
-      numberPrice < 0.000001 &&
-      numberPrice > 0
-    ) {
+    if (!(options?.ignoreSmallValueFormat ?? false) && numberPrice < 0.000001 && numberPrice > 0) {
       return "<0.000001";
     }
     if (numberPrice < 1 && numberPrice >= 0)
-      return `${Number(
-        numberPrice.toFixed(options?.maximumSignificantDigits ?? 5),
-      )}`;
+      return `${Number(numberPrice.toFixed(options?.maximumSignificantDigits ?? 5))}`;
 
     let result = numberPrice.toLocaleString("en-US", {
       maximumSignificantDigits: maximumSignificantDigits,
@@ -240,15 +207,8 @@ export const convertToKMB = (
       });
 };
 
-export const formatUsdNumber = (
-  price: string,
-  maximumFractionDigits?: number,
-  isKMB?: boolean,
-) => {
-  if (
-    convertToKMB(price, { maximumFractionDigits, isIgnoreKFormat: !isKMB }) ===
-    "-"
-  ) {
+export const formatUsdNumber = (price: string, maximumFractionDigits?: number, isKMB?: boolean) => {
+  if (convertToKMB(price, { maximumFractionDigits, isIgnoreKFormat: !isKMB }) === "-") {
     return "-";
   }
 

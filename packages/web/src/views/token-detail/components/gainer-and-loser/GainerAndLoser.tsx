@@ -17,8 +17,8 @@ interface GainerAndLoserProps {
 const GainerAndLoser: React.FC<GainerAndLoserProps> = ({ gainers, losers, loadingLose, loadingGain }) => {
   return (
     <div css={wrapper}>
-      <GainerCardList gainers={gainers} loadingGain={loadingGain}/>
-      <LoserCardList losers={losers} loadingLose={loadingLose}/>
+      <GainerCardList gainers={gainers} loadingGain={loadingGain} />
+      <LoserCardList losers={losers} loadingLose={loadingLose} />
     </div>
   );
 };

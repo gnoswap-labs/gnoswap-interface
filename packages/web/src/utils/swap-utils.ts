@@ -1,8 +1,4 @@
-import {
-  SwapFeeTierInfoMap,
-  SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { MAX_TICK, MIN_TICK, Q96 } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
 import {
@@ -26,9 +22,7 @@ export function makeSwapFeeTier(value: string | number): SwapFeeTierType {
   return "NONE";
 }
 
-export function makeSwapFeeTierByTickSpacing(
-  tickSpacing: number,
-): SwapFeeTierType {
+export function makeSwapFeeTierByTickSpacing(tickSpacing: number): SwapFeeTierType {
   for (const swapFeeTierInfo of Object.values(SwapFeeTierInfoMap)) {
     if (swapFeeTierInfo.tickSpacing == tickSpacing) {
       return swapFeeTierInfo.type;
@@ -62,9 +56,7 @@ export function findNearPrice(price: number, tickSpacing: number) {
   const previousPrice = tickToPrice(previouTickAbs * sign);
   const nextPrice = tickToPrice(nextTickAbs * sign);
 
-  if (
-    Math.abs(previousPrice - currentPrice) > Math.abs(nextPrice - currentPrice)
-  ) {
+  if (Math.abs(previousPrice - currentPrice) > Math.abs(nextPrice - currentPrice)) {
     return nextPrice;
   }
   return previousPrice;
@@ -86,10 +78,7 @@ export function priceToNearTick(price: number, tickSpacing: number) {
   }
 
   const nearTickAmount = sign > 0 ? tickAbs - mod : tickAbs - mod - tickSpacing;
-  const nearTick =
-    mod > tickSpacing / 2
-      ? (nearTickAmount + tickSpacing) * sign
-      : nearTickAmount * sign;
+  const nearTick = mod > tickSpacing / 2 ? (nearTickAmount + tickSpacing) * sign : nearTickAmount * sign;
   if (sign > 0) {
     return nearTick;
   }
@@ -102,22 +91,14 @@ export function priceToSqrtX96(price: number): bigint {
   if (Number.isNaN(price)) {
     return 0n;
   }
-  return BigInt(
-    BigNumber(Math.sqrt(price)).multipliedBy(Q96.toString()).toFixed(0),
-  );
+  return BigInt(BigNumber(Math.sqrt(price)).multipliedBy(Q96.toString()).toFixed(0));
 }
 
 export function rawBySqrtX96(value: number | bigint | string) {
-  return BigNumber(value.toString())
-    .dividedBy(Q96.toString())
-    .pow(2)
-    .toNumber();
+  return BigNumber(value.toString()).dividedBy(Q96.toString()).pow(2).toNumber();
 }
 
-export function priceX96ToNearTick(
-  priceX96: number | bigint,
-  tickSpacing: number,
-) {
+export function priceX96ToNearTick(priceX96: number | bigint, tickSpacing: number) {
   const price = rawBySqrtX96(priceX96);
   return priceToNearTick(price, tickSpacing);
 }
@@ -130,10 +111,11 @@ export function tickToPrice(tick: number) {
 export function tickToPriceStr(
   tick: number,
   options: {
-    isEnd?: boolean,
-    decimals?: number,
-    isFormat?: boolean,
-  }) {
+    isEnd?: boolean;
+    decimals?: number;
+    isFormat?: boolean;
+  },
+) {
   const isFormat = options?.isFormat === undefined ? true : options?.isFormat;
   if (options?.isEnd) {
     return tick < 0 ? "0" : "∞";
@@ -149,17 +131,14 @@ export function tickToPriceStr(
 
   if (isFormat) {
     return convertToKMB(result.replace(/,/g, ""), {
-      ignoreSmallValueFormat: true
+      ignoreSmallValueFormat: true,
     });
   }
 
   return result;
 }
 
-export function feeBoostByPrices(
-  minPrice: number | null,
-  maxPrice: number | null,
-) {
+export function feeBoostByPrices(minPrice: number | null, maxPrice: number | null) {
   if (minPrice === null || maxPrice === null || minPrice > maxPrice) {
     return null;
   }
@@ -172,10 +151,7 @@ export function feeBoostByPrices(
     .toNumber();
 }
 
-export function feeBoostRateByPrices(
-  minPrice: number | null,
-  maxPrice: number | null,
-) {
+export function feeBoostRateByPrices(minPrice: number | null, maxPrice: number | null) {
   const feeBoost = feeBoostByPrices(minPrice, maxPrice);
   if (feeBoost === null) {
     return null;
@@ -184,7 +160,7 @@ export function feeBoostRateByPrices(
   return BigNumber(feeBoost).toFixed(2);
 }
 
-export function sqrtPriceX96ToTick(priceX96: number | BigInt) {
+export function sqrtPriceX96ToTick(priceX96: number | bigint) {
   const price = rawBySqrtX96(priceX96.toString());
   return priceToTick(price);
 }
@@ -209,12 +185,7 @@ export function isEndTickBy(tick: number, fee: string): boolean {
   return tick === maxTick || tick === minTick;
 }
 
-export function getDepositAmountsByAmountA(
-  currentPrice: number,
-  minPrice: number,
-  maxPrice: number,
-  amount: bigint,
-) {
+export function getDepositAmountsByAmountA(currentPrice: number, minPrice: number, maxPrice: number, amount: bigint) {
   if (maxPrice < currentPrice) {
     return {
       amountA: 0,
@@ -232,17 +203,9 @@ export function getDepositAmountsByAmountA(
   const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
   const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
-  const liquidity = getLiquidityForAmount0(
-    currentPriceX96,
-    maxPriceX96,
-    amount,
-  );
+  const liquidity = getLiquidityForAmount0(currentPriceX96, maxPriceX96, amount);
 
-  const amountB = getAmount1ForLiquidity(
-    currentPriceX96,
-    minPriceX96,
-    liquidity,
-  );
+  const amountB = getAmount1ForLiquidity(currentPriceX96, minPriceX96, liquidity);
 
   return {
     amountA: amount,
@@ -250,12 +213,7 @@ export function getDepositAmountsByAmountA(
   };
 }
 
-export function getDepositAmountsByAmountB(
-  currentPrice: number,
-  minPrice: number,
-  maxPrice: number,
-  amount: bigint,
-) {
+export function getDepositAmountsByAmountB(currentPrice: number, minPrice: number, maxPrice: number, amount: bigint) {
   if (maxPrice < currentPrice) {
     return {
       amountA: 0,
@@ -273,17 +231,9 @@ export function getDepositAmountsByAmountB(
   const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
   const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
-  const liquidity = getLiquidityForAmount1(
-    currentPriceX96,
-    minPriceX96,
-    amount,
-  );
+  const liquidity = getLiquidityForAmount1(currentPriceX96, minPriceX96, amount);
 
-  const amountA = getAmount0ForLiquidity(
-    currentPriceX96,
-    maxPriceX96,
-    liquidity,
-  );
+  const amountA = getAmount0ForLiquidity(currentPriceX96, maxPriceX96, liquidity);
 
   return {
     amountA,
@@ -301,12 +251,7 @@ export function getDepositAmountsByLiquidity(
   const minPriceX96 = priceToSqrtX96(minPrice);
   const maxPriceX96 = priceToSqrtX96(maxPrice);
 
-  const { amount0, amount1 } = getAmountsForLiquidity(
-    currentPriceX96,
-    minPriceX96,
-    maxPriceX96,
-    liquidity,
-  );
+  const { amount0, amount1 } = getAmountsForLiquidity(currentPriceX96, minPriceX96, maxPriceX96, liquidity);
 
   return {
     amountA: amount0,

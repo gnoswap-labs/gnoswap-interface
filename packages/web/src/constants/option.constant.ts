@@ -1,11 +1,6 @@
 import { ValuesType } from "utility-types";
 
-export type SwapFeeTierType =
-  | "FEE_100"
-  | "FEE_500"
-  | "FEE_3000"
-  | "FEE_10000"
-  | "NONE";
+export type SwapFeeTierType = "FEE_100" | "FEE_500" | "FEE_3000" | "FEE_10000" | "NONE";
 
 export interface SwapFeeTierInfo {
   type: SwapFeeTierType;
@@ -56,10 +51,7 @@ export const SwapFeeTierMaxPriceRangeMap: Record<
   },
 };
 
-export const SwapFeeTierPriceRange: Record<
-  SwapFeeTierType,
-  Record<PriceRangeType, { min: number; max: number }>
-> = {
+export const SwapFeeTierPriceRange: Record<SwapFeeTierType, Record<PriceRangeType, { min: number; max: number }>> = {
   FEE_100: {
     Active: {
       min: -0.5,
@@ -203,11 +195,7 @@ export const INCENTIVE_TYPE_MAPPER = {
   NONE_INCENTIVIZED: "Non-Incentivized",
   EXTERNAL: "External-Incentivized",
 } as const;
-export type INCENTIVE_TYPE =
-  | "INCENTIVIZED"
-  | "NONE_INCENTIVIZED"
-  | "EXTERNAL"
-  | "INTERNAL";
+export type INCENTIVE_TYPE = "INCENTIVIZED" | "NONE_INCENTIVIZED" | "EXTERNAL" | "INTERNAL";
 
 export const CHART_TYPE = {
   "7D": "7D",

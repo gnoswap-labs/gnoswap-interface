@@ -2,10 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
-import {
-  nullProposalItemInfo,
-  ProposalItemInfo,
-} from "@repositories/governance";
+import { nullProposalItemInfo, ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
 import ProposalCard from "./proposal-card/ProposalCard";
@@ -107,19 +104,11 @@ const ProposalList: React.FC<ProposalListProps> = ({
   };
 
   const selectedProposalDetail = React.useMemo(() => {
-    return (
-      proposalList.find(item => item.id === selectedProposalId) ||
-      nullProposalItemInfo
-    );
+    return proposalList.find(item => item.id === selectedProposalId) || nullProposalItemInfo;
   }, [proposalList, selectedProposalId]);
 
   const getTooltipTextI18nKey = React.useCallback(
-    (
-      status: string,
-      isMajorityVoted: boolean,
-      yesVotes: number,
-      noVotes: number,
-    ) => {
+    (status: string, isMajorityVoted: boolean, yesVotes: number, noVotes: number) => {
       if (!isMajorityVoted) {
         return "proposal.tooltip.executed";
       }
@@ -157,32 +146,26 @@ const ProposalList: React.FC<ProposalListProps> = ({
       />
       {proposalList && proposalList.length > 0 && (
         <>
-          {proposalList.map(
-            (proposalDetail: ProposalItemInfo, index: number) => {
-              const Card =
-                index < proposalList.length - 1 ? ProposalCard : LastCard;
-              const isMajorityVoted = calculateIsMajorityVoted(proposalDetail);
-              return (
-                <Card
-                  key={proposalDetail.id}
-                  address={address}
-                  breakpoint={breakpoint}
-                  proposalDetail={proposalDetail}
-                  onClickCard={() => setSelectedProposalId(proposalDetail.id)}
-                  executeProposal={executeProposal}
-                  cancelProposal={cancelProposal}
-                  getTooltipTextI18nKey={getTooltipTextI18nKey}
-                  isMajorityVoted={isMajorityVoted}
-                />
-              );
-            },
-          )}
+          {proposalList.map((proposalDetail: ProposalItemInfo, index: number) => {
+            const Card = index < proposalList.length - 1 ? ProposalCard : LastCard;
+            const isMajorityVoted = calculateIsMajorityVoted(proposalDetail);
+            return (
+              <Card
+                key={proposalDetail.id}
+                address={address}
+                breakpoint={breakpoint}
+                proposalDetail={proposalDetail}
+                onClickCard={() => setSelectedProposalId(proposalDetail.id)}
+                executeProposal={executeProposal}
+                cancelProposal={cancelProposal}
+                getTooltipTextI18nKey={getTooltipTextI18nKey}
+                isMajorityVoted={isMajorityVoted}
+              />
+            );
+          })}
         </>
       )}
-      {isLoading &&
-        Array.from({ length: 3 }).map((_, idx) => (
-          <ProposalCardSkeleton key={`skeleton-${idx}`} />
-        ))}
+      {isLoading && Array.from({ length: 3 }).map((_, idx) => <ProposalCardSkeleton key={`skeleton-${idx}`} />)}
       {!isLoading && (!proposalList || proposalList.length === 0) && (
         <div className="no-data-found">{t("common:noProposalFound")}</div>
       )}
@@ -190,9 +173,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
         <ViewProposalModal
           breakpoint={breakpoint}
           proposalDetail={selectedProposalDetail}
-          setIsModalOpen={(isOpen: boolean) =>
-            setSelectedProposalId(isOpen ? selectedProposalId : 0)
-          }
+          setIsModalOpen={(isOpen: boolean) => setSelectedProposalId(isOpen ? selectedProposalId : 0)}
           isConnected={isConnected}
           isSwitchNetwork={isSwitchNetwork}
           connectWallet={connectWallet}

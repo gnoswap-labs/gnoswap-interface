@@ -7,7 +7,9 @@ describe("SubMenuButton Component", () => {
   it("SubMenuButton render", () => {
     const args = {
       sideMenuToggle: false,
-      onSideMenuToggle: () => { return; }
+      onSideMenuToggle: () => {
+        return;
+      },
     };
 
     render(

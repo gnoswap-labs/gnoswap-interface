@@ -24,11 +24,7 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
   border-radius: 8px;
   z-index: ${Z_INDEX.modal};
   right: ${({ width }) => {
-    return width && width > 1920
-      ? "-250px"
-      : width && width > 1440
-        ? `-${(width - 1440) / 2 + 10}px`
-        : "-10px";
+    return width && width > 1920 ? "-250px" : width && width > 1440 ? `-${(width - 1440) / 2 + 10}px` : "-10px";
   }};
   left: ${({ width }) => {
     return width && width < 768 && "0px";

@@ -11,8 +11,7 @@ export const Wrapper = styled.div<{ hover?: boolean }>`
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
-  background-color: ${({ theme, hover }) =>
-    hover ? theme.color.hover04 : theme.color.background01};
+  background-color: ${({ theme, hover }) => (hover ? theme.color.hover04 : theme.color.background01)};
 `;
 
 export const TableColumn = styled.div<{ tdWidth: number }>`

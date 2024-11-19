@@ -3,9 +3,7 @@ import { useAtom } from "jotai";
 
 const useScrollData = () => {
   const [pageScrollMap, setPageScrollMap] = useAtom(CommonState.pageScrollMap);
-  const [previousPageScroll, setPreviousPageScroll] = useAtom(
-    CommonState.previousPageScroll,
-  );
+  const [previousPageScroll, setPreviousPageScroll] = useAtom(CommonState.previousPageScroll);
 
   function getScrollHeight(path: string): number {
     return pageScrollMap[path] || 0;

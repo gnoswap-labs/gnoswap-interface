@@ -91,7 +91,7 @@ export const ToolTipContentWrapper = styled.div`
 export const PriceImpactStatusWrapper = styled.span<{
   priceImpact: PriceImpactStatus;
 }>`
-   ${({ priceImpact, theme }) => {
+  ${({ priceImpact, theme }) => {
     switch (priceImpact) {
       case "HIGH":
         return `color: ${theme.color.red01};`;

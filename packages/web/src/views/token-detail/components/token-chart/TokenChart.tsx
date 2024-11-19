@@ -10,11 +10,7 @@ import TokenChartGraphTab from "./token-chart-graph-tab/TokenChartGraphTab";
 import TokenChartGraph from "./token-chart-graph/TokenChartGraph";
 import TokenChartInfo from "./token-chart-info/TokenChartInfo";
 
-import {
-  ChartNotFound,
-  LoadingChart,
-  TokenChartWrapper,
-} from "./TokenChart.styles";
+import { ChartNotFound, LoadingChart, TokenChartWrapper } from "./TokenChart.styles";
 
 export interface TokenInfo {
   token: {
@@ -84,19 +80,9 @@ const TokenChart: React.FC<TokenChartProps> = ({
 
   return (
     <TokenChartWrapper>
-      <TokenChartInfo
-        {...tokenInfo}
-        isEmpty={loading || isAllZero || false}
-        loading={loading}
-      />
-      <TokenChartGraphTab
-        tabs={tabs}
-        currentTab={currentTab}
-        changeTab={changeTab}
-      />
-      {(chartInfo?.datas.length === 0 || isAllZero) && !loading && (
-        <ChartNotFound>{t("common:noData")}</ChartNotFound>
-      )}
+      <TokenChartInfo {...tokenInfo} isEmpty={loading || isAllZero || false} loading={loading} />
+      <TokenChartGraphTab tabs={tabs} currentTab={currentTab} changeTab={changeTab} />
+      {(chartInfo?.datas.length === 0 || isAllZero) && !loading && <ChartNotFound>{t("common:noData")}</ChartNotFound>}
       {loading && (
         <LoadingChart>
           <LoadingSpinner />

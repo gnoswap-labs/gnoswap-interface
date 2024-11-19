@@ -45,9 +45,9 @@ const TokenInfoContent: React.FC<TokenInfoContentProps> = ({
 }) => {
   return (
     <div css={wrapper}>
-      <PricePerformance info={performance} loading={loadingPricePerform}/>
-      <PriceInformation info={priceInfo} loading={loadingPriceInfo}/>
-      <MarketInformation info={marketInfo} loading={loadingMarketInfo}/>
+      <PricePerformance info={performance} loading={loadingPricePerform} />
+      <PriceInformation info={priceInfo} loading={loadingPriceInfo} />
+      <MarketInformation info={marketInfo} loading={loadingMarketInfo} />
     </div>
   );
 };

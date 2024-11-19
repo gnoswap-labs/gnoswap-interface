@@ -13,12 +13,7 @@ export interface Props {
   refetchPositions: () => Promise<void>;
 }
 
-export const useRemovePositionModal = ({
-  positions,
-  selectedIds,
-  isGetWGNOT,
-  refetchPositions,
-}: Props) => {
+export const useRemovePositionModal = ({ positions, selectedIds, isGetWGNOT, refetchPositions }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -36,14 +31,7 @@ export const useRemovePositionModal = ({
         refetchPositions={refetchPositions}
       />,
     );
-  }, [
-    positions,
-    selectedPositions,
-    setModalContent,
-    setOpenedModal,
-    refetchPositions,
-    isGetWGNOT,
-  ]);
+  }, [positions, selectedPositions, setModalContent, setOpenedModal, refetchPositions, isGetWGNOT]);
 
   return {
     openModal,

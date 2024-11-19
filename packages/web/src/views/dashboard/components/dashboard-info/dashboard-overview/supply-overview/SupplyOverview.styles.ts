@@ -248,8 +248,9 @@ export const BlockEmissionsWrapper = styled.div`
     height: 28px;
     width: 100%;
     ${mixins.flexbox("row", "center", "space-between")};
-    
-    .label, .value {
+
+    .label,
+    .value {
       color: ${({ theme }) => theme.color.text02};
       ${fonts.body12}
     }

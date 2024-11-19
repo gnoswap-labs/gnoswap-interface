@@ -22,10 +22,7 @@ interface MarketInformationListProps {
   loading: boolean;
 }
 
-const MarketInformationList: React.FC<MarketInformationListProps> = ({
-  list,
-  loading,
-}) => {
+const MarketInformationList: React.FC<MarketInformationListProps> = ({ list, loading }) => {
   const { t } = useTranslation();
 
   const TITLE_LIST = [

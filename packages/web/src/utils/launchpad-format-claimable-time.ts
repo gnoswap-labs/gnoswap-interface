@@ -10,9 +10,7 @@ export const formatClaimableTime = (
   } else {
     const diffMs = claimableDate.getTime() - now.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor(
-      (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-    );
+    const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
     const formatTime = (days: number, hours: number, minutes: number) => {

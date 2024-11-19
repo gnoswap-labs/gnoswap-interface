@@ -11,14 +11,13 @@ interface TrendingCryptoCardListProps {
   loading: boolean;
 }
 
-const TrendingCryptoCardList: React.FC<TrendingCryptoCardListProps> = ({
-  list,
-  loading,
-}) => {
-  if (loading) return (
-    <div css={loadingWrapper}>
-      <LoadingSpinner />
-    </div>);
+const TrendingCryptoCardList: React.FC<TrendingCryptoCardListProps> = ({ list, loading }) => {
+  if (loading)
+    return (
+      <div css={loadingWrapper}>
+        <LoadingSpinner />
+      </div>
+    );
 
   if (list.length === 0) {
     return (

@@ -5,7 +5,7 @@ import { ExchangeRateWrapper } from "./ExchangeRate.styles";
 
 interface Props {
   value: string;
-  feeTier?: SwapFeeTierType
+  feeTier?: SwapFeeTierType;
 }
 
 const ExchangeRate: React.FC<Props> = ({ value, feeTier }) => {
@@ -25,15 +25,9 @@ const ExchangeRate: React.FC<Props> = ({ value, feeTier }) => {
     }
 
     return formatTokenExchangeRate(value);
-  },
-    [feeTier, value]
-  );
+  }, [feeTier, value]);
 
-  return (
-    <ExchangeRateWrapper>
-      {exchangePrice}
-    </ExchangeRateWrapper>
-  );
+  return <ExchangeRateWrapper>{exchangePrice}</ExchangeRateWrapper>;
 };
 
 export default ExchangeRate;
