@@ -17,7 +17,7 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 enum TransactionMessageFunctionType {
   SwapRoute = "SwapRoute",
   Deposit = "Deposit",
-  Unwrap = "Unwrap",
+  Unwrap = "Withdraw",
 }
 
 export function makeSwapRouteMessageWithApproves(
