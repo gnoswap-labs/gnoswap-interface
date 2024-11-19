@@ -101,6 +101,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     setRecentsData(
       JSON.stringify(
         current
+          .filter(recentToken => tokens.some(token => token.path === recentToken.path))
           .filter((_item, index) => {
             const _value = JSON.stringify(_item);
             return (
@@ -109,8 +110,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                 return JSON.stringify(obj) === _value;
               })
             );
-          })
-          .filter(recentToken => tokens.some(token => token.path === recentToken.path)),
+          }),
       ),
     );
     onSearchMenuToggle();
