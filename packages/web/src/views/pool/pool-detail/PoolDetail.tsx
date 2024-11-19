@@ -54,91 +54,35 @@ const PoolDetail: React.FC = () => {
   }, [data?.incentiveType, positions]);
 
   useEffect(() => {
-    if (hash === "staking" && !loading && isFetchedPosition && isStakable) {
-      const positionContainerElement = document.getElementById("staking");
-      const topPosition = positionContainerElement?.offsetTop;
-      if (!topPosition) {
-        return;
-      }
-      window.scrollTo({
-        top: topPosition,
-      });
-      return;
+    if (positions.length === 0) {
+      window.scrollTo({ top: 0 });
     }
+    if (!loading && isFetchedPosition && hash && !jumpFlagRef.current) {
+      jumpFlagRef.current = true;
+      setTimeout(() => {
+        if (hash === "staking" && isStakable) {
+          const element = document.getElementById("staking");
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+          return;
+        }
 
-    if (address && isFetchedPosition && !loading && poolPath && !jumpFlagRef.current) {
-      if (hash && hash !== "staking") {
         const position = positions.find(item => item.id.toString() === hash);
-        const isClosedPosition = !position || position?.closed;
-
-        jumpFlagRef.current = true;
-        setTimeout(() => {
-          if (isClosedPosition) {
-            const positionContainerElement = document.getElementById("liquidity-wrapper");
-            const topPosition = positionContainerElement?.offsetTop;
-            if (!topPosition) {
-              return;
-            }
-            window.scrollTo({
-              top: topPosition,
-            });
+        if (position) {
+          const element = document.getElementById(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
           }
-
-          const positionContainerElement = document.getElementById(`${hash}`);
-          const topPosition = positionContainerElement?.offsetTop;
-          if (!topPosition) {
-            return;
+        } else {
+          const element = document.getElementById("liquidity-wrapper");
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
           }
-          window.scrollTo({
-            top: topPosition,
-          });
-        });
-        return;
-      }
-
-      jumpFlagRef.current = true;
-      setTimeout(() => {
-        const positionContainerElement = document.getElementById("liquidity-wrapper");
-        const topPosition = positionContainerElement?.offsetTop;
-        if (!topPosition) {
-          return;
         }
-        window.scrollTo({
-          top: topPosition,
-        });
-      });
-      return;
+      }, 100);
     }
-
-    if (hash && hash !== "staking" && isFetchedPosition && !loading && poolPath && !jumpFlagRef.current) {
-      const position = positions.find(item => item.id.toString() === hash);
-      const isClosedPosition = !position || position?.closed;
-
-      jumpFlagRef.current = true;
-      setTimeout(() => {
-        if (isClosedPosition) {
-          const positionContainerElement = document.getElementById("liquidity-wrapper");
-          const topPosition = positionContainerElement?.offsetTop;
-          if (!topPosition) {
-            return;
-          }
-          window.scrollTo({
-            top: topPosition,
-          });
-        }
-
-        const positionContainerElement = document.getElementById(`${hash}`);
-        const topPosition = positionContainerElement?.offsetTop;
-        if (!topPosition) {
-          return;
-        }
-        window.scrollTo({
-          top: topPosition,
-        });
-      });
-      return;
-    }
-  }, [isFetchedPosition, hash, address, loading, isStakable, poolPath, positions, router]);
+  }, [loading, isFetchedPosition, hash, jumpFlagRef.current]);
 
   return (
     <PoolLayout
