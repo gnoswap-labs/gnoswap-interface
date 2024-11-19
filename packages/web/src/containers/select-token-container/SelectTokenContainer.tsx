@@ -85,8 +85,9 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken
   const { isSwitchNetwork } = useWallet();
 
   const recents = useMemo(() => {
-    return parseJson(recentsData ? recentsData : "[]");
-  }, [recentsData]);
+    const recentTokens = parseJson(recentsData ? recentsData : "[]");
+    return recentTokens.filter((recentToken: TokenModel) => tokens.some(token => token.path === recentToken.path));
+  }, [recentsData, tokens]);
 
   const close = useCallback(() => {
     clearModal();
