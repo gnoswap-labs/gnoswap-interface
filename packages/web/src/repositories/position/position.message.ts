@@ -90,7 +90,7 @@ export function makeClaimMessageWithApproves(
         packagePath: PACKAGE_POSITION_PATH,
         args: [
           position.lpTokenId.toString(),
-          "false", // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
+          "true", // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
         ],
         caller,
       }),
@@ -173,7 +173,7 @@ export function makeClaimAllMessageWithApproves(
           packagePath: PACKAGE_POSITION_PATH,
           args: [
             position.lpTokenId.toString(),
-            "false", // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
+            "true", // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
           ],
           caller,
         }),
