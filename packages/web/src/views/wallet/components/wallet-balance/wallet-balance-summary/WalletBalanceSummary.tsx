@@ -6,9 +6,7 @@ import IconDownload from "@components/common/icons/IconDownload";
 import IconUpload from "@components/common/icons/IconUpload";
 import { DEVICE_TYPE } from "@styles/media";
 
-import WalletBalanceSummaryInfo, {
-  BalanceSummaryInfo,
-} from "./wallet-balance-summary-info/WalletBalanceSummaryInfo";
+import WalletBalanceSummaryInfo, { BalanceSummaryInfo } from "./wallet-balance-summary-info/WalletBalanceSummaryInfo";
 
 import { WalletBalanceSummaryWrapper } from "./WalletBalanceSummary.styles";
 
@@ -33,14 +31,9 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
 
   return (
     <WalletBalanceSummaryWrapper>
-      <span className="total-balance-title">
-        {t("Wallet:overral.totalBal")}
-      </span>
+      <span className="total-balance-title">{t("Wallet:overral.totalBal")}</span>
       <div className="container">
-        <WalletBalanceSummaryInfo
-          balanceSummaryInfo={balanceSummaryInfo}
-          connected={connected}
-        />
+        <WalletBalanceSummaryInfo balanceSummaryInfo={balanceSummaryInfo} connected={connected} />
         <div className="button-group">
           <Button
             leftIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconDownload />}
@@ -51,7 +44,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
               padding: "10px 16px",
               gap: "8px",
             }}
-            text={t("Wallet:overral.btn.assetReceive")}
+            text={t("Wallet:assets.col.assetReceive")}
             onClick={deposit}
             disabled={connected === false || isSwitchNetwork}
           />
@@ -64,7 +57,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
               padding: "10px 16px",
               gap: "8px",
             }}
-            text={t("Wallet:overral.btn.assetSend")}
+            text={t("Wallet:assets.col.assetSend")}
             onClick={withdraw}
             disabled={connected === false || isSwitchNetwork}
           />

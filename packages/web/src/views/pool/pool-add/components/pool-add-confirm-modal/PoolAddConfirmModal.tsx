@@ -79,7 +79,7 @@ const PoolAddConfirmModal: React.FC<PoolAddConfirmModalProps> = ({
       {isPoolCreation && <PoolAddConfirmFeeInfo {...feeInfo} />}
 
       <Button
-        text={t("AddPosition:confirmAddModal.btn")}
+        text={t("AddPosition:confirmAddModal.title")}
         onClick={onClickConfirm}
         disabled={isPoolCreation && !!feeInfo.errorMsg}
         style={{

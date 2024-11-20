@@ -86,6 +86,7 @@ export const ManageButtonWrapper = styled(SelectBox<POSITION_ACTION>)`
       height: fit-content;
       display: none;
       min-width: 165px;
+      width: 100%;
     }
     .open {
       display: block;

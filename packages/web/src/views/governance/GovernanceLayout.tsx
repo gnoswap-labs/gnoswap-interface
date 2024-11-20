@@ -1,55 +1,50 @@
-import IconFile from "@components/common/icons/IconFile";
-import React, { useState } from "react";
-import { GovernanceLayoutWrapper, LinkButton } from "./GovernanceLayout.styles";
 import Link from "next/link";
-import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
-import LearnMoreModal from "@components/governance/learn-more-modal/LearnMoreModal";
+import React from "react";
+import { useTranslation } from "react-i18next";
+
+import { getCanScrollUpId } from "@constants/common.constant";
+
+import IconNote from "@components/common/icons/IconNote";
+import { EXT_URL } from "@constants/external-url.contant";
+import { useWindowSize } from "@hooks/common/use-window-size";
+
+import { GovernanceLayoutWrapper } from "./GovernanceLayout.styles";
 
 interface GovernanceLayoutProps {
   header: React.ReactNode;
   summary: React.ReactNode;
+  myDelegation: React.ReactNode;
   footer: React.ReactNode;
   list: React.ReactNode;
 }
 
-const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
-  header,
-  summary,
-  list,
-  footer,
-}) => {
-  const [isShowLearnMoreModal, setIsShowLearnMoreModal] = useState(false);
+const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({ header, summary, myDelegation, list, footer }) => {
+  const { t } = useTranslation();
+  const { isMobile } = useWindowSize();
+
   return (
     <GovernanceLayoutWrapper>
       {header}
       <section className="governance-section">
         <div className="title-container">
-          <h3 className="title">Governance</h3>
-          <div
-            className="sub-title-layout"
-            onClick={() => setIsShowLearnMoreModal(true)}
-          >
-            <p>Learn More</p>
-            <IconFile />
-          </div>
+          <h3 className="title">{t("Governance:header")}</h3>
+          {isMobile && (
+            <Link className="learn-more" href={EXT_URL.DOCS.XGNS} target="_blank">
+              {t("common:learnMore")}
+              <IconNote />
+            </Link>
+          )}
         </div>
         <div className="summary-container">
           {summary}
-          <LinkButton>
-            <div>Stake GNS/GNOT Positions to earn xGNOS</div>
-            <Link href="/earn/pool/1">
-              Click here <IconStrokeArrowRight className="link-icon" />
-            </Link>
-          </LinkButton>
+          {myDelegation}
         </div>
       </section>
-      <div className="list-wrapper">
-        <div className="list-container">{list}</div>
+      <div className="proposal-list-wrapper" id={getCanScrollUpId("proposal-list")}>
+        <div className="background" id="proposal-list" />
+        <div className="proposal-list-container">{list}</div>
       </div>
       {footer}
-      {isShowLearnMoreModal && (
-        <LearnMoreModal setIsShowLearnMoreModal={setIsShowLearnMoreModal} />
-      )}
     </GovernanceLayoutWrapper>
   );
 };

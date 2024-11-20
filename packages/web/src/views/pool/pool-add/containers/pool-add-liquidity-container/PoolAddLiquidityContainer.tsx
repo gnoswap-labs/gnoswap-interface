@@ -7,7 +7,7 @@ import {
   DefaultTick,
   PriceRangeMeta,
   PriceRangeType,
-  SwapFeeTierType
+  SwapFeeTierType,
 } from "@constants/option.constant";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -23,7 +23,6 @@ import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
-import { isFetchedPools } from "@states/pool";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
 import { checkPoolStakingRewards } from "@utils/pool-utils";
@@ -37,18 +36,11 @@ import {
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
-import PoolAddLiquidity, {
-  PriceRangeSummary,
-} from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
 import { usePool } from "../../hooks/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "../../hooks/use-pool-add-liquidity-confirm-modal";
 
-export const SWAP_FEE_TIERS: SwapFeeTierType[] = [
-  "FEE_100",
-  "FEE_500",
-  "FEE_3000",
-  "FEE_10000",
-];
+export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
 
 const PRICE_RANGES: PriceRangeMeta[] = [
   { type: "Active", text: "[-10% / +10%]" },
@@ -61,39 +53,23 @@ const PoolAddLiquidityContainer: React.FC = () => {
   useRouterBack();
   const [initialized, setInitialized] = useState(false);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const {
-    tokenA = null,
-    tokenB = null,
-    type = "EXACT_IN",
-    isKeepToken = false,
-  } = swapValue;
+  const { tokenA = null, tokenB = null, type = "EXACT_IN", isKeepToken = false } = swapValue;
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
-  const [exactType, setExactType] = useState<"EXACT_IN" | "EXACT_OUT">(
-    "EXACT_IN",
-  );
+  const [exactType, setExactType] = useState<"EXACT_IN" | "EXACT_OUT">("EXACT_IN");
   const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>(null);
   const [priceRanges] = useState<PriceRangeMeta[]>(PRICE_RANGES);
-  const [priceRange, setPriceRange] = useState<PriceRangeMeta | null>(
-    null,
-  );
+  const [priceRange, setPriceRange] = useState<PriceRangeMeta | null>(null);
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
-  const [priceRangeTypeFromUrl, setPriceRangeTypeFromUrl] =
-    useState<PriceRangeType | null>();
+  const [priceRangeTypeFromUrl, setPriceRangeTypeFromUrl] = useState<PriceRangeType | null>();
   const [ticksFromUrl, setTickFromUrl] = useState<DefaultTick>();
   const { getGnotPath } = useGnotToGnot();
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
-  const {
-    connected: connectedWallet,
-    account,
-    switchNetwork,
-    isSwitchNetwork,
-  } = useWallet();
+  const { connected: connectedWallet, account, switchNetwork, isSwitchNetwork } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { tokens, updateTokens, updateBalances, updateTokenPrices } =
-    useTokenData();
+  const { tokens, updateTokens, updateBalances, updateTokenPrices } = useTokenData();
   const [createOption, setCreateOption] = useState<{
     startPrice: number | null;
     isCreate: boolean;
@@ -115,18 +91,17 @@ const PoolAddLiquidityContainer: React.FC = () => {
     fetching: isFetchingFeetierOfLiquidityMap,
   } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
 
-  const { openAddPositionModal, openAddPositionWithStakingModal } =
-    usePoolAddLiquidityConfirmModal({
-      tokenA,
-      tokenB,
-      tokenAAmountInput,
-      tokenBAmountInput,
-      selectPool,
-      slippage,
-      swapFeeTier,
-      createPool,
-      addLiquidity,
-    });
+  const { openAddPositionModal, openAddPositionWithStakingModal } = usePoolAddLiquidityConfirmModal({
+    tokenA,
+    tokenB,
+    tokenAAmountInput,
+    tokenBAmountInput,
+    selectPool,
+    slippage,
+    swapFeeTier,
+    createPool,
+    addLiquidity,
+  });
   const { isLoading: isLoadingCommon } = useLoading();
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
@@ -135,14 +110,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
     let estimatedApr: string = formatRate(selectPool.estimatedAPR) ?? "-";
 
     if (selectPool.selectedFullRange) {
-      const tokenASymbol =
-        tokenA?.symbol === selectPool.compareToken?.symbol
-          ? tokenA?.symbol
-          : tokenB?.symbol;
-      const tokenBSymbol =
-        tokenA?.symbol === selectPool.compareToken?.symbol
-          ? tokenB?.symbol
-          : tokenA?.symbol;
+      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.symbol : tokenB?.symbol;
+      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.symbol : tokenA?.symbol;
       depositRatio = `50.0% ${tokenASymbol} / 50.0% ${tokenBSymbol}`;
       return {
         depositRatio,
@@ -155,14 +124,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
     if (tokenAdepositRatio !== null) {
       const tokenARatioStr = BigNumber(tokenAdepositRatio).toFixed(1);
       const tokenBRatioStr = BigNumber(100 - tokenAdepositRatio).toFixed(1);
-      const tokenASymbol =
-        tokenA?.symbol === selectPool.compareToken?.symbol
-          ? tokenA?.symbol
-          : tokenB?.symbol;
-      const tokenBSymbol =
-        tokenA?.symbol === selectPool.compareToken?.symbol
-          ? tokenB?.symbol
-          : tokenA?.symbol;
+      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.symbol : tokenB?.symbol;
+      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.symbol : tokenA?.symbol;
       depositRatio = `${tokenARatioStr}% ${tokenASymbol} / ${tokenBRatioStr}% ${tokenBSymbol}`;
     }
     if (tokenAdepositRatio === 0 || tokenAdepositRatio === 100) {
@@ -196,35 +159,19 @@ const PoolAddLiquidityContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return "INVALID_PAIR";
     }
-    if (
-      selectPool.minPrice &&
-      selectPool.maxPrice &&
-      selectPool.minPrice >= selectPool.maxPrice
-    ) {
+    if (selectPool.minPrice && selectPool.maxPrice && selectPool.minPrice >= selectPool.maxPrice) {
       return "INVALID_RANGE";
     }
-    if (
-      !Number(tokenAAmountInput.amount) &&
-      !Number(tokenBAmountInput.amount)
-    ) {
+    if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput.amount)) {
       return "ENTER_AMOUNT";
     }
-    if (
-      Number(tokenAAmountInput.amount) < 0.000001 &&
-      Number(tokenBAmountInput.amount) < 0.000001
-    ) {
+    if (Number(tokenAAmountInput.amount) < 0.000001 && Number(tokenBAmountInput.amount) < 0.000001) {
       return "AMOUNT_TOO_LOW";
     }
-    if (
-      Number(tokenAAmountInput.amount) >
-      Number(parseFloat(tokenAAmountInput.balance.replace(/,/g, "")))
-    ) {
+    if (Number(tokenAAmountInput.amount) > Number(parseFloat(tokenAAmountInput.balance.replace(/,/g, "")))) {
       return "INSUFFICIENT_BALANCE";
     }
-    if (
-      Number(tokenBAmountInput.amount) >
-      Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))
-    ) {
+    if (Number(tokenBAmountInput.amount) > Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))) {
       return "INSUFFICIENT_BALANCE";
     }
     return "CREATE_POOL";
@@ -272,8 +219,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     (token: TokenModel) => {
       setSwapValue(prev => ({
         tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
-        tokenB:
-          prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+        tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
         type: type,
       }));
     },
@@ -284,8 +230,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     (token: TokenModel) => {
       setSwapValue(prev => ({
         tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
-        tokenA:
-          prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+        tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
         type: type,
       }));
     },
@@ -340,8 +285,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
       );
-      const expectedTokenAmount =
-        makeDisplayTokenAmount(tokenB, amountB) || "0";
+      const expectedTokenAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
       tokenBAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
@@ -379,8 +323,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
       );
-      const expectedTokenAmount =
-        makeDisplayTokenAmount(tokenA, amountA) || "0";
+      const expectedTokenAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
       tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
@@ -479,11 +422,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       const { tickLower, tickUpper, price_range_type } = router.query;
       if (price_range_type) {
         setPriceRangeTypeFromUrl(price_range_type as PriceRangeType);
-        setPriceRange(
-          PRICE_RANGES.find(
-            item => item.type === (price_range_type ?? "Passive"),
-          ) ?? null,
-        );
+        setPriceRange(PRICE_RANGES.find(item => item.type === (price_range_type ?? "Passive")) ?? null);
       }
       setTickFromUrl({
         tickLower: tickLower ? tickToPrice(Number(tickLower)) : undefined,
@@ -492,10 +431,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
       const poolPath = router.getPoolPath() || "";
       const splitPath: string[] = poolPath.split(":") || [];
-      const currentTokenA =
-        tokens.find(token => token.path === splitPath[0]) || null;
-      const currentTokenB =
-        tokens.find(token => token.path === splitPath[1]) || null;
+      const currentTokenA = tokens.find(token => token.path === splitPath[0]) || null;
+      const currentTokenB = tokens.find(token => token.path === splitPath[1]) || null;
       const feeTier = makeSwapFeeTier(splitPath[2]);
       setSwapFeeTier(feeTier);
       setSwapValue(prev => ({
@@ -529,12 +466,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     } else {
       updateTokenAAmountByTokenB(tokenBAmountInput.amount);
     }
-  }, [
-    selectPool.currentPrice,
-    selectPool.minPrice,
-    selectPool.maxPosition,
-    exactType,
-  ]);
+  }, [selectPool.currentPrice, selectPool.minPrice, selectPool.maxPosition, exactType]);
 
   useEffect(() => {
     if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
@@ -543,19 +475,13 @@ const PoolAddLiquidityContainer: React.FC = () => {
       const reverse =
         tokenPair.findIndex(path => {
           if (compareToken) {
-            return isNativeToken(compareToken)
-              ? compareToken.wrappedPath === path
-              : compareToken.path === path;
+            return isNativeToken(compareToken) ? compareToken.wrappedPath === path : compareToken.path === path;
           }
           return false;
         }) === 1;
-      const priceOfMaxLiquidity =
-        pools.sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price ||
-        null;
+      const priceOfMaxLiquidity = pools.sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price || null;
       if (priceOfMaxLiquidity) {
-        const maxPrice = reverse
-          ? 1 / priceOfMaxLiquidity
-          : priceOfMaxLiquidity;
+        const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
         setDefaultPrice(maxPrice);
       } else {
         setDefaultPrice(null);
@@ -618,13 +544,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
   }, [priceRange?.type]);
 
   useEffect(() => {
-    if (
-      !isFetchedPools ||
-      !swapFeeTier ||
-      !tokenA ||
-      !tokenB ||
-      swapFeeTier === "NONE"
-    ) {
+    if (!swapFeeTier || !tokenA || !tokenB || swapFeeTier === "NONE") {
       return;
     }
 
@@ -633,66 +553,36 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
     if (existPool) {
       if (router.query.price_range_type) {
-        setPriceRange(
-          priceRanges.find(
-            range => range.type === router.query.price_range_type,
-          ) || null,
-        );
+        setPriceRange(priceRanges.find(range => range.type === router.query.price_range_type) || null);
         return;
       }
-      setPriceRange(
-        priceRanges.find(range => range.type === "Passive") || null,
-      );
+      setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
     } else {
       setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
     }
-  }, [
-    swapFeeTier,
-    pools,
-    isFetchedPools,
-    priceRanges,
-    tokenA,
-    tokenB,
-    router.query.price_range_type,
-  ]);
+  }, [swapFeeTier, pools, priceRanges, tokenA, tokenB, router.query.price_range_type]);
 
   useEffect(() => {
     const query = {
       [QUERY_PARAMETER.POOL_PATH]: router.getPoolPath(),
       price_range_type: priceRange?.type,
-      tickLower:
-        selectPool.minPosition !== null
-          ? priceToTick(selectPool.minPosition)
-          : null,
-      tickUpper:
-        selectPool.maxPosition !== null
-          ? priceToTick(selectPool.maxPosition)
-          : null,
+      tickLower: selectPool.minPosition !== null ? priceToTick(selectPool.minPosition) : null,
+      tickUpper: selectPool.maxPosition !== null ? priceToTick(selectPool.maxPosition) : null,
     };
     if (tokenA?.path && tokenB?.path) {
-      window.history.pushState(
-        null,
-        "",
-        makeRouteUrl(PAGE_PATH.POOL_ADD, query),
-      );
+      router.replace(makeRouteUrl(PAGE_PATH.POOL_ADD, query), undefined, {
+        shallow: true,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
 
   const showDim = useMemo(() => {
-    return !!(
-      tokenA &&
-      tokenB &&
-      selectPool.isCreate &&
-      !createOption.startPrice &&
-      isFetchedPools
-    );
+    return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
   }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
 
   const isLoadingSelectFeeTier = useMemo(() => {
-    return (
-      isFetchingFeetierOfLiquidityMap || isFetchingPools || isLoadingCommon
-    );
+    return isFetchingFeetierOfLiquidityMap || isFetchingPools || isLoadingCommon;
   }, [isFetchingFeetierOfLiquidityMap, isFetchingPools, isLoadingCommon]);
 
   const isLoadingSelectPriceRange = useMemo(() => {
@@ -740,9 +630,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       }}
       handleSwapValue={handleSwapValue}
       isKeepToken={isKeepToken}
-      setPriceRange={type =>
-        setPriceRange(PRICE_RANGES.find(item => item.type === type) ?? null)
-      }
+      setPriceRange={type => setPriceRange(PRICE_RANGES.find(item => item.type === type) ?? null)}
       defaultTicks={ticksFromUrl}
       resetPriceRangeTypeTarget={priceRangeTypeFromUrl ?? "Passive"}
       showDim={showDim}

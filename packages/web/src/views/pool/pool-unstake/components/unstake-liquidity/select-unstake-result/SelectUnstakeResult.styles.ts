@@ -16,7 +16,7 @@ export const wrapper = (theme: Theme) => css`
   ${media.mobile} {
     padding-top: 12px;
   }
-  
+
   .pooled-section,
   .result-section {
     ${mixins.flexbox("column", "center", "center")};
@@ -82,7 +82,7 @@ export const wrapper = (theme: Theme) => css`
     }
     h5 {
       margin-right: 4px;
-      &.total-amount-title{
+      &.total-amount-title {
         margin-right: 4px;
         color: ${theme.color.text04};
       }

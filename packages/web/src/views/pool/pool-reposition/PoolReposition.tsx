@@ -16,7 +16,7 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 import RepositionContainer from "./containers/reposition-container/RepositionContainer";
 import RepositionLayout from "./RepositionLayout";
 
-const PoolReposition : React.FC = () =>  {
+const PoolReposition: React.FC = () => {
   const { t } = useTranslation();
   const { width } = useWindowSize();
   const router = useRouter();
@@ -31,9 +31,7 @@ const PoolReposition : React.FC = () =>  {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${
-                getGnotPath(data?.tokenB).symbol
-              } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000}%)`
             : "...",
         path: makeRouteUrl(PAGE_PATH.POOL, {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,
@@ -46,12 +44,7 @@ const PoolReposition : React.FC = () =>  {
   return (
     <RepositionLayout
       header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoadingCommon || isLoading}
-        />
-      }
+      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading} />}
       reposition={<RepositionContainer />}
       footer={<Footer />}
     />

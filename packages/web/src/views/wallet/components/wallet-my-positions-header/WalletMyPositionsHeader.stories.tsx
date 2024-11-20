@@ -8,9 +8,7 @@ export default {
   component: WalletMyPositionsHeader,
 } as ComponentMeta<typeof WalletMyPositionsHeader>;
 
-const Template: ComponentStory<typeof WalletMyPositionsHeader> = args => (
-  <WalletMyPositionsHeader {...args} />
-);
+const Template: ComponentStory<typeof WalletMyPositionsHeader> = args => <WalletMyPositionsHeader {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {};

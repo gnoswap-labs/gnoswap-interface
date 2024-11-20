@@ -7,12 +7,7 @@ import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { useGetPoolList } from "@query/pools";
 
 export const usePoolData = () => {
-  const {
-    data: pools = [],
-    isLoading: loading,
-    isFetched: isFetchedPools,
-    refetch: refetchPools,
-  } = useGetPoolList();
+  const { data: pools = [], isLoading: loading, isFetched: isFetchedPools, refetch: refetchPools } = useGetPoolList();
 
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 

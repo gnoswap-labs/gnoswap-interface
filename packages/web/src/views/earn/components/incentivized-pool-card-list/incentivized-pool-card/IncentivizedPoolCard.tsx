@@ -6,19 +6,13 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
-import {
-  INCENTIVE_TYPE_MAPPER,
-  SwapFeeTierInfoMap,
-} from "@constants/option.constant";
+import { INCENTIVE_TYPE_MAPPER, SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 import { formatRate } from "@utils/new-number-utils";
 import { numberToFormat } from "@utils/string-utils";
 
-import {
-  PoolCardWrapper,
-  PoolCardWrapperWrapperBorder,
-} from "./IncentivizedPoolCard.styles";
+import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
 
 export interface IncentivizedPoolCardProps {
   pool: IncentivizePoolCardInfo;
@@ -27,12 +21,7 @@ export interface IncentivizedPoolCardProps {
   checkStakedPool: (poolPath: string | null) => boolean;
 }
 
-const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
-  pool,
-  routeItem,
-  themeKey,
-  checkStakedPool,
-}) => {
+const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, routeItem, themeKey, checkStakedPool }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const staked = useMemo(() => {
@@ -80,8 +69,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
 
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = pool.bins40.every(
-      item =>
-        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
     );
 
     return isAllReserveZeroBin40;
@@ -114,16 +102,11 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 />
                 <span>{pairName}</span>
                 <div className="box-group">
-                  <Badge
-                    type={BADGE_TYPE.DARK_DEFAULT}
-                    text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr}`}
-                  />
+                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr}`} />
                   {incentivizedLabel && (
                     <Badge
                       type={BADGE_TYPE.DARK_DEFAULT}
-                      text={
-                        <OverlapTokenLogo tokens={rewardTokensInfo} size={16} />
-                      }
+                      text={<OverlapTokenLogo tokens={rewardTokensInfo} size={16} />}
                     />
                   )}
                 </div>
@@ -143,24 +126,15 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
           <div className="volume-container">
             <div className="volume-header">
               <div className="volume-title">
-                <span className="label-text">
-                  {t("Earn:incentiPools.card.col.volume")}
-                </span>
-                <span className="label-text">
-                  {t("Earn:incentiPools.card.col.fees")}
-                </span>
+                <span className="label-text">{t("Earn:incentiPools.card.col.volume")}</span>
+                <span className="label-text">{t("Earn:incentiPools.card.col.fees")}</span>
               </div>
               <div className="volume-content">
                 <span className="value-text">{pool.volume24h}</span>
                 <span className="value-text">{pool.fees24h}</span>
               </div>
             </div>
-            <div
-              className="pool-content"
-              onClick={(e: React.MouseEvent<HTMLDivElement>) =>
-                e.stopPropagation()
-              }
-            >
+            <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
               <PoolGraph
                 tokenA={pool.tokenA}
                 tokenB={pool.tokenB}
@@ -176,12 +150,10 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 disabled={isHideBar}
               />
               <div className="price-section">
-                <span className="label-text">{"Current Price"}</span>
-                <span className="label-text">{`1 ${
-                  pool.tokenA.symbol
-                } = ${numberToFormat(pool.price, { decimals: 2 })} ${
-                  pool.tokenB.symbol
-                }`}</span>
+                <span className="label-text">{t("Earn:incentiPools.card.current.price")}</span>
+                <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, {
+                  decimals: 2,
+                })} ${pool.tokenB.symbol}`}</span>
               </div>
             </div>
           </div>

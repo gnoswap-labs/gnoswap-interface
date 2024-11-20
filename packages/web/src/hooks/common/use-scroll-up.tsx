@@ -1,8 +1,13 @@
-import { CAN_SCROLL_UP_ID } from "@constants/common.constant";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+
+import { CAN_SCROLL_UP_ID } from "@constants/common.constant";
+import { useWindowSize } from "./use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
 
 export const useScrollUp = () => {
+  const { breakpoint } = useWindowSize();
+
   const [canScrollUp, setCanScrollUp] = useState(false);
   const [scrollStarted, setScrollStarted] = useState(false);
   const router = useRouter();
@@ -13,7 +18,8 @@ export const useScrollUp = () => {
     const findSpecificArea = () => {
       setScrollStarted(true);
       if (anyElement) {
-        const reachedTop = anyElement.getBoundingClientRect().top < 300;
+        const SCROLL_THRESHOLD = breakpoint === DEVICE_TYPE.MOBILE ? 100 : 300;
+        const reachedTop = anyElement.getBoundingClientRect().top < SCROLL_THRESHOLD;
 
         if (reachedTop) {
           setCanScrollUp(true);

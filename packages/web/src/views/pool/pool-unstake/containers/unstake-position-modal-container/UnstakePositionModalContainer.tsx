@@ -14,27 +14,31 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
 import UnstakePositionModal from "../../components/unstake-position-modal/UnstakePositionModal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
   isGetWGNOT: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 const UnstakePositionModalContainer = ({
   positions,
+  refetchPositions,
   isGetWGNOT,
 }: UnstakePositionModalContainerProps) => {
   const { account } = useWallet();
   const { positionRepository } = useGnoswapContext();
   const router = useRouter();
   const clearModal = useClearModal();
-  const {
-    broadcastRejected,
-    broadcastSuccess,
-    broadcastPending,
-    broadcastError,
-    broadcastLoading,
-  } = useBroadcastHandler();
+  const { broadcastRejected, broadcastSuccess, broadcastError, broadcastLoading } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(positions?.[0]?.poolPath);
+
   const { pooledTokenInfos } = usePositionsRewards({ positions });
   const { openModal } = useTransactionConfirmModal({
     confirmCallback: () => router.push(router.asPath.replace("/unstake", "")),
@@ -77,8 +81,31 @@ const UnstakePositionModalContainer = ({
       })
       .catch(() => null);
     if (result) {
+      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+        enqueueEvent({
+          txHash: result.data?.hash,
+          action: DexEvent.UNSTAKE,
+          visibleEmitResult: true,
+          formatData: () => ({
+            tokenASymbol: tokenA?.token?.symbol,
+            tokenBSymbol: tokenB?.token?.symbol,
+            tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+              decimals: tokenA?.token?.decimals,
+              isKMB: false,
+            }),
+            tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
+              decimals: tokenA?.token?.decimals,
+              isKMB: false,
+            }),
+          }),
+          onEmit: async () => {
+            refetchPools();
+            refetchPositions();
+            refetchPoolDetails();
+          },
+        });
+      }
       if (result.code === 0) {
-        broadcastPending({ txHash: result.data?.hash });
         setTimeout(() => {
           broadcastSuccess(
             getMessage(
@@ -143,13 +170,7 @@ const UnstakePositionModalContainer = ({
     return result;
   }, [account?.address, positionRepository, positions, router]);
 
-  return (
-    <UnstakePositionModal
-      positions={positions}
-      close={close}
-      onSubmit={unstakeOnSubmit}
-    />
-  );
+  return <UnstakePositionModal positions={positions} close={close} onSubmit={unstakeOnSubmit} />;
 };
 
 export default UnstakePositionModalContainer;

@@ -1,18 +1,8 @@
 import { ButtonHierarchy } from "@components/common/button/Button";
 import { useState } from "react";
-import {
-  CopyReferralLinkButton,
-  StyledIconLink,
-  Text,
-} from "./CopyReferralLink.styles";
+import { CopyReferralLinkButton, StyledIconLink, Text } from "./CopyReferralLink.styles";
 
-const CopyReferralLink = ({
-  connected,
-  address,
-}: {
-  connected: boolean;
-  address?: string;
-}) => {
+const CopyReferralLink = ({ connected, address }: { connected: boolean; address?: string }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {

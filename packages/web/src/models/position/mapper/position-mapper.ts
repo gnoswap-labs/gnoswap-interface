@@ -1,9 +1,6 @@
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenPairAmountInfo } from "@models/token/token-pair-amount-info";
-import {
-  PositionListResponse,
-  PositionResponse,
-} from "@repositories/position/response";
+import { PositionListResponse, PositionResponse } from "@repositories/position/response";
 import { RewardResponse } from "@repositories/position/response/reward-response";
 import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
@@ -12,9 +9,7 @@ import { toUnitFormat } from "@utils/number-utils";
 import { INCENTIVE_TYPE, RewardType } from "@constants/option.constant";
 
 export class PositionMapper {
-  public static toTokenPairAmount(
-    position: PoolPositionModel,
-  ): TokenPairAmountInfo {
+  public static toTokenPairAmount(position: PoolPositionModel): TokenPairAmountInfo {
     const tokenA = position.pool.tokenA;
     const tokenB = position.pool.tokenB;
 
@@ -38,7 +33,7 @@ export class PositionMapper {
       lpTokenId: position.lpTokenId,
       poolPath: position.poolPath,
       staked: position.staked,
-      operator: position.operator,
+      owner: position.owner,
       tickLower: Number(position.tickLower),
       tickUpper: Number(position.tickUpper),
       liquidity: BigInt(position.liquidity),
@@ -51,12 +46,9 @@ export class PositionMapper {
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsd || "",
       reward: position.reward?.map(PositionMapper.rewardFromResponse) || [],
+      claimedRewards: position.claimedRewards || [],
       closed: position.closed,
-      totalDailyRewardsUsd: toUnitFormat(
-        position.totalDailyRewardsUsd,
-        true,
-        true,
-      ),
+      totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
       bins40: [],
       totalClaimedUsd: position.totalClaimedUsd,
       usdValue: Number(position.usdValue),
@@ -81,10 +73,7 @@ export class PositionMapper {
     };
   }
 
-  public static makePoolPosition(
-    positionModel: PositionModel,
-    poolModel: PoolModel,
-  ): PoolPositionModel {
+  public static makePoolPosition(positionModel: PositionModel, poolModel: PoolModel): PoolPositionModel {
     return {
       ...positionModel,
       pool: poolModel,

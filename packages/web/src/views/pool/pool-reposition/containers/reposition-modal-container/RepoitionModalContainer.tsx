@@ -4,18 +4,11 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { TokenModel } from "@models/token/token-model";
-import {
-  RepositionLiquidityFailedResponse,
-  RepositionLiquiditySuccessResponse,
-} from "@repositories/position/response";
-import {
-  SwapRouteFailedResponse,
-  SwapRouteSuccessResponse,
-} from "@repositories/swap/response/swap-route-response";
+import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
+import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 
 import RepositionModal from "../../components/reposition-modal/RepositionModal";
 import { IPriceRange } from "../../hooks/use-reposition-handle";
-
 
 interface Props {
   amountInfo: {
@@ -39,16 +32,13 @@ interface Props {
   currentAmounts: { amountA: string; amountB: string } | null;
   repositionAmounts: { amountA: string | null; amountB: string | null } | null;
   removePosition: () => Promise<WalletResponse | null>;
-  swapRemainToken: () => Promise<WalletResponse<
-    SwapRouteSuccessResponse | SwapRouteFailedResponse
-  > | null>;
+  swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null>;
   reposition: (
     swapToken: TokenModel | null,
     swapAmount: string | null,
-  ) => Promise<WalletResponse<
-    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
-  > | null>;
+  ) => Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null>;
   isSkipSwap: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 const RepositionModalContainer: React.FC<Props> = ({
@@ -64,6 +54,7 @@ const RepositionModalContainer: React.FC<Props> = ({
   swapRemainToken,
   reposition,
   isSkipSwap,
+  refetchPositions,
 }) => {
   const clearModal = useClearModal();
 
@@ -86,6 +77,7 @@ const RepositionModalContainer: React.FC<Props> = ({
       swapRemainToken={swapRemainToken}
       reposition={reposition}
       isSkipSwap={isSkipSwap}
+      refetchPositions={refetchPositions}
     />
   );
 };

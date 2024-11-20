@@ -6,15 +6,12 @@ import { CommonError } from "@common/errors";
 import { AdenaError } from "@common/errors/adena";
 import { SessionStorageKeyType, StorageKeyType } from "@common/values";
 import { StatusOptions } from "@common/values/data-constant";
-import { GnoProvider } from "@gnolang/gno-js-client";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
-import {
-  AccountHistoryModel,
-  TransactionModel
-} from "@models/account/account-history-model";
+import { AccountHistoryModel, TransactionModel } from "@models/account/account-history-model";
 import { AccountMapper } from "@models/account/mapper/account-mapper";
 import { GNOWSWAP_CONNECTED_KEY } from "@states/common";
 
+import { GnoProvider } from "@gnolang/gno-js-client";
 import { AccountBalancesResponse, AccountRepository } from ".";
 import { AvgBlockTime } from "./response/get-avg-block-time-response";
 
@@ -57,13 +54,11 @@ export class AccountRepositoryImpl implements AccountRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
     const response = await this.walletClient.getAccount();
-    AdenaError.valdiate(response);
+    AdenaError.validate(response);
     return AccountMapper.fromResponse(response);
   };
 
-  public getBalances = async (
-    address: string,
-  ): Promise<AccountBalanceModel[]> => {
+  public getBalances = async (address: string): Promise<AccountBalanceModel[]> => {
     if (!this.networkClient) {
       return [];
     }
@@ -112,9 +107,7 @@ export class AccountRepositoryImpl implements AccountRepository {
     return response;
   };
 
-  public getNotificationsByAddress = async (
-    address: string,
-  ): Promise<AccountHistoryModel> => {
+  public getNotificationsByAddress = async (address: string): Promise<AccountHistoryModel> => {
     const history = this.getHistory();
     if (!history[address]) {
       return {
@@ -125,10 +118,7 @@ export class AccountRepositoryImpl implements AccountRepository {
     return history[address];
   };
 
-  public createNotification = async (
-    address: string,
-    transaction: TransactionModel,
-  ): Promise<boolean> => {
+  public createNotification = async (address: string, transaction: TransactionModel): Promise<boolean> => {
     const notifications = await this.getNotificationsByAddress(address);
     const transactions = [...notifications.txs, transaction];
     const history = this.getHistory();
@@ -138,10 +128,7 @@ export class AccountRepositoryImpl implements AccountRepository {
         txs: transactions,
       },
     };
-    this.localStorageClient.set(
-      "transaction-history",
-      JSON.stringify(savedHistory),
-    );
+    this.localStorageClient.set("transaction-history", JSON.stringify(savedHistory));
     return true;
   };
 
@@ -169,10 +156,7 @@ export class AccountRepositoryImpl implements AccountRepository {
       },
     };
 
-    this.localStorageClient.set(
-      "transaction-history",
-      JSON.stringify(savedHistory),
-    );
+    this.localStorageClient.set("transaction-history", JSON.stringify(savedHistory));
     return true;
   };
 
@@ -184,10 +168,7 @@ export class AccountRepositoryImpl implements AccountRepository {
         txs: [],
       },
     };
-    this.localStorageClient.set(
-      "transaction-history",
-      JSON.stringify(savedHistory),
-    );
+    this.localStorageClient.set("transaction-history", JSON.stringify(savedHistory));
     return true;
   };
 
@@ -224,17 +205,13 @@ export class AccountRepositoryImpl implements AccountRepository {
     return response;
   };
 
-  public async getAvgBlockTime(request: {
-    startBlock?: number;
-  }): Promise<AvgBlockTime> {
+  public async getAvgBlockTime(request: { startBlock?: number }): Promise<AvgBlockTime> {
     if (this.networkClient === null) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }
 
     const res = await this.networkClient.get<{ data: AvgBlockTime }>({
-      url: `/util/avgBlockTime${
-        request.startBlock ? `?compareHeight=${request.startBlock}` : ""
-      }`,
+      url: `/util/avgBlockTime${request.startBlock ? `?compareHeight=${request.startBlock}` : ""}`,
     });
 
     return res.data.data;

@@ -8,7 +8,7 @@ describe("Switch Component", () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <Switch checked={true} onChange={() => { }} />
+          <Switch checked={true} onChange={() => {}} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

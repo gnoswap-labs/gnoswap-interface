@@ -18,13 +18,8 @@ import {
   type Placement,
 } from "@floating-ui/react";
 import { useAtomValue } from "jotai";
-import React, {
-  CSSProperties,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 import { ThemeState } from "@states/index";
 import { Z_INDEX } from "@styles/zIndex";
@@ -35,6 +30,8 @@ function useTooltip({ placement }: { placement: Placement }) {
   const [open, setOpen] = useState(false);
   const arrowRef = useRef(null);
 
+  const { isMobile } = useWindowSize();
+
   const data = useFloating({
     placement,
     open,
@@ -44,8 +41,12 @@ function useTooltip({ placement }: { placement: Placement }) {
       offset(20),
       flip({
         fallbackAxisSideDirection: "start",
+        fallbackPlacements: isMobile ? ["top", "bottom"] : undefined,
       }),
-      shift(),
+      shift({
+        mainAxis: true,
+        crossAxis: !isMobile,
+      }),
       arrow({
         element: arrowRef,
       }),
@@ -99,7 +100,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   forcedOpen = false,
   forcedClose = false,
   scroll = false,
-  onChangeOpen = undefined
+  onChangeOpen = undefined,
 }) => {
   const theme = useTheme();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -123,7 +124,6 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
 
   // handle listner
   useEffect(() => {
-
     // disable auto hide scrollbar
     // let timeout: NodeJS.Timeout;
     // function showScrollEventListener(this: HTMLElement) {
@@ -193,11 +193,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
               height={14}
               tipRadius={4}
             />
-            <Content
-              themeKey={themeKey}
-              ref={contentRef}
-              className={`${scroll ? "use-scroll show-scroll" : ""}`}
-            >
+            <Content themeKey={themeKey} ref={contentRef} className={`${scroll ? "use-scroll show-scroll" : ""}`}>
               {FloatingContent}
             </Content>
           </div>

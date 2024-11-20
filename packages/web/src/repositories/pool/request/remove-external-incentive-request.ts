@@ -4,4 +4,8 @@ export interface RemoveExternalIncentiveRequest {
   poolPath: string;
 
   rewardToken: TokenModel;
+
+  startTimestamp: string;
+
+  endTimestamp: string;
 }

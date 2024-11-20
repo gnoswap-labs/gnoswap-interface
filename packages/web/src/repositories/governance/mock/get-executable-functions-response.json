@@ -1,0 +1,87 @@
+[
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/community_pool",
+    "functionName": "TransferToken",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/emission",
+    "functionName": "ChangeDistributionPct",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/gns",
+    "functionName": "SetAvgBlockTimeInMs",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/governance",
+    "functionName": "Reconfigure",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/pool",
+    "functionName": "SetFeeProtocol",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/pool",
+    "functionName": "SetPoolCreationFee",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/pool",
+    "functionName": "SetWithdrawalFee",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/protocol_fee",
+    "functionName": "SetDevOpsPct",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/router",
+    "functionName": "SetSwapFee",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/staker",
+    "functionName": "SetDepositGnsAmount",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/staker",
+    "functionName": "SetPoolTier",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/staker",
+    "functionName": "ChangePoolTier",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/staker",
+    "functionName": "RemovePoolTier",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/staker",
+    "functionName": "SetUnstakingFee",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/staker",
+    "functionName": "SetWarmUp",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/staker",
+    "functionName": "GnsSetAvgBlockTimeInMs",
+    "parameterNum": 1
+  },
+  {
+    "packagePath": "gno.land/r/gnoswap/v2/common",
+    "functionName": "SetHalt",
+    "parameterNum": 1
+  }
+]

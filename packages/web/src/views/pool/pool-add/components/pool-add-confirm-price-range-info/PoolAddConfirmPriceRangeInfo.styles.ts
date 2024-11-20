@@ -24,7 +24,6 @@ export const PoolAddConfirmPriceRangeInfoWrapper = styled.div`
     }
   }
 
-
   .price-range-wrapper {
     display: flex;
     flex-direction: row;
@@ -35,9 +34,7 @@ export const PoolAddConfirmPriceRangeInfoWrapper = styled.div`
   }
 `;
 
-export const PoolAddConfirmPriceRangeInfoSection = styled(
-  EarnAddConfirmContentSection,
-)`
+export const PoolAddConfirmPriceRangeInfoSection = styled(EarnAddConfirmContentSection)`
   gap: 16px;
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text10};
@@ -74,6 +71,7 @@ export const PoolAddConfirmPriceRangeInfoSection = styled(
     ${mixins.flexbox("flex", "center", "flex-end")}
     gap: 4px;
     > div {
+      ${mixins.flexbox("flex", "center", "center")}
       cursor: pointer;
     }
     svg * {
@@ -83,7 +81,7 @@ export const PoolAddConfirmPriceRangeInfoSection = styled(
       fill: ${({ theme }) => theme.color.icon07};
     }
   }
-  
+
   .row {
     display: flex;
     flex-direction: row;
@@ -130,7 +128,8 @@ export const PoolAddConfirmPriceRangeInfoSection = styled(
   }
   ${media.mobile} {
     gap: 8px;
-    .key, .value {
+    .key,
+    .value {
       ${fonts.p2}
     }
   }

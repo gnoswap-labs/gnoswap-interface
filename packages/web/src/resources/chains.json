@@ -4,26 +4,26 @@
     "chainId": "test4",
     "rpcUrl": "https://rpc.test4.gno.land",
     "wsUrl": "wss://rpc.test4.gno.land/websocket",
-    "apiUrl" : "https://test4.api.gnoswap.io",
-    "routerUrl" : "https://test4.route.gnoswap.io",
-    "scannerUrl" : "https://gnoscan.io"
+    "apiUrl": "https://test4.api.gnoswap.io",
+    "routerUrl": "https://test4.route.gnoswap.io",
+    "scannerUrl": "https://gnoscan.io"
   },
   {
     "name": "GNO.LAND",
     "chainId": "test3",
     "rpcUrl": "https://rpc.test3.gno.land",
     "wsUrl": "wss://rpc.test3.gno.land/websocket",
-    "apiUrl" : "https://test3.api.gnoswap.io",
-    "routerUrl" : "https://test3.route.gnoswap.io",
-    "scannerUrl" : "https://gnoscan.io"
+    "apiUrl": "https://test3.api.gnoswap.io",
+    "routerUrl": "https://test3.route.gnoswap.io",
+    "scannerUrl": "https://gnoscan.io"
   },
   {
     "name": "GNO.LAND",
     "chainId": "dev",
     "rpcUrl": "http://127.0.0.1:26657",
     "wsUrl": "ws://127.0.0.1:26657/websocket",
-    "apiUrl" : "http://127.0.0.1:8001",
-    "routerUrl" : "http://127.0.0.1:8002",
-    "scannerUrl" : "https://gnoscan.io"
+    "apiUrl": "http://127.0.0.1:8001",
+    "routerUrl": "http://127.0.0.1:8002",
+    "scannerUrl": "https://gnoscan.io"
   }
 ]

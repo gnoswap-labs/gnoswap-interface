@@ -98,6 +98,7 @@ export const PoolAddLiquidityWrapper = styled.section`
       }
     }
     .liquity-enter-amount {
+      max-width: 100%;
       .token {
         > div {
           height: 34px;

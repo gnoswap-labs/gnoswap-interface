@@ -2,14 +2,11 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
-import { GNOT_TOKEN } from "@common/values/token-constant";
+import { GNOT_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import {
-  CardListTokenInfo,
-  UpDownType,
-} from "@models/common/card-list-item-info";
+import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { useGetAllTokenPrices, useGetTokens } from "@query/token";
 import { TokenState } from "@states/index";
@@ -38,12 +35,8 @@ export const useTokenData = () => {
   const { account, availNetwork, refetchGnotBalance } = useWallet();
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
-  const [loadingBalance, setLoadingBalance] = useAtom(
-    TokenState.isLoadingBalances,
-  );
-  const [isChangeBalancesToken, setIsChangeBalancesToken] = useAtom(
-    TokenState.isChangeBalancesToken,
-  );
+  const [loadingBalance, setLoadingBalance] = useAtom(TokenState.isLoadingBalances);
+  const [isChangeBalancesToken, setIsChangeBalancesToken] = useAtom(TokenState.isChangeBalancesToken);
   const { getGnotPath } = useGnotToGnot();
 
   const gnotToken = useMemo((): TokenModel => {
@@ -61,9 +54,7 @@ export const useTokenData = () => {
       const token = tokens.find(token => token.priceID === key);
       const balance = balances[key];
       const exist = token && balance !== null && balance !== undefined;
-      tokenBalanceMap[key] = exist
-        ? makeDisplayTokenAmount(token, balance)
-        : null;
+      tokenBalanceMap[key] = exist ? makeDisplayTokenAmount(token, balance) : null;
     });
     return tokenBalanceMap;
   }, [balances, tokens]);
@@ -72,10 +63,7 @@ export const useTokenData = () => {
     const sortedTokens = tokens
       .sort((t1: { path: string }, t2: { path: string }) => {
         if (tokenPrices[t1.path] && tokenPrices[t2.path]) {
-          return (
-            BigNumber(tokenPrices[t2.path].volume).toNumber() -
-            BigNumber(tokenPrices[t1.path].volume).toNumber()
-          );
+          return BigNumber(tokenPrices[t2.path].volume).toNumber() - BigNumber(tokenPrices[t1.path].volume).toNumber();
         }
         if (tokenPrices[t2.path]) {
           return 1;
@@ -104,10 +92,7 @@ export const useTokenData = () => {
           content: "-",
         };
       }
-      const data1D = checkPositivePrice(
-        tokenPrice.pricesBefore.latestPrice,
-        tokenPrice.pricesBefore.priceToday,
-      );
+      const data1D = checkPositivePrice(tokenPrice.pricesBefore.latestPrice, tokenPrice.pricesBefore.priceToday);
 
       return {
         token: {
@@ -141,11 +126,7 @@ export const useTokenData = () => {
                 logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
-              content: `${toUnitFormat(
-                tokenPrices[token.path].usd,
-                true,
-                false,
-              )}`,
+              content: `${toUnitFormat(tokenPrices[token.path].usd, true, false)}`,
             }
           : {
               token: {
@@ -162,15 +143,29 @@ export const useTokenData = () => {
       .slice(0, 3);
   }, [tokenPrices, tokens]);
 
+  const getTokenSymbol = useCallback(
+    (tokenPath: string): string | null => {
+      if (tokenPath === XGNS_TOKEN.path) {
+        return XGNS_TOKEN.symbol;
+      }
+
+      const token = tokens.find(token => token.path === tokenPath);
+      if (token) {
+        return token.symbol;
+      }
+
+      return null;
+    },
+    [tokens],
+  );
+
   const getTokenUSDPrice = useCallback(
     (tokenAId: string, amount: bigint | string | number) => {
       const tokenUSDPrice = tokenPrices[tokenAId]?.usd || "0";
       if (!tokenUSDPrice || Number.isNaN(amount)) {
         return null;
       }
-      return BigNumber(amount.toString())
-        .multipliedBy(tokenUSDPrice)
-        .toNumber();
+      return BigNumber(amount.toString()).multipliedBy(tokenUSDPrice).toNumber();
     },
     [tokenPrices],
   );
@@ -201,9 +196,7 @@ export const useTokenData = () => {
         return null;
       }
       if (token.type === "native") {
-        const res = await rpcProvider
-          .getBalance(account.address, token.denom || "ugnot")
-          .catch(() => null);
+        const res = await rpcProvider.getBalance(account.address, token.denom || "ugnot").catch(() => null);
         return res;
       } else if (token.type === "grc20") {
         const param = `BalanceOf("${account.address}")`;
@@ -243,24 +236,13 @@ export const useTokenData = () => {
         balancesData[result.priceID] = result.balance;
       }
     });
-    if (
-      JSON.stringify(balancesData) !== JSON.stringify(balances) &&
-      !isEmptyObject(balancesData)
-    ) {
+    if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
       refetchGnotBalance();
       setIsChangeBalancesToken(true);
       setBalances(balancesData);
     }
     setLoadingBalance(false);
-  }, [
-    availNetwork,
-    account,
-    balances,
-    fetchTokenBalance,
-    loadingBalance,
-    rpcProvider,
-    tokens,
-  ]);
+  }, [availNetwork, account, balances, fetchTokenBalance, loadingBalance, rpcProvider, tokens]);
 
   return {
     gnotToken,
@@ -270,6 +252,7 @@ export const useTokenData = () => {
     balances,
     trendingTokens,
     recentlyAddedTokens,
+    getTokenSymbol,
     getTokenUSDPrice,
     getTokenPriceRate,
     updateTokens,

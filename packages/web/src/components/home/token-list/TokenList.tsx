@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  TOKEN_TYPE,
-  type Token,
-  TABLE_HEAD,
-  SortOption,
-} from "@containers/token-list-container/TokenListContainer";
+import { TOKEN_TYPE, type Token, TABLE_HEAD, SortOption } from "@containers/token-list-container/TokenListContainer";
 import TokenListHeader from "@components/home/token-list-header/TokenListHeader";
 import Pagination from "@components/common/pagination/Pagination";
 import { wrapper } from "./TokenList.styles";
@@ -69,12 +64,14 @@ const TokenList: React.FC<TokenItem> = ({
         sort={sort}
         breakpoint={breakpoint}
       />
-      {totalPage > 1 && <Pagination
-        currentPage={currentPage}
-        totalPage={totalPage}
-        onPageChange={movePage}
-        siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
-      />}
+      {totalPage > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPage={totalPage}
+          onPageChange={movePage}
+          siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
+        />
+      )}
     </div>
   );
 };

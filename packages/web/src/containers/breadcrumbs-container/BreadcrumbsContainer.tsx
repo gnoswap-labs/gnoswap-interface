@@ -7,7 +7,7 @@ import { ITokenResponse } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTranslation } from "react-i18next";
 
-export type BreadcrumbTypes = "TOKEN_SYMBOL" | "OTHERs";
+export type BreadcrumbTypes = "TOKEN_SYMBOL" | "LAUNCHPAD" | "OTHERs";
 export interface Steps {
   title: string;
   path?: string;
@@ -17,9 +17,7 @@ export interface Steps {
   };
 }
 
-const getMapping: (symbol: string) => Record<string, string> = (
-  symbol: string,
-) => {
+const getMapping: (symbol: string) => Record<string, string> = (symbol: string) => {
   return {
     "/earn/add": "Add Liquidity",
     "/earn/stake": "Stake Position",
@@ -33,11 +31,7 @@ interface Props {
   w?: string;
 }
 
-const BreadcrumbsContainer: React.FC<Props> = ({
-  listBreadcrumb,
-  isLoading,
-  w = "200px",
-}) => {
+const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading, w = "200px" }) => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const path = router.getTokenPath();
@@ -56,9 +50,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({
         path: "/",
       },
       {
-        title:
-          getMapping(tokenB?.symbol || "")[router.pathname] ||
-          `${getGnotPath(tokenB)?.symbol || "BTC"}`,
+        title: getMapping(tokenB?.symbol || "")[router.pathname] || `${getGnotPath(tokenB)?.symbol || "BTC"}`,
         path: "",
       },
     ];

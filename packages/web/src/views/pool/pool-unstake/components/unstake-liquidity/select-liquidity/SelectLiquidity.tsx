@@ -30,12 +30,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
   return (
     <div css={wrapper}>
       <div className="checked-all-wrap">
-        <input
-          id="checkbox-all"
-          type="checkbox"
-          checked={checkedAll}
-          onChange={e => onCheckedAll(e.target.checked)}
-        />
+        <input id="checkbox-all" type="checkbox" checked={checkedAll} onChange={e => onCheckedAll(e.target.checked)} />
         <label htmlFor="checkbox-all" className="select-all-label" />
         <span className="custom-label">
           {t("common:select", {
@@ -59,9 +54,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
               key={index}
             />
           ))}
-        {!isLoading && stakedPositions.length === 0 && (
-          <div className="no-position">{t("business:noPosition")}</div>
-        )}
+        {!isLoading && stakedPositions.length === 0 && <div className="no-position">{t("business:noPosition")}</div>}
       </ul>
     </div>
   );

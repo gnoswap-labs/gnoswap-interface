@@ -1,16 +1,9 @@
-import {
-  arrow,
-  getOverflowAncestors,
-  shift,
-  useFloating,
-} from "@floating-ui/react";
+import { arrow, getOverflowAncestors, shift, useFloating } from "@floating-ui/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 type FloatingPlacement = "end" | "start";
 type FloatingSide = "top" | "right" | "bottom" | "left";
-export type FloatingPosition =
-  | FloatingSide
-  | `${FloatingSide}-${FloatingPlacement}`;
+export type FloatingPosition = FloatingSide | `${FloatingSide}-${FloatingPlacement}`;
 interface UseFloatingTooltip {
   offset: number;
   position: FloatingPosition;
@@ -55,27 +48,17 @@ export function useFloatingTooltip<T extends HTMLElement = any>({
     : 0;
 
   const verticalOffset =
-    placement.includes("bottom") ||
-    placement.includes("right") ||
-    placement.includes("left")
+    placement.includes("bottom") || placement.includes("right") || placement.includes("left")
       ? offset + 32
       : position.includes("top")
       ? offset * -1
       : 0;
 
-  const handleMouseMove = (
-    event: MouseEvent | React.MouseEvent<T, MouseEvent> | React.TouchEvent<T>,
-  ) => {
+  const handleMouseMove = (event: MouseEvent | React.MouseEvent<T, MouseEvent> | React.TouchEvent<T>) => {
     const isTouch = event.type.startsWith("touch");
     const touch = isTouch ? (event as React.TouchEvent<T>).touches[0] : null;
-    const clientX =
-      (isTouch
-        ? touch?.clientX
-        : (event as React.MouseEvent<T, MouseEvent>).clientX) || 0;
-    const clientY =
-      (isTouch
-        ? touch?.clientY
-        : (event as React.MouseEvent<T, MouseEvent>).clientY) || 0;
+    const clientX = (isTouch ? touch?.clientX : (event as React.MouseEvent<T, MouseEvent>).clientX) || 0;
+    const clientY = (isTouch ? touch?.clientY : (event as React.MouseEvent<T, MouseEvent>).clientY) || 0;
 
     refs.setPositionReference({
       getBoundingClientRect() {

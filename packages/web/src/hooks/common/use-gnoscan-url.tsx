@@ -15,10 +15,7 @@ const TEMP_INDEXER_URL = "https%3A%2F%2Findexer-gnoswap.in.onbloc.xyz";
 export const useGnoscanUrl = () => {
   const network = useAtomValue(CommonState.network);
 
-  const getGnoscanUrl = (
-    type: GnoscanDataType | "" = "",
-    params = "",
-  ): string => {
+  const getGnoscanUrl = (type: GnoscanDataType | "" = "", params = ""): string => {
     const chainId = network.chainId || "";
     const baseUrl = network.scannerUrl || "";
     let chainParams = "";
@@ -26,10 +23,8 @@ export const useGnoscanUrl = () => {
       chainParams = `chainId=${chainId}`;
     } else {
       chainParams = "type=custom";
-      if (TEMP_RPC_URL)
-        chainParams = chainParams.concat(`&rpcUrl=${TEMP_RPC_URL}`);
-      if (TEMP_INDEXER_URL)
-        chainParams = chainParams.concat(`&indexerUrl=${TEMP_INDEXER_URL}`);
+      if (TEMP_RPC_URL) chainParams = chainParams.concat(`&rpcUrl=${TEMP_RPC_URL}`);
+      if (TEMP_INDEXER_URL) chainParams = chainParams.concat(`&indexerUrl=${TEMP_INDEXER_URL}`);
     }
     chainParams = `${params?.includes("?") ? "&" : "?"}${chainParams}`;
 

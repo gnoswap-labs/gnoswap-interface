@@ -147,14 +147,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         {connected ? (
           <div className="button-container">
             <MenuHeader>
-              {isSwitchNetwork ? (
-                <IconFailed className="fail-icon" />
-              ) : (
-                <IconAdenaLogo />
-              )}
-              <span className="user-address">
-                {formatAddress(account?.address || "")}
-              </span>
+              {isSwitchNetwork ? <IconFailed className="fail-icon" /> : <IconAdenaLogo />}
+              <span className="user-address">{formatAddress(account?.address || "")}</span>
               <IconButtonMaker
                 copyClick={copyClick}
                 openLinkClick={openLinkClick}
@@ -183,7 +177,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         ) : (
           <div className="button-container">
             <Button
-              text={t("HeaderFooter:walletLogin")}
+              text={t("common:btn.walletLogin")}
               onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
@@ -200,8 +194,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
           <ThemeSelector className="mt-16">
             <span>{t("HeaderFooter:language")}</span>
             <div className="language" onClick={onClickChangeLanguage}>
-              {LANGUAGES.find(item => item.code === i18n.language)?.name}{" "}
-              <IconStrokeArrowRight />
+              {LANGUAGES.find(item => item.code === i18n.language)?.name} <IconStrokeArrowRight />
             </div>
           </ThemeSelector>
         </div>

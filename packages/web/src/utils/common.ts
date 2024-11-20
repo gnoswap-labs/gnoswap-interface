@@ -1,14 +1,11 @@
-import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { formatPrice, formatRate } from "./new-number-utils";
 
-export function wait<T>(
-  runner: () => Promise<T>,
-  waitTime = 1000,
-  finishTime = 10000,
-) {
+export function wait<T>(runner: () => Promise<T>, waitTime = 1000, finishTime = 10000) {
   return new Promise<T | null>(resolve => {
     let finishedResult = false;
     let result: T | null = null;
@@ -87,12 +84,7 @@ export const checkPositivePrice = (
       return "Infinity";
     }
 
-    return BigNumber(currentAsNumber)
-      .dividedBy(checkAsNumber)
-      .minus(1)
-      .multipliedBy(100)
-      .abs()
-      .toFixed();
+    return BigNumber(currentAsNumber).dividedBy(checkAsNumber).minus(1).multipliedBy(100).abs().toFixed();
   })();
 
   const isEmpty = !currentPrice || !checkPrice;
@@ -109,11 +101,7 @@ export const checkPositivePrice = (
     return MATH_NEGATIVE_TYPE.NEGATIVE;
   })();
 
-  const statusSign = displayStatusSign
-    ? status === MATH_NEGATIVE_TYPE.NEGATIVE
-      ? "-"
-      : "+"
-    : "";
+  const statusSign = displayStatusSign ? (status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+") : "";
 
   const percentDisplay = (() => {
     if (status === MATH_NEGATIVE_TYPE.NONE) return "-";
@@ -167,11 +155,7 @@ export const checkPositivePrice = (
   };
 };
 
-export function generateDateSequence(
-  startDateString: string,
-  endDateString: string,
-  space: number,
-) {
+export function generateDateSequence(startDateString: string, endDateString: string, space: number) {
   const startDate = new Date(startDateString);
   if (startDate.getMinutes() !== 0) {
     startDate.setMinutes(0);
@@ -187,11 +171,7 @@ export function generateDateSequence(
   return temp;
 }
 
-export function countPoints(
-  startDateTime: string,
-  endDateTime: string,
-  intervalMinutes: number,
-): number {
+export function countPoints(startDateTime: string, endDateTime: string, intervalMinutes: number): number {
   const startDate = new Date(startDateTime);
   const endDate = new Date(endDateTime);
 
@@ -262,3 +242,20 @@ export function removeDuplicatesByWrappedPath(arr: TokenModel[]) {
     return false;
   });
 }
+
+/**
+ * Wraps the native token path based on the provided path.
+ *
+ * If the input `path` matches the native token path, it returns the wrapped paths.
+ * Otherwise, it returns the original `path`.
+ *
+ * @param {string} path - The token path to be processed.
+ * @returns {string} The wrapped path if the input is native token path; otherwise, the original path.
+ */
+export const wrapNativeTokenPath = (path: string) => {
+  if (path === GNOT_TOKEN.path) {
+    return WRAPPED_GNOT_PATH;
+  } else {
+    return path;
+  }
+};

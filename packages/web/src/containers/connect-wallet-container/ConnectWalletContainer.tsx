@@ -7,8 +7,7 @@ import useRouter from "@hooks/common/use-custom-router";
 
 const ConnectWalletContainer = () => {
   const clearModal = useClearModal();
-  const { connectAdenaClient, loadingConnect, connectAccount, walletClient } =
-    useWallet();
+  const { connectAdenaClient, loadingConnect, connectAccount, walletClient } = useWallet();
   const [connectWallet, setConnectWallet] = useState(false);
   const router = useRouter();
 
@@ -45,13 +44,7 @@ const ConnectWalletContainer = () => {
     }
   }, [connectWallet, String(walletClient)]);
 
-  return (
-    <ConnectWalletModal
-      close={close}
-      connect={connect}
-      loadingConnect={loadingConnect}
-    />
-  );
+  return <ConnectWalletModal close={close} connect={connect} loadingConnect={loadingConnect} />;
 };
 
 export default ConnectWalletContainer;

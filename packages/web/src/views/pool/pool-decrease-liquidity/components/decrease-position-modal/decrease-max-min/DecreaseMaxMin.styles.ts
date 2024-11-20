@@ -26,7 +26,6 @@ export const DecreaseMaxMinContentSection = styled.div`
   }
 `;
 
-
 export const DecreaseMaxMinWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -66,7 +65,6 @@ export const DecreaseMaxMinWrapper = styled.div`
     ${fonts.body12}
     gap: 5px;
     color: ${({ theme }) => theme.color.text01};
-
   }
 
   .price-range-wrapper {
@@ -79,9 +77,7 @@ export const DecreaseMaxMinWrapper = styled.div`
   }
 `;
 
-export const DecreaseMaxMinSection = styled(
-  DecreaseMaxMinContentSection,
-)`
+export const DecreaseMaxMinSection = styled(DecreaseMaxMinContentSection)`
   gap: 16px;
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text10};
@@ -127,7 +123,7 @@ export const DecreaseMaxMinSection = styled(
       fill: ${({ theme }) => theme.color.icon07};
     }
   }
-  
+
   .row {
     display: flex;
     flex-direction: row;
@@ -174,7 +170,8 @@ export const DecreaseMaxMinSection = styled(
   }
   ${media.mobile} {
     gap: 8px;
-    .key, .value {
+    .key,
+    .value {
       ${fonts.p2}
     }
   }

@@ -6,8 +6,6 @@ export default {
   component: BarAreaGraph,
 } as Meta<typeof BarAreaGraph>;
 
-const datas = Array.from({ length: 60 }, () => `${Math.random() * 30 + 10}`);
-
 export const Default: StoryObj<BarAreaGraphProps> = {
   args: {
     width: 400,

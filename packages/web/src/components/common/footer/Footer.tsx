@@ -30,12 +30,7 @@ function Anchor({ path, title, icon, newTab = false, className }: AnchorProps) {
   return (
     <>
       {newTab ? (
-        <AnchorStyle
-          href={path}
-          target="_blank"
-          rel="noreferrer"
-          className={className}
-        >
+        <AnchorStyle href={path} target="_blank" rel="noreferrer" className={className}>
           {title ?? icon}
         </AnchorStyle>
       ) : (
@@ -63,12 +58,7 @@ const Footer: React.FC = () => {
           <p className="footer-content">{t(FOOTER_LEFT_NAV.content)}</p>
           <SocialNav>
             {FOOTER_LEFT_NAV.menu.map(item => (
-              <Anchor
-                path={item.path}
-                icon={item.icon}
-                key={item.title}
-                newTab={true}
-              />
+              <Anchor path={item.path} icon={item.icon} key={item.title} newTab={true} />
             ))}
           </SocialNav>
         </FirstSection>

@@ -1,10 +1,6 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo, useState } from "react";
-import {
-  BarGraphTooltipWrapper,
-  BarGraphWrapper,
-  IncentivizeGraphTooltipWrapper,
-} from "./BarGraph.styles";
+import { BarGraphTooltipWrapper, BarGraphWrapper, IncentivizeGraphTooltipWrapper } from "./BarGraph.styles";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { Global, css } from "@emotion/react";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
@@ -88,15 +84,10 @@ const BarGraph: React.FC<BarGraphProps> = ({
   const { height: customHeight = 0, locationTooltip = 0 } = customData;
   const [chartPoint, setChartPoint] = useState<Point>();
 
-  const hasOnlyOneData = useMemo(
-    () => (datas?.length ?? 0) === 1,
-    [datas?.length],
-  );
+  const hasOnlyOneData = useMemo(() => (datas?.length ?? 0) === 1, [datas?.length]);
 
   const getStrokeWidth = useCallback(() => {
-    const maxStorkeWidth = BigNumber(
-      width - (datas.length - 1) * minGap,
-    ).dividedBy(datas.length);
+    const maxStorkeWidth = BigNumber(width - (datas.length - 1) * minGap).dividedBy(datas.length);
 
     return maxStorkeWidth.toNumber();
   }, [width, datas.length, minGap, strokeWidth]);
@@ -131,11 +122,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       );
     };
 
-    const optimizeTime = function (
-      x: number,
-      width: number,
-      strokeWidth: number,
-    ) {
+    const optimizeTime = function (x: number, width: number, strokeWidth: number) {
       if (hasOnlyOneData) {
         return new BigNumber(1)
           .multipliedBy(width - strokeWidth)
@@ -152,8 +139,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
     return mappedDatas.map<Point>(data => ({
       x: optimizeTime(data.x, width, strokeWidth),
       y:
-        Number(optimizeValue(data.value, height)) < 180 &&
-        Number(optimizeValue(data.value, height)) > 177
+        Number(optimizeValue(data.value, height)) < 180 && Number(optimizeValue(data.value, height)) > 177
           ? 177
           : optimizeValue(data.value, height),
     }));
@@ -164,9 +150,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       if (!currentTick) {
         return color;
       }
-      return currentTick > index
-        ? "url(#gradient-bar-green)"
-        : "url(#gradient-bar-red)";
+      return currentTick > index ? "url(#gradient-bar-green)" : "url(#gradient-bar-red)";
     },
     [currentTick, color],
   );
@@ -178,23 +162,13 @@ const BarGraph: React.FC<BarGraphProps> = ({
     return getGraphPoints()[currentTick];
   }, [currentTick, getGraphPoints]);
 
-  const onMouseMove = (
-    event:
-      | React.MouseEvent<HTMLDivElement, MouseEvent>
-      | React.TouchEvent<HTMLDivElement>,
-  ) => {
+  const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
     const isTouch = event.type.startsWith("touch");
-    const touch = isTouch
-      ? (event as React.TouchEvent<HTMLDivElement>).touches[0]
-      : null;
-    const clientX = isTouch
-      ? touch?.clientX
-      : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientX;
-    const clientY = isTouch
-      ? touch?.clientY
-      : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
+    const touch = isTouch ? (event as React.TouchEvent<HTMLDivElement>).touches[0] : null;
+    const clientX = isTouch ? touch?.clientX : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientX;
+    const clientY = isTouch ? touch?.clientY : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
     if (!activated) {
       setCurrentPointIndex(-1);
       return;
@@ -207,10 +181,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
     }
     const positionX = (clientX || 0) - left;
     const clientWidth = currentTarget.clientWidth;
-    const xPosition = new BigNumber(positionX)
-      .multipliedBy(width)
-      .dividedBy(clientWidth)
-      .toNumber();
+    const xPosition = new BigNumber(positionX).multipliedBy(width).dividedBy(clientWidth).toNumber();
     let currentPoint: Point | null = null;
     let minDistance = -1;
 
@@ -248,19 +219,11 @@ const BarGraph: React.FC<BarGraphProps> = ({
     return "right";
   }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight]);
 
-  const onTouchMove = (
-    event:
-      | React.MouseEvent<HTMLDivElement, MouseEvent>
-      | React.TouchEvent<HTMLDivElement>,
-  ) => {
+  const onTouchMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     onMouseMove(event);
   };
 
-  const onTouchStart = (
-    event:
-      | React.MouseEvent<HTMLDivElement, MouseEvent>
-      | React.TouchEvent<HTMLDivElement>,
-  ) => {
+  const onTouchStart = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     onMouseMove(event);
   };
@@ -285,12 +248,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
           tooltipOption === "default" && currentPointIndex > -1 ? (
             <BarGraphTooltipWrapper>
               <div className="tooltip-body">
-                <span className="date">
-                  {parseTime(times[currentPointIndex]).date}
-                </span>
-                <span className="date">
-                  {parseTime(times[currentPointIndex]).time}
-                </span>
+                <span className="date">{parseTime(times[currentPointIndex]).date}</span>
+                <span className="date">{parseTime(times[currentPointIndex]).time}</span>
               </div>
               <div className="tooltip-header">
                 <span className="label">{t("common:barChart.tradingVol")}</span>
@@ -309,9 +268,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 </span>
               </div>
             </BarGraphTooltipWrapper>
-          ) : tooltipOption === "incentivized" &&
-            currentPointIndex > -1 &&
-            activated ? (
+          ) : tooltipOption === "incentivized" && currentPointIndex > -1 && activated ? (
             <IncentivizeGraphTooltipWrapper>
               <div className="row">
                 <div className="token">{t("business:token")}</div>
@@ -361,9 +318,9 @@ const BarGraph: React.FC<BarGraphProps> = ({
             getGraphPoints().map((point, index) => (
               <path
                 key={index}
-                d={`M${point.x} ${point.y + 1} h${getStrokeWidth()} v${
-                  height - (point.y + 1)
-                } h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
+                d={`M${point.x} ${point.y + 1} h${getStrokeWidth()} v${height - (point.y + 1)} h-${getStrokeWidth()} v${
+                  -height + point.y + 10
+                } Z`}
                 fill={getStorkeColor(index)}
               />
             ))}

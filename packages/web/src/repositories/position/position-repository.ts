@@ -1,17 +1,11 @@
-import {
-  SendTransactionResponse,
-  WalletResponse,
-} from "@common/clients/wallet-client/protocols";
+import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { PositionBinModel } from "@models/position/position-bin-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
 
-import {
-  DecreaseLiquidityRequest,
-  IncreaseLiquidityRequest,
-  RepositionLiquidityRequest,
-} from "./request";
+import { DecreaseLiquidityRequest, IncreaseLiquidityRequest, RepositionLiquidityRequest } from "./request";
 import { ClaimAllRequest } from "./request/claim-all-request";
+import { ClaimRequest } from "./request/claim-request";
 import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
 import { UnstakePositionsRequest } from "./request/unstake-positions-request";
@@ -30,20 +24,15 @@ export interface PositionRepository {
     options?: { isClosed?: boolean; poolPath?: string },
   ) => Promise<PositionModel[]>;
 
-  getPositionBins: (
-    lpTokenId: string,
-    count: 20 | 40,
-  ) => Promise<PositionBinModel[]>;
+  getPositionBins: (lpTokenId: string, count: 20 | 40) => Promise<PositionBinModel[]>;
 
   getPositionById: (lpTokenId: string) => Promise<PositionModel>;
 
-  sendClaimAll: (
-    request: ClaimAllRequest,
-  ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
+  sendClaim: (request: ClaimRequest) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
-  stakePositions: (
-    request: StakePositionsRequest,
-  ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
+  sendClaimAll: (request: ClaimAllRequest) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
+
+  stakePositions: (request: StakePositionsRequest) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
   unstakePositions: (
     request: UnstakePositionsRequest,
@@ -51,27 +40,15 @@ export interface PositionRepository {
 
   increaseLiquidity: (
     request: IncreaseLiquidityRequest,
-  ) => Promise<
-    WalletResponse<
-      IncreaseLiquiditySuccessResponse | IncreaseLiquidityFailedResponse | null
-    >
-  >;
+  ) => Promise<WalletResponse<IncreaseLiquiditySuccessResponse | IncreaseLiquidityFailedResponse | null>>;
 
   decreaseLiquidity: (
     request: DecreaseLiquidityRequest,
-  ) => Promise<
-    WalletResponse<
-      DecreaseLiquiditySuccessResponse | DecreaseLiquidityFailedResponse | null
-    >
-  >;
+  ) => Promise<WalletResponse<DecreaseLiquiditySuccessResponse | DecreaseLiquidityFailedResponse | null>>;
 
   repositionLiquidity: (
     request: RepositionLiquidityRequest,
-  ) => Promise<
-    WalletResponse<
-      RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
-    >
-  >;
+  ) => Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse>>;
 
   removeLiquidity: (
     request: RemoveLiquidityRequest,

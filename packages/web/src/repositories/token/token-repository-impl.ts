@@ -1,40 +1,36 @@
 import {
-  TokenRepository,
-  TokenSearchLogListResponse,
+  IChainResponse,
+  ITokenDetailResponse,
+  ITokenResponse,
   TokenListResponse,
   TokenPriceListResponse,
-  ITokenDetailResponse,
-  IChainResponse,
-  ITokenResponse,
+  TokenRepository,
+  TokenSearchLogListResponse,
 } from ".";
 
-import { StorageKeyType } from "@common/values";
-import { TokenSearchLogModel } from "@models/token/token-search-log-model";
-import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
-import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
-import { customSort } from "@containers/select-token-container/SelectTokenContainer";
-import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
-import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
+import { StorageClient } from "@common/clients/storage-client";
 import { CommonError } from "@common/errors";
+import { StorageKeyType } from "@common/values";
+import { customSort } from "@containers/select-token-container/SelectTokenContainer";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { TokenSearchLogModel } from "@models/token/token-search-log-model";
+import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
+import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
+import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 export class TokenRepositoryImpl implements TokenRepository {
   private networkClient: NetworkClient | null;
   private localStorageClient: StorageClient<StorageKeyType>;
 
-  constructor(
-    networkClient: NetworkClient | null,
-    localStorageClient: StorageClient<StorageKeyType>,
-  ) {
+  constructor(networkClient: NetworkClient | null, localStorageClient: StorageClient<StorageKeyType>) {
     this.networkClient = networkClient;
     this.localStorageClient = localStorageClient;
   }
 
-  public getExchangeRateGraph =
-    async (): Promise<TokenExchangeRateGraphResponse> => {
-      return mockedExchangeRateGraph;
-    };
+  public getExchangeRateGraph = async (): Promise<TokenExchangeRateGraphResponse> => {
+    return mockedExchangeRateGraph;
+  };
 
   public getTokenByPath = async (path: string): Promise<ITokenResponse> => {
     if (!this.networkClient) {
@@ -82,9 +78,7 @@ export class TokenRepositoryImpl implements TokenRepository {
     return response.data.data;
   };
 
-  public getTokenDetailByPath = async (
-    path: string,
-  ): Promise<ITokenDetailResponse> => {
+  public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -107,9 +101,7 @@ export class TokenRepositoryImpl implements TokenRepository {
     return response.data.data;
   };
 
-  public getBalancesByAddress = async (
-    address: string,
-  ): Promise<IBalancesByAddressResponse> => {
+  public getBalancesByAddress = async (address: string): Promise<IBalancesByAddressResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -119,16 +111,11 @@ export class TokenRepositoryImpl implements TokenRepository {
     return response.data;
   };
 
-  public createSearchLog = async (
-    searchLog: TokenSearchLogModel,
-  ): Promise<boolean> => {
+  public createSearchLog = async (searchLog: TokenSearchLogModel): Promise<boolean> => {
     const LOG_LIMIT = 10;
     const searchLogs = await this.getSearchLogs();
     const addedSearchLogs = [searchLog, ...searchLogs].slice(0, LOG_LIMIT);
-    this.localStorageClient.set(
-      "search-token-logs",
-      JSON.stringify(addedSearchLogs),
-    );
+    this.localStorageClient.set("search-token-logs", JSON.stringify(addedSearchLogs));
     return true;
   };
 
@@ -141,7 +128,7 @@ export class TokenRepositoryImpl implements TokenRepository {
     let logs: TokenSearchLogModel[] = [];
     try {
       logs = JSON.parse(logValue);
-    } catch (e) {
+    } catch {
       throw new Error("Invalid value");
     }
     return logs;

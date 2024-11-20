@@ -1,7 +1,7 @@
-import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
+import mixins from "@styles/mixins";
 
 export const TransactionConfirmModalWrapper = styled.div`
   position: relative;
@@ -12,7 +12,7 @@ export const TransactionConfirmModalWrapper = styled.div`
   gap: 16px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background06};
-  
+
   &.modal-body-wrapper {
     gap: 24px;
     ${media.mobile} {
@@ -247,7 +247,6 @@ export const TransactionConfirmModalWrapper = styled.div`
           height: 54px;
         }
       }
-
     }
     .transaction-state {
       ${mixins.flexbox("column", "center", "flex-start")};
@@ -265,6 +264,12 @@ export const TransactionConfirmModalWrapper = styled.div`
           margin: 0 10px;
         }
         color: ${({ theme }) => theme.color.text02};
+
+        > div {
+          > span {
+            font-weight: 600;
+          }
+        }
       }
       .view-transaction {
         ${mixins.flexbox("row", "center", "center")};
@@ -340,8 +345,8 @@ export const TransactionConfirmModalWrapper = styled.div`
           height: 60px;
         }
       }
+    }
   }
-}
 `;
 
 export const SwapDivider = styled.div`

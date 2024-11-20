@@ -19,11 +19,7 @@ export type ProgressStateType =
 const loadingStates: ProgressStateType[] = ["WAIT"];
 const broadCastStates: ProgressStateType[] = ["BROADCAST"];
 const successStates: ProgressStateType[] = ["SUCCESS"];
-const failStates: ProgressStateType[] = [
-  "FAIL",
-  "REJECTED",
-  "INSUFFICIENT_LIQUIDITY",
-];
+const failStates: ProgressStateType[] = ["FAIL", "REJECTED", "INSUFFICIENT_LIQUIDITY"];
 
 export interface RepositionBroadcastProgressStateProps {
   state: ProgressStateType;
@@ -31,9 +27,7 @@ export interface RepositionBroadcastProgressStateProps {
   exit: () => void;
 }
 
-const RepositionBroadcastProgressState: React.FC<
-  RepositionBroadcastProgressStateProps
-> = ({ state, retry, exit }) => {
+const RepositionBroadcastProgressState: React.FC<RepositionBroadcastProgressStateProps> = ({ state, retry, exit }) => {
   const { t } = useTranslation();
 
   const description: {
@@ -69,13 +63,11 @@ const RepositionBroadcastProgressState: React.FC<
     <RepositionBroadcastProgressStateWrapper>
       {description.type === "RETRY" ? (
         <span className="description">
-          {description.text} -{" "}
-          <a onClick={retry}>{t("Reposition:repos.action.retry")}</a>
+          {description.text} - <a onClick={retry}>{t("Reposition:repos.action.retry")}</a>
         </span>
       ) : description.type === "EXIT" ? (
         <span className="description">
-          {description.text} -{" "}
-          <a onClick={exit}>{t("Reposition:repos.action.exit")}</a>
+          {description.text} - <a onClick={exit}>{t("Reposition:repos.action.exit")}</a>
         </span>
       ) : (
         <span className="description">{description.text}</span>
@@ -94,9 +86,7 @@ export interface RepositionBroadcastProgressStateIconProps {
   state: ProgressStateType;
 }
 
-const RepositionBroadcastProgressStateIcon: React.FC<
-  RepositionBroadcastProgressStateIconProps
-> = ({ state }) => {
+const RepositionBroadcastProgressStateIcon: React.FC<RepositionBroadcastProgressStateIconProps> = ({ state }) => {
   if (loadingStates.includes(state)) {
     return <IconProgressLoader className="icon-state rotate" />;
   }

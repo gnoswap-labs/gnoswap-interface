@@ -18,12 +18,7 @@ function calculateSmoothing(pointA: Point, pointB: Point) {
   };
 }
 
-function controlPoint(
-  current: Point,
-  previous?: Point,
-  next?: Point,
-  reverse?: boolean,
-) {
+function controlPoint(current: Point, previous?: Point, next?: Point, reverse?: boolean) {
   const smoothing = 0.1;
   const prePoint = previous || current;
   const nextPoint = next || current;
@@ -37,18 +32,9 @@ function controlPoint(
 }
 
 function bezierCommand(point: Point, index: number, points: Point[]) {
-  const [cpsX, cpsY] = controlPoint(
-    points[index - 1],
-    points[index - 2],
-    point,
-  );
+  const [cpsX, cpsY] = controlPoint(points[index - 1], points[index - 2], point);
 
-  const [cpeX, cpeY] = controlPoint(
-    point,
-    points[index - 1],
-    points[index + 1],
-    true,
-  );
+  const [cpeX, cpeY] = controlPoint(point, points[index - 1], points[index + 1], true);
 
   return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.x},${point.y}`;
 }
@@ -180,16 +166,10 @@ const LineGraph: React.FC<LineGraphProps> = ({
   }, [activated]);
 
   const isSameData = useMemo(() => {
-    return (
-      datas.length > 0 && datas.every(item => item.value === datas[0].value)
-    );
+    return datas.length > 0 && datas.every(item => item.value === datas[0].value);
   }, [datas]);
 
-  const updatePoints = (
-    datas: LineGraphData[],
-    width: number,
-    height: number,
-  ) => {
+  const updatePoints = (datas: LineGraphData[], width: number, height: number) => {
     let minValue: number;
     let maxValue: number;
     let minTime: number;
@@ -223,11 +203,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
               Math.abs(currentItem.value - previous1Item.value) >= 0.001
             ) {
               const fakeItemValue = new BigNumber(currentItem.value)
-                .minus(
-                  BigNumber(currentItem.value)
-                    .minus(BigNumber(previous1Item.value))
-                    .dividedBy(15),
-                )
+                .minus(BigNumber(currentItem.value).minus(BigNumber(previous1Item.value)).dividedBy(15))
                 .toNumber();
 
               return {
@@ -243,11 +219,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
             ) {
               if (currentItem.value - next1Item.value >= 0.01) {
                 const fakeItemValue = new BigNumber(currentItem.value)
-                  .plus(
-                    BigNumber(next1Item.value)
-                      .minus(BigNumber(currentItem.value))
-                      .dividedBy(15),
-                  )
+                  .plus(BigNumber(next1Item.value).minus(BigNumber(currentItem.value)).dividedBy(15))
                   .toNumber();
 
                 return {
@@ -258,11 +230,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
               if (next1Item.value - currentItem.value >= 0.01) {
                 const fakeItemValue = new BigNumber(currentItem.value)
-                  .plus(
-                    BigNumber(next1Item.value)
-                      .minus(BigNumber(currentItem.value))
-                      .dividedBy(15),
-                  )
+                  .plus(BigNumber(next1Item.value).minus(BigNumber(currentItem.value)).dividedBy(15))
                   .toNumber();
 
                 return {
@@ -296,88 +264,73 @@ const LineGraph: React.FC<LineGraphProps> = ({
         return maxValueBigNumber.multipliedBy(gapRatio);
       }
 
-      if (minValueBigNumber.isLessThan(0) || hasOnlyOnePoint)
-        return maxValueBigNumber;
+      if (minValueBigNumber.isLessThan(0) || hasOnlyOnePoint) return maxValueBigNumber;
 
       return maxValueBigNumber.minus(minValueBigNumber);
     })();
 
-    const baseLineData = new Array(baseLineCount)
-      .fill("")
-      .map((value, index) => {
-        // Gap from lowest value or highest value  to baseline
-        const additionalGap = (() => {
-          if (everyPointEqual) return minMaxGap.dividedBy(2);
+    const baseLineData = new Array(baseLineCount).fill("").map((value, index) => {
+      // Gap from lowest value or highest value  to baseline
+      const additionalGap = (() => {
+        if (everyPointEqual) return minMaxGap.dividedBy(2);
 
-          return minMaxGap.multipliedBy(gapRatio / 2);
-        })();
+        return minMaxGap.multipliedBy(gapRatio / 2);
+      })();
 
-        // Gap between bottom and top base line
-        const baseLineGap = (() => {
-          if (everyPointEqual) return minMaxGap;
+      // Gap between bottom and top base line
+      const baseLineGap = (() => {
+        if (everyPointEqual) return minMaxGap;
 
-          if (minValueBigNumber.isLessThanOrEqualTo(0))
-            return maxValueBigNumber;
+        if (minValueBigNumber.isLessThanOrEqualTo(0)) return maxValueBigNumber;
 
-          return minMaxGap.multipliedBy(1 + gapRatio);
-        })();
+        return minMaxGap.multipliedBy(1 + gapRatio);
+      })();
 
-        // Lowest baseline value
-        const tempBottomBaseLineValue = minValueBigNumber.minus(additionalGap);
-        const bottomBaseLineValue = tempBottomBaseLineValue.isLessThanOrEqualTo(
-          0,
-        )
-          ? BigNumber(0)
-          : tempBottomBaseLineValue;
+      // Lowest baseline value
+      const tempBottomBaseLineValue = minValueBigNumber.minus(additionalGap);
+      const bottomBaseLineValue = tempBottomBaseLineValue.isLessThanOrEqualTo(0)
+        ? BigNumber(0)
+        : tempBottomBaseLineValue;
 
-        const currentBaseLineValue = bottomBaseLineValue.plus(
-          baseLineGap.multipliedBy(index / (baseLineCount - 1)),
-        );
+      const currentBaseLineValue = bottomBaseLineValue.plus(baseLineGap.multipliedBy(index / (baseLineCount - 1)));
 
-        if (currentBaseLineValue.isLessThan(-1)) {
-          return (
-            "-" +
-            convertToKMB(currentBaseLineValue.absoluteValue().toFixed(), {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2,
-            })
-          );
-        }
-
-        if (
-          currentBaseLineValue.isGreaterThan(-1) &&
-          currentBaseLineValue.isLessThan(0)
-        ) {
-          return "-" + subscriptFormat(currentBaseLineValue.abs().toFixed());
-        }
-
-        if (currentBaseLineValue.isLessThan(1)) {
-          return subscriptFormat(currentBaseLineValue.toString(), {
-            significantDigits: 3,
-            subscriptOffset: 3,
-          });
-        }
-
-        if (
-          currentBaseLineValue.isGreaterThanOrEqualTo(1) &&
-          currentBaseLineValue.isLessThan(100)
-        ) {
-          return convertToKMB(currentBaseLineValue.toString(), {
+      if (currentBaseLineValue.isLessThan(-1)) {
+        return (
+          "-" +
+          convertToKMB(currentBaseLineValue.absoluteValue().toFixed(), {
             maximumFractionDigits: 2,
             minimumFractionDigits: 2,
-          });
-        }
+          })
+        );
+      }
 
-        const result = Math.round(currentBaseLineValue.toNumber()).toString();
+      if (currentBaseLineValue.isGreaterThan(-1) && currentBaseLineValue.isLessThan(0)) {
+        return "-" + subscriptFormat(currentBaseLineValue.abs().toFixed());
+      }
 
-        if (currentBaseLineValue.isLessThan(1))
-          return subscriptFormat(currentBaseLineValue.toFixed());
+      if (currentBaseLineValue.isLessThan(1)) {
+        return subscriptFormat(currentBaseLineValue.toString(), {
+          significantDigits: 3,
+          subscriptOffset: 3,
+        });
+      }
 
-        return convertToKMB(result, {
+      if (currentBaseLineValue.isGreaterThanOrEqualTo(1) && currentBaseLineValue.isLessThan(100)) {
+        return convertToKMB(currentBaseLineValue.toString(), {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
         });
+      }
+
+      const result = Math.round(currentBaseLineValue.toNumber()).toString();
+
+      if (currentBaseLineValue.isLessThan(1)) return subscriptFormat(currentBaseLineValue.toFixed());
+
+      return convertToKMB(result, {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
       });
+    });
 
     setBaseLineYAxis([...baseLineData]);
 
@@ -392,9 +345,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
         }
         return prev;
       });
-      const transformedLongestNumber = baseLineLabelsTransform
-        ? baseLineLabelsTransform(longestNumber)
-        : longestNumber;
+      const transformedLongestNumber = baseLineLabelsTransform ? baseLineLabelsTransform(longestNumber) : longestNumber;
 
       return (transformedLongestNumber.length / maxLength) * 52;
     })();
@@ -429,23 +380,15 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
         if (minValue === 0 && maxValue > 0) {
           return (
-            topFrontierHeight +
-            graphHeight * (0.05 / 1.05) -
-            ((value - minValue) * graphHeight) / minMaxGap.toNumber()
+            topFrontierHeight + graphHeight * (0.05 / 1.05) - ((value - minValue) * graphHeight) / minMaxGap.toNumber()
           );
         }
 
         if (everyPointEqual) {
-          return (
-            topFrontierHeight -
-            (value * 0.05 * graphHeight) / minMaxGap.toNumber()
-          );
+          return topFrontierHeight - (value * 0.05 * graphHeight) / minMaxGap.toNumber();
         }
 
-        return (
-          topFrontierHeight -
-          ((value - minValue) * graphHeight) / minMaxGap.toNumber()
-        );
+        return topFrontierHeight - ((value - minValue) * graphHeight) / minMaxGap.toNumber();
       })();
 
       return result;
@@ -482,23 +425,13 @@ const LineGraph: React.FC<LineGraphProps> = ({
     setPoints(points);
   };
 
-  const onMouseMove = (
-    event:
-      | React.MouseEvent<HTMLDivElement, MouseEvent>
-      | React.TouchEvent<HTMLDivElement>,
-  ) => {
+  const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
     const isTouch = event.type.startsWith("touch");
-    const touch = isTouch
-      ? (event as React.TouchEvent<HTMLDivElement>).touches[0]
-      : null;
-    const clientX = isTouch
-      ? touch?.clientX
-      : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientX;
-    const clientY = isTouch
-      ? touch?.clientY
-      : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
+    const touch = isTouch ? (event as React.TouchEvent<HTMLDivElement>).touches[0] : null;
+    const clientX = isTouch ? touch?.clientX : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientX;
+    const clientY = isTouch ? touch?.clientY : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
     if (!isFocus) {
       setCurrentPointIndex(-1);
       return;
@@ -508,10 +441,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     const { left, top } = currentTarget.getBoundingClientRect();
     const positionX = (clientX || 0) - left;
     const clientWidth = currentTarget.clientWidth;
-    const xPosition = new BigNumber(positionX)
-      .multipliedBy(width)
-      .dividedBy(clientWidth)
-      .toNumber();
+    const xPosition = new BigNumber(positionX).multipliedBy(width).dividedBy(clientWidth).toNumber();
     let currentPoint: Point | null = null;
     let minDistance = -1;
 
@@ -542,13 +472,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
           return `${fill ? "L" : "M"} ${point.x},${point.y}`;
         }
 
-        return smooth
-          ? bezierCommand(point, index, points)
-          : `L ${point.x},${point.y}`;
+        return smooth ? bezierCommand(point, index, points) : `L ${point.x},${point.y}`;
       }
-      return points
-        .map((point, index) => mappedPoint(point, index, points))
-        .join(" ");
+      return points.map((point, index) => mappedPoint(point, index, points)).join(" ");
     },
     [points],
   );
@@ -571,29 +497,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
     return "right";
   }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight]);
 
-  const onTouchMove = (
-    event:
-      | React.MouseEvent<HTMLDivElement, MouseEvent>
-      | React.TouchEvent<HTMLDivElement>,
-  ) => {
+  const onTouchMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     onMouseMove(event);
   };
 
-  const onTouchStart = (
-    event:
-      | React.MouseEvent<HTMLDivElement, MouseEvent>
-      | React.TouchEvent<HTMLDivElement>,
-  ) => {
+  const onTouchStart = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     onMouseMove(event);
   };
 
   const areaPath = useMemo(() => {
-    if (
-      !points ||
-      points.length === 0 ||
-      points.some(point => point === undefined)
-    ) {
+    if (!points || points.length === 0 || points.some(point => point === undefined)) {
       return undefined; // Or render some fallback UI
     }
 
@@ -602,9 +516,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     // Draw the line chart path
     for (let i = 1; i < points.length; i++) {
-      path += smooth
-        ? bezierCommand(points[i], i, points)
-        : ` L ${points[i].x},${points[i].y}`;
+      path += smooth ? bezierCommand(points[i], i, points) : ` L ${points[i].x},${points[i].y}`;
     }
 
     // Draw a line straight down to the bottom of the chart
@@ -670,10 +582,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       >
         <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`}>
           <defs>
-            <linearGradient
-              id={"gradient" + COMPONENT_ID}
-              gradientTransform="rotate(90)"
-            >
+            <linearGradient id={"gradient" + COMPONENT_ID} gradientTransform="rotate(90)">
               <stop offset="0%" stopColor={gradientStartColor} />
               {isLightTheme ? (
                 <stop offset="100%" stopColor={"white"} stopOpacity={0} />
@@ -687,30 +596,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
               <>
                 {baseLineYAxis.map((value, index) => {
                   const showBaseLine = baseLineMap[index];
-                  const currentHeight =
-                    height - (height * index) / (baseLineCount - 1);
+                  const currentHeight = height - (height * index) / (baseLineCount - 1);
                   const baseWidth =
-                    width -
-                    (showBaseLineLabels && baseLineLabelsPosition === "left"
-                      ? 0
-                      : baseLineNumberWidth);
+                    width - (showBaseLineLabels && baseLineLabelsPosition === "left" ? 0 : baseLineNumberWidth);
 
                   return (
                     <React.Fragment key={index}>
                       {showBaseLine && (
                         <line
-                          x1={
-                            showBaseLineLabels &&
-                            baseLineLabelsPosition === "left"
-                              ? baseLineNumberWidth
-                              : 0
-                          }
+                          x1={showBaseLineLabels && baseLineLabelsPosition === "left" ? baseLineNumberWidth : 0}
                           x2={
-                            width -
-                            (showBaseLineLabels &&
-                            baseLineLabelsPosition === "left"
-                              ? 0
-                              : baseLineNumberWidth)
+                            width - (showBaseLineLabels && baseLineLabelsPosition === "left" ? 0 : baseLineNumberWidth)
                           }
                           y1={currentHeight}
                           y2={currentHeight}
@@ -724,19 +620,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
                         <text
                           alignmentBaseline="central"
                           className="y-axis-number"
-                          x={
-                            showBaseLineLabels &&
-                            baseLineLabelsPosition === "left"
-                              ? 0
-                              : baseWidth + 5
-                          }
+                          x={showBaseLineLabels && baseLineLabelsPosition === "left" ? 0 : baseWidth + 5}
                           y={currentHeight}
                           fill={theme.color.text04}
                           style={baseLineLabelsStyle}
                         >
-                          {baseLineLabelsTransform
-                            ? baseLineLabelsTransform(value)
-                            : value}
+                          {baseLineLabelsTransform ? baseLineLabelsTransform(value) : value}
                         </text>
                       )}
                     </React.Fragment>
@@ -745,38 +634,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
               </>
             )}
             {hasOnlyOnePoint && (
-              <circle
-                cx={points?.[0]?.x || 0}
-                cy={points?.[0]?.y || 0}
-                r={1}
-                stroke={color}
-                fill={color}
-              />
+              <circle cx={points?.[0]?.x || 0} cy={points?.[0]?.y || 0} r={1} stroke={color} fill={color} />
             )}
-            {!isSameData && (
-              <path
-                fill={`url(#gradient${COMPONENT_ID})`}
-                stroke={color}
-                strokeWidth={0}
-                d={areaPath}
-              />
-            )}
-            <path
-              fill="none"
-              stroke={color}
-              strokeWidth={strokeWidth}
-              d={getGraphLine(smooth)}
-            />
+            {!isSameData && <path fill={`url(#gradient${COMPONENT_ID})`} stroke={color} strokeWidth={0} d={areaPath} />}
+            <path fill="none" stroke={color} strokeWidth={strokeWidth} d={getGraphLine(smooth)} />
             {point &&
-              points.map((point, index) => (
-                <circle
-                  key={index}
-                  cx={point.x}
-                  cy={point.y}
-                  r={1}
-                  stroke={color}
-                />
-              ))}
+              points.map((point, index) => <circle key={index} cx={point.x} cy={point.y} r={1} stroke={color} />)}
           </g>
           {
             <g>
@@ -804,13 +667,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 />
               )}
               {isFocus() && currentPoint && (
-                <circle
-                  cx={currentPoint.x}
-                  cy={currentPoint.y + 24}
-                  r={3}
-                  stroke={color}
-                  fill={color}
-                />
+                <circle cx={currentPoint.x} cy={currentPoint.y + 24} r={3} stroke={color} fill={color} />
               )}
             </g>
           }

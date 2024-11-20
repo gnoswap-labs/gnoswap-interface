@@ -31,11 +31,7 @@ const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }:
     <S.IncentivizeTokenDetailTooltipContent key={JSON.stringify(poolStakings)}>
       {[...poolStakings]
         .sort((a, b) => b.incentiveType.localeCompare(a.incentiveType))
-        .sort(
-          (a, b) =>
-            new Date(a.startTimestamp).getTime() -
-            new Date(b.startTimestamp).getTime(),
-        )
+        .sort((a, b) => new Date(a.startTimestamp).getTime() - new Date(b.startTimestamp).getTime())
         .map((item, index) => {
           const tokenData = getGnotPath(item.rewardToken);
 
@@ -43,37 +39,21 @@ const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }:
             <>
               <S.TokenItem key={item.startTimestamp + item.incentivizedAmount}>
                 <S.ItemHeader>
-                  <MissingLogo
-                    symbol={tokenData.symbol}
-                    url={tokenData.logoURI}
-                    width={18}
-                  />
+                  <MissingLogo symbol={tokenData.symbol} url={tokenData.logoURI} width={18} />
                   <S.ItemHeaderSymbol>{tokenData.symbol}</S.ItemHeaderSymbol>
-                  <S.ItemHeaderTag>
-                    {incentiveTypeText(item.incentiveType)}
-                  </S.ItemHeaderTag>
+                  <S.ItemHeaderTag>{incentiveTypeText(item.incentiveType)}</S.ItemHeaderTag>
                 </S.ItemHeader>
                 <S.DataGrid>
                   <S.DataGridItem>
-                    <S.ItemDataGridLabel>
-                      {t("Pool:staking.tooltip.rewardInfo.startDate")}
-                    </S.ItemDataGridLabel>
-                    <S.ItemDataGridValue>
-                      {getDateUtcToLocal(item.startTimestamp).value}{" "}
-                    </S.ItemDataGridValue>
+                    <S.ItemDataGridLabel>{t("Pool:staking.tooltip.rewardInfo.startDate")}</S.ItemDataGridLabel>
+                    <S.ItemDataGridValue>{getDateUtcToLocal(item.startTimestamp).value} </S.ItemDataGridValue>
                   </S.DataGridItem>
                   <S.DataGridItem>
-                    <S.ItemDataGridLabel>
-                      {t("Pool:staking.tooltip.rewardInfo.endDate")}
-                    </S.ItemDataGridLabel>
-                    <S.ItemDataGridValue>
-                      {getDateUtcToLocal(item.endTimestamp).value}{" "}
-                    </S.ItemDataGridValue>
+                    <S.ItemDataGridLabel>{t("Pool:staking.tooltip.rewardInfo.endDate")}</S.ItemDataGridLabel>
+                    <S.ItemDataGridValue>{getDateUtcToLocal(item.endTimestamp).value} </S.ItemDataGridValue>
                   </S.DataGridItem>
                   <S.DataGridItem>
-                    <S.ItemDataGridLabel>
-                      {t("Pool:staking.tooltip.rewardInfo.incentAmt")}
-                    </S.ItemDataGridLabel>
+                    <S.ItemDataGridLabel>{t("Pool:staking.tooltip.rewardInfo.incentAmt")}</S.ItemDataGridLabel>
                     <S.ItemDataGridValue>
                       {formatPoolPairAmount(item.incentivizedAmount, {
                         isKMB: false,
@@ -83,9 +63,7 @@ const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }:
                   </S.DataGridItem>
                   {displayRemainingAmount(item) && (
                     <S.DataGridItem>
-                      <S.ItemDataGridLabel>
-                        {t("Pool:staking.tooltip.rewardInfo.remainingAmt")}
-                      </S.ItemDataGridLabel>
+                      <S.ItemDataGridLabel>{t("Pool:staking.tooltip.rewardInfo.remainingAmt")}</S.ItemDataGridLabel>
                       <S.ItemDataGridValue>
                         {formatPoolPairAmount(item.remainingAmount, {
                           isKMB: false,
@@ -96,9 +74,7 @@ const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }:
                   )}
                 </S.DataGrid>
               </S.TokenItem>
-              {index !== poolStakings.length - 1 && (
-                <S.Divider key={`div-${index}`} />
-              )}
+              {index !== poolStakings.length - 1 && <S.Divider key={`div-${index}`} />}
             </>
           );
         })}

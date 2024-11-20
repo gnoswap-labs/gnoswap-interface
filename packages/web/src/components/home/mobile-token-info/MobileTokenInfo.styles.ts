@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 
 export const TokenInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  height: 52px;
+  height: 68px;
   width: 100%;
   ${fonts.body11};
   &:not(:first-of-type) {
@@ -74,7 +74,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 
   &.name-col {
     flex: 1;
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
   }
 
   &.price-col {

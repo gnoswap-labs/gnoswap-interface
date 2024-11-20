@@ -16,3 +16,11 @@ export interface RewardModel {
 
   apr: number | null;
 }
+
+export interface ClaimedRewardModel {
+  rewardType: RewardType;
+
+  rewardToken: TokenModel;
+
+  claimedAmount: string;
+}

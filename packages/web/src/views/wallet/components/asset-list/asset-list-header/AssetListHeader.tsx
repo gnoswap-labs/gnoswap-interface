@@ -49,11 +49,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
       <div className="title-container">
         <h2>{t("Wallet:assets.title")}</h2>
         {breakpoint !== DEVICE_TYPE.MOBILE ? (
-          <SelectTab
-            selectType={assetType}
-            list={Object.values(ASSET_FILTER_TYPE)}
-            onClick={changeAssetType}
-          />
+          <SelectTab selectType={assetType} list={Object.values(ASSET_FILTER_TYPE)} onClick={changeAssetType} />
         ) : (
           <div className="mobile-title-container">
             {breakpoint !== DEVICE_TYPE.MOBILE && (
@@ -65,16 +61,8 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
               />
             )}
             {searchIcon ? (
-              <div
-                ref={searchRef as unknown as React.RefObject<HTMLDivElement>}
-              >
-                <SearchInput
-                  width={200}
-                  height={40}
-                  value={keyword}
-                  onChange={search}
-                  className="tokens-search"
-                />
+              <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
+                <SearchInput width={200} height={40} value={keyword} onChange={search} className="tokens-search" />
               </div>
             ) : (
               <>
@@ -100,19 +88,10 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
             hasLabel={true}
             labelText={t("Wallet:assets.hideZeroAmt")}
           />
-          <SearchInput
-            width={300}
-            value={keyword}
-            onChange={search}
-            className="assets-search"
-          />
+          <SearchInput width={300} value={keyword} onChange={search} className="assets-search" />
         </div>
       ) : (
-        <SelectTab
-          selectType={assetType}
-          list={Object.values(ASSET_FILTER_TYPE)}
-          onClick={changeAssetType}
-        />
+        <SelectTab selectType={assetType} list={Object.values(ASSET_FILTER_TYPE)} onClick={changeAssetType} />
       )}
     </AssetListHeaderWrapper>
   );

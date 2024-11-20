@@ -60,7 +60,7 @@ export const wrapper = (theme: Theme) => css`
   .result-section {
     ${mixins.flexbox("column", "center", "center")};
     color: ${theme.color.text02};
-    
+
     .result-value {
       margin-left: auto;
     }
@@ -82,7 +82,8 @@ export const wrapper = (theme: Theme) => css`
     }
     h5 {
       margin-right: 4px;
-      &.total-amount-title, &.apr-title {
+      &.total-amount-title,
+      &.apr-title {
         margin-right: 4px;
         color: ${theme.color.text04};
       }

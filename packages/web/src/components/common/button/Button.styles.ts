@@ -35,8 +35,7 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
     return "auto";
   }};
   min-width: ${({ minWidth }) => {
-    if (minWidth)
-      return typeof minWidth === "number" ? minWidth + "px" : minWidth;
+    if (minWidth) return typeof minWidth === "number" ? minWidth + "px" : minWidth;
     return "auto";
   }};
   height: ${({ height }) => {
@@ -59,10 +58,8 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
       if (hoverColor) {
         return hoverColor;
       }
-      if (hierarchy === ButtonHierarchy.Primary)
-        return theme.color.background04Hover;
-      if (hierarchy === ButtonHierarchy.Dark)
-        return theme.color.background05Hover;
+      if (hierarchy === ButtonHierarchy.Primary) return theme.color.background04Hover;
+      if (hierarchy === ButtonHierarchy.Dark) return theme.color.background05Hover;
       return;
     }};
     & .arrow-icon path {
@@ -78,8 +75,7 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
       if (disabledColor) {
         return disabledColor;
       }
-      if (hierarchy === ButtonHierarchy.Primary)
-        return theme.color.background17;
+      if (hierarchy === ButtonHierarchy.Primary) return theme.color.background17;
       return;
     }};
   }

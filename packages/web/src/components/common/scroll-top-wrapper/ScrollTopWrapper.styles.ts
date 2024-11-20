@@ -5,12 +5,10 @@ export const ScrollTopContainer = styled.div`
   position: relative;
 `;
 
-
-
 export const ScrollTopButton = styled.button<{ $hidden: boolean }>`
-  opacity: ${({ $hidden }) => $hidden ? "0" : "1"};
-  transition: all .2s;
-  visibility: ${({ $hidden }) => $hidden ? "hidden" : "visible"};
+  opacity: ${({ $hidden }) => ($hidden ? "0" : "1")};
+  transition: all 0.2s;
+  visibility: ${({ $hidden }) => ($hidden ? "hidden" : "visible")};
   ${mixins.flexbox("row", "center", "center")}
   position: fixed;
   cursor: pointer;
@@ -21,6 +19,6 @@ export const ScrollTopButton = styled.button<{ $hidden: boolean }>`
   right: 16px;
   border-radius: 8px;
   &:hover {
-    background-color:  ${({ theme }) => theme.color.background04Hover};
+    background-color: ${({ theme }) => theme.color.background04Hover};
   }
 `;

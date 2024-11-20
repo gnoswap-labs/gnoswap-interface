@@ -7,9 +7,7 @@ export default {
   component: EarnMyPositionsContent,
 } as ComponentMeta<typeof EarnMyPositionsContent>;
 
-const Template: ComponentStory<typeof EarnMyPositionsContent> = args => (
-  <EarnMyPositionsContent {...args} />
-);
+const Template: ComponentStory<typeof EarnMyPositionsContent> = args => <EarnMyPositionsContent {...args} />;
 
 export const UnConnected = Template.bind({});
 UnConnected.args = {

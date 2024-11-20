@@ -52,7 +52,7 @@ export const RemovePositionModalWrapper = styled.div`
         width: 100%;
         ${mixins.flexbox("column", "flex-start", "flex-start")};
         gap: 16px;
-        
+
         h4 {
           ${fonts.body12}
           color: ${({ theme }) => theme.color.text10};
@@ -144,7 +144,6 @@ export const RemovePositionModalWrapper = styled.div`
             .value {
               color: ${({ theme }) => theme.color.text03};
             }
-            
           }
           .protocal-wrapper {
             flex-direction: column !important;
@@ -160,7 +159,7 @@ export const RemovePositionModalWrapper = styled.div`
               }
               span {
                 ${fonts.body12}
-               }
+              }
               svg {
                 width: 16px;
                 height: 16px;
@@ -171,7 +170,6 @@ export const RemovePositionModalWrapper = styled.div`
             }
           }
         }
-
       }
       > div {
         width: 100%;
@@ -226,7 +224,7 @@ interface Props {
 }
 
 export const ToolTipContentWrapper = styled.div<Props>`
-  width: ${({ width }) => width ? width : "268px"};
+  width: ${({ width }) => (width ? width : "268px")};
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
 `;

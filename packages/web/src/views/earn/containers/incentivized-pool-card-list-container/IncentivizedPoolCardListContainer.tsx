@@ -1,11 +1,5 @@
 import { useAtomValue } from "jotai";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
@@ -33,8 +27,8 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const [mobile, setMobile] = useState(false);
   const {
     data: incentivizePools = [],
-    isFetched: isFetchedPools,
-    isLoading: isLoadingPool,
+    isFetched: isFetchedIncentivizedPools,
+    isLoading: isLoadingIncentivizedPool,
   } = useIncentivizePool();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -85,8 +79,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       const maxScrollWidth = totalItemWidth + totalGapWidth - parentWidth;
       const currentScrollX = divRef.current.scrollLeft;
 
-      const maybeNextDisplayIndex =
-        Math.floor(currentScrollX / (listChildWidth + itemGap)) + 2;
+      const maybeNextDisplayIndex = Math.floor(currentScrollX / (listChildWidth + itemGap)) + 2;
 
       const centerScreenX = document.body.clientWidth / 2;
 
@@ -100,15 +93,8 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
         return;
       }
 
-      const getLengthFromElementCenterToScreenCenter = (
-        element: Element | null,
-      ) => {
-        if (element)
-          return Math.abs(
-            element?.getBoundingClientRect().x +
-              listChildWidth / 2 -
-              centerScreenX,
-          );
+      const getLengthFromElementCenterToScreenCenter = (element: Element | null) => {
+        if (element) return Math.abs(element?.getBoundingClientRect().x + listChildWidth / 2 - centerScreenX);
 
         return -1;
       };
@@ -127,12 +113,9 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
         const currentElement = checkValidElement(maybeNextIndex);
         const next1Element = checkValidElement(maybeNextIndex + 1);
 
-        const previousElementCenterXToScreenCenterX =
-          getLengthFromElementCenterToScreenCenter(previous1Element);
-        const currentElementCenterXToScreenCenterX =
-          getLengthFromElementCenterToScreenCenter(currentElement);
-        const nextElementCenterXToScreenCenterX =
-          getLengthFromElementCenterToScreenCenter(next1Element);
+        const previousElementCenterXToScreenCenterX = getLengthFromElementCenterToScreenCenter(previous1Element);
+        const currentElementCenterXToScreenCenterX = getLengthFromElementCenterToScreenCenter(currentElement);
+        const nextElementCenterXToScreenCenterX = getLengthFromElementCenterToScreenCenter(next1Element);
 
         const minLength = Math.min(
           ...[
@@ -182,7 +165,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   return (
     <IncentivizedPoolCardList
       incentivizedPools={incentivizePools}
-      isPoolFetched={isFetchedPools}
+      isPoolFetched={isFetchedIncentivizedPools}
       loadMore={!!loadMore}
       onClickLoadMore={handleClickLoadMore}
       currentIndex={currentIndex}
@@ -194,7 +177,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       onScroll={handleScroll}
       showPagination={showPagination}
       width={width}
-      isLoading={isLoadingPool || isLoadingPosition}
+      isLoading={isLoadingIncentivizedPool || isLoadingPosition}
       checkStakedPool={checkStakedPool}
     />
   );

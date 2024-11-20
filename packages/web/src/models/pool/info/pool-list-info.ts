@@ -27,5 +27,4 @@ export interface PoolListInfo {
   currentTick: number;
 
   tvl: string;
-
 }

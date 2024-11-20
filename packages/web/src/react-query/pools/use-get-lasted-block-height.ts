@@ -1,12 +1,10 @@
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetLastedBlockHeight = (
-  options?: UseQueryOptions<string, Error>,
-) => {
+export const useGetLastedBlockHeight = (options?: UseQueryOptions<string, Error>) => {
   const { poolRepository } = useGnoswapContext();
 
   return useQuery<string, Error>({
@@ -16,6 +14,10 @@ export const useGetLastedBlockHeight = (
 
       return data;
     },
+    staleTime: Infinity,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    keepPreviousData: true,
     ...options,
   });
 };

@@ -8,9 +8,11 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
@@ -22,25 +24,26 @@ interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
   allPosition: PoolPositionModel[];
   isGetWGNOT: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 const RemovePositionModalContainer = ({
   selectedPositions,
   allPosition,
   isGetWGNOT,
+  refetchPositions,
 }: RemovePositionModalContainerProps) => {
   const { account } = useWallet();
   const { positionRepository } = useGnoswapContext();
 
   const router = useRouter();
   const clearModal = useClearModal();
-  const {
-    broadcastRejected,
-    broadcastSuccess,
-    broadcastLoading,
-    broadcastError,
-    broadcastPending,
-  } = useBroadcastHandler();
+  const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(selectedPositions?.[0]?.poolPath);
   const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
     positions: selectedPositions,
   });
@@ -50,40 +53,29 @@ const RemovePositionModalContainer = ({
     router.push(router.asPath.replace("/remove", ""));
   }, [clearModal, router]);
 
-  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal(
-    {
-      closeCallback: onCloseConfirmTransactionModal,
-    },
-  );
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
+    closeCallback: onCloseConfirmTransactionModal,
+  });
 
   const { getMessage } = useMessage();
 
   const gnotToken = useMemo(
     () =>
-      selectedPositions.find(item => item.pool.tokenA.path === GNOT_TOKEN.path)
-        ?.pool.tokenA ||
-      selectedPositions.find(item => item.pool.tokenB.path === GNOT_TOKEN.path)
-        ?.pool.tokenB,
+      selectedPositions.find(item => item.pool.tokenA.path === GNOT_TOKEN.path)?.pool.tokenA ||
+      selectedPositions.find(item => item.pool.tokenB.path === GNOT_TOKEN.path)?.pool.tokenB,
     [selectedPositions],
   );
 
   const gnotAmount = useMemo(() => {
-    const pooledGnotTokenAmount = pooledTokenInfos.find(
-      item => item.token.path === gnotToken?.path,
-    )?.amount;
-    const unclaimedGnotTokenAmount = unclaimedFees.find(
-      item => item.token.path === gnotToken?.path,
-    )?.amount;
+    const pooledGnotTokenAmount = pooledTokenInfos
+      .find(item => item.token.path === gnotToken?.path)
+      ?.amount.replaceAll(",", "");
+    const unclaimedGnotTokenAmount = unclaimedFees.find(item => item.token.path === gnotToken?.path)?.amount;
 
-    return (
-      Number(pooledGnotTokenAmount || 0) + Number(unclaimedGnotTokenAmount || 0)
-    );
+    return Number(pooledGnotTokenAmount || 0) + Number(unclaimedGnotTokenAmount || 0);
   }, [gnotToken?.path, pooledTokenInfos, unclaimedFees]);
 
-  const willWrap = useMemo(
-    () => isGetWGNOT && !!gnotToken && !!gnotAmount,
-    [gnotAmount, gnotToken, isGetWGNOT],
-  );
+  const willWrap = useMemo(() => isGetWGNOT && !!gnotToken && !!gnotAmount, [gnotAmount, gnotToken, isGetWGNOT]);
 
   const tokenTransform = useCallback(
     (token: TokenModel) => {
@@ -107,10 +99,8 @@ const RemovePositionModalContainer = ({
     const approveTokenPaths = [
       ...new Set(
         selectedPositions.flatMap(position => [
-          position.pool.tokenA.wrappedPath ||
-            checkGnotPath(position.pool.tokenA.path),
-          position.pool.tokenB.wrappedPath ||
-            checkGnotPath(position.pool.tokenB.path),
+          position.pool.tokenA.wrappedPath || checkGnotPath(position.pool.tokenA.path),
+          position.pool.tokenB.wrappedPath || checkGnotPath(position.pool.tokenB.path),
         ]),
       ),
     ];
@@ -141,35 +131,36 @@ const RemovePositionModalContainer = ({
       .catch(() => null);
 
     if (result) {
+      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+        enqueueEvent({
+          txHash: result.data?.hash,
+          action: DexEvent.REMOVE,
+          visibleEmitResult: true,
+          formatData: response => {
+            if (!response) {
+              return messageData;
+            }
+            return messageData;
+          },
+          onEmit: async () => {
+            refetchPools();
+            refetchPositions();
+            refetchPoolDetails();
+          },
+        });
+      }
       if (result.code === 0) {
-        broadcastPending({ txHash: result.data?.hash });
         setTimeout(async () => {
-          broadcastSuccess(
-            getMessage(
-              DexEvent.REMOVE,
-              "success",
-              { ...messageData },
-              result.data?.hash,
-            ),
-          );
+          broadcastSuccess(getMessage(DexEvent.REMOVE, "success", { ...messageData }, result.data?.hash));
           openTransactionConfirmModal();
         }, 1000);
       } else if (
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
-        broadcastError(
-          getMessage(DexEvent.REMOVE, "error", { ...messageData }),
-        );
+        broadcastError(getMessage(DexEvent.REMOVE, "error", { ...messageData }));
         clearModal();
       } else {
-        broadcastRejected(
-          getMessage(
-            DexEvent.REMOVE,
-            "error",
-            { ...messageData },
-            result?.data?.hash,
-          ),
-        );
+        broadcastRejected(getMessage(DexEvent.REMOVE, "error", { ...messageData }, result?.data?.hash));
       }
     }
   }, [

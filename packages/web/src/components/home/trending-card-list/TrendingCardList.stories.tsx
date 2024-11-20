@@ -8,9 +8,7 @@ export default {
   component: TrendingCardList,
 } as ComponentMeta<typeof TrendingCardList>;
 
-const Template: ComponentStory<typeof TrendingCardList> = args => (
-  <TrendingCardList {...args} />
-);
+const Template: ComponentStory<typeof TrendingCardList> = args => <TrendingCardList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

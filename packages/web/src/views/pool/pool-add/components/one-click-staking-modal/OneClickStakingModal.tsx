@@ -70,7 +70,7 @@ const OneClickStakingModal: React.FC<Props> = ({
       <div className="modal-body">
         <div className="header">
           <h6>
-            {t("AddPosition:confirmAddModal.title", {
+            {t("AddPosition:confirmAddModal.title_oneClick", {
               context: "oneClick",
             })}
           </h6>
@@ -82,17 +82,13 @@ const OneClickStakingModal: React.FC<Props> = ({
           <div>
             <PoolAddConfirmAmountInfo {...amountInfo} />
           </div>
-          <PoolAddConfirmPriceRangeInfo
-            {...priceRangeInfo}
-            isShowStaking
-            {...amountInfo}
-          />
+          <PoolAddConfirmPriceRangeInfo {...priceRangeInfo} isShowStaking {...amountInfo} />
 
           {isPoolCreation && <PoolAddConfirmFeeInfo {...feeInfo} />}
 
           <div>
             <Button
-              text={t("AddPosition:confirmAddModal.btn", {
+              text={t("AddPosition:confirmAddModal.title_oneClick", {
                 context: "oneClick",
               })}
               disabled={!!feeInfo.errorMsg}

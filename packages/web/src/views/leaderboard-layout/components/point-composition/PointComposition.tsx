@@ -1,13 +1,5 @@
 import Tooltip from "@components/common/tooltip/Tooltip";
-import {
-  ContentWrapper,
-  Flex,
-  FontWeight500,
-  FrontWeight,
-  Label,
-  Title,
-  Wrapper,
-} from "./PointComposition.styles";
+import { ContentWrapper, Flex, FontWeight500, FrontWeight, Label, Title, Wrapper } from "./PointComposition.styles";
 
 const PointComposition = ({
   points,

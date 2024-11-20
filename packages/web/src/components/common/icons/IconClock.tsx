@@ -1,12 +1,5 @@
 const IconClock = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="26"
-    height="25"
-    fill="none"
-    viewBox="0 0 26 25"
-    className={className}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="25" fill="none" viewBox="0 0 26 25" className={className}>
     <path
       fill="url(#paint0_linear_9065_220754)"
       fillRule="evenodd"

@@ -7,9 +7,7 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     return 0;
   };
 
-  public getRoutes = async (
-    request: GetRoutesRequest,
-  ): Promise<GetRoutesResponse> => {
+  public getRoutes = async (request: GetRoutesRequest): Promise<GetRoutesResponse> => {
     console.log(request);
     return {
       estimatedRoutes: [],

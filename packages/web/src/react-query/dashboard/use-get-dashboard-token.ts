@@ -7,9 +7,7 @@ import { DashboardTokenResponse } from "@repositories/dashboard/response/token-r
 
 const REFETCH_INTERVAL = 60_000;
 
-export const useGetDashboardToken = (
-  options?: UseQueryOptions<DashboardTokenResponse, Error>,
-) => {
+export const useGetDashboardToken = (options?: UseQueryOptions<DashboardTokenResponse, Error>) => {
   const { dashboardRepository } = useGnoswapContext();
 
   return useQuery<DashboardTokenResponse, Error>({

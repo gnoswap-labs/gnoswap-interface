@@ -6,10 +6,7 @@ import { QUERY_KEY } from "../query-keys";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenError } from "@common/errors/token";
 
-export const useGetTokenPrices = (
-  path: string | null,
-  options?: UseQueryOptions<TokenPriceModel, Error>,
-) => {
+export const useGetTokenPrices = (path: string | null, options?: UseQueryOptions<TokenPriceModel, Error>) => {
   const { tokenRepository } = useGnoswapContext();
 
   return useQuery<TokenPriceModel, Error>({

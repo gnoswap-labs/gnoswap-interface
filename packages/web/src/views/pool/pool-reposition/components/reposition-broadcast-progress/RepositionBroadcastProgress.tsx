@@ -6,46 +6,34 @@ import IconAddPositionCircle from "@components/common/icons/IconAddPositionCircl
 import IconRemovePositionCircle from "@components/common/icons/IconRemovePositionCircle";
 import IconSwapCircle from "@components/common/icons/IconSwapCircle";
 import { TokenModel } from "@models/token/token-model";
-import {
-  RepositionLiquidityFailedResponse,
-  RepositionLiquiditySuccessResponse,
-} from "@repositories/position/response";
-import {
-  SwapRouteFailedResponse,
-  SwapRouteSuccessResponse,
-} from "@repositories/swap/response/swap-route-response";
+import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
+import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 import { wait } from "@utils/common";
 
 import { RepositionBroadcastProgressWrapper } from "./RepositionBroadcastProgress.styles";
-import RepositionBroadcastProgressState, {
-  ProgressStateType,
-} from "./RepositionBroadcastProgressState";
+import RepositionBroadcastProgressState, { ProgressStateType } from "./RepositionBroadcastProgressState";
 
 export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   swapAtoB: boolean;
   removePosition: () => Promise<WalletResponse | null>;
-  swapRemainToken: () => Promise<WalletResponse<
-    SwapRouteSuccessResponse | SwapRouteFailedResponse
-  > | null>;
+  swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null>;
   reposition: (
     swapToken: TokenModel | null,
     swapAmount: string | null,
-  ) => Promise<WalletResponse<
-    RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
-  > | null>;
+  ) => Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null>;
   closeModal: () => void;
+  refetchPositions: () => Promise<void>;
   isSkipSwap: boolean;
 }
 
-const RepositionBroadcastProgress: React.FC<
-  RepositionBroadcastProgressProps
-> = ({
+const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = ({
   removePosition,
   reposition,
   swapRemainToken,
   closeModal,
+  refetchPositions,
   tokenA,
   tokenB,
   swapAtoB,
@@ -53,28 +41,21 @@ const RepositionBroadcastProgress: React.FC<
 }) => {
   const { t } = useTranslation();
 
-  const [removePositionState, setRemovePositionState] =
-    useState<ProgressStateType>("NONE");
+  const [removePositionState, setRemovePositionState] = useState<ProgressStateType>("NONE");
   const [swapState, setSwapState] = useState<ProgressStateType>("NONE");
-  const [swapResult, setSwapResult] = useState<SwapRouteSuccessResponse | null>(
-    null,
-  );
-  const [addPositionState, setAddPositionState] =
-    useState<ProgressStateType>("NONE");
+  const [swapResult, setSwapResult] = useState<SwapRouteSuccessResponse | null>(null);
+  const [addPositionState, setAddPositionState] = useState<ProgressStateType>("NONE");
 
   const isActive = useCallback((state: ProgressStateType) => {
     return !["NONE", "INIT"].includes(state);
   }, []);
 
-  const makeActiveClassName = useCallback(
-    (className: string, active: boolean) => {
-      if (!active) {
-        return className;
-      }
-      return `${className} active`;
-    },
-    [],
-  );
+  const makeActiveClassName = useCallback((className: string, active: boolean) => {
+    if (!active) {
+      return className;
+    }
+    return `${className} active`;
+  }, []);
 
   const processRemovePosition = (callback: () => void) => {
     if (removePositionState !== "INIT") {
@@ -154,10 +135,7 @@ const RepositionBroadcastProgress: React.FC<
       return;
     }
 
-    reposition(
-      swapResult?.resultToken || null,
-      swapResult?.resultAmount || null,
-    ).then(response => {
+    reposition(swapResult?.resultToken || null, swapResult?.resultAmount || null).then(response => {
       if (!response) {
         setAddPositionState("FAIL");
         return;
@@ -203,7 +181,7 @@ const RepositionBroadcastProgress: React.FC<
 
   useEffect(() => {
     if (addPositionState === "INIT") {
-      processAddPosition(() => {});
+      processAddPosition(() => refetchPositions());
     }
   }, [addPositionState]);
 
@@ -216,12 +194,7 @@ const RepositionBroadcastProgress: React.FC<
       <div className="row">
         <div className="progress-info">
           <IconRemovePositionCircle active={isActive(removePositionState)} />
-          <span
-            className={makeActiveClassName(
-              "progress-title",
-              isActive(removePositionState),
-            )}
-          >
+          <span className={makeActiveClassName("progress-title", isActive(removePositionState))}>
             {t("Reposition:repos.step.removePosi")}
           </span>
         </div>
@@ -239,23 +212,14 @@ const RepositionBroadcastProgress: React.FC<
           <div className="row">
             <div className="progress-info">
               <IconSwapCircle active={isActive(swapState)} />
-              <span
-                className={makeActiveClassName(
-                  "progress-title",
-                  isActive(swapState),
-                )}
-              >
+              <span className={makeActiveClassName("progress-title", isActive(swapState))}>
                 {t("Reposition:repos.step.swap", {
                   symbolA: swapAtoB ? tokenA.symbol : tokenB.symbol,
                   symbolB: swapAtoB ? tokenB.symbol : tokenA.symbol,
                 })}
               </span>
             </div>
-            <RepositionBroadcastProgressState
-              state={swapState}
-              retry={() => setSwapState("INIT")}
-              exit={closeModal}
-            />
+            <RepositionBroadcastProgressState state={swapState} retry={() => setSwapState("INIT")} exit={closeModal} />
           </div>
           <div className="divider" />
         </React.Fragment>
@@ -264,12 +228,7 @@ const RepositionBroadcastProgress: React.FC<
       <div className="row">
         <div className="progress-info">
           <IconAddPositionCircle active={isActive(addPositionState)} />
-          <span
-            className={makeActiveClassName(
-              "progress-title",
-              isActive(addPositionState),
-            )}
-          >
+          <span className={makeActiveClassName("progress-title", isActive(addPositionState))}>
             {t("Reposition:repos.step.addPosi")}
           </span>
         </div>

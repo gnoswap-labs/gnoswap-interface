@@ -4,18 +4,16 @@ import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
-import {
-  RANGE_STATUS_OPTION,
-  SwapFeeTierInfoMap,
-  SwapFeeTierType
-} from "@constants/option.constant";
+import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { useAddress } from "@hooks/address/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { TokenModel } from "@models/token/token-model";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
@@ -23,6 +21,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import DecreasePositionModalContainer from "../containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { IPooledTokenInfo } from "./use-decrease-handle";
+import { makePoolPath } from "@utils/pool-utils";
 
 export interface Props {
   openModal: () => void;
@@ -40,6 +39,7 @@ export interface DecreasePositionModal {
   percent: number;
   pooledTokenInfos: IPooledTokenInfo | null;
   isGetWGNOT: boolean;
+  refetchPositions: () => Promise<void>;
 }
 
 export const useDecreasePositionModal = ({
@@ -54,6 +54,7 @@ export const useDecreasePositionModal = ({
   percent,
   pooledTokenInfos,
   isGetWGNOT,
+  refetchPositions,
 }: DecreasePositionModal): Props => {
   const router = useRouter();
   const { address } = useAddress();
@@ -65,35 +66,31 @@ export const useDecreasePositionModal = ({
     router.back();
   }, [clearModal, router]);
 
-  const {
-    broadcastRejected,
-    broadcastSuccess,
-    broadcastLoading,
-    broadcastError,
-    broadcastPending,
-  } = useBroadcastHandler();
+  const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
+  const { refetch: refetchPools } = useGetPoolList();
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(makePoolPath(tokenA, tokenB, swapFeeTier));
 
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
   const { getMessage } = useMessage();
 
-  const gnotToken = useMemo(
-    () => [tokenA, tokenB].find(item => item?.path === GNOT_TOKEN.path),
-    [tokenA, tokenB],
-  );
+  const gnotToken = useMemo(() => [tokenA, tokenB].find(item => item?.path === GNOT_TOKEN.path), [tokenA, tokenB]);
 
   const gnotAmount = useMemo(() => {
     if (tokenA?.path === gnotToken?.path) {
       return (
-        Number(pooledTokenInfos?.poolAmountA || 0) +
-        Number(pooledTokenInfos?.unClaimTokenAAmount || 0)
+        Number(pooledTokenInfos?.poolAmountA.replaceAll(",", "") || 0) +
+        Number(pooledTokenInfos?.unClaimTokenAAmount.replaceAll(",", "") || 0)
       );
     }
     if (tokenB?.path === gnotToken?.path) {
       return (
-        Number(pooledTokenInfos?.poolAmountB || 0) +
-        Number(pooledTokenInfos?.unClaimTokenBAmount || 0)
+        Number(pooledTokenInfos?.poolAmountB.replaceAll(",", "") || 0) +
+        Number(pooledTokenInfos?.unClaimTokenBAmount.replaceAll(",", "") || 0)
       );
     }
     return 0;
@@ -144,27 +141,17 @@ export const useDecreasePositionModal = ({
       getMessage(DexEvent.REMOVE, "pending", {
         tokenASymbol: tokenTransform(tokenA).symbol,
         tokenBSymbol: tokenTransform(tokenB).symbol,
-        tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString(
-          "en-US",
-          {
-            maximumFractionDigits: tokenTransform(tokenA).decimals,
-          },
-        ),
-        tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString(
-          "en-US",
-          {
-            maximumFractionDigits: tokenTransform(tokenB).decimals,
-          },
-        ),
+        tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString("en-US", {
+          maximumFractionDigits: tokenTransform(tokenA).decimals,
+        }),
+        tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString("en-US", {
+          maximumFractionDigits: tokenTransform(tokenB).decimals,
+        }),
       }),
     );
 
-    const poolAmountA = BigNumber(
-      pooledTokenInfos?.poolAmountA ?? 0,
-    ).toNumber();
-    const poolAmountB = BigNumber(
-      pooledTokenInfos?.poolAmountB ?? 0,
-    ).toNumber();
+    const poolAmountA = BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toNumber();
+    const poolAmountB = BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toNumber();
 
     const result = await positionRepository
       .decreaseLiquidity({
@@ -192,62 +179,76 @@ export const useDecreasePositionModal = ({
     };
 
     if (result) {
+      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+        enqueueEvent({
+          txHash: result.data?.hash,
+          action: DexEvent.REMOVE,
+          visibleEmitResult: true,
+          formatData: response => {
+            if (!response) {
+              return defaultMessageData;
+            }
+            return {
+              ...defaultMessageData,
+              tokenAAmount: Number(makeDisplayTokenAmount(tokenTransform(tokenA), response[4])).toLocaleString(
+                "en-US",
+                {
+                  maximumFractionDigits: tokenTransform(tokenA).decimals,
+                },
+              ),
+              tokenBAmount: Number(makeDisplayTokenAmount(tokenTransform(tokenB), response[5])).toLocaleString(
+                "en-US",
+                {
+                  maximumFractionDigits: tokenTransform(tokenB).decimals,
+                },
+              ),
+            };
+          },
+          onEmit: async () => {
+            refetchPools();
+            refetchPositions();
+            refetchPoolDetails();
+          },
+        });
+      }
+
       if (result.code === 0 && result?.data) {
         const resultData = result?.data as DecreaseLiquiditySuccessResponse;
-        broadcastPending({ txHash: resultData.hash });
-        setTimeout(() => {
-          // Make display token amount
-          const tokenAAmount = (
-            makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
-          const tokenBAmount = (
-            makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
 
-          broadcastSuccess(
-            getMessage(
-              DexEvent.REMOVE,
-              "success",
-              {
-                tokenASymbol: tokenTransform(tokenA).symbol,
-                tokenBSymbol: tokenTransform(tokenB).symbol,
-                tokenAAmount,
-                tokenBAmount,
-              },
-              resultData.hash,
-            ),
-            onSuccessClose,
-          );
-        }, 1000);
+        // Make display token amount
+        const tokenAAmount = (makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0).toLocaleString(
+          "en-US",
+          { maximumFractionDigits: tokenA.decimals },
+        );
+        const tokenBAmount = (makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0).toLocaleString(
+          "en-US",
+          { maximumFractionDigits: tokenB.decimals },
+        );
+
+        broadcastSuccess(
+          getMessage(
+            DexEvent.REMOVE,
+            "success",
+            {
+              tokenASymbol: tokenTransform(tokenA).symbol,
+              tokenBSymbol: tokenTransform(tokenB).symbol,
+              tokenAAmount,
+              tokenBAmount,
+            },
+            resultData.hash,
+          ),
+          onSuccessClose,
+        );
       } else if (
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
-        broadcastRejected(
-          getMessage(DexEvent.REMOVE, "error", defaultMessageData),
-        );
+        broadcastRejected(getMessage(DexEvent.REMOVE, "error", defaultMessageData));
       } else {
-        broadcastError(
-          getMessage(
-            DexEvent.REMOVE,
-            "error",
-            defaultMessageData,
-            result?.data?.hash,
-          ),
-        );
+        broadcastError(getMessage(DexEvent.REMOVE, "error", defaultMessageData, result?.data?.hash));
       }
     }
     return true;
-  }, [
-    address,
-    percent,
-    pooledTokenInfos,
-    positionId,
-    positionRepository,
-    router,
-    tokenA,
-    tokenB,
-    willWrap,
-  ]);
+  }, [address, percent, pooledTokenInfos, positionId, positionRepository, router, tokenA, tokenB, willWrap]);
 
   const openModal = useCallback(() => {
     if (!amountInfo) {

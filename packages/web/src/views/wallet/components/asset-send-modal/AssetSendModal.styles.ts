@@ -130,7 +130,7 @@ export const AssetSendContent = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 130%;
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text30};
   }
 
   .withdrawal-network {
@@ -154,7 +154,7 @@ export const AssetSendContent = styled.div`
     }
 
     .approximately {
-      color: ${({ theme }) => theme.color.text04};
+      color: ${({ theme }) => theme.color.text30};
       font-size: 14px;
       font-style: normal;
       font-weight: 500;
@@ -249,11 +249,17 @@ export const AssetSendContent = styled.div`
 
   .price-text,
   .balance-text {
-    ${fonts.body12};
+    ${fonts.p2};
     color: ${({ theme }) => theme.color.text04};
     ${media.mobile} {
       ${fonts.p2}
     }
+  }
+  .price-text {
+    max-width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .balance-text {

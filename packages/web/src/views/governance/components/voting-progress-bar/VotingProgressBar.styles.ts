@@ -1,0 +1,88 @@
+import styled from "@emotion/styled";
+import mixins from "@styles/mixins";
+import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
+
+export const ProgressWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
+  width: 100%;
+  gap: 24px;
+  .progress-value {
+    ${mixins.flexbox("row", "center", "center")};
+    flex-wrap: wrap;
+    gap: 4px;
+    color: ${({ theme }) => theme.color.text04};
+    ${fonts.body12};
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: ${({ theme }) => theme.color.text10};
+    }
+    .passed {
+      background: var(--Boost, linear-gradient(270deg, #536cd7 -2.39%, #233dbd 103.33%));
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  ${media.mobile} {
+    ${mixins.flexbox("column", "start", "start")};
+    gap: 8px;
+    .progress-value {
+      ${fonts.p4};
+    }
+  }
+`;
+
+export interface progressBarProps {
+  rateWidth?: string;
+  noOfQuorumWidth?: string;
+  abstainOfQuorumWidth?: string;
+}
+
+export const ProgressBar = styled.div<progressBarProps>`
+  flex: 1;
+  ${mixins.flexbox("column", "flex-start", "center")};
+  min-width: calc(100% - 200px);
+  height: 14px;
+  border-radius: 99px;
+  background-color: ${({ theme }) => theme.color.background15};
+  position: relative;
+  .progress-bar-rate {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+  .progress-bar-yes-of-quorum {
+    z-index: 3;
+    width: ${({ rateWidth }) => {
+      return rateWidth ? rateWidth : "0%";
+    }};
+    height: 100%;
+    border-radius: 8px;
+    background-color: ${({ theme }) => theme.color.background04};
+  }
+  .progress-bar-no-of-quorum {
+    z-index: 2;
+    width: ${({ noOfQuorumWidth }) => {
+      return noOfQuorumWidth ? noOfQuorumWidth : "0%";
+    }};
+    height: 100%;
+    border-radius: 8px;
+    background-color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background05 : theme.color.text08)};
+  }
+
+  ${media.mobile} {
+    flex: unset;
+    width: 100%;
+    height: 8px;
+  }
+`;
+
+export const ProposalTooltipContent = styled.div`
+  font-size: 14px;
+`;

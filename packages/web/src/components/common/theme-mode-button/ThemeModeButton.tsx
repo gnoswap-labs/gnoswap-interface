@@ -7,15 +7,9 @@ interface ThemeModeButtonProps {
   toggleTheme: () => void;
 }
 
-const ThemeModeButton: React.FC<ThemeModeButtonProps> = ({
-  themeKey,
-  toggleTheme,
-}) => {
+const ThemeModeButton: React.FC<ThemeModeButtonProps> = ({ themeKey, toggleTheme }) => {
   return (
-    <ThemeModeButtonWrapper
-      onClick={toggleTheme}
-      darkMode={themeKey === "dark"}
-    >
+    <ThemeModeButtonWrapper onClick={toggleTheme} darkMode={themeKey === "dark"}>
       <IconMoon className="dark-icon" />
       <IconSun className="light-icon" />
       <ToggleButton darkMode={themeKey === "dark"} />

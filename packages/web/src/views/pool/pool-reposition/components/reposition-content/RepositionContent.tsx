@@ -4,19 +4,13 @@ import { useTranslation } from "react-i18next";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import {
-  PriceRangeMeta,
-  RANGE_STATUS_OPTION,
-} from "@constants/option.constant";
+import { PriceRangeMeta, RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 
-import {
-  IPriceRange,
-  REPOSITION_BUTTON_TYPE,
-} from "../../hooks/use-reposition-handle";
+import { IPriceRange, REPOSITION_BUTTON_TYPE } from "../../hooks/use-reposition-handle";
 import BalanceChange from "../balance-change/BalanceChange";
 import RepositionSelectPosition from "../reposition-select-position/RepositionSelectPosition";
 import RepositionSelectRange from "../reposition-select-range/RepositionSelectRange";
@@ -80,7 +74,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
     if (buttonType === "NON_SELECTED_RANGE") {
       return t("Reposition:btn.selectRange");
     }
-    return t("Reposition:btn.reposition");
+    return t("Reposition:title");
   }, [buttonType, t]);
 
   const isSubmit = useMemo(() => {
@@ -96,11 +90,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
         <h3>{t("Reposition:title")}</h3>
         <Tooltip
           placement="top"
-          FloatingContent={
-            <ToolTipContentWrapper>
-              {t("Reposition:tooltip")}
-            </ToolTipContentWrapper>
-          }
+          FloatingContent={<ToolTipContentWrapper>{t("Reposition:tooltip")}</ToolTipContentWrapper>}
         >
           <IconInfo />
         </Tooltip>

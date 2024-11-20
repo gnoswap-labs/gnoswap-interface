@@ -1,12 +1,5 @@
 const IconPieChart = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="26"
-    height="25"
-    fill="none"
-    viewBox="0 0 26 25"
-    className={className}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="25" fill="none" viewBox="0 0 26 25" className={className}>
     <path
       fill="url(#paint0_linear_18686_349199)"
       d="M12.126 5.415c0-.627-.553-1.117-1.158-.951A8.334 8.334 0 1021.205 14.7c.166-.605-.324-1.158-.95-1.158h-6.306a1.823 1.823 0 01-1.823-1.823V5.415z"

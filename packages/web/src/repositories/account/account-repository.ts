@@ -1,7 +1,8 @@
 import {
   SendTransactionRequestParam,
   SendTransactionResponse,
-  SwitchNetworkResponse, WalletResponse
+  SwitchNetworkResponse,
+  WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
 import { AccountModel } from "@models/account/account-model";
@@ -24,18 +25,11 @@ export interface AccountRepository extends AccountNotificationRepository {
 
   addEstablishedSite: () => Promise<WalletResponse>;
 
-  sendTransaction: (
-    request: SendTransactionRequestParam,
-  ) => Promise<WalletResponse<SendTransactionResponse>>;
+  sendTransaction: (request: SendTransactionRequestParam) => Promise<WalletResponse<SendTransactionResponse>>;
 
-  switchNetwork: (
-    chainId: string,
-  ) => Promise<WalletResponse<SwitchNetworkResponse>>;
+  switchNetwork: (chainId: string) => Promise<WalletResponse<SwitchNetworkResponse>>;
 
-  getBalanceByKey: (
-    address: string,
-    tokenKey: string,
-  ) => Promise<number | null>;
+  getBalanceByKey: (address: string, tokenKey: string) => Promise<number | null>;
 
   // FIXME: it may goto new repository
   getAvgBlockTime: (request: { startBlock?: number }) => Promise<AvgBlockTime>;

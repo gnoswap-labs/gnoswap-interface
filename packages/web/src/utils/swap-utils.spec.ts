@@ -1,11 +1,5 @@
 import { tickToSqrtPriceX96 } from "./math.utils";
-import {
-  feeBoostRateByPrices,
-  isEndTickBy,
-  priceToNearTick,
-  priceToTick,
-  tickToPrice,
-} from "./swap-utils";
+import { feeBoostRateByPrices, isEndTickBy, priceToNearTick, priceToTick, tickToPrice } from "./swap-utils";
 
 describe("tick convert to price", () => {
   test("0 to 1", () => {
@@ -15,19 +9,16 @@ describe("tick convert to price", () => {
 
   test("10000 to 2.718145926825225", () => {
     const tick = 10000;
-    const a = tickToPrice(tick);
     expect(tickToPrice(tick)).toBe(2.718145926825225);
   });
 
   test("10001 to 2.7184177414179076", () => {
     const tick = 10001;
-    const a = tickToPrice(tick);
     expect(tickToPrice(tick)).toBe(2.7184177414179076);
   });
 
   test("100000 to 22015.456048552198", () => {
     const tick = 100000;
-    const a = tickToPrice(tick);
     expect(tickToPrice(tick)).toBe(22015.456048552198);
   });
 });
@@ -35,9 +26,7 @@ describe("tick convert to price", () => {
 describe("tick convert to sqrtPriceX96", () => {
   test("-5120 to 61334630738499455555414115609", () => {
     const tick = -5120;
-    expect(tickToSqrtPriceX96(tick).toString()).toBe(
-      "61334630738499455555414115609",
-    );
+    expect(tickToSqrtPriceX96(tick).toString()).toBe("61334630738499455555414115609");
   });
 
   test("10000 to 2.718145926825225", () => {

@@ -21,14 +21,14 @@ export const EarnAddConfirmWrapper = styled.div`
       ${fonts.h6}
       color: ${({ theme }) => theme.color.text01};
       ${media.mobile} {
-      ${fonts.body9}
+        ${fonts.body9}
       }
     }
 
     .close-button {
       svg {
         width: 24px;
-        height: 24px; 
+        height: 24px;
       }
 
       svg * {
@@ -47,7 +47,6 @@ export const EarnAddConfirmWrapper = styled.div`
     span {
       ${fonts.body7}
     }
-    
   }
   ${media.mobile} {
     width: 328px;

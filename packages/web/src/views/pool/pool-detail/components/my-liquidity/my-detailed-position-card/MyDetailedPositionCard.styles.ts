@@ -28,8 +28,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
   gap: 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border01};
-  background-color: ${({ theme, type }) =>
-    type === "closed" ? theme.color.background29 : theme.color.background03};
+  background-color: ${({ theme, type }) => (type === "closed" ? theme.color.background29 : theme.color.background03)};
   ${media.tablet} {
     padding: 24px 24px 0 24px;
     border-radius: 10px;
@@ -57,9 +56,10 @@ export const MyPositionCardWrapper = styled.div<Props>`
           visibility: hidden;
         }
         .link-page {
-          ${mixins.flexbox("row", "center", "flex-start")};
+          ${mixins.flexbox("row", "center", "center")};
           gap: 8px;
           .icon-link {
+            ${mixins.flexbox("row", "center", "center")};
             width: 22px;
             height: 22px;
             cursor: pointer;
@@ -109,8 +109,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         ${media.mobile} {
           ${fonts.body7};
         }
-        color: ${({ theme, type }) =>
-          type !== "closed" ? theme.color.text02 : theme.color.text10};
+        color: ${({ theme, type }) => (type !== "closed" ? theme.color.text02 : theme.color.text10)};
       }
       .flex-button {
         ${mixins.flexbox("row", "center", "center")};
@@ -203,6 +202,20 @@ export const MyPositionCardWrapper = styled.div<Props>`
       width: 100%;
       padding: 16px;
       gap: 16px;
+      .info-box-flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        button {
+          height: 36px;
+          padding: 10px 16px;
+          span {
+            font-size: 13px;
+            font-weight: 500;
+          }
+        }
+      }
       &:not(:first-of-type) {
         border-left: 1px solid ${({ theme }) => theme.color.border02};
       }
@@ -243,8 +256,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         &:hover {
           color: ${({ theme }) => theme.color.text07};
         }
-        color: ${({ theme, type }) =>
-          type !== "closed" ? theme.color.text02 : theme.color.text10};
+        color: ${({ theme, type }) => (type !== "closed" ? theme.color.text02 : theme.color.text10)};
         &.disabled {
           pointer-events: none;
         }
@@ -409,14 +421,16 @@ export const CopyTooltip = styled.div`
   .light-shadow {
     box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   }
+
   .polygon-icon * {
     fill: ${({ theme }) => theme.color.background02};
   }
 
   ${media.mobile} {
     ${mixins.flexbox("row", "center", "flex-start")};
-    top: -8px;
-    left: 20px;
+    top: -40px;
+    left: -40px;
+    z-index: 2;
     .box {
       padding: 12px;
     }
@@ -424,6 +438,10 @@ export const CopyTooltip = styled.div`
     & .rotate-90 {
       transform: rotate(90deg);
       margin-right: -10px;
+    }
+
+    .polygon-icon * {
+      fill: unset;
     }
   }
 `;

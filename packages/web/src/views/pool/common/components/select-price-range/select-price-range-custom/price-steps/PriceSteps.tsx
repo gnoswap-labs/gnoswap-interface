@@ -1,25 +1,11 @@
 import BigNumber from "bignumber.js";
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 
 import IconAdd from "@components/common/icons/IconAdd";
 import IconRemove from "@components/common/icons/IconRemove";
-import {
-  SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType
-} from "@constants/option.constant";
+import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { isNumber, subscriptFormat } from "@utils/number-utils";
-import {
-  convertToKMB,
-  formatTokenExchangeRate
-} from "@utils/stake-position-utils";
+import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { findNearPrice } from "@utils/swap-utils";
 
 import { PriceStepsWrapper } from "./PriceSteps.styles";
@@ -89,15 +75,12 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
       setIsChangeMinMax(true);
     }, [increase, setIsChangeMinMax]);
 
-    const onChangeValue = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        const formattedValue = value.replace(/[^0-9.]/, "");
-        setDisplayValue(formattedValue);
-        setChanged(true);
-      },
-      [],
-    );
+    const onChangeValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      const formattedValue = value.replace(/[^0-9.]/, "");
+      setDisplayValue(formattedValue);
+      setChanged(true);
+    }, []);
 
     const formatControllerValue = useCallback(
       (value: number | null) => {
@@ -252,11 +235,7 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
         <span className="title">{title}</span>
         <div className="controller-wrapper">
           <div
-            className={
-              disabledController
-                ? "icon-wrapper decrease disabled"
-                : "icon-wrapper decrease"
-            }
+            className={disabledController ? "icon-wrapper decrease disabled" : "icon-wrapper decrease"}
             onClick={onClickDecrease}
           >
             <span>
@@ -276,11 +255,7 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
             </div>
           </div>
           <div
-            className={
-              disabledController
-                ? "icon-wrapper increase disabled"
-                : "icon-wrapper increase"
-            }
+            className={disabledController ? "icon-wrapper increase disabled" : "icon-wrapper increase"}
             onClick={onClickIncrease}
           >
             <span>

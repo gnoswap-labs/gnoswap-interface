@@ -1,10 +1,4 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import * as d3 from "d3";
 
 import { useColorGraph } from "@hooks/common/use-color-graph";
@@ -98,16 +92,14 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
         let isBlackBar = !!(
           maxTickPosition &&
           minTickPosition &&
-          (scaleX(bin.minTick) < minTickPosition - binSpacing ||
-            scaleX(bin.minTick) > maxTickPosition)
+          (scaleX(bin.minTick) < minTickPosition - binSpacing || scaleX(bin.minTick) > maxTickPosition)
         );
 
         if (isReversed) {
           isBlackBar = !!(
             maxTickPosition &&
             minTickPosition &&
-            (scaleX(bin.minTick) <
-              scaleX(maxX) - maxTickPosition - binSpacing ||
+            (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - binSpacing ||
               scaleX(bin.minTick) > scaleX(maxX) - minTickPosition)
           );
         }
@@ -156,23 +148,14 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
               .attr("width", scaleX(bin.maxTick - bin.minTick))
               .attr("y", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return (
-                  scaleYComputation -
-                  (scaleYComputation > height - 3 &&
-                  scaleYComputation !== height
-                    ? 3
-                    : 0)
-                );
+                return scaleYComputation - (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0);
               })
               .attr("height", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
                 return (
                   boundsHeight -
                   scaleYComputation +
-                  (scaleYComputation > height - 3 &&
-                  scaleYComputation !== height
-                    ? 3
-                    : 0)
+                  (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0)
                 );
               });
 
@@ -186,33 +169,21 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
               .attr("width", scaleX(bin.maxTick - bin.minTick) - 0.5)
               .attr("y", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return (
-                  scaleYComputation -
-                  (scaleYComputation > height - 3 &&
-                  scaleYComputation !== height
-                    ? 3
-                    : 0)
-                );
+                return scaleYComputation - (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0);
               })
               .attr("height", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
                 return (
                   boundsHeight -
                   scaleYComputation +
-                  (scaleYComputation > height - heightPadding &&
-                  scaleYComputation !== height
-                    ? heightPadding
-                    : 0)
+                  (scaleYComputation > height - heightPadding && scaleYComputation !== height ? heightPadding : 0)
                 );
               });
           });
       }
     }
 
-    const getBinId = useCallback(
-      (index: number) => `pool-graph-bin-${graphId}-${index}`,
-      [graphId],
-    );
+    const getBinId = useCallback((index: number) => `pool-graph-bin-${graphId}-${index}`, [graphId]);
 
     useEffect(() => {
       //  D3 - Draw bin and define interaction
@@ -244,14 +215,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       if (!!width && !!height && !!chartRef.current) {
         updateChart();
       }
-    }, [
-      width,
-      height,
-      reservedBins,
-      svgRef?.current,
-      chartRef?.current,
-      onMouseMove,
-    ]);
+    }, [width, height, reservedBins, svgRef?.current, chartRef?.current, onMouseMove]);
 
     return (
       <PoolGraphSVGContainer
@@ -261,23 +225,11 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
         onTouchStart={onTouchStart}
       >
         <defs>
-          <linearGradient
-            id={`gradient-bar-green-${graphId}`}
-            x1="0"
-            x2="0"
-            y1="0"
-            y2="1"
-          >
+          <linearGradient id={`gradient-bar-green-${graphId}`} x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor={greenColor.start} />
             <stop offset="100%" stopColor={greenColor.end} />
           </linearGradient>
-          <linearGradient
-            id={`gradient-bar-red-${graphId}`}
-            x1="0"
-            x2="0"
-            y1="0"
-            y2="1"
-          >
+          <linearGradient id={`gradient-bar-red-${graphId}`} x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor={redColor.start} />
             <stop offset="100%" stopColor={redColor.end} />
           </linearGradient>

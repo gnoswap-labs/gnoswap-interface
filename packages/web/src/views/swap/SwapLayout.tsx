@@ -11,12 +11,7 @@ interface SwapLayoutProps {
   footer: React.ReactNode;
 }
 
-const SwapLayout: React.FC<SwapLayoutProps> = ({
-  header,
-  swap,
-  liquidity,
-  footer,
-}) => {
+const SwapLayout: React.FC<SwapLayoutProps> = ({ header, swap, liquidity, footer }) => {
   const { t } = useTranslation();
   const [swapValue] = useAtom(SwapState.swap);
 
@@ -28,9 +23,7 @@ const SwapLayout: React.FC<SwapLayoutProps> = ({
           <div className="page-name">{t("Swap:header")}</div>
           <div className="right-container">
             <div className="swap">{swap}</div>
-            <div className="liquidity">
-              {swapValue.tokenA && swapValue.tokenB && liquidity}
-            </div>
+            <div className="liquidity">{swapValue.tokenA && swapValue.tokenB && liquidity}</div>
           </div>
         </div>
       </div>

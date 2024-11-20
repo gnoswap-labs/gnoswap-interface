@@ -1,28 +1,32 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  EventBlocker,
-  PoolSelectionGraphTooltipWrapper,
-  PoolSelectionGraphWrapper,
-} from "./PoolSelectionGraph.styles";
-import * as d3 from "d3";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { TokenModel } from "@models/token/token-model";
-import { useColorGraph } from "@hooks/common/use-color-graph";
-import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import FloatingTooltip from "../tooltip/FloatingTooltip";
-import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
-import { convertToKMB } from "@utils/stake-position-utils";
-import {
-  PoolSelectionGraphBinTooptip,
-  TooltipInfo,
-} from "./PoolSelectionGraphBinTooltip";
 import { useTheme } from "@emotion/react";
 import BigNumber from "bignumber.js";
+import * as d3 from "d3";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import * as uuid from "uuid";
+import { EventBlocker, PoolSelectionGraphTooltipWrapper, PoolSelectionGraphWrapper } from "./PoolSelectionGraph.styles";
+
+import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
+import { useColorGraph } from "@hooks/common/use-color-graph";
+import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { TokenModel } from "@models/token/token-model";
+import { convertToKMB } from "@utils/stake-position-utils";
 import { displayTickNumber } from "@utils/string-utils";
-import {
-  SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+
+import FloatingTooltip from "../tooltip/FloatingTooltip";
+import { PoolSelectionGraphBinTooptip, TooltipInfo } from "./PoolSelectionGraphBinTooltip";
+
+interface SelectionColor {
+  startPercent: string;
+  endPercent: string;
+  start: string;
+  end: string;
+  lineStart: string;
+  lineEnd: string;
+  badgeStart: string;
+  badgeEnd: string;
+}
 
 interface ResolveBinModel {
   index: number;
@@ -95,14 +99,14 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   onFinishMove,
 }) => {
   const { themeKey } = useTheme();
+  const graphIdRef = useRef(uuid.v4());
+  const graphId = graphIdRef.current.toString();
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
   const brushRef = useRef<SVGGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
-  const [priceOfTick, setPriceOfTick] = useState<{ [key in number]: string }>(
-    {},
-  );
+  const [priceOfTick, setPriceOfTick] = useState<{ [key in number]: string }>({});
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
@@ -110,9 +114,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   const { redColor, greenColor } = useColorGraph();
 
-  const [selectionColor, setSelectionColor] = useState(
-    getSelectionColor("0", "0"),
-  );
+  const [selectionColor, setSelectionColor] = useState<SelectionColor>(getSelectionColor("0", "0"));
 
   const displayLabels = 8;
   const labelHeight = displayLabels > 0 ? 20 : 0;
@@ -137,18 +139,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             minTick: -1 * bin.maxTick,
             reserveTokenA: bin.reserveTokenB,
             reserveTokenB: bin.reserveTokenA,
-            height: BigNumber(bin.reserveTokenB)
-              .multipliedBy(price)
-              .plus(bin.reserveTokenA)
-              .toNumber(),
+            height: BigNumber(bin.reserveTokenB).multipliedBy(price).plus(bin.reserveTokenA).toNumber(),
           }))
           .reverse()
       : bins.map(bin => ({
           ...bin,
-          height: BigNumber(bin.reserveTokenA)
-            .multipliedBy(price)
-            .plus(bin.reserveTokenB)
-            .toNumber(),
+          height: BigNumber(bin.reserveTokenA).multipliedBy(price).plus(bin.reserveTokenB).toNumber(),
         }));
   }, [bins, price, flip]);
 
@@ -158,9 +154,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const displaySideBinCount = displayBinCount / 2;
 
     const sliceStartIndex =
-      centerIndex - displaySideBinCount + shiftIndex >= 0
-        ? centerIndex - displaySideBinCount + shiftIndex
-        : 0;
+      centerIndex - displaySideBinCount + shiftIndex >= 0 ? centerIndex - displaySideBinCount + shiftIndex : 0;
 
     const sliceEndIndex =
       centerIndex + displaySideBinCount + shiftIndex < adjustBins.length
@@ -175,14 +169,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   }, [displayBins]);
 
   // D3 - Dimension Definition
-  const minX = useMemo(
-    () => Math.min(...displayBins.map(bin => bin.minTick)),
-    [displayBins],
-  );
-  const maxX = useMemo(
-    () => Math.max(...displayBins.map(bin => bin.maxTick)),
-    [displayBins],
-  );
+  const minX = useMemo(() => Math.min(...displayBins.map(bin => bin.minTick)), [displayBins]);
+  const maxX = useMemo(() => Math.max(...displayBins.map(bin => bin.maxTick)), [displayBins]);
 
   const maxLiquidity = Math.max(...adjustBins.map(bin => bin.height));
 
@@ -199,17 +187,11 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     .tickSize(4)
     .tickPadding(4)
     .tickFormat(tick =>
-      displayTickNumber(
-        [getInvertX(0) + graphMinTick, getInvertX(width) + graphMinTick],
-        Number(tick) + graphMinTick,
-      ),
+      displayTickNumber([getInvertX(0) + graphMinTick, getInvertX(width) + graphMinTick], Number(tick) + graphMinTick),
     )
     .tickArguments([displayLabels]);
 
-  const scaleY = d3
-    .scaleLinear()
-    .domain([0, maxLiquidity])
-    .range([boundsHeight, 0]);
+  const scaleY = d3.scaleLinear().domain([0, maxLiquidity]).range([boundsHeight, 0]);
 
   const resolvedDisplayBins: ResolveBinModel[] = useMemo(() => {
     return displayBins.map((bin, index) => {
@@ -250,7 +232,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     }
     return `${isStart ? "right" : "left"}`;
   }, [width, height, positionX, positionY, position]);
-  const random = Math.random().toString();
 
   const minBrushX =
     scaleX(swapFeeTierMaxPriceRange.minTick - graphMinTick) >= -20
@@ -282,24 +263,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const startPosition = selection[0] as number;
     const endPosition = selection[1] as number;
 
-    const startPrice = tickToPrice(
-      Math.round(scaleX.invert(startPosition) + graphMinTick),
-    );
-    const endPrice = tickToPrice(
-      Math.round(scaleX.invert(endPosition) + graphMinTick),
-    );
+    const startPrice = tickToPrice(Math.round(scaleX.invert(startPosition) + graphMinTick));
+    const endPrice = tickToPrice(Math.round(scaleX.invert(endPosition) + graphMinTick));
 
-    const startRate = currentPrice
-      ? ((Number(startPrice) - currentPrice) / currentPrice) * 100
-      : 0;
-    const endRate = currentPrice
-      ? ((Number(endPrice) - currentPrice) / currentPrice) * 100
-      : 0;
+    const startRate = currentPrice ? ((Number(startPrice) - currentPrice) / currentPrice) * 100 : 0;
+    const endRate = currentPrice ? ((Number(endPrice) - currentPrice) / currentPrice) * 100 : 0;
 
-    const selectionColor = getSelectionColor(
-      startRate >= 0 ? "1" : "-1",
-      endRate >= 0 ? "1" : "-1",
-    );
+    const selectionColor = getSelectionColor(startRate >= 0 ? "1" : "-1", endRate >= 0 ? "1" : "-1");
 
     const brushElement = d3.select(brushRef.current);
     if (event.type === "start") {
@@ -327,23 +297,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       makeRightBadge(endLineElement, fullRange, selectionColor);
     }
 
-    brushElement
-      .selectAll(".resize")
-      .attr("x", data => (data === "w" ? startPosition : endPosition));
+    brushElement.selectAll(".resize").attr("x", data => (data === "w" ? startPosition : endPosition));
 
     const isRightStartLine = startPosition - 75 < 0;
     const isRightEndLine = endPosition + 75 < boundsWidth;
 
     setSelectionColor(selectionColor);
-    changeLine(
-      brushElement,
-      "start",
-      startPosition as number,
-      startRate,
-      isRightStartLine,
-      fullRange,
-      selectionColor,
-    );
+    changeLine(brushElement, "start", startPosition as number, startRate, isRightStartLine, fullRange, selectionColor);
     changeLine(
       brushElement,
       "end",
@@ -355,12 +315,14 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     );
   }
 
-  function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<any>) {
+  function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<unknown>) {
     if (!brushRef.current || event.mode === undefined) {
       return;
     }
 
-    onFinishMove && onFinishMove();
+    if (!!onFinishMove) {
+      onFinishMove();
+    }
     if (fullRange) {
       setMinPrice(null);
       setMaxPrice(null);
@@ -368,10 +330,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     }
 
     if (!event.selection) {
-      d3.select(brushRef.current)
-        .selectAll(".resize")
-        .selectChildren()
-        .remove();
+      d3.select(brushRef.current).selectAll(".resize").selectChildren().remove();
       setMinPrice(null);
       setMaxPrice(null);
     } else {
@@ -391,9 +350,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
           return 0;
         }
 
-        const tick =
-          Math.round((tickWithOffset + graphMinTick) / tickSpacing) *
-          tickSpacing;
+        const tick = Math.round((tickWithOffset + graphMinTick) / tickSpacing) * tickSpacing;
         if (tick <= swapFeeTierMaxPriceRange.minTick) {
           return 0;
         }
@@ -441,9 +398,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       }
       if (Number(bin.maxTick) - 5 < currentTick) {
-        return `url(#gradient-bar-green-${random})`;
+        return `url(#gradient-bar-green-${graphId})`;
       }
-      return `url(#gradient-bar-red-${random})`;
+      return `url(#gradient-bar-red-${graphId})`;
     }
 
     // Clean child elements.
@@ -484,12 +441,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             .attr("x", () => scaleX(bin.positionX))
             .attr("y", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return (
-                scaleYComputation -
-                (scaleYComputation > height - 5 && scaleYComputation !== height
-                  ? 5
-                  : 0)
-              );
+              return scaleYComputation - (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0);
             })
             .attr("width", tickWidth)
             .attr("height", () => {
@@ -497,9 +449,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
               return (
                 boundsHeight -
                 scaleYComputation +
-                (scaleYComputation > height - 5 && scaleYComputation !== height
-                  ? 5
-                  : 0)
+                (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0)
               );
             });
           d3.select(this)
@@ -509,12 +459,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             .attr("x", () => scaleX(bin.positionX) + 0.5)
             .attr("y", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return (
-                scaleYComputation -
-                (scaleYComputation > height - 5 && scaleYComputation !== height
-                  ? 5
-                  : 0)
-              );
+              return scaleYComputation - (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0);
             })
             .attr("width", tickWidth - 0.5)
             .attr("height", () => {
@@ -522,20 +467,14 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
               return (
                 boundsHeight -
                 scaleYComputation +
-                (scaleYComputation > height - 5 && scaleYComputation !== height
-                  ? 5
-                  : 0)
+                (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0)
               );
             });
         });
     }
 
     if (displayLabels > 0) {
-      rects
-        .append("g")
-        .attr("class", "x-axis")
-        .attr("transform", `translate(0,${boundsHeight})`)
-        .call(xAxis);
+      rects.append("g").attr("class", "x-axis").attr("transform", `translate(0,${boundsHeight})`).call(xAxis);
     }
   }
 
@@ -546,10 +485,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const mouseXTick = scaleX.invert(event.offsetX) + graphMinTick;
 
     if (minPrice && maxPrice) {
-      if (
-        priceToTick(minPrice) < mouseXTick &&
-        priceToTick(maxPrice) > mouseXTick
-      ) {
+      if (priceToTick(minPrice) < mouseXTick && priceToTick(maxPrice) > mouseXTick) {
         setTooltipInfo(null);
         setHoverBarIndex(null);
         return;
@@ -564,10 +500,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         return false;
       }
 
-      return (
-        (mouseXTick >= bin.minTick && mouseXTick <= bin.maxTick) ||
-        Math.abs(bin.maxTick - mouseXTick) <= 0.5
-      );
+      return (mouseXTick >= bin.minTick && mouseXTick <= bin.maxTick) || Math.abs(bin.maxTick - mouseXTick) <= 0.5;
     });
 
     if (!bin) {
@@ -607,12 +540,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     setTooltipInfo({
       tokenA: tokenA,
       tokenB: tokenB,
-      tokenAAmount: tokenAAmountStr
-        ? convertToKMB(tokenAAmountStr.toString())
-        : "-",
-      tokenBAmount: tokenBAmountStr
-        ? convertToKMB(tokenBAmountStr.toString())
-        : "-",
+      tokenAAmount: tokenAAmountStr ? convertToKMB(tokenAAmountStr.toString()) : "-",
+      tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
       tokenAPrice: priceOfTick[currentTick] || "0",
@@ -636,12 +565,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       return;
     }
     const { left, right, top, bottom } = svgRef.current?.getClientRects()[0];
-    if (
-      clientX < left ||
-      clientX > right ||
-      clientY < top ||
-      clientY > bottom
-    ) {
+    if (clientX < left || clientX > right || clientY < top || clientY > bottom) {
       setTooltipInfo(null);
       setHoverBarIndex(null);
     }
@@ -687,38 +611,21 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       .on("mousemove", onMouseoverChartBin)
       .on("mouseout", onMouseoutChartBin);
 
-    svgElement
-      .append("defs")
-      .append("clipPath")
-      .attr("id", "clip")
-      .append("rect")
-      .attr("width", width)
-      .attr("height", height);
-
     const defElement = svgElement.select("defs");
     const existClipPath = defElement.select("clipPath").empty();
 
     if (existClipPath) {
-      defElement
-        .append("clipPath")
-        .attr("id", "clip")
-        .append("rect")
-        .attr("width", width)
-        .attr("height", height);
+      defElement.append("clipPath").attr("id", "clip").append("rect").attr("width", width).attr("height", height);
     }
 
     if (!!width && !!height && !!scaleX && !!scaleY) {
       updateChart();
     }
-  }, [width, height, scaleX, scaleY]);
+  }, [width, height, svgRef?.current, chartRef?.current, resolvedDisplayBins]);
 
   // Brush settings, on currentPrice change, zoom, move ...
   useEffect(() => {
-    if (
-      minPrice === null ||
-      maxPrice === null ||
-      displayBins.length !== displayBinCount
-    ) {
+    if (minPrice === null || maxPrice === null || displayBins.length !== displayBinCount) {
       return;
     }
     if (!brushRef?.current) {
@@ -782,10 +689,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         offset={40}
         content={
           tooltipInfo ? (
-            <PoolSelectionGraphTooltipWrapper
-              ref={tooltipRef}
-              className={`tooltip-container ${themeKey}-shadow}`}
-            >
+            <PoolSelectionGraphTooltipWrapper ref={tooltipRef} className={`tooltip-container ${themeKey}-shadow}`}>
               <PoolSelectionGraphBinTooptip tooltipInfo={tooltipInfo} />
             </PoolSelectionGraphTooltipWrapper>
           ) : null
@@ -793,30 +697,15 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       >
         <svg ref={svgRef}>
           <defs>
-            <linearGradient
-              id={`gradient-bar-green-${random}`}
-              x1="0"
-              x2="0"
-              y1="0"
-              y2="1"
-            >
+            <linearGradient id={`gradient-bar-green-${graphId}`} x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor={greenColor.start} />
               <stop offset="100%" stopColor={greenColor.end} />
             </linearGradient>
-            <linearGradient
-              id={`gradient-bar-red-${random}`}
-              x1="0"
-              x2="0"
-              y1="0"
-              y2="1"
-            >
+            <linearGradient id={`gradient-bar-red-${graphId}`} x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor={redColor.start} />
               <stop offset="100%" stopColor={redColor.end} />
             </linearGradient>
-            <linearGradient
-              id="gradient-selection-area"
-              gradientTransform="rotate(0)"
-            >
+            <linearGradient id="gradient-selection-area" gradientTransform="rotate(0)">
               <stop offset="0%" stopColor={selectionColor.start} />
               <stop offset="100%" stopColor={selectionColor.end} />
             </linearGradient>
@@ -898,9 +787,9 @@ const getSelectionColor = (start: string, end: string) => {
 };
 
 function makeLeftBadge(
-  refer: d3.Selection<any, unknown, null, undefined>,
+  refer: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   reverse = false,
-  selectionColor: any,
+  selectionColor: SelectionColor,
 ) {
   const badge = refer
     .append("svg")
@@ -911,34 +800,19 @@ function makeLeftBadge(
     .style("fill", "none");
   badge
     .append("path")
-    .attr(
-      "d",
-      "M0 2C0 0.895431 0.895431 0 2 0H11V32H2C0.895431 32 0 31.1046 0 30V2Z",
-    )
+    .attr("d", "M0 2C0 0.895431 0.895431 0 2 0H11V32H2C0.895431 32 0 31.1046 0 30V2Z")
     .style("fill", "#596782");
-  badge
-    .append("rect")
-    .attr("x", "3.5")
-    .attr("y", "2")
-    .attr("width", "1")
-    .attr("height", "28")
-    .style("fill", "#90A2C0");
-  badge
-    .append("rect")
-    .attr("x", "6.5")
-    .attr("y", "2")
-    .attr("width", "1")
-    .attr("height", "28")
-    .style("fill", "#90A2C0");
+  badge.append("rect").attr("x", "3.5").attr("y", "2").attr("width", "1").attr("height", "28").style("fill", "#90A2C0");
+  badge.append("rect").attr("x", "6.5").attr("y", "2").attr("width", "1").attr("height", "28").style("fill", "#90A2C0");
 
   makeLabel(refer, false, reverse, selectionColor);
   return badge;
 }
 
 function makeRightBadge(
-  refer: d3.Selection<any, unknown, null, undefined>,
+  refer: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   reverse = false,
-  selectionColor: any,
+  selectionColor: SelectionColor,
 ) {
   const badge = refer
     .append("svg")
@@ -949,39 +823,23 @@ function makeRightBadge(
     .style("fill", "none");
   badge
     .append("path")
-    .attr(
-      "d",
-      "M0 0H9C10.1046 0 11 0.895431 11 2V30C11 31.1046 10.1046 32 9 32H0V0Z",
-    )
+    .attr("d", "M0 0H9C10.1046 0 11 0.895431 11 2V30C11 31.1046 10.1046 32 9 32H0V0Z")
     .style("fill", "#596782");
-  badge
-    .append("rect")
-    .attr("x", "3.5")
-    .attr("y", "2")
-    .attr("width", "1")
-    .attr("height", "28")
-    .style("fill", "#90A2C0");
-  badge
-    .append("rect")
-    .attr("x", "6.5")
-    .attr("y", "2")
-    .attr("width", "1")
-    .attr("height", "28")
-    .style("fill", "#90A2C0");
+  badge.append("rect").attr("x", "3.5").attr("y", "2").attr("width", "1").attr("height", "28").style("fill", "#90A2C0");
+  badge.append("rect").attr("x", "6.5").attr("y", "2").attr("width", "1").attr("height", "28").style("fill", "#90A2C0");
 
   makeLabel(refer, true, reverse, selectionColor);
   return badge;
 }
 
 function makeLabel(
-  refer: d3.Selection<any, unknown, null, undefined>,
+  refer: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   right = false,
   reverse = false,
-  selectionColor: any,
+  selectionColor: SelectionColor,
 ) {
   const id = right === false ? "start-price" : "end-price";
-  const color =
-    right === false ? selectionColor.badgeStart : selectionColor.badgeEnd;
+  const color = right === false ? selectionColor.badgeStart : selectionColor.badgeEnd;
   if (refer.select(`#${id}`)) {
     refer.append("g").attr("id", id);
   }
@@ -1007,35 +865,28 @@ function makeLabel(
 }
 
 function changeLine(
-  selectionElement: d3.Selection<any, unknown, null, undefined>,
+  selectionElement: d3.Selection<SVGGElement, unknown, null, undefined>,
   type: "start" | "end",
   x: number,
   rate: number,
   right = false,
   selectedFullRange = false,
-  selectionColor: any,
+  selectionColor: SelectionColor,
 ) {
   const hidden = type === "end" && selectedFullRange === true;
   const rateStr = `${rate > 0 ? "+" : ""}${Math.round(rate).toFixed(0)}%`;
-  const lineColor =
-    type === "start" ? selectionColor.lineStart : selectionColor.lineEnd;
+  const lineColor = type === "start" ? selectionColor.lineStart : selectionColor.lineEnd;
   const lineElement = selectionElement.select(`#${type}`).attr("x", x);
   lineElement.select("svg").attr("x", 0);
   lineElement.select("svg").select("line").style("stroke", lineColor);
 
   const priceID = `${type}-price`;
-  const color =
-    type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
+  const color = type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
 
-  const margin =
-    right === false ? (type === "end" ? -51 : -62) : type === "end" ? 12 : 1;
+  const margin = right === false ? (type === "end" ? -51 : -62) : type === "end" ? 12 : 1;
   const labelWrapper = lineElement.select(`#${priceID}`);
 
-  const labelText = !selectedFullRange
-    ? rateStr
-    : type === "start"
-    ? "-100%"
-    : "∞";
+  const labelText = !selectedFullRange ? rateStr : type === "start" ? "-100%" : "∞";
 
   labelWrapper
     .select("rect")

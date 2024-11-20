@@ -17,6 +17,7 @@ const StakePositionContainer: React.FC = () => {
     positions: allPositionData,
     isFetchedPosition: isFetched,
     loading: isLoadingAllPositions,
+    refetch: refetchPositions,
   } = usePositionData({
     isClosed: false,
     poolPath,
@@ -27,18 +28,16 @@ const StakePositionContainer: React.FC = () => {
   const { data: poolDetail } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
   });
-  const [checkedList, setCheckedList] = useState<number[]>(
-    positionId ? [Number(positionId)] : [],
-  );
+  const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
   // For this domain only show `closed = false` && `staked = false` position
-  const unstakedPositions = useMemo(
-    () => allPositionData.filter(item => !item.staked),
-    [allPositionData],
-  );
+  const unstakedPositions = useMemo(() => allPositionData.filter(item => !item.staked), [allPositionData]);
 
   const { openModal } = useStakePositionModal({
     positions: unstakedPositions,
     selectedIds: checkedList,
+    refetchPositions: async () => {
+      await refetchPositions();
+    },
   });
 
   const checkedAll = useMemo(() => {
@@ -65,9 +64,7 @@ const StakePositionContainer: React.FC = () => {
       setCheckedList([]);
       return;
     }
-    const checkedList = unstakedPositions.map(
-      unstakedPosition => unstakedPosition.id,
-    );
+    const checkedList = unstakedPositions.map(unstakedPosition => unstakedPosition.id);
     setCheckedList(checkedList);
   }, [checkedAll, unstakedPositions]);
 

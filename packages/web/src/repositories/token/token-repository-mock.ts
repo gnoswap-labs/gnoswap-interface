@@ -1,24 +1,24 @@
 import {
-  TokenRepository,
-  TokenSearchLogListResponse,
+  IChainResponse,
+  ITokenDetailResponse,
+  ITokenResponse,
   TokenListResponse,
   TokenPriceListResponse,
-  ITokenDetailResponse,
-  IChainResponse,
-  ITokenResponse,
+  TokenRepository,
+  TokenSearchLogListResponse,
 } from ".";
 
-import { StorageKeyType } from "@common/values";
-import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { StorageClient } from "@common/clients/storage-client";
-import TokenDetail from "./mock/token-detail.json";
-import ChainData from "./mock/token-chain.json";
+import { StorageKeyType } from "@common/values";
+import { TokenPriceModel } from "@models/token/token-price-model";
+import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import TokenByPath from "./mock/token-by-path.json";
+import ChainData from "./mock/token-chain.json";
+import TokenDetail from "./mock/token-detail.json";
+import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
 import TokenPrice from "./mock/token-price.json";
 import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
-import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
-import { TokenPriceModel } from "@models/token/token-price-model";
 
 export class TokenRepositoryMock implements TokenRepository {
   private localStorageClient: StorageClient<StorageKeyType>;
@@ -46,9 +46,7 @@ export class TokenRepositoryMock implements TokenRepository {
     return { data: [] };
   };
 
-  public getTokenDetailByPath = async (
-    path: string,
-  ): Promise<ITokenDetailResponse> => {
+  public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
     console.log(path);
 
     return TokenDetail;
@@ -58,16 +56,11 @@ export class TokenRepositoryMock implements TokenRepository {
     return ChainData;
   };
 
-  public createSearchLog = async (
-    searchLog: TokenSearchLogModel,
-  ): Promise<boolean> => {
+  public createSearchLog = async (searchLog: TokenSearchLogModel): Promise<boolean> => {
     const LOG_LIMIT = 10;
     const searchLogs = await this.getSearchLogs();
     const addedSearchLogs = [searchLog, ...searchLogs].slice(0, LOG_LIMIT);
-    this.localStorageClient.set(
-      "search-token-logs",
-      JSON.stringify(addedSearchLogs),
-    );
+    this.localStorageClient.set("search-token-logs", JSON.stringify(addedSearchLogs));
     return true;
   };
 
@@ -80,7 +73,7 @@ export class TokenRepositoryMock implements TokenRepository {
     let logs: TokenSearchLogModel[] = [];
     try {
       logs = JSON.parse(logValue);
-    } catch (e) {
+    } catch {
       throw new Error("Invalid value");
     }
     return logs;
@@ -91,9 +84,7 @@ export class TokenRepositoryMock implements TokenRepository {
     return true;
   };
 
-  public getBalancesByAddress = async (
-    address: string,
-  ): Promise<IBalancesByAddressResponse> => {
+  public getBalancesByAddress = async (address: string): Promise<IBalancesByAddressResponse> => {
     return {
       address: address,
       balances: [],

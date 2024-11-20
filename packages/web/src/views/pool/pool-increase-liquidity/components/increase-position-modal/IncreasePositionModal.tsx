@@ -65,24 +65,16 @@ const IncreasePositionModal: React.FC<Props> = ({
             maxPriceStr={maxPriceStr}
             {...amountInfo}
             rangeStatus={rangeStatus}
-            title={t(
-              "IncreaseLiquidity:confirmIncreaseModal.section.posiDetail.label",
-            )}
+            title={t("IncreaseLiquidity:confirmIncreaseModal.section.posiDetail.label")}
           />
           <div>
-            <p className="label-increase">
-              {t("IncreaseLiquidity:confirmIncreaseModal.increaseAmt")}
-            </p>
-            <IncreaseAmountInfo
-              {...amountInfo}
-              isDepositTokenA={isDepositTokenA}
-              isDepositTokenB={isDepositTokenB}
-            />
+            <p className="label-increase">{t("IncreaseLiquidity:confirmIncreaseModal.increaseAmt")}</p>
+            <IncreaseAmountInfo {...amountInfo} isDepositTokenA={isDepositTokenA} isDepositTokenB={isDepositTokenB} />
           </div>
           <div>
             <Button
               onClick={confirm}
-              text={t("IncreaseLiquidity:confirmIncreaseModal.btn")}
+              text={t("IncreaseLiquidity:confirmIncreaseModal.title")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,

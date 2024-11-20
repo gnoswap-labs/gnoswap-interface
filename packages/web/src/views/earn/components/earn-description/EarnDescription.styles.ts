@@ -33,28 +33,20 @@ export const EarnDescriptionWrapper = styled.div`
     }
 
     .description-wrapper {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
       ${fonts.p2}
       ${media.tablet} {
         ${fonts.p4}
       }
       color: ${({ theme }) => theme.color.text04};
-      white-space: nowrap;
-      .text {
-        .highlight {
-          display: none;
+
+      .docs {
+        color: ${({ theme }) => theme.color.text08};
+        &:hover {
+          color: ${({ theme }) => theme.color.text07};
         }
-      }
-      .text::after {
-        content: " ";
       }
 
       .highlight {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
         height: 18px;
         background: ${({ theme }) => theme.color.text32};
         -webkit-background-clip: text;
@@ -89,16 +81,38 @@ export const EarnDescriptionWrapper = styled.div`
       .description-wrapper {
         white-space: normal;
         ${fonts.p2}
+      }
+      .link-wrapper {
+        ${fonts.p3}
+      }
+    }
+    ${media.mobile} {
+      padding: 12px 12px 12px 16px;
+      min-width: 322px;
+    }
 
-        .text {
-          .highlight {
-            font-weight: 500;
-            display: inline-flex;
-          }
+    .link-wrapper-no-flex {
+      color: ${({ theme }) => theme.color.text08};
+      display: inline-flex;
+      align-items: center;
+      margin-left: 5px;
+      ${fonts.p1}
+      cursor: pointer;
+      svg * {
+        fill: ${({ theme }) => theme.color.text08};
+      }
+      &:hover {
+        color: ${({ theme }) => theme.color.text07};
+        svg * {
+          fill: ${({ theme }) => theme.color.text07};
         }
-        > .highlight {
-          display: none;
-        }
+      }
+    }
+    ${media.tablet} {
+      min-width: 356px;
+      .description-wrapper {
+        white-space: normal;
+        ${fonts.p2}
       }
       .link-wrapper {
         ${fonts.p3}

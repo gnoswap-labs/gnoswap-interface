@@ -14,9 +14,7 @@ export const RemoveLiquiditySelectListItemWrapper = styled.li<{
   width: 100%;
   gap: 8px;
   background-color: ${({ theme }) => theme.color.background20};
-  border: 1px solid
-    ${({ theme, selected }) =>
-      selected ? theme.color.border15 : theme.color.border02};
+  border: 1px solid ${({ theme, selected }) => (selected ? theme.color.border15 : theme.color.border02)};
   border-radius: 8px;
   padding: 15px;
   ${fonts.body12};

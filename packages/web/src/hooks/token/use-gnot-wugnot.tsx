@@ -21,22 +21,10 @@ export const useGnotToGnot = () => {
         | undefined,
     ) => {
       return {
-        path:
-          token?.path === WRAPPED_GNOT_PATH
-            ? gnot?.path || ""
-            : token?.path || "",
-        name:
-          token?.path === WRAPPED_GNOT_PATH
-            ? gnot?.name || ""
-            : token?.name || "",
-        symbol:
-          token?.path === WRAPPED_GNOT_PATH
-            ? gnot?.symbol || ""
-            : token?.symbol || "",
-        logoURI:
-          token?.path === WRAPPED_GNOT_PATH
-            ? gnot?.logoURI || ""
-            : token?.logoURI || "",
+        path: token?.path === WRAPPED_GNOT_PATH ? gnot?.path || "" : token?.path || "",
+        name: token?.path === WRAPPED_GNOT_PATH ? gnot?.name || "" : token?.name || "",
+        symbol: token?.path === WRAPPED_GNOT_PATH ? gnot?.symbol || "" : token?.symbol || "",
+        logoURI: token?.path === WRAPPED_GNOT_PATH ? gnot?.logoURI || "" : token?.logoURI || "",
       };
     },
     [gnot],

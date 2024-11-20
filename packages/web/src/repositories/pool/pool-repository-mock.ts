@@ -1,24 +1,17 @@
 import { PoolRepository } from ".";
 
-import PoolDetailData from "./mock/pool-detail.json";
-import { PoolRPCModel } from "@models/pool/pool-rpc-model";
+import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { PoolError } from "@common/errors/pool";
-import rpcPools from "./mock/rpc-pools.json";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
-import {
-  IncentivizePoolModel,
-  IPoolDetailResponse,
-  PoolModel,
-} from "@models/pool/pool-model";
-import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import {
-  SendTransactionResponse,
-  WalletResponse,
-} from "@common/clients/wallet-client/protocols";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
+import { IncentivizePoolModel, IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
+import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
+import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
+import PoolDetailData from "./mock/pool-detail.json";
+import rpcPools from "./mock/rpc-pools.json";
 export class PoolRepositoryMock implements PoolRepository {
   getWithdrawalFee = async (): Promise<number> => {
     return 0;
@@ -34,10 +27,14 @@ export class PoolRepositoryMock implements PoolRepository {
   };
 
   getRPCPools = async (): Promise<PoolRPCModel[]> => {
-    return rpcPools.map(pool => PoolRPCMapper.from(pool as any));
+    return rpcPools.map(pool => PoolRPCMapper.from(pool as never));
   };
 
   getPoolStakingList = async (): Promise<PoolStakingModel[]> => {
+    return [];
+  };
+
+  getPoolStakingListByAddress = async (): Promise<PoolStakingModel[]> => {
     return [];
   };
 
@@ -54,7 +51,7 @@ export class PoolRepositoryMock implements PoolRepository {
   };
 
   getPoolDetailByPoolPath = async (): Promise<PoolDetailModel> => {
-    return PoolDetailData.pool as any;
+    return PoolDetailData.pool as never;
   };
 
   getBinsOfPoolByPath = async (): Promise<PoolBinModel[]> => {
@@ -69,17 +66,13 @@ export class PoolRepositoryMock implements PoolRepository {
     throw new Error("Not implements");
   };
 
-  getPoolDetailByPath = async (
-    poolPath: string,
-  ): Promise<IPoolDetailResponse> => {
+  getPoolDetailByPath = async (poolPath: string): Promise<IPoolDetailResponse> => {
     console.log(poolPath);
 
     return PoolDetailDataByPath as IPoolDetailResponse;
   };
 
-  createExternalIncentive = async (): Promise<WalletResponse<
-    SendTransactionResponse<string[] | null>
-  > | null> => {
+  createExternalIncentive = async (): Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null> => {
     return null;
   };
 

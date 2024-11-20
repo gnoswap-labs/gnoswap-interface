@@ -6,10 +6,7 @@ import { TokenError } from "@common/errors/token";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetTokenDetails = (
-  path: string | null,
-  options?: UseQueryOptions<ITokenDetailResponse, Error>,
-) => {
+export const useGetTokenDetails = (path: string | null, options?: UseQueryOptions<ITokenDetailResponse, Error>) => {
   const { tokenRepository } = useGnoswapContext();
 
   return useQuery<ITokenDetailResponse, Error>({

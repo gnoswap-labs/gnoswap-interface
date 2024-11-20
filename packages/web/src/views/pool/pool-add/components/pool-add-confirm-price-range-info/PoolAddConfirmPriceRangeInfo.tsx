@@ -17,8 +17,7 @@ import {
   ToolTipContentWrapper,
 } from "./PoolAddConfirmPriceRangeInfo.styles";
 
-export interface PoolAddConfirmPriceRangeInfoProps
-  extends EarnAddConfirmAmountInfoProps {
+export interface PoolAddConfirmPriceRangeInfoProps extends EarnAddConfirmAmountInfoProps {
   currentPrice: string;
   inRange: boolean;
   minPrice: string;
@@ -30,9 +29,7 @@ export interface PoolAddConfirmPriceRangeInfoProps
   isShowStaking?: boolean;
 }
 
-const PoolAddConfirmPriceRangeInfo: React.FC<
-  PoolAddConfirmPriceRangeInfoProps
-> = ({
+const PoolAddConfirmPriceRangeInfo: React.FC<PoolAddConfirmPriceRangeInfoProps> = ({
   currentPrice,
   inRange,
   minPrice,
@@ -51,21 +48,15 @@ const PoolAddConfirmPriceRangeInfo: React.FC<
 
   const currentPriceStr = useMemo(() => {
     if (!swap) {
-      return `1 ${tokenA.info.symbol} = ${formatTokenExchangeRate(
-        currentPrice,
-        {
-          maxSignificantDigits: 6,
-          minLimit: 0.000001,
-        },
-      )} ${tokenB.info.symbol}`;
-    }
-    return `1 ${tokenB.info.symbol} = ${formatTokenExchangeRate(
-      1 / Number(currentPrice),
-      {
+      return `1 ${tokenA.info.symbol} = ${formatTokenExchangeRate(currentPrice, {
         maxSignificantDigits: 6,
         minLimit: 0.000001,
-      },
-    )} ${tokenA.info.symbol}`;
+      })} ${tokenB.info.symbol}`;
+    }
+    return `1 ${tokenB.info.symbol} = ${formatTokenExchangeRate(1 / Number(currentPrice), {
+      maxSignificantDigits: 6,
+      minLimit: 0.000001,
+    })} ${tokenA.info.symbol}`;
   }, [currentPrice, tokenA.info.symbol, tokenB.info.symbol, swap]);
 
   const rangeStatus = useMemo(() => {
@@ -80,12 +71,12 @@ const PoolAddConfirmPriceRangeInfo: React.FC<
 
       <div className="price-range-wrapper">
         <PoolAddConfirmPriceRangeInfoSection className="range-section">
-          <span>{t("AddPosition:confirmAddModal.info.label.minPrice")}</span>
+          <span>{t("AddPosition:form.priceRange.minPrice")}</span>
           <span className="amount">{minPrice}</span>
           <span className="label">{priceLabelMin}</span>
         </PoolAddConfirmPriceRangeInfoSection>
         <PoolAddConfirmPriceRangeInfoSection className="range-section">
-          <span>{t("AddPosition:confirmAddModal.info.label.maxPrice")}</span>
+          <span>{t("AddPosition:form.priceRange.maxPrice")}</span>
           <span className="amount">{maxPrice}</span>
           <span className="label">{priceLabelMax}</span>
         </PoolAddConfirmPriceRangeInfoSection>
@@ -103,15 +94,11 @@ const PoolAddConfirmPriceRangeInfo: React.FC<
         </div>
         <div className="row">
           <div className="title-wrapper">
-            <span className="key">
-              {t("AddPosition:confirmAddModal.info.label.capEff")}
-            </span>
+            <span className="key">{t("AddPosition:confirmAddModal.info.label.capEff")}</span>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("AddPosition:confirmAddModal.info.tooltip.capEff")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("AddPosition:confirmAddModal.info.tooltip.capEff")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />
@@ -122,15 +109,11 @@ const PoolAddConfirmPriceRangeInfo: React.FC<
         </div>
         <div className="row">
           <div className="title-wrapper">
-            <span className="key">
-              {t("AddPosition:confirmAddModal.info.label.feeApr")}
-            </span>
+            <span className="key">{t("AddPosition:confirmAddModal.info.label.feeApr")}</span>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("AddPosition:confirmAddModal.info.tooltip.feeApr")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("AddPosition:confirmAddModal.info.tooltip.feeApr")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />
@@ -141,9 +124,7 @@ const PoolAddConfirmPriceRangeInfo: React.FC<
         {isShowStaking && (
           <div className="row">
             <div className="title-wrapper">
-              <span className="key">
-                {t("AddPosition:confirmAddModal.info.label.stakingApr")}
-              </span>
+              <span className="key">{t("AddPosition:confirmAddModal.info.label.stakingApr")}</span>
               <Tooltip
                 placement="top"
                 FloatingContent={

@@ -4,17 +4,8 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ZOOL_VALUES } from "@constants/graph.constant";
-import {
-  SwapFeeTierInfoMap,
-  SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
-import {
-  MAX_PRICE,
-  MAX_TICK,
-  MIN_PRICE,
-  MIN_TICK,
-} from "@constants/swap.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
+import { MAX_PRICE, MAX_TICK, MIN_PRICE, MIN_TICK } from "@constants/swap.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useLoading } from "@hooks/common/use-loading";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -84,9 +75,7 @@ export interface SelectPool {
   zoomIn: () => void;
   zoomOut: () => void;
   liquidityOfTickPoints: [number, number][];
-  setInteractionType: (
-    type: "NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH",
-  ) => void;
+  setInteractionType: (type: "NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH") => void;
   isChangeMinMax: boolean;
   setIsChangeMinMax: (value: boolean) => void;
   isLoading: boolean;
@@ -102,14 +91,10 @@ export const useSelectPool = ({
   options,
 }: Props) => {
   const router = useRouter();
-  const priceRangeRef = useRef<[number | null, number | null]>([
-    ...defaultPriceRange,
-  ]);
+  const priceRangeRef = useRef<[number | null, number | null]>([...defaultPriceRange]);
 
   // Global state
-  const [currentPoolPath, setCurrentPoolPath] = useAtom(
-    EarnState.currentPoolPath,
-  );
+  const [currentPoolPath, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [, setPoolInfoQuery] = useAtom(EarnState.poolInfoQuery);
 
   const [fullRange, setFullRange] = useState(false);
@@ -120,21 +105,13 @@ export const useSelectPool = ({
   const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [compareToken, setCompareToken] = useState<TokenModel | null>(tokenA);
   const [latestPoolPath, setLatestPoolPath] = useState<string | null>(null);
-  const [interactionType, setInteractionType] = useState<
-    "NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH"
-  >("NONE");
+  const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
   const { isLoading } = useLoading();
   const [, setGlobalCompareToken] = useAtom(EarnState.currentCompareToken);
 
-  const tokenAPath = useMemo(
-    () => tokenA?.wrappedPath || tokenA?.path,
-    [tokenA?.path, tokenA?.wrappedPath],
-  );
-  const tokenBPath = useMemo(
-    () => tokenB?.wrappedPath || tokenB?.path,
-    [tokenB?.path, tokenB?.wrappedPath],
-  );
+  const tokenAPath = useMemo(() => tokenA?.wrappedPath || tokenA?.path, [tokenA?.path, tokenA?.wrappedPath]);
+  const tokenBPath = useMemo(() => tokenB?.wrappedPath || tokenB?.path, [tokenB?.path, tokenB?.wrappedPath]);
 
   const tokenPair = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -167,36 +144,15 @@ export const useSelectPool = ({
 
   const queryClient = useQueryClient();
 
-  const { data: bins } = useGetBinsByPath(
-    calculatedPoolPath || "",
-    ZOOL_VALUES[zoomLevel],
-    {
-      enabled: !!calculatedPoolPath && !isCreate,
-      queryKey: [
-        "useSelectPool/getBins",
-        calculatedPoolPath,
-        zoomLevel,
-        isCreate,
-      ],
-    },
-  );
+  const { data: bins } = useGetBinsByPath(calculatedPoolPath || "", ZOOL_VALUES[zoomLevel], {
+    enabled: !!calculatedPoolPath && !isCreate,
+    queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel, isCreate],
+  });
 
-  const { data: initializeBins } = useInitializeBins(
-    feeTier,
-    startPrice,
-    ZOOL_VALUES[zoomLevel],
-    false,
-    {
-      enabled: !!feeTier && !!startPrice && !!isCreate,
-      queryKey: [
-        QUERY_KEY.initializeBins,
-        feeTier,
-        startPrice,
-        zoomLevel,
-        false,
-      ],
-    },
-  );
+  const { data: initializeBins } = useInitializeBins(feeTier, startPrice, ZOOL_VALUES[zoomLevel], false, {
+    enabled: !!feeTier && !!startPrice && !!isCreate,
+    queryKey: [QUERY_KEY.initializeBins, feeTier, startPrice, zoomLevel, false],
+  });
 
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery<
     {
@@ -205,23 +161,13 @@ export const useSelectPool = ({
     },
     Error
   >({
-    queryKey: [
-      "poolInfo",
-      tokenAPath,
-      tokenBPath,
-      feeTier,
-      isCreate,
-      startPrice,
-    ],
+    queryKey: ["poolInfo", tokenAPath, tokenBPath, feeTier, isCreate, startPrice],
     queryFn: async () => {
       if (!tokenA || !tokenB || !feeTier) {
         return await Promise.resolve<{
           chainData: PoolDetailRPCModel | null;
           dbData: PoolModel | null;
-        }>({ chainData: null, dbData: null } as {
-          chainData: PoolDetailRPCModel | null;
-          dbData: PoolModel | null;
-        });
+        }>({ chainData: null, dbData: null });
       }
 
       const defaultPoolInfo: PoolDetailRPCModel = {
@@ -251,10 +197,7 @@ export const useSelectPool = ({
           return await Promise.resolve<{
             chainData: PoolDetailRPCModel | null;
             dbData: PoolModel | null;
-          }>({ chainData: null, dbData: null } as {
-            chainData: PoolDetailRPCModel | null;
-            dbData: PoolModel | null;
-          });
+          }>({ chainData: null, dbData: null });
         }
         const poolInfo: PoolDetailRPCModel = {
           ...defaultPoolInfo,
@@ -264,15 +207,10 @@ export const useSelectPool = ({
         return Promise.resolve<{
           chainData: PoolDetailRPCModel | null;
           dbData: PoolModel | null;
-        }>({ chainData: poolInfo, dbData: null } as {
-          chainData: PoolDetailRPCModel | null;
-          dbData: PoolModel | null;
-        });
+        }>({ chainData: poolInfo, dbData: null });
       }
 
-      const poolPath = `${tokenPair?.join(":")}:${
-        SwapFeeTierInfoMap[feeTier].fee
-      }`;
+      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
 
       let poolRes: PoolDetailRPCModel | null = null;
 
@@ -294,9 +232,7 @@ export const useSelectPool = ({
       let poolResFromDb: PoolModel | null = null;
 
       try {
-        poolResFromDb = await poolRepository.getPoolDetailByPoolPath(
-          convertPath,
-        );
+        poolResFromDb = await poolRepository.getPoolDetailByPoolPath(convertPath);
       } catch (error) {
         console.log(" error:", error);
       }
@@ -306,11 +242,9 @@ export const useSelectPool = ({
       }
 
       const price = (() => {
-        if (poolResFromDb?.price === undefined || poolResFromDb?.price === null)
-          return 0;
+        if (poolResFromDb?.price === undefined || poolResFromDb?.price === null) return 0;
 
-        const price =
-          poolResFromDb.price || tickToPrice(poolResFromDb.currentTick);
+        const price = poolResFromDb.price || tickToPrice(poolResFromDb.currentTick);
 
         if (!isReverse) return price;
 
@@ -397,15 +331,7 @@ export const useSelectPool = ({
       }
       return "DONE";
     },
-    [
-      feeTier,
-      isCreate,
-      startPrice,
-      tokenA,
-      tokenB,
-      isLoading,
-      isLoadingPoolInfo,
-    ],
+    [feeTier, isCreate, startPrice, tokenA, tokenB, isLoading, isLoadingPoolInfo],
   );
 
   const liquidityOfTickPoints: [number, number][] = useMemo(() => {
@@ -446,18 +372,11 @@ export const useSelectPool = ({
   }, [fullRange, maxPosition, swapFeeTierMaxPriceRangeMap?.maxPrice]);
 
   const depositRatio = useMemo(() => {
-    if (
-      !tokenA ||
-      !tokenB ||
-      minPrice === null ||
-      maxPrice === null ||
-      !compareToken
-    ) {
+    if (!tokenA || !tokenB || minPrice === null || maxPrice === null || !compareToken) {
       return null;
     }
 
-    const ordered =
-      checkGnotPath(compareToken.path) === checkGnotPath(tokenA.path);
+    const ordered = checkGnotPath(compareToken.path) === checkGnotPath(tokenA.path);
     const currentPrice = isCreate ? startPrice : ordered ? price : 1 / price;
     if (!currentPrice) {
       return null;
@@ -471,12 +390,8 @@ export const useSelectPool = ({
       return 100;
     }
 
-    const currentMinPrice = fullRange
-      ? swapFeeTierMaxPriceRangeMap.minPrice
-      : minPrice;
-    const currentMaxPrice = fullRange
-      ? swapFeeTierMaxPriceRangeMap.maxPrice
-      : maxPrice;
+    const currentMinPrice = fullRange ? swapFeeTierMaxPriceRangeMap.minPrice : minPrice;
+    const currentMaxPrice = fullRange ? swapFeeTierMaxPriceRangeMap.maxPrice : maxPrice;
 
     const adjustAmountA = 1_000_000_000n;
 
@@ -492,21 +407,8 @@ export const useSelectPool = ({
     const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || 0;
 
     const sumOfAmounts = tokenAAmount + tokenBAmount;
-    return BigNumber(tokenAAmount.toString())
-      .dividedBy(sumOfAmounts.toString())
-      .multipliedBy(100)
-      .toNumber();
-  }, [
-    tokenA,
-    tokenB,
-    minPrice,
-    maxPrice,
-    swapFeeTierMaxPriceRangeMap,
-    isCreate,
-    startPrice,
-    price,
-    fullRange,
-  ]);
+    return BigNumber(tokenAAmount.toString()).dividedBy(sumOfAmounts.toString()).multipliedBy(100).toNumber();
+  }, [tokenA, tokenB, minPrice, maxPrice, swapFeeTierMaxPriceRangeMap, isCreate, startPrice, price, fullRange]);
 
   const feeBoost = useMemo(() => {
     if (minPrice === null || maxPrice === null) {
@@ -523,19 +425,14 @@ export const useSelectPool = ({
     return Number(poolInfo?.dbData?.feeApr || 0) * Number(feeBoost ?? 0);
   }, [feeBoost, poolInfo?.dbData?.feeApr]);
 
-  const tickSpacing = useMemo(
-    () => poolInfo?.chainData?.tickSpacing || 1,
-    [poolInfo?.chainData?.tickSpacing],
-  );
+  const tickSpacing = useMemo(() => poolInfo?.chainData?.tickSpacing || 1, [poolInfo?.chainData?.tickSpacing]);
 
   function excuteInteraction(callback: () => void) {
     if (interactionType === "INTERACTION") {
       return;
     }
     setInteractionType("INTERACTION");
-    new Promise(resolve => resolve(callback())).then(() =>
-      setInteractionType("FINISH"),
-    );
+    new Promise(resolve => resolve(callback())).then(() => setInteractionType("FINISH"));
   }
 
   const changeMinPosition = useCallback(

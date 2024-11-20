@@ -16,11 +16,11 @@ const Template: ComponentStory<typeof PoolPairInfoContent> = args => (
 );
 
 const poolRepository = new PoolRepositoryMock();
-const pool = (await poolRepository.getPoolDetailByPoolPath());
+const pool = await poolRepository.getPoolDetailByPoolPath();
 
 export const Default = Template.bind({});
 Default.args = {
-  pool
+  pool,
 };
 
 const wrapper = () => css`

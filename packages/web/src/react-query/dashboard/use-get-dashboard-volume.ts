@@ -7,9 +7,7 @@ import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 10_000;
 
-export const useGetDashboardVolume = (
-  options?: UseQueryOptions<IVolumeResponse, Error>,
-) => {
+export const useGetDashboardVolume = (options?: UseQueryOptions<IVolumeResponse, Error>) => {
   const { dashboardRepository } = useGnoswapContext();
 
   return useQuery<IVolumeResponse, Error>({

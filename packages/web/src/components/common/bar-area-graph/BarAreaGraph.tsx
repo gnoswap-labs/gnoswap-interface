@@ -53,12 +53,10 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
 }) => {
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = poolBins.every(
-      item =>
-        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
     );
     const isAllReserveZeroBin = positionBins.every(
-      item =>
-        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
     );
 
     return isAllReserveZeroBin40 && isAllReserveZeroBin;

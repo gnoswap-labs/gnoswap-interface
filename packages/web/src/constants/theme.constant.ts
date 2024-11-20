@@ -52,8 +52,7 @@ const palette = {
   gradient4: "linear-gradient(to left, #536CD7, #A7B9F8)",
   gradient5: "linear-gradient(to right, #59678240, #59678200)",
   gradient6: "linear-gradient(0, #E0E8F4 0%, #E0E8F4 100%)",
-  gradient7:
-    "linear-gradient(90deg, rgba(89, 103, 130, 0.25) 0%, rgba(89, 103, 130, 0) 99.91%)",
+  gradient7: "linear-gradient(90deg, rgba(89, 103, 130, 0.25) 0%, rgba(89, 103, 130, 0) 99.91%)",
   gradient8: "linear-gradient(90deg, #E0E8F4 0%, rgba(224, 232, 244, 0) 100%)",
   gradient9: "linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%)",
   gradient10: "linear-gradient(270deg, #536CD7 -2.39%, #233DBD 103.33%)",
@@ -74,7 +73,7 @@ const palette = {
   gray200Opacity: "#C3D2EA80",
   gray300Opacity06: "#90A2C099",
   goldenrod: "#D7A423",
-  azureishWhite: "#e0e8f480"
+  azureishWhite: "#e0e8f480",
 };
 
 const colors = {

@@ -5,7 +5,7 @@ import { css } from "@emotion/react";
 import { PoolRepositoryMock } from "@repositories/pool";
 
 const poolRepository = new PoolRepositoryMock();
-const pool = (await poolRepository.getPoolDetailByPoolPath());
+const pool = await poolRepository.getPoolDetailByPoolPath();
 
 export default {
   title: "pool/PoolPairInfoHeader",

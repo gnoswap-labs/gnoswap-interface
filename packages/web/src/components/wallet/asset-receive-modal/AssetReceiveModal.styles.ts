@@ -110,7 +110,7 @@ export const DepositBoxContent = styled.div`
   .normal-box {
     padding: 16px;
     ${mixins.flexbox("row", "center", "space-between")};
-    
+
     .network {
       color: ${({ theme }) => theme.color.text02};
       ${mixins.flexbox("row", "center", "space-between")};
@@ -118,10 +118,15 @@ export const DepositBoxContent = styled.div`
       font-size: 16px;
       font-style: normal;
       font-weight: 500;
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
     }
 
     .approximately {
-      color: ${({ theme }) => theme.color.text04};
+      color: ${({ theme }) => theme.color.text30};
       font-size: 14px;
       font-style: normal;
       font-weight: 500;
@@ -163,7 +168,7 @@ export const DepositLabel = styled.div`
   .title {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
-    
+
     label {
       font-size: 14px;
       font-style: normal;

@@ -7,9 +7,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { AmountModel } from "@models/common/amount-model";
 
 export class AccountMapper {
-  public static fromResponse(
-    response: WalletResponse<AccountInfoResponse>,
-  ): AccountModel {
+  public static fromResponse(response: WalletResponse<AccountInfoResponse>): AccountModel {
     if (response.data === null) {
       return {
         status: "NONE",
@@ -23,18 +21,8 @@ export class AccountMapper {
       };
     }
 
-    const {
-      coins,
-      address,
-      status,
-      accountNumber,
-      chainId,
-      publicKey,
-      sequence,
-    } = response.data;
-    const balances: AmountModel[] = notNullStringType(coins)
-      ? textToBalances(coins)
-      : [amountEmptyNumberInit];
+    const { coins, address, status, accountNumber, chainId, publicKey, sequence } = response.data;
+    const balances: AmountModel[] = notNullStringType(coins) ? textToBalances(coins) : [amountEmptyNumberInit];
 
     return {
       status: status === "ACTIVE" ? "ACTIVE" : "IN_ACTIVE",

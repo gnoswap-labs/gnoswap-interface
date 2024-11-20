@@ -17,8 +17,7 @@ const Template: ComponentStory<typeof MyLiquidityHeader> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {
-};
+Default.args = {};
 
 const wrapper = () => css`
   display: flex;

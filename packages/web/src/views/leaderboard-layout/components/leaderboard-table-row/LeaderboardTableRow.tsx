@@ -57,10 +57,7 @@ const LeaderboardTableRow = ({
         />
       </Hover>
       <Hover style={{ cursor: "auto" }}>
-        <TableColumn
-          tdWidth={tdWidths.at(2)}
-          style={{ justifyContent: "flex-start" }}
-        >
+        <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
           {swapVolume}
         </TableColumn>
         <TableColumn tdWidth={tdWidths.at(3)}>{positionValue}</TableColumn>

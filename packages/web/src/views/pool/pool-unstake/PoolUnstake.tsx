@@ -29,9 +29,7 @@ const PoolUnstake: React.FC = () => {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${
-                getGnotPath(data?.tokenB).symbol
-              } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool?poolPath=${poolPath}`,
       },
@@ -42,12 +40,7 @@ const PoolUnstake: React.FC = () => {
   return (
     <UnstakeLiquidityLayout
       header={<HeaderContainer />}
-      breadcrumbs={
-        <BreadcrumbsContainer
-          listBreadcrumb={listBreadcrumb}
-          isLoading={isLoadingCommon || isLoading}
-        />
-      }
+      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading} />}
       unstakeLiquidity={<UnstakeLiquidityContainer />}
       footer={<Footer />}
     />

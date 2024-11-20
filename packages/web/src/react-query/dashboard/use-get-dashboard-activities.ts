@@ -1,18 +1,10 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
+import { ActivityType } from "@repositories/dashboard";
 
 import { QUERY_KEY } from "../query-keys";
-import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
-
-type ActivityType =
-  | "All"
-  | "Swaps"
-  | "Adds"
-  | "Removes"
-  | "Stakes"
-  | "Unstakes"
-  | "Claims";
 
 const REFETCH_INTERVAL = 10_000;
 

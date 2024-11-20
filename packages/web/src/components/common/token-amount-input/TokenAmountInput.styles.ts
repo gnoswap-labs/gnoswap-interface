@@ -54,6 +54,13 @@ export const TokenAmountInputWrapper = styled.div`
     color: ${({ theme }) => theme.color.text04};
     cursor: pointer;
   }
+  .price-text {
+    flex-shrink: 0;
+    max-width: 60%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
   .disable-pointer {
     cursor: default;
   }

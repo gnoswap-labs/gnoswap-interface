@@ -41,9 +41,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   }, [checkedList.length]);
 
   const selectedPositions = useMemo(() => {
-    return unstakedPositions.filter(position =>
-      checkedList.includes(position.id),
-    );
+    return unstakedPositions.filter(position => checkedList.includes(position.id));
   }, [checkedList, unstakedPositions]);
 
   return (
@@ -64,11 +62,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
         setIsGetWGNOT={setIsGetWGNOT}
       />
       <Button
-        text={t(
-          disabledRemoveLiquidity
-            ? "RemovePosition:btn.selectPosi"
-            : "RemovePosition:btn.remove",
-        )}
+        text={t(disabledRemoveLiquidity ? "RemovePosition:btn.selectPosi" : "RemovePosition:title")}
         disabled={disabledRemoveLiquidity}
         style={{
           hierarchy: ButtonHierarchy.Primary,

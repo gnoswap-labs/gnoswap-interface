@@ -2,11 +2,14 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { TokenInfo } from "@models/token/token-info";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import IconInfo from "@components/common/icons/IconInfo";
 
 import {
   CreationFeeErrorMsgWrapper,
   PoolAddConfirmFeeInfoWrapper,
   PoolAddConfirmFeeInfoSection,
+  ToolTipContentWrapper,
 } from "./PoolAddConfirmFeeInfo.styles";
 
 export interface EarnAddConfirmFeeInfoProps {
@@ -15,16 +18,24 @@ export interface EarnAddConfirmFeeInfoProps {
   errorMsg?: string;
 }
 
-const PoolAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
-  token,
-  fee,
-  errorMsg,
-}) => {
+const PoolAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({ token, fee, errorMsg }) => {
   const { t } = useTranslation();
 
   return (
     <PoolAddConfirmFeeInfoWrapper>
-      <p>{t("AddPosition:confirmAddModal.info.label.creationFee")}</p>
+      <div className="title-wrapper">
+        <p>{t("AddPosition:confirmAddModal.info.label.creationFee.title")}</p>
+        <Tooltip
+          placement="top"
+          FloatingContent={
+            <ToolTipContentWrapper>
+              {t("AddPosition:confirmAddModal.info.label.creationFee.tooltip")}
+            </ToolTipContentWrapper>
+          }
+        >
+          <IconInfo />
+        </Tooltip>
+      </div>
       <PoolAddConfirmFeeInfoSection $hasError={!!errorMsg}>
         <div className="token-info">
           <img src={token?.logoURI} alt="token logo" />
@@ -34,9 +45,7 @@ const PoolAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
           <span>{fee}</span>
         </div>
       </PoolAddConfirmFeeInfoSection>
-      {errorMsg && (
-        <CreationFeeErrorMsgWrapper>{errorMsg}</CreationFeeErrorMsgWrapper>
-      )}
+      {errorMsg && <CreationFeeErrorMsgWrapper>{errorMsg}</CreationFeeErrorMsgWrapper>}
     </PoolAddConfirmFeeInfoWrapper>
   );
 };

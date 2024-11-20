@@ -14,10 +14,7 @@ interface SubMenuButtonProps {
   onSideMenuToggle: (value: boolean) => void;
 }
 
-const SubMenuButton: React.FC<SubMenuButtonProps> = ({
-  sideMenuToggle,
-  onSideMenuToggle,
-}) => {
+const SubMenuButton: React.FC<SubMenuButtonProps> = ({ sideMenuToggle, onSideMenuToggle }) => {
   const theme = useTheme();
   const buttonRef = useRef<HTMLDivElement>(null);
 
@@ -30,11 +27,7 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
       const mouseX = e.clientX;
       const mouseY = e.clientY;
       if (
-        (rect &&
-          mouseX >= rect.left &&
-          mouseX <= rect.right &&
-          mouseY >= rect.top &&
-          mouseY <= rect.bottom + 10) ||
+        (rect && mouseX >= rect.left && mouseX <= rect.right && mouseY >= rect.top && mouseY <= rect.bottom + 10) ||
         (menuRect &&
           mouseX >= menuRect.left &&
           mouseX <= menuRect.right &&
@@ -54,29 +47,17 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
     };
   }, []);
 
-
   return (
-    <SubMenuButtonWrapper
-      ref={buttonRef}
-      className={`${sideMenuToggle ? "selected" : ""}`}
-    >
+    <SubMenuButtonWrapper ref={buttonRef} className={`${sideMenuToggle ? "selected" : ""}`}>
       {sideMenuToggle ? (
-        <IconStrokeArrowUp
-          className="popup-icon-button"
-          svgProps={{ fill: theme.color.text16 }}
-        />
+        <IconStrokeArrowUp className="popup-icon-button" svgProps={{ fill: theme.color.text16 }} />
       ) : (
-        <IconStrokeArrowDown
-          className="popup-icon-button"
-          svgProps={{ fill: theme.color.text04 }}
-        />
+        <IconStrokeArrowDown className="popup-icon-button" svgProps={{ fill: theme.color.text04 }} />
       )}
       {sideMenuToggle && (
         <>
           <FakeSpaceWrapper></FakeSpaceWrapper>
-          <SubMenu
-            onSideMenuToggle={() => onSideMenuToggle(false)}
-          />
+          <SubMenu onSideMenuToggle={() => onSideMenuToggle(false)} />
         </>
       )}
     </SubMenuButtonWrapper>

@@ -11,13 +11,7 @@ interface WalletLayoutProps {
   footer: React.ReactNode;
 }
 
-const EarnLayout: React.FC<WalletLayoutProps> = ({
-  header,
-  positions,
-  incentivizedPools,
-  poolList,
-  footer,
-}) => {
+const EarnLayout: React.FC<WalletLayoutProps> = ({ header, positions, incentivizedPools, poolList, footer }) => {
   const { t } = useTranslation();
 
   return (

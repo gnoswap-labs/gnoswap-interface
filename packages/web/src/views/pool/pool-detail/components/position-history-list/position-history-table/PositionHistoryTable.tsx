@@ -15,11 +15,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { TABLE_HEAD } from "../../../containers/position-history-container/PositionHistoryContainer";
 import PositionInfo from "./position-info/PositionInfo";
 
-import {
-  noDataText,
-  TableHeader,
-  TableWrapper
-} from "./PositionHistoryTable.styles";
+import { noDataText, TableHeader, TableWrapper } from "./PositionHistoryTable.styles";
 
 interface PositionHistoryTableProps {
   list: IPositionHistoryModel[];
@@ -28,12 +24,7 @@ interface PositionHistoryTableProps {
   isLoading: boolean;
 }
 
-const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
-  list,
-  isFetched,
-  breakpoint,
-  isLoading,
-}) => {
+const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({ list, isFetched, breakpoint, isLoading }) => {
   const { t } = useTranslation();
 
   const sekeleton: TableInfoType =
@@ -57,29 +48,18 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
               tdWidth={sekeleton.list[idx]?.width ?? 0}
             >
               <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}>
-                {idx === 3 || idx === 4
-                  ? `${t("business:token")} ${t("business:amount")}`
-                  : t(head)}
+                {idx === 3 || idx === 4 ? `${t("business:token")} ${t("business:amount")}` : t(head)}
               </span>
             </TableHeader>
           ))}
         </div>
         <div className="position-history-list-body">
-          {isFetched && list.length === 0 && (
-            <div css={noDataText}>{t("Pool:position.card.history.empty")}</div>
-          )}
+          {isFetched && list.length === 0 && <div css={noDataText}>{t("Pool:position.card.history.empty")}</div>}
           {isFetched &&
             !isLoading &&
             list.length > 0 &&
-            list.map((item, idx) => (
-              <PositionInfo item={item} key={idx} breakpoint={breakpoint} />
-            ))}
-          {isLoading && (
-            <TableSkeleton
-              info={sekeleton}
-              className="position-history-table"
-            />
-          )}
+            list.map((item, idx) => <PositionInfo item={item} key={idx} breakpoint={breakpoint} />)}
+          {isLoading && <TableSkeleton info={sekeleton} className="position-history-table" />}
         </div>
       </div>
     </TableWrapper>

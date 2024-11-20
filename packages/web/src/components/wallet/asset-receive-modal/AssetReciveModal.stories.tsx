@@ -9,9 +9,7 @@ export default {
   component: AssetReceiveModal,
 } as ComponentMeta<typeof AssetReceiveModal>;
 
-const Template: ComponentStory<typeof AssetReceiveModal> = args => (
-  <AssetReceiveModal {...args} />
-);
+const Template: ComponentStory<typeof AssetReceiveModal> = args => <AssetReceiveModal {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

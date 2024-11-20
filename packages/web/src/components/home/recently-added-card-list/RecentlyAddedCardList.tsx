@@ -1,9 +1,6 @@
 import React, { useMemo } from "react";
 import CardList from "@components/home/card-list/CardList";
-import {
-  RecentlyAddedCardListWrapper,
-  SkeletonItem,
-} from "./RecentlyAddedCardList.styles";
+import { RecentlyAddedCardListWrapper, SkeletonItem } from "./RecentlyAddedCardList.styles";
 import IconPieChart from "@components/common/icons/IconPieChart";
 import { DEVICE_TYPE } from "@styles/media";
 import { CardListKeyStats } from "@models/common/card-list-item-info";
@@ -20,11 +17,7 @@ interface RecentlyAddedCardListProps {
   loading: boolean;
 }
 
-const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
-  list,
-  device,
-  loading,
-}) => {
+const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({ list, device, loading }) => {
   const { t } = useTranslation();
 
   const visible = useMemo(() => {
@@ -32,9 +25,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
   }, [device]);
 
   return visible ? (
-    <RecentlyAddedCardListWrapper
-      className={cx("loading", { "empty-status": loading })}
-    >
+    <RecentlyAddedCardListWrapper className={cx("loading", { "empty-status": loading })}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />
@@ -42,8 +33,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
       ) : (
         <div className="header-wrapper">
           <h2>
-            <IconPieChart className="icon-clock" />{" "}
-            {t("Main:keyStatCard.title")}
+            <IconPieChart className="icon-clock" /> {t("Main:keyStatCard.title")}
           </h2>
           <Link href="/dashboard" className="link-to-dashboard">
             {t("Main:keyStatCard.toDashBoardBtnText")}

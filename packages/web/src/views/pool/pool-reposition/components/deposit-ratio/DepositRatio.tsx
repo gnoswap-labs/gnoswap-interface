@@ -14,10 +14,7 @@ import { formatRate } from "@utils/new-number-utils";
 
 import { IPriceRange } from "../../hooks/use-reposition-handle";
 
-import {
-  DepositRatioWrapper,
-  ToolTipContentWrapper
-} from "./DepositRatio.styles";
+import { DepositRatioWrapper, ToolTipContentWrapper } from "./DepositRatio.styles";
 
 export interface DepositRatioProps {
   tokenA: TokenModel | null;
@@ -43,10 +40,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
   const { breakpoint } = useWindowSize();
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
 
-  const isLoading = useMemo(
-    () => isLoadingPosition || selectPool.isLoading,
-    [isLoadingPosition, selectPool.isLoading],
-  );
+  const isLoading = useMemo(() => isLoadingPosition || selectPool.isLoading, [isLoadingPosition, selectPool.isLoading]);
 
   const loadingComp = useMemo(
     () => (
@@ -67,24 +61,14 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
         {priceRangeSummary.tokenARatioStr}
         {"% "}
         {isMobile ? (
-          <MissingLogo
-            symbol={tokenA?.symbol || ""}
-            url={tokenA?.logoURI}
-            className="token-logo"
-            width={18}
-          />
+          <MissingLogo symbol={tokenA?.symbol || ""} url={tokenA?.logoURI} className="token-logo" width={18} />
         ) : (
           `${tokenA?.symbol}`
         )}{" "}
         / {priceRangeSummary.tokenBRatioStr}
         {"% "}
         {isMobile ? (
-          <MissingLogo
-            symbol={tokenB?.symbol || ""}
-            url={tokenB?.logoURI}
-            className="token-logo"
-            width={18}
-          />
+          <MissingLogo symbol={tokenB?.symbol || ""} url={tokenB?.logoURI} className="token-logo" width={18} />
         ) : (
           `${tokenB?.symbol}`
         )}
@@ -107,15 +91,11 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
       <div className="deposit-ratio common-bg">
         <div>
           <div>
-            <p className="label">
-              {t("business:positionPriceRangeInfo.depositR.label")}
-            </p>
+            <p className="label">{t("business:positionPriceRangeInfo.depositR.label")}</p>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.depositR.desc")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.depositR.desc")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />
@@ -125,51 +105,31 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
         </div>
         <div>
           <div>
-            <p className="label">
-              {t("business:positionPriceRangeInfo.capEff.label")}
-            </p>
+            <p className="label">{t("business:positionPriceRangeInfo.capEff.label")}</p>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.capEff.desc")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.capEff.desc")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">
-            {isLoading
-              ? loadingComp
-              : rangeStatus === "OUT"
-              ? "-"
-              : priceRangeSummary.feeBoost}
-          </p>
+          <p className="value">{isLoading ? loadingComp : rangeStatus === "OUT" ? "-" : priceRangeSummary.feeBoost}</p>
         </div>
         <div>
           <div>
-            <p className="label">
-              {t("business:positionPriceRangeInfo.feeApr.label")}
-            </p>
+            <p className="label">{t("business:positionPriceRangeInfo.feeApr.label")}</p>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.feeApr.desc")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.feeApr.desc")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">
-            {isLoading
-              ? loadingComp
-              : rangeStatus === "OUT"
-              ? "-"
-              : formatRate(aprFee)}
-          </p>
+          <p className="value">{isLoading ? loadingComp : rangeStatus === "OUT" ? "-" : formatRate(aprFee)}</p>
         </div>
       </div>
     </DepositRatioWrapper>

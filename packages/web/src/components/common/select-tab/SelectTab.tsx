@@ -8,12 +8,7 @@ interface SelectTabProps {
   buttonClassName?: string;
 }
 
-const SelectTab: React.FC<SelectTabProps> = ({
-  selectType,
-  list,
-  onClick,
-  buttonClassName,
-}) => {
+const SelectTab: React.FC<SelectTabProps> = ({ selectType, list, onClick, buttonClassName }) => {
   const { t } = useTranslation();
 
   return (

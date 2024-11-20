@@ -1,9 +1,6 @@
 export const DEFAULT_TIMEOUT = 15 * 60 * 1000;
 
-export async function createTimeout<T>(
-  promise: Promise<T>,
-  milliseconds?: number,
-): Promise<T> {
+export async function createTimeout<T>(promise: Promise<T>, milliseconds?: number): Promise<T> {
   milliseconds = milliseconds ?? DEFAULT_TIMEOUT;
   let timer: number | NodeJS.Timeout;
   const response = await Promise.race([

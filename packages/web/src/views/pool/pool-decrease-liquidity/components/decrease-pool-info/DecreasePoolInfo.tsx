@@ -16,10 +16,7 @@ import { removeTrailingZeros } from "@utils/number-utils";
 import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
 import { ToolTipContentWrapper } from "../decrease-select-position/DecreaseSelectPosition.styles";
 
-import {
-  DecreasePoolInfoWrapper,
-  GnotCollectSwitchWrapper,
-} from "./DecreasePoolInfo.styles";
+import { DecreasePoolInfoWrapper, GnotCollectSwitchWrapper } from "./DecreasePoolInfo.styles";
 
 interface Props {
   tokenA: TokenModel;
@@ -52,9 +49,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
       return BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toFormat();
     }
 
-    return removeTrailingZeros(
-      BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toFormat(tokenA.decimals),
-    );
+    return removeTrailingZeros(BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toFormat(tokenA.decimals));
   }, [pooledTokenInfos?.poolAmountA, tokenA.decimals]);
 
   const poolBMount = useMemo(() => {
@@ -62,9 +57,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
       return BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toFormat();
     }
 
-    return removeTrailingZeros(
-      BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toFormat(tokenB.decimals),
-    );
+    return removeTrailingZeros(BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toFormat(tokenB.decimals));
   }, [pooledTokenInfos?.poolAmountB, tokenB.decimals]);
 
   const unclaimedPoolAAMount = useMemo(() => {
@@ -72,9 +65,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
       return BigNumber(pooledTokenInfos?.unClaimTokenAAmount ?? 0).toFormat();
     }
 
-    return BigNumber(pooledTokenInfos?.unClaimTokenAAmount ?? 0).toFormat(
-      tokenA.decimals,
-    );
+    return BigNumber(pooledTokenInfos?.unClaimTokenAAmount ?? 0).toFormat(tokenA.decimals);
   }, [pooledTokenInfos?.unClaimTokenAAmount, tokenA.decimals]);
 
   const unclaimedPoolBAMount = useMemo(() => {
@@ -82,9 +73,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
       return BigNumber(pooledTokenInfos?.unClaimTokenBAmount ?? 0).toFormat();
     }
 
-    return BigNumber(pooledTokenInfos?.unClaimTokenBAmount ?? 0).toFormat(
-      tokenA.decimals,
-    );
+    return BigNumber(pooledTokenInfos?.unClaimTokenBAmount ?? 0).toFormat(tokenA.decimals);
   }, [pooledTokenInfos?.unClaimTokenBAmount, tokenA.decimals]);
 
   const isNotMobile = breakpoint !== DEVICE_TYPE.MOBILE;
@@ -93,14 +82,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
       <div className="box-info">
         <div className="value">
           <div>
-            <MissingLogo
-              symbol={tokenA?.symbol}
-              url={tokenA?.logoURI}
-              width={24}
-            />
+            <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} />
             <p>
-              {t("DecreaseLiquidity:form.pooled")}{" "}
-              {isNotMobile ? tokenA?.symbol : ""}
+              {t("DecreaseLiquidity:form.pooled")} {isNotMobile ? tokenA?.symbol : ""}
             </p>
           </div>
           <p>{poolAMount}</p>
@@ -110,14 +94,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
       <div className="box-info">
         <div className="value">
           <div>
-            <MissingLogo
-              symbol={tokenB?.symbol}
-              url={tokenB?.logoURI}
-              width={24}
-            />
+            <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} />
             <p>
-              {t("DecreaseLiquidity:form.pooled")}{" "}
-              {isNotMobile ? tokenB?.symbol : ""}
+              {t("DecreaseLiquidity:form.pooled")} {isNotMobile ? tokenB?.symbol : ""}
             </p>
           </div>
           <p>{poolBMount}</p>
@@ -127,14 +106,8 @@ const DecreasePoolInfo: React.FC<Props> = ({
       <div className="box-info">
         <div className="value">
           <div>
-            <MissingLogo
-              symbol={tokenA?.symbol}
-              url={tokenA?.logoURI}
-              width={24}
-            />
-            <p>
-              {t("DecreaseLiquidity:form.unclaimed")}
-            </p>
+            <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} />
+            <p>{t("DecreaseLiquidity:form.unclaimed")}</p>
           </div>
           <p>{unclaimedPoolAAMount}</p>
         </div>
@@ -143,11 +116,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
       <div className="box-info">
         <div className="value">
           <div>
-            <MissingLogo
-              symbol={tokenB?.symbol}
-              url={tokenB?.logoURI}
-              width={24}
-            />
+            <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} />
             <p>{t("DecreaseLiquidity:form.unclaimed")}</p>
           </div>
           <p>{unclaimedPoolBAMount}</p>
@@ -164,16 +133,14 @@ const DecreasePoolInfo: React.FC<Props> = ({
                 placement="top"
                 FloatingContent={
                   <ToolTipContentWrapper>
-                    {t("business:protocolFee.desc")}
+                    {t("DecreaseLiquidity:confModal.tooltip.withdrawalFee")}
                   </ToolTipContentWrapper>
                 }
               >
                 <IconInfo />
               </Tooltip>
             </p>
-            <p className="usd protocol-fee">
-              {withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}
-            </p>
+            <p className="usd protocol-fee">{withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}</p>
           </div>
         </div>
       )}

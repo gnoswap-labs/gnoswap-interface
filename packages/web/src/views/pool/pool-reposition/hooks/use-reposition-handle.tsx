@@ -22,21 +22,12 @@ import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
-import {
-  RepositionLiquidityFailedResponse,
-  RepositionLiquiditySuccessResponse,
-} from "@repositories/position/response";
-import {
-  SwapRouteFailedResponse,
-  SwapRouteSuccessResponse,
-} from "@repositories/swap/response/swap-route-response";
+import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
+import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 import { IncreaseState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
-import {
-  getRepositionAmountsByPriceRange,
-  getRepositionAmountsWithSwapSimulation,
-} from "@utils/reposition-utils";
+import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 
@@ -46,11 +37,7 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type REPOSITION_BUTTON_TYPE =
-  | "REPOSITION"
-  | "LOADING"
-  | "NON_SELECTED_RANGE"
-  | "INSUFFICIENT_LIQUIDITY";
+export type REPOSITION_BUTTON_TYPE = "REPOSITION" | "LOADING" | "NON_SELECTED_RANGE" | "INSUFFICIENT_LIQUIDITY";
 
 export const useRepositionHandle = () => {
   const router = useRouter();
@@ -65,14 +52,16 @@ export const useRepositionHandle = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account } = useWallet();
   const [initialized, setInitialized] = useState(false);
-  const { positions, loading: isLoadingPosition } = usePositionData({
+  const {
+    positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+  } = usePositionData({
     poolPath,
   });
 
   const selectedPosition = useMemo(
-    () =>
-      positions.find(item => item.id.toString() === positionId) ||
-      defaultPosition,
+    () => positions.find(item => item.id.toString() === positionId) || defaultPosition,
     [defaultPosition, positionId, positions],
   );
 
@@ -90,8 +79,7 @@ export const useRepositionHandle = () => {
     return tickToPrice(selectedPosition.tickUpper);
   }, [selectedPosition?.tickUpper]);
 
-  const { openModal: openConfirmModal, update: updateConfirmModalData } =
-    useTransactionConfirmModal();
+  const { openModal: openConfirmModal, update: updateConfirmModalData } = useTransactionConfirmModal();
 
   const [priceRange, setPriceRange] = useState<PriceRangeMeta>({
     type: "Custom",
@@ -121,10 +109,7 @@ export const useRepositionHandle = () => {
 
   const aprFee = useMemo(() => {
     if (!selectedPosition) return 0;
-    return selectedPosition?.reward.reduce(
-      (acc, item) => acc + Number(item.apr || 0),
-      0,
-    );
+    return selectedPosition?.reward.reduce((acc, item) => acc + Number(item.apr || 0), 0);
   }, [selectedPosition]);
 
   const selectPool = useSelectPool({
@@ -137,10 +122,7 @@ export const useRepositionHandle = () => {
     if (!selectedPosition) return false;
     const { pool } = selectedPosition;
     const currentPrice = tickToPrice(pool.currentTick);
-    if (
-      currentPrice < (selectPool.minPrice || 0) ||
-      currentPrice > (selectPool.maxPrice || 0)
-    ) {
+    if (currentPrice < (selectPool.minPrice || 0) || currentPrice > (selectPool.maxPrice || 0)) {
       return false;
     }
     return true;
@@ -174,16 +156,11 @@ export const useRepositionHandle = () => {
 
   const formatPriceDisplay = useCallback(
     (price: number | string | BigNumber | null) => {
-      if (
-        price === null ||
-        BigNumber(Number(price)).isNaN() ||
-        !selectPool.feeTier
-      ) {
+      if (price === null || BigNumber(Number(price)).isNaN() || !selectPool.feeTier) {
         return "-";
       }
 
-      const { maxPrice } =
-        SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
+      const { maxPrice } = SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
 
       const currentValue = BigNumber(price).toNumber();
 
@@ -254,20 +231,14 @@ export const useRepositionHandle = () => {
     ) {
       return null;
     }
-    const ordered =
-      checkGnotPath(selectPool.compareToken.path) ===
-      checkGnotPath(tokenA.path);
+    const ordered = checkGnotPath(selectPool.compareToken.path) === checkGnotPath(tokenA.path);
 
     const repositionAmountsByNewPriceRange = getRepositionAmountsByPriceRange(
       ordered ? selectPool.currentPrice : 1 / selectPool.currentPrice,
       selectPool.minPrice,
       selectPool.maxPrice,
-      tickToPrice(
-        ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1,
-      ),
-      tickToPrice(
-        ordered ? selectedPosition.tickUpper : selectedPosition.tickLower * -1,
-      ),
+      tickToPrice(ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1),
+      tickToPrice(ordered ? selectedPosition.tickUpper : selectedPosition.tickLower * -1),
       selectedPosition.tokenABalance,
       selectedPosition.tokenBBalance,
     );
@@ -284,16 +255,11 @@ export const useRepositionHandle = () => {
   ]);
 
   const estimateSwapRequest = useMemo(() => {
-    if (
-      !currentAmounts ||
-      !initialEstimatedRepositionAmounts ||
-      !selectedPosition
-    ) {
+    if (!currentAmounts || !initialEstimatedRepositionAmounts || !selectedPosition) {
       return null;
     }
     const { amountA, amountB } = currentAmounts;
-    const { amountA: repositionAmountA, amountB: repositionAmountB } =
-      initialEstimatedRepositionAmounts;
+    const { amountA: repositionAmountA, amountB: repositionAmountB } = initialEstimatedRepositionAmounts;
 
     const isSwapAtoB = BigNumber(amountA).isGreaterThan(repositionAmountA);
     if (isSwapAtoB) {
@@ -331,11 +297,7 @@ export const useRepositionHandle = () => {
       return "LOADING";
     }
     return "REPOSITION";
-  }, [
-    initialEstimatedRepositionAmounts,
-    isErrorLiquidity,
-    isEstimatedRemainSwapLoading,
-  ]);
+  }, [initialEstimatedRepositionAmounts, isErrorLiquidity, isEstimatedRemainSwapLoading]);
 
   const estimatedRepositionAmounts = useMemo(() => {
     if (
@@ -355,11 +317,7 @@ export const useRepositionHandle = () => {
       };
     }
 
-    if (
-      !estimateSwapRequest?.inputToken ||
-      isEstimatedRemainSwapLoading ||
-      !estimatedSwapResult
-    ) {
+    if (!estimateSwapRequest?.inputToken || isEstimatedRemainSwapLoading || !estimatedSwapResult) {
       return null;
     }
 
@@ -391,29 +349,21 @@ export const useRepositionHandle = () => {
       return true;
     }
     if (
-      Number(currentAmounts?.amountA) ===
-        Number(estimatedRepositionAmounts?.amountA) &&
+      Number(currentAmounts?.amountA) === Number(estimatedRepositionAmounts?.amountA) &&
       Number(estimatedRepositionAmounts?.amountA) === 0
     ) {
       return true;
     }
     if (
-      Number(currentAmounts?.amountB) ===
-        Number(estimatedRepositionAmounts?.amountB) &&
+      Number(currentAmounts?.amountB) === Number(estimatedRepositionAmounts?.amountB) &&
       Number(estimatedRepositionAmounts?.amountB) === 0
     ) {
       return true;
     }
-    if (
-      Number(currentAmounts?.amountA) === 0 &&
-      estimatedRepositionAmounts?.amountA === null
-    ) {
+    if (Number(currentAmounts?.amountA) === 0 && estimatedRepositionAmounts?.amountA === null) {
       return true;
     }
-    if (
-      Number(currentAmounts?.amountB) === 0 &&
-      estimatedRepositionAmounts?.amountB === null
-    ) {
+    if (Number(currentAmounts?.amountB) === 0 && estimatedRepositionAmounts?.amountB === null) {
       return true;
     }
     return false;
@@ -445,24 +395,20 @@ export const useRepositionHandle = () => {
     [selectPool],
   );
 
-  const removePosition =
-    useCallback(async (): Promise<WalletResponse | null> => {
-      if (!address || !selectedPosition) {
-        return null;
-      }
+  const removePosition = useCallback(async (): Promise<WalletResponse | null> => {
+    if (!address || !selectedPosition) {
+      return null;
+    }
 
-      return positionRepository
-        .removeLiquidity({
-          lpTokenIds: [selectedPosition.lpTokenId],
-          caller: address,
-          tokenPaths: [
-            selectedPosition.pool.tokenA.path,
-            selectedPosition.pool.tokenB.path,
-          ],
-          isGetWGNOT: false,
-        })
-        .catch(() => null);
-    }, [selectedPosition, positionRepository, address]);
+    return positionRepository
+      .removeLiquidity({
+        lpTokenIds: [selectedPosition.lpTokenId],
+        caller: address,
+        tokenPaths: [selectedPosition.pool.tokenA.path, selectedPosition.pool.tokenB.path],
+        isGetWGNOT: false,
+      })
+      .catch(() => null);
+  }, [selectedPosition, positionRepository, address]);
 
   const swapRemainToken = useCallback(async (): Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
@@ -471,32 +417,22 @@ export const useRepositionHandle = () => {
       return null;
     }
 
-    const isSwapAtoB =
-      estimateSwapRequest.inputToken === selectedPosition?.pool.tokenA;
+    const isSwapAtoB = estimateSwapRequest.inputToken === selectedPosition?.pool.tokenA;
 
     const inputAmount = isSwapAtoB
-      ? BigNumber(currentAmounts?.amountA || 0).minus(
-          BigNumber(estimatedRepositionAmounts?.amountA || 0),
-        )
-      : BigNumber(currentAmounts?.amountB || 0).minus(
-          BigNumber(estimatedRepositionAmounts?.amountB || 0),
-        );
+      ? BigNumber(currentAmounts?.amountA || 0).minus(BigNumber(estimatedRepositionAmounts?.amountA || 0))
+      : BigNumber(currentAmounts?.amountB || 0).minus(BigNumber(estimatedRepositionAmounts?.amountB || 0));
 
     const outputAmount = isSwapAtoB
-      ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(
-          BigNumber(currentAmounts?.amountB || 0),
-        )
-      : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(
-          BigNumber(currentAmounts?.amountA || 0),
-        );
+      ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(BigNumber(currentAmounts?.amountB || 0))
+      : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(BigNumber(currentAmounts?.amountA || 0));
 
     return swapRouterRepository
       .sendSwapRoute({
         ...estimateSwapRequest,
         estimatedRoutes: estimatedSwapResult.estimatedRoutes,
         tokenAmount: inputAmount.toNumber(),
-        tokenAmountLimit:
-          outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100),
+        tokenAmountLimit: outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100),
       })
       .catch(() => null);
   }, [
@@ -513,9 +449,7 @@ export const useRepositionHandle = () => {
     async (
       swapToken: TokenModel | null,
       swapAmount: string | null,
-    ): Promise<WalletResponse<
-      RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse
-    > | null> => {
+    ): Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null> => {
       if (
         !address ||
         !selectedPosition ||
@@ -532,9 +466,7 @@ export const useRepositionHandle = () => {
         return null;
       }
 
-      const isSwappedAtoB =
-        checkGnotPath(selectedPosition.pool.tokenB.path) ===
-        checkGnotPath(swapToken?.path || "");
+      const isSwappedAtoB = checkGnotPath(selectedPosition.pool.tokenB.path) === checkGnotPath(swapToken?.path || "");
 
       let tokenAAmount = estimatedRepositionAmounts.amountA;
       let tokenBAmount = BigNumber.min(
@@ -564,9 +496,7 @@ export const useRepositionHandle = () => {
         })
         .then(result => {
           if (result.code === 0) {
-            updateConfirmModalData("success", "Reposition Complete", "", () =>
-              router.back(),
-            );
+            updateConfirmModalData("success", "Reposition Complete", "", () => router.back());
             openConfirmModal();
           }
           return result;
@@ -633,5 +563,6 @@ export const useRepositionHandle = () => {
     selectedPosition,
     isLoadingPosition,
     isErrorLiquidity,
+    refetchPositions,
   };
 };

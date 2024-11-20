@@ -6,7 +6,9 @@ import EarnMyPositionsUnconnected, { EarnMyPositionsUnconnectedProps } from "./E
 describe("EarnMyPositionsUnconnected Component", () => {
   it("EarnMyPositionsUnconnected render", () => {
     const args: EarnMyPositionsUnconnectedProps = {
-      connect: () => { return; }
+      connect: () => {
+        return;
+      },
     };
 
     render(
