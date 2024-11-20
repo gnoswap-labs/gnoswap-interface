@@ -73,15 +73,17 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const onClickToken = useCallback(
     (token: TokenModel) => {
       const current = [...recents, token].filter(item => !ORDER.includes(item.symbol));
-      const filterData = current.filter((_item, index) => {
-        const _value = JSON.stringify(_item);
-        return (
-          index ===
-          current.findIndex(obj => {
-            return JSON.stringify(obj) === _value;
-          })
-        );
-      });
+      const filterData = current
+        .filter(recentToken => tokens.some(token => token.path === recentToken.path))
+        .filter((_item, index) => {
+          const _value = JSON.stringify(_item);
+          return (
+            index ===
+            current.findIndex(obj => {
+              return JSON.stringify(obj) === _value;
+            })
+          );
+        });
       setRecentsData(JSON.stringify(filterData.slice(filterData.length <= 4 ? 0 : 1, filterData.length <= 4 ? 4 : 5)));
       changeToken(token);
     },
