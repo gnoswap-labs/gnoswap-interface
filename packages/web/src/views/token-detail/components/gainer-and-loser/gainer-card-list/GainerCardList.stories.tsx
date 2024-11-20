@@ -48,9 +48,7 @@ export default {
   component: GainerCardList,
 } as ComponentMeta<typeof GainerCardList>;
 
-const Template: ComponentStory<typeof GainerCardList> = args => (
-  <GainerCardList {...args} />
-);
+const Template: ComponentStory<typeof GainerCardList> = args => <GainerCardList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

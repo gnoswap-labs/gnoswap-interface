@@ -14,8 +14,7 @@ const dummyAssetList: Asset[] = [
     path: "gno.land/r/bar",
     decimals: 6,
     symbol: "BAR",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
     priceID: "gno.land/r/bar",
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
@@ -29,8 +28,7 @@ const dummyAssetList: Asset[] = [
     path: "gno.land/r/bar",
     decimals: 6,
     symbol: "BAR",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
     priceID: "gno.land/r/bar",
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
@@ -43,9 +41,7 @@ export default {
   component: AssetListTable,
 } as ComponentMeta<typeof AssetListTable>;
 
-const Template: ComponentStory<typeof AssetListTable> = args => (
-  <AssetListTable {...args} />
-);
+const Template: ComponentStory<typeof AssetListTable> = args => <AssetListTable {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

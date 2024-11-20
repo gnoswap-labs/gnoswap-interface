@@ -16,11 +16,7 @@ import { TokenModel } from "@models/token/token-model";
 
 import SelectPriceRangeCustom from "./select-price-range-custom/SelectPriceRangeCustom";
 
-import {
-  SelectPriceRangeItemWrapper,
-  SelectPriceRangeWrapper,
-  TooltipContentWrapper
-} from "./SelectPriceRange.styles";
+import { SelectPriceRangeItemWrapper, SelectPriceRangeWrapper, TooltipContentWrapper } from "./SelectPriceRange.styles";
 
 interface SelectPriceRangeProps {
   opened: boolean;
@@ -63,8 +59,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const selectPriceRangeRef =
-    useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
+  const selectPriceRangeRef = useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
   const selectedTokenPair = true;
 
   const changePriceRangeWithClear = useCallback(
@@ -83,10 +78,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
             <SelectPriceRangeItem
               key={index}
               selected={item.type === priceRange?.type}
-              tooltip={t(
-                PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type] ||
-                  "",
-              )}
+              tooltip={t(PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type] || "")}
               priceRange={{
                 ...item,
                 text: PriceRangeStr[selectPool.feeTier || "NONE"][item.type],
@@ -158,10 +150,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   }, [priceRange, changePriceRange]);
 
   return (
-    <SelectPriceRangeItemWrapper
-      className={selected ? "selected" : ""}
-      onClick={onClickItem}
-    >
+    <SelectPriceRangeItemWrapper className={selected ? "selected" : ""} onClick={onClickItem}>
       <strong className="item-title">{priceRangeDisplay}</strong>
       {priceRange.text && <p>{priceRange.text}</p>}
       {tooltip && (
@@ -169,9 +158,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
           <Tooltip
             placement="top"
             FloatingContent={
-              <TooltipContentWrapper
-                dangerouslySetInnerHTML={{ __html: tooltip }}
-              ></TooltipContentWrapper>
+              <TooltipContentWrapper dangerouslySetInnerHTML={{ __html: tooltip }}></TooltipContentWrapper>
             }
           >
             <IconInfo className="tooltip-icon" />
@@ -179,11 +166,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
         </div>
       )}
 
-      {aprStr ? (
-        <span className="apr">{aprStr}</span>
-      ) : (
-        <IconStrokeArrowRight className="arrow-icon" />
-      )}
+      {aprStr ? <span className="apr">{aprStr}</span> : <IconStrokeArrowRight className="arrow-icon" />}
     </SelectPriceRangeItemWrapper>
   );
 };

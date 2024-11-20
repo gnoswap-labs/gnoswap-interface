@@ -17,10 +17,7 @@ export interface PoolInfoLazyChartProps {
 
 const SKELETON_OPTION = POOL_INFO.list[POOL_INFO.list.length - 1];
 
-const PoolInfoLazyChart: React.FC<PoolInfoLazyChartProps> = ({
-  pool,
-  width,
-}) => {
+const PoolInfoLazyChart: React.FC<PoolInfoLazyChartProps> = ({ pool, width }) => {
   const { tokenA, tokenB, price, currentTick } = pool;
   const { themeKey } = useTheme();
 
@@ -34,8 +31,7 @@ const PoolInfoLazyChart: React.FC<PoolInfoLazyChartProps> = ({
       return true;
     }
     const isAllReserveZeroBin = bins.every(
-      item =>
-        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
     );
     return isAllReserveZeroBin;
   }, [bins]);

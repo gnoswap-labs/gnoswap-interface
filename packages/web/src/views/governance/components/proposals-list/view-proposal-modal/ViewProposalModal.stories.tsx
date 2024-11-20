@@ -11,9 +11,7 @@ export default {
   component: ViewProposalModal,
 } as ComponentMeta<typeof ViewProposalModal>;
 
-const Template: ComponentStory<typeof ViewProposalModal> = args => (
-  <ViewProposalModal {...args} />
-);
+const Template: ComponentStory<typeof ViewProposalModal> = args => <ViewProposalModal {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

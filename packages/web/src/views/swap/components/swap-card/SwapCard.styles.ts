@@ -50,9 +50,7 @@ export const SwapCardWrapper = styled.div`
   }
 `;
 
-
-export const SwapWarningSection = styled.div`
-`;
+export const SwapWarningSection = styled.div``;
 
 export const HighPriceWarningContentWrapper = styled.div`
   ${mixins.flexbox("row", "flex-start", "flex-start")};

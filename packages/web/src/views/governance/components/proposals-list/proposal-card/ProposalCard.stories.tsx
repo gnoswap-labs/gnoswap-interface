@@ -8,11 +8,9 @@ export default {
   component: ProposalCard,
 } as ComponentMeta<typeof ProposalCard>;
 
-const Template: ComponentStory<typeof ProposalCard> = (args) => (
-  <ProposalCard {...args} />
-);
+const Template: ComponentStory<typeof ProposalCard> = args => <ProposalCard {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  proposalDetail: GetProposalsResponseMock[0]
+  proposalDetail: GetProposalsResponseMock[0],
 };

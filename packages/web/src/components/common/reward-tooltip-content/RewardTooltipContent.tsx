@@ -6,10 +6,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { RewardType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-} from "@utils/new-number-utils";
+import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { RewardTooltipContentWrapper } from "./RewardTooltipContent.styles";
 
@@ -26,9 +23,7 @@ export interface RewardTooltipContentProps {
   rewardInfo: { [key in RewardType]: PositionRewardForTooltip[] } | null;
 }
 
-const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
-  rewardInfo,
-}) => {
+const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
@@ -141,9 +136,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
           {rewards && (
             <>
               <div className="list">
-                <span className="title">
-                  {t(`business:rewardType.${type.toLowerCase()}`)}
-                </span>
+                <span className="title">{t(`business:rewardType.${type.toLowerCase()}`)}</span>
                 <span className="title">{totalUSD}</span>
               </div>
               {rewards.map((reward, index) => (
@@ -156,9 +149,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({
                       width={20}
                       mobileWidth={20}
                     />
-                    <span className="position">
-                      {getGnotPath(reward.token).symbol}
-                    </span>
+                    <span className="position">{getGnotPath(reward.token).symbol}</span>
                   </div>
                   <span className="position">
                     {formatPoolPairAmount(reward.amount, {

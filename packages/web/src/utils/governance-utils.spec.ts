@@ -31,8 +31,6 @@ describe("make proposal's variable query", () => {
 
     const query = makeProposalVariablesQuery(variables);
 
-    expect(query).toBe(
-      "pkg1*EXE*func1*EXE*arg1,arg2*GOV*pkg2*EXE*func2*EXE*arg1,arg2,arg3",
-    );
+    expect(query).toBe("pkg1*EXE*func1*EXE*arg1,arg2*GOV*pkg2*EXE*func2*EXE*arg1,arg2,arg3");
   });
 });

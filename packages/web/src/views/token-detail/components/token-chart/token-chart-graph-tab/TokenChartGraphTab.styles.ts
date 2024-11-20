@@ -8,7 +8,7 @@ export const TokenChartGraphTabWrapper = styled.div`
   width: fit-content;
   height: auto;
   margin-bottom: 12px;
-  
+
   .chart-select-button {
     width: 60px;
     height: 37px;

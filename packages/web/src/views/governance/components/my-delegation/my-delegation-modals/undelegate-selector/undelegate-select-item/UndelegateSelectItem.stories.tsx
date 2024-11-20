@@ -16,9 +16,7 @@ const Template: React.FC<UndelegateSelectItemProps> = args => {
 export default {
   title: "governance/UndelegateModal/SelectItem",
   component: Template,
-
 } as Meta<typeof UndelegateSelectItem>;
-
 
 export const Default: StoryObj<UndelegateSelectItemProps> = {
   args: {

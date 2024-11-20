@@ -1,11 +1,5 @@
 import { useAtomValue } from "jotai";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 import useRouter from "@hooks/common/use-custom-router";
@@ -33,10 +27,7 @@ const WalletPositionCardListContainer: React.FC = () => {
   } = usePositionData({
     isClosed: false,
   });
-  const isLoadingPosition = useMemo(
-    () => connected && loadingPositions,
-    [connected, loadingPositions],
-  );
+  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
   const { pools, loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -82,9 +73,7 @@ const WalletPositionCardListContainer: React.FC = () => {
       if (currentScrollX >= maxScroll - 1) {
         setCurrentIndex(positions.length);
       } else {
-        setCurrentIndex(
-          Math.min(Math.floor(currentScrollX / 322) + 1, positions.length),
-        );
+        setCurrentIndex(Math.min(Math.floor(currentScrollX / 322) + 1, positions.length));
       }
     }
   };
@@ -113,9 +102,7 @@ const WalletPositionCardListContainer: React.FC = () => {
     return poolPositions;
   }, [pools, positionsData]);
 
-  const sortedData = positions.sort(
-    (x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue),
-  );
+  const sortedData = positions.sort((x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
   if (!isFetchedPosition || isSwitchNetwork) return null;
 
   return (

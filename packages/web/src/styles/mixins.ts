@@ -15,12 +15,7 @@ export type MixinsType = {
 };
 
 const mixins: MixinsType = {
-  flexbox: (
-    direction = "row",
-    align = "center",
-    justify = "center",
-    display = true,
-  ) => css`
+  flexbox: (direction = "row", align = "center", justify = "center", display = true) => css`
     display: ${display ? "flex" : "inline-flex"};
     flex-direction: ${direction};
     align-items: ${align};

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import PoolGraph, { type PoolGraphProps } from "./PoolGraph";
 import { Meta, StoryObj } from "@storybook/react";
 import POOLS from "@repositories/pool/mock/pools.json";

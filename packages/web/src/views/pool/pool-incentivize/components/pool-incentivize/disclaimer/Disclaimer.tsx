@@ -17,14 +17,14 @@ const Disclaimer: React.FC = () => {
           i18nKey={"IncentivizePool:disclaimer.description"}
           components={{
             docs_link: (
-                <IconButton
-                  onClick={() => {
-                    window.open(EXT_URL.DOCS.WARMUP, "_blank");
-                  }}
-                  style={{display: "inline-block"}}
-                >
-                  <IconOpenLink className="action-icon" />
-                </IconButton>
+              <IconButton
+                onClick={() => {
+                  window.open(EXT_URL.DOCS.WARMUP, "_blank");
+                }}
+                style={{ display: "inline-block" }}
+              >
+                <IconOpenLink className="action-icon" />
+              </IconButton>
             ),
           }}
         />

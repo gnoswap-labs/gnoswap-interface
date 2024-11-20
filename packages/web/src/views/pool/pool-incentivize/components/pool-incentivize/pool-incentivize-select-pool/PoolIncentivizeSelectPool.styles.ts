@@ -42,7 +42,7 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div<Props>`
       background: ${({ theme }) => theme.color.background11};
       cursor: pointer;
     }
-    pointer-events: ${({ isDisabled }) => !isDisabled ? "" : "none"};
+    pointer-events: ${({ isDisabled }) => (!isDisabled ? "" : "none")};
     color: var(--text-02-dark-gray-100-text-2, #e0e8f4);
     ${fonts.body9}
     justify-content: space-between;

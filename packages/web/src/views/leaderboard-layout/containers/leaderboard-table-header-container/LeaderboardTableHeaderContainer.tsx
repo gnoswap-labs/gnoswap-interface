@@ -6,10 +6,7 @@ import {
 } from "@constants/skeleton.constant";
 
 import LeaderboardTableHeader from "../../components/leaderboard-table-header/LeaderboardTableHeader";
-import {
-  TABLE_HEAD,
-  TABLE_HEAD_MOBILE,
-} from "../../leaderboard-list/LeaderboardList";
+import { TABLE_HEAD, TABLE_HEAD_MOBILE } from "../../leaderboard-list/LeaderboardList";
 
 export default function LeaderboardTableHeaderContainer() {
   const { isMobile, isTablet } = useWindowSize();
@@ -17,11 +14,7 @@ export default function LeaderboardTableHeaderContainer() {
   const heads = (isMobile && TABLE_HEAD_MOBILE) || TABLE_HEAD;
 
   const widths =
-    (isMobile && MOBILE_LEADERBOARD_TD_WIDTH) ||
-    (isTablet && TABLET_LEADERBOARD_TD_WIDTH) ||
-    LEADERBOARD_TD_WIDTH;
+    (isMobile && MOBILE_LEADERBOARD_TD_WIDTH) || (isTablet && TABLET_LEADERBOARD_TD_WIDTH) || LEADERBOARD_TD_WIDTH;
 
-  return (
-    <LeaderboardTableHeader heads={Object.values(heads)} headWidths={widths} />
-  );
+  return <LeaderboardTableHeader heads={Object.values(heads)} headWidths={widths} />;
 }

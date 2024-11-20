@@ -24,7 +24,6 @@ export const PoolAddConfirmPriceRangeInfoWrapper = styled.div`
     }
   }
 
-
   .price-range-wrapper {
     display: flex;
     flex-direction: row;
@@ -35,9 +34,7 @@ export const PoolAddConfirmPriceRangeInfoWrapper = styled.div`
   }
 `;
 
-export const PoolAddConfirmPriceRangeInfoSection = styled(
-  EarnAddConfirmContentSection,
-)`
+export const PoolAddConfirmPriceRangeInfoSection = styled(EarnAddConfirmContentSection)`
   gap: 16px;
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text10};

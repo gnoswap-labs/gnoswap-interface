@@ -12,15 +12,10 @@ export const getStatusText = (
   const start = new Date(startTime);
   const end = new Date(endTime);
 
-  const getTimeDifference = (
-    future: Date,
-    now: Date,
-  ): { days: number; hours: number; minutes: number } => {
+  const getTimeDifference = (future: Date, now: Date): { days: number; hours: number; minutes: number } => {
     const diffMs = future.getTime() - now.getTime();
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const hours = Math.floor(
-      (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-    );
+    const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
     return { days, hours, minutes };
   };
@@ -60,20 +55,12 @@ export const getStatusText = (
 
   switch (type) {
     case PROJECT_STATUS_TYPE.UPCOMING:
-      const {
-        days: upcomingDays,
-        hours: upcomingHours,
-        minutes: upcomingMinutes,
-      } = getTimeDifference(start, now);
+      const { days: upcomingDays, hours: upcomingHours, minutes: upcomingMinutes } = getTimeDifference(start, now);
       return format("Launchpad:common.status.upcoming", {
         time: formatTime(upcomingDays, upcomingHours, upcomingMinutes),
       });
     case PROJECT_STATUS_TYPE.ONGOING:
-      const {
-        days: ongoingDays,
-        hours: ongoingHours,
-        minutes: ongoingMinutes,
-      } = getTimeDifference(end, now);
+      const { days: ongoingDays, hours: ongoingHours, minutes: ongoingMinutes } = getTimeDifference(end, now);
       return format("Launchpad:common.status.ongoing", {
         time: formatTime(ongoingDays, ongoingHours, ongoingMinutes),
       });

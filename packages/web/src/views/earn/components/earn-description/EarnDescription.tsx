@@ -14,26 +14,16 @@ interface EarnDescriptionProps {
   };
 }
 
-const EarnDescription: React.FC<EarnDescriptionProps> = ({
-  highestAprInfo,
-}) => {
+const EarnDescription: React.FC<EarnDescriptionProps> = ({ highestAprInfo }) => {
   const { t } = useTranslation();
 
   return (
     <EarnDescriptionWrapper>
       <div className="card">
-        <div className="title-wrapper">
-          {t("Earn:earnInstruction.about.title")}
-        </div>
+        <div className="title-wrapper">{t("Earn:earnInstruction.about.title")}</div>
         <div className="content-wrapper">
-          <div className="description-wrapper">
-            {t("Earn:earnInstruction.about.subtitle")}
-          </div>
-          <a
-            className="link-wrapper"
-            href={EXT_URL.DOCS.USER_GUIDE.PROVIDING_LIQUIDITY}
-            target="_blank"
-          >
+          <div className="description-wrapper">{t("Earn:earnInstruction.about.subtitle")}</div>
+          <a className="link-wrapper" href={EXT_URL.DOCS.USER_GUIDE.PROVIDING_LIQUIDITY} target="_blank">
             <span>{t("Earn:earnInstruction.about.goto")}</span>
             <IconArrowRight />
           </a>
@@ -41,31 +31,20 @@ const EarnDescription: React.FC<EarnDescriptionProps> = ({
       </div>
 
       <div className="card">
-        <div className="title-wrapper">
-          {t("Earn:earnInstruction.stake.title")}
-        </div>
+        <div className="title-wrapper">{t("Earn:earnInstruction.stake.title")}</div>
         <div className="content-wrapper">
           <div className="description-wrapper">
             <Trans
               i18nKey="Earn:earnInstruction.stake.subtitle"
               components={{
-                docs: (
-                  <a
-                    className="docs"
-                    href={EXT_URL.DOCS.USER_GUIDE.STAKE_POSITIONS}
-                    target="_blank"
-                  />
-                ),
+                docs: <a className="docs" href={EXT_URL.DOCS.USER_GUIDE.STAKE_POSITIONS} target="_blank" />,
                 highlight: <span className="highlight" />,
               }}
               values={{
                 apr: `${BigNumber(highestAprInfo.apr).toFormat(0)}%`,
               }}
             />
-            <a
-              className="link-wrapper-no-flex"
-              href={`/earn/pool?poolPath=${highestAprInfo.path}#staking`}
-            >
+            <a className="link-wrapper-no-flex" href={`/earn/pool?poolPath=${highestAprInfo.path}#staking`}>
               {t("Earn:earnInstruction.stake.goto")}
               <IconArrowRight />
             </a>
@@ -74,18 +53,10 @@ const EarnDescription: React.FC<EarnDescriptionProps> = ({
       </div>
 
       <div className="card">
-        <div className="title-wrapper">
-          {t("Earn:earnInstruction.community.title")}
-        </div>
+        <div className="title-wrapper">{t("Earn:earnInstruction.community.title")}</div>
         <div className="content-wrapper">
-          <div className="description-wrapper">
-            {t("Earn:earnInstruction.community.subtitle")}
-          </div>
-          <a
-            className="link-wrapper"
-            href={EXT_URL.SOCIAL.DISCORD}
-            target="_blank"
-          >
+          <div className="description-wrapper">{t("Earn:earnInstruction.community.subtitle")}</div>
+          <a className="link-wrapper" href={EXT_URL.SOCIAL.DISCORD} target="_blank">
             {t("Earn:earnInstruction.community.goto")}
             <IconArrowRight />
           </a>

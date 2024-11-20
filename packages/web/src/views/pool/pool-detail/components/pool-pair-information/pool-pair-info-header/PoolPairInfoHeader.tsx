@@ -38,9 +38,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
 
   const rewardTokenLogos = useMemo(() => {
     return rewardTokens.reduce((acc, current) => {
-      const existToken = acc.some(
-        item => item.path === getGnotPath(current).path,
-      );
+      const existToken = acc.some(item => item.path === getGnotPath(current).path);
 
       if (!existToken) {
         acc.push({
@@ -73,9 +71,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
         {incentivezedStr && (
           <div className="badge">
             {incentivezedStr}
-            {rewardTokenLogos.length > 0 && (
-              <OverlapTokenLogo size={18} tokens={rewardTokenLogos} />
-            )}
+            {rewardTokenLogos.length > 0 && <OverlapTokenLogo size={18} tokens={rewardTokenLogos} />}
           </div>
         )}
       </div>

@@ -15,10 +15,7 @@ interface useTokenWarningModalProps {
   onClickClose: () => void;
 }
 
-export const useTokenWarningModal = ({
-  onClickConfirm,
-  onClickClose,
-}: useTokenWarningModalProps): Props => {
+export const useTokenWarningModal = ({ onClickConfirm, onClickClose }: useTokenWarningModalProps): Props => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const { warningStatus, addToken } = useUncommonToken();

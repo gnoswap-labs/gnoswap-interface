@@ -10,10 +10,7 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "../../../../common/hooks/use-positions-rewards";
 
-import {
-  GnotCollectSwitchWrapper,
-  RemoveLiquiditySelectResultWrapper,
-} from "./RemoveLiquiditySelectResult.styles";
+import { GnotCollectSwitchWrapper, RemoveLiquiditySelectResultWrapper } from "./RemoveLiquiditySelectResult.styles";
 
 interface RemoveLiquiditySelectResultProps {
   positions: PoolPositionModel[];
@@ -21,21 +18,18 @@ interface RemoveLiquiditySelectResultProps {
   setIsGetWGNOT: () => void;
 }
 
-const RemoveLiquiditySelectResult: React.FC<
-  RemoveLiquiditySelectResultProps
-> = ({ positions, isGetWGNOT, setIsGetWGNOT }) => {
+const RemoveLiquiditySelectResult: React.FC<RemoveLiquiditySelectResultProps> = ({
+  positions,
+  isGetWGNOT,
+  setIsGetWGNOT,
+}) => {
   const { t } = useTranslation();
 
-  const { pooledTokenInfos, unclaimedFees, totalLiquidityUSD } =
-    usePositionsRewards({ positions });
+  const { pooledTokenInfos, unclaimedFees, totalLiquidityUSD } = usePositionsRewards({ positions });
 
   const hasGnotToken = useMemo(() => {
-    const anyGnotPooledToken = pooledTokenInfos.some(
-      item => item.token.path === GNOT_TOKEN.path,
-    );
-    const anyGnotUnclaimedToken = unclaimedFees.some(
-      item => item.token.path === GNOT_TOKEN.path,
-    );
+    const anyGnotPooledToken = pooledTokenInfos.some(item => item.token.path === GNOT_TOKEN.path);
+    const anyGnotUnclaimedToken = unclaimedFees.some(item => item.token.path === GNOT_TOKEN.path);
 
     return anyGnotPooledToken || anyGnotUnclaimedToken;
   }, [pooledTokenInfos, unclaimedFees]);
@@ -55,8 +49,7 @@ const RemoveLiquiditySelectResult: React.FC<
                 mobileWidth={24}
               />
               <p>
-                {t("RemovePosition:overview.pooled")}{" "}
-                {pooledTokenInfo.token.symbol}
+                {t("RemovePosition:overview.pooled")} {pooledTokenInfo.token.symbol}
               </p>
               <strong>
                 {formatPoolPairAmount(pooledTokenInfo.amount, {

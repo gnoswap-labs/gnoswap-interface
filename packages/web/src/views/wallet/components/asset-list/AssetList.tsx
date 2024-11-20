@@ -3,14 +3,8 @@ import React from "react";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { DEVICE_TYPE } from "@styles/media";
 
-import AssetListHeader, {
-  ASSET_FILTER_TYPE,
-} from "./asset-list-header/AssetListHeader";
-import AssetListTable, {
-  AssetSortOption,
-  ASSET_HEAD,
-  type Asset,
-} from "./asset-list-table/AssetListTable";
+import AssetListHeader, { ASSET_FILTER_TYPE } from "./asset-list-header/AssetListHeader";
+import AssetListTable, { AssetSortOption, ASSET_HEAD, type Asset } from "./asset-list-table/AssetListTable";
 
 import { AssetListWrapper } from "./AssetList.styles";
 

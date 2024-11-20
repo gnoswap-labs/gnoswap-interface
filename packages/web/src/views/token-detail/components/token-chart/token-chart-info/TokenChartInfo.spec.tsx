@@ -14,10 +14,10 @@ describe("TokenChartInfo Component", () => {
       priceInfo: {
         amount: {
           value: 0,
-          denom: ""
+          denom: "",
         },
-        changedRate: 0
-      }
+        changedRate: 0,
+      },
     };
 
     render(

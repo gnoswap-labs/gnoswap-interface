@@ -17,9 +17,13 @@ interface LaunchpadParticipateContainerProps {
   refetch: () => Promise<void>;
 }
 
-const LaunchpadParticipateContainer: React.FC<
-  LaunchpadParticipateContainerProps
-> = ({ poolInfo, rewardInfo, status, isLoading, refetch }) => {
+const LaunchpadParticipateContainer: React.FC<LaunchpadParticipateContainerProps> = ({
+  poolInfo,
+  rewardInfo,
+  status,
+  isLoading,
+  refetch,
+}) => {
   const router = useCustomRouter();
   const projectPath = router.getProjectPath();
 

@@ -9,10 +9,7 @@ interface IncentivizedPoolsContainerProps {
   isOtherPosition: boolean;
 }
 
-const IncentivizedPoolsContainer: React.FC<IncentivizedPoolsContainerProps> = ({
-  cardList,
-  isOtherPosition,
-}) => {
+const IncentivizedPoolsContainer: React.FC<IncentivizedPoolsContainerProps> = ({ cardList, isOtherPosition }) => {
   const { pools } = usePoolData();
 
   const highestAprInfo: { apr: number; path: string } = useMemo(() => {
@@ -28,11 +25,7 @@ const IncentivizedPoolsContainer: React.FC<IncentivizedPoolsContainerProps> = ({
   }, [pools]);
 
   return (
-    <EarnIncentivizedPools
-      isOtherPosition={isOtherPosition}
-      cardList={cardList}
-      highestAprInfo={highestAprInfo}
-    />
+    <EarnIncentivizedPools isOtherPosition={isOtherPosition} cardList={cardList} highestAprInfo={highestAprInfo} />
   );
 };
 

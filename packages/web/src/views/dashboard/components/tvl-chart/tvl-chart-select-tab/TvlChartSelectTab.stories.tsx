@@ -11,9 +11,7 @@ export default {
   component: TvlChartSelectTab,
 } as ComponentMeta<typeof TvlChartSelectTab>;
 
-const Template: ComponentStory<typeof TvlChartSelectTab> = args => (
-  <TvlChartSelectTab {...args} />
-);
+const Template: ComponentStory<typeof TvlChartSelectTab> = args => <TvlChartSelectTab {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

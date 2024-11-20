@@ -72,41 +72,41 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
 
 export const tooltipWrapper = () => (theme: Theme) =>
   css`
-  width: 268px;
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
-  gap: 8px;
-  ${fonts.body12}
-  > div {
-    &:not(:first-of-type) {
-      padding: 4px 0;
-    }
-    width: 100%;
-    ${mixins.flexbox("row", "center", "space-between")};
-    .title {
-      color: ${theme.color.text04};
-    }
-    .value {
-      ${mixins.flexbox("row", "center", "center")};
-      gap: 8px;
-      color: ${theme.color.text02};
-      img {
-        width: 20px;
-        height: 20px;
+    width: 268px;
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    gap: 8px;
+    ${fonts.body12}
+    > div {
+      &:not(:first-of-type) {
+        padding: 4px 0;
+      }
+      width: 100%;
+      ${mixins.flexbox("row", "center", "space-between")};
+      .title {
+        color: ${theme.color.text04};
+      }
+      .value {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 8px;
+        color: ${theme.color.text02};
+        img {
+          width: 20px;
+          height: 20px;
+        }
       }
     }
-  }
-  .divider {
-    width: 100%;
-    height: 1px;
-    border-top: 1px solid ${theme.color.border01};
-    padding: 0 !important;
-  }
-  .unstake-description {
-    color: ${theme.color.text04};
-    padding: 0 !important;
-    ${fonts.p4}
-  }
-`;
+    .divider {
+      width: 100%;
+      height: 1px;
+      border-top: 1px solid ${theme.color.border01};
+      padding: 0 !important;
+    }
+    .unstake-description {
+      color: ${theme.color.text04};
+      padding: 0 !important;
+      ${fonts.p4}
+    }
+  `;
 
 export const TokenValueWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};

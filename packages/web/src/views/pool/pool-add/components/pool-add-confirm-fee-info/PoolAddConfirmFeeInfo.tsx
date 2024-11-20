@@ -18,11 +18,7 @@ export interface EarnAddConfirmFeeInfoProps {
   errorMsg?: string;
 }
 
-const PoolAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
-  token,
-  fee,
-  errorMsg,
-}) => {
+const PoolAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({ token, fee, errorMsg }) => {
   const { t } = useTranslation();
 
   return (
@@ -49,9 +45,7 @@ const PoolAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
           <span>{fee}</span>
         </div>
       </PoolAddConfirmFeeInfoSection>
-      {errorMsg && (
-        <CreationFeeErrorMsgWrapper>{errorMsg}</CreationFeeErrorMsgWrapper>
-      )}
+      {errorMsg && <CreationFeeErrorMsgWrapper>{errorMsg}</CreationFeeErrorMsgWrapper>}
     </PoolAddConfirmFeeInfoWrapper>
   );
 };

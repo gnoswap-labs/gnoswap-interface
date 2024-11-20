@@ -14,9 +14,7 @@ export const useGetPoolStakingListByPoolPath = (
   return useQuery<PoolStakingModel[], Error>({
     queryKey: [QUERY_KEY.poolStakingList, poolPath],
     queryFn: async () => {
-      const data = await poolRepository.getPoolStakingList(
-        encodeURIComponent(poolPath),
-      );
+      const data = await poolRepository.getPoolStakingList(encodeURIComponent(poolPath));
 
       return data;
     },

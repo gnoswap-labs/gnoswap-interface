@@ -24,9 +24,7 @@ export class PoolMapper {
       feeUsd24h,
       liquidity,
     } = poolModel;
-    const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
-      info => info.fee.toString() === fee,
-    );
+    const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(info => info.fee.toString() === fee);
 
     return {
       poolId: id,
@@ -46,10 +44,7 @@ export class PoolMapper {
   }
 
   public static toPoolSelectItemInfo(pool: PoolModel): PoolSelectItemInfo {
-    const feeRate =
-      Object.values(SwapFeeTierInfoMap).find(
-        info => info.fee.toString() === pool.fee,
-      )?.rateStr || "-";
+    const feeRate = Object.values(SwapFeeTierInfoMap).find(info => info.fee.toString() === pool.fee)?.rateStr || "-";
 
     return {
       poolId: pool.id,
@@ -61,9 +56,7 @@ export class PoolMapper {
     };
   }
 
-  public static toCardInfo(
-    poolModel: IncentivizePoolModel,
-  ): IncentivizePoolCardInfo {
+  public static toCardInfo(poolModel: IncentivizePoolModel): IncentivizePoolCardInfo {
     const {
       id,
       currentTick,
@@ -80,9 +73,7 @@ export class PoolMapper {
       feeUsd24h,
       bins40,
     } = poolModel;
-    const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
-      info => `${info.fee}` === fee.toString(),
-    );
+    const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(info => `${info.fee}` === fee.toString());
 
     return {
       poolId: id,

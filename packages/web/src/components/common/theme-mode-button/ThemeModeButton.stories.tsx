@@ -8,9 +8,7 @@ export default {
   component: ThemeModeButton,
 } as ComponentMeta<typeof ThemeModeButton>;
 
-const Template: ComponentStory<typeof ThemeModeButton> = args => (
-  <ThemeModeButton {...args} />
-);
+const Template: ComponentStory<typeof ThemeModeButton> = args => <ThemeModeButton {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {};

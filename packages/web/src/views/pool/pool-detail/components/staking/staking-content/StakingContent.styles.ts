@@ -78,11 +78,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       ${media.mobile} {
         ${fonts.body9}
       }
-      background: linear-gradient(
-        308deg,
-        #536cd7 0%,
-        ${({ theme }) => theme.color.text25} 100%
-      );
+      background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;

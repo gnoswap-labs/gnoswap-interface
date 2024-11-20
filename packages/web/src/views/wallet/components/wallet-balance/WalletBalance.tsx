@@ -4,9 +4,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 
-import WalletBalanceDetail, {
-  BalanceDetailInfo,
-} from "./wallet-balance-detail/WalletBalanceDetail";
+import WalletBalanceDetail, { BalanceDetailInfo } from "./wallet-balance-detail/WalletBalanceDetail";
 import { BalanceSummaryInfo } from "./wallet-balance-summary/wallet-balance-summary-info/WalletBalanceSummaryInfo";
 import WalletBalanceSummary from "./wallet-balance-summary/WalletBalanceSummary";
 

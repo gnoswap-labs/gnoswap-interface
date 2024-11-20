@@ -7,9 +7,7 @@ import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 10_000;
 
-export const useGetChainInfo = (
-  options?: UseQueryOptions<IChainResponse, Error>,
-) => {
+export const useGetChainInfo = (options?: UseQueryOptions<IChainResponse, Error>) => {
   const { tokenRepository } = useGnoswapContext();
 
   return useQuery<IChainResponse, Error>({

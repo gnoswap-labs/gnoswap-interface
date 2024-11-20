@@ -19,10 +19,7 @@ import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-ti
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
-type LaunchpadPoolModelWithoutClaimableTime = Omit<
-  LaunchpadPoolModel,
-  "claimableTime"
->;
+type LaunchpadPoolModelWithoutClaimableTime = Omit<LaunchpadPoolModel, "claimableTime">;
 
 interface ExtendedPoolInfo extends LaunchpadPoolModelWithoutClaimableTime {
   claimableThreshold: number;
@@ -50,10 +47,7 @@ const LaunchpadDepositModal = ({
 }: LaunchpadDepositModalProps) => {
   const { t } = useTranslation();
 
-  const Modal = React.useMemo(
-    () => withLocalModal(LaunchpadDepositModalWrapper, setIsOpen),
-    [setIsOpen],
-  );
+  const Modal = React.useMemo(() => withLocalModal(LaunchpadDepositModalWrapper, setIsOpen), [setIsOpen]);
 
   const now = new Date();
   const claimableTime = poolInfo?.claimableThreshold
@@ -70,14 +64,7 @@ const LaunchpadDepositModal = ({
     }
 
     onSubmit(`${projectPath}:${poolDuration}`, depositAmount);
-  }, [
-    projectPath,
-    isWalletConnected,
-    depositAmount,
-    setIsOpen,
-    poolDuration,
-    onSubmit,
-  ]);
+  }, [projectPath, isWalletConnected, depositAmount, setIsOpen, poolDuration, onSubmit]);
 
   return (
     <Modal>
@@ -90,57 +77,32 @@ const LaunchpadDepositModal = ({
         </div>
         <div className="content">
           <div className="data">
-            <div className="data-header">
-              {t("Launchpad:modal.deposit.deposit.title")}
-            </div>
+            <div className="data-header">{t("Launchpad:modal.deposit.deposit.title")}</div>
             <div className="data-box">
               <div className="data-row">
-                <div className="key">
-                  {t("Launchpad:modal.deposit.deposit.col.depositAmount")}
-                </div>
+                <div className="key">{t("Launchpad:modal.deposit.deposit.col.depositAmount")}</div>
                 <div className="value">
-                  <Image
-                    src="/gns.svg"
-                    width={24}
-                    height={24}
-                    alt="GNS Token symbol"
-                  />
+                  <Image src="/gns.svg" width={24} height={24} alt="GNS Token symbol" />
                   {depositAmount} {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
                 </div>
               </div>
               <div className="data-row">
-                <div className="key">
-                  {t("Launchpad:modal.deposit.deposit.col.poolTier")}
-                </div>
+                <div className="key">{t("Launchpad:modal.deposit.deposit.col.poolTier")}</div>
                 <div className="value">
-                  {poolInfo?.poolTier ? (
-                    <LaunchpadPoolTierChip poolTier={poolInfo.poolTier} />
-                  ) : (
-                    "-"
-                  )}
+                  {poolInfo?.poolTier ? <LaunchpadPoolTierChip poolTier={poolInfo.poolTier} /> : "-"}
                 </div>
               </div>
               <div className="data-row">
-                <div className="key">
-                  {t("Launchpad:modal.deposit.deposit.col.endDate")}
-                </div>
-                <div className="value">
-                  {poolInfo?.endTime
-                    ? getDateUtcToLocal(poolInfo.endTime).value
-                    : ""}
-                </div>
+                <div className="key">{t("Launchpad:modal.deposit.deposit.col.endDate")}</div>
+                <div className="value">{poolInfo?.endTime ? getDateUtcToLocal(poolInfo.endTime).value : ""}</div>
               </div>
             </div>
           </div>
           <div className="data">
-            <div className="data-header">
-              {t("Launchpad:modal.deposit.reward.title")}
-            </div>
+            <div className="data-header">{t("Launchpad:modal.deposit.reward.title")}</div>
             <div className="data-box">
               <div className="data-row">
-                <div className="key">
-                  {t("Launchpad:modal.deposit.reward.col.rewardsToken")}
-                </div>
+                <div className="key">{t("Launchpad:modal.deposit.reward.col.rewardsToken")}</div>
                 <div className="value">
                   <MissingLogo
                     symbol={rewardInfo.rewardTokenSymbol}
@@ -152,26 +114,14 @@ const LaunchpadDepositModal = ({
                 </div>
               </div>
               <div className="data-row">
-                <div className="key">
-                  {t("Launchpad:modal.deposit.reward.col.network")}
-                </div>
+                <div className="key">{t("Launchpad:modal.deposit.reward.col.network")}</div>
                 <div className="value">
-                  <Image
-                    src={GNOT_TOKEN.logoURI}
-                    width={24}
-                    height={24}
-                    alt="Gno.land Token symbol"
-                  />{" "}
-                  Gnoland (GRC20)
+                  <Image src={GNOT_TOKEN.logoURI} width={24} height={24} alt="Gno.land Token symbol" /> Gnoland (GRC20)
                 </div>
               </div>
               <div className="data-row">
-                <div className="key">
-                  {t("Launchpad:modal.deposit.reward.col.rewardsClaimableOn")}
-                </div>
-                <div className="value">
-                  {claimableTime ? getDateUtcToLocal(claimableTime).value : "-"}
-                </div>
+                <div className="key">{t("Launchpad:modal.deposit.reward.col.rewardsClaimableOn")}</div>
+                <div className="value">{claimableTime ? getDateUtcToLocal(claimableTime).value : "-"}</div>
               </div>
             </div>
           </div>
@@ -181,21 +131,14 @@ const LaunchpadDepositModal = ({
               <IconWarning /> {t("Launchpad:modal.deposit.note.title")}
             </div>
             <ul className="contents">
+              <li className="list">{t("Launchpad:modal.deposit.note.list1")}</li>
               <li className="list">
-                {t("Launchpad:modal.deposit.note.list1")}
-              </li>
-              <li className="list">
-                <Trans
-                  ns="Launchpad"
-                  components={{ br: <br /> }}
-                  i18nKey={"modal.deposit.note.list2"}
-                />
+                <Trans ns="Launchpad" components={{ br: <br /> }} i18nKey={"modal.deposit.note.list2"} />
               </li>
             </ul>
             <Link href="https://docs.gnoswap.io/" target="_blank">
               <div className="learn-more">
-                {t("Launchpad:modal.deposit.note.learnMore")}{" "}
-                <IconOpenLink size="16" fill="#ff9f0a" />
+                {t("Launchpad:modal.deposit.note.learnMore")} <IconOpenLink size="16" fill="#ff9f0a" />
               </div>
             </Link>
           </div>

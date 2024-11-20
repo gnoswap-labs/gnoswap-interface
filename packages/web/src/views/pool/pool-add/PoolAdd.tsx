@@ -22,7 +22,7 @@ interface PoolAddProps {
   useDedicatedPool: boolean;
 }
 
-const PoolAdd: React.FC<PoolAddProps> = ({useDedicatedPool}) => {
+const PoolAdd: React.FC<PoolAddProps> = ({ useDedicatedPool }) => {
   const { t } = useTranslation();
   const { width } = useWindowSize();
   const router = useCustomRouter();
@@ -40,9 +40,7 @@ const PoolAdd: React.FC<PoolAddProps> = ({useDedicatedPool}) => {
       base.push({
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${
-                getGnotPath(data?.tokenB).symbol
-              } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000}%)`
             : "...",
         path: makeRouteUrl(PAGE_PATH.POOL, {
           [QUERY_PARAMETER.POOL_PATH]: data?.poolPath,
@@ -53,16 +51,7 @@ const PoolAdd: React.FC<PoolAddProps> = ({useDedicatedPool}) => {
     base.push({ title: t("business:pageHeader.addPosi"), path: "" });
 
     return base;
-  }, [
-    t,
-    useDedicatedPool,
-    width,
-    getGnotPath,
-    data?.tokenA,
-    data?.tokenB,
-    data?.fee,
-    data?.poolPath,
-  ]);
+  }, [t, useDedicatedPool, width, getGnotPath, data?.tokenA, data?.tokenB, data?.fee, data?.poolPath]);
 
   return (
     <PoolAddLayout
@@ -73,13 +62,7 @@ const PoolAdd: React.FC<PoolAddProps> = ({useDedicatedPool}) => {
           isLoading={useDedicatedPool ? isLoadingCommon || isLoading : false}
         />
       }
-      addLiquidity={
-        useDedicatedPool ? (
-          <PoolAddLiquidityContainer />
-        ) : (
-          <EarnAddLiquidityContainer />
-        )
-      }
+      addLiquidity={useDedicatedPool ? <PoolAddLiquidityContainer /> : <EarnAddLiquidityContainer />}
       additionalInfo={<AdditionalInfoContainer />}
       footer={<Footer />}
     />

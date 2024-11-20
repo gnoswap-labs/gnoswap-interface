@@ -8,9 +8,7 @@ export const TransactionGroupsLabel = {
   GREATER_1_MONTH: "GREATER_1_MONTH",
 } as const;
 
-export type TransactionGroupsLabelType = ValuesType<
-  typeof TransactionGroupsLabel
->;
+export type TransactionGroupsLabelType = ValuesType<typeof TransactionGroupsLabel>;
 
 export interface TransactionGroupsType {
   type: TransactionGroupsLabelType;

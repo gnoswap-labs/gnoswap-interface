@@ -16,13 +16,7 @@ interface TokenDescriptionLinksProps {
   isLoading: boolean;
 }
 
-const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
-  links,
-  copied,
-  copyClick,
-  path,
-  isLoading,
-}) => {
+const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({ links, copied, copyClick, path, isLoading }) => {
   const { t } = useTranslation();
 
   const onClickLink = (link: string) => {

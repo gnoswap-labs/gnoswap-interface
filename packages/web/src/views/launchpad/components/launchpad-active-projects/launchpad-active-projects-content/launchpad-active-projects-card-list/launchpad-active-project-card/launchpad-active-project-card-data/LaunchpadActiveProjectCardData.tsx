@@ -13,15 +13,11 @@ interface LaunchpadActiveProjectCardDataProps {
   pools: LaunchpadActiveProjectPool[];
 }
 
-const LaunchpadActiveProjectCardData: React.FC<
-  LaunchpadActiveProjectCardDataProps
-> = ({ pools }) => {
+const LaunchpadActiveProjectCardData: React.FC<LaunchpadActiveProjectCardDataProps> = ({ pools }) => {
   const { t } = useTranslation();
 
   const sortedPools = React.useMemo(() => {
-    return [...pools].sort(
-      (a, b) => getTierNumber(b.poolTier) - getTierNumber(a.poolTier),
-    );
+    return [...pools].sort((a, b) => getTierNumber(b.poolTier) - getTierNumber(a.poolTier));
   }, [pools]);
 
   return (
@@ -39,9 +35,7 @@ const LaunchpadActiveProjectCardData: React.FC<
             );
             return (
               <div className="data-box" key={poolDetail.id}>
-                <span className="data-title">
-                  {t("Launchpad:poolList.title", { idx: idx + 1 })}
-                </span>
+                <span className="data-title">{t("Launchpad:poolList.title", { idx: idx + 1 })}</span>
                 <div className="flex-box">
                   <span className="data">{aprStr}</span>
                   <LaunchpadPoolTierChip poolTier={poolDetail.poolTier} />

@@ -11,9 +11,7 @@ export default {
   component: VolumeChartSelectTab,
 } as ComponentMeta<typeof VolumeChartSelectTab>;
 
-const Template: ComponentStory<typeof VolumeChartSelectTab> = args => (
-  <VolumeChartSelectTab {...args} />
-);
+const Template: ComponentStory<typeof VolumeChartSelectTab> = args => <VolumeChartSelectTab {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -104,10 +104,8 @@ export const ProposalContentWrapper = styled.div`
   padding: 24px;
   gap: 12px;
   border-radius: 8px;
-  background-color: ${({ theme }) =>
-    theme.themeKey === "dark" && "rgba(10, 14, 23, 0.7)"};
-  ${({ theme }) =>
-    mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
+  background-color: ${({ theme }) => theme.themeKey === "dark" && "rgba(10, 14, 23, 0.7)"};
+  ${({ theme }) => mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
 
   .content {
     flex: 1;
@@ -171,8 +169,7 @@ export const ModalQuorum = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   padding: 16px;
   border-radius: 8px;
-  background-color: ${({ theme }) =>
-    theme.themeKey === "dark" && "rgba(10, 14, 23, 0.7)"};
+  background-color: ${({ theme }) => theme.themeKey === "dark" && "rgba(10, 14, 23, 0.7)"};
   ${media.mobile} {
     padding: 12px;
     gap: 10px;
@@ -201,10 +198,7 @@ export const ModalQuorum = styled.div`
         color: ${({ theme }) => theme.color.text10};
       }
       .passed {
-        background: var(
-          --Boost,
-          linear-gradient(270deg, #536cd7 -2.39%, #233dbd 103.33%)
-        );
+        background: var(--Boost, linear-gradient(270deg, #536cd7 -2.39%, #233dbd 103.33%));
         color: transparent;
         background-clip: text;
         -webkit-background-clip: text;

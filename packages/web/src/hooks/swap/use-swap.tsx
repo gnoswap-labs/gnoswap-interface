@@ -16,20 +16,14 @@ interface UseSwapProps {
   swapFee?: number;
 }
 
-export const useSwap = ({
-  tokenA,
-  tokenB,
-  direction,
-  slippage,
-  swapFee = 15,
-}: UseSwapProps) => {
+export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
-  const exactOutPadding = 1 / (1 - swapFee/ 10000);
+  const exactOutPadding = 1 / (1 - swapFee / 10000);
 
   const isSameToken = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -53,51 +47,32 @@ export const useSwap = ({
       inputToken: tokenA,
       outputToken: tokenB,
       exactType: direction,
-      tokenAmount:
-        direction === "EXACT_IN"
-          ? swapAmount
-          : swapAmount
-          ? swapAmount * exactOutPadding
-          : swapAmount,
+      tokenAmount: direction === "EXACT_IN" ? swapAmount : swapAmount ? swapAmount * exactOutPadding : swapAmount,
     },
     {
-      enabled:
-        !!swapAmount &&
-        swapAmount > 0 &&
-        !!tokenA &&
-        !!tokenA.path &&
-        !!tokenB &&
-        !!tokenB.path,
+      enabled: !!swapAmount && swapAmount > 0 && !!tokenA && !!tokenA.path && !!tokenB && !!tokenB.path,
     },
   );
 
-  const swapState: "NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS" =
-    useMemo(() => {
-      if (!selectedTokenPair || !swapAmount) {
-        return "NONE";
-      }
+  const swapState: "NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS" = useMemo(() => {
+    if (!selectedTokenPair || !swapAmount) {
+      return "NONE";
+    }
 
-      if (isSameToken) {
-        return "NONE";
-      }
+    if (isSameToken) {
+      return "NONE";
+    }
 
-      if (isEstimatedSwapLoading) {
-        return "LOADING";
-      }
+    if (isEstimatedSwapLoading) {
+      return "LOADING";
+    }
 
-      if (!!error || !estimatedSwapResult?.amount) {
-        return "NO_LIQUIDITY";
-      }
+    if (!!error || !estimatedSwapResult?.amount) {
+      return "NO_LIQUIDITY";
+    }
 
-      return "SUCCESS";
-    }, [
-      swapAmount,
-      error,
-      estimatedSwapResult?.amount,
-      isEstimatedSwapLoading,
-      isSameToken,
-      selectedTokenPair,
-    ]);
+    return "SUCCESS";
+  }, [swapAmount, error, estimatedSwapResult?.amount, isEstimatedSwapLoading, isSameToken, selectedTokenPair]);
 
   const estimatedRoutes: EstimatedRoute[] = useMemo(() => {
     if (swapState !== "SUCCESS" || !estimatedSwapResult || !swapAmount) {
@@ -195,23 +170,11 @@ export const useSwap = ({
         outputToken: tokenB,
         estimatedRoutes,
         exactType: direction,
-        tokenAmount:
-          direction === "EXACT_IN"
-            ? Number(tokenAmount)
-            : Number(tokenAmount) * exactOutPadding,
+        tokenAmount: direction === "EXACT_IN" ? Number(tokenAmount) : Number(tokenAmount) * exactOutPadding,
         tokenAmountLimit,
       });
     },
-    [
-      account,
-      direction,
-      selectedTokenPair,
-      swapRouterRepository,
-      tokenA,
-      tokenAmountLimit,
-      tokenB,
-      exactOutPadding,
-    ],
+    [account, direction, selectedTokenPair, swapRouterRepository, tokenA, tokenAmountLimit, tokenB, exactOutPadding],
   );
 
   return {

@@ -11,9 +11,7 @@ export default {
   component: PoolIncentivizeDetails,
 } as ComponentMeta<typeof PoolIncentivizeDetails>;
 
-const Template: ComponentStory<typeof PoolIncentivizeDetails> = args => (
-  <PoolIncentivizeDetails {...args} />
-);
+const Template: ComponentStory<typeof PoolIncentivizeDetails> = args => <PoolIncentivizeDetails {...args} />;
 
 const poolDetail = PoolDetailData.pool;
 

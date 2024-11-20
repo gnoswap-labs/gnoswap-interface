@@ -4,11 +4,7 @@ import { useRouter } from "next/router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import {
-  useGetGovernanceSummary,
-  useGetMyDelegation,
-  useGetProposals,
-} from "@query/governance";
+import { useGetGovernanceSummary, useGetMyDelegation, useGetProposals } from "@query/governance";
 
 import { useCreateProposalModal } from "@views/governance/hooks/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
@@ -34,10 +30,7 @@ const ProposalListContainer: React.FC = () => {
     cancelProposal,
   } = useGovernanceTx();
 
-  const {
-    data: governanceSummaryInfo,
-    isFetched: isFetchedGovernanceSummaryInfo,
-  } = useGetGovernanceSummary();
+  const { data: governanceSummaryInfo, isFetched: isFetchedGovernanceSummaryInfo } = useGetGovernanceSummary();
 
   const { data: myDelegationInfo } = useGetMyDelegation({
     address: account?.address || "",
@@ -104,9 +97,7 @@ const ProposalListContainer: React.FC = () => {
       isShowActiveOnly={isShowActiveOnly}
       toggleIsShowActiveOnly={toggleIsShowActiveOnly}
       myVotingWeight={myDelegationInfo?.votingWeight || 0}
-      proposalCreationThreshold={
-        governanceSummaryInfo?.creationThreshold || 1000
-      }
+      proposalCreationThreshold={governanceSummaryInfo?.creationThreshold || 1000}
       proposalList={proposalsInfo?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}
       selectedProposalId={selectedProposalId}

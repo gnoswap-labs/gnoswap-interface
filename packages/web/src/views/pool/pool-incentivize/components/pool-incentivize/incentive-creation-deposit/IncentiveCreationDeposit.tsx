@@ -38,12 +38,7 @@ const IncentiveCreationDeposit: React.FC = () => {
         </Tooltip>
       </h5>
       <div className="deposit">
-        <MissingLogo
-          symbol={gnsInfo?.symbol || ""}
-          url={gnsInfo?.logoURI}
-          width={24}
-          mobileWidth={24}
-        />
+        <MissingLogo symbol={gnsInfo?.symbol || ""} url={gnsInfo?.logoURI} width={24} mobileWidth={24} />
         {GNS_DEPOSIT_AMOUNT.toLocaleString("en")}
       </div>
     </IncentiveCreationDepositWrapper>

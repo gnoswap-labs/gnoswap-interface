@@ -18,13 +18,7 @@ function createData(num: number) {
 
 export const Default: StoryObj<TvlChartGraphProps> = {
   args: {
-    datas: [
-      createData(1),
-      createData(2),
-      createData(3),
-      createData(4),
-      createData(5),
-    ],
+    datas: [createData(1), createData(2), createData(3), createData(4), createData(5)],
     yAxisLabels: ["1", "2", "3", "4", "5"],
   },
 };

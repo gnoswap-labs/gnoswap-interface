@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  LayoutWrapper,
-  ListContainer,
-  ListSection,
-  Section,
-  Title,
-  TitleWrapper,
-} from "./LeaderboardLayout.styles";
+import { LayoutWrapper, ListContainer, ListSection, Section, Title, TitleWrapper } from "./LeaderboardLayout.styles";
 
 const LeaderboardLayout = ({
   header,

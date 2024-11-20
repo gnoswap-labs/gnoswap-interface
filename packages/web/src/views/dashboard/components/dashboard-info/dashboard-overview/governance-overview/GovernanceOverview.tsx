@@ -42,10 +42,7 @@ const LoadingText = () => {
   );
 };
 
-const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
-  governanceOverviewInfo,
-  loading,
-}) => {
+const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({ governanceOverviewInfo, loading }) => {
   const { t } = useTranslation();
 
   const overViewInfo = useMemo(() => {
@@ -67,36 +64,22 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
         <div className="total-issued">
           <div className="label-title">
             <div>{t("Dashboard:govOver.totalxGNS.label")}</div>
-            <DashboardLabel
-              tooltip={t("Dashboard:govOver.totalxGNS.tooltip")}
-            />
+            <DashboardLabel tooltip={t("Dashboard:govOver.totalxGNS.tooltip")} />
           </div>
-          {!loading ? (
-            <div className="value">{overViewInfo.totalDelegated}</div>
-          ) : (
-            <LoadingText />
-          )}
+          {!loading ? <div className="value">{overViewInfo.totalDelegated}</div> : <LoadingText />}
         </div>
         <div className="holders">
           <div className="label-title">
             <div>{t("Dashboard:govOver.holders.label")}</div>
             <DashboardLabel tooltip={t("Dashboard:govOver.holders.tooltip")} />
           </div>
-          {!loading ? (
-            <div className="value">{overViewInfo.holders}</div>
-          ) : (
-            <LoadingText />
-          )}
+          {!loading ? <div className="value">{overViewInfo.holders}</div> : <LoadingText />}
         </div>
         <div className="passed-proposals">
           <div className="label-title">
             <div>{t("Dashboard:govOver.passedProp.label")}</div>
           </div>
-          {!loading ? (
-            <div className="value">{overViewInfo.passedCount}</div>
-          ) : (
-            <LoadingText />
-          )}
+          {!loading ? <div className="value">{overViewInfo.passedCount}</div> : <LoadingText />}
         </div>
         <div className="active-proposals">
           <div className="label-title">
@@ -130,11 +113,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
             <div>{t("Dashboard:govOver.comPool.label")}</div>
             <DashboardLabel tooltip={t("Dashboard:govOver.comPool.tooltip")} />
           </div>
-          {!loading ? (
-            <div className="value">{overViewInfo.communityPool}</div>
-          ) : (
-            <LoadingText />
-          )}
+          {!loading ? <div className="value">{overViewInfo.communityPool}</div> : <LoadingText />}
         </div>
       </GovernanceWrapper>
     </GovernanceOverviewWrapper>

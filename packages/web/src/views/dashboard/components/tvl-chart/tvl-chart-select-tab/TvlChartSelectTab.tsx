@@ -8,19 +8,10 @@ import { TvlChartSelectTabWrapper } from "./TvlChartSelectTab.styles";
 
 interface TvlChartSelectTabProps {
   tvlChartType: CHART_TYPE;
-  changeTvlChartType: ({
-    display,
-    key,
-  }: {
-    display: string;
-    key: string;
-  }) => void;
+  changeTvlChartType: ({ display, key }: { display: string; key: string }) => void;
 }
 
-const TvlChartSelectTab: React.FC<TvlChartSelectTabProps> = ({
-  tvlChartType,
-  changeTvlChartType,
-}) => {
+const TvlChartSelectTab: React.FC<TvlChartSelectTabProps> = ({ tvlChartType, changeTvlChartType }) => {
   const { t } = useTranslation();
 
   return (

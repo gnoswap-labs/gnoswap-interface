@@ -8,7 +8,6 @@ interface SkeletonStyleProps {
   tdWidth?: CSSProperties["width"];
 }
 
-
 export const HighestAprsCardListWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "center")}
   width: 100%;
@@ -18,7 +17,7 @@ export const HighestAprsCardListWrapper = styled.div`
   border-radius: 10px;
   padding: 15px 0px 11px;
   gap: 12px;
-  
+
   &.loading {
     padding: 15px 0px 15px;
     gap: 8px;

@@ -34,9 +34,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
 
   const { connected, connectAdenaClient, isSwitchNetwork } = useWallet();
 
-  const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(
-    null,
-  );
+  const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(null);
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
   const [token, setToken] = useState<TokenModel | null>(null);
   const tokenAmountInput = useTokenAmountInput(token);
@@ -159,10 +157,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
         disabled: true,
       };
     }
-    if (
-      Number(tokenAmountInput.amount) >
-      Number(tokenAmountInput.balance.replace(/,/g, ""))
-    ) {
+    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance.replace(/,/g, ""))) {
       return {
         text: t("common:btn.insuffiBal"),
         disabled: true,
@@ -170,10 +165,8 @@ const PoolAddIncentivizeContainer: React.FC = () => {
     }
     if (
       (token?.path === GNS_TOKEN_PATH &&
-        Number(tokenAmountInput.amount) + 1000 >
-          Number(tokenAmountInput.balance.replace(/,/g, ""))) ||
-      (token?.path !== GNS_TOKEN_PATH &&
-        GNS_DEPOSIT_AMOUNT * 1_000_000 > (balances[GNS_TOKEN_PATH] || 0))
+        Number(tokenAmountInput.amount) + 1000 > Number(tokenAmountInput.balance.replace(/,/g, ""))) ||
+      (token?.path !== GNS_TOKEN_PATH && GNS_DEPOSIT_AMOUNT * 1_000_000 > (balances[GNS_TOKEN_PATH] || 0))
     )
       return {
         text: t("IncentivizePool:submitBtn.insuffiDep"),

@@ -8,9 +8,7 @@ export default {
   component: SelectPriceRange,
 } as ComponentMeta<typeof SelectPriceRange>;
 
-const Template: ComponentStory<typeof SelectPriceRange> = args => (
-  <SelectPriceRange {...args} />
-);
+const Template: ComponentStory<typeof SelectPriceRange> = args => <SelectPriceRange {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

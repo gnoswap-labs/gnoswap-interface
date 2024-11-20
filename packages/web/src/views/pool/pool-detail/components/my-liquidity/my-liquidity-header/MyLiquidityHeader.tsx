@@ -57,10 +57,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
     if (address) window.open(getAccountUrl(address), "_blank");
   }, [address, getAccountUrl]);
 
-  const notConnected = useMemo(
-    () => connectedWallet && !isSwitchNetwork,
-    [connectedWallet, isSwitchNetwork],
-  );
+  const notConnected = useMemo(() => connectedWallet && !isSwitchNetwork, [connectedWallet, isSwitchNetwork]);
 
   const onClickCopy = async () => {
     try {

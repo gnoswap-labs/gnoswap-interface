@@ -1,15 +1,13 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import Calendar from "./Calendar";
-import { action } from '@storybook/addon-actions';
+import { action } from "@storybook/addon-actions";
 
 export default {
   title: "common/Calendar",
   component: Calendar,
 } as ComponentMeta<typeof Calendar>;
 
-const Template: ComponentStory<typeof Calendar> = args => (
-  <Calendar {...args} />
-);
+const Template: ComponentStory<typeof Calendar> = args => <Calendar {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

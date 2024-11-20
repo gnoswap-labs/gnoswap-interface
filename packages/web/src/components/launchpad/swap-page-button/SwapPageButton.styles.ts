@@ -12,8 +12,7 @@ export const SwapPageButtonWrapper = styled.button`
     height: 16px;
     font-size: 0;
     * {
-      fill: ${({ theme }) =>
-        theme.themeKey === "dark" ? "#596782" : "#90A2C0"};
+      fill: ${({ theme }) => (theme.themeKey === "dark" ? "#596782" : "#90A2C0")};
     }
   }
 

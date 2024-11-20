@@ -35,17 +35,13 @@ const StartingPrice: React.FC<StartingPriceProps> = ({
     if (
       !tokenASymbol ||
       !tokenBSymbol ||
-      ((startingPriceValue === "" || BigNumber(startingPriceValue).isNaN()) &&
-        !defaultPrice)
+      ((startingPriceValue === "" || BigNumber(startingPriceValue).isNaN()) && !defaultPrice)
     ) {
       return "";
     }
 
     let value = "";
-    if (
-      (startingPriceValue === "" || BigNumber(startingPriceValue).isNaN()) &&
-      defaultPrice
-    ) {
+    if ((startingPriceValue === "" || BigNumber(startingPriceValue).isNaN()) && defaultPrice) {
       value = defaultPrice.toString();
     } else {
       value = startingPriceValue;
@@ -63,14 +59,11 @@ const StartingPrice: React.FC<StartingPriceProps> = ({
     );
   }, [tokenASymbol, tokenBSymbol, defaultPrice, startingPriceValue]);
 
-  const onChangeStartingPrice = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      const formattedValue = value.replace(/[^0-9.]/, "");
-      setStartingPriceValue(formattedValue);
-    },
-    [],
-  );
+  const onChangeStartingPrice = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    const formattedValue = value.replace(/[^0-9.]/, "");
+    setStartingPriceValue(formattedValue);
+  }, []);
 
   const updateStartingPrice = useCallback(() => {
     if (startingPriceValue === "" || !Number(startingPriceValue)) {
@@ -93,18 +86,12 @@ const StartingPrice: React.FC<StartingPriceProps> = ({
   return (
     <StartingPriceWrapper className="starting-price-wrapper">
       <div className="title-wrapper">
-        <span className="sub-title">
-          {t("AddPosition:createPool.startingPrice")}
-        </span>
+        <span className="sub-title">{t("AddPosition:createPool.startingPrice")}</span>
         <div className="price-info">
           {!startingPriceValue && !isEmptyLiquidity && (
             <Tooltip
               placement="top"
-              FloatingContent={
-                <TooltipContentWrapper>
-                  {t("AddPosition:createPool.tooltip")}
-                </TooltipContentWrapper>
-              }
+              FloatingContent={<TooltipContentWrapper>{t("AddPosition:createPool.tooltip")}</TooltipContentWrapper>}
             >
               <IconInfo />
             </Tooltip>

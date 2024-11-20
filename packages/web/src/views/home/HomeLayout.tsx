@@ -33,25 +33,27 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
   footer,
   banner,
 }) => {
-  return <HomeLayoutWrapper>
-    {header}
-    <HeroSection>
-      <BrandContainer>
-        {brand}
-        {swap}
-      </BrandContainer>
-      <CardContainer>
-        {trending}
-        {highest}
-        {recently}
-      </CardContainer>
-    </HeroSection>
-    <TokensSection id={getCanScrollUpId("token-list")}>
-      <TokensContainer>{tokenList}</TokensContainer>
-    </TokensSection>
-    <BannerContainer>{banner}</BannerContainer>
-    {footer}
-  </HomeLayoutWrapper>;
+  return (
+    <HomeLayoutWrapper>
+      {header}
+      <HeroSection>
+        <BrandContainer>
+          {brand}
+          {swap}
+        </BrandContainer>
+        <CardContainer>
+          {trending}
+          {highest}
+          {recently}
+        </CardContainer>
+      </HeroSection>
+      <TokensSection id={getCanScrollUpId("token-list")}>
+        <TokensContainer>{tokenList}</TokensContainer>
+      </TokensSection>
+      <BannerContainer>{banner}</BannerContainer>
+      {footer}
+    </HomeLayoutWrapper>
+  );
 };
 
 export default HomeLayout;

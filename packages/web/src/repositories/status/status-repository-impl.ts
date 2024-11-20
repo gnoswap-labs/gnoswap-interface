@@ -16,9 +16,7 @@ export class StatusRepositoryImpl implements StatusRepository {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    const { data } = await this.networkClient.get<
-      APIResponse<SyncInfoResponse>
-    >({
+    const { data } = await this.networkClient.get<APIResponse<SyncInfoResponse>>({
       url: "/util/sync-info",
     });
 

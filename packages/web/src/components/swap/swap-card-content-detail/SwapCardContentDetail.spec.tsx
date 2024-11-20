@@ -16,25 +16,23 @@ const tokenA: TokenModel = {
   path: "gno.land/r/foo",
   decimals: 4,
   symbol: "FOO",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
   priceID: "gno.land/r/foo",
   address: "",
 };
 
 const tokenB: TokenModel = {
-    type: "grc20",
-    chainId: "dev.gnoswap",
-    createdAt: "2023-12-08T03:57:43Z",
-    name: "Foo",
-    path: "gno.land/r/foo",
-    decimals: 4,
-    symbol: "FOO",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceID: "gno.land/r/foo",
-    address: "",
-  };
+  type: "grc20",
+  chainId: "dev.gnoswap",
+  createdAt: "2023-12-08T03:57:43Z",
+  name: "Foo",
+  path: "gno.land/r/foo",
+  decimals: 4,
+  symbol: "FOO",
+  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+  priceID: "gno.land/r/foo",
+  address: "",
+};
 
 const swapSummaryInfo: SwapSummaryInfo = {
   tokenA: tokenA,
@@ -62,8 +60,8 @@ const swapTokenInfo: SwapTokenInfo = {
   slippage: 0.5,
   tokenA: tokenA,
   tokenAAmount: "1",
-  tokenABalance:"10",
-  tokenAUSD : 1,
+  tokenABalance: "10",
+  tokenAUSD: 1,
   tokenAUSDStr: "1",
   tokenADecimals: 6,
   tokenB: tokenB,
@@ -71,7 +69,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBBalance: "10",
   tokenBUSD: 0.5,
   tokenBUSDStr: "0.5",
-  tokenBDecimals: 6
+  tokenBDecimals: 6,
 };
 
 describe("SwapCardContentDetail Component", () => {

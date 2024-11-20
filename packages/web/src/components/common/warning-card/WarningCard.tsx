@@ -1,8 +1,4 @@
-import {
-  ContentWrapper,
-  TitleWrapper,
-  WarningCardWrapper,
-} from "./WarningCard.styles";
+import { ContentWrapper, TitleWrapper, WarningCardWrapper } from "./WarningCard.styles";
 
 export interface WarningCardProps {
   title?: React.ReactElement | string;
@@ -12,13 +8,7 @@ export interface WarningCardProps {
   hasBorder?: boolean;
 }
 
-function WarningCard({
-  title,
-  icon,
-  content,
-  type = "Warning",
-  hasBorder = true,
-}: WarningCardProps) {
+function WarningCard({ title, icon, content, type = "Warning", hasBorder = true }: WarningCardProps) {
   return (
     <WarningCardWrapper type={type} $hasBorder={hasBorder}>
       {title && (

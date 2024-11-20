@@ -8,9 +8,7 @@ export default {
   component: TokenDescriptionLinks,
 } as ComponentMeta<typeof TokenDescriptionLinks>;
 
-const Template: ComponentStory<typeof TokenDescriptionLinks> = args => (
-  <TokenDescriptionLinks {...args} />
-);
+const Template: ComponentStory<typeof TokenDescriptionLinks> = args => <TokenDescriptionLinks {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

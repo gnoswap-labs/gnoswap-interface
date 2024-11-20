@@ -162,14 +162,14 @@ export const ModalContainer = styled.div`
             width: 10px;
             height: 10px;
             * {
-              fill: ${({ theme }) => theme.color.icon03}; 
+              fill: ${({ theme }) => theme.color.icon03};
             }
           }
           &:hover {
             color: ${({ theme }) => theme.color.text03};
             svg {
               * {
-                fill: ${({ theme }) => theme.color.icon07}; 
+                fill: ${({ theme }) => theme.color.icon07};
               }
             }
           }
@@ -184,11 +184,11 @@ export const ModalContainer = styled.div`
     .coin-infor-value {
       ${mixins.flexbox("column", "flex-end", "flex-end")};
       gap: 2px;
-      .positive, .negative  {
+      .positive,
+      .negative {
         ${fonts.p3}
         ${mixins.flexbox("row", "center", "center")};
         gap: 4px;
-        
       }
       .token-price-apr {
         color: ${({ theme }) => theme.color.text04};
@@ -278,17 +278,17 @@ export const TokenInfoWrapper = styled.div<Props>`
   }};
   .token-path {
     max-width: ${({ tokenNameWidthList, maxWidth }) => {
-    return `calc(460px - 158px - ${maxWidth}px - ${tokenNameWidthList}px)`;
-  }};
+      return `calc(460px - 158px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+    }};
   }
   ${media.mobile} {
     max-width: ${({ maxWidth }) => {
-    return `calc(328px - 96px - ${maxWidth}px)`;
-  }};
+      return `calc(328px - 96px - ${maxWidth}px)`;
+    }};
     .token-path {
       max-width: ${({ tokenNameWidthList, maxWidth }) => {
-    return `calc(328px - 104px - ${maxWidth}px - ${tokenNameWidthList}px)`;
-  }};
+        return `calc(328px - 104px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+      }};
     }
   }
 `;

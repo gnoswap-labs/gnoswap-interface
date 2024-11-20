@@ -2,7 +2,6 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
-
 export const WarningCardWrapper = styled.div<{
   type: "Error" | "Warning";
   $hasBorder: boolean;
@@ -26,17 +25,16 @@ export const WarningCardWrapper = styled.div<{
       return `1px solid ${theme.color.border21}`;
     }
 
-
     return `1px solid ${theme.color.border20}`;
   }};
-  
+
   & > * {
     color: ${({ theme, type }) => {
-    if (type === "Error") {
-      return theme.color.red01;
-    }
-    return theme.color.text33;
-  }};
+      if (type === "Error") {
+        return theme.color.red01;
+      }
+      return theme.color.text33;
+    }};
   }
 `;
 

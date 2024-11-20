@@ -10,7 +10,7 @@ export const getLocalizeTime = (date: string | Date) => {
   return localTime.format("YYYY-MM-DD HH:mm:ss");
 };
 
-export const handleXAxis = (dates: any[], count: number) => {
+export const handleXAxis = (dates: unknown[], count: number) => {
   const length = dates.length;
 
   // get center position
@@ -27,8 +27,7 @@ export const handleXAxis = (dates: any[], count: number) => {
   // add below center
   while (true) {
     leftIndex -= space;
-    if (leftIndex < 0 || rightIndex > length - 1 || positions.size > count)
-      break;
+    if (leftIndex < 0 || rightIndex > length - 1 || positions.size > count) break;
     if (positions.size < count) {
       positions.add(leftIndex);
     }
@@ -55,11 +54,7 @@ export const parseDate = (dateString: string, locale?: string) => {
 */
 
 const MIN_AXIS = 3;
-export const getNumberOfAxis = (
-  length: number,
-  maxAxis: number,
-  minAxis = MIN_AXIS,
-) => {
+export const getNumberOfAxis = (length: number, maxAxis: number, minAxis = MIN_AXIS) => {
   let result = minAxis;
   let minSurplus = 999999999;
   for (let i = minAxis; i <= maxAxis; i++) {
@@ -72,10 +67,7 @@ export const getNumberOfAxis = (
         result = i;
       }
     } else {
-      const checkCeillOrFloor = Math.min(
-        length - floorNumberAxis,
-        length - ceilNumberAxis,
-      );
+      const checkCeillOrFloor = Math.min(length - floorNumberAxis, length - ceilNumberAxis);
       if (minSurplus > checkCeillOrFloor) {
         minSurplus = checkCeillOrFloor;
         result = i;
@@ -89,7 +81,7 @@ export const getNumberOfAxis = (
  * numberOfAxis is getNumberOfAxis();
  */
 
-export const getLabelChart = (data: any[], numberOfAxis: number) => {
+export const getLabelChart = (data: string[], numberOfAxis: number) => {
   const length = data.length;
   const label = [];
   let tempSpace = Math.floor(length / numberOfAxis);
@@ -116,7 +108,7 @@ export const getLabelChart = (data: any[], numberOfAxis: number) => {
   V2
 */
 
-export const getLabelChartV2 = (data: any[], space: number) => {
+export const getLabelChartV2 = (data: string[], space: number) => {
   const length = data.length;
   const temp = [];
   for (let i = 0; i < length; i += space) {

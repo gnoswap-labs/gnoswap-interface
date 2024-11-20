@@ -215,13 +215,9 @@ export function getNextSqrtPriceFromAmountARoundingUp(
     return sqrtPriceX96;
   }
 
-  const numerator1 = BigNumber(liquidity.toString()).multipliedBy(
-    Q96.toString(),
-  );
+  const numerator1 = BigNumber(liquidity.toString()).multipliedBy(Q96.toString());
 
-  const product = BigNumber(amount.toString()).multipliedBy(
-    sqrtPriceX96.toString(),
-  );
+  const product = BigNumber(amount.toString()).multipliedBy(sqrtPriceX96.toString());
 
   let denominator = BigNumber(0);
 
@@ -229,32 +225,18 @@ export function getNextSqrtPriceFromAmountARoundingUp(
     if (product.dividedBy(amount.toString()).eq(sqrtPriceX96.toString())) {
       denominator = numerator1.plus(product);
 
-      if (
-        BigNumber(denominator.toString()).isGreaterThanOrEqualTo(numerator1)
-      ) {
-        return BigInt(
-          numerator1
-            .multipliedBy(sqrtPriceX96.toString())
-            .dividedBy(denominator)
-            .toFixed(0),
-        );
+      if (BigNumber(denominator.toString()).isGreaterThanOrEqualTo(numerator1)) {
+        return BigInt(numerator1.multipliedBy(sqrtPriceX96.toString()).dividedBy(denominator).toFixed(0));
       }
     }
 
-    const divided = BigNumber(
-      numerator1.dividedBy(sqrtPriceX96.toString()),
-    ).plus(amount.toString());
+    const divided = BigNumber(numerator1.dividedBy(sqrtPriceX96.toString())).plus(amount.toString());
     return BigInt(numerator1.dividedBy(divided).toFixed(0));
   }
 
   denominator = numerator1.minus(product);
 
-  return BigInt(
-    numerator1
-      .multipliedBy(sqrtPriceX96.toString())
-      .dividedBy(denominator)
-      .toFixed(0),
-  );
+  return BigInt(numerator1.multipliedBy(sqrtPriceX96.toString()).dividedBy(denominator).toFixed(0));
 }
 
 export function getNextSqrtPriceFromAmountBRoundingDown(
@@ -267,10 +249,7 @@ export function getNextSqrtPriceFromAmountBRoundingDown(
   if (add) {
     if (amount <= MAX_UINT160) {
       quotient = BigInt(
-        BigNumber(amount.toString())
-          .dividedBy(liquidity.toString())
-          .multipliedBy(Q96.toString())
-          .toFixed(0),
+        BigNumber(amount.toString()).dividedBy(liquidity.toString()).multipliedBy(Q96.toString()).toFixed(0),
       );
     } else {
       quotient = amount * (Q96 / liquidity);
@@ -279,10 +258,7 @@ export function getNextSqrtPriceFromAmountBRoundingDown(
   } else {
     if (amount <= MAX_UINT160) {
       quotient = BigInt(
-        BigNumber(amount.toString())
-          .dividedBy(liquidity.toString())
-          .multipliedBy(Q96.toString())
-          .toFixed(0),
+        BigNumber(amount.toString()).dividedBy(liquidity.toString()).multipliedBy(Q96.toString()).toFixed(0),
       );
     } else {
       quotient = amount * (Q96 / liquidity);
@@ -299,19 +275,9 @@ export function getNextSqrtPriceFromInput(
   zeroForOne: boolean,
 ): bigint {
   if (zeroForOne) {
-    return getNextSqrtPriceFromAmountARoundingUp(
-      sqrtPriceX96,
-      liquidity,
-      amountIn,
-      true,
-    );
+    return getNextSqrtPriceFromAmountARoundingUp(sqrtPriceX96, liquidity, amountIn, true);
   }
-  return getNextSqrtPriceFromAmountBRoundingDown(
-    sqrtPriceX96,
-    liquidity,
-    amountIn,
-    true,
-  );
+  return getNextSqrtPriceFromAmountBRoundingDown(sqrtPriceX96, liquidity, amountIn, true);
 }
 
 export function getNextSqrtPriceFromOutput(
@@ -321,27 +287,13 @@ export function getNextSqrtPriceFromOutput(
   zeroForOne: boolean,
 ): bigint {
   if (zeroForOne) {
-    return getNextSqrtPriceFromAmountBRoundingDown(
-      sqrtPriceX96,
-      liquidity,
-      amountOut,
-      false,
-    );
+    return getNextSqrtPriceFromAmountBRoundingDown(sqrtPriceX96, liquidity, amountOut, false);
   }
 
-  return getNextSqrtPriceFromAmountARoundingUp(
-    sqrtPriceX96,
-    liquidity,
-    amountOut,
-    false,
-  );
+  return getNextSqrtPriceFromAmountARoundingUp(sqrtPriceX96, liquidity, amountOut, false);
 }
 
-export function getAmountADeltaHelper(
-  sqrtRatioAX96: bigint,
-  sqrtRatioBX96: bigint,
-  liquidity: bigint,
-): bigint {
+export function getAmountADeltaHelper(sqrtRatioAX96: bigint, sqrtRatioBX96: bigint, liquidity: bigint): bigint {
   let changedSqrtRatioAX96 = sqrtRatioAX96;
   let changedSqrtRatioBX96 = sqrtRatioBX96;
 
@@ -350,12 +302,8 @@ export function getAmountADeltaHelper(
     changedSqrtRatioBX96 = sqrtRatioAX96;
   }
 
-  const numerator1 = BigNumber(liquidity.toString()).multipliedBy(
-    BigNumber(2).pow(96),
-  );
-  const numerator2 = BigNumber(changedSqrtRatioBX96.toString()).minus(
-    changedSqrtRatioAX96.toString(),
-  );
+  const numerator1 = BigNumber(liquidity.toString()).multipliedBy(BigNumber(2).pow(96));
+  const numerator2 = BigNumber(changedSqrtRatioBX96.toString()).minus(changedSqrtRatioAX96.toString());
 
   return BigInt(
     numerator1
@@ -366,11 +314,7 @@ export function getAmountADeltaHelper(
   );
 }
 
-export function getAmountBDeltaHelper(
-  sqrtRatioAX96: bigint,
-  sqrtRatioBX96: bigint,
-  liquidity: bigint,
-): bigint {
+export function getAmountBDeltaHelper(sqrtRatioAX96: bigint, sqrtRatioBX96: bigint, liquidity: bigint): bigint {
   if (sqrtRatioAX96 <= 0n || sqrtRatioBX96 <= 0n) {
     throw new Error("ratio is 0");
   }
@@ -390,11 +334,7 @@ export function getAmountBDeltaHelper(
   );
 }
 
-export function getAmountADelta(
-  sqrtRatioAX96: bigint,
-  sqrtRatioBX96: bigint,
-  liquidity: bigint,
-): bigint {
+export function getAmountADelta(sqrtRatioAX96: bigint, sqrtRatioBX96: bigint, liquidity: bigint): bigint {
   if (liquidity < 0) {
     return -getAmountADeltaHelper(sqrtRatioAX96, sqrtRatioBX96, -liquidity);
   }
@@ -402,11 +342,7 @@ export function getAmountADelta(
   return getAmountADeltaHelper(sqrtRatioAX96, sqrtRatioBX96, liquidity);
 }
 
-export function getAmountBDelta(
-  sqrtRatioAX96: bigint,
-  sqrtRatioBX96: bigint,
-  liquidity: bigint,
-): bigint {
+export function getAmountBDelta(sqrtRatioAX96: bigint, sqrtRatioBX96: bigint, liquidity: bigint): bigint {
   if (liquidity < 0) {
     return -getAmountBDeltaHelper(sqrtRatioAX96, sqrtRatioBX96, -liquidity);
   }

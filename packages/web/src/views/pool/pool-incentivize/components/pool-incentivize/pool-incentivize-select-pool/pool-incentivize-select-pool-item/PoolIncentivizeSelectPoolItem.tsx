@@ -17,9 +17,11 @@ export interface PoolIncentivizeSelectPoolItemProps {
   select: (poolId: string) => void;
 }
 
-const PoolIncentivizeSelectPoolItem: React.FC<
-  PoolIncentivizeSelectPoolItemProps
-> = ({ poolSelectItem, visibleLiquidity, select }) => {
+const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps> = ({
+  poolSelectItem,
+  visibleLiquidity,
+  select,
+}) => {
   const { t } = useTranslation();
 
   const selected = poolSelectItem !== null;
@@ -62,17 +64,12 @@ const PoolIncentivizeSelectPoolItem: React.FC<
 
   if (!selected) {
     return (
-      <PoolIncentivizeSelectPoolItemDefaultWrapper>
-        {t("common:select")}
-      </PoolIncentivizeSelectPoolItemDefaultWrapper>
+      <PoolIncentivizeSelectPoolItemDefaultWrapper>{t("common:select")}</PoolIncentivizeSelectPoolItemDefaultWrapper>
     );
   }
 
   return (
-    <PoolIncentivizeSelectPoolItemWrapper
-      visibleLiquidity={visibleLiquidity}
-      onClick={onClickItem}
-    >
+    <PoolIncentivizeSelectPoolItemWrapper visibleLiquidity={visibleLiquidity} onClick={onClickItem}>
       <div className="main-content-wrapper">
         <DoubleLogo {...doubleLogos} size={24} />
         <span className="token-pair-name">{tokenPairName}</span>

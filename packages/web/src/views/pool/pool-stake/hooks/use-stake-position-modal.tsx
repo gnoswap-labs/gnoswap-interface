@@ -12,11 +12,7 @@ export interface Props {
   refetchPositions: () => Promise<void>;
 }
 
-export const useStakePositionModal = ({
-  positions,
-  selectedIds,
-  refetchPositions,
-}: Props) => {
+export const useStakePositionModal = ({ positions, selectedIds, refetchPositions }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -26,12 +22,7 @@ export const useStakePositionModal = ({
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
-    setModalContent(
-      <StakePositionModalContainer
-        positions={selectedPositions}
-        refetchPositions={refetchPositions}
-      />,
-    );
+    setModalContent(<StakePositionModalContainer positions={selectedPositions} refetchPositions={refetchPositions} />);
   }, [refetchPositions, selectedPositions, setModalContent, setOpenedModal]);
 
   return {

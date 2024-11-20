@@ -1,9 +1,7 @@
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { DEVICE_TYPE } from "@styles/media";
 
-import DashboardInfoTitle, {
-  DashboardTokenInfo,
-} from "./dashboard-info-title/DashboardInfoTitle";
+import DashboardInfoTitle, { DashboardTokenInfo } from "./dashboard-info-title/DashboardInfoTitle";
 import DashboardOverview from "./dashboard-overview/DashboardOverview";
 import { GovernanceOverviewInfo } from "./dashboard-overview/governance-overview/GovernanceOverview";
 import { SupplyOverviewInfo } from "./dashboard-overview/supply-overview/SupplyOverview";
@@ -26,12 +24,7 @@ const DashboardInfo: React.FC<DashboardInfoProps> = ({
   loading,
 }) => (
   <DashboardInfoWrapper>
-    {!loading && (
-      <DashboardInfoTitle
-        dashboardTokenInfo={dashboardTokenInfo}
-        breakpoint={breakpoint}
-      />
-    )}
+    {!loading && <DashboardInfoTitle dashboardTokenInfo={dashboardTokenInfo} breakpoint={breakpoint} />}
     {loading && (
       <div className="loading-spining">
         <span css={pulseSkeletonStyle({ w: "400px", mobileWidth: "150" })} />

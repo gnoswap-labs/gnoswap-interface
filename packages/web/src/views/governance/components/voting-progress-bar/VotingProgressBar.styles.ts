@@ -21,10 +21,7 @@ export const ProgressWrapper = styled.div`
       color: ${({ theme }) => theme.color.text10};
     }
     .passed {
-      background: var(
-        --Boost,
-        linear-gradient(270deg, #536cd7 -2.39%, #233dbd 103.33%)
-      );
+      background: var(--Boost, linear-gradient(270deg, #536cd7 -2.39%, #233dbd 103.33%));
       color: transparent;
       background-clip: text;
       -webkit-background-clip: text;
@@ -76,10 +73,7 @@ export const ProgressBar = styled.div<progressBarProps>`
     }};
     height: 100%;
     border-radius: 8px;
-    background-color: ${({ theme }) =>
-      theme.themeKey === "dark"
-        ? theme.color.background05
-        : theme.color.text08};
+    background-color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background05 : theme.color.text08)};
   }
 
   ${media.mobile} {

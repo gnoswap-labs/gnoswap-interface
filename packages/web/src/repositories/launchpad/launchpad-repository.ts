@@ -10,18 +10,11 @@ import {
 export interface LaunchpadRepository {
   getLaunchpadSummary(): Promise<GetLaunchpadSummaryResponse>;
 
-  getLaunchpadProjects(
-    params: GetLaunchpadProjectsRequestParameters,
-  ): Promise<GetLaunchpadProjectsResponse>;
+  getLaunchpadProjects(params: GetLaunchpadProjectsRequestParameters): Promise<GetLaunchpadProjectsResponse>;
 
-  getLaunchpadProjectDetails(
-    projectId: string,
-  ): Promise<GetLaunchpadProjectDetailsResponse>;
+  getLaunchpadProjectDetails(projectId: string): Promise<GetLaunchpadProjectDetailsResponse>;
 
-  getLaunchpadParticipationInfos(
-    projectId: string,
-    address: string,
-  ): Promise<GetLaunchpadParticipationInfosResponse>;
+  getLaunchpadParticipationInfos(projectId: string, address: string): Promise<GetLaunchpadParticipationInfosResponse>;
 
   depositLaunchpadPoolBy(
     projectPoolId: string,
@@ -29,23 +22,11 @@ export interface LaunchpadRepository {
     caller: string,
   ): Promise<WalletResponse<{ hash: string }>>;
 
-  collectRewardByProjectId(
-    projectId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>>;
+  collectRewardByProjectId(projectId: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
 
-  collectRewardByDepositId(
-    depositId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>>;
+  collectRewardByDepositId(depositId: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
 
-  collectRewardWithDepositByProjectId(
-    projectId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>>;
+  collectRewardWithDepositByProjectId(projectId: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
 
-  collectRewardWithDepositByDepositId(
-    depositId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>>;
+  collectRewardWithDepositByDepositId(depositId: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
 }

@@ -21,9 +21,7 @@ export interface DailyEarningTooltipContentProps {
   rewardInfo: { [key in RewardType]: PositionAPRInfo[] };
 }
 
-export const DailyEarningTooltipContent: React.FC<
-  DailyEarningTooltipContentProps
-> = ({ rewardInfo }) => {
+export const DailyEarningTooltipContent: React.FC<DailyEarningTooltipContentProps> = ({ rewardInfo }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
@@ -95,8 +93,7 @@ export const DailyEarningTooltipContent: React.FC<
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {formatOtherPrice(reward.accuReward1D, { usd: false })} /{" "}
-                  {t("common:day.base")}
+                  {formatOtherPrice(reward.accuReward1D, { usd: false })} / {t("common:day.base")}
                 </span>
               </div>
               <span className="position">{formatRate(reward.apr)}</span>
@@ -122,8 +119,7 @@ export const DailyEarningTooltipContent: React.FC<
                   mobileWidth={20}
                 />
                 <span className="position">
-                  {formatOtherPrice(reward.accuReward1D, { usd: false })} /{" "}
-                  {t("common:day.base")}
+                  {formatOtherPrice(reward.accuReward1D, { usd: false })} / {t("common:day.base")}
                 </span>
               </div>
               <span className="position">{formatRate(reward.apr)}</span>

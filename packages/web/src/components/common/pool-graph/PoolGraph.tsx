@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
 import * as uuid from "uuid";
 
@@ -77,10 +71,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 }) => {
   const graphIdRef = useRef(uuid.v4());
   const graphId = graphIdRef.current.toString();
-  const getBinId = useCallback(
-    (index: number) => `pool-graph-bin-${graphId}-${index}`,
-    [graphId],
-  );
+  const getBinId = useCallback((index: number) => `pool-graph-bin-${graphId}-${index}`, [graphId]);
 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -99,8 +90,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     const fullLength = length * 2;
 
     const convertReserveBins = bins.map((item, index) => {
-      const reserveTokenAMap =
-        Number(item.reserveTokenB) / (Number(poolPrice) || 1);
+      const reserveTokenAMap = Number(item.reserveTokenB) / (Number(poolPrice) || 1);
       const reserveTokenBMap = Number(item.reserveTokenA);
 
       return {
@@ -112,8 +102,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       };
     });
 
-    const maxHeight =
-      d3.max(convertReserveBins, bin => bin.reserveTokenAMap) || 0;
+    const maxHeight = d3.max(convertReserveBins, bin => bin.reserveTokenAMap) || 0;
 
     const reserveBins = convertReserveBins
       .sort((b1, b2) => b1.minTick - b2.minTick)
@@ -159,9 +148,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .range([boundsHeight, 0]);
   }, [boundsHeight, maxHeight]);
 
-  const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>(
-    {},
-  );
+  const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
@@ -173,8 +160,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (reservedBins.length === 2) {
       return 20;
     }
-    const spacing =
-      scaleX(reservedBins[1].minTick) - scaleX(reservedBins[0].minTick);
+    const spacing = scaleX(reservedBins[1].minTick) - scaleX(reservedBins[0].minTick);
     if (spacing < 2) {
       return spacing;
     }
@@ -207,17 +193,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         if (mouseY < 0.000001 || mouseY > height) {
           return false;
         }
-        const isHoveringCurrentBin = document
-          .getElementById(getBinId(bin.index))
-          ?.matches(":hover");
+        const isHoveringCurrentBin = document.getElementById(getBinId(bin.index))?.matches(":hover");
 
-        const isHoveringPreviousBin = document
-          .getElementById(getBinId(bin.index - 1))
-          ?.matches(":hover");
+        const isHoveringPreviousBin = document.getElementById(getBinId(bin.index - 1))?.matches(":hover");
 
-        const isHoveringNextBin = document
-          .getElementById(getBinId(bin.index + 1))
-          ?.matches(":hover");
+        const isHoveringNextBin = document.getElementById(getBinId(bin.index + 1))?.matches(":hover");
 
         const hoveredBinIndex = (() => {
           if (isHoveringCurrentBin) return bin.index;
@@ -258,10 +238,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         Math.abs(height - mouseY - 0.0001) >
         boundsHeight -
           scaleY(currentBin.reserveTokenMap) +
-          (scaleY(currentBin.reserveTokenMap) > height - 3 &&
-          scaleY(currentBin.reserveTokenMap) !== height
-            ? 3
-            : 0)
+          (scaleY(currentBin.reserveTokenMap) > height - 3 && scaleY(currentBin.reserveTokenMap) !== height ? 3 : 0)
       ) {
         setPositionX(null);
         setPositionY(null);
@@ -291,15 +268,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       let disabledBin = !!(
         maxTickPosition &&
         minTickPosition &&
-        (scaleX(currentBin.minTick) < minTickPosition - binSpacing ||
-          scaleX(currentBin.minTick) > maxTickPosition)
+        (scaleX(currentBin.minTick) < minTickPosition - binSpacing || scaleX(currentBin.minTick) > maxTickPosition)
       );
       if (isReversed) {
         disabledBin = !!(
           maxTickPosition &&
           minTickPosition &&
-          (scaleX(currentBin.minTick) <
-            scaleX(maxX) - maxTickPosition - binSpacing ||
+          (scaleX(currentBin.minTick) < scaleX(maxX) - maxTickPosition - binSpacing ||
             scaleX(currentBin.minTick) > scaleX(maxX) - minTickPosition)
         );
       }
@@ -404,15 +379,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         offset={offset}
         content={
           !!tooltipInfo && !disabled ? (
-            <div
-              ref={tooltipRef}
-              className={`tooltip-container ${themeKey}-shadow`}
-            >
-              <PoolGraphTooltip
-                tooltipInfo={tooltipInfo}
-                isPosition={isPosition}
-                disabled={disabled}
-              />
+            <div ref={tooltipRef} className={`tooltip-container ${themeKey}-shadow`}>
+              <PoolGraphTooltip tooltipInfo={tooltipInfo} isPosition={isPosition} disabled={disabled} />
             </div>
           ) : null
         }

@@ -1,21 +1,12 @@
 import { faker } from "@faker-js/faker";
 
 import { StorageClient } from "@common/clients/storage-client";
-import {
-  SwitchNetworkResponse,
-  WalletResponse
-} from "@common/clients/wallet-client/protocols";
+import { SwitchNetworkResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { StatusOptions } from "@common/values/data-constant";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
-import {
-  AccountHistoryModel,
-  TransactionModel
-} from "@models/account/account-history-model";
+import { AccountHistoryModel, TransactionModel } from "@models/account/account-history-model";
 import { AccountModel } from "@models/account/account-model";
-import {
-  generateAddress,
-  generateNumber, generateNumberPlus, generateTime
-} from "@test/generate-utils";
+import { generateAddress, generateNumber, generateNumberPlus, generateTime } from "@test/generate-utils";
 
 import { AccountRepository, AccountTransactionResponse } from ".";
 import AccountBalancesData from "./mock/account-balances.json";
@@ -80,9 +71,7 @@ export class AccountRepositoryMock implements AccountRepository {
     };
   };
 
-  public getNotificationsByAddress = async (
-    address: string,
-  ): Promise<AccountHistoryModel> => {
+  public getNotificationsByAddress = async (address: string): Promise<AccountHistoryModel> => {
     const history = this.getHistory();
     if (!history[address]) {
       return {
@@ -93,10 +82,7 @@ export class AccountRepositoryMock implements AccountRepository {
     return history[address];
   };
 
-  public createNotification = async (
-    address: string,
-    transaction: TransactionModel,
-  ): Promise<boolean> => {
+  public createNotification = async (address: string, transaction: TransactionModel): Promise<boolean> => {
     const notifications = await this.getNotificationsByAddress(address);
     const transactions = [...notifications.txs, transaction];
     const history = this.getHistory();
@@ -106,10 +92,7 @@ export class AccountRepositoryMock implements AccountRepository {
         txs: transactions,
       },
     };
-    this.localStorageClient.set(
-      "transaction-history",
-      JSON.stringify(savedHistory),
-    );
+    this.localStorageClient.set("transaction-history", JSON.stringify(savedHistory));
     return true;
   };
 
@@ -137,10 +120,7 @@ export class AccountRepositoryMock implements AccountRepository {
       },
     };
 
-    this.localStorageClient.set(
-      "transaction-history",
-      JSON.stringify(savedHistory),
-    );
+    this.localStorageClient.set("transaction-history", JSON.stringify(savedHistory));
     return true;
   };
 
@@ -152,10 +132,7 @@ export class AccountRepositoryMock implements AccountRepository {
         txs: [],
       },
     };
-    this.localStorageClient.set(
-      "transaction-history",
-      JSON.stringify(savedHistory),
-    );
+    this.localStorageClient.set("transaction-history", JSON.stringify(savedHistory));
     return true;
   };
 
@@ -213,9 +190,7 @@ export class AccountRepositoryMock implements AccountRepository {
     };
   };
 
-  public switchNetwork: (
-    chainId: string,
-  ) => Promise<WalletResponse<SwitchNetworkResponse>> = async () => {
+  public switchNetwork: (chainId: string) => Promise<WalletResponse<SwitchNetworkResponse>> = async () => {
     return {
       code: 0,
       status: "0",
@@ -225,16 +200,11 @@ export class AccountRepositoryMock implements AccountRepository {
     };
   };
 
-  public getBalanceByKey: (
-    address: string,
-    tokenKey: string,
-  ) => Promise<number | null> = async () => {
+  public getBalanceByKey: (address: string, tokenKey: string) => Promise<number | null> = async () => {
     return 0;
   };
 
-  public getAvgBlockTime: (request: {
-    startBlock?: number | undefined;
-  }) => Promise<AvgBlockTime> = async () => {
+  public getAvgBlockTime: (request: { startBlock?: number | undefined }) => Promise<AvgBlockTime> = async () => {
     const dummyData: AvgBlockTime = {
       AvgBlockTime: 2.2,
       Height: {

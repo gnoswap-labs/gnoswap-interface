@@ -17,32 +17,12 @@ export enum ButtonHierarchy {
   Dark = "Dark",
 }
 
-const Button = ({
-  leftIcon,
-  text,
-  rightIcon,
-  className,
-  style,
-  onClick,
-  disabled,
-  buttonRef,
-}: ButtonProps) => {
+const Button = ({ leftIcon, text, rightIcon, className, style, onClick, disabled, buttonRef }: ButtonProps) => {
   return (
-    <ButtonWrapper
-      ref={buttonRef}
-      {...style}
-      onClick={onClick}
-      disabled={disabled}
-      className={className}
-    >
+    <ButtonWrapper ref={buttonRef} {...style} onClick={onClick} disabled={disabled} className={className}>
       {leftIcon && leftIcon}
       {text && (
-        <StyledText
-          {...style}
-          fontType={style.fontType}
-          textColor={style.textColor}
-          arrowColor={style.arrowColor}
-        >
+        <StyledText {...style} fontType={style.fontType} textColor={style.textColor} arrowColor={style.arrowColor}>
           {text}
         </StyledText>
       )}

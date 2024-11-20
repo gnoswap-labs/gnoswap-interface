@@ -6,16 +6,9 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { NetworkData } from "@constants/chains.constant";
 import * as uuid from "uuid";
-import {
-  ACCOUNT_SESSION_INFO_KEY,
-  GNOSWAP_SESSION_ID_KEY,
-  GNOWSWAP_CONNECTED_KEY,
-} from "@states/common";
+import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY, GNOWSWAP_CONNECTED_KEY } from "@states/common";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  SUPPORT_CHAIN_IDS,
-  DEFAULT_CHAIN_ID,
-} from "@constants/environment.constant";
+import { SUPPORT_CHAIN_IDS, DEFAULT_CHAIN_ID } from "@constants/environment.constant";
 import { useGetTokenBalancesFromChain } from "@query/address";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
@@ -26,9 +19,7 @@ export const useWallet = () => {
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
   const [, setNetwork] = useAtom(CommonState.network);
-  const [loadingConnect, setLoadingConnect] = useAtom(
-    WalletState.loadingConnect,
-  );
+  const [loadingConnect, setLoadingConnect] = useAtom(WalletState.loadingConnect);
   const queryClient = useQueryClient();
 
   const connected = useMemo(() => {
@@ -71,14 +62,9 @@ export const useWallet = () => {
     isLoading: isLoadingBalance,
     isStale: isBalanceStale,
     refetch,
-  } = useGetTokenBalancesFromChain(
-    currentChainId,
-    walletAccount?.address,
-    "ugnot",
-    {
-      enabled: !!walletAccount?.address && availNetwork,
-    },
-  );
+  } = useGetTokenBalancesFromChain(currentChainId, walletAccount?.address, "ugnot", {
+    enabled: !!walletAccount?.address && availNetwork,
+  });
 
   useEffect(() => {
     if (walletClient) {
@@ -88,9 +74,7 @@ export const useWallet = () => {
 
   useEffect(() => {
     if (walletAccount) {
-      const network = NetworkData.find(
-        network => network.chainId === walletAccount.chainId,
-      );
+      const network = NetworkData.find(network => network.chainId === walletAccount.chainId);
       if (network) {
         setNetwork(network);
       }
@@ -127,9 +111,7 @@ export const useWallet = () => {
   const switchNetwork = async (network?: string) => {
     try {
       setLoadingConnect("loading");
-      const res = await accountRepository.switchNetwork(
-        network || DEFAULT_CHAIN_ID,
-      );
+      const res = await accountRepository.switchNetwork(network || DEFAULT_CHAIN_ID);
       if (res.code === 0) {
         const account = await accountRepository.getAccount();
         setWalletAccount(account);
@@ -158,9 +140,7 @@ export const useWallet = () => {
   const connectAccount = async () => {
     try {
       setLoadingConnect("loading");
-      const established = await accountRepository
-        .addEstablishedSite()
-        .catch(() => null);
+      const established = await accountRepository.addEstablishedSite().catch(() => null);
 
       if (established === null) {
         return;
@@ -172,10 +152,7 @@ export const useWallet = () => {
 
       if (established.code === 0 || established.code === 4001) {
         const account = await accountRepository.getAccount();
-        sessionStorage.setItem(
-          ACCOUNT_SESSION_INFO_KEY,
-          JSON.stringify(account),
-        );
+        sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
         const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
         if (!availNetwork) {
           switchNetwork();

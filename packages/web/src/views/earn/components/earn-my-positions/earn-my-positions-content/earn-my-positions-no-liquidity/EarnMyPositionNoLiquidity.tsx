@@ -16,9 +16,7 @@ interface EarnMyPositionNoLiquidityProps {
   highestApr: number;
 }
 
-const EarnMyPositionNoLiquidity: React.FC<EarnMyPositionNoLiquidityProps> = ({
-  highestApr,
-}) => {
+const EarnMyPositionNoLiquidity: React.FC<EarnMyPositionNoLiquidityProps> = ({ highestApr }) => {
   const { t } = useTranslation();
   const { balances: balancesPrice } = useTokenData();
   const { data: tokenPrices = {} } = useGetAllTokenPrices();

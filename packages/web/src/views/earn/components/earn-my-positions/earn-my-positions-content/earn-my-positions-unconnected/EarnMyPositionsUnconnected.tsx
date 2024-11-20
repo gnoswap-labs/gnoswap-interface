@@ -11,10 +11,7 @@ export interface EarnMyPositionsUnconnectedProps {
   connected: boolean;
 }
 
-const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({
-  connect,
-  connected,
-}) => {
+const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({ connect, connected }) => {
   const { t } = useTranslation();
 
   const onClickConnect = useCallback(() => {
@@ -34,9 +31,7 @@ const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({
         <p>{t("Earn:positions.unconnect.switchNetwork")}</p>
       )}
       <Button
-        text={
-          connected ? t("business:switchGnoland") : t("common:btn.walletLogin")
-        }
+        text={connected ? t("business:switchGnoland") : t("common:btn.walletLogin")}
         onClick={onClickConnect}
         style={{ hierarchy: ButtonHierarchy.Primary }}
         className="button-connect-wallet"

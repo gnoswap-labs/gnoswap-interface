@@ -137,10 +137,7 @@ export const useBroadcastHandler = () => {
 
     func()
       .then(response => {
-        if (
-          response?.code === 0 ||
-          response?.code === ERROR_VALUE.TRANSACTION_FAILED.status
-        ) {
+        if (response?.code === 0 || response?.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: eventType,
@@ -157,18 +154,14 @@ export const useBroadcastHandler = () => {
 
         if (response?.code === 0) {
           openModal();
-          broadcastSuccess(
-            getMessage(eventType, "success", messageData, response.data?.hash),
-          );
+          broadcastSuccess(getMessage(eventType, "success", messageData, response.data?.hash));
         } else if (
           response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
           broadcastRejected(getMessage(eventType, "error", messageData));
           openModal();
         } else {
-          broadcastError(
-            getMessage(eventType, "error", messageData, response?.data?.hash),
-          );
+          broadcastError(getMessage(eventType, "error", messageData, response?.data?.hash));
           openModal();
         }
       })

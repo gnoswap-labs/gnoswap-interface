@@ -8,9 +8,7 @@ import { TransactionGroupsType } from "@models/notification";
 
 const REFETCH_INTERVAL = 10_000;
 
-export const useGetNotifications = (
-  options?: UseQueryOptions<TransactionGroupsType[], Error>,
-) => {
+export const useGetNotifications = (options?: UseQueryOptions<TransactionGroupsType[], Error>) => {
   const { notificationRepository } = useGnoswapContext();
   const { account, availNetwork, currentChainId } = useWallet();
 

@@ -18,29 +18,19 @@ export const useGetLaunchpadParticipationInfos = (
   const { data: { tokens = [] } = {} } = useGetTokens();
 
   return useQuery<LaunchpadParticipationModel[], Error>({
-    queryKey: [
-      QUERY_KEY.launchpadParticipationInfos,
-      projectId,
-      address,
-      tokens.length,
-    ],
+    queryKey: [QUERY_KEY.launchpadParticipationInfos, projectId, address, tokens.length],
     queryFn: () => {
-      const tokenMap = tokens.reduce<{ [key in string]: TokenModel }>(
-        (tokenByPath, current) => {
-          tokenByPath[current.path] = current;
-          return tokenByPath;
-        },
-        {},
-      );
+      const tokenMap = tokens.reduce<{ [key in string]: TokenModel }>((tokenByPath, current) => {
+        tokenByPath[current.path] = current;
+        return tokenByPath;
+      }, {});
 
-      return launchpadRepository
-        .getLaunchpadParticipationInfos(projectId, address)
-        .then(response =>
-          response.participationInfos.map(responseInfo => ({
-            ...responseInfo,
-            rewardToken: tokenMap[responseInfo.rewardTokenPath] || null,
-          })),
-        );
+      return launchpadRepository.getLaunchpadParticipationInfos(projectId, address).then(response =>
+        response.participationInfos.map(responseInfo => ({
+          ...responseInfo,
+          rewardToken: tokenMap[responseInfo.rewardTokenPath] || null,
+        })),
+      );
     },
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,

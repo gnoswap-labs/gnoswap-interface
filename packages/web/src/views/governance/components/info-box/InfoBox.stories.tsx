@@ -7,9 +7,7 @@ export default {
   component: InfoBox,
 } as ComponentMeta<typeof InfoBox>;
 
-const Template: ComponentStory<typeof InfoBox> = (args) => (
-  <InfoBox {...args} />
-);
+const Template: ComponentStory<typeof InfoBox> = args => <InfoBox {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

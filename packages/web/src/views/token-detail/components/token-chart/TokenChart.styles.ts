@@ -25,7 +25,6 @@ export const TokenChartWrapper = styled.div`
   }
 `;
 
-
 export const LoadingChart = styled.div`
   ${mixins.flexbox("row", "center", "center")}
   width: 100%;

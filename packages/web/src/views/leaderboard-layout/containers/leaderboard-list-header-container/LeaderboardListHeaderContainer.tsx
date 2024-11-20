@@ -7,8 +7,6 @@ import ConnectYourWallet from "../../components/connect-your-wallet/ConnectYourW
 import NextUpdate from "../../components/next-update/NextUpdate";
 import { ListHeaderWrapper } from "./LeaderboardListHeaderContainer.styles";
 
-
-
 const LeaderboardListHeaderContainer = () => {
   const { connected } = useConnection();
   const [checked, setChecked] = useState(true);
@@ -55,12 +53,7 @@ const LeaderboardListHeaderContainer = () => {
   return (
     <ListHeaderWrapper ref={divRef}>
       <Box ref={leftRef}>
-        <ConnectYourWallet
-          connected={connected}
-          isMobile={isMobile}
-          checked={checked}
-          onSwitch={onSwitch}
-        />
+        <ConnectYourWallet connected={connected} isMobile={isMobile} checked={checked} onSwitch={onSwitch} />
       </Box>
 
       <Box ref={rightRef}>

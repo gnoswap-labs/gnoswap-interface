@@ -2,11 +2,7 @@ import React from "react";
 import { cx } from "@emotion/css";
 import { useTranslation } from "react-i18next";
 
-import {
-  noDataText,
-  TableColumn,
-  TableWrapper,
-} from "./LaunchpadProjectListTable.styles";
+import { noDataText, TableColumn, TableWrapper } from "./LaunchpadProjectListTable.styles";
 
 import { TABLE_HEAD } from "../types";
 import { LaunchpadProjectModel } from "@models/launchpad";
@@ -61,20 +57,14 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
       <div className="project-list-head">
         {Object.values(TABLE_HEAD).map((head, idx) => {
           return (
-            <TableColumn
-              key={idx}
-              className={cx({ left: isAlignLeft(head) })}
-              tdWidth={projectInfo.list[idx].width}
-            >
+            <TableColumn key={idx} className={cx({ left: isAlignLeft(head) })} tdWidth={projectInfo.list[idx].width}>
               <span>{t(head)}</span>
             </TableColumn>
           );
         })}
       </div>
       <div className="project-list-body">
-        {isFetched && projects.length === 0 && (
-          <div css={noDataText}>{t("Launchpad:projects.noProjectsFound")}</div>
-        )}
+        {isFetched && projects.length === 0 && <div css={noDataText}>{t("Launchpad:projects.noProjectsFound")}</div>}
         {isFetched &&
           projects.length > 0 &&
           projects.map((project, idx) => {

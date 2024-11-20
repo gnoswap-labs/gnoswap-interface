@@ -13,9 +13,7 @@ export interface SelectDistributionDateInputProps {
   setDate: (date: DistributionPeriodDate) => void;
 }
 
-const SelectDistributionDateInput: React.FC<
-  SelectDistributionDateInputProps
-> = ({ title, date, setDate }) => {
+const SelectDistributionDateInput: React.FC<SelectDistributionDateInputProps> = ({ title, date, setDate }) => {
   const [opened, setOpened] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -28,9 +26,7 @@ const SelectDistributionDateInput: React.FC<
     if (!date) {
       return "";
     }
-    return `${date.year}/${`0${date.month}`.slice(-2)}/${`0${date.date}`.slice(
-      -2,
-    )}`;
+    return `${date.year}/${`0${date.month}`.slice(-2)}/${`0${date.date}`.slice(-2)}`;
   }, [date]);
 
   const onClickCalendarDate = (date: DistributionPeriodDate) => {
@@ -49,10 +45,7 @@ const SelectDistributionDateInput: React.FC<
 
       <div className="calendar-container">
         <div ref={modalRef} className={`calendar-wrapper ${opened && "open"}`}>
-          <Calendar
-            selectedDate={date || DefaultDate}
-            onClickDate={onClickCalendarDate}
-          />
+          <Calendar selectedDate={date || DefaultDate} onClickDate={onClickCalendarDate} />
         </div>
       </div>
     </SelectDistributionDateInputWrapper>

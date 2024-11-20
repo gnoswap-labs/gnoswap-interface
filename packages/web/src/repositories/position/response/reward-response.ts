@@ -18,5 +18,5 @@ export interface RewardResponse {
 
   apr: string;
 
-  accuReward1D: string
+  accuReward1D: string;
 }

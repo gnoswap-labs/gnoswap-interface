@@ -43,13 +43,8 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
   return (
     <IncreaseSelectPositionWrapper>
       <div className="header-wrapper">
-        <h5 className="enter-increase-amount">
-          {t("IncreaseLiquidity:form.enterincreasingAmount.label")}
-        </h5>
-        <button
-          className="setting-button"
-          onClick={() => setOpenedSetting(true)}
-        >
+        <h5 className="enter-increase-amount">{t("IncreaseLiquidity:form.enterincreasingAmount.label")}</h5>
+        <button className="setting-button" onClick={() => setOpenedSetting(true)}>
           <IconSettings className="setting-icon" />
         </button>
         {openedSetting && (

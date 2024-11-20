@@ -8,11 +8,7 @@ import { useTokenImage } from "@hooks/token/use-token-image";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 
-import {
-  AutoRoutePoolInfoWrapper,
-  AutoRouterWrapper,
-  DotLine
-} from "./SwapCardAutoRouter.styles";
+import { AutoRoutePoolInfoWrapper, AutoRouterWrapper, DotLine } from "./SwapCardAutoRouter.styles";
 
 interface ContentProps {
   swapRouteInfos: SwapRouteInfo[];
@@ -20,11 +16,7 @@ interface ContentProps {
   isLoading: boolean;
 }
 
-const SwapCardAutoRouter: React.FC<ContentProps> = ({
-  swapRouteInfos,
-  swapSummaryInfo,
-  isLoading,
-}) => {
+const SwapCardAutoRouter: React.FC<ContentProps> = ({ swapRouteInfos, swapSummaryInfo, isLoading }) => {
   return (
     <AutoRouterWrapper>
       {isLoading ? (
@@ -32,11 +24,7 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
       ) : (
         <>
           {swapRouteInfos.map((swapRouteInfo, index) => (
-            <SwapCardAutoRouterItem
-              key={index}
-              swapRouteInfo={swapRouteInfo}
-              swapSummaryInfo={swapSummaryInfo}
-            />
+            <SwapCardAutoRouterItem key={index} swapRouteInfo={swapRouteInfo} swapSummaryInfo={swapSummaryInfo} />
           ))}
         </>
       )}
@@ -49,10 +37,7 @@ interface SwapCardAutoRouterItemProps {
   swapSummaryInfo: SwapSummaryInfo;
 }
 
-const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
-  swapRouteInfo,
-  swapSummaryInfo,
-}) => {
+const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({ swapRouteInfo, swapSummaryInfo }) => {
   const { getTokenImage, getTokenSymbol } = useTokenImage();
 
   const weightStr = useMemo(() => {

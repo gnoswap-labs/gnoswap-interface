@@ -85,7 +85,7 @@ export const SettingMenuModalWrapper = styled.div`
         border: 1px solid ${({ theme }) => theme.color.border02};
         background: ${({ theme }) => theme.color.background01};
         &:focus-within {
-          border: 1px solid  ${({ theme }) => theme.color.border15};
+          border: 1px solid ${({ theme }) => theme.color.border15};
         }
       }
       .amount-text {

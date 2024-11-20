@@ -27,7 +27,7 @@ const useIntersectionObserver = () => {
     };
   }, []);
 
-  return {ref, entry};
+  return { ref, entry };
 };
 
 export { useIntersectionObserver };

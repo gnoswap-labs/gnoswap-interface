@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Dispatch, SetStateAction } from "react";
 
-function useClickOutside(): [
-  React.RefObject<HTMLDivElement>,
-  boolean,
-  Dispatch<SetStateAction<boolean>>,
-] {
+function useClickOutside(): [React.RefObject<HTMLDivElement>, boolean, Dispatch<SetStateAction<boolean>>] {
   const [isClickOutside, setIsClickOutside] = useState(true);
   const [isInside, setIsInside] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
@@ -15,10 +11,7 @@ function useClickOutside(): [
       if (isInside) {
         setIsClickOutside(false);
         setIsInside(false);
-      } else if (
-        componentRef.current &&
-        componentRef.current.contains(event.target as Node)
-      ) {
+      } else if (componentRef.current && componentRef.current.contains(event.target as Node)) {
         setIsClickOutside(false);
       } else {
         setIsClickOutside(true);

@@ -53,18 +53,10 @@ export const IncentivizePoolHistoryBoxWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) =>
-      theme.themeKey === "dark" ? "#C3D2EA" : theme.color.text04};
-    background: ${({ theme }) =>
-      theme.themeKey === "dark"
-        ? theme.color.background03
-        : theme.color.background11};
+    color: ${({ theme }) => (theme.themeKey === "dark" ? "#C3D2EA" : theme.color.text04)};
+    background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background03 : theme.color.background11)};
     border-radius: 4px;
-    border: 1px solid
-      ${({ theme }) =>
-        theme.themeKey === "dark"
-          ? theme.color.border03
-          : theme.color.border01};
+    border: 1px solid ${({ theme }) => (theme.themeKey === "dark" ? theme.color.border03 : theme.color.border01)};
     padding: 0 6px;
     font-size: 12px;
     font-weight: 400;

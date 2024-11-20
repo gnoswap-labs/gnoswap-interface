@@ -15,16 +15,8 @@ const LaunchpadShowMoreButton = ({ show, onClick }: ShowMoreProps) => {
 
   return (
     <ShowMoreWrapper onClick={onClick}>
-      <span>
-        {show
-          ? t("Launchpad:common.button.showLess")
-          : t("Launchpad:common.button.showMore")}
-      </span>
-      {show ? (
-        <IconStrokeArrowUp className="icon-load" />
-      ) : (
-        <IconStrokeArrowDown className="icon-load" />
-      )}
+      <span>{show ? t("Launchpad:common.button.showLess") : t("Launchpad:common.button.showMore")}</span>
+      {show ? <IconStrokeArrowUp className="icon-load" /> : <IconStrokeArrowDown className="icon-load" />}
     </ShowMoreWrapper>
   );
 };

@@ -19,10 +19,7 @@ interface PricePerformanceProps {
   loading: boolean;
 }
 
-const PricePerformance: React.FC<PricePerformanceProps> = ({
-  info,
-  loading,
-}) => {
+const PricePerformance: React.FC<PricePerformanceProps> = ({ info, loading }) => {
   const { t } = useTranslation();
 
   return (

@@ -28,22 +28,13 @@ export const formatPoolPairAmount = (
 
   if (bigNumberValue.isEqualTo(0)) return "0";
 
-  const internalMinLimit =
-    minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
+  const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
 
-  if (
-    hasMinLimit &&
-    internalMinLimit &&
-    bigNumberValue.isLessThan(internalMinLimit)
-  ) {
+  if (hasMinLimit && internalMinLimit && bigNumberValue.isLessThan(internalMinLimit)) {
     return `<${internalMinLimit}`;
   }
 
-  if (
-    minLimit &&
-    bigNumberValue.isLessThan(minLimit) &&
-    bigNumberValue.isGreaterThan(0)
-  ) {
+  if (minLimit && bigNumberValue.isLessThan(minLimit) && bigNumberValue.isGreaterThan(0)) {
     return `<${minLimit}`;
   }
 
@@ -55,18 +46,15 @@ export const formatPoolPairAmount = (
   let stringValue = "";
 
   if (decimals) {
-    stringValue = bigNumberValue.toFormat(
-      decimals,
-      decimals ? BigNumber.ROUND_DOWN : undefined,
-    );
+    stringValue = bigNumberValue.toFormat(decimals, decimals ? BigNumber.ROUND_DOWN : undefined);
   } else {
     stringValue = bigNumberValue.toFormat();
   }
 
-  const [integerValue,fractionValue] = stringValue.split(".");
+  const [integerValue, fractionValue] = stringValue.split(".");
   if (fractionValue) {
     const fractionString = Number(`0.${fractionValue}`).toString().split(".")[1];
-    if (fractionString)  return `${integerValue}.${fractionString}`;
+    if (fractionString) return `${integerValue}.${fractionString}`;
     return integerValue;
   } else return stringValue;
 };
@@ -93,26 +81,17 @@ export const formatRate = (
   const bigNumberValue = BigNumber(valueWithoutComma);
   const sign = showSign ? (bigNumberValue.isLessThan(0) ? "-" : "+") : "";
 
-  const internalMinLimit =
-    minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
+  const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
 
   if (!allowZeroDecimals && bigNumberValue.isEqualTo(0)) {
     return sign + "0%";
   }
 
-  if (
-    internalMinLimit &&
-    bigNumberValue.isLessThan(internalMinLimit) &&
-    bigNumberValue.isGreaterThan(0)
-  ) {
+  if (internalMinLimit && bigNumberValue.isLessThan(internalMinLimit) && bigNumberValue.isGreaterThan(0)) {
     return `<${internalMinLimit}%`;
   }
 
-  return (
-    sign +
-    BigNumber(amount).abs().toFormat(decimals, BigNumber.ROUND_DOWN) +
-    "%"
-  );
+  return sign + BigNumber(amount).abs().toFormat(decimals, BigNumber.ROUND_DOWN) + "%";
 };
 
 export const formatTokenAmount = (
@@ -140,8 +119,7 @@ export const formatTokenAmount = (
 
   if (amount === 0) return "0" + internalSuffix;
 
-  const internalMinLimit =
-    minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
+  const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
 
   if (internalMinLimit && inputAsNumber.isLessThan(internalMinLimit)) {
     return `<${internalMinLimit}${internalSuffix}`;
@@ -152,10 +130,7 @@ export const formatTokenAmount = (
     if (kmbNumber) return kmbNumber;
   }
   if (decimals) {
-    return `${inputAsNumber.toFormat(
-      decimals,
-      BigNumber.ROUND_DOWN,
-    )}${internalSuffix}`;
+    return `${inputAsNumber.toFormat(decimals, BigNumber.ROUND_DOWN)}${internalSuffix}`;
   }
 
   return `${BigNumber(inputAsNumber).toFormat()}${internalSuffix}`;
@@ -197,19 +172,12 @@ export const formatPrice = (
   }
 
   if (absValue.isLessThan(1)) {
-    const tempNum = valueAsBigNum.toPrecision(
-      lessThan1Significant,
-      BigNumber.ROUND_DOWN,
-    );
+    const tempNum = valueAsBigNum.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
 
     return negativeSign + prefix + tempNum;
   }
 
-  return (
-    negativeSign +
-    prefix +
-    valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN)
-  );
+  return negativeSign + prefix + valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
 };
 
 export const formatOtherPrice = (
@@ -252,12 +220,7 @@ export const formatOtherPrice = (
 
   const internalMinLimit = decimals ? 1 / Math.pow(10, decimals) : null;
 
-  if (
-    hasMinLimit &&
-    internalMinLimit &&
-    valueAsBigNum.isLessThan(internalMinLimit) &&
-    valueAsBigNum.isGreaterThan(0)
-  ) {
+  if (hasMinLimit && internalMinLimit && valueAsBigNum.isLessThan(internalMinLimit) && valueAsBigNum.isGreaterThan(0)) {
     return `<${prefix}${minLimit || internalMinLimit}`;
   }
 
@@ -272,10 +235,5 @@ export const formatOtherPrice = (
     newFraction = Number(`0.${fraction}`).toString().split(".")[1];
   }
 
-  return (
-    negativeSign +
-    prefix +
-    integer +
-    (newFraction ? `.${newFraction.toString()}` : "")
-  );
+  return negativeSign + prefix + integer + (newFraction ? `.${newFraction.toString()}` : "");
 };

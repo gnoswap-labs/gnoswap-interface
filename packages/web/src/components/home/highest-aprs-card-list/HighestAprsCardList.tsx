@@ -1,9 +1,6 @@
 import React, { useMemo } from "react";
 import CardList from "@components/home/card-list/CardList";
-import {
-  HighestAprsCardListWrapper,
-  SkeletonItem,
-} from "./HighestAprsCardList.styles";
+import { HighestAprsCardListWrapper, SkeletonItem } from "./HighestAprsCardList.styles";
 import IconDiamond from "@components/common/icons/IconDiamond";
 import { DEVICE_TYPE } from "@styles/media";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
@@ -18,21 +15,14 @@ interface HighestAprsCardListProps {
   loading: boolean;
 }
 
-const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
-  list,
-  device,
-  onClickItem,
-  loading,
-}) => {
+const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({ list, device, onClickItem, loading }) => {
   const { t } = useTranslation();
 
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
   return visible ? (
-    <HighestAprsCardListWrapper
-      className={cx("loading", { "empty-status": loading })}
-    >
+    <HighestAprsCardListWrapper className={cx("loading", { "empty-status": loading })}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />

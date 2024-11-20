@@ -14,12 +14,7 @@ import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
 
-import {
-  TokenTitleWrapper,
-  TokenValueWrapper,
-  tooltipWrapper,
-  wrapper,
-} from "./SelectLiquidityListItem.styles";
+import { TokenTitleWrapper, TokenValueWrapper, tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
 
 interface SelectLiquidityListItemProps {
   disabled?: boolean;
@@ -41,11 +36,7 @@ const TooltipContent: React.FC<{
     return (
       <TokenValueWrapper>
         <div className="value">
-          <MissingLogo
-            url={getGnotPath(token).logoURI}
-            symbol={getGnotPath(token).symbol}
-            width={20}
-          />
+          <MissingLogo url={getGnotPath(token).logoURI} symbol={getGnotPath(token).symbol} width={20} />
           {token.symbol}
         </div>
         <div className="value">{tokenBalanceByTokenDecimal}</div>
@@ -56,19 +47,13 @@ const TooltipContent: React.FC<{
   return (
     <div css={tooltipWrapper()}>
       <TokenTitleWrapper>
-        <div className="title">
-          {t("StakePosition:positionList.item.tooltip.tokenID")}
-        </div>
+        <div className="title">{t("StakePosition:positionList.item.tooltip.tokenID")}</div>
         <div className="title">#{position.id}</div>
       </TokenTitleWrapper>
       {renderTokenValue(position.pool.tokenA, position.tokenABalance)}
       {renderTokenValue(position.pool.tokenB, position.tokenBBalance)}
       {disabled && <div className="divider"></div>}
-      {disabled && (
-        <div className="unstake-description">
-          {t("StakePosition:positionList.item.disabled")}
-        </div>
-      )}
+      {disabled && <div className="unstake-description">{t("StakePosition:positionList.item.disabled")}</div>}
     </div>
   );
 };
@@ -112,12 +97,7 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
           onChange={e => onCheckedItem(e.target.checked, position.id)}
         />
         <label htmlFor={`checkbox-item-${position.id}`} />
-        <Tooltip
-          placement="top"
-          FloatingContent={
-            <TooltipContent position={position} disabled={disabled} />
-          }
-        >
+        <Tooltip placement="top" FloatingContent={<TooltipContent position={position} disabled={disabled} />}>
           <div className="logo-wrapper">
             <DoubleLogo
               left={tokenA.logoURI}
@@ -129,10 +109,7 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
             {width > 768 && (
               <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>
             )}
-            <Badge
-              text={`${Number(position.pool.fee) / 10000}%`}
-              type={BADGE_TYPE.DARK_DEFAULT}
-            />
+            <Badge text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
             <RangeBadge status={inRange ? "IN" : "OUT"} />
           </div>
         </Tooltip>

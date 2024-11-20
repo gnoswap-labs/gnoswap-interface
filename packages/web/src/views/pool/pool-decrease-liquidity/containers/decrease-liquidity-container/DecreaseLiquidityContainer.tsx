@@ -51,9 +51,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
 
   const showWGNOTToggle = React.useMemo(() => {
     if (!tokenA || !tokenB) return false;
-    return (
-      tokenA.symbol === GNOT_TOKEN.symbol || tokenB.symbol === GNOT_TOKEN.symbol
-    );
+    return tokenA.symbol === GNOT_TOKEN.symbol || tokenB.symbol === GNOT_TOKEN.symbol;
   }, [tokenA, tokenB]);
 
   if (!tokenA || !tokenB || loading) return <DecreaseLiquidityLoading />;

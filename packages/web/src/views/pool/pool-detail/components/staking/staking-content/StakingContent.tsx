@@ -16,15 +16,9 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
-import StakingContentCard, {
-  SummuryApr,
-} from "./staking-content-card/StakingContentCard";
+import StakingContentCard, { SummuryApr } from "./staking-content-card/StakingContentCard";
 
-import {
-  AprNumberContainer,
-  AprStakingHeader,
-  StakingContentWrapper,
-} from "./StakingContent.styles";
+import { AprNumberContainer, AprStakingHeader, StakingContentWrapper } from "./StakingContent.styles";
 
 interface StakingContentProps {
   totalApr: string;
@@ -163,25 +157,15 @@ const StakingContent: React.FC<StakingContentProps> = ({
       <div className="content-header">
         {loading && (
           <PulseSkeletonWrapper height={36} mobileHeight={24}>
-            <span
-              css={pulseSkeletonStyle({ h: 22, w: "600px", mobileWidth: 400 })}
-            />
+            <span css={pulseSkeletonStyle({ h: 22, w: "600px", mobileWidth: 400 })} />
           </PulseSkeletonWrapper>
         )}
         {!loading && <span>{t("Pool:staking.intro")}</span>}
         {!loading && (
-          <AprNumberContainer
-            placeholderWidth={
-              document.getElementsByClassName("apr-text")?.[0]?.clientWidth
-            }
-          >
+          <AprNumberContainer placeholderWidth={document.getElementsByClassName("apr-text")?.[0]?.clientWidth}>
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
-                FloatingContent={
-                  <IncentivizeTokenDetailTooltipContent
-                    poolStakings={poolStakings}
-                  />
-                }
+                FloatingContent={<IncentivizeTokenDetailTooltipContent poolStakings={poolStakings} />}
                 placement="top"
                 className="apr-text"
                 scroll
@@ -191,13 +175,9 @@ const StakingContent: React.FC<StakingContentProps> = ({
                   forcedOpen={isVisible && forcedShowAprGuide}
                   forcedClose={!forcedShowAprGuide}
                   placement="top"
-                  FloatingContent={
-                    <span>{t("Pool:staking.tooltip.hoverGuide")}</span>
-                  }
+                  FloatingContent={<span>{t("Pool:staking.tooltip.hoverGuide")}</span>}
                 >
-                  <span id={"apr-text"}>
-                    {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
-                  </span>
+                  <span id={"apr-text"}>{totalApr === "-" ? "-" : `${totalApr} APR`} </span>
                 </Tooltip>
               </Tooltip>
               <div
@@ -245,11 +225,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
         <div className="empty-content"></div>
         {loading && (
           <div className="loading-wrapper">
-            <PulseSkeletonWrapper
-              className="loading-button"
-              height={36}
-              mobileHeight={24}
-            >
+            <PulseSkeletonWrapper className="loading-button" height={36} mobileHeight={24}>
               <span
                 css={pulseSkeletonStyle({
                   h: 22,
@@ -267,11 +243,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               width: "100%",
               height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
               fontType: `${
-                breakpoint === DEVICE_TYPE.WEB
-                  ? "body7"
-                  : breakpoint === DEVICE_TYPE.MOBILE
-                  ? "p2"
-                  : "body9"
+                breakpoint === DEVICE_TYPE.WEB ? "body7" : breakpoint === DEVICE_TYPE.MOBILE ? "p2" : "body9"
               }`,
               textColor: "text01",
               bgColor: "background01",

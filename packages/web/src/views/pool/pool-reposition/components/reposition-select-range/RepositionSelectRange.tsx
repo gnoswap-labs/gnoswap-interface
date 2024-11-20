@@ -4,10 +4,7 @@ import { useTranslation } from "react-i18next";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
-import {
-  PriceRangeMeta,
-  RANGE_STATUS_OPTION,
-} from "@constants/option.constant";
+import { PriceRangeMeta, RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 
@@ -59,11 +56,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
           <h5>{t("Reposition:form.selectRange.title")}</h5>
           {!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />}
         </div>
-        <Badge
-          text={priceRange.type}
-          type={BADGE_TYPE.LINE}
-          className="fee-tier-bad"
-        />
+        <Badge text={priceRange.type} type={BADGE_TYPE.LINE} className="fee-tier-bad" />
       </div>
       <SelectPriceRangeReposition
         opened={openedPriceRange}

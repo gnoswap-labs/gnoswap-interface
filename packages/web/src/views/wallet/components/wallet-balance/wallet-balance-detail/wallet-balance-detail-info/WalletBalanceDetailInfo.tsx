@@ -48,12 +48,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
     const valueElement = valueRef.current;
     const size = width > 1180 ? 28 : 24;
     if (divElement && valueElement) {
-      setFontSize(
-        Math.min(
-          ((valueElement.offsetWidth - 70) * size) / divElement.offsetWidth,
-          size,
-        ),
-      );
+      setFontSize(Math.min(((valueElement.offsetWidth - 70) * size) / divElement.offsetWidth, size));
     }
   }, [valueRef, divRef, width]);
   const isClaim = className === "claimable-rewards" && width > 968;
@@ -77,9 +72,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
       <div className="wallet-detail-left-side">
         <div className="title-wrapper">
           <span className="title">{title}</span>
-          {tooltip !== undefined && (
-            <WalletBalanceDetailInfoTooltip tooltip={tooltip} />
-          )}
+          {tooltip !== undefined && <WalletBalanceDetailInfoTooltip tooltip={tooltip} />}
         </div>
         <div className="value-wrapper" ref={valueRef}>
           {loading ? (
@@ -87,12 +80,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
               <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
             </div>
           ) : (
-            <Tooltip
-              placement="top"
-              forcedClose={!valueTooltip}
-              FloatingContent={valueTooltip}
-              scroll
-            >
+            <Tooltip placement="top" forcedClose={!valueTooltip} FloatingContent={valueTooltip} scroll>
               <span
                 className={`value ${valueTooltip ? "has-tooltip" : ""}`}
                 style={isClaim ? { fontSize: `${fontSize}px` } : {}}
@@ -120,13 +108,9 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   );
 };
 
-export const WalletBalanceDetailInfoTooltip: React.FC<{ tooltip: string }> = ({
-  tooltip,
-}) => {
+export const WalletBalanceDetailInfoTooltip: React.FC<{ tooltip: string }> = ({ tooltip }) => {
   const TooltipFloatingContent = (
-    <WalletBalanceDetailInfoTooltipContent>
-      {tooltip}
-    </WalletBalanceDetailInfoTooltipContent>
+    <WalletBalanceDetailInfoTooltipContent>{tooltip}</WalletBalanceDetailInfoTooltipContent>
   );
 
   return (

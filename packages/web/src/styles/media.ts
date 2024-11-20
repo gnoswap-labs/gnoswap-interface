@@ -30,8 +30,7 @@ export const ContainerWidth = {
   MOBILE_CONTAINER: "768px",
 };
 
-export const customMediaQuery = (maxWidth: number) =>
-  `@media (max-width: ${maxWidth}px)`;
+export const customMediaQuery = (maxWidth: number) => `@media (max-width: ${maxWidth}px)`;
 
 export const media = {
   web: customMediaQuery(DeviceSize.web),

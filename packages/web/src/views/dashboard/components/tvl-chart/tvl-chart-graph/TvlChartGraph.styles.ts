@@ -96,4 +96,3 @@ export const TokenChartGraphXLabel = styled.span<{
     ${fonts.p7};
   }
 `;
-

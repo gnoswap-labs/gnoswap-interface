@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  TOKEN_TYPE,
-  type Token,
-  TABLE_HEAD,
-  SortOption,
-} from "@containers/token-list-container/TokenListContainer";
+import { TOKEN_TYPE, type Token, TABLE_HEAD, SortOption } from "@containers/token-list-container/TokenListContainer";
 import TokenListHeader from "@components/home/token-list-header/TokenListHeader";
 import Pagination from "@components/common/pagination/Pagination";
 import { wrapper } from "./TokenList.styles";

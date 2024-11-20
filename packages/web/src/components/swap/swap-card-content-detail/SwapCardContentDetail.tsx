@@ -72,20 +72,14 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
     const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
     if (swapRateAction === "ATOB") {
       if (!tokenBUSD || tokenBUSD === 0) return "-";
-      return convertToKMB(
-        floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3),
-        {
-          isIgnoreKFormat: true,
-        },
-      );
+      return convertToKMB(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
+        isIgnoreKFormat: true,
+      });
     } else {
       if (!tokenAUSD || tokenAUSD === 0) return "-";
-      return convertToKMB(
-        floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3),
-        {
-          isIgnoreKFormat: true,
-        },
-      );
+      return convertToKMB(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
+        isIgnoreKFormat: true,
+      });
     }
   }, [swapSummaryInfo, swapTokenInfo]);
 
@@ -102,9 +96,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   }, [openedDetailInfo]);
 
   const handleSwapRate = useCallback(() => {
-    setSwapRateAction(
-      swapSummaryInfo.swapRateAction === "ATOB" ? "BTOA" : "ATOB",
-    );
+    setSwapRateAction(swapSummaryInfo.swapRateAction === "ATOB" ? "BTOA" : "ATOB");
   }, [swapSummaryInfo.swapRateAction]);
 
   return (
@@ -118,9 +110,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
                 <span className="swap-rate" onClick={handleSwapRate}>
                   {swapRateDescription}
                 </span>
-                {breakpoint !== DEVICE_TYPE.MOBILE && (
-                  <span className="exchange-price">{`($${unitSwapPrice})`}</span>
-                )}
+                {breakpoint !== DEVICE_TYPE.MOBILE && <span className="exchange-price">{`($${unitSwapPrice})`}</span>}
               </div>
             )}
             {isLoading && (
@@ -132,15 +122,9 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
               <IconGasFilled className="price-icon note-icon" />
               <span>{gasFeeUSDStr}</span>
               {openedDetailInfo ? (
-                <IconStrokeArrowUp
-                  className="price-icon"
-                  onClick={toggleDetailInfo}
-                />
+                <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
               ) : (
-                <IconStrokeArrowDown
-                  className="price-icon"
-                  onClick={toggleDetailInfo}
-                />
+                <IconStrokeArrowDown className="price-icon" onClick={toggleDetailInfo} />
               )}
             </div>
           </div>

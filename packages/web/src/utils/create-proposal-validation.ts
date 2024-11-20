@@ -20,13 +20,8 @@ export const getCreateProposalCommunityPoolSpendValidation = () =>
         .string()
         .trim()
         .required("Recipient is required")
-        .test("is-valid", "Address is not valid", value =>
-          isValidAddress(value),
-        ),
-      amount: yup
-        .number()
-        .typeError("Amount is required")
-        .required("Amount is required"),
+        .test("is-valid", "Address is not valid", value => isValidAddress(value)),
+      amount: yup.number().typeError("Amount is required").required("Amount is required"),
     })
     .required();
 
@@ -80,8 +75,7 @@ export const getCreateProposalParameterValidation = (
           }
 
           const currentFunction = executableFunctions.find(
-            func =>
-              func.pkgPath === item.pkgPath && func.funcName === item.func,
+            func => func.pkgPath === item.pkgPath && func.funcName === item.func,
           );
           if (!currentFunction) {
             return true;

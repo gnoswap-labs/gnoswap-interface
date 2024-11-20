@@ -16,7 +16,7 @@ const tokenA: TokenModel = {
   symbol: "FOO",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
   priceID: "gno.land/r/foo",
-  address: ""
+  address: "",
 };
 const tokenB: TokenModel = {
   type: "grc20",
@@ -28,9 +28,8 @@ const tokenB: TokenModel = {
   symbol: "FOO",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
   priceID: "gno.land/r/foo",
-  address: ""
+  address: "",
 };
-
 
 describe("SwapLiquidity Component", () => {
   it("SwapLiquidity render", () => {

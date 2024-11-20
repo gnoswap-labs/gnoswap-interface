@@ -16,9 +16,7 @@ export class PositionHistoryMapper {
     };
   }
 
-  public static fromList(
-    res: ActivityResponse,
-  ): IPositionHistoryModel[] {
+  public static fromList(res: ActivityResponse): IPositionHistoryModel[] {
     return res.map(PositionHistoryMapper.from);
   }
 }

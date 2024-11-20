@@ -29,17 +29,14 @@ export const PoolAddConfirmFeeInfoWrapper = styled.div`
   }
 `;
 
-export const PoolAddConfirmFeeInfoSection = styled(
-  EarnAddConfirmContentSection,
-)<{ $hasError: boolean }>`
+export const PoolAddConfirmFeeInfoSection = styled(EarnAddConfirmContentSection)<{ $hasError: boolean }>`
   height: 60px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   color: ${({ theme }) => theme.color.text01};
   background: ${({ theme }) => theme.color.background20};
-  border: ${({ $hasError, theme }) =>
-    $hasError && `1px solid ${theme.color.red01}`};
+  border: ${({ $hasError, theme }) => $hasError && `1px solid ${theme.color.red01}`};
   ${fonts.body9}
   margin-top: 8px;
   ${({ $hasError }) => ($hasError ? "margin-bottom: 6px;" : "")};

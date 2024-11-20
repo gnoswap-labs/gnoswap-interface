@@ -12,13 +12,7 @@ interface Custom500LayoutProps {
   themeKey: "dark" | "light";
 }
 
-const Custom500Layout: React.FC<Custom500LayoutProps> = ({
-  header,
-  icon404,
-  goBackClick,
-  footer,
-  themeKey,
-}) => {
+const Custom500Layout: React.FC<Custom500LayoutProps> = ({ header, icon404, goBackClick, footer, themeKey }) => {
   const { t } = useTranslation();
 
   return (

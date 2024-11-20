@@ -16,11 +16,7 @@ const SwapPageButton = ({
   const { t } = useTranslation();
 
   return (
-    <SwapPageButtonWrapper
-      className={className ? className : ""}
-      onClick={onClick}
-      disabled={disabled}
-    >
+    <SwapPageButtonWrapper className={className ? className : ""} onClick={onClick} disabled={disabled}>
       <span>{t("Launchpad:common.button.swapPage")}</span>
       <IconChevronRight />
     </SwapPageButtonWrapper>

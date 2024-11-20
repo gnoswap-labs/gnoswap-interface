@@ -27,21 +27,12 @@ interface Props {
 }
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
-  const utcDate = dayjs(
-    Date.parse(`${myDate?.year}-${myDate?.month}-${myDate?.date || 0}`),
-  ).add(days || 0, "day");
+  const utcDate = dayjs(Date.parse(`${myDate?.year}-${myDate?.month}-${myDate?.date || 0}`)).add(days || 0, "day");
   const formattedDate = getDateUtcToLocal(utcDate.toDate());
   return formattedDate.value;
 }
 
-const IncentivizePoolModal: React.FC<Props> = ({
-  close,
-  onSubmit,
-  date,
-  period,
-  data,
-  pool,
-}) => {
+const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, data, pool }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
 
@@ -63,9 +54,7 @@ const IncentivizePoolModal: React.FC<Props> = ({
             <h4>{t("IncentivizePool:confirmModal.row.title")}</h4>
             <div className="item-content">
               <div>
-                <div className="label">
-                  {t("IncentivizePool:confirmModal.row.label.pool")}
-                </div>
+                <div className="label">{t("IncentivizePool:confirmModal.row.label.pool")}</div>
                 <div className="value-content">
                   <OverlapTokenLogo
                     tokens={
@@ -77,19 +66,13 @@ const IncentivizePoolModal: React.FC<Props> = ({
                     size={24}
                   />
                   <div className="value">
-                    {pool ? pool?.tokenA.symbol : ""}/
-                    {pool ? pool?.tokenB.symbol : ""}
+                    {pool ? pool?.tokenA.symbol : ""}/{pool ? pool?.tokenB.symbol : ""}
                   </div>
-                  <Badge
-                    type={BADGE_TYPE.DARK_DEFAULT}
-                    text={`${Number(pool?.fee) / 10000}%`}
-                  />
+                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text={`${Number(pool?.fee) / 10000}%`} />
                 </div>
               </div>
               <div>
-                <div className="label">
-                  {t("IncentivizePool:incenDetail.row.label.totalAmt")}
-                </div>
+                <div className="label">{t("IncentivizePool:incenDetail.row.label.totalAmt")}</div>
                 <div className="value-content">
                   <MissingLogo
                     symbol={getGnotPath(data?.token)?.symbol}
@@ -97,15 +80,12 @@ const IncentivizePoolModal: React.FC<Props> = ({
                     url={getGnotPath(data?.token)?.logoURI || ""}
                   />
                   <div className="value">
-                    {Number(data?.amount).toLocaleString()}{" "}
-                    {data?.token?.symbol}
+                    {Number(data?.amount).toLocaleString()} {data?.token?.symbol}
                   </div>
                 </div>
               </div>
               <div>
-                <div className="label">
-                  {t("IncentivizePool:incenDetail.row.label.period")}
-                </div>
+                <div className="label">{t("IncentivizePool:incenDetail.row.label.period")}</div>
                 <div className="value-content value-content-column">
                   <DateTimeTooltip>
                     <div className="value">
@@ -114,9 +94,7 @@ const IncentivizePoolModal: React.FC<Props> = ({
                   </DateTimeTooltip>
                   <div className="sub-value">
                     {t("IncentivizePool:confirmModal.row.value.period.desc", {
-                      amount: Number(
-                        (Number(data?.amount || 0) / period).toFixed(2),
-                      ).toLocaleString(),
+                      amount: Number((Number(data?.amount || 0) / period).toFixed(2)).toLocaleString(),
                       symbol: data?.token?.symbol,
                     })}
                   </div>

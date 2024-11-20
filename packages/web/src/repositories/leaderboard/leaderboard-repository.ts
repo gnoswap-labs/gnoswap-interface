@@ -14,15 +14,9 @@ import {
 export interface LeaderboardRepository {
   getLeaders: (request: GetLeadersRequest) => Promise<GetLeadersResponse>;
 
-  getLeaderByAddress: (
-    request: GetLeaderByAddressRequest,
-  ) => Promise<GetLeaderByAddressResponse>;
+  getLeaderByAddress: (request: GetLeaderByAddressRequest) => Promise<GetLeaderByAddressResponse>;
 
-  updateLeaderByAddress: (
-    request: UpdateLeaderByAddressRequest,
-  ) => Promise<UpdateLeaderByAddressResponse>;
+  updateLeaderByAddress: (request: UpdateLeaderByAddressRequest) => Promise<UpdateLeaderByAddressResponse>;
 
-  getNextUpdateTime: (
-    request: GetNextUpdateTimeRequest,
-  ) => Promise<GetNextUpdateTimeResponse>;
+  getNextUpdateTime: (request: GetNextUpdateTimeRequest) => Promise<GetNextUpdateTimeResponse>;
 }

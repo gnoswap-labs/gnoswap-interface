@@ -48,12 +48,7 @@ export const useCreateProposalModal = (): CreateProposalModalModel => {
   }, []);
 
   const openModal = useCallback((options: CreateProposalModalOpenOption) => {
-    setModalContent(
-      <CreateProposalModal
-        setIsOpenCreateModal={setIsOpenCreateModal}
-        {...options}
-      />,
-    );
+    setModalContent(<CreateProposalModal setIsOpenCreateModal={setIsOpenCreateModal} {...options} />);
     setOpenedModal(true);
   }, []);
 

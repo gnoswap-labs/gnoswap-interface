@@ -1,12 +1,6 @@
 import { ListHead, TableHeader } from "./LeaderboardTableHeader.styles";
 
-const LeaderboardTableHeader = ({
-  heads,
-  headWidths,
-}: {
-  heads: string[];
-  headWidths: number[];
-}) => {
+const LeaderboardTableHeader = ({ heads, headWidths }: { heads: string[]; headWidths: number[] }) => {
   return (
     <ListHead>
       {heads.map((head, index) => (

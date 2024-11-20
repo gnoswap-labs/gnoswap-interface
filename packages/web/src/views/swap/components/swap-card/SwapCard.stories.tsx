@@ -14,8 +14,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     path: "gno.land/r/foo",
     decimals: 4,
     symbol: "FOO",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
     address: "",
   },
@@ -27,8 +26,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     path: "gno.land/r/foo",
     decimals: 4,
     symbol: "FOO",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
     address: "",
   },
@@ -60,8 +58,7 @@ export const swapRouteInfos: SwapRouteInfo[] = [
       path: "gno.land/r/foo",
       decimals: 4,
       symbol: "FOO",
-      logoURI:
-        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
       priceID: "gno.land/r/foo",
       address: "",
     },
@@ -73,8 +70,7 @@ export const swapRouteInfos: SwapRouteInfo[] = [
       path: "gno.land/r/foo",
       decimals: 4,
       symbol: "FOO",
-      logoURI:
-        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
       priceID: "gno.land/r/foo",
       address: "",
     },

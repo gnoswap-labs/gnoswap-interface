@@ -18,10 +18,7 @@ interface BreadcrumbsProps {
   onClickPath: (path: string) => void;
 }
 
-const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({
-  steps,
-  onClickPath,
-}) => {
+const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
@@ -43,10 +40,7 @@ const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({
       const lastPath = tokenPathArr[tokenPathArr?.length - 1];
 
       if (lastPath.length >= 12) {
-        return (
-          "..." +
-          tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1)
-        );
+        return "..." + tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1);
       }
 
       return path_.replace("gno.land", "...");
@@ -71,15 +65,9 @@ const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({
       return (
         <div className="token-symbol-path">
           <div className="token-title">{step.title}</div>
-          <div
-            className="token-path"
-            onClick={e => onClickTokenPath(e, step.options?.token?.path ?? "")}
-          >
+          <div className="token-path" onClick={e => onClickTokenPath(e, step.options?.token?.path ?? "")}>
             <div>{tokenPathDisplay(step.options.token)}</div>
-            <IconOpenLink
-              fill={theme.color.text04}
-              className="path-link-icon"
-            />
+            <IconOpenLink fill={theme.color.text04} className="path-link-icon" />
           </div>
         </div>
       );
@@ -99,9 +87,7 @@ const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({
             >
               {renderTitle(step)}
             </span>
-            {step !== steps.at(-1) && (
-              <IconStrokeArrowRight className="step-icon" />
-            )}
+            {step !== steps.at(-1) && <IconStrokeArrowRight className="step-icon" />}
           </React.Fragment>
         );
       })}

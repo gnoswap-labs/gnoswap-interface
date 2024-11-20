@@ -7,9 +7,7 @@ import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 1_000;
 
-export const useEmitTransactionEvents = (
-  options?: UseQueryOptions<Event<string[]>[], Error>,
-) => {
+export const useEmitTransactionEvents = (options?: UseQueryOptions<Event<string[]>[], Error>) => {
   const { statusRepository, eventStore } = useGnoswapContext();
 
   return useQuery<Event<string[]>[], Error>({

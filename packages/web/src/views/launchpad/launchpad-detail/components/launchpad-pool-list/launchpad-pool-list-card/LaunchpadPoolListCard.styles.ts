@@ -19,16 +19,10 @@ export const CardWrapper = styled.div`
   &.ongoing {
     cursor: pointer;
     &:hover {
-      background: ${({ theme }) =>
-        theme.themeKey === "dark"
-          ? theme.color.background05Hover
-          : theme.color.hover01};
+      background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background05Hover : theme.color.hover01)};
     }
     &.active {
-      background: ${({ theme }) =>
-        theme.themeKey === "dark"
-          ? theme.color.background05Hover
-          : theme.color.hover01};
+      background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background05Hover : theme.color.hover01)};
       border: 1px solid var(--border-gradient, #869dff);
     }
   }
@@ -52,18 +46,10 @@ export const CardWrapper = styled.div`
       white-space: nowrap;
     }
     .chip {
-      color: ${({ theme }) =>
-        theme.themeKey === "dark" ? theme.color.text06 : theme.color.text04};
-      background: ${({ theme }) =>
-        theme.themeKey === "dark"
-          ? theme.color.background03
-          : theme.color.background11};
+      color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text06 : theme.color.text04)};
+      background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background03 : theme.color.background11)};
       border-radius: 4px;
-      border: 1px solid
-        ${({ theme }) =>
-          theme.themeKey === "dark"
-            ? theme.color.border03
-            : theme.color.border01};
+      border: 1px solid ${({ theme }) => (theme.themeKey === "dark" ? theme.color.border03 : theme.color.border01)};
       padding: 4px 6px;
       font-size: 12px;
       font-weight: 400;
@@ -72,8 +58,7 @@ export const CardWrapper = styled.div`
 
   .card-description {
     /* color: ${({ theme }) => theme.color.text03}; */
-    color: ${({ theme }) =>
-      theme.themeKey === "dark" ? "#596782" : theme.color.text03};
+    color: ${({ theme }) => (theme.themeKey === "dark" ? "#596782" : theme.color.text03)};
     width: 100%;
     font-size: 14px;
     font-weight: 500;
@@ -99,11 +84,9 @@ export const CardWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
       width: 100%;
-      color: ${({ theme }) =>
-        theme.themeKey === "dark" ? "#e0e8f4" : "#1C2230"};
+      color: ${({ theme }) => (theme.themeKey === "dark" ? "#e0e8f4" : "#1C2230")};
       &.ended {
-        color: ${({ theme }) =>
-          theme.themeKey === "dark" ? theme.color.text05 : "#C3D2EA"};
+        color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : "#C3D2EA")};
       }
     }
   }

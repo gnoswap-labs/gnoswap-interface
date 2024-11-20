@@ -40,9 +40,10 @@ describe("AssetReceiveModal Component", () => {
                 <AssetReceiveModal {...mockProps} />
               </GnoswapServiceProvider>
             </GnoswapThemeProvider>
-          </JotaiProvider>,
+          </JotaiProvider>
+          ,
         </QueryClientProvider>
-      </AppRouterContext.Provider>
+      </AppRouterContext.Provider>,
     );
   });
 });

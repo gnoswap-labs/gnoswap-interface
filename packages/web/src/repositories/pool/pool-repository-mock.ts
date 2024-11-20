@@ -1,19 +1,12 @@
 import { PoolRepository } from ".";
 
-import {
-  SendTransactionResponse,
-  WalletResponse,
-} from "@common/clients/wallet-client/protocols";
+import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { PoolError } from "@common/errors/pool";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import {
-  IncentivizePoolModel,
-  IPoolDetailResponse,
-  PoolModel,
-} from "@models/pool/pool-model";
+import { IncentivizePoolModel, IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
@@ -73,17 +66,13 @@ export class PoolRepositoryMock implements PoolRepository {
     throw new Error("Not implements");
   };
 
-  getPoolDetailByPath = async (
-    poolPath: string,
-  ): Promise<IPoolDetailResponse> => {
+  getPoolDetailByPath = async (poolPath: string): Promise<IPoolDetailResponse> => {
     console.log(poolPath);
 
     return PoolDetailDataByPath as IPoolDetailResponse;
   };
 
-  createExternalIncentive = async (): Promise<WalletResponse<
-    SendTransactionResponse<string[] | null>
-  > | null> => {
+  createExternalIncentive = async (): Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null> => {
     return null;
   };
 

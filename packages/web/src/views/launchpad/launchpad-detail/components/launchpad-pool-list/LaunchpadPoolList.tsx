@@ -26,15 +26,11 @@ const LaunchpadPoolList: React.FC<LaunchpadPoolListProps> = ({
   isLoading,
   selectProjectPool,
 }) => {
-  const [, setSelectLaunchpadPool] = useAtom(
-    LaunchpadState.selectLaunchpadPool,
-  );
+  const [, setSelectLaunchpadPool] = useAtom(LaunchpadState.selectLaunchpadPool);
   const isInitialMount = React.useRef(true);
 
   const sortedPools = React.useMemo(() => {
-    return [...pools].sort(
-      (a, b) => getTierNumber(b.poolTier) - getTierNumber(a.poolTier),
-    );
+    return [...pools].sort((a, b) => getTierNumber(b.poolTier) - getTierNumber(a.poolTier));
   }, [pools]);
 
   const defaultSelectPool = React.useCallback(() => {

@@ -1,11 +1,5 @@
 import { useAtom } from "jotai";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -78,64 +72,44 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   mostLiquidity,
   popularTokens,
   recents,
+  tokens,
 }) => {
   const { t } = useTranslation();
 
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
 
   const [, setRecentsData] = useAtom(TokenState.recents);
-  const [widthListPopular, setWidthListPopular] = useState<number[]>(
-    popularTokens.map(() => 0),
-  );
-  const [widthListRecent, setWidthListRecent] = useState<number[]>(
-    recents.map(() => 0),
-  );
-  const [tokenNameRecentWidthList, setTokenNameRecentWidthList] = useState<
-    number[]
-  >(recents.map(() => 0));
-  const [tokenNamePopularWidthList, setTokenNamePopularWidthList] = useState<
-    number[]
-  >(popularTokens.map(() => 0));
+  const [widthListPopular, setWidthListPopular] = useState<number[]>(popularTokens.map(() => 0));
+  const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => 0));
+  const [tokenNameRecentWidthList, setTokenNameRecentWidthList] = useState<number[]>(recents.map(() => 0));
+  const [tokenNamePopularWidthList, setTokenNamePopularWidthList] = useState<number[]>(popularTokens.map(() => 0));
 
-  const tokenNamePopularRef = useRef(
-    popularTokens.map(() => React.createRef<HTMLSpanElement>()),
-  );
-  const tokenNameRecentsRef = useRef(
-    recents.map(() => React.createRef<HTMLSpanElement>()),
-  );
-  const recentPriceRef = useRef(
-    recents.map(() => React.createRef<HTMLDivElement>()),
-  );
-  const popularPriceRef = useRef(
-    popularTokens.map(() => React.createRef<HTMLDivElement>()),
-  );
+  const tokenNamePopularRef = useRef(popularTokens.map(() => React.createRef<HTMLSpanElement>()));
+  const tokenNameRecentsRef = useRef(recents.map(() => React.createRef<HTMLSpanElement>()));
+  const recentPriceRef = useRef(recents.map(() => React.createRef<HTMLDivElement>()));
+  const popularPriceRef = useRef(popularTokens.map(() => React.createRef<HTMLDivElement>()));
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const popularTokenKey = useMemo(
-    () => popularTokens.map(token => token.path).join(","),
-    [popularTokens],
-  );
+  const popularTokenKey = useMemo(() => popularTokens.map(token => token.path).join(","), [popularTokens]);
 
-  const recentKey = useMemo(
-    () => recents.map(token => token.path).join(","),
-    [recents],
-  );
-
+  const recentKey = useMemo(() => recents.map(token => token.path).join(","), [recents]);
   const onClickItem = (item: Token) => {
     const current = recents.length > 0 ? [item, recents[0]] : [item];
 
     setRecentsData(
       JSON.stringify(
-        current.filter((_item, index) => {
-          const _value = JSON.stringify(_item);
-          return (
-            index ===
-            current.findIndex(obj => {
-              return JSON.stringify(obj) === _value;
-            })
-          );
-        }),
+        current
+          .filter(recentToken => tokens.some(token => token.token.path === recentToken.token.path))
+          .filter((_item, index) => {
+            const _value = JSON.stringify(_item);
+            return (
+              index ===
+              current.findIndex(obj => {
+                return JSON.stringify(obj) === _value;
+              })
+            );
+          }),
       ),
     );
     onSearchMenuToggle();
@@ -223,13 +197,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       const replacedPath = path_.replace("gno.land", "");
 
       if (replacedPath.length >= length) {
-        return (
-          "..." +
-          replacedPath.slice(
-            replacedPath.length - length,
-            replacedPath.length - 1,
-          )
-        );
+        return "..." + replacedPath.slice(replacedPath.length - length, replacedPath.length - 1);
       }
 
       return path_.replace("gno.land", "...");
@@ -243,27 +211,19 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
         <div ref={menuRef}>
           <SearchContainer>
             <SearchWrapper>
-              <InputStyle
-                placeholder={placeholder}
-                value={keyword}
-                onChange={search}
-              />
+              <InputStyle placeholder={placeholder} value={keyword} onChange={search} />
               <IconSearch className="search-icon" />
             </SearchWrapper>
           </SearchContainer>
           <ModalContainer>
             <ul>
-              {popularTokens.length === 0 &&
-                mostLiquidity.length === 0 &&
-                isFetched && (
-                  <div className="no-data-found">{t("common:noDataFound")}</div>
-                )}
+              {popularTokens.length === 0 && mostLiquidity.length === 0 && isFetched && (
+                <div className="no-data-found">{t("common:noDataFound")}</div>
+              )}
               {!keyword && recents.length > 0 && isFetched && (
                 <>
                   <div className="recent-searches">
-                    {!keyword
-                      ? t("Modal:search.recentSearch")
-                      : t("Modal:search.tokens")}
+                    {!keyword ? t("Modal:search.recentSearch") : t("Modal:search.tokens")}
                   </div>
                   {recents.map((item, idx) =>
                     !item.isLiquid ? (
@@ -282,39 +242,25 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             tokenNameWidthList={tokenNameRecentWidthList[idx]}
                           >
                             <div>
-                              <span
-                                className="token-name"
-                                ref={tokenNameRecentsRef.current[idx]}
-                              >
+                              <span className="token-name" ref={tokenNameRecentsRef.current[idx]}>
                                 {item.token.name.length > length
                                   ? `${item.token.name.slice(0, length)}...`
                                   : item.token.name}
                               </span>
                               <div
                                 className="token-path"
-                                onClick={(
-                                  e: React.MouseEvent<
-                                    HTMLDivElement,
-                                    MouseEvent
-                                  >,
-                                ) => onClickPath(e, item.token.path)}
+                                onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+                                  onClickPath(e, item.token.path)
+                                }
                               >
-                                <div>
-                                  {getTokenPathDisplay(
-                                    item.token.path,
-                                    item.isNative,
-                                  )}
-                                </div>
+                                <div>{getTokenPathDisplay(item.token.path, item.isNative)}</div>
                                 <IconNewTab />
                               </div>
                             </div>
                             <span>{item.token.symbol}</span>
                           </TokenInfoWrapper>
                         </div>
-                        <div
-                          className="coin-infor-value"
-                          ref={recentPriceRef.current[idx]}
-                        >
+                        <div className="coin-infor-value" ref={recentPriceRef.current[idx]}>
                           <span className="token-price">{item.price}</span>
                           {item.priceOf1d.status !== "NEGATIVE" ? (
                             <span className="positive">
@@ -342,10 +288,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           <span className="token-name">
                             {item.token.symbol}/{item?.tokenB?.symbol}
                           </span>
-                          <Badge
-                            text={item.fee}
-                            type={BADGE_TYPE.DARK_DEFAULT}
-                          />
+                          <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
                         </div>
                         <div className="coin-infor-value">
                           <span className="token-price">{item.price}</span>
@@ -359,9 +302,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
               {popularTokens.length > 0 && (
                 <>
                   <div className="popular-tokens">
-                    {!keyword
-                      ? t("Modal:search.popular")
-                      : t("Modal:search.tokens")}
+                    {!keyword ? t("Modal:search.popular") : t("Modal:search.tokens")}
                   </div>
                   {popularTokens.map((item, idx) => (
                     <li key={idx} onClick={() => onClickItem(item)}>
@@ -379,36 +320,25 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           tokenNameWidthList={tokenNamePopularWidthList[idx]}
                         >
                           <div>
-                            <span
-                              className="token-name"
-                              ref={tokenNamePopularRef.current[idx]}
-                            >
+                            <span className="token-name" ref={tokenNamePopularRef.current[idx]}>
                               {item.token.name.length > length
                                 ? `${item.token.name.slice(0, length)}...`
                                 : item.token.name}
                             </span>
                             <div
                               className="token-path"
-                              onClick={(
-                                e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-                              ) => onClickPath(e, item.token.path)}
+                              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+                                onClickPath(e, item.token.path)
+                              }
                             >
-                              <div>
-                                {getTokenPathDisplay(
-                                  item.token.path,
-                                  item.isNative,
-                                )}
-                              </div>
+                              <div>{getTokenPathDisplay(item.token.path, item.isNative)}</div>
                               <IconNewTab />
                             </div>
                           </div>
                           <span>{item.token.symbol}</span>
                         </TokenInfoWrapper>
                       </div>
-                      <div
-                        className="coin-infor-value"
-                        ref={popularPriceRef.current[idx]}
-                      >
+                      <div className="coin-infor-value" ref={popularPriceRef.current[idx]}>
                         <span className="token-price">{item.price}</span>
                         {item.priceOf1d.status !== "NEGATIVE" ? (
                           <span className="positive">
@@ -428,9 +358,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
               {mostLiquidity.length > 0 && (
                 <>
                   <div className="popular-tokens">
-                    {!keyword
-                      ? t("Modal:search.mostLiquiPools")
-                      : t("Modal:search.pools")}
+                    {!keyword ? t("Modal:search.mostLiquiPools") : t("Modal:search.pools")}
                   </div>
                   {mostLiquidity.map((item, idx) => (
                     <li key={idx} onClick={() => onClickItem(item)}>

@@ -7,9 +7,7 @@ export class PoolStakingMapper {
     return poolStakings.map(PoolStakingMapper.fromResponse);
   }
 
-  public static fromResponse(
-    poolStaking: PoolStakingResponse,
-  ): PoolStakingModel {
+  public static fromResponse(poolStaking: PoolStakingResponse): PoolStakingModel {
     return {
       ...poolStaking,
       incentiveType: poolStaking.incentiveType as INCENTIVE_TYPE,

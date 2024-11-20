@@ -16,9 +16,7 @@ export interface OverlapTokenLogoImageProps {
   overlap: number;
 }
 
-export const OverlapTokenLogoImageWrapper = styled.div<
-  OverlapTokenLogoImageProps
->`
+export const OverlapTokenLogoImageWrapper = styled.div<OverlapTokenLogoImageProps>`
   ${mixins.flexbox("row", "center", "center")};
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
@@ -29,7 +27,6 @@ export const OverlapTokenLogoImageWrapper = styled.div<
     height: ${({ size }) => `${size}px`};
     border-radius: 50%;
   }
-
 `;
 
 export const TokenSymbolWrapper = styled.div`

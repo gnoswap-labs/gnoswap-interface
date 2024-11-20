@@ -90,13 +90,10 @@ const AssetSendModal: React.FC<Props> = ({
     [setAmount],
   );
 
-  const onChangeAddress = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setAddress(value);
-    },
-    [],
-  );
+  const onChangeAddress = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setAddress(value);
+  }, []);
 
   const onSubmit = () => {
     if (!withdrawInfo || !account?.address) return;
@@ -120,16 +117,12 @@ const AssetSendModal: React.FC<Props> = ({
     !address ||
     !withdrawInfo ||
     !isValidAddress(address) ||
-    BigNumber(amount || "0").isGreaterThan(
-      BigNumber(currentAvailableBalance || "0"),
-    );
+    BigNumber(amount || "0").isGreaterThan(BigNumber(currentAvailableBalance || "0"));
 
   const estimateFee = useMemo(() => 0.000001, []);
 
   const estimateFeeUSD = useMemo(
-    () =>
-      0.000001 *
-      (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0),
+    () => 0.000001 * (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0),
     [nativeToken?.wrappedPath, tokenPrices],
   );
 
@@ -138,9 +131,7 @@ const AssetSendModal: React.FC<Props> = ({
       withdrawInfo?.wrappedPath && !!amount && amount !== "0"
         ? formatPrice(
             BigNumber(+amount)
-              .multipliedBy(
-                Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
-              )
+              .multipliedBy(Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"))
               .toString(),
             {
               usd: true,
@@ -167,15 +158,13 @@ const AssetSendModal: React.FC<Props> = ({
       return t("Wallet:assetSendModal.btn.lowAmt");
     }
     if (
-      (currentAvailableBalance &&
-        BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) ||
+      (currentAvailableBalance && BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) ||
       !Number(amount || 0)
     ) {
       return t("common:btn.insuffiBal");
     }
     if (address === "") return t("Wallet:assetSendModal.btn.enterAddr");
-    if (!isValidAddress(address))
-      return t("Wallet:assetSendModal.btn.invalidAddr");
+    if (!isValidAddress(address)) return t("Wallet:assetSendModal.btn.invalidAddr");
     return t("Wallet:assets.col.assetSend");
   }, [address, amount, currentAvailableBalance, withdrawInfo, t]);
 
@@ -202,31 +191,19 @@ const AssetSendModal: React.FC<Props> = ({
             </div>
 
             <AssetSendContent>
-              <p className="label">
-                {t("Wallet:assetSendModal.selectToken.label")}
-              </p>
+              <p className="label">{t("Wallet:assetSendModal.selectToken.label")}</p>
               <div className="withdraw">
                 <div className="amount">
-                  <input
-                    className="amount-text"
-                    value={amount}
-                    onChange={onChangeAmount}
-                    placeholder="0"
-                  />
+                  <input className="amount-text" value={amount} onChange={onChangeAmount} placeholder="0" />
                   <div className="token">
-                    <SelectPairButton
-                      token={withdrawInfo ?? null}
-                      changeToken={changeToken}
-                      callback={callback}
-                    />
+                    <SelectPairButton token={withdrawInfo ?? null} changeToken={changeToken} callback={callback} />
                   </div>
                 </div>
                 <div className="info">
                   <span className="price-text">{estimatePrice}</span>
-                  <span
-                    className="balance-text"
-                    onClick={handleEnterAllBalanceAvailable}
-                  >{`${t("common:action.balance")}: ${
+                  <span className="balance-text" onClick={handleEnterAllBalanceAvailable}>{`${t(
+                    "common:action.balance",
+                  )}: ${
                     currentAvailableBalance
                       ? formatPrice(currentAvailableBalance, {
                           isKMB: false,
@@ -241,27 +218,19 @@ const AssetSendModal: React.FC<Props> = ({
             <AssetSendContent>
               <div className="title">
                 <label>{t("Wallet:assetSendModal.network.label")}</label>
-                <WithdrawTooltip
-                  tooltip={t("Wallet:assetSendModal.network.tooltip")}
-                />
+                <WithdrawTooltip tooltip={t("Wallet:assetSendModal.network.tooltip")} />
               </div>
 
               <div className="withdraw">
                 <div className="withdrawal-network">
                   <div className="network">
-                    <img
-                      src={DEFAULT_WITHDRAW_GNOT.logoURI}
-                      alt="token logo"
-                      className="token-logo"
-                    />
+                    <img src={DEFAULT_WITHDRAW_GNOT.logoURI} alt="token logo" className="token-logo" />
                     <span className="token-symbol">Gnoland (GRC20)</span>
                   </div>
 
                   <div className="approximately">
                     {t("Wallet:assetSendModal.second", {
-                      avgBlockTime: (
-                        Math.floor(avgBlockTime * 10) / 10
-                      ).toFixed(1),
+                      avgBlockTime: (Math.floor(avgBlockTime * 10) / 10).toFixed(1),
                     })}
                   </div>
                 </div>
@@ -271,9 +240,7 @@ const AssetSendModal: React.FC<Props> = ({
             <AssetSendContent>
               <div className="title">
                 <label>{t("Wallet:assetSendModal.addr.label")}</label>
-                <WithdrawTooltip
-                  tooltip={t("Wallet:assetSendModal.addr.tooltip")}
-                />
+                <WithdrawTooltip tooltip={t("Wallet:assetSendModal.addr.tooltip")} />
               </div>
 
               <div className="withdraw">
@@ -299,11 +266,7 @@ const AssetSendModal: React.FC<Props> = ({
                     <li>{t("Wallet:assetSendModal.warning.content3")}</li>
                   </ul>
 
-                  <a
-                    href="https://beta.gnoswap.io/"
-                    target="_blank"
-                    className="learn-more-box"
-                  >
+                  <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
                     <p>{t("common:learnMore")}</p>
                     <IconNewTab color={theme.color.icon21} />
                   </a>
@@ -312,9 +275,7 @@ const AssetSendModal: React.FC<Props> = ({
             />
             <AssetSendContent>
               <div className="estimate-box">
-                <p className="estimate-fee">
-                  {t("Wallet:assetSendModal.estNetFee")}
-                </p>
+                <p className="estimate-fee">{t("Wallet:assetSendModal.estNetFee")}</p>
                 <p className="tokens-fee">{`${estimateFee} GNOT${estimatedPrice}`}</p>
               </div>
             </AssetSendContent>
@@ -328,12 +289,8 @@ const AssetSendModal: React.FC<Props> = ({
                 fullWidth: true,
                 textColor: "text09",
                 fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-                hierarchy:
-                  connected && !isDisabledWithdraw
-                    ? ButtonHierarchy.Primary
-                    : undefined,
-                bgColor:
-                  !connected || isDisabledWithdraw ? "background17" : undefined,
+                hierarchy: connected && !isDisabledWithdraw ? ButtonHierarchy.Primary : undefined,
+                bgColor: !connected || isDisabledWithdraw ? "background17" : undefined,
               }}
             />
           </div>
@@ -347,9 +304,7 @@ const AssetSendModal: React.FC<Props> = ({
 export default AssetSendModal;
 
 export const WithdrawTooltip: React.FC<{ tooltip: string }> = ({ tooltip }) => {
-  const TooltipFloatingContent = (
-    <AssetSendTooltipContent>{tooltip}</AssetSendTooltipContent>
-  );
+  const TooltipFloatingContent = <AssetSendTooltipContent>{tooltip}</AssetSendTooltipContent>;
 
   return (
     <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>

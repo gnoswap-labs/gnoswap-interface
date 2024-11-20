@@ -7,9 +7,7 @@ import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 60_000;
 
-export const useGetDelegatees = (
-  options?: UseQueryOptions<DelegateeInfo[], Error>,
-) => {
+export const useGetDelegatees = (options?: UseQueryOptions<DelegateeInfo[], Error>) => {
   const { governanceRepository } = useGnoswapContext();
 
   return useQuery<DelegateeInfo[], Error>({

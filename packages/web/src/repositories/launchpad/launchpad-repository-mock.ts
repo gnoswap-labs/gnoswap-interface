@@ -28,17 +28,14 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
   getLaunchpadSummary(): Promise<GetLaunchpadSummaryResponse> {
     return new Promise(resolve =>
       setTimeout(resolve, LaunchpadRepositoryMock.LOADING_DURATION),
-    ).then<GetLaunchpadSummaryResponse>(
-      () => MockLaunchpadSummaryResponse.data,
-    );
+    ).then<GetLaunchpadSummaryResponse>(() => MockLaunchpadSummaryResponse.data);
   }
 
   getLaunchpadProjects(): Promise<GetLaunchpadProjectsResponse> {
     return new Promise(resolve =>
       setTimeout(resolve, LaunchpadRepositoryMock.LOADING_DURATION),
     ).then<GetLaunchpadProjectsResponse>(
-      () =>
-        MockLaunchpadProjectListResponse.data as unknown as GetLaunchpadProjectsResponse,
+      () => MockLaunchpadProjectListResponse.data as unknown as GetLaunchpadProjectsResponse,
     );
   }
 
@@ -46,8 +43,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     return new Promise(resolve =>
       setTimeout(resolve, LaunchpadRepositoryMock.LOADING_DURATION),
     ).then<GetLaunchpadProjectDetailsResponse>(
-      () =>
-        MockLaunchpadProjectResponse.data as unknown as GetLaunchpadProjectDetailsResponse,
+      () => MockLaunchpadProjectResponse.data as unknown as GetLaunchpadProjectDetailsResponse,
     );
   }
 
@@ -55,8 +51,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     return new Promise(resolve =>
       setTimeout(resolve, LaunchpadRepositoryMock.LOADING_DURATION),
     ).then<GetLaunchpadParticipationInfosResponse>(
-      () =>
-        MockLaunchpadParticipationListResponse.data as unknown as GetLaunchpadParticipationInfosResponse,
+      () => MockLaunchpadParticipationListResponse.data as unknown as GetLaunchpadParticipationInfosResponse,
     );
   }
 
@@ -87,10 +82,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     });
   }
 
-  async collectRewardByProjectId(
-    projectId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>> {
+  async collectRewardByProjectId(projectId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -113,10 +105,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     });
   }
 
-  async collectRewardByDepositId(
-    depositId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>> {
+  async collectRewardByDepositId(depositId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -139,10 +128,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     });
   }
 
-  collectRewardWithDepositByProjectId(
-    projectId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>> {
+  collectRewardWithDepositByProjectId(projectId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -172,10 +158,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     });
   }
 
-  collectRewardWithDepositByDepositId(
-    depositId: string,
-    caller: string,
-  ): Promise<WalletResponse<{ hash: string }>> {
+  collectRewardWithDepositByDepositId(depositId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }

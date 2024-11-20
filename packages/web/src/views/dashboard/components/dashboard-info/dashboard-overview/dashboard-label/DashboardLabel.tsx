@@ -9,12 +9,8 @@ interface WalletBalanceDetailInfoProps {
   tooltip: React.ReactNode;
 }
 
-const DashboardLabel: React.FC<WalletBalanceDetailInfoProps> = ({
-  tooltip,
-}) => {
-  const TooltipFloatingContent = (
-    <DashboardLabelTooltipContent>{tooltip}</DashboardLabelTooltipContent>
-  );
+const DashboardLabel: React.FC<WalletBalanceDetailInfoProps> = ({ tooltip }) => {
+  const TooltipFloatingContent = <DashboardLabelTooltipContent>{tooltip}</DashboardLabelTooltipContent>;
 
   return (
     <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>

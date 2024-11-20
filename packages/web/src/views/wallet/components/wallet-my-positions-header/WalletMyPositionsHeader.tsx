@@ -15,13 +15,7 @@ const WalletMyPositionsHeader: React.FC = () => {
   });
   if (!isFetchedPosition || isSwitchNetwork) return null;
 
-  return (
-    <div css={wrapper}>
-      {positions.length > 0 && (
-        <h2>{`${t("Wallet:myPosi")} (${positions.length})`}</h2>
-      )}
-    </div>
-  );
+  return <div css={wrapper}>{positions.length > 0 && <h2>{`${t("Wallet:myPosi")} (${positions.length})`}</h2>}</div>;
 };
 
 export default WalletMyPositionsHeader;

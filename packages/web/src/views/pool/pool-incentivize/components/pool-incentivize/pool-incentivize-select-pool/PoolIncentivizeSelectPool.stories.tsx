@@ -23,16 +23,10 @@ const Template: ComponentStory<typeof PoolIncentivizeSelectPool> = args => {
     }
   }, []);
 
-  return (
-    <PoolIncentivizeSelectPool
-      {...args}
-      selectedPool={selectedPool}
-      select={select}
-    />
-  );
+  return <PoolIncentivizeSelectPool {...args} selectedPool={selectedPool} select={select} />;
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  pools
+  pools,
 };

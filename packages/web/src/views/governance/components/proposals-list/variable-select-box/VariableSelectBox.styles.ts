@@ -88,8 +88,7 @@ export const VariableSelectOptionsWrapper = styled.div<{
   overflow: auto;
   max-height: 183px;
 
-  ${({ theme }) =>
-    mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
+  ${({ theme }) => mixins.useScrollStyle(theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")}
 
   > .select-list {
     ${mixins.flexbox("column", "flex-start", "flex-start")};

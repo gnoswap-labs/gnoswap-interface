@@ -82,11 +82,7 @@ const OneClickStakingModal: React.FC<Props> = ({
           <div>
             <PoolAddConfirmAmountInfo {...amountInfo} />
           </div>
-          <PoolAddConfirmPriceRangeInfo
-            {...priceRangeInfo}
-            isShowStaking
-            {...amountInfo}
-          />
+          <PoolAddConfirmPriceRangeInfo {...priceRangeInfo} isShowStaking {...amountInfo} />
 
           {isPoolCreation && <PoolAddConfirmFeeInfo {...feeInfo} />}
 

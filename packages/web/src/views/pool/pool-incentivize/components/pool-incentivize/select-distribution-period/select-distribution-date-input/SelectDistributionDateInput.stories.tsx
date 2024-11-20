@@ -13,8 +13,8 @@ export const Default: StoryObj<SelectDistributionDateInputProps> = {
     date: {
       year: 2023,
       month: 10,
-      date: 1
+      date: 1,
     },
-    setDate: action("date")
+    setDate: action("date"),
   },
 };

@@ -26,9 +26,7 @@ interface LaunchpadActiveProjectsCardListProps {
   moveProjectDetail: (poolId: string) => void;
 }
 
-const LaunchpadActiveProjectsCardList: React.FC<
-  LaunchpadActiveProjectsCardListProps
-> = ({
+const LaunchpadActiveProjectsCardList: React.FC<LaunchpadActiveProjectsCardListProps> = ({
   activeProjectList,
   showLoadMore,
   loadMore,
@@ -50,11 +48,7 @@ const LaunchpadActiveProjectsCardList: React.FC<
         {hasData &&
           activeProjectList.map((project: LaunchpadProjectResponse) => {
             return (
-              <LaunchpadActiveProjectCard
-                key={project.id}
-                project={project}
-                moveProjectDetail={moveProjectDetail}
-              />
+              <LaunchpadActiveProjectCard key={project.id} project={project} moveProjectDetail={moveProjectDetail} />
             );
           })}
         {isFetched &&
@@ -73,19 +67,14 @@ const LaunchpadActiveProjectsCardList: React.FC<
             />
           ))}
       </ActiveProjectsGridWrapper>
-      {!isMobile && showLoadMore && (
-        <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
+      {!isMobile && showLoadMore && <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />}
+      {isMobile && isFetched && activeProjectList.length !== 0 && !isLoading && (
+        <div className="box-indicator">
+          <span className="current-page">{currentIndex}</span>
+          <span>/</span>
+          <span>{activeProjectList.length}</span>
+        </div>
       )}
-      {isMobile &&
-        isFetched &&
-        activeProjectList.length !== 0 &&
-        !isLoading && (
-          <div className="box-indicator">
-            <span className="current-page">{currentIndex}</span>
-            <span>/</span>
-            <span>{activeProjectList.length}</span>
-          </div>
-        )}
     </ActiveProjectsCardListWrapper>
   );
 };

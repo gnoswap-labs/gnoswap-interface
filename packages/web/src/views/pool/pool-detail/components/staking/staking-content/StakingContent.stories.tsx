@@ -10,9 +10,7 @@ export default {
   component: StakingContent,
 } as ComponentMeta<typeof StakingContent>;
 
-const Template: ComponentStory<typeof StakingContent> = args => (
-  <StakingContent {...args} />
-);
+const Template: ComponentStory<typeof StakingContent> = args => <StakingContent {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

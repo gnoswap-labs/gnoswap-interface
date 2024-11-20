@@ -15,4 +15,3 @@ export const TimeWrapper = styled.div`
   color: ${({ theme }) => theme.color.text02};
   ${fonts.body12}
 `;
-

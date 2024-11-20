@@ -7,17 +7,11 @@ import { useTranslation } from "react-i18next";
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import {
-  ACTIVITY_INFO,
-  MOBILE_ACTIVITY_INFO,
-} from "@constants/skeleton.constant";
+import { ACTIVITY_INFO, MOBILE_ACTIVITY_INFO } from "@constants/skeleton.constant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { ActivityData } from "@repositories/activity/responses/activity-responses";
 import { DexEvent } from "@repositories/common";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-} from "@utils/new-number-utils";
+import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 import { formatAddress } from "@utils/string-utils";
 
 import {
@@ -52,15 +46,11 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
   const { t } = useTranslation();
   const { getTxUrl } = useGnoscanUrl();
 
-  const {
-    action,
-    totalValue,
-    tokenAmountOne,
-    tokenAmountTwo,
-    account,
-    time,
-    explorerUrl,
-  } = formatActivity(item, t, getTxUrl(item.txHash));
+  const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time, explorerUrl } = formatActivity(
+    item,
+    t,
+    getTxUrl(item.txHash),
+  );
 
   return (
     <TokenInfoWrapper>
@@ -87,22 +77,13 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
           <span className="token-index">{tokenAmountTwo}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_INFO.list[4].width}>
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <TableColumnTooltipContent>{account}</TableColumnTooltipContent>
-            }
-          >
-            <span className="token-index tooltip-label">
-              {formatAddress(account || "")}
-            </span>
+          <Tooltip placement="top" FloatingContent={<TableColumnTooltipContent>{account}</TableColumnTooltipContent>}>
+            <span className="token-index tooltip-label">{formatAddress(account || "")}</span>
           </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_INFO.list[5].width}>
           <DateTimeTooltip date={time}>
-            <span className="token-index tooltip-label">
-              {dayjs(time).fromNow()}
-            </span>
+            <span className="token-index tooltip-label">{dayjs(time).fromNow()}</span>
           </DateTimeTooltip>
         </TableColumn>
       </HoverSection>
@@ -114,23 +95,16 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
   const { t } = useTranslation();
   const { getTxUrl } = useGnoscanUrl();
 
-  const {
-    action,
-    totalValue,
-    tokenAmountOne,
-    tokenAmountTwo,
-    account,
-    time,
-    explorerUrl,
-  } = formatActivity(item, t, getTxUrl(item.txHash));
+  const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time, explorerUrl } = formatActivity(
+    item,
+    t,
+    getTxUrl(item.txHash),
+  );
 
   return (
     <MobileActivitiesWrapper>
       <HoverSection>
-        <MobileTableColumn
-          className="left"
-          tdWidth={MOBILE_ACTIVITY_INFO.list[0].width}
-        >
+        <MobileTableColumn className="left" tdWidth={MOBILE_ACTIVITY_INFO.list[0].width}>
           <span className="cell">
             {action}
             <IconButton
@@ -142,41 +116,21 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
             </IconButton>
           </span>
         </MobileTableColumn>
-        <MobileTableColumn
-          className="right"
-          tdWidth={MOBILE_ACTIVITY_INFO.list[1].width}
-        >
+        <MobileTableColumn className="right" tdWidth={MOBILE_ACTIVITY_INFO.list[1].width}>
           <span className="cell">{totalValue}</span>
         </MobileTableColumn>
-        <MobileTableColumn
-          className="right"
-          tdWidth={MOBILE_ACTIVITY_INFO.list[2].width}
-        >
+        <MobileTableColumn className="right" tdWidth={MOBILE_ACTIVITY_INFO.list[2].width}>
           <span className="cell token-amount">{tokenAmountOne}</span>
         </MobileTableColumn>
-        <MobileTableColumn
-          className="right"
-          tdWidth={MOBILE_ACTIVITY_INFO.list[3].width}
-        >
+        <MobileTableColumn className="right" tdWidth={MOBILE_ACTIVITY_INFO.list[3].width}>
           <span className="cell token-amount">{tokenAmountTwo}</span>
         </MobileTableColumn>
-        <MobileTableColumn
-          className="right"
-          tdWidth={MOBILE_ACTIVITY_INFO.list[4].width}
-        >
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <TableColumnTooltipContent>{account}</TableColumnTooltipContent>
-            }
-          >
+        <MobileTableColumn className="right" tdWidth={MOBILE_ACTIVITY_INFO.list[4].width}>
+          <Tooltip placement="top" FloatingContent={<TableColumnTooltipContent>{account}</TableColumnTooltipContent>}>
             <span className="cell">{formatAddress(account)}</span>
           </Tooltip>
         </MobileTableColumn>
-        <MobileTableColumn
-          className="right"
-          tdWidth={MOBILE_ACTIVITY_INFO.list[5].width}
-        >
+        <MobileTableColumn className="right" tdWidth={MOBILE_ACTIVITY_INFO.list[5].width}>
           <DateTimeTooltip placement={"top-end"} date={time}>
             <span className="cell">{dayjs(time).fromNow()}</span>
           </DateTimeTooltip>
@@ -187,24 +141,18 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
 };
 export default ActivityInfo;
 
-const formatActivity = (
-  res: ActivityData,
-  t: TFunction<"translation", undefined>,
-  explorerUrl: string,
-): Activity => {
+const formatActivity = (res: ActivityData, t: TFunction<"translation", undefined>, explorerUrl: string): Activity => {
   const tokenASymbol = res.tokenA.symbol;
   const tokenBSymbol = res.tokenB.symbol;
   const shouldShowTokenAAmount =
-    (res.actionType !== DexEvent.CLAIM_FEE ||
-      (!!res.tokenAAmount && !!Number(res.tokenAAmount))) &&
+    (res.actionType !== DexEvent.CLAIM_FEE || (!!res.tokenAAmount && !!Number(res.tokenAAmount))) &&
     res.actionType !== DexEvent.PROPOSE_TEXT &&
     res.actionType !== DexEvent.PROPOSE_COMM_POOL_SPEND &&
     res.actionType !== DexEvent.PROPOSE_PARAM_CHANGE &&
     res.actionType !== DexEvent.EXECUTE_PROPOSAL &&
     res.actionType !== DexEvent.CANCEL_PROPOSAL;
   const shouldShowTokenBAmount =
-    res.actionType !== DexEvent.CLAIM_FEE ||
-    (!!res.tokenBAmount && !!Number(res.tokenBAmount));
+    res.actionType !== DexEvent.CLAIM_FEE || (!!res.tokenBAmount && !!Number(res.tokenBAmount));
 
   const isGovernanceEvent = (actionType: string) => {
     return (
@@ -277,19 +225,15 @@ const formatActivity = (
     })();
 
     const getSwapRelatedMessage = () => {
-      const tokenAText =
-        shouldShowTokenAAmount && tokenASymbol ? " " + tokenASymbol : "";
-      const tokenBText =
-        shouldShowTokenBAmount && tokenBSymbol ? " " + tokenBSymbol : "";
+      const tokenAText = shouldShowTokenAAmount && tokenASymbol ? " " + tokenASymbol : "";
+      const tokenBText = shouldShowTokenBAmount && tokenBSymbol ? " " + tokenBSymbol : "";
 
       const relatedTokens = res.usedTokens || 0;
 
       let conjunction = "";
       if (relatedTokens === 2 && tokenAText && tokenBText) {
         conjunction = ` ${
-          res.actionType === DexEvent.SWAP
-            ? t("common:conjunction.for")
-            : t("common:conjunction.and")
+          res.actionType === DexEvent.SWAP ? t("common:conjunction.for") : t("common:conjunction.and")
         }`;
       } else if (relatedTokens > 2) {
         conjunction = ", ";
@@ -320,15 +264,11 @@ const formatActivity = (
         case DexEvent.PROPOSE_PARAM_CHANGE:
         case DexEvent.EXECUTE_PROPOSAL:
         case DexEvent.CANCEL_PROPOSAL:
-          return (
-            <span className="symbol-text">{` #${res?.tokenAAmount} Proposal`}</span>
-          );
+          return <span className="symbol-text">{` #${res?.tokenAAmount} Proposal`}</span>;
         case DexEvent.VOTE:
           return (
             <span className="symbol-text">
-              {` ${res?.tokenBAmount
-                .slice(0, 1)
-                .toUpperCase()}${res?.tokenBAmount.slice(1)}`}
+              {` ${res?.tokenBAmount.slice(0, 1).toUpperCase()}${res?.tokenBAmount.slice(1)}`}
             </span>
           );
         default:
@@ -340,9 +280,7 @@ const formatActivity = (
     return (
       <span>
         {action}
-        {isGovernanceEvent(res.actionType)
-          ? getGovernanceRelatedMessage()
-          : getSwapRelatedMessage()}
+        {isGovernanceEvent(res.actionType) ? getGovernanceRelatedMessage() : getSwapRelatedMessage()}
       </span>
     );
   })();

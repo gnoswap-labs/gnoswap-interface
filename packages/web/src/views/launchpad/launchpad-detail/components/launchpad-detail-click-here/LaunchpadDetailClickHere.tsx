@@ -3,10 +3,7 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
 import IconArrowRight from "@components/common/icons/IconArrowRight";
-import {
-  DetailClickHereWrapper,
-  LinkButton,
-} from "./LaunchpadDetailClickHere.styles";
+import { DetailClickHereWrapper, LinkButton } from "./LaunchpadDetailClickHere.styles";
 
 const LaunchpadDetailClickHere = () => {
   const { t } = useTranslation();

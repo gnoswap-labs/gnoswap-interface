@@ -18,7 +18,7 @@ interface VoteButtonsWrapper {
   setSelectedVote: Dispatch<SetStateAction<string>>;
 }
 
-const VoteButtons : React.FC<VoteButtonsWrapper> = ({
+const VoteButtons: React.FC<VoteButtonsWrapper> = ({
   isClickable,
   breakpoint,
   votedType,
@@ -31,11 +31,7 @@ const VoteButtons : React.FC<VoteButtonsWrapper> = ({
 
   const votedBadge = useMemo(() => {
     return breakpoint !== DEVICE_TYPE.MOBILE ? (
-      <Badge
-        className="badge"
-        type={BADGE_TYPE.DARK_DEFAULT}
-        text={t("Governance:detailModal.badge.voted")}
-      />
+      <Badge className="badge" type={BADGE_TYPE.DARK_DEFAULT} text={t("Governance:detailModal.badge.voted")} />
     ) : (
       <div className="badge">
         <IconCheck />

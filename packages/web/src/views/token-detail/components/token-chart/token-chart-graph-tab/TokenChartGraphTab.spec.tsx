@@ -8,7 +8,9 @@ describe("TokenChartGraphTab Component", () => {
     const args: TokenChartGraphTabProps = {
       tabs: ["1D"],
       currentTab: "1D",
-      changeTab: () => { return; }
+      changeTab: () => {
+        return;
+      },
     };
 
     render(

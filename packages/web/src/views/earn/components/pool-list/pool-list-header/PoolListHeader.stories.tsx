@@ -12,9 +12,7 @@ export default {
   component: PoolListHeader,
 } as ComponentMeta<typeof PoolListHeader>;
 
-const Template: ComponentStory<typeof PoolListHeader> = args => (
-  <PoolListHeader {...args} />
-);
+const Template: ComponentStory<typeof PoolListHeader> = args => <PoolListHeader {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

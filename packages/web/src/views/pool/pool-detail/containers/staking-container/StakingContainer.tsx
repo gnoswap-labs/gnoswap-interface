@@ -9,10 +9,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import {
-  useGetPoolDetailByPath,
-  useGetPoolStakingListByPoolPath,
-} from "@query/pools";
+import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
@@ -41,31 +38,24 @@ const StakingContainer: React.FC = () => {
     return address;
   }, [initializedData]);
 
-  const { positions: allPositions, loading: isLoadingPosition } =
-    usePositionData({
-      address,
-      poolPath,
-      queryOption: {
-        enabled: !!poolPath,
-      },
-    });
-
-  const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(
-    poolPath || "",
-    {
+  const { positions: allPositions, loading: isLoadingPosition } = usePositionData({
+    address,
+    poolPath,
+    queryOption: {
       enabled: !!poolPath,
     },
-  );
+  });
+
+  const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(poolPath || "", {
+    enabled: !!poolPath,
+  });
 
   const { getGnotPath } = useGnotToGnot();
 
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
-  const stakedPositions = useMemo(
-    () => allPositions.filter(item => item.staked),
-    [allPositions],
-  );
+  const stakedPositions = useMemo(() => allPositions.filter(item => item.staked), [allPositions]);
   const pool = useMemo(() => {
     if (!data) return null;
     return {
@@ -181,12 +171,7 @@ const StakingContainer: React.FC = () => {
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
       loading={isLoadingPool || isLoadingPosition}
-      isOtherPosition={
-        !!(
-          (address && account?.address && address !== account?.address) ||
-          !account?.address
-        )
-      }
+      isOtherPosition={!!((address && account?.address && address !== account?.address) || !account?.address)}
     />
   );
 };

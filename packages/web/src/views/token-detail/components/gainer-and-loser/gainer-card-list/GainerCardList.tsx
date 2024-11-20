@@ -9,21 +9,14 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { TokenChangeInfo } from "@models/token/token-change-info";
 import { makeTokenRouteUrl } from "@utils/page.utils";
 
-import {
-  cardStyle,
-  loadingWrapper,
-  NameSectionWrapper
-} from "../CardListCommonStyle.styles";
+import { cardStyle, loadingWrapper, NameSectionWrapper } from "../CardListCommonStyle.styles";
 
 interface GainerCardListProps {
   gainers: TokenChangeInfo[];
   loadingGain: boolean;
 }
 
-const GainerCardList: React.FC<GainerCardListProps> = ({
-  gainers = [],
-  loadingGain,
-}) => {
+const GainerCardList: React.FC<GainerCardListProps> = ({ gainers = [], loadingGain }) => {
   const { t } = useTranslation();
 
   return (
@@ -57,8 +50,7 @@ const GainerCardList: React.FC<GainerCardListProps> = ({
               <span className="price">{gainer.price}</span>
               <span
                 className={cx("change", {
-                  negative:
-                    gainer?.change?.status === MATH_NEGATIVE_TYPE.NEGATIVE,
+                  negative: gainer?.change?.status === MATH_NEGATIVE_TYPE.NEGATIVE,
                 })}
               >
                 {gainer?.change?.value}

@@ -28,8 +28,7 @@ export const LaunchpadProjectSummaryWrapper = styled.div`
         font-size: 13px;
       }
       * {
-        fill: ${({ theme }) =>
-          theme.themeKey === "dark" ? "#596782" : "#90A2C0"};
+        fill: ${({ theme }) => (theme.themeKey === "dark" ? "#596782" : "#90A2C0")};
       }
     }
     .value {

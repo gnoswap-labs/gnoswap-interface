@@ -19,7 +19,6 @@ export const PoolIncentivizeWrapper = styled.div`
   padding: 23px;
   margin: 0 auto;
 
-
   .title {
     ${fonts.h6};
   }
@@ -32,9 +31,8 @@ export const PoolIncentivizeWrapper = styled.div`
     .title {
       margin-bottom: 8px;
     }
-
   }
-  
+
   article {
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;

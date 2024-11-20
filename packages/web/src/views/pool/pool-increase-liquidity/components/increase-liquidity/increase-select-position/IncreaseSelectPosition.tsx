@@ -15,10 +15,7 @@ import { formatRate } from "@utils/new-number-utils";
 
 import { IPriceRange } from "../../../hooks/use-increase-handle";
 
-import {
-  IncreaseSelectPositionWrapper,
-  ToolTipContentWrapper
-} from "./IncreaseSelectPosition.styles";
+import { IncreaseSelectPositionWrapper, ToolTipContentWrapper } from "./IncreaseSelectPosition.styles";
 
 export interface IncreaseSelectPositionProps {
   tokenA: TokenModel;
@@ -68,12 +65,7 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
           <p className="value">{minPriceStr}</p>
           <p className="convert-value">
             {isMobile ? (
-              <MissingLogo
-                symbol={tokenA?.symbol}
-                url={tokenA?.logoURI}
-                className="token-logo"
-                width={18}
-              />
+              <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} className="token-logo" width={18} />
             ) : (
               `1 ${tokenA?.symbol}`
             )}{" "}
@@ -85,12 +77,7 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
           <p className="value">{maxPriceStr}</p>
           <p className="convert-value">
             {isMobile ? (
-              <MissingLogo
-                symbol={tokenA?.symbol}
-                url={tokenA?.logoURI}
-                className="token-logo"
-                width={18}
-              />
+              <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} className="token-logo" width={18} />
             ) : (
               `1 ${tokenA?.symbol}`
             )}{" "}
@@ -101,15 +88,11 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
       <div className="deposit-ratio common-bg">
         <div>
           <div>
-            <p className="label">
-              {t("business:positionPriceRangeInfo.depositR.label")}
-            </p>
+            <p className="label">{t("business:positionPriceRangeInfo.depositR.label")}</p>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.depositR.desc")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.depositR.desc")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />
@@ -119,24 +102,14 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
             {priceRangeSummary.tokenARatioStr}
             {"% "}
             {isMobile ? (
-              <MissingLogo
-                symbol={tokenA?.symbol}
-                url={tokenA?.logoURI}
-                className="token-logo"
-                width={18}
-              />
+              <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} className="token-logo" width={18} />
             ) : (
               `${tokenA?.symbol}`
             )}{" "}
             / {priceRangeSummary.tokenBRatioStr}
             {"% "}
             {isMobile ? (
-              <MissingLogo
-                symbol={tokenB?.symbol}
-                url={tokenB?.logoURI}
-                className="token-logo"
-                width={18}
-              />
+              <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} className="token-logo" width={18} />
             ) : (
               `${tokenB?.symbol}`
             )}
@@ -144,15 +117,11 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
         </div>
         <div>
           <div>
-            <p className="label">
-              {t("business:positionPriceRangeInfo.capEff.label")}
-            </p>
+            <p className="label">{t("business:positionPriceRangeInfo.capEff.label")}</p>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.capEff.desc")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.capEff.desc")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />
@@ -162,15 +131,11 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
         </div>
         <div>
           <div>
-            <p className="label">
-              {t("business:positionPriceRangeInfo.feeApr.label")}
-            </p>
+            <p className="label">{t("business:positionPriceRangeInfo.feeApr.label")}</p>
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>
-                  {t("business:positionPriceRangeInfo.feeApr.desc")}
-                </ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.feeApr.desc")}</ToolTipContentWrapper>
               }
             >
               <IconInfo />

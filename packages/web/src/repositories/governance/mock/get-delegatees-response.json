@@ -17,7 +17,7 @@
   },
   {
     "name": "GnoSwap Foundation",
-    "logoUrl" : "",
+    "logoUrl": "",
     "address": "g139dn8glz9khhfwc4nxmuhcpftf0pajg8dzml8e",
     "votingPower": 92334,
     "description": "The team that works on the core contracts for GnoSwap Protocol and maintains the GnoSwap Interface and API.",

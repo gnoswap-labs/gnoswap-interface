@@ -17,7 +17,7 @@ describe("InfoBox Component", () => {
         <GnoswapThemeProvider>
           <InfoBox {...mockProps} />
         </GnoswapThemeProvider>
-      </JotaiProvider>
+      </JotaiProvider>,
     );
   });
 });

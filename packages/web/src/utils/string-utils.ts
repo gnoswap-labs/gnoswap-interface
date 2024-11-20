@@ -16,26 +16,16 @@ export function formatAddress(address: string, num?: number): string {
   const already = address.length <= fix * 2 + 3 && address.includes("...");
   if (already) return address;
 
-  return `${address.substring(0, fix)}...${address.substring(
-    address.length - fix,
-  )}`;
+  return `${address.substring(0, fix)}...${address.substring(address.length - fix)}`;
 }
 
-export function tokenPairSymbolToOneCharacter(
-  tokenPair: TokenPairInfo,
-): string {
+export function tokenPairSymbolToOneCharacter(tokenPair: TokenPairInfo): string {
   const symbol0 = tokenPair.tokenA.symbol;
   const symbol1 = tokenPair.tokenB.symbol;
   return `${symbol0}/${symbol1}`;
 }
 
-export function makePairName({
-  tokenA,
-  tokenB,
-}: {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
-}): string {
+export function makePairName({ tokenA, tokenB }: { tokenA: TokenModel; tokenB: TokenModel }): string {
   const symbolA = tokenA.symbol;
   const symbolB = tokenB.symbol;
   return `${symbolA}/${symbolB}`;
@@ -53,11 +43,7 @@ export function numberToFormat(
     isRounding?: boolean;
   } = {},
 ) {
-  const decimal = forceDecimals
-    ? decimals
-    : Number.isInteger(Number(num))
-    ? 0
-    : decimals;
+  const decimal = forceDecimals ? decimals : Number.isInteger(Number(num)) ? 0 : decimals;
 
   if (!isNumber(Number(num))) {
     return "0";
@@ -68,9 +54,7 @@ export function numberToFormat(
     const [intPart, decimalPart] = temp.split(".");
 
     if (!forceDecimals) {
-      return removeTrailingZeros(
-        intPart + "." + decimalPart.substring(0, decimal),
-      );
+      return removeTrailingZeros(intPart + "." + decimalPart.substring(0, decimal));
     }
 
     return intPart + "." + decimalPart.substring(0, decimal);
@@ -95,12 +79,7 @@ export function numberToRate(
     haveMinLimit?: boolean;
   } = {},
 ) {
-  if (
-    num === null ||
-    num === undefined ||
-    num === "" ||
-    BigNumber(num).isNaN()
-  ) {
+  if (num === null || num === undefined || num === "" || BigNumber(num).isNaN()) {
     return errorText;
   }
 
@@ -140,12 +119,7 @@ export function formatApr(
     haveMinLimit?: boolean;
   } = {},
 ) {
-  if (
-    num === null ||
-    num === undefined ||
-    num === "" ||
-    BigNumber(num).isNaN()
-  ) {
+  if (num === null || num === undefined || num === "" || BigNumber(num).isNaN()) {
     return errorText;
   }
 
@@ -179,16 +153,12 @@ export function displayTickNumber(range: number[], tick: number) {
   const rangeGapSplit = `${rangeGap}`.split(".");
   if (rangeGap > 0.1) {
     const fixedPosition = rangeGapSplit[0].length;
-    BigNumber(tick)
-      .shiftedBy(fixedPosition)
-      .shiftedBy(-fixedPosition)
-      .toFormat(0);
+    BigNumber(tick).shiftedBy(fixedPosition).shiftedBy(-fixedPosition).toFormat(0);
   }
   if (rangeGapSplit.length < 2) {
     return tick.toFixed(1);
   }
-  const fixedPosition =
-    Array.from(rangeGapSplit[1], v => v).findIndex(v => v !== "0") + 1;
+  const fixedPosition = Array.from(rangeGapSplit[1], v => v).findIndex(v => v !== "0") + 1;
   return tickToPriceStr(tick, { decimals: fixedPosition + 1 });
 }
 

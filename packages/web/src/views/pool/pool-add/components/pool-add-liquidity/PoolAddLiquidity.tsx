@@ -31,10 +31,7 @@ import SelectFeeTier from "./select-fee-tier/SelectFeeTier";
 import SelectPair from "./select-pair/SelectPair";
 import SelectPriceRangeSummary from "./select-price-range-summary/SelectPriceRangeSummary";
 
-import {
-  OutOfRangeWrapper,
-  PoolAddLiquidityWrapper,
-} from "./PoolAddLiquidity.styles";
+import { OutOfRangeWrapper, PoolAddLiquidityWrapper } from "./PoolAddLiquidity.styles";
 
 export interface PriceRangeSummary {
   depositRatio: string;
@@ -81,9 +78,7 @@ interface PoolAddLiquidityProps {
   handleSwapValue: () => void;
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
-  defaultPriceRangeRef?: React.MutableRefObject<
-    [number | null, number | null] | undefined
-  >;
+  defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
   resetPriceRangeTypeTarget: PriceRangeType;
   defaultTicks?: DefaultTick;
   isLoadingTokens?: boolean;
@@ -136,9 +131,7 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
 
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
-  const [openedPriceRange, setOpenedPriceRange] = useState(
-    isEarnAdd ? false : true,
-  );
+  const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openedSetting, setOpenedSetting] = useState(false);
   const { isLoading: isLoadingCommon } = useLoading();
 
@@ -278,19 +271,10 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
     const { minPrice, maxPrice, currentPrice } = selectPool;
 
     return (
-      ((minPrice || 0) > (currentPrice || 0) &&
-        (maxPrice || 0) > (currentPrice || 0)) ||
-      ((minPrice || 0) < (currentPrice || 0) &&
-        (maxPrice || 0) < (currentPrice || 0))
+      ((minPrice || 0) > (currentPrice || 0) && (maxPrice || 0) > (currentPrice || 0)) ||
+      ((minPrice || 0) < (currentPrice || 0) && (maxPrice || 0) < (currentPrice || 0))
     );
-  }, [
-    selectPool.selectedFullRange,
-    selectPool.minPrice,
-    selectPool.maxPrice,
-    selectPool.currentPrice,
-    tokenA,
-    tokenB,
-  ]);
+  }, [selectPool.selectedFullRange, selectPool.minPrice, selectPool.maxPrice, selectPool.currentPrice, tokenA, tokenB]);
 
   const isLoading = useMemo(
     () => selectPool.renderState() === "LOADING" || isLoadingCommon,
@@ -298,10 +282,9 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
   );
 
   const tokenPair = useMemo(() => {
-    return [
-      isKeepToken ? tokenA : tokenB,
-      !isKeepToken ? tokenA : tokenB,
-    ].filter(item => item !== null) as TokenModel[];
+    return [isKeepToken ? tokenA : tokenB, !isKeepToken ? tokenA : tokenB].filter(
+      item => item !== null,
+    ) as TokenModel[];
   }, [isKeepToken, tokenA, tokenB]);
 
   return (
@@ -309,15 +292,9 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
       <h3>{t("AddPosition:card.title")}</h3>
       <div className="select-content">
         <article className="selector-wrapper">
-          <div
-            className={`header-wrapper default-cursor ${
-              !isEarnAdd ? "disable-text" : ""
-            }`}
-          >
+          <div className={`header-wrapper default-cursor ${!isEarnAdd ? "disable-text" : ""}`}>
             <h5>{t("AddPosition:form.pairSection.label")}</h5>
-            {!isEarnAdd && existTokenPair && (
-              <OverlapTokenLogo tokens={tokenPair} size={32} />
-            )}
+            {!isEarnAdd && existTokenPair && <OverlapTokenLogo tokens={tokenPair} size={32} />}
           </div>
           {openedSelectPair && (
             <SelectPair
@@ -331,23 +308,17 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
         </article>
         <article className="selector-wrapper selector-wrapper-fee-tier">
           <div
-            className={`header-wrapper ${
-              !isEarnAdd || !existTokenPair ? "default-cursor" : ""
-            } ${!isEarnAdd && "disable-text"}`}
+            className={`header-wrapper ${!isEarnAdd || !existTokenPair ? "default-cursor" : ""} ${
+              !isEarnAdd && "disable-text"
+            }`}
             onClick={toggleFeeTier}
           >
             <div className="header-wrapper-title">
               <h5>{t("AddPosition:form.feeTier.label")}</h5>
-              {existTokenPair &&
-                isEarnAdd &&
-                (!openedFeeTier ? <IconArrowDown /> : <IconArrowUp />)}
+              {existTokenPair && isEarnAdd && (!openedFeeTier ? <IconArrowDown /> : <IconArrowUp />)}
             </div>
             {selectedFeeRate && existTokenPair && (
-              <Badge
-                text={selectedFeeRate}
-                type={BADGE_TYPE.LINE}
-                className="fee-tier-bad"
-              />
+              <Badge text={selectedFeeRate} type={BADGE_TYPE.LINE} className="fee-tier-bad" />
             )}
           </div>
 
@@ -361,28 +332,14 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
             openedFeeTier={openedFeeTier}
           />
         </article>
-        <article
-          className={`selector-wrapper ${
-            !openedPriceRange ? "selector-wrapper-price-range" : ""
-          }`}
-        >
-          <div
-            className={`header-wrapper ${
-              !existTokenPair ? "default-cursor" : ""
-            }`}
-            onClick={togglePriceRange}
-          >
+        <article className={`selector-wrapper ${!openedPriceRange ? "selector-wrapper-price-range" : ""}`}>
+          <div className={`header-wrapper ${!existTokenPair ? "default-cursor" : ""}`} onClick={togglePriceRange}>
             <div className="header-wrapper-title">
               <h5>{t("AddPosition:form.priceRange.label")}</h5>
-              {existTokenPair &&
-                (!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />)}
+              {existTokenPair && (!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />)}
             </div>
             {visiblePriceRangeLabel && (
-              <Badge
-                text={selectedPriceRange}
-                type={BADGE_TYPE.LINE}
-                className="fee-tier-bad"
-              />
+              <Badge text={selectedPriceRange} type={BADGE_TYPE.LINE} className="fee-tier-bad" />
             )}
           </div>
           <SelectPriceRange
@@ -404,10 +361,9 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
             resetPriceRangeTypeTarget={resetPriceRangeTypeTarget}
             isLoadingSelectPriceRange={isLoadingSelectPriceRange}
           />
-          {selectedPriceRange &&
-            existTokenPair &&
-            selectedFeeRate &&
-            !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
+          {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && (
+            <SelectPriceRangeSummary {...priceRangeSummary} />
+          )}
           {!isLoading && isShowOutRange && (
             <OutOfRangeWrapper>
               <div>
@@ -453,22 +409,17 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
         text={submitButtonStr}
         onClick={submit}
         style={{
-          hierarchy: activatedSubmit
-            ? ButtonHierarchy.Primary
-            : ButtonHierarchy.Gray,
+          hierarchy: activatedSubmit ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
           fullWidth: true,
         }}
         disabled={!activatedSubmit}
         className="button-submit"
       />
-      {submitType === "CREATE_POOL" &&
-        existTokenPair &&
-        selectedFeeRate &&
-        showOneClickStaking && (
-          <div className="btn-one-click" onClick={submitOneClickStaking}>
-            <IconStaking /> {t("AddPosition:oneClick")}
-          </div>
-        )}
+      {submitType === "CREATE_POOL" && existTokenPair && selectedFeeRate && showOneClickStaking && (
+        <div className="btn-one-click" onClick={submitOneClickStaking}>
+          <IconStaking /> {t("AddPosition:oneClick")}
+        </div>
+      )}
     </PoolAddLiquidityWrapper>
   );
 };

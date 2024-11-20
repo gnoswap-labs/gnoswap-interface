@@ -125,33 +125,22 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         balanceUSD:
           makeDisplayTokenAmount(
             reward.rewardToken,
-            Number(reward.totalAmount) *
-              Number(tokenPrices[reward.rewardToken.priceID]?.usd),
+            Number(reward.totalAmount) * Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
         amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
         usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
-        accumulatedRewardOf1d: reward.accuReward1D
-          ? Number(reward.accuReward1D)
-          : null,
-        claimableUsdValue: reward.claimableUsd
-          ? Number(reward.claimableUsd)
-          : null,
+        accumulatedRewardOf1d: reward.accuReward1D ? Number(reward.accuReward1D) : null,
+        claimableUsdValue: reward.claimableUsd ? Number(reward.claimableUsd) : null,
       }))
       .forEach(rewardInfo => {
-        const existReward =
-          claimableMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
+        const existReward = claimableMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
         const tokenPrice = tokenPrices[rewardInfo.token.priceID].usd
           ? Number(tokenPrices[rewardInfo.token.priceID].usd)
           : null;
         if (existReward) {
-          const accumulatedRewardOf1d = getAccumulatedRewardOf1d(
-            existReward,
-            rewardInfo,
-          );
+          const accumulatedRewardOf1d = getAccumulatedRewardOf1d(existReward, rewardInfo);
           const accumulatedRewardOf1dUsd =
-            accumulatedRewardOf1d !== null && tokenPrice !== null
-              ? accumulatedRewardOf1d * tokenPrice
-              : null;
+            accumulatedRewardOf1d !== null && tokenPrice !== null ? accumulatedRewardOf1d * tokenPrice : null;
 
           claimableMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
@@ -196,17 +185,13 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         const claimedAmount = Number(claimed.claimedAmount);
         const claimedUsd = tokenPrice ? claimedAmount * tokenPrice : null;
 
-        const existingClaimed =
-          claimedMap[claimed.rewardType]?.[claimed.rewardToken.priceID];
+        const existingClaimed = claimedMap[claimed.rewardType]?.[claimed.rewardToken.priceID];
 
         if (existingClaimed) {
           claimedMap[claimed.rewardType][claimed.rewardToken.priceID] = {
             ...existingClaimed,
             amount: (existingClaimed.amount || 0) + claimedAmount,
-            usd:
-              existingClaimed.usd !== null && claimedUsd !== null
-                ? existingClaimed.usd + claimedUsd
-                : claimedUsd,
+            usd: existingClaimed.usd !== null && claimedUsd !== null ? existingClaimed.usd + claimedUsd : claimedUsd,
             token: claimed.rewardToken,
             rewardType: claimed.rewardType,
             accumulatedRewardOf1d: null,
@@ -241,12 +226,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   const hasInfo = (data: {
     [key in RewardType]: PositionRewardForTooltip[];
   }): boolean => {
-    if (
-      data.SWAP_FEE.length === 0 &&
-      data.INTERNAL.length === 0 &&
-      data.EXTERNAL.length === 0
-    )
-      return false;
+    if (data.SWAP_FEE.length === 0 && data.INTERNAL.length === 0 && data.EXTERNAL.length === 0) return false;
     return true;
   };
 
@@ -269,9 +249,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         connected={connected}
         isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
-          stakedPositions.length > 0 ? (
-            <StakedPostionsTooltipContent poolStakings={stakedPositions} />
-          ) : undefined
+          stakedPositions.length > 0 ? <StakedPostionsTooltipContent poolStakings={stakedPositions} /> : undefined
         }
         breakpoint={breakpoint}
       />
@@ -283,11 +261,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         tooltip={t("Wallet:overral.totalClaimed.tooltip")}
         connected={connected}
         isSwitchNetwork={isSwitchNetwork}
-        valueTooltip={
-          hasInfo(claimedRewardInfo) ? (
-            <RewardTooltipContent rewardInfo={claimedRewardInfo} />
-          ) : undefined
-        }
+        valueTooltip={hasInfo(claimedRewardInfo) ? <RewardTooltipContent rewardInfo={claimedRewardInfo} /> : undefined}
         breakpoint={breakpoint}
       />
       <WalletBalanceDetailInfo
@@ -298,9 +272,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         connected={connected}
         isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
-          hasInfo(claimableRewardInfo) ? (
-            <RewardTooltipContent rewardInfo={claimableRewardInfo} />
-          ) : undefined
+          hasInfo(claimableRewardInfo) ? <RewardTooltipContent rewardInfo={claimableRewardInfo} /> : undefined
         }
         className="claimable-rewards"
         button={
@@ -311,20 +283,10 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
               padding: loadngTransactionClaim ? "8px 16px" : "10px 16px",
               hierarchy: ButtonHierarchy.Primary,
             }}
-            text={
-              loadngTransactionClaim ? "" : t("Wallet:overral.claimAll.btn")
-            }
+            text={loadngTransactionClaim ? "" : t("Wallet:overral.claimAll.btn")}
             onClick={claimAll}
-            disabled={
-              connected === false ||
-              isSwitchNetwork ||
-              Number(balanceDetailInfo.claimableRewards) === 0
-            }
-            leftIcon={
-              loadngTransactionClaim ? (
-                <LoadingSpinner className="loading-button" />
-              ) : undefined
-            }
+            disabled={connected === false || isSwitchNetwork || Number(balanceDetailInfo.claimableRewards) === 0}
+            leftIcon={loadngTransactionClaim ? <LoadingSpinner className="loading-button" /> : undefined}
           />
         }
         breakpoint={breakpoint}

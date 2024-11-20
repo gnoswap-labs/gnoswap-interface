@@ -141,32 +141,19 @@ const Header: React.FC<HeaderProps> = ({
                         <li
                           key={t(item.title)}
                           className={
-                            pathname === item.path ||
-                            (item?.subPath || []).some(_ =>
-                              pathname.includes(_),
-                            )
+                            pathname === item.path || (item?.subPath || []).some(_ => pathname.includes(_))
                               ? "selected"
                               : ""
                           }
                         >
-                          <span
-                            className="link"
-                            onClick={() =>
-                              saveCurrentScrollHeight(
-                                window?.location?.pathname,
-                              )
-                            }
-                          >
+                          <span className="link" onClick={() => saveCurrentScrollHeight(window?.location?.pathname)}>
                             {t(item.title)}
                           </span>
                         </li>
                       </Link>
                     ))}
                   </ul>
-                  <SubMenuButton
-                    sideMenuToggle={sideMenuToggle}
-                    onSideMenuToggle={onSideMenuToggle}
-                  />
+                  <SubMenuButton sideMenuToggle={sideMenuToggle} onSideMenuToggle={onSideMenuToggle} />
                 </React.Fragment>
               )}
             </Navigation>
@@ -218,19 +205,13 @@ const Header: React.FC<HeaderProps> = ({
                 <BottomNavItem
                   key={t(item.title)}
                   className={
-                    pathname === item.path ||
-                    (item.subPath || []).some(_ => pathname.includes(_))
-                      ? "selected"
-                      : ""
+                    pathname === item.path || (item.subPath || []).some(_ => pathname.includes(_)) ? "selected" : ""
                   }
                 >
                   <Link href={item.path}>{t(item.title)}</Link>
                 </BottomNavItem>
               ))}
-              <SubMenuButton
-                sideMenuToggle={sideMenuToggle}
-                onSideMenuToggle={onSideMenuToggle}
-              />
+              <SubMenuButton sideMenuToggle={sideMenuToggle} onSideMenuToggle={onSideMenuToggle} />
             </BottomNavContainer>
           </BottomNavWrapper>
         )}

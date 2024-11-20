@@ -8,9 +8,7 @@ export default {
   component: HighestAprsCardList,
 } as ComponentMeta<typeof HighestAprsCardList>;
 
-const Template: ComponentStory<typeof HighestAprsCardList> = args => (
-  <HighestAprsCardList {...args} />
-);
+const Template: ComponentStory<typeof HighestAprsCardList> = args => <HighestAprsCardList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

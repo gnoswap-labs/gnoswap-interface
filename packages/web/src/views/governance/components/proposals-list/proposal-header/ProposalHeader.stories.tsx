@@ -8,9 +8,7 @@ export default {
   component: ProposalHeader,
 } as ComponentMeta<typeof ProposalHeader>;
 
-const Template: ComponentStory<typeof ProposalHeader> = (args) => (
-  <ProposalHeader {...args} />
-);
+const Template: ComponentStory<typeof ProposalHeader> = args => <ProposalHeader {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

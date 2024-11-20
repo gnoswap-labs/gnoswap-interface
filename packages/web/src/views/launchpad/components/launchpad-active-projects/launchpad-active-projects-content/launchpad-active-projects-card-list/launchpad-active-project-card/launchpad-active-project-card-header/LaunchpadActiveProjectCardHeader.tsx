@@ -16,9 +16,12 @@ interface LaunchpadActiveProjectCardHeaderProps {
   rewardTokenUrl: string;
 }
 
-const LaunchpadActiveProjectCardHeader: React.FC<
-  LaunchpadActiveProjectCardHeaderProps
-> = ({ name, description, rewardTokenSymbol, rewardTokenUrl }) => {
+const LaunchpadActiveProjectCardHeader: React.FC<LaunchpadActiveProjectCardHeaderProps> = ({
+  name,
+  description,
+  rewardTokenSymbol,
+  rewardTokenUrl,
+}) => {
   return (
     <ActiveProjectCardHeader>
       <div className="header-title-wrapper">
@@ -29,11 +32,7 @@ const LaunchpadActiveProjectCardHeader: React.FC<
         <div className="text">{description}</div>
       </div>
       <div className="image-wrapper">
-        <MissingLogo
-          symbol={rewardTokenSymbol}
-          url={rewardTokenUrl}
-          width={60}
-        />
+        <MissingLogo symbol={rewardTokenSymbol} url={rewardTokenUrl} width={60} />
       </div>
     </ActiveProjectCardHeader>
   );

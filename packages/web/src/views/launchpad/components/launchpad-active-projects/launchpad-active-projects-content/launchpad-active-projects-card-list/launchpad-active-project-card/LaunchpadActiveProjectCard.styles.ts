@@ -19,10 +19,7 @@ export const ActiveProjectCardWrapper = styled.div<ActiveProjectCardWrapperProps
   overflow: hidden;
   &:hover {
     border: 1px solid var(--border-gradient, #869dff);
-    background: ${({ theme }) =>
-      theme.themeKey === "dark"
-        ? theme.color.background06
-        : theme.color.hover01};
+    background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background06 : theme.color.hover01)};
   }
   ${media.mobile} {
     gap: 16px;

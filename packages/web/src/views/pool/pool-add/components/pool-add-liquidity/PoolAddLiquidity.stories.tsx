@@ -10,9 +10,7 @@ export default {
   component: PoolAddLiquidity,
 } as ComponentMeta<typeof PoolAddLiquidity>;
 
-const Template: ComponentStory<typeof PoolAddLiquidity> = args => (
-  <PoolAddLiquidity {...args} />
-);
+const Template: ComponentStory<typeof PoolAddLiquidity> = args => <PoolAddLiquidity {...args} />;
 const tokenA: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
@@ -21,8 +19,7 @@ const tokenA: TokenModel = {
   path: "gno.land/r/gns",
   decimals: 4,
   symbol: "GNS",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
   type: "grc20",
   priceID: "gno.land/r/gns",
 };
@@ -34,8 +31,7 @@ const tokenB: TokenModel = {
   path: "gno.land/r/gns",
   decimals: 4,
   symbol: "GNS",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
   type: "grc20",
   priceID: "gno.land/r/gns",
 };

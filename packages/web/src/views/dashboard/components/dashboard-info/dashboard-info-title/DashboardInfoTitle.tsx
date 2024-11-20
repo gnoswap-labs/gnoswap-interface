@@ -2,12 +2,7 @@ import { GNS_TOKEN } from "@common/values/token-constant";
 import IconLogoWhite from "@components/common/icons/IconLogoWhite";
 import { DEVICE_TYPE } from "@styles/media";
 
-import {
-  DashboardInfoTitleWrapper,
-  TitleDivider,
-  TokenLogoWrapper,
-  TokenWrapper,
-} from "./DashboardInfoTitle.styles";
+import { DashboardInfoTitleWrapper, TitleDivider, TokenLogoWrapper, TokenWrapper } from "./DashboardInfoTitle.styles";
 
 export interface DashboardTokenInfo {
   gnosAmount: string;
@@ -19,9 +14,7 @@ interface DashboardInfoTitleProps {
   breakpoint: DEVICE_TYPE;
 }
 
-const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
-  dashboardTokenInfo,
-}) => (
+const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({ dashboardTokenInfo }) => (
   <DashboardInfoTitleWrapper>
     <TokenWrapper>
       <TokenLogoWrapper>
@@ -36,9 +29,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
     <TokenWrapper>
       <TokenLogoWrapper>
         <div className="token-image-wrapper">
-          <img
-            src="https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg"
-          />
+          <img src="https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg" />
         </div>
         <div className="token-symbol">GNOT</div>
       </TokenLogoWrapper>

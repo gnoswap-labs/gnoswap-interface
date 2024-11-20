@@ -12,8 +12,7 @@ export default {
 } as Meta<typeof UndelegateSelect>;
 
 const Template: ComponentStory<typeof UndelegateSelect> = args => {
-  const [selectedDelegationInfo, setSelectedDelegationInfo] =
-    useState<DelegationItemInfo | null>(null);
+  const [selectedDelegationInfo, setSelectedDelegationInfo] = useState<DelegationItemInfo | null>(null);
 
   return (
     <UndelegateSelect

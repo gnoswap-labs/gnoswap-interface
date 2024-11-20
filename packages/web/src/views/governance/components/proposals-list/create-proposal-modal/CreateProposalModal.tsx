@@ -27,12 +27,7 @@ import { makeDisplayPackagePath } from "@utils/governance-utils";
 import TokenChip from "../../token-chip/TokenChip";
 import VariableSelectBox from "../variable-select-box/VariableSelectBox";
 
-import {
-  BoxItem,
-  CreateProposalModalWrapper,
-  IconButton,
-  ToolTipContentWrapper,
-} from "./CreateProposalModal.styles";
+import { BoxItem, CreateProposalModalWrapper, IconButton, ToolTipContentWrapper } from "./CreateProposalModal.styles";
 
 interface BoxContentProps {
   label: string;
@@ -59,11 +54,7 @@ const TypeTransMap: { [key: string]: string } = {
   PARAMETER_CHANGE: "Governance:proposal.type.paramChange",
 };
 
-const BoxContent: React.FC<BoxContentProps> = ({
-  label,
-  children,
-  ...props
-}) => {
+const BoxContent: React.FC<BoxContentProps> = ({ label, children, ...props }) => {
   return (
     <BoxItem {...props}>
       {label && <label className="box-label">{label}</label>}
@@ -191,16 +182,13 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
             path: string;
           }[] = err?.inner || [];
           return {
-            variable: errors.reduce<{ [key in string]: string }>(
-              (acc, current) => {
-                const errorPaths = JSON.parse(current.path) as number[];
-                if (errorPaths?.length > 0 && !acc[errorPaths[0]]) {
-                  acc[errorPaths[0]] = current.message;
-                }
-                return acc;
-              },
-              {},
-            ),
+            variable: errors.reduce<{ [key in string]: string }>((acc, current) => {
+              const errorPaths = JSON.parse(current.path) as number[];
+              if (errorPaths?.length > 0 && !acc[errorPaths[0]]) {
+                acc[errorPaths[0]] = current.message;
+              }
+              return acc;
+            }, {}),
           };
         });
     },
@@ -224,11 +212,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       }
 
       const functions = [
-        ...new Set(
-          executableFunctions
-            .filter(func => func.pkgPath === packagePath)
-            .map(func => func.funcName),
-        ),
+        ...new Set(executableFunctions.filter(func => func.pkgPath === packagePath).map(func => func.funcName)),
       ];
       return functions.map(func => ({
         displayValue: func,
@@ -239,27 +223,13 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   );
 
   const isDisableSubmit = useMemo(() => {
-    const isValidParameter =
-      Object.keys(paramErrors.variable || {}).length === 0;
-    return (
-      !isDirty ||
-      !isValid ||
-      !isValidParameter ||
-      myVotingWeight < proposalCreationThreshold
-    );
-  }, [
-    isDirty,
-    isValid,
-    paramErrors,
-    proposalCreationThreshold,
-    myVotingWeight,
-  ]);
+    const isValidParameter = Object.keys(paramErrors.variable || {}).length === 0;
+    return !isDirty || !isValid || !isValidParameter || myVotingWeight < proposalCreationThreshold;
+  }, [isDirty, isValid, paramErrors, proposalCreationThreshold, myVotingWeight]);
 
   const getParameterPlaceholder = useCallback(
     (item: { pkgPath: string; func: string }): string => {
-      const defaultPlaceholder = t(
-        "Governance:createModal.setVariable.placeholder.param",
-      );
+      const defaultPlaceholder = t("Governance:createModal.setVariable.placeholder.param");
 
       const currentFunction = executableFunctions.find(
         func => func.pkgPath === item.pkgPath && func.funcName === item.func,
@@ -298,8 +268,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     }
 
     const variables = data.variable.filter(
-      variable =>
-        variable.pkgPath.trim().length > 0 && variable.func.trim().length > 0,
+      variable => variable.pkgPath.trim().length > 0 && variable.func.trim().length > 0,
     );
     if (variables.length === 0) {
       return;
@@ -315,10 +284,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         <div className={"modal-body"} ref={modalBodyRef}>
           <div className="header">
             <h6>{t("Governance:createModal.title")}</h6>
-            <div
-              className="close-wrap"
-              onClick={() => setIsOpenCreateModal(false)}
-            >
+            <div className="close-wrap" onClick={() => setIsOpenCreateModal(false)}>
               <IconClose className="close-icon" />
             </div>
           </div>
@@ -327,9 +293,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
               {ProposalOption.map((item, index) => (
                 <div
                   key={index}
-                  className={
-                    type === ProposalOption[index] ? "active-type-tab" : ""
-                  }
+                  className={type === ProposalOption[index] ? "active-type-tab" : ""}
                   onClick={() => setType(ProposalOption[index])}
                 >
                   {t(TypeTransMap[item])}
@@ -339,20 +303,17 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
           </BoxContent>
           <BoxContent label={t("Governance:createModal.proposalDetails.title")}>
             <FormInput
-              placeholder={t(
-                "Governance:createModal.proposalDetails.placeholder.title",
-              )}
+              placeholder={t("Governance:createModal.proposalDetails.placeholder.title")}
               errorText={errors?.title ? errors.title.message : undefined}
               {...register("title")}
               name="title"
             />
             <FormTextArea
-              placeholder={t(
-                "Governance:createModal.proposalDetails.placeholder.description",
-              ).replaceAll("<nl/>", "\n\n")}
-              errorText={
-                errors?.description ? errors.description.message : undefined
-              }
+              placeholder={t("Governance:createModal.proposalDetails.placeholder.description").replaceAll(
+                "<nl/>",
+                "\n\n",
+              )}
+              errorText={errors?.description ? errors.description.message : undefined}
               rows={type === ProposalOption[0] ? 14 : 8}
               {...register("description")}
             />
@@ -360,14 +321,8 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
           {type === ProposalOption[1] && (
             <BoxContent label={t("Governance:createModal.setVariable.title")}>
               <FormInput
-                placeholder={t(
-                  "Governance:createModal.setVariable.placeholder.recipient",
-                )}
-                errorText={
-                  errors?.recipientAddress
-                    ? errors.recipientAddress.message
-                    : undefined
-                }
+                placeholder={t("Governance:createModal.setVariable.placeholder.recipient")}
+                errorText={errors?.recipientAddress ? errors.recipientAddress.message : undefined}
                 {...register("recipientAddress")}
                 name="recipientAddress"
               />
@@ -395,17 +350,13 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                       currentItem={
                         item.pkgPath
                           ? {
-                              displayValue: makeDisplayPackagePath(
-                                item.pkgPath,
-                              ),
+                              displayValue: makeDisplayPackagePath(item.pkgPath),
                               value: item.pkgPath,
                             }
                           : null
                       }
                       errorText={
-                        breakpoint !== DEVICE_TYPE.MOBILE
-                          ? paramErrors?.variable?.[index] || undefined
-                          : undefined
+                        breakpoint !== DEVICE_TYPE.MOBILE ? paramErrors?.variable?.[index] || undefined : undefined
                       }
                       items={executablePackagePaths}
                       {...register(`variable.${index}.pkgPath`)}
@@ -420,9 +371,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                           param: "",
                         });
                       }}
-                      placeholder={t(
-                        "Governance:createModal.setVariable.placeholder.pkgPath",
-                      )}
+                      placeholder={t("Governance:createModal.setVariable.placeholder.pkgPath")}
                     />
                     <VariableSelectBox
                       modalBodyRef={modalBodyRef}
@@ -447,9 +396,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                           param: "",
                         });
                       }}
-                      placeholder={t(
-                        "Governance:createModal.setVariable.placeholder.func",
-                      )}
+                      placeholder={t("Governance:createModal.setVariable.placeholder.func")}
                       disabled={!item.pkgPath}
                     />
                     <FormInput
@@ -461,9 +408,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                         }
                       }}
                       errorText={
-                        breakpoint === DEVICE_TYPE.MOBILE
-                          ? paramErrors?.variable?.[index] || undefined
-                          : undefined
+                        breakpoint === DEVICE_TYPE.MOBILE ? paramErrors?.variable?.[index] || undefined : undefined
                       }
                     />
                   </div>
@@ -481,9 +426,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                 <Tooltip
                   placement="top"
                   FloatingContent={
-                    <ToolTipContentWrapper>
-                      {t("Governance:createModal.minimum.tooltip")}
-                    </ToolTipContentWrapper>
+                    <ToolTipContentWrapper>{t("Governance:createModal.minimum.tooltip")}</ToolTipContentWrapper>
                   }
                 >
                   <IconInfo size={16} />
@@ -494,12 +437,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                 {breakpoint !== DEVICE_TYPE.MOBILE ? (
                   <TokenChip tokenInfo={XGNS_TOKEN} />
                 ) : (
-                  <MissingLogo
-                    className=""
-                    symbol={XGNS_TOKEN.symbol}
-                    width={24}
-                    url={XGNS_TOKEN.logoURI}
-                  />
+                  <MissingLogo className="" symbol={XGNS_TOKEN.symbol} width={24} url={XGNS_TOKEN.logoURI} />
                 )}
               </div>
             </div>

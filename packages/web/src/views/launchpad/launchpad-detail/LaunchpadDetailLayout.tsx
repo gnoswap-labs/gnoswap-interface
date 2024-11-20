@@ -50,20 +50,14 @@ const LaunchpadDetailLayout: React.FC<LaunchpadDetailLayoutProps> = ({
           {contentsHeader}
           <div className="main-container">
             <div className="main-section">
-              {breakpoint !== DEVICE_TYPE.MOBILE && (
-                <div className="pool-list">{poolList}</div>
-              )}
+              {breakpoint !== DEVICE_TYPE.MOBILE && <div className="pool-list">{poolList}</div>}
               <div className="project-summary">{projectSummary}</div>
               <div className="about-project">{aboutProject}</div>
             </div>
             <div className="right-section">
-              {breakpoint === DEVICE_TYPE.MOBILE && (
-                <div className="pool-list">{poolList}</div>
-              )}
+              {breakpoint === DEVICE_TYPE.MOBILE && <div className="pool-list">{poolList}</div>}
               <div className="participate">{participate}</div>
-              {status !== "UPCOMING" && (
-                <div className="my-participation">{myParticipation}</div>
-              )}
+              {status !== "UPCOMING" && <div className="my-participation">{myParticipation}</div>}
               <div className="click-here">{clickHere}</div>
             </div>
           </div>

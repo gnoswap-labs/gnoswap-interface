@@ -18,15 +18,10 @@ export const useSelectTokenModal = ({ changeToken, callback }: SelectTokenModalP
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
-    setModalContent(
-      <SelectTokenContainer
-        changeToken={changeToken}
-        callback={callback}
-      />
-    );
+    setModalContent(<SelectTokenContainer changeToken={changeToken} callback={callback} />);
   }, [changeToken, setModalContent, setOpenedModal, callback]);
 
   return {
-    openModal
+    openModal,
   };
 };

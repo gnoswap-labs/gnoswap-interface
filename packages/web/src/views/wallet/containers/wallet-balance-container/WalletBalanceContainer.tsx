@@ -39,36 +39,19 @@ const WalletBalanceContainer: React.FC = () => {
   const [sendAssetAmount, setSendAssetAmount] = useState("");
 
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const {
-    balances: balancesPrice,
-    loadingBalance,
-    updateBalances,
-  } = useTokenData();
+  const { balances: balancesPrice, loadingBalance, updateBalances } = useTokenData();
 
-  const {
-    positions,
-    loading: loadingPositions,
-    refetch: refetchPositions,
-  } = usePositionData();
+  const { positions, loading: loadingPositions, refetch: refetchPositions } = usePositionData();
 
-  const isLoadingPosition = useMemo(
-    () => connected && loadingPositions,
-    [connected, loadingPositions],
-  );
+  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
   const { claimAll } = usePosition(positions);
-  const {
-    broadcastSuccess,
-    broadcastError,
-    broadcastRejected,
-    broadcastLoading,
-  } = useBroadcastHandler();
+  const { broadcastSuccess, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
   const { openModal } = useTransactionConfirmModal();
-  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } =
-    useGetAllTokenPrices();
+  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } = useGetAllTokenPrices();
 
   const { getMessage } = useMessage();
 
@@ -94,9 +77,7 @@ const WalletBalanceContainer: React.FC = () => {
   }, [connected, address]);
 
   const claimAllReward = useCallback(() => {
-    const amount = positions
-      .flatMap(item => item.reward)
-      .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
+    const amount = positions.flatMap(item => item.reward).reduce((acc, item) => acc + Number(item.claimableUsd), 0);
 
     const messageData = {
       tokenAAmount: toUnitFormat(amount, true, false),
@@ -107,10 +88,7 @@ const WalletBalanceContainer: React.FC = () => {
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
       if (response) {
-        if (
-          response?.code === 0 ||
-          response?.code === ERROR_VALUE.TRANSACTION_FAILED.status
-        ) {
+        if (response?.code === 0 || response?.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: DexEvent.CLAIM_FEE,
@@ -125,34 +103,17 @@ const WalletBalanceContainer: React.FC = () => {
         }
         if (response?.code === 0) {
           openModal();
-          broadcastSuccess(
-            getMessage(
-              DexEvent.CLAIM_FEE,
-              "success",
-              messageData,
-              response?.data?.hash,
-            ),
-          );
+          broadcastSuccess(getMessage(DexEvent.CLAIM_FEE, "success", messageData, response?.data?.hash));
           setLoadingTransactionClaim(false);
         } else if (
           response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
-          broadcastRejected(
-            getMessage(DexEvent.CLAIM_FEE, "error", messageData),
-            () => {},
-          );
+          broadcastRejected(getMessage(DexEvent.CLAIM_FEE, "error", messageData), () => {});
           setLoadingTransactionClaim(false);
           openModal();
         } else {
           openModal();
-          broadcastError(
-            getMessage(
-              DexEvent.CLAIM_FEE,
-              "error",
-              messageData,
-              response?.data?.hash,
-            ),
-          );
+          broadcastError(getMessage(DexEvent.CLAIM_FEE, "error", messageData, response?.data?.hash));
           setLoadingTransactionClaim(false);
         }
       }
@@ -167,14 +128,7 @@ const WalletBalanceContainer: React.FC = () => {
       (account?.address && loadingBalance) ||
       !!(isEmptyObject(balancesPrice) && account?.address)
     );
-  }, [
-    isLoadingPosition,
-    loadingConnect,
-    account?.address,
-    balancesPrice,
-    isLoadingTokenPrices,
-    loadingBalance,
-  ]);
+  }, [isLoadingPosition, loadingConnect, account?.address, balancesPrice, isLoadingTokenPrices, loadingBalance]);
 
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
@@ -192,12 +146,7 @@ const WalletBalanceContainer: React.FC = () => {
     return availableBalance;
   }, [availableBalance]);
 
-  const {
-    stakedBalance,
-    unStakedBalance,
-    claimableRewards,
-    totalClaimedRewards,
-  } = positions.reduce(
+  const { stakedBalance, unStakedBalance, claimableRewards, totalClaimedRewards } = positions.reduce(
     (acc, curPosition) => {
       acc.totalClaimedRewards = BigNumber(acc.totalClaimedRewards)
         .plus(Number(curPosition.totalClaimedUsd ?? "0"))
@@ -230,10 +179,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   const sumTotalBalance = useMemo(() => {
     return formatOtherPrice(
-      BigNumber(availableBalance)
-        .plus(unStakedBalance)
-        .plus(stakedBalance)
-        .plus(claimableRewards),
+      BigNumber(availableBalance).plus(unStakedBalance).plus(stakedBalance).plus(claimableRewards),
       { isKMB: false },
     );
   }, [availableBalance, unStakedBalance, stakedBalance, claimableRewards]);
@@ -266,9 +212,7 @@ const WalletBalanceContainer: React.FC = () => {
         fromAddress: account.address,
         toAddress: address,
         token: withdrawInfo,
-        tokenAmount: BigNumber(amount)
-          .multipliedBy(Math.pow(10, withdrawInfo.decimals))
-          .toNumber(),
+        tokenAmount: BigNumber(amount).multipliedBy(Math.pow(10, withdrawInfo.decimals)).toNumber(),
       },
       withdrawInfo.type,
     );

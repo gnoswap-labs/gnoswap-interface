@@ -65,24 +65,24 @@ export const ConnectWalletModalWrapper = styled.div`
     }
 
     .footer {
-        ${mixins.flexbox("row", "flex-start", "flex-start")};
-        color: ${({ theme }) => theme.color.text04};
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
+      color: ${({ theme }) => theme.color.text04};
+      ${fonts.body12};
+      a {
+        color: ${({ theme }) => theme.color.background04};
+        display: contents;
         ${fonts.body12};
-        a {
-          color: ${({ theme }) => theme.color.background04};
-          display: contents;
-          ${fonts.body12};
-          font-weight: 600;
-          &:hover {
-            color: ${({ theme }) => theme.color.background04Hover};
-          }
+        font-weight: 600;
+        &:hover {
+          color: ${({ theme }) => theme.color.background04Hover};
         }
+      }
     }
   }
   .loading-button {
     width: 32px;
     height: 32px;
-    background: conic-gradient(from 0deg at 50% 50.63%, #FFFFFF 0deg, #233DBD 360deg);
+    background: conic-gradient(from 0deg at 50% 50.63%, #ffffff 0deg, #233dbd 360deg);
     &::before {
       width: 23.4px;
       height: 23.4px;
@@ -95,16 +95,16 @@ export const ConnectWalletModalWrapper = styled.div`
     .modal-body {
       gap: 12px;
       .content {
-          gap: 8px;
-          > div {
-            .button-connect {
-              height: 44px;
-              span {
-                ${fonts.body9}
-              }
+        gap: 8px;
+        > div {
+          .button-connect {
+            height: 44px;
+            span {
+              ${fonts.body9}
             }
           }
         }
+      }
     }
   }
 `;

@@ -1,12 +1,5 @@
 const IconWalletConnect = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="25"
-    height="25"
-    fill="none"
-    viewBox="0 0 25 25"
-    className={className}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="none" viewBox="0 0 25 25" className={className}>
     <g clipPath="url(#clip0_11020_151863)">
       <mask
         id="mask0_11020_151863"

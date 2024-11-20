@@ -26,7 +26,7 @@ export const getDateUtcToLocal = (d: string | Date) => {
   };
 };
 
-export const getDateDiff = (d: any) => {
+export const getDateDiff = (d: string | Date) => {
   const now = dayjs();
   const target = dayjs(getDateUtcToLocal(d).value);
   const diff = now.diff(target, "seconds");
@@ -46,11 +46,10 @@ export const getDateDiff = (d: any) => {
   if (diffD >= 730) return `${Math.floor(diffD / 365)} years ago`;
 };
 
-export const getLocalDateString = (d: any) => {
+export const getLocalDateString = (d: string | Date) => {
   const { value, offsetHours } = getDateUtcToLocal(d);
   const sign = offsetHours > 0 ? "+" : "-";
-  const offsetHoursString =
-    offsetHours === 0 ? "UTC" : `UTC${sign}${Math.abs(offsetHours)}`;
+  const offsetHoursString = offsetHours === 0 ? "UTC" : `UTC${sign}${Math.abs(offsetHours)}`;
   return `${value} (${offsetHoursString})`;
 };
 
@@ -96,22 +95,10 @@ export function secondsToTime(seconds: number) {
     .format("HH:mm:ss");
 }
 
-export function getTimeDiffInSeconds(
-  endDate: string | number | Date,
-  startDate?: string | number | Date,
-) {
-  return (
-    (new Date(endDate).getTime() -
-      new Date(startDate || Date.now()).getTime()) /
-    1000
-  );
+export function getTimeDiffInSeconds(endDate: string | number | Date, startDate?: string | number | Date) {
+  return (new Date(endDate).getTime() - new Date(startDate || Date.now()).getTime()) / 1000;
 }
 
-export function getTimeDiffInMilliseconds(
-  endDate: string | number | Date,
-  startDate?: string | number | Date,
-) {
-  return (
-    new Date(endDate).getTime() - new Date(startDate || Date.now()).getTime()
-  );
+export function getTimeDiffInMilliseconds(endDate: string | number | Date, startDate?: string | number | Date) {
+  return new Date(endDate).getTime() - new Date(startDate || Date.now()).getTime();
 }

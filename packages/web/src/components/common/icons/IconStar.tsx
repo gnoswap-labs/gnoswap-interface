@@ -12,12 +12,7 @@ function IconStar({ size }: { size?: number }) {
     >
       <path fill="url(#pattern0)" d="M.313 30.457h30v-30h-30v30z"></path>
       <defs>
-        <pattern
-          id="pattern0"
-          width="1"
-          height="1"
-          patternContentUnits="objectBoundingBox"
-        >
+        <pattern id="pattern0" width="1" height="1" patternContentUnits="objectBoundingBox">
           <use transform="scale(.00625)" xlinkHref="#image0_12006_378405"></use>
         </pattern>
         <image

@@ -34,7 +34,7 @@ export const RemoveLiquiditySelectListWrapper = styled.div`
       padding: 0px 11px;
     }
   }
-  
+
   ul {
     ${mixins.flexbox("column", "center", "center")};
     gap: 4px;

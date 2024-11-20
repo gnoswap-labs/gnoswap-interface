@@ -27,19 +27,10 @@ export const ACTIVITY_SWITCH_DATA = [
 
 interface ActivityListHeaderProps {
   activityType: ActivityType;
-  changeActivityType: ({
-    display,
-    key,
-  }: {
-    display: string;
-    key: string;
-  }) => void;
+  changeActivityType: ({ display, key }: { display: string; key: string }) => void;
 }
 
-const ActivityListHeader: React.FC<ActivityListHeaderProps> = ({
-  activityType,
-  changeActivityType,
-}) => {
+const ActivityListHeader: React.FC<ActivityListHeaderProps> = ({ activityType, changeActivityType }) => {
   const { t } = useTranslation();
 
   return (

@@ -18,13 +18,7 @@ import {
   type Placement,
 } from "@floating-ui/react";
 import { useAtomValue } from "jotai";
-import React, {
-  CSSProperties,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
 import { ThemeState } from "@states/index";
@@ -199,11 +193,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
               height={14}
               tipRadius={4}
             />
-            <Content
-              themeKey={themeKey}
-              ref={contentRef}
-              className={`${scroll ? "use-scroll show-scroll" : ""}`}
-            >
+            <Content themeKey={themeKey} ref={contentRef} className={`${scroll ? "use-scroll show-scroll" : ""}`}>
               {FloatingContent}
             </Content>
           </div>

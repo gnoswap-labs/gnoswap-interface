@@ -13,11 +13,7 @@ interface LaunchpadStatusTimeChipProps {
   status: PROJECT_STATUS_TYPE;
 }
 
-const LaunchpadStatusTimeChip = ({
-  startTime,
-  endTime,
-  status,
-}: LaunchpadStatusTimeChipProps) => {
+const LaunchpadStatusTimeChip = ({ startTime, endTime, status }: LaunchpadStatusTimeChipProps) => {
   const { t } = useTranslation();
 
   return (

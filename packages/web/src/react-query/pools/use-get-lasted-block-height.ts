@@ -4,9 +4,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetLastedBlockHeight = (
-  options?: UseQueryOptions<string, Error>,
-) => {
+export const useGetLastedBlockHeight = (options?: UseQueryOptions<string, Error>) => {
   const { poolRepository } = useGnoswapContext();
 
   return useQuery<string, Error>({

@@ -1,8 +1,6 @@
-import Pagination from "./Pagination";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { render } from "@testing-library/react";
-import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 describe("Pagination Component", () => {
-  it("Pagination render", () => { });
+  it("Pagination render", () => {});
 });

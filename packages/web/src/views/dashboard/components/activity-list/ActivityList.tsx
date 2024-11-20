@@ -5,10 +5,7 @@ import { ActivityType } from "@repositories/dashboard";
 import { DEVICE_TYPE } from "@styles/media";
 
 import ActivityListHeader from "./activity-list-header/ActivityListHeader";
-import ActivityListTable, {
-  ACTIVITY_TABLE_HEAD,
-  SortOption,
-} from "./activity-list-table/ActivityListTable";
+import ActivityListTable, { ACTIVITY_TABLE_HEAD, SortOption } from "./activity-list-table/ActivityListTable";
 
 import { ActivityListWrapper } from "./ActivityList.styles";
 
@@ -18,13 +15,7 @@ interface ActivityItem {
   error: Error | null;
   activityType?: ActivityType;
   sortOption?: SortOption;
-  changeActivityType: ({
-    display,
-    key,
-  }: {
-    display: string;
-    key: string;
-  }) => void;
+  changeActivityType: ({ display, key }: { display: string; key: string }) => void;
   currentPage: number;
   totalPage: number;
   movePage: (page: number) => void;
@@ -45,10 +36,7 @@ const ActivityList: React.FC<ActivityItem> = ({
 }) => {
   return (
     <ActivityListWrapper>
-      <ActivityListHeader
-        activityType={activityType}
-        changeActivityType={changeActivityType}
-      />
+      <ActivityListHeader activityType={activityType} changeActivityType={changeActivityType} />
       <ActivityListTable
         activities={activities}
         isFetched={isFetched}

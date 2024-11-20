@@ -9,9 +9,7 @@ export const useIncentivizePool = () => {
   const { getGnotPath } = useGnotToGnot();
 
   const incentivizePools: IncentivizePoolCardInfo[] = useMemo(() => {
-    const mappedPools = data
-      .filter(pool => pool.incentiveType !== "NONE_INCENTIVIZED")
-      .map(PoolMapper.toCardInfo);
+    const mappedPools = data.filter(pool => pool.incentiveType !== "NONE_INCENTIVIZED").map(PoolMapper.toCardInfo);
     mappedPools.sort((x, y) => Number(y.tvl) - Number(x.tvl));
     return mappedPools.map((item: IncentivizePoolCardInfo) => {
       return {

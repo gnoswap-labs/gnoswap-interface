@@ -7,9 +7,7 @@ interface TokenDescriptionContentProps {
   content: string;
 }
 
-const TokenDescriptionContent: React.FC<TokenDescriptionContentProps> = ({
-  content,
-}) => {
+const TokenDescriptionContent: React.FC<TokenDescriptionContentProps> = ({ content }) => {
   const { t } = useTranslation();
 
   return (

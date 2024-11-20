@@ -8,7 +8,7 @@ describe("LoadMoreButton Component", () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <LoadMoreButton show={true} onClick={() => { }} />
+          <LoadMoreButton show={true} onClick={() => {}} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

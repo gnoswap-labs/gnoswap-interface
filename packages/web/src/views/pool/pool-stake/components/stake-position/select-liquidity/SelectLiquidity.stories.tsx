@@ -23,16 +23,8 @@ const Template: ComponentStory<typeof SelectLiquidity> = args => {
     [checkedList],
   );
 
-  return (
-    <SelectLiquidity
-      {...args}
-      checkedList={checkedList}
-      onCheckedItem={onCheckedItem}
-      checkedAll={checkedAll}
-    />
-  );
+  return <SelectLiquidity {...args} checkedList={checkedList} onCheckedItem={onCheckedItem} checkedAll={checkedAll} />;
 };
 
 export const Default = Template.bind({});
-Default.args = {
-};
+Default.args = {};

@@ -11,8 +11,7 @@ import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpa
 export const useLoading = () => {
   const { address } = useAddress();
   const { data: initialized } = useInitLoading();
-  const { isFetched: isFetchedTokenData, isFetchedTokenPrices } =
-    useTokenData();
+  const { isFetched: isFetchedTokenData, isFetchedTokenPrices } = useTokenData();
   const { isFetched: isFetchedChainList } = useGetChainInfo({ enabled: false });
   const { isFetched: isFetchedPoolData } = useGetPoolList({ enabled: false });
   const { isFetched: isFetchedDashboardVolume } = useGetDashboardVolume({
@@ -28,8 +27,7 @@ export const useLoading = () => {
     },
   );
 
-  const { isFetched: isFetchedLaunchpadProjectList } =
-    useGetLaunchpadActiveProjects({ enabled: false });
+  const { isFetched: isFetchedLaunchpadProjectList } = useGetLaunchpadActiveProjects({ enabled: false });
 
   const isLoading = useMemo(() => {
     if (initialized) {
@@ -57,12 +55,7 @@ export const useLoading = () => {
       return true;
     }
     return !isFetchedTokenData || !isFetchedTokenPrices || !isFetchedChainList;
-  }, [
-    initialized,
-    isFetchedTokenData,
-    isFetchedTokenPrices,
-    isFetchedChainList,
-  ]);
+  }, [initialized, isFetchedTokenData, isFetchedTokenPrices, isFetchedChainList]);
 
   const isLoadingHighestAPRPools = useMemo(() => {
     if (!initialized) {

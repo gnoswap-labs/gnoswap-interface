@@ -32,15 +32,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
   moveProjectDetail,
   moveRewardTokenSwapPage,
 }) => {
-  const {
-    status,
-    name,
-    pools,
-    projectId,
-    rewardTokenLogoUrl,
-    rewardTokenSymbol,
-    rewardTokenPath,
-  } = project;
+  const { status, name, pools, projectId, rewardTokenLogoUrl, rewardTokenSymbol, rewardTokenPath } = project;
 
   const highestApr = React.useMemo(() => {
     return pools.reduce((acc, current) => {
@@ -97,12 +89,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
         tdWidth={cellWidths.list[0].width}
         onClick={() => moveProjectDetail(projectId)}
       >
-        <MissingLogo
-          symbol={rewardTokenSymbol}
-          url={rewardTokenLogoUrl || undefined}
-          width={24}
-          mobileWidth={24}
-        />
+        <MissingLogo symbol={rewardTokenSymbol} url={rewardTokenLogoUrl || undefined} width={24} mobileWidth={24} />
         <span className="ellipsis">{name}</span>
         <span className="reward-token-symbol">{rewardTokenSymbol}</span>
       </TableColumn>
@@ -115,9 +102,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
         <span className="ellipsis">{aprStr}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[3].width}>
-        <span className="ellipsis">
-          {toNumberFormat(totals.totalParticipants, 2) || 0}
-        </span>
+        <span className="ellipsis">{toNumberFormat(totals.totalParticipants, 2) || 0}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[4].width}>
         <span className="ellipsis">
@@ -125,9 +110,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
         </span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>
-        <span className="ellipsis">
-          {toNumberFormat(totals.totalDeposit, 2) || 0} GNS
-        </span>
+        <span className="ellipsis">{toNumberFormat(totals.totalDeposit, 2) || 0} GNS</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[6].width}>
         <SwapPageButton

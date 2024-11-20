@@ -33,13 +33,7 @@ const MissingLogo: React.FC<Props> = ({
       FloatingContent={<TokenSymbolWrapper>{symbol}</TokenSymbolWrapper>}
     >
       {url ? (
-        <Image
-          mobileWidth={mobileWidth}
-          width={width}
-          src={url}
-          alt="logo"
-          className={className}
-        />
+        <Image mobileWidth={mobileWidth} width={width} src={url} alt="logo" className={className} />
       ) : (
         <LogoWrapper
           width={width}

@@ -12,7 +12,7 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div<Props>`
   width: 100%;
   height: auto;
   align-items: center;
-  padding: ${({ visibleLiquidity}) => {
+  padding: ${({ visibleLiquidity }) => {
     return visibleLiquidity ? "12px 0" : "16px 0";
   }};
   cursor: pointer;
@@ -54,7 +54,7 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div<Props>`
   }
 
   &:hover {
-    background-color:  ${({ visibleLiquidity, theme}) => {
+    background-color: ${({ visibleLiquidity, theme }) => {
       return visibleLiquidity ? theme.color.hover02 : "transparent";
     }};
   }

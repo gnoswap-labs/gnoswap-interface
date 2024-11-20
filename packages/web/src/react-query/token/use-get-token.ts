@@ -6,10 +6,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { QUERY_KEY } from "../query-keys";
 import { TokenError } from "@common/errors/token";
 
-export const useGetToken = (
-  path: string | null,
-  options?: UseQueryOptions<ITokenResponse, Error>,
-) => {
+export const useGetToken = (path: string | null, options?: UseQueryOptions<ITokenResponse, Error>) => {
   const { tokenRepository } = useGnoswapContext();
 
   return useQuery<ITokenResponse, Error>({

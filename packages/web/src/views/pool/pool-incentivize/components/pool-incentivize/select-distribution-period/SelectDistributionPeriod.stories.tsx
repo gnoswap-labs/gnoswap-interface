@@ -8,16 +8,14 @@ export default {
   component: SelectDistributionPeriod,
 } as ComponentMeta<typeof SelectDistributionPeriod>;
 
-const Template: ComponentStory<typeof SelectDistributionPeriod> = args => (
-  <SelectDistributionPeriod {...args} />
-);
+const Template: ComponentStory<typeof SelectDistributionPeriod> = args => <SelectDistributionPeriod {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
   startDate: {
     year: 2023,
     month: 10,
-    date: 1
+    date: 1,
   },
   period: 90,
   setStartDate: action("setStartDate"),
