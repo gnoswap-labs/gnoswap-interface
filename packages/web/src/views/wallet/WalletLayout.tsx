@@ -2,10 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
-import {
-  DEFAULT_POOL_ADD_URI,
-  getCanScrollUpId,
-} from "@constants/common.constant";
+import { DEFAULT_POOL_ADD_URI, getCanScrollUpId } from "@constants/common.constant";
 import { LinkButton, WalletLayoutWrapper } from "./WalletLayout.styles";
 
 interface WalletLayoutProps {
@@ -16,13 +13,7 @@ interface WalletLayoutProps {
   footer: React.ReactNode;
 }
 
-const WalletLayout: React.FC<WalletLayoutProps> = ({
-  header,
-  balance,
-  assets,
-  positions,
-  footer,
-}) => {
+const WalletLayout: React.FC<WalletLayoutProps> = ({ header, balance, assets, positions, footer }) => {
   const { t } = useTranslation();
 
   return (
@@ -36,8 +27,7 @@ const WalletLayout: React.FC<WalletLayoutProps> = ({
             <LinkButton>
               <span>{t("Wallet:gotoEarnAdd")}</span>
               <Link href={DEFAULT_POOL_ADD_URI}>
-                {t("common:clickHere")}{" "}
-                <IconStrokeArrowRight className="link-icon" />
+                {t("common:clickHere")} <IconStrokeArrowRight className="link-icon" />
               </Link>
             </LinkButton>
           </div>

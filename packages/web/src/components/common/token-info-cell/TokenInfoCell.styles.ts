@@ -17,9 +17,9 @@ export const TokenInfoCellWrapper = styled.div`
     cursor: pointer;
     margin-left: 8px;
     width: 100%;
+    gap: 2px;
 
     &.mobile {
-      gap: 2px;
     }
 
     .token-name-path {

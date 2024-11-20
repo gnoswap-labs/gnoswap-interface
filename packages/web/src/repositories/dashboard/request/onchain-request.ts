@@ -1,20 +1,13 @@
-export interface OnchainRequest {
-  type:
-    | "All"
-    | "Swaps"
-    | "Adds"
-    | "Removes"
-    | "Stakes"
-    | "Unstakes"
-    | "Claims";
+export enum ActivityType {
+  ALL = "ALL",
+  SWAP = "SWAP",
+  ADD = "ADD",
+  REMOVE = "REMOVE",
+  STAKE = "STAKE",
+  UNSTAKE = "UNSTAKE",
+  CLAIM = "CLAIM",
 }
 
-export const OnChainRequestMapping: Record<OnchainRequest["type"], string> = {
-  All: "ALL",
-  Swaps: "SWAP",
-  Adds: "ADD",
-  Removes: "REMOVE",
-  Stakes: "STAKE",
-  Unstakes: "UNSTAKE",
-  Claims: "CLAIM",
-};
+export interface OnchainRequest {
+  type: ActivityType;
+}

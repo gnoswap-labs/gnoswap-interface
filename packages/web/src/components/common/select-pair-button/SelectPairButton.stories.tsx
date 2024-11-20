@@ -8,9 +8,7 @@ export default {
   component: SelectPairButton,
 } as ComponentMeta<typeof SelectPairButton>;
 
-const Template: ComponentStory<typeof SelectPairButton> = args => (
-  <SelectPairButton {...args} />
-);
+const Template: ComponentStory<typeof SelectPairButton> = args => <SelectPairButton {...args} />;
 
 export const Selected = Template.bind({});
 Selected.args = {
@@ -24,7 +22,7 @@ Selected.args = {
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     priceID: "gno.land/r/foo",
-    address: ""
+    address: "",
   },
 };
 

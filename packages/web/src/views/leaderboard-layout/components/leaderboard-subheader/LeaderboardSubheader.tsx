@@ -3,21 +3,14 @@ import { Container, TitleWrapper } from "./LeaderboardSubheader.styles";
 import LearnMore from "../learn-more/LearnMore";
 import { FontSize16, P } from "../common/common.styles";
 
-const LeaderboardSubheader = ({
-  connected,
-  address,
-}: {
-  connected: boolean;
-  address?: string;
-}) => {
+const LeaderboardSubheader = ({ connected, address }: { connected: boolean; address?: string }) => {
   return (
     <Container>
       <TitleWrapper>
         <FontSize16>
           <P as="span" color="text04">
-            Climb up the leaderboard by collecting points for swapping,
-            providing liquidity, staking, or inviting friends. Every activity on
-            GnoSwap counts!&nbsp;
+            Climb up the leaderboard by collecting points for swapping, providing liquidity, staking, or inviting
+            friends. Every activity on GnoSwap counts!&nbsp;
           </P>
           <LearnMore />
         </FontSize16>

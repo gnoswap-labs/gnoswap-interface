@@ -65,9 +65,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
                 key={index}
               />
             ))}
-        {!isLoading && isEmpty && (
-          <div className="no-position">{t("StakePosition:noPosi")}</div>
-        )}
+        {!isLoading && isEmpty && <div className="no-position">{t("StakePosition:noPosi")}</div>}
       </ul>
     </div>
   );

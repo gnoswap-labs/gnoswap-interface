@@ -7,7 +7,7 @@ describe("BarGraph Component", () => {
   it("BarGraph render", () => {
     const args: BarGraphProps = {
       color: "#FFFFFF",
-      datas: []
+      datas: [],
     };
 
     render(

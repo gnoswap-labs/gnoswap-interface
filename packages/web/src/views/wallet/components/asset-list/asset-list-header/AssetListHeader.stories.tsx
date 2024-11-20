@@ -10,9 +10,7 @@ export default {
   component: AssetListHeader,
 } as ComponentMeta<typeof AssetListHeader>;
 
-const Template: ComponentStory<typeof AssetListHeader> = args => (
-  <AssetListHeader {...args} />
-);
+const Template: ComponentStory<typeof AssetListHeader> = args => <AssetListHeader {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -6,11 +6,7 @@ import { GnoscanDataType, useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 import { SnackbarContent } from "./type";
 
-const FailContent: React.FC<{ content?: SnackbarContent }> = ({
-  content,
-}: {
-  content?: SnackbarContent;
-}) => {
+const FailContent: React.FC<{ content?: SnackbarContent }> = ({ content }: { content?: SnackbarContent }) => {
   const { t } = useTranslation();
   const { getGnoscanUrl, getTxUrl } = useGnoscanUrl();
 
@@ -21,10 +17,7 @@ const FailContent: React.FC<{ content?: SnackbarContent }> = ({
         <h5>
           {content.title} - {t("Modal:toast.failed.title")}
         </h5>
-        <div
-          className="description"
-          dangerouslySetInnerHTML={{ __html: content.description || "" }}
-        />
+        <div className="description" dangerouslySetInnerHTML={{ __html: content.description || "" }} />
         {content.txHash ? (
           <a href={getTxUrl(content.txHash)} target="_blank">
             {t("Modal:toast.failed.viewTx")} <IconNewTab />

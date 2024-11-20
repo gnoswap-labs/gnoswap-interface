@@ -7,15 +7,10 @@ export interface SimpleLineGraphProps {
   datas: number[];
   width?: number;
   height?: number;
-  status: MATH_NEGATIVE_TYPE
+  status: MATH_NEGATIVE_TYPE;
 }
 
-const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
-  datas,
-  width,
-  height,
-  status,
-}) => {
+const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({ datas, width, height, status }) => {
   const theme = useTheme();
 
   const checkSameData = useMemo(() => {
@@ -25,7 +20,7 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
   const getChartDatas = useCallback(() => {
     return datas.map((data, index) => ({
       time: `${index + 1000}`,
-      value: `${data}`
+      value: `${data}`,
     }));
   }, [datas]);
 
@@ -56,12 +51,12 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
     if (getStatus() === "UP") {
       return {
         start: "#16C78A66",
-        end: "#16C78A00"
+        end: "#16C78A00",
       };
     }
     return {
       start: "#EA394366",
-      end: "#EA394300"
+      end: "#EA394300",
     };
   }, [getStatus]);
 

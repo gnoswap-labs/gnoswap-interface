@@ -15,28 +15,22 @@ export const useMakePoolPositions = (
   isFetchedPosition: boolean,
   options?: UseQueryOptions<PoolPositionModel[], Error>,
 ) => {
-  return useQuery<PoolPositionModel[], Error>({
-    queryKey: [QUERY_KEY.poolPositions, positions?.map(p => p.id).join(",")],
+  const query = useQuery<PoolPositionModel[], Error>({
+    queryKey: [QUERY_KEY.poolPositions],
     queryFn: async () => {
       return new Promise(resolve => {
         const poolPositions: PoolPositionModel[] = [];
         positions?.forEach(position => {
           const pool = pools.find(pool => pool.poolPath === position.poolPath);
           if (pool) {
-            const tokenA = isGNOTPath(pool.tokenA.path)
-              ? GNOT_TOKEN
-              : pool.tokenA;
-            const tokenB = isGNOTPath(pool.tokenB.path)
-              ? GNOT_TOKEN
-              : pool.tokenB;
+            const tokenA = isGNOTPath(pool.tokenA.path) ? GNOT_TOKEN : pool.tokenA;
+            const tokenB = isGNOTPath(pool.tokenB.path) ? GNOT_TOKEN : pool.tokenB;
             const currentPool = {
               ...pool,
               tokenA,
               tokenB,
             };
-            poolPositions.push(
-              PositionMapper.makePoolPosition(position, currentPool),
-            );
+            poolPositions.push(PositionMapper.makePoolPosition(position, currentPool));
           }
         });
 
@@ -48,4 +42,6 @@ export const useMakePoolPositions = (
     enabled: isFetchedPosition && pools.length > 0,
     ...options,
   });
+
+  return query;
 };

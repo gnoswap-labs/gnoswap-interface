@@ -16,10 +16,8 @@ interface PaginationProps {
 const getLabel = (item: string | number) => {
   if (typeof item === "number") return item;
   else if (item.indexOf("ellipsis") > -1) return "...";
-  else if (item.indexOf("prev") > -1)
-    return <IconStrokeArrowLeft className="icon-arrow-pagination" />;
-  else if (item.indexOf("next") > -1)
-    return <IconStrokeArrowRight className="icon-arrow-pagination" />;
+  else if (item.indexOf("prev") > -1) return <IconStrokeArrowLeft className="icon-arrow-pagination" />;
+  else if (item.indexOf("next") > -1) return <IconStrokeArrowRight className="icon-arrow-pagination" />;
   else return item;
 };
 
@@ -36,17 +34,10 @@ const Pagination: React.FC<PaginationProps> = ({
   siblingCount = 2,
   boundaryCount = 1,
 }) => {
-  const startPages = useMemo(
-    () => range(1, Math.min(boundaryCount, totalPage)),
-    [boundaryCount, totalPage],
-  );
+  const startPages = useMemo(() => range(1, Math.min(boundaryCount, totalPage)), [boundaryCount, totalPage]);
 
   const endPages = useMemo(
-    () =>
-      range(
-        Math.max(totalPage - boundaryCount + 1, boundaryCount + 1),
-        totalPage,
-      ),
+    () => range(Math.max(totalPage - boundaryCount + 1, boundaryCount + 1), totalPage),
     [boundaryCount, totalPage],
   );
 
@@ -81,14 +72,11 @@ const Pagination: React.FC<PaginationProps> = ({
         }
       : {
           key: index,
-          onClick: () =>
-            onPageChange(item === "next" ? currentPage + 1 : currentPage - 1),
+          onClick: () => onPageChange(item === "next" ? currentPage + 1 : currentPage - 1),
           disabled:
             disabled ||
             item.indexOf("ellipsis") > -1 ||
-            (item === "next"
-              ? currentPage >= totalPage - 1
-              : currentPage - 1 < 0),
+            (item === "next" ? currentPage >= totalPage - 1 : currentPage - 1 < 0),
           selected: false,
           item,
         },
@@ -96,19 +84,13 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <PaginationWrapper>
-      {paginationDetailsObject.map(
-        ({ key, disabled, selected, onClick, item }) => (
-          <PaginationItem key={key}>
-            <Button
-              className={cx({ selected: selected })}
-              disabled={disabled}
-              onClick={onClick}
-            >
-              {getLabel(item)}
-            </Button>
-          </PaginationItem>
-        ),
-      )}
+      {paginationDetailsObject.map(({ key, disabled, selected, onClick, item }) => (
+        <PaginationItem key={key}>
+          <Button className={cx({ selected: selected })} disabled={disabled} onClick={onClick}>
+            {getLabel(item)}
+          </Button>
+        </PaginationItem>
+      ))}
     </PaginationWrapper>
   );
 };

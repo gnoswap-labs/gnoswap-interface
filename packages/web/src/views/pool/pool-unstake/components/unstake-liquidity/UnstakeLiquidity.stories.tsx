@@ -8,9 +8,7 @@ export default {
 } as ComponentMeta<typeof UnstakeLiquidity>;
 
 const Template: ComponentStory<typeof UnstakeLiquidity> = args => {
-  return (
-    <UnstakeLiquidity {...args} />
-  );
+  return <UnstakeLiquidity {...args} />;
 };
 
 export const Default = Template.bind({});

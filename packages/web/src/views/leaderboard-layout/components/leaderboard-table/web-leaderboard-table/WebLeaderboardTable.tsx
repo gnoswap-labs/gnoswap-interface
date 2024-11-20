@@ -14,12 +14,7 @@ export default function WebLeaderboardTable({
   return (
     <>
       {myLeader && (
-        <LeaderboardTableRow
-          item={myLeader}
-          tdWidths={LEADERBOARD_TD_WIDTH}
-          isMobile={isMobile}
-          isMe={true}
-        />
+        <LeaderboardTableRow item={myLeader} tdWidths={LEADERBOARD_TD_WIDTH} isMobile={isMobile} isMe={true} />
       )}
       {leaders.map(leader => (
         <LeaderboardTableRow

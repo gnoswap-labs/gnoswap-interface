@@ -10,9 +10,7 @@ interface OtherPositionNoLiquidityProps {
   account: AccountModel | null;
 }
 
-const OtherPositionNoLiquidity: React.FC<
-  OtherPositionNoLiquidityProps
-> = () => {
+const OtherPositionNoLiquidity: React.FC<OtherPositionNoLiquidityProps> = () => {
   const { t } = useTranslation();
 
   return (

@@ -1,9 +1,10 @@
+import styled from "@emotion/styled";
+
 import { fonts } from "@constants/font.constant";
-import { css, Theme } from "@emotion/react";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const wrapper = (theme: Theme) => css`
+export const PoolAddLayoutWrapper = styled.div`
   width: 100%;
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   main {
@@ -16,9 +17,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .wrapper-sub-content {
     ${mixins.flexbox("row", "flex-start", "flex-end")};
-    &.full-width {
-      width: 100%;
-    }
+    width: 100%;
   }
   .title-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -29,30 +28,18 @@ export const wrapper = (theme: Theme) => css`
     }
     .title {
       ${fonts.h3};
-      color: ${theme.color.text02};
+      color: ${({ theme }) => theme.color.text02};
     }
-  }
-
-  .additional-info-section {
-    padding: 0 24px 0 16px;
   }
 
   .add-liquidity-section {
     margin: 0 auto;
     height: 100%;
-  }
-  .quick-pool-info-section {
-    &.margin-bottom {
-      margin-bottom: 16px;
-    }
-    .fake-div {
+    &:not(&:last-child) {
+      margin: 0 0 0 auto;
     }
   }
-  .content-default {
-    ${media.tablet} {
-      display: none;
-    }
-  }
+
   ${media.tablet} {
     main {
       margin: 60px 0;
@@ -68,27 +55,9 @@ export const wrapper = (theme: Theme) => css`
         ${fonts.h4};
       }
     }
-    .additional-info-section {
-      width: 100%;
-      margin: auto;
-      padding: 0;
-    }
-    .exchange-rate-graph {
-      margin: auto;
-      max-width: 500px;
-      width: 100%;
-    }
     .add-liquidity-section {
-      margin: auto;
-    }
-    .quick-pool-info-section {
-      padding: 0;
-      margin: 16px auto 0;
+      ${mixins.flexbox("row", "center", "center")};
       width: 100%;
-      max-width: 500px;
-      .fake-div {
-        width: 430px;
-      }
     }
     .content-default {
       display: none;
@@ -109,9 +78,6 @@ export const wrapper = (theme: Theme) => css`
     .content-wrap {
       gap: 24px;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
-    }
-    .add-liquidity-section {
-      margin: none;
     }
   }
   ${media.mobile} {

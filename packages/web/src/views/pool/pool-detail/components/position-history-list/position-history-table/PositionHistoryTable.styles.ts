@@ -57,7 +57,6 @@ export const TableWrapper = styled.div`
   }
   ${media.mobile} {
     margin-top: 8px;
-
   }
 `;
 

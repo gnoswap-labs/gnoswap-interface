@@ -1,6 +1,6 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
-
 
 export const WarningCardWrapper = styled.div<{
   type: "Error" | "Warning";
@@ -25,26 +25,27 @@ export const WarningCardWrapper = styled.div<{
       return `1px solid ${theme.color.border21}`;
     }
 
-
     return `1px solid ${theme.color.border20}`;
   }};
-  
+
   & > * {
     color: ${({ theme, type }) => {
-    if (type === "Error") {
-      return theme.color.red01;
-    }
-    return theme.color.text33;
-  }};
+      if (type === "Error") {
+        return theme.color.red01;
+      }
+      return theme.color.text33;
+    }};
   }
 `;
 
 export const TitleWrapper = styled.div`
-  font-size: 14px;
-  font-style: normal;
+  ${mixins.flexbox("row", "flex-start", "center")}
+  ${fonts.body13}
   font-weight: 600;
-  ${mixins.flexbox("row", "center")}
   gap: 4px;
+  > svg {
+    margin-top: 1px;
+  }
 `;
 
 export const ContentWrapper = styled.div`

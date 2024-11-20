@@ -1,10 +1,11 @@
 import React from "react";
 
 import Footer from "@components/common/footer/Footer";
-import GovernanceContainer from "@containers/governance-container/GovernanceContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import ProposalListContainer from "@containers/proposal-list-container/ProposalListContainer";
 
+import GovernanceContainer from "./containers/governance-summary-container/GovernanceSummaryContainer";
+import MyDelegationContainer from "./containers/my-delegation-container/MyDelegationContainer";
+import ProposalListContainer from "./containers/proposal-list-container/ProposalListContainer";
 import GovernanceLayout from "./GovernanceLayout";
 
 const Governance: React.FC = () => {
@@ -12,6 +13,7 @@ const Governance: React.FC = () => {
     <GovernanceLayout
       header={<HeaderContainer />}
       summary={<GovernanceContainer />}
+      myDelegation={<MyDelegationContainer />}
       list={<ProposalListContainer />}
       footer={<Footer />}
     />

@@ -16,9 +16,7 @@ interface SelectPairIncentivizeButtonProps {
   className?: string;
 }
 
-const SelectPairIncentivizeButton: React.FC<
-  SelectPairIncentivizeButtonProps
-> = ({
+const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = ({
   token,
   changeToken,
   disabled,
@@ -46,25 +44,15 @@ const SelectPairIncentivizeButton: React.FC<
     <div
       css={wrapper(Boolean(token), disabled || hiddenModal, isHiddenArrow)}
       onClick={onClickButton}
-      className={`${className} ${
-        token ? "selected-token" : "not-selected-token"
-      }`}
+      className={`${className} ${token ? "selected-token" : "not-selected-token"}`}
     >
       {token ? (
         <div className="token-pair-wrapper">
-          <MissingLogo
-            symbol={token.symbol}
-            url={token.logoURI}
-            className="token-logo"
-            width={24}
-            mobileWidth={24}
-          />
+          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24} />
           <span className="token-symbol">{token.symbol}</span>
         </div>
       ) : (
-        <span className="token-label-select">
-          {t("common:selectPairBtn.select")}
-        </span>
+        <span className="token-label-select">{t("common:selectPairBtn.select")}</span>
       )}
       {!isHiddenArrow && <IconStrokeArrowDown className="arrow-icon" />}
     </div>

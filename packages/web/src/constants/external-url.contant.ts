@@ -4,12 +4,17 @@ export const EXT_URL = {
     WELCOME: "https://docs.gnoswap.io/welcome",
     CONTRACTS: "https://docs.gnoswap.io/contracts",
     ONBOARDING: "https://docs.gnoswap.io/references/onboarding-guide",
-    WARMUP:
-      "https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods",
+    FAQ: "https://docs.gnoswap.io/references/faq",
+    WARMUP: "https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods",
     USER_GUIDE: {
-      STAKE_POSITIONS:
-        "https://docs.gnoswap.io/user-guide/staking/stake-positions",
+      ROOT: "https://docs.gnoswap.io/user-guide/getting-started",
+      STAKE_POSITIONS: "https://docs.gnoswap.io/user-guide/staking/stake-positions",
+      PROVIDING_LIQUIDITY: "https://docs.gnoswap.io/user-guide/providing-liquidity/create-a-position",
     },
+    GOVERNANCE: "https://docs.gnoswap.io/core-concepts/governance",
+    XGNS: "https://docs.gnoswap.io/gnoswap-token/xgns",
+    DISCLAIMER: "https://docs.gnoswap.io/disclaimer",
+    RISK: "https://docs.gnoswap.io/risk",
   },
   SOCIAL: {
     DISCORD: "https://discord.gg/u4bdGHStb2",
@@ -21,4 +26,5 @@ export const EXT_URL = {
     ROOT: "https://github.com/gnoswap-labs",
     CONTRACTS: "https://github.com/gnoswap-labs/gnoswap",
   },
+  AUDIT: "https://github.com/gnoswap-labs/gnoswap/tree/main/audits",
 } as const;

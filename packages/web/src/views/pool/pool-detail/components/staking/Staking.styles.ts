@@ -17,6 +17,6 @@ export const StakingAnchor = styled.div`
     top: -75px;
   }
   ${media.mobile} {
-    display: none;
+    top: -40px;
   }
 `;

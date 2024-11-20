@@ -8,10 +8,7 @@ export interface PortalProps {
   selector?: string;
 }
 
-const GnoswapModalProvider: React.FC<PortalProps> = ({
-  children,
-  selector,
-}) => {
+const GnoswapModalProvider: React.FC<PortalProps> = ({ children, selector }) => {
   const [element, setElement] = useState<HTMLElement | null>(null);
 
   useEffect(() => {

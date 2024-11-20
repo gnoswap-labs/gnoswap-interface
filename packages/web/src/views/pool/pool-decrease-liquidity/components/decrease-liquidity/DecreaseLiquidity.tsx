@@ -27,6 +27,7 @@ interface DecreaseLiquidityProps {
   pooledTokenInfos: IPooledTokenInfo | null;
   isGetWGNOT: boolean;
   setIsGetWGNOT: () => void;
+  showWGNOTToggle: boolean;
 }
 
 const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
@@ -44,6 +45,7 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
   pooledTokenInfos,
   isGetWGNOT,
   setIsGetWGNOT,
+  showWGNOTToggle,
 }) => {
   const { t } = useTranslation();
 
@@ -71,11 +73,12 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
           pooledTokenInfos={pooledTokenInfos}
           isGetWGNOT={isGetWGNOT}
           setIsGetWGNOT={setIsGetWGNOT}
+          showWGNOTToggle={showWGNOTToggle}
         />
       </article>
       <Button
         onClick={onSubmit}
-        text={t("DecreaseLiquidity:btn.decreaseLiqui")}
+        text={t("DecreaseLiquidity:title")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,

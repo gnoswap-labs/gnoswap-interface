@@ -16,14 +16,9 @@ interface SelectUnstakeResultProps {
   setIsGetWGNOT: () => void;
 }
 
-const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
-  positions,
-  isGetWGNOT,
-  setIsGetWGNOT,
-}) => {
+const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({ positions, isGetWGNOT, setIsGetWGNOT }) => {
   const { t } = useTranslation();
-  const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } =
-    usePositionsRewards({ positions });
+  const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } = usePositionsRewards({ positions });
 
   if (positions.length === 0) return <></>;
   return (
@@ -39,8 +34,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                 mobileWidth={24}
               />
               <p>
-                {t("UnstakePosition:overview.pooled")}{" "}
-                {pooledTokenInfo.token.symbol}
+                {t("UnstakePosition:overview.pooled")} {pooledTokenInfo.token.symbol}
               </p>
               <strong>{pooledTokenInfo.amount}</strong>
             </div>
@@ -58,9 +52,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
                   width={24}
                   mobileWidth={24}
                 />
-                <p>
-                  {t("UnstakePosition:overview.unclaimed")}
-                </p>
+                <p>{t("UnstakePosition:unclaimedRewards")}</p>
                 <strong>
                   {formatPoolPairAmount(pooledTokenInfo.amount, {
                     decimals: pooledTokenInfo.token.decimals,
@@ -83,9 +75,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
-          <h5 className="total-amount-title">
-            {t("UnstakePosition:overview.totalAmt")}
-          </h5>
+          <h5 className="total-amount-title">{t("UnstakePosition:overview.totalAmt")}</h5>
           <span className="result-value">{totalLiquidityUSD}</span>
         </div>
       </div>

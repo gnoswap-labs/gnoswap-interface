@@ -2,11 +2,7 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  PriceRangeMeta,
-  RANGE_STATUS_OPTION,
-  SwapFeeTierInfoMap,
-} from "@constants/option.constant";
+import { PriceRangeMeta, RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
 import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
@@ -34,16 +30,11 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type INCREASE_BUTTON_TYPE =
-  | "ENTER_AMOUNT"
-  | "INCREASE_LIQUIDITY"
-  | "INSUFFICIENT_BALANCE";
+export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY" | "INSUFFICIENT_BALANCE";
 
 export const useIncreaseHandle = () => {
   const router = useCustomRouter();
-  const [selectedPosition, setSelectedPosition] = useAtom(
-    IncreaseState.selectedPosition,
-  );
+  const [selectedPosition, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
   const { getGnotPath } = useGnotToGnot();
@@ -52,15 +43,13 @@ export const useIncreaseHandle = () => {
     type: "Custom",
   });
 
-  const { positions } = usePositionData({
+  const { positions, refetch: refetchPositions } = usePositionData({
     poolPath,
   });
 
   useEffect(() => {
     if (!selectedPosition && positions.length > 0 && positionId) {
-      const position = positions.find(
-        position => position.lpTokenId.toString() === positionId,
-      );
+      const position = positions.find(position => position.lpTokenId.toString() === positionId);
 
       if (!position) {
         router.movePageWithPoolPath("POOL", poolPath || "");
@@ -74,10 +63,7 @@ export const useIncreaseHandle = () => {
   const { connected, account, loadingConnect } = useWallet();
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
-    const isEndTick = isEndTickBy(
-      selectedPosition?.tickLower,
-      selectedPosition?.pool.fee,
-    );
+    const isEndTick = isEndTickBy(selectedPosition?.tickLower, selectedPosition?.pool.fee);
     const minPrice = tickToPriceStr(selectedPosition?.tickLower, {
       decimals: 40,
       isEnd: isEndTick,
@@ -88,10 +74,7 @@ export const useIncreaseHandle = () => {
 
   const maxPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
-    const isEndTick = isEndTickBy(
-      selectedPosition?.tickUpper,
-      selectedPosition?.pool.fee,
-    );
+    const isEndTick = isEndTickBy(selectedPosition?.tickUpper, selectedPosition?.pool.fee);
 
     const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, {
       decimals: 40,
@@ -145,19 +128,14 @@ export const useIncreaseHandle = () => {
 
   const aprFee = useMemo(() => {
     if (!selectedPosition) return 0;
-    return selectedPosition?.reward.reduce(
-      (acc, item) => acc + Number(item.apr || 0),
-      0,
-    );
+    return selectedPosition?.reward.reduce((acc, item) => acc + Number(item.apr || 0), 0);
   }, [selectedPosition]);
 
   const selectPool = useSelectPool({
     tokenA,
     tokenB,
     feeTier,
-    startPrice: selectedPosition
-      ? tickToPrice(selectedPosition.pool.currentTick)
-      : null,
+    startPrice: selectedPosition ? tickToPrice(selectedPosition.pool.currentTick) : null,
     isCreate: false,
     options: selectedPosition
       ? {
@@ -168,23 +146,12 @@ export const useIncreaseHandle = () => {
   });
 
   useEffect(() => {
-    if (
-      !selectedPosition?.tickLower ||
-      !selectedPosition?.tickUpper ||
-      !selectedPosition?.pool.fee ||
-      !selectPool
-    )
+    if (!selectedPosition?.tickLower || !selectedPosition?.tickUpper || !selectedPosition?.pool.fee || !selectPool)
       return;
 
-    const isLowestTick = isEndTickBy(
-      selectedPosition?.tickLower,
-      selectedPosition?.pool.fee,
-    );
+    const isLowestTick = isEndTickBy(selectedPosition?.tickLower, selectedPosition?.pool.fee);
 
-    const isHighestTick = isEndTickBy(
-      selectedPosition?.tickUpper,
-      selectedPosition?.pool.fee,
-    );
+    const isHighestTick = isEndTickBy(selectedPosition?.tickUpper, selectedPosition?.pool.fee);
 
     selectPool.setCompareToken(tokenA);
 
@@ -194,13 +161,7 @@ export const useIncreaseHandle = () => {
 
     selectPool.setMinPosition(tickToPrice(selectedPosition?.tickLower));
     selectPool.setMaxPosition(tickToPrice(selectedPosition?.tickUpper));
-  }, [
-    selectedPosition?.tickLower,
-    selectedPosition?.tickUpper,
-    selectedPosition?.pool.fee,
-    selectPool,
-    tokenA,
-  ]);
+  }, [selectedPosition?.tickLower, selectedPosition?.tickUpper, selectedPosition?.pool.fee, selectPool, tokenA]);
 
   const currentTick = useMemo(() => {
     if (!selectPool.currentPrice) {
@@ -267,13 +228,7 @@ export const useIncreaseHandle = () => {
     (amount: string) => {
       tokenAAmountInput.changeAmount(amount);
 
-      if (
-        !selectPool ||
-        !tokenA ||
-        !tokenB ||
-        Number.isNaN(amount) ||
-        Number(amount) <= 0
-      ) {
+      if (!selectPool || !tokenA || !tokenB || Number.isNaN(amount) || Number(amount) <= 0) {
         return;
       }
       const amountAAmountRaw = makeRawTokenAmount(tokenA, amount) || "0";
@@ -287,27 +242,14 @@ export const useIncreaseHandle = () => {
       const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
       tokenBAmountInput.changeAmount(tokenBAmount.toString());
     },
-    [
-      tokenAAmountInput,
-      selectPool.currentPrice,
-      tokenA,
-      tokenB,
-      minPrice,
-      maxPrice,
-    ],
+    [tokenAAmountInput, selectPool.currentPrice, tokenA, tokenB, minPrice, maxPrice],
   );
 
   const changeTokenBAmount = useCallback(
     (amount: string) => {
       tokenBAmountInput.changeAmount(amount);
 
-      if (
-        !selectPool ||
-        !tokenA ||
-        !tokenB ||
-        Number.isNaN(amount) ||
-        Number(amount) <= 0
-      ) {
+      if (!selectPool || !tokenA || !tokenB || Number.isNaN(amount) || Number(amount) <= 0) {
         return;
       }
 
@@ -322,14 +264,7 @@ export const useIncreaseHandle = () => {
       const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
       tokenAAmountInput.changeAmount(tokenAAmount.toString());
     },
-    [
-      tokenBAmountInput,
-      selectPool.currentPrice,
-      tokenA,
-      tokenB,
-      minPrice,
-      maxPrice,
-    ],
+    [tokenBAmountInput, selectPool.currentPrice, tokenA, tokenB, minPrice, maxPrice],
   );
 
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
@@ -343,12 +278,10 @@ export const useIncreaseHandle = () => {
     if (
       (isDepositTokenA &&
         !!tokenA &&
-        Number(tokenAAmountInput.amount) >
-          Number(tokenAAmountInput.balance.replace(/,/g, ""))) ||
+        Number(tokenAAmountInput.amount) > Number(tokenAAmountInput.balance.replace(/,/g, ""))) ||
       (isDepositTokenB &&
         !!tokenB &&
-        Number(tokenBAmountInput.amount) >
-          Number(tokenBAmountInput.balance.replace(/,/g, "")))
+        Number(tokenBAmountInput.amount) > Number(tokenBAmountInput.balance.replace(/,/g, "")))
     ) {
       return "INSUFFICIENT_BALANCE";
     }
@@ -403,5 +336,6 @@ export const useIncreaseHandle = () => {
     selectedPosition,
     isDepositTokenA,
     isDepositTokenB,
+    refetchPositions,
   };
 };

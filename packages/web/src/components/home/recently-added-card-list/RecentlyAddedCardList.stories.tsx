@@ -8,9 +8,7 @@ export default {
   component: RecentlyAddedCardList,
 } as ComponentMeta<typeof RecentlyAddedCardList>;
 
-const Template: ComponentStory<typeof RecentlyAddedCardList> = args => (
-  <RecentlyAddedCardList {...args} />
-);
+const Template: ComponentStory<typeof RecentlyAddedCardList> = args => <RecentlyAddedCardList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

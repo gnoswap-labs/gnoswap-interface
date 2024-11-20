@@ -18,10 +18,7 @@ import { formatAddress } from "@utils/string-utils";
 import SelectLanguage from "./select-language/SelectLanguage";
 import WalletConnectorMenu from "./wallet-connector-menu/WalletConnectorMenu";
 
-import {
-  FailNetworkTooltipContentWrap,
-  WalletConnectorButtonWrapper,
-} from "./WalletConnectorButton.styles";
+import { FailNetworkTooltipContentWrap, WalletConnectorButtonWrapper } from "./WalletConnectorButton.styles";
 
 interface WalletConnectProps {
   account: AccountModel | null;
@@ -135,11 +132,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           }
           text={address}
           rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
-          className={
-            toggle.walletConnect
-              ? "selected connected-button"
-              : "connected-button"
-          }
+          className={toggle.walletConnect ? "selected connected-button" : "connected-button"}
           style={{
             fontType: "p1",
             textColor: "text19",
@@ -152,22 +145,16 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
         />
       ) : (
         <Button
-          text={isLoading ? "" : t("HeaderFooter:walletLogin")}
+          text={isLoading ? "" : t("common:btn.walletLogin")}
           rightIcon={
-            isLoading ? (
-              <LoadingSpinner className="loading-button" />
-            ) : (
-              <IconStrokeArrowDown className="arrow-icon" />
-            )
+            isLoading ? <LoadingSpinner className="loading-button" /> : <IconStrokeArrowDown className="arrow-icon" />
           }
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
             minWidth: "136px",
             height: 36,
-            padding: isLoading
-              ? "8.5px 16px 7.5px 20px"
-              : "10px 16px 10px 20px",
+            padding: isLoading ? "8.5px 16px 7.5px 20px" : "10px 16px 10px 20px",
             justify: "space-between",
           }}
           onClick={onMenuToggle}
@@ -189,9 +176,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           gnotToken={gnotToken}
         />
       )}
-      {toggle.showLanguage && (
-        <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />
-      )}
+      {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />}
       <ToolTipGlobalStyle />
     </WalletConnectorButtonWrapper>
   );

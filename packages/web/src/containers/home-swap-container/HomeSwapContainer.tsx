@@ -45,29 +45,23 @@ const HomeSwapContainer: React.FC = () => {
   }, [isSwitchNetwork, connected, displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
-    if (
-      !Number(tokenAAmount) ||
-      !tokenA ||
-      !tokenPrices[checkGnotPath(tokenA.priceID)]
-    ) {
+    if (!Number(tokenAAmount) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]) {
       return null;
     }
-    return BigNumber(tokenAAmount)
+    const calculateValue = BigNumber(tokenAAmount)
       .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
       .toNumber();
+    return isNaN(calculateValue) ? null : calculateValue;
   }, [tokenA, tokenAAmount, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
-    if (
-      !Number(tokenBAmount) ||
-      !tokenB ||
-      !tokenPrices[checkGnotPath(tokenB.priceID)]
-    ) {
+    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]) {
       return null;
     }
-    return BigNumber(tokenBAmount)
+    const calculateValue = BigNumber(tokenBAmount)
       .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd)
       .toNumber();
+    return isNaN(calculateValue) ? null : calculateValue;
   }, [tokenB, tokenBAmount, tokenPrices]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
@@ -87,17 +81,7 @@ const HomeSwapContainer: React.FC = () => {
       tokenADecimals: tokenA?.decimals,
       tokenBDecimals: tokenB?.decimals,
     };
-  }, [
-    slippage,
-    tokenA,
-    tokenAAmount,
-    tokenABalance,
-    tokenAUSD,
-    tokenB,
-    tokenBAmount,
-    tokenBBalance,
-    tokenBUSD,
-  ]);
+  }, [slippage, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapNow = useCallback(() => {
     const direction = (() => {

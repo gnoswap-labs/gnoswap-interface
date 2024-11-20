@@ -1,12 +1,4 @@
-const IconInfo = ({
-  className,
-  size = 24,
-  fill,
-}: {
-  className?: string;
-  size?: number;
-  fill?: string;
-}) => (
+const IconInfo = ({ className, size = 24, fill }: { className?: string; size?: number; fill?: string }) => (
   <svg
     width={size}
     height={size}

@@ -17,9 +17,7 @@ export default {
   component: PoolListTable,
 } as ComponentMeta<typeof PoolListTable>;
 
-const Template: ComponentStory<typeof PoolListTable> = args => (
-  <PoolListTable {...args} />
-);
+const Template: ComponentStory<typeof PoolListTable> = args => <PoolListTable {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

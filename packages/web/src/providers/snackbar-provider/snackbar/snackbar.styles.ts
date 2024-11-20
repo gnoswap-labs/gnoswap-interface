@@ -41,8 +41,6 @@ export const SnackbarWrapper = styled.div`
   ${media.mobile} {
     width: 100%;
     top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
     height: fit-content;
     padding: 15px;
   }
@@ -110,6 +108,7 @@ export const SnackbarWrapper = styled.div`
         }
       }
       .waiting-confirmation {
+        ${fonts.body12}
         color: ${({ theme }) => theme.color.text19};
       }
       .description {

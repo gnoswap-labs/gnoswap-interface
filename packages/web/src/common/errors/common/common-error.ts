@@ -17,6 +17,10 @@ const ERROR_VALUE = {
     status: 403,
     type: "Failed to initialize environment value",
   },
+  NOT_FOUND_DATA: {
+    status: 404,
+    type: "Failed to find data",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

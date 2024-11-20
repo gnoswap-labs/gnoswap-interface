@@ -10,10 +10,16 @@ describe("SelectToken Component", () => {
       defaultTokens: [],
       tokens: [],
       tokenPrices: {},
-      changeKeyword: () => { return; },
-      changeToken: () => { return; },
-      close: () => { return; },
-      themeKey: "dark"
+      changeKeyword: () => {
+        return;
+      },
+      changeToken: () => {
+        return;
+      },
+      close: () => {
+        return;
+      },
+      themeKey: "dark",
     };
 
     render(

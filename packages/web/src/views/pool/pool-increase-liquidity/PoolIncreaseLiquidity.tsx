@@ -31,9 +31,7 @@ const PoolIncreaseLiquidity: React.FC = () => {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${
-                getGnotPath(data?.tokenB).symbol
-              } (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000}%)`
             : "...",
         path: makeRouteUrl(PAGE_PATH.POOL, {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,
@@ -44,17 +42,12 @@ const PoolIncreaseLiquidity: React.FC = () => {
   }, [data, width, t, poolPath]);
 
   return (
-      <ModifyLiquidityLayout
-        header={<HeaderContainer />}
-        breadcrumbs={
-          <BreadcrumbsContainer
-            listBreadcrumb={listBreadcrumb}
-            isLoading={isLoadingCommon || isLoading}
-          />
-        }
-        increaseLiquidity={<IncreaseLiquidityContainer />}
-        footer={<Footer />}
-      />
+    <ModifyLiquidityLayout
+      header={<HeaderContainer />}
+      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading} />}
+      increaseLiquidity={<IncreaseLiquidityContainer />}
+      footer={<Footer />}
+    />
   );
 };
 

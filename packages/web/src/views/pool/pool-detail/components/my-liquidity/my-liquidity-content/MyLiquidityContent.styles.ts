@@ -44,11 +44,7 @@ export const MyLiquidityContentWrapper = styled.div`
     .loading-button {
       width: 20px;
       height: 20px;
-      background: conic-gradient(
-        from 0deg at 50% 50.63%,
-        #ffffff 0deg,
-        #233dbd 360deg
-      );
+      background: conic-gradient(from 0deg at 50% 50.63%, #ffffff 0deg, #233dbd 360deg);
       &::before {
         width: 14.8px;
         height: 14.8px;

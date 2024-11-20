@@ -9,6 +9,6 @@ export default {
 export const Default: StoryObj<PriceStepsProps> = {
   args: {
     current: 123123,
-    title: "GNOS per GNOT"
+    title: "GNOS per GNOT",
   },
 };

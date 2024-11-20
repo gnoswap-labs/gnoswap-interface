@@ -8,10 +8,7 @@ describe("Overlap Component", () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <Overlap
-            logos={[]}
-            size={36}
-          />
+          <Overlap logos={[]} size={36} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

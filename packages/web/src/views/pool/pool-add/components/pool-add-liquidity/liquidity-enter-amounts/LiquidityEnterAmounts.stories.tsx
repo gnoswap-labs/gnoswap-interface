@@ -10,9 +10,7 @@ export default {
   component: EnterAmounts,
 } as ComponentMeta<typeof EnterAmounts>;
 
-const Template: ComponentStory<typeof EnterAmounts> = args => (
-  <EnterAmounts {...args} />
-);
+const Template: ComponentStory<typeof EnterAmounts> = args => <EnterAmounts {...args} />;
 
 const token: TokenModel = {
   isWrappedGasToken: false,
@@ -26,8 +24,7 @@ const token: TokenModel = {
   path: "gno.land/r/foo",
   decimals: 4,
   symbol: "FOO",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
   priceID: "gno.land/r/foo",
   address: "",
 };
@@ -40,6 +37,9 @@ Default.args = {
     usdValue: "$0.00",
     balance: "0",
     changeAmount: action("changeAmount"),
+    delegateButtonState: "DELEGATE",
+    delegateButtonText: "Delegate GNS",
+    isAvailableDelegate: true,
   },
   tokenBInput: {
     token: token,
@@ -47,6 +47,9 @@ Default.args = {
     usdValue: "$0.00",
     balance: "0",
     changeAmount: action("changeAmount"),
+    delegateButtonState: "DELEGATE",
+    delegateButtonText: "Delegate GNS",
+    isAvailableDelegate: true,
   },
   changeTokenA: action("changeTokenA"),
   changeTokenB: action("changeTokenB"),

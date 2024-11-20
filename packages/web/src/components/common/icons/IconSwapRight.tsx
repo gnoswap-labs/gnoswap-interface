@@ -18,11 +18,7 @@ function IconSwapRight({ className }: { className?: string }) {
       </g>
       <defs>
         <clipPath id="clip0_9065_269251">
-          <path
-            fill="#fff"
-            d="M0 0H12V12H0z"
-            transform="rotate(-90 6 6)"
-          ></path>
+          <path fill="#fff" d="M0 0H12V12H0z" transform="rotate(-90 6 6)"></path>
         </clipPath>
       </defs>
     </svg>

@@ -7,9 +7,7 @@ export default {
   component: WalletBalanceSummaryInfo,
 } as ComponentMeta<typeof WalletBalanceSummaryInfo>;
 
-const Template: ComponentStory<typeof WalletBalanceSummaryInfo> = args => (
-  <WalletBalanceSummaryInfo {...args} />
-);
+const Template: ComponentStory<typeof WalletBalanceSummaryInfo> = args => <WalletBalanceSummaryInfo {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -8,14 +8,7 @@ export default {
 
 export const Default: StoryObj<typeof LeaderboardTableHeader> = {
   args: {
-    heads: [
-      "Rank",
-      "User",
-      "Swap Volume",
-      "Position Value",
-      "Staking Value",
-      "Points",
-    ],
+    heads: ["Rank", "User", "Swap Volume", "Position Value", "Staking Value", "Points"],
     headWidths: [120, 400, 200, 200, 200, 240],
   },
   parameters: {

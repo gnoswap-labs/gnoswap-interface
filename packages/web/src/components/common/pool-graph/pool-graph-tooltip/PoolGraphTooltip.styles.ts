@@ -24,6 +24,11 @@ export const PoolGraphTooltipContainer = styled.div`
         flex-direction: row;
         align-items: center;
 
+        &.price {
+          width: 100%;
+          justify-content: flex-end;
+        }
+
         &.price-range {
           justify-content: flex-end;
         }
@@ -62,14 +67,6 @@ export const PoolGraphTooltipContainer = styled.div`
       .row {
         padding: 4px 0;
       }
-
-      &:last-of-type {
-        .token {
-          ${media.mobile} {
-            display: none;
-          }
-        }
-      }
     }
 
     .token {
@@ -81,10 +78,27 @@ export const PoolGraphTooltipContainer = styled.div`
         width: 20px;
         height: 20px;
       }
+    }
+
+    .content-token {
+      flex-shrink: 0;
+      min-width: 80px;
+      gap: 8px;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+
       ${media.mobile} {
-        display: none;
+        min-width: 20px;
+        width: 20px;
+        .symbol {
+          display: none;
+        }
       }
     }
+
     .amount {
       flex-shrink: 0;
       min-width: 76px;
@@ -103,6 +117,11 @@ export const PoolGraphTooltipContainer = styled.div`
 
       &.w-100 {
         min-width: 108px;
+        ${media.mobile} {
+          &.in-header {
+            padding-left: 30px;
+          }
+        }
       }
 
       img {
@@ -113,7 +132,7 @@ export const PoolGraphTooltipContainer = styled.div`
 
       ${media.mobile} {
         &.total-amount {
-          width: 85px;
+          width: fit-content;
           gap: 8px;
         }
 

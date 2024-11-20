@@ -7,7 +7,11 @@ import Governance from "@views/governance/Governance";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS])),
+      ...(await serverSideTranslations(locale, [
+        "Governance",
+        "Wallet",
+        ...DEFAULT_I18N_NS,
+      ])),
     },
   };
 }

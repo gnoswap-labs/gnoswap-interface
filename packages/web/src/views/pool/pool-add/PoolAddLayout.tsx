@@ -1,55 +1,34 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { wrapper } from "./PoolAddLayout.styles";
+import { PoolAddLayoutWrapper } from "./PoolAddLayout.styles";
 
 interface PoolAddLayoutProps {
   header: React.ReactNode;
   breadcrumbs: React.ReactNode;
   addLiquidity: React.ReactNode;
-  quickPoolInfo: React.ReactNode;
-  exchangeRateGraph: React.ReactNode;
+  additionalInfo: React.ReactNode;
   footer: React.ReactNode;
 }
 
-const PoolAddLayout: React.FC<PoolAddLayoutProps> = ({
-  header,
-  breadcrumbs,
-  addLiquidity,
-  quickPoolInfo,
-  footer,
-  exchangeRateGraph,
-}) => {
+const PoolAddLayout: React.FC<PoolAddLayoutProps> = ({ header, breadcrumbs, addLiquidity, additionalInfo, footer }) => {
   const { t } = useTranslation();
 
   return (
-    <div css={wrapper}>
+    <PoolAddLayoutWrapper>
       {header}
       <main className="content-wrap">
         <div className="title-container">
           <h3 className="title">{t("business:pageHeader.earn")}</h3>
           <div className="breadcrumbs">{breadcrumbs}</div>
         </div>
-        <div
-          className={`wrapper-sub-content ${
-            !quickPoolInfo && !exchangeRateGraph && "full-width"
-          }`}
-        >
+        <div className={`wrapper-sub-content ${!additionalInfo && "full-width"}`}>
           <div className="add-liquidity-section">{addLiquidity}</div>
-          <div className="additional-info-section">
-            <div
-              className={`quick-pool-info-section ${
-                quickPoolInfo && exchangeRateGraph ? "margin-bottom" : ""
-              }`}
-            >
-              {quickPoolInfo ? quickPoolInfo : <div className="fake-div"></div>}
-            </div>
-            <div className="exchange-rate-graph">{exchangeRateGraph}</div>
-          </div>
+          {additionalInfo}
         </div>
       </main>
       {footer}
-    </div>
+    </PoolAddLayoutWrapper>
   );
 };
 

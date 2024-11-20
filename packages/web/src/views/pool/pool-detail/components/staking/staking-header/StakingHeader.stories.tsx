@@ -8,9 +8,7 @@ export default {
   component: StakingHeader,
 } as ComponentMeta<typeof StakingHeader>;
 
-const Template: ComponentStory<typeof StakingHeader> = args => (
-  <StakingHeader {...args} />
-);
+const Template: ComponentStory<typeof StakingHeader> = args => <StakingHeader {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

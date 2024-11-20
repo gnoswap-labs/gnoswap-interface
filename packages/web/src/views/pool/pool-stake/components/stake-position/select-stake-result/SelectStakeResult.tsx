@@ -19,11 +19,7 @@ interface SelectStakeResultProps {
   pool?: PoolModel;
 }
 
-const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
-  positions,
-  isHiddenBadge = false,
-  pool,
-}) => {
+const SelectStakeResult: React.FC<SelectStakeResultProps> = ({ positions, isHiddenBadge = false, pool }) => {
   const { t } = useTranslation();
   const { pooledTokenInfos, totalLiquidityUSD } = usePositionsRewards({
     positions,
@@ -34,9 +30,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
 
     if (!Number(pool?.stakingApr || 0)) return "0%";
 
-    return `${formatRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatRate(
-      pool?.stakingApr,
-    )}`;
+    return `${formatRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatRate(pool?.stakingApr)}`;
   }, [pool?.stakingApr]);
 
   if (positions.length === 0) return null;
@@ -54,8 +48,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
                 mobileWidth={24}
               />
               <p>
-                {t("StakePosition:overview.pooled")}{" "}
-                {pooledTokenInfo.token.symbol}
+                {t("StakePosition:overview.pooled")} {pooledTokenInfo.token.symbol}
               </p>
               <strong>{pooledTokenInfo.amount}</strong>
             </div>
@@ -65,27 +58,16 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
-          <h5 className="total-amount-title">
-            {t("StakePosition:overview.totalAmt")}
-          </h5>
-          {!isHiddenBadge && (
-            <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />
-          )}
+          <h5 className="total-amount-title">{t("StakePosition:totalAmt")}</h5>
+          {!isHiddenBadge && <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />}
           <span className="result-value">{totalLiquidityUSD}</span>
         </div>
         <div className="apr-box">
-          <h5 className="apr-title">
-            {t("StakePosition:overview.stakingApr.label")}
-          </h5>
+          <h5 className="apr-title">{t("StakePosition:overview.stakingApr.label")}</h5>
           <div className="hover-info">
             <Tooltip
               placement="top"
-              FloatingContent={
-                <HoverTextWrapper>
-                  {" "}
-                  {t("StakePosition:overview.stakingApr.tooltip")}
-                </HoverTextWrapper>
-              }
+              FloatingContent={<HoverTextWrapper> {t("StakePosition:overview.stakingApr.tooltip")}</HoverTextWrapper>}
             >
               <IconInfo className="icon-info" />
             </Tooltip>

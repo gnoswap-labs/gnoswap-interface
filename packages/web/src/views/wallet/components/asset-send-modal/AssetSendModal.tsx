@@ -20,9 +20,8 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
-import { convertToKMB } from "@utils/stake-position-utils";
 import { capitalize } from "@utils/string-utils";
-import { addressValidationCheck } from "@utils/validation-utils";
+import { isValidAddress } from "@utils/validation-utils";
 
 import {
   AssetSendContent,
@@ -35,16 +34,19 @@ import {
 const DEFAULT_WITHDRAW_GNOT = GNOT_TOKEN;
 
 interface Props {
-  close: () => void;
+  amount: string;
+  setAmount: React.Dispatch<React.SetStateAction<string>>;
+  isConfirm: boolean;
   breakpoint: DEVICE_TYPE;
   withdrawInfo?: TokenModel;
   avgBlockTime: number;
   connected: boolean;
+
+  close: () => void;
   changeToken: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
   handleSubmit: (amount: string, address: string) => void;
   setIsConfirm: () => void;
-  isConfirm: boolean;
 }
 
 function isAmount(str: string) {
@@ -53,6 +55,8 @@ function isAmount(str: string) {
 }
 
 const AssetSendModal: React.FC<Props> = ({
+  amount,
+  setAmount,
   close,
   breakpoint,
   withdrawInfo,
@@ -67,7 +71,6 @@ const AssetSendModal: React.FC<Props> = ({
   const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
-  const [amount, setAmount] = useState("");
   const [address, setAddress] = useState("");
 
   const { account } = useWallet();
@@ -84,16 +87,13 @@ const AssetSendModal: React.FC<Props> = ({
       if (value !== "" && !isAmount(value)) return;
       setAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [setAmount],
   );
 
-  const onChangeAddress = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setAddress(value);
-    },
-    [],
-  );
+  const onChangeAddress = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setAddress(value);
+  }, []);
 
   const onSubmit = () => {
     if (!withdrawInfo || !account?.address) return;
@@ -116,32 +116,26 @@ const AssetSendModal: React.FC<Props> = ({
     !Number(amount ?? 0) ||
     !address ||
     !withdrawInfo ||
-    !addressValidationCheck(address) ||
-    BigNumber(amount || "0").isGreaterThan(
-      BigNumber(currentAvailableBalance || "0"),
-    );
+    !isValidAddress(address) ||
+    BigNumber(amount || "0").isGreaterThan(BigNumber(currentAvailableBalance || "0"));
 
   const estimateFee = useMemo(() => 0.000001, []);
 
   const estimateFeeUSD = useMemo(
-    () =>
-      0.000001 *
-      (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0),
+    () => 0.000001 * (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0),
     [nativeToken?.wrappedPath, tokenPrices],
   );
 
   const estimatePrice = useMemo(
     () =>
       withdrawInfo?.wrappedPath && !!amount && amount !== "0"
-        ? "$" +
-          convertToKMB(
+        ? formatPrice(
             BigNumber(+amount)
-              .multipliedBy(
-                Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
-              )
+              .multipliedBy(Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"))
               .toString(),
             {
-              isIgnoreKFormat: true,
+              usd: true,
+              isKMB: false,
             },
           )
         : "-",
@@ -164,16 +158,14 @@ const AssetSendModal: React.FC<Props> = ({
       return t("Wallet:assetSendModal.btn.lowAmt");
     }
     if (
-      (currentAvailableBalance &&
-        BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) ||
+      (currentAvailableBalance && BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) ||
       !Number(amount || 0)
     ) {
-      return t("Wallet:assetSendModal.btn.insuffBal");
+      return t("common:btn.insuffiBal");
     }
     if (address === "") return t("Wallet:assetSendModal.btn.enterAddr");
-    if (!addressValidationCheck(address))
-      return t("Wallet:assetSendModal.btn.invalidAddr");
-    return t("Wallet:assetSendModal.btn.send");
+    if (!isValidAddress(address)) return t("Wallet:assetSendModal.btn.invalidAddr");
+    return t("Wallet:assets.col.assetSend");
   }, [address, amount, currentAvailableBalance, withdrawInfo, t]);
 
   const estimatedPrice = useMemo(() => {
@@ -192,38 +184,26 @@ const AssetSendModal: React.FC<Props> = ({
         <AssetSendModalWrapper ref={modalRef}>
           <div className="modal-body">
             <div className="header">
-              <h6>{capitalize(t("Wallet:assetSendModal.title"))}</h6>
+              <h6>{capitalize(t("Wallet:assets.col.assetSend"))}</h6>
               <div className="close-wrap" onClick={close}>
                 <IconClose className="close-icon" />
               </div>
             </div>
 
             <AssetSendContent>
-              <p className="label">
-                {t("Wallet:assetSendModal.selectToken.label")}
-              </p>
+              <p className="label">{t("Wallet:assetSendModal.selectToken.label")}</p>
               <div className="withdraw">
                 <div className="amount">
-                  <input
-                    className="amount-text"
-                    value={amount}
-                    onChange={onChangeAmount}
-                    placeholder="0"
-                  />
+                  <input className="amount-text" value={amount} onChange={onChangeAmount} placeholder="0" />
                   <div className="token">
-                    <SelectPairButton
-                      token={withdrawInfo ?? null}
-                      changeToken={changeToken}
-                      callback={callback}
-                    />
+                    <SelectPairButton token={withdrawInfo ?? null} changeToken={changeToken} callback={callback} />
                   </div>
                 </div>
                 <div className="info">
                   <span className="price-text">{estimatePrice}</span>
-                  <span
-                    className="balance-text"
-                    onClick={handleEnterAllBalanceAvailable}
-                  >{`${t("common:available")}: ${
+                  <span className="balance-text" onClick={handleEnterAllBalanceAvailable}>{`${t(
+                    "common:action.balance",
+                  )}: ${
                     currentAvailableBalance
                       ? formatPrice(currentAvailableBalance, {
                           isKMB: false,
@@ -238,27 +218,19 @@ const AssetSendModal: React.FC<Props> = ({
             <AssetSendContent>
               <div className="title">
                 <label>{t("Wallet:assetSendModal.network.label")}</label>
-                <WithdrawTooltip
-                  tooltip={t("Wallet:assetSendModal.network.tooltip")}
-                />
+                <WithdrawTooltip tooltip={t("Wallet:assetSendModal.network.tooltip")} />
               </div>
 
               <div className="withdraw">
                 <div className="withdrawal-network">
                   <div className="network">
-                    <img
-                      src={DEFAULT_WITHDRAW_GNOT.logoURI}
-                      alt="token logo"
-                      className="token-logo"
-                    />
+                    <img src={DEFAULT_WITHDRAW_GNOT.logoURI} alt="token logo" className="token-logo" />
                     <span className="token-symbol">Gnoland (GRC20)</span>
                   </div>
 
                   <div className="approximately">
                     {t("Wallet:assetSendModal.second", {
-                      avgBlockTime: (
-                        Math.floor(avgBlockTime * 10) / 10
-                      ).toFixed(1),
+                      avgBlockTime: (Math.floor(avgBlockTime * 10) / 10).toFixed(1),
                     })}
                   </div>
                 </div>
@@ -268,9 +240,7 @@ const AssetSendModal: React.FC<Props> = ({
             <AssetSendContent>
               <div className="title">
                 <label>{t("Wallet:assetSendModal.addr.label")}</label>
-                <WithdrawTooltip
-                  tooltip={t("Wallet:assetSendModal.addr.tooltip")}
-                />
+                <WithdrawTooltip tooltip={t("Wallet:assetSendModal.addr.tooltip")} />
               </div>
 
               <div className="withdraw">
@@ -296,11 +266,7 @@ const AssetSendModal: React.FC<Props> = ({
                     <li>{t("Wallet:assetSendModal.warning.content3")}</li>
                   </ul>
 
-                  <a
-                    href="https://beta.gnoswap.io/"
-                    target="_blank"
-                    className="learn-more-box"
-                  >
+                  <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
                     <p>{t("common:learnMore")}</p>
                     <IconNewTab color={theme.color.icon21} />
                   </a>
@@ -309,9 +275,7 @@ const AssetSendModal: React.FC<Props> = ({
             />
             <AssetSendContent>
               <div className="estimate-box">
-                <p className="estimate-fee">
-                  {t("Wallet:assetSendModal.estNetFee")}
-                </p>
+                <p className="estimate-fee">{t("Wallet:assetSendModal.estNetFee")}</p>
                 <p className="tokens-fee">{`${estimateFee} GNOT${estimatedPrice}`}</p>
               </div>
             </AssetSendContent>
@@ -325,12 +289,8 @@ const AssetSendModal: React.FC<Props> = ({
                 fullWidth: true,
                 textColor: "text09",
                 fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-                hierarchy:
-                  connected && !isDisabledWithdraw
-                    ? ButtonHierarchy.Primary
-                    : undefined,
-                bgColor:
-                  !connected || isDisabledWithdraw ? "background17" : undefined,
+                hierarchy: connected && !isDisabledWithdraw ? ButtonHierarchy.Primary : undefined,
+                bgColor: !connected || isDisabledWithdraw ? "background17" : undefined,
               }}
             />
           </div>
@@ -344,9 +304,7 @@ const AssetSendModal: React.FC<Props> = ({
 export default AssetSendModal;
 
 export const WithdrawTooltip: React.FC<{ tooltip: string }> = ({ tooltip }) => {
-  const TooltipFloatingContent = (
-    <AssetSendTooltipContent>{tooltip}</AssetSendTooltipContent>
-  );
+  const TooltipFloatingContent = <AssetSendTooltipContent>{tooltip}</AssetSendTooltipContent>;
 
   return (
     <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>

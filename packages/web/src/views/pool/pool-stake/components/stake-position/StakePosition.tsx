@@ -43,9 +43,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
   }, [checkedList, connected]);
 
   const selectedPositions = useMemo(() => {
-    return unstakedPositions.filter(position =>
-      checkedList.includes(position.id),
-    );
+    return unstakedPositions.filter(position => checkedList.includes(position.id));
   }, [checkedList, unstakedPositions]);
 
   return (
@@ -61,19 +59,15 @@ const StakePosition: React.FC<StakePositionProps> = ({
         isEmpty={isEmpty}
         isLoading={isLoading}
       />
-      <SelectStakeResult
-        positions={selectedPositions}
-        isHiddenBadge
-        pool={pool}
-      />
+      <SelectStakeResult positions={selectedPositions} isHiddenBadge pool={pool} />
       <Button
         className="button-stake-position"
         text={
           !connected
-            ? t("business:walletLogin")
+            ? t("common:btn.walletLogin")
             : isEmptyCheckList
             ? t("StakePosition:btn.selectPosi")
-            : t("StakePosition:btn.stake")
+            : t("StakePosition:title")
         }
         disabled={isEmptyCheckList}
         style={{

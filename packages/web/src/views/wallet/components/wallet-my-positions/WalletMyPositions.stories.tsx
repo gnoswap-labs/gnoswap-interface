@@ -10,11 +10,7 @@ export default {
 } as ComponentMeta<typeof WalletMyPositions>;
 
 const Template: ComponentStory<typeof WalletMyPositions> = args => (
-  <WalletMyPositions
-    {...args}
-    header={<WalletMyPositionsHeader />}
-    cardList={<WalletPositionCardListContainer />}
-  />
+  <WalletMyPositions {...args} header={<WalletMyPositionsHeader />} cardList={<WalletPositionCardListContainer />} />
 );
 
 export const Default = Template.bind({});

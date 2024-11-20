@@ -31,23 +31,13 @@ const IncreaseAmountInfo: React.FC<IncreaseAmountInfoProps> = ({
   return (
     <IncreaseAmountInfoWrapper>
       <div className="pair-amount">
-        {isDepositTokenA && (
-          <TokenAmount
-            token={tokenA.info}
-            amount={tokenA.amount}
-            usdPrice={tokenA.usdPrice}
-          />
+        {isDepositTokenA && <TokenAmount token={tokenA.info} amount={tokenA.amount} usdPrice={tokenA.usdPrice} />}
+        {isDepositTokenB && <TokenAmount token={tokenB.info} amount={tokenB.amount} usdPrice={tokenB.usdPrice} />}
+        {isDepositTokenA && isDepositTokenB && (
+          <div className="icon-wrapper">
+            <IconAdd className="icon-add" />
+          </div>
         )}
-        {isDepositTokenB && (
-          <TokenAmount
-            token={tokenB.info}
-            amount={tokenB.amount}
-            usdPrice={tokenB.usdPrice}
-          />
-        )}
-        {(isDepositTokenA && isDepositTokenB) && <div className="icon-wrapper">
-          <IconAdd className="icon-add" />
-        </div>}
       </div>
     </IncreaseAmountInfoWrapper>
   );

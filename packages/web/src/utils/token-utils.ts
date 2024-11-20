@@ -22,10 +22,7 @@ export function makeDisplayTokenAmount(
 
   if (options?.decimalsWithoutRounding) {
     return Number(
-      number
-        .shiftedBy(-token.decimals)
-        .toString()
-        .match(roundDownDecimalNumber(options?.decimalsWithoutRounding)),
+      number.shiftedBy(-token.decimals).toString().match(roundDownDecimalNumber(options?.decimalsWithoutRounding)),
     );
   }
 
@@ -43,12 +40,7 @@ export function makeShiftAmount(
   }
 
   if (options?.decimalsWithoutRounding) {
-    return Number(
-      number
-        .shiftedBy(shift)
-        .toString()
-        .match(roundDownDecimalNumber(options?.decimalsWithoutRounding)),
-    );
+    return Number(number.shiftedBy(shift).toString().match(roundDownDecimalNumber(options?.decimalsWithoutRounding)));
   }
 
   return number.shiftedBy(shift).toNumber();

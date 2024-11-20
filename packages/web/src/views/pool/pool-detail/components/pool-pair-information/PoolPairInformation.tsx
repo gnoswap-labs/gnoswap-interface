@@ -10,10 +10,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import PoolPairInfoContent from "./pool-pair-info-content/PoolPairInfoContent";
 import PoolPairInfoHeader from "./pool-pair-info-header/PoolPairInfoHeader";
 
-import {
-  BreadcrumbsWrapper,
-  PoolPairInformationWrapper,
-} from "./PoolPairInformation.styles";
+import { BreadcrumbsWrapper, PoolPairInformationWrapper } from "./PoolPairInformation.styles";
 
 interface PoolPairInformationProps {
   pool: PoolDetailModel;
@@ -54,12 +51,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
             <span className="token">{tokenInfo}</span>
           </div>
         )}
-        {loading && (
-          <div
-            css={pulseSkeletonStyle({ w: "150px", h: 26 })}
-            className="pulse-skeleton"
-          />
-        )}
+        {loading && <div css={pulseSkeletonStyle({ w: "150px", h: 26 })} className="pulse-skeleton" />}
       </BreadcrumbsWrapper>
       <div className="token-status">
         {loading && (
@@ -76,12 +68,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
             feeStr={feeStr || ""}
           />
         )}
-        <PoolPairInfoContent
-          poolBins={poolBins}
-          pool={pool}
-          loading={loading}
-          loadingBins={loadingBins}
-        />
+        <PoolPairInfoContent poolBins={poolBins} pool={pool} loading={loading} loadingBins={loadingBins} />
       </div>
     </PoolPairInformationWrapper>
   );

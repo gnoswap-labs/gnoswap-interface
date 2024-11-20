@@ -2,9 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { LeaderModel } from "@models/leaderboard/leader-model";
-import {
-  GetLeadersResponse
-} from "@repositories/leaderboard/response";
+import { GetLeadersResponse } from "@repositories/leaderboard/response";
 import { Leader } from "@repositories/leaderboard/response/common/types";
 import { formatAddress, numberToFormat } from "@utils/string-utils";
 

@@ -11,12 +11,8 @@ const ModalContainer: React.FC = () => {
   const router = useRouter();
   const [openedModal, setOpendModal] = useAtom(CommonState.openedModal);
   const [modalContent, setModalContent] = useAtom(CommonState.modalContent);
-  const [openedTransactionModal, setOpendTransactionModal] = useAtom(
-    CommonState.openedTransactionModal,
-  );
-  const [transactionModalContent, setTransactionModalContent] = useAtom(
-    CommonState.transactionModalContent,
-  );
+  const [openedTransactionModal, setOpendTransactionModal] = useAtom(CommonState.openedTransactionModal);
+  const [transactionModalContent, setTransactionModalContent] = useAtom(CommonState.transactionModalContent);
   const [, setWalletAccount] = useAtom(WalletState.loadingConnect);
 
   const visible = useMemo(() => {

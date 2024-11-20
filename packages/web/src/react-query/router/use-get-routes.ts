@@ -31,12 +31,7 @@ export const useGetRoutes = (
       request?.tokenAmount || "",
     ].filter(item => item),
     queryFn: async () => {
-      if (
-        !request ||
-        !request.inputToken ||
-        !request.outputToken ||
-        Number.isNaN(request.tokenAmount)
-      ) {
+      if (!request || !request.inputToken || !request.outputToken || Number.isNaN(request.tokenAmount)) {
         throw new SwapError("INVALID_PARAMS");
       }
 
@@ -64,10 +59,7 @@ export const useGetRoutes = (
         throw new SwapError("NOT_FOUND_SWAP_POOL");
       }
 
-      const availRoute = result.estimatedRoutes.reduce(
-        (accumulated, current) => accumulated + current.quote,
-        0,
-      );
+      const availRoute = result.estimatedRoutes.reduce((accumulated, current) => accumulated + current.quote, 0);
 
       if (availRoute < 100) {
         throw new SwapError("NOT_FOUND_SWAP_POOL");

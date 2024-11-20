@@ -51,8 +51,7 @@ export function useGetMyLeader() {
       });
     },
 
-    select: (data: GetLeaderByAddressResponse | null) =>
-      data === null ? null : { leader: mapLeader(data.leader) },
+    select: (data: GetLeaderByAddressResponse | null) => (data === null ? null : { leader: mapLeader(data.leader) }),
 
     suspense: true,
 

@@ -54,9 +54,7 @@ export const PoolAddConfirmAmountInfoWrapper = styled.div`
   }
 `;
 
-export const PoolAddConfirmFeeInfoSection = styled(
-  EarnAddConfirmContentSection,
-)`
+export const PoolAddConfirmFeeInfoSection = styled(EarnAddConfirmContentSection)`
   height: 50px;
   flex-direction: row;
   justify-content: space-between;

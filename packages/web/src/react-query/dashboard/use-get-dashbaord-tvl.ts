@@ -7,9 +7,7 @@ import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 10_000;
 
-export const useGetDashboardTVL = (
-  options?: UseQueryOptions<TvlResponse, Error>,
-) => {
+export const useGetDashboardTVL = (options?: UseQueryOptions<TvlResponse, Error>) => {
   const { dashboardRepository } = useGnoswapContext();
 
   return useQuery<TvlResponse, Error>({

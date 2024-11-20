@@ -15,7 +15,6 @@ const defaultAccountInfo: AccountModel = {
   chainId: "test3",
 };
 
-
 export default {
   title: "common/WalletConnector",
   component: WalletConnectorButton,
@@ -35,9 +34,7 @@ export default {
   ],
 } as ComponentMeta<typeof WalletConnectorButton>;
 
-const Template: ComponentStory<typeof WalletConnectorButton> = args => (
-  <WalletConnectorButton {...args} />
-);
+const Template: ComponentStory<typeof WalletConnectorButton> = args => <WalletConnectorButton {...args} />;
 
 export const Disconnected = Template.bind({});
 Disconnected.args = {

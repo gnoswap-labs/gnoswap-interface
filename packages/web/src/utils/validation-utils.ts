@@ -1,10 +1,7 @@
 import { ErrorResponse } from "@common/errors/response";
 import { bech32 } from "bech32";
 
-function fromBech32(
-  address: string,
-  limit = Infinity,
-): { readonly prefix: string; readonly data: Uint8Array } {
+function fromBech32(address: string, limit = Infinity): { readonly prefix: string; readonly data: Uint8Array } {
   const decodedAddress = bech32.decode(address, limit);
   return {
     prefix: decodedAddress.prefix,
@@ -12,7 +9,7 @@ function fromBech32(
   };
 }
 
-export function addressValidationCheck(address: string): boolean {
+export function isValidAddress(address: string): boolean {
   try {
     const publicKey = fromBech32(address);
     return Boolean(publicKey?.prefix);
@@ -21,6 +18,7 @@ export function addressValidationCheck(address: string): boolean {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isErrorResponse(resposne: any): resposne is ErrorResponse {
   return resposne?.isError === true;
 }

@@ -50,7 +50,7 @@ export const OneClickStakingModalWrapper = styled.div`
       gap: 16px;
       > div {
         width: 100%;
-        
+
         .button-confirm {
           gap: 8px;
           height: 57px;
@@ -66,18 +66,18 @@ export const OneClickStakingModalWrapper = styled.div`
     }
 
     .footer {
-        ${mixins.flexbox("row", "flex-start", "flex-start")};
-        color: ${({ theme }) => theme.color.text04};
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
+      color: ${({ theme }) => theme.color.text04};
+      ${fonts.body12};
+      a {
+        color: ${({ theme }) => theme.color.background04};
+        display: contents;
         ${fonts.body12};
-        a {
-          color: ${({ theme }) => theme.color.background04};
-          display: contents;
-          ${fonts.body12};
-          font-weight: 600;
-          &:hover {
-            color: ${({ theme }) => theme.color.background04Hover};
-          }
+        font-weight: 600;
+        &:hover {
+          color: ${({ theme }) => theme.color.background04Hover};
         }
+      }
     }
   }
   ${media.mobile} {
@@ -85,17 +85,17 @@ export const OneClickStakingModalWrapper = styled.div`
     width: 328px;
     .modal-body {
       gap: 12px;
-        .content {
-            gap: 12px;
-            > div {
-              .button-confirm {
-                height: 41px;
-                span {
-                  ${fonts.body9}
-                }
-              }
+      .content {
+        gap: 12px;
+        > div {
+          .button-confirm {
+            height: 41px;
+            span {
+              ${fonts.body9}
             }
           }
+        }
+      }
     }
   }
   .fee-tier {
@@ -108,7 +108,6 @@ export const OneClickStakingModalWrapper = styled.div`
     padding: 12px 16px;
     border-radius: 8px;
     margin-top: 4px;
-    
   }
   .price-range {
     width: 100%;
@@ -139,8 +138,7 @@ export const OneClickStakingModalWrapper = styled.div`
       }
     }
   }
-  .balance-text  {
+  .balance-text {
     opacity: 0;
   }
-  
 `;

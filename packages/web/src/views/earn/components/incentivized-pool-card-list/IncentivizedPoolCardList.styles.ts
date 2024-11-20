@@ -35,12 +35,6 @@ export const PoolListWrapper = styled.div<Props>`
   grid-gap: 24px;
   grid-template-columns: repeat(4, 13.4em);
   overflow-x: scroll;
-  .card-skeleton {
-    height: 321px;
-    border-radius: 10px;
-    box-shadow: ${({ theme }) => theme.color.shadow02};
-  }
-
   @media (min-width: 1440px) {
     overflow-x: visible;
   }
@@ -52,6 +46,12 @@ export const PoolListWrapper = styled.div<Props>`
     grid-template-columns: repeat(auto-fill, 322px);
     grid-auto-flow: column;
     grid-auto-columns: 322px;
+  }
+
+  .card-skeleton {
+    height: 321px;
+    border-radius: 10px;
+    box-shadow: ${({ theme }) => theme.color.shadow02};
   }
 `;
 

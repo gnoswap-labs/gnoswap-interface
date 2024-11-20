@@ -24,11 +24,7 @@ export const BarAreaGraphWrapper = styled.div<{
       pointer-events: initial;
     }
     .area {
-      background: linear-gradient(
-        270deg,
-        rgba(0, 205, 46, 0.2) 0%,
-        rgba(255, 2, 2, 0.2) 100%
-      );
+      background: linear-gradient(270deg, rgba(0, 205, 46, 0.2) 0%, rgba(255, 2, 2, 0.2) 100%);
     }
   }
 `;
@@ -38,9 +34,7 @@ interface BarAreaGraphTooltipWrapperProps {
   y: number;
 }
 
-export const BarAreaGraphTooltipWrapper = styled.div<
-  BarAreaGraphTooltipWrapperProps
->`
+export const BarAreaGraphTooltipWrapper = styled.div<BarAreaGraphTooltipWrapperProps>`
   position: absolute;
   top: ${props => `${props.y}px`};
   left: ${props => `${props.x}px`};

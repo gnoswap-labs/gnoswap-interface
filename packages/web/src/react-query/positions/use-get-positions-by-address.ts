@@ -30,18 +30,8 @@ export const useGetPositionsByAddress = (
     return props?.poolPath || "";
   }, [props?.poolPath]);
 
-  const isClosed = useMemo(() => {
-    return props?.isClosed;
-  }, [props?.isClosed]);
-
   return useQuery<PositionModel[], Error>({
-    queryKey: [
-      QUERY_KEY.positions,
-      currentChainId,
-      address,
-      poolPath,
-      `${isClosed}`,
-    ],
+    queryKey: [QUERY_KEY.positions, currentChainId, address, poolPath],
     queryFn: async () => {
       if (!availNetwork || !address) {
         return [];
@@ -49,13 +39,18 @@ export const useGetPositionsByAddress = (
 
       return await positionRepository
         .getPositionsByAddress(address, {
-          isClosed,
           poolPath: encodeURIComponent(poolPath),
         })
         .catch(e => {
           console.error(e);
           return [];
         });
+    },
+    select: data => {
+      if (props?.isClosed === undefined) {
+        return data;
+      }
+      return data.filter(p => p.closed === props.isClosed);
     },
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,

@@ -1,4 +1,6 @@
 export interface RepositionLiquiditySuccessResponse {
+  hash: string;
+
   tokenID: string;
 
   liquidity: string;

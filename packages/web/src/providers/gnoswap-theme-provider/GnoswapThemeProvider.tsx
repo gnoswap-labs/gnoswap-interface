@@ -11,12 +11,10 @@ import { ThemeKeys } from "@styles/ThemeTypes";
 
 const getInitialThemeValue = () => {
   const storedTheme = localStorage.getItem(GNOSWAP_THEME_KEY);
-  return storedTheme !== null ? storedTheme.slice(1, -1) as ThemeKeys : "dark";
+  return storedTheme !== null ? (storedTheme.slice(1, -1) as ThemeKeys) : "dark";
 };
 
-const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
+const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [themeKey] = useAtom(ThemeState.themeKey);
   const [currentTheme, setCurrentTheme] = useState<ThemeKeys | null>(null);
   const { breakpoint, handleBreakpoint } = useWindowSize();

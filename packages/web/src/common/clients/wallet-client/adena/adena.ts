@@ -1,20 +1,14 @@
 export interface Adena {
   AddEstablish: (name: string) => Promise<Response>;
   GetAccount: () => Promise<Response<AccountInfo>>;
-  DoContract: (
-    mesasage: SendTransactionRequestParam,
-  ) => Promise<Response<AdenaSendTransactionResponse>>;
+  DoContract: (mesasage: SendTransactionRequestParam) => Promise<Response<AdenaSendTransactionResponse>>;
   Sign: (mesasage: SendTransactionRequestParam) => Promise<Response>;
-  AddNetwork: (
-    chain: AdenaAddNetworkRequestParam,
-  ) => Promise<Response<AdenaAddNetworkResponse>>;
-  SwitchNetwork: (
-    chainId: string,
-  ) => Promise<Response<AdenaSwitchNetworkResponse>>;
+  AddNetwork: (chain: AdenaAddNetworkRequestParam) => Promise<Response<AdenaAddNetworkResponse>>;
+  SwitchNetwork: (chainId: string) => Promise<Response<AdenaSwitchNetworkResponse>>;
   On: (eventName: string, callback: (message: string) => void) => void;
 }
 
-interface Response<T = {}> {
+interface Response<T = object> {
   code: number;
   status: string;
   type: string;
@@ -45,9 +39,7 @@ interface SendTransactionRequestParam {
 /**
  * Transaction Request Message
  */
-type TransactionMessage =
-  | TransactionMessageOfBankMsgSend
-  | TransactionMessageOfContract;
+type TransactionMessage = TransactionMessageOfBankMsgSend | TransactionMessageOfContract;
 
 interface TransactionMessageForm<T> {
   type: string;
@@ -71,9 +63,7 @@ interface TransactionMessageOfContract {
 /**
  * Send Transaction Response
  */
-export type AdenaSendTransactionResponse =
-  | AdenaSendTransactionSuccessResponse
-  | AdenaSendTransactionErrorResponse;
+export type AdenaSendTransactionResponse = AdenaSendTransactionSuccessResponse | AdenaSendTransactionErrorResponse;
 
 export interface AdenaSendTransactionSuccessResponse {
   hash: string;

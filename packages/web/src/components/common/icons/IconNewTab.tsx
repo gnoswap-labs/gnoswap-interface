@@ -1,18 +1,5 @@
-const IconNewTab = ({
-  className,
-  color = "#596782",
-}: {
-  className?: string;
-  color?: string;
-}) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="17"
-    fill="none"
-    viewBox="0 0 16 17"
-    className={className}
-  >
+const IconNewTab = ({ className, color = "#596782" }: { className?: string; color?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" fill="none" viewBox="0 0 16 17" className={className}>
     <path
       fill={color}
       fillRule="evenodd"

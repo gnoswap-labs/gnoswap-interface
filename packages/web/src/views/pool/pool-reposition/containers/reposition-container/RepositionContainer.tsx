@@ -6,11 +6,7 @@ import RepositionContent from "../../components/reposition-content/RepositionCon
 import { useRepositionHandle } from "../../hooks/use-reposition-handle";
 import { useRepositionModalContainer } from "../../hooks/use-reposition-position-modal";
 
-const PRICE_RANGES: PriceRangeMeta[] = [
-  { type: "Active" },
-  { type: "Passive" },
-  { type: "Custom" },
-];
+const PRICE_RANGES: PriceRangeMeta[] = [{ type: "Active" }, { type: "Passive" }, { type: "Custom" }];
 
 const RepositionContainer: React.FC = () => {
   const {
@@ -42,12 +38,13 @@ const RepositionContainer: React.FC = () => {
     selectedPosition,
     isLoadingPosition,
     isSkipSwap,
+    refetchPositions,
   } = useRepositionHandle();
 
   const concentratedFeeApr =
     priceRangeSummary.feeBoost && priceRangeSummary.feeBoost !== "-"
       ? aprFee * Number(priceRangeSummary.feeBoost.replace("x", ""))
-      : 0; 
+      : 0;
 
   const { openModal } = useRepositionModalContainer({
     tokenA,
@@ -66,13 +63,13 @@ const RepositionContainer: React.FC = () => {
     swapRemainToken,
     reposition,
     isSkipSwap,
+    refetchPositions: async () => {
+      await refetchPositions();
+    },
   });
 
   const onSubmit = () => {
-    if (
-      buttonType === "REPOSITION" ||
-      (buttonType === "LOADING" && isSkipSwap)
-    ) {
+    if (buttonType === "REPOSITION" || (buttonType === "LOADING" && isSkipSwap)) {
       openModal();
     }
   };

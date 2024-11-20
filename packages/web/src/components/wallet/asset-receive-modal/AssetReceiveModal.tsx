@@ -45,13 +45,7 @@ interface Props {
   callback?: (value: boolean) => void;
 }
 
-const AssetReceiveModal: React.FC<Props> = ({
-  close,
-  breakpoint,
-  avgBlockTime,
-  changeToken,
-  callback,
-}) => {
+const AssetReceiveModal: React.FC<Props> = ({ close, breakpoint, avgBlockTime, changeToken, callback }) => {
   const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const { account } = useWallet();
@@ -112,19 +106,13 @@ const AssetReceiveModal: React.FC<Props> = ({
               <DepositBoxContent>
                 <div className="normal-box">
                   <div className="network">
-                    <img
-                      src={DEFAULT_DEPOSIT_GNOT.logoURI}
-                      alt="token logo"
-                      className="token-logo"
-                    />
+                    <img src={DEFAULT_DEPOSIT_GNOT.logoURI} alt="token logo" className="token-logo" />
                     <span className="token-symbol">Gnoland (GRC20)</span>
                   </div>
 
                   <div className="approximately">
                     {t("Modal:assetReceive.second", {
-                      avgBlockTime: (
-                        Math.floor(avgBlockTime * 10) / 10
-                      ).toFixed(1),
+                      avgBlockTime: (Math.floor(avgBlockTime * 10) / 10).toFixed(1),
                     })}
                   </div>
                 </div>
@@ -140,23 +128,15 @@ const AssetReceiveModal: React.FC<Props> = ({
               <DepositBoxContent>
                 <div className="normal-box">
                   <div className="address-box">
-                    <QRCodeGenerator
-                      text={account?.address ?? ""}
-                      size={93}
-                      logo={DEFAULT_DEPOSIT_GNOT.logoURI}
-                    />
+                    <QRCodeGenerator text={account?.address ?? ""} size={93} logo={DEFAULT_DEPOSIT_GNOT.logoURI} />
                     <div className="address">
                       <p>{account?.address}</p>
                       <Button
-                        text={
-                          copied ? t("common:copied") : t("common:action.copy")
-                        }
+                        text={copied ? t("common:copied") : t("common:action.copy")}
                         className="btn-copy"
                         style={{
                           textColor: "text09",
-                          hierarchy: copied
-                            ? undefined
-                            : ButtonHierarchy.Primary,
+                          hierarchy: copied ? undefined : ButtonHierarchy.Primary,
                           bgColor: copied ? "background17" : undefined,
                         }}
                         disabled={copied}
@@ -178,11 +158,7 @@ const AssetReceiveModal: React.FC<Props> = ({
                     <li>{t("Modal:assetReceive.warning.content2")}</li>
                   </ul>
 
-                  <a
-                    href="https://beta.gnoswap.io/"
-                    target="_blank"
-                    className="learn-more-box"
-                  >
+                  <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
                     <p>{t("common:learnMore")}</p>
                     <IconNewTab color={theme.color.icon21} />
                   </a>
@@ -211,9 +187,7 @@ const AssetReceiveModal: React.FC<Props> = ({
 export default AssetReceiveModal;
 
 export const DepositTooltip: React.FC<{ tooltip: string }> = ({ tooltip }) => {
-  const TooltipFloatingContent = (
-    <AssetReceiveTooltipContent>{tooltip}</AssetReceiveTooltipContent>
-  );
+  const TooltipFloatingContent = <AssetReceiveTooltipContent>{tooltip}</AssetReceiveTooltipContent>;
 
   return (
     <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>

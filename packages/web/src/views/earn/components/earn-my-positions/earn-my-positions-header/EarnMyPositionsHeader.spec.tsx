@@ -9,10 +9,16 @@ describe("EarnMyPositionsHeader Component", () => {
       connected: false,
       isSwitchNetwork: false,
       availableStake: false,
-      moveEarnAdd: () => { return; },
-      moveEarnStake: () => { return; },
+      moveEarnAdd: () => {
+        return;
+      },
+      moveEarnStake: () => {
+        return;
+      },
       isClosed: false,
-      handleChangeClosed: () => { return; },
+      handleChangeClosed: () => {
+        return;
+      },
       positions: [],
     };
 

@@ -1,8 +1,4 @@
-import {
-  SearchInputWrapper,
-  InputStyle,
-  SearchInputStyleProps,
-} from "./SearchInput.styles";
+import { SearchInputWrapper, InputStyle, SearchInputStyleProps } from "./SearchInput.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import { cx } from "@emotion/css";
 import { useTranslation } from "react-i18next";
@@ -31,11 +27,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       height={height}
       className={cx(className, { "empty-status": value === "" })}
     >
-      <InputStyle
-        placeholder={placeholder || t("common:search")}
-        value={value}
-        onChange={onChange}
-      />
+      <InputStyle placeholder={placeholder || t("common:search")} value={value} onChange={onChange} />
       <div className="icon-wrapper">
         <IconSearch className="search-icon" />
       </div>

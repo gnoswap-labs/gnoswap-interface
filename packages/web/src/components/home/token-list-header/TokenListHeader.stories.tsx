@@ -11,9 +11,7 @@ export default {
   component: TokenListHeader,
 } as ComponentMeta<typeof TokenListHeader>;
 
-const Template: ComponentStory<typeof TokenListHeader> = args => (
-  <TokenListHeader {...args} />
-);
+const Template: ComponentStory<typeof TokenListHeader> = args => <TokenListHeader {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

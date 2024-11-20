@@ -12,11 +12,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetWithdrawalFee } from "@query/pools";
-import {
-  formatOtherPrice,
-  formatPoolPairAmount,
-  formatRate
-} from "@utils/new-number-utils";
+import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
 
@@ -24,7 +20,7 @@ import {
   Divider,
   RemovePositionModalWrapper,
   RemoveWarningContentWrapper,
-  ToolTipContentWrapper
+  ToolTipContentWrapper,
 } from "./RemovePositionModal.styles";
 
 interface Props {
@@ -34,11 +30,7 @@ interface Props {
   onSubmit: () => void;
 }
 
-const RemovePositionModal: React.FC<Props> = ({
-  selectedPositions,
-  close,
-  onSubmit,
-}) => {
+const RemovePositionModal: React.FC<Props> = ({ selectedPositions, close, onSubmit }) => {
   const { t } = useTranslation();
 
   const { unclaimedFees, totalLiquidityUSD } = usePositionsRewards({
@@ -67,12 +59,8 @@ const RemovePositionModal: React.FC<Props> = ({
 
     const result = positionAprs.reduce(
       (accum, currentPostionApr) => {
-        accum.fee +=
-          BigInt((currentPostionApr.aprs.fee * 1000).toFixed(0)) *
-          currentPostionApr.liquidity;
-        accum.rewards +=
-          BigInt((currentPostionApr.aprs.rewards * 1000).toFixed(0)) *
-          currentPostionApr.liquidity;
+        accum.fee += BigInt((currentPostionApr.aprs.fee * 1000).toFixed(0)) * currentPostionApr.liquidity;
+        accum.rewards += BigInt((currentPostionApr.aprs.rewards * 1000).toFixed(0)) * currentPostionApr.liquidity;
         accum.liquidity += currentPostionApr.liquidity;
         return accum;
       },
@@ -97,7 +85,7 @@ const RemovePositionModal: React.FC<Props> = ({
         </div>
         <div className="content">
           <div className="box-item">
-            <h4>{t("RemovePosition:confRemoveModal.positionLst")}</h4>
+            <h4>{t("RemovePosition:posi")}</h4>
             <div className="item-content">
               {selectedPositions.map((position, index) => (
                 <div key={index}>
@@ -155,27 +143,19 @@ const RemovePositionModal: React.FC<Props> = ({
                     <Divider />
                     <div className="protocol">
                       <div>
-                        <span className="">
-                          {t(
-                            "RemovePosition:confRemoveModal.protocolFee.label",
-                          )}
-                        </span>
+                        <span className="">{t("RemovePosition:confRemoveModal.protocolFee.label")}</span>
                         <Tooltip
                           placement="top"
                           FloatingContent={
                             <ToolTipContentWrapper width="251px">
-                              {t(
-                                "RemovePosition:confRemoveModal.protocolFee.tooltip",
-                              )}
+                              {t("RemovePosition:confRemoveModal.protocolFee.tooltip")}
                             </ToolTipContentWrapper>
                           }
                         >
                           <IconInfo />
                         </Tooltip>
                       </div>
-                      <span className="white-text">
-                        {withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}
-                      </span>
+                      <span className="white-text">{withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}</span>
                     </div>
                   </div>
                 </div>
@@ -185,9 +165,7 @@ const RemovePositionModal: React.FC<Props> = ({
             <div className="box-item">
               <div className="item-content">
                 <div>
-                  <div className="label-large">
-                    {t("RemovePosition:confRemoveModal.totalAmt")}
-                  </div>
+                  <div className="label-large">{t("RemovePosition:totalAmt")}</div>
                   <div className="value-large">{totalLiquidityUSD}</div>
                 </div>
               </div>
@@ -210,7 +188,7 @@ const RemovePositionModal: React.FC<Props> = ({
             />
             <div className="button-wrapper">
               <Button
-                text={t("RemovePosition:confRemoveModal.btn")}
+                text={t("RemovePosition:confRemoveModal.title")}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                   fullWidth: true,

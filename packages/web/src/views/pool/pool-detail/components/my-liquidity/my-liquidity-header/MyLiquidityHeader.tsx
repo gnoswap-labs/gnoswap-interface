@@ -57,10 +57,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
     if (address) window.open(getAccountUrl(address), "_blank");
   }, [address, getAccountUrl]);
 
-  const notConnected = useMemo(
-    () => connectedWallet && !isSwitchNetwork,
-    [connectedWallet, isSwitchNetwork],
-  );
+  const notConnected = useMemo(() => connectedWallet && !isSwitchNetwork, [connectedWallet, isSwitchNetwork]);
 
   const onClickCopy = async () => {
     try {
@@ -83,7 +80,6 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             <span className="name" onClick={onClickAddressPosition}>
               {addressName}
             </span>
-            &nbsp;
             <span>{`${t("Pool:position.title", {
               context: "other",
             })}${!isLoadingPositionsById ? ` (${positionLength})` : ""}`}</span>
@@ -156,6 +152,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
               padding: "10px 16px",
               fontType: "p1",
             }}
+            className="full-width"
           />
         )}
         <Button

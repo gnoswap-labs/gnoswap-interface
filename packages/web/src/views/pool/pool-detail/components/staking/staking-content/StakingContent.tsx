@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button from "@components/common/button/Button";
@@ -7,6 +7,7 @@ import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSke
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
@@ -15,16 +16,9 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
-import StakingContentCard, {
-  SummuryApr,
-} from "./staking-content-card/StakingContentCard";
+import StakingContentCard, { SummuryApr } from "./staking-content-card/StakingContentCard";
 
-import {
-  AprNumberContainer,
-  AprStakingHeader,
-  NoticeAprToolTip,
-  StakingContentWrapper
-} from "./StakingContent.styles";
+import { AprNumberContainer, AprStakingHeader, StakingContentWrapper } from "./StakingContent.styles";
 
 interface StakingContentProps {
   totalApr: string;
@@ -57,8 +51,46 @@ const StakingContent: React.FC<StakingContentProps> = ({
   poolStakings,
 }) => {
   const { getGnotPath } = useGnotToGnot();
-  const [forceShowAprGuide, setForceShowAprGuide] = useState(true);
+  const [forcedShowAprGuide, setForceShowAprGuide] = useState(true);
   const { t } = useTranslation();
+
+  const { ref } = useIntersectionObserver();
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  const debounce = (func: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (...args: any[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  };
+
+  const [isVisible, setIsVisible] = useState(true);
+  const scrollTimeoutRef = useRef<number | null>(null);
+
+  const handleScroll = debounce(() => {
+    setIsVisible(false);
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    scrollTimeoutRef.current = window.setTimeout(() => {
+      setIsVisible(true);
+    }, 500);
+  }, 10);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [handleScroll]);
 
   const rewardTokenLogos = useMemo(() => {
     const rewardData = pool?.rewardTokens || [];
@@ -121,50 +153,32 @@ const StakingContent: React.FC<StakingContentProps> = ({
   }, [stakingPositionMap]);
 
   return (
-    <StakingContentWrapper isMobile={mobile}>
+    <StakingContentWrapper ref={ref} isMobile={mobile}>
       <div className="content-header">
         {loading && (
           <PulseSkeletonWrapper height={36} mobileHeight={24}>
-            <span
-              css={pulseSkeletonStyle({ h: 22, w: "600px", mobileWidth: 400 })}
-            />
+            <span css={pulseSkeletonStyle({ h: 22, w: "600px", mobileWidth: 400 })} />
           </PulseSkeletonWrapper>
         )}
         {!loading && <span>{t("Pool:staking.intro")}</span>}
         {!loading && (
-          <AprNumberContainer
-            placeholderWidth={
-              document.getElementsByClassName("apr-text")?.[0]?.clientWidth
-            }
-          >
-            <Tooltip
-              className={"float-view-apr"}
-              FloatingContent={
-                <NoticeAprToolTip>
-                  {t("Pool:staking.tooltip.hoverGuide")}
-                </NoticeAprToolTip>
-              }
-              placement="top"
-              forcedOpen={forceShowAprGuide}
-              forcedClose={!forceShowAprGuide}
-            >
-              <div className="placeholder"></div>
-            </Tooltip>
+          <AprNumberContainer placeholderWidth={document.getElementsByClassName("apr-text")?.[0]?.clientWidth}>
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
-                FloatingContent={
-                  <IncentivizeTokenDetailTooltipContent
-                    poolStakings={poolStakings}
-                  />
-                }
+                FloatingContent={<IncentivizeTokenDetailTooltipContent poolStakings={poolStakings} />}
                 placement="top"
                 className="apr-text"
                 scroll
                 onChangeOpen={(open: boolean) => setForceShowAprGuide(!open)}
               >
-                <span id={"apr-text"}>
-                  {totalApr === "-" ? "-" : `${totalApr} APR`}{" "}
-                </span>
+                <Tooltip
+                  forcedOpen={isVisible && forcedShowAprGuide}
+                  forcedClose={!forcedShowAprGuide}
+                  placement="top"
+                  FloatingContent={<span>{t("Pool:staking.tooltip.hoverGuide")}</span>}
+                >
+                  <span id={"apr-text"}>{totalApr === "-" ? "-" : `${totalApr} APR`} </span>
+                </Tooltip>
               </Tooltip>
               <div
                 className="coin-info"
@@ -182,42 +196,36 @@ const StakingContent: React.FC<StakingContentProps> = ({
         )}
       </div>
       <div className="staking-wrap">
-        <>
-          <span>{t("Pool:staking.myStake")}</span>
-          {STAKING_PERIOS.map((period, index) => {
-            return period === "MAX" ? (
-              <SummuryApr
-                loading={loading}
-                key={index}
-                stakingApr={pool?.stakingApr}
-                period={period}
-                positions={stakingPositionMap[period]}
-                checkPoints={checkPoints}
-                breakpoint={breakpoint}
-              />
-            ) : (
-              <StakingContentCard
-                key={index}
-                stakingApr={pool?.stakingApr}
-                period={period}
-                positions={stakingPositionMap[period]}
-                breakpoint={breakpoint}
-                loading={loading}
-                checkPoints={checkPoints}
-              />
-            );
-          })}
-        </>
+        <span>{t("Pool:staking.myStake")}</span>
+        {STAKING_PERIOS.map((period, index) => {
+          return period === "MAX" ? (
+            <SummuryApr
+              loading={loading}
+              key={index}
+              stakingApr={pool?.stakingApr}
+              period={period}
+              positions={stakingPositionMap[period]}
+              checkPoints={checkPoints}
+              breakpoint={breakpoint}
+            />
+          ) : (
+            <StakingContentCard
+              key={index}
+              stakingApr={pool?.stakingApr}
+              period={period}
+              positions={stakingPositionMap[period]}
+              breakpoint={breakpoint}
+              loading={loading}
+              checkPoints={checkPoints}
+            />
+          );
+        })}
       </div>
       <div className="button-wrap">
         <div className="empty-content"></div>
         {loading && (
           <div className="loading-wrapper">
-            <PulseSkeletonWrapper
-              className="loading-button"
-              height={36}
-              mobileHeight={24}
-            >
+            <PulseSkeletonWrapper className="loading-button" height={36} mobileHeight={24}>
               <span
                 css={pulseSkeletonStyle({
                   h: 22,
@@ -235,11 +243,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               width: "100%",
               height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
               fontType: `${
-                breakpoint === DEVICE_TYPE.WEB
-                  ? "body7"
-                  : breakpoint === DEVICE_TYPE.MOBILE
-                  ? "p2"
-                  : "body9"
+                breakpoint === DEVICE_TYPE.WEB ? "body7" : breakpoint === DEVICE_TYPE.MOBILE ? "p2" : "body9"
               }`,
               textColor: "text01",
               bgColor: "background01",

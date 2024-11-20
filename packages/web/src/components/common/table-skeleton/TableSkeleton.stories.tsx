@@ -9,9 +9,7 @@ export default {
   component: TableSkeleton,
 } as ComponentMeta<typeof TableSkeleton>;
 
-const Template: ComponentStory<typeof TableSkeleton> = args => (
-  <TableSkeleton {...args} />
-);
+const Template: ComponentStory<typeof TableSkeleton> = args => <TableSkeleton {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

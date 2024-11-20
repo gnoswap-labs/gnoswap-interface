@@ -18,13 +18,7 @@ interface ManageButtonProps {
   isStakable: boolean;
 }
 
-const ManageButton: React.FC<ManageButtonProps> = ({
-  position,
-  inRange,
-  isClosed,
-  isStaked,
-  isStakable,
-}) => {
+const ManageButton: React.FC<ManageButtonProps> = ({ position, inRange, isClosed, isStaked, isStakable }) => {
   const router = useCustomRouter();
   const { t } = useTranslation();
   const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
@@ -33,51 +27,27 @@ const ManageButton: React.FC<ManageButtonProps> = ({
     switch (text) {
       case POSITION_ACTION.DECREASE:
         setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POSITION_DECREASE_LIQUIDITY",
-          position.poolPath,
-          position?.id,
-        );
+        router.movePageWithPositionId("POSITION_DECREASE_LIQUIDITY", position.poolPath, position?.id);
         break;
       case POSITION_ACTION.INCREASE:
         setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POSITION_INCREASE_LIQUIDITY",
-          position.poolPath,
-          position?.id,
-        );
+        router.movePageWithPositionId("POSITION_INCREASE_LIQUIDITY", position.poolPath, position?.id);
         break;
       case POSITION_ACTION.REPOSITION:
         setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POSITION_REPOSITION",
-          position.poolPath,
-          position?.id,
-        );
+        router.movePageWithPositionId("POSITION_REPOSITION", position.poolPath, position?.id);
         break;
       case POSITION_ACTION.REMOVE:
         setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POOL_REMOVE",
-          position.poolPath,
-          position?.id,
-        );
+        router.movePageWithPositionId("POOL_REMOVE", position.poolPath, position?.id);
         break;
       case POSITION_ACTION.STAKE:
         setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POOL_STAKE",
-          position.poolPath,
-          position?.id,
-        );
+        router.movePageWithPositionId("POOL_STAKE", position.poolPath, position?.id);
         break;
       case POSITION_ACTION.UNSTAKE:
         setSelectedPosition(position);
-        router.movePageWithPositionId(
-          "POOL_UNSTAKE",
-          position.poolPath,
-          position?.id,
-        );
+        router.movePageWithPositionId("POOL_UNSTAKE", position.poolPath, position?.id);
         break;
     }
   };

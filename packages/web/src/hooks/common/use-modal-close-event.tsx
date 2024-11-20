@@ -1,9 +1,6 @@
 import { useEffect } from "react";
 
-function useModalCloseEvent(
-  modal: React.RefObject<HTMLElement | null>,
-  callback: () => void
-) {
+function useModalCloseEvent(modal: React.RefObject<HTMLElement | null>, callback: () => void) {
   const handleEsc = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       callback();

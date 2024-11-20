@@ -8,13 +8,14 @@ import IconHeaderLogo from "@components/common/icons/IconHeaderLogo";
 import IconSearch from "@components/common/icons/IconSearch";
 import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetReceiveModal";
 import { BLOCKED_PAGES } from "@constants/environment.constant";
-import { HEADER_NAV, SIDE_MENU_NAV } from "@constants/header.constant";
+import { HEADER_NAV } from "@constants/header.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
 import { DeviceSize, DEVICE_TYPE } from "@styles/media";
+import useScrollData from "@hooks/common/use-scroll-data";
 
 import NotificationButton from "./notification-button/NotificationButton";
 import SearchMenuModal, { Token } from "./search-menu-modal/SearchMenuModal";
@@ -33,7 +34,7 @@ import {
   Navigation,
   RightSection,
   SearchButton,
-  SearchContainer
+  SearchContainer,
 } from "./Header.styles";
 
 interface HeaderProps {
@@ -100,15 +101,10 @@ const Header: React.FC<HeaderProps> = ({
   const router = useCustomRouter();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const { t } = useTranslation();
+  const { saveCurrentScrollHeight } = useScrollData();
 
   const navigationItems = useMemo(() => {
-    // Make path by page name
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
-    if (blockedPaths.length > 0) {
-      return [...HEADER_NAV, ...SIDE_MENU_NAV].filter(
-        item => !blockedPaths.includes(item.path),
-      );
-    }
     return HEADER_NAV.filter(item => !blockedPaths.includes(item.path));
   }, []);
 
@@ -141,28 +137,23 @@ const Header: React.FC<HeaderProps> = ({
                 <React.Fragment>
                   <ul>
                     {navigationItems.map(item => (
-                      <li
-                        key={t(item.title)}
-                        className={
-                          pathname === item.path ||
-                          (item?.subPath || []).some(_ => pathname.includes(_))
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        <span
-                          className="link"
-                          onClick={() => router.push(item.path)}
+                      <Link href={item.path} key={item.title}>
+                        <li
+                          key={t(item.title)}
+                          className={
+                            pathname === item.path || (item?.subPath || []).some(_ => pathname.includes(_))
+                              ? "selected"
+                              : ""
+                          }
                         >
-                          {t(item.title)}
-                        </span>
-                      </li>
+                          <span className="link" onClick={() => saveCurrentScrollHeight(window?.location?.pathname)}>
+                            {t(item.title)}
+                          </span>
+                        </li>
+                      </Link>
                     ))}
                   </ul>
-                  <SubMenuButton
-                    sideMenuToggle={sideMenuToggle}
-                    onSideMenuToggle={onSideMenuToggle}
-                  />
+                  <SubMenuButton sideMenuToggle={sideMenuToggle} onSideMenuToggle={onSideMenuToggle} />
                 </React.Fragment>
               )}
             </Navigation>
@@ -214,19 +205,13 @@ const Header: React.FC<HeaderProps> = ({
                 <BottomNavItem
                   key={t(item.title)}
                   className={
-                    pathname === item.path ||
-                    (item.subPath || []).some(_ => pathname.includes(_))
-                      ? "selected"
-                      : ""
+                    pathname === item.path || (item.subPath || []).some(_ => pathname.includes(_)) ? "selected" : ""
                   }
                 >
                   <Link href={item.path}>{t(item.title)}</Link>
                 </BottomNavItem>
               ))}
-              <SubMenuButton
-                sideMenuToggle={sideMenuToggle}
-                onSideMenuToggle={onSideMenuToggle}
-              />
+              <SubMenuButton sideMenuToggle={sideMenuToggle} onSideMenuToggle={onSideMenuToggle} />
             </BottomNavContainer>
           </BottomNavWrapper>
         )}

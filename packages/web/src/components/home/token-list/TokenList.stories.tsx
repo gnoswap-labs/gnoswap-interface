@@ -11,9 +11,7 @@ export default {
   component: TokenList,
 } as ComponentMeta<typeof TokenList>;
 
-const Template: ComponentStory<typeof TokenList> = args => (
-  <TokenList {...args} />
-);
+const Template: ComponentStory<typeof TokenList> = args => <TokenList {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

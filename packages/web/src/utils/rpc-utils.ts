@@ -1,20 +1,14 @@
 import BigNumber from "bignumber.js";
 
-export function makeABCIParams(
-  functionName: string,
-  args: (string | number | boolean)[],
-) {
-  const argsStr = args
-    .map(arg => (typeof arg === "string" ? `"${arg}"` : `${arg}`))
-    .join(", ");
+export function makeABCIParams(functionName: string, args: (string | number | boolean)[]) {
+  const argsStr = args.map(arg => (typeof arg === "string" ? `"${arg}"` : `${arg}`)).join(", ");
   return `${functionName}(${argsStr})`;
 }
 
 export function evaluateExpressionToNumber(evaluateExpression: string) {
   try {
-    const result = matchValues(evaluateExpression);
-
-    const parsedValue = parseABCIValue(result[0]);
+    const result = matchNumberValues(evaluateExpression);
+    const parsedValue = result.length > 0 ? result[0] : 0;
     return BigNumber(parsedValue).toNumber();
   } catch {
     console.error("Parse Error: " + evaluateExpression);
@@ -22,11 +16,9 @@ export function evaluateExpressionToNumber(evaluateExpression: string) {
   }
 }
 
-export function evaluateExpressionToObject<T extends {}>(
-  evaluateExpression: string,
-): T | null {
+export function evaluateExpressionToObject<T extends object>(evaluateExpression: string): T | null {
   try {
-    const result = matchValues(evaluateExpression);
+    const result = matchStringValues(evaluateExpression);
     if (result.length === 0) {
       return null;
     }
@@ -35,31 +27,27 @@ export function evaluateExpressionToObject<T extends {}>(
     const object = JSON.parse(JSON.parse(objectStr), (_, value) => value as T);
     return object;
   } catch {
-    console.error("Parse Error: " + evaluateExpression);
     return null;
   }
 }
 
-export function evaluateExpressionToValues(
-  evaluateExpression: string,
-): string[] {
-  try {
-    const result = matchValues(evaluateExpression);
+function matchNumberValues(str: string): string[] {
+  const regex = /\((?:"([^"]+)"|(\d+))\s+\w+\)/g;
+  const results: string[] = [];
+  let match: RegExpExecArray | null;
 
-    const values: string[] = [];
-    for (const data of result) {
-      const value = parseABCIValue(data);
-      values.push(value);
+  while ((match = regex.exec(str)) !== null) {
+    if (match[1] !== undefined) {
+      results.push(match[1]);
+    } else if (match[2] !== undefined) {
+      results.push(match[2]);
     }
-
-    return values;
-  } catch {
-    console.error("Parse Error: " + evaluateExpression);
-    return [];
   }
+
+  return results;
 }
 
-function matchValues(str: string): string[] {
+function matchStringValues(str: string): string[] {
   const regexp = /\((.*)\)/g;
   const result = str.match(regexp);
   if (result === null || result.length < 1) {

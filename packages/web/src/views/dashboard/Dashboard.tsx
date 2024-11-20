@@ -1,12 +1,12 @@
 import React from "react";
 
 import Footer from "@components/common/footer/Footer";
-import DashboardActivitiesContainer from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
-import DashboardInfoContainer from "@containers/dashboard-info-container/DashboardInfoContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import TvlChartContainer from "@containers/tvl-chart-container/TvlChartContainer";
-import VolumeChartContainer from "@containers/volume-chart-container/VolumeChartContainer";
 
+import DashboardActivitiesContainer from "./containers/dashboard-activities-container/DashboardActivitiesContainer";
+import DashboardInfoContainer from "./containers/dashboard-info-container/DashboardInfoContainer";
+import TvlChartContainer from "./containers/tvl-chart-container/TvlChartContainer";
+import VolumeChartContainer from "./containers/volume-chart-container/VolumeChartContainer";
 import DashboardLayout from "./DashboardLayout";
 
 const Dashboard: React.FC = () => {

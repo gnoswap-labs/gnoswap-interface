@@ -39,19 +39,13 @@ const NotificationList: React.FC<NotificationListProps> = ({
       >
         <NotificationHeader>
           <span className="notification-title">{t("Modal:notif.title")}</span>
-          <ClearButton onClick={onClearAll}>
-            {t("Modal:notif.clear")}
-          </ClearButton>
+          <ClearButton onClick={onClearAll}>{t("Modal:notif.clear")}</ClearButton>
         </NotificationHeader>
         {txsGroupsInformation.length > 0 ? (
           <div className="list-container">
             <div className="list-content">
               {txsGroupsInformation.map(groups => (
-                <NotificationItem
-                  key={groups.type}
-                  groups={groups}
-                  breakpoint={breakpoint}
-                />
+                <NotificationItem key={groups.type} groups={groups} breakpoint={breakpoint} />
               ))}
             </div>
           </div>

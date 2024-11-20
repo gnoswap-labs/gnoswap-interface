@@ -9,13 +9,10 @@ export default {
   component: MyPositionCard,
 } as ComponentMeta<typeof MyPositionCard>;
 
-const Template: ComponentStory<typeof MyPositionCard> = args => (
-  <MyPositionCard {...args} />
-);
+const Template: ComponentStory<typeof MyPositionCard> = args => <MyPositionCard {...args} />;
 
 export const Staked = Template.bind({});
-Staked.args = {
-};
+Staked.args = {};
 
 export const Unstaked = Template.bind({});
 Unstaked.args = {

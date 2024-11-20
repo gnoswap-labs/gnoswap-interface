@@ -7,7 +7,6 @@ import mixins from "@styles/mixins";
 
 import { inputStyle } from "../../UnstakeLiquidity.styles";
 
-
 export const wrapper = (checked: boolean) => (theme: Theme) =>
   css`
     ${inputStyle(theme)};

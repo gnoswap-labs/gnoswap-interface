@@ -6,13 +6,9 @@ import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 
-import {
-  INCREASE_BUTTON_TYPE,
-  IPriceRange,
-} from "../../hooks/use-increase-handle";
+import { INCREASE_BUTTON_TYPE, IPriceRange } from "../../hooks/use-increase-handle";
 import IncreaseAmountPosition from "./increase-select-position/IncreaseAmount";
 import IncreaseSelectPosition from "./increase-select-position/IncreaseSelectPosition";
-
 
 import { IncreaseLiquidityWrapper } from "./IncreaseLiquidity.styles";
 
@@ -72,9 +68,9 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
   const textButton = useMemo(() => {
     switch (buttonType) {
       case "INCREASE_LIQUIDITY":
-        return t("IncreaseLiquidity:btn.increaseLiquidity");
+        return t("IncreaseLiquidity:title");
       case "INSUFFICIENT_BALANCE":
-        return t("IncreaseLiquidity:btn.insufficientBalance");
+        return t("common:btn.insuffiBal");
       case "ENTER_AMOUNT":
       default:
         return t("IncreaseLiquidity:btn.enterAmount");
@@ -116,9 +112,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
         disabled={!activatedSubmit}
         text={textButton}
         style={{
-          hierarchy: activatedSubmit
-            ? ButtonHierarchy.Primary
-            : ButtonHierarchy.Gray,
+          hierarchy: activatedSubmit ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
 
           fullWidth: true,
         }}

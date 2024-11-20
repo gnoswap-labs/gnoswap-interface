@@ -10,15 +10,11 @@ interface WalletMyPositionsProps {
   cardList: React.ReactNode;
 }
 
-const WalletMyPositions: React.FC<WalletMyPositionsProps> = ({
-  header,
-  cardList,
-}) => {
+const WalletMyPositions: React.FC<WalletMyPositionsProps> = ({ header, cardList }) => {
   const { isFetchedPosition, positions, loading } = usePositionData();
   const { connected } = useWallet();
   if (!connected) return null;
-  if (isFetchedPosition && positions.length === 0 && loading)
-    return null;
+  if (isFetchedPosition && positions.length === 0 && loading) return null;
   return (
     <div css={wrapper}>
       {header}

@@ -13,10 +13,12 @@ const RemoveLiquidityContainer: React.FC = () => {
   const [isGetWGNOT, setIsGetWGNOT] = useState(false);
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
-  const [checkedList, setCheckedList] = useState<number[]>(
-    positionId ? [Number(positionId)] : [],
-  );
-  const { positions, loading: isLoadingPositions } = usePositionData({
+  const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
+  const {
+    positions,
+    loading: isLoadingPositions,
+    refetch: refetchPositions,
+  } = usePositionData({
     isClosed: false,
     poolPath,
     queryOption: {
@@ -28,6 +30,9 @@ const RemoveLiquidityContainer: React.FC = () => {
     positions: positions,
     selectedIds: checkedList,
     isGetWGNOT,
+    refetchPositions: async () => {
+      await refetchPositions();
+    },
   });
 
   const stakedPositions = useMemo(() => {

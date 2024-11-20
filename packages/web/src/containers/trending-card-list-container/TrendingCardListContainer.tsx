@@ -57,9 +57,7 @@ const TrendingCardListContainer: React.FC = () => {
     return (trending ?? [])
       ?.map((item: ITrending) => {
         const tempToken =
-          (tokens.find(
-            (token: TokenModel) => token.path === item.tokenPath,
-          ) as TokenModel) ?? defaultToken;
+          (tokens.find((token: TokenModel) => token.path === item.tokenPath) as TokenModel) ?? defaultToken;
         const priceChange = item.tokenPrice24hChange || 0;
         const status = (() => {
           if (priceChange === "" || Number(priceChange) >= 0) return "up";
@@ -69,22 +67,10 @@ const TrendingCardListContainer: React.FC = () => {
         return {
           token: {
             ...tempToken,
-            path:
-              item.tokenPath === wugnotPath
-                ? gnot?.path || ""
-                : item.tokenPath || "",
-            name:
-              item.tokenPath === wugnotPath
-                ? gnot?.name || ""
-                : tempToken?.name || "",
-            symbol:
-              item.tokenPath === wugnotPath
-                ? gnot?.symbol || ""
-                : tempToken?.symbol || "",
-            logoURI:
-              item.tokenPath === wugnotPath
-                ? gnot?.logoURI || ""
-                : tempToken?.logoURI || "",
+            path: item.tokenPath === wugnotPath ? gnot?.path || "" : item.tokenPath || "",
+            name: item.tokenPath === wugnotPath ? gnot?.name || "" : tempToken?.name || "",
+            symbol: item.tokenPath === wugnotPath ? gnot?.symbol || "" : tempToken?.symbol || "",
+            logoURI: item.tokenPath === wugnotPath ? gnot?.logoURI || "" : tempToken?.logoURI || "",
           },
           price: formatPrice(item.tokenPrice),
           upDown: status as UpDownType,

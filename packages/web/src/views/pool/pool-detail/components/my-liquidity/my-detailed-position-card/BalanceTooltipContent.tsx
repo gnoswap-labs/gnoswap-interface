@@ -6,7 +6,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
-import { TooltipContent } from "./MyDetailedPositionCard.styles";
+import { BalanceTooltipContentWrapper } from "./BalanceTooltipContent.styles";
 
 export interface PositionBalanceInfo {
   token: TokenModel;
@@ -19,14 +19,12 @@ export interface BalanceTooltipContentProps {
   balances: PositionBalanceInfo[];
 }
 
-export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({
-  balances,
-}) => {
+export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({ balances }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
   return (
-    <TooltipContent>
+    <BalanceTooltipContentWrapper>
       <span className="title">{t("business:balance")}</span>
       {balances.map((balance, index) => (
         <div key={index} className="list">
@@ -49,6 +47,6 @@ export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({
           </span>
         </div>
       ))}
-    </TooltipContent>
+    </BalanceTooltipContentWrapper>
   );
 };

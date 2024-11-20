@@ -11,6 +11,7 @@ import { usePosition } from "@hooks/common/use-position";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -35,27 +36,22 @@ const WalletBalanceContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
+  const [sendAssetAmount, setSendAssetAmount] = useState("");
 
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { balances: balancesPrice, loadingBalance } = useTokenData();
+  const { balances: balancesPrice, loadingBalance, updateBalances } = useTokenData();
 
-  const { positions, loading: loadingPositions } = usePositionData();
+  const { positions, loading: loadingPositions, refetch: refetchPositions } = usePositionData();
 
-  const isLoadingPosition = useMemo(
-    () => connected && loadingPositions,
-    [connected, loadingPositions],
-  );
+  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
   const { claimAll } = usePosition(positions);
-  const {
-    broadcastSuccess,
-    broadcastPending,
-    broadcastError,
-    broadcastRejected,
-  } = useBroadcastHandler();
+  const { broadcastSuccess, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
+
+  // Refetch functions
   const { openModal } = useTransactionConfirmModal();
-  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } =
-    useGetAllTokenPrices();
+  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrices } = useGetAllTokenPrices();
 
   const { getMessage } = useMessage();
 
@@ -81,39 +77,43 @@ const WalletBalanceContainer: React.FC = () => {
   }, [connected, address]);
 
   const claimAllReward = useCallback(() => {
-    const amount = positions
-      .flatMap(item => item.reward)
-      .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
-    const data = {
-      tokenAAmount: toUnitFormat(amount, true, true),
+    const amount = positions.flatMap(item => item.reward).reduce((acc, item) => acc + Number(item.claimableUsd), 0);
+
+    const messageData = {
+      tokenAAmount: toUnitFormat(amount, true, false),
     };
+
+    broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
+
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
       if (response) {
-        if (response.code === 0) {
-          broadcastPending({ txHash: response.data?.hash });
-          setTimeout(() => {
-            broadcastSuccess(
-              getMessage(DexEvent.CLAIM_FEE, "success", data, response.data?.hash),
-            );
-            setLoadingTransactionClaim(false);
-          }, 1000);
+        if (response?.code === 0 || response?.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+          enqueueEvent({
+            txHash: response?.data?.hash,
+            action: DexEvent.CLAIM_FEE,
+            formatData: () => messageData,
+            onUpdate: async () => {
+              await updateBalances();
+            },
+            onEmit: async () => {
+              await refetchPositions();
+            },
+          });
+        }
+        if (response?.code === 0) {
           openModal();
+          broadcastSuccess(getMessage(DexEvent.CLAIM_FEE, "success", messageData, response?.data?.hash));
+          setLoadingTransactionClaim(false);
         } else if (
-          response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+          response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
-          broadcastRejected(
-            getMessage(DexEvent.CLAIM_FEE, "error", data),
-            () => {},
-            true,
-          );
+          broadcastRejected(getMessage(DexEvent.CLAIM_FEE, "error", messageData), () => {});
           setLoadingTransactionClaim(false);
           openModal();
         } else {
           openModal();
-          broadcastError(
-            getMessage(DexEvent.CLAIM_FEE, "error", data, response.data?.hash),
-          );
+          broadcastError(getMessage(DexEvent.CLAIM_FEE, "error", messageData, response?.data?.hash));
           setLoadingTransactionClaim(false);
         }
       }
@@ -128,14 +128,7 @@ const WalletBalanceContainer: React.FC = () => {
       (account?.address && loadingBalance) ||
       !!(isEmptyObject(balancesPrice) && account?.address)
     );
-  }, [
-    isLoadingPosition,
-    loadingConnect,
-    account?.address,
-    balancesPrice,
-    isLoadingTokenPrices,
-    loadingBalance,
-  ]);
+  }, [isLoadingPosition, loadingConnect, account?.address, balancesPrice, isLoadingTokenPrices, loadingBalance]);
 
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
@@ -153,12 +146,7 @@ const WalletBalanceContainer: React.FC = () => {
     return availableBalance;
   }, [availableBalance]);
 
-  const {
-    stakedBalance,
-    unStakedBalance,
-    claimableRewards,
-    totalClaimedRewards,
-  } = positions.reduce(
+  const { stakedBalance, unStakedBalance, claimableRewards, totalClaimedRewards } = positions.reduce(
     (acc, curPosition) => {
       acc.totalClaimedRewards = BigNumber(acc.totalClaimedRewards)
         .plus(Number(curPosition.totalClaimedUsd ?? "0"))
@@ -191,10 +179,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   const sumTotalBalance = useMemo(() => {
     return formatOtherPrice(
-      BigNumber(availableBalance)
-        .plus(unStakedBalance)
-        .plus(stakedBalance)
-        .plus(claimableRewards),
+      BigNumber(availableBalance).plus(unStakedBalance).plus(stakedBalance).plus(claimableRewards),
       { isKMB: false },
     );
   }, [availableBalance, unStakedBalance, stakedBalance, claimableRewards]);
@@ -205,6 +190,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   const closeWithdraw = () => {
     setIsShowWithDrawModal(false);
+    setSendAssetAmount("");
   };
 
   const callbackDeposit = (value: boolean) => {
@@ -217,11 +203,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
 
-  const {
-    isConfirm,
-    setIsConfirm,
-    onSubmit: handleSubmit,
-  } = useSendAsset();
+  const { isConfirm, setIsConfirm, onSubmit: handleSubmit } = useSendAsset();
 
   const onSubmit = (amount: string, address: string) => {
     if (!withdrawInfo || !account?.address) return;
@@ -230,9 +212,7 @@ const WalletBalanceContainer: React.FC = () => {
         fromAddress: account.address,
         toAddress: address,
         token: withdrawInfo,
-        tokenAmount: BigNumber(amount)
-          .multipliedBy(Math.pow(10, withdrawInfo.decimals))
-          .toNumber(),
+        tokenAmount: BigNumber(amount).multipliedBy(Math.pow(10, withdrawInfo.decimals)).toNumber(),
       },
       withdrawInfo.type,
     );
@@ -262,6 +242,8 @@ const WalletBalanceContainer: React.FC = () => {
         breakpoint={breakpoint}
         isSwitchNetwork={isSwitchNetwork}
         loadngTransactionClaim={loadngTransactionClaim}
+        positions={positions}
+        tokenPrices={tokenPrices}
       />
       {isShowDepositModal && (
         <AssetReceiveModal
@@ -275,6 +257,8 @@ const WalletBalanceContainer: React.FC = () => {
       )}
       {isShowWithdrawModal && (
         <AssetSendModal
+          amount={sendAssetAmount}
+          setAmount={setSendAssetAmount}
           breakpoint={breakpoint}
           close={closeWithdraw}
           withdrawInfo={withdrawInfo}

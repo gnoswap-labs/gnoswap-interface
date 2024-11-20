@@ -28,8 +28,20 @@ export const wrapper = (theme: Theme) => css`
   }
 
   .pool-incentivize-section {
-    margin: 0 auto;
+    margin: 0 0 0 auto;
     height: 100%;
+    ${media.tablet} {
+      margin: 0 auto;
+    }
+  }
+
+  .pool-incentivize-history {
+    max-width: 430px;
+    width: 100%;
+    ${media.tablet} {
+      margin: 0 auto;
+      max-width: 500px;
+    }
   }
 
   ${media.tablet} {
@@ -66,6 +78,17 @@ export const wrapper = (theme: Theme) => css`
   ${media.mobile} {
     .content-wrap {
       padding: 0 16px;
+    }
+  }
+
+  .right-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 16px;
+    width: 100%;
+    ${media.tablet} {
+      flex-direction: column;
     }
   }
 `;

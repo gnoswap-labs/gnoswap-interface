@@ -22,18 +22,10 @@ const PositionHistory: FC<Props> = ({ isClosed, position }) => {
       <div className="title" onClick={() => setOpenedSelector(!openedSelector)}>
         <div>{t("Pool:position.card.history.title")}</div>
         <div className="icon-wrapper">
-          {openedSelector ? (
-            <IconArrowUp className="icon-arrow" />
-          ) : (
-            <IconArrowDown className="icon-arrow" />
-          )}
+          {openedSelector ? <IconArrowUp className="icon-arrow" /> : <IconArrowDown className="icon-arrow" />}
         </div>
       </div>
-      {openedSelector && (
-        <PositionHistoryContainer
-          position={position}
-        />
-      )}
+      {openedSelector && <PositionHistoryContainer position={position} />}
     </PositionHistoryWrapper>
   );
 };

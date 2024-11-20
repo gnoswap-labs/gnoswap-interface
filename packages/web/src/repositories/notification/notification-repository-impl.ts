@@ -15,24 +15,17 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   private networkClient: NetworkClient | null;
   private storage: StorageClient<StorageKeyType>;
 
-  constructor(
-    networkClient: NetworkClient | null,
-    localStorageClient: StorageClient<StorageKeyType>,
-  ) {
+  constructor(networkClient: NetworkClient | null, localStorageClient: StorageClient<StorageKeyType>) {
     this.networkClient = networkClient;
     this.storage = localStorageClient;
   }
 
   private getRemovedTx = (): string[] => {
-    return JSON.parse(
-      this.storage.get("notification-removed-tx") ?? "[]",
-    ) as string[];
+    return JSON.parse(this.storage.get("notification-removed-tx") ?? "[]") as string[];
   };
 
   private getSeenTx = (): string[] => {
-    return JSON.parse(
-      this.storage.get("notification-seen-tx") ?? "[]",
-    ) as string[];
+    return JSON.parse(this.storage.get("notification-seen-tx") ?? "[]") as string[];
   };
 
   public setRemovedTx = (txs: string[]): void => {
@@ -50,10 +43,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     /**
      * Use set to make it don't have duplicate tx ( reduce storage size )
      */
-    this.storage.set(
-      "notification-removed-tx",
-      JSON.stringify([...new Set(oldTx)]),
-    );
+    this.storage.set("notification-removed-tx", JSON.stringify([...new Set(oldTx)]));
   };
 
   public appendSeenTx = (txs: string[]) => {
@@ -62,26 +52,10 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     /**
      * Use set to make it don't have duplicate tx ( reduce storage size )
      */
-    this.storage.set(
-      "notification-seen-tx",
-      JSON.stringify([...new Set(oldTx)]),
-    );
+    this.storage.set("notification-seen-tx", JSON.stringify([...new Set(oldTx)]));
   };
 
-  private replaceToken = (symbol: string) => {
-    if (symbol === "wugnot") return "GNOT";
-    return symbol;
-  };
-
-  private replaceUri = (symbol: string, uri: string) => {
-    if (symbol === "wugnot")
-      return "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg";
-    return uri;
-  };
-
-  public getAccountOnchainActivity = async (
-    request: AccountActivityRequest,
-  ): Promise<ActivityResponse> => {
+  public getAccountOnchainActivity = async (request: AccountActivityRequest): Promise<ActivityResponse> => {
     if (!this.networkClient) {
       return [];
     }
@@ -103,9 +77,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     }
   };
 
-  public getGroupedNotification = async (
-    request: AccountActivityRequest,
-  ): Promise<TransactionGroupsType[]> => {
+  public getGroupedNotification = async (request: AccountActivityRequest): Promise<TransactionGroupsType[]> => {
     const data = await this.getAccountOnchainActivity(request);
     const removedTxs = this.getRemovedTx();
     const seenTxs = this.getSeenTx();
@@ -125,38 +97,23 @@ export class NotificationRepositoryImpl implements NotificationRepository {
         continue;
       }
 
-      const tokenA = {
-        ...tx.tokenA,
-        symbol: this.replaceToken(tx.tokenA?.symbol),
-        logoURI: this.replaceUri(tx.tokenA?.symbol, tx.tokenA?.logoURI),
-      };
-      const tokenB = {
-        ...tx.tokenB,
-        symbol: this.replaceToken(tx.tokenB?.symbol),
-        logoURI: this.replaceUri(tx.tokenB?.symbol, tx.tokenB?.logoURI),
-      };
-
       const txModel: TransactionModel = {
         txType: tx.tokenB.name ? 1 : 0,
         txHash: tx.txHash,
-        tokenInfo: { tokenA, tokenB },
+        tokenInfo: { tokenA: tx.tokenA, tokenB: tx.tokenB },
         status: "SUCCESS",
         createdAt: tx.time,
         isRead: seenTxs.includes(tx.txHash), // * Check if transaction is already seen
         rawValue: tx,
       };
 
-      if (tokenA) transactionResult.push(txModel);
+      if (tx.tokenA) transactionResult.push(txModel);
     }
 
-    return NotificationMapper.notificationGroupFromTransaction(
-      transactionResult,
-    );
+    return NotificationMapper.notificationGroupFromTransaction(transactionResult);
   };
 
-  public clearNotification = async (
-    request: DeleteAccountActivityRequest,
-  ): Promise<void> => {
+  public clearNotification = async (request: DeleteAccountActivityRequest): Promise<void> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }

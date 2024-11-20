@@ -33,8 +33,9 @@ import { matchInputNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
-import { useSwap } from "./use-swap";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { rawBySqrtX96 } from "@utils/swap-utils";
+import { useSwap } from "./use-swap";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -51,11 +52,7 @@ type SwapButtonStateType =
 
 export type PriceImpactStatus = "LOW" | "HIGH" | "MEDIUM" | "POSITIVE" | "NONE";
 
-function estimatePriceImpactByRoutes(
-  tokenInPath: string,
-  routes: EstimatedRoute[],
-  swapFeeRate: number,
-) {
+function estimatePriceImpactByRoutes(tokenInPath: string, routes: EstimatedRoute[], swapFeeRate: number) {
   let amountInBN = BigNumber(0);
   let amountOutBN = BigNumber(0);
   let estimatedAmountOutBN = BigNumber(0);
@@ -74,37 +71,24 @@ function estimatePriceImpactByRoutes(
       return rawBySqrtX96(pool.price);
     });
 
-    const routePrice = poolTickPrices.reduce(
-      (price, poolTickPrice) => price * poolTickPrice,
-      1,
-    );
+    const routePrice = poolTickPrices.reduce((price, poolTickPrice) => price * poolTickPrice, 1);
 
-    const amountOutWithSwapFee = BigNumber(
-      route.amountOut.toString(),
-    ).multipliedBy(1 - swapFeeRate / 100);
+    const amountOutWithSwapFee = BigNumber(route.amountOut.toString()).multipliedBy(1 - swapFeeRate / 100);
 
     amountInBN = amountInBN.plus(route.amountIn.toString());
     amountOutBN = amountOutBN.plus(amountOutWithSwapFee);
 
-    estimatedAmountOutBN = estimatedAmountOutBN.plus(
-      BigNumber(route.amountIn.toString()).multipliedBy(routePrice),
-    );
+    estimatedAmountOutBN = estimatedAmountOutBN.plus(BigNumber(route.amountIn.toString()).multipliedBy(routePrice));
   }
 
   if (amountOutBN.isZero()) {
     return BigNumber(0);
   }
 
-  return amountOutBN
-    .minus(estimatedAmountOutBN)
-    .multipliedBy(100)
-    .dividedBy(estimatedAmountOutBN);
+  return amountOutBN.minus(estimatedAmountOutBN).multipliedBy(100).dividedBy(estimatedAmountOutBN);
 }
 
-function compareAmountFn(
-  amountA: string | number | bigint,
-  amountB: string | number | bigint,
-) {
+function compareAmountFn(amountA: string | number | bigint, amountB: string | number | bigint) {
   const amountValueA = BigNumber(`${amountA}`.replace(/,/g, ""));
   const amountValueB = BigNumber(`${amountB}`.replace(/,/g, ""));
 
@@ -148,20 +132,15 @@ export const useSwapHandler = () => {
     tokenBAmount: defaultTokenBAmount,
   } = swapValue;
   const { t } = useTranslation();
+  const { enqueueEvent } = useTransactionEventStore();
 
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
-  const [tokenAAmount = "", setTokenAAmount] = useState(
-    defaultTokenAAmount ?? undefined,
-  );
+  const [tokenAAmount = "", setTokenAAmount] = useState(defaultTokenAAmount ?? undefined);
 
   const estimateFlagRef = useRef(0);
 
   const [tokenBAmount = "", setTokenBAmount] = useState(() =>
-    !defaultTokenAAmount
-      ? defaultTokenBAmount
-        ? defaultTokenBAmount
-        : undefined
-      : undefined,
+    !defaultTokenAAmount ? (defaultTokenBAmount ? defaultTokenBAmount : undefined) : undefined,
   );
 
   const [submitted, setSubmitted] = useState(false);
@@ -170,18 +149,8 @@ export const useSwapHandler = () => {
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
   const [openedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    connected: connectedWallet,
-    isSwitchNetwork,
-    switchNetwork,
-  } = useWallet();
-  const {
-    tokens,
-    tokenPrices,
-    displayBalanceMap,
-    updateBalances,
-    getTokenUSDPrice,
-  } = useTokenData();
+  const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
+  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice } = useTokenData();
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
@@ -204,24 +173,14 @@ export const useSwapHandler = () => {
     swapFee,
   });
 
-  const { openModal: openTransactionConfirmModal } =
-    useTransactionConfirmModal();
-  const {
-    broadcastSuccess,
-    broadcastLoading,
-    broadcastPending,
-    broadcastError,
-    broadcastRejected,
-  } = useBroadcastHandler();
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal();
+  const { broadcastSuccess, broadcastLoading, broadcastError, broadcastRejected } = useBroadcastHandler();
 
   usePreventScroll(openedConfirmModal);
 
   const { getMessage } = useMessage();
 
-  const gnotToken = useMemo(
-    () => tokens.find(item => item.symbol === "GNOT"),
-    [tokens],
-  );
+  const gnotToken = useMemo(() => tokens.find(item => item.symbol === "GNOT"), [tokens]);
   const defaultGasFeeAmount = useMemo(
     () =>
       BigNumber(DEFAULT_GAS_FEE)
@@ -230,11 +189,7 @@ export const useSwapHandler = () => {
     [gnotToken?.decimals],
   );
   const gasFeeUSD = useMemo(
-    () =>
-      getTokenUSDPrice(
-        checkGnotPath(gnotToken?.path ?? ""),
-        defaultGasFeeAmount,
-      ) ?? 0,
+    () => getTokenUSDPrice(checkGnotPath(gnotToken?.path ?? ""), defaultGasFeeAmount) ?? 0,
     [defaultGasFeeAmount, getTokenUSDPrice, gnotToken?.path],
   );
 
@@ -278,29 +233,17 @@ export const useSwapHandler = () => {
   }, [isSwitchNetwork, displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
-    if (
-      !Number(tokenAAmount) ||
-      !tokenA ||
-      !tokenPrices[checkGnotPath(tokenA.priceID)].usd
-    ) {
+    if (!Number(tokenAAmount) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)].usd) {
       return null;
     }
-    return BigNumber(tokenAAmount)
-      .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
-      .toNumber();
+    return BigNumber(tokenAAmount).multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd).toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
-    if (
-      !Number(tokenBAmount) ||
-      !tokenB ||
-      !tokenPrices[checkGnotPath(tokenB.priceID)]?.usd
-    ) {
+    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]?.usd) {
       return null;
     }
-    return BigNumber(tokenBAmount)
-      .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd)
-      .toNumber();
+    return BigNumber(tokenBAmount).multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd).toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
 
   const priceImpact = useMemo(() => {
@@ -309,20 +252,15 @@ export const useSwapHandler = () => {
     }
 
     const hasUSDPrice =
-      !!tokenPrices[checkGnotPath(tokenA.path)]?.usd &&
-      !!tokenPrices[checkGnotPath(tokenB.path)]?.usd;
+      !!tokenPrices[checkGnotPath(tokenA.path)]?.usd && !!tokenPrices[checkGnotPath(tokenB.path)]?.usd;
 
     if (hasUSDPrice) {
       const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 0;
       const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 0;
 
-      const tokenAUSDAmount =
-        (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) *
-        Number(tokenAUSDValue);
+      const tokenAUSDAmount = (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) * Number(tokenAUSDValue);
 
-      const tokenBUSDAmount =
-        (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) *
-        Number(tokenBUSDValue);
+      const tokenBUSDAmount = (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) * Number(tokenBUSDValue);
 
       const priceImpactNum =
         tokenAUSDAmount !== 0
@@ -339,38 +277,18 @@ export const useSwapHandler = () => {
       (swapFee || 0) / 100,
     );
     return BigNumber(priceImpactNum.toFixed(2));
-  }, [
-    estimatedRoutes,
-    swapFee,
-    tokenA,
-    tokenAAmount,
-    tokenB,
-    tokenBAmount,
-    tokenPrices,
-  ]);
+  }, [estimatedRoutes, swapFee, tokenA, tokenAAmount, tokenB, tokenBAmount, tokenPrices]);
 
   const priceImpactStatus: PriceImpactStatus = useMemo(() => {
     if (!priceImpact) return "NONE";
 
     if (priceImpact.isGreaterThan(0)) return "POSITIVE";
 
-    if (
-      priceImpact.isLessThanOrEqualTo(0) &&
-      priceImpact.isGreaterThanOrEqualTo(-4.99)
-    )
-      return "LOW";
+    if (priceImpact.isLessThanOrEqualTo(0) && priceImpact.isGreaterThanOrEqualTo(-4.99)) return "LOW";
 
-    if (
-      priceImpact.isLessThanOrEqualTo(-5) &&
-      priceImpact.isGreaterThanOrEqualTo(-9.99)
-    )
-      return "MEDIUM";
+    if (priceImpact.isLessThanOrEqualTo(-5) && priceImpact.isGreaterThanOrEqualTo(-9.99)) return "MEDIUM";
 
-    if (
-      priceImpact.isLessThanOrEqualTo(-10) &&
-      priceImpact.isGreaterThanOrEqualTo(-100)
-    )
-      return "HIGH";
+    if (priceImpact.isLessThanOrEqualTo(-10) && priceImpact.isGreaterThanOrEqualTo(-100)) return "HIGH";
 
     return "NONE";
   }, [priceImpact]);
@@ -391,48 +309,34 @@ export const useSwapHandler = () => {
     if (
       (Number(tokenAAmount) < 0.000001 && type === "EXACT_IN") ||
       (Number(tokenBAmount) < 0.000001 && type === "EXACT_OUT") ||
-      (isGNOTPath(toNativePath(tokenA.path)) &&
-        BigNumber(tokenAAmount).isLessThan(MINIMUM_GNOT_SWAP_AMOUNT))
+      (isGNOTPath(toNativePath(tokenA.path)) && BigNumber(tokenAAmount).isLessThan(MINIMUM_GNOT_SWAP_AMOUNT))
     ) {
       return "AMOUNT_TOO_LOW";
-    }
-
-    if (priceImpactStatus === "HIGH" && estimatedRoutes.length !== 0) {
-      return "HIGHT_PRICE_IMPACT";
     }
 
     if (compareAmountFn(tokenAAmount, tokenABalance) > 0) {
       return "INSUFFICIENT_BALANCE";
     }
 
-    if (!isSameToken && swapState === "NO_LIQUIDITY") {
-      return "INSUFFICIENT_LIQUIDITY";
-    }
     if (
       !isSameToken &&
-      Number(tokenAAmount) > 0 &&
-      tokenBAmount === "0" &&
-      !isLoading &&
-      type === "EXACT_IN"
+      (swapState === "NO_LIQUIDITY" ||
+        (type === "EXACT_IN" && Number(tokenAAmount) > 0 && tokenBAmount === "0" && !isLoading) ||
+        (type === "EXACT_OUT" && Number(tokenBAmount) > 0 && tokenAAmount === "0" && !isLoading) ||
+        estimatedRoutes.length === 0)
     ) {
       return "INSUFFICIENT_LIQUIDITY";
     }
 
-    if (
-      ((Number(tokenBAmount) > 0 &&
-        tokenAAmount === "0" &&
-        !isLoading &&
-        type === "EXACT_OUT") ||
-        estimatedRoutes.length === 0) &&
-      !isSameToken
-    ) {
-      return "INSUFFICIENT_LIQUIDITY";
-    }
     if (isSameToken) {
       if (isNativeToken(tokenA)) {
         return "WRAP";
       }
       return "UNWRAP";
+    }
+
+    if (priceImpactStatus === "HIGH" && estimatedRoutes.length !== 0) {
+      return "HIGHT_PRICE_IMPACT";
     }
     return "SWAP";
   }, [
@@ -454,7 +358,7 @@ export const useSwapHandler = () => {
   const swapButtonText = useMemo(() => {
     switch (swapButtonState) {
       case "WALLET_LOGIN":
-        return t("Swap:swapButton.walletLogin");
+        return t("common:btn.walletLogin");
       case "SWITCH_NETWORK":
         return t("Swap:swapButton.switchNetwork");
       case "SELECT_TOKEN":
@@ -464,7 +368,7 @@ export const useSwapHandler = () => {
       case "AMOUNT_TOO_LOW":
         return t("Swap:swapButton.amtLow");
       case "INSUFFICIENT_BALANCE":
-        return t("Swap:swapButton.insuffiBalance");
+        return t("common:btn.insuffiBal");
       case "INSUFFICIENT_LIQUIDITY":
         return t("Swap:swapButton.insuffiLiq");
       case "WRAP":
@@ -496,18 +400,7 @@ export const useSwapHandler = () => {
       tokenADecimals: tokenA?.decimals,
       tokenBDecimals: tokenB?.decimals,
     };
-  }, [
-    slippage,
-    type,
-    tokenA,
-    tokenAAmount,
-    tokenABalance,
-    tokenAUSD,
-    tokenB,
-    tokenBAmount,
-    tokenBBalance,
-    tokenBUSD,
-  ]);
+  }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -561,9 +454,7 @@ export const useSwapHandler = () => {
       swapDirection: type,
       swapRate,
       swapRateUSD,
-      priceImpact: priceImpact?.isGreaterThan(100)
-        ? 100
-        : Number(priceImpact?.toFixed(2)),
+      priceImpact: priceImpact?.isGreaterThan(100) ? 100 : Number(priceImpact?.toFixed(2)),
       guaranteedAmount: {
         amount: tokenAmountLimit || 0,
         currency: (type === "EXACT_IN" ? tokenB : tokenA).symbol,
@@ -618,36 +509,25 @@ export const useSwapHandler = () => {
         swapResult={swapResult}
         swap={executeSwap}
         close={closeModal}
-        isWrapOrUnwrap={
-          swapButtonState === "WRAP" || swapButtonState === "UNWRAP"
-        }
+        isWrapOrUnwrap={swapButtonState === "WRAP" || swapButtonState === "UNWRAP"}
         priceImpactStatus={priceImpactStatus}
         title={(() => {
           switch (swapButtonState) {
             case "SWAP":
-              return t("Swap:confirmSwapModal.confirmBtn.swap");
+              return t("Swap:confirmSwapModal.title");
             case "WRAP":
               return t("Swap:confirmSwapModal.confirmBtn.wrap");
             case "UNWRAP":
               return t("Swap:confirmSwapModal.confirmBtn.unwrap");
             case "HIGHT_PRICE_IMPACT":
-              return t("Swap:confirmSwapModal.confirmBtn.swapAnyway");
+              return t("Swap:swapButton.swapAnyway");
             default:
               return "";
           }
         })()}
       />,
     );
-  }, [
-    submitted,
-    swapResult,
-    swapSummaryInfo,
-    swapTokenInfo,
-    swapButtonState,
-    priceImpactStatus,
-    isLoading,
-    t,
-  ]);
+  }, [submitted, swapResult, swapSummaryInfo, swapTokenInfo, swapButtonState, priceImpactStatus, isLoading, t]);
 
   const openConnectWallet = useCallback(() => {
     openModal();
@@ -768,21 +648,18 @@ export const useSwapHandler = () => {
     [isSameToken, tokenA, tokenB],
   );
 
-  const isSameTokenFn = useCallback(
-    (tokenA_: TokenModel | null, tokenB_: TokenModel | null) => {
-      if (!tokenA_ || !tokenB_) {
-        return false;
-      }
-      if (isNativeToken(tokenA_)) {
-        return tokenA_.wrappedPath === tokenB_.path;
-      }
-      if (isNativeToken(tokenB_)) {
-        return tokenA_.path === tokenB_.wrappedPath;
-      }
+  const isSameTokenFn = useCallback((tokenA_: TokenModel | null, tokenB_: TokenModel | null) => {
+    if (!tokenA_ || !tokenB_) {
       return false;
-    },
-    [],
-  );
+    }
+    if (isNativeToken(tokenA_)) {
+      return tokenA_.wrappedPath === tokenB_.path;
+    }
+    if (isNativeToken(tokenB_)) {
+      return tokenA_.path === tokenB_.wrappedPath;
+    }
+    return false;
+  }, []);
 
   const changeTokenA = useCallback(
     (token: TokenModel) => {
@@ -793,24 +670,15 @@ export const useSwapHandler = () => {
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue(prev => ({
-        tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
-        tokenB:
-          prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+        tokenA: prev.tokenB?.path === token.path ? prev.tokenB : token,
+        tokenB: prev.tokenB?.path === token.path ? prev.tokenA : prev.tokenB,
         type: changedSwapDirection,
       }));
       if (!!Number(tokenAAmount)) {
         setIsLoading(true);
       }
     },
-    [
-      tokenA,
-      tokenB,
-      type,
-      tokenBAmount,
-      tokenAAmount,
-      isSameToken,
-      isSameTokenFn,
-    ],
+    [tokenA, tokenB, type, tokenBAmount, tokenAAmount, isSameToken, isSameTokenFn],
   );
 
   const changeTokenB = useCallback(
@@ -822,24 +690,15 @@ export const useSwapHandler = () => {
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue(prev => ({
-        tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
-        tokenA:
-          prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+        tokenB: prev.tokenA?.path === token.path ? prev.tokenA : token,
+        tokenA: prev.tokenA?.path === token.path ? prev.tokenB : prev.tokenA,
         type: changedSwapDirection,
       }));
       if (!!Number(tokenAAmount)) {
         setIsLoading(true);
       }
     },
-    [
-      tokenA,
-      type,
-      tokenBAmount,
-      tokenAAmount,
-      swapValue,
-      isSameToken,
-      isSameTokenFn,
-    ],
+    [tokenA, type, tokenBAmount, tokenAAmount, swapValue, isSameToken, isSameTokenFn],
   );
 
   const switchSwapDirection = useCallback(() => {
@@ -875,11 +734,7 @@ export const useSwapHandler = () => {
   const copyURL = async () => {
     try {
       if (router.pathname === PAGE_PATH.TOKEN) {
-        let url =
-          window?.location?.host +
-          PAGE_PATH.TOKEN +
-          "?path=" +
-          router.getTokenPath();
+        let url = window?.location?.host + PAGE_PATH.TOKEN + "?path=" + router.getTokenPath();
         const query = {
           to: tokenB?.path,
           from: tokenA?.path,
@@ -941,40 +796,51 @@ export const useSwapHandler = () => {
 
       wrap(swapAmount)
         .then(response => {
+          if (response?.code === 0 || response?.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+            enqueueEvent({
+              txHash: response?.data?.hash,
+              action: DexEvent.WRAP,
+              formatData: response => {
+                if (!response) {
+                  return messageData;
+                }
+
+                return {
+                  ...messageData,
+                  tokenAAmount: response[0],
+                  tokenBAmount: response[1],
+                };
+              },
+              onUpdate: async () => {
+                await updateBalances();
+              },
+            });
+          }
+
           if (response?.code === 0) {
-            broadcastPending({ txHash: response.data?.hash });
-            setTimeout(() => {
-              const tokenAAmountStr = tokenAAmount;
-              const tokenBAmountStr = tokenBAmount;
-              broadcastSuccess(
-                getMessage(
-                  DexEvent.WRAP,
-                  "success",
-                  {
-                    ...messageData,
-                    tokenAAmount: tokenAAmountStr || "0",
-                    tokenBAmount: tokenBAmountStr || "0",
-                  },
-                  response.data?.hash,
-                ),
-                onFinishSwap,
-              );
-            }, 1000);
             openTransactionConfirmModal();
+            const tokenAAmountStr = tokenAAmount;
+            const tokenBAmountStr = tokenBAmount;
+            broadcastSuccess(
+              getMessage(
+                DexEvent.WRAP,
+                "success",
+                {
+                  ...messageData,
+                  tokenAAmount: tokenAAmountStr || "0",
+                  tokenBAmount: tokenBAmountStr || "0",
+                },
+                response.data?.hash,
+              ),
+              onFinishSwap,
+            );
           } else if (
             response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
             broadcastRejected(getMessage(DexEvent.WRAP, "error", messageData));
             openTransactionConfirmModal();
           } else {
-            broadcastError(
-              getMessage(
-                DexEvent.WRAP,
-                "error",
-                messageData,
-                response?.data?.hash,
-              ),
-            );
+            broadcastError(getMessage(DexEvent.WRAP, "error", messageData, response?.data?.hash));
             openTransactionConfirmModal();
           }
         })
@@ -990,43 +856,42 @@ export const useSwapHandler = () => {
 
       unwrap(swapAmount)
         .then(response => {
+          if (response?.code === 0 || response?.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+            enqueueEvent({
+              txHash: response?.data?.hash,
+              action: DexEvent.UNWRAP,
+              formatData: () => messageData,
+              onUpdate: async () => {
+                await updateBalances();
+              },
+            });
+          }
+
           if (response?.status === "success") {
-            broadcastPending({ txHash: response.data?.hash });
-            setTimeout(() => {
-              const tokenAAmountStr = tokenAAmount;
-              const tokenBAmountStr = tokenBAmount;
-              broadcastSuccess(
-                getMessage(
-                  DexEvent.UNWRAP,
-                  "success",
-                  {
-                    ...messageData,
-                    tokenAAmount: tokenAAmountStr || "0",
-                    tokenBAmount: tokenBAmountStr || "0",
-                  },
-                  response.data?.hash,
-                ),
-                onFinishSwap,
-              );
-            }, 1000);
+            const tokenAAmountStr = tokenAAmount;
+            const tokenBAmountStr = tokenBAmount;
             openTransactionConfirmModal();
+            broadcastSuccess(
+              getMessage(
+                DexEvent.UNWRAP,
+                "success",
+                {
+                  ...messageData,
+                  tokenAAmount: tokenAAmountStr || "0",
+                  tokenBAmount: tokenBAmountStr || "0",
+                },
+                response.data?.hash,
+              ),
+              onFinishSwap,
+            );
           } else if (
             response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
-            broadcastRejected(
-              getMessage(DexEvent.UNWRAP, "error", messageData),
-            );
+            broadcastRejected(getMessage(DexEvent.UNWRAP, "error", messageData));
             openTransactionConfirmModal();
           } else {
-            broadcastError(
-              getMessage(
-                DexEvent.UNWRAP,
-                "error",
-                messageData,
-                response?.data?.hash,
-              ),
-            );
             openTransactionConfirmModal();
+            broadcastError(getMessage(DexEvent.UNWRAP, "error", messageData, response?.data?.hash));
           }
         })
         .catch(() => {
@@ -1051,14 +916,8 @@ export const useSwapHandler = () => {
     const broadcastMessage = {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
-      tokenAAmount: isExactIn
-        ? tokenAAmount
-        : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() ||
-          "0",
-      tokenBAmount: isExactIn
-        ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() ||
-          "0"
-        : tokenBAmount,
+      tokenAAmount: isExactIn ? tokenAAmount : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() || "0",
+      tokenBAmount: isExactIn ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() || "0" : tokenBAmount,
     };
 
     // Handle Wrap and Unwrap
@@ -1073,42 +932,40 @@ export const useSwapHandler = () => {
     swap(estimatedRoutes, swapAmount)
       .then(response => {
         if (response) {
+          if (response.code === 0 || response.type === ERROR_VALUE.TRANSACTION_FAILED.type) {
+            enqueueEvent({
+              txHash: response?.data?.hash,
+              action: DexEvent.SWAP,
+              formatData: response => {
+                if (!response) {
+                  return broadcastMessage;
+                }
+
+                const tokenAAmount = isExactIn ? response[0] : response[1];
+                const tokenBAmount = isExactIn ? response[1] : response[0];
+
+                return {
+                  ...broadcastMessage,
+                  tokenAAmount:
+                    makeDisplayTokenAmount(tokenA, BigNumber(tokenAAmount).abs().toString())?.toString() || "0",
+                  tokenBAmount:
+                    makeDisplayTokenAmount(tokenB, BigNumber(tokenBAmount).abs().toString())?.toString() || "0",
+                };
+              },
+              onUpdate: async () => {
+                await updateBalances();
+              },
+            });
+          }
+
           if (response.code === 0) {
             const responseData = response?.data as SwapRouteSuccessResponse;
-            broadcastPending({ txHash: responseData.hash });
-            setTimeout(() => {
-              const tokenAAmountStr = isExactIn
-                ? tokenAAmount
-                : responseData.resultAmount;
-              const tokenBAmountStr = isExactIn
-                ? responseData.resultAmount
-                : tokenBAmount;
-              broadcastSuccess(
-                getMessage(
-                  DexEvent.SWAP,
-                  "success",
-                  {
-                    ...broadcastMessage,
-                    tokenAAmount: tokenAAmountStr || "0",
-                    tokenBAmount: tokenBAmountStr || "0",
-                  },
-                  responseData.hash,
-                ),
-                onFinishSwap,
-              );
-            }, 1000);
             openTransactionConfirmModal();
+            broadcastSuccess(getMessage(DexEvent.SWAP, "success", broadcastMessage, responseData.hash), onFinishSwap);
           } else if (
             response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
-            broadcastRejected(
-              getMessage(
-                DexEvent.SWAP,
-                "error",
-                broadcastMessage,
-                response.data?.hash,
-              ),
-            );
+            broadcastRejected(getMessage(DexEvent.SWAP, "error", broadcastMessage, response.data?.hash));
             openTransactionConfirmModal();
           } else {
             broadcastError(
@@ -1116,9 +973,7 @@ export const useSwapHandler = () => {
                 DexEvent.SWAP,
                 "error",
                 broadcastMessage,
-                response.type === ERROR_VALUE.TRANSACTION_FAILED.type
-                  ? response.data?.hash
-                  : undefined,
+                response.type === ERROR_VALUE.TRANSACTION_FAILED.type ? response.data?.hash : undefined,
               ),
             );
             openTransactionConfirmModal();
@@ -1200,15 +1055,7 @@ export const useSwapHandler = () => {
     if (!!Number(tokenAAmount) || !!Number(tokenBAmount)) {
       setIsLoading(true);
     }
-  }, [
-    defaultTokenBAmount,
-    defaultTokenAAmount,
-    tokenA?.symbol,
-    tokenAAmount,
-    tokenBAmount,
-    type,
-    tokenB?.symbol,
-  ]);
+  }, [defaultTokenBAmount, defaultTokenAAmount, tokenA?.symbol, tokenAAmount, tokenBAmount, type, tokenB?.symbol]);
 
   return {
     slippage,

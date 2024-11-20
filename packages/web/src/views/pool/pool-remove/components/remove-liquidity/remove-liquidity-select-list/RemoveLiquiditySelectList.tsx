@@ -74,11 +74,9 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
               disabled
             />
           ))}
-        {!isLoading &&
-          unstakedPositions.length === 0 &&
-          stakedPositions.length === 0 && (
-            <div className="no-position">{t("business:noPosition")}</div>
-          )}
+        {!isLoading && unstakedPositions.length === 0 && stakedPositions.length === 0 && (
+          <div className="no-position">{t("business:noPosition")}</div>
+        )}
       </ul>
     </RemoveLiquiditySelectListWrapper>
   );

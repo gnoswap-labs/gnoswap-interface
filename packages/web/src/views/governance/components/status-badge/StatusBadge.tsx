@@ -1,0 +1,117 @@
+import dayjs from "dayjs";
+import relative from "dayjs/plugin/relativeTime";
+import duration from "dayjs/plugin/duration";
+import React from "react";
+import { useTranslation } from "react-i18next";
+
+import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
+import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
+import IconInfo from "@components/common/icons/IconInfo";
+import IconOutlineClock from "@components/common/icons/IconOutlineClock";
+import IconPass from "@components/common/icons/IconPass";
+import { StatusBadgeWrapper } from "./StatusBadge.style";
+import { DEVICE_TYPE } from "@styles/media";
+
+dayjs.extend(relative);
+dayjs.extend(duration);
+
+interface StatusBadgeProps {
+  breakpoint: DEVICE_TYPE;
+  status: string;
+  time: string;
+  twoline?: boolean;
+}
+
+const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, twoline }) => {
+  const { t } = useTranslation();
+
+  const getContent = () => {
+    switch (status) {
+      case "UPCOMING":
+        return (
+          <div className="status success">
+            <IconCircleInCheck className="success-icon status-icon" />
+            {t("Governance:proposal.status.upcoming")}
+          </div>
+        );
+      case "ACTIVE":
+        return (
+          <div className="status success">
+            <IconCircleInCheck className="success-icon status-icon" />
+            {t("Governance:proposal.status.active")}
+          </div>
+        );
+      case "EXPIRED":
+      case "EXECUTED":
+      case "PASSED":
+        return (
+          <div className="status passed">
+            <IconPass className="passed-icon status-icon" />
+            {t("Governance:proposal.status.passed")}
+          </div>
+        );
+      case "REJECTED":
+        return (
+          <div className="status failed">
+            <IconCircleInCancel className="failed-icon status-icon" />
+            {t("Governance:proposal.status.rejected")}
+          </div>
+        );
+      case "CANCELLED":
+      default:
+        return (
+          <div className="status cancelled">
+            <IconInfo className="cancelled-icon status-icon" />
+            {t("Governance:proposal.status.cancelled")}
+          </div>
+        );
+    }
+  };
+
+  const getTimeInfo = () => {
+    const timeString = dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
+    switch (status) {
+      case "UPCOMING":
+        return breakpoint === DEVICE_TYPE.MOBILE
+          ? `${t("Governance:proposal.time.start", {
+              rel_time: dayjs(time).fromNow(),
+            })}`
+          : `${t("Governance:proposal.time.start", {
+              rel_time: dayjs(time).fromNow(),
+            })} (${timeString})`;
+      case "ACTIVE":
+        return breakpoint === DEVICE_TYPE.MOBILE
+          ? `${t("Governance:proposal.time.end", {
+              rel_time: dayjs(time).fromNow(),
+            })}`
+          : `${t("Governance:proposal.time.end", {
+              rel_time: dayjs(time).fromNow(),
+            })} (${timeString})`;
+      case "EXECUTED":
+      case "EXPIRED":
+      case "PASSED":
+      case "REJECTED":
+      case "CANCELLED":
+      default:
+        return breakpoint === DEVICE_TYPE.MOBILE
+          ? `${t("Governance:proposal.time.ended", {
+              rel_time: "",
+            })}`
+          : `${t("Governance:proposal.time.ended", {
+              rel_time: "",
+            })} (${timeString})`;
+    }
+  };
+
+  return (
+    <StatusBadgeWrapper style={{ flexDirection: twoline ? "column" : "row" }}>
+      {getContent()}
+      <div className="time">
+        <IconOutlineClock className="time-icon" />
+        {getTimeInfo()}
+      </div>
+    </StatusBadgeWrapper>
+  );
+};
+
+export default StatusBadge;

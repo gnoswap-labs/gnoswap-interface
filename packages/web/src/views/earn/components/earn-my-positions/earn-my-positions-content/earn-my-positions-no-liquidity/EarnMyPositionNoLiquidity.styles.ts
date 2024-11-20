@@ -65,7 +65,7 @@ export const NoLiquidityWrapper = styled.div`
     ${media.mobile} {
       text-align: start;
       ${fonts.p4};
-      text-align: center
+      text-align: center;
     }
   }
 `;

@@ -9,9 +9,7 @@ export default {
   component: WalletBalance,
 } as ComponentMeta<typeof WalletBalance>;
 
-const Template: ComponentStory<typeof WalletBalance> = args => (
-  <WalletBalance {...args} />
-);
+const Template: ComponentStory<typeof WalletBalance> = args => <WalletBalance {...args} />;
 
 export const ConnectionSucceeded = Template.bind({});
 ConnectionSucceeded.args = {
@@ -28,7 +26,7 @@ ConnectionSucceeded.args = {
     claimableRewards: "$1.40",
     loadingBalance: false,
     loadingPositions: false,
-    totalClaimedRewards: "$1.50"
+    totalClaimedRewards: "$1.50",
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),

@@ -10,9 +10,7 @@ export default {
   component: StakingContentCard,
 } as ComponentMeta<typeof StakingContentCard>;
 
-const Template: ComponentStory<typeof StakingContentCard> = args => (
-  <StakingContentCard {...args} />
-);
+const Template: ComponentStory<typeof StakingContentCard> = args => <StakingContentCard {...args} />;
 
 export const ActiveStaking = Template.bind({});
 ActiveStaking.args = {

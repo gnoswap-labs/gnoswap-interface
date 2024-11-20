@@ -6,11 +6,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { TooltipInfo } from "../PoolGraph.types";
 import { PoolGraphTooltipContainer } from "./PoolGraphTooltip.styles";
 
-function makeClassNameWithSmallFont(
-  className: string,
-  target: string,
-  limitLength = 21,
-) {
+function makeClassNameWithSmallFont(className: string, target: string, limitLength = 21) {
   const additionalClassName = "small-font";
   if (target.length > limitLength) {
     return `${className} ${additionalClassName}`;
@@ -113,9 +109,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               {tooltipInfo.tokenA.symbol} {t("common:price")}
             </span>
           </span>
-          <span className="price-range">
-            {displayTooltipInfo.tokenAPriceRange}
-          </span>
+          <span className={"token-amount-value price"}>{displayTooltipInfo.tokenAPrice}</span>
         </div>
 
         <div className="row">
@@ -131,32 +125,24 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               {tooltipInfo.tokenB.symbol} {t("common:price")}
             </span>
           </span>
-          <span className="price-range">
-            {displayTooltipInfo.tokenBPriceRange}
-          </span>
+          <span className={"token-amount-value price"}>{displayTooltipInfo.tokenBPrice}</span>
         </div>
       </div>
 
       <div className="header mt-8">
         <div className="row">
           <span className="token token-title">{t("business:token")}</span>
-          <span className="amount total-amount">
-            {t("common:poolGraph.tooltip.totalAmt")}
-          </span>
+          <span className="amount total-amount">{t("common:poolGraph.tooltip.totalAmt")}</span>
           {isDisplayPositionAmount && (
-            <span className="amount w-100">
-              {t("common:poolGraph.tooltip.positionAmt")}
-            </span>
+            <span className="amount w-100 in-header">{t("common:poolGraph.tooltip.positionAmt")}</span>
           )}
-          <span className="price-range">
-            {t("common:poolGraph.tooltip.priceRange")}
-          </span>
+          <span className="price-range">{t("common:poolGraph.tooltip.priceRange")}</span>
         </div>
       </div>
 
       <div className="content">
         <div className="row">
-          <span className="token">
+          <span className="content-token">
             <MissingLogo
               symbol={tooltipInfo.tokenA.symbol}
               url={tooltipInfo.tokenA.logoURI}
@@ -164,29 +150,22 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               width={20}
               mobileWidth={20}
             />
-            <span>{tooltipInfo.tokenA.symbol}</span>
+            <span className="symbol">{tooltipInfo.tokenA.symbol}</span>
           </span>
           <span className="amount total-amount">
-            <span
-              className={makeClassNameWithSmallFont(
-                "token-amount-value",
-                displayTooltipInfo.totalTokenAAmount,
-              )}
-            >
+            <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenAAmount)}>
               {displayTooltipInfo.totalTokenAAmount}
             </span>
           </span>
 
           {isDisplayPositionAmount && (
             <span className="amount w-100">
-              <span className="token-amount-value">
-                {displayTooltipInfo.depositTokenAAmount}
-              </span>
+              <span className="token-amount-value">{displayTooltipInfo.depositTokenAAmount}</span>
             </span>
           )}
           <span
             className={makeClassNameWithSmallFont(
-              "token-amount-value",
+              "token-amount-value price-range",
               displayTooltipInfo.tokenAPriceRange,
             )}
           >
@@ -195,7 +174,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
         </div>
 
         <div className="row">
-          <span className="token">
+          <span className="content-token">
             <MissingLogo
               symbol={tooltipInfo.tokenB.symbol}
               url={tooltipInfo.tokenB.logoURI}
@@ -203,28 +182,21 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               width={20}
               mobileWidth={20}
             />
-            <span>{tooltipInfo.tokenB.symbol}</span>
+            <span className="symbol">{tooltipInfo.tokenB.symbol}</span>
           </span>
           <span className="amount total-amount">
-            <span
-              className={makeClassNameWithSmallFont(
-                "token-amount-value",
-                displayTooltipInfo.totalTokenBAmount,
-              )}
-            >
+            <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenBAmount)}>
               {displayTooltipInfo.totalTokenBAmount}
             </span>
           </span>
           {isDisplayPositionAmount && (
             <span className="amount w-100">
-              <span className="token-amount-value">
-                {displayTooltipInfo.depositTokenBAmount}
-              </span>
+              <span className="token-amount-value">{displayTooltipInfo.depositTokenBAmount}</span>
             </span>
           )}
           <span
             className={makeClassNameWithSmallFont(
-              "token-amount-value",
+              "token-amount-value price-range",
               displayTooltipInfo.tokenBPriceRange,
             )}
           >

@@ -32,20 +32,14 @@ const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
     <TransactionConfirmModalWrapper className="modal-body-wrapper">
       <div className="modal-body submitted-modal">
         <div className="modal-header model-header-submitted">
-          <div className="close-wrap" onClick={close}>
-            <IconClose className="close-icon" />
-          </div>
+          {status !== "loading" && (
+            <div className="close-wrap" onClick={close}>
+              <IconClose className="close-icon" />
+            </div>
+          )}
         </div>
-        {status === "loading" && (
-          <TransactionConfirmLoading description={description} />
-        )}
-        {status === "success" && (
-          <TransactionConfirmSubmitted
-            confirm={confirm}
-            txHash={txHash}
-            close={close}
-          />
-        )}
+        {status === "loading" && <TransactionConfirmLoading description={description} />}
+        {status === "success" && <TransactionConfirmSubmitted confirm={confirm} txHash={txHash} close={close} />}
         {status === "error" && <TransactionConfirmFailed close={close} />}
         {status === "rejected" && <TransactionConfirmRejected close={close} />}
       </div>
@@ -56,9 +50,7 @@ const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
 interface TransactionConfirmLoadingProps {
   description: string | null;
 }
-const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({
-  description,
-}) => {
+const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({ description }) => {
   const { t } = useTranslation();
 
   return (
@@ -67,13 +59,8 @@ const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({
         <LoadingSpinner />
       </div>
       <div className="transaction-state">
-        <span className="submitted">
-          {t("Modal:confirm.general.loading.title")}
-        </span>
-        <div
-          className="swap-message"
-          dangerouslySetInnerHTML={{ __html: description || "" }}
-        />
+        <span className="submitted">{t("Modal:confirm.general.loading.title")}</span>
+        <div className="swap-message" dangerouslySetInnerHTML={{ __html: description || "" }} />
         <div className="view-transaction">
           <span>{t("Modal:confirm.general.loading.desc")}</span>
         </div>
@@ -87,9 +74,7 @@ interface TransactionConfirmSubmittedProps {
   confirm: () => void;
   close: () => void;
 }
-const TransactionConfirmSubmitted: React.FC<
-  TransactionConfirmSubmittedProps
-> = ({ txHash, confirm, close }) => {
+const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = ({ txHash, confirm, close }) => {
   const { t } = useTranslation();
   const { getTxUrl } = useGnoscanUrl();
 
@@ -107,9 +92,7 @@ const TransactionConfirmSubmitted: React.FC<
         <IconSuccess className="animation-logo" />
       </div>
       <div className="transaction-state">
-        <span className="submitted">
-          {t("Modal:confirm.general.submitted.title")}
-        </span>
+        <span className="submitted">{t("Modal:confirm.general.submitted.title")}</span>
         <div className="view-transaction">
           <span>{t("Modal:confirm.general.submitted.viewTx")}</span>
           <div className="open-link" onClick={moveScanner}>
@@ -135,9 +118,7 @@ const TransactionConfirmSubmitted: React.FC<
 interface TransactionConfirmFailedProps {
   close: () => void;
 }
-const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({
-  close,
-}) => {
+const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({ close }) => {
   const { t } = useTranslation();
 
   return (
@@ -146,9 +127,7 @@ const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({
         <IconFailed className="animation-logo" />
       </div>
       <div className="transaction-state">
-        <span className="submitted">
-          {t("Modal:confirm.general.failed.title")}
-        </span>
+        <span className="submitted">{t("Modal:confirm.general.failed.title")}</span>
         <div className="view-transaction">
           <span>
             <Trans ns="Modal" i18nKey={"Modal:confirm.general.failed.desc"}>
@@ -177,9 +156,7 @@ const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({
 interface TransactionConfirmRejectedProps {
   close: () => void;
 }
-const TransactionConfirmRejected: React.FC<TransactionConfirmRejectedProps> = ({
-  close,
-}) => {
+const TransactionConfirmRejected: React.FC<TransactionConfirmRejectedProps> = ({ close }) => {
   const { t } = useTranslation();
 
   return (
@@ -188,9 +165,7 @@ const TransactionConfirmRejected: React.FC<TransactionConfirmRejectedProps> = ({
         <IconFailed className="animation-logo" />
       </div>
       <div className="transaction-state">
-        <span className="submitted">
-          {t("Modal:confirm.general.rejected.title")}
-        </span>
+        <span className="submitted">{t("Modal:confirm.general.rejected.title")}</span>
         <div className="view-transaction">
           <span>
             <Trans ns="Modal" i18nKey={"confirm.general.rejected.desc"}>
