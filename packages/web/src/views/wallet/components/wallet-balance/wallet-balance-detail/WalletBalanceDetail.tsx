@@ -70,135 +70,111 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     claimedRewardInfo: { [key in RewardType]: PositionRewardForTooltip[] };
     claimableRewardInfo: { [key in RewardType]: PositionRewardForTooltip[] };
   } => {
+    const initRewardTypeMap = () => ({
+      SWAP_FEE: {},
+      INTERNAL: {},
+      EXTERNAL: {},
+    });
+
     const claimableMap: {
       [key in RewardType]: { [key in string]: PositionRewardForTooltip };
-    } = {
-      SWAP_FEE: {},
-      INTERNAL: {},
-      EXTERNAL: {},
-    };
+    } = initRewardTypeMap();
+
     const claimedMap: {
       [key in RewardType]: { [key in string]: PositionRewardForTooltip };
-    } = {
-      SWAP_FEE: {},
-      INTERNAL: {},
-      EXTERNAL: {},
-    };
+    } = initRewardTypeMap();
 
-    if (!positions || positions.length === 0)
+    if (!positions || positions.length === 0) {
       return {
         claimedRewardInfo: {
-          SWAP_FEE: Object.values(claimedMap["SWAP_FEE"]),
-          INTERNAL: Object.values(claimedMap["INTERNAL"]),
-          EXTERNAL: Object.values(claimedMap["EXTERNAL"]),
+          SWAP_FEE: [],
+          INTERNAL: [],
+          EXTERNAL: [],
         },
         claimableRewardInfo: {
-          SWAP_FEE: Object.values(claimableMap["SWAP_FEE"]),
-          INTERNAL: Object.values(claimableMap["INTERNAL"]),
-          EXTERNAL: Object.values(claimableMap["EXTERNAL"]),
+          SWAP_FEE: [],
+          INTERNAL: [],
+          EXTERNAL: [],
         },
       };
+    }
 
-    const getAccumulatedRewardOf1d = (
-      cached: PositionRewardForTooltip,
-      current: { accumulatedRewardOf1d: number | null },
-    ) => {
+    const getAccumulatedRewardOf1d = (cached: PositionRewardForTooltip, current: { accuReward1D: string | null }) => {
       if (cached.accumulatedRewardOf1d === null) {
-        if (current.accumulatedRewardOf1d === null) {
+        if (current.accuReward1D === null) {
           return null;
         }
-        return current.accumulatedRewardOf1d;
+        return Number(current.accuReward1D);
       }
-      if (current.accumulatedRewardOf1d === null) {
+      if (current.accuReward1D === null) {
         return cached.accumulatedRewardOf1d;
       }
-      return cached.accumulatedRewardOf1d + current.accumulatedRewardOf1d;
+      return cached.accumulatedRewardOf1d + Number(current.accuReward1D);
     };
 
-    // Claimable rewards
-    positions
-      .flatMap(position => position.reward)
-      .map(reward => ({
-        token: reward.rewardToken,
-        rewardType: reward.rewardType,
-        balance: reward.totalAmount || 0,
-        balanceUSD:
-          makeDisplayTokenAmount(
-            reward.rewardToken,
-            Number(reward.totalAmount) * Number(tokenPrices[reward.rewardToken.priceID]?.usd),
-          ) || 0,
-        amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
-        usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
-        accumulatedRewardOf1d: reward.accuReward1D ? Number(reward.accuReward1D) : null,
-        claimableUsdValue: reward.claimableUsd ? Number(reward.claimableUsd) : null,
-      }))
-      .forEach(rewardInfo => {
-        const existReward = claimableMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
-        const tokenPrice = tokenPrices[rewardInfo.token.priceID].usd
-          ? Number(tokenPrices[rewardInfo.token.priceID].usd)
-          : null;
-        if (existReward) {
-          const accumulatedRewardOf1d = getAccumulatedRewardOf1d(existReward, rewardInfo);
-          const accumulatedRewardOf1dUsd =
-            accumulatedRewardOf1d !== null && tokenPrice !== null ? accumulatedRewardOf1d * tokenPrice : null;
+    const processClaimableRewards = () => {
+      positions
+        .flatMap(position => position.reward)
+        .forEach(reward => {
+          if (!claimableMap[reward.rewardType]) {
+            console.warn(`Invalid rewardType: ${reward.rewardType}`);
+            return;
+          }
 
-          claimableMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
-            ...existReward,
-            usd: (() => {
-              if (existReward.usd === null && rewardInfo.usd === null) {
-                return null;
-              }
+          const tokenPrice = tokenPrices[reward.rewardToken.priceID]?.usd
+            ? Number(tokenPrices[reward.rewardToken.priceID].usd)
+            : null;
 
-              if (existReward.usd === null) {
-                return rewardInfo.usd;
-              }
-
-              if (rewardInfo.usd === null) {
-                return existReward.usd;
-              }
-
-              return existReward.usd + rewardInfo.usd;
-            })(),
-            amount: Number(existReward.amount || 0) + Number(rewardInfo.amount),
-            accumulatedRewardOf1d: accumulatedRewardOf1d,
-            accumulatedRewardOf1dUsd: accumulatedRewardOf1dUsd,
-          };
-        } else {
-          claimableMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
-            ...rewardInfo,
+          const rewardInfo: PositionRewardForTooltip = {
+            token: reward.rewardToken,
+            rewardType: reward.rewardType as RewardType,
+            amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
+            usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
+            accumulatedRewardOf1d: reward.accuReward1D ? Number(reward.accuReward1D) : null,
             accumulatedRewardOf1dUsd:
-              rewardInfo.accumulatedRewardOf1d !== null && tokenPrice !== null
-                ? tokenPrice * rewardInfo.accumulatedRewardOf1d
-                : null,
+              reward.accuReward1D && tokenPrice ? Number(reward.accuReward1D) * tokenPrice : null,
           };
-        }
-      });
 
-    // Claimed rewards
-    positions
-      .flatMap(position => position.claimedRewards)
-      .forEach(claimed => {
-        const tokenPrice = tokenPrices[claimed.rewardToken.priceID]?.usd
-          ? Number(tokenPrices[claimed.rewardToken.priceID].usd)
-          : null;
+          const existingReward = claimableMap[rewardInfo.rewardType]?.[reward.rewardToken.priceID];
 
-        const claimedAmount = Number(claimed.claimedAmount);
-        const claimedUsd = tokenPrice ? claimedAmount * tokenPrice : null;
+          if (existingReward) {
+            const accumulatedRewardOf1d = getAccumulatedRewardOf1d(existingReward, reward);
+            const accumulatedRewardOf1dUsd =
+              accumulatedRewardOf1d !== null && tokenPrice !== null ? accumulatedRewardOf1d * tokenPrice : null;
 
-        const existingClaimed = claimedMap[claimed.rewardType]?.[claimed.rewardToken.priceID];
+            claimableMap[rewardInfo.rewardType][reward.rewardToken.priceID] = {
+              ...existingReward,
+              amount: (existingReward.amount || 0) + (rewardInfo.amount || 0),
+              usd:
+                existingReward.usd !== null && rewardInfo.usd !== null
+                  ? existingReward.usd + rewardInfo.usd
+                  : existingReward.usd || rewardInfo.usd,
+              accumulatedRewardOf1d,
+              accumulatedRewardOf1dUsd,
+            };
+          } else {
+            claimableMap[rewardInfo.rewardType][reward.rewardToken.priceID] = rewardInfo;
+          }
+        });
+    };
 
-        if (existingClaimed) {
-          claimedMap[claimed.rewardType][claimed.rewardToken.priceID] = {
-            ...existingClaimed,
-            amount: (existingClaimed.amount || 0) + claimedAmount,
-            usd: existingClaimed.usd !== null && claimedUsd !== null ? existingClaimed.usd + claimedUsd : claimedUsd,
-            token: claimed.rewardToken,
-            rewardType: claimed.rewardType,
-            accumulatedRewardOf1d: null,
-            accumulatedRewardOf1dUsd: null,
-          };
-        } else {
-          claimedMap[claimed.rewardType][claimed.rewardToken.priceID] = {
+    const processClaimedRewards = () => {
+      positions
+        .flatMap(position => position.claimedRewards)
+        .forEach(claimed => {
+          if (!claimedMap[claimed.rewardType]) {
+            console.warn(`Invalid rewardType: ${claimed.rewardType}`);
+            return;
+          }
+
+          const tokenPrice = tokenPrices[claimed.rewardToken.priceID]?.usd
+            ? Number(tokenPrices[claimed.rewardToken.priceID].usd)
+            : null;
+
+          const claimedAmount = Number(claimed.claimedAmount);
+          const claimedUsd = tokenPrice ? claimedAmount * tokenPrice : null;
+
+          const rewardInfo: PositionRewardForTooltip = {
             token: claimed.rewardToken,
             rewardType: claimed.rewardType,
             amount: claimedAmount,
@@ -206,19 +182,37 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
             accumulatedRewardOf1d: null,
             accumulatedRewardOf1dUsd: null,
           };
-        }
-      });
+
+          const existingReward = claimedMap[rewardInfo.rewardType]?.[claimed.rewardToken.priceID];
+
+          if (existingReward) {
+            claimedMap[rewardInfo.rewardType][claimed.rewardToken.priceID] = {
+              ...existingReward,
+              amount: (existingReward.amount || 0) + claimedAmount,
+              usd:
+                existingReward.usd !== null && claimedUsd !== null
+                  ? existingReward.usd + claimedUsd
+                  : existingReward.usd || claimedUsd,
+            };
+          } else {
+            claimedMap[rewardInfo.rewardType][claimed.rewardToken.priceID] = rewardInfo;
+          }
+        });
+    };
+
+    processClaimableRewards();
+    processClaimedRewards();
 
     return {
       claimedRewardInfo: {
-        SWAP_FEE: Object.values(claimedMap["SWAP_FEE"]),
-        INTERNAL: Object.values(claimedMap["INTERNAL"]),
-        EXTERNAL: Object.values(claimedMap["EXTERNAL"]),
+        SWAP_FEE: Object.values(claimedMap.SWAP_FEE),
+        INTERNAL: Object.values(claimedMap.INTERNAL),
+        EXTERNAL: Object.values(claimedMap.EXTERNAL),
       },
       claimableRewardInfo: {
-        SWAP_FEE: Object.values(claimableMap["SWAP_FEE"]),
-        INTERNAL: Object.values(claimableMap["INTERNAL"]),
-        EXTERNAL: Object.values(claimableMap["EXTERNAL"]),
+        SWAP_FEE: Object.values(claimableMap.SWAP_FEE),
+        INTERNAL: Object.values(claimableMap.INTERNAL),
+        EXTERNAL: Object.values(claimableMap.EXTERNAL),
       },
     };
   }, [positions, tokenPrices]);
