@@ -94,14 +94,13 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   const popularTokenKey = useMemo(() => popularTokens.map(token => token.path).join(","), [popularTokens]);
 
   const recentKey = useMemo(() => recents.map(token => token.path).join(","), [recents]);
-
   const onClickItem = (item: Token) => {
     const current = recents.length > 0 ? [item, recents[0]] : [item];
 
     setRecentsData(
       JSON.stringify(
         current
-          .filter(recentToken => tokens.some(token => token.path === recentToken.path))
+          .filter(recentToken => tokens.some(token => token.token.path === recentToken.token.path))
           .filter((_item, index) => {
             const _value = JSON.stringify(_item);
             return (

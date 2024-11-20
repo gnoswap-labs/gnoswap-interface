@@ -49,6 +49,48 @@ const HeaderContainer: React.FC = () => {
   const { data: tokenPrices = {} } = useGetAllTokenPrices({
     enabled: !!searchMenuToggle,
   });
+
+  const tokens = useMemo(() => {
+    return listTokens.map((item: TokenModel) => {
+      const temp: TokenPriceModel = tokenPrices[item.path] ?? {};
+      const isGnot = item.path === "gnot";
+      const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
+      const transferData = isGnot ? tempWuGnot : temp;
+      const dataToday = checkPositivePrice(
+        transferData.pricesBefore?.latestPrice,
+        transferData.pricesBefore?.priceToday,
+      );
+      const price = formatPrice(transferData.usd);
+
+      return {
+        path: "",
+        searchType: "",
+        token: {
+          path: item.path,
+          name: item.name,
+          symbol: item.symbol,
+          logoURI: item.logoURI,
+        },
+        price: price,
+        priceOf1d: {
+          status: dataToday.status,
+          value: dataToday.percentDisplay !== "-" ? dataToday.percentDisplay.replace(/[+-]/g, "") : "0.00%",
+        },
+        tokenB: {
+          path: "",
+          name: "",
+          symbol: "",
+          logoURI: "",
+        },
+        fee: "",
+        isLiquid: false,
+        volume: transferData.volume ?? "0",
+        liquidity: 0,
+        isNative: isNativeToken(item),
+      };
+    });
+  }, [listTokens, tokenPrices, wugnotPath]);
+
   const recents = useMemo(() => {
     const storageData = parseJson(recentsData ? recentsData : "[]");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -236,7 +278,7 @@ const HeaderContainer: React.FC = () => {
       onSideMenuToggle={onSideMenuToggle}
       searchMenuToggle={searchMenuToggle}
       onSearchMenuToggle={onSearchMenuToggle}
-      tokens={[]}
+      tokens={tokens}
       isFetched={isFetched}
       error={error}
       search={search}
