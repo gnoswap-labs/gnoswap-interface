@@ -53,36 +53,44 @@ const PoolDetail: React.FC = () => {
     return false;
   }, [data?.incentiveType, positions]);
 
+  const handleScroll = () => {
+    if (hash === "staking" && isStakable) {
+      const element = document.getElementById("staking");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
+    }
+
+    const position = positions.find(item => item.id.toString() === hash);
+    if (position) {
+      const element = document.getElementById(hash as string);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    } else {
+      const element = document.getElementById("liquidity-wrapper");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
+
   useEffect(() => {
     if (positions.length === 0) {
       window.scrollTo({ top: 0 });
+      return;
     }
+
     if (!loading && isFetchedPosition && hash && !jumpFlagRef.current) {
       jumpFlagRef.current = true;
-      setTimeout(() => {
-        if (hash === "staking" && isStakable) {
-          const element = document.getElementById("staking");
-          if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-          return;
-        }
-
-        const position = positions.find(item => item.id.toString() === hash);
-        if (position) {
-          const element = document.getElementById(hash);
-          if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        } else {
-          const element = document.getElementById("liquidity-wrapper");
-          if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }
-      }, 100);
+      setTimeout(handleScroll, 100);
     }
-  }, [loading, isFetchedPosition, hash, jumpFlagRef.current]);
+  }, [loading, isFetchedPosition, hash, positions.length]);
+
+  useEffect(() => {
+    jumpFlagRef.current = false;
+  }, [hash]);
 
   return (
     <PoolLayout
