@@ -53,92 +53,48 @@ const PoolDetail: React.FC = () => {
     return false;
   }, [data?.incentiveType, positions]);
 
+  const isElementInDOM = (element: HTMLElement | null): boolean => {
+    return !!(element && document.body.contains(element));
+  };
+
+  const handleScroll = () => {
+    if (hash === "staking" && isStakable) {
+      const element = document.getElementById("staking");
+      if (element && isElementInDOM(element)) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
+    }
+
+    const position = positions.find(item => item.id.toString() === hash);
+    if (position) {
+      const element = document.getElementById(hash as string);
+      if (element && isElementInDOM(element)) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    } else {
+      const element = document.getElementById("liquidity-wrapper");
+      if (element && isElementInDOM(element)) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
+
   useEffect(() => {
-    if (hash === "staking" && !loading && isFetchedPosition && isStakable) {
-      const positionContainerElement = document.getElementById("staking");
-      const topPosition = positionContainerElement?.offsetTop;
-      if (!topPosition) {
-        return;
-      }
-      window.scrollTo({
-        top: topPosition,
-      });
+    if (positions.length === 0) {
+      window.scrollTo({ top: 0 });
       return;
     }
 
-    if (address && isFetchedPosition && !loading && poolPath && !jumpFlagRef.current) {
-      if (hash && hash !== "staking") {
-        const position = positions.find(item => item.id.toString() === hash);
-        const isClosedPosition = !position || position?.closed;
-
-        jumpFlagRef.current = true;
-        setTimeout(() => {
-          if (isClosedPosition) {
-            const positionContainerElement = document.getElementById("liquidity-wrapper");
-            const topPosition = positionContainerElement?.offsetTop;
-            if (!topPosition) {
-              return;
-            }
-            window.scrollTo({
-              top: topPosition,
-            });
-          }
-
-          const positionContainerElement = document.getElementById(`${hash}`);
-          const topPosition = positionContainerElement?.offsetTop;
-          if (!topPosition) {
-            return;
-          }
-          window.scrollTo({
-            top: topPosition,
-          });
-        });
-        return;
-      }
-
+    if (!loading && isFetchedPosition && hash && !jumpFlagRef.current) {
       jumpFlagRef.current = true;
-      setTimeout(() => {
-        const positionContainerElement = document.getElementById("liquidity-wrapper");
-        const topPosition = positionContainerElement?.offsetTop;
-        if (!topPosition) {
-          return;
-        }
-        window.scrollTo({
-          top: topPosition,
-        });
-      });
-      return;
+      setTimeout(handleScroll, 100);
     }
+  }, [loading, isFetchedPosition, hash, positions.length]);
 
-    if (hash && hash !== "staking" && isFetchedPosition && !loading && poolPath && !jumpFlagRef.current) {
-      const position = positions.find(item => item.id.toString() === hash);
-      const isClosedPosition = !position || position?.closed;
-
-      jumpFlagRef.current = true;
-      setTimeout(() => {
-        if (isClosedPosition) {
-          const positionContainerElement = document.getElementById("liquidity-wrapper");
-          const topPosition = positionContainerElement?.offsetTop;
-          if (!topPosition) {
-            return;
-          }
-          window.scrollTo({
-            top: topPosition,
-          });
-        }
-
-        const positionContainerElement = document.getElementById(`${hash}`);
-        const topPosition = positionContainerElement?.offsetTop;
-        if (!topPosition) {
-          return;
-        }
-        window.scrollTo({
-          top: topPosition,
-        });
-      });
-      return;
-    }
-  }, [isFetchedPosition, hash, address, loading, isStakable, poolPath, positions, router]);
+  useEffect(() => {
+    jumpFlagRef.current = false;
+  }, [hash]);
 
   return (
     <PoolLayout
