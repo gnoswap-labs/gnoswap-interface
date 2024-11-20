@@ -53,10 +53,14 @@ const PoolDetail: React.FC = () => {
     return false;
   }, [data?.incentiveType, positions]);
 
+  const isElementInDOM = (element: HTMLElement | null): boolean => {
+    return !!(element && document.body.contains(element));
+  };
+
   const handleScroll = () => {
     if (hash === "staking" && isStakable) {
       const element = document.getElementById("staking");
-      if (element) {
+      if (element && isElementInDOM(element)) {
         element.scrollIntoView({ behavior: "smooth", block: "start" });
       }
       return;
@@ -65,12 +69,12 @@ const PoolDetail: React.FC = () => {
     const position = positions.find(item => item.id.toString() === hash);
     if (position) {
       const element = document.getElementById(hash as string);
-      if (element) {
+      if (element && isElementInDOM(element)) {
         element.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     } else {
       const element = document.getElementById("liquidity-wrapper");
-      if (element) {
+      if (element && isElementInDOM(element)) {
         element.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }
