@@ -39,6 +39,8 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             type="checkbox"
             checked={checkedAll}
             onChange={e => onCheckedAll(e.target.checked)}
+            autoComplete={"off"}
+            spellCheck={"false"}
           />
           <label htmlFor="checkbox-all" />
           <span className="custom-label">

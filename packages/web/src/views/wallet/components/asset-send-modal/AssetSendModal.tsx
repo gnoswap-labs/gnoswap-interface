@@ -194,7 +194,14 @@ const AssetSendModal: React.FC<Props> = ({
               <p className="label">{t("Wallet:assetSendModal.selectToken.label")}</p>
               <div className="withdraw">
                 <div className="amount">
-                  <input className="amount-text" value={amount} onChange={onChangeAmount} placeholder="0" />
+                  <input
+                    className="amount-text"
+                    value={amount}
+                    onChange={onChangeAmount}
+                    placeholder="0"
+                    autoComplete={"off"}
+                    spellCheck={"false"}
+                  />
                   <div className="token">
                     <SelectPairButton token={withdrawInfo ?? null} changeToken={changeToken} callback={callback} />
                   </div>
@@ -250,6 +257,8 @@ const AssetSendModal: React.FC<Props> = ({
                     value={address}
                     onChange={onChangeAddress}
                     placeholder={t("Wallet:assetSendModal.enterAddr.input")}
+                    autoComplete={"off"}
+                    spellCheck={"false"}
                   />
                 </div>
               </div>

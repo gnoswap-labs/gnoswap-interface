@@ -136,6 +136,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
             value={tokenAAmount}
             onChange={onChangeTokenAAmount}
             placeholder="0"
+            autoComplete={"off"}
+            spellCheck={"false"}
           />
           <div className="token-selector">
             <SelectPairButton token={tokenA} changeToken={changeTokenA} />
@@ -166,6 +168,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
             value={tokenBAmount}
             onChange={onChangeTokenBAmount}
             placeholder="0"
+            autoComplete={"off"}
+            spellCheck={"false"}
           />
           <div className="token-selector">
             <SelectPairButton token={tokenB} changeToken={changeTokenB} />

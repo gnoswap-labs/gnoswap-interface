@@ -106,6 +106,8 @@ const StartingPrice: React.FC<StartingPriceProps> = ({
         onBlur={updateStartingPrice}
         onFocus={() => setTempPrice("")}
         placeholder={t("AddPosition:createPool.placeholder")}
+        autoComplete={"off"}
+        spellCheck={"false"}
       />
     </StartingPriceWrapper>
   );

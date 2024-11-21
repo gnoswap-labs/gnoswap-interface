@@ -38,6 +38,8 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
             type="checkbox"
             checked={checkedAll}
             onChange={e => onCheckedAll(e.target.checked)}
+            autoComplete={"off"}
+            spellCheck={"false"}
           />
           <label htmlFor="checkbox-all" className="select-all-label" />
           <span className="custom-label">

@@ -87,7 +87,14 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
       <div className="inputs">
         <div className="from">
           <div className="amount">
-            <input className="amount-text" value={fromAmount} onChange={onChangeFromAmount} placeholder="0" />
+            <input
+              className="amount-text"
+              value={fromAmount}
+              onChange={onChangeFromAmount}
+              placeholder="0"
+              autoComplete={"off"}
+              spellCheck={"false"}
+            />
             <div className="token">
               <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal isHiddenArrow />
             </div>
@@ -101,7 +108,14 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
         </div>
         <div className="to">
           <div className="amount">
-            <input className="amount-text" value={toAmount} onChange={onChangeToAmount} placeholder="0" />
+            <input
+              className="amount-text"
+              value={toAmount}
+              onChange={onChangeToAmount}
+              placeholder="0"
+              autoComplete={"off"}
+              spellCheck={"false"}
+            />
             <div className="token">
               <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal isHiddenArrow />
             </div>

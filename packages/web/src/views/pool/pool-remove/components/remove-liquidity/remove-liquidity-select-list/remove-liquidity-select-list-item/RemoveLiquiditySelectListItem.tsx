@@ -104,6 +104,8 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
         disabled={disabled}
         checked={checked}
         onChange={e => onCheckedItem(e.target.checked, position.id)}
+        autoComplete={"off"}
+        spellCheck={"false"}
       />
       <label htmlFor={`checkbox-item-${position.id}`} />
     </>

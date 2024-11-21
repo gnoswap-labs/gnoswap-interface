@@ -329,6 +329,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
                 value={selfAddress}
                 onChange={e => changeSelfDelegateeAddress(e.target.value)}
                 placeholder={t("Governance:myDel.delModal.selectDel.self.placeholder")}
+                autoComplete={"off"}
+                spellCheck={"false"}
               />
             </div>
           </div>

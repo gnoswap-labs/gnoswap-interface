@@ -249,6 +249,8 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
               value={displayValue}
               onChange={onChangeValue}
               onBlur={onBlur}
+              autoComplete={"off"}
+              spellCheck={"false"}
             />
             <div style={{ fontSize: `${fontSize}px` }} className="fake-input">
               {ratioDisplay}
