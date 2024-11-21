@@ -1,5 +1,7 @@
-import { CommonState } from "@states/index";
 import { useAtomValue } from "jotai";
+
+import { CommonState } from "@states/index";
+import { GNOSCAN_OFFICIAL_CHAIN_IDS } from "@constants/environment.constant";
 
 export enum GnoscanDataType {
   Blocks = "/blocks",
@@ -19,7 +21,7 @@ export const useGnoscanUrl = () => {
     const chainId = network.chainId || "";
     const baseUrl = network.scannerUrl || "";
     let chainParams = "";
-    if (["portal-loop", "test4"].includes(chainId)) {
+    if (GNOSCAN_OFFICIAL_CHAIN_IDS.includes(chainId)) {
       chainParams = `chainId=${chainId}`;
     } else {
       chainParams = "type=custom";
