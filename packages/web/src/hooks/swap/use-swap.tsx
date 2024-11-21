@@ -50,7 +50,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       tokenAmount: direction === "EXACT_IN" ? swapAmount : swapAmount ? swapAmount * exactOutPadding : swapAmount,
     },
     {
-      enabled: !!swapAmount && swapAmount > 0 && !!tokenA && !!tokenA.path && !!tokenB && !!tokenB.path,
+      enabled: !!swapAmount && swapAmount > 0 && !!tokenA && !!tokenA.path && !!tokenB && !!tokenB.path && !isSameToken,
     },
   );
 
