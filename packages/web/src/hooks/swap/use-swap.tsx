@@ -216,7 +216,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
   }, [estimatedRoutes, swapAmount, estimatedLiquidityMax]);
 
-  console.log(estimatedRoutes, swapAmount, "test");
   return {
     isSameToken,
     tokenAmountLimit,
