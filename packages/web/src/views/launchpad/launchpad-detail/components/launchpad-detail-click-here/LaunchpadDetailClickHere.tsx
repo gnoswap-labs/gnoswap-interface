@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
+
 import IconArrowRight from "@components/common/icons/IconArrowRight";
 import { DetailClickHereWrapper, LinkButton } from "./LaunchpadDetailClickHere.styles";
 
@@ -12,7 +14,7 @@ const LaunchpadDetailClickHere = () => {
     <DetailClickHereWrapper>
       <LinkButton>
         <span>{t("Launchpad:clickHere.text")}</span>
-        <Link href="/swap?to=gno.land/r/gnoswap/v2/gns">
+        <Link href={`/swap?to=${GNS_TOKEN_PATH}`}>
           {t("Launchpad:clickHere.button")} <IconArrowRight />
         </Link>
       </LinkButton>
