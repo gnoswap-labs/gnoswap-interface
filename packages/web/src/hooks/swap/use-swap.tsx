@@ -1,12 +1,14 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import BigNumber from "bignumber.js";
+
 import { SwapDirectionType } from "@common/values";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import BigNumber from "bignumber.js";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGetRoutes } from "@query/router";
+import useDebounce from "@hooks/common/use-debounce";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -20,6 +22,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
+  const debouncedSwapAmount = useDebounce(swapAmount, 500);
   const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
 
   const shouldFetchData = useCallback(
@@ -30,7 +33,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     },
     [estimatedLiquidityMax],
   );
-  const shouldFetch = shouldFetchData(swapAmount);
+  const shouldFetch = shouldFetchData(debouncedSwapAmount);
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
@@ -58,13 +61,18 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       inputToken: tokenA,
       outputToken: tokenB,
       exactType: direction,
-      tokenAmount: direction === "EXACT_IN" ? swapAmount : swapAmount ? swapAmount * exactOutPadding : swapAmount,
+      tokenAmount:
+        direction === "EXACT_IN"
+          ? debouncedSwapAmount
+          : debouncedSwapAmount
+          ? debouncedSwapAmount * exactOutPadding
+          : debouncedSwapAmount,
     },
     {
       enabled:
         shouldFetch &&
-        !!swapAmount &&
-        swapAmount > 0 &&
+        !!debouncedSwapAmount &&
+        debouncedSwapAmount > 0 &&
         !!tokenA &&
         !!tokenA.path &&
         !!tokenB &&
@@ -74,7 +82,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   );
 
   const swapState: "NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS" = useMemo(() => {
-    if (!selectedTokenPair || !swapAmount) {
+    if (!selectedTokenPair || !debouncedSwapAmount) {
       return "NONE";
     }
 
@@ -91,22 +99,22 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
 
     return "SUCCESS";
-  }, [swapAmount, error, estimatedSwapResult?.amount, isEstimatedSwapLoading, isSameToken, selectedTokenPair]);
+  }, [debouncedSwapAmount, error, estimatedSwapResult?.amount, isEstimatedSwapLoading, isSameToken, selectedTokenPair]);
 
   const estimatedRoutes: EstimatedRoute[] | null = useMemo(() => {
     if (swapState === "LOADING") {
       return null;
     }
 
-    if (swapState !== "SUCCESS" || !estimatedSwapResult || !swapAmount) {
+    if (swapState !== "SUCCESS" || !estimatedSwapResult || !debouncedSwapAmount) {
       return [];
     }
 
     return estimatedSwapResult.estimatedRoutes;
-  }, [swapState, estimatedSwapResult, swapAmount]);
+  }, [swapState, estimatedSwapResult, debouncedSwapAmount]);
 
   const estimatedAmount: string | null = useMemo(() => {
-    if (!swapAmount || error) {
+    if (!debouncedSwapAmount || error) {
       return null;
     }
 
@@ -115,7 +123,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
 
     return estimatedSwapResult.amount;
-  }, [swapAmount, error, swapState, estimatedSwapResult]);
+  }, [debouncedSwapAmount, error, swapState, estimatedSwapResult]);
 
   const tokenAmountLimit = useMemo(() => {
     if (estimatedAmount && !Number.isNaN(slippage)) {
@@ -207,14 +215,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
     if (estimatedRoutes.length === 0) {
       if (!estimatedLiquidityMax) {
-        setEstimatedLiquidityMax(swapAmount || null);
-      } else if (swapAmount && swapAmount < estimatedLiquidityMax) {
-        setEstimatedLiquidityMax(swapAmount);
+        setEstimatedLiquidityMax(debouncedSwapAmount || null);
+      } else if (debouncedSwapAmount && debouncedSwapAmount < estimatedLiquidityMax) {
+        setEstimatedLiquidityMax(debouncedSwapAmount);
       }
     } else {
       setEstimatedLiquidityMax(null);
     }
-  }, [estimatedRoutes, swapAmount, estimatedLiquidityMax]);
+  }, [estimatedRoutes, debouncedSwapAmount, estimatedLiquidityMax]);
 
   return {
     isSameToken,
