@@ -256,6 +256,10 @@ export const useSwapHandler = () => {
       return BigNumber(0);
     }
 
+    if (!Number(tokenAAmount) || !Number(tokenBAmount)) {
+      return BigNumber(0);
+    }
+
     const hasUSDPrice =
       !!tokenPrices[checkGnotPath(tokenA.path)]?.usd && !!tokenPrices[checkGnotPath(tokenB.path)]?.usd;
 
