@@ -60,9 +60,7 @@ const OneClickStakingModal: React.FC<Props> = ({
   }, [close]);
 
   const onClickConfirm = useCallback(() => {
-    if (!feeInfo.errorMsg) {
-      confirm();
-    }
+    confirm();
   }, [confirm, feeInfo.errorMsg]);
 
   return (
