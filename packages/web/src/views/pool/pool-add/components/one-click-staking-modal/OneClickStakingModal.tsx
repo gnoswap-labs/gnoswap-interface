@@ -60,9 +60,7 @@ const OneClickStakingModal: React.FC<Props> = ({
   }, [close]);
 
   const onClickConfirm = useCallback(() => {
-    if (!feeInfo.errorMsg) {
-      confirm();
-    }
+    confirm();
   }, [confirm, feeInfo.errorMsg]);
 
   return (
@@ -91,7 +89,6 @@ const OneClickStakingModal: React.FC<Props> = ({
               text={t("AddPosition:confirmAddModal.title_oneClick", {
                 context: "oneClick",
               })}
-              disabled={!!feeInfo.errorMsg}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
