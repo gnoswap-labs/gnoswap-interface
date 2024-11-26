@@ -91,7 +91,6 @@ const OneClickStakingModal: React.FC<Props> = ({
               text={t("AddPosition:confirmAddModal.title_oneClick", {
                 context: "oneClick",
               })}
-              disabled={!!feeInfo.errorMsg}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
