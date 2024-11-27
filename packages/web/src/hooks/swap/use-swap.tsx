@@ -107,6 +107,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   }, [swapState, estimatedSwapResult, swapAmount]);
 
   const estimatedAmount: string | null = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return null;
+    }
+
     if (!swapAmount || error) {
       return null;
     }
@@ -115,7 +119,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return null;
     }
 
-    return estimatedSwapResult.amount;
+    const amount = estimatedSwapResult.amount;
+    return direction === "EXACT_IN"
+      ? makeDisplayTokenAmount(tokenB, amount)?.toString() || null
+      : makeDisplayTokenAmount(tokenA, amount)?.toString() || null;
   }, [swapAmount, error, swapState, estimatedSwapResult]);
 
   const tokenAmountLimit = useMemo(() => {
@@ -227,6 +234,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     wrap,
     unwrap,
     updateSwapAmount,
+    isEstimatedSwapLoading,
     resetSwapAmount: () => setSwapAmount(0),
   };
 };
