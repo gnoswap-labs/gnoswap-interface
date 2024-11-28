@@ -30,7 +30,14 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
   return (
     <div css={wrapper}>
       <div className="checked-all-wrap">
-        <input id="checkbox-all" type="checkbox" checked={checkedAll} onChange={e => onCheckedAll(e.target.checked)} />
+        <input
+          id="checkbox-all"
+          type="checkbox"
+          checked={checkedAll}
+          onChange={e => onCheckedAll(e.target.checked)}
+          autoComplete={"off"}
+          spellCheck={"false"}
+        />
         <label htmlFor="checkbox-all" className="select-all-label" />
         <span className="custom-label">
           {t("common:select", {

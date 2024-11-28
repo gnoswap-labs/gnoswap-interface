@@ -132,6 +132,8 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({ slippage, changeSli
                 placeholder="0"
                 onKeyDown={handleEnterKey}
                 ref={inputRef}
+                autoComplete={"off"}
+                spellCheck={"false"}
               />
               <span>%</span>
             </div>

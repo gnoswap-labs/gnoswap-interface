@@ -156,6 +156,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               value={dataTokenInfo.tokenAAmount}
               onChange={onChangeTokenAAmount}
               placeholder="0"
+              autoComplete={"off"}
+              spellCheck={"false"}
             />
             <div className="token">
               <SelectPairButton token={tokenA} changeToken={changeTokenA} />
@@ -180,6 +182,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               value={dataTokenInfo.tokenBAmount}
               onChange={onChangeTokenBAmount}
               placeholder="0"
+              autoComplete={"off"}
+              spellCheck={"false"}
             />
             <div className="token">
               <SelectPairButton token={tokenB} changeToken={changeTokenB} />

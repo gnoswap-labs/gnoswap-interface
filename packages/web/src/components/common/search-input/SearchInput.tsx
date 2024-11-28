@@ -27,7 +27,13 @@ const SearchInput: React.FC<SearchInputProps> = ({
       height={height}
       className={cx(className, { "empty-status": value === "" })}
     >
-      <InputStyle placeholder={placeholder || t("common:search")} value={value} onChange={onChange} />
+      <InputStyle
+        placeholder={placeholder || t("common:search")}
+        value={value}
+        onChange={onChange}
+        autoComplete={"off"}
+        spellCheck={"false"}
+      />
       <div className="icon-wrapper">
         <IconSearch className="search-icon" />
       </div>

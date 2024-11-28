@@ -197,6 +197,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
             placeholder="0"
             value={participateAmount}
             onChange={onChangeParticipateAmount}
+            autoComplete={"off"}
+            spellCheck={"false"}
           />
           <div className="participate-token-selector">
             <SelectPairButton token={DEFAULT_DEPOSIT_TOKEN} isHiddenArrow disabled />

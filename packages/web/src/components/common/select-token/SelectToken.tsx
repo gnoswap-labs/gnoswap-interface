@@ -169,6 +169,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
             placeholder={t("common:selectPairBtn.modal.searchInputPlaceholder")}
             value={keyword}
             onChange={onChangeSearchKeyword}
+            autoComplete={"off"}
+            spellCheck={"false"}
           />
           <IconSearch className="search-icon" />
         </div>

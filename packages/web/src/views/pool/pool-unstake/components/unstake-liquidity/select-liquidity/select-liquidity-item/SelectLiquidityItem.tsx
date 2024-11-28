@@ -90,6 +90,8 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
           checked={checked}
           disabled={disabled}
           onChange={e => onCheckedItem(e.target.checked, position.id)}
+          autoComplete={"off"}
+          spellCheck={"false"}
         />
         <label htmlFor={`checkbox-item-${position.id}`} />
         <Tooltip placement="top" FloatingContent={<TooltipContent position={position} />}>
