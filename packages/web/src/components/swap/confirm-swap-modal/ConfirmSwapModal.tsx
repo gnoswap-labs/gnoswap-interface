@@ -16,6 +16,7 @@ import { swapDirectionToGuaranteedType, SwapSummaryInfo } from "@models/swap/swa
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { toNumberFormat } from "@utils/number-utils";
+import { formatApproximateUSD } from "@utils/string-utils";
 
 import { convertSwapRate } from "../swap-card-content-detail/SwapCardContentDetail";
 
@@ -58,7 +59,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
     return (
       <>
-        1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;
+        1&nbsp;{tokenA.symbol}&nbsp;≈&nbsp;
         <ExchangeRate value={convertSwapRate(swapRate)} />
         &nbsp;{tokenB.symbol}
       </>
@@ -154,7 +155,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                 </div>
               </div>
               <div className="amount-info">
-                <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
+                <span className="price-text">{formatApproximateUSD(swapTokenInfo.tokenAUSDStr)}</span>
               </div>
               <div className="arrow">
                 <div className="shape">
@@ -177,7 +178,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                 </div>
               </div>
               <div className="amount-info">
-                <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
+                <span className="price-text">{formatApproximateUSD(swapTokenInfo.tokenBUSDStr)}</span>
                 {showPriceImpact && (
                   <PriceImpactWrapper priceImpact={priceImpactStatus}>
                     {priceImpactStatus === "HIGH" && <IconTriangleWarningOutlined stroke={theme.color.red01} />}

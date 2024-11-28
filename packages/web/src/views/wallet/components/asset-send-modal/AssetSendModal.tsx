@@ -20,7 +20,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
-import { capitalize } from "@utils/string-utils";
+import { capitalize, formatApproximateUSD } from "@utils/string-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
 import {
@@ -207,7 +207,7 @@ const AssetSendModal: React.FC<Props> = ({
                   </div>
                 </div>
                 <div className="info">
-                  <span className="price-text">{estimatePrice}</span>
+                  <span className="price-text">{formatApproximateUSD(estimatePrice)}</span>
                   <span className="balance-text" onClick={handleEnterAllBalanceAvailable}>{`${t(
                     "common:action.balance",
                   )}: ${

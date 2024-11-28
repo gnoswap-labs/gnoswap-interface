@@ -5,6 +5,7 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconAdd from "@components/common/icons/IconAdd";
 import TokenAmount from "@components/common/token-amount/TokenAmount";
 import { TokenModel } from "@models/token/token-model";
+import { formatApproximateUSD } from "@utils/string-utils";
 
 import { PoolAddConfirmAmountInfoWrapper, PoolAddConfirmFeeInfoSection } from "./PoolAddConfirmAmountInfo.styles";
 
@@ -28,8 +29,8 @@ const PoolAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({ tok
   return (
     <PoolAddConfirmAmountInfoWrapper>
       <div className="pair-amount">
-        <TokenAmount token={tokenA.info} amount={tokenA.amount} usdPrice={tokenA.usdPrice} />
-        <TokenAmount token={tokenB.info} amount={tokenB.amount} usdPrice={tokenB.usdPrice} />
+        <TokenAmount token={tokenA.info} amount={tokenA.amount} usdPrice={formatApproximateUSD(tokenA.usdPrice)} />
+        <TokenAmount token={tokenB.info} amount={tokenB.amount} usdPrice={formatApproximateUSD(tokenB.usdPrice)} />
         <div className="icon-wrapper">
           <IconAdd className="icon-add" />
         </div>

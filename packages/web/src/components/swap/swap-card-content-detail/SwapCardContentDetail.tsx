@@ -51,7 +51,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
     if (swapRateAction === "ATOB") {
       return (
         <>
-          1 {tokenA.symbol} =&nbsp;
+          1 {tokenA.symbol} ≈&nbsp;
           <ExchangeRate value={convertSwapRate(swapRate)} />
           &nbsp;{tokenB.symbol}
         </>
@@ -59,7 +59,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
     } else {
       return (
         <>
-          1 {tokenB.symbol} =&nbsp;
+          1 {tokenB.symbol} ≈&nbsp;
           <ExchangeRate value={convertSwapRate(swapRate)} />
           &nbsp;{tokenA.symbol}
         </>
