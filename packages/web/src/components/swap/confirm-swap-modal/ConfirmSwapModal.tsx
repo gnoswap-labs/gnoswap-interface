@@ -59,7 +59,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
     return (
       <>
-        1&nbsp;{tokenA.symbol}&nbsp;≈&nbsp;
+        1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;
         <ExchangeRate value={convertSwapRate(swapRate)} />
         &nbsp;{tokenB.symbol}
       </>
@@ -70,7 +70,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     const swapRateStr = formatOtherPrice(swapSummaryInfo.swapRateUSD, {
       isKMB: false,
     });
-    return `(${swapRateStr})`;
+    return `(≈ ${swapRateStr})`;
   }, [swapSummaryInfo.swapRateUSD]);
 
   const priceImpactStr = useMemo(() => {
