@@ -25,6 +25,8 @@ const FormInput: FC<Props> = React.forwardRef<HTMLInputElement, Props>((props, r
         ref={ref}
         onBlur={props?.onBlur}
         onWheel={event => (event.target as HTMLElement).blur()}
+        autoComplete={"off"}
+        spellCheck={"false"}
       />
       {errorText && <div className="error-text">{errorText}</div>}
     </FormInputWrapper>

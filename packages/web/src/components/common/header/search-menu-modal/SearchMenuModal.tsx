@@ -211,7 +211,13 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
         <div ref={menuRef}>
           <SearchContainer>
             <SearchWrapper>
-              <InputStyle placeholder={placeholder} value={keyword} onChange={search} />
+              <InputStyle
+                placeholder={placeholder}
+                value={keyword}
+                onChange={search}
+                autoComplete={"off"}
+                spellCheck={"false"}
+              />
               <IconSearch className="search-icon" />
             </SearchWrapper>
           </SearchContainer>
