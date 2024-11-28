@@ -224,6 +224,16 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
   }, [estimatedRoutes, swapAmount, estimatedLiquidityMax]);
 
+  // Reset after 5 seconds when estimatedLiquidityMax is set
+  useEffect(() => {
+    if (estimatedLiquidityMax !== null) {
+      const timer = setTimeout(() => {
+        setEstimatedLiquidityMax(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [estimatedLiquidityMax]);
+
   return {
     isSameToken,
     tokenAmountLimit,
