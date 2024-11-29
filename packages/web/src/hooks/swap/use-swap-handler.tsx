@@ -168,6 +168,7 @@ export const useSwapHandler = () => {
     unwrap,
     updateSwapAmount,
     resetSwapAmount,
+    isTyping,
   } = useSwap({
     tokenA,
     tokenB,
@@ -258,7 +259,7 @@ export const useSwapHandler = () => {
       return BigNumber(0);
     }
 
-    if (estimatedAmount === null) {
+    if (estimatedAmount === null || isTyping) {
       return prevPriceImpact.current || BigNumber(0);
     }
 
@@ -299,7 +300,7 @@ export const useSwapHandler = () => {
 
     prevPriceImpact.current = BigNumber(priceImpactNum.toFixed(2));
     return BigNumber(priceImpactNum.toFixed(2));
-  }, [estimatedRoutes, swapFee, tokenA, tokenAAmount, tokenB, tokenBAmount, tokenPrices]);
+  }, [estimatedRoutes, swapFee, tokenA?.path, tokenAAmount, tokenB?.path, tokenBAmount, tokenPrices]);
 
   const priceImpactStatus: PriceImpactStatus = useMemo(() => {
     if (!priceImpact) return "NONE";
@@ -1032,7 +1033,7 @@ export const useSwapHandler = () => {
     }
 
     if (swapState !== "SUCCESS" && estimatedAmount === null) {
-      if (swapState === "NO_LIQUIDITY") {
+      if (swapState === "NO_LIQUIDITY" || swapState === "NONE") {
         if (type === "EXACT_IN") {
           setTokenBAmount("");
         } else {
@@ -1107,7 +1108,7 @@ export const useSwapHandler = () => {
     executeSwap,
     isSwitchNetwork,
     switchNetwork,
-    isLoading: swapState === "LOADING",
+    isLoading: swapState === "LOADING" || isTyping,
     setSwapValue,
     tokenA,
     tokenB,
