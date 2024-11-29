@@ -140,8 +140,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       : makeDisplayTokenAmount(tokenA, amount)?.toString() || null;
   }, [debouncedSwapAmount, error, swapState, estimatedSwapResult, isTyping]);
 
-  console.log(estimatedRoutes, estimatedAmount, "estimated?");
-
   const tokenAmountLimit = useMemo(() => {
     if (estimatedAmount && !Number.isNaN(slippage)) {
       const tokenAmountLimit =

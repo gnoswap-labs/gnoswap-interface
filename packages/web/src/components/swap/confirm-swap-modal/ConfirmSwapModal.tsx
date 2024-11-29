@@ -14,9 +14,9 @@ import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { swapDirectionToGuaranteedType, SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { formatOtherPrice } from "@utils/new-number-utils";
-import { toNumberFormat } from "@utils/number-utils";
+import { floorNumber, toNumberFormat } from "@utils/number-utils";
 import { formatApproximateUSD } from "@utils/string-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 import { convertSwapRate } from "../swap-card-content-detail/SwapCardContentDetail";
 
@@ -65,13 +65,6 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
       </>
     );
   }, [swapSummaryInfo]);
-
-  const swapRateUSDStr = useMemo(() => {
-    const swapRateStr = formatOtherPrice(swapSummaryInfo.swapRateUSD, {
-      isKMB: false,
-    });
-    return `(≈ ${swapRateStr})`;
-  }, [swapSummaryInfo.swapRateUSD]);
 
   const priceImpactStr = useMemo(() => {
     const priceImpact = swapSummaryInfo.priceImpact;
@@ -123,6 +116,22 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
         return "";
     }
   }, [priceImpactStatus, t]);
+
+  const unitSwapPrice = useMemo(() => {
+    const { swapRateAction, swapRate } = swapSummaryInfo;
+    const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
+    if (swapRateAction === "ATOB") {
+      if (!tokenBUSD || tokenBUSD === 0) return "-";
+      return convertToKMB(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
+        isIgnoreKFormat: true,
+      });
+    } else {
+      if (!tokenAUSD || tokenAUSD === 0) return "-";
+      return convertToKMB(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
+        isIgnoreKFormat: true,
+      });
+    }
+  }, [swapSummaryInfo, swapTokenInfo]);
 
   return (
     <ConfirmModal>
@@ -194,7 +203,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
           <div className="swap-info">
             <div className="coin-info">
               <span className="gnos-price">{swapRateDescription}</span>
-              <span className="exchange-price">{swapRateUSDStr}</span>
+              <span className="exchange-price">{`(${formatApproximateUSD(unitSwapPrice, false)})`}</span>
             </div>
           </div>
           <div className="gas-info">
