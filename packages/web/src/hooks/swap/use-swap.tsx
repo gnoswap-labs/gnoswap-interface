@@ -181,7 +181,11 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     if (debouncedSwapAmount !== null) {
       setIsTyping(false);
     }
-  }, [debouncedSwapAmount]);
+
+    if (debouncedSwapAmount !== null && swapAmount === debouncedSwapAmount) {
+      setIsTyping(false);
+    }
+  }, [debouncedSwapAmount, swapAmount]);
 
   const wrap = useCallback(
     async (tokenAmount: string) => {
