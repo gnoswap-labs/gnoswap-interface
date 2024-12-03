@@ -4,7 +4,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
-import Privacy from "@views/terms/Terms";
+import Privacy from "src/layouts/terms/Terms";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {

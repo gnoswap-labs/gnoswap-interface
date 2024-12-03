@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Swap from "@views/swap/Swap";
+import Swap from "src/layouts/swap/Swap";
 import * as SwapState from "@states/swap";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
@@ -21,12 +21,7 @@ export default function Page() {
   const seoInfo = useMemo(() => SEOInfo["/swap"], []);
 
   const title = useMemo(
-    () =>
-      seoInfo.title(
-        [swapInfo.tokenA?.symbol, swapInfo.tokenB?.symbol].filter(
-          item => item,
-        ) as string[],
-      ),
+    () => seoInfo.title([swapInfo.tokenA?.symbol, swapInfo.tokenB?.symbol].filter(item => item) as string[]),
     [seoInfo, swapInfo.tokenA?.symbol, swapInfo.tokenB?.symbol],
   );
 

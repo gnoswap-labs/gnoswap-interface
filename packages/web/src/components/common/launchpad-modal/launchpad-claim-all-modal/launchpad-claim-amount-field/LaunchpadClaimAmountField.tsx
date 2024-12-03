@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+import { ProjectRewardInfoModel } from "src/layouts/launchpad/launchpad-detail/LaunchpadDetail";
 
 import { ClaimAllFieldWrapper } from "./LaunchpadClaimAmountField.styled";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";

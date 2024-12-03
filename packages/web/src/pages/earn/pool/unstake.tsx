@@ -6,17 +6,14 @@ import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import PoolUnstake from "@views/pool/pool-unstake/PoolUnstake";
+import PoolUnstake from "src/layouts/pool/pool-unstake/PoolUnstake";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        ...DEFAULT_I18N_NS,
-        "UnstakePosition",
-      ])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "UnstakePosition"])),
     },
   };
 }
@@ -42,9 +39,7 @@ export default function Page() {
     const tokenA = getGnotPath(data?.tokenA);
     const tokenB = getGnotPath(data?.tokenB);
 
-    return seoInfo.title(
-      [tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[],
-    );
+    return seoInfo.title([tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[]);
   }, [data?.tokenA, data?.tokenB, feeStr, getGnotPath, seoInfo]);
 
   return (

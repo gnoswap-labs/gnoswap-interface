@@ -4,16 +4,12 @@ import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import useRouter from "@hooks/common/use-custom-router";
-import PoolReposition from "@views/pool/pool-reposition/PoolReposition";
+import PoolReposition from "src/layouts/pool/pool-reposition/PoolReposition";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        ...DEFAULT_I18N_NS,
-        "Reposition",
-        "AddPosition",
-      ])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Reposition", "AddPosition"])),
     },
   };
 }

@@ -3,16 +3,12 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import SEOHeader from "@components/common/seo-header/seo-header";
-import Launchpad from "@views/launchpad/Launchpad";
+import Launchpad from "src/layouts/launchpad/Launchpad";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        ...DEFAULT_I18N_NS,
-        "Launchpad",
-        "Earn",
-      ])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Launchpad", "Earn"])),
     },
   };
 }

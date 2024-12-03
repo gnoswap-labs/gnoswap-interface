@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -31,7 +27,7 @@
       "@providers/*": ["src/providers/*"],
       "@states/*": ["src/states/*"],
       "@styles/*": ["src/styles/*"],
-      "@views/*": ["src/views/*"],
+      "@views/*": ["src/layouts/*"],
       "@models/*": ["src/models/*"],
       "@query/*": ["src/react-query/*"],
       "@context/*": ["src/context/*"],
@@ -39,14 +35,7 @@
     },
     "jsxImportSource": "@emotion/react"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "jest.config.js"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js"],
+  "exclude": ["node_modules"],
   "declaration": true
 }

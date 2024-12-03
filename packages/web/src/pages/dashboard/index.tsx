@@ -3,15 +3,12 @@ import { useMemo } from "react";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Dashboard from "@views/dashboard/Dashboard";
+import Dashboard from "src/layouts/dashboard/Dashboard";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        ...DEFAULT_I18N_NS,
-        "Dashboard",
-      ])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Dashboard"])),
     },
   };
 }

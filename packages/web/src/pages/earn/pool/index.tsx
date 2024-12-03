@@ -12,7 +12,7 @@ import { useGetPoolDetailByPath } from "@query/pools";
 import { formatAddress } from "@utils/string-utils";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { isValidAddress } from "@utils/validation-utils";
-import PoolDetail from "@views/pool/pool-detail/PoolDetail";
+import PoolDetail from "src/layouts/pool/pool-detail/PoolDetail";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {

@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Home from "@views/home/Home";
+import Home from "src/layouts/home/Home";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -15,19 +15,11 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
-  const { i18n } = useTranslation(
-    ["HeaderFooter", "common", "Main", "business"],
-    {
-      bindI18n: "languageChanged loaded",
-    },
-  );
+  const { i18n } = useTranslation(["HeaderFooter", "common", "Main", "business"], {
+    bindI18n: "languageChanged loaded",
+  });
   useEffect(() => {
-    i18n.reloadResources(i18n.resolvedLanguage, [
-      "HeaderFooter",
-      "common",
-      "Main",
-      "business",
-    ]);
+    i18n.reloadResources(i18n.resolvedLanguage, ["HeaderFooter", "common", "Main", "business"]);
   }, []);
 
   const seoInfo = useMemo(() => SEOInfo["/"], []);

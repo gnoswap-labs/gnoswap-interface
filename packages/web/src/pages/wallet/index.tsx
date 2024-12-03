@@ -3,16 +3,12 @@ import { useMemo } from "react";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Wallet from "@views/wallet/Wallet";
+import Wallet from "src/layouts/wallet/Wallet";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        ...DEFAULT_I18N_NS,
-        "Earn",
-        "Wallet",
-      ])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Earn", "Wallet"])),
     },
   };
 }
