@@ -3,7 +3,14 @@ import { useMemo } from "react";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Dashboard from "src/layouts/dashboard/Dashboard";
+
+import DashboardLayout from "@views/dashboard/DashboardLayout";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import TvlChartContainer from "@views/dashboard/containers/tvl-chart-container/TvlChartContainer";
+import VolumeChartContainer from "@views/dashboard/containers/volume-chart-container/VolumeChartContainer";
+import DashboardInfoContainer from "@views/dashboard/containers/dashboard-info-container/DashboardInfoContainer";
+import DashboardActivitiesContainer from "@views/dashboard/containers/dashboard-activities-container/DashboardActivitiesContainer";
+import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -14,6 +21,10 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
+  /**
+   * SEO
+   * Todo: SEO will be managed by a new container
+   */
   const seoInfo = useMemo(() => SEOInfo["/dashboard"], []);
 
   return (
@@ -24,7 +35,14 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <Dashboard />
+      <DashboardLayout
+        header={<HeaderContainer />}
+        tvl={<TvlChartContainer />}
+        volume={<VolumeChartContainer />}
+        info={<DashboardInfoContainer />}
+        activities={<DashboardActivitiesContainer />}
+        footer={<Footer />}
+      />
     </>
   );
 }
