@@ -9,7 +9,6 @@ import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
-import { formatApproximateUSD } from "@utils/string-utils";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -101,7 +100,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
         </div>
       </div>
       <div className="info">
-        <span className="price-text disable-pointer ">{formatApproximateUSD(usdValue)}</span>
+        <span className="price-text disable-pointer ">{usdValue}</span>
         <span className={`balance-text ${!connected ? "disable-pointer" : ""}`} onClick={handleFillBalance}>
           {t("business:balance")}: {balanceADisplay}
         </span>

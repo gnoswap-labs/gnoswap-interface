@@ -13,7 +13,6 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
-import { formatApproximateUSD } from "@utils/string-utils";
 
 import {
   ContentWrapper,
@@ -146,7 +145,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         </div>
         <div className="amount-info">
           <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>
-            {formatApproximateUSD(swapTokenInfo.tokenAUSDStr)}
+            {swapTokenInfo.tokenAUSDStr}
           </span>
           <span
             className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"}`}
@@ -181,7 +180,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             <span
               className={`price-text second-price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
             >
-              {formatApproximateUSD(swapTokenInfo.tokenBUSDStr)}
+              {swapTokenInfo.tokenBUSDStr}
             </span>
             {showPriceImpact && (
               <PriceImpactWrapper priceImpact={priceImpactStatus}>

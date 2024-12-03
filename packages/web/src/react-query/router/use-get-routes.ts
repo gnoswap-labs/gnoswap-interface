@@ -4,6 +4,7 @@ import { SwapError } from "@common/errors/swap";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenModel } from "@models/token/token-model";
 import { GetRoutesResponse } from "@repositories/swap/response/get-routes-response";
+import { wait } from "@utils/common";
 
 import { QUERY_KEY } from "../query-keys";
 
@@ -38,17 +39,21 @@ export const useGetRoutes = (
       const outputToken = request.outputToken;
       const tokenAmount = Number(request.tokenAmount);
 
-      const result = await swapRouterRepository
-        .getRoutes({
-          inputToken,
-          outputToken,
-          exactType: request.exactType,
-          tokenAmount,
-        })
-        .catch(e => {
-          console.error(e);
-          return null;
-        });
+      const result = await wait<GetRoutesResponse | null>(
+        async () =>
+          swapRouterRepository
+            .getRoutes({
+              inputToken,
+              outputToken,
+              exactType: request.exactType,
+              tokenAmount,
+            })
+            .catch(e => {
+              console.error(e);
+              return null;
+            }),
+        300,
+      );
 
       if (!result) {
         throw new SwapError("NOT_FOUND_SWAP_POOL");
@@ -62,10 +67,10 @@ export const useGetRoutes = (
 
       return result;
     },
-    retry: 1,
+    // retry: false,
     refetchInterval: REFETCH_INTERVAL,
     staleTime: STALE_TIME,
-    enabled: !!request?.inputToken?.path && !!request?.outputToken?.path && options?.enabled !== false,
+    enabled: !!request?.inputToken?.path && !!request?.outputToken?.path,
     ...options,
   });
 };

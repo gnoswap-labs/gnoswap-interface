@@ -27,7 +27,6 @@ import DepositConditionsTooltip from "@components/common/launchpad-tooltip/depos
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
-import { formatApproximateUSD } from "@utils/string-utils";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -207,7 +206,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         </div>
 
         <div className="participate-amount-info">
-          <span className="participate-price-text">{formatApproximateUSD(estimatePrice)}</span>
+          <span className="participate-price-text">{estimatePrice}</span>
           <span
             className={cx("participate-balance-text", {
               upcoming: status === "UPCOMING",
