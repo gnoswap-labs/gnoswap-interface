@@ -1,8 +1,4 @@
-import {
-  Hydrate,
-  QueryClient,
-  QueryClientProvider
-} from "@tanstack/react-query";
+import { Hydrate, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/en";
@@ -28,7 +24,7 @@ import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapS
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import SnackbarProvider from "@providers/snackbar-provider/SnackbarProvider";
 
-import nextI18NextConfig from "../next-i18next.config.js";
+import nextI18NextConfig from "../../next-i18next.config.js";
 import Custom500 from "./500";
 
 function App({ Component, pageProps }: AppProps) {
