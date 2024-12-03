@@ -165,3 +165,8 @@ export function displayTickNumber(range: number[], tick: number) {
 export const capitalize = (value: string) => {
   return (value && value[0].toUpperCase() + value.toLowerCase().slice(1)) || "";
 };
+
+export const formatApproximateUSD = (value: string, hasDollarSymbol: boolean = true) => {
+  if (value === "-") return "-";
+  return hasDollarSymbol ? `≈ ${value}` : `≈ $${value}`;
+};

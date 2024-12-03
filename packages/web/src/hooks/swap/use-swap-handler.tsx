@@ -43,6 +43,7 @@ type SwapButtonStateType =
   | "SELECT_TOKEN"
   | "ENTER_AMOUNT"
   | "AMOUNT_TOO_LOW"
+  | "LOADING"
   | "INSUFFICIENT_BALANCE"
   | "INSUFFICIENT_LIQUIDITY"
   | "WRAP"
@@ -143,6 +144,8 @@ export const useSwapHandler = () => {
     !defaultTokenAAmount ? (defaultTokenBAmount ? defaultTokenBAmount : undefined) : undefined,
   );
 
+  const prevPriceImpact = useRef<BigNumber>(BigNumber(0));
+
   const [submitted, setSubmitted] = useState(false);
 
   const [copied, setCopied] = useState(false);
@@ -165,6 +168,7 @@ export const useSwapHandler = () => {
     unwrap,
     updateSwapAmount,
     resetSwapAmount,
+    isTyping,
   } = useSwap({
     tokenA,
     tokenB,
@@ -195,6 +199,10 @@ export const useSwapHandler = () => {
 
   const swapRouteInfos: SwapRouteInfo[] = useMemo(() => {
     if (!tokenA || !tokenB) {
+      return [];
+    }
+
+    if (estimatedRoutes === null) {
       return [];
     }
 
@@ -251,6 +259,16 @@ export const useSwapHandler = () => {
       return BigNumber(0);
     }
 
+    if (estimatedAmount === null || isTyping) {
+      return prevPriceImpact.current || BigNumber(0);
+    }
+
+    if (type === "EXACT_IN") {
+      setTokenBAmount(estimatedAmount);
+    } else {
+      setTokenAAmount(estimatedAmount);
+    }
+
     const hasUSDPrice =
       !!tokenPrices[checkGnotPath(tokenA.path)]?.usd && !!tokenPrices[checkGnotPath(tokenB.path)]?.usd;
 
@@ -259,7 +277,6 @@ export const useSwapHandler = () => {
       const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 0;
 
       const tokenAUSDAmount = (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) * Number(tokenAUSDValue);
-
       const tokenBUSDAmount = (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) * Number(tokenBUSDValue);
 
       const priceImpactNum =
@@ -271,13 +288,19 @@ export const useSwapHandler = () => {
       return BigNumber(priceImpactNum.toFixed(2));
     }
 
+    if (estimatedRoutes === null) {
+      return BigNumber(0);
+    }
+
     const priceImpactNum = estimatePriceImpactByRoutes(
       checkGnotPath(tokenA.path),
       estimatedRoutes,
       (swapFee || 0) / 100,
     );
+
+    prevPriceImpact.current = BigNumber(priceImpactNum.toFixed(2));
     return BigNumber(priceImpactNum.toFixed(2));
-  }, [estimatedRoutes, swapFee, tokenA, tokenAAmount, tokenB, tokenBAmount, tokenPrices]);
+  }, [estimatedRoutes, swapFee, tokenA?.path, tokenAAmount, tokenB?.path, tokenBAmount, tokenPrices]);
 
   const priceImpactStatus: PriceImpactStatus = useMemo(() => {
     if (!priceImpact) return "NONE";
@@ -318,6 +341,10 @@ export const useSwapHandler = () => {
       return "INSUFFICIENT_BALANCE";
     }
 
+    if (estimatedRoutes === null) {
+      return "LOADING";
+    }
+
     if (
       !isSameToken &&
       (swapState === "NO_LIQUIDITY" ||
@@ -352,7 +379,7 @@ export const useSwapHandler = () => {
     tokenABalance,
     isLoading,
     priceImpactStatus,
-    estimatedRoutes.length,
+    estimatedRoutes?.length,
   ]);
 
   const swapButtonText = useMemo(() => {
@@ -365,6 +392,8 @@ export const useSwapHandler = () => {
         return t("Swap:swapButton.selectToken");
       case "ENTER_AMOUNT":
         return t("Swap:swapButton.enterAmount");
+      case "LOADING":
+        return t("Swap:swapButton.review");
       case "AMOUNT_TOO_LOW":
         return t("Swap:swapButton.amtLow");
       case "INSUFFICIENT_BALANCE":
@@ -908,6 +937,11 @@ export const useSwapHandler = () => {
     if (!tokenA || !tokenB) {
       return;
     }
+
+    if (estimatedRoutes === null) {
+      return;
+    }
+
     setSubmitted(true);
 
     const isExactIn = type === "EXACT_IN";
@@ -999,7 +1033,7 @@ export const useSwapHandler = () => {
     }
 
     if (swapState !== "SUCCESS" && estimatedAmount === null) {
-      if (swapState === "NO_LIQUIDITY") {
+      if (swapState === "NO_LIQUIDITY" || swapState === "NONE") {
         if (type === "EXACT_IN") {
           setTokenBAmount("");
         } else {
@@ -1009,14 +1043,6 @@ export const useSwapHandler = () => {
       }
 
       return;
-    }
-
-    if (type === "EXACT_IN") {
-      const amount = makeDisplayTokenAmount(tokenB, estimatedAmount || 0) || 0;
-      setTokenBAmount(amount.toString());
-    } else {
-      const amount = makeDisplayTokenAmount(tokenA, estimatedAmount || 0) || 0;
-      setTokenAAmount(amount.toString());
     }
   }, [swapState, estimatedAmount, type, tokenA, tokenB]);
 
@@ -1082,7 +1108,7 @@ export const useSwapHandler = () => {
     executeSwap,
     isSwitchNetwork,
     switchNetwork,
-    isLoading: swapState === "LOADING",
+    isLoading: swapState === "LOADING" || isTyping,
     setSwapValue,
     tokenA,
     tokenB,
