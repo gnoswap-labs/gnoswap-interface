@@ -14,7 +14,6 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { DEVICE_TYPE } from "@styles/media";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
 import { convertToKMB } from "@utils/stake-position-utils";
-import { formatApproximateUSD } from "@utils/string-utils";
 
 import SwapCardAutoRouter from "./swap-card-auto-router/SwapCardAutoRouter";
 import SwapCardFeeInfo from "./swap-card-fee-info/SwapCardFeeInfo";
@@ -61,7 +60,8 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
       return (
         <>
           1 {tokenB.symbol} =&nbsp;
-          <ExchangeRate value={convertSwapRate(swapRate)} /> &nbsp;{tokenA.symbol}
+          <ExchangeRate value={convertSwapRate(swapRate)} />
+          &nbsp;{tokenA.symbol}
         </>
       );
     }
@@ -110,9 +110,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
                 <span className="swap-rate" onClick={handleSwapRate}>
                   {swapRateDescription}
                 </span>
-                {breakpoint !== DEVICE_TYPE.MOBILE && (
-                  <span className="exchange-price">{`(${formatApproximateUSD(unitSwapPrice, false)})`}</span>
-                )}
+                {breakpoint !== DEVICE_TYPE.MOBILE && <span className="exchange-price">{`($${unitSwapPrice})`}</span>}
               </div>
             )}
             {isLoading && (

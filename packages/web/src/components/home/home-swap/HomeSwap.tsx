@@ -7,7 +7,6 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { SwapValue } from "@states/swap";
 import { useTranslation } from "next-i18next";
-import { formatApproximateUSD } from "@utils/string-utils";
 
 interface HomeSwapProps {
   changeTokenAAmount: (value: string) => void;
@@ -101,7 +100,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{formatApproximateUSD(swapTokenInfo.tokenAUSDStr)}</span>
+            <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
             <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenA}>
               {`${t("Main:bal")}: ${swapTokenInfo.tokenABalance}`}
             </span>
@@ -122,7 +121,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{formatApproximateUSD(swapTokenInfo.tokenBUSDStr)}</span>
+            <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
             <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenB}>
               {t("Main:bal")}: {swapTokenInfo.tokenBBalance}
             </span>
