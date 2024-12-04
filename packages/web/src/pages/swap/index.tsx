@@ -3,9 +3,14 @@ import { useMemo } from "react";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Swap from "src/layouts/swap/Swap";
 import * as SwapState from "@states/swap";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+import SwapLayout from "@views/swap/SwapLayout";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import SwapContainer from "@views/swap/containers/swap-container/SwapContainer";
+import SwapLiquidityContainer from "@views/swap/containers/swap-liquidity-container/SwapLiquidityContainer";
+import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -18,6 +23,10 @@ export async function getStaticProps({ locale }: { locale: string }) {
 export default function Page() {
   const [swapInfo] = useAtom(SwapState.swap);
 
+  /**
+   * SEO
+   * Todo: SEO will be managed by a new container
+   */
   const seoInfo = useMemo(() => SEOInfo["/swap"], []);
 
   const title = useMemo(
@@ -33,7 +42,12 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <Swap />
+      <SwapLayout
+        header={<HeaderContainer />}
+        swap={<SwapContainer />}
+        liquidity={<SwapLiquidityContainer />}
+        footer={<Footer />}
+      />
     </>
   );
 }

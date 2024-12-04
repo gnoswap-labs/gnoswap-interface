@@ -1,9 +1,18 @@
 import { useMemo } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useAtomValue } from "jotai";
 
+import { ThemeState } from "@states/index";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import SEOHeader from "@components/common/seo-header/seo-header";
-import Launchpad from "src/layouts/launchpad/Launchpad";
+
+import LaunchpadLayout from "@views/launchpad/LaunchpadLayout";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import LaunchpadMainContainer from "@views/launchpad/containers/launchpad-main-container/LaunchpadMainContainer";
+import IconLaunchpadMain from "@components/common/icons/IconLaunchpadMain";
+import LaunchpadActiveProjectContainer from "@views/launchpad/containers/launchpad-active-project-container/LaunchpadActiveProjectContainer";
+import LaunchpadProjectListContainer from "@views/launchpad/containers/launchpad-project-list-container/LaunchpadProjectListContainer";
+import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -14,6 +23,12 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
+  const themeKey = useAtomValue(ThemeState.themeKey);
+
+  /**
+   * SEO
+   * Todo: SEO will be managed by a new container
+   */
   const seoInfo = useMemo(() => SEOInfo["/launchpad"], []);
 
   return (
@@ -24,7 +39,18 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <Launchpad />
+      <LaunchpadLayout
+        header={<HeaderContainer />}
+        main={
+          <LaunchpadMainContainer
+            themeKey={themeKey}
+            icon={<IconLaunchpadMain themeKey={themeKey} className="icon-launchpad" />}
+          />
+        }
+        activeProjects={<LaunchpadActiveProjectContainer />}
+        projectList={<LaunchpadProjectListContainer />}
+        footer={<Footer />}
+      />
     </>
   );
 }

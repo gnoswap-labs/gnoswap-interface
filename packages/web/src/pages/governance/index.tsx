@@ -2,7 +2,13 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Governance from "src/layouts/governance/Governance";
+
+import GovernanceLayout from "@views/governance/GovernanceLayout";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import GovernanceSummaryContainer from "@views/governance/containers/governance-summary-container/GovernanceSummaryContainer";
+import MyDelegationContainer from "@views/governance/containers/my-delegation-container/MyDelegationContainer";
+import ProposalListContainer from "@views/governance/containers/proposal-list-container/ProposalListContainer";
+import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -13,6 +19,10 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
+  /**
+   * SEO
+   * Todo: SEO will be managed by a new container
+   */
   const seoInfo = SEOInfo["/governance"];
 
   return (
@@ -23,7 +33,13 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <Governance />
+      <GovernanceLayout
+        header={<HeaderContainer />}
+        summary={<GovernanceSummaryContainer />}
+        myDelegation={<MyDelegationContainer />}
+        list={<ProposalListContainer />}
+        footer={<Footer />}
+      />
     </>
   );
 }

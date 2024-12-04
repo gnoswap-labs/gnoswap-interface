@@ -3,7 +3,12 @@ import { useMemo } from "react";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import Leaderboard from "src/layouts/leaderboard-layout/Leaderboard";
+
+import LeaderboardLayout from "@views/leaderboard-layout/LeaderboardLayout";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import LeaderboardSubheaderContainer from "@views/leaderboard-layout/containers/leaderboard-subheader-container/LeaderboardSubheaderContainer";
+import LeaderboardList from "@views/leaderboard-layout/leaderboard-list/LeaderboardList";
+import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -14,6 +19,10 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
+  /**
+   * SEO
+   * Todo: SEO will be managed by a new container
+   */
   const seoInfo = useMemo(() => SEOInfo["/leaderboard"], []);
 
   return (
@@ -24,7 +33,12 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <Leaderboard />
+      <LeaderboardLayout
+        header={<HeaderContainer />}
+        subheader={<LeaderboardSubheaderContainer />}
+        list={<LeaderboardList />}
+        footer={<Footer />}
+      />
     </>
   );
 }
