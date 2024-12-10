@@ -216,6 +216,21 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
   }, [estimatedRoutes, swapAmount, estimatedLiquidityMax]);
 
+  /**
+   * Reset estimatedLiquidityMax to null after specified delay
+   * This effect triggers when estimatedLiquidityMax changes and is not null
+   */
+  const ESTIMATED_LIQUIDITY_RESET_DELAY = 5000;
+  useEffect(() => {
+    if (estimatedLiquidityMax !== null) {
+      const timer = setTimeout(() => {
+        setEstimatedLiquidityMax(null);
+      }, ESTIMATED_LIQUIDITY_RESET_DELAY);
+
+      return () => clearTimeout(timer);
+    }
+  }, [estimatedLiquidityMax]);
+
   return {
     isSameToken,
     tokenAmountLimit,
