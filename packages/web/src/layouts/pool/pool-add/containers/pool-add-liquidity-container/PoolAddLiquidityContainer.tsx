@@ -470,7 +470,9 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
-      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort();
+      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort((a, b) =>
+        (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }),
+      );
       const compareToken = selectPool.compareToken;
       const reverse =
         tokenPair.findIndex(path => {

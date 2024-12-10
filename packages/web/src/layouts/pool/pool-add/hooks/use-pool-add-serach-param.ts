@@ -16,7 +16,9 @@ export const usePoolAddSearchParams = () => {
       const poolPathSplit = poolPathParam?.split(":");
       return [poolPathSplit[0], poolPathSplit[1]];
     }
-    return [checkGnotPath(tokenAPath), checkGnotPath(tokenBPath)].sort();
+    return [checkGnotPath(tokenAPath), checkGnotPath(tokenBPath)].sort((a, b) =>
+      (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }),
+    );
   }, [poolPathParam, tokenAPath, tokenBPath]);
 
   const poolPath = useMemo(() => {

@@ -309,7 +309,10 @@ export const DEFAULT_POOL_ADD_URI = `/earn/add?tokenA=gnot&tokenB=${GNS_TOKEN_PA
 
 export const DEFAULT_TOKEN_PAIR = [WRAPPED_GNOT_PATH, GNS_TOKEN_PATH];
 
-export const DEFAULT_POOL_PATH = [...DEFAULT_TOKEN_PAIR.sort(), "3000"].join(":");
+export const DEFAULT_POOL_PATH = [
+  ...DEFAULT_TOKEN_PAIR.sort((a, b) => (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false })),
+  "3000",
+].join(":");
 
 export const LANGUAGE_CODE_MAP: Record<string, string> = {
   en: "en-US",
