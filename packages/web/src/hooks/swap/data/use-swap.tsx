@@ -5,7 +5,7 @@ import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGetRoutes } from "@query/router";
 
 interface UseSwapProps {
@@ -20,6 +20,17 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
+  const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
+
+  const shouldFetchData = useCallback(
+    (amount: number | null) => {
+      if (!amount) return false;
+      if (!estimatedLiquidityMax) return true;
+      return amount < estimatedLiquidityMax;
+    },
+    [estimatedLiquidityMax],
+  );
+  const shouldFetch = shouldFetchData(swapAmount);
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
@@ -50,7 +61,15 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       tokenAmount: direction === "EXACT_IN" ? swapAmount : swapAmount ? swapAmount * exactOutPadding : swapAmount,
     },
     {
-      enabled: !!swapAmount && swapAmount > 0 && !!tokenA && !!tokenA.path && !!tokenB && !!tokenB.path && !isSameToken,
+      enabled:
+        shouldFetch &&
+        !!swapAmount &&
+        swapAmount > 0 &&
+        !!tokenA &&
+        !!tokenA.path &&
+        !!tokenB &&
+        !!tokenB.path &&
+        !isSameToken,
     },
   );
 
@@ -63,7 +82,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return "NONE";
     }
 
-    if (isEstimatedSwapLoading) {
+    if (isEstimatedSwapLoading && shouldFetch) {
       return "LOADING";
     }
 
@@ -182,6 +201,20 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     },
     [account, direction, selectedTokenPair, swapRouterRepository, tokenA, tokenAmountLimit, tokenB, exactOutPadding],
   );
+
+  useEffect(() => {
+    if (estimatedRoutes === null) return;
+
+    if (estimatedRoutes.length === 0) {
+      if (!estimatedLiquidityMax) {
+        setEstimatedLiquidityMax(swapAmount || null);
+      } else if (swapAmount && swapAmount < estimatedLiquidityMax) {
+        setEstimatedLiquidityMax(swapAmount);
+      }
+    } else {
+      setEstimatedLiquidityMax(null);
+    }
+  }, [estimatedRoutes, swapAmount, estimatedLiquidityMax]);
 
   return {
     isSameToken,
