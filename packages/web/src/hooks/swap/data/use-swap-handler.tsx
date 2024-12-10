@@ -43,6 +43,7 @@ type SwapButtonStateType =
   | "SELECT_TOKEN"
   | "ENTER_AMOUNT"
   | "AMOUNT_TOO_LOW"
+  | "LOADING"
   | "INSUFFICIENT_BALANCE"
   | "INSUFFICIENT_LIQUIDITY"
   | "WRAP"
@@ -198,6 +199,10 @@ export const useSwapHandler = () => {
       return [];
     }
 
+    if (estimatedRoutes === null) {
+      return [];
+    }
+
     return estimatedRoutes.map(route => ({
       version: "V1",
       from: tokenA,
@@ -271,6 +276,10 @@ export const useSwapHandler = () => {
       return BigNumber(priceImpactNum.toFixed(2));
     }
 
+    if (estimatedRoutes === null) {
+      return BigNumber(0);
+    }
+
     const priceImpactNum = estimatePriceImpactByRoutes(
       checkGnotPath(tokenA.path),
       estimatedRoutes,
@@ -318,6 +327,10 @@ export const useSwapHandler = () => {
       return "INSUFFICIENT_BALANCE";
     }
 
+    if (estimatedRoutes === null) {
+      return "LOADING";
+    }
+
     if (
       !isSameToken &&
       (swapState === "NO_LIQUIDITY" ||
@@ -352,7 +365,7 @@ export const useSwapHandler = () => {
     tokenABalance,
     isLoading,
     priceImpactStatus,
-    estimatedRoutes.length,
+    estimatedRoutes?.length,
   ]);
 
   const swapButtonText = useMemo(() => {
@@ -365,6 +378,8 @@ export const useSwapHandler = () => {
         return t("Swap:swapButton.selectToken");
       case "ENTER_AMOUNT":
         return t("Swap:swapButton.enterAmount");
+      case "LOADING":
+        return t("Swap:swapButton.review");
       case "AMOUNT_TOO_LOW":
         return t("Swap:swapButton.amtLow");
       case "INSUFFICIENT_BALANCE":
@@ -908,6 +923,11 @@ export const useSwapHandler = () => {
     if (!tokenA || !tokenB) {
       return;
     }
+
+    if (estimatedRoutes === null) {
+      return;
+    }
+
     setSubmitted(true);
 
     const isExactIn = type === "EXACT_IN";
