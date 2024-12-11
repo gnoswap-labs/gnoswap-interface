@@ -41,7 +41,7 @@ export default function Page() {
   const address = React.useMemo(() => {
     const address = initializedData?.addr;
     if (!address || !isValidAddress(address)) {
-      return account?.address;
+      return undefined;
     }
     return address;
   }, [initializedData, account]);
