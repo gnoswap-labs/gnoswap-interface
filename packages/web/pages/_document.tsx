@@ -9,7 +9,7 @@ import "dayjs/locale/ko";
 import "dayjs/locale/ru";
 import "dayjs/locale/zh";
 import Document, { Head, Html, Main, NextScript } from "next/document";
-import i18nextConfig from "../../next-i18next.config";
+import i18nextConfig from "../next-i18next.config";
 
 class MyDocument extends Document {
   render() {
