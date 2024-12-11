@@ -3,7 +3,7 @@ import React from "react";
 import { ThemeKeys } from "@styles/ThemeTypes";
 
 import { useGetLaunchpadSummary } from "@query/launchpad/use-get-launchpad-summary";
-import LaunchpadMain from "src/layouts/launchpad/components/launchpad-main/LaunchpadMain";
+import LaunchpadMain from "@layouts/launchpad/components/launchpad-main/LaunchpadMain";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface LaunchpadMainContainerProps {

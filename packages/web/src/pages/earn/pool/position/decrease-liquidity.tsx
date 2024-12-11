@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import useRouter from "@hooks/common/use-custom-router";
-import PoolDecreaseLiquidity from "src/layouts/pool/pool-decrease-liquidity/PoolDecreaseLiquidity";
+import PoolDecreaseLiquidity from "@layouts/pool/pool-decrease-liquidity/PoolDecreaseLiquidity";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {

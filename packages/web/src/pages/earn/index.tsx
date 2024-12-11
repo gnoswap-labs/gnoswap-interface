@@ -7,12 +7,12 @@ import { formatAddress } from "@utils/string-utils";
 import { useWallet } from "@hooks/wallet/use-wallet";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
-import EarnLayout from "@views/earn/EarnLayout";
+import EarnLayout from "@layouts/earn/EarnLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import EarnMyPositionContainer from "@views/earn/containers/earn-my-position-container/EarnMyPositionContainer";
-import IncentivizedPoolsContainer from "@views/earn/containers/incentivized-pools-container/IncentivizedPoolsContainer";
-import IncentivizedPoolCardListContainer from "@views/earn/containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
-import PoolListContainer from "@views/earn/containers/pool-list-container/PoolListContainer";
+import EarnMyPositionContainer from "@layouts/earn/containers/earn-my-position-container/EarnMyPositionContainer";
+import IncentivizedPoolsContainer from "@layouts/earn/containers/incentivized-pools-container/IncentivizedPoolsContainer";
+import IncentivizedPoolCardListContainer from "@layouts/earn/containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
+import PoolListContainer from "@layouts/earn/containers/pool-list-container/PoolListContainer";
 import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {

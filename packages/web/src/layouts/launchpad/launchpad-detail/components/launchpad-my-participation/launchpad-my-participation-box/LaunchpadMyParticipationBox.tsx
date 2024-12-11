@@ -6,7 +6,7 @@ import { useTranslation } from "next-i18next";
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { ParticipateButtonProps } from "../LaunchpadMyParticipation";
 import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
-import { ProjectRewardInfoModel } from "src/layouts/launchpad/launchpad-detail/LaunchpadDetail";
+import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import { toNumberFormat } from "@utils/number-utils";
 import { formatRate } from "@utils/new-number-utils";
@@ -19,7 +19,7 @@ import IconArrowUp from "@components/common/icons/IconArrowUp";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { MyParticipationBoxWrapper } from "./LaunchpadMyParticipationBox.styles";
-import LaunchpadPoolTierChip from "src/layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface LaunchpadMyParticipationBoxProps {

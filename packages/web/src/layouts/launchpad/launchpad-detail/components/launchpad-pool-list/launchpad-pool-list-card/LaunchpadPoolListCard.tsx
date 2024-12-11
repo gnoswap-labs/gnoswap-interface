@@ -7,13 +7,13 @@ import { Trans, useTranslation } from "react-i18next";
 import { LaunchpadState } from "@states/index";
 import { getTierDuration } from "@utils/launchpad-get-tier-number";
 import { LaunchpadPoolModel } from "@models/launchpad";
-import { ProjectRewardInfoModel } from "src/layouts/launchpad/launchpad-detail/LaunchpadDetail";
+import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 import { toNumberFormat } from "@utils/number-utils";
 import { getClaimableDays } from "@utils/launchpad-get-claimable";
 
 import { Divider } from "@components/common/divider/divider";
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
-import LaunchpadPoolTierChip from "src/layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";

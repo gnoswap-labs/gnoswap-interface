@@ -6,12 +6,12 @@ import { ThemeState } from "@states/index";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import SEOHeader from "@components/common/seo-header/seo-header";
 
-import LaunchpadLayout from "@views/launchpad/LaunchpadLayout";
+import LaunchpadLayout from "@layouts/launchpad/LaunchpadLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import LaunchpadMainContainer from "@views/launchpad/containers/launchpad-main-container/LaunchpadMainContainer";
+import LaunchpadMainContainer from "@layouts/launchpad/containers/launchpad-main-container/LaunchpadMainContainer";
 import IconLaunchpadMain from "@components/common/icons/IconLaunchpadMain";
-import LaunchpadActiveProjectContainer from "@views/launchpad/containers/launchpad-active-project-container/LaunchpadActiveProjectContainer";
-import LaunchpadProjectListContainer from "@views/launchpad/containers/launchpad-project-list-container/LaunchpadProjectListContainer";
+import LaunchpadActiveProjectContainer from "@layouts/launchpad/containers/launchpad-active-project-container/LaunchpadActiveProjectContainer";
+import LaunchpadProjectListContainer from "@layouts/launchpad/containers/launchpad-project-list-container/LaunchpadProjectListContainer";
 import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {

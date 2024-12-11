@@ -7,7 +7,7 @@ import { ThemeState } from "@states/index";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
-import Custom500Layout from "@views/custom-500/Custom500Layout";
+import Custom500Layout from "@layouts/custom-500/Custom500Layout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import IconGnoswap404 from "@components/common/icons/IconGnoswap404";
 import Footer from "@components/common/footer/Footer";

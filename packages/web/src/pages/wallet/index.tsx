@@ -4,13 +4,13 @@ import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
-import WalletLayout from "@views/wallet/WalletLayout";
+import WalletLayout from "@layouts/wallet/WalletLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import WalletBalanceContainer from "@views/wallet/containers/wallet-balance-container/WalletBalanceContainer";
-import AssetListContainer from "@views/wallet/containers/asset-list-container/AssetListContainer";
-import WalletMyPositions from "@views/wallet/components/wallet-my-positions/WalletMyPositions";
-import WalletMyPositionsHeader from "@views/wallet/components/wallet-my-positions-header/WalletMyPositionsHeader";
-import WalletPositionCardListContainer from "@views/wallet/containers/wallet-position-card-list-container/WalletPositionCardListContainer";
+import WalletBalanceContainer from "@layouts/wallet/containers/wallet-balance-container/WalletBalanceContainer";
+import AssetListContainer from "@layouts/wallet/containers/asset-list-container/AssetListContainer";
+import WalletMyPositions from "@layouts/wallet/components/wallet-my-positions/WalletMyPositions";
+import WalletMyPositionsHeader from "@layouts/wallet/components/wallet-my-positions-header/WalletMyPositionsHeader";
+import WalletPositionCardListContainer from "@layouts/wallet/containers/wallet-position-card-list-container/WalletPositionCardListContainer";
 import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {

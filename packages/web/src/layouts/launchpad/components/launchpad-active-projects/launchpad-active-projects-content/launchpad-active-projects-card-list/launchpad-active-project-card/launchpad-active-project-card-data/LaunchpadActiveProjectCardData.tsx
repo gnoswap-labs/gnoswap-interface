@@ -6,7 +6,7 @@ import { getTierNumber } from "@utils/launchpad-get-tier-number";
 import { ActiveProjectCardDataWrapper } from "./LaunchpadActiveProjectCardData.styles";
 import { formatRate } from "@utils/new-number-utils";
 import IconStar from "@components/common/icons/IconStar";
-import LaunchpadPoolTierChip from "src/layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import { useTranslation } from "react-i18next";
 
 interface LaunchpadActiveProjectCardDataProps {

@@ -18,12 +18,12 @@ import { makeRouteUrl } from "@utils/page.utils";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import { checkGnotPath } from "@utils/common";
 
-import PoolIncentivizeLayout from "@views/pool/pool-incentivize/PoolIncentivizeLayout";
+import PoolIncentivizeLayout from "@layouts/pool/pool-incentivize/PoolIncentivizeLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
-import PoolAddIncentivizeContainer from "@views/pool/pool-incentivize/containers/pool-add-incentivize-container/PoolAddIncentivizeContainer";
-import PoolIncentivizeContainer from "@views/pool/pool-incentivize/containers/pool-incentivize-container/PoolIncentivizeContainer";
-import IncentivizePoolHistoryContainer from "@views/pool/pool-incentivize/containers/incentivize-pool-history-container/IncentivizePoolHistoryContainer";
+import PoolAddIncentivizeContainer from "@layouts/pool/pool-incentivize/containers/pool-add-incentivize-container/PoolAddIncentivizeContainer";
+import PoolIncentivizeContainer from "@layouts/pool/pool-incentivize/containers/pool-incentivize-container/PoolIncentivizeContainer";
+import IncentivizePoolHistoryContainer from "@layouts/pool/pool-incentivize/containers/incentivize-pool-history-container/IncentivizePoolHistoryContainer";
 import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {

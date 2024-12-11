@@ -17,12 +17,12 @@ import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
-import PoolAddLayout from "@views/pool/pool-add/PoolAddLayout";
+import PoolAddLayout from "@layouts/pool/pool-add/PoolAddLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
-import AdditionalInfoContainer from "@views/pool/pool-add/containers/additional-info-container/AdditionalInfoContainer";
-import PoolAddLiquidityContainer from "@views/pool/pool-add/containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
-import EarnAddLiquidityContainer from "@views/pool/pool-add/containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import AdditionalInfoContainer from "@layouts/pool/pool-add/containers/additional-info-container/AdditionalInfoContainer";
+import PoolAddLiquidityContainer from "@layouts/pool/pool-add/containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
+import EarnAddLiquidityContainer from "@layouts/pool/pool-add/containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {

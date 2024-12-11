@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
-import { ProjectLinksObject } from "src/layouts/launchpad/launchpad-detail/LaunchpadDetail";
+import { ProjectLinksObject } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 import { capitalize } from "@utils/string-utils";
 import { removePoolPathUrl } from "@utils/launchpad-remove-pool-path-url";
 

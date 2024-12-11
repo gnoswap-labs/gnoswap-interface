@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
 import { Divider } from "@components/common/select-token/SelectToken.styles";
-import LaunchpadPoolTierChip from "src/layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 export const LaunchpadPoolListSkeletonCard = ({ idx }: { idx: number }) => {

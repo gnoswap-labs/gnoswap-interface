@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
-import HomeLayout from "@views/home/HomeLayout";
+import HomeLayout from "@layouts/home/HomeLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import GnoswapBrandContainer from "@containers/gnoswap-brand-container/GnoswapBrandContainer";
 import HomeSwapContainer from "@containers/home-swap-container/HomeSwapContainer";

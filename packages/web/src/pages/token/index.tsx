@@ -12,17 +12,17 @@ import { useLoading } from "@hooks/common/use-loading";
 
 import { useGetToken, useGetTokenPrices } from "@query/token";
 import { formatPrice } from "@utils/new-number-utils";
-import TokenLayout from "@views/token-detail/TokenLayout";
+import TokenLayout from "@layouts/token-detail/TokenLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import BreadcrumbsContainer, { BreadcrumbTypes } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
-import TokenChartContainer from "@views/token-detail/containers/token-chart-container/TokenChartContainer";
-import TokenInfoContentContainer from "@views/token-detail/containers/token-info-content-container/TokenInfoContentContainer";
-import TokenDescriptionContainer from "@views/token-detail/containers/token-description-container/TokenDescriptionContainer";
-import TokenSwapContainer from "@views/token-detail/containers/token-swap-container/TokenSwapContainer";
-import BestPoolsContainer from "@views/token-detail/containers/best-pools-container/BestPoolsContainer";
-import TrendingCryptos from "@views/token-detail/components/trending-cryptos/TrendingCryptos";
-import TrendingCryptoCardListContainer from "@views/token-detail/containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
-import GainerAndLoserContainer from "@views/token-detail/containers/gainer-and-loser-container/GainerAndLoserContainer";
+import TokenChartContainer from "@layouts/token-detail/containers/token-chart-container/TokenChartContainer";
+import TokenInfoContentContainer from "@layouts/token-detail/containers/token-info-content-container/TokenInfoContentContainer";
+import TokenDescriptionContainer from "@layouts/token-detail/containers/token-description-container/TokenDescriptionContainer";
+import TokenSwapContainer from "@layouts/token-detail/containers/token-swap-container/TokenSwapContainer";
+import BestPoolsContainer from "@layouts/token-detail/containers/best-pools-container/BestPoolsContainer";
+import TrendingCryptos from "@layouts/token-detail/components/trending-cryptos/TrendingCryptos";
+import TrendingCryptoCardListContainer from "@layouts/token-detail/containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
+import GainerAndLoserContainer from "@layouts/token-detail/containers/gainer-and-loser-container/GainerAndLoserContainer";
 import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {

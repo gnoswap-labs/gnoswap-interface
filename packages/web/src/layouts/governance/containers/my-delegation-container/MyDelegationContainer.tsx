@@ -5,7 +5,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetDelegatees, useGetGovernanceSummary, useGetMyDelegation } from "@query/governance";
 import { nullMyDelegationInfo } from "@repositories/governance";
 
-import { useGovernanceTx } from "src/layouts/governance/hooks/use-governance-tx";
+import { useGovernanceTx } from "@layouts/governance/hooks/use-governance-tx";
 import MyDelegation from "../../components/my-delegation/MyDelegation";
 
 const MyDelegationContainer: React.FC = () => {

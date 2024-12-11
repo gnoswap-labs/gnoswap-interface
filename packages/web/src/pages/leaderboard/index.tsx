@@ -4,10 +4,10 @@ import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
-import LeaderboardLayout from "@views/leaderboard-layout/LeaderboardLayout";
+import LeaderboardLayout from "@layouts/leaderboard-layout/LeaderboardLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import LeaderboardSubheaderContainer from "@views/leaderboard-layout/containers/leaderboard-subheader-container/LeaderboardSubheaderContainer";
-import LeaderboardList from "@views/leaderboard-layout/leaderboard-list/LeaderboardList";
+import LeaderboardSubheaderContainer from "@layouts/leaderboard-layout/containers/leaderboard-subheader-container/LeaderboardSubheaderContainer";
+import LeaderboardList from "@layouts/leaderboard-layout/leaderboard-list/LeaderboardList";
 import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {

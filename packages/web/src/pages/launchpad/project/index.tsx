@@ -15,17 +15,17 @@ import { useGetLaunchpadProjectDetails } from "@query/launchpad/use-get-launchpa
 import { BreadcrumbTypes } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import { useGetLaunchpadParticipationInfos } from "@query/launchpad/use-get-launchpad-participation-infos";
 
-import LaunchpadDetailLayout from "@views/launchpad/launchpad-detail/LaunchpadDetailLayout";
+import LaunchpadDetailLayout from "@layouts/launchpad/launchpad-detail/LaunchpadDetailLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
-import LaunchpadDetailContentsHeaderContainer from "@views/launchpad/launchpad-detail/containers/launchpad-detail-contents-header-container/LaunchpadDetailContentsHeaderContainer";
-import LaunchpadPoolListContainer from "@views/launchpad/launchpad-detail/containers/launchpad-pool-list-container/LaunchpadPoolListContainer";
-import LaunchpadProjectSummaryContainer from "@views/launchpad/launchpad-detail/containers/launchpad-project-summary-container/LaunchpadProjectSummaryContainer";
-import LaunchpadAboutProjectContainer from "@views/launchpad/launchpad-detail/containers/launchpad-about-project-container/LaunchpadAboutProjectContainer";
-import LaunchpadParticipateContainer from "@views/launchpad/launchpad-detail/containers/launchpad-participate-container/LaunchpadParticipateContainer";
-import LaunchpadDetailClickHereContainer from "@views/launchpad/launchpad-detail/containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
+import LaunchpadDetailContentsHeaderContainer from "@layouts/launchpad/launchpad-detail/containers/launchpad-detail-contents-header-container/LaunchpadDetailContentsHeaderContainer";
+import LaunchpadPoolListContainer from "@layouts/launchpad/launchpad-detail/containers/launchpad-pool-list-container/LaunchpadPoolListContainer";
+import LaunchpadProjectSummaryContainer from "@layouts/launchpad/launchpad-detail/containers/launchpad-project-summary-container/LaunchpadProjectSummaryContainer";
+import LaunchpadAboutProjectContainer from "@layouts/launchpad/launchpad-detail/containers/launchpad-about-project-container/LaunchpadAboutProjectContainer";
+import LaunchpadParticipateContainer from "@layouts/launchpad/launchpad-detail/containers/launchpad-participate-container/LaunchpadParticipateContainer";
+import LaunchpadDetailClickHereContainer from "@layouts/launchpad/launchpad-detail/containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
 import Footer from "@components/common/footer/Footer";
-import LaunchpadMyParticipationContainer from "@views/launchpad/launchpad-detail/containers/launchpad-my-participation-container/LaunchpadMyParticipationContainer";
+import LaunchpadMyParticipationContainer from "@layouts/launchpad/launchpad-detail/containers/launchpad-my-participation-container/LaunchpadMyParticipationContainer";
 
 export interface ProjectSummaryDataModel {
   totalAllocation: number;

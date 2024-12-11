@@ -6,10 +6,10 @@ import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import * as SwapState from "@states/swap";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-import SwapLayout from "@views/swap/SwapLayout";
+import SwapLayout from "@layouts/swap/SwapLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import SwapContainer from "@views/swap/containers/swap-container/SwapContainer";
-import SwapLiquidityContainer from "@views/swap/containers/swap-liquidity-container/SwapLiquidityContainer";
+import SwapContainer from "@layouts/swap/containers/swap-container/SwapContainer";
+import SwapLiquidityContainer from "@layouts/swap/containers/swap-liquidity-container/SwapLiquidityContainer";
 import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {

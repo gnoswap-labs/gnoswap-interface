@@ -6,7 +6,7 @@ import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetGovernanceSummary, useGetMyDelegation, useGetProposals } from "@query/governance";
 
-import { useCreateProposalModal } from "src/layouts/governance/hooks/use-create-proposal-modal";
+import { useCreateProposalModal } from "@layouts/governance/hooks/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "../../hooks/use-governance-tx";
 

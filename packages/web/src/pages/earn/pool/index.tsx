@@ -14,11 +14,11 @@ import { isValidAddress } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
-import PoolLayout from "@views/pool/pool-detail/PoolLayout";
+import PoolLayout from "@layouts/pool/pool-detail/PoolLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import PoolPairInformationContainer from "@views/pool/pool-detail/containers/pool-pair-information-container/PoolPairInformationContainer";
-import MyLiquidityContainer from "@views/pool/pool-detail/containers/my-liquidity-container/MyLiquidityContainer";
-import StakingContainer from "@views/pool/pool-detail/containers/staking-container/StakingContainer";
+import PoolPairInformationContainer from "@layouts/pool/pool-detail/containers/pool-pair-information-container/PoolPairInformationContainer";
+import MyLiquidityContainer from "@layouts/pool/pool-detail/containers/my-liquidity-container/MyLiquidityContainer";
+import StakingContainer from "@layouts/pool/pool-detail/containers/staking-container/StakingContainer";
 import Footer from "@components/common/footer/Footer";
 
 export async function getStaticProps({ locale }: { locale: string }) {

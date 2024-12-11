@@ -7,7 +7,7 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
-import LaunchpadActiveProjects from "src/layouts/launchpad/components/launchpad-active-projects/LaunchpadActiveProjects";
+import LaunchpadActiveProjects from "@layouts/launchpad/components/launchpad-active-projects/LaunchpadActiveProjects";
 import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
 
 const LaunchpadActiveProjectContainer: React.FC = () => {

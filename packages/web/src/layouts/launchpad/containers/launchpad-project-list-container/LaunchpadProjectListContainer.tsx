@@ -6,7 +6,7 @@ import useDebounce from "@hooks/common/use-debounce";
 import { useGetLaunchpadProjects } from "@query/launchpad/use-get-launchpad-projects";
 import { LaunchpadProjectModel } from "@models/launchpad";
 
-import LaunchpadProjectList from "src/layouts/launchpad/components/launchpad-project-list/LaunchpadProjectList";
+import LaunchpadProjectList from "@layouts/launchpad/components/launchpad-project-list/LaunchpadProjectList";
 import { CommonState } from "@states/index";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import useClickOutside from "@hooks/common/use-click-outside";

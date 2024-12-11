@@ -27,7 +27,7 @@
       "@providers/*": ["src/providers/*"],
       "@states/*": ["src/states/*"],
       "@styles/*": ["src/styles/*"],
-      "@views/*": ["src/layouts/*"],
+      "@layouts/*": ["src/layouts/*"],
       "@models/*": ["src/models/*"],
       "@query/*": ["src/react-query/*"],
       "@context/*": ["src/context/*"],

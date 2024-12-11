@@ -7,7 +7,7 @@ import LaunchpadActiveProjectCardHeader from "./launchpad-active-project-card-he
 import { Divider } from "@components/common/divider/divider";
 import LaunchpadActiveProjectCardData from "./launchpad-active-project-card-data/LaunchpadActiveProjectCardData";
 import { LaunchpadActiveProjectPool } from "@repositories/launchpad/response/get-launchpad-active-projects-response";
-import LaunchpadStatusTimeChip from "src/layouts/launchpad/launchpad-detail/components/common/launchpad-status-time-chip/LaunchpadStatusTimeChip";
+import LaunchpadStatusTimeChip from "@layouts/launchpad/launchpad-detail/components/common/launchpad-status-time-chip/LaunchpadStatusTimeChip";
 
 interface LaunchpadActiveProjectCardProps {
   project: LaunchpadProjectResponse;
