@@ -73,9 +73,7 @@ export function makeCreatePoolMessageWithApproves(
    */
   const isOrdered = isOrderedTokenPaths(tokenAPath, tokenBPath);
 
-  const [orderedPoolAPath, orderedPoolBPath] = [tokenAPath, tokenBPath].sort((a, b) =>
-    (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }),
-  );
+  const [orderedPoolAPath, orderedPoolBPath] = [tokenAPath, tokenBPath].sort();
   const orderedStartPriceNum = isOrdered || startPriceNum === 0 ? startPriceNum : 1 / startPriceNum;
   const startPriceSqrt = tickToSqrtPriceX96(priceToTick(orderedStartPriceNum));
 

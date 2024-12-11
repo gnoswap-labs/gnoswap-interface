@@ -548,9 +548,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
-      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort((a, b) =>
-        (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }),
-      );
+      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort();
       const compareToken = selectPool.compareToken;
       const reverse =
         tokenPair.findIndex(path => {
@@ -577,7 +575,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     const pair = [tokenA?.path, tokenB?.path]
       .filter(item => item !== undefined)
-      .sort((a, b) => (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }))
+      .sort()
       .join(":");
 
     const isDifferentPair = pair !== lastPoolPathRef.current;

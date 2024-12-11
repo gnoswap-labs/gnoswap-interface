@@ -91,9 +91,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState() === "DONE";
 
     const flip = useMemo(() => {
-      const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort((a, b) =>
-        (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }),
-      );
+      const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort();
       return compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken?.path || "");
     }, [selectPool.compareToken, tokenA.path, tokenB.path]);
 

@@ -118,9 +118,7 @@ export const useSelectPool = ({
       return null;
     }
 
-    return [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort((a, b) =>
-      (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }),
-    );
+    return [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort();
   }, [tokenA, tokenB]);
 
   const isReverse = useMemo(() => {

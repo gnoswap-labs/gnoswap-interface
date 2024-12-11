@@ -20,13 +20,7 @@ export function makePoolPath(
   }
   const tokenAPath = tokenA.wrappedPath || tokenA.path || "";
   const tokenBPath = tokenB.wrappedPath || tokenB.path || "";
-  return (
-    [tokenAPath, tokenBPath]
-      .sort((a, b) => (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }))
-      .join(":") +
-    ":" +
-    SwapFeeTierInfoMap[swapFeeTier].fee
-  );
+  return [tokenAPath, tokenBPath].sort().join(":") + ":" + SwapFeeTierInfoMap[swapFeeTier].fee;
 }
 
 export function isMaxTick(tick: number) {
@@ -56,9 +50,5 @@ export function checkPoolStakingRewards(type?: INCENTIVE_TYPE) {
 }
 
 export function isOrderedTokenPaths(tokenAPath: string, tokenBPath: string): boolean {
-  return (
-    [tokenAPath, tokenBPath].sort((a, b) =>
-      (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }),
-    )?.[0] === tokenAPath
-  );
+  return [tokenAPath, tokenBPath].sort()?.[0] === tokenAPath;
 }

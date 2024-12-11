@@ -78,9 +78,7 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
       return false;
     }
 
-    const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort((a, b) =>
-      (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }),
-    );
+    const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort();
     return compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path);
   }, [selectPool.compareToken, selectPool.startPrice, tokenA.path, tokenB.path]);
 

@@ -29,9 +29,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
     const tokenATokenPath = checkGnotPath(tokenA.path) ? tokenA.wrappedPath : tokenA.path;
     const tokenBTokenPath = checkGnotPath(tokenB.path) ? tokenB.wrappedPath : tokenB.path;
 
-    const tokenPair = [tokenATokenPath, tokenBTokenPath].sort((a, b) =>
-      (a ?? "").toString().localeCompare(b ?? "", "en", { numeric: false }),
-    );
+    const tokenPair = [tokenATokenPath, tokenBTokenPath].sort();
 
     return [
       SwapFeeTierInfoMap.FEE_100,
