@@ -4,11 +4,7 @@ import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
-import LeaderboardLayout from "@layouts/leaderboard-layout/LeaderboardLayout";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import LeaderboardSubheaderContainer from "@layouts/leaderboard-layout/containers/leaderboard-subheader-container/LeaderboardSubheaderContainer";
-import LeaderboardList from "@layouts/leaderboard-layout/leaderboard-list/LeaderboardList";
-import Footer from "@components/common/footer/Footer";
+import Leaderboard from "@layouts/leaderboard-layout/Leaderboard";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -33,12 +29,7 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <LeaderboardLayout
-        header={<HeaderContainer />}
-        subheader={<LeaderboardSubheaderContainer />}
-        list={<LeaderboardList />}
-        footer={<Footer />}
-      />
+      <Leaderboard />
     </>
   );
 }

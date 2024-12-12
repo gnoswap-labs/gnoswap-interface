@@ -1,14 +1,7 @@
 import { useMemo } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-import useCustomRouter from "@hooks/common/use-custom-router";
-import { useTranslation } from "react-i18next";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { DeviceSize } from "@styles/media";
-import { useGetPoolDetailByPath } from "@query/pools";
-import { useLoading } from "@hooks/common/use-loading";
-import { makeRouteUrl } from "@utils/page.utils";
-import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
+import useRouter from "@hooks/common/use-custom-router";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -17,13 +10,7 @@ import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
-import PoolAddLayout from "@layouts/pool/pool-add/PoolAddLayout";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
-import AdditionalInfoContainer from "@layouts/pool/pool-add/containers/additional-info-container/AdditionalInfoContainer";
-import PoolAddLiquidityContainer from "@layouts/pool/pool-add/containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
-import EarnAddLiquidityContainer from "@layouts/pool/pool-add/containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import Footer from "@components/common/footer/Footer";
+import PoolAdd from "@layouts/pool/pool-add/PoolAdd";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -34,15 +21,9 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
-  const router = useCustomRouter();
+  const router = useRouter();
   const query = router.query;
-  const poolPath = router.getPoolPath();
-  const { t } = useTranslation();
-  const { width } = useWindowSize();
 
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath, { enabled: !!poolPath });
-
-  const { isLoading: isLoadingCommon } = useLoading();
   const { tokens } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
@@ -54,28 +35,6 @@ export default function Page() {
     }
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [feeTier]);
-
-  const useDedicatedPool = useMemo(() => false, []);
-
-  const listBreadcrumb = useMemo(() => {
-    const base = [{ title: t("business:pageHeader.earn"), path: "/earn" }];
-
-    if (useDedicatedPool) {
-      base.push({
-        title:
-          width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000}%)`
-            : "...",
-        path: makeRouteUrl(PAGE_PATH.POOL, {
-          [QUERY_PARAMETER.POOL_PATH]: data?.poolPath,
-        }),
-      });
-    }
-
-    base.push({ title: t("business:pageHeader.addPosi"), path: "" });
-
-    return base;
-  }, [t, useDedicatedPool, width, getGnotPath, data?.tokenA, data?.tokenB, data?.fee, data?.poolPath]);
 
   /**
    * SEO
@@ -101,18 +60,7 @@ export default function Page() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <PoolAddLayout
-        header={<HeaderContainer />}
-        breadcrumbs={
-          <BreadcrumbsContainer
-            listBreadcrumb={listBreadcrumb}
-            isLoading={useDedicatedPool ? isLoadingCommon || isLoading : false}
-          />
-        }
-        addLiquidity={useDedicatedPool ? <PoolAddLiquidityContainer /> : <EarnAddLiquidityContainer />}
-        additionalInfo={<AdditionalInfoContainer />}
-        footer={<Footer />}
-      />
+      <PoolAdd useDedicatedPool={false} />
     </>
   );
 }

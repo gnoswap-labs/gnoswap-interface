@@ -4,16 +4,9 @@ import { useMemo } from "react";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { formatAddress } from "@utils/string-utils";
-import { useWallet } from "@hooks/wallet/use-wallet";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
-import EarnLayout from "@layouts/earn/EarnLayout";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import EarnMyPositionContainer from "@layouts/earn/containers/earn-my-position-container/EarnMyPositionContainer";
-import IncentivizedPoolsContainer from "@layouts/earn/containers/incentivized-pools-container/IncentivizedPoolsContainer";
-import IncentivizedPoolCardListContainer from "@layouts/earn/containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
-import PoolListContainer from "@layouts/earn/containers/pool-list-container/PoolListContainer";
-import Footer from "@components/common/footer/Footer";
+import Earn from "@layouts/earn/Earn";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -24,10 +17,8 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
-  const { account } = useWallet();
   const router = useCustomRouter();
   const addr = router.getAddress();
-  const isOtherPosition = !!(addr && addr !== account?.address);
 
   /**
    * SEO
@@ -43,18 +34,7 @@ export default function Page() {
         ogTitle={seoInfo?.ogTitle?.()}
         ogDescription={seoInfo?.ogDesc?.()}
       />
-      <EarnLayout
-        header={<HeaderContainer />}
-        positions={<EarnMyPositionContainer isOtherPosition={isOtherPosition} address={(addr || "") as string} />}
-        incentivizedPools={
-          <IncentivizedPoolsContainer
-            isOtherPosition={isOtherPosition}
-            cardList={<IncentivizedPoolCardListContainer />}
-          />
-        }
-        poolList={<PoolListContainer />}
-        footer={<Footer />}
-      />
+      <Earn />
     </>
   );
 }

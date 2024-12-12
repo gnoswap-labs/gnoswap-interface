@@ -4,10 +4,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
-
-import PrivacyLayout from "@layouts/privacy/PrivacyLayout";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import Footer from "@components/common/footer/Footer";
+import Privacy from "@layouts/privacy/Privacy";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -32,7 +29,7 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <PrivacyLayout header={<HeaderContainer />} footer={<Footer />} />;
+      <Privacy />
     </>
   );
 }

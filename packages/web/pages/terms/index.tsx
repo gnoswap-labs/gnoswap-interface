@@ -4,9 +4,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
-import TermsLayout from "@layouts/terms/TermsLayout";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import Footer from "@components/common/footer/Footer";
+import Terms from "@layouts/terms/Terms";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -31,7 +29,7 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <TermsLayout header={<HeaderContainer />} footer={<Footer />} />;
+      <Terms />
     </>
   );
 }

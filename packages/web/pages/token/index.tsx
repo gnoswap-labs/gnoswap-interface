@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useTranslation } from "react-i18next";
 
 import { TokenError } from "@common/errors/token";
 import SEOHeader from "@components/common/seo-header/seo-header";
@@ -8,22 +7,9 @@ import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useLoading } from "@hooks/common/use-loading";
-
 import { useGetToken, useGetTokenPrices } from "@query/token";
 import { formatPrice } from "@utils/new-number-utils";
-import TokenLayout from "@layouts/token-detail/TokenLayout";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import BreadcrumbsContainer, { BreadcrumbTypes } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
-import TokenChartContainer from "@layouts/token-detail/containers/token-chart-container/TokenChartContainer";
-import TokenInfoContentContainer from "@layouts/token-detail/containers/token-info-content-container/TokenInfoContentContainer";
-import TokenDescriptionContainer from "@layouts/token-detail/containers/token-description-container/TokenDescriptionContainer";
-import TokenSwapContainer from "@layouts/token-detail/containers/token-swap-container/TokenSwapContainer";
-import BestPoolsContainer from "@layouts/token-detail/containers/best-pools-container/BestPoolsContainer";
-import TrendingCryptos from "@layouts/token-detail/components/trending-cryptos/TrendingCryptos";
-import TrendingCryptoCardListContainer from "@layouts/token-detail/containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
-import GainerAndLoserContainer from "@layouts/token-detail/containers/gainer-and-loser-container/GainerAndLoserContainer";
-import Footer from "@components/common/footer/Footer";
+import TokenDetail from "@layouts/token-detail/TokenDetail";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -36,8 +22,6 @@ export async function getStaticProps({ locale }: { locale: string }) {
 export default function Page() {
   const router = useCustomRouter();
   const path = router.getTokenPath();
-  const { isLoading } = useLoading();
-  const { t } = useTranslation();
 
   const { data: token } = useGetToken(path, {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,23 +46,6 @@ export default function Page() {
     }
     return getGnotPath(token);
   }, [getGnotPath, token]);
-
-  const steps = useMemo(() => {
-    return [
-      {
-        title: t("common:main"),
-        path: "/",
-      },
-      {
-        title: `${token?.symbol || ""}`,
-        path: "",
-        options: {
-          type: "TOKEN_SYMBOL" as BreadcrumbTypes,
-          token: token,
-        },
-      },
-    ];
-  }, [token, t]);
 
   /**
    * SEO
@@ -109,18 +76,7 @@ export default function Page() {
   return (
     <>
       <SEOHeader title={title} ogTitle={ogTitle} pageDescription={desc} ogDescription={seoInfo.ogDesc?.()} />
-      <TokenLayout
-        header={<HeaderContainer />}
-        breadcrumbs={<BreadcrumbsContainer listBreadcrumb={steps} isLoading={isLoading} w="102px" />}
-        chart={<TokenChartContainer />}
-        info={<TokenInfoContentContainer />}
-        description={<TokenDescriptionContainer />}
-        swap={<TokenSwapContainer />}
-        bestPools={<BestPoolsContainer />}
-        trending={<TrendingCryptos cardList={<TrendingCryptoCardListContainer />} />}
-        gainersAndLosers={<GainerAndLoserContainer />}
-        footer={<Footer />}
-      />
+      <TokenDetail />
     </>
   );
 }

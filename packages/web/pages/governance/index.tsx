@@ -3,12 +3,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
-import GovernanceLayout from "@layouts/governance/GovernanceLayout";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import GovernanceSummaryContainer from "@layouts/governance/containers/governance-summary-container/GovernanceSummaryContainer";
-import MyDelegationContainer from "@layouts/governance/containers/my-delegation-container/MyDelegationContainer";
-import ProposalListContainer from "@layouts/governance/containers/proposal-list-container/ProposalListContainer";
-import Footer from "@components/common/footer/Footer";
+import Governance from "@layouts/governance/Governance";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -33,13 +28,7 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <GovernanceLayout
-        header={<HeaderContainer />}
-        summary={<GovernanceSummaryContainer />}
-        myDelegation={<MyDelegationContainer />}
-        list={<ProposalListContainer />}
-        footer={<Footer />}
-      />
+      <Governance />
     </>
   );
 }

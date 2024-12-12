@@ -4,13 +4,7 @@ import { useMemo } from "react";
 import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 
-import DashboardLayout from "@layouts/dashboard/DashboardLayout";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
-import TvlChartContainer from "@layouts/dashboard/containers/tvl-chart-container/TvlChartContainer";
-import VolumeChartContainer from "@layouts/dashboard/containers/volume-chart-container/VolumeChartContainer";
-import DashboardInfoContainer from "@layouts/dashboard/containers/dashboard-info-container/DashboardInfoContainer";
-import DashboardActivitiesContainer from "@layouts/dashboard/containers/dashboard-activities-container/DashboardActivitiesContainer";
-import Footer from "@components/common/footer/Footer";
+import Dashboard from "@layouts/dashboard/Dashboard";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -35,14 +29,7 @@ export default function Page() {
         ogTitle={seoInfo.ogTitle?.()}
         ogDescription={seoInfo.ogDesc?.()}
       />
-      <DashboardLayout
-        header={<HeaderContainer />}
-        tvl={<TvlChartContainer />}
-        volume={<VolumeChartContainer />}
-        info={<DashboardInfoContainer />}
-        activities={<DashboardActivitiesContainer />}
-        footer={<Footer />}
-      />
+      <Dashboard />
     </>
   );
 }
