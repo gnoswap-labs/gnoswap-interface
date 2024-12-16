@@ -19,7 +19,7 @@ import { EarnState } from "@states/index";
 
 import IncentivizePoolModal from "../../components/incentivize-pool-modal/IncentivizePoolModal";
 
-const DAY_TIME = 24 * 60 * 60;
+const DAY_TIME = 60;
 const MILLISECONDS = 1000;
 
 interface IncentivizePoolModalContainerProps {
