@@ -27,7 +27,7 @@ const PoolReposition: React.FC = () => {
 
   const listBreadcrumb = useMemo(() => {
     return [
-      { title: t("business:pageHeader.earn"), path: "/earn" },
+      { title: t("business:pageHeader.earn"), path: PAGE_PATH.EARN },
       {
         title:
           width > DeviceSize.mediumWeb

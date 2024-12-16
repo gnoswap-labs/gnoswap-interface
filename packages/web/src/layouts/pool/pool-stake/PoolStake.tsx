@@ -10,6 +10,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { DeviceSize } from "@styles/media";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
+import { PAGE_PATH } from "@constants/page.constant";
 
 import StakePositionLayout from "./StakePositionLayout";
 import StakePositionContainer from "./containers/stake-position-container/StakePositionContainer";
@@ -25,7 +26,7 @@ const PoolStake: React.FC = () => {
 
   const listBreadcrumb = useMemo(() => {
     return [
-      { title: t("business:pageHeader.earn"), path: "/earn" },
+      { title: t("business:pageHeader.earn"), path: PAGE_PATH.EARN },
       {
         title:
           width >= DeviceSize.mediumWeb

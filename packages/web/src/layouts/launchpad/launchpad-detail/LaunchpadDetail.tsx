@@ -22,6 +22,8 @@ import LaunchpadMyParticipationContainer from "./containers/launchpad-my-partici
 import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-click-here-container/LaunchpadDetailClickHereContainer";
 import Footer from "@components/common/footer/Footer";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { PAGE_PATH } from "@constants/page.constant";
+
 export interface ProjectSummaryDataModel {
   totalAllocation: number;
   totalParticipants: number;
@@ -79,7 +81,7 @@ const LaunchpadDetail: React.FC = () => {
     return [
       {
         title: title,
-        path: "/launchpad",
+        path: PAGE_PATH.LAUNCHPAD,
         options: {
           type: "LAUNCHPAD" as BreadcrumbTypes,
         },
@@ -133,12 +135,14 @@ const LaunchpadDetail: React.FC = () => {
    */
   const [linksInfo, setLinksInfo] = React.useState({});
 
+  const URL_SUFFIX = "Url";
+
   function transformUrls(input: InputObject): OutputObject {
     const output: OutputObject = {};
 
     for (const [key, value] of Object.entries(input)) {
-      if (key.endsWith("Url") && typeof value === "string") {
-        const newKey = key.slice(0, -3);
+      if (key.endsWith(URL_SUFFIX) && typeof value === "string") {
+        const newKey = key.slice(0, -URL_SUFFIX.length);
         output[newKey] = value.trim();
       }
     }

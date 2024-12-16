@@ -24,7 +24,7 @@ import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapS
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import SnackbarProvider from "@providers/snackbar-provider/SnackbarProvider";
 
-import nextI18NextConfig from "../next-i18next.config";
+import nextI18nextConfig from "next-i18next.config";
 import Custom500 from "./500";
 
 function App({ Component, pageProps }: AppProps) {
@@ -84,6 +84,6 @@ function App({ Component, pageProps }: AppProps) {
 /// Cast to fix type error from next-i18next.
 /// Reference: https://github.com/i18next/next-i18next/issues/2049
 export default appWithTranslation(App, {
-  ...nextI18NextConfig,
+  ...nextI18nextConfig,
   debug: false,
 } as UserConfig);
