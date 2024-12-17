@@ -25,6 +25,7 @@ import {
   tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -118,7 +119,7 @@ export const useSelectPool = ({
       return null;
     }
 
-    return [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort();
+    return [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort(sortTokenPaths);
   }, [tokenA, tokenB]);
 
   const isReverse = useMemo(() => {

@@ -1,4 +1,5 @@
 import { GNS_TOKEN_PATH, WRAPPED_GNOT_PATH } from "./environment.constant";
+import { sortTokenPaths } from "@utils/sort-utils";
 
 export const DEFAULT_NETWORK_ID = "portal-loop";
 
@@ -309,7 +310,7 @@ export const DEFAULT_POOL_ADD_URI = `/earn/add?tokenA=gnot&tokenB=${GNS_TOKEN_PA
 
 export const DEFAULT_TOKEN_PAIR = [WRAPPED_GNOT_PATH, GNS_TOKEN_PATH];
 
-export const DEFAULT_POOL_PATH = [...DEFAULT_TOKEN_PAIR.sort(), "3000"].join(":");
+export const DEFAULT_POOL_PATH = [...DEFAULT_TOKEN_PAIR.sort(sortTokenPaths), "3000"].join(":");
 
 export const LANGUAGE_CODE_MAP: Record<string, string> = {
   en: "en-US",

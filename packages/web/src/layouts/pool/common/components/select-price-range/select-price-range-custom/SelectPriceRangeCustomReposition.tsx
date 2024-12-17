@@ -20,6 +20,7 @@ import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 
 import SelectPriceRangeCutomController from "./price-steps/PriceSteps";
 
@@ -78,7 +79,7 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
       return false;
     }
 
-    const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort();
+    const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort(sortTokenPaths);
     return compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path);
   }, [selectPool.compareToken, selectPool.startPrice, tokenA.path, tokenB.path]);
 
