@@ -80,7 +80,7 @@ export class TokenRepositoryMock implements TokenRepository {
   };
 
   public clearSearchLogs = async (): Promise<boolean> => {
-    await this.localStorageClient.remove("search-token-logs");
+    this.localStorageClient.remove("search-token-logs");
     return true;
   };
 
