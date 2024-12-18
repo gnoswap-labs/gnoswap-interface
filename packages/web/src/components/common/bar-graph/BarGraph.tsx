@@ -162,13 +162,24 @@ const BarGraph: React.FC<BarGraphProps> = ({
     return getGraphPoints()[currentTick];
   }, [currentTick, getGraphPoints]);
 
+  const getEventCoordinates = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>,
+  ) => {
+    const isTouch = event.type.startsWith("touch");
+    const touch = isTouch ? (event as React.TouchEvent<HTMLDivElement>).touches[0] : null;
+
+    return {
+      clientX: isTouch ? touch?.clientX : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientX,
+      clientY: isTouch ? touch?.clientY : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY,
+    };
+  };
+
   const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    const isTouch = event.type.startsWith("touch");
-    const touch = isTouch ? (event as React.TouchEvent<HTMLDivElement>).touches[0] : null;
-    const clientX = isTouch ? touch?.clientX : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientX;
-    const clientY = isTouch ? touch?.clientY : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
+
+    const { clientX, clientY } = getEventCoordinates(event);
+
     if (!activated) {
       setCurrentPointIndex(-1);
       return;
