@@ -6,17 +6,32 @@ export interface DoubleLogoStyleProps {
   overlap?: string | number;
 }
 
+const FONT_SIZES = {
+  36: "13px",
+  32: "12px",
+  28: "10px",
+  24: "9px",
+  21: "8px",
+  20: "7px",
+} as const;
+
+type SizeKey = keyof typeof FONT_SIZES;
+
+const getSizeValue = (size: string | number | undefined) => {
+  if (!size) return "36px";
+  return typeof size === "number" ? `${size}px` : size;
+};
+
+const getFontSize = (size: string | number = 36): string => {
+  const key = typeof size === "string" ? parseInt(size) : size;
+  return FONT_SIZES[key as SizeKey];
+};
+
 export const DoubleLogoWrapper = styled.div<DoubleLogoStyleProps>`
   ${mixins.flexbox("row", "center", "center")};
   img {
-    width: ${({ size }) => {
-      if (size) return typeof size === "number" ? `${size}px` : size;
-      return "36px";
-    }};
-    height: ${({ size }) => {
-      if (size) return typeof size === "number" ? `${size}px` : size;
-      return "36px";
-    }};
+    width: ${({ size }) => getSizeValue(size)};
+    height: ${({ size }) => getSizeValue(size)};
     border-radius: 50%;
   }
   .right-logo {
@@ -27,34 +42,12 @@ export const DoubleLogoWrapper = styled.div<DoubleLogoStyleProps>`
   }
   .missing-logo {
     ${mixins.flexbox("row", "center", "center")};
-    width: ${({ size }) => {
-      if (size) return typeof size === "number" ? `${size}px` : size;
-      return "36px";
-    }};
-    height: ${({ size }) => {
-      if (size) return typeof size === "number" ? `${size}px` : size;
-      return "36px";
-    }};
+    width: ${({ size }) => getSizeValue(size)};
+    height: ${({ size }) => getSizeValue(size)};
     font-weight: 600;
     border-radius: 50%;
     color: ${({ theme }) => theme.color.text02};
     background-color: ${({ theme }) => theme.color.text04};
-    font-size: ${({ size = 36 }) => {
-      return `${
-        size === 36
-          ? "13"
-          : size === 32
-          ? "12"
-          : size === 28
-          ? "10"
-          : size === 24
-          ? "9"
-          : size === 21
-          ? "8"
-          : size === 20
-          ? "7"
-          : "6"
-      }px`;
-    }};
+    font-size: ${({ size = 36 }) => getFontSize(size)};
   }
 `;

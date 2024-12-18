@@ -9,6 +9,33 @@ import { convertToKMB } from "@utils/stake-position-utils";
 import { formatPrice } from "@utils/new-number-utils";
 import dayjs from "dayjs";
 
+interface DataItem {
+  value: number;
+  time: string | number;
+}
+
+interface DataContext {
+  current: DataItem;
+  prev2: DataItem | null;
+  prev1: DataItem | null;
+  next1: DataItem | null;
+  next2: DataItem | null;
+}
+
+function getDataItem(data: DataItem[], index: number): DataItem | null {
+  return index >= 0 && index < data.length ? data[index] : null;
+}
+
+function createItemContext(data: DataItem[], currentIndex: number): DataContext {
+  return {
+    current: data[currentIndex],
+    prev2: getDataItem(data, currentIndex - 2),
+    prev1: getDataItem(data, currentIndex - 1),
+    next1: getDataItem(data, currentIndex + 1),
+    next2: getDataItem(data, currentIndex + 2),
+  };
+}
+
 function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthX = pointB.x - pointA.x;
   const lengthY = pointB.y - pointA.y;
@@ -191,19 +218,16 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
       if (smooth) {
         return newDatas.map((item, index) => {
-          const currentItem = item;
-          const previous2Item = index > 1 ? newDatas[index - 2] : null;
-          const previous1Item = index !== 0 ? newDatas[index - 1] : null;
-          const next1Item = index !== length - 1 ? newDatas[index + 1] : null;
-          const next2Item = index !== length - 2 ? newDatas[index + 2] : null;
-          if (previous1Item && next1Item && next2Item) {
+          const context = createItemContext(newDatas, index);
+
+          if (context.prev1 && context.next1 && context.next2) {
             if (
-              Math.abs(next1Item.value - next2Item.value) < 0.001 &&
-              Math.abs(currentItem.value - next1Item.value) < 0.001 &&
-              Math.abs(currentItem.value - previous1Item.value) >= 0.001
+              Math.abs(context.next1.value - context.next2.value) < 0.001 &&
+              Math.abs(context.current.value - context.next1.value) < 0.001 &&
+              Math.abs(context.current.value - context.prev1.value) >= 0.001
             ) {
-              const fakeItemValue = new BigNumber(currentItem.value)
-                .minus(BigNumber(currentItem.value).minus(BigNumber(previous1Item.value)).dividedBy(15))
+              const fakeItemValue = new BigNumber(context.current.value)
+                .minus(BigNumber(context.current.value).minus(BigNumber(context.prev1.value)).dividedBy(15))
                 .toNumber();
 
               return {
@@ -212,14 +236,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
               };
             }
           }
-          if (previous2Item && previous1Item && next1Item)
+          if (context.prev2 && context.prev1 && context.next1)
             if (
-              Math.abs(previous2Item.value - previous1Item.value) < 0.001 &&
-              Math.abs(previous1Item.value - currentItem.value) < 0.001
+              Math.abs(context.prev2.value - context.prev1.value) < 0.001 &&
+              Math.abs(context.prev1.value - context.current.value) < 0.001
             ) {
-              if (currentItem.value - next1Item.value >= 0.01) {
-                const fakeItemValue = new BigNumber(currentItem.value)
-                  .plus(BigNumber(next1Item.value).minus(BigNumber(currentItem.value)).dividedBy(15))
+              if (context.current.value - context.next1.value >= 0.01) {
+                const fakeItemValue = new BigNumber(context.current.value)
+                  .plus(BigNumber(context.next1.value).minus(BigNumber(context.current.value)).dividedBy(15))
                   .toNumber();
 
                 return {
@@ -228,9 +252,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 };
               }
 
-              if (next1Item.value - currentItem.value >= 0.01) {
-                const fakeItemValue = new BigNumber(currentItem.value)
-                  .plus(BigNumber(next1Item.value).minus(BigNumber(currentItem.value)).dividedBy(15))
+              if (context.next1.value - context.current.value >= 0.01) {
+                const fakeItemValue = new BigNumber(context.current.value)
+                  .plus(BigNumber(context.next1.value).minus(BigNumber(context.current.value)).dividedBy(15))
                   .toNumber();
 
                 return {
