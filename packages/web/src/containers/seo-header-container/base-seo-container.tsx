@@ -1,6 +1,7 @@
 import React from "react";
 
 import { SEOInfo } from "@constants/common.constant";
+import { nullish } from "@utils/nullish-utils";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
 
@@ -25,7 +26,7 @@ export const BaseSEOContainer = ({
 
   return (
     <SEOHeader
-      title={customTitle || seoInfo.title(titleParams)}
+      title={nullish.handleFalsy(customTitle, seoInfo.title(titleParams))}
       pageDescription={seoInfo.desc(descParams)}
       ogTitle={seoInfo.ogTitle?.(ogTitleParams)}
       ogDescription={seoInfo.ogDesc?.()}

@@ -36,10 +36,6 @@ export default function Page() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [feeTier]);
 
-  /**
-   * SEO
-   * Todo: SEO will be managed by a new container
-   */
   const seoInfo = useMemo(() => SEOInfo["/earn/add"], []);
 
   const title = useMemo(() => {
