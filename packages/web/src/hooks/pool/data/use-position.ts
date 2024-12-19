@@ -3,7 +3,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
 import BigNumber from "bignumber.js";
 import { useCallback } from "react";
-import { useGnoswapContext } from "./use-gnoswap-context";
+import { useGnoswapContext } from "../../common/use-gnoswap-context";
 
 export const usePosition = (positions: PositionModel[]) => {
   const { positionRepository } = useGnoswapContext();

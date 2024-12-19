@@ -1,6 +1,6 @@
 import React, { cloneElement, useRef } from "react";
 
-import { usePositionModal } from "@hooks/common/use-position-modal";
+import { usePositionModal } from "@hooks/wallet/ui/use-position-modal";
 
 import { ModalStyleProps, ModalWrapper, Overlay } from "./Modal.styles";
 

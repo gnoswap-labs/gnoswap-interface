@@ -13,7 +13,7 @@ import {
 import { useAddress } from "@hooks/common/use-address";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useSelectPool } from "@hooks/pool/data/use-select-pool";

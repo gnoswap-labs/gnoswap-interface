@@ -2,7 +2,7 @@ import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useCallback, useEffect, useMemo } from "react";
 import { useGetPositionsByAddress, useMakePoolPositions } from "@query/positions";
-import { useLoading } from "./use-loading";
+import { useLoading } from "@hooks/common/use-loading";
 import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
 import { PositionModel } from "@models/position/position-model";
 

@@ -9,7 +9,7 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetIncentivizePoolList, useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";

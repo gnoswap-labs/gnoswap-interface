@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { DEFAULT_POOL_PATH } from "@constants/common.constant";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";

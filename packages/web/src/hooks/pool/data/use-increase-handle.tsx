@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { PriceRangeMeta, RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
 import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useSelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";

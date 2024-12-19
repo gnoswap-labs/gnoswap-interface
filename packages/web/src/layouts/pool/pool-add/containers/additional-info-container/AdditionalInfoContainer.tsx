@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from "react";
 
 import { PAGE_PATH_TYPE } from "@constants/page.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { initialDetailPool } from "@models/pool/pool-detail-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";

@@ -15,7 +15,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import { useCopy } from "@hooks/common/use-copy";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { usePositionModal } from "@hooks/common/use-position-modal";
+import { usePositionModal } from "@hooks/wallet/ui/use-position-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";

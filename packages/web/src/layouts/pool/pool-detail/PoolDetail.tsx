@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import Footer from "@components/common/footer/Footer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolDetailByPath } from "@query/pools";

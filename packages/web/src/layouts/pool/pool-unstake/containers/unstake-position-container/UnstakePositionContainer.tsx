@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 
 import UnstakeLiquidity from "../../components/unstake-liquidity/UnstakeLiquidity";
 import { useUnstakePositionModal } from "@hooks/pool/ui/use-unstake-position-modal";
