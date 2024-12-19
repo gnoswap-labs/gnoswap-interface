@@ -1,12 +1,10 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useMemo } from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
-import { formatAddress } from "@utils/string-utils";
+import { DEFAULT_I18N_NS } from "@constants/common.constant";
 
-import SEOHeader from "@components/common/seo-header/seo-header";
 import Earn from "@layouts/earn/Earn";
+import { EarnSEOContainer } from "@containers/seo-header-container";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -20,20 +18,9 @@ export default function Page() {
   const router = useCustomRouter();
   const addr = router.getAddress();
 
-  /**
-   * SEO
-   * Todo: SEO will be managed by a new container
-   */
-  const seoInfo = useMemo(() => SEOInfo[addr ? "/earn?address" : "/earn"], [addr]);
-
   return (
     <>
-      <SEOHeader
-        title={seoInfo.title([addr ? formatAddress(addr) : undefined].filter(item => item) as string[])}
-        pageDescription={seoInfo.desc()}
-        ogTitle={seoInfo?.ogTitle?.()}
-        ogDescription={seoInfo?.ogDesc?.()}
-      />
+      <EarnSEOContainer address={addr} />
       <Earn />
     </>
   );

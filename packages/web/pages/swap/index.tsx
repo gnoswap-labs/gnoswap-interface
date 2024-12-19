@@ -5,8 +5,8 @@ import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import * as SwapState from "@states/swap";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-import SEOHeader from "@components/common/seo-header/seo-header";
 import Swap from "@layouts/swap/Swap";
+import { SwapSEOContainer } from "@containers/seo-header-container";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -19,10 +19,6 @@ export async function getStaticProps({ locale }: { locale: string }) {
 export default function Page() {
   const [swapInfo] = useAtom(SwapState.swap);
 
-  /**
-   * SEO
-   * Todo: SEO will be managed by a new container
-   */
   const seoInfo = useMemo(() => SEOInfo["/swap"], []);
 
   const title = useMemo(
@@ -32,12 +28,7 @@ export default function Page() {
 
   return (
     <>
-      <SEOHeader
-        title={title}
-        pageDescription={seoInfo.desc()}
-        ogTitle={seoInfo.ogTitle?.()}
-        ogDescription={seoInfo.ogDesc?.()}
-      />
+      <SwapSEOContainer customTitle={title} />
       <Swap />
     </>
   );

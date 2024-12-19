@@ -12,7 +12,7 @@ import { formatAddress } from "@utils/string-utils";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
-import SEOHeader from "@components/common/seo-header/seo-header";
+import { EarnPoolSEOContainer } from "@containers/seo-header-container";
 import PoolDetail from "@layouts/pool/pool-detail/PoolDetail";
 
 export async function getStaticProps({ locale }: { locale: string }) {
@@ -49,10 +49,6 @@ export default function Page() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(data.fee)]?.rateStr;
   }, [data?.fee]);
 
-  /**
-   * SEO
-   * Todo: SEO will be managed by a new container
-   */
   const seoInfo = React.useMemo(() => SEOInfo[address ? "/earn/pool?address" : "/earn/pool"], [address]);
 
   const title = React.useMemo(() => {
@@ -68,12 +64,7 @@ export default function Page() {
 
   return (
     <>
-      <SEOHeader
-        title={title}
-        pageDescription={seoInfo.desc()}
-        ogTitle={seoInfo?.ogTitle?.()}
-        ogDescription={seoInfo?.ogDesc?.()}
-      />
+      <EarnPoolSEOContainer customTitle={title} address={address} />
       <PoolDetail />
     </>
   );

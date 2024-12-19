@@ -1,15 +1,16 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useMemo } from "react";
 
-import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
-import PoolAdd from "@layouts/pool/pool-add/PoolAdd";
 import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
+
+import { EarnPoolAddSEOContainer } from "@containers/seo-header-container";
+import PoolAdd from "@layouts/pool/pool-add/PoolAdd";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -46,12 +47,7 @@ export default function Page() {
 
   return (
     <>
-      <SEOHeader
-        title={title}
-        pageDescription={seoInfo.desc()}
-        ogTitle={seoInfo?.ogTitle?.()}
-        ogDescription={seoInfo?.ogDesc?.()}
-      />
+      <EarnPoolAddSEOContainer customTitle={title} />
       <PoolAdd useDedicatedPool />
     </>
   );
