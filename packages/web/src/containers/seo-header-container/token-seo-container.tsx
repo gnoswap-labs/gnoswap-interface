@@ -5,7 +5,7 @@ import { formatPrice } from "@utils/new-number-utils";
 import { BaseSEOContainer } from "./base-seo-container";
 
 interface TokenSEOProps {
-  currentPrice?: string | undefined;
+  currentPrice: string | undefined;
   wrappedToken:
     | {
         name?: string;
