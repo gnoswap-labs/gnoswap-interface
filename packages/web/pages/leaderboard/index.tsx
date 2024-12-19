@@ -1,10 +1,9 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useMemo } from "react";
 
-import SEOHeader from "@components/common/seo-header/seo-header";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS } from "@constants/common.constant";
 
 import Leaderboard from "@layouts/leaderboard-layout/Leaderboard";
+import { LeaderboardSEOContainer } from "@containers/seo-header-container";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -15,20 +14,9 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
-  /**
-   * SEO
-   * Todo: SEO will be managed by a new container
-   */
-  const seoInfo = useMemo(() => SEOInfo["/leaderboard"], []);
-
   return (
     <>
-      <SEOHeader
-        title={seoInfo.title()}
-        pageDescription={seoInfo.desc()}
-        ogTitle={seoInfo.ogTitle?.()}
-        ogDescription={seoInfo.ogDesc?.()}
-      />
+      <LeaderboardSEOContainer />
       <Leaderboard />
     </>
   );

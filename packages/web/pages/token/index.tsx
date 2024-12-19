@@ -2,14 +2,14 @@ import { useMemo } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import { TokenError } from "@common/errors/token";
-import SEOHeader from "@components/common/seo-header/seo-header";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS } from "@constants/common.constant";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetToken, useGetTokenPrices } from "@query/token";
-import { formatPrice } from "@utils/new-number-utils";
+
 import TokenDetail from "@layouts/token-detail/TokenDetail";
+import { TokenSEOContainer } from "@containers/seo-header-container";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -47,35 +47,9 @@ export default function Page() {
     return getGnotPath(token);
   }, [getGnotPath, token]);
 
-  /**
-   * SEO
-   * Todo: SEO will be managed by a new container
-   */
-  const seoInfo = useMemo(() => SEOInfo["/token"], []);
-
-  const title = useMemo(() => {
-    return seoInfo.title([
-      currentPrice ? formatPrice(currentPrice) : undefined,
-      token ? wrappedToken?.name : undefined,
-      token ? wrappedToken?.symbol : undefined,
-    ]);
-  }, [currentPrice, seoInfo, token, wrappedToken?.name, wrappedToken?.symbol]);
-
-  const ogTitle = useMemo(
-    () =>
-      seoInfo.ogTitle?.(
-        [token ? wrappedToken?.name : undefined, token ? wrappedToken?.symbol : undefined].filter(item => item),
-      ),
-    [seoInfo, token, wrappedToken?.name, wrappedToken?.symbol],
-  );
-  const desc = useMemo(
-    () => seoInfo.desc?.([token ? wrappedToken?.symbol : undefined].filter(item => item)),
-    [seoInfo, token, wrappedToken?.symbol],
-  );
-
   return (
     <>
-      <SEOHeader title={title} ogTitle={ogTitle} pageDescription={desc} ogDescription={seoInfo.ogDesc?.()} />
+      <TokenSEOContainer currentPrice={currentPrice} wrappedToken={wrappedToken} />
       <TokenDetail />
     </>
   );

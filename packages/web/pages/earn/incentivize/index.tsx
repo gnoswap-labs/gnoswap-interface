@@ -8,8 +8,8 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 
-import SEOHeader from "@components/common/seo-header/seo-header";
 import PoolIncentivize from "@layouts/pool/pool-incentivize/PoolIncentivize";
+import { EarnIncentivizeSEOContainer } from "@containers/seo-header-container";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -32,10 +32,6 @@ export default function Page() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [currentPool?.fee]);
 
-  /**
-   * SEO
-   * Todo: SEO will be managed by a new container
-   */
   const seoInfo = useMemo(() => SEOInfo["/earn/incentivize"], []);
 
   const title = useMemo(() => {
@@ -47,12 +43,7 @@ export default function Page() {
 
   return (
     <>
-      <SEOHeader
-        title={title}
-        pageDescription={seoInfo.desc()}
-        ogTitle={seoInfo?.ogTitle?.()}
-        ogDescription={seoInfo?.ogDesc?.()}
-      />
+      <EarnIncentivizeSEOContainer customTitle={title} />
       <PoolIncentivize />
     </>
   );

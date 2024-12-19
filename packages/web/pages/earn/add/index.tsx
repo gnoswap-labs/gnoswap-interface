@@ -9,8 +9,8 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 
-import SEOHeader from "@components/common/seo-header/seo-header";
 import PoolAdd from "@layouts/pool/pool-add/PoolAdd";
+import { EarnAddSEOContainer } from "@containers/seo-header-container";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -36,10 +36,6 @@ export default function Page() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [feeTier]);
 
-  /**
-   * SEO
-   * Todo: SEO will be managed by a new container
-   */
   const seoInfo = useMemo(() => SEOInfo["/earn/add"], []);
 
   const title = useMemo(() => {
@@ -54,12 +50,7 @@ export default function Page() {
 
   return (
     <>
-      <SEOHeader
-        title={title}
-        pageDescription={seoInfo.desc()}
-        ogTitle={seoInfo?.ogTitle?.()}
-        ogDescription={seoInfo?.ogDesc?.()}
-      />
+      <EarnAddSEOContainer customTitle={title} />
       <PoolAdd useDedicatedPool={false} />
     </>
   );

@@ -1,14 +1,15 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useMemo } from "react";
 
-import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import PoolIncentivize from "@layouts/pool/pool-incentivize/PoolIncentivize";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
+
+import { EarnPoolIncentivizeSEOContainer } from "@containers/seo-header-container";
+import PoolIncentivize from "@layouts/pool/pool-incentivize/PoolIncentivize";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -45,12 +46,7 @@ export default function Page() {
 
   return (
     <>
-      <SEOHeader
-        title={title}
-        pageDescription={seoInfo.desc()}
-        ogTitle={seoInfo?.ogTitle?.()}
-        ogDescription={seoInfo?.ogDesc?.()}
-      />
+      <EarnPoolIncentivizeSEOContainer customTitle={title} />
       <PoolIncentivize />
     </>
   );
