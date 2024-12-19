@@ -1,7 +1,4 @@
-import {
-  UMAMI_SCRIPT_URL,
-  UMAMI_WEBSITE_ID,
-} from "@constants/environment.constant";
+import { UMAMI_SCRIPT_URL, UMAMI_WEBSITE_ID } from "@constants/environment.constant";
 import "dayjs/locale/de";
 import "dayjs/locale/en";
 import "dayjs/locale/es";
@@ -16,17 +13,13 @@ import i18nextConfig from "../next-i18next.config";
 
 class MyDocument extends Document {
   render() {
-    const currentLocale =
-      this.props.__NEXT_DATA__.locale || i18nextConfig.i18n.defaultLocale;
+    const currentLocale = this.props.__NEXT_DATA__.locale || i18nextConfig.i18n.defaultLocale;
 
     return (
       <Html lang={currentLocale}>
         <Head>
           <meta charSet="utf-8" />
-          <meta
-            name="keywords"
-            content="Swap, Earn, GnoSwap, Liquidity, DeFi, trader"
-          />
+          <meta name="keywords" content="Swap, Earn, GnoSwap, Liquidity, DeFi, trader" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
@@ -34,11 +27,7 @@ class MyDocument extends Document {
             rel="stylesheet"
           />
           {UMAMI_SCRIPT_URL && UMAMI_WEBSITE_ID && (
-            <script
-              defer
-              src={UMAMI_SCRIPT_URL}
-              data-website-id={UMAMI_WEBSITE_ID}
-            />
+            <script defer src={UMAMI_SCRIPT_URL} data-website-id={UMAMI_WEBSITE_ID} />
           )}
         </Head>
         <body>

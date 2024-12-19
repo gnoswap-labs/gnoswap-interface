@@ -9,9 +9,9 @@ import withLocalModal from "@components/hoc/with-local-modal";
 import { LaunchpadClaimAllModalWrapper } from "./LaunchpadClaimAllModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import LaunchpadClaimAmountField from "./launchpad-claim-amount-field/LaunchpadClaimAmountField";
-import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 
 interface LaunchpadClaimAllModalProps {
   data: LaunchpadParticipationModel[];

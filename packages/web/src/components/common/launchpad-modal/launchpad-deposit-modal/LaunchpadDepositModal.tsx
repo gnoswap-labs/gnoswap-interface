@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Trans, useTranslation } from "react-i18next";
 
 import { LaunchpadPoolModel } from "@models/launchpad";
-import { ProjectRewardInfoModel } from "@views/launchpad/launchpad-detail/LaunchpadDetail";
+import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 import { getTierNumber } from "@utils/launchpad-get-tier-number";
 import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
 import { GNOT_TOKEN } from "@common/values/token-constant";
@@ -15,7 +15,7 @@ import IconClose from "@components/common/icons/IconCancel";
 import IconWarning from "../../icons/IconWarning";
 import IconOpenLink from "../../icons/IconOpenLink";
 import Button, { ButtonHierarchy } from "../../button/Button";
-import LaunchpadPoolTierChip from "@views/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
+import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 

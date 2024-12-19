@@ -1,7 +1,6 @@
+import React from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useMemo } from "react";
 
-import SEOHeader from "@components/common/seo-header/seo-header";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -12,7 +11,9 @@ import { useGetPoolDetailByPath } from "@query/pools";
 import { formatAddress } from "@utils/string-utils";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { isValidAddress } from "@utils/validation-utils";
-import PoolDetail from "@views/pool/pool-detail/PoolDetail";
+
+import SEOHeader from "@components/common/seo-header/seo-header";
+import PoolDetail from "@layouts/pool/pool-detail/PoolDetail";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -33,7 +34,7 @@ export default function Page() {
     addr: account?.address,
   });
 
-  const address = useMemo(() => {
+  const address = React.useMemo(() => {
     const address = initializedData?.addr;
     if (!address || !isValidAddress(address)) {
       return undefined;
@@ -41,16 +42,20 @@ export default function Page() {
     return address;
   }, [initializedData]);
 
-  const feeStr = useMemo(() => {
+  const feeStr = React.useMemo(() => {
     if (!data?.fee) {
       return null;
     }
     return SwapFeeTierInfoMap[makeSwapFeeTier(data.fee)]?.rateStr;
   }, [data?.fee]);
 
-  const seoInfo = useMemo(() => SEOInfo[address ? "/earn/pool?address" : "/earn/pool"], [address]);
+  /**
+   * SEO
+   * Todo: SEO will be managed by a new container
+   */
+  const seoInfo = React.useMemo(() => SEOInfo[address ? "/earn/pool?address" : "/earn/pool"], [address]);
 
-  const title = useMemo(() => {
+  const title = React.useMemo(() => {
     const tokenA = getGnotPath(data?.tokenA);
     const tokenB = getGnotPath(data?.tokenB);
 
